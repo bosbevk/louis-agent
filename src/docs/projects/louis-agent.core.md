@@ -95,10 +95,7 @@ One turn, step by step, before the parts that make it are told one by one below.
 
 The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
-## Diagrams
-
-The diagram under *How it works* shows how the engine is put together; this is what happens when a host hands it a
-message.
+What happens when a host hands the engine a message:
 
 ![One turn: the engine runs the tool loop, each model request measured and each tool call guarded, and the turn joins the history at the end](diagrams/louis-agent.core-diagrams.svg)
 

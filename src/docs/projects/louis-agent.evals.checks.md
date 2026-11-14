@@ -60,8 +60,6 @@ It references only what a pack already references, each for one thing:
 
 Never the harness, a pack, an identity or a package: the harness keeps `Microsoft.Extensions.AI.Evaluation`.
 
-## Diagrams
-
 ![The check contract: who lists checks, and how a check is built, reads and grades](diagrams/louis-agent.evals.checks-diagrams.svg)
 
 ![From a line to a grade: the catalogue finds the entry, the entry reads its settings strictly and builds the check, and the check grades the trial](diagrams/louis-agent.evals.checks-diagrams-2.svg)

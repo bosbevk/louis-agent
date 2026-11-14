@@ -50,8 +50,6 @@ The profile page shows how the pages are put together: one page, a section for e
   the key's in their own files; scoped and bundled by the build, so a site lists nothing of them; colours from
   variables only.
 
-## Diagrams
-
 ![louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web](diagrams/louis-agent.web.accounts-diagrams.svg)
 
 ![The profile menu: with no accounts it shows the guest's menu, otherwise it asks /account/me and shows the person](diagrams/louis-agent.web.accounts-diagrams-2.svg)

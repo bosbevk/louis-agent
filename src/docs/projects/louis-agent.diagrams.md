@@ -627,10 +627,9 @@ it trims the empty ground round the drawing.
 
 *Decided in:* F127.4.1.
 
-## Diagrams
+### 5. The types, in two pictures
 
-The flow and the sequence are shown in part 1, where they are explained, and the geometry's two families in part
-3. The interface design is two pictures, since one of all of it can't be read. The first is the way in: who
+The interface design is two pictures, since one of all of it can't be read. The first is the way in: who
 reads a diagram and who writes one, how its kind picks one of the seven renderers, and what a renderer is handed.
 
 ![The way in: the reader makes a DiagramSource, DiagramRenderers picks one of seven renderers by its kind and hands it the geometry, and TitledFrame wraps what it drew](diagrams/louis-agent.diagrams-interface.svg)

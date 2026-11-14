@@ -68,8 +68,6 @@ keeps its own copy of a step (`TriageStepView`), and `louis-agent.pack.triage.we
 recorder's options and reads it back field for field. The louis-agent site plays a recorded run on `/triage-demo` until
 F106.3.3's workflow runs live.
 
-## Diagrams
-
 ![How it works: the workflow reads the feed, the roles end with typed tools, and every step is written to the run](diagrams/louis-agent.pack.triage-flow.svg)
 
 ![An investigation reported: a bad value comes back with its choices, a good one becomes a step on the run](diagrams/louis-agent.pack.triage-sequence.svg)

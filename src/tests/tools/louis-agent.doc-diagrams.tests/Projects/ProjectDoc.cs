@@ -24,13 +24,15 @@ namespace LouisAgent.DocDiagrams.Tests.Projects;
 /// <param name="Own">The types it names in its <c>**Also shows:**</c> line.</param>
 /// <param name="Pictures">The pictures it links from its <c>diagrams</c> folder, as written.</param>
 /// <param name="Shown">The type of each picture it shows, as the picture states it.</param>
+/// <param name="Headings">Its sections' headings, as written, <c>## Purpose</c> and the rest.</param>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
 public sealed record ProjectDoc(
     string Path,
     ProjectKind? Kind,
     IReadOnlySet<DiagramType> Own,
     IReadOnlyList<string> Pictures,
-    IReadOnlySet<DiagramType> Shown)
+    IReadOnlySet<DiagramType> Shown,
+    IReadOnlyList<string> Headings)
 {
     /// <summary>How the line that states a doc's kind starts.</summary>
     private const string KindLine = "> **Kind:**";
@@ -65,7 +67,9 @@ public sealed record ProjectDoc(
         var shown = pictures.Select(picture => TypeOf(System.IO.Path.Combine(folder, picture)))
             .OfType<DiagramType>().ToHashSet();
 
-        return new ProjectDoc(path, KindOf(lines), OwnOf(lines), pictures, shown);
+        var headings = lines.Where(line => line.StartsWith("## ", StringComparison.Ordinal)).ToList();
+
+        return new ProjectDoc(path, KindOf(lines), OwnOf(lines), pictures, shown, headings);
     }
 
     /// <summary>The kind the doc's kind line names, read once with the one parser of a choice.</summary>

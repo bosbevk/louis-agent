@@ -41,8 +41,6 @@ The landing page lists its sections in order, each a component of its own.
   the sidebar and the Werk panel are hidden, and whether the animations are on although the system asks for less
   (`chat.motion`, F24).
 
-## Diagrams
-
 ![The Puls app: its pages, the framework's shells and the API](diagrams/louis-agent.puls-diagrams.svg)
 
 ![Asking Puls about cooking: the web app opens the session, Puls asks the cook on the server, and the page draws the work and the answer](diagrams/louis-agent.puls-diagrams-2.svg)

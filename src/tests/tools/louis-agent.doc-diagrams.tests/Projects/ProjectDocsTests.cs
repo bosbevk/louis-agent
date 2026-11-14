@@ -70,6 +70,19 @@ public class ProjectDocsTests
     }
 
     /// <summary>
+    /// No project doc keeps its pictures in a section apart (Louis, 2026-11-14: "graphs must also be placed where it
+    /// is used ort needed not a section"): each stands beside the text it explains.
+    /// </summary>
+    [Test]
+    public void NoProjectDoc_HasADiagramsSection()
+    {
+        var apart = ProjectDoc.All().Where(doc => doc.Headings.Contains("## Diagrams")).Select(Relative)
+            .Order(StringComparer.Ordinal);
+
+        Assert.That(apart, Is.Empty, "a project doc with its pictures in a section apart: put each beside its text");
+    }
+
+    /// <summary>
     /// The guide's table of what each kind of project shows is the floor the rule holds, row for row, so a person
     /// reads the same rule the test keeps.
     /// </summary>

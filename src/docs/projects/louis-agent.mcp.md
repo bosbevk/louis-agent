@@ -35,9 +35,7 @@ call at a time. (To have louis-agent do a whole task itself, use the API's sessi
   client's child process.
 - **Approval stays with the user:** approving agent-built tools is not exposed over MCP.
 
-## Diagrams
-
-The architecture is under *How it works*; this is a client using it.
+A client using it:
 
 ![A client using the tools: it lists and calls the engine's tools through the SDK's server, hears when they change, and reads a feed](diagrams/louis-agent.mcp-diagrams.svg)
 

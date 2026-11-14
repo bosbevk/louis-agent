@@ -81,20 +81,18 @@ put my name in?", "and then only that card", "see this should also be an input c
   that showing one presses it for the visitor, that a message naming a selected piece is about that piece, and to find
   a place on another page with `FindPlace` before showing it.
 
+![How it works: the tool says, the widget hears the call, and the visitor's own browser moves](diagrams/louis-agent.pack.site-flow.svg)
+
+![A booking: only the visitor's click books, the agent shows a card and offers, and sends nothing before](diagrams/louis-agent.pack.site-sequence.svg)
+
+![The types: one pack, tools that move and draw nothing, their checks, and the web's readers](diagrams/louis-agent.pack.site-interface.svg)
+
 ## Rules it keeps
 
 - References the composition only, names no identity and no other pack (ADR 0027); stays convertible to MCP: text and
   records of plain data in, text out (ADR 0028). An MCP client that calls it gets the text and moves nothing, which is right: the tool
   says what should be shown, the client decides whether it can.
 - Arguments as data (ADR 0004): the path is checked, never run; the browser only ever receives a path of its own site.
-
-## Diagrams
-
-![How it works: the tool says, the widget hears the call, and the visitor's own browser moves](diagrams/louis-agent.pack.site-flow.svg)
-
-![A booking: only the visitor's click books, the agent shows a card and offers, and sends nothing before](diagrams/louis-agent.pack.site-sequence.svg)
-
-![The types: one pack, tools that move and draw nothing, their checks, and the web's readers](diagrams/louis-agent.pack.site-interface.svg)
 
 ## Tests
 

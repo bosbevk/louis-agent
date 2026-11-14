@@ -33,8 +33,6 @@ references only `louis-agent.choices`, so each side takes it without the others.
   object with a known `event`; the live view shows it as a log line. `Line` writes an event; both use one options
   object.
 
-## Diagrams
-
 ![The eval protocol: written as JSON lines, read by the API and the web](diagrams/louis-agent.evals.protocol-diagrams.svg)
 
 ![The order of a run's lines: the protocol event first, then each mode's conversations, and the summary last](diagrams/louis-agent.evals.protocol-diagrams-2.svg)

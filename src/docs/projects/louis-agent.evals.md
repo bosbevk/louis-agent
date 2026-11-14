@@ -74,8 +74,6 @@ One run, step by step.
   graders) and known-bad ones (each required grader must fail one); `Labels/` writes the sheet a person labels and
   calibrates a model judge against the labels (90% of each class, ADR 0029).
 
-## Diagrams
-
 ![The eval harness: what the runner uses, and where a run's events go](diagrams/louis-agent.evals-diagrams.svg)
 
 ![One run: for each mode, repeat and question the runner asks a session and writes the events, then grades each conversation and sums up](diagrams/louis-agent.evals-diagrams-2.svg)

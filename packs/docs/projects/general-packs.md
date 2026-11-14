@@ -25,7 +25,7 @@ Each says `ComesBeforeTheEngine`, so a session's tools keep their order: these, 
 so a pack can't reach an internal address or skip a site's `robots.txt`. It keeps its own small PDF reader, because a pack
 references no other pack.
 
-## Diagrams
+## How it works
 
 A toolset opened, then a call, step by step.
 

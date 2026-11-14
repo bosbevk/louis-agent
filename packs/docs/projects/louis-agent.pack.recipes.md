@@ -62,6 +62,12 @@ One search, step by step.
   `packs/evals/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
   demo program's `PulsCatalogs`, and the check catalogue's listing shows it with that one setting.
 
+![The recipes pack: its tools, its sources and the library](diagrams/louis-agent.pack.recipes-diagrams.svg)
+
+![Searching, then reading a recipe: the search asks several sites at once, and a read takes the library's copy or the page's own recipe data first](diagrams/louis-agent.pack.recipes-diagrams-2.svg)
+
+![The types: three tools, a search scattered over the sites, a page read as data first, and our own library on a shelf](diagrams/louis-agent.pack.recipes-interface.svg)
+
 ## Design notes
 
 What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35-recipe-sources.md) is deleted; what it taught is in the [write-up](../../../src/docs/learning/05-structured-outputs.md)):
@@ -89,14 +95,6 @@ What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blo
 - **Off until named** ([ADR 0023](../../../src/docs/adr/0023-copyleft-service-beside-us.md)): nothing is enabled until
   `RECIPE_SOURCES` names it. Puls's stacks name `*`, every site in the table; a site's terms of use are a separate
   reading, not part of its row (Louis's decision on them is in the plan's F35.2 *Approved during the build*, 2026-11-04).
-
-## Diagrams
-
-![The recipes pack: its tools, its sources and the library](diagrams/louis-agent.pack.recipes-diagrams.svg)
-
-![Searching, then reading a recipe: the search asks several sites at once, and a read takes the library's copy or the page's own recipe data first](diagrams/louis-agent.pack.recipes-diagrams-2.svg)
-
-![The types: three tools, a search scattered over the sites, a page read as data first, and our own library on a shelf](diagrams/louis-agent.pack.recipes-interface.svg)
 
 ## Structure
 

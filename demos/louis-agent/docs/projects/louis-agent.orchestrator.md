@@ -35,9 +35,7 @@ itself before calling anything fixed. It never edits code.
    currency (F14: rates from demo-api's `/v1/rates`, one rate for both agents), with the rate and the USD charged under the
    run total; the jsonl files keep USD.
 
-## Diagrams
-
-The flow is under *How it works*; these are the pieces.
+The pieces:
 
 ![The orchestrator: the poll, its engine and tools, and what it writes down](diagrams/louis-agent.orchestrator-diagrams.svg)
 

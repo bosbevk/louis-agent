@@ -41,8 +41,6 @@ own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep 
 - **Every number is a decimal.** The evaluator reads a whole number as an int, and `100000*100000` outgrows one, so each whole
   number gets a point first.
 
-## Diagrams
-
 ![The calculator pack: one tool over plain arithmetic](diagrams/louis-agent.pack.calculator-diagrams.svg)
 
 ![Two sums, one bad: the good one is worked out, the bad one is refused with its reason, and both come back on their own lines](diagrams/louis-agent.pack.calculator-diagrams-2.svg)

@@ -39,8 +39,6 @@ A host's telemetry, step by step.
 What stays in core: `TurnSpans` (a span per turn, on the GenAI conventions), `SpanTag`, `LastChance`, and the
 seam with its Null Object.
 
-## Diagrams
-
 ![Telemetry: the log sink and the tracer, out to the collector](diagrams/louis-agent.core.telemetry-diagrams.svg)
 
 ![Switching telemetry on: the host adds the collector's sink and starts the tracer, and a turn's spans go out over OTLP](diagrams/louis-agent.core.telemetry-diagrams-2.svg)

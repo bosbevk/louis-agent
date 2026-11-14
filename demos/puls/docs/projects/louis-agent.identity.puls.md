@@ -50,8 +50,6 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
   [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
 
-## Diagrams
-
 ![The Puls identity: its prompts and packs, its evals and judges](diagrams/louis-agent.identity.puls-diagrams.svg)
 
 ![A cooking question: the session reads Puls's prompts, Puls asks the cook, and the cook's tools answer through it](diagrams/louis-agent.identity.puls-diagrams-2.svg)

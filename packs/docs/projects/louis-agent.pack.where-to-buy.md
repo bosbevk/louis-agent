@@ -51,6 +51,12 @@ One shop's branches, step by step.
   [ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price given as fact,
   the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
 
+![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
+
+![Finding a shop's branches: the town is found on the map, then ever bigger boxes round it until one holds the shop, and the three nearest are printed](diagrams/louis-agent.pack.where-to-buy-diagrams-2.svg)
+
+![The types: two tools over the map, the town first, then the shop's branches around it](diagrams/louis-agent.pack.where-to-buy-interface.svg)
+
 ## Design notes
 
 - **In the town's municipality, not within a radius.** A branch is the town's when the map files it under the same
@@ -61,14 +67,6 @@ One shop's branches, step by step.
   and the cook say *Branches from © OpenStreetMap contributors.* under the branches.
 - **The map is a shared public service.** One request a second is the policy; a busy public Puls needs its own
   Nominatim or a paid geocoder (*Limits and plans*).
-
-## Diagrams
-
-![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
-
-![Finding a shop's branches: the town is found on the map, then ever bigger boxes round it until one holds the shop, and the three nearest are printed](diagrams/louis-agent.pack.where-to-buy-diagrams-2.svg)
-
-![The types: two tools over the map, the town first, then the shop's branches around it](diagrams/louis-agent.pack.where-to-buy-interface.svg)
 
 ## Structure
 

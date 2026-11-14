@@ -51,8 +51,6 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 - **The stub eval** (`Evals/Stub/`) answers from canned events through a `CannedSessionClient`: no session, no model.
   It proves the runner end to end in the tests and in the portal for free.
 
-## Diagrams
-
 ![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
 ![A run from the Evals page: the API starts the runner as a child process, reads its lines on stdout for the live view, and stores the run](diagrams/louis-agent.evals.runner-diagrams-2.svg)

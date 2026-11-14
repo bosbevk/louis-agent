@@ -32,8 +32,6 @@ Start-up, step by step.
   share, and a tool name two toolsets share or that is the engine's own. The host hands it to `AgentHost`, which
   registers the prompts with `SkillFileSource` and builds every engine from it.
 
-## Diagrams
-
 ![Host packs: the program's plugins, the identity and the packs, into the catalogue](diagrams/louis-agent.host-packs-diagrams.svg)
 
 ![Start-up: the plugins read the names from the settings, build the identities and packs, and the catalogue checks them before the host builds](diagrams/louis-agent.host-packs-diagrams-2.svg)

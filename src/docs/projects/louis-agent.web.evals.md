@@ -31,18 +31,6 @@ Almost nothing, which is the point ([ADR 0084](../adr/0084-every-site-is-built-o
   and the addresses it takes. A website goes under the first kind it fits, the first kind is green, and what fits none is grey and called
   *elsewhere*. With none named, everything is one grey slice. Puls's list is `PulsSites`.
 
-## Diagrams
-
-Where the pieces sit, and what a site adds:
-
-![The eval studio's pages: from a site's program through the admin frame to the API](diagrams/louis-agent.web.evals-diagrams.svg)
-
-What happens when someone starts a run and watches it:
-
-![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
-
-![The types: a site adds the pages in one call, a run's events build its live view and its stored lines its tree](diagrams/louis-agent.web.evals-interface.svg)
-
 ## How it works
 
 The Evals page is the studio's front: the list of evals, the chosen one's details, and the run in progress.
@@ -91,6 +79,16 @@ the standard records alone: `GraderList` above the explorer (the run's eval, ver
 it recorded none) and `GradeChips` on each conversation's row (its outcome and one chip per grade, in the run's grader order,
 the reason on hover; "no grades" for a run from before F18 step 2a, never 0). The readers and the chip list are plain classes in
 `Admin/Grades/`, the components in `Components/Evals/Grades/`.
+
+Where the pieces sit, and what a site adds:
+
+![The eval studio's pages: from a site's program through the admin frame to the API](diagrams/louis-agent.web.evals-diagrams.svg)
+
+What happens when someone starts a run and watches it:
+
+![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
+
+![The types: a site adds the pages in one call, a run's events build its live view and its stored lines its tree](diagrams/louis-agent.web.evals-interface.svg)
 
 ## Structure
 

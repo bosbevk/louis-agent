@@ -36,8 +36,6 @@ You: exit
   the session total, so stdout stays the answer alone for scripts. Only with the ledger on (`LOG_DIRECTORY` set).
 - Outside Docker, `config/.env` and the repository root are found from any folder inside the repository.
 
-## Diagrams
-
 ![The terminal host: from your program through ConsoleChat to the engine and the output](diagrams/louis-agent.cli-diagrams.svg)
 
 ![One line typed: a command is answered with no model, a message streams from the engine with its usage at the end](diagrams/louis-agent.cli-diagrams-2.svg)

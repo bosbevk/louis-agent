@@ -43,8 +43,6 @@ One fetch, step by step.
 What a pack gets is unchanged: its `IPackContext` (`ToolsetContext`) answers `WebSearch`, `Browser`, `Renderer` and
 `NewFetcher()` from the seam.
 
-## Diagrams
-
 ![Web access: from a host's program to IWebAccess and the parts behind it](diagrams/louis-agent.core.web-diagrams.svg)
 
 ![Fetching a page: a pack's tool gets a fetcher through the seam, and the fetcher asks the robots policy before it reads](diagrams/louis-agent.core.web-diagrams-2.svg)

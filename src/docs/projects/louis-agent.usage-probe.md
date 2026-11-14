@@ -62,8 +62,6 @@ invariant), checks it names a region, prints the currency and today's rate, and 
 roughly $0.05 on Haiku 4.5. Anthropic only caches a prompt above a minimum size (4,096 tokens on Haiku 4.5), which is
 why its prompt is long.
 
-## Diagrams
-
 ![The usage probe: each command and the parts it uses](diagrams/louis-agent.usage-probe-diagrams.svg)
 
 ![The default job: the probe asks the provider a one-word question each way and prints what the adapter and the ledger report](diagrams/louis-agent.usage-probe-diagrams-2.svg)

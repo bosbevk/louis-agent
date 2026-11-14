@@ -24,8 +24,6 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 - **The list** (`PulsJudges.All`) is what an eval file can name; the runner gathers it with the harness's general
   checks and Puls's fixed rules (`PulsCatalogs`).
 
-## Diagrams
-
 ![Puls's judges: from the runner's catalogue to a model's verdict](diagrams/louis-agent.identity.puls.judges-diagrams.svg)
 
 ![Judging one trial: the check asks the judge's model with the rubric and the answer, and turns its verdict into a grade](diagrams/louis-agent.identity.puls.judges-diagrams-2.svg)

@@ -32,8 +32,6 @@ files pack uses keeps every path under the root.
 without docs runs as before. On the PC the demo's compose points it at the repo's docs; in the image it is the copy
 the Dockerfile carries (`/app/docs`: `src/docs`, each demo's `docs/`, `packs/docs`, films left out).
 
-## Diagrams
-
 ![How it works: the pack is on when its folder is set, and its three tools read nothing outside it](diagrams/louis-agent.pack.docs-flow.svg)
 
 ![A search, then a read: a search gives paths and lines, a read gives the doc whole, and a path outside the root is refused](diagrams/louis-agent.pack.docs-sequence.svg)

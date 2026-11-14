@@ -12,8 +12,6 @@
 
 A test that starts a real process, opens Mongo or needs the Puls stack is an integration test: its class is `[Category("Integration")]` and it lives in `{name}.integration-tests`, so a unit project never starts a process. Solution folders `unit`, `integration` and `shared` hold the projects; CI runs `--filter "Category!=Integration"` and then `--filter "Category=Integration"` with `INTEGRATION_REQUIRED=1`. `louis-agent.api.testing` (shared) holds the in-memory API host, the built runner and stand-in dlls and the store contracts, so each is written once and run against memory (unit) and Mongo (integration). Two ratchets in `core.tests/Categories/` hold it: `IntegrationTestsAreMarkedTests` (a test that asks for the outside or uses a process, Mongo or the runner is marked; no raw skip) and `IntegrationPlacementTests` (the mark and the project agree).
 
-## Diagrams
-
 ![The tests: what CI runs, and the two testing libraries they share](diagrams/tests-diagrams.svg)
 
 ![A golden file: the snapshot is written when you ask, and otherwise the test passes when it's the same and fails when it differs](diagrams/tests-diagrams-2.svg)

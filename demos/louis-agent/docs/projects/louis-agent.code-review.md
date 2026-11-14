@@ -37,9 +37,7 @@ The chat page is the framework's chat shell, given the app's own parts in its sl
   the framework's colour names, built to `wwwroot/css/themes/`, loaded after `app.css` and swapped while the page runs.
   `wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
 
-## Diagrams
-
-The architecture is under *How it works*; this is reviewing a change, the job it's for.
+Reviewing a change, the job the app is for:
 
 ![Reviewing a change: the review button builds the prompt and hands it to the chat's message box, and the reviewer sends it](diagrams/louis-agent.code-review-diagrams.svg)
 

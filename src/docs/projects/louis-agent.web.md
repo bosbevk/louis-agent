@@ -469,8 +469,6 @@ cross, Enter keeps and Escape drops.
 
 *Decided in:* F134.1 (icons and the stage), FX154 (paper), F142 (editing).
 
-## Diagrams
-
 The [eval pages](louis-agent.web.evals.md) have pictures of their own.
 
 ![The framework's web: a site's pages in the chat's and the admin's frames, and the API they call](diagrams/louis-agent.web-diagrams.svg)

@@ -35,8 +35,6 @@ How a client is made, step by step.
 `LlmClientFactory` in core is the registry: it finds the provider by name, wraps the client for caching, and asks the
 provider for its mapper and its markers; with no providers it says every name is unknown.
 
-## Diagrams
-
 ![Claude's provider: from a program through the client factory to the SDK and its parts](diagrams/louis-agent.core.anthropic-diagrams.svg)
 
 ![Making Claude's client: the factory asks the provider for the SDK's client, then wraps the cache markers round it](diagrams/louis-agent.core.anthropic-diagrams-2.svg)

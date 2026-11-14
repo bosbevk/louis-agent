@@ -41,9 +41,7 @@ Rider sends prompts (with attached files), and the server streams back thinking,
   else; `LOG_CONTENT=full` shows the text, on your own machine. The protocol on stdout is unchanged. Paths to a developer's own files
   stay in the log: they are out of scope.
 
-## Diagrams
-
-The flow is under *How it works*; these are the pieces.
+The pieces:
 
 ![Rider's chat: from AcpHost through the prompt handler to Rider, and back](diagrams/louis-agent.acp-diagrams.svg)
 

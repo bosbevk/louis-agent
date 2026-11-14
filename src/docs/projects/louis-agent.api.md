@@ -121,9 +121,7 @@ remembers the visitor it counts for ([ADR 0099](../adr/0099-the-guide-answers-wi
 (`AgentSession.Who`), and each turn sets it ambient (`TurnIdentity`, with the user's place and the rest, in
 `Sessions/Streaming/TurnAmbience`), so a pack can tell a demonstration's turn from a real one.
 
-## Diagrams
-
-The diagram under *How it works* shows the routes; this is the main one, opening a session and asking it something.
+The main route, opening a session and asking it something:
 
 ![A session and a message to it: the key gate, the session with its shared engine, and the turn streamed back as Server-Sent Events](diagrams/louis-agent.api-diagrams.svg)
 
