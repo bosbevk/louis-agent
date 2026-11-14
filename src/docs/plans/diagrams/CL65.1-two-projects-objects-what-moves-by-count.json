@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "title": "CL65.1 two projects: what moves, by count",
+  "caption": "About an eighth stays: the project that says what a diagram is is small on purpose.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      { "id": "today", "label": "louis-agent.diagrams today\nabout 5,600 lines of code", "icon": "code", "tone": "violet" },
+      { "id": "stays", "label": "Stays: about 700 lines\nrecords, reader, checks, refusals", "icon": "code", "tone": "teal" },
+      { "id": "svg", "label": "Step 3: about 2,300 lines\nSvg/, the words, icons' drawings", "icon": "chip", "tone": "green" },
+      { "id": "layouts", "label": "Step 4: about 2,600 lines\nlayouts, routing, adapters, keys", "icon": "chip", "tone": "green" },
+      { "id": "engine", "label": "louis-agent.diagrams.engine\nabout 4,900 lines", "icon": "chip", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "today", "to": "stays" },
+      { "from": "today", "to": "svg" },
+      { "from": "today", "to": "layouts" },
+      { "from": "svg", "to": "engine" },
+      { "from": "layouts", "to": "engine" }
+    ]
+  }
+}
