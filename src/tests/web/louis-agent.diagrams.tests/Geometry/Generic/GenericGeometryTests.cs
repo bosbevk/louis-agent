@@ -35,6 +35,30 @@ public class GenericGeometryTests
     }
 
     /// <summary>
+    /// The sums the flow's layout and router wrote by hand, each answered to the last digit: a frame's width, a
+    /// box put on a line, and a place part of the way along a side.
+    /// </summary>
+    [Test]
+    public void TheFlowsSums_AreTheOnesWrittenByHand()
+    {
+        const double x = 0.1, y = 0.7, w = 0.2, h = 0.3, left = 0.6, top = 1.3, pad = 0.9, line = 7.7, part = 0.4;
+        var box = Ours.Box(x, y, w, h);
+        var frame = box.Grown(left, top, pad, pad);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(frame.Left, Is.EqualTo(x - left));
+            Assert.That(frame.Top, Is.EqualTo(y - top));
+            Assert.That(frame.Width, Is.EqualTo(w + left + pad));
+            Assert.That(frame.Height, Is.EqualTo(h + top + pad));
+            Assert.That(box.OnLine(line).Top, Is.EqualTo(line - h / 2));
+            Assert.That(box.Across(part), Is.EqualTo(x + w * part));
+            Assert.That(box.Down(part), Is.EqualTo(y + h * part));
+            Assert.That(box.Moved(left, top).Left, Is.EqualTo(x + left));
+        });
+    }
+
+    /// <summary>
     /// One type over any number: in <c>decimal</c> the same box answers 0.3 where <c>double</c> answers
     /// 0.30000000000000004, with not a line of the box written twice.
     /// </summary>

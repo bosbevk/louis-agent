@@ -11,4 +11,11 @@ public sealed record DotNetPoint(Vector2 Vector) : IPoint
 
     /// <summary>How far down.</summary>
     public double Y => Vector.Y;
+
+    /// <summary>The same point, somewhere else.</summary>
+    public IPoint Moved(double across, double down) =>
+        new DotNetPoint(Vector + new Vector2((float)across, (float)down));
+
+    /// <summary>The point turned over the picture's diagonal.</summary>
+    public IPoint Turned() => new DotNetPoint(new Vector2(Vector.Y, Vector.X));
 }

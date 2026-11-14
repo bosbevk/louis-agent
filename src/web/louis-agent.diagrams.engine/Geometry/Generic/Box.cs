@@ -36,8 +36,24 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     /// <summary>The box with room added on every side.</summary>
     public Box<T> Grown(T by) => new(Left - by, Top - by, Width + Two * by, Height + Two * by);
 
+    /// <summary>The box with room added on each side, its own on every one.</summary>
+    public Box<T> Grown(T left, T top, T right, T bottom) =>
+        new(Left - left, Top - top, Width + left + right, Height + top + bottom);
+
     /// <summary>The same box, somewhere else.</summary>
     public Box<T> Moved(T across, T down) => this with { Left = Left + across, Top = Top + down };
+
+    /// <summary>The same box with its middle on a line across the picture, at this height.</summary>
+    public Box<T> OnLine(T y) => this with { Top = y - Height / Two };
+
+    /// <summary>The box turned over its diagonal: across becomes down, and its width its height.</summary>
+    public Box<T> Turned() => new(Top, Left, Height, Width);
+
+    /// <summary>A place along the box from its left: 0 its left edge, 1 its right.</summary>
+    public T Across(T part) => Left + Width * part;
+
+    /// <summary>A place down the box from its top: 0 its top edge, 1 its bottom.</summary>
+    public T Down(T part) => Top + Height * part;
 
     /// <summary>The smallest box that holds this one and another.</summary>
     public Box<T> With(Box<T> other)
@@ -66,6 +82,17 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     IBox IBox.Moved(double across, double down) => Moved(T.CreateChecked(across), T.CreateChecked(down));
 
     IBox IBox.With(IBox other) => With(Ours(other));
+
+    IBox IBox.Grown(double left, double top, double right, double bottom) => Grown(T.CreateChecked(left),
+        T.CreateChecked(top), T.CreateChecked(right), T.CreateChecked(bottom));
+
+    IBox IBox.OnLine(double y) => OnLine(T.CreateChecked(y));
+
+    IBox IBox.Turned() => Turned();
+
+    double IBox.Across(double part) => double.CreateChecked(Across(T.CreateChecked(part)));
+
+    double IBox.Down(double part) => double.CreateChecked(Down(T.CreateChecked(part)));
 
     /// <summary>
     /// Another box as one of ours. It is one already when the picture is drawn by one geometry, and a box of

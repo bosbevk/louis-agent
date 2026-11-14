@@ -51,7 +51,9 @@ public class GeometryFamiliesTests(IGeometry geometry)
         Assert.That((grown.Left, grown.Top, grown.Width, grown.Height), Is.EqualTo((112.0, 32.0, 216.0, 80.0)));
     }
 
-    /// <summary>Moved, a box is somewhere else and as big as it was, and the box it was moved from has not moved.</summary>
+    /// <summary>
+    /// Moved, a box is somewhere else and as big as it was, and the box it was moved from has not moved.
+    /// </summary>
     [Test]
     public void ABoxMoved_KeepsItsSize_AndLeavesTheFirstWhereItWas()
     {
@@ -114,6 +116,72 @@ public class GeometryFamiliesTests(IGeometry geometry)
     }
 
     /// <summary>
+    /// Grown with its own room on each side, a box is what a group's frame is to its boxes: more room over the
+    /// label than under.
+    /// </summary>
+    [Test]
+    public void ABoxGrownSideBySide_HasEachSidesOwnRoom()
+    {
+        var frame = Box().Grown(12, 34, 12, 12);
+
+        Assert.That((frame.Left, frame.Top, frame.Right, frame.Bottom), Is.EqualTo((108.0, 6.0, 332.0, 116.0)));
+    }
+
+    /// <summary>Put on a line, a box has its middle at that height and is where it was across.</summary>
+    [Test]
+    public void ABoxOnALine_HasItsMiddleThere()
+    {
+        var onLine = Box().OnLine(200);
+
+        Assert.That((onLine.Left, onLine.Top, onLine.Middle.Y, onLine.Height), Is.EqualTo((120.0, 168.0, 200.0, 64.0)));
+    }
+
+    /// <summary>
+    /// Turned over the diagonal, across becomes down for a box and for a point, and turned twice each is itself.
+    /// </summary>
+    [Test]
+    public void Turned_AcrossBecomesDown()
+    {
+        IBox box = Box(), turned = box.Turned();
+        IPoint point = geometry.Point(3, 4), over = point.Turned();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((turned.Left, turned.Top, turned.Width, turned.Height), Is.EqualTo((40.0, 120.0, 64.0, 200.0)));
+            Assert.That(turned.Turned(), Is.EqualTo(box));
+            Assert.That((over.X, over.Y), Is.EqualTo((4.0, 3.0)));
+            Assert.That(over.Turned(), Is.EqualTo(point));
+            Assert.That(turned, Is.TypeOf(box.GetType()));
+            Assert.That(over, Is.TypeOf(point.GetType()));
+        });
+    }
+
+    /// <summary>A place part of the way along a box, or down it, counts from its left and its top.</summary>
+    [Test]
+    public void APlaceAlongABox_CountsFromItsLeftAndItsTop()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That((Box().Across(0), Box().Across(0.5), Box().Across(1)), Is.EqualTo((120.0, 220.0, 320.0)));
+            Assert.That((Box().Down(0), Box().Down(0.25), Box().Down(1)), Is.EqualTo((40.0, 56.0, 104.0)));
+        });
+    }
+
+    /// <summary>Moved, a point is somewhere else, and the point it was moved from has not moved.</summary>
+    [Test]
+    public void APointMoved_IsSomewhereElse()
+    {
+        IPoint point = geometry.Point(3, 4), moved = point.Moved(10, -1);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((moved.X, moved.Y), Is.EqualTo((13.0, 3.0)));
+            Assert.That((point.X, point.Y), Is.EqualTo((3.0, 4.0)));
+            Assert.That(moved, Is.TypeOf(point.GetType()));
+        });
+    }
+
+    /// <summary>
     /// Joined with a box of another family, a box still answers in its own: the other is read through the seam.
     /// </summary>
     [Test]
@@ -125,7 +193,8 @@ public class GeometryFamiliesTests(IGeometry geometry)
         Assert.Multiple(() =>
         {
             Assert.That(joined, Is.TypeOf(Box().GetType()));
-            Assert.That((joined.Left, joined.Top, joined.Right, joined.Bottom), Is.EqualTo((120.0, 40.0, 350.0, 150.0)));
+            Assert.That((joined.Left, joined.Top, joined.Right, joined.Bottom),
+                Is.EqualTo((120.0, 40.0, 350.0, 150.0)));
         });
     }
 }

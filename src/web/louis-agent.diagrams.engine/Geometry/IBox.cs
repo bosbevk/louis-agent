@@ -36,6 +36,23 @@ public interface IBox
     /// <summary>The box with room added on every side.</summary>
     IBox Grown(double by);
 
+    /// <summary>
+    /// The box with room added on each side, its own on every one, as a frame has more room over its label.
+    /// </summary>
+    IBox Grown(double left, double top, double right, double bottom);
+
+    /// <summary>The same box with its middle on a line across the picture, at this height.</summary>
+    IBox OnLine(double y);
+
+    /// <summary>The box turned over its diagonal: across becomes down, and its width its height.</summary>
+    IBox Turned();
+
+    /// <summary>A place along the box from its left: 0 its left edge, 1 its right, 0.5 its middle.</summary>
+    double Across(double part);
+
+    /// <summary>A place down the box from its top: 0 its top edge, 1 its bottom.</summary>
+    double Down(double part);
+
     /// <summary>The same box, somewhere else.</summary>
     IBox Moved(double across, double down);
 

@@ -9,4 +9,10 @@ public interface IPoint
 
     /// <summary>How far down it is, from the picture's top.</summary>
     double Y { get; }
+
+    /// <summary>The same point, somewhere else.</summary>
+    IPoint Moved(double across, double down);
+
+    /// <summary>The point turned over the picture's diagonal: across becomes down.</summary>
+    IPoint Turned();
 }

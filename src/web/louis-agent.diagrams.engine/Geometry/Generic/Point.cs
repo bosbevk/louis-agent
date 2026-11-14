@@ -15,4 +15,14 @@ public sealed record Point<T>(T X, T Y) : IPoint where T : INumber<T>
 
     /// <summary>How far down, as the seam reads it.</summary>
     double IPoint.Y => double.CreateChecked(Y);
+
+    /// <summary>The same point, somewhere else.</summary>
+    public Point<T> Moved(T across, T down) => new(X + across, Y + down);
+
+    /// <summary>The point turned over the picture's diagonal: across becomes down.</summary>
+    public Point<T> Turned() => new(Y, X);
+
+    IPoint IPoint.Moved(double across, double down) => Moved(T.CreateChecked(across), T.CreateChecked(down));
+
+    IPoint IPoint.Turned() => Turned();
 }

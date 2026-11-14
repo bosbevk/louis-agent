@@ -53,6 +53,24 @@ public sealed record DotNetBox(RectangleF Rectangle) : IBox
     /// <summary>The smallest box that holds this one and another.</summary>
     public IBox With(IBox other) => new DotNetBox(RectangleF.Union(Rectangle, Theirs(other)));
 
+    /// <summary>The box with room added on each side, its own on every one.</summary>
+    public IBox Grown(double left, double top, double right, double bottom) => new DotNetBox(new RectangleF(
+        Rectangle.Left - (float)left, Rectangle.Top - (float)top, Rectangle.Width + (float)left + (float)right,
+        Rectangle.Height + (float)top + (float)bottom));
+
+    /// <summary>The same box with its middle on a line across the picture.</summary>
+    public IBox OnLine(double y) => new DotNetBox(Rectangle with { Y = (float)y - Rectangle.Height / 2 });
+
+    /// <summary>The box turned over its diagonal.</summary>
+    public IBox Turned() =>
+        new DotNetBox(new RectangleF(Rectangle.Top, Rectangle.Left, Rectangle.Height, Rectangle.Width));
+
+    /// <summary>A place along the box from its left.</summary>
+    public double Across(double part) => Rectangle.Left + Rectangle.Width * (float)part;
+
+    /// <summary>A place down the box from its top.</summary>
+    public double Down(double part) => Rectangle.Top + Rectangle.Height * (float)part;
+
     /// <summary>
     /// Another box as a rectangle: its own when it is of this family, read through the seam when it is not.
     /// </summary>
