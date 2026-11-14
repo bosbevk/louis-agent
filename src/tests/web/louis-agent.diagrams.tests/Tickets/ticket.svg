@@ -103,12 +103,12 @@
     </marker>
   </defs>
   <rect class="ground" x="-24" y="-24" width="368" height="400" rx="14" />
-  <path class="ticket" d="M14 0 H306 A14 14 0 0 1 320 14 V82 A8 8 0 0 0 320 98 V338 A14 14 0 0 1 306 352 H14 A14 14 0 0 1 0 338 V98 A8 8 0 0 0 0 82 V14 A14 14 0 0 1 14 0 Z" />
-  <path class="ticket-band" d="M14 0 H306 A14 14 0 0 1 320 14 V82 A8 8 0 0 0 312 90 H8 A8 8 0 0 0 0 82 V14 A14 14 0 0 1 14 0 Z" />
+  <path class="ticket" d="M14 0H306A14 14 0 0 1 320 14V82A8 8 0 0 0 320 98V338A14 14 0 0 1 306 352H14A14 14 0 0 1 0 338V98A8 8 0 0 0 0 82V14A14 14 0 0 1 14 0Z" />
+  <path class="ticket-band" d="M14 0H306A14 14 0 0 1 320 14V82A8 8 0 0 0 312 90H8A8 8 0 0 0 0 82V14A14 14 0 0 1 14 0Z" />
   <rect class="ticket-pill tone-amber" x="192.8" y="14" width="111.2" height="22" rx="11" />
   <circle class="ticket-pill-text" cx="204.8" cy="25" r="3" />
   <text class="ticket-pill-text" x="212.8" y="29" text-anchor="start">Not sent yet</text>
-  <path class="ticket-tear" d="M12 90 H308" />
+  <path class="ticket-tear" d="M12 90H308" />
   <rect class="ticket-icon-box" x="16" y="106" width="32" height="32" rx="10" />
   <g class="ticket-icon" transform="translate(24 114) scale(0.6667)">
     <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
@@ -138,7 +138,7 @@
     <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
     <path d="M3 7l9 6l9 -6" />
   </g>
-  <path class="ticket-foot" d="M0 302 H320 V338 A14 14 0 0 1 306 352 H14 A14 14 0 0 1 0 338 Z" />
+  <path class="ticket-foot" d="M0 302H320V338A14 14 0 0 1 306 352H14A14 14 0 0 1 0 338Z" />
   <text class="ticket-kicker" x="16" y="24" text-anchor="start">BOOKING REQUEST</text>
   <text class="ticket-title" x="16" y="54" text-anchor="start">The garden room</text>
   <text class="ticket-subtitle" x="16" y="74" text-anchor="start">Seemeeu Guesthouse · Yzerfontein</text>

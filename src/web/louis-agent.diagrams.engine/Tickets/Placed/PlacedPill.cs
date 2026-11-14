@@ -1,6 +1,10 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Engine.Tickets.Placed;
 
 /// <summary>The status pill at the band's top right: its box, its words and its tone.</summary>
-public sealed record PlacedPill(double X, double Y, double W, double H, string Label, DiagramTone Tone);
+/// <param name="Box">Where it stands and how large it is.</param>
+/// <param name="Label">What it says.</param>
+/// <param name="Tone">Its colour.</param>
+public sealed record PlacedPill(IBox Box, string Label, DiagramTone Tone);

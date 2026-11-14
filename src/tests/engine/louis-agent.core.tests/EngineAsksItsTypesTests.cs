@@ -62,30 +62,22 @@ public partial class EngineAsksItsTypesTests
     ];
 
     /// <summary>The records that are still a box by four numbers.</summary>
-    private static readonly string[] BoxesByNumbers =
-    [
-        "Tickets/Placed/PlacedPill.cs"
-    ];
+    private static readonly string[] BoxesByNumbers = [];
 
     /// <summary>The files that still work out a box's edge or half its size.</summary>
-    private static readonly string[] BoxSums =
-    [
-        "Svg/Renderers/TicketRenderer.cs"
-    ];
+    private static readonly string[] BoxSums = [];
 
     /// <summary>The files that still measure words by their length.</summary>
     private static readonly string[] WordsMeasured =
     [
         "Keys/KeyRows.cs",
-        "Svg/Renderers/Parts/PictureBuilder.cs",
-        "Tickets/TicketLayout.cs"
+        "Svg/Renderers/Parts/PictureBuilder.cs"
     ];
 
     /// <summary>The files that still build a path as text.</summary>
     private static readonly string[] PathsAsText =
     [
-        "Svg/Renderers/Parts/PictureBuilder.cs",
-        "Svg/Renderers/TicketRenderer.cs"
+        "Svg/Renderers/Parts/PictureBuilder.cs"
     ];
 
     /// <summary>A place and a size are a box, never four numbers side by side.</summary>

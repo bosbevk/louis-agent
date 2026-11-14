@@ -556,7 +556,7 @@ src/web/louis-agent.diagrams.engine/
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
 ├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
-├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords)
+├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/

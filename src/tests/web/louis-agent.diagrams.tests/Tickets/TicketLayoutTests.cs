@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Tickets;
+using LouisAgent.Diagrams.Engine.Tickets.Placed;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tickets.Spec;
@@ -38,9 +39,26 @@ public class TicketLayoutTests
     {
         var placed = TicketLayout.Place(Booking);
 
-        Assert.That(placed.Words.Where(words => words.X < TicketLayout.Pad - 0.01 ||
-                                                words.X + words.Width > placed.Width - TicketLayout.Pad + 0.01)
+        Assert.That(placed.Words.Where(words => words.At.X < TicketLayout.Pad - 0.01 ||
+                                                words.End.X > placed.Width - TicketLayout.Pad + 0.01)
             .Select(words => words.Text), Is.Empty);
+    }
+
+    /// <summary>
+    /// A line of words runs as wide as its own kind's face says, and ends that far after where it starts, on its
+    /// baseline: a title's letters are wider than a note's.
+    /// </summary>
+    [Test]
+    public void ALineOfWords_EndsWhereItsKindsFaceSays()
+    {
+        var title = TicketLayout.Place(Booking).Words.Single(words => words.Kind == TicketWords.Title);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(title.Width, Is.EqualTo(TicketWords.Title.Face.Width("The garden room")));
+            Assert.That((title.End.X, title.End.Y), Is.EqualTo((title.At.X + title.Width, title.At.Y)));
+            Assert.That(TicketWords.Title.Face.Width("room"), Is.GreaterThan(TicketWords.Note.Face.Width("room")));
+        });
     }
 
     /// <summary>The band's words that share the pill's height end before it, so the status never covers them.</summary>
@@ -48,10 +66,10 @@ public class TicketLayoutTests
     public void TheBandsWords_EndBeforeThePill()
     {
         var placed = TicketLayout.Place(Booking with { Title = "The garden room, with its own door to the lawn" });
-        var pill = placed.Pill!;
+        var pill = placed.Pill!.Box;
 
-        Assert.That(placed.Words.Where(words => words.Y - 14 < pill.Y + pill.H && words.Y > pill.Y)
-            .Where(words => words.X + words.Width > pill.X - 6).Select(words => words.Text), Is.Empty);
+        Assert.That(placed.Words.Where(words => words.At.Y - 14 < pill.Bottom && words.At.Y > pill.Top)
+            .Where(words => words.End.X > pill.Left - 6).Select(words => words.Text), Is.Empty);
     }
 
     /// <summary>A long value wraps onto a second line, and the card grows by that line.</summary>
@@ -70,8 +88,8 @@ public class TicketLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(longOne.Words.Count(words => words.Cls == "ticket-value"),
-                Is.GreaterThan(shortOne.Words.Count(words => words.Cls == "ticket-value")));
+            Assert.That(longOne.Words.Count(words => words.Kind == TicketWords.Value),
+                Is.GreaterThan(shortOne.Words.Count(words => words.Kind == TicketWords.Value)));
             Assert.That(longOne.Height, Is.GreaterThan(shortOne.Height));
         });
     }
@@ -82,7 +100,7 @@ public class TicketLayoutTests
     {
         var rows = TicketLayout.Place(Booking).Rows;
 
-        Assert.That(rows.Zip(rows.Skip(1)).All(pair => pair.Second.Y >= pair.First.Y + pair.First.H), Is.True);
+        Assert.That(rows.Zip(rows.Skip(1)).All(pair => pair.Second.Box.Top >= pair.First.Box.Bottom), Is.True);
     }
 
     /// <summary>
