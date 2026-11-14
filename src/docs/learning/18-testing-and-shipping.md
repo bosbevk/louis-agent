@@ -748,6 +748,53 @@ though a part's box is wider.
 translation and a drawing. Skill 18, testing and shipping: a doubt proved with a throwaway drawing before the
 plan rested on it, and a rule test that belongs to everything that reads a shared enum.
 
+## One project cut in two along a line that was already there (CL65.1, 2026-11-14)
+
+**What it is.** The diagrams were one project. You said ".diagrams must be split into a diagrams --> and what
+builds the diagrams". Now `louis-agent.diagrams` says what a diagram is: its kinds, its records, its reader.
+`louis-agent.diagrams.engine` builds one: the layouts, the routing, the drawings, the looks, the writer. The
+engine references the diagrams, never the other way.
+
+**The idea: nobody takes what they don't use.** That is the Common Reuse Principle, which the repo already
+follows for the API's contracts. Something that only writes or reads a diagram's JSON, a pack's tool or an
+agent, should not carry four thousand lines of drawing code to do it. The small project is what both sides
+agree on.
+
+**The line was already there.** Before moving anything I asked of each file: does it say what a diagram is, or
+build one? A file that said what a diagram is used only other such files. No record reached for a layout. So
+the move was 130 files changing project and namespace, and no code changing what it does.
+
+**The one thread across.** The reader's refusals and the drawings' words were one enum with one formatter.
+That was the only real coupling, and it was cut first, in its own commit, while there was still one project:
+two enums, and one formatter that fills either. Doing it first made the move itself mechanical.
+
+**Two commits became one.** The plan moved the drawings first and the layouts after. But a key's layout uses
+the drawing's words, and a drawing uses a layout's sizes. A half-moved state would have had the small project
+open its internals to the engine, for the length of one commit. One move has no such in-between, so it was one
+commit.
+
+**The proof is that nothing changed.** After the move, the docs' tool redrew all 268 pictures and wrote none.
+No golden changed. That one check says more than the test count: every layout, every line and every style
+string came out the same, byte for byte.
+
+**A rule so it stays split.** A test holds four things: the small project references only the enum-name
+parser; the engine references only the small project; the small project holds no layout, renderer, drawing,
+look or writer and never names the engine; every file of the engine is in its namespace. I saw it fail before
+the move.
+
+**What I got wrong.** I guessed two hundred files would move, and 130 did. I counted the enum's members as 69,
+and there are 68. Both numbers were in the plan before I had counted properly, and both were corrected there.
+And the shell halves a doubled backslash inside a script it is handed, which broke three scripts before I
+wrote them as files.
+
+**What was left as it was.** One test project still tests both, because most kinds' tests mix a reader's case
+with a drawing's and share a sample. One design doc covers both projects and the tool, because its story
+follows one picture across all three.
+
+**Where it sits.** Skill 20, extensibility: a small project both sides agree on, and a rule test that keeps the
+dependency one way. Skill 18, testing and shipping: a refactor proved by an output that does not change by a
+byte.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

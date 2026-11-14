@@ -102,7 +102,7 @@ Each is its own plan, its own done-when and its own write-up, in this order.
 
 | Child | What it does | Done when |
 |---|---|---|
-| **CL65.1 Two projects** | Moves what builds a diagram into `louis-agent.diagrams.engine`. Splits the one message enum in two. Their tests follow, in two projects. | `louis-agent.diagrams` holds no layout and no drawing, a test holds the direction, and the docs' tool writes no picture. |
+| **CL65.1 Two projects**, built 2026-11-14 | Moves what builds a diagram into `louis-agent.diagrams.engine`. Splits the one message enum in two. Their tests follow, in two projects. | `louis-agent.diagrams` holds no layout and no drawing, a test holds the direction, and the docs' tool writes no picture. |
 | **CL65.2 The picture builder** | `PictureBuilder`, and the six drawings built through it. The light, drawn in three places, and the keys' placing, written four times, become one each. The renderers get a folder that fits them. | No kind writes its own title, light or caption, and the docs' tool writes no picture. |
 | **CL65.3 Every picture says its type** | The `type` in the JSON and the reader, the builder's step, each of the 91 flows read and given its type, the guide. | Every picture in the docs shows its type, and a flow without one is refused. |
 | **CL65.4 What the old looks left** | The old rules in the shared style and the frame's. The two layout rules nothing draws by. The long lines out of the class that gives a box its column. One folder for the kinds' styles. One rule for a word's pill. The diagrams' own interface picture. The `components` kind's name, put to Louis. | The list in F134's plan is empty, and the docs' tool writes no picture. |
@@ -132,6 +132,12 @@ Each is its own plan, its own done-when and its own write-up, in this order.
 
 - **2026-11-14, unattended from the start.** Louis: "approve go unattended". No stop after a step or a child;
   every pick is recorded in the child's plan, and a child's plan is written and committed before its first step.
+- **2026-11-14, CL65.1 is built.** 130 files moved to `louis-agent.diagrams.engine` and 75 stayed. The one
+  message enum is two. A rule test holds the direction. No picture changed. Its picks are in its plan as of
+  the commit before the one that deleted it, and its lessons in
+  [the write-up](../learning/18-testing-and-shipping.md). What it left for CL65.4: one test project tests both
+  projects, and one design doc covers both.
+- **2026-11-14, after CL65.** Louis, while CL65.1 started: "then after this finish F134.1."
 
 ---
 [Docs index](../README.md) · Related: [F134](F134-the-showroom-looks-modern.md) ·
