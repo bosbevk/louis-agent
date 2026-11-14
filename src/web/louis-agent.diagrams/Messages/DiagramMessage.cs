@@ -34,7 +34,8 @@ public enum DiagramMessage
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
     UnknownCard,
 
-    [Description("The link from '{From}' to '{To}' doesn't join two neighbouring rows. A link runs from a card to one in the row just above or just under it.")]
+    [Description("The link from '{From}' to '{To}' doesn't join two neighbouring rows. A link runs from a card to " +
+                 "one in the row just above or just under it.")]
     LinkNotBetweenRows,
 
     [Description("A step names '{Id}', which no participant in the diagram has: \"{Step}\".")]
@@ -89,6 +90,14 @@ public enum DiagramMessage
     [Description("data in or out")] FlowData,
     [Description("a start or an end")] FlowTerminal,
     [Description("a line has the colour of the box it leaves")] FlowLine,
+
+    // The words a sequence's key says of a call, an answer, a note and each kind of block (F134.10).
+    [Description("a call")] SequenceCall,
+    [Description("an answer")] SequenceAnswer,
+    [Description("a note")] SequenceNote,
+    [Description("repeats")] SequenceLoop,
+    [Description("only if")] SequenceOpt,
+    [Description("one case or the other")] SequenceAlt,
 
     // The words a component diagram draws itself (F134.7): on a line to a service, and in its key.
     [Description("reads")] ComponentReads,

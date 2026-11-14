@@ -210,8 +210,14 @@ its own. They are a Composite of records (`Spec/Steps/`), read by their `step` f
 
 `SequenceLayout` stands each lifeline as far from the others as the words between them need. It works that out as
 a longest path over the lifelines. `SequenceRows` then walks the steps down the page and frames each block round
-what it holds, so a nested frame sits inside its parent. `SequenceMeasures` holds the measures as one value the layout is handed: words wrap at 40
-characters, and a head at 24.
+what it holds, so a nested frame sits inside its parent. `SequenceMeasures` holds the measures as one value the
+layout is handed: words wrap at 40 characters, and a head at 24.
+
+`SequenceKeyLayout` (`Keys/`) places a sequence's key: an item for each tone a participant wears, with what the
+tone means, then a call, an answer, a note and each kind of block, each only when the sequence has one. A block's
+item says what its kind does: a `loop` repeats, an `opt` runs only if, an `alt` is one case or the other. The
+items stand side by side across a width and go on to a new row when one is full. No sequence is drawn with a key
+yet.
 
 #### A class chart: the interface design
 
@@ -324,7 +330,7 @@ src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
 ├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
-├── Sequence/       # SequenceLayout, SequenceRows, SequenceMeasures; Spec/ (Steps/), Placed/
+├── Sequence/       # SequenceLayout, SequenceRows, SequenceMeasures; Spec/ (Steps/), Placed/, Keys/ (SequenceKeyLayout, SequenceKeyItem, SequenceKeyKind)
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
