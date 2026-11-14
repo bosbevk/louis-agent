@@ -32,6 +32,36 @@ internal sealed class SvgWriter
     /// <summary>The tones whose arrowheads the drawing uses, each written once, in the order first used.</summary>
     private readonly List<string> _tones = [];
 
+    /// <summary>The paints the drawing defines, each once, in the order first asked for.</summary>
+    private readonly List<XElement> _paints = [];
+
+    /// <summary>
+    /// A paint: a fade a style fills shapes with by its id, since a style alone can't give a shape a colour that
+    /// runs into another. It has a stop at each place given, from 0 to 1 along its run, and each stop is classed
+    /// by the paint's id and its number, as <c>fade-0</c>, which is how the style colours it. Asked for twice, it
+    /// is written once.
+    /// </summary>
+    public SvgWriter Paint(string id, PaintRun run, params double[] stops)
+    {
+        if (_paints.Any(paint => (string?)paint.Attribute("id") == id)) return this;
+
+        // Where a straight run ends, the shape's width and height each counted as 1. One from the middle has none.
+        (string X, string Y)? end = run switch
+        {
+            PaintRun.Across => ("1", "0"),
+            PaintRun.Down => ("0", "1"),
+            PaintRun.Slant => ("1", "1"),
+            _ => null
+        };
+        XAttribute[] line = end is { } to
+            ? [new("x1", "0"), new("y1", "0"), new("x2", to.X), new("y2", to.Y)]
+            : [];
+        _paints.Add(new XElement(Svg + (end is null ? "radialGradient" : "linearGradient"), new XAttribute("id", id),
+            line, stops.Select((place, at) => new XElement(Svg + "stop", new XAttribute("class", $"{id}-{at}"),
+                new XAttribute("offset", N(place))))));
+        return this;
+    }
+
     /// <summary>A rounded box.</summary>
     public SvgWriter Box(double x, double y, double width, double height, double radius, string cls)
     {
@@ -100,7 +130,7 @@ internal sealed class SvgWriter
             new XElement(Svg + "style", SvgStyle.Of(theme)),
             style is null ? null : new XElement(Svg + "style", style),
             new XElement(Svg + "defs", Arrowhead(ArrowId, "arrow"),
-                _tones.Distinct().Select(tone => Arrowhead($"{ArrowId}-{tone}", $"arrow tone-{tone}"))),
+                _tones.Distinct().Select(tone => Arrowhead($"{ArrowId}-{tone}", $"arrow tone-{tone}")), _paints),
             new XElement(Svg + "rect", new XAttribute("class", "ground"), new XAttribute("x", N(-Pad)),
                 new XAttribute("y", N(-Pad)), new XAttribute("width", N(outerWidth)),
                 new XAttribute("height", N(outerHeight)), new XAttribute("rx", "14")),
@@ -130,12 +160,15 @@ internal sealed class SvgWriter
     }
 
     /// <summary>
-    /// Everything another writer drew, moved together by a distance, with the arrowheads its arrows wear: a part of
-    /// a picture drawn on its own, from where its layout starts, and set down where the picture wants it.
+    /// Everything another writer drew, moved together by a distance, with the arrowheads its arrows wear and the
+    /// paints its shapes are filled with: a part of a picture drawn on its own, from where its layout starts, and
+    /// set down where the picture wants it.
     /// </summary>
     public SvgWriter Group(string cls, double dx, double dy, SvgWriter drawn)
     {
         _tones.AddRange(drawn._tones);
+        _paints.AddRange(drawn._paints.Where(paint => _paints.All(own =>
+            (string?)own.Attribute("id") != (string?)paint.Attribute("id"))));
         return Group(cls, dx, dy, drawn._shapes);
     }
 

@@ -48,7 +48,9 @@ a word in a chip. Each drawing has a name of its own so the two renderers can ch
 
 **How a renderer writes the file** (`SvgWriter`). It is a Builder: a renderer adds boxes, paths and words one by
 one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
-arrowhead every picture needs are written in one place. The file is built with `XElement` and has a `<title>`.
+arrowhead every picture needs are written in one place. A drawing may also define a paint, a fade from one colour
+into another that a style fills a shape with by its id, since a style alone can't give a shape one. Each stop of a
+paint is classed by the paint's id and its number, and the style colours it. The file is built with `XElement` and has a `<title>`.
 Every number is written in the invariant culture and every line ends in a plain `\n`, so the same drawing is the
 same bytes on every machine.
 

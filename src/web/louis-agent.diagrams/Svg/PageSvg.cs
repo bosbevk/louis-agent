@@ -6,7 +6,8 @@ namespace LouisAgent.Diagrams.Svg;
 /// <summary>
 /// Turns a drawing's file into one a page can hold inline (F127.4.1). A style inside an inline SVG is the whole
 /// page's, so each one is wrapped in <c>@scope</c>, which the browser keeps to the drawing; and an arrowhead no arrow
-/// uses is dropped, so two drawings on one page hold no id twice.
+/// uses is dropped, so two drawings on one page hold no id twice. A paint is kept: two drawings of one kind define
+/// the same paint under the same id, so whichever the browser takes is the right one.
 /// </summary>
 /// <remarks>
 /// Inline with <c>@scope</c>, the pick of three (an <c>img</c> keeps the page out, so a business's brand colours and
@@ -26,7 +27,9 @@ internal static class PageSvg
         // An arrowhead is only kept when something points with it.
         bool arrows = root.Descendants().Any(shape =>
             shape.Attribute("marker-end") is not null || shape.Attribute("marker-start") is not null);
-        if (!arrows) root.Elements(Svg + "defs").Remove();
+        if (!arrows) root.Elements(Svg + "defs").Elements(Svg + "marker").Remove();
+        // A paint stays, since a shape is filled with it. Definitions left empty go, as they always did.
+        root.Elements(Svg + "defs").Where(defs => !defs.HasElements).Remove();
 
         Trim(root);
         return SvgWriter.Serialize(root);
@@ -56,7 +59,8 @@ internal static class PageSvg
 
     /// <summary>
     /// The style with its root named <c>:scope</c>: inside <c>@scope</c> a bare <c>svg</c> means an svg inside the
-    /// drawing, which would leave the drawing's own colours unset. Only a rule whose selector is <c>svg</c> alone changes.
+    /// drawing, which would leave the drawing's own colours unset. Only a rule whose selector is <c>svg</c> alone
+    /// changes.
     /// </summary>
     private static string Rooted(string style) =>
         string.Join('\n', style.Split('\n').Select(line =>

@@ -92,6 +92,21 @@ public class PageSvgTests
     public void ADrawingWithArrows_KeepsItsArrowhead() =>
         Assert.That(DiagramRenderers.RenderForPage(Flow()), Does.Contain("<marker"));
 
+    /// <summary>
+    /// A drawing with paints and no arrow keeps its paints in the page's copy, since its shapes are filled with
+    /// them, and still brings no arrowhead.
+    /// </summary>
+    [Test]
+    public void ADrawingWithPaintsAndNoArrow_KeepsItsPaints_AndBringsNoArrowhead()
+    {
+        string file = new SvgWriter().Paint("fade", PaintRun.Across, 0, 1).Box(0, 0, 10, 10, 2, "filled")
+            .Write(LouisAgent.Diagrams.Svg.Theme.SvgTheme.Site, "A picture", 100, 100);
+
+        var defined = XElement.Parse(PageSvg.Of(file)).Elements(Svg + "defs").Elements().ToList();
+
+        Assert.That(defined.Select(element => element.Name.LocalName), Is.EqualTo(new[] { "linearGradient" }));
+    }
+
     /// <summary>The file for the docs stays as it was: its styles plain, read by any viewer.</summary>
     [Test]
     public void TheFile_KeepsItsPlainStyles() =>
