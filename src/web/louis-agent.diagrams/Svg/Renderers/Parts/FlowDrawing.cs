@@ -13,9 +13,9 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 /// <summary>
-/// Draws a flow in the new look (F134.8): its own title, boxes as tinted panels in their shape, each arrow at its
-/// own point with dots that march to its head, a ring where a box's line leaves, and the key that says how to read
-/// it.
+/// Draws a flow in the new look (F134.8, the others' look since F134.12): its title as one small line over a soft
+/// light, boxes as panels in their shape, each arrow at its own point with dots that march to its head, a ring
+/// where a box's line leaves, and the key that says how to read it.
 /// </summary>
 /// <remarks>
 /// It draws what <see cref="GraphLayout"/> placed by the rules a flow gets, <see cref="FlowRules.Straight"/>, and
@@ -26,13 +26,10 @@ namespace LouisAgent.Diagrams.Svg.Renderers.Parts;
 internal static class FlowDrawing
 {
     /// <summary>
-    /// The room the title takes with a line under it and without one, the room between the drawing and its key,
-    /// and the room a caption takes under them.
+    /// The room the title takes above the drawing, the room between the drawing and its key, and the room a
+    /// caption takes under them.
     /// </summary>
-    private const double Head = 72, HeadAlone = 46, KeyGap = 26, CaptionRoom = 34;
-
-    /// <summary>How wide a character of the title and of the line under it is taken to be, generously.</summary>
-    private const double TitleChar = 11.5, UnderChar = 7.6;
+    private const double Head = PictureParts.Head, KeyGap = 26, CaptionRoom = 34;
 
     /// <summary>
     /// A plain box's corner, a badge's size and the icon's in it, and how far a pill's and a slanted box's insides
@@ -44,34 +41,22 @@ internal static class FlowDrawing
     public static string Of(DiagramSource source)
     {
         var placed = GraphLayout.Place(source.Flow!, bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
-        var (title, under) = Titles(source.Title);
 
         // As wide as the drawing, or as its own title when that is wider. The key goes across that width.
-        double top = under is null ? HeadAlone : Head;
-        double width = Math.Max(placed.Width, Math.Max(title.Length * TitleChar, (under?.Length ?? 0) * UnderChar));
+        double width = Math.Max(placed.Width, source.Title.Length * PictureParts.TitleChar);
         var (items, keyHeight) = FlowKeyLayout.Of(placed.Nodes, width);
-        double keyTop = top + placed.Height + KeyGap;
+        double keyTop = Head + placed.Height + KeyGap;
         double height = keyTop + keyHeight + (source.Caption is null ? 0 : CaptionRoom);
 
-        var writer = PictureParts.Ground(new SvgWriter(), width, height);
-        PictureParts.Head(writer, title, under);
-        writer.Group("flow", 0, top, Flow(placed));
+        // The light and the title first, so everything stands on them. Then the flow, and the key under it.
+        var writer = PictureParts.Open(source.Title, width).Group("flow", 0, Head, Flow(placed));
         FlowKey.Draw(writer, items, 0, keyTop);
         if (source.Caption is { } caption) writer.Text(0, height - 8, caption, "caption", "start");
 
-        // The shared look first, then what is a flow's own.
-        string style = PictureLook.Of(SvgTheme.Site) + FlowStyle.Of(SvgTheme.Site);
+        // What every picture in the new look wears, then the title and the light the other kinds wear too, then
+        // what is a flow's own.
+        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + FlowStyle.Of(SvgTheme.Site);
         return writer.Write(SvgTheme.Site, source.Title, width, height, style);
-    }
-
-    /// <summary>
-    /// A picture's title and the line under it: the words before the first colon, and the rest. A title with no
-    /// colon has no line under it.
-    /// </summary>
-    private static (string Title, string? Under) Titles(string title)
-    {
-        int colon = title.IndexOf(": ", StringComparison.Ordinal);
-        return colon < 0 ? (title, null) : (title[..colon], title[(colon + 2)..]);
     }
 
     /// <summary>
@@ -123,9 +108,9 @@ internal static class FlowDrawing
     }
 
     /// <summary>
-    /// A box: its panel in its shape and its tone, then what stands in it. A decision holds its words alone, in the
-    /// middle under a short bar in its colour. Any other box has a bar in its colour at its left, its icon in a
-    /// solid badge, and its words after them.
+    /// A box: its panel in its shape, then what stands in it. A decision holds its words alone, in the middle
+    /// under a short bar in its colour. Any other box has its icon in a solid badge in its colour, and its words
+    /// after it. A box with no icon has its words alone, in the middle.
     /// </summary>
     private static void Box(SvgWriter writer, PlacedNode node)
     {
@@ -141,8 +126,6 @@ internal static class FlowDrawing
 
         // A pill's round end and a slanted box's slant take room at the left, so what is inside stands further in.
         double left = node.X + (node.Node.Shape == NodeShape.Box ? 0 : Inside);
-        double bar = Math.Min(22, node.H - 24);
-        writer.Box(left + 7, middle - bar / 2, 4, bar, 2, $"pic-fill{tone}");
         if (node.Node.Icon is not { } icon)
         {
             Words(writer, node, node.X + node.W / 2, "middle");
@@ -156,22 +139,20 @@ internal static class FlowDrawing
 
     /// <summary>
     /// A box's panel: a rounded box for a plain box and, with a round end, for a pill, and the outline's path for
-    /// a decision and a slanted box. A shape that means something is marked, so the look makes it stand out.
+    /// a decision and a slanted box. A plain box is a panel and no more. A shape that means something is marked
+    /// and wears its tone, so the look outlines it in its colour.
     /// </summary>
     private static void Panel(SvgWriter writer, PlacedNode node, string tone)
     {
         bool plain = node.Node.Shape == NodeShape.Box;
-        string look = $"pic-panel depth-2 pic-edge{tone}{(plain ? "" : " flow-shape")}";
+        string look = plain ? "pic-panel" : $"pic-panel flow-shape pic-edge{tone}";
         if (NodeShapes.PathOf(node) is { } outline)
         {
             writer.Path(outline, look, arrow: false);
             return;
         }
 
-        // The highlight runs along the flat of the top, between the corners.
-        double round = plain ? Corner : node.H / 2, from = node.X + round, to = node.X + node.W - round;
-        string sheen = $"M{SvgWriter.N(from)} {SvgWriter.N(node.Y + 1.5)}H{SvgWriter.N(to)}";
-        writer.Box(node.X, node.Y, node.W, node.H, round, look).Path(sheen, "pic-sheen", arrow: false);
+        writer.Box(node.X, node.Y, node.W, node.H, plain ? Corner : node.H / 2, look);
     }
 
     /// <summary>A box's words: its label's lines, and its note's under them.</summary>

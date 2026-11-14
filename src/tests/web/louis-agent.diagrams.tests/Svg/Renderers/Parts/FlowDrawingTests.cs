@@ -5,9 +5,10 @@ using LouisAgent.Diagrams.Svg.Renderers.Parts;
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts;
 
 /// <summary>
-/// A flow drawn in the new look (F134.8): its own title, boxes as tinted panels in their shape, each arrow at its
-/// own point with dots that march to its head, a ring where a box's line leaves, and the key that says how to read
-/// it. The drawing decides no place itself, so these tests are about what is drawn and how it is marked.
+/// A flow drawn in the new look (F134.8), which since F134.12 is the others': its title as one small line over a
+/// soft light, boxes as plain panels in their shape, each arrow at its own point with dots that march to its
+/// head, a ring where a box's line leaves, and the key that says how to read it. The drawing decides no place
+/// itself, so these tests are about what is drawn and how it is marked.
 /// </summary>
 public class FlowDrawingTests
 {
@@ -60,15 +61,18 @@ public class FlowDrawingTests
     public void TheProcedure_IsDrawnAsItsGolden() => Golden.Match("flow-look.svg", Drawn());
 
     /// <summary>
-    /// The picture has its own title: the words before the colon, and the rest in the smaller line under it.
+    /// The picture's title is one small line, the whole title as it is written, in the face the other kinds'
+    /// titles have. Behind the top of the picture stands the soft light, and the ground has no dots.
     /// </summary>
     [Test]
-    public void TheTitle_IsItsWordsBeforeTheColon_AndTheRestUnderIt()
+    public void TheTitle_IsOneSmallLine_OverTheLight()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Words("pic-title"), Is.EqualTo(new[] { "Runbooks" }));
-            Assert.That(Words("pic-group"), Does.Contain("how one is used"));
+            Assert.That(Words("mrq-title"), Is.EqualTo(new[] { "Runbooks: how one is used" }));
+            Assert.That(Words("pic-group"), Has.None.EqualTo("how one is used"));
+            Assert.That(Shapes().Count(shape => shape.Class == "mrq-light"), Is.EqualTo(1));
+            Assert.That(Shapes().Select(shape => shape.Class), Has.None.EqualTo("pic-dots"));
         });
     }
 
@@ -88,21 +92,45 @@ public class FlowDrawingTests
     }
 
     /// <summary>
-    /// A box is a panel in its tone. A shape that means something is marked as one, so the look can make it stand
-    /// out: here the start, the question and the data, and not the two plain boxes.
+    /// A plain box is a panel and nothing more: no tone on it, since its badge says its tone. A shape that means
+    /// something is marked as one and wears its tone, so the look can outline it: here the start, the question
+    /// and the data, and not the two plain boxes.
     /// </summary>
     [Test]
     public void EachBox_IsAPanel_AndAShapeIsMarkedAsOne()
     {
-        var panels = Shapes().Where(shape => shape.Class.StartsWith("pic-panel ")).ToList();
+        var panels = Shapes().Where(shape => shape.Class.Split(' ')[0] == "pic-panel").ToList();
 
         Assert.Multiple(() =>
         {
             Assert.That(panels, Has.Count.EqualTo(5));
+            Assert.That(panels.Count(panel => panel.Class == "pic-panel"), Is.EqualTo(2), "the two plain boxes");
             Assert.That(panels.Count(panel => panel.Class.Contains("flow-shape")), Is.EqualTo(3));
             Assert.That(panels.Select(panel => panel.Class), Has.Some.Contains("tone-amber"));
             Assert.That(panels.Count(panel => panel.Shape.Name == Svg + "path"), Is.EqualTo(2),
-                "the diamond and the slanted box are drawn as paths");
+                "the decision and the slanted box are drawn as paths");
+        });
+    }
+
+    /// <summary>
+    /// A box has no highlight along its top and no marker bar at its left (F134.12): its badge is its only mark.
+    /// A decision keeps the short bar over its words, which is wider than it is tall.
+    /// </summary>
+    [Test]
+    public void ABox_HasNoHighlight_AndNoMarkerBar()
+    {
+        var flow = XElement.Parse(Drawn()).Descendants(Svg + "g")
+            .Single(group => (string?)group.Attribute("class") == "flow");
+        var bars = flow.Descendants(Svg + "rect")
+            .Where(bar => ((string?)bar.Attribute("class") ?? "").StartsWith("pic-fill"))
+            .Select(bar => (string?)bar.Attribute("width")).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Shapes().Select(shape => shape.Class), Has.None.EqualTo("pic-sheen"));
+            Assert.That(bars, Has.None.EqualTo("4"), "no marker bar");
+            Assert.That(bars.Count(width => width == "28"), Is.EqualTo(4), "a badge a box with an icon");
+            Assert.That(bars.Count(width => width == "22"), Is.EqualTo(1), "the decision's bar");
         });
     }
 

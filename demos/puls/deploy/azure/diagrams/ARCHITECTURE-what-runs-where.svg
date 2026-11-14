@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1859 1240" width="1859" height="1240" role="img" aria-label="Puls in Azure: what runs where" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1859 1212" width="1859" height="1212" role="img" aria-label="Puls in Azure: what runs where" xmlns="http://www.w3.org/2000/svg">
   <title>Puls in Azure: what runs where</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,66 +91,46 @@ svg {
 </style>
   <style>
 svg {
-  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
-}
-.pic-dots {
-  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
 .pic-fill { fill: var(--quiet); }
 .pic-ink { fill: var(--text); }
 .pic-edge.tone-blue { stroke: var(--blue-line); }
-.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
 .pic-tint.tone-blue { fill: var(--blue-fill); }
 .pic-fill.tone-blue { fill: var(--blue-line); }
 .pic-ink.tone-blue { fill: var(--blue-ink); }
 .pic-edge.tone-green { stroke: var(--green-line); }
-.pic-panel.tone-green { --pic-tone: var(--green-fill); }
 .pic-tint.tone-green { fill: var(--green-fill); }
 .pic-fill.tone-green { fill: var(--green-line); }
 .pic-ink.tone-green { fill: var(--green-ink); }
 .pic-edge.tone-violet { stroke: var(--violet-line); }
-.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
 .pic-tint.tone-violet { fill: var(--violet-fill); }
 .pic-fill.tone-violet { fill: var(--violet-line); }
 .pic-ink.tone-violet { fill: var(--violet-ink); }
 .pic-edge.tone-teal { stroke: var(--teal-line); }
-.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
 .pic-tint.tone-teal { fill: var(--teal-fill); }
 .pic-fill.tone-teal { fill: var(--teal-line); }
 .pic-ink.tone-teal { fill: var(--teal-ink); }
 .pic-edge.tone-red { stroke: var(--red-line); }
-.pic-panel.tone-red { --pic-tone: var(--red-fill); }
 .pic-tint.tone-red { fill: var(--red-fill); }
 .pic-fill.tone-red { fill: var(--red-line); }
 .pic-ink.tone-red { fill: var(--red-ink); }
 .pic-edge.tone-amber { stroke: var(--amber-line); }
-.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
 .pic-tint.tone-amber { fill: var(--amber-fill); }
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
-.pic-panel {
-  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
-  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
-.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
-.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
-.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
-.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
-.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
-.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
 .pic-swatch { stroke-width: 1; }
-.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
@@ -164,6 +144,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .flow-group {
   fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
 }
@@ -200,13 +199,17 @@ svg {
     <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1859" height="1240" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1859" height="1212" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1811M0 33H1811M0 55H1811M0 77H1811M0 99H1811M0 121H1811M0 143H1811M0 165H1811M0 187H1811M0 209H1811M0 231H1811M0 253H1811M0 275H1811M0 297H1811M0 319H1811M0 341H1811M0 363H1811M0 385H1811M0 407H1811M0 429H1811M0 451H1811M0 473H1811M0 495H1811M0 517H1811M0 539H1811M0 561H1811M0 583H1811M0 605H1811M0 627H1811M0 649H1811M0 671H1811M0 693H1811M0 715H1811M0 737H1811M0 759H1811M0 781H1811M0 803H1811M0 825H1811M0 847H1811M0 869H1811M0 891H1811M0 913H1811M0 935H1811M0 957H1811M0 979H1811M0 1001H1811M0 1023H1811M0 1045H1811M0 1067H1811M0 1089H1811M0 1111H1811M0 1133H1811" />
-    <text class="pic-title" x="0" y="24" text-anchor="start">Puls in Azure</text>
-    <text class="pic-group" x="0" y="46" text-anchor="start">what runs where</text>
-    <g class="flow" transform="translate(0 72)">
+    <path class="mrq-light" d="M-24 74a929.5 190 0 1 0 1859 0a929.5 190 0 1 0 -1859 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">Puls in Azure: what runs where</text>
+    <g class="flow" transform="translate(0 44)">
       <rect class="flow-group" x="0" y="752" width="918.5" height="224" rx="14" />
       <text class="pic-group" x="14" y="771" text-anchor="start">apps subnet 10.0.0.0/23, delegated to Container Apps</text>
       <rect class="flow-group" x="1160.5" y="744" width="320.8" height="194" rx="14" />
@@ -257,26 +260,21 @@ svg {
       <text class="flow-word pic-ink tone-green" x="1070.5" y="205" text-anchor="middle">mounted at /workspace</text>
       <rect class="flow-chip pic-edge tone-green" x="993" y="665" width="155" height="18" rx="9" />
       <text class="flow-word pic-ink tone-green" x="1070.5" y="677" text-anchor="middle">mounted at /workspace</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="12" y="648" width="294" height="52" rx="26" />
-      <path class="pic-sheen" d="M38 649.5H280" />
-      <rect class="pic-fill tone-blue" x="31" y="663" width="4" height="22" rx="2" />
+      <rect class="pic-panel flow-shape pic-edge tone-blue" x="12" y="648" width="294" height="52" rx="26" />
       <rect class="pic-fill tone-blue" x="40" y="660" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(46 666) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
       <text class="flow-name" x="76" y="679" text-anchor="start">A person's browser</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="12" y="786" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M22 787.5H296" />
-      <rect class="pic-fill tone-violet" x="19" y="809" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="12" y="786" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="28" y="806" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(34 812) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
       <text class="flow-name" x="64" y="817" text-anchor="start">puls-env (Consumption profile,</text>
       <text class="flow-name" x="64" y="833" text-anchor="start">static IP 4.253.73.61)</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M638.1 632L906.5 632L888.5 716L620.1 716Z" />
-      <rect class="pic-fill tone-amber" x="639.1" y="663" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M638.1 632L906.5 632L888.5 716L620.1 716Z" />
       <rect class="pic-fill tone-amber" x="648.1" y="660" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(654.1 666) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -287,9 +285,7 @@ svg {
       <text class="flow-name" x="684.1" y="663" text-anchor="start">Registry acrpulsza:</text>
       <text class="flow-name" x="684.1" y="679" text-anchor="start">louis-agent-puls and</text>
       <text class="flow-name" x="684.1" y="695" text-anchor="start">louis-agent-coding images</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="620.1" y="786" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M630.1 787.5H896.5" />
-      <rect class="pic-fill tone-green" x="627.1" y="809" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="620.1" y="786" width="286.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="636.1" y="806" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(642.1 812) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -299,9 +295,7 @@ svg {
       </g>
       <text class="flow-name" x="672.1" y="817" text-anchor="start">puls-app: the Puls image, one</text>
       <text class="flow-name" x="672.1" y="833" text-anchor="start">container, revision vNNN</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="620.1" y="880" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M630.1 881.5H896.5" />
-      <rect class="pic-fill tone-green" x="627.1" y="911" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="620.1" y="880" width="286.4" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="636.1" y="908" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(642.1 914) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -312,9 +306,7 @@ svg {
       <text class="flow-name" x="672.1" y="911" text-anchor="start">louis-agent-app: the coding</text>
       <text class="flow-name" x="672.1" y="927" text-anchor="start">API serving the site and the</text>
       <text class="flow-name" x="672.1" y="943" text-anchor="start">chat, revision vNNN</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="1172.5" y="50" width="296.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M1182.5 51.5H1459.3" />
-      <rect class="pic-fill tone-teal" x="1179.5" y="73" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1172.5" y="50" width="296.8" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="1188.5" y="70" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1194.5 76) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -322,8 +314,7 @@ svg {
       </g>
       <text class="flow-name" x="1224.5" y="81" text-anchor="start">puls-app-identity: Key Vault</text>
       <text class="flow-name" x="1224.5" y="97" text-anchor="start">Secrets User</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1190.5 160L1469.3 160L1451.3 244L1172.5 244Z" />
-      <rect class="pic-fill tone-amber" x="1191.5" y="191" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1190.5 160L1469.3 160L1451.3 244L1172.5 244Z" />
       <rect class="pic-fill tone-amber" x="1200.5" y="188" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1206.5 194) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
@@ -331,8 +322,7 @@ svg {
       <text class="flow-name" x="1236.5" y="191" text-anchor="start">pulsstorage: the share</text>
       <text class="flow-name" x="1236.5" y="207" text-anchor="start">puls-app-workspace (config/,</text>
       <text class="flow-name" x="1236.5" y="223" text-anchor="start">logs/, data/)</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1190.5 270L1469.3 270L1451.3 370L1172.5 370Z" />
-      <rect class="pic-fill tone-amber" x="1191.5" y="309" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1190.5 270L1469.3 270L1451.3 370L1172.5 370Z" />
       <rect class="pic-fill tone-amber" x="1200.5" y="306" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1206.5 312) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
@@ -343,9 +333,7 @@ svg {
       <text class="flow-name" x="1236.5" y="317" text-anchor="start">puls_accounts, tenants puls</text>
       <text class="flow-name" x="1236.5" y="333" text-anchor="start">and louis-agent (free offer,</text>
       <text class="flow-name" x="1236.5" y="349" text-anchor="start">pauses when idle)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="1172.5" y="404" width="296.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M1182.5 405.5H1459.3" />
-      <rect class="pic-fill tone-violet" x="1179.5" y="427" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1172.5" y="404" width="296.8" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="1188.5" y="424" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1194.5 430) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -355,9 +343,7 @@ svg {
       </g>
       <text class="flow-name" x="1224.5" y="435" text-anchor="start">Application Insights</text>
       <text class="flow-name" x="1224.5" y="451" text-anchor="start">puls-insights, on puls-logs</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="1172.5" y="522" width="296.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M1182.5 523.5H1459.3" />
-      <rect class="pic-fill tone-teal" x="1179.5" y="545" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1172.5" y="522" width="296.8" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="1188.5" y="542" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1194.5 548) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -365,8 +351,7 @@ svg {
       </g>
       <text class="flow-name" x="1224.5" y="553" text-anchor="start">louis-agent-app-identity: Key</text>
       <text class="flow-name" x="1224.5" y="569" text-anchor="start">Vault Secrets User</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1190.5 624L1469.3 624L1451.3 724L1172.5 724Z" />
-      <rect class="pic-fill tone-amber" x="1191.5" y="663" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1190.5 624L1469.3 624L1451.3 724L1172.5 724Z" />
       <rect class="pic-fill tone-amber" x="1200.5" y="660" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1206.5 666) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
@@ -375,9 +360,7 @@ svg {
       <text class="flow-name" x="1236.5" y="671" text-anchor="start">louis-agent-workspace</text>
       <text class="flow-name" x="1236.5" y="687" text-anchor="start">(config/, skills/, logs/,</text>
       <text class="flow-name" x="1236.5" y="703" text-anchor="start">data/)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="1172.5" y="778" width="296.8" height="148" rx="10" />
-      <path class="pic-sheen" d="M1182.5 779.5H1459.3" />
-      <rect class="pic-fill tone-green" x="1179.5" y="841" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1172.5" y="778" width="296.8" height="148" rx="10" />
       <rect class="pic-fill tone-green" x="1188.5" y="838" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1194.5 844) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -392,8 +375,7 @@ svg {
       <text class="flow-name" x="1224.5" y="873" text-anchor="start">headless-shell :9222, searxng</text>
       <text class="flow-name" x="1224.5" y="889" text-anchor="start">:8080</text>
       <text class="flow-name" x="1224.5" y="905" text-anchor="start">data disk, XFS at /data</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1547.4 286L1811 286L1793 354L1529.4 354Z" />
-      <rect class="pic-fill tone-amber" x="1548.4" y="309" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1547.4 286L1811 286L1793 354L1529.4 354Z" />
       <rect class="pic-fill tone-amber" x="1557.4" y="306" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1563.4 312) scale(0.6667)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
@@ -407,40 +389,40 @@ svg {
       <circle class="pic-port pic-edge tone-teal" cx="1469.3" cy="84" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="1469.3" cy="556" r="4" />
     </g>
-    <text class="pic-group" x="0" y="1084" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1101" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="1105" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="1113" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1101" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="1105" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="1113" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1101" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="264.3" y="1105" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="1113" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="1101" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="410.2" y="1105" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="444.2" y="1113" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="1101" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="593.9" y="1105" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="627.9" y="1113" text-anchor="start">files and data</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M760.1 1101L772.1 1101L754.1 1117L742.1 1117Z" />
-    <text class="pic-note" x="780.1" y="1113" text-anchor="start">data in or out</text>
-    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="894.3" y="1101" width="30" height="16" rx="8" />
-    <text class="pic-note" x="932.3" y="1113" text-anchor="start">a start or an end</text>
-    <path class="flow-key pic-line pic-edge" d="M1065.4 1109H1095.4" marker-end="url(#arrow)" />
-    <text class="pic-note" x="1103.4" y="1113" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="1056" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1073" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="1077" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="1085" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1073" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="1077" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="1085" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1073" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="264.3" y="1077" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="1085" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="1073" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="410.2" y="1077" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="444.2" y="1085" text-anchor="start">contracts and state</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="1073" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="593.9" y="1077" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="627.9" y="1085" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M760.1 1073L772.1 1073L754.1 1089L742.1 1089Z" />
+    <text class="pic-note" x="780.1" y="1085" text-anchor="start">data in or out</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="894.3" y="1073" width="30" height="16" rx="8" />
+    <text class="pic-note" x="932.3" y="1085" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M1065.4 1081H1095.4" marker-end="url(#arrow)" />
+    <text class="pic-note" x="1103.4" y="1085" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1138" width="1811" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 1148) scale(0.6667)">
+  <rect class="notebar" x="0" y="1110" width="1811" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 1120) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1160">
+  <text class="notes" x="38" y="1132">
     <tspan class="note-head">Nothing outside reaches the services:</tspan>
     <tspan class="note-rest">everything here sits in rg-puls-za, the VM has no public address (both apps reach it at 10.0.2.4 and send their telemetry through the OpenTelemetry agent), SQL takes TLS only, and every secret is in the</tspan>
   </text>
-  <text class="notes" x="38" y="1177">
+  <text class="notes" x="38" y="1149">
     <tspan class="note-rest">vault.</tspan>
   </text>
 </svg>

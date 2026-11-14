@@ -7,7 +7,7 @@ namespace LouisAgent.Diagrams.Tests.Components;
 /// <summary>
 /// F134.7: a component diagram is drawn in a look of its own, inside the frame every picture in the docs has. The
 /// renderer draws what the layout placed and decides no place itself, so these tests are about what is drawn and
-/// how it is marked: every word, each box by how deep it is, each pin by which way it points, and motion that
+/// how it is marked: every word, each box as a plain panel, each pin by which way it points, and motion that
 /// stops for a reader who asked for less.
 /// </summary>
 public class ComponentsRendererTests
@@ -40,8 +40,7 @@ public class ComponentsRendererTests
     [TestCase("Deck.razor.js")]
     [TestCase("Viewed")]
     [TestCase("How to read it")]
-    [TestCase("The start: what it is made of")]
-    [TestCase("louis-agent.web, Site / Showroom / Start")]
+    [TestCase("The start: what it is made of: louis-agent.web, Site / Showroom / Start")]
     [TestCase("Components/Site/Showroom/Start")]
     [TestCase("What the start reads")]
     [TestCase("watch, bring")]
@@ -58,8 +57,8 @@ public class ComponentsRendererTests
     }
 
     /// <summary>
-    /// A box is marked by how deep it is nested, so the look can lighten it, and wears its tone. A ghost is marked
-    /// as one. A pin said back up is marked apart from one handed down.
+    /// A box is a plain panel, the same at every depth and with no tone on it (F134.12): a panel in a panel is a
+    /// step deeper by itself. A ghost is marked as one. A pin said back up is marked apart from one handed down.
     /// </summary>
     [Test]
     public void EachShape_IsMarkedForWhatItIs()
@@ -68,11 +67,12 @@ public class ComponentsRendererTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(classes.Count(cls => cls.Contains("pic-panel") && cls.Contains("depth-0")), Is.EqualTo(1));
-            Assert.That(classes.Count(cls => cls.Contains("pic-panel") && cls.Contains("depth-3")), Is.EqualTo(1),
-                "the window, three boxes deep");
+            Assert.That(classes.Count(cls => cls.Contains("pic-panel")), Is.EqualTo(8), "the boxes and neighbours");
+            Assert.That(classes.Where(cls => cls.Contains("pic-panel")), Is.All.EqualTo("pic-panel"));
+            Assert.That(classes, Has.None.EqualTo("pic-sheen").And.None.EqualTo("pic-dots"));
+            Assert.That(classes.Count(cls => cls == "mrq-title"), Is.EqualTo(1), "one small title");
+            Assert.That(classes.Count(cls => cls == "mrq-light"), Is.EqualTo(1), "the light behind the top");
             Assert.That(classes.Count(cls => cls.Contains("cmp-ghost")), Is.EqualTo(1));
-            Assert.That(classes.Where(cls => cls.Contains("pic-panel")), Has.Some.Contains("tone-green"));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pin ") && cls.Contains(" up")), Is.EqualTo(2));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pin ")), Is.EqualTo(9));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pill ")), Is.EqualTo(1));
@@ -98,7 +98,7 @@ public class ComponentsRendererTests
             Assert.That(drawn, Does.Contain("@media (prefers-reduced-motion: reduce)"));
             Assert.That(drawn, Does.Contain(".pic-march { display: none; }"));
             Assert.That(drawn, Does.Contain("@media (prefers-color-scheme: dark)"));
-            Assert.That(drawn, Does.Contain("--pic-0:"));
+            Assert.That(drawn, Does.Contain("--pic-body:"));
         });
     }
 

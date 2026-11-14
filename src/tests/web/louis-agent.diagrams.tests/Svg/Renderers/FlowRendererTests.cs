@@ -15,7 +15,7 @@ public class FlowRendererTests
         Flow: new GraphSpec([new GraphNode("host", "A host"), new GraphNode("engine", "The engine")],
             [new GraphEdge("host", "engine", "runs")]));
 
-    /// <summary>A flow is what the new drawing draws: panels in the shared look, and its own title.</summary>
+    /// <summary>A flow is what the new drawing draws: panels in the shared look, and its small title.</summary>
     [Test]
     public void AFlow_IsDrawnInTheNewLook()
     {
@@ -24,7 +24,7 @@ public class FlowRendererTests
         Assert.Multiple(() =>
         {
             Assert.That(drawn, Is.EqualTo(FlowDrawing.Of(Turn)));
-            Assert.That(drawn, Does.Contain("class=\"pic-title\"").And.Contain("pic-panel"));
+            Assert.That(drawn, Does.Contain("class=\"mrq-title\"").And.Contain("pic-panel"));
         });
     }
 }

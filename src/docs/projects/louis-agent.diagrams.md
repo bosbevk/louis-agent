@@ -62,16 +62,20 @@ picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone'
 too.
 
 **The new look is one shared style** (`Svg/Theme/Looks/`). A component diagram and a flow are drawn in the new
-look: a ground of faint dots, the picture's own title, panels tinted in their tone and lifted by a shadow, and
-lines whose dots march the way the arrow points. What any kind in that look wears is `PictureLook`, with class
-names that start `pic-`, and the parts drawn with it are `PictureParts`: the ground, the title and a panel.
+look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
+whose dots march the way the arrow points. A panel is filled with a little of the page's ink, the same wherever
+it stands. So a panel inside a panel is a step deeper with no rule for its depth, and on a white page a box four
+deep is not white. A tone never tints a panel: a box's badge, its chip or its pins say its tone. What any kind
+in that look wears is `PictureLook`, with class names that start `pic-`, and the parts drawn with it are
+`PictureParts`: the start of a picture, which is the light with the title over it, and a panel. The title and
+the light are `MarqueeLook`'s, so they are the same in every kind.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
 start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a group's frame, a box's name and
 icon badge, the glow round a shape, and the pill an arrow's word stands in. The shared rules come first in a
 picture's style, so two kinds can't drift apart in what they share.
 
 **The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence
-wears it as well. What both wear has names that start `mrq-`: the picture's small title, the soft light, the
+wears it as well. A flow and a component diagram wear its title and its light. What both wear has names that start `mrq-`: the picture's small title, the soft light, the
 glass with the accent along its top, the pill with its code, and a node on a lit line. Its accent is the palette's
 violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
 `CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
@@ -84,8 +88,8 @@ letter, its name, kind and members, a line for each kind of link, and the colour
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
 
-- *The title.* The words before the first colon of the picture's title, and the rest on a line under them.
-- *A box.* A panel tinted in its tone, with a colour bar and its icon in a badge, in its shape.
+- *The title.* The picture's whole title as one small line, in the top left corner, on a soft light.
+- *A box.* A panel in its shape, with its icon in a badge in its tone.
 - *A line.* It has the colour of the box it leaves, and a ring stands where a box's line leaves it. Dots march
   along it to its head. A dashed arrow has no dots.
 - *The key* (`FlowKey`, placed by `Flow/Keys/FlowKeyLayout`). Across the picture's width, under the drawing: an

@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1236 851" width="1236" height="851" role="img" aria-label="The shop-prices pack: its tools, the prices and the estimate" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1236 823" width="1236" height="823" role="img" aria-label="The shop-prices pack: its tools, the prices and the estimate" xmlns="http://www.w3.org/2000/svg">
   <title>The shop-prices pack: its tools, the prices and the estimate</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,66 +91,46 @@ svg {
 </style>
   <style>
 svg {
-  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
-}
-.pic-dots {
-  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
 .pic-fill { fill: var(--quiet); }
 .pic-ink { fill: var(--text); }
 .pic-edge.tone-blue { stroke: var(--blue-line); }
-.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
 .pic-tint.tone-blue { fill: var(--blue-fill); }
 .pic-fill.tone-blue { fill: var(--blue-line); }
 .pic-ink.tone-blue { fill: var(--blue-ink); }
 .pic-edge.tone-green { stroke: var(--green-line); }
-.pic-panel.tone-green { --pic-tone: var(--green-fill); }
 .pic-tint.tone-green { fill: var(--green-fill); }
 .pic-fill.tone-green { fill: var(--green-line); }
 .pic-ink.tone-green { fill: var(--green-ink); }
 .pic-edge.tone-violet { stroke: var(--violet-line); }
-.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
 .pic-tint.tone-violet { fill: var(--violet-fill); }
 .pic-fill.tone-violet { fill: var(--violet-line); }
 .pic-ink.tone-violet { fill: var(--violet-ink); }
 .pic-edge.tone-teal { stroke: var(--teal-line); }
-.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
 .pic-tint.tone-teal { fill: var(--teal-fill); }
 .pic-fill.tone-teal { fill: var(--teal-line); }
 .pic-ink.tone-teal { fill: var(--teal-ink); }
 .pic-edge.tone-red { stroke: var(--red-line); }
-.pic-panel.tone-red { --pic-tone: var(--red-fill); }
 .pic-tint.tone-red { fill: var(--red-fill); }
 .pic-fill.tone-red { fill: var(--red-line); }
 .pic-ink.tone-red { fill: var(--red-ink); }
 .pic-edge.tone-amber { stroke: var(--amber-line); }
-.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
 .pic-tint.tone-amber { fill: var(--amber-fill); }
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
-.pic-panel {
-  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
-  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
-.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
-.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
-.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
-.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
-.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
-.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
 .pic-swatch { stroke-width: 1; }
-.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
@@ -164,6 +144,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .flow-group {
   fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
 }
@@ -197,13 +196,17 @@ svg {
     <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1236" height="851" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1236" height="823" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1188M0 33H1188M0 55H1188M0 77H1188M0 99H1188M0 121H1188M0 143H1188M0 165H1188M0 187H1188M0 209H1188M0 231H1188M0 253H1188M0 275H1188M0 297H1188M0 319H1188M0 341H1188M0 363H1188M0 385H1188M0 407H1188M0 429H1188M0 451H1188M0 473H1188M0 495H1188M0 517H1188M0 539H1188M0 561H1188M0 583H1188M0 605H1188M0 627H1188M0 649H1188M0 671H1188M0 693H1188M0 715H1188M0 737H1188M0 759H1188" />
-    <text class="pic-title" x="0" y="24" text-anchor="start">The shop-prices pack</text>
-    <text class="pic-group" x="0" y="46" text-anchor="start">its tools, the prices and the estimate</text>
-    <g class="flow" transform="translate(0 72)">
+    <path class="mrq-light" d="M-24 74a618 190 0 1 0 1236 0a618 190 0 1 0 -1236 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">The shop-prices pack: its tools, the prices and the estimate</text>
+    <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 451.8 84 L 451.8 99 Q 451.8 114 436.8 114 L 159.6 114 Q 144.6 114 144.6 129 L 144.6 144" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 451.8 84 L 451.8 99 Q 451.8 114 436.8 114 L 159.6 114 Q 144.6 114 144.6 129 L 144.6 144" />
       <path class="pic-line pic-edge tone-blue" d="M 451.8 84 L 451.8 144" marker-end="url(#arrow-blue)" />
@@ -230,9 +233,7 @@ svg {
       <path class="pic-march" d="M 451.8 492 L 451.8 552" />
       <path class="pic-line pic-edge tone-green" d="M 144.6 212 L 144.6 248 Q 144.6 272 168.6 272 L 430.8 272 Q 442.8 272 442.8 284 L 442.8 296" marker-end="url(#arrow-green)" />
       <path class="pic-march" d="M 144.6 212 L 144.6 248 Q 144.6 272 168.6 272 L 430.8 272 Q 442.8 272 442.8 284 L 442.8 296" />
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="308.6" y="0" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M318.6 1.5H585" />
-      <rect class="pic-fill tone-blue" x="315.6" y="31" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="308.6" y="0" width="286.4" height="84" rx="10" />
       <rect class="pic-fill tone-blue" x="324.6" y="28" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(330.6 34) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -243,18 +244,14 @@ svg {
       <text class="flow-name" x="360.6" y="31" text-anchor="start">ShopPricesPack: the</text>
       <text class="flow-name" x="360.6" y="47" text-anchor="start">shop-prices toolset, feed and</text>
       <text class="flow-name" x="360.6" y="63" text-anchor="start">upload</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="1.4" y="144" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M11.4 145.5H277.8" />
-      <rect class="pic-fill tone-green" x="8.4" y="167" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1.4" y="144" width="286.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="17.4" y="164" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(23.4 170) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
       <text class="flow-name" x="53.4" y="183" text-anchor="start">ShopPriceTools.EstimatePrices</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="339" y="144" width="225.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M349 145.5H554.6" />
-      <rect class="pic-fill tone-green" x="346" y="167" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="339" y="144" width="225.6" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="355" y="164" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(361 170) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -265,18 +262,14 @@ svg {
       </g>
       <text class="flow-name" x="391" y="175" text-anchor="start">ShopPricesFeed: GET</text>
       <text class="flow-name" x="391" y="191" text-anchor="start">/v1/feeds/shop-prices</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="661.4" y="144" width="195.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M671.4 145.5H846.6" />
-      <rect class="pic-fill tone-green" x="668.4" y="167" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="661.4" y="144" width="195.2" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="677.4" y="164" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(683.4 170) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
       <text class="flow-name" x="713.4" y="175" text-anchor="start">StatsSaImport: at</text>
       <text class="flow-name" x="713.4" y="191" text-anchor="start">/admin/imports</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="58.4" y="296" width="172.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M68.4 297.5H220.8" />
-      <rect class="pic-fill tone-teal" x="65.4" y="319" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="58.4" y="296" width="172.4" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="74.4" y="316" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(80.4 322) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -285,9 +278,7 @@ svg {
         <path d="M12 12l-8 -4.5" />
       </g>
       <text class="flow-name" x="110.4" y="335" text-anchor="start">BasketEstimate</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="361.8" y="296" width="180" height="68" rx="10" />
-      <path class="pic-sheen" d="M371.8 297.5H531.8" />
-      <rect class="pic-fill tone-green" x="368.8" y="319" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="361.8" y="296" width="180" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="377.8" y="316" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(383.8 322) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -297,9 +288,7 @@ svg {
         <path d="M9 17l6 0" />
       </g>
       <text class="flow-name" x="413.8" y="335" text-anchor="start">EstimatePrinter</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="619.6" y="296" width="278.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M629.6 297.5H888.4" />
-      <rect class="pic-fill tone-teal" x="626.6" y="319" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="619.6" y="296" width="278.8" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="635.6" y="316" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(641.6 322) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -309,9 +298,7 @@ svg {
       </g>
       <text class="flow-name" x="671.6" y="327" text-anchor="start">PriceBookCache: read at most</text>
       <text class="flow-name" x="671.6" y="343" text-anchor="start">once an hour</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="20.4" y="424" width="248.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M30.4 425.5H258.8" />
-      <rect class="pic-fill tone-teal" x="27.4" y="447" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="20.4" y="424" width="248.4" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="36.4" y="444" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(42.4 450) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
@@ -319,9 +306,7 @@ svg {
         <path d="M14 4l-4 16" />
       </g>
       <text class="flow-name" x="72.4" y="463" text-anchor="start">BasketItem: reads a line</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="365.6" y="424" width="172.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M375.6 425.5H528" />
-      <rect class="pic-fill tone-green" x="372.6" y="447" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="365.6" y="424" width="172.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="381.6" y="444" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(387.6 450) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -330,8 +315,7 @@ svg {
         <path d="M4 20h14" />
       </g>
       <text class="flow-name" x="417.6" y="463" text-anchor="start">PriceEstimator</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M632.4 424L903.6 424L885.6 492L614.4 492Z" />
-      <rect class="pic-fill tone-amber" x="633.4" y="447" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M632.4 424L903.6 424L885.6 492L614.4 492Z" />
       <rect class="pic-fill tone-amber" x="642.4" y="444" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(648.4 450) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -342,8 +326,7 @@ svg {
       </g>
       <text class="flow-name" x="678.4" y="455" text-anchor="start">ShippedPrices: the embedded</text>
       <text class="flow-name" x="678.4" y="471" text-anchor="start">tables</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M962.4 424L1188 424L1170 492L944.4 492Z" />
-      <rect class="pic-fill tone-amber" x="963.4" y="447" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M962.4 424L1188 424L1170 492L944.4 492Z" />
       <rect class="pic-fill tone-amber" x="972.4" y="444" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(978.4 450) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
@@ -352,9 +335,7 @@ svg {
       </g>
       <text class="flow-name" x="1008.4" y="455" text-anchor="start">MongoPriceStore, with</text>
       <text class="flow-name" x="1008.4" y="471" text-anchor="start">SHOP_PRICES_MONGO_URL</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="366.8" y="552" width="170" height="52" rx="10" />
-      <path class="pic-sheen" d="M376.8 553.5H526.8" />
-      <rect class="pic-fill tone-teal" x="373.8" y="567" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="366.8" y="552" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-teal" x="382.8" y="564" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(388.8 570) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -372,31 +353,31 @@ svg {
       <circle class="pic-port pic-edge tone-teal" cx="144.6" cy="364" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="451.8" cy="492" r="4" />
     </g>
-    <text class="pic-group" x="0" y="712" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="729" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="733" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="741" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="729" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="733" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="741" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="260.3" y="729" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="264.3" y="733" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="741" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="444" y="729" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="448" y="733" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="482" y="741" text-anchor="start">files and data</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M614.2 729L626.2 729L608.2 745L596.2 745Z" />
-    <text class="pic-note" x="634.2" y="741" text-anchor="start">data in or out</text>
-    <path class="flow-key pic-line pic-edge" d="M748.4 737H778.4" marker-end="url(#arrow)" />
-    <text class="pic-note" x="786.4" y="741" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="684" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="701" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="705" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="713" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="701" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="705" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="713" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="260.3" y="701" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="264.3" y="705" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="713" text-anchor="start">contracts and state</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="444" y="701" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="448" y="705" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="482" y="713" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M614.2 701L626.2 701L608.2 717L596.2 717Z" />
+    <text class="pic-note" x="634.2" y="713" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M748.4 709H778.4" marker-end="url(#arrow)" />
+    <text class="pic-note" x="786.4" y="713" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="766" width="1188" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 776) scale(0.6667)">
+  <rect class="notebar" x="0" y="738" width="1188" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 748) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="788">
+  <text class="notes" x="38" y="760">
     <tspan class="note-head">One tool over one price book:</tspan>
     <tspan class="note-rest">the shipped files fill it, or Mongo where it's set. The same tables go out as a feed, and new ones come in as an upload.</tspan>
   </text>

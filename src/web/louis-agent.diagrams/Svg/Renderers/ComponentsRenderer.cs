@@ -13,9 +13,9 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Svg.Renderers;
 
 /// <summary>
-/// Draws a component diagram (F134.7): its own title, a box inside a box for what holds what, pins on a box's top
-/// edge for what is handed down and said back up, a pill for the one thing a box holds, the neighbours beside the
-/// root, and the key that says how to read it.
+/// Draws a component diagram (F134.7): its title as one small line over a soft light, a box inside a box for what
+/// holds what, pins on a box's top edge for what is handed down and said back up, a pill for the one thing a box
+/// holds, the neighbours beside the root, and the key that says how to read it.
 /// </summary>
 /// <remarks>
 /// Strategy, as every kind's renderer is: one <see cref="IDiagramRenderer"/> a kind, picked by
@@ -40,8 +40,10 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     {
         var components = source.Components!;
         var placed = ComponentLayout.Of(components);
-        var writer = PictureParts.Ground(new SvgWriter(), placed.Width, placed.Height);
-        PictureParts.Head(writer, source.Title, components.Subtitle);
+
+        // The title is one line: the picture's, and after a colon what the diagram says under it.
+        string title = components.Subtitle is { } under ? $"{source.Title}: {under}" : source.Title;
+        var writer = PictureParts.Open(title, placed.Width);
 
         foreach (var neighbour in placed.Neighbours) DrawNeighbour(writer, neighbour);
         foreach (var box in placed.Boxes) DrawBox(writer, box);
@@ -50,22 +52,22 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         foreach (var pin in placed.Pins) ComponentPins.Draw(writer, pin, ToneOf(placed, pin), "cmp-pin");
         ComponentsKey.Draw(writer, placed.Key);
 
-        // The shared look first, then what is a component's own.
-        string style = PictureLook.Of(SvgTheme.Site) + ComponentsStyle.Of(SvgTheme.Site);
+        // What every picture in the new look wears, then the title and the light the other kinds wear too, then
+        // what is a component's own.
+        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + ComponentsStyle.Of(SvgTheme.Site);
         return writer.Write(SvgTheme.Site, source.Title, placed.Width, placed.Height, style);
     }
 
     /// <summary>
-    /// A box: its panel by its depth, tinted in its tone, with its name, its chip, the words at its right and its
-    /// note.
+    /// A box: its panel, with its name, its chip in its tone, the words at its right and its note. A box that
+    /// stands in for another is a dashed outline in its tone, and no panel.
     /// </summary>
     private static void DrawBox(SvgWriter writer, PlacedBox placed)
     {
         var box = placed.Box;
         string tone = Tone(box.Tone), ghost = $"cmp-ghost pic-edge{tone}";
-        int depth = Math.Min(placed.Depth, PictureLook.Deepest);
         if (box.Ghost) writer.Box(placed.X + .5, placed.Y + .5, placed.Width - 1, placed.Height - 1, Radius, ghost);
-        if (!box.Ghost) Panel(writer, placed.X, placed.Y, placed.Width, placed.Height, depth, tone);
+        if (!box.Ghost) PictureParts.Panel(writer, placed.X, placed.Y, placed.Width, placed.Height);
 
         writer.Text(placed.X + 22, placed.Y + 29, box.Name, "pic-name", "start");
         if (box.Kind is { } kind)
@@ -85,7 +87,7 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         string tone = Tone(neighbour.Tone);
         bool before = neighbour.Side == NeighbourSide.Before;
         if (neighbour.Heading is { } heading) writer.Text(placed.X, placed.Y - 10, heading, "pic-group", "start");
-        Panel(writer, placed.X, placed.Y, placed.Width, placed.Height, 1, tone);
+        PictureParts.Panel(writer, placed.X, placed.Y, placed.Width, placed.Height);
         writer.Text(placed.X + 22, placed.Y + 29, neighbour.Name, "cmp-code-name", "start");
         if (neighbour.Kind is { } kind) Chip(writer, placed.X + 22, placed.Y + 40, kind, tone);
         if (neighbour.Code is { } code)
@@ -102,10 +104,6 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
                 .Circle(edge, y, 4, $"pic-port pic-edge{tone}");
         }
     }
-
-    /// <summary>A panel as every picture in the look draws it: the shape a box and a neighbour share.</summary>
-    private static void Panel(SvgWriter writer, double x, double y, double width, double height, int depth,
-        string tone) => PictureParts.Panel(writer, x, y, width, height, depth, tone);
 
     /// <summary>A chip: a few words in the box's tone.</summary>
     private static void Chip(SvgWriter writer, double x, double y, string words, string tone) => writer

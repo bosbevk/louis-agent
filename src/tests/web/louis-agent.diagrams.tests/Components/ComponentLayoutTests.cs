@@ -146,7 +146,7 @@ public class ComponentLayoutTests
             Assert.That(page.Right, Is.LessThan(start.X - 30), "before the root, with room for its lines");
             Assert.That(script.X, Is.GreaterThan(start.Right + 30), "after the root");
             Assert.That(page.Y, Is.InRange(start.Y, start.Y + 20), "level with the root, under its heading");
-            Assert.That(start.Y, Is.GreaterThanOrEqualTo(60), "under the picture's title");
+            Assert.That(start.Y, Is.GreaterThanOrEqualTo(ComponentLayout.TitleRoom), "under the picture's title");
             Assert.That(demos.Y, Is.GreaterThan(page.Bottom), "under the first in its column");
             Assert.That(script.Y, Is.InRange(deck.Y, deck.Bottom), "level with the deck it talks to");
             Assert.That(placed.Width, Is.GreaterThanOrEqualTo(script.Right));

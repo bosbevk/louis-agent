@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1596 1779" width="1596" height="1779" role="img" aria-label="The evals: the portal, the API and the runner" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1596 1751" width="1596" height="1751" role="img" aria-label="The evals: the portal, the API and the runner" xmlns="http://www.w3.org/2000/svg">
   <title>The evals: the portal, the API and the runner</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,66 +91,46 @@ svg {
 </style>
   <style>
 svg {
-  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
-}
-.pic-dots {
-  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
 .pic-fill { fill: var(--quiet); }
 .pic-ink { fill: var(--text); }
 .pic-edge.tone-blue { stroke: var(--blue-line); }
-.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
 .pic-tint.tone-blue { fill: var(--blue-fill); }
 .pic-fill.tone-blue { fill: var(--blue-line); }
 .pic-ink.tone-blue { fill: var(--blue-ink); }
 .pic-edge.tone-green { stroke: var(--green-line); }
-.pic-panel.tone-green { --pic-tone: var(--green-fill); }
 .pic-tint.tone-green { fill: var(--green-fill); }
 .pic-fill.tone-green { fill: var(--green-line); }
 .pic-ink.tone-green { fill: var(--green-ink); }
 .pic-edge.tone-violet { stroke: var(--violet-line); }
-.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
 .pic-tint.tone-violet { fill: var(--violet-fill); }
 .pic-fill.tone-violet { fill: var(--violet-line); }
 .pic-ink.tone-violet { fill: var(--violet-ink); }
 .pic-edge.tone-teal { stroke: var(--teal-line); }
-.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
 .pic-tint.tone-teal { fill: var(--teal-fill); }
 .pic-fill.tone-teal { fill: var(--teal-line); }
 .pic-ink.tone-teal { fill: var(--teal-ink); }
 .pic-edge.tone-red { stroke: var(--red-line); }
-.pic-panel.tone-red { --pic-tone: var(--red-fill); }
 .pic-tint.tone-red { fill: var(--red-fill); }
 .pic-fill.tone-red { fill: var(--red-line); }
 .pic-ink.tone-red { fill: var(--red-ink); }
 .pic-edge.tone-amber { stroke: var(--amber-line); }
-.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
 .pic-tint.tone-amber { fill: var(--amber-fill); }
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
-.pic-panel {
-  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
-  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
-.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
-.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
-.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
-.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
-.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
-.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
 .pic-swatch { stroke-width: 1; }
-.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
@@ -164,6 +144,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .flow-group {
   fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
 }
@@ -203,13 +202,17 @@ svg {
     <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1596" height="1779" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1596" height="1751" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1548M0 33H1548M0 55H1548M0 77H1548M0 99H1548M0 121H1548M0 143H1548M0 165H1548M0 187H1548M0 209H1548M0 231H1548M0 253H1548M0 275H1548M0 297H1548M0 319H1548M0 341H1548M0 363H1548M0 385H1548M0 407H1548M0 429H1548M0 451H1548M0 473H1548M0 495H1548M0 517H1548M0 539H1548M0 561H1548M0 583H1548M0 605H1548M0 627H1548M0 649H1548M0 671H1548M0 693H1548M0 715H1548M0 737H1548M0 759H1548M0 781H1548M0 803H1548M0 825H1548M0 847H1548M0 869H1548M0 891H1548M0 913H1548M0 935H1548M0 957H1548M0 979H1548M0 1001H1548M0 1023H1548M0 1045H1548M0 1067H1548M0 1089H1548M0 1111H1548M0 1133H1548M0 1155H1548M0 1177H1548M0 1199H1548M0 1221H1548M0 1243H1548M0 1265H1548M0 1287H1548M0 1309H1548M0 1331H1548M0 1353H1548M0 1375H1548M0 1397H1548M0 1419H1548M0 1441H1548M0 1463H1548M0 1485H1548M0 1507H1548M0 1529H1548M0 1551H1548M0 1573H1548M0 1595H1548M0 1617H1548M0 1639H1548M0 1661H1548M0 1683H1548" />
-    <text class="pic-title" x="0" y="24" text-anchor="start">The evals</text>
-    <text class="pic-group" x="0" y="46" text-anchor="start">the portal, the API and the runner</text>
-    <g class="flow" transform="translate(0 72)">
+    <path class="mrq-light" d="M-24 74a798 190 0 1 0 1596 0a798 190 0 1 0 -1596 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">The evals: the portal, the API and the runner</text>
+    <g class="flow" transform="translate(0 44)">
       <rect class="flow-group" x="30.4" y="0" width="584.4" height="130" rx="14" />
       <text class="pic-group" x="44.4" y="19" text-anchor="start">Portal (louis-agent.puls, Components/Admin)</text>
       <rect class="flow-group" x="38" y="224" width="234.4" height="1148" rx="14" />
@@ -274,9 +277,7 @@ svg {
       <text class="flow-word pic-ink tone-violet" x="1414.8" y="1153.4" text-anchor="middle">stream (SSE)</text>
       <rect class="flow-chip pic-edge tone-violet" x="1386.8" y="685.6" width="155" height="18" rx="9" />
       <text class="flow-word pic-ink tone-violet" x="1464.3" y="697.6" text-anchor="middle">protocol v2 on stdout</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="42.4" y="34" width="225.6" height="84" rx="10" />
-      <path class="pic-sheen" d="M52.4 35.5H258" />
-      <rect class="pic-fill tone-blue" x="49.4" y="65" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="42.4" y="34" width="225.6" height="84" rx="10" />
       <rect class="pic-fill tone-blue" x="58.4" y="62" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(64.4 68) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
@@ -285,9 +286,7 @@ svg {
       </g>
       <text class="flow-name" x="94.4" y="73" text-anchor="start">Evals page</text>
       <text class="flow-name" x="94.4" y="89" text-anchor="start">evals, runs, live run</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="316.4" y="34" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M326.4 35.5H592.8" />
-      <rect class="pic-fill tone-blue" x="323.4" y="65" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="316.4" y="34" width="286.4" height="84" rx="10" />
       <rect class="pic-fill tone-blue" x="332.4" y="62" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(338.4 68) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
@@ -295,9 +294,7 @@ svg {
       </g>
       <text class="flow-name" x="368.4" y="73" text-anchor="start">Run explorer</text>
       <text class="flow-name" x="368.4" y="89" text-anchor="start">conversations, turns, reviews</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="726" y="34" width="263.6" height="84" rx="10" />
-      <path class="pic-sheen" d="M736 35.5H979.6" />
-      <rect class="pic-fill tone-green" x="733" y="65" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="726" y="34" width="263.6" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="742" y="62" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(748 68) scale(0.6667)">
         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
@@ -308,9 +305,7 @@ svg {
       <text class="flow-name" x="778" y="65" text-anchor="start">Puls identity</text>
       <text class="flow-name" x="778" y="81" text-anchor="start">Evals/Cook, Evals/Routing,</text>
       <text class="flow-name" x="778" y="97" text-anchor="start">Evals/Checks</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="50" y="258" width="210.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M60 259.5H250.4" />
-      <rect class="pic-fill tone-green" x="57" y="281" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="50" y="258" width="210.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="66" y="278" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(72 284) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -320,9 +315,7 @@ svg {
       </g>
       <text class="flow-name" x="102" y="289" text-anchor="start">Admin endpoints</text>
       <text class="flow-name" x="102" y="305" text-anchor="start">/v1/admin/evals/...</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="57.6" y="394" width="195.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M67.6 395.5H242.8" />
-      <rect class="pic-fill tone-green" x="64.6" y="417" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="57.6" y="394" width="195.2" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="73.6" y="414" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(79.6 420) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
@@ -330,9 +323,7 @@ svg {
       </g>
       <text class="flow-name" x="109.6" y="425" text-anchor="start">EvalProcess</text>
       <text class="flow-name" x="109.6" y="441" text-anchor="start">starts the runner</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="70.2" y="602" width="170" height="68" rx="10" />
-      <path class="pic-sheen" d="M80.2 603.5H230.2" />
-      <rect class="pic-fill tone-green" x="77.2" y="625" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="70.2" y="602" width="170" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="86.2" y="622" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(92.2 628) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -343,9 +334,7 @@ svg {
       </g>
       <text class="flow-name" x="122.2" y="633" text-anchor="start">EvalRecorder</text>
       <text class="flow-name" x="122.2" y="649" text-anchor="start">RunRecording</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="369" y="602" width="271.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M379 603.5H630.2" />
-      <rect class="pic-fill tone-teal" x="376" y="625" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="369" y="602" width="271.2" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="385" y="622" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(391 628) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -356,16 +345,14 @@ svg {
       </g>
       <text class="flow-name" x="421" y="633" text-anchor="start">EvalCatalog</text>
       <text class="flow-name" x="421" y="649" text-anchor="start">EvalFolders, RunnerCatalogs</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M370.4 816L656.8 816L638.8 900L352.4 900Z" />
-      <rect class="pic-fill tone-amber" x="371.4" y="847" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M370.4 816L656.8 816L638.8 900L352.4 900Z" />
       <rect class="pic-fill tone-amber" x="380.4" y="844" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(386.4 850) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
       <text class="flow-name" x="416.4" y="855" text-anchor="start">FileEval</text>
       <text class="flow-name" x="416.4" y="871" text-anchor="start">eval folders copied beside it</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1043.2 816L1314.4 816L1296.4 900L1025.2 900Z" />
-      <rect class="pic-fill tone-amber" x="1044.2" y="847" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1043.2 816L1314.4 816L1296.4 900L1025.2 900Z" />
       <rect class="pic-fill tone-amber" x="1053.2" y="844" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1059.2 850) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
@@ -375,9 +362,7 @@ svg {
       <text class="flow-name" x="1089.2" y="847" text-anchor="start">Mongo: runs, conversations,</text>
       <text class="flow-name" x="1089.2" y="863" text-anchor="start">turns, requests, reviews,</text>
       <text class="flow-name" x="1089.2" y="879" text-anchor="start">calibrations, notes</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="399.4" y="960" width="210.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M409.4 961.5H599.8" />
-      <rect class="pic-fill tone-violet" x="406.4" y="983" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="399.4" y="960" width="210.4" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="415.4" y="980" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(421.4 986) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
@@ -393,9 +378,7 @@ svg {
       </g>
       <text class="flow-name" x="451.4" y="991" text-anchor="start">EvalRunner</text>
       <text class="flow-name" x="451.4" y="1007" text-anchor="start">(louis-agent.evals)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="57.6" y="1156" width="195.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M67.6 1157.5H242.8" />
-      <rect class="pic-fill tone-green" x="64.6" y="1179" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="57.6" y="1156" width="195.2" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="73.6" y="1176" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(79.6 1182) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -405,18 +388,14 @@ svg {
       </g>
       <text class="flow-name" x="109.6" y="1187" text-anchor="start">Session endpoints</text>
       <text class="flow-name" x="109.6" y="1203" text-anchor="start">POST /v1/sessions</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="1083.6" y="1156" width="172.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M1093.6 1157.5H1246" />
-      <rect class="pic-fill tone-red" x="1090.6" y="1179" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1083.6" y="1156" width="172.4" height="68" rx="10" />
       <rect class="pic-fill tone-red" x="1099.6" y="1176" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1105.6 1182) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
       <text class="flow-name" x="1135.6" y="1187" text-anchor="start">Judge model</text>
       <text class="flow-name" x="1135.6" y="1203" text-anchor="start">(EVAL_JUDGE_*)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="61.4" y="1292" width="187.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M71.4 1293.5H239" />
-      <rect class="pic-fill tone-green" x="68.4" y="1315" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="61.4" y="1292" width="187.6" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="77.4" y="1312" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(83.4 1318) scale(0.6667)">
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -427,9 +406,7 @@ svg {
         <path d="M14 14l3 -3l3 3" />
       </g>
       <text class="flow-name" x="113.4" y="1331" text-anchor="start">ReplayResolution</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="1022.8" y="1292" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M1032.8 1293.5H1306.8" />
-      <rect class="pic-fill tone-violet" x="1029.8" y="1315" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="1022.8" y="1292" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="1038.8" y="1312" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1044.8 1318) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
@@ -445,8 +422,7 @@ svg {
       </g>
       <text class="flow-name" x="1074.8" y="1323" text-anchor="start">The agent under test</text>
       <text class="flow-name" x="1074.8" y="1339" text-anchor="start">(engine, Puls identity, packs)</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M761.6 1464L972 1464L954 1532L743.6 1532Z" />
-      <rect class="pic-fill tone-amber" x="762.6" y="1487" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M761.6 1464L972 1464L954 1532L743.6 1532Z" />
       <rect class="pic-fill tone-amber" x="771.6" y="1484" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(777.6 1490) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -457,8 +433,7 @@ svg {
       </g>
       <text class="flow-name" x="807.6" y="1495" text-anchor="start">Usage ledger</text>
       <text class="flow-name" x="807.6" y="1511" text-anchor="start">usage-YYYY-MM.jsonl</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1085 1464L1272.6 1464L1254.6 1532L1067 1532Z" />
-      <rect class="pic-fill tone-amber" x="1086" y="1487" width="4" height="22" rx="2" />
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1085 1464L1272.6 1464L1254.6 1532L1067 1532Z" />
       <rect class="pic-fill tone-amber" x="1095" y="1484" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(1101 1490) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
@@ -480,37 +455,37 @@ svg {
       <circle class="pic-port pic-edge tone-violet" cx="1316.8" cy="1326" r="4" />
       <circle class="pic-port pic-edge tone-violet" cx="609.8" cy="987.2" r="4" />
     </g>
-    <text class="pic-group" x="0" y="1640" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1657" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="1661" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="1669" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1657" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="1661" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="1669" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1657" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="264.3" y="1661" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="1669" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="1657" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="410.2" y="1661" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="444.2" y="1669" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-red" x="589.9" y="1657" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-red" x="593.9" y="1661" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="627.9" y="1669" text-anchor="start">outside the process</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="1657" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="777.6" y="1661" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="811.6" y="1669" text-anchor="start">files and data</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M943.8 1657L955.8 1657L937.8 1673L925.8 1673Z" />
-    <text class="pic-note" x="963.8" y="1669" text-anchor="start">data in or out</text>
-    <path class="flow-key pic-line pic-edge" d="M1078 1665H1108" marker-end="url(#arrow)" />
-    <text class="pic-note" x="1116" y="1669" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="1612" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1629" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="1633" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="1641" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1629" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="1633" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="1641" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1629" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="264.3" y="1633" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="1641" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="1629" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="410.2" y="1633" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="444.2" y="1641" text-anchor="start">contracts and state</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-red" x="589.9" y="1629" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-red" x="593.9" y="1633" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="627.9" y="1641" text-anchor="start">outside the process</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="1629" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="777.6" y="1633" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="811.6" y="1641" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M943.8 1629L955.8 1629L937.8 1645L925.8 1645Z" />
+    <text class="pic-note" x="963.8" y="1641" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M1078 1637H1108" marker-end="url(#arrow)" />
+    <text class="pic-note" x="1116" y="1641" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1694" width="1548" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 1704) scale(0.6667)">
+  <rect class="notebar" x="0" y="1666" width="1548" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1676) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1716">
+  <text class="notes" x="38" y="1688">
     <tspan class="note-head">Three processes:</tspan>
     <tspan class="note-rest">the portal shows, the API records, and the runner runs the evals as a child process.</tspan>
   </text>

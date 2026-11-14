@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1212 719" width="1212" height="719" role="img" aria-label="ADR 0064: where the telemetry goes, on the PC and in Azure" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1212 691" width="1212" height="691" role="img" aria-label="ADR 0064: where the telemetry goes, on the PC and in Azure" xmlns="http://www.w3.org/2000/svg">
   <title>ADR 0064: where the telemetry goes, on the PC and in Azure</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,66 +91,46 @@ svg {
 </style>
   <style>
 svg {
-  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
-}
-.pic-dots {
-  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
 .pic-fill { fill: var(--quiet); }
 .pic-ink { fill: var(--text); }
 .pic-edge.tone-blue { stroke: var(--blue-line); }
-.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
 .pic-tint.tone-blue { fill: var(--blue-fill); }
 .pic-fill.tone-blue { fill: var(--blue-line); }
 .pic-ink.tone-blue { fill: var(--blue-ink); }
 .pic-edge.tone-green { stroke: var(--green-line); }
-.pic-panel.tone-green { --pic-tone: var(--green-fill); }
 .pic-tint.tone-green { fill: var(--green-fill); }
 .pic-fill.tone-green { fill: var(--green-line); }
 .pic-ink.tone-green { fill: var(--green-ink); }
 .pic-edge.tone-violet { stroke: var(--violet-line); }
-.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
 .pic-tint.tone-violet { fill: var(--violet-fill); }
 .pic-fill.tone-violet { fill: var(--violet-line); }
 .pic-ink.tone-violet { fill: var(--violet-ink); }
 .pic-edge.tone-teal { stroke: var(--teal-line); }
-.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
 .pic-tint.tone-teal { fill: var(--teal-fill); }
 .pic-fill.tone-teal { fill: var(--teal-line); }
 .pic-ink.tone-teal { fill: var(--teal-ink); }
 .pic-edge.tone-red { stroke: var(--red-line); }
-.pic-panel.tone-red { --pic-tone: var(--red-fill); }
 .pic-tint.tone-red { fill: var(--red-fill); }
 .pic-fill.tone-red { fill: var(--red-line); }
 .pic-ink.tone-red { fill: var(--red-ink); }
 .pic-edge.tone-amber { stroke: var(--amber-line); }
-.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
 .pic-tint.tone-amber { fill: var(--amber-fill); }
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
-.pic-panel {
-  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
-  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
-.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
-.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
-.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
-.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
-.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
-.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
 .pic-swatch { stroke-width: 1; }
-.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
@@ -164,6 +144,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .flow-group {
   fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
 }
@@ -197,13 +196,17 @@ svg {
     <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1212" height="719" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1212" height="691" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1164M0 33H1164M0 55H1164M0 77H1164M0 99H1164M0 121H1164M0 143H1164M0 165H1164M0 187H1164M0 209H1164M0 231H1164M0 253H1164M0 275H1164M0 297H1164M0 319H1164M0 341H1164M0 363H1164M0 385H1164M0 407H1164M0 429H1164M0 451H1164M0 473H1164M0 495H1164M0 517H1164M0 539H1164M0 561H1164M0 583H1164M0 605H1164M0 627H1164" />
-    <text class="pic-title" x="0" y="24" text-anchor="start">ADR 0064</text>
-    <text class="pic-group" x="0" y="46" text-anchor="start">where the telemetry goes, on the PC and in Azure</text>
-    <g class="flow" transform="translate(0 72)">
+    <path class="mrq-light" d="M-24 74a606 190 0 1 0 1212 0a606 190 0 1 0 -1212 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">ADR 0064: where the telemetry goes, on the PC and in Azure</text>
+    <g class="flow" transform="translate(0 44)">
       <rect class="flow-group" x="0" y="0" width="885.6" height="326" rx="14" />
       <text class="pic-group" x="14" y="19" text-anchor="start">Louis's PC</text>
       <rect class="flow-group" x="0" y="342" width="1164" height="130" rx="14" />
@@ -226,9 +229,7 @@ svg {
       <text class="flow-word pic-ink tone-blue" x="442.1" y="283" text-anchor="middle">localhost:4317</text>
       <rect class="flow-chip pic-edge tone-green" x="378.6" y="409" width="127" height="18" rx="9" />
       <text class="flow-word pic-ink tone-green" x="442.1" y="421" text-anchor="middle">endpoint injected</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="12" y="34" width="294" height="84" rx="10" />
-      <path class="pic-sheen" d="M22 35.5H296" />
-      <rect class="pic-fill tone-green" x="19" y="65" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="12" y="34" width="294" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="62" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(34 68) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -239,9 +240,7 @@ svg {
       <text class="flow-name" x="64" y="65" text-anchor="start">code-review stack</text>
       <text class="flow-name" x="64" y="81" text-anchor="start">api, acp-server, mcp-server,</text>
       <text class="flow-name" x="64" y="97" text-anchor="start">local-agent</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="12" y="144" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M22 145.5H296" />
-      <rect class="pic-fill tone-green" x="19" y="167" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="12" y="144" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="164" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(34 170) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -251,9 +250,7 @@ svg {
       </g>
       <text class="flow-name" x="64" y="175" text-anchor="start">Puls stack</text>
       <text class="flow-name" x="64" y="191" text-anchor="start">puls, OTEL_SERVICE_NAME=puls</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="12" y="246" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M22 247.5H296" />
-      <rect class="pic-fill tone-blue" x="19" y="269" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="12" y="246" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="28" y="266" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(34 272) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
@@ -262,9 +259,7 @@ svg {
       </g>
       <text class="flow-name" x="64" y="277" text-anchor="start">Rider: cli, orchestrator, eval</text>
       <text class="flow-name" x="64" y="293" text-anchor="start">runner</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="12" y="384" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M22 385.5H296" />
-      <rect class="pic-fill tone-green" x="19" y="407" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="12" y="384" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="404" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(34 410) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -274,9 +269,7 @@ svg {
       </g>
       <text class="flow-name" x="64" y="415" text-anchor="start">puls-app,</text>
       <text class="flow-name" x="64" y="431" text-anchor="start">OTEL_SERVICE_NAME=puls</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="602.4" y="136" width="271.2" height="84" rx="10" />
-      <path class="pic-sheen" d="M612.4 137.5H863.6" />
-      <rect class="pic-fill tone-amber" x="609.4" y="167" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="602.4" y="136" width="271.2" height="84" rx="10" />
       <rect class="pic-fill tone-amber" x="618.4" y="164" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(624.4 170) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -287,18 +280,14 @@ svg {
       <text class="flow-name" x="654.4" y="167" text-anchor="start">observability stack</text>
       <text class="flow-name" x="654.4" y="183" text-anchor="start">Aspire dashboard, UI 18888,</text>
       <text class="flow-name" x="654.4" y="199" text-anchor="start">OTLP 4317</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="602.4" y="384" width="271.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M612.4 385.5H863.6" />
-      <rect class="pic-fill tone-violet" x="609.4" y="407" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="602.4" y="384" width="271.2" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="618.4" y="404" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(624.4 410) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
       <text class="flow-name" x="654.4" y="415" text-anchor="start">managed OpenTelemetry agent</text>
       <text class="flow-name" x="654.4" y="431" text-anchor="start">gRPC, the environment's</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="934" y="376" width="218" height="84" rx="10" />
-      <path class="pic-sheen" d="M944 377.5H1142" />
-      <rect class="pic-fill tone-red" x="941" y="407" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="934" y="376" width="218" height="84" rx="10" />
       <rect class="pic-fill tone-red" x="950" y="404" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(956 410) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -315,32 +304,32 @@ svg {
       <circle class="pic-port pic-edge tone-green" cx="306" cy="418" r="4" />
       <circle class="pic-port pic-edge tone-violet" cx="873.6" cy="418" r="4" />
     </g>
-    <text class="pic-group" x="0" y="580" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="597" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="601" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="609" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="597" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="601" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="609" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="597" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="264.3" y="601" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="609" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-red" x="406.2" y="597" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-red" x="410.2" y="601" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="444.2" y="609" text-anchor="start">outside the process</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="597" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="593.9" y="601" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="627.9" y="609" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M742.1 605H772.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="780.1" y="609" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="552" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="569" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="573" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="581" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="569" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="573" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="581" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="569" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="264.3" y="573" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="581" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-red" x="406.2" y="569" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-red" x="410.2" y="573" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="444.2" y="581" text-anchor="start">outside the process</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="569" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="593.9" y="573" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="627.9" y="581" text-anchor="start">files and data</text>
+    <path class="flow-key pic-line pic-edge" d="M742.1 577H772.1" marker-end="url(#arrow)" />
+    <text class="pic-note" x="780.1" y="581" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="634" width="1164" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 644) scale(0.6667)">
+  <rect class="notebar" x="0" y="606" width="1164" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 616) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="656">
+  <text class="notes" x="38" y="628">
     <tspan class="note-head">One pipe:</tspan>
     <tspan class="note-rest">every process sends OTLP, to the Aspire dashboard on the PC and to Application Insights in Azure.</tspan>
   </text>

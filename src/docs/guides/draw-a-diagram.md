@@ -187,8 +187,8 @@ shape when the box is one of these three.
 A class or a program at the top of a picture of what a project holds is not a start, so it stays a box. A
 decision shows its words and no icon, and is as tall as a plain box and a little wider.
 
-**What the picture says about itself.** A flow writes its own title inside the picture: the part of `title`
-before the first `: ` large, and the rest on a line under it. Under the drawing it has a key, *How to read it*:
+**What the picture says about itself.** A flow writes its own title inside the picture: the whole `title` as
+one small line in the top left corner. Under the drawing it has a key, *How to read it*:
 each tone and each shape the picture uses, and that a line has the colour of the box it leaves. You write none of
 that.
 
@@ -422,8 +422,9 @@ The picture draws its own key, "how to read it", with a row for each of these it
 | `reads` | `true` when its box only reads it. It is drawn as one dashed line. |
 | `calls`, `back` | The word on the line from the box out to it, and on the line from it back. |
 
-**The title is in the picture.** A component diagram writes its `title` and its `subtitle` inside itself. So the
-docs' frame gives it no title bar and no legend, only the note bar from `caption`.
+**The title is in the picture.** A component diagram writes its `title` inside itself as one small line, and
+its `subtitle` after it on the same line, after a colon. So the docs' frame gives it no title bar and no legend,
+only the note bar from `caption`.
 
 **What the tool places.** Everything. A box is as wide as its words, its pins and the boxes it holds need. A
 neighbour stands level with the box it talks to. A line from a pill goes straight where it can, and otherwise

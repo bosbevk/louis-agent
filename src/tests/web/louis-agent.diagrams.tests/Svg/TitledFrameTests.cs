@@ -52,8 +52,8 @@ public class TitledFrameTests
             Assert.That(Rects(svg, "titlebar"), Is.Empty);
             Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "legend"), Is.Empty);
             Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
-            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "pic-title")
-                .Select(text => text.Value), Is.EqualTo(new[] { "Accounts" }));
+            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "mrq-title")
+                .Select(text => text.Value), Is.EqualTo(new[] { "Accounts: the browser's calls to the store" }));
         });
     }
 

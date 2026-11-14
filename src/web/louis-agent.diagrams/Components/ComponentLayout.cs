@@ -17,8 +17,8 @@ namespace LouisAgent.Diagrams.Components;
 /// <seealso href="https://refactoring.guru/design-patterns/composite">Composite (Refactoring.Guru)</seealso>
 public static class ComponentLayout
 {
-    /// <summary>The room the picture's title and the line under it take, above everything else.</summary>
-    public const double TitleRoom = 64;
+    /// <summary>The room the picture's title takes, one small line, above everything else.</summary>
+    public const double TitleRoom = 32;
 
     /// <summary>The room above the root, and between the root and a column of neighbours for their lines.</summary>
     private const double Top = 12, ColumnGap = 60;

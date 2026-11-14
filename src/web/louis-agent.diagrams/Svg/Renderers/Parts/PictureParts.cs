@@ -5,39 +5,52 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 /// <summary>
-/// The parts every picture in the new look is drawn from (F134.7, shared since F134.8): the ground of dots, the
-/// picture's own title with the line under it, and a panel with its marker and the highlight along its top.
+/// The parts every picture in the new look is drawn from (F134.7, shared since F134.8): the start of a picture,
+/// which is the soft light behind its top with its title over it, and a panel.
 /// </summary>
 /// <remarks>
 /// They wear <see cref="PictureLook"/>'s classes, so a kind that draws with them looks like the others without
-/// writing a class name of its own.
+/// writing a class name of its own. The title and the light are <see cref="MarqueeLook"/>'s, the ones a cards
+/// picture, a sequence and a class chart have (F134.12, Louis: "make the theme of the flow and component diagrams
+/// resemble the others").
 /// </remarks>
 internal static class PictureParts
 {
-    /// <summary>A panel's corner, and how far apart the ground's dots are.</summary>
-    public const double Radius = 14, DotStep = 22;
+    /// <summary>A panel's corner.</summary>
+    public const double Radius = 14;
 
-    /// <summary>The ground's dots: a row of them every so far, each row one dashed line with round ends.</summary>
-    public static SvgWriter Ground(SvgWriter writer, double width, double height) => writer.Path(string.Concat(
-        Enumerable.Range(0, (int)(height / DotStep) + 1)
-            .Select(row => $"M0 {N(row * DotStep + DotStep / 2)}H{N(width)}")), "pic-dots", false);
+    /// <summary>The room the picture's title takes above the drawing, and where its words stand in it.</summary>
+    public const double Head = 44, TitleLine = 14;
 
-    /// <summary>The picture's own title, and under it a line of smaller words when it has one.</summary>
-    public static SvgWriter Head(SvgWriter writer, string title, string? under)
+    /// <summary>How wide a character of the title is taken to be, generously, since no font is measured.</summary>
+    public const double TitleChar = 7;
+
+    /// <summary>
+    /// The light behind the top of the picture: how far under the title's room its middle is, and how far it
+    /// reaches down. Across, it reaches the picture's sides, where it has faded to nothing.
+    /// </summary>
+    private const double LightDrop = 30, LightDown = 190;
+
+    /// <summary>
+    /// A picture begun: the light first, an oval as wide as the picture, so everything stands on it, and the
+    /// title over it as one small line.
+    /// </summary>
+    public static SvgWriter Open(string title, double width)
     {
-        writer.Text(0, 24, title, "pic-title", "start");
-        return under is null ? writer : writer.Text(0, 46, under, "pic-group", "start");
+        double reach = width / 2 + SvgWriter.Pad, y = Head + LightDrop;
+        string across = N(reach), down = N(LightDown), there = N(2 * reach);
+        return new SvgWriter().Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, 0.5, 1)
+            .Path($"M{N(-SvgWriter.Pad)} {N(y)}a{across} {down} 0 1 0 {there} 0a{across} {down} 0 1 0 -{there} 0Z",
+                "mrq-light", false)
+            .Text(0, TitleLine, title, "mrq-title", "start");
     }
 
     /// <summary>
-    /// A panel by its depth, tinted in its tone, with its marker and the highlight along its top: the shape a box
-    /// and a neighbour share.
+    /// A panel: the shape a box and a neighbour share. It wears no tone and no depth, since a panel inside a panel
+    /// is a step deeper by itself.
     /// </summary>
-    public static SvgWriter Panel(SvgWriter writer, double x, double y, double width, double height, int depth,
-        string tone) => writer
-        .Box(x, y, width, height, Radius, $"pic-panel depth-{depth} pic-edge{tone}")
-        .Path($"M{N(x + Radius)} {N(y + 1.5)}H{N(x + width - Radius)}", "pic-sheen", false)
-        .Box(x + 7, y + 14, 4, Math.Min(height - 28, 22), 2, $"pic-fill{tone}");
+    public static SvgWriter Panel(SvgWriter writer, double x, double y, double width, double height) =>
+        writer.Box(x, y, width, height, Radius, "pic-panel");
 
     /// <summary>
     /// A tone as a shape's class, with the space before it. Nothing for plain, which the look draws grey.

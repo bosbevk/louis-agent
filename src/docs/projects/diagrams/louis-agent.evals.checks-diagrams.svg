@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 970 867" width="970" height="867" role="img" aria-label="The check contract: who lists checks, and how a check is built, reads and grades" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 970 839" width="970" height="839" role="img" aria-label="The check contract: who lists checks, and how a check is built, reads and grades" xmlns="http://www.w3.org/2000/svg">
   <title>The check contract: who lists checks, and how a check is built, reads and grades</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,66 +91,46 @@ svg {
 </style>
   <style>
 svg {
-  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
-}
-.pic-dots {
-  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
 .pic-fill { fill: var(--quiet); }
 .pic-ink { fill: var(--text); }
 .pic-edge.tone-blue { stroke: var(--blue-line); }
-.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
 .pic-tint.tone-blue { fill: var(--blue-fill); }
 .pic-fill.tone-blue { fill: var(--blue-line); }
 .pic-ink.tone-blue { fill: var(--blue-ink); }
 .pic-edge.tone-green { stroke: var(--green-line); }
-.pic-panel.tone-green { --pic-tone: var(--green-fill); }
 .pic-tint.tone-green { fill: var(--green-fill); }
 .pic-fill.tone-green { fill: var(--green-line); }
 .pic-ink.tone-green { fill: var(--green-ink); }
 .pic-edge.tone-violet { stroke: var(--violet-line); }
-.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
 .pic-tint.tone-violet { fill: var(--violet-fill); }
 .pic-fill.tone-violet { fill: var(--violet-line); }
 .pic-ink.tone-violet { fill: var(--violet-ink); }
 .pic-edge.tone-teal { stroke: var(--teal-line); }
-.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
 .pic-tint.tone-teal { fill: var(--teal-fill); }
 .pic-fill.tone-teal { fill: var(--teal-line); }
 .pic-ink.tone-teal { fill: var(--teal-ink); }
 .pic-edge.tone-red { stroke: var(--red-line); }
-.pic-panel.tone-red { --pic-tone: var(--red-fill); }
 .pic-tint.tone-red { fill: var(--red-fill); }
 .pic-fill.tone-red { fill: var(--red-line); }
 .pic-ink.tone-red { fill: var(--red-ink); }
 .pic-edge.tone-amber { stroke: var(--amber-line); }
-.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
 .pic-tint.tone-amber { fill: var(--amber-fill); }
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
-.pic-panel {
-  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
-  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
-.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
-.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
-.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
-.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
-.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
-.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
 .pic-swatch { stroke-width: 1; }
-.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
@@ -164,6 +144,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .flow-group {
   fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
 }
@@ -197,13 +196,17 @@ svg {
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="970" height="867" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="970" height="839" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H922M0 33H922M0 55H922M0 77H922M0 99H922M0 121H922M0 143H922M0 165H922M0 187H922M0 209H922M0 231H922M0 253H922M0 275H922M0 297H922M0 319H922M0 341H922M0 363H922M0 385H922M0 407H922M0 429H922M0 451H922M0 473H922M0 495H922M0 517H922M0 539H922M0 561H922M0 583H922M0 605H922M0 627H922M0 649H922M0 671H922M0 693H922M0 715H922M0 737H922M0 759H922" />
-    <text class="pic-title" x="0" y="24" text-anchor="start">The check contract</text>
-    <text class="pic-group" x="0" y="46" text-anchor="start">who lists checks, and how a check is built, reads and grades</text>
-    <g class="flow" transform="translate(0 72)">
+    <path class="mrq-light" d="M-24 74a485 190 0 1 0 970 0a485 190 0 1 0 -970 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">The check contract: who lists checks, and how a check is built, reads and grades</text>
+    <g class="flow" transform="translate(0 44)">
       <rect class="flow-group" x="3.8" y="142" width="614.8" height="478" rx="14" />
       <text class="pic-group" x="17.8" y="161" text-anchor="start">This project</text>
       <path class="pic-line pic-edge tone-teal" d="M 471 228 L 471 288" marker-end="url(#arrow-teal)" />
@@ -232,9 +235,7 @@ svg {
       <text class="flow-word pic-ink tone-green" x="540.5" y="84" text-anchor="middle">lists its entries</text>
       <rect class="flow-chip pic-edge tone-blue" x="789" y="72" width="127" height="18" rx="9" />
       <text class="flow-word pic-ink tone-blue" x="852.5" y="84" text-anchor="middle">lists its entries</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="12" y="0" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M22 1.5H296" />
-      <rect class="pic-fill tone-green" x="19" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="12" y="0" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="20" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(34 26) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
@@ -242,9 +243,7 @@ svg {
       </g>
       <text class="flow-name" x="64" y="31" text-anchor="start">louis-agent.evals: the general</text>
       <text class="flow-name" x="64" y="47" text-anchor="start">checks</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="350.6" y="0" width="240.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M360.6 1.5H581.4" />
-      <rect class="pic-fill tone-green" x="357.6" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="350.6" y="0" width="240.8" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="366.6" y="20" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(372.6 26) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -253,9 +252,7 @@ svg {
         <path d="M12 12l-8 -4.5" />
       </g>
       <text class="flow-name" x="402.6" y="39" text-anchor="start">A pack's checks project</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="674" y="0" width="218" height="68" rx="10" />
-      <path class="pic-sheen" d="M684 1.5H882" />
-      <rect class="pic-fill tone-blue" x="681" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="674" y="0" width="218" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="690" y="20" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(696 26) scale(0.6667)">
         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
@@ -264,9 +261,7 @@ svg {
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
       <text class="flow-name" x="726" y="39" text-anchor="start">An identity's judges</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="386" y="176" width="170" height="52" rx="10" />
-      <path class="pic-sheen" d="M396 177.5H546" />
-      <rect class="pic-fill tone-teal" x="393" y="191" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="386" y="176" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-teal" x="402" y="188" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(408 194) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -276,9 +271,7 @@ svg {
         <path d="M21 6l0 13" />
       </g>
       <text class="flow-name" x="438" y="207" text-anchor="start">CheckCatalog</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="335.4" y="288" width="271.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M345.4 289.5H596.6" />
-      <rect class="pic-fill tone-teal" x="342.4" y="311" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="335.4" y="288" width="271.2" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="351.4" y="308" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(357.4 314) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
@@ -287,18 +280,14 @@ svg {
       </g>
       <text class="flow-name" x="387.4" y="319" text-anchor="start">ICheckType and CheckType: a</text>
       <text class="flow-name" x="387.4" y="335" text-anchor="start">check named by its type</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="386" y="422" width="170" height="52" rx="10" />
-      <path class="pic-sheen" d="M396 423.5H546" />
-      <rect class="pic-fill tone-teal" x="393" y="437" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="386" y="422" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-teal" x="402" y="434" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(408 440) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
       <text class="flow-name" x="438" y="453" text-anchor="start">ICheck</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="15.8" y="540" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M25.8 541.5H292.2" />
-      <rect class="pic-fill tone-teal" x="22.8" y="563" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="15.8" y="540" width="286.4" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="31.8" y="560" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(37.8 566) scale(0.6667)">
         <path d="M8 9h8" />
@@ -307,9 +296,7 @@ svg {
       </g>
       <text class="flow-name" x="67.8" y="571" text-anchor="start">Trial, Transcript, TurnFacts,</text>
       <text class="flow-name" x="67.8" y="587" text-anchor="start">EngineEvents</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="373.4" y="540" width="195.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M383.4 541.5H558.6" />
-      <rect class="pic-fill tone-teal" x="380.4" y="563" width="4" height="22" rx="2" />
+      <rect class="pic-panel" x="373.4" y="540" width="195.2" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="389.4" y="560" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(395.4 566) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -325,26 +312,26 @@ svg {
       <circle class="pic-port pic-edge tone-green" cx="471" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="783" cy="68" r="4" />
     </g>
-    <text class="pic-group" x="0" y="728" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="745" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="749" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="757" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="745" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="749" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="757" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="260.3" y="745" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="264.3" y="749" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="757" text-anchor="start">contracts and state</text>
-    <path class="flow-key pic-line pic-edge" d="M444 753H474" marker-end="url(#arrow)" />
-    <text class="pic-note" x="482" y="757" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="700" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="717" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="721" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="729" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="717" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="721" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="729" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="260.3" y="717" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="264.3" y="721" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="729" text-anchor="start">contracts and state</text>
+    <path class="flow-key pic-line pic-edge" d="M444 725H474" marker-end="url(#arrow)" />
+    <text class="pic-note" x="482" y="729" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="782" width="922" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 792) scale(0.6667)">
+  <rect class="notebar" x="0" y="754" width="922" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 764) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="804">
+  <text class="notes" x="38" y="776">
     <tspan class="note-head">The contract sits apart:</tspan>
     <tspan class="note-rest">a pack can ship a check without referencing the harness (Separated Interface).</tspan>
   </text>
