@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "bicep",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "config/azure/main.bicep +\nmain.bicepparam"

@@ -54,6 +54,7 @@
       },
       {
         "id": "workspace",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "The workspace root"

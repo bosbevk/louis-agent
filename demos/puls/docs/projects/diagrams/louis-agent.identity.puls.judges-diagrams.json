@@ -42,6 +42,7 @@
       },
       {
         "id": "rubric",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "meal-for-people.md, in the\ncook\u0027s eval folder"

@@ -36,12 +36,14 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "MongoPriceStore, with\nSHOP_PRICES_MONGO_URL"
       },
       {
         "id": "shipped",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "ShippedPrices: the embedded\ntables"

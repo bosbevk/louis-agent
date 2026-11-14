@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "person",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "A person's browser"
@@ -40,6 +41,7 @@
       },
       {
         "id": "sql",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Azure SQL puls-sql-za:\npuls_accounts, tenants puls\nand louis-agent (free offer,\npauses when idle)"
@@ -58,6 +60,7 @@
       },
       {
         "id": "vault",
+        "shape": "data",
         "icon": "shield",
         "tone": "amber",
         "label": "Key Vault puls-keys: every\nsecret value"
@@ -70,18 +73,21 @@
       },
       {
         "id": "registry",
+        "shape": "data",
         "icon": "box",
         "tone": "amber",
         "label": "Registry acrpulsza:\nlouis-agent-puls and\nlouis-agent-coding images"
       },
       {
         "id": "share",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "pulsstorage: the share\npuls-app-workspace (config/,\nlogs/, data/)"
       },
       {
         "id": "share2",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "pulsstorage: the share\nlouis-agent-workspace\n(config/, skills/, logs/,\ndata/)"

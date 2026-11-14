@@ -18,6 +18,7 @@
       },
       {
         "id": "prompts",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "Prompts: voice, specialists,\nminions"

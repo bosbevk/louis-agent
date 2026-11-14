@@ -325,14 +325,13 @@ svg {
       </g>
       <text class="flow-name" x="59.6" y="689" text-anchor="start">The engine's browser, search</text>
       <text class="flow-name" x="59.6" y="705" text-anchor="start">and guards</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="357.6" y="658" width="202.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M367.6 659.5H550.4" />
-      <rect class="pic-fill tone-amber" x="364.6" y="681" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="373.6" y="678" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(379.6 684) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M366.6 658L569.4 658L551.4 726L348.6 726Z" />
+      <rect class="pic-fill tone-amber" x="367.6" y="681" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="376.6" y="678" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(382.6 684) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="flow-name" x="409.6" y="697" text-anchor="start">The workspace root</text>
+      <text class="flow-name" x="412.6" y="697" text-anchor="start">The workspace root</text>
       <rect class="pic-panel depth-2 pic-edge tone-red" x="624" y="658" width="294" height="68" rx="10" />
       <path class="pic-sheen" d="M634 659.5H908" />
       <rect class="pic-fill tone-red" x="631" y="681" width="4" height="22" rx="2" />
@@ -367,8 +366,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="851" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="777.6" y="855" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="811.6" y="863" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M0 885H30" marker-end="url(#arrow)" />
-    <text class="pic-note" x="38" y="889" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M18 877L30 877L12 893L0 893Z" />
+    <text class="pic-note" x="38" y="889" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M152.2 885H182.2" marker-end="url(#arrow)" />
+    <text class="pic-note" x="190.2" y="889" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="914" width="918" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 924) scale(0.6667)">

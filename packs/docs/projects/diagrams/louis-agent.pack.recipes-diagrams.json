@@ -78,6 +78,7 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "The library, in Mongo"

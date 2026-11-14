@@ -279,19 +279,18 @@ svg {
         <path d="M12 19l7 0" />
       </g>
       <text class="flow-name" x="424.8" y="165" text-anchor="start">The eval runner only</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="15.2" y="252" width="278.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M25.2 253.5H284" />
-      <rect class="pic-fill tone-amber" x="22.2" y="275" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="31.2" y="272" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(37.2 278) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M24.2 252L303 252L285 320L6.2 320Z" />
+      <rect class="pic-fill tone-amber" x="25.2" y="275" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="34.2" y="272" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(40.2 278) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="67.2" y="283" text-anchor="start">Prompts: voice, specialists,</text>
-      <text class="flow-name" x="67.2" y="299" text-anchor="start">minions</text>
+      <text class="flow-name" x="70.2" y="283" text-anchor="start">Prompts: voice, specialists,</text>
+      <text class="flow-name" x="70.2" y="299" text-anchor="start">minions</text>
       <rect class="pic-panel depth-2 pic-edge tone-teal" x="350" y="252" width="263.6" height="68" rx="10" />
       <path class="pic-sheen" d="M360 253.5H603.6" />
       <rect class="pic-fill tone-teal" x="357" y="275" width="4" height="22" rx="2" />
@@ -362,8 +361,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="701" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="777.6" y="705" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="811.6" y="713" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M0 735H30" marker-end="url(#arrow)" />
-    <text class="pic-note" x="38" y="739" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M18 727L30 727L12 743L0 743Z" />
+    <text class="pic-note" x="38" y="739" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M152.2 735H182.2" marker-end="url(#arrow)" />
+    <text class="pic-note" x="190.2" y="739" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="764" width="964" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 774) scale(0.6667)">

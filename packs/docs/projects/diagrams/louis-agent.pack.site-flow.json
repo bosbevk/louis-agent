@@ -4,11 +4,11 @@
   "caption": "The tools say, the browser does: every call is checked as data, a refusal goes back to the model as an error, and only the visitor's own browser moves or draws.",
   "flow": {
     "nodes": [
-      { "id": "agent", "label": "An agent\nthe guide or a business", "icon": "chip", "tone": "violet" },
+      { "id": "agent", "shape": "terminal", "label": "An agent\nthe guide or a business", "icon": "chip", "tone": "violet" },
       { "id": "tool", "label": "SiteTools, CardTools\nchecked, never run", "icon": "shield", "tone": "green" },
       { "id": "stream", "label": "The turn's stream\nthe tool call", "icon": "message", "tone": "violet" },
       { "id": "widget", "label": "The widget\nreads the call", "icon": "browser", "tone": "violet" },
-      { "id": "page", "label": "The page, the card\nand the choices", "icon": "browser", "tone": "blue" }
+      { "id": "page", "shape": "terminal", "label": "The page, the card\nand the choices", "icon": "browser", "tone": "blue" }
     ],
     "edges": [
       { "from": "agent", "to": "tool" },
