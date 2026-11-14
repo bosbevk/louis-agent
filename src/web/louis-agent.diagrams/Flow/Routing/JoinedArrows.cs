@@ -36,6 +36,9 @@ public sealed class JoinedArrows : IArrowRule
     public double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId) => byId[edge.To].Y + byId[edge.To].H / 2;
 
+    /// <summary>They all arrive at one point, so a side is long enough whatever arrives.</summary>
+    public double SideFor(int arrows) => 0;
+
     /// <summary>
     /// The order of a gap's tracks, nearest the sources first: the bottom source first, and a source level with
     /// another's target always before that other, so its line out ends before the other's line in starts and the two

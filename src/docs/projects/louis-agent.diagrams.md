@@ -92,6 +92,16 @@ the rule (`IArrowRule`). Handed none, it uses `JoinedArrows`: the arrows into a 
 side, and a gap has a track for each source only when several boxes feed several. So a caller picks how its
 arrows run without the router knowing which rule it has.
 
+The other rule is `ApartArrows`. With it each arrow into a box arrives at a point of its own:
+
+- The points are 18 apart, spread round the middle of the side, the arrow from the upper box at the upper point.
+  One arrow alone arrives at the middle.
+- An arrow from a box at its target's own height runs straight in, and the others take the points beside it. If a
+  point would then stand off the side, the points are spread round the middle instead.
+- A box's side is at least as long as its points need: two or three arrows fit a box 52 high, and a fourth makes
+  it 84.
+- An arrow past a column is led in line with its own point, where no box stands in the way.
+
 **A chart that runs down.** It is laid out turned, and `Turn` turns every point back. So one layout and one router
 serve both directions.
 
@@ -190,7 +200,7 @@ This section is for looking a file up.
 ```
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
-├── Flow/           # GraphLayout, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows)
+├── Flow/           # GraphLayout, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)

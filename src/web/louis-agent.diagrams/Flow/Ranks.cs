@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Routing;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow;
@@ -66,30 +67,37 @@ public static class Ranks
     }
 
     /// <summary>
-    /// Every waypoint moved in line with its arrow's target, where no box in its column stands in the way, so the
-    /// arrow runs along and then straight into its target instead of jogging to a slot and back (Louis, of the CLI and
-    /// accounts charts).
+    /// Every waypoint moved in line with where its arrow arrives, which the arrows' rule says, where no box in its
+    /// column stands in the way, so the arrow runs along and then straight into its target instead of jogging to a
+    /// slot and back (Louis, of the CLI and accounts charts).
     /// </summary>
     /// <remarks>
     /// The alignment step of layered drawing (Brandes and Köpf straighten long edges the same way): a waypoint is
     /// drawn as nothing, so it may stand anywhere its line crosses no box.
     /// </remarks>
-    public static List<PlacedNode> Straightened(List<PlacedNode> nodes, IReadOnlyList<GraphEdge> edges)
+    public static List<PlacedNode> Straightened(List<PlacedNode> nodes, IReadOnlyList<GraphEdge> edges,
+        IArrowRule rule)
     {
         var byId = nodes.ToDictionary(node => node.Node.Id, StringComparer.Ordinal);
+        // The rule places an arrow among the others that run forward into the same box.
+        var forward = edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)
+                                                                      && byId[edge.To].Node.Column >
+                                                                      byId[edge.From].Node.Column).ToList();
         var moved = new Dictionary<string, double>(StringComparer.Ordinal);
-        // Each chain from its real source: in line with its target if every waypoint can be, else with its source.
+        // Each chain from its real source: in line with where it arrives if every waypoint can be, else with its
+        // source.
         foreach (var first in edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To)))
         {
             var chain = new List<string>();
-            string at = first.To;
-            while (IsWaypoint(at))
+            var last = first;
+            while (IsWaypoint(last.To))
             {
-                chain.Add(at);
-                at = edges.First(edge => edge.From == at).To;
+                chain.Add(last.To);
+                last = edges.First(edge => edge.From == chain[^1]);
             }
 
-            var line = new[] { byId[at], byId[first.From] }.Select(end => end.Y + end.H / 2)
+            var source = byId[first.From];
+            var line = new[] { rule.EntryOf(last, forward, byId), source.Y + source.H / 2 }
                 .FirstOrDefault(middle => chain.All(id => Free(byId[id], middle, nodes)), double.NaN);
             if (double.IsNaN(line)) continue;
             foreach (string id in chain) moved[id] = line - byId[id].H / 2;

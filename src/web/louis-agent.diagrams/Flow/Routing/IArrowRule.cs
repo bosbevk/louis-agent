@@ -24,4 +24,7 @@ public interface IArrowRule
 
     /// <summary>How far down the drawing an arrow arrives at its target's side.</summary>
     double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward, IReadOnlyDictionary<string, PlacedNode> byId);
+
+    /// <summary>How long a box's side must be at least for that many arrows to arrive on it.</summary>
+    double SideFor(int arrows);
 }

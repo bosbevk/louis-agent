@@ -71,7 +71,10 @@ public static class GraphLayout
     /// </summary>
     private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend, IArrowRule rule)
     {
-        Func<GraphNode, double> wide = turned ? HeightOf : WidthOf, tall = turned ? WidthOf : HeightOf;
+        Func<GraphNode, double> wide = turned ? HeightOf : WidthOf, plain = turned ? WidthOf : HeightOf;
+        // A box's side is at least as long as the arrows that arrive on it need, which their rule says.
+        var arriving = Arriving(spec);
+        double Tall(GraphNode node) => Math.Max(plain(node), rule.SideFor(arriving.GetValueOrDefault(node.Id)));
 
         // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the
         // height.
@@ -86,9 +89,9 @@ public static class GraphLayout
         // Every box sits on one row grid, each row as tall as the tallest box of its band, a shorter column centred on
         // it (Louis: "alignment is key", "this must not happen"): two middles then differ by half a row at least, never
         // by a few pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
-        var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, tall), turned);
-        // A long arrow's waypoints stand in line with its target, so it drops straight in.
-        var placed = Ranks.Straightened(banded, spec.Edges);
+        var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, Tall), turned);
+        // A long arrow's waypoints stand in line with where it arrives, so it drops straight in.
+        var placed = Ranks.Straightened(banded, spec.Edges, rule);
         // A group's frame goes round its boxes; the drawing moves and grows so every frame is inside it.
         var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, Bands.Frames(spec, placed, turned), width, height);
 
@@ -101,6 +104,17 @@ public static class GraphLayout
         // The waypoints go, and each chain through them is one arrow again.
         return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight),
             [.. nodes.Where(node => !Ranks.IsWaypoint(node.Node.Id))], Ranks.Joined(edges), groups);
+    }
+
+    /// <summary>
+    /// How many forward arrows arrive at each box. An arrow past a column counts where its last link ends.
+    /// </summary>
+    private static Dictionary<string, int> Arriving(GraphSpec spec)
+    {
+        var columnOf = spec.Nodes.ToDictionary(node => node.Id, node => node.Column);
+        return spec.Edges.Where(edge => columnOf.ContainsKey(edge.From) && columnOf.ContainsKey(edge.To)
+                                                                        && columnOf[edge.To] > columnOf[edge.From])
+            .GroupBy(edge => edge.To).ToDictionary(group => group.Key, group => group.Count());
     }
 
     /// <summary>
