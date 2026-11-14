@@ -32,8 +32,8 @@ is a drawing held inside a web page, which needs care of its own.
 a kind, a title that a screen reader is told, an optional caption, and the kind's own part. The kind is one of
 `flow`, `cards`, `sequence`, `classes` or `ticket`.
 
-The reader refuses what is wrong, with the reason: a misspelt field, an unknown kind, a missing title, or an arrow
-or a link to an id that nothing has. The reasons are the library's own messages (`Messages/DiagramMessage`), filled
+The reader refuses what is wrong, with the reason: a misspelt field, an unknown kind, a missing title, an arrow
+or a link to an id that nothing has, or a link between two cards that are not in neighbouring rows. The reasons are the library's own messages (`Messages/DiagramMessage`), filled
 by `DiagramText`, its own small stand-in for core's `MessageText`. That keeps the library from leaning on any part
 of the engine.
 

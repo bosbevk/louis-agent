@@ -86,8 +86,9 @@ its parts. Two links join the project to each part, and the second has arrowhead
 | `highlight` | Centred, in the accent's tint. |
 | `heading` | Centred, with no box. |
 
-**A link.** It joins two cards by their ids. Its `kind` says which way its arrowheads
-point: `down` (the default), `up` or `both`.
+**A link.** It joins two cards by their ids, a card to one in the row just above or just under it. A link that
+skips a row, or joins two cards of one row, is refused with the two cards it names. Its `kind` says which way its
+arrowheads point: `down` (the default), `up` or `both`.
 
 **The icons.** `icon` names one of the 36 icons the framework holds. They come in five groups.
 

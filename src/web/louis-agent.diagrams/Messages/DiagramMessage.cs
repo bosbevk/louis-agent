@@ -34,6 +34,9 @@ public enum DiagramMessage
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
     UnknownCard,
 
+    [Description("The link from '{From}' to '{To}' doesn't join two neighbouring rows. A link runs from a card to one in the row just above or just under it.")]
+    LinkNotBetweenRows,
+
     [Description("A step names '{Id}', which no participant in the diagram has: \"{Step}\".")]
     UnknownParticipant,
 

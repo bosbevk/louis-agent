@@ -124,15 +124,31 @@ public static class DiagramReader
         throw Refused(DiagramMessage.UnknownBox, noBox);
     }
 
-    /// <summary>Every link joins two cards the overview has.</summary>
+    /// <summary>
+    /// Every link joins two cards the overview has, one in the row just above or just under the other: a link is
+    /// drawn on a rail in the gap between two rows (F134.9), so one that skips a row or stays in one can't be drawn.
+    /// </summary>
     private static void CheckCards(CardsSpec cards)
     {
-        var ids = cards.Rows.SelectMany(row => row.Cards).Select(card => card.Id).ToHashSet(StringComparer.Ordinal);
-        var stray = cards.Links.FirstOrDefault(link => !ids.Contains(link.From) || !ids.Contains(link.To));
-        if (stray is null) return;
+        // Each card's row, counted from the top.
+        var rowOf = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (int row = 0; row < cards.Rows.Count; row++)
+            foreach (var card in cards.Rows[row].Cards)
+                rowOf[card.Id] = row;
 
-        var noCard = new UnknownCardHoles(stray.From, stray.To, StrayEnd(ids, stray.From, stray.To));
-        throw Refused(DiagramMessage.UnknownCard, noCard);
+        if (cards.Links.FirstOrDefault(link => !rowOf.ContainsKey(link.From) || !rowOf.ContainsKey(link.To))
+            is { } stray)
+        {
+            var ids = rowOf.Keys.ToHashSet(StringComparer.Ordinal);
+            var noCard = new UnknownCardHoles(stray.From, stray.To, StrayEnd(ids, stray.From, stray.To));
+            throw Refused(DiagramMessage.UnknownCard, noCard);
+        }
+
+        if (cards.Links.FirstOrDefault(link => Math.Abs(rowOf[link.From] - rowOf[link.To]) != 1) is not { } far)
+            return;
+
+        var notBetween = new LinkNotBetweenRowsHoles(far.From, far.To);
+        throw Refused(DiagramMessage.LinkNotBetweenRows, notBetween);
     }
 
     /// <summary>

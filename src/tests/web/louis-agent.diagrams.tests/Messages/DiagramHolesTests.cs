@@ -40,6 +40,7 @@ public class DiagramHolesTests
     [TestCase(DiagramMessage.UnknownBox)]
     [TestCase(DiagramMessage.UnknownGroup)]
     [TestCase(DiagramMessage.UnknownCard)]
+    [TestCase(DiagramMessage.LinkNotBetweenRows)]
     [TestCase(DiagramMessage.UnknownParticipant)]
     [TestCase(DiagramMessage.NoteOverNoOne)]
     [TestCase(DiagramMessage.EmptyBlock)]

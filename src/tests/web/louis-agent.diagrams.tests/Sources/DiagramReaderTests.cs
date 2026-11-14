@@ -160,6 +160,53 @@ public class DiagramReaderTests
         Assert.That(() => DiagramReader.Read(Cards.Replace("\"to\": \"packs\"", "\"to\": \"pack\"")),
             Throws.TypeOf<InvalidDataException>().With.Message.Contain("pack"));
 
+    /// <summary>
+    /// Three rows of cards, a over b and c over d, with the one link a test gives it: the least that has a row to
+    /// skip and a row with two cards.
+    /// </summary>
+    private static string ThreeRows(string from, string to) =>
+        $$"""
+          {
+            "kind": "cards",
+            "title": "Three rows",
+            "cards": {
+              "rows": [
+                { "cards": [ { "id": "a", "icon": "chip", "title": "A", "text": "On top." } ] },
+                { "cards": [
+                  { "id": "b", "icon": "box", "title": "B", "text": "In the middle." },
+                  { "id": "c", "icon": "box", "title": "C", "text": "In the middle." }
+                ] },
+                { "cards": [ { "id": "d", "icon": "box", "title": "D", "text": "At the bottom." } ] }
+              ],
+              "links": [ { "from": "{{from}}", "to": "{{to}}" } ]
+            }
+          }
+          """;
+
+    /// <summary>
+    /// A link joins a card to one in the row just above or just under it (F134.9), whichever way it is written:
+    /// that is the gap its rail stands in.
+    /// </summary>
+    [TestCase("a", "b")]
+    [TestCase("c", "a")]
+    [TestCase("b", "d")]
+    public void ALinkBetweenNeighbouringRows_Reads(string from, string to) =>
+        Assert.That(DiagramReader.Read(ThreeRows(from, to)).Cards!.Links, Has.Count.EqualTo(1));
+
+    /// <summary>A link that skips a row is refused, naming its two cards: no rail can draw it.</summary>
+    [Test]
+    public void ALinkThatSkipsARow_IsRefused_NamingItsCards() =>
+        Assert.That(() => DiagramReader.Read(ThreeRows("a", "d")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'a' to 'd'").And.Message
+                .Contain("neighbouring rows"));
+
+    /// <summary>A link between two cards of one row is refused the same way.</summary>
+    [Test]
+    public void ALinkInsideARow_IsRefused_NamingItsCards() =>
+        Assert.That(() => DiagramReader.Read(ThreeRows("b", "c")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'b' to 'c'").And.Message
+                .Contain("neighbouring rows"));
+
     /// <summary>A kind without its own part (a cards diagram with no cards) is refused.</summary>
     [Test]
     public void AKindWithoutItsPart_IsRefused() =>
