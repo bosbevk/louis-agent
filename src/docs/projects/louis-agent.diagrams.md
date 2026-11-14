@@ -78,7 +78,10 @@ violet running to its blue, and it sets the few variables of its own for a light
 `CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
 lines, a headline with its badge, a glass card's badge, name and text, and the quiet card. `SequenceStyle` holds
 what a sequence adds, with names that start `seq-`: a participant's badge in its tone and its name, the
-lifeline, a call's beam either way, an answer's quiet line and the words above them.
+lifeline, a call's beam either way, an answer's quiet line and the words above them. `ClassesStyle`
+(`Looks/Kinds/`) holds what a class chart adds, with names that start `cls-`: a type's badge in its tone with its
+letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends. No class
+chart is drawn with it yet.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
@@ -364,7 +367,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's), Theme/ (with Looks/)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's), Theme/ (with Looks/, and Looks/Kinds/ for a class chart's own style)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/

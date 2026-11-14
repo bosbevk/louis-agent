@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Svg.Theme.Looks.Kinds;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks;
 
@@ -50,7 +51,8 @@ public partial class MarqueeLookTests
     [Test]
     public void BothSchemes_SetEveryVariableAnyRuleReads()
     {
-        string every = Shared + CardsStyle.Rules + SequenceStyle.Of(SvgTheme.Site);
+        string every = Shared + CardsStyle.Rules + SequenceStyle.Of(SvgTheme.Site) +
+                       ClassesStyle.Of(SvgTheme.Site);
         var read = Read().Matches(every).Select(match => match.Groups[1].Value).ToHashSet();
 
         Assert.Multiple(() =>
