@@ -1,6 +1,6 @@
 # louis-agent.core.web — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core,
 > louis-agent.composition, louis-agent.choices, PuppeteerSharp · **Used by:** every host that gives its agent the web:
 > the API, the CLI, the ACP and MCP hosts, the demos' programs; the eval runner through the API's settings
 

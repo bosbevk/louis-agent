@@ -1,6 +1,6 @@
 # louis-agent.core.anthropic — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.anthropic/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.anthropic/` · **References:** louis-agent.core,
 > Anthropic (the SDK) · **Used by:** every program whose agent may talk to Claude: the demos' hosts, the eval runners,
 > the orchestrator, the usage probe
 

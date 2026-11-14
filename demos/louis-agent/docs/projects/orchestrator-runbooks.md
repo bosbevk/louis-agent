@@ -3,6 +3,8 @@
 > **Explanation.** How the orchestrator decides what an error needs, and how to write a runbook. **Elsewhere:**
 > the demo's last run at the [`pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md) (removed in CL10), the design in
 > [the orchestrator spec](../specs/ORCHESTRATOR_DESIGN.md).
+> **Kind:** content (the orchestrator's skill files)
+> · **Path:** `demos/louis-agent/hosts/louis-agent.orchestrator/Skills/`
 
 ![A runbook, and what it can decide: nothing, a fix, or a hand-off](diagrams/orchestrator-runbooks.svg)
 

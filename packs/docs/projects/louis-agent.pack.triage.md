@@ -5,6 +5,7 @@
 > [Build a pack](../../../src/docs/guides/build-a-pack.md); the service it reads, the louis-agent demo's
 > [samples](../../../demos/louis-agent/samples/README.md); the orchestrator that read the feed before, in
 > [its doc](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md).
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.triage/`
 
 ![The triage pack: the error feed, a run's steps, typed endings, a person and a run read back, and the departments](diagrams/louis-agent.pack.triage.svg)
 

@@ -7,7 +7,7 @@
 > that hears it in [louis-agent.web](../../../src/docs/projects/louis-agent.web.md); how a pack is shaped in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
-> **Kind:** Class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.site/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.site/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.coding-catalog`, for the guide
 
 ![The site pack: ShowPage, ShowCard and Offer, and the widget that acts on them](diagrams/louis-agent.pack.site.svg)

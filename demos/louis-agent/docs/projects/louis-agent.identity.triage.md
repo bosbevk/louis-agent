@@ -4,6 +4,8 @@
 > [the F106.3 plan](../../../../src/docs/plans/F106.3-triage-and-fix-a-service.md); the pack it ends its work with in
 > [louis-agent.pack.triage](../../../../packs/docs/projects/louis-agent.pack.triage.md); building an identity in
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md).
+> **Kind:** contracts library (`net10.0`, an identity's prompts)
+> · **Path:** `demos/louis-agent/identity/louis-agent.identity.triage/`
 
 ![The triage team: the manager, and the sorter, the investigator, the reviewer and the coder who work for it](diagrams/louis-agent.identity.triage.svg)
 

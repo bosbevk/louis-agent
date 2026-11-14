@@ -1,6 +1,6 @@
 # louis-agent.identity.puls.judges — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `demos/puls/evals/louis-agent.identity.puls.judges/` · **References:**
+> **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `demos/puls/evals/louis-agent.identity.puls.judges/` · **References:**
 > louis-agent.evals (the harness), louis-agent.identity.puls (the cook's expectations and messages) · **Used by:**
 > louis-agent.evals.runner only
 

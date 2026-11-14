@@ -7,7 +7,7 @@
 > [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md) and
 > [ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md).
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/site/louis-agent.identity.guide/` · **References:**
+> **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.guide/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), and the coding agent's
 > catalogue beside the coding identity
 

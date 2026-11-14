@@ -1,6 +1,6 @@
 # louis-agent.puls — design
 
-> **Kind:** Blazor WebAssembly app · **Path:** `demos/puls/web/louis-agent.puls/` · **Served by:** louis-agent.api built with
+> **Kind:** web app (Blazor WebAssembly) · **Path:** `demos/puls/web/louis-agent.puls/` · **Served by:** louis-agent.api built with
 > `louis-agent.puls-api` (`demos/puls/docker/images/Dockerfile.puls`, `demos/puls/docker/docker-compose.puls.yml`, port 5070) · **References:**
 > louis-agent.web, Bootstrap 5.3 (CDN, SRI-pinned), highlight.js (CDN), Montserrat (Google Fonts)
 

@@ -3,6 +3,7 @@
 > **Explanation.** What the calculator pack does and why it's built this way. **Elsewhere:** the rule behind it in
 > [ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md); building a pack in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.calculator/`
 
 ![The calculator: many sums in one call, a bad sum alone, four decimals](diagrams/louis-agent.pack.calculator.svg)
 

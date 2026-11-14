@@ -1,6 +1,6 @@
 # louis-agent.mcp — design
 
-> **Kind:** library, serving stdio or ASP.NET Core (Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp/` ·
+> **Kind:** host (a library, serving stdio or ASP.NET Core, Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp/` ·
 > **References:** louis-agent.core, louis-agent.composition, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
 
 ![The MCP server, and its parts: the tools in sync, the feeds as resources, and its two transports](diagrams/louis-agent.mcp.svg)

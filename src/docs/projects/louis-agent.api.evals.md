@@ -1,6 +1,6 @@
 # louis-agent.api.evals — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/hosts/louis-agent.api.evals/` · **References:** louis-agent.api,
+> **Kind:** host (a library, `net10.0`) · **Path:** `src/hosts/louis-agent.api.evals/` · **References:** louis-agent.api,
 > louis-agent.core, louis-agent.evals.protocol, louis-agent.evals.checks, MongoDB.Driver · **Used by:** a program that
 > wants the eval studio: the Puls API, the coding API, the starter API
 

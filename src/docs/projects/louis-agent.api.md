@@ -1,6 +1,6 @@
 # louis-agent.api — design
 
-> **Kind:** library, ASP.NET Core minimal API · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and no web
+> **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and no web
 > app: a demo's program references the one it serves ·
 > **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` (5070)
 

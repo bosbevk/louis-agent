@@ -7,6 +7,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.DocDiagrams.Tests.Projects;
 
 namespace LouisAgent.DocDiagrams.Tests;
 
@@ -104,15 +105,8 @@ public class DocsDiagramsTests
         .Select(json => DiagramReader.Read(File.ReadAllText(json)).Kind)
         .ToHashSet();
 
-    /// <summary>
-    /// Every project doc, the framework's, the packs' and each demo's: a demo's root is the whole demo, so its
-    /// <c>projects</c> folder sits deeper, in its <c>docs</c>.
-    /// </summary>
-    private static IEnumerable<string> ProjectDocs() => DiagramSync.Roots(TestPaths.RepoRoot)
-        .Where(Directory.Exists)
-        .SelectMany(root => Directory.EnumerateDirectories(root, "projects", SearchOption.AllDirectories))
-        .SelectMany(folder => Directory.EnumerateFiles(folder, "*.md"))
-        .Where(doc => Path.GetFileName(doc) != "README.md");
+    /// <summary>Every project doc, the framework's, the packs' and each demo's.</summary>
+    private static IEnumerable<string> ProjectDocs() => ProjectDoc.Paths();
 
     /// <summary>
     /// The flow a picture is placed as: its own, a class chart's (CL60.4) or a composite's (F134.13), each through

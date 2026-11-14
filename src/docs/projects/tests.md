@@ -1,6 +1,6 @@
 # Test projects — design
 
-> **Kind:** NUnit test projects · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
+> **Kind:** test projects (NUnit) · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
 > `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs/tests/louis-agent.pack.where-to-buy.tests/`, `packs/tests/louis-agent.pack.shop-prices.tests/`,
 > `packs/tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs/tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs/tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
 > `demos/louis-agent/tests/louis-agent.code-review.tests/`; the tests that leave their process in `src/tests/engine/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `src/tests/shared/louis-agent.testing/` and, for the web apps,

@@ -1,6 +1,6 @@
 # louis-agent.core.telemetry — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.telemetry/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.telemetry/` · **References:**
 > louis-agent.core, OpenTelemetry, OpenTelemetry.Exporter.OpenTelemetryProtocol, Serilog.Sinks.OpenTelemetry ·
 > **Used by:** every host's program, the eval runner, the orchestrator
 

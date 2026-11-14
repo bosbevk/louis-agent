@@ -1,6 +1,6 @@
 # louis-agent.core.ollama — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.ollama/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.ollama/` · **References:** louis-agent.core,
 > OllamaSharp · **Used by:** every program whose agent may talk to a local model through Ollama
 
 ![Ollama's provider, and its parts: the client and its long timeout](diagrams/louis-agent.core.ollama.svg)

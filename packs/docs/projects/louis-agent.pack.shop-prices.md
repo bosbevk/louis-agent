@@ -1,6 +1,6 @@
 # louis-agent.pack.shop-prices — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.shop-prices/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.shop-prices/` · **References:**
 > louis-agent.composition, MongoDB.Driver, ExcelDataReader, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=shop-prices`, or
 > an identity that names it (Puls) · **Uses:** MongoDB when `SHOP_PRICES_MONGO_URL` is set
 

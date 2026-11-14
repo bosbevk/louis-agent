@@ -4,6 +4,7 @@
 > [ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md); building a pack in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md); who uses it, the guide in the site's corner, in the
 > framework's site's [guide](../../../src/docs/projects/louis-agent.identity.guide.md).
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.docs/`
 
 ![The docs pack's three tools: ListDocs, SearchDocs and ReadDoc](diagrams/louis-agent.pack.docs.svg)
 

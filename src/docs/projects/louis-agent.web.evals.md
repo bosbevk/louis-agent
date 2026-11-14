@@ -1,6 +1,6 @@
 # louis-agent.web.evals — design
 
-> **Kind:** Razor class library (`net10.0`) · **Path:** `src/web/louis-agent.web.evals/` · **References:** louis-agent.web,
+> **Kind:** Razor library (`net10.0`) · **Path:** `src/web/louis-agent.web.evals/` · **References:** louis-agent.web,
 > louis-agent.evals.protocol · **Used by:** a site that opts into the eval studio (Puls, the code-review app, the starter), at
 > `/admin/evals`, an area inside the admin's frame (F144) · **How to change them:** [Change the eval pages](../guides/change-the-eval-pages.md)
 

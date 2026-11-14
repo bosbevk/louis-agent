@@ -1,6 +1,6 @@
 # louis-agent.web.accounts — design
 
-> **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.accounts/` ·
+> **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.accounts/` ·
 > **References:** louis-agent.web, louis-agent.accounts.contracts, Microsoft.AspNetCore.Components.Authorization ·
 > **Used by:** a site that has accounts: louis-agent.puls, louis-agent.starter, louis-agent.code-review
 

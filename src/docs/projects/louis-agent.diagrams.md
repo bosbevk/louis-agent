@@ -1,6 +1,6 @@
 # louis-agent.diagrams — design
 
-> **Kind:** Two class libraries (`net10.0`), plain C# · **Paths:** `src/web/louis-agent.diagrams/`, what a
+> **Kind:** library (two class libraries, `net10.0`, plain C#) · **Paths:** `src/web/louis-agent.diagrams/`, what a
 > diagram is, and `src/web/louis-agent.diagrams.engine/`, what builds one · **References:** the first references
 > louis-agent.choices, the second the first · **Used by:** louis-agent.web (the site's `GraphView`, and the
 > chat's `DrawnCard`), and `src/tools/louis-agent.doc-diagrams`, the tool that draws the docs' pictures ·

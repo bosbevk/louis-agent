@@ -1,6 +1,6 @@
 # louis-agent.pack.where-to-buy — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.where-to-buy/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.where-to-buy/` · **References:**
 > louis-agent.composition, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:**
 > `PACKS=where-to-buy`, or an identity that names it (Puls) · **Uses:** OpenStreetMap's Nominatim
 

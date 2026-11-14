@@ -1,6 +1,6 @@
 # louis-agent.evals.checks — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
+> **Kind:** contracts library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
 > louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
 > harness); from F49.3, the packs
 

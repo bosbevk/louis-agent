@@ -5,7 +5,7 @@
 > [louis-agent.identity.guide](../../../src/docs/projects/louis-agent.identity.guide.md); how a pack is
 > shaped in [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
-> **Kind:** Class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.leads/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.leads/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.coding-catalog`, for the guide
 
 ![The leads pack: SendLead, a sender behind a seam, and failures as text](diagrams/louis-agent.pack.leads.svg)

@@ -1,6 +1,6 @@
 # louis-agent.web — design
 
-> **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
+> **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
 > **References:** Markdig, Net.Codecrete.QrCodeGenerator, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
 > louis-agent.code-review, louis-agent.puls and louis-agent.starter
 

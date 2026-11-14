@@ -3,6 +3,8 @@
 > **Design doc.** The tools any agent may want, one pack each: what each holds and what it gets from the engine.
 > **Elsewhere:** why they aren't in core in [ADR 0076](../../../src/docs/adr/0076-core-ships-no-agent.md), how to write one in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
+> **Kind:** library (`net10.0`, one a pack)
+> · **Paths:** `packs/tools/louis-agent.pack.files/`, `.git`, `.dotnet`, `.shell`, `.web`, `.paymo` and `.devops`
 
 ![The general packs: files, git, .NET, shell, web, Paymo and Azure DevOps](diagrams/general-packs.svg)
 

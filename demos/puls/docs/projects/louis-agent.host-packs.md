@@ -1,6 +1,6 @@
 # louis-agent.host-packs — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
 > the Puls identity and the packs Puls's programs can load · **Used by:**
 > louis-agent.puls-api, louis-agent.puls-eval-runner
 
