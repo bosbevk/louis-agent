@@ -11,7 +11,7 @@
         </defs>
         @foreach (var edge in Placed.Edges)
         {
-            <path class="edge" d="@edge.Path" style="@EdgeStyle(edge)" marker-end="@ArrowRef" />
+            <path class="edge" d="@edge.Way.Text" style="@EdgeStyle(edge)" marker-end="@ArrowRef" />
         }
         @* A word stands on its own line, on a ground that hides the line behind it. Every word is drawn after every
            line, so none runs over a word. *@
@@ -29,7 +29,7 @@
                 }
                 else
                 {
-                    <rect width="@N(node.W)" height="@N(node.H)" rx="@Corner(node)" />
+                    <rect width="@N(node.Box.Width)" height="@N(node.Box.Height)" rx="@Corner(node)" />
                 }
                 @Label(node)
                 @if (node.Node.Note is { } note)

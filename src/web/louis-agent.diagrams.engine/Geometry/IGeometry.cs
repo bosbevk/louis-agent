@@ -15,4 +15,7 @@ public interface IGeometry
 
     /// <summary>A point.</summary>
     IPoint Point(double x, double y);
+
+    /// <summary>The smallest box that holds every one of these, as a group's frame holds its boxes.</summary>
+    IBox Around(IEnumerable<IBox> boxes);
 }

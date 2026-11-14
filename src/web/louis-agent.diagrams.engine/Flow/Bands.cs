@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Rows;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Flow;
@@ -20,14 +21,15 @@ internal static class Bands
 
     /// <summary>
     /// Every box placed on the grid, band by band, and the drawing's height. How tall a band's rows are and which
-    /// row a box stands on is what the rows' rule says.
+    /// row a box stands on is what the rows' rule says. The boxes are of the geometry handed in.
     /// </summary>
     public static (List<PlacedNode> Nodes, double Height) Place(
         GraphSpec spec,
         List<List<GraphNode>> columns,
         Grid grid,
         bool turned,
-        IRowRule rule)
+        IRowRule rule,
+        IGeometry geometry)
     {
         bool grouped = spec.Groups is { Count: > 0 };
         string? Key(GraphNode node) => grouped ? node.Group : null;
@@ -76,7 +78,7 @@ internal static class Bands
                 {
                     double h = grid.Tall(node);
                     double top = rowTops[node.Id] + (row[band] - h) / 2;
-                    nodes.Add(new PlacedNode(node, grid.Lefts[at], top, grid.Widths[at], h));
+                    nodes.Add(new PlacedNode(node, geometry.Box(grid.Lefts[at], top, grid.Widths[at], h)));
                 }
 
         return (nodes, grouped ? y + Pad : y);
@@ -85,21 +87,19 @@ internal static class Bands
     /// <summary>
     /// Each declared group's frame around its boxes, its label's room on top once the drawing is turned back.
     /// </summary>
-    public static List<PlacedGroup> Frames(GraphSpec spec, IReadOnlyList<PlacedNode> nodes, bool turned)
+    public static List<PlacedGroup> Frames(GraphSpec spec, IReadOnlyList<PlacedNode> nodes, bool turned,
+        IGeometry geometry)
     {
         (double left, double top) = turned ? (Pad + LabelRoom, Pad) : (Pad, Pad + LabelRoom);
+
+        // The frame is the smallest box round the group's boxes, grown by the room each side keeps.
         return
         [
             .. (spec.Groups ?? []).Select(group => (group, members: nodes.Where(node => node.Node.Group == group.Id)
                 .ToList()))
             .Where(pair => pair.members.Count > 0)
-            .Select(pair =>
-            {
-                double x = pair.members.Min(node => node.X), y = pair.members.Min(node => node.Y);
-                double right = pair.members.Max(node => node.X + node.W);
-                double bottom = pair.members.Max(node => node.Y + node.H);
-                return new PlacedGroup(pair.group, x - left, y - top, right - x + left + Pad, bottom - y + top + Pad);
-            })
+            .Select(pair => new PlacedGroup(pair.group,
+                geometry.Around(pair.members.Select(node => node.Box)).Grown(left, top, Pad, Pad)))
         ];
     }
 
@@ -114,21 +114,12 @@ internal static class Bands
     {
         if (groups.Count == 0) return (nodes, groups, width, height);
 
-        double dx = Math.Max(0, -groups.Min(group => group.X)), dy = Math.Max(0, -groups.Min(group => group.Y));
-        var moved = groups.Select(group => group with
-        {
-            X = group.X + dx,
-            Y = group.Y + dy
-        }).ToList();
-        return ([
-                .. nodes.Select(node => node with
-                {
-                    X = node.X + dx,
-                    Y = node.Y + dy
-                })
-            ], moved,
-            Math.Max(width + dx, moved.Max(group => group.X + group.W)),
-            Math.Max(height + dy, moved.Max(group => group.Y + group.H)));
+        double dx = Math.Max(0, -groups.Min(group => group.Box.Left));
+        double dy = Math.Max(0, -groups.Min(group => group.Box.Top));
+        var moved = groups.Select(group => group with { Box = group.Box.Moved(dx, dy) }).ToList();
+        return ([.. nodes.Select(node => node with { Box = node.Box.Moved(dx, dy) })], moved,
+            Math.Max(width + dx, moved.Max(group => group.Box.Right)),
+            Math.Max(height + dy, moved.Max(group => group.Box.Bottom)));
     }
 
     /// <summary>

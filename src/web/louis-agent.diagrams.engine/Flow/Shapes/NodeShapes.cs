@@ -1,4 +1,6 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 
@@ -25,16 +27,17 @@ public static class NodeShapes
     public const double Point = 22;
 
     /// <summary>
-    /// The size a box needs in its shape, from the size it would have as a plain box: a slanted box its slant
-    /// wider, a pill wider by the round of its ends, and a decision wider by a point. A plain box's room round
-    /// its words is more than half a point each side, so the words still fit between the two slanted ends.
+    /// How wide a box must be in its shape, from the size it would have as a plain box: a slanted box its slant
+    /// wider, a pill wider by the round of its ends, and a decision wider by a point. No shape makes a box
+    /// taller. A plain box's room round its words is more than half a point each side, so the words still fit
+    /// between the two slanted ends.
     /// </summary>
-    public static (double W, double H) Room(GraphNode node, double w, double h) => node.Shape switch
+    public static double Width(GraphNode node, double w, double h) => node.Shape switch
     {
-        NodeShape.Decision => (w + Point, h),
-        NodeShape.Data => (w + Skew, h),
-        NodeShape.Terminal => (w + h / 2, h),
-        _ => (w, h)
+        NodeShape.Decision => w + Point,
+        NodeShape.Data => w + Skew,
+        NodeShape.Terminal => w + h / 2,
+        _ => w
     };
 
     /// <summary>
@@ -60,47 +63,50 @@ public static class NodeShapes
     /// How far in the outline is on the side arrows arrive on, at a height of the layout: the shape's left, or its
     /// top when the picture runs down and is laid out turned.
     /// </summary>
-    public static double Entry(PlacedNode node, double y, bool turned) => turned
-        ? Inset(node.Node.Shape, ShapeSide.Top, node.H, node.W, y - node.Y)
-        : Inset(node.Node.Shape, ShapeSide.Left, node.W, node.H, y - node.Y);
+    public static double Entry(PlacedNode node, double y, bool turned) =>
+        Side(node, turned ? ShapeSide.Top : ShapeSide.Left, y - node.Box.Top, turned);
 
     /// <summary>
     /// How far in the outline is on the side arrows leave from, at a height of the layout: the shape's right, or
     /// its bottom laid out turned.
     /// </summary>
-    public static double Exit(PlacedNode node, double y, bool turned) => turned
-        ? Inset(node.Node.Shape, ShapeSide.Bottom, node.H, node.W, y - node.Y)
-        : Inset(node.Node.Shape, ShapeSide.Right, node.W, node.H, y - node.Y);
+    public static double Exit(PlacedNode node, double y, bool turned) =>
+        Side(node, turned ? ShapeSide.Bottom : ShapeSide.Right, y - node.Box.Top, turned);
 
     /// <summary>
     /// How far up the outline is on the side under the box in the layout, at a place along it: the shape's bottom,
     /// or its right laid out turned.
     /// </summary>
-    public static double Under(PlacedNode node, double x, bool turned) => turned
-        ? Inset(node.Node.Shape, ShapeSide.Right, node.H, node.W, x - node.X)
-        : Inset(node.Node.Shape, ShapeSide.Bottom, node.W, node.H, x - node.X);
+    public static double Under(PlacedNode node, double x, bool turned) =>
+        Side(node, turned ? ShapeSide.Right : ShapeSide.Bottom, x - node.Box.Left, turned);
+
+    /// <summary>
+    /// How far in the outline is on a side of the shape, a way along it. Laid out turned, the box in the layout is
+    /// the shape's own turned over, so the shape's width is the box's height.
+    /// </summary>
+    private static double Side(PlacedNode node, ShapeSide side, double along, bool turned)
+    {
+        var shape = turned ? node.Box.Turned() : node.Box;
+        return Inset(node.Node.Shape, side, shape.Width, shape.Height, along);
+    }
 
     /// <summary>
     /// The outline of a decision or a slanted box as a path, round the box the layout placed. Nothing for a plain
     /// box or a pill, which are drawn as a rounded box.
     /// </summary>
-    public static string? PathOf(PlacedNode node)
+    public static string? PathOf(NodeShape shape, IBox box)
     {
-        double left = node.X, right = node.X + node.W, top = node.Y, bottom = node.Y + node.H;
-        double down = node.Y + node.H / 2, point = PointOf(node.H);
-        return node.Node.Shape switch
+        double down = box.Middle.Y, point = PointOf(box.Height);
+        return shape switch
         {
-            NodeShape.Decision => Closed((left, down), (left + point, top), (right - point, top), (right, down),
-                (right - point, bottom), (left + point, bottom)),
-            NodeShape.Data => Closed((left + Skew, top), (right, top), (right - Skew, bottom), (left, bottom)),
+            NodeShape.Decision => new PathWriter().From(box.Left, down).To(box.Left + point, box.Top)
+                .To(box.Right - point, box.Top).To(box.Right, down).To(box.Right - point, box.Bottom)
+                .To(box.Left + point, box.Bottom).Close().Text,
+            NodeShape.Data => new PathWriter().From(box.Left + Skew, box.Top).To(box.Right, box.Top)
+                .To(box.Right - Skew, box.Bottom).To(box.Left, box.Bottom).Close().Text,
             _ => null
         };
     }
-
-    /// <summary>A closed path through corners, each number as an SVG writes it.</summary>
-    private static string Closed(params (double X, double Y)[] corners) =>
-        "M" + string.Join("L", corners.Select(corner => FormattableString.Invariant($"{corner.X:0.#} {corner.Y:0.#}")))
-            + "Z";
 
     /// <summary>
     /// A decision's point for its height: the usual one, or half the height for a shape so small that the usual

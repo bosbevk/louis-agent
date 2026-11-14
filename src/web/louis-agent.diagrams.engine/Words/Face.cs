@@ -15,4 +15,11 @@ public sealed record Face(double Char)
 {
     /// <summary>How wide these words are.</summary>
     public double Width(string words) => words.Length * Char;
+
+    /// <summary>How wide the longest of these lines is. Nothing, for no lines.</summary>
+    public double Widest(IEnumerable<string> lines) =>
+        lines.Select(line => line.Length).DefaultIfEmpty(0).Max() * Char;
+
+    /// <summary>How many characters of these words a room holds, part of a character counted as it is.</summary>
+    public double Holds(double room) => room / Char;
 }

@@ -15,4 +15,15 @@ public interface IPoint
 
     /// <summary>The point turned over the picture's diagonal: across becomes down.</summary>
     IPoint Turned();
+
+    /// <summary>
+    /// How far it is to another point for a line that runs only across and down: the two distances added.
+    /// </summary>
+    double StepsTo(IPoint other);
+
+    /// <summary>
+    /// The point a little way off this one, towards another that is level with it or straight above or under,
+    /// as a line stops short of a corner to round it.
+    /// </summary>
+    IPoint Toward(IPoint other, double by);
 }

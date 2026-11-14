@@ -90,7 +90,7 @@ public class FlowGroupsTests
 
         var at = GraphLayout.Place(spec).Nodes.ToDictionary(node => node.Node.Id);
 
-        Assert.That(Math.Abs(at["b"].X - at["a"].X), Is.LessThan(at["wide"].W));
+        Assert.That(Math.Abs(at["b"].Box.Left - at["a"].Box.Left), Is.LessThan(at["wide"].Box.Width));
     }
 
     /// <summary>
@@ -116,12 +116,12 @@ public class FlowGroupsTests
         var placed = GraphLayout.Place(spec);
 
         var frame = placed.Groups.Single();
-        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && edge.Path.Contains('Q'));
+        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && edge.Way.Text.Contains('Q'));
         // The bend is the height the path runs along at: the one y two of its points share.
-        var ys = into.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
+        var ys = into.Way.Text.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
             .Where((_, at) => at % 2 == 1).ToList();
         double bend = ys.GroupBy(y => y).Where(same => same.Count() > 1).Select(same => same.Key).Single();
-        Assert.That(bend, Is.LessThan(frame.Y), "it runs along above the frame, then drops in");
+        Assert.That(bend, Is.LessThan(frame.Box.Top), "it runs along above the frame, then drops in");
     }
 
     /// <summary>A diagram without groups has no frame, so the site's diagrams draw as before.</summary>
@@ -131,15 +131,15 @@ public class FlowGroupsTests
 
     /// <summary>Whether a box stands wholly inside a frame.</summary>
     private static bool Inside(PlacedNode node, PlacedGroup group) =>
-        node.X >= group.X && node.Y >= group.Y && node.X + node.W <= group.X + group.W
-        && node.Y + node.H <= group.Y + group.H;
+        node.Box.Left >= group.Box.Left && node.Box.Top >= group.Box.Top && node.Box.Right <= group.Box.Right
+        && node.Box.Bottom <= group.Box.Bottom;
 
     /// <summary>Whether a box and a frame share any ground.</summary>
     private static bool Overlap(PlacedNode node, PlacedGroup group) =>
-        node.X < group.X + group.W && group.X < node.X + node.W && node.Y < group.Y + group.H
-        && group.Y < node.Y + node.H;
+        node.Box.Left < group.Box.Right && group.Box.Left < node.Box.Right && node.Box.Top < group.Box.Bottom
+        && group.Box.Top < node.Box.Bottom;
 
     /// <summary>Whether two frames share any ground.</summary>
     private static bool Overlap(PlacedGroup a, PlacedGroup b) =>
-        a.X < b.X + b.W && b.X < a.X + a.W && a.Y < b.Y + b.H && b.Y < a.Y + a.H;
+        a.Box.Left < b.Box.Right && b.Box.Left < a.Box.Right && a.Box.Top < b.Box.Bottom && b.Box.Top < a.Box.Bottom;
 }

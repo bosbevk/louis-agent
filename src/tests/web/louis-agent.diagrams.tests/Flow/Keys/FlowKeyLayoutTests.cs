@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow.Keys;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Shapes;
@@ -14,7 +15,7 @@ public class FlowKeyLayoutTests
 {
     /// <summary>A placed box in a tone and a shape. Where it stands makes no difference to the key.</summary>
     private static PlacedNode Box(DiagramTone tone, NodeShape shape = NodeShape.Box) =>
-        new(new GraphNode($"{tone}{shape}", "A box", Tone: tone, Shape: shape), 0, 0, 170, 52);
+        new(new GraphNode($"{tone}{shape}", "A box", Tone: tone, Shape: shape), Geometries.InUse.Box(0, 0, 170, 52));
 
     /// <summary>
     /// The key has an item for each tone a box wears, in the tones' own order however the boxes come, and none for

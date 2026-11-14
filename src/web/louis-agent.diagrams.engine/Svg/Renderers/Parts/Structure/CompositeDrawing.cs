@@ -4,13 +4,15 @@ using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Arrows;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
-using LouisAgent.Diagrams.Engine.Types;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
+using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 
@@ -35,11 +37,23 @@ internal static class CompositeDrawing
     /// </summary>
     private const double Corner = 10, NameLine = 23, ChipHeight = 18, Clear = 12;
 
-    /// <summary>The composite a source holds, as one SVG file's text.</summary>
-    public static string Of(DiagramSource source)
+    /// <summary>
+    /// How far in from the frame's left its name starts, the room between the name and its chip, how far above
+    /// the name's line a chip's top is, and how far in from the frame's right what stands aside ends.
+    /// </summary>
+    private const double NameIn = 22, ChipGap = 8, ChipRise = 13, AsideIn = 16;
+
+    /// <summary>
+    /// Where a chip's words start in it, across and down, and how far under a pin's middle its words' line is.
+    /// </summary>
+    private const double ChipTextIn = 8, ChipTextLine = 12.5, LabelDrop = 4;
+
+    /// <summary>The composite a source holds, as one SVG file's text, drawn with a geometry.</summary>
+    public static string Of(DiagramSource source, IGeometry geometry)
     {
         var spec = source.Composite!;
-        var placed = GraphLayout.Place(CompositeFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
+        var placed = GraphLayout.Place(CompositeFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight,
+            geometry: geometry);
         string tone = PictureParts.Tone(spec.Tone);
 
         // The class is the body, and the key goes across under it, under a rule the accent's edge fills. Its
@@ -47,7 +61,7 @@ internal static class CompositeDrawing
         return PictureBuilder.Titled(source.Title)
             .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-            .Body("cps", Class(spec, placed), placed.Width, placed.Height)
+            .Body("cps", Class(spec, placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {
                 var (items, height) = CompositeKey.Of(spec, width);
@@ -63,35 +77,37 @@ internal static class CompositeDrawing
     /// The class, from where the layout starts, back to front: its frame and name, the lines, their words in a
     /// flow's pill, the parts over the lines' ends, and last the pins on the frame's edge.
     /// </summary>
-    private static SvgWriter Class(CompositeSpec spec, PlacedGraph placed)
+    private static SvgWriter Class(CompositeSpec spec, PlacedGraph placed, IGeometry geometry)
     {
         var writer = new SvgWriter();
-        var boxOf = placed.Nodes.ToDictionary(node => node.Node.Id, StringComparer.Ordinal);
-        var ports = (spec.Ports ?? []).Select(port => (Port: port, Box: boxOf[CompositeFlow.PortId(port.Name)]))
+        var nodeOf = placed.Nodes.ToDictionary(node => node.Node.Id, StringComparer.Ordinal);
+        var ports = (spec.Ports ?? []).Select(port => (Port: port, Node: nodeOf[CompositeFlow.PortId(port.Name)]))
             .ToList();
-        var parts = spec.Parts.Select(part => (Part: part, Box: boxOf[part.Id])).ToList();
+        var parts = spec.Parts.Select(part => (Part: part, Node: nodeOf[part.Id])).ToList();
         var asked = ports.Where(port => port.Port.Side == PortSide.In).ToList();
         var needed = ports.Where(port => port.Port.Side == PortSide.Out).ToList();
 
         // The frame's left edge runs through the middle of the widest pin of what is asked, which ends where the
         // ports' boxes end, and its right edge through the middle of the widest pin of what is needed.
         double left = asked.Count == 0
-            ? parts.Min(part => part.Box.X) - Clear
-            : asked.Max(port => port.Box.X + port.Box.W) - asked.Max(port => PinWidth(port.Port)) / 2;
+            ? parts.Min(part => part.Node.Box.Left) - Clear
+            : asked.Max(port => port.Node.Box.Right) - asked.Max(port => PinWidth(port.Port)) / 2;
         double right = needed.Count == 0
-            ? parts.Max(part => part.Box.X + part.Box.W) + Clear
-            : needed.Min(port => port.Box.X) + needed.Max(port => PinWidth(port.Port)) / 2;
-        Frame(writer, spec, placed.Groups[0], left, right);
+            ? parts.Max(part => part.Node.Box.Right) + Clear
+            : needed.Min(port => port.Node.Box.Left) + needed.Max(port => PinWidth(port.Port)) / 2;
+        var around = placed.Groups[0].Box;
+        Frame(writer, spec, geometry.Box(left, around.Top, right - left, around.Height), geometry);
 
-        var sideOf = ports.ToDictionary(port => port.Box.Node.Id, port => port, StringComparer.Ordinal);
+        var sideOf = ports.ToDictionary(port => port.Node.Node.Id, port => port, StringComparer.Ordinal);
         foreach (var edge in placed.Edges) Line(writer, spec, edge, sideOf, left, right);
 
         // Every line first, then the words: two lines that leave one part share their first stretch, so a word
         // drawn with its own line would have the next line across it.
         foreach (var edge in placed.Edges.Where(edge => edge.Edge.Word is not null))
-            FlowDrawing.Word(writer, edge, "");
-        foreach (var (part, box) in parts) Part(writer, part, box, PictureParts.Tone(spec.Tone));
-        foreach (var (port, box) in ports) Pin(writer, spec, port, box, port.Side == PortSide.In ? left : right);
+            FlowDrawing.Word(writer, edge, "", geometry);
+        foreach (var (part, node) in parts) Part(writer, part, node, PictureParts.Tone(spec.Tone), geometry);
+        foreach (var (port, node) in ports)
+            Pin(writer, spec, port, node.Box, port.Side == PortSide.In ? left : right);
         return writer;
     }
 
@@ -99,14 +115,18 @@ internal static class CompositeDrawing
     /// The class's frame: a panel as tall as the layout's own frame, between the two edges, with the class's name,
     /// the chip of what it is, and where it is at the right.
     /// </summary>
-    private static void Frame(SvgWriter writer, CompositeSpec spec, PlacedGroup group, double left, double right)
+    private static void Frame(SvgWriter writer, CompositeSpec spec, IBox frame, IGeometry geometry)
     {
         string tone = PictureParts.Tone(spec.Tone);
-        PictureParts.Panel(writer, left, group.Y, right - left, group.H)
-            .Text(left + 22, group.Y + NameLine, spec.Name, "pic-name", "start");
+        double line = frame.Top + NameLine;
+        PictureParts.Panel(writer, frame).Text(frame.Left + NameIn, line, spec.Name, "pic-name", "start");
         if (spec.Kind is { } kind)
-            Chip(writer, left + 22 + ComponentSizes.NameWidth(spec.Name) + 8, group.Y + NameLine - 13, kind, tone);
-        if (spec.Aside is { } aside) writer.Text(right - 16, group.Y + NameLine, aside, "pic-note", "end");
+        {
+            double after = frame.Left + NameIn + ComponentSizes.NameWidth(spec.Name) + ChipGap;
+            Chip(writer, geometry.Box(after, line - ChipRise, ComponentSizes.ChipWidth(kind), ChipHeight), kind, tone);
+        }
+
+        if (spec.Aside is { } aside) writer.Text(frame.Right - AsideIn, line, aside, "pic-note", "end");
     }
 
     /// <summary>
@@ -115,76 +135,78 @@ internal static class CompositeDrawing
     /// </summary>
     /// <remarks>Guard clauses, one kind of line each (ADR 0051).</remarks>
     private static void Line(SvgWriter writer, CompositeSpec spec, PlacedEdge edge,
-        Dictionary<string, (CompositePort Port, PlacedNode Box)> ports, double left, double right)
+        Dictionary<string, (CompositePort Port, PlacedNode Node)> ports, double left, double right)
     {
         if (ports.TryGetValue(edge.Edge.From, out var from))
         {
-            double y = from.Box.Y + from.Box.H / 2, start = left + PinWidth(from.Port) / 2;
-            Passed(writer, $"M {N(start)} {N(y)} L{edge.Path[1..]}", CompositeFlow.ToneOf(spec, from.Port));
+            double start = left + PinWidth(from.Port) / 2;
+            var way = ArrowPath.From(start, from.Node.Box.Middle.Y).Then(edge.Way);
+            Passed(writer, way, CompositeFlow.ToneOf(spec, from.Port));
             return;
         }
 
         if (ports.TryGetValue(edge.Edge.To, out var to))
         {
-            double y = to.Box.Y + to.Box.H / 2, end = right - PinWidth(to.Port) / 2;
-            Passed(writer, $"{edge.Path} L {N(end)} {N(y)}", CompositeFlow.ToneOf(spec, to.Port));
+            double end = right - PinWidth(to.Port) / 2;
+            Passed(writer, edge.Way.To(end, to.Node.Box.Middle.Y), CompositeFlow.ToneOf(spec, to.Port));
             return;
         }
 
-        writer.Path(edge.Path, "cps-wire", arrow: false);
+        writer.Path(edge.Way.Text, "cps-wire", arrow: false);
     }
 
     /// <summary>What is passed on: a line with its arrowhead, and the dots that run along it.</summary>
-    private static void Passed(SvgWriter writer, string path, DiagramTone tone)
+    private static void Passed(SvgWriter writer, ArrowPath way, DiagramTone tone)
     {
         string? name = tone == DiagramTone.Plain ? null : tone.Wire();
-        writer.Path(path, $"pic-line pic-edge{PictureParts.Tone(tone)}", arrow: true, tone: name)
-            .Path(path, "pic-march", arrow: false);
+        writer.Path(way.Text, $"pic-line pic-edge{PictureParts.Tone(tone)}", arrow: true, tone: name)
+            .Path(way.Text, "pic-march", arrow: false);
     }
 
     /// <summary>
     /// A part: a panel with its type large at the left, its role in a chip at the right, and under them a line of
     /// what it does.
     /// </summary>
-    private static void Part(SvgWriter writer, CompositePart part, PlacedNode box, string tone)
+    private static void Part(SvgWriter writer, CompositePart part, PlacedNode node, string tone, IGeometry geometry)
     {
-        double line = box.Y + FlowText.LabelY(box);
-        writer.Box(box.X, box.Y, box.W, box.H, Corner, "pic-panel")
-            .Text(box.X + CompositeFlow.Inset, line, part.Type, "pic-name", "start");
+        var box = node.Box;
+        double line = box.Top + FlowText.LabelY(node), words = box.Left + CompositeFlow.Inset;
+        writer.Box(box, Corner, "pic-panel").Text(words, line, part.Type, "pic-name", "start");
         if (part.Role is { } role)
-            Chip(writer, box.X + box.W - CompositeFlow.Inset - ComponentSizes.ChipWidth(role), line - 13, role, tone);
+        {
+            double wide = ComponentSizes.ChipWidth(role);
+            double chipLeft = box.Right - CompositeFlow.Inset - wide;
+            Chip(writer, geometry.Box(chipLeft, line - ChipRise, wide, ChipHeight), role, tone);
+        }
 
-        var note = part.Note is { } words ? GraphLayout.NoteLines(words) : [];
+        var note = part.Note is { } said ? GraphLayout.NoteLines(said) : [];
         for (int at = 0; at < note.Count; at++)
-            writer.Text(box.X + CompositeFlow.Inset, box.Y + FlowText.NoteY(box) + FlowText.NoteStep * at, note[at],
-                "pic-note", "start");
+            writer.Text(words, box.Top + FlowText.NoteY(node) + FlowText.NoteStep * at, note[at], "pic-note",
+                "start");
     }
 
     /// <summary>
     /// A port: its pin, its middle on the frame's edge, down for what is asked and up for what is needed, and
     /// outside the frame what is asked or needed in the code's words.
     /// </summary>
-    private static void Pin(SvgWriter writer, CompositeSpec spec, CompositePort port, PlacedNode box, double edge)
+    private static void Pin(SvgWriter writer, CompositeSpec spec, CompositePort port, IBox box, double edge)
     {
         bool needs = port.Side == PortSide.Out;
         string tone = PictureParts.Tone(CompositeFlow.ToneOf(spec, port));
-        double wide = PinWidth(port), y = box.Y + box.H / 2;
+        double wide = PinWidth(port), y = box.Middle.Y;
         var pin = new PlacedPin("", port.Name, needs, edge - wide / 2, y, wide);
         ComponentPins.Draw(writer, pin, tone, "cmp-pin");
         if (port.Label is not { } label) return;
 
         double beside = needs ? pin.X + wide + CompositeFlow.Beside : pin.X - CompositeFlow.Beside;
-        writer.Text(beside, y + 4, label, $"cps-words pic-ink{tone}", needs ? "start" : "end");
+        writer.Text(beside, y + LabelDrop, label, $"cps-words pic-ink{tone}", needs ? "start" : "end");
     }
 
-    /// <summary>A chip: a few words in the class's tone.</summary>
-    private static void Chip(SvgWriter writer, double x, double y, string words, string tone) => writer
-        .Box(x, y, ComponentSizes.ChipWidth(words), ChipHeight, ChipHeight / 2, $"pic-tint{tone}")
-        .Text(x + 8, y + 12.5, words, $"cmp-chip-text pic-ink{tone}", "start");
+    /// <summary>A chip: a few words in the class's tone, in a box as round as it is tall.</summary>
+    private static void Chip(SvgWriter writer, IBox chip, string words, string tone) => writer
+        .Box(chip, chip.HalfHeight, $"pic-tint{tone}")
+        .Text(chip.Left + ChipTextIn, chip.Top + ChipTextLine, words, $"cmp-chip-text pic-ink{tone}", "start");
 
     /// <summary>How wide a port's pin is.</summary>
     private static double PinWidth(CompositePort port) => ComponentSizes.PinWidth(port.Name);
-
-    /// <summary>A number as the SVG writes it.</summary>
-    private static string N(double value) => SvgWriter.N(value);
 }

@@ -37,7 +37,7 @@ public sealed class JoinedArrows : IArrowRule
 
     /// <summary>Every arrow arrives at the middle of its target's side, so the arrows into a box join there.</summary>
     public double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId) => byId[edge.To].Y + byId[edge.To].H / 2;
+        IReadOnlyDictionary<string, PlacedNode> byId) => byId[edge.To].Box.Middle.Y;
 
     /// <summary>They all arrive at one point, so a side is long enough whatever arrives.</summary>
     public double SideFor(int arrows) => 0;
@@ -58,7 +58,7 @@ public sealed class JoinedArrows : IArrowRule
     /// </summary>
     private static List<string> TrackOrder(IReadOnlyList<GraphEdge> gap, IReadOnlyDictionary<string, PlacedNode> byId)
     {
-        double Middle(string id) => byId[id].Y + byId[id].H / 2;
+        double Middle(string id) => byId[id].Box.Middle.Y;
         var order = gap.Select(edge => edge.From).Distinct().OrderByDescending(Middle).ToList();
 
         bool Before(string a, string b) => gap.Any(edge => edge.From == b && Math.Abs(Middle(edge.To) - Middle(a)) < 1);

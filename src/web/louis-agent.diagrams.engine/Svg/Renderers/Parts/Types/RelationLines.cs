@@ -1,8 +1,9 @@
-using System.Globalization;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Arrows;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Ends;
 using LouisAgent.Diagrams.Tones;
 
@@ -21,8 +22,11 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 /// </remarks>
 internal static class RelationLines
 {
-    /// <summary>The room a diamond takes at a line's start: its length, and a little clear after it.</summary>
-    private const double DiamondRoom = 18;
+    /// <summary>
+    /// The room a diamond takes at a line's start, its length and a little clear after it, and the corner of a
+    /// word's pill.
+    /// </summary>
+    private const double DiamondRoom = 18, ChipCorner = 9;
 
     /// <summary>The tone of the structure's ends, and of a creates' arrowhead.</summary>
     private static readonly string Structure = DiagramTone.Violet.Wire(), Made = DiagramTone.Blue.Wire();
@@ -43,9 +47,9 @@ internal static class RelationLines
     /// <summary>A link where the layout routed it: its line, and its dots when its kind moves.</summary>
     public static void Draw(SvgWriter writer, PlacedEdge edge, RelationKind kind)
     {
-        Line(writer, edge.Path, kind);
+        Line(writer, edge.Way.Text, kind);
         if (kind is RelationKind.Holds or RelationKind.Inherits or RelationKind.Creates)
-            writer.Path(edge.Path, "pic-march", false);
+            writer.Path(edge.Way.Text, "pic-march", false);
     }
 
     /// <summary>A line of a kind along a path, with the ends the kind wears.</summary>
@@ -67,17 +71,26 @@ internal static class RelationLines
     /// A link's word, in a pill on its line where the layout kept the room clear: a flow's pill, by a flow's
     /// measures, edged in the line's colour. A use's word is quiet, as its line is.
     /// </summary>
-    public static void Word(SvgWriter writer, PlacedEdge edge, RelationKind kind)
+    public static void Word(SvgWriter writer, PlacedEdge edge, RelationKind kind, IGeometry geometry)
     {
-        var (x, y, w, h) = FlowText.WordBox(edge);
-        // A holds' line starts in a diamond, just where a flow stands a word, so its word moves past the diamond.
-        var (dx, dy) = kind == RelationKind.Holds ? PastDiamond(edge.Path, x, y, w, h) : (0, 0);
-        writer.Box(x + dx, y + dy, w, h, 9, $"cls-chip {kind.Wire()}");
+        var chip = FlowText.WordBox(edge, geometry);
+        var word = edge.Word;
+
+        // A holds' line starts in a diamond, just where a flow stands a word, so its word moves past the diamond,
+        // along the line's first stretch: across when that runs level, down when it runs upright.
+        if (kind == RelationKind.Holds)
+        {
+            var first = edge.Way.Stretches.First();
+            bool level = first.To.Y == first.From.Y;
+            double by = PastDiamond(first, chip, level);
+            (chip, word) = level ? (chip.Moved(by, 0), word.Moved(by, 0)) : (chip.Moved(0, by), word.Moved(0, by));
+        }
+
+        writer.Box(chip, ChipCorner, $"cls-chip {kind.Wire()}");
         string look = kind == RelationKind.Uses ? "cls-word quiet" : "cls-word";
         var lines = FlowText.WordLines(edge.Edge.Word!);
         for (int at = 0; at < lines.Count; at++)
-            writer.Text(edge.WordX + dx, edge.WordY + dy - FlowText.WordRise + FlowText.WordStep * at, lines[at],
-                look);
+            writer.Text(word.X, word.Y - FlowText.WordRise + FlowText.WordStep * at, lines[at], look);
     }
 
     /// <summary>
@@ -89,30 +102,27 @@ internal static class RelationLines
     /// a line of this kind starts in a diamond, so the pill is moved the least that clears it, along the line,
     /// into room the line itself runs through.
     /// </remarks>
-    private static (double X, double Y) PastDiamond(string path, double x, double y, double w, double h)
+    private static double PastDiamond(ArrowStretch first, IBox chip, bool level)
     {
-        // Where the line starts, and the next point it runs to: level with it, or straight above or under.
-        string[] parts = path.Split(' ');
-        double startX = Number(parts[1]), startY = Number(parts[2]);
-        double nextX = Number(parts[4]), nextY = Number(parts[5]);
-
-        bool level = nextY == startY;
-        bool onLine = level ? y <= startY && startY <= y + h : x <= startX && startX <= x + w;
-        if (!onLine) return (0, 0);
-        return level ? (Along(startX, nextX, x, w), 0) : (0, Along(startY, nextY, y, h));
+        // Where the line starts, and the next place it runs to: level with it, or straight above or under.
+        var start = first.From;
+        bool onLine = level
+            ? chip.Top <= start.Y && start.Y <= chip.Bottom
+            : chip.Left <= start.X && start.X <= chip.Right;
+        if (!onLine) return 0;
+        return level
+            ? Along(start.X, first.To.X, chip.Left, chip.Right)
+            : Along(start.Y, first.To.Y, chip.Top, chip.Bottom);
     }
 
     /// <summary>
     /// How far along one direction a pill moves to clear the diamond: forward when the line runs forward, back
-    /// when it runs back, and not at all when it is clear.
+    /// when it runs back, and not at all when it is clear. The pill reaches from its low edge to its high one.
     /// </summary>
-    private static double Along(double start, double next, double low, double size)
+    private static double Along(double start, double next, double low, double high)
     {
         bool forward = next > start;
-        double clear = forward ? start + DiamondRoom - low : start - DiamondRoom - (low + size);
+        double clear = forward ? start + DiamondRoom - low : start - DiamondRoom - high;
         return forward ? Math.Max(0, clear) : Math.Min(0, clear);
     }
-
-    /// <summary>A number of a path, as the layout wrote it.</summary>
-    private static double Number(string part) => double.Parse(part, CultureInfo.InvariantCulture);
 }

@@ -70,9 +70,6 @@ public partial class EngineAsksItsTypesTests
         "Components/Placed/PlacedNeighbour.cs",
         "Components/Placed/PlacedPill.cs",
         "Components/Routing/Block.cs",
-        "Flow/FlowText.cs",
-        "Flow/Placed/PlacedGroup.cs",
-        "Flow/Placed/PlacedNode.cs",
         "Sequence/Placed/PlacedBlock.cs",
         "Sequence/Placed/PlacedHead.cs",
         "Sequence/SequenceMeasures.cs",
@@ -86,23 +83,12 @@ public partial class EngineAsksItsTypesTests
         "Components/ComponentLayout.cs",
         "Components/Routing/Obstacles.cs",
         "Components/Routing/StateRoutes.cs",
-        "Flow/Bands.cs",
-        "Flow/Ranks.cs",
-        "Flow/Routing/ApartArrows.cs",
-        "Flow/Routing/Detours.cs",
-        "Flow/Routing/EdgeRouter.cs",
-        "Flow/Routing/JoinedArrows.cs",
-        "Flow/Shapes/NodeShapes.cs",
-        "Flow/Turn.cs",
         "Sequence/SequenceRows.cs",
-        "Svg/Renderers/Parts/Flows/FlowDrawing.cs",
         "Svg/Renderers/Parts/Lifelines/SequenceFrames.cs",
         "Svg/Renderers/Parts/Lifelines/SequenceHeads.cs",
         "Svg/Renderers/Parts/Nesting/ComponentsRenderer.cs",
         "Svg/Renderers/Parts/Overview/OverviewCards.cs",
         "Svg/Renderers/Parts/Overview/OverviewDrawing.cs",
-        "Svg/Renderers/Parts/Structure/CompositeDrawing.cs",
-        "Svg/Renderers/Parts/Types/TypeCards.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];
 
@@ -112,8 +98,6 @@ public partial class EngineAsksItsTypesTests
         "Cards/Sizes/CardSizes.cs",
         "Components/ComponentSizes.cs",
         "Components/NeighbourLayout.cs",
-        "Flow/FlowText.cs",
-        "Flow/GraphLayout.cs",
         "Keys/KeyRows.cs",
         "Sequence/SequenceMeasures.cs",
         "Svg/Renderers/Parts/Overview/OverviewCards.cs",
@@ -125,9 +109,6 @@ public partial class EngineAsksItsTypesTests
     private static readonly string[] PathsAsText =
     [
         "Components/Placed/Lines/LinePath.cs",
-        "Flow/Routing/EdgeRouter.cs",
-        "Flow/Shapes/NodeShapes.cs",
-        "Svg/Renderers/Parts/Flows/FlowKey.cs",
         "Svg/Renderers/Parts/Lifelines/SequenceFrames.cs",
         "Svg/Renderers/Parts/Lifelines/SequenceSteps.cs",
         "Svg/Renderers/Parts/Nesting/ComponentPins.cs",
@@ -135,10 +116,8 @@ public partial class EngineAsksItsTypesTests
         "Svg/Renderers/Parts/Overview/OverviewDrawing.cs",
         "Svg/Renderers/Parts/Overview/OverviewRails.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
-        "Svg/Renderers/Parts/Structure/CompositeDrawing.cs",
         "Svg/Renderers/Parts/Structure/CompositeKey.cs",
         "Svg/Renderers/Parts/Types/ClassesKey.cs",
-        "Svg/Renderers/Parts/Types/TypeCards.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];
 

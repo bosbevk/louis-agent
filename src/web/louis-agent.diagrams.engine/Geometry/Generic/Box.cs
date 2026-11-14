@@ -33,6 +33,9 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     /// <summary>The point in its middle.</summary>
     public Point<T> Middle => new(Left + Width / Two, Top + Height / Two);
 
+    /// <summary>Half its height: how far its middle is from its top and from its bottom.</summary>
+    public T HalfHeight => Height / Two;
+
     /// <summary>The box with room added on every side.</summary>
     public Box<T> Grown(T by) => new(Left - by, Top - by, Width + Two * by, Height + Two * by);
 
@@ -76,6 +79,8 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     double IBox.Bottom => double.CreateChecked(Bottom);
 
     IPoint IBox.Middle => Middle;
+
+    double IBox.HalfHeight => double.CreateChecked(HalfHeight);
 
     IBox IBox.Grown(double by) => Grown(T.CreateChecked(by));
 

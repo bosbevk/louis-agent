@@ -23,7 +23,7 @@ public class FlowTonesTests
         var badged = GraphLayout.Place(new GraphSpec([new GraphNode("a", label, Icon: DiagramIcon.Box)], []))
             .Nodes.Single();
 
-        Assert.That(badged.W, Is.EqualTo(plain.W + FlowText.IconRoom));
+        Assert.That(badged.Box.Width, Is.EqualTo(plain.Box.Width + FlowText.IconRoom));
     }
 
     /// <summary>A diagram's file names a box's icon and tone, and leaves them out when it has none.</summary>

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 using LouisAgent.Diagrams.Sources;
@@ -18,7 +19,8 @@ public class CompositeDrawingTests
     private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
 
     /// <summary>The shared sample as the drawing draws it.</summary>
-    private static string Drawn() => CompositeDrawing.Of(DiagramReader.Read(CompositeSamples.Engine));
+    private static string Drawn() =>
+        CompositeDrawing.Of(DiagramReader.Read(CompositeSamples.Engine), Geometries.InUse);
 
     /// <summary>The class itself: the frame and everything in and on it, without the title and the key.</summary>
     private static XElement Class() => XElement.Parse(Drawn()).Descendants(Svg + "g")
@@ -183,7 +185,8 @@ public class CompositeDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(DiagramRenderers.Render(source), Is.EqualTo(CompositeDrawing.Of(source)));
+            Assert.That(DiagramRenderers.Render(source),
+                Is.EqualTo(CompositeDrawing.Of(source, Geometries.InUse)));
             Assert.That(classes, Has.Some.EqualTo("notebar").And.None.EqualTo("titlebar"));
         });
     }

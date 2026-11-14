@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
@@ -16,5 +17,5 @@ internal sealed class CompositeRenderer : IDiagramRenderer
     public DiagramKind Kind => DiagramKind.Composite;
 
     /// <summary>The picture as an SVG, drawn from what the flow's layout placed.</summary>
-    public string Render(DiagramSource source) => CompositeDrawing.Of(source);
+    public string Render(DiagramSource source) => CompositeDrawing.Of(source, Geometries.InUse);
 }

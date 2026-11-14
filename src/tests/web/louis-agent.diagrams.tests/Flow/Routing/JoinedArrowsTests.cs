@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Routing;
@@ -27,7 +28,8 @@ public class JoinedArrowsTests
     };
 
     /// <summary>A box of the site's size at a place.</summary>
-    private static PlacedNode Box(string id, double x, double y) => new(new GraphNode(id, id), x, y, 170, 52);
+    private static PlacedNode Box(string id, double x, double y) =>
+        new(new GraphNode(id, id), Geometries.InUse.Box(x, y, 170, 52));
 
     /// <summary>One box that feeds the rest has one line out, so the gap needs no second track.</summary>
     [Test]
@@ -89,8 +91,8 @@ public class JoinedArrowsTests
             [new GraphNode("a", "A"), new GraphNode("b", "B"), new GraphNode("x", "X"), new GraphNode("y", "Y")],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x"), new GraphEdge("b", "y")]);
 
-        var unnamed = GraphLayout.Place(spec).Edges.Select(edge => edge.Path);
-        var joined = GraphLayout.Place(spec, rules: FlowRules.Joined).Edges.Select(edge => edge.Path);
+        var unnamed = GraphLayout.Place(spec).Edges.Select(edge => edge.Way.Text);
+        var joined = GraphLayout.Place(spec, rules: FlowRules.Joined).Edges.Select(edge => edge.Way.Text);
 
         Assert.That(joined, Is.EqualTo(unnamed));
     }
@@ -116,9 +118,9 @@ public class JoinedArrowsTests
         var levelRows = new FlowRules(Rule, new LevelRows());
 
         var placed = GraphLayout.Place(spec, rules: levelRows);
-        double top = placed.Nodes.Min(node => node.Y);
+        double top = placed.Nodes.Min(node => node.Box.Top);
 
-        Assert.That(placed.Edges.Single(edge => edge.Edge is { From: "start", To: "deck" }).Path,
+        Assert.That(placed.Edges.Single(edge => edge.Edge is { From: "start", To: "deck" }).Way.Text,
             Does.Contain($" {(top - 44).ToString(CultureInfo.InvariantCulture)} L"),
             "it runs along the row above the first box");
     }

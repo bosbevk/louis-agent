@@ -140,7 +140,7 @@ public sealed class ApartArrows : IArrowRule
         // The one that can run straight started at a box at the target's own height, next to it or columns away.
         int level = arriving.FindIndex(arrow => Math.Abs(Middle(byId[Origin(arrow, forward)]) - middle) < 1);
         // It keeps its level only if the points above and below it still stand on the side.
-        double reach = target.H / 2 - Margin, step = EdgeRouter.Step;
+        double reach = target.Box.HalfHeight - Margin, step = EdgeRouter.Step;
         bool keeps = level >= 0 && level * step <= reach && (arriving.Count - 1 - level) * step <= reach;
         double first = keeps ? middle - level * step : middle - (arriving.Count - 1) * step / 2;
         return first + Aside(first, arriving, forward, byId) + arriving.IndexOf(edge) * step;
@@ -157,14 +157,15 @@ public sealed class ApartArrows : IArrowRule
     {
         var target = byId[arriving[0].To];
         var feeders = arriving.Select(arrow => arrow.From).ToHashSet(StringComparer.Ordinal);
-        double column = byId[arriving[0].From].X, last = first + (arriving.Count - 1) * EdgeRouter.Step;
+        double column = byId[arriving[0].From].Box.Left, last = first + (arriving.Count - 1) * EdgeRouter.Step;
 
         // The lines out next door that are not this box's own arrows.
-        var others = forward.Where(arrow => !feeders.Contains(arrow.From) && byId[arrow.From].X == column)
+        var others = forward.Where(arrow => !feeders.Contains(arrow.From) && byId[arrow.From].Box.Left == column)
             .Select(arrow => Middle(byId[arrow.From])).Distinct().ToList();
         bool Level(double shift) => Enumerable.Range(0, arriving.Count).Any(at =>
             others.Any(other => Math.Abs(first + shift + at * EdgeRouter.Step - other) < 1));
-        bool Fits(double shift) => first + shift >= target.Y + Margin && last + shift <= target.Y + target.H - Margin;
+        bool Fits(double shift) => first + shift >= target.Box.Top + Margin
+                                  && last + shift <= target.Box.Bottom - Margin;
         if (!Level(0)) return 0;
 
         double towards = feeders.Average(feeder => Middle(byId[feeder])) < Middle(target) ? -Near : Near;
@@ -220,5 +221,5 @@ public sealed class ApartArrows : IArrowRule
     }
 
     /// <summary>The height of a box's middle.</summary>
-    private static double Middle(PlacedNode node) => node.Y + node.H / 2;
+    private static double Middle(PlacedNode node) => node.Box.Middle.Y;
 }

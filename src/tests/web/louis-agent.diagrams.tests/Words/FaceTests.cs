@@ -30,6 +30,24 @@ public class FaceTests
         Assert.That(new Face(character).Width(words), Is.EqualTo(words.Length * character));
     }
 
+    /// <summary>
+    /// Of several lines the longest counts, as a box is as wide as its longest line, and how many characters a
+    /// room holds is the room over a character, the sums a layout wrote by hand.
+    /// </summary>
+    [Test]
+    public void TheWidestLine_AndWhatARoomHolds_AreTheSumsWrittenByHand()
+    {
+        string[] lines = ["A host", "reads a line, then waits", ""];
+        var face = new Face(7.6);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(face.Widest(lines), Is.EqualTo(lines.Max(line => line.Length) * 7.6));
+            Assert.That(face.Widest([]), Is.Zero);
+            Assert.That(face.Holds(142), Is.EqualTo(142 / 7.6));
+        });
+    }
+
     /// <summary>No words are no width, and two faces told the same are the same face.</summary>
     [Test]
     public void NoWords_AreNoWidth_AndAFaceIsItsNumber()

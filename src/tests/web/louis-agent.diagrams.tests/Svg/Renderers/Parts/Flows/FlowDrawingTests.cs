@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Sources;
 
@@ -46,7 +47,7 @@ public class FlowDrawingTests
                                      """;
 
     /// <summary>The procedure as the new drawing draws it.</summary>
-    private static string Drawn() => FlowDrawing.Of(DiagramReader.Read(Procedure));
+    private static string Drawn() => FlowDrawing.Of(DiagramReader.Read(Procedure), Geometries.InUse);
 
     /// <summary>Every shape of the drawing that has a class, with that class.</summary>
     private static List<(XElement Shape, string Class)> Shapes() =>

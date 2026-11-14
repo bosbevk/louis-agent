@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Routing;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Flow;
@@ -89,7 +90,7 @@ public static class Ranks
         var forward = edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)
                                                                       && byId[edge.To].Node.Column >
                                                                       byId[edge.From].Node.Column).ToList();
-        var moved = new Dictionary<string, double>(StringComparer.Ordinal);
+        var moved = new Dictionary<string, IBox>(StringComparer.Ordinal);
         // Every long arrow from its real source, and the box each waypoint's arrow started at: two arrows of one
         // box may share a line, as its line out.
         var chains = edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To))
@@ -98,12 +99,12 @@ public static class Ranks
             .ToDictionary(waypoint => waypoint.Id, waypoint => waypoint.From, StringComparer.Ordinal);
 
         // Where a waypoint's middle is now, moved or not.
-        double Now(string id) => moved.GetValueOrDefault(id, byId[id].Y) + byId[id].H / 2;
+        double Now(string id) => moved.GetValueOrDefault(id, byId[id].Box).Middle.Y;
 
         // Whether another box's arrow already runs through this waypoint's column nearer than the rule lets two
         // lines run. A rule that joins arrows lets them lie on one another, so then nothing is too near.
         bool Taken(string id, double middle) => startOf.Keys.Any(other =>
-            startOf[other] != startOf[id] && byId[other].X == byId[id].X
+            startOf[other] != startOf[id] && InColumnOf(byId[id], byId[other])
                                           && Math.Abs(Now(other) - middle) < rule.LineGap);
 
         // Whether a waypoint can stand on a line: no box of its column in the way, and no other box's arrow.
@@ -118,7 +119,7 @@ public static class Ranks
             foreach (var (first, chain, last) in chains)
             {
                 var source = byId[first.From];
-                double leaves = source.Y + source.H / 2, arrives = rule.EntryOf(last, forward, byId);
+                double leaves = source.Box.Middle.Y, arrives = rule.EntryOf(last, forward, byId);
 
                 // The way up and down an arrow has from where it leaves, through a line, to where it arrives.
                 double Way(params double[] through) =>
@@ -152,12 +153,15 @@ public static class Ranks
                 if (lines is null) continue;
 
                 moves |= chain.Zip(lines).Any(waypoint => Math.Abs(Now(waypoint.First) - waypoint.Second) > 0.01);
-                foreach (var (id, line) in chain.Zip(lines)) moved[id] = line - byId[id].H / 2;
+                foreach (var (id, line) in chain.Zip(lines)) moved[id] = byId[id].Box.OnLine(line);
             }
         }
 
-        return [.. nodes.Select(node => moved.TryGetValue(node.Node.Id, out double y) ? node with { Y = y } : node)];
+        return [.. nodes.Select(node => moved.TryGetValue(node.Node.Id, out var box) ? node with { Box = box } : node)];
     }
+
+    /// <summary>Whether a box stands in a waypoint's column: the boxes of a column share their left edge.</summary>
+    private static bool InColumnOf(PlacedNode waypoint, PlacedNode other) => other.Box.Left == waypoint.Box.Left;
 
     /// <summary>A long arrow as its first link, the waypoints it passes in order, and its last link.</summary>
     private static (GraphEdge First, List<string> Waypoints, GraphEdge Last) Chain(GraphEdge first,
@@ -176,8 +180,9 @@ public static class Ranks
 
     /// <summary>Whether a line through a waypoint's column at this height passes clear of every box in it.</summary>
     private static bool Free(PlacedNode waypoint, double middle, IReadOnlyList<PlacedNode> nodes) =>
-        !nodes.Any(other => !IsWaypoint(other.Node.Id) && other.X == waypoint.X && other.Y - Clear < middle
-                            && other.Y + other.H + Clear > middle);
+        !nodes.Any(other => !IsWaypoint(other.Node.Id) && InColumnOf(waypoint, other)
+                                                       && other.Box.Top - Clear < middle
+                                                       && other.Box.Bottom + Clear > middle);
 
     /// <summary>How far clear of a box a straightened line keeps.</summary>
     private const double Clear = 6;
@@ -190,10 +195,10 @@ public static class Ranks
     private static IEnumerable<double> Gaps(IEnumerable<PlacedNode> chain, IReadOnlyList<PlacedNode> nodes) =>
         chain.SelectMany(waypoint =>
         {
-            var column = nodes.Where(other => !IsWaypoint(other.Node.Id) && other.X == waypoint.X)
-                .OrderBy(other => other.Y).ToList();
+            var column = nodes.Where(other => !IsWaypoint(other.Node.Id) && InColumnOf(waypoint, other))
+                .OrderBy(other => other.Box.Top).ToList();
             return column.Zip(column.Skip(1)).Where(pair => pair.First.Node.Group == pair.Second.Node.Group)
-                .Select(pair => (pair.First.Y + pair.First.H + pair.Second.Y) / 2);
+                .Select(pair => (pair.First.Box.Bottom + pair.Second.Box.Top) / 2);
         });
 
     /// <summary>
@@ -205,11 +210,11 @@ public static class Ranks
     private static IEnumerable<double> Beside(IEnumerable<PlacedNode> chain, IReadOnlyList<PlacedNode> nodes) =>
         chain.SelectMany(waypoint =>
         {
-            var column = nodes.Where(other => !IsWaypoint(other.Node.Id) && other.X == waypoint.X).ToList();
+            var column = nodes.Where(other => !IsWaypoint(other.Node.Id) && InColumnOf(waypoint, other)).ToList();
             return column.Where(box => box.Node.Group is null)
-                .SelectMany(box => new[] { box.Y - EdgeRouter.Step, box.Y + box.H + EdgeRouter.Step })
-                .Where(line => column.All(box => line <= box.Y - EdgeRouter.Step
-                                                 || line >= box.Y + box.H + EdgeRouter.Step));
+                .SelectMany(box => new[] { box.Box.Top - EdgeRouter.Step, box.Box.Bottom + EdgeRouter.Step })
+                .Where(line => column.All(box => line <= box.Box.Top - EdgeRouter.Step
+                                                 || line >= box.Box.Bottom + EdgeRouter.Step));
         });
 
     /// <summary>
@@ -227,7 +232,7 @@ public static class Ranks
                 edge = edge with
                 {
                     Edge = edge.Edge with { To = next.Edge.To },
-                    Path = $"{edge.Path} L{next.Path[1..]}",
+                    Way = edge.Way.Then(next.Way),
                     Length = edge.Length + next.Length,
                     Right = Math.Max(edge.Right, next.Right)
                 };

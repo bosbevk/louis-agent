@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
@@ -35,7 +36,7 @@ public class FlowArrowsTests
     public void AWiderBend_StartsItsCornerFurtherOut()
     {
         double Corner(double bend) => GraphLayout.Place(Calls(), bend: bend).Edges
-            .SelectMany(edge => Corners(edge.Path)).Max();
+            .SelectMany(edge => Corners(edge.Way.Text)).Max();
 
         Assert.Multiple(() =>
         {
@@ -61,12 +62,13 @@ public class FlowArrowsTests
             [new GraphEdge("program", "gaps", "--cache-gaps"), new GraphEdge("program", "env", "--host-culture")],
             FlowDirection.Down), bend: GraphLayout.SoftBend).Edges;
 
-        var (_, top, _, height) = FlowText.WordBox(right);
+        var ground = FlowText.WordBox(right, Geometries.InUse);
         Assert.Multiple(() =>
         {
-            Assert.That(top + height, Is.LessThanOrEqualTo(Ys(right.Path).First() - 4), "above its line");
+            Assert.That(ground.Bottom, Is.LessThanOrEqualTo(Ys(right.Way.Text).First() - 4), "above its line");
             foreach (var edge in down)
-                Assert.That(FlowText.WordBox(edge).Y, Is.GreaterThanOrEqualTo(Track(edge.Path) + 4), "under its track");
+                Assert.That(FlowText.WordBox(edge, Geometries.InUse).Top,
+                    Is.GreaterThanOrEqualTo(Track(edge.Way.Text) + 4), "under its track");
         });
     }
 

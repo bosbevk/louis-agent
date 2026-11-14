@@ -2,6 +2,8 @@ using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Engine.Classes.Marks;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 
@@ -20,57 +22,70 @@ internal static class TypeCards
     /// <summary>A card's corner, a badge's corner, and the icon in a badge.</summary>
     private const double Corner = 14, BadgeCorner = 9, BadgeIcon = 16;
 
-    /// <summary>How far in a contract's accent starts along its top, and how thick it is.</summary>
-    private const double EdgeIn = 24, Edge = 1.6;
+    /// <summary>
+    /// How far in a contract's accent starts along its top, how thick it is, and how far above the card's top it
+    /// starts, so it lies on the card's edge.
+    /// </summary>
+    private const double EdgeIn = 24, Edge = 1.6, EdgeRise = 0.5;
 
     /// <summary>How far under a badge's middle its letter stands, and under a member's row its words.</summary>
     private const double MarkDrop = 4.5, MemberDrop = 10;
 
+    /// <summary>Where a group's label stands in its frame: in from its left, and down from its top.</summary>
+    private const double GroupLabelIn = 12, GroupLabelLine = 18;
+
     /// <summary>One type, where the layout put its box.</summary>
-    public static void Draw(SvgWriter writer, PlacedNode node, ClassType type)
+    public static void Draw(SvgWriter writer, PlacedNode node, ClassType type, IGeometry geometry)
     {
         var mark = TypeMarks.Of(type);
+        var box = node.Box;
         double head = FlowText.HeadHeight(node);
-        writer.Box(node.X, node.Y, node.W, node.H, Corner, "cls-cover")
-            .Box(node.X, node.Y, node.W, node.H, Corner, "mrq-glass");
+        writer.Box(box, Corner, "cls-cover").Box(box, Corner, "mrq-glass");
         if (TypeMarks.Contract(mark))
-            writer.Box(node.X + EdgeIn, node.Y - 0.5, Math.Max(0, node.W - 2 * EdgeIn), Edge, 0, "mrq-edge");
+        {
+            var accent = geometry.Box(box.Left + EdgeIn, box.Top - EdgeRise, Math.Max(0, box.Width - 2 * EdgeIn), Edge);
+            writer.Box(accent, 0, "mrq-edge");
+        }
 
-        Badge(writer, node, type, mark, head);
+        Badge(writer, node, type, mark, head, geometry);
         Words(writer, node);
         Members(writer, node, head);
     }
 
     /// <summary>A group's frame, with its label at its top left.</summary>
     public static void Frame(SvgWriter writer, PlacedGroup group) => writer
-        .Box(group.X, group.Y, group.W, group.H, Corner, "cls-group")
-        .Text(group.X + 12, group.Y + 18, group.Group.Label, "pic-group", "start");
+        .Box(group.Box, Corner, "cls-group")
+        .Text(group.Box.Left + GroupLabelIn, group.Box.Top + GroupLabelLine, group.Group.Label, "pic-group", "start");
 
     /// <summary>
     /// The badge, in the middle of the head's height: the type's own icon when it names one, and the letter of
     /// what it is when it doesn't.
     /// </summary>
-    private static void Badge(SvgWriter writer, PlacedNode node, ClassType type, TypeMark mark, double head)
+    private static void Badge(SvgWriter writer, PlacedNode node, ClassType type, TypeMark mark, double head,
+        IGeometry geometry)
     {
-        double size = FlowText.BadgeSize, left = node.X + FlowText.BadgeLeft, top = node.Y + (head - size) / 2;
-        writer.Box(left, top, size, size, BadgeCorner, "cls-badge" + PictureParts.Tone(node.Node.Tone));
+        double size = FlowText.BadgeSize;
+        var badge = geometry.Box(node.Box.Left + FlowText.BadgeLeft, node.Box.Top + (head - size) / 2, size, size);
+        writer.Box(badge, BadgeCorner, "cls-badge" + PictureParts.Tone(node.Node.Tone));
+
+        // The icon stands in the badge's middle, as far in from its left as from its top.
+        double inset = (size - BadgeIcon) / 2;
         if (type.Icon is { } icon)
-            writer.Icon(left + (size - BadgeIcon) / 2, top + (size - BadgeIcon) / 2, BadgeIcon, icon,
-                "cls-badge-icon");
+            writer.Icon(badge.Left + inset, badge.Top + inset, BadgeIcon, icon, "cls-badge-icon");
         else
-            writer.Text(left + size / 2, top + size / 2 + MarkDrop, TypeMarks.Letter(mark), "cls-mark");
+            writer.Text(badge.Middle.X, badge.Middle.Y + MarkDrop, TypeMarks.Letter(mark), "cls-mark");
     }
 
     /// <summary>The name's lines beside the badge, and the kind's under them.</summary>
     private static void Words(SvgWriter writer, PlacedNode node)
     {
-        double x = FlowText.LabelLeft(node);
+        double x = FlowText.LabelLeft(node), top = node.Box.Top;
         var name = FlowText.LabelLines(node.Node);
         for (int at = 0; at < name.Count; at++)
-            writer.Text(x, node.Y + FlowText.LabelY(node) + FlowText.LabelStep * at, name[at], "cls-name", "start");
+            writer.Text(x, top + FlowText.LabelY(node) + FlowText.LabelStep * at, name[at], "cls-name", "start");
         var kind = node.Node.Note is { } words ? GraphLayout.NoteLines(words) : [];
         for (int at = 0; at < kind.Count; at++)
-            writer.Text(x, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, kind[at], "cls-kind", "start");
+            writer.Text(x, top + FlowText.NoteY(node) + FlowText.NoteStep * at, kind[at], "cls-kind", "start");
     }
 
     /// <summary>
@@ -82,9 +97,9 @@ internal static class TypeCards
         var members = FlowText.MemberLines(node.Node);
         if (members.Count == 0) return;
 
-        double divider = node.Y + head, left = node.X + GraphLayout.LabelPad;
-        double right = node.X + node.W - GraphLayout.LabelPad;
-        writer.Path($"M{SvgWriter.N(left)} {SvgWriter.N(divider)}H{SvgWriter.N(right)}", "cls-divide", false);
+        double divider = node.Box.Top + head, left = node.Box.Left + GraphLayout.LabelPad;
+        double right = node.Box.Right - GraphLayout.LabelPad;
+        writer.Path(new PathWriter().From(left, divider).Across(right).Text, "cls-divide", false);
         for (int at = 0; at < members.Count; at++)
             writer.Text(left, divider + FlowText.MemberTop + MemberDrop + FlowText.MemberStep * at,
                 members[at].TrimStart('+'), "cls-member", "start");

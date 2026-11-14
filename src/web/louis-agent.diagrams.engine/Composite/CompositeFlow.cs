@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Composite.Spec;
 using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Tones;
 
@@ -25,10 +26,12 @@ public static class CompositeFlow
     public const string Class = "class";
 
     /// <summary>
-    /// How far in from a box's side its words start, the room between two things drawn side by side in a box, and
-    /// how wide a character of a port's words is taken to be.
+    /// How far in from a box's side its words start, and the room between two things drawn side by side in a box.
     /// </summary>
-    public const double Inset = 16, Beside = 10, WordChar = 6.6;
+    public const double Inset = 16, Beside = 10;
+
+    /// <summary>A port's words, what is asked or needed, written outside the frame.</summary>
+    private static readonly Face PortWords = new(6.6);
 
     /// <summary>The id a port's box has in the flow: its name, marked so no part can share it.</summary>
     public static string PortId(string name) => "port:" + name;
@@ -73,7 +76,7 @@ public static class CompositeFlow
     /// <summary>A port's label: its words and its name, as wide as the words with the pin beside them.</summary>
     private static string PortLabel(CompositePort port)
     {
-        double words = (port.Label?.Length ?? 0) * WordChar;
+        double words = PortWords.Width(port.Label ?? "");
         return Measured($"{port.Label}   {port.Name}", words + Beside + ComponentSizes.PinWidth(port.Name) + Beside);
     }
 
@@ -83,7 +86,7 @@ public static class CompositeFlow
     /// </summary>
     private static string Measured(string words, double width)
     {
-        int length = (int)Math.Ceiling((width - 2 * GraphLayout.LabelPad) / GraphLayout.LabelCharWidth);
+        int length = (int)Math.Ceiling(GraphLayout.Label.Holds(width - 2 * GraphLayout.LabelPad));
         return words.TrimEnd().PadRight(Math.Max(words.TrimEnd().Length, length));
     }
 }

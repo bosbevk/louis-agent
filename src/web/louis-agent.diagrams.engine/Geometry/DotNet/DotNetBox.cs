@@ -38,6 +38,9 @@ public sealed record DotNetBox(RectangleF Rectangle) : IBox
     /// <summary>The point in its middle: its corner, and half its size on from there.</summary>
     public IPoint Middle => new DotNetPoint(Rectangle.Location.ToVector2() + Rectangle.Size.ToVector2() / 2);
 
+    /// <summary>Half its height: how far its middle is from its top and from its bottom.</summary>
+    public double HalfHeight => Rectangle.Height / 2;
+
     /// <summary>The box with room added on every side.</summary>
     public IBox Grown(double by) => new DotNetBox(RectangleF.Inflate(Rectangle, (float)by, (float)by));
 

@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Tones;
 
@@ -23,6 +24,9 @@ internal static class PictureParts
     /// </summary>
     public static SvgWriter Panel(SvgWriter writer, double x, double y, double width, double height) =>
         writer.Box(x, y, width, height, Radius, "pic-panel");
+
+    /// <summary>A panel, where a box of the layout stands.</summary>
+    public static SvgWriter Panel(SvgWriter writer, IBox box) => writer.Box(box, Radius, "pic-panel");
 
     /// <summary>
     /// A tone as a shape's class, with the space before it. Nothing for plain, which the look draws grey.

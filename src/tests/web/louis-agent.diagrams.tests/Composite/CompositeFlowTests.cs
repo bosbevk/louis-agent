@@ -111,18 +111,18 @@ public class CompositeFlowTests
         var placed = Placed();
         var asked = Box(placed, CompositeFlow.PortId("prompts"));
         var needed = Box(placed, CompositeFlow.PortId("model"));
-        string into = placed.Edges.Single(edge => edge.Edge.From == asked.Node.Id).Path;
-        string outOf = placed.Edges.Single(edge => edge.Edge.To == needed.Node.Id).Path;
+        string into = placed.Edges.Single(edge => edge.Edge.From == asked.Node.Id).Way.Text;
+        string outOf = placed.Edges.Single(edge => edge.Edge.To == needed.Node.Id).Way.Text;
 
         Assert.Multiple(() =>
         {
-            Assert.That(asked.X, Is.LessThan(Box(placed, "turns").X));
-            Assert.That(needed.X, Is.GreaterThan(Box(placed, "registry").X));
+            Assert.That(asked.Box.Left, Is.LessThan(Box(placed, "turns").Box.Left));
+            Assert.That(needed.Box.Left, Is.GreaterThan(Box(placed, "registry").Box.Left));
             Assert.That(placed.Groups, Has.Count.EqualTo(1));
             Assert.That(into, Does.StartWith(FormattableString.Invariant(
-                $"M {asked.X + asked.W:0.#} {asked.Y + asked.H / 2:0.#} ")));
+                $"M {asked.Box.Right:0.#} {asked.Box.Middle.Y:0.#} ")));
             Assert.That(outOf, Does.EndWith(FormattableString.Invariant(
-                $" {needed.X:0.#} {needed.Y + needed.H / 2:0.#}")));
+                $" {needed.Box.Left:0.#} {needed.Box.Middle.Y:0.#}")));
         });
     }
 }

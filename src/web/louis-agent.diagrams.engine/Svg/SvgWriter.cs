@@ -3,6 +3,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Icons;
 using LouisAgent.Diagrams.Engine.Svg.Ends;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
@@ -76,6 +77,10 @@ internal sealed class SvgWriter
             new XAttribute("rx", N(radius))));
         return this;
     }
+
+    /// <summary>A rounded box, where a box of the layout stands.</summary>
+    public SvgWriter Box(IBox box, double radius, string cls) =>
+        Box(box.Left, box.Top, box.Width, box.Height, radius, cls);
 
     /// <summary>A circle round a point.</summary>
     public SvgWriter Circle(double x, double y, double radius, string cls)

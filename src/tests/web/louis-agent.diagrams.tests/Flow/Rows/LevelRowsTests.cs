@@ -132,7 +132,7 @@ public class LevelRowsTests
             Groups: [new GraphGroup("site", "A site")]);
 
         bool Straight(FlowRules rules) => !GraphLayout.Place(spec, rules: rules).Edges
-            .Single(edge => edge.Edge.To == "frame").Path.Contains('Q');
+            .Single(edge => edge.Edge.To == "frame").Way.Text.Contains('Q');
 
         Assert.Multiple(() =>
         {

@@ -25,4 +25,21 @@ public sealed record Point<T>(T X, T Y) : IPoint where T : INumber<T>
     IPoint IPoint.Moved(double across, double down) => Moved(T.CreateChecked(across), T.CreateChecked(down));
 
     IPoint IPoint.Turned() => Turned();
+
+    /// <summary>How far it is to another point for a line that runs only across and down.</summary>
+    public T StepsTo(Point<T> other) => T.Abs(other.X - X) + T.Abs(other.Y - Y);
+
+    /// <summary>
+    /// The point a little way off this one, towards another level with it or straight above or under.
+    /// </summary>
+    public Point<T> Toward(Point<T> other, T by) =>
+        new(X + T.CreateChecked(T.Sign(other.X - X)) * by, Y + T.CreateChecked(T.Sign(other.Y - Y)) * by);
+
+    double IPoint.StepsTo(IPoint other) => double.CreateChecked(StepsTo(Ours(other)));
+
+    IPoint IPoint.Toward(IPoint other, double by) => Toward(Ours(other), T.CreateChecked(by));
+
+    /// <summary>Another point as one of ours: it is one already when the picture is drawn by one geometry.</summary>
+    private static Point<T> Ours(IPoint point) =>
+        point as Point<T> ?? new Point<T>(T.CreateChecked(point.X), T.CreateChecked(point.Y));
 }

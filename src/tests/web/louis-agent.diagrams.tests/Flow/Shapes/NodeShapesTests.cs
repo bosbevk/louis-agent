@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Shapes;
@@ -32,7 +33,7 @@ public class NodeShapesTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(NodeShapes.Room(new GraphNode("a", "A"), 170, 52), Is.EqualTo((170.0, 52.0)));
+            Assert.That(NodeShapes.Width(new GraphNode("a", "A"), 170, 52), Is.EqualTo(170));
             Assert.That(NodeShapes.Inset(NodeShape.Box, ShapeSide.Left, 170, 52, 8), Is.Zero);
         });
     }
@@ -44,19 +45,20 @@ public class NodeShapesTests
     [Test]
     public void ADecision_IsAsTallAsItsWords_AndHoldsThem()
     {
-        var (w, h) = NodeShapes.Room(Question, 170, 84);
+        const double h = 84;
+        double w = NodeShapes.Width(Question, 170, h);
         string[] lines = Question.Label.Split('\n');
         double top = h / 2 - FlowText.LabelStep * lines.Length / 2;
 
         Assert.Multiple(() =>
         {
-            Assert.That((w, h), Is.EqualTo((170 + NodeShapes.Point, 84.0)));
+            Assert.That(w, Is.EqualTo(170 + NodeShapes.Point), "wider by a point, and a shape adds no height");
             for (int at = 0; at < lines.Length; at++)
             {
                 // The edge of the line that is further from the middle, where the ends reach further in.
                 double edge = top + FlowText.LabelStep * (at < lines.Length / 2.0 ? at : at + 1);
                 double room = w - 2 * NodeShapes.Inset(NodeShape.Decision, ShapeSide.Left, w, h, edge);
-                Assert.That(room, Is.GreaterThanOrEqualTo(lines[at].Length * GraphLayout.LabelCharWidth),
+                Assert.That(room, Is.GreaterThanOrEqualTo(GraphLayout.Label.Width(lines[at])),
                     $"line {at + 1} fits");
             }
         });
@@ -88,7 +90,7 @@ public class NodeShapesTests
     [Test]
     public void ADecisionsOutline_HasSixCorners()
     {
-        string? outline = NodeShapes.PathOf(new PlacedNode(Question, 10, 20, 200, 100));
+        string? outline = NodeShapes.PathOf(Question.Shape, Geometries.InUse.Box(10, 20, 200, 100));
 
         Assert.That(outline, Is.EqualTo($"M10 70L{10 + NodeShapes.Point} 20L{210 - NodeShapes.Point} 20L210 70" +
                                         $"L{210 - NodeShapes.Point} 120L{10 + NodeShapes.Point} 120Z"));
@@ -101,7 +103,7 @@ public class NodeShapesTests
     [Test]
     public void ASmallDecision_HasShorterPoints()
     {
-        string? outline = NodeShapes.PathOf(new PlacedNode(Question, 0, 0, 30, 16));
+        string? outline = NodeShapes.PathOf(Question.Shape, Geometries.InUse.Box(0, 0, 30, 16));
 
         Assert.Multiple(() =>
         {
@@ -161,14 +163,14 @@ public class NodeShapesTests
         {
             foreach (var edge in placed.Edges)
             {
-                var (x, y) = End(edge.Path);
+                var (x, y) = End(edge.Way.Text);
                 // How far the point is from the middle: across in pixels, and down as a part of half the height.
-                double across = Math.Abs(x - (shape.X + shape.W / 2));
-                double down = Math.Abs(y - (shape.Y + shape.H / 2)) / (shape.H / 2);
+                double across = Math.Abs(x - shape.Box.Middle.X);
+                double down = Math.Abs(y - shape.Box.Middle.Y) / shape.Box.HalfHeight;
                 // On a slanted end the outline is a point's length further in at the top than at the tip. On the
                 // flat top or bottom it is anywhere between the two corners.
-                bool onAnEnd = Math.Abs(across - (shape.W / 2 - NodeShapes.Point * down)) < 0.1;
-                bool onTheFlat = Math.Abs(down - 1) < 0.01 && across <= shape.W / 2 - NodeShapes.Point + 0.1;
+                bool onAnEnd = Math.Abs(across - (shape.Box.Width / 2 - NodeShapes.Point * down)) < 0.1;
+                bool onTheFlat = Math.Abs(down - 1) < 0.01 && across <= shape.Box.Width / 2 - NodeShapes.Point + 0.1;
                 Assert.That(onAnEnd || onTheFlat, Is.True, $"{edge.Edge.From} ends on the outline, at {x} {y}");
             }
         });

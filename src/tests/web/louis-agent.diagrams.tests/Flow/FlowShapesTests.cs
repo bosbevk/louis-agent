@@ -27,10 +27,10 @@ public class FlowShapesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(core.W, Is.GreaterThanOrEqualTo(
-                "[class library: the engine, tools, skills]".Length * GraphLayout.LabelCharWidth));
-            Assert.That(core.H, Is.GreaterThan(GraphLayout.Place(new GraphSpec([new GraphNode("a", "A")], []))
-                .Nodes[0].H));
+            Assert.That(core.Box.Width, Is.GreaterThanOrEqualTo(
+                GraphLayout.Label.Width("[class library: the engine, tools, skills]")));
+            Assert.That(core.Box.Height, Is.GreaterThan(GraphLayout.Place(new GraphSpec([new GraphNode("a", "A")], []))
+                .Nodes[0].Box.Height));
         });
     }
 
@@ -40,7 +40,7 @@ public class FlowShapesTests
     {
         var host = GraphLayout.Place(TwoLines()).Nodes.Single(node => node.Node.Id == "host");
 
-        Assert.That((host.W, host.H), Is.EqualTo((170d, 52d)));
+        Assert.That((host.Box.Width, host.Box.Height), Is.EqualTo((170d, 52d)));
     }
 
     /// <summary>A chart that runs down: a host, the engine it starts, and the two things the engine calls.</summary>
@@ -62,10 +62,10 @@ public class FlowShapesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(at["engine"].Y, Is.GreaterThan(at["host"].Y + at["host"].H));
-            Assert.That(at["model"].Y, Is.GreaterThan(at["engine"].Y + at["engine"].H));
-            Assert.That(at["model"].Y, Is.EqualTo(at["tools"].Y));
-            Assert.That(at["tools"].X, Is.Not.EqualTo(at["model"].X));
+            Assert.That(at["engine"].Box.Top, Is.GreaterThan(at["host"].Box.Bottom));
+            Assert.That(at["model"].Box.Top, Is.GreaterThan(at["engine"].Box.Bottom));
+            Assert.That(at["model"].Box.Top, Is.EqualTo(at["tools"].Box.Top));
+            Assert.That(at["tools"].Box.Left, Is.Not.EqualTo(at["model"].Box.Left));
         });
     }
 
@@ -80,9 +80,9 @@ public class FlowShapesTests
         var starts = placed.Edges.Single(edge => edge.Edge.To == "engine");
         Assert.Multiple(() =>
         {
-            Assert.That((host.W, host.H), Is.EqualTo((170d, 52d)));
-            Assert.That(starts.Path, Does.StartWith($"M {host.X + host.W / 2:0.#} {host.Y + host.H:0.#} "));
-            Assert.That(starts.Path, Does.EndWith($"{engine.X + engine.W / 2:0.#} {engine.Y:0.#}"));
+            Assert.That((host.Box.Width, host.Box.Height), Is.EqualTo((170d, 52d)));
+            Assert.That(starts.Way.Text, Does.StartWith($"M {host.Box.Middle.X:0.#} {host.Box.Bottom:0.#} "));
+            Assert.That(starts.Way.Text, Does.EndWith($"{engine.Box.Middle.X:0.#} {engine.Box.Top:0.#}"));
         });
     }
 
@@ -98,7 +98,7 @@ public class FlowShapesTests
 
         var at = GraphLayout.Place(spec).Nodes.ToDictionary(node => node.Node.Id);
 
-        Assert.That(at["b"].Y - (at["a"].Y + at["a"].H), Is.LessThan(word.Length * 8));
+        Assert.That(at["b"].Box.Top - (at["a"].Box.Bottom), Is.LessThan(word.Length * 8));
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class FlowShapesTests
 
         var placed = GraphLayout.Place(spec);
 
-        var numbers = placed.Edges.SelectMany(edge => edge.Path.Split(' '))
+        var numbers = placed.Edges.SelectMany(edge => edge.Way.Text.Split(' '))
             .Where(part => double.TryParse(part, out _)).Select(double.Parse);
         Assert.That(numbers, Has.All.InRange(0d, Math.Max(placed.Width, placed.Height)));
     }
@@ -148,7 +148,8 @@ public class FlowShapesTests
         var placed = GraphLayout.Place(spec);
 
         var past = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build");
-        var numbers = past.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
+        var numbers = past.Way.Text.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
+            .ToList();
         var chat = placed.Nodes.Single(node => node.Node.Id == "chat");
         Assert.Multiple(() =>
         {
@@ -157,7 +158,8 @@ public class FlowShapesTests
             Assert.That(placed.Edges.Count(edge => edge.Edge is { From: "host", To: "engine" }), Is.EqualTo(1));
             Assert.That(numbers.Where((_, at) => at % 2 == 1).Max(), Is.LessThan(placed.Height), "no lane under it");
             Assert.That(numbers.Where((_, at) => at % 2 == 0)
-                .All(x => x < chat.X || x > chat.X + chat.W), Is.True, "it passes beside the box, not through it");
+                .All(x => x < chat.Box.Left || x > chat.Box.Right), Is.True,
+            "it passes beside the box, not through it");
         });
     }
 
@@ -182,8 +184,8 @@ public class FlowShapesTests
         var placed = GraphLayout.Place(spec);
 
         // A bent connector's track is its first rounded corner: the point after its first Q.
-        double Track(string from) => placed.Edges.Where(edge => edge.Edge.From == from && edge.Path.Contains('Q'))
-            .Select(edge => edge.Path.Split(' '))
+        double Track(string from) => placed.Edges.Where(edge => edge.Edge.From == from && edge.Way.Text.Contains('Q'))
+            .Select(edge => edge.Way.Text.Split(' '))
             .Select(parts => double.Parse(parts[Array.IndexOf(parts, "Q") + 1],
                 System.Globalization.CultureInfo.InvariantCulture))
             .Distinct().Single();
@@ -212,14 +214,14 @@ public class FlowShapesTests
         var placed = GraphLayout.Place(spec);
 
         var engine = placed.Nodes.Single(node => node.Node.Id == "engine");
-        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build").Path.Split(' ')
+        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build").Way.Text.Split(' ')
             .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
         // Out of its source, along, and straight down into the target: its upright pieces stand at two places only,
         // the source's middle and the target's, with no jog through a slot between (a curve's corners left out).
         var host = placed.Nodes.Single(node => node.Node.Id == "host");
         var xs = numbers.Where((_, at) => at % 2 == 0).Select(x => Math.Round(x)).ToList();
         Assert.That(
-            xs.Where(x => Math.Abs(x - (host.X + host.W / 2)) > 10 && Math.Abs(x - (engine.X + engine.W / 2)) > 10),
+            xs.Where(x => Math.Abs(x - host.Box.Middle.X) > 10 && Math.Abs(x - engine.Box.Middle.X) > 10),
             Is.Empty);
     }
 
@@ -247,11 +249,11 @@ public class FlowShapesTests
 
         var logging = placed.Nodes.Single(node => node.Node.Id == "logging");
         var collector = placed.Nodes.Single(node => node.Node.Id == "collector");
-        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "the sink").Path.Split(' ')
+        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "the sink").Way.Text.Split(' ')
             .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
         var xs = numbers.Where((_, at) => at % 2 == 0).ToList();
-        Assert.That(xs.Where(x => Math.Abs(x - (logging.X + logging.W / 2)) > 10
-                                  && Math.Abs(x - (collector.X + collector.W / 2)) > 10), Is.Empty);
+        Assert.That(xs.Where(x => Math.Abs(x - logging.Box.Middle.X) > 10
+                                  && Math.Abs(x - collector.Box.Middle.X) > 10), Is.Empty);
     }
 
     /// <summary>
@@ -275,7 +277,7 @@ public class FlowShapesTests
         string Last(string path) => string.Join(' ', path.Split(' ').TakeLast(2));
         var outOf = placed.Edges.Single(edge => edge.Edge is { From: "sync", To: "client" });
         var into = placed.Edges.Single(edge => edge.Edge is { From: "engine", To: "sync" });
-        Assert.That(First(outOf.Path), Is.Not.EqualTo(Last(into.Path)));
+        Assert.That(First(outOf.Way.Text), Is.Not.EqualTo(Last(into.Way.Text)));
     }
 
     /// <summary>Down, an arrow's word starts just right of its line, and the drawing holds it.</summary>
@@ -290,11 +292,11 @@ public class FlowShapesTests
 
         var a = placed.Nodes.Single(node => node.Node.Id == "a");
         var edge = placed.Edges.Single();
-        double left = edge.WordX - word.Length * FlowText.WordChar / 2;
+        double left = edge.Word.X - word.Length * FlowText.WordChar / 2;
         Assert.Multiple(() =>
         {
-            Assert.That(left, Is.GreaterThan(a.X + a.W / 2), "it starts right of the line");
-            Assert.That(edge.WordX + word.Length * FlowText.WordChar / 2, Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(left, Is.GreaterThan(a.Box.Middle.X), "it starts right of the line");
+            Assert.That(edge.Word.X + word.Length * FlowText.WordChar / 2, Is.LessThanOrEqualTo(placed.Width));
         });
     }
 
@@ -319,8 +321,8 @@ public class FlowShapesTests
 
         var placed = GraphLayout.Place(spec);
 
-        double drawn = Math.Max(placed.Nodes.Max(node => node.X + node.W),
-            placed.Edges.Max(edge => Xs(edge.Path).Max()));
+        double drawn = Math.Max(placed.Nodes.Max(node => node.Box.Right),
+            placed.Edges.Max(edge => Xs(edge.Way.Text).Max()));
         Assert.That(placed.Width, Is.LessThanOrEqualTo(Math.Ceiling(drawn)));
     }
 

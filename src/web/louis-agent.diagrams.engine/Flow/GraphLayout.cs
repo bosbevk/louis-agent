@@ -1,6 +1,8 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Routing;
 using LouisAgent.Diagrams.Engine.Flow.Shapes;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Flow;
@@ -30,8 +32,11 @@ public static class GraphLayout
     /// <summary>How many characters of the 10px code font fit a line inside the box.</summary>
     public const int NoteWidth = 25;
 
-    /// <summary>How wide a character of the label's 600 12px code font is, and the room beside a line.</summary>
-    public const double LabelCharWidth = 7.6, LabelPad = 14;
+    /// <summary>The room beside a line of the label.</summary>
+    public const double LabelPad = 14;
+
+    /// <summary>A label's words, in the 600 12px code font.</summary>
+    public static readonly Face Label = new(7.6);
 
     private const double Gap = 18;
 
@@ -53,12 +58,14 @@ public static class GraphLayout
     /// <summary>
     /// Places a diagram across the given width, each arrow's corners rounded by the bend asked for. The arrows run
     /// and the boxes stand by the rules you hand it. Handed none, the arrows join and the boxes are centred, as every
-    /// picture was drawn before F134.8.
+    /// picture was drawn before F134.8. Its boxes and points are of the geometry you hand it, and of the one in use
+    /// when you hand it none.
     /// </summary>
     public static PlacedGraph Place(GraphSpec spec, int width = 880, double bend = EdgeRouter.Bend,
-        FlowRules? rules = null)
+        FlowRules? rules = null, IGeometry? geometry = null)
     {
         rules ??= FlowRules.Joined;
+        geometry ??= Geometries.InUse;
         // A box with no column takes the one its arrows give it, so everything below sees a column on every box.
         var ranks = Ranks.Of(spec);
         spec = spec with { Nodes = [.. spec.Nodes.Select(node => node with { Column = ranks[node.Id] })] };
@@ -67,14 +74,15 @@ public static class GraphLayout
 
         // A chart that runs down is laid out to the right with every box turned, at its own size, then turned back.
         return spec.Direction == FlowDirection.Down
-            ? Turn.Back(PlaceRight(spec, 0, turned: true, bend, rules))
-            : PlaceRight(spec, width, turned: false, bend, rules);
+            ? Turn.Back(PlaceRight(spec, 0, turned: true, bend, rules, geometry), geometry)
+            : PlaceRight(spec, width, turned: false, bend, rules, geometry);
     }
 
     /// <summary>
     /// The diagram laid out to the right across the given width; turned, every box's width and height swap places.
     /// </summary>
-    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend, FlowRules rules)
+    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend, FlowRules rules,
+        IGeometry geometry)
     {
         var rule = rules.Arrows;
         Func<GraphNode, double> wide = turned ? Height : Width, plain = turned ? Width : Height;
@@ -90,7 +98,8 @@ public static class GraphLayout
         // The boxes placed once with the columns far apart, only to learn how high each stands: how many tracks a
         // gap needs can depend on whether two lines in it would lie on one another, and that is a matter of heights.
         var apart = Enumerable.Range(0, columns.Count).Select(at => at * FarApart).ToList();
-        var (rough, _) = Bands.Place(spec, columns, new Bands.Grid(apart, widths, Gap, Tall), turned, rules.Rows);
+        var (rough, _) = Bands.Place(spec, columns, new Bands.Grid(apart, widths, Gap, Tall), turned, rules.Rows,
+            geometry);
         var heights = Ranks.Straightened(rough, spec.Edges, rule).ToDictionary(node => node.Node.Id);
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
@@ -101,17 +110,19 @@ public static class GraphLayout
         // not happen"): two middles then differ by half a row at least, never by a few pixels, so no connector ever
         // jogs. A shorter box stands in the middle of its row.
         var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, Tall), turned,
-            rules.Rows);
+            rules.Rows, geometry);
         // A long arrow's waypoints stand in line with where it arrives, so it drops straight in.
         var placed = Ranks.Straightened(banded, spec.Edges, rule);
         // A group's frame goes round its boxes; the drawing moves and grows so every frame is inside it.
-        var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, Bands.Frames(spec, placed, turned), width, height);
+        var frames = Bands.Frames(spec, placed, turned, geometry);
+        var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, frames, width, height);
 
         // An arrow only between two boxes that exist; the router draws each as a connector and may need room outside
         // the boxes, for a lane under the drawing or a loop past the last column.
         var byId = nodes.ToDictionary(node => node.Node.Id);
         var known = spec.Edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)).ToList();
-        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, rule, turned, bend);
+        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, rule, geometry,
+            turned, bend);
 
         // The waypoints go, and each chain through them is one arrow again.
         return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight),
@@ -196,13 +207,12 @@ public static class GraphLayout
     /// <summary>
     /// A box's width in its shape: a plain box's own, and what a decision's points, a slant or a pill adds.
     /// </summary>
-    private static double Width(GraphNode node) => NodeShapes.Room(node, WidthOf(node), HeightOf(node)).W;
+    private static double Width(GraphNode node) => NodeShapes.Width(node, WidthOf(node), Height(node));
 
-    /// <summary>A box's height in its shape.</summary>
-    private static double Height(GraphNode node) => NodeShapes.Room(node, WidthOf(node), HeightOf(node)).H;
-
-    /// <summary>A box's height: its head, and under it its members, each a line (CL60.4).</summary>
-    private static double HeightOf(GraphNode node) =>
+    /// <summary>
+    /// A box's height: its head, and under it its members, each a line (CL60.4). Its shape never makes it taller.
+    /// </summary>
+    private static double Height(GraphNode node) =>
         HeadOf(node) + (node.Members is { Count: > 0 }
             ? FlowText.MemberTop + FlowText.MemberLines(node).Count * FlowText.MemberStep + FlowText.MemberEnd
             : 0);
@@ -222,10 +232,9 @@ public static class GraphLayout
     /// </summary>
     private static double WidthOf(GraphNode node)
     {
-        double label = FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad
+        double label = Label.Widest(FlowText.LabelLines(node)) + 2 * LabelPad
                        + (node.Icon is null ? 0 : FlowText.IconRoom);
-        double members = FlowText.MemberLines(node).Select(line => line.Length).DefaultIfEmpty(0).Max()
-                         * FlowText.WordChar + 2 * LabelPad;
+        double members = FlowText.Word.Widest(FlowText.MemberLines(node)) + 2 * LabelPad;
         return Math.Max(BoxWidth, Math.Max(label, members));
     }
 

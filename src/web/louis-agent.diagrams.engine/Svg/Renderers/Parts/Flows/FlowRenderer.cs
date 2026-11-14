@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
@@ -13,5 +14,5 @@ internal sealed class FlowRenderer : IDiagramRenderer
     public DiagramKind Kind => DiagramKind.Flow;
 
     /// <summary>The flow as one SVG file's text.</summary>
-    public string Render(DiagramSource source) => FlowDrawing.Of(source);
+    public string Render(DiagramSource source) => FlowDrawing.Of(source, Geometries.InUse);
 }

@@ -20,4 +20,9 @@ public sealed class DotNetGeometry : IGeometry
 
     /// <summary>A point of Microsoft's.</summary>
     public IPoint Point(double x, double y) => new DotNetPoint(new Vector2((float)x, (float)y));
+
+    /// <summary>The smallest box of Microsoft's that holds every one of these, by its own <c>Union</c>.</summary>
+    public IBox Around(IEnumerable<IBox> boxes) => new DotNetBox(boxes
+        .Select(box => ((DotNetBox)Box(box.Left, box.Top, box.Width, box.Height)).Rectangle)
+        .Aggregate(RectangleF.Union));
 }

@@ -33,6 +33,9 @@ public interface IBox
     /// <summary>The point in its middle.</summary>
     IPoint Middle { get; }
 
+    /// <summary>Half its height: how far its middle is from its top and from its bottom.</summary>
+    double HalfHeight { get; }
+
     /// <summary>The box with room added on every side.</summary>
     IBox Grown(double by);
 

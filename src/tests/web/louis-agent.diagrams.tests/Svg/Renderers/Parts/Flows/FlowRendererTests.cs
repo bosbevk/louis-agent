@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Flow.Spec;
@@ -23,7 +24,7 @@ public class FlowRendererTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(drawn, Is.EqualTo(FlowDrawing.Of(Turn)));
+            Assert.That(drawn, Is.EqualTo(FlowDrawing.Of(Turn, Geometries.InUse)));
             Assert.That(drawn, Does.Contain("class=\"mrq-title\"").And.Contain("pic-panel"));
         });
     }

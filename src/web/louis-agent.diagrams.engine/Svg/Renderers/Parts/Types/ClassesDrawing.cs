@@ -3,6 +3,7 @@ using LouisAgent.Diagrams.Engine.Classes;
 using LouisAgent.Diagrams.Engine.Classes.Keys;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
@@ -28,10 +29,11 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 internal static class ClassesDrawing
 {
     /// <summary>The class chart a source holds, as one SVG file's text.</summary>
-    public static string Of(DiagramSource source)
+    public static string Of(DiagramSource source, IGeometry geometry)
     {
         var spec = source.Classes!;
-        var placed = GraphLayout.Place(ClassFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
+        var placed = GraphLayout.Place(ClassFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight,
+            geometry: geometry);
 
         // The types and their links are the body, and the key goes across the picture's width under them. Two
         // of the look's fades are a class chart's to ask for: a contract's top edge with the key's rule, and the
@@ -40,7 +42,7 @@ internal static class ClassesDrawing
             .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
             .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
-            .Body("cls-drawing", Types(spec, placed), placed.Width, placed.Height)
+            .Body("cls-drawing", Types(spec, placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {
                 var (items, height) = ClassKeyLayout.Of(spec, width);
@@ -55,7 +57,7 @@ internal static class ClassesDrawing
     /// The types and their links, from where the layout starts, back to front: a group's frame, the links with
     /// the loosest under the structure, their words, and the cards last, over the lines' ends.
     /// </summary>
-    private static SvgWriter Types(ClassesSpec spec, PlacedGraph placed)
+    private static SvgWriter Types(ClassesSpec spec, PlacedGraph placed, IGeometry geometry)
     {
         var writer = new SvgWriter();
         foreach (var group in placed.Groups) TypeCards.Frame(writer, group);
@@ -70,10 +72,10 @@ internal static class ClassesDrawing
         foreach (var (edge, kind) in links.OrderBy(link => RelationLines.Weight(link.Kind)))
             RelationLines.Draw(writer, edge, kind);
         foreach (var (edge, kind) in links.Where(link => link.Edge.Edge.Word is not null))
-            RelationLines.Word(writer, edge, kind);
+            RelationLines.Word(writer, edge, kind, geometry);
 
         var typeOf = spec.Types.ToDictionary(type => type.Id, StringComparer.Ordinal);
-        foreach (var node in placed.Nodes) TypeCards.Draw(writer, node, typeOf[node.Node.Id]);
+        foreach (var node in placed.Nodes) TypeCards.Draw(writer, node, typeOf[node.Node.Id], geometry);
         return writer;
     }
 }

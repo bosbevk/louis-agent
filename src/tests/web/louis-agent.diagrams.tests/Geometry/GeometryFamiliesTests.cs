@@ -20,7 +20,9 @@ public class GeometryFamiliesTests(IGeometry geometry)
         yield return new TestFixtureData(new DotNetGeometry()).SetArgDisplayNames("Microsoft's");
     }
 
-    /// <summary>A box 200 wide and 64 tall, its corner at 120 across and 40 down: numbers any family holds whole.</summary>
+    /// <summary>
+    /// A box 200 wide and 64 tall, its corner at 120 across and 40 down: numbers any family holds whole.
+    /// </summary>
     private IBox Box() => geometry.Box(120, 40, 200, 64);
 
     /// <summary>A box keeps the place and the size it was made with.</summary>
@@ -156,6 +158,25 @@ public class GeometryFamiliesTests(IGeometry geometry)
         });
     }
 
+    /// <summary>
+    /// The box round several is the smallest that holds them all, as a group's frame is drawn round its boxes,
+    /// and half a box's height is how far its middle is from its top.
+    /// </summary>
+    [Test]
+    public void TheBoxRoundSeveral_HoldsThemAll_AndABoxKnowsHalfItsHeight()
+    {
+        var around = geometry.Around([geometry.Box(20, 5, 10, 20), Box(), geometry.Box(0, 90, 10, 60)]);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((around.Left, around.Top, around.Right, around.Bottom), Is.EqualTo((0.0, 5.0, 320.0, 150.0)));
+            Assert.That(geometry.Around([Box()]), Is.EqualTo(Box()));
+            Assert.That(around, Is.TypeOf(Box().GetType()));
+            Assert.That(Box().HalfHeight, Is.EqualTo(32));
+            Assert.That(Box().Top + Box().HalfHeight, Is.EqualTo(Box().Middle.Y));
+        });
+    }
+
     /// <summary>A place part of the way along a box, or down it, counts from its left and its top.</summary>
     [Test]
     public void APlaceAlongABox_CountsFromItsLeftAndItsTop()
@@ -164,6 +185,26 @@ public class GeometryFamiliesTests(IGeometry geometry)
         {
             Assert.That((Box().Across(0), Box().Across(0.5), Box().Across(1)), Is.EqualTo((120.0, 220.0, 320.0)));
             Assert.That((Box().Down(0), Box().Down(0.25), Box().Down(1)), Is.EqualTo((40.0, 56.0, 104.0)));
+        });
+    }
+
+    /// <summary>
+    /// A line that runs only across and down goes as far as the two distances added, and stops a little short
+    /// of a corner on the side it came from, which is where a rounded turn starts.
+    /// </summary>
+    [Test]
+    public void APoint_KnowsHowFarAnotherIs_AndTheWayTowardsIt()
+    {
+        IPoint corner = geometry.Point(3, 4), level = geometry.Point(13, 4), above = geometry.Point(3, 0);
+        IPoint short1 = corner.Toward(level, 2), short2 = corner.Toward(above, 1.5);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(corner.StepsTo(geometry.Point(13, 1)), Is.EqualTo(13));
+            Assert.That(corner.StepsTo(corner), Is.Zero);
+            Assert.That((short1.X, short1.Y), Is.EqualTo((5.0, 4.0)));
+            Assert.That((short2.X, short2.Y), Is.EqualTo((3.0, 2.5)));
+            Assert.That(short1, Is.TypeOf(corner.GetType()));
         });
     }
 

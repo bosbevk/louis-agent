@@ -1,6 +1,8 @@
-using System.Globalization;
+using LouisAgent.Diagrams.Engine.Flow.Arrows;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Shapes;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Flow.Routing;
@@ -17,6 +19,7 @@ namespace LouisAgent.Diagrams.Engine.Flow.Routing;
 /// Orthogonal routing, the drawing style of circuit and org charts. Chosen over curves because curves between a tall
 /// column and a short one crossed each other and a reader lost which box fed which; on a shared track a crossing
 /// becomes a junction, and a back arrow's own track, lane and entry are nested so two of them never cross either.
+/// It asks each box for its edges and its middle, and makes every corner a point of the geometry it was handed.
 /// </remarks>
 internal static class EdgeRouter
 {
@@ -35,7 +38,38 @@ internal static class EdgeRouter
     /// <summary>The flat piece of an arrow that carries no word: room for the bend and the arrowhead.</summary>
     private const double Stub = 24;
 
-    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
+    /// <summary>
+    /// A word as the router makes room for it, lying on its arrow: wider than it is drawn, so it never crowds the
+    /// bend. And the room it keeps at its two ends together.
+    /// </summary>
+    private static readonly Face Lying = new(8);
+
+    private const double WordEnds = 16;
+
+    /// <summary>What a word standing beside an upright line adds to its lines' height, laid out turned.</summary>
+    private const double TurnedWordRoom = 24;
+
+    /// <summary>
+    /// How far a word stands from the upright line it is beside, and how far under the middle of its room a
+    /// word's point is put.
+    /// </summary>
+    private const double WordBeside = 8;
+
+    internal const double WordUnder = 4;
+
+    /// <summary>
+    /// The room under the last lane, where the drawing ends, and past the furthest word or loop, at its right.
+    /// </summary>
+    private const double UnderLanes = 8, PastReach = 4;
+
+    /// <summary>
+    /// Where along a box's bottom an arrow back leaves and arrives: its middle, or a little before it to leave and
+    /// a little after to arrive, for a box that does both.
+    /// </summary>
+    private const double Middle = 0.5, Before = 0.4, After = 0.6;
+
+    /// <summary>How far down a box's right side an arrow to itself leaves, and comes back in.</summary>
+    private const double LoopOut = 0.3, LoopIn = 0.7;
 
     /// <summary>
     /// The room two columns need between them so the widest word of the arrows crossing it sits on a flat piece with
@@ -68,15 +102,25 @@ internal static class EdgeRouter
     /// The room a word takes along its arrow: its length, lying on a flat piece; laid out turned, its lines' height,
     /// since once turned back it stands beside an upright line (CL60.2).
     /// </summary>
-    private static double RoomOf(string word, bool turned) =>
-        turned ? FlowText.WordStep * FlowText.WordLines(word).Count + FlowText.ChipExtra + 24 : 8 * word.Length + 16;
+    private static double RoomOf(string word, bool turned) => turned
+        ? FlowText.WordStep * FlowText.WordLines(word).Count + FlowText.ChipExtra + TurnedWordRoom
+        : Lying.Width(word) + WordEnds;
 
     /// <summary>
     /// Where a word stands on its piece: in the middle, lying on it; laid out turned, at the top of its room, so its
     /// chip starts a little under the piece's start, clear of the track it hangs from.
     /// </summary>
     private static double WordAlong(double start, double end, bool turned) =>
-        turned ? start + FlowText.ChipRise + 4 : (start + end) / 2;
+        turned ? start + FlowText.ChipRise + ChipClear : (start + end) / 2;
+
+    /// <summary>How far under the start of its piece a turned word's chip starts, clear of its track.</summary>
+    private const double ChipClear = 4;
+
+    /// <summary>
+    /// Where a word stands beside an upright line: past it by a gap, and half the word's own room. An arrow with
+    /// no word has its point just past the gap.
+    /// </summary>
+    internal static double BesideLine(double line, string? word) => line + WordBeside + Lying.Width(word ?? "") / 2;
 
     /// <summary>
     /// How many arrows with a word leave each box; a box with two or more puts its words by their targets.
@@ -95,6 +139,7 @@ internal static class EdgeRouter
         double height,
         double width,
         IArrowRule rule,
+        IGeometry geometry,
         bool turned = false,
         double bend = Bend)
     {
@@ -106,9 +151,9 @@ internal static class EdgeRouter
         var forward = edges.Except(self).Except(back).Except(down).ToList();
 
         var plans = new List<Plan>();
-        plans.AddRange(Forward(forward, byId, turned, rule));
-        plans.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
-        if (back.Count > 0) plans.AddRange(Back(back, byId, height, turned));
+        plans.AddRange(Forward(forward, byId, turned, rule, geometry));
+        plans.AddRange(down.Select(edge => Down(edge, byId[edge.From].Box, byId[edge.To].Box, geometry)));
+        if (back.Count > 0) plans.AddRange(Back(back, byId, height, turned, geometry));
         int backLanes = back.Select(edge => edge.To).Distinct().Count();
 
         // An arrow whose way would cross a box it doesn't join, as a docs chart's arrow past a rank can (CL60.2),
@@ -116,24 +161,24 @@ internal static class EdgeRouter
         double firstFree = height + BackLane + Step * backLanes;
         int detours = 0;
         var placed = plans.Select(plan => Connector(Detours.Crosses(plan, byId)
-            ? Detours.Detour(plan, byId, firstFree + Step * detours++)
+            ? Detours.Detour(plan, byId, firstFree + Step * detours++, geometry)
             : plan, bend)).ToList();
-        placed.AddRange(self.Select(edge => Connector(SelfLoop(edge, byId[edge.From]), bend)));
+        placed.AddRange(self.Select(edge => Connector(SelfLoop(edge, byId[edge.From].Box, geometry), bend)));
 
         // Room for the lanes under the drawing, and for a track or a loop past the last column.
-        if (back.Count > 0) height += BackLane + Step * (backLanes - 1) + 8;
-        if (detours > 0) height = firstFree + Step * (detours - 1) + 8;
+        if (back.Count > 0) height += BackLane + Step * (backLanes - 1) + UnderLanes;
+        if (detours > 0) height = firstFree + Step * (detours - 1) + UnderLanes;
 
         // A word reaches along its piece half its length, or laid out turned its lines' height.
         double Reach(PlacedEdge edge) => (edge.Edge.Word, turned) switch
         {
             (null, _) => 0,
             ({ } word, true) => FlowText.WordStep * FlowText.WordLines(word).Count,
-            ({ } word, false) => 4 * word.Length
+            ({ } word, false) => Lying.Width(word) / 2
         };
 
-        double reach = placed.Count == 0 ? 0 : placed.Max(edge => Math.Max(edge.WordX + Reach(edge), edge.Right));
-        return (placed, height, Math.Max(width, reach + 4));
+        double reach = placed.Count == 0 ? 0 : placed.Max(edge => Math.Max(edge.Word.X + Reach(edge), edge.Right));
+        return (placed, height, Math.Max(width, reach + PastReach));
     }
 
     /// <summary>
@@ -145,15 +190,15 @@ internal static class EdgeRouter
     /// middle.
     /// </summary>
     private static IEnumerable<Plan> Forward(List<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule)
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule, IGeometry geometry)
     {
         var wordsOut = WordsOut(forward);
         foreach (var edge in forward)
         {
             var from = byId[edge.From];
             var to = byId[edge.To];
-            double x1 = from.X + from.W, y1 = from.Y + from.H / 2;
-            double x2 = to.X, y2 = rule.EntryOf(edge, forward, byId);
+            double x1 = from.Box.Right, y1 = from.Box.Middle.Y;
+            double x2 = to.Box.Left, y2 = rule.EntryOf(edge, forward, byId);
             var (track, last) = Track(edge, x1, x2, forward, byId, turned, rule);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
             // An arrow starts and ends on the outline of its boxes' shapes: a decision's end is inside its box
@@ -163,8 +208,12 @@ internal static class EdgeRouter
             // once turned back, and no drop moves it.
             double word = (bySource ? y1 : y2) + (turned ? 0 : rule.WordDrop);
             // A word by its target stands past the gap's last track, clear of the other sources' lines.
-            yield return new Plan(edge, [(leaves, y1), (track, y1), (track, y2), (arrives, y2)],
-                bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned), word);
+            double along = bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned);
+            yield return new Plan(edge,
+            [
+                geometry.Point(leaves, y1), geometry.Point(track, y1), geometry.Point(track, y2),
+                geometry.Point(arrives, y2)
+            ], geometry.Point(along, word));
         }
     }
 
@@ -175,11 +224,11 @@ internal static class EdgeRouter
     private static (double Track, double Last) Track(GraphEdge edge, double x1, double x2, List<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule)
     {
-        bool Between(PlacedNode node) => node.X >= x1 && node.X < x2;
+        bool Between(PlacedNode node) => node.Box.Left >= x1 && node.Box.Left < x2;
         if (byId.Values.Any(Between)) return ((x1 + x2) / 2, (x1 + x2) / 2);
 
         // Every arrow from the same column's right edge to the same column's left edge shares this gap.
-        var gap = forward.Where(other => byId[other.From].X + byId[other.From].W == x1 && byId[other.To].X == x2)
+        var gap = forward.Where(other => byId[other.From].Box.Right == x1 && byId[other.To].Box.Left == x2)
             .ToList();
         var (words, wordsIn) = RoomsFor(gap, forward, turned);
         var (frameOut, frameIn) = FrameRooms(gap, id => byId[id].Node.Group, turned);
@@ -205,8 +254,12 @@ internal static class EdgeRouter
         var arrows = between.ToList();
         bool leaves = arrows.Any(edge => groupOf(edge.From) is { } group && group != groupOf(edge.To));
         bool enters = arrows.Any(edge => groupOf(edge.To) is { } group && group != groupOf(edge.From));
-        return (leaves ? Bands.Pad + 8 : 0, enters ? Bands.Pad + 8 + (turned ? Bands.LabelRoom : 0) : 0);
+        return (leaves ? Bands.Pad + FrameClear : 0,
+            enters ? Bands.Pad + FrameClear + (turned ? Bands.LabelRoom : 0) : 0);
     }
+
+    /// <summary>How far outside a group's frame a bend stands.</summary>
+    private const double FrameClear = 8;
 
     /// <summary>
     /// The arrows back to earlier columns: all the arrows into one box share one track past the last column, one lane
@@ -214,7 +267,7 @@ internal static class EdgeRouter
     /// so two sets never cross, and the tracks all start past any loop to itself and its word.
     /// </summary>
     private static IEnumerable<Plan> Back(List<GraphEdge> back, IReadOnlyDictionary<string, PlacedNode> byId,
-        double height, bool turned)
+        double height, bool turned, IGeometry geometry)
     {
         var targets = back.Select(edge => edge.To).Distinct().ToList();
         var sources = back.Select(edge => edge.From).ToHashSet();
@@ -227,13 +280,17 @@ internal static class EdgeRouter
             // (Louis, of the runner and MCP charts); a box in the way sends it on a detour instead. A box that both
             // sends and receives one sends a little before its middle and receives a little after, so the two
             // never share a stretch.
-            double outAt = targets.Contains(edge.From) ? 0.4 : 0.5, inAt = sources.Contains(edge.To) ? 0.6 : 0.5;
-            double x1 = from.X + from.W * outAt, y1 = from.Y + from.H, lane = height + BackLane + Step * at;
-            double entry = to.X + to.W * inAt, y2 = to.Y + to.H;
+            double outAt = targets.Contains(edge.From) ? Before : Middle;
+            double inAt = sources.Contains(edge.To) ? After : Middle;
+            double x1 = from.Box.Across(outAt), y1 = from.Box.Bottom, lane = height + BackLane + Step * at;
+            double entry = to.Box.Across(inAt), y2 = to.Box.Bottom;
             // It starts and ends on the outline, which under a decision or a pill is higher towards its ends.
             double leaves = y1 - NodeShapes.Under(from, x1, turned), arrives = y2 - NodeShapes.Under(to, entry, turned);
-            yield return new Plan(edge, [(x1, leaves), (x1, lane), (entry, lane), (entry, arrives)], (x1 + entry) / 2,
-                lane + 4);
+            yield return new Plan(edge,
+            [
+                geometry.Point(x1, leaves), geometry.Point(x1, lane), geometry.Point(entry, lane),
+                geometry.Point(entry, arrives)
+            ], geometry.Point((x1 + entry) / 2, lane + WordUnder));
         }
     }
 
@@ -241,58 +298,54 @@ internal static class EdgeRouter
     /// An arrow inside a column (a pipeline a turn runs down): a straight drop from the box's bottom middle to the next
     /// box's top middle, its word beside it in the gap. Rising, it climbs the same way, from the top to the bottom.
     /// </summary>
-    private static Plan Down(GraphEdge edge, PlacedNode from, PlacedNode to)
+    private static Plan Down(GraphEdge edge, IBox from, IBox to, IGeometry geometry)
     {
-        bool falls = to.Y >= from.Y;
-        double x = from.X + from.W / 2, y1 = falls ? from.Y + from.H : from.Y, y2 = falls ? to.Y : to.Y + to.H;
-        return new Plan(edge, [(x, y1), (x, y2)], x + 8 + 4 * (edge.Word?.Length ?? 0), (y1 + y2) / 2 + 4);
+        bool falls = to.Top >= from.Top;
+        double x = from.Middle.X, y1 = falls ? from.Bottom : from.Top, y2 = falls ? to.Top : to.Bottom;
+        return new Plan(edge, [geometry.Point(x, y1), geometry.Point(x, y2)],
+            geometry.Point(BesideLine(x, edge.Word), (y1 + y2) / 2 + WordUnder));
     }
 
     /// <summary>
     /// An arrow from a box to itself: out of its right side near the top, round and back in near the bottom, its word
     /// beside it.
     /// </summary>
-    private static Plan SelfLoop(GraphEdge edge, PlacedNode box)
+    private static Plan SelfLoop(GraphEdge edge, IBox box, IGeometry geometry)
     {
-        double x = box.X + box.W, y1 = box.Y + box.H * 0.3, y2 = box.Y + box.H * 0.7, reach = x + SelfReach;
-        return new Plan(edge, [(x, y1), (reach, y1), (reach, y2), (x, y2)], reach + 8 + 4 * (edge.Word?.Length ?? 0),
-            box.Y + box.H / 2 + 4);
+        double x = box.Right, y1 = box.Down(LoopOut), y2 = box.Down(LoopIn), reach = x + SelfReach;
+        return new Plan(edge,
+        [
+            geometry.Point(x, y1), geometry.Point(reach, y1), geometry.Point(reach, y2), geometry.Point(x, y2)
+        ], geometry.Point(BesideLine(reach, edge.Word), box.Middle.Y + WordUnder));
     }
 
     /// <summary>
-    /// The path through the points, each bend rounded by a quarter-curve that starts and ends <paramref name="bend"/>
+    /// The way through the points, each bend rounded by a quarter-curve that starts and ends <paramref name="bend"/>
     /// from the corner, or less when a piece is shorter, so a short jog between two wide corners reads as a soft S;
     /// the length is the pieces' sum, close enough for the stroke that draws it.
     /// </summary>
     private static PlacedEdge Connector(Plan plan, double bend)
     {
-        var (edge, points, wordX, wordY) = plan;
-        var path = new System.Text.StringBuilder($"M {N(points[0].X)} {N(points[0].Y)}");
+        var (edge, points, word) = plan;
+        var way = ArrowPath.From(points[0]);
         double length = 0;
-        for (int at = 1; at < points.Length; at++)
+        for (int at = 1; at < points.Count; at++)
         {
-            var (fromX, fromY) = points[at - 1];
-            var (toX, toY) = points[at];
-            length += Math.Abs(toX - fromX) + Math.Abs(toY - fromY);
-            if (at == points.Length - 1)
+            IPoint from = points[at - 1], to = points[at];
+            length += from.StepsTo(to);
+            if (at == points.Count - 1)
             {
-                path.Append($" L {N(toX)} {N(toY)}");
+                way = way.To(to);
                 continue;
             }
 
             // Stop short of the corner, then curve through it towards the next point.
-            var (nextX, nextY) = points[at + 1];
-            double round = Math.Min(bend,
-                Math.Min(Math.Abs(toX - fromX) + Math.Abs(toY - fromY), Math.Abs(nextX - toX) + Math.Abs(nextY - toY)) /
-                2);
+            var next = points[at + 1];
+            double round = Math.Min(bend, Math.Min(from.StepsTo(to), to.StepsTo(next)) / 2);
             if (round < 1) continue;
-            var (inX, inY) = (toX - Math.Sign(toX - fromX) * round, toY - Math.Sign(toY - fromY) * round);
-            var (outX, outY) = (toX + Math.Sign(nextX - toX) * round, toY + Math.Sign(nextY - toY) * round);
-            path.Append($" L {N(inX)} {N(inY)} Q {N(toX)} {N(toY)} {N(outX)} {N(outY)}");
+            way = way.To(to.Toward(from, round)).Round(to, to.Toward(next, round));
         }
 
-        return new PlacedEdge(edge, path.ToString(), length, wordX, wordY, points.Max(point => point.X));
+        return new PlacedEdge(edge, way, length, word, points.Max(point => point.X));
     }
-
-    private static string N(double value) => value.ToString("0.#", Invariant);
 }

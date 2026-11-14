@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
 
 namespace LouisAgent.Diagrams.Engine.Flow.Routing;
 
@@ -8,52 +9,60 @@ namespace LouisAgent.Diagrams.Engine.Flow.Routing;
 /// </summary>
 internal static class Detours
 {
+    /// <summary>How far inside a box a line must pass to count as crossing it: touching its edge does not.</summary>
+    private const double In = 1;
+
     /// <summary>Whether a straight piece of the way passes through a box the arrow doesn't join, a pixel in.</summary>
     public static bool Crosses(Plan plan, IReadOnlyDictionary<string, PlacedNode> byId) =>
-        byId.Values.Where(box => box.Node.Id != plan.Edge.From && box.Node.Id != plan.Edge.To
-                                                               && !Ranks.IsWaypoint(box.Node.Id)).Any(box =>
-            plan.Points.Zip(plan.Points.Skip(1)).Any(piece =>
-                Math.Min(piece.First.X, piece.Second.X) < box.X + box.W - 1
-                && Math.Max(piece.First.X, piece.Second.X) > box.X + 1
-                && Math.Min(piece.First.Y, piece.Second.Y) < box.Y + box.H - 1
-                && Math.Max(piece.First.Y, piece.Second.Y) > box.Y + 1));
+        byId.Values.Where(node => node.Node.Id != plan.Edge.From && node.Node.Id != plan.Edge.To
+                                                                 && !Ranks.IsWaypoint(node.Node.Id))
+            .Select(node => node.Box).Any(box =>
+                plan.Points.Zip(plan.Points.Skip(1)).Any(piece =>
+                    Math.Min(piece.First.X, piece.Second.X) < box.Right - In
+                    && Math.Max(piece.First.X, piece.Second.X) > box.Left + In
+                    && Math.Min(piece.First.Y, piece.Second.Y) < box.Bottom - In
+                    && Math.Max(piece.First.Y, piece.Second.Y) > box.Top + In));
 
     /// <summary>
     /// The way round: out of the source's right side into the gap beside it, down to a lane under the drawing, along
     /// it to the gap by the target, and up into the target's near side; inside one column, down the gap beside it.
     /// Every piece runs in a gap or under the boxes, so it crosses none. Its word sits on the lane.
     /// </summary>
-    public static Plan Detour(Plan plan, IReadOnlyDictionary<string, PlacedNode> byId, double lane)
+    /// <remarks>Guard clauses, one way round each from the top (ADR 0051).</remarks>
+    public static Plan Detour(Plan plan, IReadOnlyDictionary<string, PlacedNode> byId, double lane,
+        IGeometry geometry)
     {
-        var (from, to) = (byId[plan.Edge.From], byId[plan.Edge.To]);
-        double x1 = from.X + from.W, y1 = from.Y + from.H / 2, y2 = to.Y + to.H / 2, out1 = x1 + EdgeRouter.Step;
-        if (to.X == from.X)
+        var target = byId[plan.Edge.To];
+        IBox from = byId[plan.Edge.From].Box, to = target.Box;
+        double x1 = from.Right, y1 = from.Middle.Y, y2 = to.Middle.Y, out1 = x1 + EdgeRouter.Step;
+        IPoint At(double x, double y) => geometry.Point(x, y);
+
+        // Inside one column: down the gap beside it, its word beside the upright line.
+        if (to.Left == from.Left)
             return plan with
             {
-                Points = [(x1, y1), (out1, y1), (out1, y2), (to.X + to.W, y2)],
-                WordX = out1 + 8 + 4 * (plan.Edge.Word?.Length ?? 0),
-                WordY = (y1 + y2) / 2 + 4
+                Points = [At(x1, y1), At(out1, y1), At(out1, y2), At(to.Right, y2)],
+                Word = At(EdgeRouter.BesideLine(out1, plan.Edge.Word), (y1 + y2) / 2 + EdgeRouter.WordUnder)
             };
 
         // Back to an earlier column, it comes up into the target's bottom middle, away from the side its own arrows
         // leave by, unless a box stands under the target in its column.
-        double entry = to.X + to.W / 2;
-        bool under = byId.Values.Any(box => box != to && box.X < entry && box.X + box.W > entry && box.Y > to.Y);
-        if (to.X < from.X && !under)
+        double entry = to.Middle.X;
+        bool under = byId.Values.Where(node => node != target).Select(node => node.Box)
+            .Any(box => box.Left < entry && box.Right > entry && box.Top > to.Top);
+        if (to.Left < from.Left && !under)
             return plan with
             {
-                Points = [(x1, y1), (out1, y1), (out1, lane), (entry, lane), (entry, to.Y + to.H)],
-                WordX = (out1 + entry) / 2,
-                WordY = lane + 4
+                Points = [At(x1, y1), At(out1, y1), At(out1, lane), At(entry, lane), At(entry, to.Bottom)],
+                Word = At((out1 + entry) / 2, lane + EdgeRouter.WordUnder)
             };
 
-        bool ahead = to.X > from.X;
-        double x2 = ahead ? to.X : to.X + to.W, in2 = ahead ? x2 - EdgeRouter.Step : x2 + EdgeRouter.Step;
+        bool ahead = to.Left > from.Left;
+        double x2 = ahead ? to.Left : to.Right, in2 = ahead ? x2 - EdgeRouter.Step : x2 + EdgeRouter.Step;
         return plan with
         {
-            Points = [(x1, y1), (out1, y1), (out1, lane), (in2, lane), (in2, y2), (x2, y2)],
-            WordX = (out1 + in2) / 2,
-            WordY = lane + 4
+            Points = [At(x1, y1), At(out1, y1), At(out1, lane), At(in2, lane), At(in2, y2), At(x2, y2)],
+            Word = At((out1 + in2) / 2, lane + EdgeRouter.WordUnder)
         };
     }
 }

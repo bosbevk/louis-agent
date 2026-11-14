@@ -21,7 +21,7 @@ public class FlowMembersTests
     {
         var node = new GraphNode("p", "ISpeechProvider", Members: members.Length == 0 ? null : members);
         var placed = GraphLayout.Place(new GraphSpec([node], [])).Nodes.Single();
-        return [placed.W, placed.H];
+        return [placed.Box.Width, placed.Box.Height];
     }
 
     /// <summary>A box is as wide as its longest member needs.</summary>

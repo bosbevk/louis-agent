@@ -1,4 +1,6 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Flow;
@@ -18,6 +20,9 @@ public static class FlowText
     /// </summary>
     public const double WordChar = 7;
 
+    /// <summary>An arrow's word, and a member's line: the face that measures them.</summary>
+    public static readonly Face Word = new(WordChar);
+
     /// <summary>How far a word's next line stands under the one before.</summary>
     public const double WordStep = 12;
 
@@ -35,18 +40,18 @@ public static class FlowText
     public static IReadOnlyList<string> WordLines(string word) => word.Split('\n');
 
     /// <summary>How wide a word's chip is: its longest line and the room either side.</summary>
-    public static double WordWidth(string word) =>
-        WordLines(word).Max(line => line.Length) * WordChar + 2 * ChipPad;
+    public static double WordWidth(string word) => Word.Widest(WordLines(word)) + 2 * ChipPad;
 
     /// <summary>
     /// The ground a word covers, its chip, centred on the word's point and just above it: the layout keeps it clear
-    /// of lines and other words, and the renderer draws the chip there.
+    /// of lines and other words, and the renderer draws the chip there. An arrow with no word covers no ground, at
+    /// its word's point.
     /// </summary>
-    public static (double X, double Y, double W, double H) WordBox(PlacedEdge edge)
+    public static IBox WordBox(PlacedEdge edge, IGeometry geometry)
     {
-        if (edge.Edge.Word is not { } word) return (edge.WordX, edge.WordY, 0, 0);
+        if (edge.Edge.Word is not { } word) return geometry.Box(edge.Word.X, edge.Word.Y, 0, 0);
         double width = WordWidth(word);
-        return (edge.WordX - width / 2, edge.WordY - ChipRise, width,
+        return geometry.Box(edge.Word.X - width / 2, edge.Word.Y - ChipRise, width,
             WordStep * WordLines(word).Count + ChipExtra);
     }
 
@@ -60,7 +65,7 @@ public static class FlowText
     public const double IconRoom = BadgeSize + BadgeGap;
 
     /// <summary>Where a label starts in a box with an icon: after the badge, from the left.</summary>
-    public static double LabelLeft(PlacedNode node) => node.X + BadgeLeft + IconRoom;
+    public static double LabelLeft(PlacedNode node) => node.Box.Left + BadgeLeft + IconRoom;
 
     /// <summary>How far a label's next line stands under the one before (CL60.2).</summary>
     public const double LabelStep = 16;
@@ -89,15 +94,22 @@ public static class FlowText
     /// Where the label's first line sits: its lines centred in a plain box; in a noted one, from the top, above the
     /// note's lines.
     /// </summary>
-    public static double LabelY(PlacedNode node) =>
-        node.Node.Note is null ? HeadHeight(node) / 2 + 5 - (LabelLines(node.Node).Count - 1) * LabelStep / 2 : 28;
+    public static double LabelY(PlacedNode node) => node.Node.Note is null
+        ? HeadHeight(node) / 2 + Baseline - (LabelLines(node.Node).Count - 1) * LabelStep / 2
+        : NotedLabelTop;
+
+    /// <summary>
+    /// How far under the middle of its room a line's baseline stands, so the words look centred, and where a
+    /// label's first line sits in a box that has a note under it.
+    /// </summary>
+    private const double Baseline = 5, NotedLabelTop = 28;
 
     /// <summary>
     /// How tall a placed box's head is: the whole box, or with members (CL60.4), the part above the divider, where the
     /// label and the badge stand.
     /// </summary>
     public static double HeadHeight(PlacedNode node) =>
-        node.Node.Members is { Count: > 0 } ? GraphLayout.HeadOf(node.Node) : node.H;
+        node.Node.Members is { Count: > 0 } ? GraphLayout.HeadOf(node.Node) : node.Box.Height;
 
     /// <summary>Where the note's first line sits, under however many lines the label has.</summary>
     public static double NoteY(PlacedNode node) => NoteTop + (LabelLines(node.Node).Count - 1) * LabelStep;

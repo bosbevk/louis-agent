@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
@@ -34,7 +35,7 @@ public class ClassesRendererTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(drawn, Is.EqualTo(ClassesDrawing.Of(Speech)));
+            Assert.That(drawn, Is.EqualTo(ClassesDrawing.Of(Speech, Geometries.InUse)));
             Assert.That(drawn, Does.Contain("class=\"mrq-title\"").And.Contain("class=\"cls-line holds\"").And
                 .Contain("class=\"cls-mark\"").And.Contain("class=\"cls-key\""));
             Assert.That(drawn, Does.Not.Contain("class=\"box").And.Not.Contain("class=\"word-chip"));
