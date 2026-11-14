@@ -8,9 +8,12 @@ svg { --tf: var(--d2); --tl: var(--quiet); --ti: var(--text); }
   stroke-opacity: .5; stroke-linejoin: round; filter: drop-shadow(0 8px 9px var(--lift)); }
 .group { fill: var(--d1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--lift)); }
 .sheen { fill: none; stroke: var(--sheen); stroke-width: 1; stroke-linecap: round; }
-.name { fill: var(--text); font: 600 13.5px var(--sans); }
-.badge { fill: color-mix(in srgb, var(--tl) 22%, var(--d2)); stroke: var(--tl); stroke-width: 1; stroke-opacity: .6; }
-.icon { fill: none; stroke: var(--tl); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.name { fill: var(--text); font: 600 14.5px var(--sans); }
+.marker { fill: var(--tl); }
+.panel.shape { stroke-width: 1.5; stroke-opacity: 1;
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--tl) 55%, transparent)) drop-shadow(0 8px 9px var(--lift)); }
+.badge { fill: var(--tl); }
+.icon { fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .line { fill: none; stroke: var(--tl); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .march { fill: none; stroke: var(--march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
   animation: march 1.1s linear infinite; }
@@ -33,10 +36,10 @@ svg { --tf: var(--d2); --tl: var(--quiet); --ti: var(--text); }
 .t-amber { --tf: var(--amber-fill); --tl: var(--amber-line); --ti: var(--amber-ink); }</style><rect class="ground" x="-24" y="-24" width="828" height="264" rx="16"/><path class="dots" d=""/>
 <text class="title" x="0" y="26">The shapes a box may have</text>
 <text class="sub" x="0" y="50">left out, a box is the box it always was</text>
-<g class="t-green"><rect class="panel" x="0" y="96" width="170" height="64" rx="10"/><path class="sheen" d="M 10 97 H 160"/><rect class="badge" x="14" y="113" width="30" height="30" rx="8"/><g class="icon" transform="translate(20 119) scale(.75)"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></g><text class="name" x="54" y="132.5">A step</text></g>
-<g><path class="panel" d="M 291 80 L 386 128 L 291 176 L 196 128 Z"/><text class="name" x="291" y="132.5" text-anchor="middle">A decision?</text></g>
-<g class="t-amber"><path class="panel" d="M 430 96 L 592 96 L 574 160 L 412 160 Z"/><rect class="badge" x="434" y="113" width="30" height="30" rx="8"/><g class="icon" transform="translate(440 119) scale(.75)"><path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></g><text class="name" x="474" y="132.5">Data</text></g>
-<g class="t-blue"><rect class="panel" x="618" y="96" width="162" height="64" rx="32"/><path class="sheen" d="M 650 97 H 748"/><rect class="badge" x="640" y="113" width="30" height="30" rx="8"/><g class="icon" transform="translate(646 119) scale(.75)"><path d="M8 9h8"/><path d="M8 13h6"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z"/></g><text class="name" x="680" y="132.5">A start</text></g>
+<g class="t-green"><rect class="panel" x="0" y="96" width="170" height="64" rx="10"/><path class="sheen" d="M 10 97 H 160"/><rect class="marker" x="11" y="117" width="4" height="22" rx="2"/><rect class="badge" x="22" y="113" width="30" height="30" rx="8"/><g class="icon" transform="translate(28 119) scale(.75)"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></g><text class="name" x="62" y="133">A step</text></g>
+<g><path class="panel shape" d="M 291 80 L 386 128 L 291 176 L 196 128 Z"/><rect class="marker" x="280" y="107" width="22" height="4" rx="2"/><text class="name" x="291" y="133" text-anchor="middle">A decision?</text></g>
+<g class="t-amber"><path class="panel shape" d="M 430 96 L 592 96 L 574 160 L 412 160 Z"/><rect class="marker" x="435" y="117" width="4" height="22" rx="2"/><rect class="badge" x="446" y="113" width="30" height="30" rx="8"/><g class="icon" transform="translate(452 119) scale(.75)"><path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></g><text class="name" x="486" y="133">Data</text></g>
+<g class="t-blue"><rect class="panel shape" x="618" y="96" width="162" height="64" rx="32"/><path class="sheen" d="M 650 97 H 748"/><rect class="marker" x="641" y="117" width="4" height="22" rx="2"/><rect class="badge" x="652" y="113" width="30" height="30" rx="8"/><g class="icon" transform="translate(658 119) scale(.75)"><path d="M8 9h8"/><path d="M8 13h6"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z"/></g><text class="name" x="692" y="133">A start</text></g>
 <text class="word" x="85" y="204" text-anchor="middle">no shape, or "box"</text>
 <text class="word" x="291" y="204" text-anchor="middle">"decision"</text>
 <text class="word" x="502" y="204" text-anchor="middle">"data"</text>
