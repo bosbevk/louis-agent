@@ -274,11 +274,11 @@ svg {
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="109" y="311" text-anchor="start">8 others</text>
+      <text class="flow-name" x="109" y="311" text-anchor="start">9 others</text>
       <text class="flow-name" x="109" y="327" text-anchor="start">plain, data or a start and end</text>
       <path class="pic-panel depth-2 pic-edge tone-teal flow-shape" d="M630 268L834 314L630 360L426 314Z" />
       <rect class="pic-fill tone-teal" x="619" y="287" width="22" height="4" rx="2" />
-      <text class="flow-name" x="630" y="311" text-anchor="middle">5 decisions</text>
+      <text class="flow-name" x="630" y="311" text-anchor="middle">4 decisions</text>
       <text class="flow-name" x="630" y="327" text-anchor="middle">pointed ends, six corners</text>
       <circle class="pic-port pic-edge tone-teal" cx="630" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="204" cy="202" r="4" />

@@ -19,14 +19,14 @@
       },
       {
         "id": "decision",
-        "label": "5 decisions\npointed ends, six corners",
+        "label": "4 decisions\npointed ends, six corners",
         "icon": "chart",
         "tone": "teal",
         "shape": "decision"
       },
       {
         "id": "plain",
-        "label": "8 others\nplain, data or a start and end",
+        "label": "9 others\nplain, data or a start and end",
         "icon": "box",
         "tone": "teal"
       },
