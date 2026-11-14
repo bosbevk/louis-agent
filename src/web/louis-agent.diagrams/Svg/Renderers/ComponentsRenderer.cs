@@ -138,7 +138,7 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         if (!ofState) writer.Circle(port.X, port.Y, 4, $"pic-port pic-edge{Tone(line.Tone)}");
 
         // What a neighbour gives is written in the neighbour. Any other word stands over its line.
-        string? word = reads ? DiagramText.Format(DiagramMessage.ComponentReads) : line.Word;
+        string? word = reads ? DiagramText.Format(DrawingMessage.ComponentReads) : line.Word;
         if (line.Kind == LineKind.Gives || word is null) return;
         writer.Text((line.Points[0].X + line.Points[^1].X) / 2, line.Points[0].Y - 7, word, "pic-word");
     }

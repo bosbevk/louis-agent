@@ -9,7 +9,7 @@
       { "id": "refusals", "name": "DiagramMessage", "kind": "enum, step 2", "group": "diagrams", "members": [ "the 25 refusals" ] },
       { "id": "text", "name": "DiagramText", "kind": "static, step 2", "group": "diagrams", "members": [ "Format(message) string", "Format(message, holes) string" ] },
       { "id": "spec", "name": "GraphSpec", "kind": "record, stays", "group": "diagrams", "members": [ "one of the kinds' specs" ] },
-      { "id": "words", "name": "DrawingMessage", "kind": "enum, steps 2 and 3", "group": "engine", "members": [ "the 44 words a drawing writes", "NoRenderer" ] },
+      { "id": "words", "name": "DrawingMessage", "kind": "enum, steps 2 and 3", "group": "engine", "members": [ "the 42 words a drawing writes", "NoRenderer" ] },
       { "id": "renderers", "name": "DiagramRenderers", "kind": "static, step 3", "group": "engine", "members": [ "Render(source) string" ] },
       { "id": "writer", "name": "SvgWriter", "kind": "class, step 3", "group": "engine" },
       { "id": "layout", "name": "GraphLayout", "kind": "static, step 4", "group": "engine", "members": [ "Place(spec) PlacedGraph" ] }

@@ -329,7 +329,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-name" x="436" y="354" text-anchor="start">DrawingMessage</text>
       <text class="cls-kind" x="436" y="370" text-anchor="start">enum, steps 2 and 3</text>
       <path class="cls-divide" d="M398 390H601" />
-      <text class="cls-member" x="398" y="408" text-anchor="start">the 44 words a drawing writes</text>
+      <text class="cls-member" x="398" y="408" text-anchor="start">the 42 words a drawing writes</text>
       <text class="cls-member" x="398" y="422" text-anchor="start">NoRenderer</text>
       <rect class="cls-cover" x="384" y="461" width="231" height="96" rx="14" />
       <rect class="mrq-glass" x="384" y="461" width="231" height="96" rx="14" />

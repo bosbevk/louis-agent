@@ -63,11 +63,11 @@ public static class SequenceKeyLayout
     private static IEnumerable<SequenceKeyItem> Lines(List<SequenceStep> steps)
     {
         if (steps.OfType<MessageStep>().Any())
-            yield return new SequenceKeyItem(SequenceKeyKind.Call, Text(DiagramMessage.SequenceCall), 0, 0, Line);
+            yield return new SequenceKeyItem(SequenceKeyKind.Call, Text(DrawingMessage.SequenceCall), 0, 0, Line);
         if (steps.OfType<ReplyStep>().Any())
-            yield return new SequenceKeyItem(SequenceKeyKind.Answer, Text(DiagramMessage.SequenceAnswer), 0, 0, Line);
+            yield return new SequenceKeyItem(SequenceKeyKind.Answer, Text(DrawingMessage.SequenceAnswer), 0, 0, Line);
         if (steps.OfType<NoteStep>().Any())
-            yield return new SequenceKeyItem(SequenceKeyKind.Note, Text(DiagramMessage.SequenceNote), 0, 0, Panel);
+            yield return new SequenceKeyItem(SequenceKeyKind.Note, Text(DrawingMessage.SequenceNote), 0, 0, Panel);
     }
 
     /// <summary>
@@ -80,13 +80,13 @@ public static class SequenceKeyLayout
             SequenceMeasures.Marquee.KindWidth(kind), Block: kind));
 
     /// <summary>The message that says what a kind of block does.</summary>
-    private static DiagramMessage Meaning(BlockKind kind) => kind switch
+    private static DrawingMessage Meaning(BlockKind kind) => kind switch
     {
-        BlockKind.Loop => DiagramMessage.SequenceLoop,
-        BlockKind.Opt => DiagramMessage.SequenceOpt,
-        _ => DiagramMessage.SequenceAlt
+        BlockKind.Loop => DrawingMessage.SequenceLoop,
+        BlockKind.Opt => DrawingMessage.SequenceOpt,
+        _ => DrawingMessage.SequenceAlt
     };
 
     /// <summary>A message's words, which have no holes.</summary>
-    private static string Text(DiagramMessage message) => DiagramText.Format(message);
+    private static string Text(DrawingMessage message) => DiagramText.Format(message);
 }

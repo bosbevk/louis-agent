@@ -27,7 +27,7 @@ internal static class ComponentsKey
     /// <summary>The key, where the layout put it.</summary>
     public static void Draw(SvgWriter writer, PlacedKey key)
     {
-        writer.Text(key.X, key.Y + 10, DiagramText.Format(DiagramMessage.KeyHeading), "pic-group", "start");
+        writer.Text(key.X, key.Y + 10, DiagramText.Format(DrawingMessage.KeyHeading), "pic-group", "start");
         foreach (var (row, at) in key.Rows.Select((row, at) => (row, at)))
             DrawRow(writer, row, key.X, key.Y + KeyLayout.Heading + at * KeyLayout.Row + KeyLayout.Row / 2);
     }
@@ -38,8 +38,8 @@ internal static class ComponentsKey
         double words = row.Kind switch
         {
             KeyRowKind.Tone => ToneBadge(writer, row, x, y),
-            KeyRowKind.HandedDown => Pin(writer, DiagramMessage.ComponentHandedDown, false, Tone(row), x, y),
-            KeyRowKind.SaidBackUp => Pin(writer, DiagramMessage.ComponentSaidBackUp, true, Tone(row), x, y),
+            KeyRowKind.HandedDown => Pin(writer, DrawingMessage.ComponentHandedDown, false, Tone(row), x, y),
+            KeyRowKind.SaidBackUp => Pin(writer, DrawingMessage.ComponentSaidBackUp, true, Tone(row), x, y),
             KeyRowKind.Reads => Read(writer, x, y),
             KeyRowKind.Holds => Pill(writer, Tone(row), x, y),
             _ => 0
@@ -55,7 +55,7 @@ internal static class ComponentsKey
     }
 
     /// <summary>A pin's sample: a real pin with its own word on it. Says where the words beside it start.</summary>
-    private static double Pin(SvgWriter writer, DiagramMessage word, bool up, string tone, double x, double y)
+    private static double Pin(SvgWriter writer, DrawingMessage word, bool up, string tone, double x, double y)
     {
         string name = DiagramText.Format(word);
         var sample = new PlacedPin("", name, up, x, y, ComponentSizes.PinWidth(name));

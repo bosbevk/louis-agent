@@ -32,19 +32,19 @@ internal static class CompositeKey
     /// The key's items for a composite, across a width, and how tall the key is. An item only for what the
     /// picture has: a pin each way, a plain line, and a line that runs.
     /// </summary>
-    public static (IReadOnlyList<(DiagramMessage Means, double X, double Y, double Wide)> Items, double Height) Of(
+    public static (IReadOnlyList<(DrawingMessage Means, double X, double Y, double Wide)> Items, double Height) Of(
         CompositeSpec spec, double width)
     {
         var ports = spec.Ports ?? [];
-        double pin = ComponentSizes.PinWidth(DiagramText.Format(DiagramMessage.CompositePort));
-        var shown = new List<(DiagramMessage Means, double Wide)>();
-        if (ports.Any(port => port.Side == PortSide.In)) shown.Add((DiagramMessage.CompositeAsked, pin));
-        if (ports.Any(port => port.Side == PortSide.Out)) shown.Add((DiagramMessage.CompositeNeeded, pin));
-        if (spec.Connectors?.Count > 0) shown.Add((DiagramMessage.CompositeTogether, Line));
-        if (ports.Count > 0) shown.Add((DiagramMessage.CompositePassedOn, Line));
+        double pin = ComponentSizes.PinWidth(DiagramText.Format(DrawingMessage.CompositePort));
+        var shown = new List<(DrawingMessage Means, double Wide)>();
+        if (ports.Any(port => port.Side == PortSide.In)) shown.Add((DrawingMessage.CompositeAsked, pin));
+        if (ports.Any(port => port.Side == PortSide.Out)) shown.Add((DrawingMessage.CompositeNeeded, pin));
+        if (spec.Connectors?.Count > 0) shown.Add((DrawingMessage.CompositeTogether, Line));
+        if (ports.Count > 0) shown.Add((DrawingMessage.CompositePassedOn, Line));
 
         // Side by side, each after the one before, and on to a new row at the left when the width is full.
-        var items = new List<(DiagramMessage, double, double, double)>();
+        var items = new List<(DrawingMessage, double, double, double)>();
         double x = 0, y = Heading;
         foreach (var (means, wide) in shown)
         {
@@ -59,11 +59,11 @@ internal static class CompositeKey
 
     /// <summary>The key for a picture that wide, its top at a height, its pins in the class's tone.</summary>
     public static void Draw(SvgWriter writer,
-        IReadOnlyList<(DiagramMessage Means, double X, double Y, double Wide)> items, string tone, double top,
+        IReadOnlyList<(DrawingMessage Means, double X, double Y, double Wide)> items, string tone, double top,
         double width)
     {
         writer.Box(0, top, width, 1, 0, "flow-rule")
-            .Text(0, top + HeadingLine, DiagramText.Format(DiagramMessage.KeyHeading), "pic-group", "start");
+            .Text(0, top + HeadingLine, DiagramText.Format(DrawingMessage.KeyHeading), "pic-group", "start");
         foreach (var (means, x, y, wide) in items)
         {
             double middle = top + y + Row / 2;
@@ -74,22 +74,22 @@ internal static class CompositeKey
 
     /// <summary>An item's sample, by what the item explains, its left at a point and centred on a height.</summary>
     /// <remarks>A switch on what the item means, one arm each (ADR 0051).</remarks>
-    private static void Sample(SvgWriter writer, DiagramMessage means, string tone, double x, double y, double wide)
+    private static void Sample(SvgWriter writer, DrawingMessage means, string tone, double x, double y, double wide)
     {
-        string word = DiagramText.Format(DiagramMessage.CompositePort);
+        string word = DiagramText.Format(DrawingMessage.CompositePort);
         string line = $"M{SvgWriter.N(x)} {SvgWriter.N(y)}H{SvgWriter.N(x + wide)}";
         switch (means)
         {
             // What is asked of the class: a pin that points down, as a real one does.
-            case DiagramMessage.CompositeAsked:
+            case DrawingMessage.CompositeAsked:
                 ComponentPins.Draw(writer, new PlacedPin("", word, false, x, y, wide), tone, "cmp-key cmp-pin");
                 break;
             // What the class needs: a pin that points up.
-            case DiagramMessage.CompositeNeeded:
+            case DrawingMessage.CompositeNeeded:
                 ComponentPins.Draw(writer, new PlacedPin("", word, true, x, y, wide), tone, "cmp-key cmp-pin");
                 break;
             // Two parts that work together: a plain line.
-            case DiagramMessage.CompositeTogether:
+            case DrawingMessage.CompositeTogether:
                 writer.Path(line, "cps-key cps-wire", false);
                 break;
             // What is passed on: a line with its arrowhead. A sample stands still, so it has no dots.

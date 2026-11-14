@@ -44,7 +44,7 @@ internal static class CompositeDrawing
     {
         var spec = source.Composite!;
         var placed = GraphLayout.Place(CompositeFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
-        string type = DiagramText.Format(DiagramMessage.CompositeType);
+        string type = DiagramText.Format(DrawingMessage.CompositeType);
 
         // As wide as the class, or as its title and type side by side. The key goes across that width.
         double width = Math.Max(placed.Width, PictureParts.HeadWidth(source.Title, type));

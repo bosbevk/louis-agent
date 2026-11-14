@@ -28,7 +28,7 @@ internal static class FlowKey
     public static void Draw(SvgWriter writer, IReadOnlyList<FlowKeyItem> items, double x, double y, double width)
     {
         writer.Box(x, y, width, 1, 0, "flow-rule")
-            .Text(x, y + HeadingLine, DiagramText.Format(DiagramMessage.KeyHeading), "pic-group", "start");
+            .Text(x, y + HeadingLine, DiagramText.Format(DrawingMessage.KeyHeading), "pic-group", "start");
         foreach (var item in items)
         {
             double left = x + item.X, middle = y + item.Y + FlowKeyLayout.Row / 2;

@@ -59,14 +59,14 @@ internal static class KeyLayout
         // A sample wears the colour of the thing it shows: a pin the root's, a pill its holder's.
         var own = components.Root.Tone;
         var holder = boxes.FirstOrDefault(box => box.State is not null)?.Tone ?? own;
-        if (handsDown) yield return RowOf(KeyRowKind.HandedDown, DiagramMessage.ComponentParameter, own);
-        if (saysBack) yield return RowOf(KeyRowKind.SaidBackUp, DiagramMessage.ComponentCallback, own);
-        if (reads) yield return RowOf(KeyRowKind.Reads, DiagramMessage.ComponentReadsAService);
-        if (holds) yield return RowOf(KeyRowKind.Holds, DiagramMessage.ComponentHolds, holder);
-        if (nests) yield return RowOf(KeyRowKind.Sentence, DiagramMessage.ComponentHeldBy);
+        if (handsDown) yield return RowOf(KeyRowKind.HandedDown, DrawingMessage.ComponentParameter, own);
+        if (saysBack) yield return RowOf(KeyRowKind.SaidBackUp, DrawingMessage.ComponentCallback, own);
+        if (reads) yield return RowOf(KeyRowKind.Reads, DrawingMessage.ComponentReadsAService);
+        if (holds) yield return RowOf(KeyRowKind.Holds, DrawingMessage.ComponentHolds, holder);
+        if (nests) yield return RowOf(KeyRowKind.Sentence, DrawingMessage.ComponentHeldBy);
     }
 
     /// <summary>A row with its words from the messages, in the tone its sample wears.</summary>
-    private static KeyRow RowOf(KeyRowKind kind, DiagramMessage words, DiagramTone tone = DiagramTone.Plain) =>
+    private static KeyRow RowOf(KeyRowKind kind, DrawingMessage words, DiagramTone tone = DiagramTone.Plain) =>
         new(kind, DiagramText.Format(words), tone);
 }

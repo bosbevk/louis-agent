@@ -29,7 +29,7 @@ public static class DiagramRenderers
         if (renderer is not null) return renderer.Render(source);
 
         var noRenderer = new NoRendererHoles(source.Kind.Wire());
-        throw new NotSupportedException(DiagramText.Format(DiagramMessage.NoRenderer, noRenderer));
+        throw new NotSupportedException(DiagramText.Format(DrawingMessage.NoRenderer, noRenderer));
     }
 
     /// <summary>

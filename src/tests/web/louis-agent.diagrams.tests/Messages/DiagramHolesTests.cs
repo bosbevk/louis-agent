@@ -13,9 +13,9 @@ namespace LouisAgent.Diagrams.Tests.Messages;
 public class DiagramHolesTests
 {
     /// <summary>The words between braces in a message's template, such as <c>Id</c> in "names '{Id}'".</summary>
-    private static List<string> HolesOf(DiagramMessage message)
+    private static List<string> HolesOf(Enum message)
     {
-        string template = typeof(DiagramMessage).GetField(message.ToString())!
+        string template = message.GetType().GetField(Enum.GetName(message.GetType(), message)!)!
             .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()!.Description;
 
         // Every odd piece, cut at an opening brace, starts with a hole's name and its closing brace.
@@ -25,8 +25,8 @@ public class DiagramHolesTests
     /// <summary>
     /// The record named for a message, wherever under the messages' holes it is filed. None when there is none.
     /// </summary>
-    private static Type? RecordOf(DiagramMessage message) => typeof(DiagramReader).Assembly.GetTypes()
-        .FirstOrDefault(type => type.Name == $"{message}Holes" &&
+    private static Type? RecordOf(Enum message) => typeof(DiagramReader).Assembly.GetTypes()
+        .FirstOrDefault(type => type.Name == $"{Enum.GetName(message.GetType(), message)}Holes" &&
                                 type.Namespace?.StartsWith("LouisAgent.Diagrams.Messages.Holes") == true);
 
     /// <summary>
@@ -50,12 +50,14 @@ public class DiagramHolesTests
     [TestCase(DiagramMessage.DuplicateComponent)]
     [TestCase(DiagramMessage.UnknownPin)]
     [TestCase(DiagramMessage.UnknownComponent)]
-    [TestCase(DiagramMessage.NoRenderer)]
-    public void AMessageTheReaderFills_HasItsRecord_WithItsHoles(DiagramMessage message)
+    [TestCase(DrawingMessage.NoRenderer)]
+    public void AMessageTheReaderFills_HasItsRecord_WithItsHoles(object member)
     {
+        // A refusal of the reader's or the one that is a drawing's: either enum's member.
+        var message = (Enum)member;
         var record = RecordOf(message);
 
-        Assert.That(record, Is.Not.Null, $"no {message}Holes record");
+        Assert.That(record, Is.Not.Null, $"no holes record for {message}");
         Assert.That(record!.GetProperties().Select(property => property.Name).Order(), Is.EqualTo(HolesOf(message)));
     }
 

@@ -79,26 +79,26 @@ public static class ClassKeyLayout
     }
 
     /// <summary>The message that says what a letter stands for.</summary>
-    private static DiagramMessage Meaning(TypeMark mark) => mark switch
+    private static DrawingMessage Meaning(TypeMark mark) => mark switch
     {
-        TypeMark.Interface => DiagramMessage.ClassInterface,
-        TypeMark.Record => DiagramMessage.ClassRecord,
-        TypeMark.Enum => DiagramMessage.ClassEnum,
-        TypeMark.Abstract => DiagramMessage.ClassAbstract,
-        TypeMark.Static => DiagramMessage.ClassStatic,
-        _ => DiagramMessage.ClassPlain
+        TypeMark.Interface => DrawingMessage.ClassInterface,
+        TypeMark.Record => DrawingMessage.ClassRecord,
+        TypeMark.Enum => DrawingMessage.ClassEnum,
+        TypeMark.Abstract => DrawingMessage.ClassAbstract,
+        TypeMark.Static => DrawingMessage.ClassStatic,
+        _ => DrawingMessage.ClassPlain
     };
 
     /// <summary>The message that says a kind of link.</summary>
-    private static DiagramMessage Meaning(RelationKind kind) => kind switch
+    private static DrawingMessage Meaning(RelationKind kind) => kind switch
     {
-        RelationKind.Holds => DiagramMessage.LinkHolds,
-        RelationKind.Inherits => DiagramMessage.LinkInherits,
-        RelationKind.Implements => DiagramMessage.LinkImplements,
-        RelationKind.Creates => DiagramMessage.LinkCreates,
-        _ => DiagramMessage.LinkUses
+        RelationKind.Holds => DrawingMessage.LinkHolds,
+        RelationKind.Inherits => DrawingMessage.LinkInherits,
+        RelationKind.Implements => DrawingMessage.LinkImplements,
+        RelationKind.Creates => DrawingMessage.LinkCreates,
+        _ => DrawingMessage.LinkUses
     };
 
     /// <summary>A message's words, which have no holes.</summary>
-    private static string Text(DiagramMessage message) => DiagramText.Format(message);
+    private static string Text(DrawingMessage message) => DiagramText.Format(message);
 }

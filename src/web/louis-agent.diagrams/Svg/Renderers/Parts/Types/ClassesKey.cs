@@ -28,7 +28,7 @@ internal static class ClassesKey
     {
         var writer = new SvgWriter();
         writer.Box(0, 0, width, 1, 0, "cls-rule")
-            .Text(0, HeadingLine, DiagramText.Format(DiagramMessage.KeyHeading), "pic-group", "start");
+            .Text(0, HeadingLine, DiagramText.Format(DrawingMessage.KeyHeading), "pic-group", "start");
         foreach (var item in items)
         {
             double middle = item.Y + ClassKeyLayout.Row / 2;

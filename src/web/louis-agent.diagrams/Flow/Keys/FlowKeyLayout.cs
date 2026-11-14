@@ -43,7 +43,7 @@ public static class FlowKeyLayout
             .Select(tone => new FlowKeyItem(FlowKeyKind.Tone, ToneMeanings.Of(tone), 0, 0, Badge, Tone: tone));
         var shapes = nodes.Select(node => node.Node.Shape).Where(shape => shape != NodeShape.Box).Distinct().Order()
             .Select(shape => new FlowKeyItem(FlowKeyKind.Shape, Meaning(shape), 0, 0, Wide, Shape: shape));
-        var line = new FlowKeyItem(FlowKeyKind.Line, DiagramText.Format(DiagramMessage.FlowLine), 0, 0, Wide);
+        var line = new FlowKeyItem(FlowKeyKind.Line, DiagramText.Format(DrawingMessage.FlowLine), 0, 0, Wide);
 
         // Side by side, each after the one before, and on to a new row at the left when the width is full.
         var items = new List<FlowKeyItem>();
@@ -62,8 +62,8 @@ public static class FlowKeyLayout
     /// <summary>The few words for what a shape means.</summary>
     private static string Meaning(NodeShape shape) => DiagramText.Format(shape switch
     {
-        NodeShape.Decision => DiagramMessage.FlowDecision,
-        NodeShape.Data => DiagramMessage.FlowData,
-        _ => DiagramMessage.FlowTerminal
+        NodeShape.Decision => DrawingMessage.FlowDecision,
+        NodeShape.Data => DrawingMessage.FlowData,
+        _ => DrawingMessage.FlowTerminal
     });
 }
