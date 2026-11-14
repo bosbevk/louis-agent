@@ -23,15 +23,6 @@ public partial class DiagramsProjectTests
         RegexOptions.NonBacktracking)]
     private static partial Regex Builder();
 
-    /// <summary>Every C# file of a project, with its path under the repo and its text.</summary>
-    private static List<(string Path, string Text)> Sources(string project) =>
-    [
-        .. Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, project), "*.cs", SearchOption.AllDirectories)
-            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace(Path.DirectorySeparatorChar, '/'))
-            .Where(file => !file.Contains("/bin/") && !file.Contains("/obj/"))
-            .Select(file => (file, File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file))))
-    ];
-
     /// <summary>A project's references, each as its kind and what it names.</summary>
     private static List<string> References(string project)
     {
@@ -64,7 +55,7 @@ public partial class DiagramsProjectTests
     [Test]
     public void TheDiagramsProject_HoldsNothingThatBuildsADiagram()
     {
-        var sources = Sources(Diagrams);
+        var sources = ProjectSources.Of(Diagrams);
         var builders = sources.SelectMany(source => Builder().Matches(source.Text)
             .Select(match => $"{source.Path}: {match.Groups[1].Value}")).ToList();
         var reaching = sources.Where(source => source.Text.Contains("LouisAgent.Diagrams.Engine"))
@@ -86,7 +77,7 @@ public partial class DiagramsProjectTests
     [Test]
     public void NoDrawing_WritesItsOwnTitleLightOrCaption()
     {
-        var drawings = Sources(Engine).Where(source => source.Path.Contains("/Svg/Renderers/") &&
+        var drawings = ProjectSources.Of(Engine).Where(source => source.Path.Contains("/Svg/Renderers/") &&
                                                        !source.Path.EndsWith("/PictureBuilder.cs")).ToList();
         string[] shared = ["\"mrq-title\"", "\"caption\"", ".Write(SvgTheme"];
         var own = drawings.Where(source => !source.Path.EndsWith("/TicketRenderer.cs"))
@@ -106,7 +97,7 @@ public partial class DiagramsProjectTests
     [Test]
     public void EveryFileOfTheEngine_IsInItsNamespace()
     {
-        var astray = Sources(Engine).Where(source => !source.Text.Contains("namespace LouisAgent.Diagrams.Engine"))
+        var astray = ProjectSources.Of(Engine).Where(source => !source.Text.Contains("namespace LouisAgent.Diagrams.Engine"))
             .Select(source => source.Path).ToList();
 
         Assert.That(astray, Is.Empty, string.Join('\n', astray));
