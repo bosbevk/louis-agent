@@ -20,6 +20,10 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 
 ## How it works
 
+One shop's branches, step by step.
+
+![Branches: the town found, the shop asked for in a box widened only when empty, the three nearest kept](diagrams/louis-agent.pack.where-to-buy-flow.svg)
+
 - **One toolset, `where-to-buy`.** `WhereToBuyPack` defines it with its guide (`prompts/toolsets/where-to-buy.md`)
   and two tools. It needs no setting, so it loads wherever it is named.
 - **The town.** `FindBranches(shop, town)` asks Nominatim for the town (South Africa only, the first answer), which

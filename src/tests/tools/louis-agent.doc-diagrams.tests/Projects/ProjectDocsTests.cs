@@ -13,20 +13,6 @@ public class ProjectDocsTests
     /// <summary>The guide that says which pictures a project doc shows, from the repo's root.</summary>
     private const string Guide = "src/docs/guides/draw-a-diagram.md";
 
-    /// <summary>
-    /// The pictures a doc's kind asks for that are not drawn yet. Each is drawn from the code in a step of its own,
-    /// and taken off here when it is: the list only shrinks, and empty, the rule is a plain one.
-    /// </summary>
-    private static readonly Dictionary<string, DiagramType[]> StillMissing = new()
-    {
-        ["demos/puls/docs/projects/louis-agent.host-packs.md"] = [DiagramType.Activity],
-        ["packs/docs/projects/general-packs.md"] = [DiagramType.Activity],
-        ["packs/docs/projects/louis-agent.pack.calculator.md"] = [DiagramType.Activity],
-        ["packs/docs/projects/louis-agent.pack.recipes.md"] = [DiagramType.Activity],
-        ["packs/docs/projects/louis-agent.pack.shop-prices.md"] = [DiagramType.Activity],
-        ["packs/docs/projects/louis-agent.pack.where-to-buy.md"] = [DiagramType.Activity]
-    };
-
     /// <summary>The doc's path from the repo's root, as a person would find it.</summary>
     private static string Relative(ProjectDoc doc) =>
         System.IO.Path.GetRelativePath(TestPaths.RepoRoot, doc.Path).Replace('\\', '/');
@@ -61,8 +47,8 @@ public class ProjectDocsTests
     }
 
     /// <summary>
-    /// Every project doc shows exactly what its kind's floor and its own line ask for: none missing but the ones
-    /// still listed, and none more than it names, so the doc's first lines are a true list of its pictures.
+    /// Every project doc shows exactly what its kind's floor and its own line ask for: none missing and none more
+    /// than it names, so the doc's first lines are a true list of its pictures.
     /// </summary>
     [Test]
     public void EveryProjectDoc_ShowsWhatItsKindAsks()
@@ -71,17 +57,16 @@ public class ProjectDocsTests
         foreach (var doc in ProjectDoc.All())
         {
             var asked = ProjectFloor.Asked(doc);
-            var missing = asked.Except(doc.Shown).ToHashSet();
-            var listed = StillMissing.GetValueOrDefault(Relative(doc), []).ToHashSet();
+            var missing = asked.Except(doc.Shown).ToList();
             var more = doc.Shown.Except(asked).ToList();
 
-            if (!missing.SetEquals(listed))
-                wrong.Add($"{Relative(doc)}: missing {Names(missing)}, listed as still missing {Names(listed)}");
+            if (missing.Count > 0)
+                wrong.Add($"{Relative(doc)}: its kind asks for {Names(missing)}, which it doesn't show");
             if (more.Count > 0)
                 wrong.Add($"{Relative(doc)}: shows {Names(more)}, which its kind and its own line don't name");
         }
 
-        Assert.That(wrong, Is.Empty, "draw what is missing, or take a drawn one off the list; name what it adds");
+        Assert.That(wrong, Is.Empty, "draw what is missing from the code; name in the doc's own line what it adds");
     }
 
     /// <summary>

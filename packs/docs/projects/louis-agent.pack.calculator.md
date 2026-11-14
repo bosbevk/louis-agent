@@ -28,6 +28,10 @@ so it loads wherever it's named.
 
 ## How it works
 
+One sum, step by step.
+
+![One sum: refused unless it is only arithmetic, every whole number made a decimal, then .NET's evaluator](diagrams/louis-agent.pack.calculator-flow.svg)
+
 `Sums/Arithmetic.cs` uses .NET's own expression evaluator (`DataTable.Compute`), so there's no package and no parser of our
 own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep that safe and correct:
 

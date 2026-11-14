@@ -18,6 +18,10 @@ any identity can use it, and it could be served as an MCP server unchanged
 
 ## How it works
 
+One search, step by step.
+
+![One search: four sites at once or the one named, each its own way, the hits listed as untrusted data](diagrams/louis-agent.pack.recipes-flow.svg)
+
 - **One toolset, `recipes`.** `RecipesPack` defines it with its guide (`prompts/toolsets/recipes.md`) and its two
   tools. It loads only where `RECIPE_SOURCES` names a site and `BROWSER_URL` gives a browser; otherwise
   `GET /v1/toolsets` lists it with the setting it lacks. Its calls only read, so a round's calls run at once.

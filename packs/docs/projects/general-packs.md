@@ -27,6 +27,10 @@ references no other pack.
 
 ## Diagrams
 
+A toolset opened, then a call, step by step.
+
+![A toolset opened and a call: listed with what it lacks, or its tools built, and every call run behind the engine's guards](diagrams/general-packs-flow.svg)
+
 ![The general packs: from a catalogue to their tools and what they reach](diagrams/general-packs-diagrams.svg)
 
 ![A session and a tool call: the factory finds each toolset and builds its tools, and the guards run a call the model makes](diagrams/general-packs-diagrams-2.svg)

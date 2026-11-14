@@ -15,6 +15,10 @@ thin and never references an identity or a pack; and which agent a host runs is 
 
 ## How it works
 
+Start-up, step by step.
+
+![Start-up: the names read and parsed, each identity and its packs created, the catalogue checked before any engine](diagrams/louis-agent.host-packs-flow.svg)
+
 - **One call at start-up.** `louis-agent.puls-api` starts with `AgentHost.Build(Plugins.FromEnvironment())`. `FromEnvironment` loads `config/.env` first, since the hosts load it only inside `Build`, which runs
   after this, then reads `IDENTITIES` and `PACKS`.
 - **Names become enums once.** `IDENTITIES=puls` and `PACKS=where-to-buy` are comma separated, case ignored, each name once,

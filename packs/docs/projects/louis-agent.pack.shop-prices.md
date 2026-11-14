@@ -19,6 +19,10 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ## How it works
 
+One basket, step by step.
+
+![One basket: each line matched to a product and priced from its province and pack, or a question mark, then the total](diagrams/louis-agent.pack.shop-prices-flow.svg)
+
 - **One toolset, `shop-prices`.** `ShopPricesPack` defines it with its guide (`prompts/toolsets/shop-prices.md`) and
   one tool. It needs no setting, so it loads wherever it is named.
 - **The tables.** Two price files ship embedded in `Prices/Data/`: Stats SA's average prices for August 2026 (P0141,
