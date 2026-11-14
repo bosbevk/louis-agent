@@ -2,7 +2,9 @@ using System.Globalization;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using LouisAgent.Choices;
 using LouisAgent.Diagrams.Icons;
+using LouisAgent.Diagrams.Svg.Ends;
 using LouisAgent.Diagrams.Svg.Theme;
 
 namespace LouisAgent.Diagrams.Svg;
@@ -31,6 +33,9 @@ internal sealed class SvgWriter
 
     /// <summary>The tones whose arrowheads the drawing uses, each written once, in the order first used.</summary>
     private readonly List<string> _tones = [];
+
+    /// <summary>The ends the drawing's lines wear beside the arrowhead, each once, in the order first used.</summary>
+    private readonly List<(LineEnd End, string? Tone)> _ends = [];
 
     /// <summary>The paints the drawing defines, each once, in the order first asked for.</summary>
     private readonly List<XElement> _paints = [];
@@ -94,6 +99,35 @@ internal sealed class SvgWriter
         return this;
     }
 
+    /// <summary>
+    /// A line with an end of its own at either side (F134.11): a triangle, a diamond or an open arrowhead, or the
+    /// writer's own arrowhead, each in the line's tone when it has one. A look colours an end by its class, its
+    /// kind and its tone, as it colours everything else.
+    /// </summary>
+    public SvgWriter Line(string data, string cls, LineEnd start = LineEnd.None, LineEnd end = LineEnd.None,
+        string? tone = null)
+    {
+        var line = new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", data));
+        if (EndId(start, tone) is { } from) line.Add(new XAttribute("marker-start", $"url(#{from})"));
+        if (EndId(end, tone) is { } to) line.Add(new XAttribute("marker-end", $"url(#{to})"));
+        _shapes.Add(line);
+        return this;
+    }
+
+    /// <summary>
+    /// The id a line points at for an end, noting the end so the file defines it. An arrowhead is the writer's
+    /// own, and no end has no id.
+    /// </summary>
+    private string? EndId(LineEnd end, string? tone)
+    {
+        if (end == LineEnd.None) return null;
+
+        string id = tone is null ? end.Wire() : $"{end.Wire()}-{tone}";
+        if (end == LineEnd.Arrow && tone is not null) _tones.Add(tone);
+        if (end != LineEnd.Arrow && !_ends.Contains((end, tone))) _ends.Add((end, tone));
+        return id;
+    }
+
     /// <summary>Words at a point, centred on it unless told to start there.</summary>
     public SvgWriter Text(double x, double y, string words, string cls, string anchor = "middle")
     {
@@ -130,7 +164,8 @@ internal sealed class SvgWriter
             new XElement(Svg + "style", SvgStyle.Of(theme)),
             style is null ? null : new XElement(Svg + "style", style),
             new XElement(Svg + "defs", Arrowhead(ArrowId, "arrow"),
-                _tones.Distinct().Select(tone => Arrowhead($"{ArrowId}-{tone}", $"arrow tone-{tone}")), _paints),
+                _tones.Distinct().Select(tone => Arrowhead($"{ArrowId}-{tone}", $"arrow tone-{tone}")),
+                _ends.Select(end => End(end.End, end.Tone)), _paints),
             new XElement(Svg + "rect", new XAttribute("class", "ground"), new XAttribute("x", N(-Pad)),
                 new XAttribute("y", N(-Pad)), new XAttribute("width", N(outerWidth)),
                 new XAttribute("height", N(outerHeight)), new XAttribute("rx", "14")),
@@ -167,6 +202,7 @@ internal sealed class SvgWriter
     public SvgWriter Group(string cls, double dx, double dy, SvgWriter drawn)
     {
         _tones.AddRange(drawn._tones);
+        _ends.AddRange(drawn._ends.Except(_ends).ToList());
         _paints.AddRange(drawn._paints.Where(paint => _paints.All(own =>
             (string?)own.Attribute("id") != (string?)paint.Attribute("id"))));
         return Group(cls, dx, dy, drawn._shapes);
@@ -198,6 +234,29 @@ internal sealed class SvgWriter
             new XAttribute("markerHeight", "8"), new XAttribute("markerUnits", "userSpaceOnUse"),
             new XAttribute("orient", "auto-start-reverse"),
             new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", "M 0 0 L 10 5 L 0 10 z")));
+
+    /// <summary>
+    /// An end a line wears beside the arrowhead: its shape in a small box, turned with the line, its point where
+    /// the line ends. Each is classed by its kind and its tone, <c>end-triangle tone-violet</c>.
+    /// </summary>
+    private static XElement End(LineEnd end, string? tone)
+    {
+        // The box each shape is drawn in, where its point is in that box, and the shape.
+        (double Wide, double Tall, double Point, string Shape) = end switch
+        {
+            LineEnd.Triangle => (14, 12, 13, "M 1 1 L 13 6 L 1 11 z"),
+            LineEnd.Diamond => (14, 10, 14, "M 0 5 L 7 1 L 14 5 L 7 9 z"),
+            _ => (10.0, 10.0, 9.0, "M 1 1 L 9 5 L 1 9")
+        };
+        string name = end.Wire(), id = tone is null ? name : $"{name}-{tone}";
+        string cls = tone is null ? $"end-{name}" : $"end-{name} tone-{tone}";
+        return new XElement(Svg + "marker", new XAttribute("id", id),
+            new XAttribute("viewBox", $"0 0 {N(Wide)} {N(Tall)}"), new XAttribute("refX", N(Point)),
+            new XAttribute("refY", N(Tall / 2)), new XAttribute("markerWidth", N(Wide)),
+            new XAttribute("markerHeight", N(Tall)), new XAttribute("markerUnits", "userSpaceOnUse"),
+            new XAttribute("orient", "auto-start-reverse"),
+            new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", Shape)));
+    }
 
     /// <summary>A number as the file writes it: invariant, at most one decimal.</summary>
     internal static string N(double value) => value.ToString("0.#", CultureInfo.InvariantCulture);

@@ -50,7 +50,11 @@ a word in a chip. Each drawing has a name of its own so the two renderers can ch
 one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
 arrowhead every picture needs are written in one place. A drawing may also define a paint, a fade from one colour
 into another that a style fills a shape with by its id, since a style alone can't give a shape one. Each stop of a
-paint is classed by the paint's id and its number, and the style colours it. The file is built with `XElement` and has a `<title>`.
+paint is classed by the paint's id and its number, and the style colours it. A line may wear an end of its own at
+either side (`Ends/LineEnd`): the arrowhead, a hollow triangle, a diamond or an open arrowhead, in the line's tone
+when it has one. An end turns with its line, is written once however many lines wear it, and only when one does.
+It is classed by its kind and its tone, as `end-triangle tone-violet`, and the look colours it. The file is built
+with `XElement` and has a `<title>`.
 Every number is written in the invariant culture and every line ends in a plain `\n`, so the same drawing is the
 same bytes on every machine.
 
@@ -360,7 +364,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's), Theme/ (with Looks/)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's), Theme/ (with Looks/)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
