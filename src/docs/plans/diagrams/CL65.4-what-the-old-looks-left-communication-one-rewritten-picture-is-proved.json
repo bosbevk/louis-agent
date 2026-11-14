@@ -1,0 +1,22 @@
+{
+  "kind": "sequence",
+  "title": "CL65.4 what the old looks left: one rewritten picture is proved",
+  "caption": "A picture that changes is not looked over: the one change is taken out again, and the rest must be the same to the byte.",
+  "sequence": {
+    "participants": [
+      { "id": "step", "label": "A step", "icon": "code", "tone": "blue" },
+      { "id": "tool", "label": "doc-diagrams", "icon": "terminal", "tone": "violet" },
+      { "id": "script", "label": "The proof's script", "icon": "terminal", "tone": "green" },
+      { "id": "git", "label": "The commit before", "icon": "file", "tone": "amber" }
+    ],
+    "steps": [
+      { "step": "message", "from": "step", "to": "tool", "text": "redraw every picture" },
+      { "step": "reply", "from": "tool", "to": "step", "text": "the pictures it wrote" },
+      { "step": "message", "from": "step", "to": "script", "text": "the one change: a class's name, a rule, a space" },
+      { "step": "message", "from": "script", "to": "git", "text": "each picture as it was" },
+      { "step": "reply", "from": "git", "to": "script", "text": "the old file" },
+      { "step": "note", "over": [ "script" ], "text": "takes the change out again, and holds the two equal" },
+      { "step": "reply", "from": "script", "to": "step", "text": "the pictures that differ in more, by name" }
+    ]
+  }
+}
