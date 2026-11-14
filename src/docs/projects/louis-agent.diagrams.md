@@ -280,7 +280,7 @@ This section is for looking a file up.
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
 ├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
-├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
+├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
