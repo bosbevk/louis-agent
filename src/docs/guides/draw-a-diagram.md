@@ -623,16 +623,42 @@ In the doc, link the SVG as a markdown image. Its alt text says what the picture
 ![The engine, and its parts: the loop and the guards](diagrams/louis-agent.core.svg)
 ```
 
-**Where the pictures go in a project doc.** Every project doc shows four pictures:
+**Which pictures a project doc shows.** A project's kind decides the least its doc shows, and the doc names what
+it shows beyond that. The doc's opening quote says both: its kind as the first words of its `**Kind:**` line, and
+what it adds in a line of its own, by the names a picture's `type` has:
 
-| Picture | Kind | Where it goes |
+```markdown
+> **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/louis-agent.api/` · …
+> **Also shows:** `component`
+```
+
+| Kind | What it is | It shows at least |
 |---|---|---|
-| The overview: the project and its parts | `cards` | Just above the doc's *Purpose*, or after its opening quote when it has none |
-| How it works | `flow` | Beside the part of *How it works* that it explains, or in the doc's `## Diagrams` section |
-| Its main case | `sequence` | The same |
-| Its interface design: the types someone using or extending it meets, about twelve at most | `classes` | The same |
+| `library` | A class library with a main path through it | `class`, `activity`, `sequence`, `overview` |
+| `contracts library` | A library of contracts or content, with no path of its own, such as an identity's prompts | `class`, `overview` |
+| `host` | A library a program adds to serve the agent: the API, the CLI, ACP, MCP, the accounts | `class`, `deployment`, `sequence`, `overview` |
+| `program` | A console app that composes and runs | `class`, `deployment`, `sequence`, `overview` |
+| `web app` | A Blazor WebAssembly app | `class`, `composite-structure`, `overview` |
+| `Razor library` | A Razor class library | `class`, `composite-structure`, `overview` |
+| `console tool` | A developer's tool, run by hand | `class`, `activity`, `overview` |
+| `test projects` | The doc of the test projects | `class`, `overview` |
+| `content` | Files an agent reads, such as runbooks | `overview` |
 
-Name the last three `{project}-flow`, `{project}-sequence` and `{project}-interface` when they are new.
+A doc shows exactly that and what its own line adds, no less and no more, so its first lines are a true list of
+its pictures (`ProjectDocsTests`).
+
+- *The overview* is a `cards` picture named for the doc, just above its *Purpose*, or after its opening quote when
+  it has none.
+- *The class diagram* is its interface design: the types someone using or extending it meets, about twelve at
+  most. Name it `{project}-interface`.
+- *An activity diagram* is the project's main path, step by step, with its decisions: a `flow` whose type is
+  `activity`. Name it `{project}-flow`.
+- *A sequence diagram* is its main case: who calls whom, in order. Name it `{project}-sequence`.
+- *A deployment diagram* is where it runs: the machine or container, the program that starts it, and what it
+  talks to across the network. A `flow` whose type is `deployment`. Name it `{project}-deployment`.
+- *A composite structure* of a web project is its main component, drawn as a `nested` picture (below).
+
+Each picture stands beside the text it explains, inside *How it works* or the part it belongs to.
 
 **A project that has components shows them too** (Louis, 2026-11-14: "all projects which has components should
 have an component diagram in their documentation", and of one picture for a whole project: "of it's main
@@ -651,11 +677,14 @@ dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
 
 - a picture isn't what its JSON draws
 - no doc shows a picture, or a doc shows a picture that isn't there
-- a project doc lacks its overview or one of its four kinds of picture
 - a flow's word sits on a box or a line, or a line crosses a box it doesn't join
 - a sequence's words, notes or frames leave its drawing
 - a `diagrams` folder sits where the tool never looks
 - a doc holds a Mermaid block
+
+`ProjectDocsTests` fails when a project doc names no kind of the list, lacks its overview, or shows other than
+exactly what its kind and its `**Also shows:**` line ask for, and when the guide's table of kinds is not the one
+the test holds.
 
 Then look at the picture yourself, in Rider's markdown preview or a browser, in a light look and a dark one,
 before you commit. A chart wider than about 1,600 px reads small in a doc's column, so try it the other way round.

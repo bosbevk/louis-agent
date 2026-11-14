@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `src/evals/louis-agent.evals/` · **References:** louis-agent.core,
 > louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner,
 > louis-agent.identity.puls.judges
+> **Also shows:** `component`
 
 ![The eval harness, and its parts: an eval as a class, trials, checks and metrics, the protocol and the judge's calibration](diagrams/louis-agent.evals.svg)
 

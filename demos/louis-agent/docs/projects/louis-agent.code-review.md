@@ -3,6 +3,7 @@
 > **Kind:** web app (Blazor WebAssembly) · **Path:** `demos/louis-agent/web/louis-agent.code-review/` · **Served by:**
 > `louis-agent.coding-api` (same origin), on 127.0.0.1:5082 · **References:** louis-agent.web (with Markdig),
 > highlight.js (from a CDN)
+> **Also shows:** `component`, `sequence`
 
 ![The code review app: chat, the workspace and branches](diagrams/louis-agent.code-review.svg)
 

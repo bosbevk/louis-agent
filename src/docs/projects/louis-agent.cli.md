@@ -2,6 +2,7 @@
 
 > **Kind:** host (a library) · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
 > `local-agent`
+> **Also shows:** `component`
 
 ![The terminal host, and what it does: a chat, one prompt for a script, and its local commands](diagrams/louis-agent.cli.svg)
 

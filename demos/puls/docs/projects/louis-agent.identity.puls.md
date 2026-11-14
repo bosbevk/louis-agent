@@ -5,6 +5,7 @@
 > sets it) · **Names:** the `where-to-buy`, `shop-prices`, `recipes`, `web` and `calculator` packs · **Its evals:**
 > `demos/puls/evals/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
 > references it, [ADR 0073](../../../../src/docs/adr/0073-packs-reference-no-evals.md))
+> **Also shows:** `component`, `sequence`
 
 ![Puls: its voice, its specialists and the packs it names](diagrams/louis-agent.identity.puls.svg)
 

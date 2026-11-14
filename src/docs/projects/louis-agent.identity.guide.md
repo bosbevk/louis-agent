@@ -6,6 +6,7 @@
 > the decisions in [ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
 > [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md) and
 > [ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md).
+> **Also shows:** `activity`, `sequence`
 
 > **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.guide/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), and the coding agent's

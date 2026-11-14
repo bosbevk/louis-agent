@@ -3,6 +3,7 @@
 > **Kind:** contracts library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.protocol/` · **References:**
 > louis-agent.choices only · **Used by:** louis-agent.evals (the writer), louis-agent.api (the reader and the
 > export), louis-agent.web and louis-agent.puls (the live view)
+> **Also shows:** `component`, `sequence`
 
 ![The eval protocol: one event per line, the run's and the conversation's events, and its choices as enums](diagrams/louis-agent.evals.protocol.svg)
 

@@ -3,6 +3,7 @@
 > **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
 > **References:** Markdig, Net.Codecrete.QrCodeGenerator, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
 > louis-agent.code-review, louis-agent.puls and louis-agent.starter
+> **Also shows:** `component`, `sequence`
 
 ![The framework's web, and its parts: the chat's frame, the admin's frame, the site's parts, styles and scripts, and the seams](diagrams/louis-agent.web.svg)
 

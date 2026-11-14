@@ -3,6 +3,7 @@
 > **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `demos/puls/evals/louis-agent.identity.puls.judges/` · **References:**
 > louis-agent.evals (the harness), louis-agent.identity.puls (the cook's expectations and messages) · **Used by:**
 > louis-agent.evals.runner only
+> **Also shows:** `component`, `sequence`
 
 ![Puls's judge: its rubric, on the harness's judge, referenced by the runner only](diagrams/louis-agent.identity.puls.judges.svg)
 

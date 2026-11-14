@@ -19,7 +19,7 @@ The guide has every field and a whole example of each kind of picture: `src/docs
 before writing a kind you have not written in this session.
 
 1. **Write the JSON** in the `diagrams/` folder beside the doc, named for what it shows. Every file has a `kind`
-   (`cards`, `flow`, `sequence`, `classes`, `components`, `composite` or `ticket`), a `title`, a `caption`,
+   (`cards`, `flow`, `sequence`, `classes`, `nested`, `composite` or `ticket`), a `title`, a `caption`,
    and the kind's own part. A `flow` also says its `type`, straight after its `kind`: `component` for parts,
    `activity` for the steps of a procedure, `object` for instances in memory, `package` for sets of projects,
    `deployment` for what runs where. The guide's *Say the type* has all eight.
@@ -58,10 +58,12 @@ for what a type is built of and `uses` for what it only calls.
 
 ## Where a project doc's pictures go
 
-Every project doc shows four: its overview (`cards`) just above its *Purpose*, and a `flow`, a `sequence` and a
-`classes` picture, each beside the part of *How it works* that it explains or in the doc's `## Diagrams` section.
+A project's kind decides the least its doc shows, and the doc names what it adds: the first words of its
+`**Kind:**` line, and its `**Also shows:**` line. The table of kinds is in the guide, under *Which pictures a
+project doc shows*, and `ProjectDocsTests` holds a doc to exactly that. The overview (`cards`) stands just above
+its *Purpose*; every other picture beside the part of *How it works* that it explains.
 
-A project that has components shows them too: a `components` picture for each of its main components, since
+A project that has components shows them too: a `nested` picture for each of its main components, since
 one picture is of one component. Name each `{project}-components-{what}`. It shows what holds what, what is
 handed down and what is said back up. Read the component's markup and its code-behind before you write it:
 every box, pin and neighbour is one the code has.

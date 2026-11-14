@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.openai/` · **References:** louis-agent.core,
 > Microsoft.Extensions.AI.OpenAI (over the OpenAI SDK) · **Used by:** every program whose agent may talk to a server
 > that speaks OpenAI's chat API
+> **Also shows:** `component`
 
 ![The OpenAI-compatible provider, and its parts: your endpoint and the standard usage](diagrams/louis-agent.core.openai.svg)
 

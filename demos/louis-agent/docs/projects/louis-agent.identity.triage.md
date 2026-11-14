@@ -6,6 +6,7 @@
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md).
 > **Kind:** contracts library (`net10.0`, an identity's prompts)
 > · **Path:** `demos/louis-agent/identity/louis-agent.identity.triage/`
+> **Also shows:** `activity`, `sequence`
 
 ![The triage team: the manager, and the sorter, the investigator, the reviewer and the coder who work for it](diagrams/louis-agent.identity.triage.svg)
 

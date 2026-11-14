@@ -2,6 +2,7 @@
 
 > **Kind:** host (a library, JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp/` · **References:**
 > louis-agent.core · **Docker service:** `acp-server`, one container per Rider chat
+> **Also shows:** `component`
 
 ![Rider's chat host, and its parts: the protocol, sessions and files, and Rider's own tools](diagrams/louis-agent.acp.svg)
 

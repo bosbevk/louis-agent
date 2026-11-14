@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
 > the Puls identity and the packs Puls's programs can load · **Used by:**
 > louis-agent.puls-api, louis-agent.puls-eval-runner
+> **Also shows:** `component`
 
 ![Puls's composition: one call at start-up, names become enums, a setting not a build](diagrams/louis-agent.host-packs.svg)
 

@@ -2,6 +2,7 @@
 
 > **Kind:** console tool (a console app) · **Path:** `src/tools/louis-agent.usage-probe/` · **References:** louis-agent.core
 > · **Docker service:** none
+> **Also shows:** `component`, `sequence`
 
 ![The usage probe, and what it shows: the raw report, the ledger's line, and a ledger priced](diagrams/louis-agent.usage-probe.svg)
 

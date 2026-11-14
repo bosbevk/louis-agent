@@ -3,6 +3,7 @@
 > **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.accounts/` ·
 > **References:** louis-agent.web, louis-agent.accounts.contracts, Microsoft.AspNetCore.Components.Authorization ·
 > **Used by:** a site that has accounts: louis-agent.puls, louis-agent.starter, louis-agent.code-review
+> **Also shows:** `component`, `sequence`
 
 ![The account pages, and their parts: the pages, the client and passkeys](diagrams/louis-agent.web.accounts.svg)
 

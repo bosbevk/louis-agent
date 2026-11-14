@@ -3,6 +3,7 @@
 > **Kind:** program (a console app) · **Path:** `demos/louis-agent/hosts/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
 > louis-agent.api over HTTP + SSE · **Docker:** `Dockerfile.orchestrator` (its demo compose file was removed in CL10) ·
 > **Status:** proof of concept
+> **Also shows:** `component`, `activity`
 
 ![The orchestrator: it watches a log, reads its runbook, and has louis-agent fix it](diagrams/louis-agent.orchestrator.svg)
 

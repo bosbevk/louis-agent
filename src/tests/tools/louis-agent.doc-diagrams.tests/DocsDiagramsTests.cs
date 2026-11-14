@@ -7,7 +7,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.DocDiagrams.Tests.Projects;
+using LouisAgent.DocDiagrams.Tests.Docs;
 
 namespace LouisAgent.DocDiagrams.Tests;
 
@@ -41,7 +41,7 @@ public class DocsDiagramsTests
     public void EveryPicture_IsShownByADoc()
     {
         // Each picture link, as the full path of the file it points at.
-        var shown = Docs().SelectMany(doc => Targets(File.ReadAllText(doc))
+        var shown = Docs().SelectMany(doc => DocLinks.Pictures(File.ReadAllText(doc))
                 .Where(target => target.Contains($"{DiagramSync.Folder}/", StringComparison.Ordinal))
                 .Select(target => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(doc)!, target))))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -57,56 +57,13 @@ public class DocsDiagramsTests
     {
         var missing = DiagramSync.Roots(TestPaths.RepoRoot).Where(Directory.Exists)
             .SelectMany(root => Directory.EnumerateFiles(root, "*.md", SearchOption.AllDirectories))
-            .SelectMany(doc => Targets(File.ReadAllText(doc))
+            .SelectMany(doc => DocLinks.Pictures(File.ReadAllText(doc))
                 .Where(target => target.Contains($"{DiagramSync.Folder}/", StringComparison.Ordinal))
                 .Where(target => !File.Exists(Path.Combine(Path.GetDirectoryName(doc)!, target)))
                 .Select(target => $"{Relative(doc)} -> {target}"));
 
         Assert.That(missing, Is.Empty);
     }
-
-    /// <summary>
-    /// Every project doc, the framework's, the packs' and each demo's, shows its overview, named for the doc.
-    /// </summary>
-    [Test]
-    public void EveryProjectDoc_ShowsItsOverview()
-    {
-        var bare = ProjectDocs().Where(doc => !Targets(File.ReadAllText(doc))
-            .Contains($"{DiagramSync.Folder}/{Path.GetFileNameWithoutExtension(doc)}.svg"));
-
-        Assert.That(bare.Select(Relative), Is.Empty, "a project doc without its overview");
-    }
-
-    /// <summary>
-    /// Every project doc shows all four kinds of picture (CL60.5, Louis: "so each project has a
-    /// architecture/flow/seq/interface diagrams"): its overview, a flow, a sequence and its types, so a new project's
-    /// doc can't go without one.
-    /// </summary>
-    [Test]
-    public void EveryProjectDoc_ShowsItsFourDiagrams()
-    {
-        var lacking = ProjectDocs().Where(doc => !ProjectDocKinds.All(KindsShown(doc).Contains));
-
-        Assert.That(lacking.Select(Relative), Is.Empty, "a project doc without all four kinds of picture");
-    }
-
-    /// <summary>
-    /// The four a project doc shows, named rather than every kind there is: a ticket (F127.4.1) is a card an agent
-    /// shows in a chat, not a picture of a project.
-    /// </summary>
-    private static readonly DiagramKind[] ProjectDocKinds =
-        [DiagramKind.Cards, DiagramKind.Flow, DiagramKind.Sequence, DiagramKind.Classes];
-
-    /// <summary>The kinds of picture a doc shows, read from each picture's JSON.</summary>
-    private static IReadOnlySet<DiagramKind> KindsShown(string doc) => Targets(File.ReadAllText(doc))
-        .Where(target => target.Contains($"{DiagramSync.Folder}/", StringComparison.Ordinal))
-        .Select(target => Path.ChangeExtension(Path.Combine(Path.GetDirectoryName(doc)!, target), ".json"))
-        .Where(File.Exists)
-        .Select(json => DiagramReader.Read(File.ReadAllText(json)).Kind)
-        .ToHashSet();
-
-    /// <summary>Every project doc, the framework's, the packs' and each demo's.</summary>
-    private static IEnumerable<string> ProjectDocs() => ProjectDoc.Paths();
 
     /// <summary>
     /// The flow a picture is placed as: its own, a class chart's (CL60.4) or a composite's (F134.13), each through
@@ -251,39 +208,6 @@ public class DocsDiagramsTests
         for (int at = 0; at < lines.Length - 1; at++)
             if (lines[at].Trim() == "```mermaid")
                 yield return lines[at + 1].Trim();
-    }
-
-    /// <summary>
-    /// The SVG pictures a doc shows: each markdown link's target, read between <c>](</c> and the <c>)</c> after it,
-    /// outside code, since a how-to or a plan shows a link as an example there.
-    /// </summary>
-    private static IEnumerable<string> Targets(string doc)
-    {
-        bool fenced = false;
-        foreach (string line in doc.ReplaceLineEndings("\n").Split('\n'))
-        {
-            if (line.TrimStart().StartsWith("```", StringComparison.Ordinal)) fenced = !fenced;
-            if (fenced) continue;
-
-            // The parts between backticks are inline code: every other part, from the second.
-            string prose = string.Concat(line.Split('`').Where((_, part) => part % 2 == 0));
-            foreach (string target in LinkTargets(prose)
-                         .Where(target => target.EndsWith(".svg", StringComparison.Ordinal)))
-                yield return target;
-        }
-    }
-
-    /// <summary>Each markdown link's target on a line of prose.</summary>
-    private static IEnumerable<string> LinkTargets(string prose)
-    {
-        for (int at = prose.IndexOf("](", StringComparison.Ordinal);
-             at >= 0;
-             at = prose.IndexOf("](", at + 2, StringComparison.Ordinal))
-        {
-            int end = prose.IndexOf(')', at + 2);
-            if (end < 0) yield break;
-            yield return prose[(at + 2)..end];
-        }
     }
 
     /// <summary>A path from the repo's root, with forward slashes, as a failure names it.</summary>

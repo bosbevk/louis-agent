@@ -3,6 +3,7 @@
 > **Kind:** web app (Blazor WebAssembly), and its host `louis-agent.site-api` · **Path:** `src/site/` · **References:**
 > `louis-agent.web`, the guide (`louis-agent.identity.guide`), the triage pack's web project; the host also the
 > framework's API and the docs, leads and site packs · **Runs:** louis-agent.dev, and the review copy on 127.0.0.1:5080
+> **Also shows:** `component`, `sequence`
 
 ![The framework's website, and its parts: the pages, the guide, the showroom, its own host and its image](diagrams/louis-agent.site.svg)
 

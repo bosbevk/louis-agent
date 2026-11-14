@@ -5,6 +5,7 @@
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 > **Kind:** library (`net10.0`, one a pack)
 > · **Paths:** `packs/tools/louis-agent.pack.files/`, `.git`, `.dotnet`, `.shell`, `.web`, `.paymo` and `.devops`
+> **Also shows:** `component`
 
 ![The general packs: files, git, .NET, shell, web, Paymo and Azure DevOps](diagrams/general-packs.svg)
 

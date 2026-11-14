@@ -6,6 +6,7 @@
 > folders and readers), louis-agent.identity.puls.judges (its judge), louis-agent.pack.where-to-buy.checks and
 > louis-agent.pack.recipes.checks · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
+> **Also shows:** `component`
 
 ![The eval runner, and what it does: the catalogue, a run or a re-score, and the judge](diagrams/louis-agent.evals.runner.svg)
 

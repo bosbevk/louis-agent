@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.telemetry/` · **References:**
 > louis-agent.core, OpenTelemetry, OpenTelemetry.Exporter.OpenTelemetryProtocol, Serilog.Sinks.OpenTelemetry ·
 > **Used by:** every host's program, the eval runner, the orchestrator
+> **Also shows:** `component`
 
 ![Telemetry, and its parts: the tracer, the log sink, and the filter that keeps our own traffic out](diagrams/louis-agent.core.telemetry.svg)
 

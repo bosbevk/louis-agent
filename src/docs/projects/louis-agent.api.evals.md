@@ -3,6 +3,7 @@
 > **Kind:** host (a library, `net10.0`) · **Path:** `src/hosts/louis-agent.api.evals/` · **References:** louis-agent.api,
 > louis-agent.core, louis-agent.evals.protocol, louis-agent.evals.checks, MongoDB.Driver · **Used by:** a program that
 > wants the eval studio: the Puls API, the coding API, the starter API
+> **Also shows:** `component`
 
 ![The eval studio, and its parts: the runner, the stores and the admin routes](diagrams/louis-agent.api.evals.svg)
 

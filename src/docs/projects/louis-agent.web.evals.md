@@ -3,6 +3,7 @@
 > **Kind:** Razor library (`net10.0`) · **Path:** `src/web/louis-agent.web.evals/` · **References:** louis-agent.web,
 > louis-agent.evals.protocol · **Used by:** a site that opts into the eval studio (Puls, the code-review app, the starter), at
 > `/admin/evals`, an area inside the admin's frame (F144) · **How to change them:** [Change the eval pages](../guides/change-the-eval-pages.md)
+> **Also shows:** `component`, `sequence`
 
 Since CL57 ([ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)) the studio is a library on the
 framework's web, not a part of it: a site references it, calls `AddLouisAgentEvals()` and lists

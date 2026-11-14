@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core,
 > louis-agent.composition, louis-agent.choices, PuppeteerSharp · **Used by:** every host that gives its agent the web:
 > the API, the CLI, the ACP and MCP hosts, the demos' programs; the eval runner through the API's settings
+> **Also shows:** `component`
 
 ![Web access, and its parts: the robots policy, the browser, search and rendering, and the recorders](diagrams/louis-agent.core.web.svg)
 

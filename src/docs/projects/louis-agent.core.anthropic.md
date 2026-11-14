@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.anthropic/` · **References:** louis-agent.core,
 > Anthropic (the SDK) · **Used by:** every program whose agent may talk to Claude: the demos' hosts, the eval runners,
 > the orchestrator, the usage probe
+> **Also shows:** `component`
 
 ![Claude's provider, and its parts: the client, the usage mapper and prompt caching](diagrams/louis-agent.core.anthropic.svg)
 

@@ -5,6 +5,7 @@
 > [louis-agent.pack.leads](../../../packs/docs/projects/louis-agent.pack.leads.md); the site they show on in
 > [louis-agent.site](louis-agent.site.md); the decisions in [ADR 0112](../adr/0112-the-site-sells-first.md) and
 > [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
+> **Also shows:** `activity`, `sequence`
 
 > **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.showroom/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), behind its key

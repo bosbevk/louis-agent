@@ -5,6 +5,7 @@
 > [the orchestrator spec](../specs/ORCHESTRATOR_DESIGN.md).
 > **Kind:** content (the orchestrator's skill files)
 > · **Path:** `demos/louis-agent/hosts/louis-agent.orchestrator/Skills/`
+> **Also shows:** `class`, `activity`, `sequence`
 
 ![A runbook, and what it can decide: nothing, a fix, or a hand-off](diagrams/orchestrator-runbooks.svg)
 

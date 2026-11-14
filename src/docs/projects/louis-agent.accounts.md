@@ -4,6 +4,7 @@
 > sign in and what the browser app reads. **Elsewhere:** why in [ADR 0087](../adr/0087-identity-is-the-identity-server.md)
 > and [ADR 0088](../adr/0088-a-tenant-on-every-account.md); how to change the web in [Change the web](../guides/change-the-web.md).
 > **Kind:** host (a library, ASP.NET Core Identity) · **Path:** `src/hosts/louis-agent.accounts/`
+> **Also shows:** `component`
 
 ![Accounts, and their parts: ASP.NET Core Identity, our routes beside it, and the tenant](diagrams/louis-agent.accounts.svg)
 

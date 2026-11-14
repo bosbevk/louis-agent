@@ -1,8 +1,9 @@
 # Project design docs
 
 One design doc per project in the solution: what it's for, how it works, its parts, its settings, how to extend it,
-how it's tested, and its limits, with four pictures: its overview, a flow, a sequence of its main case and its
-interface design ([Draw a diagram](../guides/draw-a-diagram.md)). For the whole system at once, read [Architecture](../architecture/README.md) first; come here
+how it's tested, and its limits, with the pictures its kind of project asks for: its overview and its interface
+design always, and what its kind adds, such as a library's main path or where a host runs. Its opening quote says
+its kind and what it shows beyond that ([Draw a diagram](../guides/draw-a-diagram.md#step-3-link-it)). For the whole system at once, read [Architecture](../architecture/README.md) first; come here
 when you're about to change a particular project. Each project's `.csproj` links its design doc and its how-to from
 [Guides](../guides/README.md), so both show under `src/docs/` in the IDE's solution explorer.
 

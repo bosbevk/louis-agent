@@ -3,6 +3,7 @@
 > **Kind:** contracts library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
 > louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
 > harness); from F49.3, the packs
+> **Also shows:** `component`, `sequence`
 
 ![The check contract: it reads a trial, returns a grade, and the checks themselves live elsewhere](diagrams/louis-agent.evals.checks.svg)
 

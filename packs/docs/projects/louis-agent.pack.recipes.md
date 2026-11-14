@@ -3,6 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.recipes/` · **References:** louis-agent.composition,
 > Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
 > **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
+> **Also shows:** `component`
 
 ![The recipes pack: FindRecipes, ReadRecipe and the library](diagrams/louis-agent.pack.recipes.svg)
 
