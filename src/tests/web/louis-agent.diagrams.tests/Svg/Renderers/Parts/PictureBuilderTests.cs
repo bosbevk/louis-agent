@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 
@@ -14,13 +15,17 @@ public class PictureBuilderTests
 {
     private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
 
+    /// <summary>A box of the geometry in use, as a drawing hands the writer.</summary>
+    private static IBox At(double x, double y, double width, double height) =>
+        Geometries.InUse.Box(x, y, width, height);
+
     /// <summary>A body 300 wide: one box, so it can be found in the picture.</summary>
-    private static SvgWriter Box(string cls) => new SvgWriter().Box(0, 0, 300, 100, 0, cls);
+    private static SvgWriter Box(string cls) => new SvgWriter().Box(At(0, 0, 300, 100), 0, cls);
 
     /// <summary>A picture with a body, a key 40 tall and a caption, as a flow would build it.</summary>
     private static PictureBuilder Whole(string title = "The engine") => PictureBuilder.Titled(title)
         .Type("Flow chart").Body("body", Box("box"), 300, 100)
-        .Key(width => (40, (writer, top) => writer.Box(0, top, width, 40, 0, "key")))
+        .Key(width => (40, (writer, top) => writer.Box(At(0, top, width, 40), 0, "key")))
         .Caption("What it says.").Style(".a { }", ".b { }");
 
     /// <summary>The picture's shapes after its ground, each by its class, in the order they are drawn.</summary>
@@ -57,7 +62,7 @@ public class PictureBuilderTests
         Assert.Multiple(() =>
         {
             Assert.That(Root(Whole().Build(), "width"), Is.EqualTo(300 + 2 * SvgWriter.Pad));
-            Assert.That(head, Is.GreaterThan(100 * PictureBuilder.TitleChar + "Flow chart".Length * 7));
+            Assert.That(head, Is.GreaterThan(PictureBuilder.TitleFace.Width(longTitle) + "Flow chart".Length * 7));
             Assert.That(Root(Whole(longTitle).Build(), "width"), Is.EqualTo(head + 2 * SvgWriter.Pad).Within(0.11));
             Assert.That((string?)key.Attribute("width"), Is.EqualTo(SvgWriter.N(head)), "the key has that width");
         });
@@ -107,8 +112,8 @@ public class PictureBuilderTests
     public void AKindsOwnLights_ReplaceTheOneBehindTheTop_AndABodyMayBeDrawnStraightIn()
     {
         string svg = PictureBuilder.Titled("The engine")
-            .Lights(writer => writer.Box(0, 0, 10, 10, 0, "own-light").Box(0, 0, 10, 10, 0, "own-light"))
-            .Draw(writer => writer.Box(0, 50, 300, 100, 0, "straight"), 300, 100).Build();
+            .Lights(writer => writer.Box(At(0, 0, 10, 10), 0, "own-light").Box(At(0, 0, 10, 10), 0, "own-light"))
+            .Draw(writer => writer.Box(At(0, 50, 300, 100), 0, "straight"), 300, 100).Build();
 
         Assert.That(Parts(svg), Is.EqualTo(new[] { "own-light", "own-light", "mrq-title", "straight" }));
     }

@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Engine.Words;
+
 namespace LouisAgent.Diagrams.Engine.Keys;
 
 /// <summary>
@@ -17,11 +19,11 @@ public static class KeyRows
     /// </summary>
     public const double Heading = 34, Row = 28, Words = 10;
 
-    /// <summary>
-    /// How wide a character of an item's words is taken to be, generously, since no font is measured, and the room
-    /// between two items.
-    /// </summary>
-    private const double Char = 6.6, Gap = 30;
+    /// <summary>The room between two items.</summary>
+    private const double Gap = 30;
+
+    /// <summary>An item's words, which say how wide they run.</summary>
+    private static readonly Face Meaning = new(6.6);
 
     /// <summary>
     /// The items placed across a width, and how tall the key is. An item is read by how wide its sample is and by
@@ -34,7 +36,7 @@ public static class KeyRows
         double x = 0, y = Heading;
         foreach (var item in items)
         {
-            double room = sample(item) + Words + words(item).Length * Char;
+            double room = sample(item) + Words + Meaning.Width(words(item));
             if (x > 0 && x + room > width) (x, y) = (0, y + Row);
             placed.Add(at(item, x, y));
             x += room + Gap;

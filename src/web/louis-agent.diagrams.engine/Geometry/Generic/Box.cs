@@ -58,14 +58,6 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     /// <summary>A place down the box from its top: 0 its top edge, 1 its bottom.</summary>
     public T Down(T part) => Top + Height * part;
 
-    /// <summary>The smallest box that holds this one and another.</summary>
-    public Box<T> With(Box<T> other)
-    {
-        T left = T.Min(Left, other.Left), top = T.Min(Top, other.Top);
-        T right = T.Max(Right, other.Right), bottom = T.Max(Bottom, other.Bottom);
-        return new Box<T>(left, top, right - left, bottom - top);
-    }
-
     /// <summary>Whether another box lies within this one, or is as big as it.</summary>
     public bool Holds(Box<T> other) =>
         Left <= other.Left && Right >= other.Right && Top <= other.Top && Bottom >= other.Bottom;
@@ -97,8 +89,6 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     IBox IBox.Grown(double by) => Grown(T.CreateChecked(by));
 
     IBox IBox.Moved(double across, double down) => Moved(T.CreateChecked(across), T.CreateChecked(down));
-
-    IBox IBox.With(IBox other) => With(Ours(other));
 
     bool IBox.Holds(IBox other) => Holds(Ours(other));
 

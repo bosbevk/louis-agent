@@ -1,5 +1,7 @@
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Words;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 
@@ -19,14 +21,21 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 /// <seealso href="https://refactoring.guru/design-patterns/builder">Builder (Refactoring.Guru)</seealso>
 internal sealed class PictureBuilder
 {
-    /// <summary>Where the title's words stand, and how wide a character of it is taken to be, generously.</summary>
-    public const double TitleLine = 14, TitleChar = 7;
+    /// <summary>Where the title's words stand.</summary>
+    public const double TitleLine = 14;
+
+    /// <summary>The title's words, which say how wide they run, generously.</summary>
+    public static readonly Face TitleFace = new(7);
 
     /// <summary>
-    /// How wide a character of the type's name is taken to be, in its spaced capitals, the room kept between the
-    /// title and it, the room a caption takes, and how far above the bottom its words stand.
+    /// The room kept between the title and the type's name, the room a caption takes, how far above the bottom
+    /// its words stand, and where along its run the light behind the top changes from its first colour to its
+    /// second.
     /// </summary>
-    private const double TypeChar = 7.6, TypeGap = 28, CaptionRoom = 34, CaptionRise = 8;
+    private const double TypeGap = 28, CaptionRoom = 34, CaptionRise = 8, LightTurns = 0.5;
+
+    /// <summary>The type's name, in its spaced capitals.</summary>
+    private static readonly Face TypeFace = new(7.6);
 
     private readonly string _title;
     private readonly PictureMeasures _measures;
@@ -120,7 +129,7 @@ internal sealed class PictureBuilder
     /// How wide a picture must be at least for its title and its type to stand side by side on one line.
     /// </summary>
     public static double HeadWidth(string title, string? type) =>
-        title.Length * TitleChar + (type is null ? 0 : TypeGap + type.Length * TypeChar);
+        TitleFace.Width(title) + (type is null ? 0 : TypeGap + TypeFace.Width(type));
 
     /// <summary>The picture, as one SVG file's text.</summary>
     public string Build()
@@ -136,7 +145,7 @@ internal sealed class PictureBuilder
         double height = under + (_caption is null ? 0 : CaptionRoom);
 
         // The fades first, the light's before a kind's own. Then the parts, in the one order every picture has.
-        var writer = new SvgWriter().Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, 0.5, 1);
+        var writer = new SvgWriter().Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, LightTurns, 1);
         foreach (var (id, run, stops) in _paints) writer.Paint(id, run, stops);
         if (_lights is null) Light(writer, width);
         _lights?.Invoke(writer);
@@ -156,8 +165,7 @@ internal sealed class PictureBuilder
     private void Light(SvgWriter writer, double width)
     {
         double reach = width / 2 + SvgWriter.Pad, y = _measures.Head + _measures.LightDrop;
-        string across = SvgWriter.N(reach), down = SvgWriter.N(_measures.LightDown), there = SvgWriter.N(2 * reach);
-        writer.Path($"M{SvgWriter.N(-SvgWriter.Pad)} {SvgWriter.N(y)}a{across} {down} 0 1 0 {there} 0" +
-                    $"a{across} {down} 0 1 0 -{there} 0Z", "mrq-light", false);
+        var oval = new PathWriter().Oval(width / 2, y, reach, _measures.LightDown);
+        writer.Path(oval.Text, "mrq-light", false);
     }
 }

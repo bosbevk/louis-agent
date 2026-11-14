@@ -1,4 +1,3 @@
-using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sources;
 
@@ -16,5 +15,5 @@ internal sealed class ClassesRenderer : IDiagramRenderer
     public DiagramKind Kind => DiagramKind.Classes;
 
     /// <summary>The class chart as one SVG file's text.</summary>
-    public string Render(DiagramSource source) => ClassesDrawing.Of(source, Geometries.InUse);
+    public string Render(DiagramSource source, IGeometry geometry) => ClassesDrawing.Of(source, geometry);
 }

@@ -48,9 +48,8 @@ internal sealed class TicketRenderer : IDiagramRenderer
     public DiagramKind Kind => DiagramKind.Ticket;
 
     /// <inheritdoc />
-    public string Render(DiagramSource source)
+    public string Render(DiagramSource source, IGeometry geometry)
     {
-        var geometry = Geometries.InUse;
         var placed = TicketLayout.Place(source.Ticket!, geometry: geometry);
         var card = placed.Card;
 

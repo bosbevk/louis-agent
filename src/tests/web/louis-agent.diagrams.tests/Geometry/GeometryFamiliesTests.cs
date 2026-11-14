@@ -69,20 +69,6 @@ public class GeometryFamiliesTests(IGeometry geometry)
         });
     }
 
-    /// <summary>Two boxes joined are the smallest box that holds both, as a group's frame holds its boxes.</summary>
-    [Test]
-    public void TwoBoxesJoined_AreTheSmallestBoxRoundBoth()
-    {
-        var joined = geometry.Box(0, 0, 10, 10).With(geometry.Box(20, 5, 10, 20));
-        IBox box = Box(), inside = box.With(geometry.Box(130, 50, 10, 10));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That((joined.Left, joined.Top, joined.Right, joined.Bottom), Is.EqualTo((0.0, 0.0, 30.0, 25.0)));
-            Assert.That(inside, Is.EqualTo(box), "a box that holds the other is itself");
-        });
-    }
-
     /// <summary>A box is its numbers: two made the same are the same box, and so are two points.</summary>
     [Test]
     public void TwoMadeTheSame_AreTheSame()
@@ -112,7 +98,6 @@ public class GeometryFamiliesTests(IGeometry geometry)
         {
             Assert.That(Box().Grown(1), Is.TypeOf(box));
             Assert.That(Box().Moved(1, 1), Is.TypeOf(box));
-            Assert.That(Box().With(Box()), Is.TypeOf(box));
             Assert.That(Box().Middle, Is.TypeOf(point));
         });
     }
@@ -260,19 +245,17 @@ public class GeometryFamiliesTests(IGeometry geometry)
     }
 
     /// <summary>
-    /// Joined with a box of another family, a box still answers in its own: the other is read through the seam.
+    /// Asked about a box of another family, a box still answers: the other is read through the seam.
     /// </summary>
     [Test]
-    public void JoinedWithABoxOfAnotherFamily_ABoxStaysOfItsOwn()
+    public void AskedAboutABoxOfAnotherFamily_ABoxStillAnswers()
     {
-        var other = new GenericGeometry<decimal>().Box(300, 100, 50, 50);
-        var joined = Box().With(other);
+        var decimals = new GenericGeometry<decimal>();
 
         Assert.Multiple(() =>
         {
-            Assert.That(joined, Is.TypeOf(Box().GetType()));
-            Assert.That((joined.Left, joined.Top, joined.Right, joined.Bottom),
-                Is.EqualTo((120.0, 40.0, 350.0, 150.0)));
+            Assert.That(Box().Holds(decimals.Box(130, 50, 10, 10)), Is.True);
+            Assert.That(Box().Holds(decimals.Box(300, 100, 50, 50)), Is.False);
         });
     }
 }

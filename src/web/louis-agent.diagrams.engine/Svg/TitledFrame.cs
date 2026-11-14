@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
+using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 
@@ -18,11 +20,6 @@ namespace LouisAgent.Diagrams.Engine.Svg;
 /// </remarks>
 public static class TitledFrame
 {
-    /// <summary>
-    /// How wide a character of the note's 12px font is, measured generously, since no font is measured.
-    /// </summary>
-    private const double NoteChar = 7.2;
-
     /// <summary>The room between the drawing and the note.</summary>
     private const double Gap = 16;
 
@@ -31,16 +28,32 @@ public static class TitledFrame
     /// </summary>
     private const double NotePad = 10, NoteLine = 17, NoteLeft = 38, NoteIcon = 16;
 
-    /// <summary>The picture inside the frame: the drawing as it was, and the note under it.</summary>
-    public static string Around(string svg, DiagramSource source)
+    /// <summary>
+    /// The note bar's corner, where its icon stands from its left, and how far under the bar's own room its
+    /// first line of words stands.
+    /// </summary>
+    private const double NoteCorner = 8, IconLeft = 12, FirstLine = 12;
+
+    /// <summary>However narrow the drawing, a line of the note holds at least this many letters.</summary>
+    private const int FewestLetters = 8;
+
+    /// <summary>The note's words in their 12px font, measured generously, since no font is measured.</summary>
+    private static readonly Face NoteFace = new(7.2);
+
+    /// <summary>
+    /// The picture inside the frame: the drawing as it was, and the note under it, in a bar made by the geometry
+    /// the picture was drawn with.
+    /// </summary>
+    public static string Around(string svg, DiagramSource source, IGeometry geometry)
     {
         var root = XElement.Parse(svg);
-        var view = root.Attribute("viewBox")!.Value.Split(' ')
-            .Select(number => double.Parse(number, CultureInfo.InvariantCulture)).ToArray();
-        double pad = -view[0], width = view[2] - 2 * pad, height = view[3] - 2 * pad;
+
+        // What the file shows, and inside it the drawing: the file keeps the same room round it on every side.
+        var shown = Shown(root, geometry);
+        var drawn = shown.Grown(shown.Left);
 
         // The note is as tall as its words need at the drawing's width.
-        var note = source.Caption is { } caption ? Lines(caption, width - NoteLeft - NotePad) : [];
+        var note = source.Caption is { } caption ? Lines(caption, drawn.Width - NoteLeft - NotePad) : [];
         double noteHeight = note.Count == 0 ? 0 : 2 * NotePad + NoteLine * note.Count;
 
         // Everything the renderer drew on the ground is kept together, whole, and the note goes under it.
@@ -48,28 +61,36 @@ public static class TitledFrame
         var drawing = ground.ElementsAfterSelf().ToList();
         drawing.ForEach(element => element.Remove());
         var frame = new SvgWriter().Group("drawing", 0, 0, drawing);
-        if (note.Count > 0) NoteBar(frame, note, width, height + Gap, noteHeight);
+        var bar = geometry.Box(drawn.Left, drawn.Bottom + Gap, drawn.Width, noteHeight);
+        if (note.Count > 0) NoteBar(frame, note, bar);
         ground.AddAfterSelf(frame.Shapes);
 
         // The picture grows by the note, and its style learns the note's look.
-        double outer = view[3] + (note.Count == 0 ? 0 : Gap + noteHeight);
+        string outer = SvgWriter.N(shown.Grown(0, 0, 0, note.Count == 0 ? 0 : Gap + noteHeight).Height);
         root.SetAttributeValue("viewBox",
-            $"{SvgWriter.N(view[0])} {SvgWriter.N(view[1])} {SvgWriter.N(view[2])} {SvgWriter.N(outer)}");
-        root.SetAttributeValue("height", SvgWriter.N(outer));
-        ground.SetAttributeValue("height", SvgWriter.N(outer));
+            $"{SvgWriter.N(shown.Left)} {SvgWriter.N(shown.Top)} {SvgWriter.N(shown.Width)} {outer}");
+        root.SetAttributeValue("height", outer);
+        ground.SetAttributeValue("height", outer);
         var style = root.Elements().First(element => element.Name.LocalName == "style");
         style.Value += SvgStyle.Frame(SvgTheme.Site);
         return SvgWriter.Serialize(root);
     }
 
-    /// <summary>The note bar under the drawing: an info icon by its first line, and the caption's lines.</summary>
-    private static void NoteBar(SvgWriter writer, List<List<(string, string)>> lines, double width, double top,
-        double height)
+    /// <summary>What a picture's file shows, as a box: its <c>viewBox</c>, which is a corner and a size.</summary>
+    private static IBox Shown(XElement root, IGeometry geometry)
     {
-        writer.Box(0, top, width, height, 8, "notebar")
-            .Icon(12, top + NotePad, NoteIcon, DiagramIcon.Info, "note-icon");
+        var view = root.Attribute("viewBox")!.Value.Split(' ')
+            .Select(number => double.Parse(number, CultureInfo.InvariantCulture)).ToArray();
+        return geometry.Box(view[0], view[1], view[2], view[3]);
+    }
+
+    /// <summary>The note bar under the drawing: an info icon by its first line, and the caption's lines.</summary>
+    private static void NoteBar(SvgWriter writer, List<List<(string, string)>> lines, IBox bar)
+    {
+        writer.Box(bar, NoteCorner, "notebar")
+            .Icon(bar.Left + IconLeft, bar.Top + NotePad, NoteIcon, DiagramIcon.Info, "note-icon");
         for (int at = 0; at < lines.Count; at++)
-            writer.Spans(NoteLeft, top + NotePad + 12 + NoteLine * at, "notes", lines[at]);
+            writer.Spans(bar.Left + NoteLeft, bar.Top + NotePad + FirstLine + NoteLine * at, "notes", lines[at]);
     }
 
     /// <summary>
@@ -84,7 +105,7 @@ public static class TitledFrame
             .Concat(rest.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(word => (word, "note-rest")));
 
         // Words taken in order while a line holds them; a word too long for any line stands on one of its own.
-        int most = Math.Max(8, (int)(width / NoteChar));
+        int most = Math.Max(FewestLetters, (int)NoteFace.Holds(width));
         var lines = new List<List<(string Word, string Cls)>> { new() };
         foreach (var word in words)
         {

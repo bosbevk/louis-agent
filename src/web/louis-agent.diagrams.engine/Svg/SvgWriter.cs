@@ -28,6 +28,9 @@ internal sealed class SvgWriter
     /// <summary>Room around the drawing, inside the ground, so nothing touches its edge.</summary>
     internal const double Pad = 24;
 
+    /// <summary>The ground's corner, and the side of the square box an icon's paths are drawn in, Tabler's.</summary>
+    private const double GroundCorner = 14, IconGrid = 24;
+
     /// <summary>The arrowhead's id, one per file.</summary>
     private const string ArrowId = "arrow";
 
@@ -69,18 +72,14 @@ internal sealed class SvgWriter
         return this;
     }
 
-    /// <summary>A rounded box.</summary>
-    public SvgWriter Box(double x, double y, double width, double height, double radius, string cls)
+    /// <summary>A rounded box, where a box of the layout stands.</summary>
+    public SvgWriter Box(IBox box, double radius, string cls)
     {
-        _shapes.Add(new XElement(Svg + "rect", new XAttribute("class", cls), new XAttribute("x", N(x)),
-            new XAttribute("y", N(y)), new XAttribute("width", N(width)), new XAttribute("height", N(height)),
-            new XAttribute("rx", N(radius))));
+        _shapes.Add(new XElement(Svg + "rect", new XAttribute("class", cls), new XAttribute("x", N(box.Left)),
+            new XAttribute("y", N(box.Top)), new XAttribute("width", N(box.Width)),
+            new XAttribute("height", N(box.Height)), new XAttribute("rx", N(radius))));
         return this;
     }
-
-    /// <summary>A rounded box, where a box of the layout stands.</summary>
-    public SvgWriter Box(IBox box, double radius, string cls) =>
-        Box(box.Left, box.Top, box.Width, box.Height, radius, cls);
 
     /// <summary>A circle round a point.</summary>
     public SvgWriter Circle(double x, double y, double radius, string cls)
@@ -148,7 +147,7 @@ internal sealed class SvgWriter
     /// </summary>
     public SvgWriter Icon(double x, double y, double size, DiagramIcon icon, string cls)
     {
-        string scale = (size / 24).ToString("0.####", CultureInfo.InvariantCulture);
+        string scale = (size / IconGrid).ToString("0.####", CultureInfo.InvariantCulture);
         _shapes.Add(new XElement(Svg + "g", new XAttribute("class", cls),
             new XAttribute("transform", $"translate({N(x)} {N(y)}) scale({scale})"),
             IconPaths.Of(icon).Select(data => new XElement(Svg + "path", new XAttribute("d", data)))));
@@ -174,7 +173,7 @@ internal sealed class SvgWriter
                 _ends.Select(end => End(end.End, end.Tone)), _paints),
             new XElement(Svg + "rect", new XAttribute("class", "ground"), new XAttribute("x", N(-Pad)),
                 new XAttribute("y", N(-Pad)), new XAttribute("width", N(outerWidth)),
-                new XAttribute("height", N(outerHeight)), new XAttribute("rx", "14")),
+                new XAttribute("height", N(outerHeight)), new XAttribute("rx", N(GroundCorner))),
             _shapes);
 
         return Serialize(root);

@@ -31,13 +31,12 @@ public class DotNetGeometryTests
     private static double[] Answers(IGeometry geometry, (double X, double Y, double W, double H) made)
     {
         var box = geometry.Box(made.X, made.Y, made.W, made.H);
-        IBox grown = box.Grown(7.3), moved = box.Moved(0.7, -1.9), joined = box.With(geometry.Box(1.1, 2.2, 3.3, 4.4));
+        IBox grown = box.Grown(7.3), moved = box.Moved(0.7, -1.9);
 
         return
         [
             box.Left, box.Top, box.Width, box.Height, box.Right, box.Bottom, box.Middle.X, box.Middle.Y,
-            grown.Left, grown.Top, grown.Width, grown.Height, moved.Left, moved.Top,
-            joined.Left, joined.Top, joined.Width, joined.Height
+            grown.Left, grown.Top, grown.Width, grown.Height, moved.Left, moved.Top
         ];
     }
 

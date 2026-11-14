@@ -5,20 +5,20 @@ namespace LouisAgent.Core.Tests;
 /// <summary>
 /// The diagram engine asks its types (CL65.6, ADR 0123, Louis: "we cannot write spaghetti code"): a box knows its
 /// edges, a face how wide words are, and a path writer a path's text, so no layout or drawing works those out
-/// where it stands.
+/// where it stands. And a picture's geometry is chosen in one place.
 /// </summary>
 /// <remarks>
-/// A ratchet, as the file sizes are held. Each list names the files that still broke the rule when the types
-/// were built. A test fails for a file new to its list, and for a listed file that no longer breaks the rule,
-/// so a list only shrinks, and the work is done when all four are empty.
+/// Each test reads the engine's source for one shape that says a type was not asked, outside the folders of the
+/// types themselves, and fails for any file that holds it. They were ratchets while the kinds moved onto the
+/// types, each with a list that could only shrink. The lists are empty, so a shape is refused wherever it turns
+/// up.
 /// </remarks>
 public partial class EngineAsksItsTypesTests
 {
     private const string Engine = "src/web/louis-agent.diagrams.engine";
 
-    /// <summary>What to do about a list that no longer matches the code.</summary>
-    private const string Hint = "a file new to the list broke the rule: ask the type (ADR 0123). " +
-                                "A file that left it: take it off the list.";
+    /// <summary>What to do about a file a test names.</summary>
+    private const string Hint = "each file listed works out what a type could answer: ask the type (ADR 0123).";
 
     /// <summary>The folders of the types themselves, where the sums are meant to be.</summary>
     private static readonly string[] TheTypes = ["/Geometry/", "/Words/", "/Svg/Paths/"];
@@ -53,7 +53,7 @@ public partial class EngineAsksItsTypesTests
     [GeneratedRegex("""\$"M ?[{\d]|"M" \+""", RegexOptions.NonBacktracking)]
     private static partial Regex PathAsText();
 
-    /// <summary>The engine's files that still hold a shape, outside the types' own folders, by path under it.</summary>
+    /// <summary>The engine's files that hold a shape, outside the types' own folders, by path under it.</summary>
     private static List<string> Holding(Regex shape) =>
     [
         .. ProjectSources.Of(Engine).Where(source => !TheTypes.Any(source.Path.Contains))
@@ -61,40 +61,37 @@ public partial class EngineAsksItsTypesTests
             .Select(source => source.Path[(Engine.Length + 1)..]).Order(StringComparer.Ordinal)
     ];
 
-    /// <summary>The records that are still a box by four numbers.</summary>
-    private static readonly string[] BoxesByNumbers = [];
-
-    /// <summary>The files that still work out a box's edge or half its size.</summary>
-    private static readonly string[] BoxSums = [];
-
-    /// <summary>The files that still measure words by their length.</summary>
-    private static readonly string[] WordsMeasured =
-    [
-        "Keys/KeyRows.cs",
-        "Svg/Renderers/Parts/PictureBuilder.cs"
-    ];
-
-    /// <summary>The files that still build a path as text.</summary>
-    private static readonly string[] PathsAsText =
-    [
-        "Svg/Renderers/Parts/PictureBuilder.cs"
-    ];
-
     /// <summary>A place and a size are a box, never four numbers side by side.</summary>
     [Test]
-    public void NoRecord_IsABoxByFourNumbers() =>
-        Assert.That(Holding(BoxByNumbers()), Is.EqualTo(BoxesByNumbers), Hint);
+    public void NoRecord_IsABoxByFourNumbers() => Assert.That(Holding(BoxByNumbers()), Is.Empty, Hint);
 
     /// <summary>A box is asked for its edge and its middle.</summary>
     [Test]
-    public void NoFile_WorksOutABoxsEdge() => Assert.That(Holding(BoxSum()), Is.EqualTo(BoxSums), Hint);
+    public void NoFile_WorksOutABoxsEdge() => Assert.That(Holding(BoxSum()), Is.Empty, Hint);
 
     /// <summary>A face is asked how wide words are.</summary>
     [Test]
-    public void NoFile_MeasuresWordsByTheirLength() =>
-        Assert.That(Holding(WordsByLength()), Is.EqualTo(WordsMeasured), Hint);
+    public void NoFile_MeasuresWordsByTheirLength() => Assert.That(Holding(WordsByLength()), Is.Empty, Hint);
 
     /// <summary>A path writer writes a path.</summary>
     [Test]
-    public void NoFile_BuildsAPathAsText() => Assert.That(Holding(PathAsText()), Is.EqualTo(PathsAsText), Hint);
+    public void NoFile_BuildsAPathAsText() => Assert.That(Holding(PathAsText()), Is.Empty, Hint);
+
+    /// <summary>
+    /// Which geometry draws a picture is said once, by the list of renderers, and a layout names the one in use
+    /// only as what it falls back to when it is told none. No renderer and no drawing picks one for itself.
+    /// </summary>
+    [Test]
+    public void NoDrawing_PicksItsOwnGeometry()
+    {
+        var naming = ProjectSources.Of(Engine).Where(source => source.Text.Contains("Geometries.InUse"))
+            .Select(source => source.Path[(Engine.Length + 1)..]).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(naming.Where(path => path.StartsWith("Svg/", StringComparison.Ordinal)),
+                Is.EqualTo(new[] { "Svg/DiagramRenderers.cs" }), "among the drawings, only the list of renderers");
+            Assert.That(naming, Has.Count.GreaterThan(1), "and the layouts, as what they fall back to");
+        });
+    }
 }

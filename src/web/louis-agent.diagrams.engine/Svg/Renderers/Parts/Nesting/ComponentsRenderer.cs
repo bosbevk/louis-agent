@@ -58,10 +58,9 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     public DiagramKind Kind => DiagramKind.Components;
 
     /// <summary>The picture as an SVG, drawn from what the layout placed.</summary>
-    public string Render(DiagramSource source)
+    public string Render(DiagramSource source, IGeometry geometry)
     {
         var components = source.Components!;
-        var geometry = Geometries.InUse;
         var placed = ComponentLayout.Of(components, geometry);
 
         // The words in the title's line: the picture's title, and after a colon what the diagram says under it.

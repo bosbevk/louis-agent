@@ -59,9 +59,6 @@ public interface IBox
     /// <summary>The same box, somewhere else.</summary>
     IBox Moved(double across, double down);
 
-    /// <summary>The smallest box that holds this one and another.</summary>
-    IBox With(IBox other);
-
     /// <summary>Whether another box lies within this one, or is as big as it.</summary>
     bool Holds(IBox other);
 

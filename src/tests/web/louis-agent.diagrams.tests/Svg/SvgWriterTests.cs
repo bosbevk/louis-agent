@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 
@@ -73,7 +74,8 @@ public class SvgWriterTests
     [Test]
     public void APartSetIntoAPicture_BringsItsPaints()
     {
-        var part = new SvgWriter().Paint("fade", PaintRun.Down, 0, 1).Box(0, 0, 10, 10, 2, "filled");
+        var box = Geometries.InUse.Box(0, 0, 10, 10);
+        var part = new SvgWriter().Paint("fade", PaintRun.Down, 0, 1).Box(box, 2, "filled");
 
         var picture = new SvgWriter().Group("part", 5, 5, part);
 
