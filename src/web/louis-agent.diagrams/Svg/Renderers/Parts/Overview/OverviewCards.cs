@@ -86,7 +86,7 @@ internal static class OverviewCards
     private static void Glass(SvgWriter writer, PlacedCard card)
     {
         double left = card.X + CardSizes.Pad;
-        int titles = card.TitleLines?.Count ?? 0;
+        int titles = card.TitleLines.Count;
         writer.Box(card.X, card.Y, card.W, card.H, Corner, "crd-glass")
             .Box(card.X + EdgeIn, card.Y - 0.5, card.W - 2 * EdgeIn, 1.6, 0, "crd-edge")
             .Box(left, card.Y + CardSizes.Pad, Tint, Tint, 10, "crd-tint")
@@ -98,7 +98,7 @@ internal static class OverviewCards
             (double x, double y) = card.TitleBelow
                 ? (left, card.Y + CardSizes.Head + CardSizes.TextTop + CardSizes.TitleLine * at)
                 : (card.X + CardSizes.TitleLeft, card.Y + TitleDrop);
-            writer.Text(x, y, card.TitleLines![at], "crd-name", "start");
+            writer.Text(x, y, card.TitleLines[at], "crd-name", "start");
         }
 
         double top = card.Y + CardSizes.Head + (card.TitleBelow ? CardSizes.TitleLine * titles : 0);
@@ -115,12 +115,12 @@ internal static class OverviewCards
     private static void Quiet(SvgWriter writer, PlacedCard card)
     {
         double left = card.X + CardSizes.QuietPad;
-        int titles = card.TitleLines?.Count ?? 0;
+        int titles = card.TitleLines.Count;
         writer.Box(card.X, card.Y, card.W, card.H, Corner, "crd-quiet")
             .Icon(left, card.Y + QuietIcon, TintIcon, card.Card.Icon, "crd-icon quiet");
         for (int at = 0; at < titles; at++)
             writer.Text(card.X + CardSizes.QuietTitleLeft, card.Y + QuietTitle + CardSizes.QuietTitleLine * at,
-                card.TitleLines![at], "crd-name quiet", "start");
+                card.TitleLines[at], "crd-name quiet", "start");
 
         double more = CardSizes.QuietTitleLine * Math.Max(0, titles - 1);
         double code = Pill(writer, card, left, card.Y + QuietPill + more, CardSizes.QuietCodeRoom);

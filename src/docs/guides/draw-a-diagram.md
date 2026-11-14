@@ -82,9 +82,12 @@ its parts. Two links join the project to each part, and the second has arrowhead
 
 | `look` | What it draws |
 |---|---|
-| `plain` | An ordinary card. This is the default. |
-| `highlight` | Centred, in the accent's tint. |
-| `heading` | Centred, with no box. |
+| `plain` | A glass card: its icon in a badge beside its title, and its text. This is the default. |
+| `highlight` | A headline on a light, with no box: the project. Give it a row of its own. |
+| `heading` | A quieter headline, with no light. |
+
+A plain card that no link touches is drawn quiet, lower and without a badge, in a picture that has links. So link
+the project to its main parts, and leave what else it has unlinked.
 
 **A link.** It joins two cards by their ids, a card to one in the row just above or just under it. A link that
 skips a row, or joins two cards of one row, is refused with the two cards it names. Its `kind` says which way its
@@ -180,9 +183,9 @@ before the first `: ` large, and the rest on a line under it. Under the drawing 
 each tone and each shape the picture uses, and that a line has the colour of the box it leaves. You write none of
 that.
 
-**What the docs' frame adds.** The tool draws a frame round every picture in the docs. Round a flow or a component
-diagram, which have their own title and key, it adds only a note bar from `caption`, with the part before the
-colon in bold. Round every other kind it also has a title bar from `title`, with the part before the first `: `
+**What the docs' frame adds.** The tool draws a frame round every picture in the docs. Round a flow, a component
+diagram or a cards picture, which have their own title, it adds only a note bar from `caption`, with the part
+before the colon in bold. Round every other kind it also has a title bar from `title`, with the part before the first `: `
 in bold, and a legend of the tones the chart uses. That is why every chart has a caption: it is the one thing to
 take from the picture, so the doc doesn't have to say it again.
 

@@ -29,12 +29,12 @@ public static class CardSizes
         HeadlineLine = 19, HeadingLine = 18, HeadlineEnd = 10, HeadlineSide = 78;
 
     /// <summary>
-    /// A glass card, from its top: its badge's row, what its title starts after beside the badge, a line of a title
-    /// that stands under the badge, what a code name's pill adds, how far under them the text starts, a line of
-    /// text, and the room under the last line.
+    /// A glass card, from its top: its badge's row, what its title starts after beside the badge and the room it
+    /// keeps at the card's right, a line of a title that stands under the badge, what a code name's pill adds, how
+    /// far under them the text starts, a line of text, and the room under the last line.
     /// </summary>
-    public const double Head = 58, TitleLeft = 64, TitleLine = 21, CodeRoom = 28, TextTop = 18, TextLine = 18,
-        End = 20;
+    public const double Head = 58, TitleLeft = 64, TitleEnd = 14, TitleLine = 21, CodeRoom = 28, TextTop = 18,
+        TextLine = 18, End = 20;
 
     /// <summary>
     /// A quiet card, from its top: where its text starts, what its title starts after beside its icon, a further
@@ -70,7 +70,7 @@ public static class CardSizes
     /// </summary>
     private static CardSize Glass(Card card, double width)
     {
-        bool below = card.Title.Length * TitleChar > width - TitleLeft - Pad;
+        bool below = card.Title.Length * TitleChar > width - TitleLeft - TitleEnd;
         var titles = below ? TextWrap.Lines(card.Title, (int)((width - 2 * Pad) / TitleChar)) : [card.Title];
         var lines = TextWrap.Lines(card.Text, (int)((width - 2 * Pad) / TextChar));
         double head = Head + (below ? TitleLine * titles.Count : 0), code = card.Code is null ? 0 : CodeRoom;

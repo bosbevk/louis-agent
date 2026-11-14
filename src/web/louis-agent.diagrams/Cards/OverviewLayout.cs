@@ -74,8 +74,7 @@ public static class OverviewLayout
         return
         [
             .. row.Cards.Select((card, at) => new PlacedCard(card, at * (cardWidth + Gap), 0, cardWidth, height,
-                sizes[at].TextLines, card.Code is not null, sizes[at].TitleLines, sizes[at].TitleBelow,
-                sizes[at].Quiet))
+                sizes[at].TitleLines, sizes[at].TitleBelow, sizes[at].TextLines, sizes[at].Quiet))
         ];
     }
 

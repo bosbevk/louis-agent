@@ -66,7 +66,7 @@ names that start `pic-`, and the parts drawn with it are `PictureParts`: the gro
 start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a group's frame, a box's name and
 icon badge, the glow round a shape, and the pill an arrow's word stands in. `CardsStyle` holds what a cards
 picture will wear, with names that start `crd-`: the light behind a headline, the lit rail, the glass card and the
-quiet one. No picture is drawn with it yet. The shared rules come first in a picture's style, so two kinds can't
+quiet one. The shared rules come first in a picture's style, so two kinds can't
 drift apart in what they share.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
@@ -83,7 +83,8 @@ layout placed by `FlowRules.Straight`.
 **Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
 the picture bare and then frames it: a navy title bar, a legend of the tones the chart uses, and a note bar from
 its caption. A component diagram and a flow write their own title and their own key inside the picture, so they
-get only the note bar. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
+get only the note bar. A cards picture writes its own title too, and has no tones to explain, so it gets only the
+note bar as well. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
 cards draw, is unchanged.
 
 #### The tool that draws the docs' pictures
@@ -218,14 +219,44 @@ So the flow's layout, router, word chips and clearance check all serve a class c
 
 #### Cards: a project's overview
 
-Cards (`Cards/`) are Louis's overview style. `CardLayout` lays rows of cards in one frame. A row's cards share its
-width and take its tallest card's height, and a card's words wrap to fit.
+Cards (`Cards/`) are the overview a project doc opens with: the project, and under it the parts it is made of. The
+picture is rows of cards, top to bottom, and links between neighbouring rows.
 
-Every word is in the code font. So a line's width is its length times one number, and the tests can prove it fits.
+**What each card looks like.** A card has a look, its `CardLook`, and the picture draws it by that look wherever
+its row is:
 
-A card has a look, its `CardLook`: `plain`, `highlight` (centred, in the accent's tint) or `heading` (centred, with
-no box). A link (`Cards/Links/`) runs from a card's bottom middle to the next row's top middle, at right angles,
-with its arrowheads the way it says.
+- *`highlight`, a headline.* No box: its icon in an accent badge, its title large, its code name in a pill, its
+  text, all centred, on a soft light. This is the project.
+- *`heading`, a quieter headline.* The same words smaller, with a plain icon and no light.
+- *`plain`, glass.* A faint panel with an accent line along its top, its icon in a tinted badge beside its title,
+  and its text. A long title on a narrow card goes under the badge.
+- *A plain card no link touches is quiet*, in a picture that has links: lower, with no badge and no accent line.
+  In a picture with no links at all, every plain card is glass.
+
+**Placing the cards.** `OverviewLayout` lays the rows under one another. A row's cards share its width and take its
+tallest card's height. `CardSizes` says how tall each kind of card is and where its words break. The words are in
+the sans font, whose letters differ in width, so a line's width is taken as its length times a number chosen wide.
+The tests hold that every line fits its card by that measure, and the pictures are looked at.
+
+**The rails.** A link is not drawn as a line of its own. In the gap between two rows, the cards above that are
+linked to exactly the same cards below share one rail: a lit line, with a stem down to it from each card above and
+a drop from it to each card below. Every other card above has a rail of its own, so you can still see which card
+feeds which. `CardRails` does that grouping from the data alone. `RailPlaces` then says where a gap's rails stand:
+two that are clear of each other stand at one height, and one that would lie on another stands 18 under it. A gap
+is as tall as its rails need, 52 for one rail, and 26 when no link crosses it.
+
+**Which way a link points.** A small arrowhead stands on the end a link points at: the card below for `down`, the
+card above for `up`, both for `both`. Dots run down a rail's lines only where every one of its links points down,
+since dots say one way. So the direction never rests on motion alone.
+
+**A link the rail cannot draw.** A rail stands in the gap between two rows. So a link that skips a row, or joins
+two cards of one row, is refused when the JSON is read, with the two cards it names.
+
+**The drawing** (`Svg/Renderers/Parts/Overview/`). `OverviewDrawing` draws what the layout placed and decides no
+place itself: the picture's own small title, the light behind each highlighted card, the rails and the cards. The
+look is `PictureLook` with `CardsStyle` after it. A card has no tone, so the colour is the look's own, one accent:
+the palette's violet running to its blue. The fades, the rail's, the light's and the glass's, are paints the
+drawing defines and the style fills with.
 
 #### A ticket: a card an agent draws in the chat
 
@@ -284,13 +315,13 @@ This section is for looking a file up.
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
 ├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
-├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
+├── Cards/          # CardsSpec, CardRow, Card, CardLook, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/, and Parts/Overview/ for a cards picture's new drawing), Theme/ (with Looks/)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/, and Parts/Overview/ for a cards picture's drawing), Theme/ (with Looks/)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
@@ -305,7 +336,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
   trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
-  `Sequence/sequence.svg`, `Classes/classes.svg`, `Cards/cards.svg`, `Cards/looks.svg` and `Tickets/ticket.svg`
+  `Sequence/sequence.svg`, `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,

@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tones;
@@ -11,7 +13,8 @@ namespace LouisAgent.Diagrams.Tests.Svg;
 /// <summary>
 /// The docs' frame round a picture (CL60.2, Louis's pick "Both looks"): a navy title bar on top, the title's part
 /// before its colon in bold, and the caption as a note bar under the drawing, the drawing itself as it was. A
-/// picture that has its own title, a flow or a component diagram, gets the note bar alone (F134.8).
+/// picture that has its own title, a flow, a component diagram or a cards picture, gets the note bar alone
+/// (F134.8, F134.9).
 /// </summary>
 public class TitledFrameTests
 {
@@ -50,6 +53,28 @@ public class TitledFrameTests
             Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
             Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "pic-title")
                 .Select(text => text.Value), Is.EqualTo(new[] { "Accounts" }));
+        });
+    }
+
+    /// <summary>
+    /// A cards picture writes its own title too (F134.9), so the frame gives it no bar, only the note bar under
+    /// it.
+    /// </summary>
+    [Test]
+    public void ACardsPicture_HasItsOwnTitle_SoNoBar_OnlyTheNote()
+    {
+        var overview = new DiagramSource(DiagramKind.Cards, "A project at a glance", "One project, one part.",
+            Cards: new CardsSpec(
+                [new CardRow([new Card("project", DiagramIcon.Chip, "The project", null, "What it is.")])], []));
+
+        var svg = XDocument.Parse(DiagramRenderers.RenderTitled(overview));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rects(svg, "titlebar"), Is.Empty);
+            Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
+            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "crd-title")
+                .Select(text => text.Value), Is.EqualTo(new[] { "A project at a glance" }));
         });
     }
 
