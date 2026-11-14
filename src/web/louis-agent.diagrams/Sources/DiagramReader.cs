@@ -37,6 +37,9 @@ public static class DiagramReader
 
         // Its type is its kind's own when it wrote none, and is refused when it is not one its kind may be.
         source = source with { Type = DiagramTypeCheck.Of(kind, source.Type) };
+
+        // Cards whose file says nothing of links have none: no links can only mean that, so it is filled in.
+        if (source.Cards is { Links: null } unlinked) source = source with { Cards = unlinked with { Links = [] } };
         if (source.Flow is { } flow) CheckFlow(flow);
         if (source.Cards is { } cards) CheckCards(cards);
         if (source.Sequence is { } sequence) CheckSequence(sequence);

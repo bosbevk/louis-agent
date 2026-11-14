@@ -122,7 +122,8 @@ project as a headline on a light, and hangs its two parts from one lit rail unde
 | `heading` | A quieter headline, with no light. |
 
 A plain card that no link touches is drawn quiet, lower and without a badge, in a picture that has links. So link
-the project to its main parts, and leave what else it has unlinked.
+the project to its main parts, and leave what else it has unlinked. A picture with no links at all may leave
+`links` out: the reader takes that as none.
 
 **A link.** It joins two cards by their ids, a card to one in the row just above or just under it. A link that
 skips a row, or joins two cards of one row, is refused with the two cards it names. Its `kind` says which way its

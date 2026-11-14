@@ -56,6 +56,34 @@ public class DiagramReaderTests
                                  }
                                  """;
 
+    /// <summary>
+    /// A cards picture whose file says nothing of links has none: there is one thing no links can mean, so the
+    /// reader fills it in and refuses nothing (CL65.4). It failed with .NET's own error, which named nothing the
+    /// file's writer wrote.
+    /// </summary>
+    [Test]
+    public void CardsWithNoLinksWritten_HaveNone()
+    {
+        const string noLinks = """
+                               {
+                                 "kind": "cards",
+                                 "title": "Two cards",
+                                 "cards": { "rows": [ { "cards": [
+                                   { "id": "one", "icon": "chip", "title": "One", "text": "The first." },
+                                   { "id": "two", "icon": "box", "title": "Two", "text": "The second." }
+                                 ] } ] }
+                               }
+                               """;
+
+        var cards = DiagramReader.Read(noLinks).Cards!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cards.Links, Is.Empty);
+            Assert.That(cards.Rows.Single().Cards.Select(card => card.Id), Is.EqualTo(new[] { "one", "two" }));
+        });
+    }
+
     /// <summary>A flow file reads into its boxes and arrows.</summary>
     [Test]
     public void AFlow_ReadsIntoItsBoxesAndArrows()

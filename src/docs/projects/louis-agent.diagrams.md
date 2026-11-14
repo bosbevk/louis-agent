@@ -72,6 +72,9 @@ cards. A type is what the picture shows, by UML's name for it. There are UML's t
 `DiagramTypes` says which types a kind may be, and the check holds a file to it. The writer leaves a kind's own
 type out again, as it leaves out everything at its default, and writes a flow's straight after its kind.
 
+The reader fills in what can only be one thing: a kind's own type, and no links for a cards picture whose file
+says nothing of links.
+
 The reader refuses what is wrong, with the reason: a misspelt field, an unknown kind, a missing title, a type
 that is not the kind's, an arrow or a link to an id that nothing has, or a link between two cards that are not in
 neighbouring rows. The reasons are the library's own messages (`Messages/DiagramMessage`), filled
