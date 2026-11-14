@@ -1,4 +1,4 @@
-namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a flow's look adds to the shared one (F134.8): a box's name and the icon in its badge, the thin outline of

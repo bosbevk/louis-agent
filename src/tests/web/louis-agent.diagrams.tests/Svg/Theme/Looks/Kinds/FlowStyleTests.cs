@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks;
+namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a flow's look adds to the shared one (F134.8), in the others' look since F134.12: a shape's thin outline

@@ -8,6 +8,7 @@ using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 

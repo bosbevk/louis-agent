@@ -6,6 +6,7 @@ using LouisAgent.Diagrams.Engine.Flow.Shapes;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;

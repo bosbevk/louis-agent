@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a sequence's look adds to the shared ones (F134.10, Louis's pick of three designs, "Marquee"): a

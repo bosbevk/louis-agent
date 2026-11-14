@@ -135,7 +135,7 @@ same bytes on every machine.
 picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
 too.
 
-**The new look is one shared style** (`Svg/Theme/Looks/`). A component diagram and a flow are drawn in the new
+**The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A component diagram and a flow are drawn in the new
 look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
 whose dots march the way the arrow points. A panel is filled with a little of the page's ink, the same wherever
 it stands. So a panel inside a panel is a step deeper with no rule for its depth, and on a white page a box four
@@ -158,7 +158,7 @@ violet running to its blue, and it sets the few variables of its own for a light
 lines, a headline with its badge, a glass card's badge, name and text, and the quiet card. `SequenceStyle` holds
 what a sequence adds, with names that start `seq-`: a participant's badge in its tone and its name, the
 lifeline, a call's beam either way, an answer's quiet line and the words above them. `ClassesStyle`
-(`Looks/Kinds/`) holds what a class chart adds, with names that start `cls-`: a type's badge in its tone with its
+holds what a class chart adds, with names that start `cls-`: a type's badge in its tone with its
 letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/Flows/FlowDrawing`). It places nothing itself: it draws what the
@@ -610,7 +610,7 @@ src/web/louis-agent.diagrams.engine/
 ├── Keys/       # KeyParts, KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, ComponentsStyle, CompositeStyle, FlowStyle, SequenceStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames

@@ -5,6 +5,7 @@ using LouisAgent.Diagrams.Engine.Sequence.Keys;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;

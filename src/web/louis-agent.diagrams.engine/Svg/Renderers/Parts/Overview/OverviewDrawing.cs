@@ -6,6 +6,7 @@ using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;

@@ -1,7 +1,8 @@
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks;
+namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a cards picture's look adds to the shared ones (F134.9): the lit rail and its lines, a headline with its

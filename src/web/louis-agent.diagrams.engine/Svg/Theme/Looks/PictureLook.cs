@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 

@@ -1,4 +1,4 @@
-namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a component diagram's look adds to the shared one (F134.7): the pins on a box's edge, the pill of the one

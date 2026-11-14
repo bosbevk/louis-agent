@@ -2,6 +2,7 @@ using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Overview;

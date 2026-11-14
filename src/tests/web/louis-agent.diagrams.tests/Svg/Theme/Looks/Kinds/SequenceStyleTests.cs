@@ -1,7 +1,8 @@
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks;
+namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a sequence's look adds to the shared ones (F134.10): a participant's badge in its tone and its name, the
