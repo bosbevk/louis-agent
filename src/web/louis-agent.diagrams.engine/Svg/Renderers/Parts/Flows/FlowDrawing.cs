@@ -27,12 +27,6 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 internal static class FlowDrawing
 {
     /// <summary>
-    /// The room the title takes above the drawing, the room between the drawing and its key, and the room a
-    /// caption takes under them.
-    /// </summary>
-    private const double Head = PictureParts.Head, KeyGap = 26, CaptionRoom = 34;
-
-    /// <summary>
     /// A plain box's corner, a badge's size, its corner and the icon's size in it, and how far a pill's and a
     /// slanted box's insides stand in from where a plain box's do.
     /// </summary>
@@ -43,23 +37,18 @@ internal static class FlowDrawing
     {
         var placed = GraphLayout.Place(source.Flow!, bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
 
-        // As wide as the drawing, or as its own title when that is wider. The key goes across that width.
-        double width = Math.Max(placed.Width, source.Title.Length * PictureParts.TitleChar);
-        var (items, keyHeight) = FlowKeyLayout.Of(placed.Nodes, width);
-        double keyTop = Head + placed.Height + KeyGap;
-        double height = keyTop + keyHeight + (source.Caption is null ? 0 : CaptionRoom);
-
-        // The light and the title first, so everything stands on them. Then the flow, and the key under it,
-        // whose rule is filled with the accent's edge.
-        var writer = PictureParts.Open(source.Title, width).Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-            .Group("flow", 0, Head, Flow(placed));
-        FlowKey.Draw(writer, items, 0, keyTop, width);
-        if (source.Caption is { } caption) writer.Text(0, height - 8, caption, "caption", "start");
-
-        // What every picture in the new look wears, then the title and the light the other kinds wear too, then
-        // what is a flow's own.
-        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + FlowStyle.Rules;
-        return writer.Write(SvgTheme.Site, source.Title, width, height, style);
+        // The flow is the body. Its key goes across the picture's width, under a rule the accent's edge fills.
+        return PictureBuilder.Titled(source.Title)
+            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
+            .Body("flow", Flow(placed), placed.Width, placed.Height)
+            .Key(width =>
+            {
+                var (items, height) = FlowKeyLayout.Of(placed.Nodes, width);
+                return (height, (writer, top) => FlowKey.Draw(writer, items, 0, top, width));
+            })
+            .Caption(source.Caption)
+            .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, FlowStyle.Rules)
+            .Build();
     }
 
     /// <summary>

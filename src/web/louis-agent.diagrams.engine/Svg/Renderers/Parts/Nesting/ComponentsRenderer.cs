@@ -41,21 +41,29 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         var components = source.Components!;
         var placed = ComponentLayout.Of(components);
 
-        // The title is one line: the picture's, and after a colon what the diagram says under it.
-        string title = components.Subtitle is { } under ? $"{source.Title}: {under}" : source.Title;
-        var writer = PictureParts.Open(title, placed.Width);
+        // The words in the title's line: the picture's title, and after a colon what the diagram says under it.
+        string heading = components.Subtitle is { } under ? $"{source.Title}: {under}" : source.Title;
 
+        // Its layout stands every box under the title's room already, and holds the key. So the body is drawn
+        // straight in, and the picture is as wide and as tall as the layout says.
+        return PictureBuilder.Titled(source.Title).Heading(heading).Narrow()
+            .Draw(writer => Draw(writer, placed), placed.Width, placed.Height - PictureMeasures.Usual.Head)
+            .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, ComponentsStyle.Rules)
+            .Build();
+    }
+
+    /// <summary>
+    /// Everything the layout placed, back to front: the neighbours, the boxes, the lines, the pills over them,
+    /// the pins, and the key.
+    /// </summary>
+    private static void Draw(SvgWriter writer, PlacedComponents placed)
+    {
         foreach (var neighbour in placed.Neighbours) DrawNeighbour(writer, neighbour);
         foreach (var box in placed.Boxes) DrawBox(writer, box);
         foreach (var line in placed.Lines) DrawLine(writer, line);
         foreach (var box in placed.Boxes.Where(box => box.Pill is not null)) DrawPill(writer, box);
         foreach (var pin in placed.Pins) ComponentPins.Draw(writer, pin, ToneOf(placed, pin), "cmp-pin");
         ComponentsKey.Draw(writer, placed.Key);
-
-        // What every picture in the new look wears, then the title and the light the other kinds wear too, then
-        // what is a component's own.
-        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + ComponentsStyle.Rules;
-        return writer.Write(SvgTheme.Site, source.Title, placed.Width, placed.Height, style);
     }
 
     /// <summary>

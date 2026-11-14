@@ -78,6 +78,30 @@ public partial class DiagramsProjectTests
         });
     }
 
+    /// <summary>
+    /// One builder puts every picture together (CL65.2), so no drawing writes a title, a light behind its top or
+    /// a caption of its own. A cards picture keeps its own lights, one behind each highlighted card, and the
+    /// ticket is a card in a chat with a look of its own.
+    /// </summary>
+    [Test]
+    public void NoDrawing_WritesItsOwnTitleLightOrCaption()
+    {
+        var drawings = Sources(Engine).Where(source => source.Path.Contains("/Svg/Renderers/") &&
+                                                       !source.Path.EndsWith("/PictureBuilder.cs")).ToList();
+        string[] shared = ["\"mrq-title\"", "\"caption\"", ".Write(SvgTheme"];
+        var own = drawings.Where(source => !source.Path.EndsWith("/TicketRenderer.cs"))
+            .SelectMany(source => shared.Where(source.Text.Contains).Select(part => $"{source.Path}: {part}"))
+            .Concat(drawings.Where(source => source.Text.Contains("\"mrq-light\"") &&
+                                             !source.Path.EndsWith("/OverviewDrawing.cs"))
+                .Select(source => $"{source.Path}: a light")).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(drawings, Has.Count.GreaterThan(10));
+            Assert.That(own, Is.Empty, string.Join('\n', own));
+        });
+    }
+
     /// <summary>Every file of the engine is in the engine's namespace.</summary>
     [Test]
     public void EveryFileOfTheEngine_IsInItsNamespace()

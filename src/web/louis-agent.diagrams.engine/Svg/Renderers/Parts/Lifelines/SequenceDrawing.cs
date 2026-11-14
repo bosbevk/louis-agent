@@ -23,41 +23,34 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 internal static class SequenceDrawing
 {
     /// <summary>
-    /// The room the picture's title takes above the participants, where its words stand in it, the room between
-    /// the lifelines' ends and the key, and the room a caption takes under the key.
+    /// A sequence's own numbers for its picture: more room above, for the participants' badges, less before the
+    /// key, and a light a little lower and shallower, behind the participants.
     /// </summary>
-    private const double Head = 48, TitleLine = 14, KeyGap = 12, CaptionRoom = 34;
-
-    /// <summary>How wide a character of the title is taken to be, generously, since no font is measured.</summary>
-    private const double TitleChar = 7;
-
-    /// <summary>
-    /// The light behind the participants: how far under the badges' top its middle is, and how far it reaches
-    /// down. Across, it reaches the picture's sides, where it has faded to nothing.
-    /// </summary>
-    private const double LightDrop = 36, LightDown = 170;
+    private static readonly PictureMeasures Measures = new(Head: 48, KeyGap: 12, LightDrop: 36, LightDown: 170);
 
     /// <summary>The sequence a source holds, as one SVG file's text.</summary>
     public static string Of(DiagramSource source)
     {
-        var placed = SequenceLayout.Place(source.Sequence!, SequenceMeasures.Marquee);
+        var spec = source.Sequence!;
+        var placed = SequenceLayout.Place(spec, SequenceMeasures.Marquee);
 
-        // As wide as the participants, or as its own title when that is wider. The key goes across that width.
-        double width = Math.Max(placed.Width, source.Title.Length * TitleChar);
-        var (items, keyHeight) = SequenceKeyLayout.Of(source.Sequence!, width);
-        double keyTop = Head + placed.Height + KeyGap;
-        double height = keyTop + keyHeight + (source.Caption is null ? 0 : CaptionRoom);
-
-        // The light first, so everything stands on it. Then the steps, and the key under them.
-        var writer = Light(Paints(new SvgWriter()), width)
-            .Text(0, TitleLine, source.Title, "mrq-title", "start")
-            .Group("seq-drawing", 0, Head, Steps(placed))
-            .Group("seq-legend", 0, keyTop, SequenceKey.Of(items, width));
-        if (source.Caption is { } caption) writer.Text(0, height - 8, caption, "caption", "start");
-
-        // What every picture in the new look wears, then what a cards picture wears too, then a sequence's own.
-        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + SequenceStyle.Of(SvgTheme.Site);
-        return writer.Write(SvgTheme.Site, source.Title, width, height, style);
+        // The steps are the body, and the key goes across under them. Five fades are a sequence's to ask for: a
+        // call's beam and its mirror for a call to the left, a lifeline, a frame's top edge, and the glass.
+        return PictureBuilder.Titled(source.Title, Measures)
+            .Paint(SequenceStyle.BeamPaint, PaintRun.Across, 0, 1)
+            .Paint(SequenceStyle.BackPaint, PaintRun.Across, 0, 1)
+            .Paint(SequenceStyle.LifePaint, PaintRun.Down, 0, 0.85, 1)
+            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
+            .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
+            .Body("seq-drawing", Steps(placed), placed.Width, placed.Height)
+            .Key(width =>
+            {
+                var (items, height) = SequenceKeyLayout.Of(spec, width);
+                return (height, (writer, top) => writer.Group("seq-legend", 0, top, SequenceKey.Of(items, width)));
+            })
+            .Caption(source.Caption)
+            .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, SequenceStyle.Of(SvgTheme.Site))
+            .Build();
     }
 
     /// <summary>
@@ -75,28 +68,5 @@ internal static class SequenceDrawing
         foreach (var row in placed.Rows) SequenceSteps.Draw(writer, row);
         foreach (var head in placed.Heads) SequenceHeads.Draw(writer, head);
         return writer;
-    }
-
-    /// <summary>
-    /// The look's six fades, each under the id the style fills with: the light from its middle out, a call's beam
-    /// across and its mirror for a call to the left, a lifeline down, a frame's top edge across, and the glass
-    /// down.
-    /// </summary>
-    private static SvgWriter Paints(SvgWriter writer) => writer
-        .Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, 0.5, 1)
-        .Paint(SequenceStyle.BeamPaint, PaintRun.Across, 0, 1)
-        .Paint(SequenceStyle.BackPaint, PaintRun.Across, 0, 1)
-        .Paint(SequenceStyle.LifePaint, PaintRun.Down, 0, 0.85, 1)
-        .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-        .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1);
-
-    /// <summary>The light behind the participants: an oval round the row of badges, as wide as the picture.</summary>
-    private static SvgWriter Light(SvgWriter writer, double width)
-    {
-        double reach = width / 2 + SvgWriter.Pad, y = Head + LightDrop;
-        string across = SvgWriter.N(reach), down = SvgWriter.N(LightDown), there = SvgWriter.N(2 * reach);
-        return writer.Path(
-            $"M{SvgWriter.N(-SvgWriter.Pad)} {SvgWriter.N(y)}a{across} {down} 0 1 0 {there} 0" +
-            $"a{across} {down} 0 1 0 -{there} 0Z", "mrq-light", false);
     }
 }

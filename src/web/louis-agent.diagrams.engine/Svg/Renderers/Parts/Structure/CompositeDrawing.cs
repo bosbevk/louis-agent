@@ -30,12 +30,6 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 internal static class CompositeDrawing
 {
     /// <summary>
-    /// The room the title takes above the class, the room between the class and its key, and the room a caption
-    /// takes under them.
-    /// </summary>
-    private const double Head = PictureParts.Head, KeyGap = 26, CaptionRoom = 34;
-
-    /// <summary>
     /// A part's corner, where the class's name stands under the frame's top, a chip's height, and how far the
     /// frame stands from its parts where it has no pins.
     /// </summary>
@@ -46,26 +40,23 @@ internal static class CompositeDrawing
     {
         var spec = source.Composite!;
         var placed = GraphLayout.Place(CompositeFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
-        string type = DiagramText.Format(DrawingMessage.CompositeType);
+        string tone = PictureParts.Tone(spec.Tone);
 
-        // As wide as the class, or as its title and type side by side. The key goes across that width.
-        double width = Math.Max(placed.Width, PictureParts.HeadWidth(source.Title, type));
-        var (items, keyHeight) = CompositeKey.Of(spec, width);
-        double keyTop = Head + placed.Height + KeyGap;
-        double height = keyTop + keyHeight + (source.Caption is null ? 0 : CaptionRoom);
-
-        // The light, the title and the type first, then the class, and the key under it.
-        var writer = PictureParts.Open(source.Title, width, type)
+        // The class is the body, and the key goes across under it, under a rule the accent's edge fills. Its
+        // styles are the looks it borrows, a flow's word and a component's pin and chip, and last its own.
+        return PictureBuilder.Titled(source.Title)
+            .Type(DiagramText.Format(DrawingMessage.CompositeType))
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-            .Group("cps", 0, Head, Class(spec, placed));
-        CompositeKey.Draw(writer, items, PictureParts.Tone(spec.Tone), keyTop, width);
-        if (source.Caption is { } caption) writer.Text(0, height - 8, caption, "caption", "start");
-
-        // What every picture in the new look wears, the title and the light, a flow's word and a component's pin
-        // and chip, and last what is a composite's own.
-        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + FlowStyle.Rules + ComponentsStyle.Rules +
-                       CompositeStyle.Rules;
-        return writer.Write(SvgTheme.Site, source.Title, width, height, style);
+            .Body("cps", Class(spec, placed), placed.Width, placed.Height)
+            .Key(width =>
+            {
+                var (items, height) = CompositeKey.Of(spec, width);
+                return (height, (writer, top) => CompositeKey.Draw(writer, items, tone, top, width));
+            })
+            .Caption(source.Caption)
+            .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, FlowStyle.Rules, ComponentsStyle.Rules,
+                CompositeStyle.Rules)
+            .Build();
     }
 
     /// <summary>
