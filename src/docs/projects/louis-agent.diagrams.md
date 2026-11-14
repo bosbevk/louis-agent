@@ -592,9 +592,16 @@ it trims the empty ground round the drawing.
 ## Diagrams
 
 The flow and the sequence are shown in part 1, where they are explained, and the geometry's two families in part
-3. This is the interface design.
+3. The interface design is two pictures, since one of all of it can't be read. The first is the way in: who
+reads a diagram and who writes one, how its kind picks one of the seven renderers, and what a renderer is handed.
 
-![The types: the reader makes a DiagramSource, its kind picks a renderer, each renderer has its layout and draws with SvgWriter, and TitledFrame wraps it](diagrams/louis-agent.diagrams-interface.svg)
+![The way in: the reader makes a DiagramSource, DiagramRenderers picks one of seven renderers by its kind and hands it the geometry, and TitledFrame wraps what it drew](diagrams/louis-agent.diagrams-interface.svg)
+
+The second is a kind's own parts: the layout its renderer asks where things stand, and what the picture is put
+together with. A class chart and a composite are laid out as a flow, each through an adapter. Six kinds are put
+together through `PictureBuilder`, and a ticket, which has no title, light or key, draws with `SvgWriter` itself.
+
+![A kind's own parts: each renderer asks its layout, three kinds are laid out as a flow, six are put together through PictureBuilder, and the builder draws with SvgWriter](diagrams/louis-agent.diagrams-interface-kinds.svg)
 
 ## Structure
 

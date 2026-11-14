@@ -982,6 +982,90 @@ our own type in `float` beside the other. Skill 18, testing and shipping: a ratc
 refactor proved by output that does not change by a byte, and a second implementation that is only kept if
 something runs it.
 
+## Taking out what nothing draws, and proving a rewrite by undoing it (CL65.4, 2026-11-15)
+
+**What it is.** Every kind of picture was redone in one look, a kind at a time, and each time a little of the
+look before stayed behind: style rules for shapes nobody draws, two layout rules no picture is laid out by, a
+second way to write a path. This cleanup took it out. The engine now holds only what a picture is drawn with
+today, and three rule tests keep it so.
+
+**The idea: code that is tested looks alive.** The two old layout rules, arrows that join and boxes centred,
+were drawn by nothing. Every drawing and the web's `GraphView` asked for the new pair by name. But the layout's
+own default was still the old pair, so 47 calls in the tests laid a flow out by rules no picture had. They
+passed, and passing made the old rules look used. I measured before planning: with the default switched for a
+moment, 8 of the 714 tests failed and 706 held. So I read the eight one by one. Two were about the rules that
+went, and went with them. Six were about the layout and now hold under the rules that are drawn. A test says
+the code works. It does not say anything uses it, and a default is where unused code hides.
+
+**A strategy is worth its interface while it has two.** The two rules sat behind two interfaces and a record
+that paired them. With the old pair gone each interface had one implementation, and ADR 0055 says that is a
+class. So the layout asks `ApartArrows` and `LevelRows` themselves. Three of the answers on those interfaces
+had only existed so the two rules could differ. How far apart two lines keep became a number. Whether an arrow
+may pass between two boxes was always yes, so the branch it guarded went too. A seam costs more than its lines:
+it keeps questions alive that have one answer.
+
+**A rule test written first found more than I had.** The plan named two things styled twice, a word's pill and
+the faint line over a key. I wrote the test first, that no kind's style has a rule a shared look has, and it
+named eleven. A box's name, a class's kind, the icon in three kinds' badges, a sequence's ring, a card's text:
+each had a twin. All eleven are folded. Reading the styles had found two, and the test found the rest in a
+second.
+
+**A change to every file, proved by undoing it.** Three steps rewrote every picture of the docs: 283 files,
+then 277, then 161. Nobody can look that over. So each step had a script that takes exactly its change out
+again, and what is left had to be the commit before, to the byte.
+
+- *Class names moved to the shared look:* map the eighteen new names back, and every drawing is the same.
+- *Old rules out of the style:* compare the drawings and leave the style out, then read the two styles as
+  rules: 61 went and 11 came, and each of the 11 is named.
+- *One way to write a path:* read each of the 2,458 paths as its letters and numbers, and hold them equal.
+
+After each I also drew a few pictures before and after in headless Chrome and compared the pixels. They were
+the same. The script proves the file, and the pixels prove the script reads the right thing.
+
+**Move the readers first, then change what they read.** An arrow's path was written with a space round every
+letter, and every other path without. The writer's own remark said why: other code read that text back. The
+other code was the tests, about 45 lines that split an arrow's text on its spaces to find where it turns. I
+moved those onto asking the arrow for its places, through one small helper, and left the text alone. All 696
+tests passed, so the move had changed no test's meaning. Only then did the text change. Had both changed in one
+go, a red test could have meant either. Then I tried keeping an arrow's numbers exact, where they had been
+rounded to the one decimal the text held. The docs' tool wrote none of the 269 pictures, so the rounding by
+writing and reading a text is gone.
+
+**A fade is named once.** The look's accent was written out in six drawings and its glass in four, each time
+with its id, the way it runs and the same stops. Now a fade is a small record, named beside the style that
+colours its stops, and a drawing asks for it by name. The plan named the look's three. Six more were written
+out the same way, so nine are named.
+
+**What went wrong on the way.**
+
+- Step 2 was planned as a refusal and built as a default. The plan said a cards picture with no `links` is
+  refused by name. Read again, no links can only mean none, and one picture of the docs already says so. The
+  rule from CL65.3 is a default where there is one answer and a refusal where there are several. I had planned
+  against our own rule.
+- One test had no chart left. It laid arrows out by the new rule on boxes placed by the old one, a pair no
+  picture ever had. Under the drawn rules its chart does something else, so the test now says what that is.
+- The first rule test for the fades named the writer too. The writer is where a run becomes markup, so it
+  must name one. I read the list a failing rule test gave me and narrowed the rule to the drawings. A rule
+  test's first failure is read like a finding, and not only made to pass.
+- The diagrams' own interface picture, drawn from the code, had 24 boxes and 30 lines, and its middle was a
+  knot. It is two pictures now, the way in and a kind's own parts. The old one read well because it left
+  two renderers and the builder out.
+
+**What is open for you.**
+
+- The picks made unattended, listed in CL65's plan: the strategy folded, the cards' default, one test project
+  and one design doc for the two projects, a kind's class beside a shared one, nine fades, two pictures.
+- The names of two kinds, each put to you there with three options: `components`, which reads as UML's
+  component diagram and shows a composite structure, and `ticket`, which is a glass card now. Neither is
+  renamed. I could not read uml-diagrams.org for the first, its certificate failed, so that finding rests on
+  the GeeksforGeeks page you named.
+- Six messages still named `Legend…`, from when the docs' frame had a legend.
+
+**Where it sits.** Skill 18, testing and shipping: a rewrite of every file proved by taking the change out
+again, a rule test written before the cleanup it holds, and readers moved before what they read. Skill 20,
+extensibility: when a seam earns its keep, and when a strategy is a class. Skill 5, structured outputs: a
+default where data someone else writes can mean one thing, and a refusal where it can mean several.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into
