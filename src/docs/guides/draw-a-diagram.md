@@ -193,9 +193,9 @@ each tone and each shape the picture uses, and that a line has the colour of the
 that.
 
 **What the docs' frame adds.** The tool draws a frame round every picture in the docs. Round a flow, a component
-diagram or a cards picture, which have their own title, it adds only a note bar from `caption`, with the part
-before the colon in bold. Round every other kind it also has a title bar from `title`, with the part before the first `: `
-in bold, and a legend of the tones the chart uses. That is why every chart has a caption: it is the one thing to
+diagram, a cards picture or a sequence, which have their own title, it adds only a note bar from `caption`, with
+the part before the colon in bold. Round a class chart it also has a title bar from `title`, with the part before
+the first `: ` in bold, and a legend of the tones the chart uses. That is why every chart has a caption: it is the one thing to
 take from the picture, so the doc doesn't have to say it again.
 
 ### Sequence: who calls whom, in order
@@ -230,20 +230,28 @@ A sequence names its participants first, then its steps.
 second is a block with two cases: the line is a command, or else it is a message. The last is a note over two
 lifelines.
 
-**A participant.** It takes an icon and a tone, as a flow's box does. An `actor` with no icon wears a person's
-icon.
+**A participant.** It takes an icon and a tone, as a flow's box does, and is drawn as a badge filled with the
+tone, its icon in the badge and its `label` under it. An `actor` with no icon wears a person's icon. The badge is
+the only place a tone is shown, so give each participant the tone that says what it is: a call does not take its
+sender's colour. A `label` breaks at 24 characters, and a written `\n` breaks it where you say.
 
 **A step.** Each step says what it is in its `step` field.
 
 | `step` | What it draws |
 |---|---|
-| `message` | A solid arrow from one participant to another. |
-| `reply` | A dashed arrow, in the answerer's tone. |
-| `note` | A note over one lifeline, or over a span of them. |
-| `block` | A frame round steps of its own. Its `block` is `loop`, `opt` or `alt`. An `alt` lists each other case in `else`. |
+| `message` | A call: a lit line from one participant to another, violet where it leaves and blue where it arrives, with an arrowhead and dots that run the way it points. Its `text` stands above it, bold. |
+| `reply` | An answer: a thin dashed grey line with an arrowhead, its `text` above it in grey. |
+| `note` | A glass panel over one lifeline, or over a span of them. |
+| `block` | A glass frame round steps of its own, its kind in a pill and its `label` beside it. Its `block` is `loop`, `opt` or `alt`. An `alt` lists each other case in `else`, drawn under a dashed line. |
 
-A message to oneself, with the same `from` and `to`, turns back on its own lifeline. Setting `numbered` to true
-puts 1, 2, 3 on the arrows.
+A message to oneself, with the same `from` and `to`, turns back on its own lifeline, with its words beside the
+turn. Setting `numbered` to true puts 1, 2, 3 in a small ring where each line starts. A step's `text` breaks at 40
+characters.
+
+**What the picture says about itself.** A sequence writes its `title` small in its top left corner. Under the
+steps it has a key, *How to read it*: each tone its badges wear, a call, an answer, a note when it has one, and
+each kind of block it has, with what the kind does (`loop` repeats, `opt` only if, `alt` one case or the other).
+You write none of that.
 
 ### Classes: an interface design
 

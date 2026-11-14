@@ -109,13 +109,17 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
     [the write-up](../learning/18-testing-and-shipping.md). The designs are in
     [m-cards.html](F134-mockups/m-cards.html).
-  - **F134.10 The sequence picture, redone** ([plan](F134.10-the-sequence-picture.md)): Louis, 2026-11-14,
-    "now 134.10 now we need to redo this one. same as with the others". His pick of three designs: C, the cards'
-    look, with its key. Done when the 64 sequence pictures are drawn that way.
+  - **F134.10 The sequence picture, redone**, built 2026-11-14: Louis, "now 134.10 now we need to redo this
+    one. same as with the others". His pick of three designs: C, the cards' look, with its key. All 64 sequence
+    pictures are drawn that way. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The designs are in
+    [m-sequence.html](F134-mockups/m-sequence.html).
   - **Left for the next kind that is redone:** the old rules for a card's frame, box, chip and words are still
     in the pictures' shared style (`SvgStyle`). Every picture's file carries that style, so taking them out
-    rewrites all 264 pictures. They go when the shared style is next opened for a sequence, a class chart or a
-    ticket.
+    rewrites every picture. F134.10 did not open that style: the old sequence wore a flow's own rules, the box,
+    the word's chip and the group's panel, which a class chart still wears. They go when the shared style is
+    next opened, for a class chart or a ticket.
 
 ## Verification
 

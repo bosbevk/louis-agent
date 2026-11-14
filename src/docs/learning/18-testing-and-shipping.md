@@ -473,6 +473,81 @@ every line fits by that measure, but the real proof is looking at the 45.
 **Where it sits.** Skill 18, testing and shipping: a change proved in parts and shipped in one step. Skill 20,
 extensibility: one shared look under three kinds of picture, each adding only its own.
 
+## One layout, two looks, by the numbers it is handed (F134.10, 2026-11-14)
+
+**What it is.** The sequence picture, who calls whom in order, was redone in the cards' look. A participant is a
+badge in its tone with its name under it. A call is a lit line that runs from violet to blue. An answer is a thin
+dashed grey line. Under the steps the picture has a key. You picked the design from three, after asking how the
+key would look on it. The engineering idea is the third way to change a drawing, after F134.8 and F134.9: **when
+only the numbers differ, don't write a second layout. Hand the one layout its numbers.**
+
+**The three ways, side by side.**
+
+| Feature | What differed between old and new | What was done |
+|---|---|---|
+| F134.8, flows | how an arrow is routed, and class charts kept the old way | a rule object the layout is handed (Strategy) |
+| F134.9, cards | the idea itself: rails instead of lines | a second layout beside the first, then the first deleted |
+| F134.10, sequences | only sizes: a head's height, a line's step, a frame's reach | one value of numbers the layout is handed (Parameter Object) |
+
+The sequence's layout already did what the new look needs: lifelines as far apart as the words between them
+need, rows down the page, a frame round each block. Its numbers were constants in one class that four other
+classes read. Step 3 turned them into one record, `SequenceMeasures`, with one instance holding the old numbers.
+Step 4 added a second instance for the new look. Step 8 deleted the first.
+
+**How step 3 was proved.** It changed 9 files and no picture. The proof was not a test I wrote: the diagrams'
+409 tests passed unchanged, the sequence's golden among them, and the docs' tool, which redraws every picture
+and compares bytes, wrote none. A refactor that touches a layout is proved by the pictures it does not move.
+
+**How the shared look was proved.** The cards and the sequence wear the same title, light, glass and pill. Those
+rules moved out of the cards' style into a shared one, and their names changed from `crd-` to `mrq-`. So all 45
+cards pictures changed as text. To prove they did not change as pictures, each was shot before and after, in both
+colour schemes: 92 images, and one hash over them that was the same both times.
+
+**What was built, in order.** The measures as a value. The new look's numbers, with tests that hold relations
+(heads apart, words between their lifelines, a frame round its rows) and a check over the 64 real pictures. The
+shared look, then the sequence's own style. The key's layout, a pure function of the data. The drawing, with a
+golden. The switch, and all the pictures redrawn. Then the old numbers deleted.
+
+**What looking found that numbers did not.** The drawing's first picture passed every test and had three faults:
+
+- A frame sat on what followed it. An inner frame's bottom touched its parent's dashed line, and a note stood 4
+  under a frame. The layout had no room under a frame, because the old look's frames were plain boxes that could
+  touch. A new measure, 12 under a frame, fixed it.
+- A frame's tab stands 14 inside the frame in this look, and the layout's least width for a frame did not count
+  that. A long label in a narrow frame would have run to the frame's edge. A second new measure fixed it.
+- A long title over two participants was cut off at the picture's edge. The picture is now as wide as its title
+  when the title is the wider, as a flow's is.
+
+All three were found by looking at the first pictures drawn, and none by the drawing's tests. Then all 65
+redrawn pictures were looked at, on 20 sheets dark and 8 light, and nothing more was found.
+
+**What the look cost.** In the old picture a line had its sender's tone, so you could follow one participant's
+calls by colour. In this look every call is one accent, and a tone is on a badge only. You were shown that with
+the design. The key is what makes up for it: it says what each badge's tone means.
+
+**Three small things CSS and SVG would not do.**
+
+- A gradient can't fill a straight line: a line has no height for the gradient to be measured in. So a beam is a
+  thin box, two high.
+- A box has no arrowhead. So the arrowhead sits on a short path of its own that shows nothing else.
+- The moving dots are hidden for a reader who asked for no motion. So the arrowhead can't sit on the dots' path
+  either, or the direction would disappear with them.
+
+**What didn't work, or cost time.**
+
+- I committed step 3 without its wrapped lines and its docs. A script failed, and the commit after a `;` went
+  through anyway. Fixed with a second commit. A commit now runs in its own command, after the checks.
+- My check for lines over 120 characters counted a line ending that new files don't have, so it let 121 through.
+  It now strips the ending first.
+- A test asked NUnit for "all equal to this, and five of them" in one constraint, which asks each item for a
+  count. Two assertions say it.
+- The plan said 64 pictures and four drawing classes. It was 65, since the plan's own communication picture is a
+  sequence, and five, since a frame is drawn in two goes and earned a class.
+
+**Where it sits.** Skill 18, testing and shipping: a refactor proved by what it does not move, and a rename
+proved by identical images. Skill 20, extensibility: one layout that serves any look whose numbers it is handed,
+and one shared look under two kinds of picture.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

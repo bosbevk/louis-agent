@@ -73,10 +73,10 @@
       },
       {
         "id": "cards",
-        "name": "CardLayout",
+        "name": "OverviewLayout",
         "kind": "static",
         "members": [
-          "+Place(CardsSpec, width) PlacedCards"
+          "+Place(CardsSpec, width) PlacedOverview"
         ]
       },
       {
@@ -84,7 +84,7 @@
         "name": "SequenceLayout",
         "kind": "static",
         "members": [
-          "+Place(SequenceSpec) PlacedSequence"
+          "+Place(SequenceSpec, SequenceMeasures) PlacedSequence"
         ]
       },
       {

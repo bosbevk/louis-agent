@@ -40,6 +40,12 @@ row, and is drawn as a headline. Its main parts are in the row under it, each li
 its rail. What else it has goes in a further row with no links, and is drawn quiet. A link joins neighbouring rows
 only.
 
+## A sequence's tones
+
+A `sequence` shows a tone on a participant's badge and nowhere else: every call is the look's violet running to
+blue, and every answer is grey. So give each participant the tone that says what it is, and don't count on a
+call's colour to say who sent it. The picture writes its own title and its own key.
+
 ## Where a project doc's pictures go
 
 Every project doc shows four: its overview (`cards`) just above its *Purpose*, and a `flow`, a `sequence` and a
