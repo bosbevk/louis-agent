@@ -11,7 +11,15 @@
     outline: none;
 }
 .deck:focus-visible { outline: 2px solid var(--bs-emphasis-color); outline-offset: 4px; border-radius: 12px; }
-.deck-items { position: absolute; inset: 0; transform-style: preserve-3d; }
+/* The items together lean a little towards the mouse, by the two numbers the deck's module writes on the deck.
+   With nothing written they stand straight. */
+.deck-items {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--deck-lean-x, 0deg)) rotateY(var(--deck-lean-y, 0deg));
+    transition: transform .3s var(--web-ease);
+}
 .deck-item {
     position: absolute;
     left: 50%;
@@ -77,6 +85,7 @@
         scroll-snap-type: x mandatory;
         overscroll-behavior-x: contain;
         scrollbar-width: none;
+        transform: none;
         transform-style: flat;
     }
     /* Room before the first item and after the last, so those two can stop in the middle as well. */
@@ -102,5 +111,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .deck-item, .deck-arrow { transition: none; }
+    .deck-item, .deck-items, .deck-arrow { transition: none; }
 }

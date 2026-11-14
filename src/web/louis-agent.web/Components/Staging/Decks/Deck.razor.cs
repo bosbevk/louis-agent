@@ -23,7 +23,9 @@ namespace LouisAgent.Web.Components.Staging.Decks;
 /// <para>
 /// On a narrow screen there is no room for depth, so the same items are a row the visitor swipes, one at a time.
 /// The styles make the row and the browser does the swiping. The deck's module, beside it (ADR 0093), only says
-/// which item a swipe left in the middle, and a swipe then asks the page as an arrow does.
+/// which item a swipe left in the middle, and a swipe then asks the page as an arrow does. On a wide screen the
+/// same module leans the items a little towards the mouse. That is only how they look: it changes nothing the
+/// page holds.
 /// </para>
 /// </remarks>
 /// <typeparam name="TItem">What the deck holds.</typeparam>

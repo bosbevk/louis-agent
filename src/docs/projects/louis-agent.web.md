@@ -416,12 +416,18 @@ page and a diagram never hold two copies of a drawing.
   What an item behind holds can't be reached until it is forward. `DeckPlace` is the deck's one rule: how far from
   the middle each item stands, counted the short way round.
 
+  On a wide screen the items together lean a little towards the mouse while it is over the deck: at most 7
+  degrees sideways and 5 up or down, with the mouse at an edge, and straight again when it leaves. The deck's
+  module writes how far as two numbers on the deck, and the styles turn the items by them. It is only how the
+  deck looks, so nothing the page holds changes. A finger is not followed, and a visitor who asked for less
+  motion gets no lean.
+
   On a screen up to 900 wide there is no room for depth, so the same items are a row. The styles make the row:
   each item upright, most of the row's width and never wider than a phone's, with its neighbours showing at the
   sides and no arrows. The browser does the swiping, and is told to stop on each item. The deck's module does
   the two things styles can't. When a swipe comes to rest it says which item stands in the middle, and the deck
   asks the page for that one, as an arrow would. When the page puts another item forward, it brings the row to
-  it. On a wide screen nothing scrolls, so the module says and moves nothing. The place that uses the deck lets
+  it. On a wide screen nothing scrolls, so of these two the module does neither. The place that uses the deck lets
   go of the height it gave, since the row is as tall as its items.
 - `FramedWindow` is a bar like a browser's, with an address word, then a body. The body can't outgrow the frame or
   be scrolled inside it. The framework offers three bodies, which hold no words of their own. `SiteBody` is a
