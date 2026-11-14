@@ -414,6 +414,65 @@ had its turn keeps the old way and the old way is deleted later without touching
 **Where it sits.** Skill 18, testing and shipping: a change measured over real data and shipped in one step. Skill
 20, extensibility, for the two rules.
 
+## Built beside the old, switched in one commit (F134.9, 2026-11-14)
+
+**What it is.** The cards picture, the overview every project doc opens with, was redone: the project is a
+headline on a light, and its parts hang from a lit rail. You picked the design from three, each drawn from a real
+picture's data. The engineering idea is the one F134.8 taught, used a second way: **when nothing keeps the old
+way, don't build a switch. Build the new way beside the old, prove it alone, and swap them in one commit.**
+
+**What was built, in order.** The reader's check that a link joins two neighbouring rows. The rails, grouped from
+the links with no places at all. How tall each kind of card is. The layout, which places cards and stands rails.
+The style. The writer's way to define a gradient. The drawing, with a golden. Then one commit that handed the
+renderer the new drawing, deleted the old layout, and redrew all 45 pictures.
+
+**Why no rule object this time.** F134.8 handed the layout a rule (Strategy), because class charts had to keep
+the old lines. Here nothing kept the old drawing. A Strategy with one strategy is a switch nobody flips, so the
+old and the new were two plain classes for six commits, and the old one was deleted in the seventh.
+
+**How the layout was split so each part is proved alone.**
+
+| Part | What it knows | What its tests need |
+|---|---|---|
+| `CardRails` | which links share a rail | ids only |
+| `CardSizes` | how tall a card is, where words break | a card and a width |
+| `RailPlaces` | where a gap's rails stand | the middle of each card, as numbers |
+| `OverviewLayout` | rows, gaps, a rail's ends | the three above |
+| `OverviewDrawing` | nothing about places or colours | the layout's result |
+
+Each row was a commit with its tests seen failing first. None needed a browser.
+
+**What was measured.** Over the 45 real pictures: 51 rails, 19 quiet cards, no gap with rails at two heights, and
+3.6% more height in all. After the switch the docs' tool wrote 45 pictures and left the other 219 untouched,
+which is the proof that no other kind of picture changed.
+
+**What looking found that numbers did not.**
+
+- An arrowhead of a link up stood tight under a headline's text. A stem under a headline now starts a little
+  clear of it.
+- In a row of four cards one title went under its badge beside three that didn't. The layout kept 18 at a card's
+  right where the approved mockup kept 14. A measure can be right and still differ from the design by a number.
+- The first mockup's rail said nothing about direction once motion is off. Small arrowheads were added before
+  any code, in the design step.
+
+**What it cost to leave a fixed-width font.** The old picture set every word in the code font, so a line's width
+was its length times one number, and a test could prove a line fits. The new look sets words in a font whose
+letters differ in width. The layout now takes a character's width as a number chosen wide. The tests still say
+every line fits by that measure, but the real proof is looking at the 45.
+
+**What didn't work, or cost time.**
+
+- Two test cards were named "web" and "files", which are toolset names, and a rule test that reads the whole repo
+  failed. The fix was a rename, but it shows a made-up id is never free in a repo with rules about names.
+- A test of mine assumed a title would break over two lines on a half-width card. It fits on one. The code was
+  right and the test was a guess about the data.
+- A command over Bash's length limit wrote nothing at all. A long file is written with the file tool.
+- CSS cannot give an SVG shape a gradient fill. I found that only at the style step, so the drawing step grew a
+  part: the writer learning to define a paint, and a page's copy learning to keep it.
+
+**Where it sits.** Skill 18, testing and shipping: a change proved in parts and shipped in one step. Skill 20,
+extensibility: one shared look under three kinds of picture, each adding only its own.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

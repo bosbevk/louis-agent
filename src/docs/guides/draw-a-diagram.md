@@ -75,10 +75,11 @@ The six parts below take one kind each. Each starts with a whole example, then s
 ```
 
 **Reading the example.** The picture has two rows. The first holds one card, the project. The second holds two,
-its parts. Two links join the project to each part, and the second has arrowheads both ways.
+its parts. Two links join the project to each part, and the second has arrowheads both ways. The picture draws the
+project as a headline on a light, and hangs its two parts from one lit rail under it.
 
 **A card.** In the example each card has an `id`, an `icon`, a `title` and a `text`. A card may also have a
-`code`, which is a project's or a type's name shown in a chip beside the title. And it may have a `look`:
+`code`, which is a project's or a type's name shown in a pill under the title. And it may have a `look`:
 
 | `look` | What it draws |
 |---|---|
@@ -107,8 +108,16 @@ To add an icon, add a member to `DiagramIcon` and its Tabler path data to `IconP
 set of icons. A page's line icons are drawn from it too, by `LineIconView` in the framework's web.
 
 **The shape of an overview.** Every project doc's overview takes one shape, so they all read alike. The project is
-highlighted on top. Its main parts are under it, with an arrow to each. A second row, with no arrows, holds what
-else the project has.
+highlighted on top, alone in its row. Its main parts are in the row under it, with a link to each, so they hang
+from its rail. A further row, with no links, holds what else the project has, and is drawn quiet.
+
+**How links become rails.** You write links, and the picture draws rails. In the gap between two rows, the cards
+above that are linked to exactly the same cards below share one rail, and every other card above has a rail of
+its own. So two cards that both feed one card share a rail, and two that feed different cards have one each.
+
+**What the picture says about itself.** A cards picture writes its `title` small in its top left corner. Keep a
+card's title and its text short: a row of three gives a card about 40 characters a line, and a row of four about
+28.
 
 ### Flow: boxes and arrows
 

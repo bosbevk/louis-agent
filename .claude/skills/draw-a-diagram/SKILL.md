@@ -33,6 +33,13 @@ A box of a `flow` names a `shape` only where the shape means something, and most
 - `decision`, a diamond: a box that asks a question, or says a choice is made there, each arrow out an outcome.
 - `terminal`, a pill: a person. In a picture that tells steps in order, also what sets it off and what it ends in.
 
+## The overview's shape
+
+A project's overview is a `cards` picture in one shape. The project is the `highlight` card, alone in the first
+row, and is drawn as a headline. Its main parts are in the row under it, each linked from it, so they hang from
+its rail. What else it has goes in a further row with no links, and is drawn quiet. A link joins neighbouring rows
+only.
+
 ## Where a project doc's pictures go
 
 Every project doc shows four: its overview (`cards`) just above its *Purpose*, and a `flow`, a `sequence` and a
