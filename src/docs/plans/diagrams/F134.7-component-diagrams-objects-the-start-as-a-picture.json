@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "title": "F134.7 component diagrams: the showroom's start, as the JSON holds it",
+  "caption": "A tree, not a list: each box holds the boxes inside it, and what stands around the root points at the box it talks to.",
+  "flow": {
+    "nodes": [
+      { "id": "spec", "label": "ComponentsSpec", "icon": "box", "tone": "teal" },
+      { "id": "start", "label": "ComponentBox: ShowroomStart\nState: which demo is forward\nDown: stage.Accent, deck.Forward, dock.Current\nUp: deck.ForwardChanged, dock.Chosen", "icon": "code", "tone": "green" },
+      { "id": "stage", "label": "ComponentBox: LitStage\nIn: Accent", "icon": "code", "tone": "green" },
+      { "id": "deck", "label": "ComponentBox: Deck\nIn: Items, Forward\nOut: ForwardChanged", "icon": "code", "tone": "green" },
+      { "id": "dock", "label": "ComponentBox: Dock\nIn: Items, Current\nOut: Chosen", "icon": "code", "tone": "green" },
+      { "id": "window", "label": "ComponentBox: FramedWindow\nholds the site's window,\nwhich holds SiteBody", "icon": "code", "tone": "green" },
+      { "id": "page", "label": "ComponentNeighbour: DemosPage\nSide: before\nGives: Featured, Group", "icon": "box", "tone": "blue" },
+      { "id": "script", "label": "ComponentNeighbour: Deck.razor.js\nSide: after, To: deck\nCalls and Back", "icon": "box", "tone": "plain" }
+    ],
+    "edges": [
+      { "from": "spec", "to": "start", "word": "Root" },
+      { "from": "spec", "to": "page", "word": "Around" },
+      { "from": "spec", "to": "script", "word": "Around" },
+      { "from": "start", "to": "stage", "word": "Holds" },
+      { "from": "stage", "to": "deck", "word": "Holds" },
+      { "from": "stage", "to": "dock", "word": "Holds" },
+      { "from": "deck", "to": "window", "word": "Holds" }
+    ],
+    "direction": "down"
+  }
+}

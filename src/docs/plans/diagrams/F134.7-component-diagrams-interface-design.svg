@@ -1,0 +1,250 @@
+<svg viewBox="-24 -24 2380 1385" width="2380" height="1385" role="img" aria-label="F134.7 component diagrams: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F134.7 component diagrams: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2380" height="1385" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2332" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F134.7 component diagrams:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-teal" d="M 831 111 L 881 111 Q 905 111 905 135 L 905 327 Q 905 351 929 351 L 977 351" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 1425 351 L 1437 351 Q 1449 351 1449 363 L 1449 447 Q 1449 471 1473 471 L 1633 471" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 1425 351 L 1437 351 Q 1449 351 1449 363 L 1449 687 Q 1449 711 1473 711 L 1633 711" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 1899 471 L 2067 471 Q 2091 471 2091 495 L 2091 579 Q 2091 591 2103 591 L 2115 591" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 294 471 L 315 471 Q 336 471 336 450 L 336 135 Q 336 111 360 111 L 432 111" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 294 471 L 315 471 Q 336 471 336 450 L 336 375 Q 336 351 360 351 L 432 351" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 294 711 L 306 711 Q 318 711 318 723 L 318 807 Q 318 831 342 831 L 432 831" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 294 711 L 306 711 Q 318 711 318 699 L 318 615 Q 318 591 342 591 L 432 591" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 831 591 L 977 591" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 831 591 L 863 591 Q 887 591 887 615 L 887 807 Q 887 831 911 831 L 977 831" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 294 711 L 306 711 Q 318 711 318 723 L 318 1047 Q 318 1071 342 1071 L 432 1071" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-teal" x="846.5" y="89" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="868" y="101" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="1509" y="449" width="64" height="18" rx="4" />
+    <text class="word tone-teal" x="1541" y="461" text-anchor="middle">the root</text>
+    <rect class="word-chip tone-teal" x="1463.5" y="689" width="155" height="18" rx="4" />
+    <text class="word tone-teal" x="1541" y="701" text-anchor="middle">what stands around it</text>
+    <rect class="word-chip tone-teal" x="1914" y="449" width="162" height="18" rx="4" />
+    <text class="word tone-teal" x="1995" y="461" text-anchor="middle">the one thing it holds</text>
+    <rect class="word-chip tone-green" x="355.5" y="89" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="384" y="101" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="366" y="329" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="384" y="341" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="345" y="809" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="384" y="821" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="366" y="569" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="384" y="581" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="912.5" y="569" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="941" y="581" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="923" y="809" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="941" y="821" text-anchor="middle">uses</text>
+    <rect class="box tone-green" x="0" y="423" width="294" height="96" rx="10" />
+    <text class="label tone-green" x="147" y="451" text-anchor="middle">DiagramReader</text>
+    <text class="note" x="147" y="467" text-anchor="middle">changed in steps 2 and 3</text>
+    <path class="frame" d="M 0 487 L 294 487" />
+    <text class="word tone-green" x="14" y="505" text-anchor="start">static DiagramSource Read(string json)</text>
+    <rect class="box tone-green" x="0" y="679" width="294" height="64" rx="10" />
+    <text class="label tone-green" x="147" y="707" text-anchor="middle">ComponentsRenderer</text>
+    <text class="note" x="147" y="723" text-anchor="middle">step 5</text>
+    <rect class="box tone-teal" x="432" y="50" width="399" height="122" rx="10" />
+    <text class="label tone-teal" x="631.5" y="78" text-anchor="middle">DiagramSource</text>
+    <text class="note" x="631.5" y="94" text-anchor="middle">record, gains Components</text>
+    <text class="note" x="631.5" y="106" text-anchor="middle">in step 3</text>
+    <path class="frame" d="M 432 126 L 831 126" />
+    <text class="word tone-teal" x="446" y="144" text-anchor="start">DiagramKind Kind</text>
+    <text class="word tone-teal" x="446" y="158" text-anchor="start">ComponentsSpec? Components</text>
+    <rect class="box tone-green" x="432" y="303" width="399" height="96" rx="10" />
+    <text class="label tone-green" x="631.5" y="331" text-anchor="middle">ComponentsCheck</text>
+    <text class="note" x="631.5" y="347" text-anchor="middle">step 3</text>
+    <path class="frame" d="M 432 367 L 831 367" />
+    <text class="word tone-green" x="446" y="385" text-anchor="start">static void Check(ComponentsSpec components)</text>
+    <rect class="box tone-green" x="432" y="543" width="399" height="96" rx="10" />
+    <text class="label tone-green" x="631.5" y="571" text-anchor="middle">ComponentLayout</text>
+    <text class="note" x="631.5" y="587" text-anchor="middle">step 4</text>
+    <path class="frame" d="M 432 607 L 831 607" />
+    <text class="word tone-green" x="446" y="625" text-anchor="start">static PlacedComponents Of(ComponentsSpec components)</text>
+    <rect class="box tone-teal" x="432" y="776" width="399" height="110" rx="10" />
+    <text class="label tone-teal" x="631.5" y="804" text-anchor="middle">IDiagramRenderer</text>
+    <text class="note" x="631.5" y="820" text-anchor="middle">interface, as today</text>
+    <path class="frame" d="M 432 840 L 831 840" />
+    <text class="word tone-teal" x="446" y="858" text-anchor="start">DiagramKind Kind</text>
+    <text class="word tone-teal" x="446" y="872" text-anchor="start">string Render(DiagramSource source)</text>
+    <rect class="box tone-green" x="432" y="1023" width="399" height="96" rx="10" />
+    <text class="label tone-green" x="631.5" y="1051" text-anchor="middle">ComponentsStyle</text>
+    <text class="note" x="631.5" y="1067" text-anchor="middle">step 5</text>
+    <path class="frame" d="M 432 1087 L 831 1087" />
+    <text class="word tone-green" x="446" y="1105" text-anchor="start">static string Of(SvgTheme theme)</text>
+    <rect class="box tone-teal" x="977" y="296" width="448" height="110" rx="10" />
+    <text class="label tone-teal" x="1201" y="324" text-anchor="middle">ComponentsSpec</text>
+    <text class="note" x="1201" y="340" text-anchor="middle">record, step 3</text>
+    <path class="frame" d="M 977 360 L 1425 360" />
+    <text class="word tone-teal" x="991" y="378" text-anchor="start">ComponentBox Root</text>
+    <text class="word tone-teal" x="991" y="392" text-anchor="start">IReadOnlyList&lt;ComponentNeighbour&gt;? Around</text>
+    <rect class="box tone-teal" x="977" y="515" width="448" height="152" rx="10" />
+    <text class="label tone-teal" x="1201" y="543" text-anchor="middle">PlacedComponents</text>
+    <text class="note" x="1201" y="559" text-anchor="middle">record, step 4</text>
+    <path class="frame" d="M 977 579 L 1425 579" />
+    <text class="word tone-teal" x="991" y="597" text-anchor="start">IReadOnlyList&lt;PlacedBox&gt; Boxes</text>
+    <text class="word tone-teal" x="991" y="611" text-anchor="start">IReadOnlyList&lt;PlacedPin&gt; Pins</text>
+    <text class="word tone-teal" x="991" y="625" text-anchor="start">IReadOnlyList&lt;PlacedLine&gt; Lines</text>
+    <text class="word tone-teal" x="991" y="639" text-anchor="start">double Width</text>
+    <text class="word tone-teal" x="991" y="653" text-anchor="start">double Height</text>
+    <rect class="box tone-green" x="977" y="776" width="448" height="110" rx="10" />
+    <text class="label tone-green" x="1201" y="804" text-anchor="middle">StateRoutes</text>
+    <text class="note" x="1201" y="820" text-anchor="middle">step 6</text>
+    <path class="frame" d="M 977 840 L 1425 840" />
+    <text class="word tone-green" x="991" y="858" text-anchor="start">static IReadOnlyList&lt;PlacedLine&gt; Of(PlacedComponents placed,</text>
+    <text class="word tone-green" x="991" y="872" text-anchor="start">  ComponentsSpec components)</text>
+    <rect class="box tone-teal" x="1633" y="360" width="266" height="222" rx="10" />
+    <text class="label tone-teal" x="1766" y="388" text-anchor="middle">ComponentBox</text>
+    <text class="note" x="1766" y="404" text-anchor="middle">record, step 3</text>
+    <path class="frame" d="M 1633 424 L 1899 424" />
+    <text class="word tone-teal" x="1647" y="442" text-anchor="start">string Id</text>
+    <text class="word tone-teal" x="1647" y="456" text-anchor="start">string Name</text>
+    <text class="word tone-teal" x="1647" y="470" text-anchor="start">string? Kind</text>
+    <text class="word tone-teal" x="1647" y="484" text-anchor="start">string? Note</text>
+    <text class="word tone-teal" x="1647" y="498" text-anchor="start">DiagramTone Tone</text>
+    <text class="word tone-teal" x="1647" y="512" text-anchor="start">IReadOnlyList&lt;string&gt;? In</text>
+    <text class="word tone-teal" x="1647" y="526" text-anchor="start">IReadOnlyList&lt;string&gt;? Out</text>
+    <text class="word tone-teal" x="1647" y="540" text-anchor="start">IReadOnlyList&lt;ComponentBox&gt;? Holds</text>
+    <text class="word tone-teal" x="1647" y="554" text-anchor="start">ComponentState? State</text>
+    <text class="word tone-teal" x="1647" y="568" text-anchor="start">bool Ghost</text>
+    <rect class="box tone-teal" x="1633" y="614" width="266" height="194" rx="10" />
+    <text class="label tone-teal" x="1766" y="642" text-anchor="middle">ComponentNeighbour</text>
+    <text class="note" x="1766" y="658" text-anchor="middle">record, step 3</text>
+    <path class="frame" d="M 1633 678 L 1899 678" />
+    <text class="word tone-teal" x="1647" y="696" text-anchor="start">string Id</text>
+    <text class="word tone-teal" x="1647" y="710" text-anchor="start">string Name</text>
+    <text class="word tone-teal" x="1647" y="724" text-anchor="start">NeighbourSide Side</text>
+    <text class="word tone-teal" x="1647" y="738" text-anchor="start">string? To</text>
+    <text class="word tone-teal" x="1647" y="752" text-anchor="start">IReadOnlyList&lt;string&gt;? Gives</text>
+    <text class="word tone-teal" x="1647" y="766" text-anchor="start">bool Reads</text>
+    <text class="word tone-teal" x="1647" y="780" text-anchor="start">string? Calls</text>
+    <text class="word tone-teal" x="1647" y="794" text-anchor="start">string? Back</text>
+    <rect class="box tone-teal" x="2115" y="529" width="217" height="124" rx="10" />
+    <text class="label tone-teal" x="2223.5" y="557" text-anchor="middle">ComponentState</text>
+    <text class="note" x="2223.5" y="573" text-anchor="middle">record, step 3</text>
+    <path class="frame" d="M 2115 593 L 2332 593" />
+    <text class="word tone-teal" x="2129" y="611" text-anchor="start">string Says</text>
+    <text class="word tone-teal" x="2129" y="625" text-anchor="start">IReadOnlyList&lt;string&gt;? Down</text>
+    <text class="word tone-teal" x="2129" y="639" text-anchor="start">IReadOnlyList&lt;string&gt;? Up</text>
+  </g>
+  <rect class="swatch tone-green" x="0" y="1264" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1274.5" text-anchor="start">this project</text>
+  <rect class="notebar" x="0" y="1300" width="2332" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1310) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1322">
+    <tspan class="note-head">A fifth kind beside the others:</tspan>
+    <tspan class="note-rest">its own part in the JSON, its own checks, a layout that places every box, and a renderer with a look of its own.</tspan>
+  </text>
+</svg>

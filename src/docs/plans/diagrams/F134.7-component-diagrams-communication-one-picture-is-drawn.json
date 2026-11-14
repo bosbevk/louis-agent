@@ -1,0 +1,32 @@
+{
+  "kind": "sequence",
+  "title": "F134.7 component diagrams: one picture is drawn",
+  "caption": "Read, check, place, draw: a picture that names a pin or a box that is not there is refused before anything is placed.",
+  "sequence": {
+    "participants": [
+      { "id": "you", "label": "You", "actor": true, "tone": "blue" },
+      { "id": "tool", "label": "doc-diagrams", "icon": "terminal", "tone": "green" },
+      { "id": "reader", "label": "DiagramReader", "icon": "code", "tone": "violet" },
+      { "id": "check", "label": "ComponentsCheck", "icon": "search", "tone": "violet" },
+      { "id": "renderer", "label": "ComponentsRenderer", "icon": "code", "tone": "violet" },
+      { "id": "layout", "label": "ComponentLayout", "icon": "code", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "you", "to": "tool", "text": "dotnet run" },
+      { "step": "message", "from": "tool", "to": "reader", "text": "Read(json)" },
+      { "step": "message", "from": "reader", "to": "check", "text": "Check(components)" },
+      { "step": "block", "block": "alt", "label": "a pin, a box or an id is wrong",
+        "steps": [ { "step": "reply", "from": "check", "to": "tool", "text": "refused, with what to change" } ],
+        "else": [ { "label": "it holds together",
+          "steps": [
+            { "step": "reply", "from": "reader", "to": "tool", "text": "DiagramSource" },
+            { "step": "message", "from": "tool", "to": "renderer", "text": "RenderTitled(source)" },
+            { "step": "message", "from": "renderer", "to": "layout", "text": "Of(components)" },
+            { "step": "reply", "from": "layout", "to": "renderer", "text": "every box, pin and line, placed" },
+            { "step": "reply", "from": "renderer", "to": "tool", "text": "the SVG" }
+          ] } ] },
+      { "step": "note", "over": ["tool"], "text": "written beside the JSON, only when it changed" }
+    ],
+    "numbered": false
+  }
+}
