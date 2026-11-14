@@ -20,4 +20,10 @@ public sealed record FlowRules(IArrowRule Arrows, IRowRule Rows)
     /// The rules every picture was laid out by before F134.8: arrows that join, boxes centred in their band.
     /// </summary>
     public static FlowRules Joined { get; } = new(new JoinedArrows(), new CentredRows());
+
+    /// <summary>
+    /// The rules a flow is laid out by since F134.8: each arrow at its own point, boxes level with what feeds them,
+    /// so a line from one box to one box runs straight.
+    /// </summary>
+    public static FlowRules Straight { get; } = new(new ApartArrows(), new LevelRows());
 }

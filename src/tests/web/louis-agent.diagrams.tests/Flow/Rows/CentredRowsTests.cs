@@ -20,9 +20,9 @@ public class CentredRowsTests
     [Test]
     public void EachBand_KeepsItsOwnRowHeight()
     {
-        IReadOnlySet<int>[] spans = [new HashSet<int> { 0 }, new HashSet<int> { 1 }];
+        BandShape[] bands = [new(52, new HashSet<int> { 0 }, 3), new(84, new HashSet<int> { 1 }, 4)];
 
-        Assert.That(Rule.RowHeights([52, 84], spans), Is.EqualTo(new[] { 52.0, 84.0 }));
+        Assert.That(Rule.RowHeights(bands, 18), Is.EqualTo(new[] { 52.0, 84.0 }));
     }
 
     /// <summary>The fullest column fills the band's rows from the top, a row and a gap apart.</summary>

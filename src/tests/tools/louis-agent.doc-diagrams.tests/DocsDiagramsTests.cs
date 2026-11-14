@@ -1,7 +1,5 @@
 using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Flow;
-using LouisAgent.Diagrams.Flow.Routing;
-using LouisAgent.Diagrams.Flow.Rows;
 using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -132,13 +130,13 @@ public class DocsDiagramsTests
     }
 
     /// <summary>
-    /// Laid out with the arrows apart (F134.8), no flow in the docs has two lines from different boxes lying on one
-    /// another: each line can be followed from its box to where it arrives.
+    /// Laid out by the rules a flow gets (F134.8), arrows apart and boxes level, no flow in the docs has two lines
+    /// from different boxes lying on one another: each line can be followed from its box to where it arrives.
     /// </summary>
     [Test]
     public void EveryFlow_LaidOutApart_HasNoTwoLinesOnOneAnother()
     {
-        var rules = new FlowRules(new ApartArrows(), new CentredRows());
+        var rules = FlowRules.Straight;
         var lying = Diagrams().Select(json => (json, flow: DiagramReader.Read(File.ReadAllText(json)).Flow))
             .Where(pair => pair.flow is not null)
             .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: rules))

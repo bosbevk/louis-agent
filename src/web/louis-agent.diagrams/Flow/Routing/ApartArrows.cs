@@ -125,7 +125,8 @@ public sealed class ApartArrows : IArrowRule
     /// <summary>
     /// An arrow's own point on its target's side. One arrow alone arrives at the middle. Several are spread round the
     /// middle, a step apart. But an arrow from a box level with its target runs straight in (Louis's pick), and the
-    /// others take the points beside it, as long as they then still fit on the side.
+    /// others take the points beside it, as long as they then still fit on the side. And no point stands level with
+    /// the line out of a box next door that feeds something else: the points then stand half a step aside.
     /// </summary>
     public double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId)
@@ -133,7 +134,8 @@ public sealed class ApartArrows : IArrowRule
         var target = byId[edge.To];
         double middle = Middle(target);
         var arriving = Arriving(edge.To, forward, byId);
-        if (arriving.Count < 2) return middle;
+        // An arrow passes straight through a waypoint, so it arrives where it leaves: at the middle.
+        if (Ranks.IsWaypoint(edge.To)) return middle;
 
         // The one that can run straight started at a box at the target's own height, next to it or columns away.
         int level = arriving.FindIndex(arrow => Math.Abs(Middle(byId[Origin(arrow, forward)]) - middle) < 1);
@@ -141,7 +143,32 @@ public sealed class ApartArrows : IArrowRule
         double reach = target.H / 2 - Margin, step = EdgeRouter.Step;
         bool keeps = level >= 0 && level * step <= reach && (arriving.Count - 1 - level) * step <= reach;
         double first = keeps ? middle - level * step : middle - (arriving.Count - 1) * step / 2;
-        return first + arriving.IndexOf(edge) * step;
+        return first + Aside(first, arriving, forward, byId) + arriving.IndexOf(edge) * step;
+    }
+
+    /// <summary>
+    /// How far a box's points step aside: half a step when one of them would stand level with the line out of a box
+    /// in the column they come from that feeds something else, since an arrow arriving there and that line out would
+    /// lie on one another. They step towards the boxes their arrows come from, and not at all if a point would then
+    /// leave the side.
+    /// </summary>
+    private static double Aside(double first, List<GraphEdge> arriving, IReadOnlyList<GraphEdge> forward,
+        IReadOnlyDictionary<string, PlacedNode> byId)
+    {
+        var target = byId[arriving[0].To];
+        var feeders = arriving.Select(arrow => arrow.From).ToHashSet(StringComparer.Ordinal);
+        double column = byId[arriving[0].From].X, last = first + (arriving.Count - 1) * EdgeRouter.Step;
+
+        // The lines out next door that are not this box's own arrows.
+        var others = forward.Where(arrow => !feeders.Contains(arrow.From) && byId[arrow.From].X == column)
+            .Select(arrow => Middle(byId[arrow.From])).Distinct().ToList();
+        bool Level(double shift) => Enumerable.Range(0, arriving.Count).Any(at =>
+            others.Any(other => Math.Abs(first + shift + at * EdgeRouter.Step - other) < 1));
+        bool Fits(double shift) => first + shift >= target.Y + Margin && last + shift <= target.Y + target.H - Margin;
+        if (!Level(0)) return 0;
+
+        double towards = feeders.Average(feeder => Middle(byId[feeder])) < Middle(target) ? -Near : Near;
+        return new[] { towards, -towards }.Where(shift => Fits(shift) && !Level(shift)).FirstOrDefault(0);
     }
 
     /// <summary>
@@ -149,6 +176,9 @@ public sealed class ApartArrows : IArrowRule
     /// fit whether they are spread round the middle or stand beside a straight arrow at it.
     /// </summary>
     public double SideFor(int arrows) => arrows < 2 ? 0 : 2 * (arrows / 2) * EdgeRouter.Step + 2 * Margin;
+
+    /// <summary>Two lines of different boxes keep half a step apart, so neither is taken for the other.</summary>
+    public double LineGap => Near;
 
     /// <summary>
     /// The arrows into a box from the top point down: by the height of the box each comes from, the upper source

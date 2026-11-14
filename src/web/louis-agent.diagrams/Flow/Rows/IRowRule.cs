@@ -13,10 +13,8 @@ namespace LouisAgent.Diagrams.Flow.Rows;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data on a row grid</seealso>
 public interface IRowRule
 {
-    /// <summary>
-    /// How tall each band's rows are, told each band's own tallest box and the columns each band has boxes in.
-    /// </summary>
-    IReadOnlyList<double> RowHeights(IReadOnlyList<double> tallest, IReadOnlyList<IReadOnlySet<int>> spans);
+    /// <summary>How tall each band's rows are, told each band's shape and the room between two rows.</summary>
+    IReadOnlyList<double> RowHeights(IReadOnlyList<BandShape> bands, double gap);
 
     /// <summary>Where the row each box stands on starts, a box an id.</summary>
     IReadOnlyDictionary<string, double> RowTops(RowGrid grid);

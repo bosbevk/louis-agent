@@ -14,8 +14,8 @@ public sealed class CentredRows : IRowRule
     /// <summary>
     /// A band's row is as tall as its own tallest box, so a wide box in one group doesn't spread every other.
     /// </summary>
-    public IReadOnlyList<double> RowHeights(IReadOnlyList<double> tallest, IReadOnlyList<IReadOnlySet<int>> spans) =>
-        tallest;
+    public IReadOnlyList<double> RowHeights(IReadOnlyList<BandShape> bands, double gap) =>
+        [.. bands.Select(band => band.Tallest)];
 
     /// <summary>
     /// In each column a band's boxes stand one after another, centred in their band: a column with fewer boxes than

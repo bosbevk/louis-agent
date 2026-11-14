@@ -32,4 +32,10 @@ public interface IArrowRule
 
     /// <summary>How long a box's side must be at least for that many arrows to arrive on it.</summary>
     double SideFor(int arrows);
+
+    /// <summary>
+    /// How far apart the lines of two different boxes must keep where they run the same way. Nothing, when the rule
+    /// lets them lie on one another.
+    /// </summary>
+    double LineGap { get; }
 }

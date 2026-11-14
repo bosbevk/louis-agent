@@ -87,9 +87,20 @@ Two things about a band are not `Bands`' to decide: how tall its rows are, and w
 rule answers both (`IRowRule`). `CentredRows` is the one every picture uses today: a band's rows are as tall as
 its own tallest box, and a column's boxes stand one after another, centred in the band.
 
+The other rule is `LevelRows`. With it a box stands level with the box that feeds it, so the line between them
+runs straight:
+
+- The columns are taken from the left. In each, the boxes keep their order and take the rows nearest the boxes
+  that feed them. Every way to stand them is weighed, and the nearest one overall is taken.
+- Then from the right, so a box nothing feeds stands level with what it feeds, and from the left once more.
+- A box only ever stands on a whole row. Two boxes are then level or a row apart, never a few pixels off.
+- The bands that start at the top stand beside each other, and share one row height so their rows line up. A
+  band whose tallest box is far taller than the rest gets rows that span three of the shared ones, so one tall
+  box doesn't make every row beside it as tall. A band under another keeps its own row height.
+
 The rule for the rows and the rule for the arrows, described below, are handed to the layout together, as one
 `FlowRules`. `FlowRules.Joined` is the pair a layout uses when it is handed none: arrows that join, and boxes
-centred.
+centred. `FlowRules.Straight` is the other pair: arrows apart, and boxes level.
 
 **Drawing the arrows.** `Routing/EdgeRouter` draws an arrow as connectors at right angles. A long arrow goes
 through a waypoint in each column it passes. A blocked arrow goes round a detour. The bends are as soft as the
@@ -109,7 +120,10 @@ The other rule is `ApartArrows`. With it each arrow into a box arrives at a poin
   point would then stand off the side, the points are spread round the middle instead.
 - A box's side is at least as long as its points need: two or three arrows fit a box 52 high, and a fourth makes
   it 84.
-- An arrow past a column is led in line with its own point, where no box stands in the way.
+- An arrow past a column is led in line with its own point, where no box stands in the way and no other box's
+  long arrow already runs within 9.
+- A point never stands level with the line out of a box in the column before that feeds something else: the
+  points then stand 9 aside, towards the boxes their arrows come from.
 
 With `ApartArrows` the lines of a gap also turn on one line:
 
@@ -223,7 +237,7 @@ This section is for looking a file up.
 ```
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
-├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, RowGrid, CentredRows)
+├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)

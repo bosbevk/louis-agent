@@ -220,11 +220,12 @@ public class ApartArrowsTests
     }
 
     /// <summary>
-    /// A box level with the point another's arrow arrives at turns first, so its line out ends before the other's
-    /// line in begins and the two never lie on one another.
+    /// A point never stands level with the line out of a box next door that feeds something else, since the arrow
+    /// arriving there and that line out would lie on one another: it stands half a step aside, towards the box its
+    /// own arrow comes from.
     /// </summary>
     [Test]
-    public void ABoxLevelWithAnothersPoint_TurnsFirst()
+    public void APoint_StepsAsideFromTheLineOutOfABoxNextDoor()
     {
         var boxes = new Dictionary<string, PlacedNode>
         {
@@ -233,11 +234,31 @@ public class ApartArrowsTests
             ["x"] = Box("x", 300, 0),
             ["y"] = Box("y", 300, 200)
         };
-        GraphEdge[] gap = [new("a", "y"), new("b", "x")];
+        GraphEdge[] forward = [new("a", "y"), new("b", "x")];
+
+        Assert.That(Rule.EntryOf(forward[1], forward, boxes), Is.EqualTo(35), "x is level with a, and b is under it");
+    }
+
+    /// <summary>
+    /// An arrow passes straight through a waypoint, so its point there can't step aside. Then the box level with
+    /// that point turns first, so its line out ends before the other's line in begins.
+    /// </summary>
+    [Test]
+    public void ABoxLevelWithAWaypoint_TurnsFirst()
+    {
+        var boxes = new Dictionary<string, PlacedNode>
+        {
+            ["a"] = Box("a", 0, 0),
+            ["b"] = Box("b", 0, 100),
+            ["→w"] = Box("→w", 300, 0),
+            ["y"] = Box("y", 300, 200)
+        };
+        GraphEdge[] gap = [new("a", "y"), new("b", "→w")];
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.Zero, "a's line out is level with b's point");
+            Assert.That(Rule.EntryOf(gap[1], gap, boxes), Is.EqualTo(26), "straight through the waypoint's middle");
+            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.Zero, "a's line out is level with that point");
             Assert.That(Rule.TrackOf(gap[1], gap, gap, boxes), Is.EqualTo(1));
         });
     }

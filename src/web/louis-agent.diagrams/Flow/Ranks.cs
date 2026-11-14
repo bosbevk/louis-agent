@@ -84,6 +84,21 @@ public static class Ranks
                                                                       && byId[edge.To].Node.Column >
                                                                       byId[edge.From].Node.Column).ToList();
         var moved = new Dictionary<string, double>(StringComparer.Ordinal);
+        // The box each waypoint's arrow started at: two arrows of one box may share a line, as its line out.
+        var startOf = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var first in edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To)))
+            for (string at = first.To; IsWaypoint(at); at = edges.First(edge => edge.From == at).To)
+                startOf[at] = first.From;
+
+        // Where a waypoint's middle is now, moved or not.
+        double Now(string id) => moved.GetValueOrDefault(id, byId[id].Y) + byId[id].H / 2;
+
+        // Whether another box's arrow already runs through this waypoint's column nearer than the rule lets two
+        // lines run. A rule that joins arrows lets them lie on one another, so then nothing is too near.
+        bool Taken(string id, double middle) => startOf.Keys.Any(other =>
+            startOf[other] != startOf[id] && byId[other].X == byId[id].X
+                                          && Math.Abs(Now(other) - middle) < rule.LineGap);
+
         // Each chain from its real source: in line with where it arrives if every waypoint can be, else with its
         // source.
         foreach (var first in edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To)))
@@ -98,7 +113,8 @@ public static class Ranks
 
             var source = byId[first.From];
             var line = new[] { rule.EntryOf(last, forward, byId), source.Y + source.H / 2 }
-                .FirstOrDefault(middle => chain.All(id => Free(byId[id], middle, nodes)), double.NaN);
+                .FirstOrDefault(middle => chain.All(id => Free(byId[id], middle, nodes) && !Taken(id, middle)),
+                    double.NaN);
             if (double.IsNaN(line)) continue;
             foreach (string id in chain) moved[id] = line - byId[id].H / 2;
         }
