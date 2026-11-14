@@ -42,9 +42,8 @@ Strategy. There is one per kind in `Svg/Renderers/`: `FlowRenderer`, `CardsRende
 `TicketRenderer`, `ComponentsRenderer`, and `ClassesRenderer`, which turns a class chart into a flow. Each
 renderer has a layout that places every box and word, and then draws. Part 2 explains each layout.
 
-A flow is drawn by `FlowDrawing`, in the new look described below. A class chart is turned into a flow and drawn
-by `PlainFlowDrawing`, the drawing both had before: boxes in their tone with a round icon badge, arrows that join,
-a word in a chip. Each drawing has a name of its own so the two renderers can change apart.
+A flow is drawn by `FlowDrawing`, in the new look described below. A class chart is turned into a flow for its
+layout and drawn by `ClassesDrawing`, as cards. Part 2 says what each shows.
 
 **How a renderer writes the file** (`SvgWriter`). It is a Builder: a renderer adds boxes, paths and words one by
 one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
@@ -425,7 +424,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   round their steps and nested inside their parents; a box's members and tones in `Flow/Boxes/`; a class chart's
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
-  trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
+  trimmed (`Svg/PageSvgTests`), and the goldens `Svg/Renderers/Parts/flow-look.svg`,
   `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each

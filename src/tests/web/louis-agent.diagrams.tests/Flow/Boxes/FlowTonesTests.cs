@@ -1,10 +1,7 @@
-using System.Text.RegularExpressions;
-using LouisAgent.Choices;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Tones;
 
@@ -17,14 +14,6 @@ namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 /// </summary>
 public class FlowTonesTests
 {
-    /// <summary>The browser, blue with its icon, calling a plain box.</summary>
-    private static DiagramSource Calls() => new(DiagramKind.Flow, "Calls", Flow: new GraphSpec(
-        [
-            new GraphNode("browser", "Browser app (F61.2)", Icon: DiagramIcon.Browser, Tone: DiagramTone.Blue),
-            new GraphNode("handlers", "AccountHandlers")
-        ],
-        [new GraphEdge("browser", "handlers")]));
-
     /// <summary>A box with an icon is wider by the badge's room, so its label still fits after the badge.</summary>
     [Test]
     public void AnIcon_WidensTheBoxByItsRoom()
@@ -65,38 +54,16 @@ public class FlowTonesTests
         });
     }
 
-    /// <summary>
-    /// A toned box is drawn in its tone with its icon in a badge and its label from the left; a plain one as before.
-    /// </summary>
-    [Test]
-    public void AToneBox_WearsItsTone_AndItsBadge()
-    {
-        string svg = PlainFlowDrawing.Of(Calls());
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(Regex.Matches(svg, "class=\"box tone-blue\""), Has.Count.EqualTo(1));
-            Assert.That(Regex.Matches(svg, "class=\"box\""), Has.Count.EqualTo(1));
-            Assert.That(svg, Does.Contain("class=\"badge tone-blue\""));
-            Assert.That(svg, Does.Contain("class=\"badge-icon\""));
-            Assert.That(svg, Does.Match("class=\"label tone-blue\"[^>]*text-anchor=\"start\">Browser app"));
-        });
-    }
-
-    /// <summary>Every tone has its colours in both looks, so no toned box falls back to nothing.</summary>
+    /// <summary>Every tone has its colours in both schemes, so nothing toned falls back to nothing.</summary>
     [Test]
     public void EveryTone_HasItsColours_DarkAndLight()
     {
-        string svg = PlainFlowDrawing.Of(Calls());
+        var tones = Enum.GetValues<DiagramTone>().Where(tone => tone != DiagramTone.Plain).ToList();
 
         Assert.Multiple(() =>
         {
-            foreach (var tone in Enum.GetValues<DiagramTone>().Where(tone => tone != DiagramTone.Plain))
-            {
-                Assert.That(SvgTheme.Site.Light.Tones.ContainsKey(tone), Is.True, tone.ToString());
-                Assert.That(SvgTheme.Site.Dark.Tones.ContainsKey(tone), Is.True, tone.ToString());
-                Assert.That(svg, Does.Contain($".box.tone-{tone.Wire()}"), tone.ToString());
-            }
+            Assert.That(tones.Where(tone => !SvgTheme.Site.Light.Tones.ContainsKey(tone)), Is.Empty, "light");
+            Assert.That(tones.Where(tone => !SvgTheme.Site.Dark.Tones.ContainsKey(tone)), Is.Empty, "dark");
         });
     }
 }

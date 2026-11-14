@@ -2,8 +2,6 @@ using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
-using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -13,8 +11,6 @@ namespace LouisAgent.Diagrams.Tests.Flow;
 /// </summary>
 public class FlowShapesTests
 {
-    private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
-
     /// <summary>A label of two lines, the second long, and a box with one short line.</summary>
     private static GraphSpec TwoLines() => new(
         [
@@ -57,12 +53,6 @@ public class FlowShapesTests
         ],
         [new GraphEdge("host", "engine", "starts"), new GraphEdge("engine", "model"), new GraphEdge("engine", "tools")],
         FlowDirection.Down);
-
-    /// <summary>A chart that runs down, drawn, matches its golden file.</summary>
-    [Test]
-    public void ADownChart_MatchesTheGoldenFile() =>
-        Golden.Match("down.svg",
-            PlainFlowDrawing.Of(new DiagramSource(DiagramKind.Flow, "A turn, down", Flow: Down())));
 
     /// <summary>Down, each rank is a row under the one before, and a rank's boxes stand side by side.</summary>
     [Test]
@@ -338,24 +328,4 @@ public class FlowShapesTests
     private static IEnumerable<double> Xs(string path) => path.Split(' ')
         .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
         .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).Where((_, at) => at % 2 == 0);
-
-    /// <summary>The SVG draws each of a label's lines as its own words, inside the box.</summary>
-    [Test]
-    public void EachLine_IsDrawnInsideTheBox()
-    {
-        var placed = GraphLayout.Place(TwoLines());
-        var core = placed.Nodes.Single(node => node.Node.Id == "core");
-        var svg = XDocument.Parse(PlainFlowDrawing.Of(
-            new DiagramSource(DiagramKind.Flow, "Two lines", Flow: TwoLines())));
-
-        var lines = svg.Descendants(Svg + "text").Where(text => (string?)text.Attribute("class") == "label")
-            .Where(text => text.Value != "A host").ToList();
-        Assert.Multiple(() =>
-        {
-            Assert.That(lines.Select(line => line.Value),
-                Is.EqualTo(new[] { "louis-agent.core", "[class library: the engine, tools, skills]" }));
-            foreach (var line in lines)
-                Assert.That(double.Parse((string)line.Attribute("y")!), Is.InRange(core.Y, core.Y + core.H));
-        });
-    }
 }

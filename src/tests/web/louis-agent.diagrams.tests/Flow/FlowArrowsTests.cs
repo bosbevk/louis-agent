@@ -1,10 +1,7 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
-using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
@@ -47,36 +44,6 @@ public class FlowArrowsTests
         });
     }
 
-    /// <summary>An arrow wears the tone of the box it leaves, its head too; one from a plain box stays plain.</summary>
-    [Test]
-    public void AnArrow_WearsItsSourcesTone()
-    {
-        string svg = Render();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(Regex.Matches(svg, "class=\"edge tone-blue\"[^>]*marker-end=\"url\\(#arrow-blue\\)\""),
-                Has.Count.EqualTo(2));
-            Assert.That(Regex.Matches(svg, "class=\"edge\"[^>]*marker-end=\"url\\(#arrow\\)\""), Has.Count.EqualTo(1));
-            Assert.That(svg, Does.Contain("id=\"arrow-blue\""));
-        });
-    }
-
-    /// <summary>A word stands in a chip of its arrow's tone, written as it is, not in capitals.</summary>
-    [Test]
-    public void AWord_StandsInAChip()
-    {
-        string svg = Render();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(svg, Does.Contain("class=\"word-chip tone-blue\""));
-            Assert.That(svg, Does.Contain("class=\"word tone-blue\""));
-            Assert.That(svg, Does.Contain(">POST /account/login<"));
-            Assert.That(Regex.Match(svg, @"\.word \{[^}]*\}").Value, Does.Not.Contain("uppercase"));
-        });
-    }
-
     /// <summary>
     /// A chip keeps clear of the line it belongs to: above its flat piece when the chart runs right, under the track
     /// it hangs from when the chart runs down (Louis's runner and usage-probe charts, CL60.2).
@@ -111,10 +78,6 @@ public class FlowArrowsTests
     /// <summary>The height a down arrow runs across at: the one y its path holds for a while.</summary>
     private static double Track(string path) => Ys(path).GroupBy(y => y).Where(same => same.Count() > 1)
         .Select(same => same.Key).Single();
-
-    /// <summary>The flow drawn as the docs draw it.</summary>
-    private static string Render() =>
-        PlainFlowDrawing.Of(new DiagramSource(DiagramKind.Flow, "Calls", Flow: Calls()));
 
     /// <summary>
     /// How far each corner of a path starts from its turn: from the line's end to the curve's corner.

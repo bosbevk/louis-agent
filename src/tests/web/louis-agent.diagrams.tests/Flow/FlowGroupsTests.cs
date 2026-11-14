@@ -2,8 +2,6 @@ using System.Xml.Linq;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
-using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -13,8 +11,6 @@ namespace LouisAgent.Diagrams.Tests.Flow;
 /// </summary>
 public class FlowGroupsTests
 {
-    private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
-
     /// <summary>
     /// A developer outside, the system's host, engine and tools in one group, and its store in another, the arrow to
     /// the store dashed.
@@ -35,12 +31,6 @@ public class FlowGroupsTests
         ],
         direction,
         [new GraphGroup("system", "louis-agent"), new GraphGroup("data", "logs/")]);
-
-    /// <summary>The groups, drawn, match their golden file.</summary>
-    [Test]
-    public void Groups_MatchTheGoldenFile() =>
-        Golden.Match("groups.svg", PlainFlowDrawing.Of(
-            new DiagramSource(DiagramKind.Flow, "A system in groups", Flow: System(FlowDirection.Right))));
 
     /// <summary>Every group gets one frame, and each of its boxes stands inside it.</summary>
     [TestCase(FlowDirection.Right)]
@@ -81,25 +71,6 @@ public class FlowGroupsTests
         var groups = GraphLayout.Place(System(direction)).Groups;
 
         Assert.That(Overlap(groups[0], groups[1]), Is.False);
-    }
-
-    /// <summary>A dashed arrow is drawn dashed, the others solid; a group's frame and its label are drawn.</summary>
-    [Test]
-    public void ADashedArrow_IsDrawnDashed_AndAGroupFramed()
-    {
-        var svg = XDocument.Parse(PlainFlowDrawing.Of(
-            new DiagramSource(DiagramKind.Flow, "A system in groups", Flow: System(FlowDirection.Right))));
-
-        var edges = svg.Descendants(Svg + "path").Select(path => (string?)path.Attribute("class"))
-            .Where(cls => cls?.StartsWith("edge", StringComparison.Ordinal) == true).ToList();
-        Assert.Multiple(() =>
-        {
-            Assert.That(edges.Count(cls => cls == "edge dashed"), Is.EqualTo(1));
-            Assert.That(edges.Count(cls => cls == "edge"), Is.EqualTo(3));
-            Assert.That(svg.Descendants(Svg + "rect").Count(rect => (string?)rect.Attribute("class") == "group"),
-                Is.EqualTo(2));
-            Assert.That(svg.Descendants(Svg + "text").Select(text => text.Value), Does.Contain("louis-agent"));
-        });
     }
 
     /// <summary>

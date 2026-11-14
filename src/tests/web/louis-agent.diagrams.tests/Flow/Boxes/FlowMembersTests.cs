@@ -1,7 +1,5 @@
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
-using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 
@@ -59,24 +57,6 @@ public class FlowMembersTests
         {
             Assert.That(one, Is.GreaterThan(none));
             Assert.That(two - one, Is.EqualTo(FlowText.MemberStep).Within(0.001));
-        });
-    }
-
-    /// <summary>The renderer draws each member, under a divider across the box.</summary>
-    [Test]
-    public void EveryMember_IsDrawnUnderADivider()
-    {
-        var spec = new GraphSpec(
-            [new GraphNode("p", "ISpeechProvider", Members: ["SpeechProviderName Name", LongMember])],
-            []);
-
-        string svg = PlainFlowDrawing.Of(new DiagramSource(DiagramKind.Flow, "Members", Flow: spec));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(svg, Does.Contain(">SpeechProviderName Name<"));
-            Assert.That(svg, Does.Contain(">" + LongMember + "<"));
-            Assert.That(svg, Does.Contain("class=\"frame\""));
         });
     }
 }
