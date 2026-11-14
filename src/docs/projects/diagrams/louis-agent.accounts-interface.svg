@@ -282,15 +282,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="cls-line uses" d="M 364 183 L 526.1 183 Q 550.1 183 550.1 159 L 550.1 79 Q 550.1 55 574.1 55 L 736.3 55" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 364 183 L 526.1 183 Q 550.1 183 550.1 207 L 550.1 653 Q 550.1 677 574.1 677 L 736.3 677" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 364 439 L 544.1 439 Q 568.1 439 568.1 463 L 568.1 534 Q 568.1 558 592.1 558 L 736.3 558" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 364 439 L 544.1 439 Q 568.1 439 568.1 415 L 568.1 207 Q 568.1 183 592.1 183 L 736.3 183 L 1142.3 183 L 1192.4 183 Q 1216.4 183 1216.4 207 L 1216.4 316.9 Q 1216.4 329 1228.5 329 L 1240.5 329" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 364 439 L 736.3 439 L 1142.3 439 L 1174.4 439 Q 1198.4 439 1198.4 415 L 1198.4 350.1 Q 1198.4 329 1219.5 329 L 1240.5 329" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 364 311 L 736.3 311" marker-end="url(#open)" />
       <path class="cls-line implements" d="M 364 695 L 736.3 695" marker-end="url(#triangle-violet)" />
       <path class="cls-line holds" d="M 364 567 L 508.1 567 Q 532.1 567 532.1 543 L 532.1 472 Q 532.1 448 556.1 448 L 736.3 448 L 1142.3 448 L 1240.5 448" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 364 567 L 508.1 567 Q 532.1 567 532.1 543 L 532.1 472 Q 532.1 448 556.1 448 L 736.3 448 L 1142.3 448 L 1240.5 448" />
       <path class="cls-line holds" d="M 1142.3 311 L 1240.5 311" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 1142.3 311 L 1240.5 311" />
-      <path class="cls-line holds" d="M 1142.3 311 L 1174.4 311 Q 1198.4 311 1198.4 335 L 1198.4 408.9 Q 1198.4 430 1219.5 430 L 1240.5 430" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1142.3 311 L 1174.4 311 Q 1198.4 311 1198.4 335 L 1198.4 408.9 Q 1198.4 430 1219.5 430 L 1240.5 430" />
+      <path class="cls-line holds" d="M 1142.3 311 L 1192.4 311 Q 1216.4 311 1216.4 335 L 1216.4 417.9 Q 1216.4 430 1228.5 430 L 1240.5 430" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1142.3 311 L 1192.4 311 Q 1216.4 311 1216.4 335 L 1216.4 417.9 Q 1216.4 430 1228.5 430 L 1240.5 430" />
       <path class="cls-line holds" d="M 1435.7 439 L 1516 439" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 1435.7 439 L 1516 439" />
       <rect class="cls-chip uses" x="630.7" y="46" width="43" height="18" rx="9" />
@@ -299,8 +299,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-word quiet" x="652.2" y="680" text-anchor="middle">adds each with keys</text>
       <rect class="cls-chip uses" x="581.7" y="549" width="141" height="18" rx="9" />
       <text class="cls-word quiet" x="652.2" y="561" text-anchor="middle">asks for the tenant</text>
-      <rect class="cls-chip uses" x="634.2" y="174" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="652.2" y="186" text-anchor="middle">sets</text>
+      <rect class="cls-chip uses" x="634.2" y="430" width="36" height="18" rx="9" />
+      <text class="cls-word quiet" x="652.2" y="442" text-anchor="middle">sets</text>
       <rect class="cls-chip holds" x="426.6" y="558" width="43" height="18" rx="9" />
       <text class="cls-word" x="448.1" y="570" text-anchor="middle">holds</text>
       <rect class="cls-chip holds" x="1160.3" y="302" width="43" height="18" rx="9" />

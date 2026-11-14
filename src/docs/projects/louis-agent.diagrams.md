@@ -161,11 +161,19 @@ The other rule is `ApartArrows`. With it each arrow into a box arrives at a poin
   point would then stand off the side, the points are spread round the middle instead.
 - A box's side is at least as long as its points need: two or three arrows fit a box 52 high, and a fourth makes
   it 84.
-- An arrow past a column is led in line with its own point, where no box stands in the way and no other box's
-  long arrow already runs within 9. If it can't run there, it runs at the height it leaves at. If a box stands
-  there too, it passes between two boxes of a column it crosses, in the middle of the room between them, when
-  that is a shorter way up and down than the row it was given. It only passes between two boxes of one group, or
-  of none, so it never runs along a group's frame.
+- An arrow past a column is led on as few lines as it can be. A line is clear in a column where no box stands
+  in the way and no other box's long arrow already runs within 9. The ways are tried in this order:
+  - *One line the whole way*: in line with its own point, else at the height it leaves at.
+  - *Two lines, with one step between them*: the height it leaves at past as few columns as it must, and the
+    line of its own point from there.
+  - *Three lines*: the height it leaves at, a line past the boxes in its way, and the line of its own point.
+    This one only when it is a shorter way up and down than the row the arrow was given. Of two ways as short,
+    it takes the one that steps less often.
+- A line past the boxes in an arrow's way is the middle of the room between two boxes of a column it crosses, or
+  a line 18 beside one box, no nearer than 18 to any other box of that column. It passes only between two boxes
+  of one group, or of none, and beside a box of none, so it never runs along a group's frame.
+- The long arrows are looked at again while one of them still moves. An arrow whose line was taken by another
+  one, which has since moved to a line of its own, then gets that line.
 - A point never stands level with the line out of a box in the column before that feeds something else: the
   points then stand 9 aside, towards the boxes their arrows come from.
 - In a picture that runs to the right, an arrow's word stands on its own line, in its pill. Above the line, the

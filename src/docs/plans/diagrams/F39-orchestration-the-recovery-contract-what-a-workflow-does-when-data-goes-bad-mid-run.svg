@@ -209,8 +209,8 @@ svg {
     <g class="flow" transform="translate(0 72)">
       <path class="pic-line pic-edge tone-blue" d="M 492 52 L 492 112" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 492 52 L 492 112" />
-      <path class="pic-line pic-edge" d="M 492 196 L 492 208 Q 492 220 480 220 L 342.2 220 Q 321.2 220 321.2 241 L 321.2 262 L 321.2 314 L 321.2 374 L 321.2 426 L 321.2 492 L 321.2 560 L 321.2 626 L 321.2 694 L 321.2 772 L 321.2 856 L 321.2 916 L 321.2 1000 L 321.2 1021 Q 321.2 1042 342.2 1042 L 498 1042 Q 510 1042 510 1054 L 510 1066" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 492 196 L 492 208 Q 492 220 480 220 L 342.2 220 Q 321.2 220 321.2 241 L 321.2 262 L 321.2 314 L 321.2 374 L 321.2 426 L 321.2 492 L 321.2 560 L 321.2 626 L 321.2 694 L 321.2 772 L 321.2 856 L 321.2 916 L 321.2 1000 L 321.2 1021 Q 321.2 1042 342.2 1042 L 498 1042 Q 510 1042 510 1054 L 510 1066" />
+      <path class="pic-line pic-edge" d="M 492 196 L 492 208 Q 492 220 504 220 L 647 220 Q 668 220 668 241 L 668 262 L 668 314 L 668 374 L 668 426 L 668 492 L 668 560 L 668 626 L 668 694 L 668 772 L 668 856 L 668 916 L 668 1000 L 668 1021 Q 668 1042 647 1042 L 522 1042 Q 510 1042 510 1054 L 510 1066" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 492 196 L 492 208 Q 492 220 504 220 L 647 220 Q 668 220 668 241 L 668 262 L 668 314 L 668 374 L 668 426 L 668 492 L 668 560 L 668 626 L 668 694 L 668 772 L 668 856 L 668 916 L 668 1000 L 668 1021 Q 668 1042 647 1042 L 522 1042 Q 510 1042 510 1054 L 510 1066" />
       <path class="pic-line pic-edge" d="M 492 196 L 492 208 Q 492 220 480 220 L 179 220 Q 158 220 158 241 L 158 262" marker-end="url(#arrow)" />
       <path class="pic-march" d="M 492 196 L 492 208 Q 492 220 480 220 L 179 220 Q 158 220 158 241 L 158 262" />
       <path class="pic-line pic-edge tone-teal" d="M 158 314 L 158 374" marker-end="url(#arrow-teal)" />
@@ -237,8 +237,8 @@ svg {
       <path class="pic-march" d="M 158 856 L 158 916" />
       <path class="pic-line pic-edge" d="M 619.6 958 L 990 958 Q 1014 958 1014 934 L 1014 312 Q 1014 288 990 288 L 286 288" marker-end="url(#arrow)" />
       <path class="pic-march" d="M 619.6 958 L 990 958 Q 1014 958 1014 934 L 1014 312 Q 1014 288 990 288 L 286 288" />
-      <rect class="flow-chip pic-edge" x="327.2" y="224" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="348.7" y="236" text-anchor="middle">valid</text>
+      <rect class="flow-chip pic-edge" x="674" y="224" width="43" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="695.5" y="236" text-anchor="middle">valid</text>
       <rect class="flow-chip pic-edge" x="164" y="224" width="57" height="18" rx="9" />
       <text class="flow-word pic-ink" x="192.5" y="236" text-anchor="middle">invalid</text>
       <rect class="flow-chip pic-edge" x="164" y="454" width="29" height="18" rx="9" />

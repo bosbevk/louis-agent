@@ -131,7 +131,13 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     and the legend's in the frame's. Every picture's file carries those styles, so taking them out rewrites
     every picture. The older layout rules, arrows that join and boxes centred, are drawn by nothing. The kinds'
     styles stand in two folders, the three keys place their items by the same steps in three classes, and a
-    flow and a class chart each have the same two rules for a word's pill.
+    flow and a class chart each have the same two rules for a word's pill. And the class that gives a box its
+    column (`Ranks`) also leads the long lines, at 185 of its 200 lines since F134.12.
+  - **In that refactor the kinds of picture must match UML's.** Louis, 2026-11-14: "read here when you
+    refactor, our graph types must match", with
+    [GeeksforGeeks' introduction to UML](https://www.geeksforgeeks.org/system-design/unified-modeling-language-uml-introduction/).
+    Its plan starts by reading that page and holding each of our kinds against the UML type it is meant to be.
+    Each mismatch is put to him. None is renamed without his pick.
 
 ## Verification
 

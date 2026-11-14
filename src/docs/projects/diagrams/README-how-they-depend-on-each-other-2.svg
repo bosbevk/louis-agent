@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 819 909" width="819" height="909" role="img" aria-label="How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 654 920" width="654" height="920" role="img" aria-label="How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API" xmlns="http://www.w3.org/2000/svg">
   <title>How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -201,26 +201,26 @@ svg {
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="819" height="909" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="654" height="920" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H771M0 33H771M0 55H771M0 77H771M0 99H771M0 121H771M0 143H771M0 165H771M0 187H771M0 209H771M0 231H771M0 253H771M0 275H771M0 297H771M0 319H771M0 341H771M0 363H771M0 385H771M0 407H771M0 429H771M0 451H771M0 473H771M0 495H771M0 517H771M0 539H771M0 561H771M0 583H771M0 605H771M0 627H771M0 649H771M0 671H771M0 693H771M0 715H771M0 737H771M0 759H771M0 781H771M0 803H771" />
+    <path class="pic-dots" d="M0 11H606M0 33H606M0 55H606M0 77H606M0 99H606M0 121H606M0 143H606M0 165H606M0 187H606M0 209H606M0 231H606M0 253H606M0 275H606M0 297H606M0 319H606M0 341H606M0 363H606M0 385H606M0 407H606M0 429H606M0 451H606M0 473H606M0 495H606M0 517H606M0 539H606M0 561H606M0 583H606M0 605H606M0 627H606M0 649H606M0 671H606M0 693H606M0 715H606M0 737H606M0 759H606M0 781H606M0 803H606" />
     <text class="pic-title" x="0" y="24" text-anchor="start">How the web projects depend on each other</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">the programs, the sites, packs/web, the framework's web and the API</text>
     <g class="flow" transform="translate(0 72)">
       <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 83 Q 459 98 444 98 L 162 98 Q 147 98 147 113 L 147 128" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 459 68 L 459 83 Q 459 98 444 98 L 162 98 Q 147 98 147 113 L 147 128" />
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 128 L 459 228 L 459 240 Q 459 252 471 252 L 750 252 Q 771 252 771 273 L 771 294 L 771 378 L 771 438 L 771 506 L 771 536 Q 771 560 747 560 L 471 560 Q 459 560 459 572 L 459 584" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 128 L 459 228 L 459 240 Q 459 252 471 252 L 750 252 Q 771 252 771 273 L 771 294 L 771 378 L 771 438 L 771 506 L 771 536 Q 771 560 747 560 L 471 560 Q 459 560 459 572 L 459 584" />
-      <path class="pic-line pic-edge tone-green" d="M 147 228 L 147 294" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 228 L 147 294" />
-      <path class="pic-line pic-edge tone-green" d="M 147 228 L 147 249 Q 147 270 168 270 L 447 270 Q 459 270 459 282 L 459 294 L 459 378 L 459 393 Q 459 408 444 408 L 180 408 Q 165 408 165 423 L 165 438" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 228 L 147 249 Q 147 270 168 270 L 447 270 Q 459 270 459 282 L 459 294 L 459 378 L 459 393 Q 459 408 444 408 L 180 408 Q 165 408 165 423 L 165 438" />
-      <path class="pic-line pic-edge tone-teal" d="M 147 378 L 147 438" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 147 378 L 147 438" />
-      <path class="pic-line pic-edge tone-violet reads" d="M 147 506 L 147 536 Q 147 560 171 560 L 429 560 Q 441 560 441 572 L 441 584" marker-end="url(#arrow-violet)" />
-      <rect class="flow-chip pic-edge tone-violet" x="153" y="510" width="148" height="30" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="227" y="522" text-anchor="middle">HTTP and SSE, at run</text>
-      <text class="flow-word pic-ink tone-violet" x="227" y="534" text-anchor="middle">time</text>
+      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 128 L 459 228 L 459 288 L 459 372 L 459 432 L 459 500 L 459 578" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 459 68 L 459 128 L 459 228 L 459 288 L 459 372 L 459 432 L 459 500 L 459 578" />
+      <path class="pic-line pic-edge tone-green" d="M 147 228 L 147 288" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 147 228 L 147 288" />
+      <path class="pic-line pic-edge tone-green" d="M 147 228 L 147 243 Q 147 258 162 258 L 285.6 258 Q 300.6 258 300.6 273 L 300.6 288 L 300.6 372 L 300.6 387 Q 300.6 402 285.6 402 L 180 402 Q 165 402 165 417 L 165 432" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 147 228 L 147 243 Q 147 258 162 258 L 285.6 258 Q 300.6 258 300.6 273 L 300.6 288 L 300.6 372 L 300.6 387 Q 300.6 402 285.6 402 L 180 402 Q 165 402 165 417 L 165 432" />
+      <path class="pic-line pic-edge tone-teal" d="M 147 372 L 147 432" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 147 372 L 147 432" />
+      <path class="pic-line pic-edge tone-violet reads" d="M 147 500 L 147 530 Q 147 554 171 554 L 429 554 Q 441 554 441 566 L 441 578" marker-end="url(#arrow-violet)" />
+      <rect class="flow-chip pic-edge tone-violet" x="153" y="504" width="148" height="30" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="227" y="516" text-anchor="middle">HTTP and SSE, at run</text>
+      <text class="flow-word pic-ink tone-violet" x="227" y="528" text-anchor="middle">time</text>
       <rect class="pic-panel depth-2 pic-edge tone-blue" x="312" y="0" width="294" height="68" rx="10" />
       <path class="pic-sheen" d="M322 1.5H596" />
       <rect class="pic-fill tone-blue" x="319" y="23" width="4" height="22" rx="2" />
@@ -244,75 +244,78 @@ svg {
       <text class="flow-name" x="74.8" y="175" text-anchor="start">louis-agent.puls,</text>
       <text class="flow-name" x="74.8" y="191" text-anchor="start">louis-agent.code-review,</text>
       <text class="flow-name" x="74.8" y="207" text-anchor="start">louis-agent.starter</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="11.4" y="294" width="271.2" height="84" rx="10" />
-      <path class="pic-sheen" d="M21.4 295.5H272.6" />
-      <rect class="pic-fill tone-teal" x="18.4" y="325" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-teal" x="27.4" y="322" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(33.4 328) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="11.4" y="288" width="271.2" height="84" rx="10" />
+      <path class="pic-sheen" d="M21.4 289.5H272.6" />
+      <rect class="pic-fill tone-teal" x="18.4" y="319" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="27.4" y="316" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(33.4 322) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="63.4" y="325" text-anchor="start">packs/web</text>
-      <text class="flow-name" x="63.4" y="341" text-anchor="start">a pack's own views, for the</text>
-      <text class="flow-name" x="63.4" y="357" text-anchor="start">sites that use them</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="30.4" y="438" width="233.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M40.4 439.5H253.6" />
-      <rect class="pic-fill tone-violet" x="37.4" y="461" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="46.4" y="458" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(52.4 464) scale(0.6667)">
+      <text class="flow-name" x="63.4" y="319" text-anchor="start">packs/web</text>
+      <text class="flow-name" x="63.4" y="335" text-anchor="start">a pack's own views, for the</text>
+      <text class="flow-name" x="63.4" y="351" text-anchor="start">sites that use them</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="30.4" y="432" width="233.2" height="68" rx="10" />
+      <path class="pic-sheen" d="M40.4 433.5H253.6" />
+      <rect class="pic-fill tone-violet" x="37.4" y="455" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="46.4" y="452" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(52.4 458) scale(0.6667)">
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
         <path d="M3.6 9h16.8" />
         <path d="M3.6 15h16.8" />
         <path d="M11.5 3a17 17 0 0 0 0 18" />
         <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
-      <text class="flow-name" x="82.4" y="469" text-anchor="start">louis-agent.web</text>
-      <text class="flow-name" x="82.4" y="485" text-anchor="start">what every site shares</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="369" y="584" width="180" height="52" rx="10" />
-      <path class="pic-sheen" d="M379 585.5H539" />
-      <rect class="pic-fill tone-red" x="376" y="599" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="385" y="596" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(391 602) scale(0.6667)">
+      <text class="flow-name" x="82.4" y="463" text-anchor="start">louis-agent.web</text>
+      <text class="flow-name" x="82.4" y="479" text-anchor="start">what every site shares</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red" x="369" y="578" width="180" height="52" rx="10" />
+      <path class="pic-sheen" d="M379 579.5H539" />
+      <rect class="pic-fill tone-red" x="376" y="593" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="385" y="590" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(391 596) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="421" y="615" text-anchor="start">louis-agent.api</text>
+      <text class="flow-name" x="421" y="609" text-anchor="start">louis-agent.api</text>
       <circle class="pic-port pic-edge tone-blue" cx="459" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="147" cy="228" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="147" cy="378" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="147" cy="506" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="147" cy="372" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="147" cy="500" r="4" />
     </g>
-    <text class="pic-group" x="0" y="744" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="761" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="765" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="773" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="761" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="765" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="773" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="761" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="264.3" y="765" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="773" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="761" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="410.2" y="765" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="444.2" y="773" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-red" x="589.9" y="761" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-red" x="593.9" y="765" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="627.9" y="773" text-anchor="start">outside the process</text>
-    <path class="flow-key pic-line pic-edge" d="M0 795H30" marker-end="url(#arrow)" />
-    <text class="pic-note" x="38" y="799" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="738" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="755" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="759" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="767" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="755" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="759" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="767" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="755" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="264.3" y="759" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="767" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="755" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="410.2" y="759" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="444.2" y="767" text-anchor="start">contracts and state</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-red" x="0" y="781" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-red" x="4" y="785" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="793" text-anchor="start">outside the process</text>
+    <path class="flow-key pic-line pic-edge" d="M183.7 789H213.7" marker-end="url(#arrow)" />
+    <text class="pic-note" x="221.7" y="793" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="824" width="771" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 834) scale(0.6667)">
+  <rect class="notebar" x="0" y="818" width="606" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 828) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="846">
+  <text class="notes" x="38" y="840">
     <tspan class="note-head">The web:</tspan>
-    <tspan class="note-rest">a site is a small program on the framework's web, and it reaches the engine only over HTTP.</tspan>
+    <tspan class="note-rest">a site is a small program on the framework's web, and it reaches the</tspan>
+  </text>
+  <text class="notes" x="38" y="857">
+    <tspan class="note-rest">engine only over HTTP.</tspan>
   </text>
 </svg>

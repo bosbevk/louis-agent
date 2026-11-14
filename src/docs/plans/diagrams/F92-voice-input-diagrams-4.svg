@@ -282,7 +282,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="cls-line uses" d="M 1603 222 L 1699 222" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 420 376 L 492 376 Q 516 376 516 352 L 516 255 Q 516 231 540 231 L 606 231" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 420 376 L 606 376" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 420 222 L 510 222 Q 534 222 534 246 L 534 265 Q 534 289 558 289 L 606 289 L 984 289 L 1184 289 Q 1208 289 1208 265 L 1208 252 Q 1208 240 1220 240 L 1232 240" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 420 222 L 510 222 Q 534 222 534 246 L 534 264 Q 534 288 558 288 L 606 288 L 984 288 L 1184 288 Q 1208 288 1208 264 L 1208 252 Q 1208 240 1220 240 L 1232 240" marker-end="url(#triangle-violet)" />
       <path class="cls-line holds" d="M 984 222 L 1232 222" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 984 222 L 1232 222" />
       <rect class="cls-chip implements" x="438" y="213" width="78" height="18" rx="9" />

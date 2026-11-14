@@ -279,48 +279,48 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <path class="mrq-light" d="M-24 74a981.5 190 0 1 0 1963 0a981.5 190 0 1 0 -1963 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The evals: the types</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 378 111 L 702 111" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 378 111 L 720 111" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 1644 351 L 1656 351 Q 1668 351 1668 363 L 1668 567 Q 1668 591 1692 591 L 1740 591" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 1644 351 L 1740 351" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1279 111 L 1337 111 Q 1361 111 1361 135 L 1361 321 Q 1361 333 1373 333 L 1385 333" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 591 L 486 591 Q 510 591 510 567 L 510 384 Q 510 360 534 360 L 702 360" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 591 L 486 591 Q 510 591 510 615 L 510 1509 Q 510 1533 534 1533 L 702 1533" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 591 L 486 591 Q 510 591 510 615 L 510 798 Q 510 822 534 822 L 702 822" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 989 831 L 1021 831 Q 1045 831 1045 855 L 1045 1023 Q 1045 1035 1057 1035 L 1069 1035" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 378 111 L 468 111 Q 492 111 492 135 L 492 318 Q 492 342 516 342 L 702 342" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 378 351 L 450 351 Q 474 351 474 327 L 474 227.5 Q 474 203.5 498 203.5 L 702 203.5 L 989 203.5 L 1069 203.5 L 1279 203.5 L 1319 203.5 Q 1343 203.5 1343 227.5 L 1343 348 Q 1343 369 1364 369 L 1385 369" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 378 1311 L 468 1311 Q 492 1311 492 1335 L 492 1527 Q 492 1551 516 1551 L 702 1551" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 378 1551 L 465 1551 Q 474 1551 474 1560 L 474 1560 Q 474 1569 483 1569 L 702 1569" marker-end="url(#triangle-violet)" />
-      <path class="cls-line inherits" d="M 378 831 L 450 831 Q 474 831 474 855 L 474 1029 Q 474 1053 498 1053 L 702 1053 L 989 1053 L 1069 1053" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 378 831 L 450 831 Q 474 831 474 855 L 474 1029 Q 474 1053 498 1053 L 702 1053 L 989 1053 L 1069 1053" />
-      <path class="cls-line inherits" d="M 378 1071 L 702 1071 L 989 1071 L 1069 1071" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 378 1071 L 702 1071 L 989 1071 L 1069 1071" />
-      <path class="cls-line holds" d="M 989 351 L 1069 351 L 1279 351 L 1385 351" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 989 351 L 1069 351 L 1279 351 L 1385 351" />
-      <path class="cls-line holds" d="M 989 111 L 1069 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 989 111 L 1069 111" />
-      <rect class="cls-chip implements" x="567" y="333" width="78" height="18" rx="9" />
-      <text class="cls-word" x="606" y="345" text-anchor="middle">implements</text>
-      <rect class="cls-chip holds" x="1007" y="342" width="43" height="18" rx="9" />
-      <text class="cls-word" x="1028.5" y="354" text-anchor="middle">holds</text>
-      <rect class="cls-chip uses" x="525" y="102" width="162" height="18" rx="9" />
-      <text class="cls-word quiet" x="606" y="114" text-anchor="middle">builds its checks from</text>
+      <path class="cls-line uses" d="M 1297 111 L 1337 111 Q 1361 111 1361 135 L 1361 321 Q 1361 333 1373 333 L 1385 333" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 378 591 L 486 591 Q 510 591 510 567 L 510 384 Q 510 360 534 360 L 720 360" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 378 591 L 486 591 Q 510 591 510 615 L 510 1509 Q 510 1533 534 1533 L 720 1533" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 378 591 L 486 591 Q 510 591 510 615 L 510 798 Q 510 822 534 822 L 720 822" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 1007 831 L 1039 831 Q 1063 831 1063 855 L 1063 1023 Q 1063 1035 1075 1035 L 1087 1035" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M 378 111 L 450 111 Q 474 111 474 135 L 474 318 Q 474 342 498 342 L 720 342" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 378 351 L 504 351 Q 528 351 528 375 L 528 456 Q 528 480 552 480 L 720 480 L 1007 480 L 1087 480 L 1297 480 L 1337 480 Q 1361 480 1361 456 L 1361 381 Q 1361 369 1373 369 L 1385 369" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 378 1311 L 468 1311 Q 492 1311 492 1335 L 492 1527 Q 492 1551 516 1551 L 720 1551" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 378 1551 L 465 1551 Q 474 1551 474 1560 L 474 1560 Q 474 1569 483 1569 L 720 1569" marker-end="url(#triangle-violet)" />
+      <path class="cls-line inherits" d="M 378 831 L 450 831 Q 474 831 474 855 L 474 1029 Q 474 1053 498 1053 L 720 1053 L 1007 1053 L 1087 1053" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M 378 831 L 450 831 Q 474 831 474 855 L 474 1029 Q 474 1053 498 1053 L 720 1053 L 1007 1053 L 1087 1053" />
+      <path class="cls-line inherits" d="M 378 1071 L 720 1071 L 1007 1071 L 1087 1071" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M 378 1071 L 720 1071 L 1007 1071 L 1087 1071" />
+      <path class="cls-line holds" d="M 1007 351 L 1087 351 L 1297 351 L 1385 351" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1007 351 L 1087 351 L 1297 351 L 1385 351" />
+      <path class="cls-line holds" d="M 1007 111 L 1087 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1007 111 L 1087 111" />
+      <rect class="cls-chip implements" x="585" y="333" width="78" height="18" rx="9" />
+      <text class="cls-word" x="624" y="345" text-anchor="middle">implements</text>
+      <rect class="cls-chip holds" x="1025" y="342" width="43" height="18" rx="9" />
+      <text class="cls-word" x="1046.5" y="354" text-anchor="middle">holds</text>
+      <rect class="cls-chip uses" x="543" y="102" width="162" height="18" rx="9" />
+      <text class="cls-word quiet" x="624" y="114" text-anchor="middle">builds its checks from</text>
       <rect class="cls-chip uses" x="1679" y="582" width="50" height="18" rx="9" />
       <text class="cls-word quiet" x="1704" y="594" text-anchor="middle">grades</text>
       <rect class="cls-chip uses" x="1675.5" y="342" width="57" height="18" rx="9" />
       <text class="cls-word quiet" x="1704" y="354" text-anchor="middle">returns</text>
-      <rect class="cls-chip implements" x="387" y="342" width="78" height="18" rx="9" />
-      <text class="cls-word" x="426" y="354" text-anchor="middle">implements</text>
-      <rect class="cls-chip uses" x="1295" y="102" width="50" height="18" rx="9" />
-      <text class="cls-word quiet" x="1320" y="114" text-anchor="middle">builds</text>
-      <rect class="cls-chip holds" x="1007" y="102" width="43" height="18" rx="9" />
-      <text class="cls-word" x="1028.5" y="114" text-anchor="middle">holds</text>
+      <rect class="cls-chip implements" x="414" y="342" width="78" height="18" rx="9" />
+      <text class="cls-word" x="453" y="354" text-anchor="middle">implements</text>
+      <rect class="cls-chip uses" x="1304" y="102" width="50" height="18" rx="9" />
+      <text class="cls-word quiet" x="1329" y="114" text-anchor="middle">builds</text>
+      <rect class="cls-chip holds" x="1025" y="102" width="43" height="18" rx="9" />
+      <text class="cls-word" x="1046.5" y="114" text-anchor="middle">holds</text>
       <rect class="cls-chip implements" x="396" y="1302" width="78" height="18" rx="9" />
       <text class="cls-word" x="435" y="1314" text-anchor="middle">implements</text>
       <rect class="cls-chip uses" x="426" y="582" width="36" height="18" rx="9" />
       <text class="cls-word quiet" x="444" y="594" text-anchor="middle">uses</text>
-      <rect class="cls-chip uses" x="999" y="822" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="1017" y="834" text-anchor="middle">uses</text>
+      <rect class="cls-chip uses" x="1017" y="822" width="36" height="18" rx="9" />
+      <text class="cls-word quiet" x="1035" y="834" text-anchor="middle">uses</text>
       <rect class="cls-chip inherits" x="408" y="822" width="36" height="18" rx="9" />
       <text class="cls-word" x="426" y="834" text-anchor="middle">is a</text>
       <rect class="cls-cover" x="0" y="62" width="378" height="98" rx="14" />
@@ -369,66 +369,66 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-green" x="14" y="1537" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="1555.5" text-anchor="middle">C</text>
       <text class="cls-name" x="52" y="1556" text-anchor="start">CannedSessionClient</text>
-      <rect class="cls-cover" x="702" y="55" width="287" height="112" rx="14" />
-      <rect class="mrq-glass" x="702" y="55" width="287" height="112" rx="14" />
-      <rect class="cls-badge tone-green" x="716" y="67" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="730" y="85.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="754" y="86" text-anchor="start">CheckCatalog</text>
-      <path class="cls-divide" d="M716 107H975" />
-      <text class="cls-member" x="716" y="125" text-anchor="start">Find(type) ICheckType</text>
-      <text class="cls-member" x="716" y="139" text-anchor="start">Get(type) ICheckType</text>
-      <text class="cls-member" x="716" y="153" text-anchor="start">Listing() ListedCheck list</text>
-      <rect class="cls-cover" x="702" y="240" width="287" height="222" rx="14" />
-      <rect class="mrq-glass" x="702" y="240" width="287" height="222" rx="14" />
-      <rect class="mrq-edge" x="726" y="239.5" width="239" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="716" y="258" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="730" y="276.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="754" y="268" text-anchor="start">IEval</text>
-      <text class="cls-kind" x="754" y="284" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M716 304H975" />
-      <text class="cls-member" x="716" y="322" text-anchor="start">string Name</text>
-      <text class="cls-member" x="716" y="336" text-anchor="start">string Identity</text>
-      <text class="cls-member" x="716" y="350" text-anchor="start">int Version</text>
-      <text class="cls-member" x="716" y="364" text-anchor="start">string Proves</text>
-      <text class="cls-member" x="716" y="378" text-anchor="start">ModesAsync(sessions) EvalMode list</text>
-      <text class="cls-member" x="716" y="392" text-anchor="start">IReadOnlyList&lt;EvalScenario&gt; Scenarios</text>
-      <text class="cls-member" x="716" y="406" text-anchor="start">DatasetManifest Dataset</text>
-      <text class="cls-member" x="716" y="420" text-anchor="start">IReadOnlyList&lt;ICheck&gt; Checks</text>
-      <text class="cls-member" x="716" y="434" text-anchor="start">IReadOnlyList&lt;LabeledAnswer&gt; Labels</text>
-      <text class="cls-member" x="716" y="448" text-anchor="start">TurnFactsOf(turn, mode) TurnFacts</text>
-      <rect class="cls-cover" x="702" y="805" width="287" height="52" rx="14" />
-      <rect class="mrq-glass" x="702" y="805" width="287" height="52" rx="14" />
-      <rect class="cls-badge tone-green" x="716" y="817" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="730" y="835.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="754" y="836" text-anchor="start">ProtocolWriter</text>
-      <rect class="cls-cover" x="702" y="1519" width="287" height="64" rx="14" />
-      <rect class="mrq-glass" x="702" y="1519" width="287" height="64" rx="14" />
-      <rect class="mrq-edge" x="726" y="1518.5" width="239" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="716" y="1537" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="730" y="1555.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="754" y="1547" text-anchor="start">ISessionClient</text>
-      <text class="cls-kind" x="754" y="1563" text-anchor="start">interface</text>
-      <rect class="cls-cover" x="1069" y="42" width="210" height="138" rx="14" />
-      <rect class="mrq-glass" x="1069" y="42" width="210" height="138" rx="14" />
-      <rect class="mrq-edge" x="1093" y="41.5" width="162" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1083" y="60" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1097" y="78.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="1121" y="70" text-anchor="start">ICheckType</text>
-      <text class="cls-kind" x="1121" y="86" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M1083 106H1265" />
-      <text class="cls-member" x="1083" y="124" text-anchor="start">string Type</text>
-      <text class="cls-member" x="1083" y="138" text-anchor="start">CheckKind Kind</text>
-      <text class="cls-member" x="1083" y="152" text-anchor="start">Type Parameters</text>
-      <text class="cls-member" x="1083" y="166" text-anchor="start">Create(JsonElement) ICheck</text>
-      <rect class="cls-cover" x="1069" y="1023" width="210" height="96" rx="14" />
-      <rect class="mrq-glass" x="1069" y="1023" width="210" height="96" rx="14" />
-      <rect class="mrq-edge" x="1093" y="1022.5" width="162" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1083" y="1041" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1097" y="1059.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="1121" y="1051" text-anchor="start">EvalEvent</text>
-      <text class="cls-kind" x="1121" y="1067" text-anchor="start">record</text>
-      <path class="cls-divide" d="M1083 1087H1265" />
-      <text class="cls-member" x="1083" y="1105" text-anchor="start">DateTimeOffset T</text>
+      <rect class="cls-cover" x="720" y="55" width="287" height="112" rx="14" />
+      <rect class="mrq-glass" x="720" y="55" width="287" height="112" rx="14" />
+      <rect class="cls-badge tone-green" x="734" y="67" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="748" y="85.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="772" y="86" text-anchor="start">CheckCatalog</text>
+      <path class="cls-divide" d="M734 107H993" />
+      <text class="cls-member" x="734" y="125" text-anchor="start">Find(type) ICheckType</text>
+      <text class="cls-member" x="734" y="139" text-anchor="start">Get(type) ICheckType</text>
+      <text class="cls-member" x="734" y="153" text-anchor="start">Listing() ListedCheck list</text>
+      <rect class="cls-cover" x="720" y="240" width="287" height="222" rx="14" />
+      <rect class="mrq-glass" x="720" y="240" width="287" height="222" rx="14" />
+      <rect class="mrq-edge" x="744" y="239.5" width="239" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="734" y="258" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="748" y="276.5" text-anchor="middle">I</text>
+      <text class="cls-name" x="772" y="268" text-anchor="start">IEval</text>
+      <text class="cls-kind" x="772" y="284" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M734 304H993" />
+      <text class="cls-member" x="734" y="322" text-anchor="start">string Name</text>
+      <text class="cls-member" x="734" y="336" text-anchor="start">string Identity</text>
+      <text class="cls-member" x="734" y="350" text-anchor="start">int Version</text>
+      <text class="cls-member" x="734" y="364" text-anchor="start">string Proves</text>
+      <text class="cls-member" x="734" y="378" text-anchor="start">ModesAsync(sessions) EvalMode list</text>
+      <text class="cls-member" x="734" y="392" text-anchor="start">IReadOnlyList&lt;EvalScenario&gt; Scenarios</text>
+      <text class="cls-member" x="734" y="406" text-anchor="start">DatasetManifest Dataset</text>
+      <text class="cls-member" x="734" y="420" text-anchor="start">IReadOnlyList&lt;ICheck&gt; Checks</text>
+      <text class="cls-member" x="734" y="434" text-anchor="start">IReadOnlyList&lt;LabeledAnswer&gt; Labels</text>
+      <text class="cls-member" x="734" y="448" text-anchor="start">TurnFactsOf(turn, mode) TurnFacts</text>
+      <rect class="cls-cover" x="720" y="805" width="287" height="52" rx="14" />
+      <rect class="mrq-glass" x="720" y="805" width="287" height="52" rx="14" />
+      <rect class="cls-badge tone-green" x="734" y="817" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="748" y="835.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="772" y="836" text-anchor="start">ProtocolWriter</text>
+      <rect class="cls-cover" x="720" y="1519" width="287" height="64" rx="14" />
+      <rect class="mrq-glass" x="720" y="1519" width="287" height="64" rx="14" />
+      <rect class="mrq-edge" x="744" y="1518.5" width="239" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="734" y="1537" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="748" y="1555.5" text-anchor="middle">I</text>
+      <text class="cls-name" x="772" y="1547" text-anchor="start">ISessionClient</text>
+      <text class="cls-kind" x="772" y="1563" text-anchor="start">interface</text>
+      <rect class="cls-cover" x="1087" y="42" width="210" height="138" rx="14" />
+      <rect class="mrq-glass" x="1087" y="42" width="210" height="138" rx="14" />
+      <rect class="mrq-edge" x="1111" y="41.5" width="162" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1101" y="60" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1115" y="78.5" text-anchor="middle">I</text>
+      <text class="cls-name" x="1139" y="70" text-anchor="start">ICheckType</text>
+      <text class="cls-kind" x="1139" y="86" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M1101 106H1283" />
+      <text class="cls-member" x="1101" y="124" text-anchor="start">string Type</text>
+      <text class="cls-member" x="1101" y="138" text-anchor="start">CheckKind Kind</text>
+      <text class="cls-member" x="1101" y="152" text-anchor="start">Type Parameters</text>
+      <text class="cls-member" x="1101" y="166" text-anchor="start">Create(JsonElement) ICheck</text>
+      <rect class="cls-cover" x="1087" y="1023" width="210" height="96" rx="14" />
+      <rect class="mrq-glass" x="1087" y="1023" width="210" height="96" rx="14" />
+      <rect class="mrq-edge" x="1111" y="1022.5" width="162" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1101" y="1041" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1115" y="1059.5" text-anchor="middle">R</text>
+      <text class="cls-name" x="1139" y="1051" text-anchor="start">EvalEvent</text>
+      <text class="cls-kind" x="1139" y="1067" text-anchor="start">record</text>
+      <path class="cls-divide" d="M1101 1087H1283" />
+      <text class="cls-member" x="1101" y="1105" text-anchor="start">DateTimeOffset T</text>
       <rect class="cls-cover" x="1385" y="268" width="259" height="166" rx="14" />
       <rect class="mrq-glass" x="1385" y="268" width="259" height="166" rx="14" />
       <rect class="mrq-edge" x="1409" y="267.5" width="211" height="1.6" rx="0" />

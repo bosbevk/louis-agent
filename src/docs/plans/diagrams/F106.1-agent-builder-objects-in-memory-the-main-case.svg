@@ -205,8 +205,8 @@ svg {
       <path class="pic-march" d="M 459 52 L 459 112" />
       <path class="pic-line pic-edge tone-violet" d="M 459 52 L 459 67 Q 459 82 444 82 L 153 82 Q 138 82 138 97 L 138 112 L 138 164 L 138 224" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 459 52 L 459 67 Q 459 82 444 82 L 153 82 Q 138 82 138 97 L 138 112 L 138 164 L 138 224" />
-      <path class="pic-line pic-edge tone-violet" d="M 459 52 L 459 67 Q 459 82 474 82 L 756 82 Q 771 82 771 97 L 771 112 L 771 164 L 771 179 Q 771 194 756 194 L 492 194 Q 477 194 477 209 L 477 224" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 459 52 L 459 67 Q 459 82 474 82 L 756 82 Q 771 82 771 97 L 771 112 L 771 164 L 771 179 Q 771 194 756 194 L 492 194 Q 477 194 477 209 L 477 224" />
+      <path class="pic-line pic-edge tone-violet" d="M 459 52 L 459 67 Q 459 82 474 82 L 555.8 82 Q 570.8 82 570.8 97 L 570.8 112 L 570.8 164 L 570.8 179 Q 570.8 194 555.8 194 L 492 194 Q 477 194 477 209 L 477 224" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 459 52 L 459 67 Q 459 82 474 82 L 555.8 82 Q 570.8 82 570.8 97 L 570.8 112 L 570.8 164 L 570.8 179 Q 570.8 194 555.8 194 L 492 194 Q 477 194 477 209 L 477 224" />
       <path class="pic-line pic-edge tone-violet" d="M 459 52 L 459 67 Q 459 82 474 82 L 765 82 Q 780 82 780 97 L 780 112 L 780 164 L 780 224 L 780 292 L 780 358" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 459 52 L 459 67 Q 459 82 474 82 L 765 82 Q 780 82 780 97 L 780 112 L 780 164 L 780 224 L 780 292 L 780 358" />
       <path class="pic-line pic-edge tone-violet" d="M 459 164 L 459 179 Q 459 194 444 194 L 171 194 Q 156 194 156 209 L 156 224" marker-end="url(#arrow-violet)" />

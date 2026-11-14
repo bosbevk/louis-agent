@@ -213,8 +213,8 @@ svg {
       <path class="pic-march" d="M 752 116 L 752 131 Q 752 146 737 146 L 158.2 146 Q 143.2 146 143.2 161 L 143.2 176" />
       <path class="pic-line pic-edge tone-violet" d="M 752 116 L 752 131 Q 752 146 737 146 L 462.6 146 Q 447.6 146 447.6 161 L 447.6 176 L 447.6 292 L 447.6 376" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 752 116 L 752 131 Q 752 146 737 146 L 462.6 146 Q 447.6 146 447.6 161 L 447.6 176 L 447.6 292 L 447.6 376" />
-      <path class="pic-line pic-edge tone-violet" d="M 752 116 L 752 131 Q 752 146 767 146 L 1039.5 146 Q 1054.5 146 1054.5 161 L 1054.5 176 L 1054.5 292 L 1054.5 313 Q 1054.5 334 1033.5 334 L 791 334 Q 770 334 770 355 L 770 376" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 752 116 L 752 131 Q 752 146 767 146 L 1039.5 146 Q 1054.5 146 1054.5 161 L 1054.5 176 L 1054.5 292 L 1054.5 313 Q 1054.5 334 1033.5 334 L 791 334 Q 770 334 770 355 L 770 376" />
+      <path class="pic-line pic-edge tone-violet" d="M 752 116 L 752 131 Q 752 146 767 146 L 886.8 146 Q 901.8 146 901.8 161 L 901.8 176 L 901.8 292 L 901.8 313 Q 901.8 334 880.8 334 L 791 334 Q 770 334 770 355 L 770 376" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 752 116 L 752 131 Q 752 146 767 146 L 886.8 146 Q 901.8 146 901.8 161 L 901.8 176 L 901.8 292 L 901.8 313 Q 901.8 334 880.8 334 L 791 334 Q 770 334 770 355 L 770 376" />
       <path class="pic-line pic-edge tone-teal" d="M 752 292 L 752 313 Q 752 334 731 334 L 486.6 334 Q 465.6 334 465.6 355 L 465.6 376" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M 752 292 L 752 313 Q 752 334 731 334 L 486.6 334 Q 465.6 334 465.6 355 L 465.6 376" />
       <path class="pic-line pic-edge tone-teal" d="M 143.2 292 L 143.2 313 Q 143.2 334 164.2 334 L 408.6 334 Q 429.6 334 429.6 355 L 429.6 376" marker-end="url(#arrow-teal)" />

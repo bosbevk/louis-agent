@@ -286,8 +286,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 246 Q 595 222 619 222 L 715 222" />
       <path class="cls-line holds" d="M 427 530 L 715 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 427 530 L 715 530" />
-      <path class="cls-line holds" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 488 Q 595 464 619 464 L 715 464 L 1058 464 L 1070 464 Q 1082 464 1082 476 L 1082 509 Q 1082 530 1103 530 L 1124 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 488 Q 595 464 619 464 L 715 464 L 1058 464 L 1070 464 Q 1082 464 1082 476 L 1082 509 Q 1082 530 1103 530 L 1124 530" />
+      <path class="cls-line holds" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 504 Q 595 480 619 480 L 715 480 L 1058 480 L 1070 480 Q 1082 480 1082 492 L 1082 509 Q 1082 530 1103 530 L 1124 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 504 Q 595 480 619 480 L 715 480 L 1058 480 L 1070 480 Q 1082 480 1082 492 L 1082 509 Q 1082 530 1103 530 L 1124 530" />
       <path class="cls-line holds" d="M 427 530 L 571 530 Q 595 530 595 554 L 595 796 Q 595 820 619 820 L 715 820" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 554 L 595 796 Q 595 820 619 820 L 715 820" />
       <path class="cls-line holds" d="M 1058 222 L 1079 222 Q 1100 222 1100 243 L 1100 500 Q 1100 512 1112 512 L 1124 512" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
@@ -300,8 +300,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-word" x="511" y="71" text-anchor="middle">the runbooks</text>
       <rect class="cls-chip holds" x="605.5" y="521" width="99" height="18" rx="9" />
       <text class="cls-word" x="655" y="533" text-anchor="middle">marks handled</text>
-      <rect class="cls-chip holds" x="633.5" y="455" width="43" height="18" rx="9" />
-      <text class="cls-word" x="655" y="467" text-anchor="middle">holds</text>
+      <rect class="cls-chip holds" x="633.5" y="471" width="43" height="18" rx="9" />
+      <text class="cls-word" x="655" y="483" text-anchor="middle">holds</text>
       <rect class="cls-chip creates" x="612.5" y="213" width="85" height="18" rx="9" />
       <text class="cls-word" x="655" y="225" text-anchor="middle">one per fix</text>
       <rect class="cls-chip uses" x="440.5" y="829" width="141" height="18" rx="9" />

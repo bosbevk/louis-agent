@@ -70,12 +70,16 @@ public static class Ranks
     /// Every waypoint moved in line with where its arrow arrives, which the arrows' rule says, where no box in its
     /// column stands in the way, so the arrow runs along and then straight into its target instead of jogging to a
     /// slot and back (Louis, of the CLI and accounts charts). An arrow that can run neither there nor at the height
-    /// it leaves at passes between two boxes of a column, when its rule lets it and that is a shorter way than where
-    /// its waypoints stand.
+    /// it leaves at the whole way runs at the height it leaves at as far as it must, and in line with where it
+    /// arrives from there (F134.12, Louis: "why is that line not straight"). If that can't be either, it passes the
+    /// boxes in its way between two of a column or beside one, when its rule lets it and that is a shorter way than
+    /// where its waypoints stand (Louis: "why did it take a longer route?").
     /// </summary>
     /// <remarks>
     /// The alignment step of layered drawing (Brandes and Köpf straighten long edges the same way): a waypoint is
-    /// drawn as nothing, so it may stand anywhere its line crosses no box.
+    /// drawn as nothing, so it may stand anywhere its line crosses no box. The ways an arrow could run are listed
+    /// best first and the first clear one is taken (generate and test, F134.12), on three lines at most. A shortest
+    /// path worked out column by column would find ways with more steps too, and no picture in the docs needs one.
     /// </remarks>
     public static List<PlacedNode> Straightened(List<PlacedNode> nodes, IReadOnlyList<GraphEdge> edges,
         IArrowRule rule)
@@ -86,11 +90,12 @@ public static class Ranks
                                                                       && byId[edge.To].Node.Column >
                                                                       byId[edge.From].Node.Column).ToList();
         var moved = new Dictionary<string, double>(StringComparer.Ordinal);
-        // The box each waypoint's arrow started at: two arrows of one box may share a line, as its line out.
-        var startOf = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var first in edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To)))
-            for (string at = first.To; IsWaypoint(at); at = edges.First(edge => edge.From == at).To)
-                startOf[at] = first.From;
+        // Every long arrow from its real source, and the box each waypoint's arrow started at: two arrows of one
+        // box may share a line, as its line out.
+        var chains = edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To))
+            .Select(first => Chain(first, edges)).ToList();
+        var startOf = chains.SelectMany(chain => chain.Waypoints.Select(id => (Id: id, chain.First.From)))
+            .ToDictionary(waypoint => waypoint.Id, waypoint => waypoint.From, StringComparer.Ordinal);
 
         // Where a waypoint's middle is now, moved or not.
         double Now(string id) => moved.GetValueOrDefault(id, byId[id].Y) + byId[id].H / 2;
@@ -101,35 +106,72 @@ public static class Ranks
             startOf[other] != startOf[id] && byId[other].X == byId[id].X
                                           && Math.Abs(Now(other) - middle) < rule.LineGap);
 
-        // Each chain from its real source: in line with where it arrives if every waypoint can be, else with its
-        // source, else between two boxes.
-        foreach (var first in edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To)))
+        // Whether a waypoint can stand on a line: no box of its column in the way, and no other box's arrow.
+        bool Open(string id, double middle) => Free(byId[id], middle, nodes) && !Taken(id, middle);
+
+        // Every long arrow is looked at again while one still moves (F134.12): a line another arrow stood on when
+        // this one was looked at may be clear, now that arrow has moved to its own.
+        bool moves = true;
+        for (int pass = 0; moves && pass < chains.Count; pass++)
         {
-            var chain = new List<string>();
-            var last = first;
-            while (IsWaypoint(last.To))
+            moves = false;
+            foreach (var (first, chain, last) in chains)
             {
-                chain.Add(last.To);
-                last = edges.First(edge => edge.From == chain[^1]);
+                var source = byId[first.From];
+                double leaves = source.Y + source.H / 2, arrives = rule.EntryOf(last, forward, byId);
+
+                // The way up and down an arrow has from where it leaves, through a line, to where it arrives.
+                double Way(params double[] through) =>
+                    through.Prepend(leaves).Zip(through.Append(arrives), (a, b) => Math.Abs(a - b)).Sum();
+                double now = Way([.. chain.Select(Now)]);
+
+                // Its waypoints on three lines at most: the first few on the line it leaves on, the last few on the
+                // line it arrives on, and the rest on a line between. And how often such a way steps to another line.
+                double[] On(int leaving, double line, int arriving) =>
+                [
+                    .. Enumerable.Repeat(leaves, leaving), .. Enumerable.Repeat(line, chain.Count - leaving - arriving),
+                    .. Enumerable.Repeat(arrives, arriving)
+                ];
+                int Steps(double[] through) => through.Prepend(leaves).Zip(through.Append(arrives))
+                    .Count(pair => Math.Abs(pair.First - pair.Second) > 0.01);
+
+                // The ways it could run, the best first. One line the whole way: the one it arrives on, else the one
+                // it leaves on. Then the leaving line past as few columns as it must and the arriving line from
+                // there (F134.12), which is one step and no way round.
+                var straight = new[] { 0, chain.Count }.Concat(Enumerable.Range(1, Math.Max(0, chain.Count - 1)))
+                    .Select(leaving => On(leaving, arrives, 0));
+                // Last a line past the boxes in its way, between two or beside one, when that is shorter than where
+                // it stands: the shortest such way, and of two as short the one with fewer steps.
+                var columns = chain.Select(id => byId[id]).ToList();
+                var passes = rule.PassesBetween ? Gaps(columns, nodes).Concat(Beside(columns, nodes)) : [];
+                var round = passes.SelectMany(line => Enumerable.Range(0, chain.Count).SelectMany(leaving =>
+                        Enumerable.Range(0, chain.Count - leaving).Select(arriving => On(leaving, line, arriving))))
+                    .Where(option => Way(option) < now - 1).OrderBy(option => Way(option)).ThenBy(Steps);
+                double[]? lines = straight.Concat(round).FirstOrDefault(option =>
+                    chain.Zip(option).All(waypoint => Open(waypoint.First, waypoint.Second)));
+                if (lines is null) continue;
+
+                moves |= chain.Zip(lines).Any(waypoint => Math.Abs(Now(waypoint.First) - waypoint.Second) > 0.01);
+                foreach (var (id, line) in chain.Zip(lines)) moved[id] = line - byId[id].H / 2;
             }
-
-            var source = byId[first.From];
-            double leaves = source.Y + source.H / 2, arrives = rule.EntryOf(last, forward, byId);
-            bool Open(double middle) => chain.All(id => Free(byId[id], middle, nodes) && !Taken(id, middle));
-
-            // The way up and down an arrow has from where it leaves, through a line, to where it arrives.
-            double Way(params double[] through) =>
-                through.Prepend(leaves).Zip(through.Append(arrives), (a, b) => Math.Abs(a - b)).Sum();
-            double now = Way([.. chain.Select(Now)]);
-            var between = rule.PassesBetween ? Gaps(chain.Select(id => byId[id]), nodes) : [];
-            double line = new[] { arrives, leaves }.Where(Open)
-                .Concat(between.Where(Open).OrderBy(gap => Way(gap)).Where(gap => Way(gap) < now - 1).Take(1))
-                .FirstOrDefault(double.NaN);
-            if (double.IsNaN(line)) continue;
-            foreach (string id in chain) moved[id] = line - byId[id].H / 2;
         }
 
         return [.. nodes.Select(node => moved.TryGetValue(node.Node.Id, out double y) ? node with { Y = y } : node)];
+    }
+
+    /// <summary>A long arrow as its first link, the waypoints it passes in order, and its last link.</summary>
+    private static (GraphEdge First, List<string> Waypoints, GraphEdge Last) Chain(GraphEdge first,
+        IReadOnlyList<GraphEdge> edges)
+    {
+        var waypoints = new List<string>();
+        var last = first;
+        while (IsWaypoint(last.To))
+        {
+            waypoints.Add(last.To);
+            last = edges.First(edge => edge.From == waypoints[^1]);
+        }
+
+        return (first, waypoints, last);
     }
 
     /// <summary>Whether a line through a waypoint's column at this height passes clear of every box in it.</summary>
@@ -152,6 +194,22 @@ public static class Ranks
                 .OrderBy(other => other.Y).ToList();
             return column.Zip(column.Skip(1)).Where(pair => pair.First.Node.Group == pair.Second.Node.Group)
                 .Select(pair => (pair.First.Y + pair.First.H + pair.Second.Y) / 2);
+        });
+
+    /// <summary>
+    /// The lines a chain could run on beside a box of a column it passes, a track's step clear of it on either
+    /// side (F134.12), and no nearer than that to any other box of the column: where two boxes stand closer, the
+    /// middle between them is the line. Only beside a box of no group, so the line never runs along a group's frame
+    /// or over its name.
+    /// </summary>
+    private static IEnumerable<double> Beside(IEnumerable<PlacedNode> chain, IReadOnlyList<PlacedNode> nodes) =>
+        chain.SelectMany(waypoint =>
+        {
+            var column = nodes.Where(other => !IsWaypoint(other.Node.Id) && other.X == waypoint.X).ToList();
+            return column.Where(box => box.Node.Group is null)
+                .SelectMany(box => new[] { box.Y - EdgeRouter.Step, box.Y + box.H + EdgeRouter.Step })
+                .Where(line => column.All(box => line <= box.Y - EdgeRouter.Step
+                                                 || line >= box.Y + box.H + EdgeRouter.Step));
         });
 
     /// <summary>
