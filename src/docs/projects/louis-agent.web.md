@@ -204,10 +204,15 @@ stacks the row.
 **A diagram on a page.** `GraphView` draws a diagram from data. A page declares a `GraphSpec`: nodes with an id, a
 label, a note and a column, and edges between ids, with a word when one helps. The spec is plain C# in the diagrams
 library, which the docs' tool draws with too. `GraphLayout.Place` puts the columns across the width on one row
-grid and orders each by its neighbours. It hands the arrows to `EdgeRouter`, which draws each as a connector:
-right-angle bends, one track per gap, back arrows under the drawing, loops to the right, words on flat pieces with
-room, each gap as wide as the words that cross it, and the bend just after a word. The view writes one SVG that
-scales to its box.
+grid and orders each by its neighbours. The view asks for the rules a flow in the docs is drawn by: a box stands
+level with the box that feeds it, and each arrow into a box arrives at a point of its own. It hands the arrows to
+`EdgeRouter`, which draws each as a connector: right-angle bends, the lines of a gap turning on one line, back
+arrows under the drawing, loops to the right, words on flat pieces with room, each gap as wide as the words that
+cross it, and the bend just after a word. The view writes one SVG that scales to its box.
+
+A word stands on its own arrow's line, on a small ground of the page's colour that hides the line behind it. A
+box that names a shape is drawn in it: a decision as a diamond, data as a slanted box, a start or an end as a
+pill. The seven pages' diagrams name none today.
 
 The diagram plays once as it enters the screen: each arrow draws itself and each box rises, a column at a time. At
 rest it is fully drawn. The SVG's text goes out as markup from the code-behind, since Razor keeps the `text` tag

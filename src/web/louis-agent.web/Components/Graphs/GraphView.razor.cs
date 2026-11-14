@@ -1,6 +1,7 @@
 using System.Globalization;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 using Microsoft.AspNetCore.Components;
 
@@ -34,7 +35,16 @@ public partial class GraphView
     [Parameter]
     public int Width { get; set; } = 880;
 
-    private PlacedGraph Placed => GraphLayout.Place(Spec, Width);
+    /// <summary>
+    /// How far under the middle of its line a word's letters stand, so the middle of a 10 px word is on the line.
+    /// </summary>
+    private const double WordDrop = 3.5;
+
+    /// <summary>
+    /// The diagram, placed by the rules a flow in the docs is (F134.8): a box level with what feeds it, each arrow
+    /// into a box at a point of its own.
+    /// </summary>
+    private PlacedGraph Placed => GraphLayout.Place(Spec, Width, rules: FlowRules.Straight);
 
     /// <summary>
     /// This diagram's own arrowhead id (F119): an id is the page's, so two diagrams on one page each need their own, or
@@ -50,6 +60,24 @@ public partial class GraphView
     private static string N(double value) => value.ToString("0.#", Invariant);
 
     private static string Translate(PlacedNode node) => $"translate({N(node.X)} {N(node.Y)})";
+
+    /// <summary>
+    /// A diamond's or a slanted box's outline, drawn from the box's own corner. Nothing for a plain box or a pill.
+    /// </summary>
+    private static string? Outline(PlacedNode node)
+    {
+        var atItsCorner = node with
+        {
+            X = 0,
+            Y = 0
+        };
+        return NodeShapes.PathOf(atItsCorner);
+    }
+
+    /// <summary>
+    /// A box's corner: the site's listing's, and half its height for a start or an end, which is a pill.
+    /// </summary>
+    private static string Corner(PlacedNode node) => node.Node.Shape == NodeShape.Terminal ? N(node.H / 2) : "10";
 
     /// <summary>The column as a CSS variable, so the styles delay each column's motion a little more.</summary>
     private static string NodeStyle(PlacedNode node) => $"--col: {node.Node.Column}";
@@ -74,9 +102,28 @@ public partial class GraphView
         return new MarkupString($"<text class=\"note\" text-anchor=\"middle\">{spans}</text>");
     }
 
-    /// <summary>The word on an arrow, just above its middle.</summary>
-    private MarkupString Word(PlacedEdge edge, string word) =>
-        Words("word", edge.WordX, edge.WordY - 7, word, EdgeStyle(edge));
+    /// <summary>
+    /// The ground behind an arrow's word, of the page's own colour: the room the layout keeps for the word, so the
+    /// line the word stands on doesn't show through the space between two words. It carries its arrow's column,
+    /// and so appears when its word does.
+    /// </summary>
+    private MarkupString WordGround(PlacedEdge edge)
+    {
+        var (x, y, width, height) = FlowText.WordBox(edge);
+        return new MarkupString(
+            $"<rect class=\"word-ground\" x=\"{N(x)}\" y=\"{N(y)}\" width=\"{N(width)}\" height=\"{N(height)}\"" +
+            $" rx=\"4\" style=\"{EdgeStyle(edge)}\"></rect>");
+    }
+
+    /// <summary>
+    /// The word on an arrow, in the middle of the ground the layout keeps for it. That is on its own line, which
+    /// its ground hides behind it.
+    /// </summary>
+    private MarkupString Word(PlacedEdge edge, string word)
+    {
+        var (_, top, _, height) = FlowText.WordBox(edge);
+        return Words("word", edge.WordX, top + height / 2 + WordDrop, word, EdgeStyle(edge));
+    }
 
     /// <summary>
     /// An SVG text element, centred on a point. Written as markup here because Razor keeps the <c>text</c> tag for

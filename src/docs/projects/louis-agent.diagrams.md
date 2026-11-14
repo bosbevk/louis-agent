@@ -109,11 +109,11 @@ of their own, inside a labelled frame.
 
 **The rule the boxes stand by.** A band is one group's rows, or every box's rows when a picture has no groups.
 Two things about a band are not `Bands`' to decide: how tall its rows are, and which row each box stands on. A
-rule answers both (`IRowRule`). `CentredRows` is the one a class chart and the site's pages use: a band's rows
-are as tall as its own tallest box, and a column's boxes stand one after another, centred in the band.
+rule answers both (`IRowRule`). `CentredRows` is the one a class chart uses: a band's rows are as tall as its
+own tallest box, and a column's boxes stand one after another, centred in the band.
 
-The other rule is `LevelRows`, which a flow in the docs is drawn by. With it a box stands level with the box that
-feeds it, so the line between them runs straight:
+The other rule is `LevelRows`, which a flow in the docs and a diagram on a site's page are drawn by. With it a box
+stands level with the box that feeds it, so the line between them runs straight:
 
 - The columns are taken from the left. In each, the boxes keep their order and take the rows nearest the boxes
   that feed them. Every way to stand them is weighed, and the nearest one overall is taken.
@@ -187,7 +187,8 @@ serve both directions.
 box may list members under a divider in the code font, as a class's box does. It is then as wide as its longest
 member, and a member wraps at 60 characters.
 
-The site's `GraphView` animates the same placed graph.
+The site's `GraphView` animates the same placed graph, laid out by `FlowRules.Straight` as a flow in the docs is,
+in the site's own look.
 
 #### A sequence: who calls whom, in order
 
