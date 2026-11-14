@@ -147,6 +147,10 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [GeeksforGeeks' introduction to UML](https://www.geeksforgeeks.org/system-design/unified-modeling-language-uml-introduction/).
     Its plan starts by reading that page and holding each of our kinds against the UML type it is meant to be.
     Each mismatch is put to him. None is renamed without his pick.
+  - **And it is thought of as a diagram engine.** Louis, 2026-11-14: "when we come to the refactoring, think of
+    it as an diagram engine so we can split it into engine --> engine.diagrams of some sort." Its plan says
+    what in the diagrams knows no kind and what is a kind's own, and puts the split to him before anything
+    moves.
 
 ## Verification
 

@@ -492,6 +492,18 @@ fills.
 uses, and give it a `word` when the link has a name. The picture is laid out from that: what is asked first,
 then the part that does it, then the parts that part uses, and last what the class needs.
 
+**How it is drawn.** The class is a frame with its name, its chip and its `aside`. A part is a panel inside it:
+its type large, its role in a chip, its note under them. A port is a pin on the frame's edge, on the left and
+pointing down for `in`, on the right and pointing up for `out`, with its `label` written outside the frame. A
+line from a pin to a part, or from a part to a pin, is what is passed on: it has an arrowhead and running dots.
+A line between two parts is plain, since it says they work together and not that something moves.
+
+**What the picture says about itself.** Its title in the top left corner, and in the top right what type of
+diagram it is: *Composite structure diagram*. Under the class a key, *How to read it*, with an item for each
+thing the picture has. You write none of that.
+
+**What the tool places.** Everything, by the layout a flow has. So what holds for a flow's lines holds here.
+
 ### Ticket: a card an agent draws
 
 A ticket is a read-only card, such as a booking request. An agent draws one in the chat with the site pack's

@@ -96,6 +96,11 @@ public enum DiagramMessage
     // The heading over a picture's own key, in any kind that has one.
     [Description("How to read it")] KeyHeading,
     [Description("Composite structure diagram")] CompositeType,
+    [Description("a port")] CompositePort,
+    [Description("asked of the class")] CompositeAsked,
+    [Description("what the class needs")] CompositeNeeded,
+    [Description("two parts work together")] CompositeTogether,
+    [Description("passed on")] CompositePassedOn,
 
     // The words a flow's key says of a shape and of a line (F134.8).
     [Description("a decision")] FlowDecision,

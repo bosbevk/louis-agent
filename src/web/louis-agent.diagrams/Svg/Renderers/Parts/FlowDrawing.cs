@@ -99,7 +99,7 @@ internal static class FlowDrawing
     }
 
     /// <summary>An arrow's word, in a pill on its line where the layout kept the room clear.</summary>
-    private static void Word(SvgWriter writer, PlacedEdge edge, string tone)
+    internal static void Word(SvgWriter writer, PlacedEdge edge, string tone)
     {
         var (x, y, w, h) = FlowText.WordBox(edge);
         writer.Box(x, y, w, h, 9, $"flow-chip pic-edge{tone}");

@@ -39,8 +39,9 @@ of the engine.
 
 **Step 2: the kind picks a renderer** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind, a
 Strategy. There is one per kind in `Svg/Renderers/`: `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`,
-`TicketRenderer`, `ComponentsRenderer`, and `ClassesRenderer`, which turns a class chart into a flow. Each
-renderer has a layout that places every box and word, and then draws. Part 2 explains each layout.
+`TicketRenderer`, `ComponentsRenderer`, and `ClassesRenderer`, which turns a class chart into a flow. The
+seventh, `CompositeRenderer`, stands beside its drawing in `Svg/Renderers/Parts/Structure/`. Each renderer has a
+layout that places every box and word, and then draws. Part 2 explains each layout.
 
 A flow is drawn by `FlowDrawing`, in the new look described below. A class chart is turned into a flow for its
 layout and drawn by `ClassesDrawing`, as cards. Part 2 says what each shows.
@@ -122,7 +123,7 @@ The docs hold no Mermaid now. The import stays for a doc someone brings in.
 
 *Decided in:* CL60.1, CL60.2, [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
-### 2. The five kinds of picture
+### 2. The kinds of picture
 
 #### A flow: boxes and arrows on a grid
 
@@ -326,6 +327,48 @@ layout placed and decides no place itself, with one exception named below. The l
 A class chart is laid out by the rule a flow is drawn by, each arrow at its own place and the lines of a gap
 turning on one line.
 
+#### A composite structure diagram: the inside of one class
+
+A composite (`Composite/`) shows one class from the inside: the parts it is built from, the ports on its edge,
+and which parts work together. A class chart shows whole classes. This shows the pieces of one.
+
+**It is read into five records** (`Composite/Spec/`): the class, a part, a port, a connector, and which way a
+port faces. `CompositeCheck` refuses a class with no part, an id two parts share, and a port or a connector that
+names a part the class doesn't have.
+
+**It has no layout of its own.** `CompositeFlow` turns it into a flow, an Adapter, as `ClassFlow` does for a
+class chart, and the flow's layout places it. So every fix a flow's layout and routing get reaches this kind too.
+
+- Every part and every port is a box, all in one group: the class.
+- What is asked of the class stands in the first column. A part stands one past the furthest part that uses it.
+  What the class needs stands in the last column. So the picture reads from what comes in to what goes out.
+- A connector is an arrow from the part that uses to the part it uses. A port is an arrow too: from what is
+  asked to the part that does it, or from the part that needs something to what it needs.
+- The layout measures a box by its label's length. So a box's label is padded to the room its drawing needs: a
+  part's type with its role's chip beside it, and a port's words with its pin beside them.
+
+**What its drawing shows** (`Svg/Renderers/Parts/Structure/`). `CompositeDrawing` draws what the layout placed,
+and decides one place itself: the frame.
+
+- *The frame.* The layout's frame goes round every box, the ports' too. The drawing's goes round the parts. Its
+  left edge runs through the middle of the pins of what is asked, and its right edge through the middle of the
+  pins of what is needed, since a port stands on the class's edge. The class's name, its chip and where it is
+  stand along the frame's top.
+- *A part.* A panel with its type large, its role in a chip at the right, and its note under them.
+- *A port.* The component diagram's own pin (`ComponentPins`), its middle on the frame's edge: pointing down for
+  what is asked, up for what is needed. Outside the frame stands what is asked or needed, in the code's words.
+  A pin wears its port's tone, and a port with none wears the class's.
+- *A line.* What is passed on runs from a pin's end to a part, or from a part to a pin's end, with an arrowhead
+  and running dots, in the pin's colour. A line between two parts is plain, with no arrowhead and no dots, and
+  its word stands in a flow's pill.
+- *The type.* "Composite structure diagram" stands at the right of the title's line. The shared start of a
+  picture writes it (`PictureParts.Open`) when it is handed a type. This kind is the first that hands it one.
+- *The key* (`CompositeKey`) stands under a faint rule: a pin each way, a plain line and a line that runs, each
+  only when the picture has one.
+
+Its style, `CompositeStyle`, has two rules of its own, with names that start `cps-`: the plain line, and the
+face of the words outside a pin. Everything else it wears is another look's.
+
 #### Cards: a project's overview
 
 Cards (`Cards/`) are the overview a project doc opens with: the project, and under it the parts it is made of. The
@@ -427,6 +470,7 @@ src/web/louis-agent.diagrams/
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceMeasures; Spec/ (Steps/), Placed/, Keys/ (SequenceKeyLayout, SequenceKeyItem, SequenceKeyKind)
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind), Marks/ (TypeMark, TypeMarks), Keys/ (ClassKeyLayout, ClassKeyItem, ClassKeyKind)
+├── Composite/      # CompositeFlow, CompositeCheck; Spec/ (CompositeSpec, CompositePart, CompositePort, CompositeConnector, PortSide)
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt

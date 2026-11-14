@@ -3,6 +3,7 @@ using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Messages.Holes.Reading;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Renderers;
+using LouisAgent.Diagrams.Svg.Renderers.Parts.Structure;
 
 namespace LouisAgent.Diagrams.Svg;
 
@@ -18,7 +19,7 @@ public static class DiagramRenderers
     private static readonly IReadOnlyList<IDiagramRenderer> All =
     [
         new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer(), new TicketRenderer(),
-        new ComponentsRenderer()
+        new ComponentsRenderer(), new CompositeRenderer()
     ];
 
     /// <summary>The diagram as one SVG file's text.</summary>
