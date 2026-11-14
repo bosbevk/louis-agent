@@ -220,7 +220,7 @@ straight:
   box doesn't make every row beside it as tall. A band under another keeps its own row height.
 
 **Drawing the arrows.** `Routing/EdgeRouter` draws an arrow as connectors at right angles. A long arrow goes
-through a waypoint in each column it passes. A blocked arrow goes round a detour. The bends are as soft as the
+through a waypoint in each column it passes, which `LongLines` adds, moves into line and takes out again. A blocked arrow goes round a detour. The bends are as soft as the
 caller asks: the site asks for 8 px, the docs for `SoftBend`.
 
 **Where an arrow bends and arrives.** Two things about a forward arrow are not the router's to decide: which
@@ -604,7 +604,7 @@ src/web/louis-agent.diagrams.engine/
 ├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
 ├── Components/ # ComponentLayout, ComponentSizes, KeyLayout, NeighbourLayout; Placed/ (PlacedBox, PlacedComponents, PlacedNeighbour, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Composite/  # CompositeFlow
-├── Flow/       # Bands, FlowText, GraphLayout, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
+├── Flow/       # Bands, FlowText, GraphLayout, LongLines, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
 ├── Geometry/   # Geometries, IBox, IGeometry, IPoint; DotNet/ (DotNetBox, DotNetGeometry, DotNetPoint); Generic/ (Box, GenericGeometry, Point)
 ├── Icons/      # IconPaths
 ├── Keys/       # KeyParts, KeyRows

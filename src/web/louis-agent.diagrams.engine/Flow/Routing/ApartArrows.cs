@@ -138,7 +138,7 @@ public static class ApartArrows
         double middle = Middle(target);
         var arriving = Arriving(edge.To, forward, byId);
         // An arrow passes straight through a waypoint, so it arrives where it leaves: at the middle.
-        if (Ranks.IsWaypoint(edge.To)) return middle;
+        if (LongLines.IsWaypoint(edge.To)) return middle;
 
         // The one that can run straight started at a box at the target's own height, next to it or columns away.
         int level = arriving.FindIndex(arrow => Math.Abs(Middle(byId[Origin(arrow, forward)]) - middle) < 1);
@@ -203,9 +203,9 @@ public static class ApartArrows
         return
         [
             .. forward.Where(arrow => arrow.To == to)
-                .OrderBy(arrow => Ranks.IsWaypoint(arrow.From) ? middle : Middle(byId[arrow.From]))
+                .OrderBy(arrow => LongLines.IsWaypoint(arrow.From) ? middle : Middle(byId[arrow.From]))
                 .ThenBy(arrow => Middle(byId[Origin(arrow, forward)]))
-                .ThenBy(arrow => Ranks.IsWaypoint(arrow.From))
+                .ThenBy(arrow => LongLines.IsWaypoint(arrow.From))
         ];
     }
 
@@ -213,7 +213,7 @@ public static class ApartArrows
     private static string Origin(GraphEdge arrow, IReadOnlyList<GraphEdge> forward)
     {
         string from = arrow.From;
-        while (Ranks.IsWaypoint(from)) from = forward.First(link => link.To == from).From;
+        while (LongLines.IsWaypoint(from)) from = forward.First(link => link.To == from).From;
         return from;
     }
 

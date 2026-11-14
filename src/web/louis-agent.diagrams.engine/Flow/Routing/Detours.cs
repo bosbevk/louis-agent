@@ -15,7 +15,7 @@ internal static class Detours
     /// <summary>Whether a straight piece of the way passes through a box the arrow doesn't join, a pixel in.</summary>
     public static bool Crosses(Plan plan, IReadOnlyDictionary<string, PlacedNode> byId) =>
         byId.Values.Where(node => node.Node.Id != plan.Edge.From && node.Node.Id != plan.Edge.To
-                                                                 && !Ranks.IsWaypoint(node.Node.Id))
+                                                                 && !LongLines.IsWaypoint(node.Node.Id))
             .Select(node => node.Box).Any(box =>
                 plan.Points.Zip(plan.Points.Skip(1)).Any(piece => box.CrossedBy(piece.First, piece.Second, In)));
 

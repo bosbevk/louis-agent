@@ -69,7 +69,7 @@ public static class GraphLayout
         var ranks = Ranks.Of(spec);
         spec = spec with { Nodes = [.. spec.Nodes.Select(node => node with { Column = ranks[node.Id] })] };
         // An arrow past a column runs through a waypoint in it, laid out like a box and drawn as nothing.
-        spec = Ranks.Through(spec);
+        spec = LongLines.Through(spec);
 
         // A chart that runs down is laid out to the right with every box turned, at its own size, then turned back.
         return spec.Direction == FlowDirection.Down
@@ -97,7 +97,7 @@ public static class GraphLayout
         // gap needs can depend on whether two lines in it would lie on one another, and that is a matter of heights.
         var apart = Enumerable.Range(0, columns.Count).Select(at => at * FarApart).ToList();
         var (rough, _) = Bands.Place(spec, columns, new Bands.Grid(apart, widths, Gap, Tall), turned, geometry);
-        var heights = Ranks.Straightened(rough, spec.Edges).ToDictionary(node => node.Node.Id);
+        var heights = LongLines.Straightened(rough, spec.Edges).ToDictionary(node => node.Node.Id);
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
         var gaps = Gaps(spec, columns, turned, heights);
@@ -109,7 +109,7 @@ public static class GraphLayout
         var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, Tall), turned,
             geometry);
         // A long arrow's waypoints stand in line with where it arrives, so it drops straight in.
-        var placed = Ranks.Straightened(banded, spec.Edges);
+        var placed = LongLines.Straightened(banded, spec.Edges);
         // A group's frame goes round its boxes; the drawing moves and grows so every frame is inside it.
         var frames = Bands.Frames(spec, placed, turned, geometry);
         var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, frames, width, height);
@@ -123,7 +123,7 @@ public static class GraphLayout
 
         // The waypoints go, and each chain through them is one arrow again.
         return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight),
-            [.. nodes.Where(node => !Ranks.IsWaypoint(node.Node.Id))], Ranks.Joined(edges), groups);
+            [.. nodes.Where(node => !LongLines.IsWaypoint(node.Node.Id))], LongLines.Joined(edges), groups);
     }
 
     /// <summary>
