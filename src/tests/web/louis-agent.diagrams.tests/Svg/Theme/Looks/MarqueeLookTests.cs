@@ -50,7 +50,8 @@ public partial class MarqueeLookTests
     [Test]
     public void BothSchemes_SetEveryVariableAnyRuleReads()
     {
-        var read = Read().Matches(Shared + CardsStyle.Rules).Select(match => match.Groups[1].Value).ToHashSet();
+        string every = Shared + CardsStyle.Rules + SequenceStyle.Of(SvgTheme.Site);
+        var read = Read().Matches(every).Select(match => match.Groups[1].Value).ToHashSet();
 
         Assert.Multiple(() =>
         {

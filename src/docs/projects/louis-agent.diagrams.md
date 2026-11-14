@@ -72,7 +72,10 @@ to wear it as well. What both wear has names that start `mrq-`: the picture's sm
 glass with the accent along its top, the pill with its code, and a node on a lit line. Its accent is the palette's
 violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
 `CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
-lines, a headline with its badge, a glass card's badge, name and text, and the quiet card.
+lines, a headline with its badge, a glass card's badge, name and text, and the quiet card. `SequenceStyle` holds
+what a sequence will add, with names that start `seq-`: a participant's badge in its tone and its name, the
+lifeline, a call's beam either way, an answer's quiet line and the words above them. No sequence is drawn with it
+yet.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
