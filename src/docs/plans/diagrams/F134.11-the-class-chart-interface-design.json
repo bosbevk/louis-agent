@@ -1,0 +1,194 @@
+{
+  "kind": "classes",
+  "title": "F134.11 the class chart: the interface design",
+  "caption": "The chart stays an adapter onto a flow: only a drawing, a look, a key and three ends for a line are new.",
+  "classes": {
+    "types": [
+      {
+        "id": "spec",
+        "name": "ClassesSpec",
+        "kind": "record, as today",
+        "members": [
+          "IReadOnlyList<ClassType> Types",
+          "IReadOnlyList<ClassRelation> Relations"
+        ]
+      },
+      {
+        "id": "flow",
+        "name": "ClassFlow",
+        "kind": "static, an Adapter, steps 5 and 6",
+        "members": [
+          "Of(ClassesSpec) GraphSpec",
+          "wraps a long name, asks for a badge's room"
+        ]
+      },
+      {
+        "id": "layout",
+        "name": "GraphLayout",
+        "kind": "static, as today",
+        "members": [
+          "Place(GraphSpec, width, bend, rules) PlacedGraph"
+        ]
+      },
+      {
+        "id": "marks",
+        "name": "TypeMarks",
+        "kind": "static, step 4",
+        "members": [
+          "Of(ClassType) TypeMark"
+        ]
+      },
+      {
+        "id": "mark",
+        "name": "TypeMark",
+        "kind": "enum, step 4",
+        "members": [
+          "Class, Interface, Record, Enum, Abstract, Static"
+        ]
+      },
+      {
+        "id": "key",
+        "name": "ClassKeyLayout",
+        "kind": "static, step 4",
+        "members": [
+          "Of(ClassesSpec, width)"
+        ]
+      },
+      {
+        "id": "drawing",
+        "name": "ClassesDrawing",
+        "kind": "static, step 5",
+        "members": [
+          "Of(DiagramSource) string"
+        ]
+      },
+      {
+        "id": "cards",
+        "name": "TypeCards",
+        "kind": "static, step 5"
+      },
+      {
+        "id": "lines",
+        "name": "RelationLines",
+        "kind": "static, step 5"
+      },
+      {
+        "id": "keydraw",
+        "name": "ClassesKey",
+        "kind": "static, step 5"
+      },
+      {
+        "id": "style",
+        "name": "ClassesStyle",
+        "kind": "static, step 3",
+        "members": [
+          "the cls- rules: badge, name, members, a line a kind"
+        ]
+      },
+      {
+        "id": "writer",
+        "name": "SvgWriter",
+        "kind": "as today, and step 2",
+        "members": [
+          "Line(path, class, start, end)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "end",
+        "name": "LineEnd",
+        "kind": "enum, step 2",
+        "members": [
+          "None, Arrow, Triangle, Diamond, Open"
+        ]
+      },
+      {
+        "id": "renderer",
+        "name": "ClassesRenderer",
+        "kind": "an IDiagramRenderer, step 6",
+        "members": [
+          "Render(DiagramSource) string"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "renderer",
+        "to": "drawing",
+        "kind": "uses",
+        "word": "hands its picture, step 6"
+      },
+      {
+        "from": "drawing",
+        "to": "flow",
+        "kind": "uses",
+        "word": "asks for a flow"
+      },
+      {
+        "from": "flow",
+        "to": "spec",
+        "kind": "uses",
+        "word": "reads"
+      },
+      {
+        "from": "drawing",
+        "to": "layout",
+        "kind": "uses",
+        "word": "places"
+      },
+      {
+        "from": "drawing",
+        "to": "key",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "cards",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "lines",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "keydraw",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "style",
+        "kind": "uses",
+        "word": "wears"
+      },
+      {
+        "from": "cards",
+        "to": "marks",
+        "kind": "uses",
+        "word": "a badge's letter"
+      },
+      {
+        "from": "marks",
+        "to": "mark",
+        "kind": "creates"
+      },
+      {
+        "from": "key",
+        "to": "marks",
+        "kind": "uses"
+      },
+      {
+        "from": "lines",
+        "to": "writer",
+        "kind": "uses",
+        "word": "draws with"
+      },
+      {
+        "from": "writer",
+        "to": "end",
+        "kind": "uses"
+      }
+    ]
+  }
+}

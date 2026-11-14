@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>F134.11: the class chart, a design</title>
+<style>
+  body { margin: 0; padding: 32px; background: #15161b; color: #e8eaee; font: 15px/1.5 "Segoe UI", system-ui, sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; } h2 { font-size: 15px; margin: 40px 0 8px; } p { max-width: 72ch; color: #b6bac2; margin: 0 0 12px; }
+  img { max-width: 100%; height: auto; display: block; border-radius: 18px; }
+</style>
+<h1>F134.11: the class chart, a design</h1>
+<p>Drawn from two real charts' own data and their own layout. Only the look is new here: the boxes stand where today's layout puts them.</p>
+<h2>louis-agent.diagrams: the interface design (the picture in your screenshot)</h2>
+<p>This chart has only "uses" and "creates" links, so every line is quiet. Its one long name is wrapped, which makes it 236 narrower.</p>
+<img src="m-classes-diagrams.svg" alt="">
+<h2>The same, light</h2>
+<img src="m-classes-diagrams-light.svg" alt="">
+<h2>louis-agent.core: the interface design</h2>
+<p>A chart with "holds" links: the skeleton stands out in the accent, with a diamond at the holder, and what merely uses or creates stays quiet.</p>
+<img src="m-classes-core.svg" alt="">
+<h2>The first again, with arrows that share a trunk (today's routing)</h2>
+<img src="m-classes-diagrams-joined.svg" alt="">

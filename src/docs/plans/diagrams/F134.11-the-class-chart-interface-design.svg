@@ -1,0 +1,233 @@
+<svg viewBox="-24 -24 2247 1165" width="2247" height="1165" role="img" aria-label="F134.11 the class chart: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F134.11 the class chart: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2247" height="1165" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2199" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F134.11 the class chart:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 224 481 L 464 481" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 672 481 Q 684 481 684 469 L 684 85 Q 684 61 708 61 L 820 61" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1205 61 L 1379 61 Q 1403 61 1403 85 L 1403 329 Q 1403 341 1415 341 L 1427 341" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 672 481 Q 684 481 684 469 L 684 225 Q 684 201 708 201 L 820 201" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 672 481 Q 684 481 684 469 L 684 365 Q 684 341 708 341 L 820 341" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 820 481" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 672 481 Q 684 481 684 493 L 684 597 Q 684 621 708 621 L 820 621" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 672 481 Q 684 481 684 493 L 684 737 Q 684 761 708 761 L 820 761" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 660 481 L 672 481 Q 684 481 684 493 L 684 877 Q 684 901 708 901 L 820 901" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1205 481 L 1427 481" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1721 481 L 1787 481 Q 1811 481 1811 457 L 1811 423 Q 1811 411 1823 411 L 1835 411" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1205 341 L 1361 341 Q 1385 341 1385 365 L 1385 460 Q 1385 481 1406 481 L 1427 481" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1205 621 L 1427 621" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-violet" d="M 1721 621 L 1769 621 Q 1793 621 1793 597 L 1793 572 Q 1793 551 1814 551 L 1835 551" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-green" x="240.5" y="459" width="183" height="18" rx="4" />
+    <text class="word tone-green" x="332" y="471" text-anchor="middle">hands its picture, step 6</text>
+    <rect class="word-chip tone-green" x="695.5" y="39" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="752" y="51" text-anchor="middle">asks for a flow</text>
+    <rect class="word-chip tone-green" x="1282.5" y="39" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1304" y="51" text-anchor="middle">reads</text>
+    <rect class="word-chip tone-green" x="727" y="179" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="752" y="191" text-anchor="middle">places</text>
+    <rect class="word-chip tone-green" x="734" y="319" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="752" y="331" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="730.5" y="879" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="752" y="891" text-anchor="middle">wears</text>
+    <rect class="word-chip tone-green" x="1226" y="459" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="1286" y="471" text-anchor="middle">a badge's letter</text>
+    <rect class="word-chip tone-green" x="1737.5" y="459" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1766" y="471" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1277" y="319" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="1295" y="331" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="1238" y="599" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="1277" y="611" text-anchor="middle">draws with</text>
+    <rect class="word-chip tone-violet" x="1739" y="599" width="36" height="18" rx="4" />
+    <text class="word tone-violet" x="1757" y="611" text-anchor="middle">uses</text>
+    <rect class="box tone-green" x="0" y="427" width="224" height="108" rx="10" />
+    <text class="label tone-green" x="112" y="455" text-anchor="middle">ClassesRenderer</text>
+    <text class="note" x="112" y="471" text-anchor="middle">an IDiagramRenderer, step</text>
+    <text class="note" x="112" y="483" text-anchor="middle">6</text>
+    <path class="frame" d="M 0 503 L 224 503" />
+    <text class="word tone-green" x="14" y="521" text-anchor="start">Render(DiagramSource) string</text>
+    <rect class="box tone-green" x="464" y="433" width="196" height="96" rx="10" />
+    <text class="label tone-green" x="562" y="461" text-anchor="middle">ClassesDrawing</text>
+    <text class="note" x="562" y="477" text-anchor="middle">static, step 5</text>
+    <path class="frame" d="M 464 497 L 660 497" />
+    <text class="word tone-green" x="478" y="515" text-anchor="start">Of(DiagramSource) string</text>
+    <rect class="box tone-green" x="820" y="0" width="385" height="122" rx="10" />
+    <text class="label tone-green" x="1012.5" y="28" text-anchor="middle">ClassFlow</text>
+    <text class="note" x="1012.5" y="44" text-anchor="middle">static, an Adapter, steps</text>
+    <text class="note" x="1012.5" y="56" text-anchor="middle">5 and 6</text>
+    <path class="frame" d="M 820 76 L 1205 76" />
+    <text class="word tone-green" x="834" y="94" text-anchor="start">Of(ClassesSpec) GraphSpec</text>
+    <text class="word tone-green" x="834" y="108" text-anchor="start">wraps a long name, asks for a badge's room</text>
+    <rect class="box tone-green" x="820" y="153" width="385" height="96" rx="10" />
+    <text class="label tone-green" x="1012.5" y="181" text-anchor="middle">GraphLayout</text>
+    <text class="note" x="1012.5" y="197" text-anchor="middle">static, as today</text>
+    <path class="frame" d="M 820 217 L 1205 217" />
+    <text class="word tone-green" x="834" y="235" text-anchor="start">Place(GraphSpec, width, bend, rules) PlacedGraph</text>
+    <rect class="box tone-green" x="820" y="293" width="385" height="96" rx="10" />
+    <text class="label tone-green" x="1012.5" y="321" text-anchor="middle">ClassKeyLayout</text>
+    <text class="note" x="1012.5" y="337" text-anchor="middle">static, step 4</text>
+    <path class="frame" d="M 820 357 L 1205 357" />
+    <text class="word tone-green" x="834" y="375" text-anchor="start">Of(ClassesSpec, width)</text>
+    <rect class="box tone-green" x="820" y="449" width="385" height="64" rx="10" />
+    <text class="label tone-green" x="1012.5" y="477" text-anchor="middle">TypeCards</text>
+    <text class="note" x="1012.5" y="493" text-anchor="middle">static, step 5</text>
+    <rect class="box tone-green" x="820" y="589" width="385" height="64" rx="10" />
+    <text class="label tone-green" x="1012.5" y="617" text-anchor="middle">RelationLines</text>
+    <text class="note" x="1012.5" y="633" text-anchor="middle">static, step 5</text>
+    <rect class="box tone-green" x="820" y="729" width="385" height="64" rx="10" />
+    <text class="label tone-green" x="1012.5" y="757" text-anchor="middle">ClassesKey</text>
+    <text class="note" x="1012.5" y="773" text-anchor="middle">static, step 5</text>
+    <rect class="box tone-green" x="820" y="853" width="385" height="96" rx="10" />
+    <text class="label tone-green" x="1012.5" y="881" text-anchor="middle">ClassesStyle</text>
+    <text class="note" x="1012.5" y="897" text-anchor="middle">static, step 3</text>
+    <path class="frame" d="M 820 917 L 1205 917" />
+    <text class="word tone-green" x="834" y="935" text-anchor="start">the cls- rules: badge, name, members, a line a kind</text>
+    <rect class="box tone-teal" x="1427" y="286" width="294" height="110" rx="10" />
+    <text class="label tone-teal" x="1574" y="314" text-anchor="middle">ClassesSpec</text>
+    <text class="note" x="1574" y="330" text-anchor="middle">record, as today</text>
+    <path class="frame" d="M 1427 350 L 1721 350" />
+    <text class="word tone-teal" x="1441" y="368" text-anchor="start">IReadOnlyList&lt;ClassType&gt; Types</text>
+    <text class="word tone-teal" x="1441" y="382" text-anchor="start">IReadOnlyList&lt;ClassRelation&gt; Relations</text>
+    <rect class="box tone-green" x="1427" y="433" width="294" height="96" rx="10" />
+    <text class="label tone-green" x="1574" y="461" text-anchor="middle">TypeMarks</text>
+    <text class="note" x="1574" y="477" text-anchor="middle">static, step 4</text>
+    <path class="frame" d="M 1427 497 L 1721 497" />
+    <text class="word tone-green" x="1441" y="515" text-anchor="start">Of(ClassType) TypeMark</text>
+    <rect class="box tone-violet" x="1427" y="573" width="294" height="96" rx="10" />
+    <text class="label tone-violet" x="1574" y="601" text-anchor="middle">SvgWriter</text>
+    <text class="note" x="1574" y="617" text-anchor="middle">as today, and step 2</text>
+    <path class="frame" d="M 1427 637 L 1721 637" />
+    <text class="word tone-violet" x="1441" y="655" text-anchor="start">Line(path, class, start, end)</text>
+    <rect class="box tone-teal" x="1835" y="363" width="364" height="96" rx="10" />
+    <text class="label tone-teal" x="2017" y="391" text-anchor="middle">TypeMark</text>
+    <text class="note" x="2017" y="407" text-anchor="middle">enum, step 4</text>
+    <path class="frame" d="M 1835 427 L 2199 427" />
+    <text class="word tone-teal" x="1849" y="445" text-anchor="start">Class, Interface, Record, Enum, Abstract, Static</text>
+    <rect class="box tone-teal" x="1835" y="503" width="364" height="96" rx="10" />
+    <text class="label tone-teal" x="2017" y="531" text-anchor="middle">LineEnd</text>
+    <text class="note" x="2017" y="547" text-anchor="middle">enum, step 2</text>
+    <path class="frame" d="M 1835 567 L 2199 567" />
+    <text class="word tone-teal" x="1849" y="585" text-anchor="start">None, Arrow, Triangle, Diamond, Open</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="1044" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1054.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="1080" width="2199" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1090) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1102">
+    <tspan class="note-head">The chart stays an adapter onto a flow:</tspan>
+    <tspan class="note-rest">only a drawing, a look, a key and three ends for a line are new.</tspan>
+  </text>
+</svg>

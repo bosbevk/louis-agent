@@ -115,6 +115,9 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
     [the write-up](../learning/18-testing-and-shipping.md). The designs are in
     [m-sequence.html](F134-mockups/m-sequence.html).
+  - **F134.11 The class chart, redone** ([plan](F134.11-the-class-chart.md)): Louis, 2026-11-14, "next will
+    be F134.11 which will be the redesign of the interface diagram". His approved design: a type a glass card
+    with a badge for its kind, a link's kind in its line. Done when the 58 class charts are drawn that way.
   - **Left for the next kind that is redone:** the old rules for a card's frame, box, chip and words are still
     in the pictures' shared style (`SvgStyle`). Every picture's file carries that style, so taking them out
     rewrites every picture. F134.10 did not open that style: the old sequence wore a flow's own rules, the box,

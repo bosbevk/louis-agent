@@ -1,0 +1,127 @@
+{
+  "kind": "sequence",
+  "title": "F134.11 the class chart: one class chart is drawn",
+  "caption": "A link's kind is not in a flow's arrow, so the drawing reads it from the chart, relation by relation in the order they were written.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "tool",
+        "label": "doc-diagrams",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "renderer",
+        "label": "ClassesRenderer",
+        "icon": "stack",
+        "tone": "green"
+      },
+      {
+        "id": "drawing",
+        "label": "ClassesDrawing",
+        "icon": "code",
+        "tone": "green"
+      },
+      {
+        "id": "adapter",
+        "label": "ClassFlow",
+        "icon": "code",
+        "tone": "green"
+      },
+      {
+        "id": "layout",
+        "label": "GraphLayout",
+        "icon": "chart",
+        "tone": "green"
+      },
+      {
+        "id": "key",
+        "label": "ClassKeyLayout",
+        "icon": "info",
+        "tone": "green"
+      },
+      {
+        "id": "frame",
+        "label": "TitledFrame",
+        "icon": "box",
+        "tone": "green"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "tool",
+        "to": "renderer",
+        "text": "RenderTitled(source)"
+      },
+      {
+        "step": "message",
+        "from": "renderer",
+        "to": "drawing",
+        "text": "Of(source)"
+      },
+      {
+        "step": "message",
+        "from": "drawing",
+        "to": "adapter",
+        "text": "Of(spec)"
+      },
+      {
+        "step": "reply",
+        "from": "adapter",
+        "to": "drawing",
+        "text": "a flow: long names wrapped, a badge's room asked for"
+      },
+      {
+        "step": "message",
+        "from": "drawing",
+        "to": "layout",
+        "text": "Place(flow, FlowRules.Straight)"
+      },
+      {
+        "step": "reply",
+        "from": "layout",
+        "to": "drawing",
+        "text": "PlacedGraph: boxes and lines"
+      },
+      {
+        "step": "note",
+        "over": [
+          "drawing"
+        ],
+        "text": "each line by its relation's kind, each card by its type"
+      },
+      {
+        "step": "message",
+        "from": "drawing",
+        "to": "key",
+        "text": "Of(spec, width)"
+      },
+      {
+        "step": "reply",
+        "from": "key",
+        "to": "drawing",
+        "text": "an item for what the picture has"
+      },
+      {
+        "step": "reply",
+        "from": "drawing",
+        "to": "renderer",
+        "text": "the SVG, its own title and key in it"
+      },
+      {
+        "step": "message",
+        "from": "renderer",
+        "to": "frame",
+        "text": "Around(svg, source)"
+      },
+      {
+        "step": "reply",
+        "from": "frame",
+        "to": "tool",
+        "text": "the SVG, with a note bar if it has a caption"
+      }
+    ],
+    "numbered": true
+  }
+}

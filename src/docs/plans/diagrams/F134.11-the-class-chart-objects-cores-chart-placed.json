@@ -1,0 +1,101 @@
+{
+  "kind": "flow",
+  "title": "F134.11 the class chart: core's chart, placed",
+  "caption": "The second chart the design was drawn on: twelve types and thirteen links, eight of them holds.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "source",
+        "label": "DiagramSource\nkind classes",
+        "icon": "file",
+        "tone": "teal"
+      },
+      {
+        "id": "spec",
+        "label": "ClassesSpec\n12 types, 13 relations",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "flow",
+        "label": "GraphSpec\nfrom ClassFlow",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "placed",
+        "label": "PlacedGraph\nby FlowRules.Straight",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "nodes",
+        "label": "PlacedNode x 12\na card each",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "edges",
+        "label": "PlacedEdge x 13\nits path, where its word stands",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "rel",
+        "label": "ClassRelation x 13\n8 holds, 2 creates, 3 uses",
+        "icon": "info",
+        "tone": "teal"
+      },
+      {
+        "id": "keyitems",
+        "label": "ClassKeyItem\ntones, letters, kinds of link",
+        "icon": "info",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "source",
+        "to": "spec",
+        "word": "holds"
+      },
+      {
+        "from": "spec",
+        "to": "flow",
+        "word": "turned into"
+      },
+      {
+        "from": "flow",
+        "to": "placed",
+        "word": "placed as"
+      },
+      {
+        "from": "placed",
+        "to": "nodes",
+        "word": "holds"
+      },
+      {
+        "from": "placed",
+        "to": "edges",
+        "word": "holds"
+      },
+      {
+        "from": "spec",
+        "to": "rel",
+        "word": "holds"
+      },
+      {
+        "from": "edges",
+        "to": "rel",
+        "word": "read beside, by order",
+        "style": "dashed"
+      },
+      {
+        "from": "spec",
+        "to": "keyitems",
+        "word": "gives"
+      }
+    ]
+  }
+}
