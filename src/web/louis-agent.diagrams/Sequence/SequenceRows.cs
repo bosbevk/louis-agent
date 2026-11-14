@@ -68,7 +68,7 @@ internal sealed class SequenceRows(
 
     /// <summary>
     /// A block: its tab, its steps a level deeper, each other case under a divider, and a frame round them all, wide
-    /// enough for its tab and its cases' labels.
+    /// enough for its tab and its cases' labels. What comes next starts the measures' gap under the frame.
     /// </summary>
     private (double Y, double Left, double Right) Block(BlockStep block, double top, int depth)
     {
@@ -91,7 +91,7 @@ internal sealed class SequenceRows(
             .Max();
         double bottom = y + measures.BlockEnd;
         Blocks.Add(new PlacedBlock(block, lines, cases, depth, x, top, width, bottom - top));
-        return (bottom, x, x + width);
+        return (bottom + measures.BlockGap, x, x + width);
     }
 
     /// <summary>

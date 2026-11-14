@@ -73,9 +73,10 @@ glass with the accent along its top, the pill with its code, and a node on a lit
 violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
 `CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
 lines, a headline with its badge, a glass card's badge, name and text, and the quiet card. `SequenceStyle` holds
-what a sequence will add, with names that start `seq-`: a participant's badge in its tone and its name, the
-lifeline, a call's beam either way, an answer's quiet line and the words above them. No sequence is drawn with it
-yet.
+what a sequence adds, with names that start `seq-`: a participant's badge in its tone and its name, the
+lifeline, a call's beam either way, an answer's quiet line and the words above them. `SequenceDrawing`
+(`Svg/Renderers/Parts/Lifelines/`) draws a sequence with it. The sequence's renderer doesn't hand it a picture
+yet, so the docs' sequences are still drawn the old way.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
@@ -216,8 +217,8 @@ layout is handed: words wrap at 40 characters, and a head at 24.
 `SequenceKeyLayout` (`Keys/`) places a sequence's key: an item for each tone a participant wears, with what the
 tone means, then a call, an answer, a note and each kind of block, each only when the sequence has one. A block's
 item says what its kind does: a `loop` repeats, an `opt` runs only if, an `alt` is one case or the other. The
-items stand side by side across a width and go on to a new row when one is full. No sequence is drawn with a key
-yet.
+items stand side by side across a width and go on to a new row when one is full. `SequenceKey` draws it, each
+sample with the shapes of the real thing.
 
 #### A class chart: the interface design
 
@@ -335,7 +336,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/, and Parts/Overview/ for a cards picture's drawing), Theme/ (with Looks/)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's), Theme/ (with Looks/)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
@@ -350,7 +351,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
   trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
-  `Sequence/sequence.svg`, `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg` and `Tickets/ticket.svg`
+  `Sequence/sequence.svg`, `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,

@@ -50,7 +50,9 @@ public sealed record SequenceMeasures
         NoteReach = 24,
         InsetLeft = 62,
         InsetRight = 22,
-        TabPad = 9.5
+        TabPad = 9.5,
+        TabLeft = 14,
+        BlockGap = 12
     };
 
     /// <summary>A message's words break at this many characters (Claude's pick Q2).</summary>
@@ -125,6 +127,12 @@ public sealed record SequenceMeasures
     /// <summary>The room round a block's tab's words.</summary>
     public double TabPad { get; init; } = 6;
 
+    /// <summary>The room under a block's frame, before what comes next. Today's frames have none.</summary>
+    public double BlockGap { get; init; }
+
+    /// <summary>How far inside its frame a block's tab starts. Today's starts at the frame's edge.</summary>
+    public double TabLeft { get; init; }
+
     /// <summary>The room under a block's last row.</summary>
     public double BlockEnd { get; init; } = 8;
 
@@ -187,12 +195,17 @@ public sealed record SequenceMeasures
     /// <summary>How wide the chip naming a block's kind is.</summary>
     public double KindWidth(BlockKind kind) => kind.Wire().Length * FlowText.WordChar + 2 * WordPad;
 
-    /// <summary>How wide a frame must be for its tab: the kind's chip and the label beside it.</summary>
+    /// <summary>
+    /// How wide a frame must be for its tab: from where the tab starts, the kind's chip and the label beside it.
+    /// </summary>
     public double TabWidth(BlockKind kind, IReadOnlyList<string> lines) =>
-        KindWidth(kind) + WordsWidth(lines) + TabPad;
+        TabLeft + KindWidth(kind) + WordsWidth(lines) + TabPad;
 
-    /// <summary>How wide a frame must be for a divider: its chip and its case's label beside it.</summary>
-    public double ElseWidth(IReadOnlyList<string> lines) => WordsWidth([ElseWord]) + WordsWidth(lines) + TabPad;
+    /// <summary>
+    /// How wide a frame must be for a divider: from where the tab starts, its chip and its case's label beside it.
+    /// </summary>
+    public double ElseWidth(IReadOnlyList<string> lines) =>
+        TabLeft + WordsWidth([ElseWord]) + WordsWidth(lines) + TabPad;
 
     /// <summary>
     /// Words broken at each written <c>\n</c>, as a flow's label is, then each part wrapped at a width.

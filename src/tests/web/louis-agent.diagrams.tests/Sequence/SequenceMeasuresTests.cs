@@ -133,6 +133,45 @@ public class SequenceMeasuresTests
         });
     }
 
+    /// <summary>
+    /// A block's tab stands a little inside its frame, so a frame is as wide as that, its kind's pill, its label
+    /// and the room after it need, and so is one for an else's label. Today's tab starts at the frame's edge.
+    /// </summary>
+    [Test]
+    public void AFrame_IsWideEnoughForItsTab_FromWhereTheTabStands()
+    {
+        var label = Marquee.Lines("every name is known");
+        double words = Marquee.WordsWidth(label) + Marquee.TabPad;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Marquee.TabLeft, Is.EqualTo(14));
+            Assert.That(Marquee.TabWidth(BlockKind.Alt, label),
+                Is.EqualTo(14 + Marquee.KindWidth(BlockKind.Alt) + words));
+            Assert.That(Marquee.ElseWidth(label),
+                Is.EqualTo(14 + Marquee.WordsWidth([SequenceMeasures.ElseWord]) + words));
+            Assert.That(SequenceMeasures.Boxed.TabLeft, Is.Zero);
+        });
+    }
+
+    /// <summary>
+    /// What comes after a block starts a little under its frame, so a frame never touches a note, a divider or
+    /// another frame under it. Today's frames have no such room.
+    /// </summary>
+    [Test]
+    public void WhatComesAfterABlock_StartsALittleUnderItsFrame()
+    {
+        var placed = Placed();
+        var block = placed.Blocks.Single();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Marquee.BlockGap, Is.EqualTo(12));
+            Assert.That(placed.Rows[^1].Y, Is.EqualTo(block.Y + block.H + 12), "the last answer, after the block");
+            Assert.That(SequenceMeasures.Boxed.BlockGap, Is.Zero);
+        });
+    }
+
     /// <summary>A note spans the lifelines it names and a reach each side, and is as tall as its lines need.</summary>
     [Test]
     public void ANote_SpansItsLifelines()

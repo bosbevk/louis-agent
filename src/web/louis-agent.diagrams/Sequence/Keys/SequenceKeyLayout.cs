@@ -1,4 +1,3 @@
-using LouisAgent.Choices;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -31,10 +30,10 @@ public static class SequenceKeyLayout
     private const double Char = 6.6, Gap = 30;
 
     /// <summary>
-    /// How wide a sample is: a tone's swatch, a call's or an answer's line, a note's panel, and for a block its
-    /// kind's pill, a character of the code font each and the room round them.
+    /// How wide a sample is: a tone's swatch, a call's or an answer's line, and a note's panel. A block's is its
+    /// kind's pill, as wide as the picture draws it.
     /// </summary>
-    private const double Swatch = 18, Line = 48, Panel = 40, PillChar = 6.8, PillPad = 18;
+    private const double Swatch = 18, Line = 48, Panel = 40;
 
     /// <summary>The key's items for a sequence, across a width, and how tall the key is.</summary>
     public static (IReadOnlyList<SequenceKeyItem> Items, double Height) Of(SequenceSpec spec, double width)
@@ -73,12 +72,12 @@ public static class SequenceKeyLayout
 
     /// <summary>
     /// An item for each kind of block the picture has, in the kinds' own order, with what the kind does. Its
-    /// sample is the kind's pill, as wide as the kind's word needs.
+    /// sample is the kind's pill, as wide as a frame's own.
     /// </summary>
     private static IEnumerable<SequenceKeyItem> Blocks(List<SequenceStep> steps) => steps.OfType<BlockStep>()
         .Select(block => block.Block).Distinct().Order()
         .Select(kind => new SequenceKeyItem(SequenceKeyKind.Block, Text(Meaning(kind)), 0, 0,
-            kind.Wire().Length * PillChar + PillPad, Block: kind));
+            SequenceMeasures.Marquee.KindWidth(kind), Block: kind));
 
     /// <summary>The message that says what a kind of block does.</summary>
     private static DiagramMessage Meaning(BlockKind kind) => kind switch

@@ -5,7 +5,7 @@ namespace LouisAgent.Diagrams.Svg.Theme.Looks;
 /// <summary>
 /// What a sequence's look adds to the shared ones (F134.10, Louis's pick of three designs, "Marquee"): a
 /// participant's badge in its tone and its name, the lifeline, a call's beam either way, an answer's quiet line,
-/// the words above them, a block's tab and the key's own parts.
+/// the words above them, a block's tab and its cases' divider, and the key's own parts.
 /// </summary>
 /// <remarks>
 /// The tones are on the badges only, where a tone says what a participant is, as it does in a flow. Every call is
@@ -49,6 +49,7 @@ internal static class SequenceStyle
           .{{BeamPaint}}-1 { stop-color: var(--blue-line); }
           .{{BackPaint}}-0 { stop-color: var(--blue-line); }
           .{{BackPaint}}-1 { stop-color: var(--violet-line); }
+          .seq-tip { fill: none; }
           .seq-turn { fill: none; stroke: var(--violet-line); stroke-width: 2; stroke-linecap: round; }
           .seq-answer {
             fill: none; stroke: var(--quiet); stroke-opacity: .8; stroke-width: 1.5; stroke-dasharray: 3 6;
@@ -60,6 +61,7 @@ internal static class SequenceStyle
           .seq-cover { fill: var(--ground); }
           .seq-kind { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
           .seq-tab { fill: var(--text); font: 600 12.5px var(--pic-sans); {{Halo}} }
+          .seq-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; stroke-dasharray: 4 6; }
           .seq-else { fill: var(--ground); stroke: var(--quiet); stroke-width: 1; stroke-opacity: .5; }
           .seq-else-word { fill: var(--quiet); font: 11px var(--mono); }
           .seq-ring { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
