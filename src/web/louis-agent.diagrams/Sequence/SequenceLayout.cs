@@ -26,22 +26,22 @@ public static class SequenceLayout
     /// <summary>How far the lifelines run under the last row.</summary>
     private const double LifelineEnd = 16;
 
-    /// <summary>Where every head, every step and every block's frame stands.</summary>
-    public static PlacedSequence Place(SequenceSpec spec)
+    /// <summary>Where every head, every step and every block's frame stands, by the measures it is handed.</summary>
+    public static PlacedSequence Place(SequenceSpec spec, SequenceMeasures measures)
     {
-        var lines = spec.Participants.Select(SequenceText.HeadLines).ToList();
-        var widths = spec.Participants.Select((head, at) => SequenceText.HeadWidth(head, lines[at])).ToList();
+        var lines = spec.Participants.Select(measures.HeadLines).ToList();
+        var widths = spec.Participants.Select((head, at) => measures.HeadWidth(head, lines[at])).ToList();
         var index = spec.Participants.Select((head, at) => (head.Id, at)).ToDictionary(StringComparer.Ordinal);
-        var centers = Centers(spec, widths, index);
-        double headHeight = lines.Max(SequenceText.HeadHeight);
+        var centers = Centers(spec, widths, index, measures);
+        double headHeight = lines.Max(measures.HeadHeight);
 
         // A note or a frame may reach left of the first head: then every lifeline moves right and the rows go again.
-        var rows = new SequenceRows(centers, index, spec.Numbered);
+        var rows = new SequenceRows(centers, index, spec.Numbered, measures);
         var (bottom, left, right) = rows.Walk(spec.Steps, headHeight + RowGap, 0);
         if (left < 0)
         {
             centers = centers.Select(center => center - left).ToArray();
-            rows = new SequenceRows(centers, index, spec.Numbered);
+            rows = new SequenceRows(centers, index, spec.Numbered, measures);
             (bottom, _, right) = rows.Walk(spec.Steps, headHeight + RowGap, 0);
         }
 
@@ -57,7 +57,7 @@ public static class SequenceLayout
     /// Each lifeline's place: the furthest of what its neighbour and every message ending on it ask, left to right.
     /// </summary>
     private static double[] Centers(SequenceSpec spec, IReadOnlyList<double> widths,
-        IReadOnlyDictionary<string, int> index)
+        IReadOnlyDictionary<string, int> index, SequenceMeasures measures)
     {
         // Each ask: lifeline b stands at least this far right of lifeline a.
         var asks = Enumerable.Range(1, widths.Count - 1)
@@ -66,12 +66,12 @@ public static class SequenceLayout
         foreach (var step in spec.Steps.SelectMany(step => step.All()).Where(step => step is MessageStep or ReplyStep))
         {
             var ends = step.Names().Select(id => index[id]).ToList();
-            double words = SequenceText.WordsWidth(SequenceText.Lines(SequenceRows.Text(step)));
+            double words = measures.WordsWidth(measures.Lines(SequenceRows.Text(step)));
             int a = ends.Min(), b = ends.Max();
             if (a != b) asks.Add((a, b, words + 2 * Clear));
             // A turn to oneself puts its words right of its lifeline, before the next one.
             else if (a + 1 < widths.Count)
-                asks.Add((a, a + 1, SequenceText.SelfOut + SequenceText.WordPad + words + Clear));
+                asks.Add((a, a + 1, measures.SelfOut + measures.WordPad + words + Clear));
         }
 
         var centers = new double[widths.Count];

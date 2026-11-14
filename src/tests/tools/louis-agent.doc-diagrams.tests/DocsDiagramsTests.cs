@@ -158,7 +158,7 @@ public class DocsDiagramsTests
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
             .Where(pair => pair.source.Sequence is not null)
-            .SelectMany(pair => Outside(SequenceLayout.Place(pair.source.Sequence!))
+            .SelectMany(pair => Outside(SequenceLayout.Place(pair.source.Sequence!, SequenceMeasures.Boxed))
                 .Select(what => $"{Path.GetFileNameWithoutExtension(pair.json)}: {what} leaves the drawing"))
             .ToList();
 
@@ -170,7 +170,7 @@ public class DocsDiagramsTests
     {
         var boxes = placed.Rows
             .Select(row => (What: row.Lines.FirstOrDefault() ?? "",
-                Box: row.Step is NoteStep ? SequenceText.NoteBox(row) : SequenceText.WordBox(row)))
+                Box: row.Step is NoteStep ? SequenceMeasures.Boxed.NoteBox(row) : SequenceMeasures.Boxed.WordBox(row)))
             .Concat(placed.Blocks.Select(block =>
                 (What: block.Block.Label, Box: (block.X, block.Y, block.W, block.H))));
         return boxes.Where(item => item.Box.Item1 < 0 || item.Box.Item1 + item.Box.Item3 > placed.Width + 0.001)

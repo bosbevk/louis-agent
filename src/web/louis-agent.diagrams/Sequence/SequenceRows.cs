@@ -15,7 +15,8 @@ namespace LouisAgent.Diagrams.Sequence;
 internal sealed class SequenceRows(
     IReadOnlyList<double> centers,
     IReadOnlyDictionary<string, int> index,
-    bool numbered)
+    bool numbered,
+    SequenceMeasures measures)
 {
     /// <summary>Clear room between a turn to oneself's words and the drawing's edge, and under a row.</summary>
     private const double Clear = 12, RowEnd = 12;
@@ -69,24 +70,24 @@ internal sealed class SequenceRows(
     /// </summary>
     private (double Y, double Left, double Right) Block(BlockStep block, double top, int depth)
     {
-        var lines = SequenceText.Lines(block.Label);
-        var (y, left, right) = Walk(block.Steps, top + SequenceText.TabHeight(lines), depth + 1);
+        var lines = measures.Lines(block.Label);
+        var (y, left, right) = Walk(block.Steps, top + measures.TabHeight(lines), depth + 1);
 
         var cases = new List<PlacedCase>();
         foreach (var @case in block.Else ?? [])
         {
-            var caseLines = SequenceText.Lines(@case.Label);
+            var caseLines = measures.Lines(@case.Label);
             cases.Add(new PlacedCase(@case.Label, caseLines, y));
-            var inner = Walk(@case.Steps, y + SequenceText.TabHeight(caseLines), depth + 1);
+            var inner = Walk(@case.Steps, y + measures.TabHeight(caseLines), depth + 1);
             (y, left, right) = (inner.Y, Math.Min(left, inner.Left), Math.Max(right, inner.Right));
         }
 
-        double x = left - SequenceText.Inset;
-        double width = cases.Select(@case => SequenceText.ElseWidth(@case.Lines))
-            .Append(SequenceText.TabWidth(block.Block, lines))
-            .Append(right + SequenceText.Inset - x)
+        double x = left - measures.Inset;
+        double width = cases.Select(@case => measures.ElseWidth(@case.Lines))
+            .Append(measures.TabWidth(block.Block, lines))
+            .Append(right + measures.Inset - x)
             .Max();
-        double bottom = y + SequenceText.BlockEnd;
+        double bottom = y + measures.BlockEnd;
         Blocks.Add(new PlacedBlock(block, lines, cases, depth, x, top, width, bottom - top));
         return (bottom, x, x + width);
     }
@@ -98,27 +99,29 @@ internal sealed class SequenceRows(
     private PlacedRow Row(SequenceStep step, double y)
     {
         var xs = step.Names().Select(id => centers[index[id]]).ToList();
-        var words = SequenceText.Lines(Text(step));
+        var words = measures.Lines(Text(step));
+        // Where its arrow runs: under its words. A note has no arrow, and the height is of no use to it.
+        double arrow = y + measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap;
         if (step is NoteStep)
             return new PlacedRow(step, words, xs.Min(), xs.Max(), y,
-                SequenceText.NoteTop + SequenceText.NoteHeight(words) + RowEnd);
+                measures.NoteTop + measures.NoteHeight(words) + RowEnd, arrow);
 
-        double height = SequenceText.TextTop + words.Count * SequenceText.LineStep + SequenceText.ArrowGap + RowEnd
-                        + (xs[0] == xs[1] ? SequenceText.SelfDrop : 0);
-        return new PlacedRow(step, words, xs[0], xs[1], y, height);
+        double height = measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap + RowEnd
+                        + (xs[0] == xs[1] ? measures.SelfDrop : 0);
+        return new PlacedRow(step, words, xs[0], xs[1], y, height, arrow);
     }
 
     /// <summary>How far left and right a row reaches: a note's panel, a turn to oneself's words, or its arrow.</summary>
-    private static (double Left, double Right) Reach(PlacedRow row)
+    private (double Left, double Right) Reach(PlacedRow row)
     {
         if (row.Step is NoteStep)
         {
-            var note = SequenceText.NoteBox(row);
+            var note = measures.NoteBox(row);
             return (note.X, note.X + note.W);
         }
 
         if (!row.Self) return (Math.Min(row.FromX, row.ToX), Math.Max(row.FromX, row.ToX));
-        var words = SequenceText.WordBox(row);
+        var words = measures.WordBox(row);
         return (row.FromX, words.X + words.W + Clear);
     }
 }

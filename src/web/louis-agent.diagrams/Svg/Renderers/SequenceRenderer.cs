@@ -30,11 +30,14 @@ internal sealed class SequenceRenderer : IDiagramRenderer
     /// <summary>A line of small words: where it sits under the top of its room, and a chip's height.</summary>
     private const double Baseline = 10, ChipHeight = 20, ChipBaseline = 14;
 
+    /// <summary>The measures this drawing is laid out and drawn by: today's.</summary>
+    private static readonly SequenceMeasures Measures = SequenceMeasures.Boxed;
+
     public DiagramKind Kind => DiagramKind.Sequence;
 
     public string Render(DiagramSource source)
     {
-        var placed = SequenceLayout.Place(source.Sequence!);
+        var placed = SequenceLayout.Place(source.Sequence!, Measures);
         var writer = new SvgWriter();
         var toneOf = source.Sequence!.Participants.ToDictionary(head => head.Id, head => head.Tone);
 
@@ -70,20 +73,20 @@ internal sealed class SequenceRenderer : IDiagramRenderer
         string toned = FlowRenderer.Class(tone);
         double y = row.ArrowY, from = row.FromX;
         string path = row.Self
-            ? $"M {N(from)} {N(y)} L {N(from + SequenceText.SelfOut)} {N(y)} " +
-              $"L {N(from + SequenceText.SelfOut)} {N(y + SequenceText.SelfDrop)} " +
-              $"L {N(from + ArrowStop)} {N(y + SequenceText.SelfDrop)}"
+            ? $"M {N(from)} {N(y)} L {N(from + Measures.SelfOut)} {N(y)} " +
+              $"L {N(from + Measures.SelfOut)} {N(y + Measures.SelfDrop)} " +
+              $"L {N(from + ArrowStop)} {N(y + Measures.SelfDrop)}"
             : $"M {N(from)} {N(y)} L {N(row.ToX - Math.Sign(row.ToX - from) * ArrowStop)} {N(y)}";
         string dashed = row.Step is ReplyStep ? " dashed" : "";
         writer.Path(path, "edge" + dashed + toned, arrow: true, tone: tone == DiagramTone.Plain ? null : tone.Wire());
 
         // The words in a chip centred over the arrow, or for a turn to oneself, beside the turn: the chip's ground
         // hides a lifeline the words cross.
-        var box = SequenceText.WordBox(row);
+        var box = Measures.WordBox(row);
         if (row.Lines.Count > 0) writer.Box(box.X, box.Y, box.W, box.H, 4, "word-chip" + toned);
-        (double x, string anchor) = row.Self ? (box.X + SequenceText.WordPad, "start") : ((from + row.ToX) / 2, "middle");
+        (double x, string anchor) = row.Self ? (box.X + Measures.WordPad, "start") : ((from + row.ToX) / 2, "middle");
         for (int at = 0; at < row.Lines.Count; at++)
-            writer.Text(x, row.Y + SequenceText.TextTop + Baseline + at * SequenceText.LineStep, row.Lines[at],
+            writer.Text(x, row.Y + Measures.TextTop + Baseline + at * Measures.LineStep, row.Lines[at],
                 "word" + toned, anchor);
 
         if (row.Number is not { } number) return;
@@ -95,10 +98,10 @@ internal sealed class SequenceRenderer : IDiagramRenderer
     /// <summary>A note: its panel over the lifelines it names, its words centred on it.</summary>
     private static void Note(SvgWriter writer, PlacedRow row)
     {
-        var (x, y, w, h) = SequenceText.NoteBox(row);
+        var (x, y, w, h) = Measures.NoteBox(row);
         writer.Box(x, y, w, h, 6, "word-chip");
         for (int at = 0; at < row.Lines.Count; at++)
-            writer.Text(x + w / 2, y + SequenceText.WordPad + Baseline + at * SequenceText.LineStep, row.Lines[at],
+            writer.Text(x + w / 2, y + Measures.WordPad + Baseline + at * Measures.LineStep, row.Lines[at],
                 "word");
     }
 
@@ -108,14 +111,14 @@ internal sealed class SequenceRenderer : IDiagramRenderer
     /// </summary>
     private static void Tabs(SvgWriter writer, PlacedBlock block)
     {
-        Tab(writer, block.X, block.Y, block.Block.Block.Wire(), SequenceText.KindWidth(block.Block.Block),
+        Tab(writer, block.X, block.Y, block.Block.Block.Wire(), Measures.KindWidth(block.Block.Block),
             block.Lines);
         foreach (var @case in block.Cases)
         {
             writer.Path($"M {N(block.X)} {N(@case.Y)} L {N(block.X + block.W)} {N(@case.Y)}", "edge dashed",
                 arrow: false);
-            Tab(writer, block.X, @case.Y, SequenceText.ElseWord,
-                SequenceText.WordsWidth([SequenceText.ElseWord]), @case.Lines);
+            Tab(writer, block.X, @case.Y, SequenceMeasures.ElseWord,
+                Measures.WordsWidth([SequenceMeasures.ElseWord]), @case.Lines);
         }
     }
 
@@ -125,7 +128,7 @@ internal sealed class SequenceRenderer : IDiagramRenderer
     {
         writer.Box(x, y, width, ChipHeight, 6, "word-chip").Text(x + width / 2, y + ChipBaseline, word, "word");
         for (int at = 0; at < lines.Count; at++)
-            writer.Text(x + width + SequenceText.TabPad, y + ChipBaseline + at * SequenceText.LineStep, lines[at],
+            writer.Text(x + width + Measures.TabPad, y + ChipBaseline + at * Measures.LineStep, lines[at],
                 "word", "start");
     }
 
@@ -139,7 +142,7 @@ internal sealed class SequenceRenderer : IDiagramRenderer
         writer.Box(head.X, head.Y, head.W, head.H, 10, "box" + tone);
 
         (double x, string anchor) = (head.Center, "middle");
-        if (SequenceText.IconOf(head.Participant) is { } icon)
+        if (SequenceMeasures.IconOf(head.Participant) is { } icon)
         {
             double centreX = head.X + FlowText.BadgeLeft + FlowText.BadgeSize / 2, centreY = head.Y + head.H / 2;
             writer.Circle(centreX, centreY, FlowText.BadgeSize / 2, "badge" + tone)

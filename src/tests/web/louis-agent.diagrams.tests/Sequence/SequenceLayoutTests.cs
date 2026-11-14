@@ -26,7 +26,7 @@ public class SequenceLayoutTests
     [Test]
     public void TheHeads_StandInARow_Apart()
     {
-        var heads = SequenceLayout.Place(Spec).Heads;
+        var heads = SequenceLayout.Place(Spec, SequenceMeasures.Boxed).Heads;
 
         Assert.Multiple(() =>
         {
@@ -43,13 +43,13 @@ public class SequenceLayoutTests
     [Test]
     public void AMessagesWords_KeepBetweenItsLifelines()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
 
         Assert.Multiple(() =>
         {
             foreach (var row in placed.Rows.Where(row => row.FromX != row.ToX))
             {
-                var box = SequenceText.WordBox(row);
+                var box = SequenceMeasures.Boxed.WordBox(row);
                 Assert.That(box.X, Is.GreaterThan(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
                 Assert.That(box.X + box.W, Is.LessThan(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
             }
@@ -60,7 +60,7 @@ public class SequenceLayoutTests
     [Test]
     public void ALongMessage_WrapsAtForty()
     {
-        var lambda = SequenceLayout.Place(Spec).Rows[1];
+        var lambda = SequenceLayout.Place(Spec, SequenceMeasures.Boxed).Rows[1];
 
         Assert.Multiple(() =>
         {
@@ -80,7 +80,7 @@ public class SequenceLayoutTests
         var spec = new SequenceSpec([new Participant("P", "Program.cs\n(the host)"), new Participant("S", "S")],
             [new MessageStep("P", "S", "Build()\nchecked"), new ReplyStep("S", "P", "")]);
 
-        var placed = SequenceLayout.Place(spec);
+        var placed = SequenceLayout.Place(spec, SequenceMeasures.Boxed);
 
         Assert.Multiple(() =>
         {
@@ -94,7 +94,7 @@ public class SequenceLayoutTests
     [Test]
     public void TheRows_RunDownInOrder()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
         double headsEnd = placed.Heads.Max(head => head.Y + head.H);
 
         Assert.Multiple(() =>
@@ -113,9 +113,9 @@ public class SequenceLayoutTests
     [Test]
     public void AMessageToOneself_TurnsBackBesideItsLifeline()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
         var self = placed.Rows[2];
-        var box = SequenceText.WordBox(self);
+        var box = SequenceMeasures.Boxed.WordBox(self);
 
         Assert.Multiple(() =>
         {
