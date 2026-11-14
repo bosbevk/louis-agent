@@ -4,6 +4,9 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
+using LouisAgent.Diagrams.Messages.Holes.Reading;
+using LouisAgent.Diagrams.Messages.Holes.Shapes;
+using LouisAgent.Diagrams.Messages.Holes.Strays;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Tickets.Spec;
@@ -18,6 +21,7 @@ namespace LouisAgent.Diagrams.Sources;
 /// guess and a typo never becomes a box without its arrow.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0119-declare-name-then-pass.md">ADR 0119: named types, declared, then passed</seealso>
 public static class DiagramReader
 {
     /// <summary>The diagram the JSON describes.</summary>
@@ -25,7 +29,7 @@ public static class DiagramReader
     {
         var kind = KindOf(json);
         var source = Deserialize(json);
-        if (string.IsNullOrWhiteSpace(source.Title)) throw Refused(DiagramMessage.MissingTitle, new { });
+        if (string.IsNullOrWhiteSpace(source.Title)) throw Refused(DiagramMessage.MissingTitle);
         CheckPart(kind, source);
         if (source.Flow is { } flow) CheckFlow(flow);
         if (source.Cards is { } cards) CheckCards(cards);
@@ -46,16 +50,14 @@ public static class DiagramReader
         }
         catch (JsonException ex)
         {
-            throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
+            var unreadable = new UnreadableHoles(ex.Message);
+            throw Refused(DiagramMessage.Unreadable, unreadable);
         }
 
         if (SettingChoice.TryParse<DiagramKind>(text, out var parsed)) return parsed!.Value;
-        throw Refused(DiagramMessage.UnknownKind,
-            new
-            {
-                Value = text,
-                Kinds = string.Join(", ", SettingChoice.Names<DiagramKind>())
-            });
+
+        var unknown = new UnknownKindHoles(text, string.Join(", ", SettingChoice.Names<DiagramKind>()));
+        throw Refused(DiagramMessage.UnknownKind, unknown);
     }
 
     /// <summary>
@@ -70,12 +72,14 @@ public static class DiagramReader
         }
         catch (JsonException ex)
         {
-            throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
+            var unreadable = new UnreadableHoles(ex.Message);
+            throw Refused(DiagramMessage.Unreadable, unreadable);
         }
         // A sequence's step without its "step" field can't be told apart: System.Text.Json says so this way.
         catch (NotSupportedException ex)
         {
-            throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
+            var unreadable = new UnreadableHoles(ex.Message);
+            throw Refused(DiagramMessage.Unreadable, unreadable);
         }
     }
 
@@ -91,7 +95,10 @@ public static class DiagramReader
             DiagramKind.Ticket => source.Ticket is not null,
             _ => false
         };
-        if (!hasPart) throw Refused(DiagramMessage.MissingPart, new { Kind = kind.Wire() });
+        if (hasPart) return;
+
+        var missing = new MissingPartHoles(kind.Wire());
+        throw Refused(DiagramMessage.MissingPart, missing);
     }
 
     /// <summary>Every box's group is one the flow declares, and every arrow joins two boxes the flow has.</summary>
@@ -101,23 +108,17 @@ public static class DiagramReader
         var groups = (flow.Groups ?? []).Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
         var astray = flow.Nodes.FirstOrDefault(node => node.Group is { } group && !groups.Contains(group));
         if (astray is not null)
-            throw Refused(DiagramMessage.UnknownGroup,
-                new
-                {
-                    astray.Id,
-                    astray.Group
-                });
+        {
+            var noGroup = new UnknownGroupHoles(astray.Id, astray.Group);
+            throw Refused(DiagramMessage.UnknownGroup, noGroup);
+        }
 
         var ids = flow.Nodes.Select(node => node.Id).ToHashSet(StringComparer.Ordinal);
         var stray = flow.Edges.FirstOrDefault(edge => !ids.Contains(edge.From) || !ids.Contains(edge.To));
         if (stray is null) return;
-        throw Refused(DiagramMessage.UnknownBox,
-            new
-            {
-                stray.From,
-                stray.To,
-                Id = ids.Contains(stray.From) ? stray.To : stray.From
-            });
+
+        var noBox = new UnknownBoxHoles(stray.From, stray.To, StrayEnd(ids, stray.From, stray.To));
+        throw Refused(DiagramMessage.UnknownBox, noBox);
     }
 
     /// <summary>Every link joins two cards the overview has.</summary>
@@ -126,13 +127,9 @@ public static class DiagramReader
         var ids = cards.Rows.SelectMany(row => row.Cards).Select(card => card.Id).ToHashSet(StringComparer.Ordinal);
         var stray = cards.Links.FirstOrDefault(link => !ids.Contains(link.From) || !ids.Contains(link.To));
         if (stray is null) return;
-        throw Refused(DiagramMessage.UnknownCard,
-            new
-            {
-                stray.From,
-                stray.To,
-                Id = ids.Contains(stray.From) ? stray.To : stray.From
-            });
+
+        var noCard = new UnknownCardHoles(stray.From, stray.To, StrayEnd(ids, stray.From, stray.To));
+        throw Refused(DiagramMessage.UnknownCard, noCard);
     }
 
     /// <summary>
@@ -140,29 +137,28 @@ public static class DiagramReader
     /// </summary>
     private static void CheckSequence(SequenceSpec sequence)
     {
-        if (sequence.Steps.Count == 0) throw Refused(DiagramMessage.NoSteps, new { });
+        if (sequence.Steps.Count == 0) throw Refused(DiagramMessage.NoSteps);
         var all = sequence.Steps.SelectMany(step => step.All()).ToList();
         if (all.OfType<NoteStep>().FirstOrDefault(note => note.Over.Count == 0) is { } bare)
-            throw Refused(DiagramMessage.NoteOverNoOne, new { bare.Text });
+        {
+            var overNoOne = new NoteOverNoOneHoles(bare.Text);
+            throw Refused(DiagramMessage.NoteOverNoOne, overNoOne);
+        }
+
         if (all.OfType<BlockStep>().FirstOrDefault(Empty) is { } empty)
-            throw Refused(DiagramMessage.EmptyBlock,
-                new
-                {
-                    Kind = empty.Block.Wire(),
-                    empty.Label
-                });
+        {
+            var emptyBlock = new EmptyBlockHoles(empty.Block.Wire(), empty.Label);
+            throw Refused(DiagramMessage.EmptyBlock, emptyBlock);
+        }
 
         var ids = sequence.Participants.Select(head => head.Id).ToHashSet(StringComparer.Ordinal);
         var stray = sequence.Steps
             .SelectMany(step => step.Names().Where(id => !ids.Contains(id)).Select(id => (Step: step, Id: id)))
             .FirstOrDefault();
         if (stray == default) return;
-        throw Refused(DiagramMessage.UnknownParticipant,
-            new
-            {
-                stray.Id,
-                Step = stray.Step.ToString()
-            });
+
+        var noParticipant = new UnknownParticipantHoles(stray.Id, stray.Step.ToString()!);
+        throw Refused(DiagramMessage.UnknownParticipant, noParticipant);
     }
 
     /// <summary>Every relation joins two types the class chart has.</summary>
@@ -172,13 +168,9 @@ public static class DiagramReader
         var stray = classes.Relations.FirstOrDefault(relation =>
             !ids.Contains(relation.From) || !ids.Contains(relation.To));
         if (stray is null) return;
-        throw Refused(DiagramMessage.UnknownType,
-            new
-            {
-                stray.From,
-                stray.To,
-                Id = ids.Contains(stray.From) ? stray.To : stray.From
-            });
+
+        var noType = new UnknownTypeHoles(stray.From, stray.To, StrayEnd(ids, stray.From, stray.To));
+        throw Refused(DiagramMessage.UnknownType, noType);
     }
 
     /// <summary>
@@ -187,19 +179,34 @@ public static class DiagramReader
     /// </summary>
     private static void CheckTicket(TicketSpec ticket)
     {
-        if (string.IsNullOrWhiteSpace(ticket.Title)) throw Refused(DiagramMessage.TicketWithoutTitle, new { });
-        if (ticket.Rows.Count is < 1 or > 6) throw Refused(DiagramMessage.TicketRowCount, new { ticket.Rows.Count });
+        if (string.IsNullOrWhiteSpace(ticket.Title)) throw Refused(DiagramMessage.TicketWithoutTitle);
+        if (ticket.Rows.Count is < 1 or > 6)
+        {
+            var rowCount = new TicketRowCountHoles(ticket.Rows.Count);
+            throw Refused(DiagramMessage.TicketRowCount, rowCount);
+        }
 
         int half = ticket.Rows.ToList()
             .FindIndex(row => string.IsNullOrWhiteSpace(row.Label) || string.IsNullOrWhiteSpace(row.Value));
-        if (half >= 0) throw Refused(DiagramMessage.TicketHalfRow, new { Number = half + 1 });
+        if (half < 0) return;
+
+        var halfRow = new TicketHalfRowHoles(half + 1);
+        throw Refused(DiagramMessage.TicketHalfRow, halfRow);
     }
+
+    /// <summary>
+    /// Of a line's two ends, the one nothing in the diagram has: the far end when the near one is known.
+    /// </summary>
+    private static string StrayEnd(HashSet<string> ids, string from, string to) => ids.Contains(from) ? to : from;
 
     /// <summary>A block, or one of its cases, with nothing in it: a frame round nothing.</summary>
     private static bool Empty(BlockStep block) =>
         block.Steps.Count == 0 || (block.Else ?? []).Any(@case => @case.Steps.Count == 0);
 
-    /// <summary>The refusal, its text from the message enum.</summary>
-    private static InvalidDataException Refused(DiagramMessage message, object values) =>
-        new(DiagramText.Format(message, values));
+    /// <summary>The refusal, its text the message's own, which has no holes.</summary>
+    private static InvalidDataException Refused(DiagramMessage message) => new(DiagramText.Format(message));
+
+    /// <summary>The refusal, its text from the message with its holes filled.</summary>
+    private static InvalidDataException Refused(DiagramMessage message, object holes) =>
+        new(DiagramText.Format(message, holes));
 }

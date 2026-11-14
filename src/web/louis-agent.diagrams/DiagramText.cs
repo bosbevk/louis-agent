@@ -12,11 +12,14 @@ namespace LouisAgent.Diagrams;
 /// </summary>
 internal static class DiagramText
 {
+    /// <summary>The text of a message that has no holes, as it is written.</summary>
+    public static string Format(DiagramMessage message) => typeof(DiagramMessage).GetField(Enum.GetName(message)!)!
+        .GetCustomAttribute<DescriptionAttribute>()!.Description;
+
     /// <summary>The message's text, each <c>{Hole}</c> replaced by the value of the property with that name.</summary>
     public static string Format(DiagramMessage message, object values)
     {
-        string text = typeof(DiagramMessage).GetField(Enum.GetName(message)!)!
-            .GetCustomAttribute<DescriptionAttribute>()!.Description;
+        string text = Format(message);
         foreach (var property in values.GetType().GetProperties())
             text = text.Replace($"{{{property.Name}}}",
                 Convert.ToString(property.GetValue(values), CultureInfo.InvariantCulture), StringComparison.Ordinal);
