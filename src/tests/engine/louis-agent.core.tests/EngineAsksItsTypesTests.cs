@@ -116,8 +116,6 @@ public partial class EngineAsksItsTypesTests
         "Svg/Renderers/Parts/Overview/OverviewDrawing.cs",
         "Svg/Renderers/Parts/Overview/OverviewRails.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
-        "Svg/Renderers/Parts/Structure/CompositeKey.cs",
-        "Svg/Renderers/Parts/Types/ClassesKey.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];
 

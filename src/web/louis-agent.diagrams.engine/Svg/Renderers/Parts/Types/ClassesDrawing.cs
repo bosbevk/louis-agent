@@ -46,7 +46,8 @@ internal static class ClassesDrawing
             .Key(width =>
             {
                 var (items, height) = ClassKeyLayout.Of(spec, width);
-                return (height, (writer, top) => writer.Group("cls-legend", 0, top, ClassesKey.Of(items, width)));
+                return (height, (writer, top) =>
+                    writer.Group("cls-legend", 0, top, ClassesKey.Of(items, width, geometry)));
             })
             .Caption(source.Caption)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, ClassesStyle.Of(SvgTheme.Site))

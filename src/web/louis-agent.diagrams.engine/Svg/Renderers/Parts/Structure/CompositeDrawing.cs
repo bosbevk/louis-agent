@@ -65,7 +65,7 @@ internal static class CompositeDrawing
             .Key(width =>
             {
                 var (items, height) = CompositeKey.Of(spec, width);
-                return (height, (writer, top) => CompositeKey.Draw(writer, items, tone, top, width));
+                return (height, (writer, top) => CompositeKey.Draw(writer, items, tone, geometry, top, width));
             })
             .Caption(source.Caption)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, FlowStyle.Rules, ComponentsStyle.Rules,
