@@ -202,7 +202,7 @@ its own. They are a Composite of records (`Spec/Steps/`), read by their `step` f
 
 `SequenceLayout` stands each lifeline as far from the others as the words between them need. It works that out as
 a longest path over the lifelines. `SequenceRows` then walks the steps down the page and frames each block round
-what it holds, so a nested frame sits inside its parent. `SequenceText` holds the measures: words wrap at 40
+what it holds, so a nested frame sits inside its parent. `SequenceMeasures` holds the measures as one value the layout is handed: words wrap at 40
 characters, and a head at 24.
 
 #### A class chart: the interface design
@@ -316,7 +316,7 @@ src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
 ├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
-├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
+├── Sequence/       # SequenceLayout, SequenceRows, SequenceMeasures; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone

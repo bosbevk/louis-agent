@@ -30,7 +30,9 @@ internal sealed class SequenceRows(
     /// <summary>How many arrows a numbered chart has counted so far.</summary>
     private int _number;
 
-    /// <summary>Lays steps from the given height down: the height under them, and how far left and right they reach.</summary>
+    /// <summary>
+    /// Lays steps from the given height down: the height under them, and how far left and right they reach.
+    /// </summary>
     public (double Y, double Left, double Right) Walk(IReadOnlyList<SequenceStep> steps, double y, int depth)
     {
         double left = double.MaxValue, right = double.MinValue;
@@ -111,7 +113,9 @@ internal sealed class SequenceRows(
         return new PlacedRow(step, words, xs[0], xs[1], y, height, arrow);
     }
 
-    /// <summary>How far left and right a row reaches: a note's panel, a turn to oneself's words, or its arrow.</summary>
+    /// <summary>
+    /// How far left and right a row reaches: a note's panel, a turn to oneself's words, or its arrow.
+    /// </summary>
     private (double Left, double Right) Reach(PlacedRow row)
     {
         if (row.Step is NoteStep)

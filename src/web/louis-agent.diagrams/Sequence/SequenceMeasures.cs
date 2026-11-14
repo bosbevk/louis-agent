@@ -78,7 +78,9 @@ public sealed record SequenceMeasures
     public static DiagramIcon? IconOf(Participant participant) =>
         participant.Icon ?? (participant.Actor ? DiagramIcon.User : null);
 
-    /// <summary>A message's words, broken into lines: at each written break, then where a line grows too long.</summary>
+    /// <summary>
+    /// A message's words, broken into lines: at each written break, then where a line grows too long.
+    /// </summary>
     public IReadOnlyList<string> Lines(string text) => Broken(text, MessageWidth);
 
     /// <summary>A head's label, broken into lines the same way.</summary>
@@ -138,7 +140,9 @@ public sealed record SequenceMeasures
     /// <summary>How wide a frame must be for a divider: its chip and its case's label beside it.</summary>
     public double ElseWidth(IReadOnlyList<string> lines) => WordsWidth([ElseWord]) + WordsWidth(lines) + TabPad;
 
-    /// <summary>Words broken at each written <c>\n</c>, as a flow's label is, then each part wrapped at a width.</summary>
+    /// <summary>
+    /// Words broken at each written <c>\n</c>, as a flow's label is, then each part wrapped at a width.
+    /// </summary>
     private static IReadOnlyList<string> Broken(string text, int width) =>
         text.Split('\n').SelectMany(part => TextWrap.Lines(part, width)).ToList();
 }
