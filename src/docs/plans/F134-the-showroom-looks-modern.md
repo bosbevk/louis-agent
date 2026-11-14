@@ -82,7 +82,7 @@ Built in this order, one pull request each. A child's plan is written and approv
 
 | Child | What it builds | Done when |
 |---|---|---|
-| **F134.1 The start is a stage** ([plan](F134.1-the-start-is-a-stage.md)) | The general parts (line icons, the lit stage, the deck, the framed window with its two bodies, the dock) and the start built from them, each window at its address, swiped on a phone. The site fills its five windows. | `/demos` is the stage at 1920×1080 and at 390 px, `/demos/restaurant-demo` opens with the restaurant forward, and a test holds each window's words to its recording. |
+| **F134.1 The start is a stage**, built 2026-11-15 (its plan as of commit 34a61a224) | The general parts (line icons, the lit stage, the deck, the framed window with its two bodies, the dock) and the start built from them, each window at its address, swiped on a phone. The site fills its five windows. | `/demos` is the stage at 1920×1080 and at 390 px, `/demos/restaurant-demo` opens with the restaurant forward, and a test holds each window's words to its recording. |
 | **F134.2 A demo on the stage** | A demo's page as the window grown to fill the stage, what to watch as chapters under it, the rail as a slim dock of icons, and a body for an agent at work. | The five demo pages play as today in the new look, at both widths, and the guide's stops are the same places. |
 | **F134.3 The agent bar** | The chat widget's layout (`Corner`, `Bar`), the orb with its four states, the suggestions as chips, the box that is always there, and the frame keeping the page clear of the bar. | The showroom's guide is the bar, a typed question is answered mid-walk, and no page ends under the bar. |
 | **F134.4 The agent runs the room** | The guide's last answer as a caption beside the place it lights, its `Offer` drawn there, a window coming forward on `ShowPage`, the guide holding a demo's play while it talks about it, and the talk as a drawer. | A live walk of the start and of one demo page, by the real guide, moves the stage only through its tools. |
@@ -171,4 +171,4 @@ agent's tool calls as the only cause of what the screen does. In F134.5, skill 1
 skill 17 (observability): the framework's own records of an answer, shown to the person who asked.
 
 ---
-[Docs index](../README.md) · Related: [Plans](README.md) · [F134.1](F134.1-the-start-is-a-stage.md)
+[Docs index](../README.md) · Related: [Plans](README.md)

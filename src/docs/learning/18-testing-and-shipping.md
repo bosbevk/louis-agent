@@ -1124,6 +1124,49 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## Parts any site can use, proved alone, then one page built from them (F134.1, 2026-11-15)
+
+**What it is.** `/demos` was a feature card and a row of small flat covers, each with an emoji Windows drew black.
+You picked "centre stage": one demo at a time as a window in the light, the others behind it in depth, a dock under
+it. And you set the rule for how: "things that can be shared, must go to framework", "like cool components we
+could reuse later in other projects". So the start is built from five general parts in the framework's web, each
+with its own test, and only then put together.
+
+**The parts know nothing of demos.** A line icon, a lit stage, a deck, a framed window with three bodies, and a
+dock. Each was built and tested alone before anything used it: the deck's markup with five items and the first
+forward, the dock's buttons and its divider, the window's address word. The deck's one real rule, how far an item
+stands from the one forward, the short way round, is a plain class, `DeckPlace`, tested with no browser at all.
+That is the pattern of a presentation rule kept out of the component: the part that can be wrong in a way a
+person can't see is the part that has a test of its own.
+
+**The page owns what it shows.** Which window is forward comes into the deck as a parameter and goes out as an
+event, so the start holds it, reads it from the address, and writes it back when a visitor moves the deck. A
+window's address, `/demos/restaurant-demo`, opens the start with that window forward. The frame's own script
+couldn't do that here, as step 7 found, so the start reads its address and a small script of its own writes it.
+
+**The site fills a slot by naming a type.** A demo's record names the component that fills its window, as a site
+names its admin card. The framework draws the frame and the bar; the site draws a business's website and one
+moment of its recorded talk. A test holds every word a window shows to the recording it comes from.
+
+**What your picks changed on the way.** One icon set, the diagrams', not a second one. The dock takes a record a
+button, not a function for each fact. On a phone the dock is its icons only, since with a name open it was wider
+than the phone. The coding agent and the triage team came off the start, so it shows the three businesses, and the
+page says which group it shows. A window's answer is one whole sentence of the recording, not a cut-off answer.
+
+**What went wrong on the way.**
+
+- The plan named a part's address word nowhere, and a window needs one. It is a field on the demo's record now.
+- The page a search engine is given had no demos in it, on `main` too. It was fixed here, at your word, as FX155.
+- The lean towards the cursor was in the design and in no step. It became its own step, built last.
+
+**Checked by eye.** `/demos` at full width in Chrome, each of the three windows brought forward in turn, and each
+at 390 px in a frame of a phone's width. Windows' display scaling makes Chrome's page 1538 wide when the window is
+1920, so the wide check is at that width.
+
+**Where it sits.** Skill 18, testing and shipping: a general part proved alone by a markup test before anything is
+built from it, and a rule kept out of the component so it is tested with no browser. Skill 20, extensibility: a slot
+a site fills by naming a type.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

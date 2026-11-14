@@ -1,6 +1,6 @@
 # ADR 0115: A site's showroom is an area of the framework
 
-**Status:** Accepted (2026-11-10, F127.1)
+**Status:** Accepted (2026-11-10, F127.1); amended 2026-11-15 (F134.1): the start is a stage of general parts
 
 ## Context
 
@@ -34,6 +34,13 @@ point"), and notes of what a custom agent could add ("we could integrate with th
   the website catch up.
 - **A place's own address opened afresh draws in its page's layout** (`PlaceLayout`), so a refreshed
   `/restaurant-demo/the-demo` is still in the showroom.
+- **The start is a stage, put together from general parts** (F134.1; Louis: "things that can be shared, must go to
+  framework", "like cool components we could reuse later in other projects"). `ShowroomStart` puts one demo forward
+  as a window in the light, the others behind it in depth, and a dock under it. Its parts know nothing of demos and
+  each has its own test, so any site or later project uses one alone: `LineIconView`, `LitStage`, `Deck` with its
+  rule `DeckPlace`, `FramedWindow` with its bodies `SiteBody`, `WorkBody` and `PlainBody`, and `Dock`, all in
+  `louis-agent.web` under `Components/Icons` and `Components/Staging`. A site fills a demo's window by naming a
+  component's type, `ShowroomDemo.Window`, as a site names its admin card; a demo with none gets `PlainBody`.
 
 ## Consequences
 
@@ -44,6 +51,8 @@ point"), and notes of what a custom agent could add ("we could integrate with th
 - Photos are third-party: from Pexels under its licence, chosen with no recognisable person, brand or real private
   property presented as a made-up business, and kept in the site's own `images/showroom`.
 - The demos become working three-page websites a visitor can try live in F127.2, on this area.
+- A part the stage needs is built as a general part first, proved alone by its test, and only then used by the
+  showroom. What is one site's own, such as a business's window, stays in that site.
 
 ## Links
 
