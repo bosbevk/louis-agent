@@ -26,6 +26,33 @@ public sealed record SequenceMeasures
     /// <summary>Today's measures: a head as a flow's box, and every word in the code font.</summary>
     public static SequenceMeasures Boxed { get; } = new();
 
+    /// <summary>
+    /// The cards' look (F134.10, Louis's pick "Marquee"): a head is a badge with its name under it and no box, so
+    /// it is as wide as the name alone and tall for the badge. The words are in the sans font, a little larger,
+    /// and stand above their line. A block's frame reaches well left of what it holds, for its tab.
+    /// </summary>
+    public static SequenceMeasures Marquee { get; } = new()
+    {
+        LineStep = 15,
+        ArrowGap = 6,
+        RowEnd = 22,
+        SelfOut = 34,
+        SelfDrop = 18,
+        HeadMin = 0,
+        HeadMinWidth = 64,
+        HeadPad = 32,
+        HeadChar = 9.4,
+        HeadSide = 0,
+        HeadIconRoom = 0,
+        HeadLine = 20,
+        NoteLine = 16,
+        NotePad = 9,
+        NoteReach = 24,
+        InsetLeft = 62,
+        InsetRight = 22,
+        TabPad = 9.5
+    };
+
     /// <summary>A message's words break at this many characters (Claude's pick Q2).</summary>
     public int MessageWidth { get; init; } = 40;
 
@@ -56,6 +83,27 @@ public sealed record SequenceMeasures
     /// <summary>The room above and under a head's label.</summary>
     public double HeadPad { get; init; } = 18;
 
+    /// <summary>How wide a character of a head's label is taken to be.</summary>
+    public double HeadChar { get; init; } = GraphLayout.LabelCharWidth;
+
+    /// <summary>The room beside a head's label, both sides together.</summary>
+    public double HeadSide { get; init; } = 2 * GraphLayout.LabelPad;
+
+    /// <summary>The room a head's icon takes beside its label. Nothing, where the icon stands over the label.</summary>
+    public double HeadIconRoom { get; init; } = FlowText.IconRoom;
+
+    /// <summary>A line of a head's label.</summary>
+    public double HeadLine { get; init; } = FlowText.LabelStep;
+
+    /// <summary>The room under a row's arrow, or under its note.</summary>
+    public double RowEnd { get; init; } = 12;
+
+    /// <summary>A line of a note's words.</summary>
+    public double NoteLine { get; init; } = 14;
+
+    /// <summary>The room above and under a note's words.</summary>
+    public double NotePad { get; init; } = 8;
+
     /// <summary>A head's width at the least, so a short name still reads as a box.</summary>
     public double HeadMinWidth { get; init; } = 120;
 
@@ -65,8 +113,14 @@ public sealed record SequenceMeasures
     /// <summary>A note's room above.</summary>
     public double NoteTop { get; init; } = 4;
 
-    /// <summary>How far a block's frame reaches past what it holds, so a nested one sits inside.</summary>
-    public double Inset { get; init; } = 14;
+    /// <summary>
+    /// How far a block's frame reaches left of what it holds, so a nested one sits inside. A frame whose tab
+    /// stands left of the first lifeline reaches further.
+    /// </summary>
+    public double InsetLeft { get; init; } = 14;
+
+    /// <summary>How far a block's frame reaches right of what it holds.</summary>
+    public double InsetRight { get; init; } = 14;
 
     /// <summary>The room round a block's tab's words.</summary>
     public double TabPad { get; init; } = 6;
@@ -89,14 +143,14 @@ public sealed record SequenceMeasures
     /// <summary>How wide a head is for its label and its icon.</summary>
     public double HeadWidth(Participant participant, IReadOnlyList<string> lines)
     {
-        double label = lines.Max(line => line.Length) * GraphLayout.LabelCharWidth + 2 * GraphLayout.LabelPad;
-        double icon = IconOf(participant) is null ? 0 : FlowText.IconRoom;
+        double label = lines.Max(line => line.Length) * HeadChar + HeadSide;
+        double icon = IconOf(participant) is null ? 0 : HeadIconRoom;
         return Math.Max(HeadMinWidth, label + icon);
     }
 
     /// <summary>How tall a head is for its label's lines.</summary>
     public double HeadHeight(IReadOnlyList<string> lines) =>
-        Math.Max(HeadMin, lines.Count * FlowText.LabelStep + 2 * HeadPad);
+        Math.Max(HeadMin, lines.Count * HeadLine + 2 * HeadPad);
 
     /// <summary>How wide a message's words are, their room included.</summary>
     public double WordsWidth(IReadOnlyList<string> lines) =>
@@ -118,7 +172,7 @@ public sealed record SequenceMeasures
         Math.Max(WordsWidth(lines), span + 2 * NoteReach);
 
     /// <summary>How tall a note's panel is for its lines.</summary>
-    public double NoteHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * WordPad;
+    public double NoteHeight(IReadOnlyList<string> lines) => lines.Count * NoteLine + 2 * NotePad;
 
     /// <summary>The panel a note stands on, centred over the lifelines it names.</summary>
     public (double X, double Y, double W, double H) NoteBox(PlacedRow row)

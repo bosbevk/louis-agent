@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Sequence;
-using LouisAgent.Diagrams.Sequence.Placed;
+using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 
@@ -158,19 +158,38 @@ public class DocsDiagramsTests
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
             .Where(pair => pair.source.Sequence is not null)
-            .SelectMany(pair => Outside(SequenceLayout.Place(pair.source.Sequence!, SequenceMeasures.Boxed))
+            .SelectMany(pair => Outside(pair.source.Sequence!, SequenceMeasures.Boxed)
                 .Select(what => $"{Path.GetFileNameWithoutExtension(pair.json)}: {what} leaves the drawing"))
             .ToList();
 
         Assert.That(faults, Is.Empty, string.Join('\n', faults));
     }
 
-    /// <summary>What in a laid-out sequence reaches left of its start or right of its width.</summary>
-    private static IEnumerable<string> Outside(PlacedSequence placed)
+    /// <summary>
+    /// The same holds when every sequence picture is laid out by design C's measures (F134.10), before any is
+    /// drawn that way: a head with no box, words above their line and a frame that reaches left for its tab.
+    /// </summary>
+    [Test]
+    public void EverySequence_LaidOutByTheNewMeasures_KeepsItsWordsInsideTheDrawing()
     {
+        var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
+            .Where(pair => pair.source.Sequence is not null)
+            .SelectMany(pair => Outside(pair.source.Sequence!, SequenceMeasures.Marquee)
+                .Select(what => $"{Path.GetFileNameWithoutExtension(pair.json)}: {what} leaves the drawing"))
+            .ToList();
+
+        Assert.That(faults, Is.Empty, string.Join('\n', faults));
+    }
+
+    /// <summary>
+    /// What in a sequence, laid out by the measures given, reaches left of its start or right of its width.
+    /// </summary>
+    private static IEnumerable<string> Outside(SequenceSpec sequence, SequenceMeasures measures)
+    {
+        var placed = SequenceLayout.Place(sequence, measures);
         var boxes = placed.Rows
             .Select(row => (What: row.Lines.FirstOrDefault() ?? "",
-                Box: row.Step is NoteStep ? SequenceMeasures.Boxed.NoteBox(row) : SequenceMeasures.Boxed.WordBox(row)))
+                Box: row.Step is NoteStep ? measures.NoteBox(row) : measures.WordBox(row)))
             .Concat(placed.Blocks.Select(block =>
                 (What: block.Block.Label, Box: (block.X, block.Y, block.W, block.H))));
         return boxes.Where(item => item.Box.Item1 < 0 || item.Box.Item1 + item.Box.Item3 > placed.Width + 0.001)

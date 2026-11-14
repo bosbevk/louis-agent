@@ -18,8 +18,8 @@ internal sealed class SequenceRows(
     bool numbered,
     SequenceMeasures measures)
 {
-    /// <summary>Clear room between a turn to oneself's words and the drawing's edge, and under a row.</summary>
-    private const double Clear = 12, RowEnd = 12;
+    /// <summary>Clear room between a turn to oneself's words and the drawing's edge.</summary>
+    private const double Clear = 12;
 
     /// <summary>The messages, replies and notes, top to bottom.</summary>
     public List<PlacedRow> Rows { get; } = [];
@@ -84,10 +84,10 @@ internal sealed class SequenceRows(
             (y, left, right) = (inner.Y, Math.Min(left, inner.Left), Math.Max(right, inner.Right));
         }
 
-        double x = left - measures.Inset;
+        double x = left - measures.InsetLeft;
         double width = cases.Select(@case => measures.ElseWidth(@case.Lines))
             .Append(measures.TabWidth(block.Block, lines))
-            .Append(right + measures.Inset - x)
+            .Append(right + measures.InsetRight - x)
             .Max();
         double bottom = y + measures.BlockEnd;
         Blocks.Add(new PlacedBlock(block, lines, cases, depth, x, top, width, bottom - top));
@@ -106,9 +106,9 @@ internal sealed class SequenceRows(
         double arrow = y + measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap;
         if (step is NoteStep)
             return new PlacedRow(step, words, xs.Min(), xs.Max(), y,
-                measures.NoteTop + measures.NoteHeight(words) + RowEnd, arrow);
+                measures.NoteTop + measures.NoteHeight(words) + measures.RowEnd, arrow);
 
-        double height = measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap + RowEnd
+        double height = measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap + measures.RowEnd
                         + (xs[0] == xs[1] ? measures.SelfDrop : 0);
         return new PlacedRow(step, words, xs[0], xs[1], y, height, arrow);
     }
