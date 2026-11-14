@@ -79,6 +79,17 @@ public enum DiagramMessage
     [Description("The neighbour '{Neighbour}' stands by '{To}', which no box in the component diagram has.")]
     UnknownComponent,
 
+    [Description("The class '{Name}' has no part. A composite structure diagram shows what a class is built " +
+                 "from, so give it one part at least.")]
+    CompositeNoParts,
+
+    [Description("The id '{Id}' is used twice in the composite structure diagram. Every part needs an id of its " +
+                 "own.")]
+    DuplicatePart,
+
+    [Description("'{By}' names the part '{Part}', which the class doesn't have. Name a part by its \"id\".")]
+    UnknownPart,
+
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 

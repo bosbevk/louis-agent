@@ -6,7 +6,7 @@ namespace LouisAgent.Diagrams.Sources;
 /// What a diagram draws. A flow is the site's boxes and arrows; cards are the overview pictures in Louis's figure;
 /// a sequence is who calls whom in order; classes are an interface design; a ticket is a read-only card an agent
 /// shows in a chat (F127.4.1); components are one component, everything it holds and what stands around it
-/// (F134.7).
+/// (F134.7); a composite is the inside of one class, its parts, its ports and what joins them (F134.13).
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum DiagramKind
@@ -16,5 +16,6 @@ public enum DiagramKind
     [WireName("sequence")] Sequence,
     [WireName("classes")] Classes,
     [WireName("ticket")] Ticket,
-    [WireName("components")] Components
+    [WireName("components")] Components,
+    [WireName("composite")] Composite
 }
