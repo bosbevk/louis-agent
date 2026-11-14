@@ -156,7 +156,7 @@ internal static class EdgeRouter
             double x2 = to.X, y2 = rule.EntryOf(edge, forward, byId);
             var (track, last) = Track(edge, x1, x2, forward, byId, turned, rule);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
-            // An arrow starts and ends on the outline of its boxes' shapes: a diamond's side is inside its box
+            // An arrow starts and ends on the outline of its boxes' shapes: a decision's end is inside its box
             // everywhere but at its tip.
             double leaves = x1 - NodeShapes.Exit(from, y1, turned), arrives = x2 + NodeShapes.Entry(to, y2, turned);
             // A word stands by its line, or on it when the rule drops it. Laid out turned it stands beside its line
@@ -230,7 +230,7 @@ internal static class EdgeRouter
             double outAt = targets.Contains(edge.From) ? 0.4 : 0.5, inAt = sources.Contains(edge.To) ? 0.6 : 0.5;
             double x1 = from.X + from.W * outAt, y1 = from.Y + from.H, lane = height + BackLane + Step * at;
             double entry = to.X + to.W * inAt, y2 = to.Y + to.H;
-            // It starts and ends on the outline, which under a diamond or a pill is higher away from the middle.
+            // It starts and ends on the outline, which under a decision or a pill is higher towards its ends.
             double leaves = y1 - NodeShapes.Under(from, x1, turned), arrives = y2 - NodeShapes.Under(to, entry, turned);
             yield return new Plan(edge, [(x1, leaves), (x1, lane), (entry, lane), (entry, arrives)], (x1 + entry) / 2,
                 lane + 4);

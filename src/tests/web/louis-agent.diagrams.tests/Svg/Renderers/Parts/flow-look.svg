@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1029 464" width="1029" height="464" role="img" aria-label="Runbooks: how one is used" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1010 440" width="1010" height="440" role="img" aria-label="Runbooks: how one is used" xmlns="http://www.w3.org/2000/svg">
   <title>Runbooks: how one is used</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -165,91 +165,91 @@ svg {
       <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1029" height="464" rx="14" />
-  <path class="pic-dots" d="M0 11H981M0 33H981M0 55H981M0 77H981M0 99H981M0 121H981M0 143H981M0 165H981M0 187H981M0 209H981M0 231H981M0 253H981M0 275H981M0 297H981M0 319H981M0 341H981M0 363H981M0 385H981M0 407H981" />
+  <rect class="ground" x="-24" y="-24" width="1010" height="440" rx="14" />
+  <path class="pic-dots" d="M0 11H962M0 33H962M0 55H962M0 77H962M0 99H962M0 121H962M0 143H962M0 165H962M0 187H962M0 209H962M0 231H962M0 253H962M0 275H962M0 297H962M0 319H962M0 341H962M0 363H962M0 385H962" />
   <text class="pic-title" x="0" y="24" text-anchor="start">Runbooks</text>
   <text class="pic-group" x="0" y="46" text-anchor="start">how one is used</text>
   <g class="flow" transform="translate(0 72)">
-    <rect class="flow-group" x="538.8" y="146" width="442.2" height="98" rx="14" />
-    <text class="pic-group" x="552.8" y="165" text-anchor="start">Triage</text>
-    <path class="pic-line pic-edge tone-blue" d="M 196 80 L 256.2 80" marker-end="url(#arrow-blue)" />
-    <path class="pic-march" d="M 196 80 L 256.2 80" />
-    <path class="pic-line pic-edge" d="M 466.6 80 L 550.8 80" marker-end="url(#arrow)" />
-    <path class="pic-march" d="M 466.6 80 L 550.8 80" />
-    <path class="pic-line pic-edge" d="M 466.6 80 L 478.7 80 Q 490.7 80 490.7 92.1 L 490.7 182 Q 490.7 206 514.7 206 L 550.8 206" marker-end="url(#arrow)" />
-    <path class="pic-march" d="M 466.6 80 L 478.7 80 Q 490.7 80 490.7 92.1 L 490.7 182 Q 490.7 206 514.7 206 L 550.8 206" />
-    <path class="pic-line pic-edge tone-teal reads" d="M 720.8 206 L 790 206" marker-end="url(#arrow-teal)" />
-    <rect class="flow-chip pic-edge" x="509.8" y="71" width="22" height="18" rx="9" />
-    <text class="flow-word pic-ink" x="520.8" y="83" text-anchor="middle">no</text>
-    <rect class="flow-chip pic-edge" x="506.3" y="197" width="29" height="18" rx="9" />
-    <text class="flow-word pic-ink" x="520.8" y="209" text-anchor="middle">yes</text>
-    <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="0" y="54" width="196" height="52" rx="26" />
-    <path class="pic-sheen" d="M26 55.5H170" />
-    <rect class="pic-fill tone-blue" x="19" y="69" width="4" height="22" rx="2" />
-    <rect class="pic-fill tone-blue" x="28" y="66" width="28" height="28" rx="8" />
-    <g class="flow-icon" transform="translate(34 72) scale(0.6667)">
+    <rect class="flow-group" x="520" y="122" width="442" height="98" rx="14" />
+    <text class="pic-group" x="534" y="141" text-anchor="start">Triage</text>
+    <path class="pic-line pic-edge tone-blue" d="M 196 68 L 256 68" marker-end="url(#arrow-blue)" />
+    <path class="pic-march" d="M 196 68 L 256 68" />
+    <path class="pic-line pic-edge" d="M 448 68 L 532 68" marker-end="url(#arrow)" />
+    <path class="pic-march" d="M 448 68 L 532 68" />
+    <path class="pic-line pic-edge" d="M 448 68 L 460 68 Q 472 68 472 80 L 472 158 Q 472 182 496 182 L 532 182" marker-end="url(#arrow)" />
+    <path class="pic-march" d="M 448 68 L 460 68 Q 472 68 472 80 L 472 158 Q 472 182 496 182 L 532 182" />
+    <path class="pic-line pic-edge tone-teal reads" d="M 702 182 L 771 182" marker-end="url(#arrow-teal)" />
+    <rect class="flow-chip pic-edge" x="491" y="59" width="22" height="18" rx="9" />
+    <text class="flow-word pic-ink" x="502" y="71" text-anchor="middle">no</text>
+    <rect class="flow-chip pic-edge" x="487.5" y="173" width="29" height="18" rx="9" />
+    <text class="flow-word pic-ink" x="502" y="185" text-anchor="middle">yes</text>
+    <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="0" y="42" width="196" height="52" rx="26" />
+    <path class="pic-sheen" d="M26 43.5H170" />
+    <rect class="pic-fill tone-blue" x="19" y="57" width="4" height="22" rx="2" />
+    <rect class="pic-fill tone-blue" x="28" y="54" width="28" height="28" rx="8" />
+    <g class="flow-icon" transform="translate(34 60) scale(0.6667)">
       <path d="M8 9h8" />
       <path d="M8 13h6" />
       <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
     </g>
-    <text class="flow-name" x="64" y="85" text-anchor="start">An error</text>
-    <path class="pic-panel depth-2 pic-edge flow-shape" d="M361.4 34L466.6 80L361.4 126L256.2 80Z" />
-    <rect class="pic-fill" x="350.4" y="53" width="22" height="4" rx="2" />
-    <text class="flow-name" x="361.4" y="77" text-anchor="middle">Runbook for</text>
-    <text class="flow-name" x="361.4" y="93" text-anchor="middle">this method?</text>
-    <rect class="pic-panel depth-2 pic-edge tone-red" x="550.8" y="54" width="170" height="52" rx="10" />
-    <path class="pic-sheen" d="M560.8 55.5H710.8" />
-    <rect class="pic-fill tone-red" x="557.8" y="69" width="4" height="22" rx="2" />
-    <rect class="pic-fill tone-red" x="566.8" y="66" width="28" height="28" rx="8" />
-    <g class="flow-icon" transform="translate(572.8 72) scale(0.6667)">
+    <text class="flow-name" x="64" y="73" text-anchor="start">An error</text>
+    <path class="pic-panel depth-2 pic-edge flow-shape" d="M256 68L278 34L426 34L448 68L426 102L278 102Z" />
+    <rect class="pic-fill" x="341" y="41" width="22" height="4" rx="2" />
+    <text class="flow-name" x="352" y="65" text-anchor="middle">Runbook for</text>
+    <text class="flow-name" x="352" y="81" text-anchor="middle">this method?</text>
+    <rect class="pic-panel depth-2 pic-edge tone-red" x="532" y="42" width="170" height="52" rx="10" />
+    <path class="pic-sheen" d="M542 43.5H692" />
+    <rect class="pic-fill tone-red" x="539" y="57" width="4" height="22" rx="2" />
+    <rect class="pic-fill tone-red" x="548" y="54" width="28" height="28" rx="8" />
+    <g class="flow-icon" transform="translate(554 60) scale(0.6667)">
       <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
       <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
     </g>
-    <text class="flow-name" x="602.8" y="85" text-anchor="start">Tell the team</text>
-    <rect class="pic-panel depth-2 pic-edge tone-teal" x="550.8" y="180" width="170" height="52" rx="10" />
-    <path class="pic-sheen" d="M560.8 181.5H710.8" />
-    <rect class="pic-fill tone-teal" x="557.8" y="195" width="4" height="22" rx="2" />
-    <rect class="pic-fill tone-teal" x="566.8" y="192" width="28" height="28" rx="8" />
-    <g class="flow-icon" transform="translate(572.8 198) scale(0.6667)">
+    <text class="flow-name" x="584" y="73" text-anchor="start">Tell the team</text>
+    <rect class="pic-panel depth-2 pic-edge tone-teal" x="532" y="156" width="170" height="52" rx="10" />
+    <path class="pic-sheen" d="M542 157.5H692" />
+    <rect class="pic-fill tone-teal" x="539" y="171" width="4" height="22" rx="2" />
+    <rect class="pic-fill tone-teal" x="548" y="168" width="28" height="28" rx="8" />
+    <g class="flow-icon" transform="translate(554 174) scale(0.6667)">
       <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
       <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
       <path d="M3 6l0 13" />
       <path d="M12 6l0 13" />
       <path d="M21 6l0 13" />
     </g>
-    <text class="flow-name" x="602.8" y="211" text-anchor="start">Sort it</text>
-    <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M799 180L969 180L951 232L781 232Z" />
-    <rect class="pic-fill tone-amber" x="800" y="195" width="4" height="22" rx="2" />
-    <rect class="pic-fill tone-amber" x="809" y="192" width="28" height="28" rx="8" />
-    <g class="flow-icon" transform="translate(815 198) scale(0.6667)">
+    <text class="flow-name" x="584" y="187" text-anchor="start">Sort it</text>
+    <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M780 156L950 156L932 208L762 208Z" />
+    <rect class="pic-fill tone-amber" x="781" y="171" width="4" height="22" rx="2" />
+    <rect class="pic-fill tone-amber" x="790" y="168" width="28" height="28" rx="8" />
+    <g class="flow-icon" transform="translate(796 174) scale(0.6667)">
       <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
       <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
       <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
     </g>
-    <text class="flow-name" x="845" y="211" text-anchor="start">The runbook</text>
-    <circle class="pic-port pic-edge tone-blue" cx="196" cy="80" r="4" />
-    <circle class="pic-port pic-edge" cx="466.6" cy="80" r="4" />
-    <circle class="pic-port pic-edge tone-teal" cx="720.8" cy="206" r="4" />
+    <text class="flow-name" x="826" y="187" text-anchor="start">The runbook</text>
+    <circle class="pic-port pic-edge tone-blue" cx="196" cy="68" r="4" />
+    <circle class="pic-port pic-edge" cx="448" cy="68" r="4" />
+    <circle class="pic-port pic-edge tone-teal" cx="702" cy="182" r="4" />
   </g>
-  <text class="pic-group" x="0" y="352" text-anchor="start">How to read it</text>
-  <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="369" width="26" height="16" rx="5" />
-  <rect class="pic-fill tone-blue" x="4" y="373" width="3" height="8" rx="1.5" />
-  <text class="pic-note" x="38" y="381" text-anchor="start">starts it</text>
-  <rect class="pic-swatch pic-tint pic-edge tone-teal" x="120.7" y="369" width="26" height="16" rx="5" />
-  <rect class="pic-fill tone-teal" x="124.7" y="373" width="3" height="8" rx="1.5" />
-  <text class="pic-note" x="158.7" y="381" text-anchor="start">contracts and state</text>
-  <rect class="pic-swatch pic-tint pic-edge tone-red" x="304.4" y="369" width="26" height="16" rx="5" />
-  <rect class="pic-fill tone-red" x="308.4" y="373" width="3" height="8" rx="1.5" />
-  <text class="pic-note" x="342.4" y="381" text-anchor="start">outside the process</text>
-  <rect class="pic-swatch pic-tint pic-edge tone-amber" x="488.1" y="369" width="26" height="16" rx="5" />
-  <rect class="pic-fill tone-amber" x="492.1" y="373" width="3" height="8" rx="1.5" />
-  <text class="pic-note" x="526.1" y="381" text-anchor="start">files and data</text>
-  <path class="pic-swatch pic-tint pic-edge flow-shape" d="M655.3 369L670.3 377L655.3 385L640.3 377Z" />
-  <text class="pic-note" x="678.3" y="381" text-anchor="start">a decision</text>
-  <path class="pic-swatch pic-tint pic-edge flow-shape" d="M785.3 369L797.3 369L779.3 385L767.3 385Z" />
-  <text class="pic-note" x="805.3" y="381" text-anchor="start">data in or out</text>
-  <rect class="pic-swatch pic-tint pic-edge flow-shape" x="0" y="395" width="30" height="16" rx="8" />
-  <text class="pic-note" x="38" y="407" text-anchor="start">a start or an end</text>
-  <path class="flow-key pic-line pic-edge" d="M171.1 403H201.1" marker-end="url(#arrow)" />
-  <text class="pic-note" x="209.1" y="407" text-anchor="start">a line has the colour of the box it leaves</text>
+  <text class="pic-group" x="0" y="328" text-anchor="start">How to read it</text>
+  <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="345" width="26" height="16" rx="5" />
+  <rect class="pic-fill tone-blue" x="4" y="349" width="3" height="8" rx="1.5" />
+  <text class="pic-note" x="38" y="357" text-anchor="start">starts it</text>
+  <rect class="pic-swatch pic-tint pic-edge tone-teal" x="120.7" y="345" width="26" height="16" rx="5" />
+  <rect class="pic-fill tone-teal" x="124.7" y="349" width="3" height="8" rx="1.5" />
+  <text class="pic-note" x="158.7" y="357" text-anchor="start">contracts and state</text>
+  <rect class="pic-swatch pic-tint pic-edge tone-red" x="304.4" y="345" width="26" height="16" rx="5" />
+  <rect class="pic-fill tone-red" x="308.4" y="349" width="3" height="8" rx="1.5" />
+  <text class="pic-note" x="342.4" y="357" text-anchor="start">outside the process</text>
+  <rect class="pic-swatch pic-tint pic-edge tone-amber" x="488.1" y="345" width="26" height="16" rx="5" />
+  <rect class="pic-fill tone-amber" x="492.1" y="349" width="3" height="8" rx="1.5" />
+  <text class="pic-note" x="526.1" y="357" text-anchor="start">files and data</text>
+  <path class="pic-swatch pic-tint pic-edge flow-shape" d="M640.3 353L648.3 345L662.3 345L670.3 353L662.3 361L648.3 361Z" />
+  <text class="pic-note" x="678.3" y="357" text-anchor="start">a decision</text>
+  <path class="pic-swatch pic-tint pic-edge flow-shape" d="M785.3 345L797.3 345L779.3 361L767.3 361Z" />
+  <text class="pic-note" x="805.3" y="357" text-anchor="start">data in or out</text>
+  <rect class="pic-swatch pic-tint pic-edge flow-shape" x="0" y="371" width="30" height="16" rx="8" />
+  <text class="pic-note" x="38" y="383" text-anchor="start">a start or an end</text>
+  <path class="flow-key pic-line pic-edge" d="M171.1 379H201.1" marker-end="url(#arrow)" />
+  <text class="pic-note" x="209.1" y="383" text-anchor="start">a line has the colour of the box it leaves</text>
 </svg>

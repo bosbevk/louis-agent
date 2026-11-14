@@ -193,7 +193,9 @@ public static class GraphLayout
         return crossings;
     }
 
-    /// <summary>A box's width in its shape: a plain box's own, and what a diamond, a slant or a pill adds.</summary>
+    /// <summary>
+    /// A box's width in its shape: a plain box's own, and what a decision's points, a slant or a pill adds.
+    /// </summary>
     private static double Width(GraphNode node) => NodeShapes.Room(node, WidthOf(node), HeightOf(node)).W;
 
     /// <summary>A box's height in its shape.</summary>

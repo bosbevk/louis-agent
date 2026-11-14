@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1727 1823" width="1727" height="1823" role="img" aria-label="F106: the framework's track: the triage workflow, drawn" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1589 1753" width="1589" height="1753" role="img" aria-label="F106: the framework's track: the triage workflow, drawn" xmlns="http://www.w3.org/2000/svg">
   <title>F106: the framework's track: the triage workflow, drawn</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -204,65 +204,65 @@ svg {
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1727" height="1823" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1589" height="1753" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1679M0 33H1679M0 55H1679M0 77H1679M0 99H1679M0 121H1679M0 143H1679M0 165H1679M0 187H1679M0 209H1679M0 231H1679M0 253H1679M0 275H1679M0 297H1679M0 319H1679M0 341H1679M0 363H1679M0 385H1679M0 407H1679M0 429H1679M0 451H1679M0 473H1679M0 495H1679M0 517H1679M0 539H1679M0 561H1679M0 583H1679M0 605H1679M0 627H1679M0 649H1679M0 671H1679M0 693H1679M0 715H1679M0 737H1679M0 759H1679M0 781H1679M0 803H1679M0 825H1679M0 847H1679M0 869H1679M0 891H1679M0 913H1679M0 935H1679M0 957H1679M0 979H1679M0 1001H1679M0 1023H1679M0 1045H1679M0 1067H1679M0 1089H1679M0 1111H1679M0 1133H1679M0 1155H1679M0 1177H1679M0 1199H1679M0 1221H1679M0 1243H1679M0 1265H1679M0 1287H1679M0 1309H1679M0 1331H1679M0 1353H1679M0 1375H1679M0 1397H1679M0 1419H1679M0 1441H1679M0 1463H1679M0 1485H1679M0 1507H1679M0 1529H1679M0 1551H1679M0 1573H1679M0 1595H1679M0 1617H1679M0 1639H1679M0 1661H1679M0 1683H1679M0 1705H1679M0 1727H1679" />
+    <path class="pic-dots" d="M0 11H1541M0 33H1541M0 55H1541M0 77H1541M0 99H1541M0 121H1541M0 143H1541M0 165H1541M0 187H1541M0 209H1541M0 231H1541M0 253H1541M0 275H1541M0 297H1541M0 319H1541M0 341H1541M0 363H1541M0 385H1541M0 407H1541M0 429H1541M0 451H1541M0 473H1541M0 495H1541M0 517H1541M0 539H1541M0 561H1541M0 583H1541M0 605H1541M0 627H1541M0 649H1541M0 671H1541M0 693H1541M0 715H1541M0 737H1541M0 759H1541M0 781H1541M0 803H1541M0 825H1541M0 847H1541M0 869H1541M0 891H1541M0 913H1541M0 935H1541M0 957H1541M0 979H1541M0 1001H1541M0 1023H1541M0 1045H1541M0 1067H1541M0 1089H1541M0 1111H1541M0 1133H1541M0 1155H1541M0 1177H1541M0 1199H1541M0 1221H1541M0 1243H1541M0 1265H1541M0 1287H1541M0 1309H1541M0 1331H1541M0 1353H1541M0 1375H1541M0 1397H1541M0 1419H1541M0 1441H1541M0 1463H1541M0 1485H1541M0 1507H1541M0 1529H1541M0 1551H1541M0 1573H1541M0 1595H1541M0 1617H1541M0 1639H1541M0 1661H1541" />
     <text class="pic-title" x="0" y="24" text-anchor="start">F106</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">the framework's track: the triage workflow, drawn</text>
     <g class="flow" transform="translate(0 72)">
-      <rect class="flow-group" x="0" y="0" width="290.4" height="1576" rx="14" />
+      <rect class="flow-group" x="0" y="0" width="290.4" height="1480" rx="14" />
       <text class="pic-group" x="14" y="19" text-anchor="start">Code: fixed steps, a checkpoint after each</text>
-      <rect class="flow-group" x="320.4" y="274" width="447.2" height="1122" rx="14" />
+      <rect class="flow-group" x="320.4" y="274" width="309.6" height="1026" rx="14" />
       <text class="pic-group" x="334.4" y="293" text-anchor="start">Agents: the sorter dispatches, the manager decides, the others work</text>
       <path class="pic-line pic-edge tone-blue" d="M 145.2 86 L 145.2 146" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 145.2 86 L 145.2 146" />
-      <path class="pic-line pic-edge tone-amber" d="M 145.2 198 L 145.2 220 Q 145.2 242 167.2 242 L 520 242 Q 544 242 544 266 L 544 308" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 145.2 198 L 145.2 220 Q 145.2 242 167.2 242 L 520 242 Q 544 242 544 266 L 544 308" />
-      <path class="pic-line pic-edge tone-teal" d="M 544 400 L 544 486" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 544 400 L 544 486" />
-      <path class="pic-line pic-edge tone-teal" d="M 544 400 L 544 422 Q 544 444 566 444 L 1296.2 444 Q 1317.2 444 1317.2 465 L 1317.2 486 L 1317.2 578 L 1317.2 706 L 1317.2 774 L 1317.2 834 L 1317.2 926 L 1317.2 1036" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 544 400 L 544 422 Q 544 444 566 444 L 1296.2 444 Q 1317.2 444 1317.2 465 L 1317.2 486 L 1317.2 578 L 1317.2 706 L 1317.2 774 L 1317.2 834 L 1317.2 926 L 1317.2 1036" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 578 L 544 706" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 578 L 544 706" />
-      <path class="pic-line pic-edge tone-green" d="M 544 774 L 544 834" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 544 774 L 544 834" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 578 L 544 600 Q 544 622 522 622 L 169.2 622 Q 145.2 622 145.2 646 L 145.2 706" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 578 L 544 600 Q 544 622 522 622 L 169.2 622 Q 145.2 622 145.2 646 L 145.2 706" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 926 L 544 948 Q 544 970 566 970 L 945.8 970 Q 969.8 970 969.8 994 L 969.8 1036" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 926 L 544 948 Q 544 970 566 970 L 945.8 970 Q 969.8 970 969.8 994 L 969.8 1036" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 926 L 544 948 Q 544 970 566 970 L 1275.2 970 Q 1299.2 970 1299.2 994 L 1299.2 1036" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 926 L 544 948 Q 544 970 566 970 L 1275.2 970 Q 1299.2 970 1299.2 994 L 1299.2 1036" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 926 L 544 1036" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 926 L 544 1036" />
-      <path class="pic-line pic-edge tone-green" d="M 544 1104 L 544 1164" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 544 1104 L 544 1164" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 1232 L 544 1292" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 1232 L 544 1292" />
-      <path class="pic-line pic-edge tone-green" d="M 544 1384 L 544 1422 Q 544 1446 520 1446 L 169.2 1446 Q 145.2 1446 145.2 1470 L 145.2 1512" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 544 1384 L 544 1422 Q 544 1446 520 1446 L 169.2 1446 Q 145.2 1446 145.2 1470 L 145.2 1512" />
-      <path class="pic-line pic-edge tone-violet" d="M 544 1232 L 544 1241 Q 544 1250 553 1250 L 1504.4 1250 Q 1528.4 1250 1528.4 1226 L 1528.4 1146 Q 1528.4 1122 1504.4 1122 L 553 1122 Q 544 1122 544 1113 L 544 1104" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 544 1232 L 544 1241 Q 544 1250 553 1250 L 1504.4 1250 Q 1528.4 1250 1528.4 1226 L 1528.4 1146 Q 1528.4 1122 1504.4 1122 L 553 1122 Q 544 1122 544 1113 L 544 1104" />
-      <rect class="flow-chip pic-edge tone-teal" x="550" y="448" width="113" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-teal" x="606.5" y="460" text-anchor="middle">this department</text>
-      <rect class="flow-chip pic-edge tone-teal" x="1323.2" y="448" width="134" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-teal" x="1390.2" y="460" text-anchor="middle">another department</text>
-      <rect class="flow-chip pic-edge tone-violet" x="550" y="626" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="564.5" y="638" text-anchor="middle">yes</text>
-      <rect class="flow-chip pic-edge tone-violet" x="151.2" y="626" width="22" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="162.2" y="638" text-anchor="middle">no</text>
-      <rect class="flow-chip pic-edge tone-violet" x="975.8" y="974" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="997.3" y="986" text-anchor="middle">human</text>
-      <rect class="flow-chip pic-edge tone-violet" x="1152.2" y="974" width="141" height="42" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="1222.7" y="986" text-anchor="middle">found to be theirs:</text>
-      <text class="flow-word pic-ink tone-violet" x="1222.7" y="998" text-anchor="middle">hand-off, history</text>
-      <text class="flow-word pic-ink tone-violet" x="1222.7" y="1010" text-anchor="middle">travels</text>
-      <rect class="flow-chip pic-edge tone-violet" x="550" y="974" width="64" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="582" y="986" text-anchor="middle">auto-fix</text>
-      <rect class="flow-chip pic-edge tone-green" x="550" y="1388" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="571.5" y="1400" text-anchor="middle">happy</text>
-      <rect class="flow-chip pic-edge tone-violet" x="1538.4" y="1164" width="134" height="30" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="1605.4" y="1176" text-anchor="middle">not valid, or the</text>
-      <text class="flow-word pic-ink tone-violet" x="1605.4" y="1188" text-anchor="middle">reviewer not happy</text>
+      <path class="pic-line pic-edge tone-amber" d="M 145.2 198 L 145.2 220 Q 145.2 242 167.2 242 L 451.2 242 Q 475.2 242 475.2 266 L 475.2 308" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M 145.2 198 L 145.2 220 Q 145.2 242 167.2 242 L 451.2 242 Q 475.2 242 475.2 266 L 475.2 308" />
+      <path class="pic-line pic-edge tone-teal" d="M 475.2 376 L 475.2 462" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 475.2 376 L 475.2 462" />
+      <path class="pic-line pic-edge tone-teal" d="M 475.2 376 L 475.2 398 Q 475.2 420 497.2 420 L 1158.6 420 Q 1179.6 420 1179.6 441 L 1179.6 462 L 1179.6 530 L 1179.6 658 L 1179.6 726 L 1179.6 786 L 1179.6 854 L 1179.6 964" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 475.2 376 L 475.2 398 Q 475.2 420 497.2 420 L 1158.6 420 Q 1179.6 420 1179.6 441 L 1179.6 462 L 1179.6 530 L 1179.6 658 L 1179.6 726 L 1179.6 786 L 1179.6 854 L 1179.6 964" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 530 L 475.2 658" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 530 L 475.2 658" />
+      <path class="pic-line pic-edge tone-green" d="M 475.2 726 L 475.2 786" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 475.2 726 L 475.2 786" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 530 L 475.2 552 Q 475.2 574 453.2 574 L 169.2 574 Q 145.2 574 145.2 598 L 145.2 658" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 530 L 475.2 552 Q 475.2 574 453.2 574 L 169.2 574 Q 145.2 574 145.2 598 L 145.2 658" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 854 L 475.2 876 Q 475.2 898 497.2 898 L 808.2 898 Q 832.2 898 832.2 922 L 832.2 964" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 854 L 475.2 876 Q 475.2 898 497.2 898 L 808.2 898 Q 832.2 898 832.2 922 L 832.2 964" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 854 L 475.2 876 Q 475.2 898 497.2 898 L 1137.6 898 Q 1161.6 898 1161.6 922 L 1161.6 964" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 854 L 475.2 876 Q 475.2 898 497.2 898 L 1137.6 898 Q 1161.6 898 1161.6 922 L 1161.6 964" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 854 L 475.2 964" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 854 L 475.2 964" />
+      <path class="pic-line pic-edge tone-green" d="M 475.2 1032 L 475.2 1092" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 475.2 1032 L 475.2 1092" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 1160 L 475.2 1220" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 1160 L 475.2 1220" />
+      <path class="pic-line pic-edge tone-green" d="M 475.2 1288 L 475.2 1326 Q 475.2 1350 451.2 1350 L 169.2 1350 Q 145.2 1350 145.2 1374 L 145.2 1416" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 475.2 1288 L 475.2 1326 Q 475.2 1350 451.2 1350 L 169.2 1350 Q 145.2 1350 145.2 1374 L 145.2 1416" />
+      <path class="pic-line pic-edge tone-violet" d="M 475.2 1160 L 475.2 1169 Q 475.2 1178 484.2 1178 L 1366.8 1178 Q 1390.8 1178 1390.8 1154 L 1390.8 1074 Q 1390.8 1050 1366.8 1050 L 484.2 1050 Q 475.2 1050 475.2 1041 L 475.2 1032" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 475.2 1160 L 475.2 1169 Q 475.2 1178 484.2 1178 L 1366.8 1178 Q 1390.8 1178 1390.8 1154 L 1390.8 1074 Q 1390.8 1050 1366.8 1050 L 484.2 1050 Q 475.2 1050 475.2 1041 L 475.2 1032" />
+      <rect class="flow-chip pic-edge tone-teal" x="481.2" y="424" width="113" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-teal" x="537.7" y="436" text-anchor="middle">this department</text>
+      <rect class="flow-chip pic-edge tone-teal" x="1185.6" y="424" width="134" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-teal" x="1252.6" y="436" text-anchor="middle">another department</text>
+      <rect class="flow-chip pic-edge tone-violet" x="481.2" y="578" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="495.7" y="590" text-anchor="middle">yes</text>
+      <rect class="flow-chip pic-edge tone-violet" x="151.2" y="578" width="22" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="162.2" y="590" text-anchor="middle">no</text>
+      <rect class="flow-chip pic-edge tone-violet" x="838.2" y="902" width="43" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="859.7" y="914" text-anchor="middle">human</text>
+      <rect class="flow-chip pic-edge tone-violet" x="1014.6" y="902" width="141" height="42" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="1085.1" y="914" text-anchor="middle">found to be theirs:</text>
+      <text class="flow-word pic-ink tone-violet" x="1085.1" y="926" text-anchor="middle">hand-off, history</text>
+      <text class="flow-word pic-ink tone-violet" x="1085.1" y="938" text-anchor="middle">travels</text>
+      <rect class="flow-chip pic-edge tone-violet" x="481.2" y="902" width="64" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="513.2" y="914" text-anchor="middle">auto-fix</text>
+      <rect class="flow-chip pic-edge tone-green" x="481.2" y="1292" width="43" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="502.7" y="1304" text-anchor="middle">happy</text>
+      <rect class="flow-chip pic-edge tone-violet" x="1400.8" y="1092" width="134" height="30" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="1467.8" y="1104" text-anchor="middle">not valid, or the</text>
+      <text class="flow-word pic-ink tone-violet" x="1467.8" y="1116" text-anchor="middle">reviewer not happy</text>
       <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="46" y="34" width="198.4" height="52" rx="26" />
       <path class="pic-sheen" d="M72 35.5H218.4" />
       <rect class="pic-fill tone-blue" x="65" y="49" width="4" height="22" rx="2" />
@@ -284,87 +284,87 @@ svg {
         <path d="M9 17l6 0" />
       </g>
       <text class="flow-name" x="103.4" y="177" text-anchor="start">2 Collect errors</text>
-      <path class="pic-panel depth-2 pic-edge tone-teal flow-shape" d="M544 308L687.2 354L544 400L400.8 354Z" />
-      <rect class="pic-fill tone-teal" x="533" y="327" width="22" height="4" rx="2" />
-      <text class="flow-name" x="544" y="351" text-anchor="middle">2b Sorter</text>
-      <text class="flow-name" x="544" y="367" text-anchor="middle">which department?</text>
-      <path class="pic-panel depth-2 pic-edge tone-violet flow-shape" d="M544 486L710 532L544 578L378 532Z" />
-      <rect class="pic-fill tone-violet" x="533" y="505" width="22" height="4" rx="2" />
-      <text class="flow-name" x="544" y="529" text-anchor="middle">3 Manager</text>
-      <text class="flow-name" x="544" y="545" text-anchor="middle">worth investigating?</text>
-      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M30 706L278.4 706L260.4 774L12 774Z" />
-      <rect class="pic-fill tone-amber" x="31" y="729" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="40" y="726" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(46 732) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-teal flow-shape" d="M366.6 342L388.6 308L561.8 308L583.8 342L561.8 376L388.6 376Z" />
+      <rect class="pic-fill tone-teal" x="464.2" y="315" width="22" height="4" rx="2" />
+      <text class="flow-name" x="475.2" y="339" text-anchor="middle">2b Sorter</text>
+      <text class="flow-name" x="475.2" y="355" text-anchor="middle">which department?</text>
+      <path class="pic-panel depth-2 pic-edge tone-violet flow-shape" d="M355.2 496L377.2 462L573.2 462L595.2 496L573.2 530L377.2 530Z" />
+      <rect class="pic-fill tone-violet" x="464.2" y="469" width="22" height="4" rx="2" />
+      <text class="flow-name" x="475.2" y="493" text-anchor="middle">3 Manager</text>
+      <text class="flow-name" x="475.2" y="509" text-anchor="middle">worth investigating?</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M30 658L278.4 658L260.4 726L12 726Z" />
+      <rect class="pic-fill tone-amber" x="31" y="681" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="40" y="678" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(46 684) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="76" y="737" text-anchor="start">Saved after every step</text>
-      <text class="flow-name" x="76" y="753" text-anchor="start">Mongo, restart from here</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="457.8" y="706" width="172.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M467.8 707.5H620.2" />
-      <rect class="pic-fill tone-green" x="464.8" y="729" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="473.8" y="726" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(479.8 732) scale(0.6667)">
+      <text class="flow-name" x="76" y="689" text-anchor="start">Saved after every step</text>
+      <text class="flow-name" x="76" y="705" text-anchor="start">Mongo, restart from here</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="389" y="658" width="172.4" height="68" rx="10" />
+      <path class="pic-sheen" d="M399 659.5H551.4" />
+      <rect class="pic-fill tone-green" x="396" y="681" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="405" y="678" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(411 684) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="509.8" y="737" text-anchor="start">4 Investigator</text>
-      <text class="flow-name" x="509.8" y="753" text-anchor="start">typed result</text>
-      <path class="pic-panel depth-2 pic-edge tone-violet flow-shape" d="M544 834L755.6 880L544 926L332.4 880Z" />
-      <rect class="pic-fill tone-violet" x="533" y="853" width="22" height="4" rx="2" />
-      <text class="flow-name" x="544" y="877" text-anchor="middle">5 Manager + a rule in code</text>
-      <text class="flow-name" x="544" y="893" text-anchor="middle">human or auto?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="446.4" y="1036" width="195.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M456.4 1037.5H631.6" />
-      <rect class="pic-fill tone-green" x="453.4" y="1059" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="462.4" y="1056" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(468.4 1062) scale(0.6667)">
+      <text class="flow-name" x="441" y="689" text-anchor="start">4 Investigator</text>
+      <text class="flow-name" x="441" y="705" text-anchor="start">typed result</text>
+      <path class="pic-panel depth-2 pic-edge tone-violet flow-shape" d="M332.4 820L354.4 786L596 786L618 820L596 854L354.4 854Z" />
+      <rect class="pic-fill tone-violet" x="464.2" y="793" width="22" height="4" rx="2" />
+      <text class="flow-name" x="475.2" y="817" text-anchor="middle">5 Manager + a rule in code</text>
+      <text class="flow-name" x="475.2" y="833" text-anchor="middle">human or auto?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="377.6" y="964" width="195.2" height="68" rx="10" />
+      <path class="pic-sheen" d="M387.6 965.5H562.8" />
+      <rect class="pic-fill tone-green" x="384.6" y="987" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="393.6" y="984" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(399.6 990) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="498.4" y="1067" text-anchor="start">6 Coder</text>
-      <text class="flow-name" x="498.4" y="1083" text-anchor="start">fixes on a branch</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="832.6" y="1036" width="274.4" height="68" rx="34" />
-      <path class="pic-sheen" d="M866.6 1037.5H1073" />
-      <rect class="pic-fill tone-red" x="851.6" y="1059" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="860.6" y="1056" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(866.6 1062) scale(0.6667)">
+      <text class="flow-name" x="429.6" y="995" text-anchor="start">6 Coder</text>
+      <text class="flow-name" x="429.6" y="1011" text-anchor="start">fixes on a branch</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="695" y="964" width="274.4" height="68" rx="34" />
+      <path class="pic-sheen" d="M729 965.5H935.4" />
+      <rect class="pic-fill tone-red" x="714" y="987" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="723" y="984" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(729 990) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="896.6" y="1075" text-anchor="start">Endpoint: needs a person</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="1148" y="1036" width="320.4" height="68" rx="34" />
-      <path class="pic-sheen" d="M1182 1037.5H1434.4" />
-      <rect class="pic-fill tone-red" x="1167" y="1059" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="1176" y="1056" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1182 1062) scale(0.6667)">
+      <text class="flow-name" x="759" y="1003" text-anchor="start">Endpoint: needs a person</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="1010.4" y="964" width="320.4" height="68" rx="34" />
+      <path class="pic-sheen" d="M1044.4 965.5H1296.8" />
+      <rect class="pic-fill tone-red" x="1029.4" y="987" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="1038.4" y="984" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1044.4 990) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="1212" y="1067" text-anchor="start">Another department's workflow</text>
-      <text class="flow-name" x="1212" y="1083" text-anchor="start">its own manager and steps</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="438.8" y="1164" width="210.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M448.8 1165.5H639.2" />
-      <rect class="pic-fill tone-violet" x="445.8" y="1187" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="454.8" y="1184" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(460.8 1190) scale(0.6667)">
+      <text class="flow-name" x="1074.4" y="995" text-anchor="start">Another department's workflow</text>
+      <text class="flow-name" x="1074.4" y="1011" text-anchor="start">its own manager and steps</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="370" y="1092" width="210.4" height="68" rx="10" />
+      <path class="pic-sheen" d="M380 1093.5H570.4" />
+      <rect class="pic-fill tone-violet" x="377" y="1115" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="386" y="1112" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(392 1118) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="490.8" y="1195" text-anchor="start">7 Manager validates</text>
-      <text class="flow-name" x="490.8" y="1211" text-anchor="start">tests, replay, git</text>
-      <path class="pic-panel depth-2 pic-edge tone-green flow-shape" d="M544 1292L634 1338L544 1384L454 1338Z" />
-      <rect class="pic-fill tone-green" x="533" y="1311" width="22" height="4" rx="2" />
-      <text class="flow-name" x="544" y="1335" text-anchor="middle">8 Reviewer</text>
-      <text class="flow-name" x="544" y="1351" text-anchor="middle">happy?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green flow-shape" x="15.6" y="1512" width="259.2" height="52" rx="26" />
-      <path class="pic-sheen" d="M41.6 1513.5H248.8" />
-      <rect class="pic-fill tone-green" x="34.6" y="1527" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="43.6" y="1524" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(49.6 1530) scale(0.6667)">
+      <text class="flow-name" x="422" y="1123" text-anchor="start">7 Manager validates</text>
+      <text class="flow-name" x="422" y="1139" text-anchor="start">tests, replay, git</text>
+      <path class="pic-panel depth-2 pic-edge tone-green flow-shape" d="M379.2 1254L401.2 1220L549.2 1220L571.2 1254L549.2 1288L401.2 1288Z" />
+      <rect class="pic-fill tone-green" x="464.2" y="1227" width="22" height="4" rx="2" />
+      <text class="flow-name" x="475.2" y="1251" text-anchor="middle">8 Reviewer</text>
+      <text class="flow-name" x="475.2" y="1267" text-anchor="middle">happy?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green flow-shape" x="15.6" y="1416" width="259.2" height="52" rx="26" />
+      <path class="pic-sheen" d="M41.6 1417.5H248.8" />
+      <rect class="pic-fill tone-green" x="34.6" y="1431" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="43.6" y="1428" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(49.6 1434) scale(0.6667)">
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -372,52 +372,52 @@ svg {
         <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
         <path d="M14 14l3 -3l3 3" />
       </g>
-      <text class="flow-name" x="79.6" y="1543" text-anchor="start">9 A branch, never a PR</text>
+      <text class="flow-name" x="79.6" y="1447" text-anchor="start">9 A branch, never a PR</text>
       <circle class="pic-port pic-edge tone-blue" cx="145.2" cy="86" r="4" />
       <circle class="pic-port pic-edge tone-amber" cx="145.2" cy="198" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="544" cy="400" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="544" cy="578" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="544" cy="774" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="544" cy="926" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="544" cy="1104" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="544" cy="1232" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="544" cy="1384" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="475.2" cy="376" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="475.2" cy="530" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="475.2" cy="726" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="475.2" cy="854" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="475.2" cy="1032" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="475.2" cy="1160" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="475.2" cy="1288" r="4" />
     </g>
-    <text class="pic-group" x="0" y="1684" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1701" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="1705" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="1713" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1701" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="1705" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="1713" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1701" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="264.3" y="1705" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="1713" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="1701" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="410.2" y="1705" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="444.2" y="1713" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-red" x="589.9" y="1701" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-red" x="593.9" y="1705" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="627.9" y="1713" text-anchor="start">outside the process</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="1701" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="777.6" y="1705" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="811.6" y="1713" text-anchor="start">files and data</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M940.8 1701L955.8 1709L940.8 1717L925.8 1709Z" />
-    <text class="pic-note" x="963.8" y="1713" text-anchor="start">a decision</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M1070.8 1701L1082.8 1701L1064.8 1717L1052.8 1717Z" />
-    <text class="pic-note" x="1090.8" y="1713" text-anchor="start">data in or out</text>
-    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="1205" y="1701" width="30" height="16" rx="8" />
-    <text class="pic-note" x="1243" y="1713" text-anchor="start">a start or an end</text>
-    <path class="flow-key pic-line pic-edge" d="M1376.1 1709H1406.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="1414.1" y="1713" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="1588" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1605" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="1609" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="1617" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1605" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="1609" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="1617" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1605" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="264.3" y="1609" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="1617" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="1605" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="410.2" y="1609" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="444.2" y="1617" text-anchor="start">contracts and state</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-red" x="589.9" y="1605" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-red" x="593.9" y="1609" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="627.9" y="1617" text-anchor="start">outside the process</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="1605" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="777.6" y="1609" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="811.6" y="1617" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M925.8 1613L933.8 1605L947.8 1605L955.8 1613L947.8 1621L933.8 1621Z" />
+    <text class="pic-note" x="963.8" y="1617" text-anchor="start">a decision</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M1070.8 1605L1082.8 1605L1064.8 1621L1052.8 1621Z" />
+    <text class="pic-note" x="1090.8" y="1617" text-anchor="start">data in or out</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="1205" y="1605" width="30" height="16" rx="8" />
+    <text class="pic-note" x="1243" y="1617" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M0 1639H30" marker-end="url(#arrow)" />
+    <text class="pic-note" x="38" y="1643" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1738" width="1679" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 1748) scale(0.6667)">
+  <rect class="notebar" x="0" y="1668" width="1541" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1678) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1760">
+  <text class="notes" x="38" y="1690">
     <tspan class="note-head">Code runs the fixed steps and saves after each:</tspan>
     <tspan class="note-rest">the manager decides and checks, the others work, and a branch is left, never a PR.</tspan>
   </text>

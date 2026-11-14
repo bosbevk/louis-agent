@@ -1,14 +1,15 @@
 using System.Globalization;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Shapes;
 
 /// <summary>
-/// A box may have a shape where the shape means something (F134.8): a diamond for a decision, a slanted box for
-/// data, a pill for a start or an end. A shape is as big as its words need inside it, and an arrow ends on its
-/// outline.
+/// A box may have a shape where the shape means something (F134.8): a box with pointed ends for a decision
+/// (F134.12, a diamond before), a slanted box for data, a pill for a start or an end. A shape is as big as its
+/// words need inside it, and an arrow ends on its outline.
 /// </summary>
 public class NodeShapesTests
 {
@@ -36,11 +37,11 @@ public class NodeShapesTests
     }
 
     /// <summary>
-    /// A diamond is big enough for its words: at the height of each line, the line fits between the two slanted
-    /// sides.
+    /// A decision is a box with pointed ends (F134.12): as tall as a plain box with its words, and wider only by
+    /// a point. At the height of each line, the line fits between the two slanted ends.
     /// </summary>
     [Test]
-    public void ADiamond_HoldsItsWords()
+    public void ADecision_IsAsTallAsItsWords_AndHoldsThem()
     {
         var (w, h) = NodeShapes.Room(Question, 170, 84);
         string[] lines = Question.Label.Split('\n');
@@ -48,9 +49,10 @@ public class NodeShapesTests
 
         Assert.Multiple(() =>
         {
+            Assert.That((w, h), Is.EqualTo((170 + NodeShapes.Point, 84.0)));
             for (int at = 0; at < lines.Length; at++)
             {
-                // The edge of the line that is further from the middle, where the diamond is narrower.
+                // The edge of the line that is further from the middle, where the ends reach further in.
                 double edge = top + FlowText.LabelStep * (at < lines.Length / 2.0 ? at : at + 1);
                 double room = w - 2 * NodeShapes.Inset(NodeShape.Decision, ShapeSide.Left, w, h, edge);
                 Assert.That(room, Is.GreaterThanOrEqualTo(lines[at].Length * GraphLayout.LabelCharWidth),
@@ -59,16 +61,52 @@ public class NodeShapesTests
         });
     }
 
-    /// <summary>A diamond's outline is at the box's side only at the tip, and half the box in at its top.</summary>
+    /// <summary>
+    /// A decision's end is a point at half its height, and slants in to a corner a point's length from the tip.
+    /// Its top and its bottom are flat between the corners.
+    /// </summary>
     [Test]
-    public void ADiamondsSide_SlantsFromItsTip()
+    public void ADecisionsEnd_IsAPoint_AndItsTopIsFlat()
     {
+        double point = NodeShapes.Point;
+
         Assert.Multiple(() =>
         {
             Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Left, 200, 100, 50), Is.Zero, "at the tip");
-            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Left, 200, 100, 25), Is.EqualTo(50));
-            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Top, 200, 100, 100), Is.Zero, "at the top tip");
-            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Bottom, 200, 100, 50), Is.EqualTo(25));
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Left, 200, 100, 0), Is.EqualTo(point));
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Right, 200, 100, 75), Is.EqualTo(point / 2));
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Top, 200, 100, 100), Is.Zero, "the flat top");
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Top, 200, 100, point), Is.Zero, "a corner");
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Top, 200, 100, 0), Is.EqualTo(50), "the tip");
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Bottom, 200, 100, 200 - point / 2),
+                Is.EqualTo(25));
+        });
+    }
+
+    /// <summary>A decision's outline has six corners: a tip each side, and two corners above and under.</summary>
+    [Test]
+    public void ADecisionsOutline_HasSixCorners()
+    {
+        string? outline = NodeShapes.PathOf(new PlacedNode(Question, 10, 20, 200, 100));
+
+        Assert.That(outline, Is.EqualTo($"M10 70L{10 + NodeShapes.Point} 20L{210 - NodeShapes.Point} 20L210 70" +
+                                        $"L{210 - NodeShapes.Point} 120L{10 + NodeShapes.Point} 120Z"));
+    }
+
+    /// <summary>
+    /// A small decision, as the key draws its sample, has points no longer than half its height, so its outline
+    /// never crosses itself, and an arrow meets that same outline.
+    /// </summary>
+    [Test]
+    public void ASmallDecision_HasShorterPoints()
+    {
+        string? outline = NodeShapes.PathOf(new PlacedNode(Question, 0, 0, 30, 16));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(outline, Is.EqualTo("M0 8L8 0L22 0L30 8L22 16L8 16Z"));
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Left, 30, 16, 0), Is.EqualTo(8));
+            Assert.That(NodeShapes.Inset(NodeShape.Decision, ShapeSide.Top, 30, 16, 8), Is.Zero);
         });
     }
 
@@ -104,30 +142,33 @@ public class NodeShapesTests
     }
 
     /// <summary>
-    /// Two arrows into a diamond arrive off its tip, so each ends on the slanted side, not at the edge of the box
-    /// the diamond is drawn in.
+    /// Two arrows into a decision arrive off its tip, so each ends on its outline, a slanted end or the flat top,
+    /// and not at the edge of the box the shape is drawn in.
     /// </summary>
     [TestCase(FlowDirection.Right)]
     [TestCase(FlowDirection.Down)]
-    public void AnArrowIntoADiamond_EndsOnItsOutline(FlowDirection direction)
+    public void AnArrowIntoADecision_EndsOnItsOutline(FlowDirection direction)
     {
         var spec = new GraphSpec(
             [new GraphNode("a", "A"), new GraphNode("b", "B"), Question],
             [new GraphEdge("a", "q"), new GraphEdge("b", "q")], direction);
 
         var placed = GraphLayout.Place(spec, rules: FlowRules.Straight);
-        var diamond = placed.Nodes.Single(node => node.Node.Id == "q");
+        var shape = placed.Nodes.Single(node => node.Node.Id == "q");
 
         Assert.Multiple(() =>
         {
             foreach (var edge in placed.Edges)
             {
                 var (x, y) = End(edge.Path);
-                // On a diamond, how far a point is from the middle each way, as parts of the half sizes, adds up
-                // to one.
-                double across = Math.Abs(x - (diamond.X + diamond.W / 2)) / (diamond.W / 2);
-                double down = Math.Abs(y - (diamond.Y + diamond.H / 2)) / (diamond.H / 2);
-                Assert.That(across + down, Is.EqualTo(1).Within(0.01), $"{edge.Edge.From} ends on the outline");
+                // How far the point is from the middle: across in pixels, and down as a part of half the height.
+                double across = Math.Abs(x - (shape.X + shape.W / 2));
+                double down = Math.Abs(y - (shape.Y + shape.H / 2)) / (shape.H / 2);
+                // On a slanted end the outline is a point's length further in at the top than at the tip. On the
+                // flat top or bottom it is anywhere between the two corners.
+                bool onAnEnd = Math.Abs(across - (shape.W / 2 - NodeShapes.Point * down)) < 0.1;
+                bool onTheFlat = Math.Abs(down - 1) < 0.01 && across <= shape.W / 2 - NodeShapes.Point + 0.1;
+                Assert.That(onAnEnd || onTheFlat, Is.True, $"{edge.Edge.From} ends on the outline, at {x} {y}");
             }
         });
     }

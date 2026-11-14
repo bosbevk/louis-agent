@@ -18,12 +18,19 @@ public static class NodeShapes
     public const double Skew = 18;
 
     /// <summary>
+    /// How far in from its tip a decision's corners stand: its two ends are points, and its top and bottom are
+    /// flat between the corners (F134.12).
+    /// </summary>
+    public const double Point = 22;
+
+    /// <summary>
     /// The size a box needs in its shape, from the size it would have as a plain box: a slanted box its slant
-    /// wider, a pill wider by the round of its ends, and a diamond as below.
+    /// wider, a pill wider by the round of its ends, and a decision wider by a point. A plain box's room round
+    /// its words is more than half a point each side, so the words still fit between the two slanted ends.
     /// </summary>
     public static (double W, double H) Room(GraphNode node, double w, double h) => node.Shape switch
     {
-        NodeShape.Decision => Diamond(node, w),
+        NodeShape.Decision => (w + Point, h),
         NodeShape.Data => (w + Skew, h),
         NodeShape.Terminal => (w + h / 2, h),
         _ => (w, h)
@@ -31,13 +38,14 @@ public static class NodeShapes
 
     /// <summary>
     /// How far inside the box a shape's outline is, at a place along one of the box's sides. Nothing for a plain
-    /// box, and nothing at the tip of a diamond.
+    /// box, and nothing at the tip of a decision's end or along its flat top.
     /// </summary>
     public static double Inset(NodeShape shape, ShapeSide side, double w, double h, double along) =>
         (shape, side) switch
         {
-            (NodeShape.Decision, ShapeSide.Left or ShapeSide.Right) => w * Math.Abs(along - h / 2) / h,
-            (NodeShape.Decision, _) => h * Math.Abs(along - w / 2) / w,
+            (NodeShape.Decision, ShapeSide.Left or ShapeSide.Right) => PointOf(h) * Math.Abs(along - h / 2) / (h / 2),
+            (NodeShape.Decision, _) => h / 2 * Math.Max(0,
+                Math.Max(1 - along / PointOf(h), (along - (w - PointOf(h))) / PointOf(h))),
             (NodeShape.Terminal, ShapeSide.Left or ShapeSide.Right) => Round(h / 2, along - h / 2),
             (NodeShape.Terminal, _) => Round(h / 2, Math.Max(0, Math.Max(h / 2 - along, along - (w - h / 2)))),
             (NodeShape.Data, ShapeSide.Left) => Skew * (1 - along / h),
@@ -72,16 +80,17 @@ public static class NodeShapes
         : Inset(node.Node.Shape, ShapeSide.Bottom, node.W, node.H, x - node.X);
 
     /// <summary>
-    /// The outline of a diamond or a slanted box as a path, round the box the layout placed. Nothing for a plain
+    /// The outline of a decision or a slanted box as a path, round the box the layout placed. Nothing for a plain
     /// box or a pill, which are drawn as a rounded box.
     /// </summary>
     public static string? PathOf(PlacedNode node)
     {
         double left = node.X, right = node.X + node.W, top = node.Y, bottom = node.Y + node.H;
-        double across = node.X + node.W / 2, down = node.Y + node.H / 2;
+        double down = node.Y + node.H / 2, point = PointOf(node.H);
         return node.Node.Shape switch
         {
-            NodeShape.Decision => Closed((across, top), (right, down), (across, bottom), (left, down)),
+            NodeShape.Decision => Closed((left, down), (left + point, top), (right - point, top), (right, down),
+                (right - point, bottom), (left + point, bottom)),
             NodeShape.Data => Closed((left + Skew, top), (right, top), (right - Skew, bottom), (left, bottom)),
             _ => null
         };
@@ -93,17 +102,10 @@ public static class NodeShapes
             + "Z";
 
     /// <summary>
-    /// A diamond for a box's words: twice as wide and twice as tall as the words, with the label's room round them.
-    /// A line of words then fits between the slanted sides at its own height. It shows its label and no icon, since
-    /// its shape already says what it is.
+    /// A decision's point for its height: the usual one, or half the height for a shape so small that the usual
+    /// one would cross itself, as the key's sample is.
     /// </summary>
-    private static (double W, double H) Diamond(GraphNode node, double w)
-    {
-        var lines = FlowText.LabelLines(node);
-        double wide = lines.Max(line => line.Length) * GraphLayout.LabelCharWidth;
-        double tall = FlowText.LabelStep * lines.Count;
-        return (Math.Max(w, 2 * wide + 2 * GraphLayout.LabelPad), 2 * tall + 2 * GraphLayout.LabelPad);
-    }
+    private static double PointOf(double h) => Math.Min(Point, h / 2);
 
     /// <summary>How far in a half circle's edge is, a way off the middle of its flat side.</summary>
     private static double Round(double radius, double off) =>

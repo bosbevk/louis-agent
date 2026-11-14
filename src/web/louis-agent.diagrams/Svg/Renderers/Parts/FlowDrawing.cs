@@ -123,7 +123,7 @@ internal static class FlowDrawing
     }
 
     /// <summary>
-    /// A box: its panel in its shape and its tone, then what stands in it. A diamond holds its words alone, in the
+    /// A box: its panel in its shape and its tone, then what stands in it. A decision holds its words alone, in the
     /// middle under a short bar in its colour. Any other box has a bar in its colour at its left, its icon in a
     /// solid badge, and its words after them.
     /// </summary>
@@ -156,7 +156,7 @@ internal static class FlowDrawing
 
     /// <summary>
     /// A box's panel: a rounded box for a plain box and, with a round end, for a pill, and the outline's path for
-    /// a diamond and a slanted box. A shape that means something is marked, so the look makes it stand out.
+    /// a decision and a slanted box. A shape that means something is marked, so the look makes it stand out.
     /// </summary>
     private static void Panel(SvgWriter writer, PlacedNode node, string tone)
     {

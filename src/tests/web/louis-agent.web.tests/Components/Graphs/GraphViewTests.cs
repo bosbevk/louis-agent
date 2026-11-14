@@ -134,7 +134,9 @@ public class GraphViewTests
         });
     }
 
-    /// <summary>A decision is drawn as its diamond, four corners, and not as a box.</summary>
+    /// <summary>
+    /// A decision is drawn as its outline, a box with pointed ends and six corners, and not as a box.
+    /// </summary>
     [Test]
     public void ADecision_IsDrawnAsItsOutline()
     {
@@ -146,7 +148,7 @@ public class GraphViewTests
         Assert.Multiple(() =>
         {
             Assert.That(decision.QuerySelectorAll("rect"), Is.Empty);
-            Assert.That(Numbers(decision.QuerySelector("path")!.GetAttribute("d")!), Has.Count.EqualTo(8));
+            Assert.That(Numbers(decision.QuerySelector("path")!.GetAttribute("d")!), Has.Count.EqualTo(12));
             Assert.That(Numbers(decision.QuerySelector("path")!.GetAttribute("d")!).Min(), Is.Zero,
                 "drawn from the group's own corner");
         });

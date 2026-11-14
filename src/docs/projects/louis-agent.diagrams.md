@@ -185,15 +185,18 @@ Whether two upright pieces overlap depends on how high the boxes stand. So `Grap
 with the columns far apart, only to learn the heights, sizes each gap from them, and then places the boxes
 where they belong.
 
-**A box's shape.** A box may name a shape where the shape means something: `decision` is a diamond, `data` a
-slanted box, `terminal` a pill for a start or an end. Left out, it is a plain box. A name that is no shape is
+**A box's shape.** A box may name a shape where the shape means something: `decision` is a box with pointed
+ends, `data` a slanted box, `terminal` a pill for a start or an end. Left out, it is a plain box. A name that is no shape is
 refused with the shapes there are. A shape stands inside the box the layout gives it, so the layout and the
 router go on working with boxes and ask `NodeShapes` for the two things a shape changes:
 
-- *Its room.* A diamond is twice as wide and twice as tall as its words, so each line fits between the slanted
-  sides at its own height. A slanted box is 18 wider, and a pill wider by half its height.
-- *Where its outline is.* A diamond's side is inside its box everywhere but at the tip, so an arrow that arrives
-  off the middle ends on the slanted side, not at the box's edge. The same holds under a shape, where an arrow
+- *Its room.* A decision is as tall as a plain box and 22 wider, a point's length. A plain box keeps 14 clear each
+  side of its words, so they still fit between the two slanted ends. A slanted box is 18 wider, and a pill wider
+  by half its height.
+- *Where its outline is.* A decision's end is a point at half its height, and slants in to a corner 22 from the
+  tip. Its top and its bottom are flat between the corners. So an arrow that arrives off the middle of an end
+  stops on the slant, not at the box's edge, and one from above or below meets the flat. A decision too small
+  for that, as the key's sample is, has points of half its height. The same holds under a shape, where an arrow
   back to an earlier column leaves and arrives.
 
 **A chart that runs down.** It is laid out turned, and `Turn` turns every point back. So one layout and one router

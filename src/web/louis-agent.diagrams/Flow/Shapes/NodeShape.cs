@@ -3,9 +3,9 @@ using LouisAgent.Choices;
 namespace LouisAgent.Diagrams.Flow.Shapes;
 
 /// <summary>
-/// The shape of a flow's box (F134.8), named only where the shape means something: a decision is a diamond, data a
-/// slanted box, a start or an end a pill. Left out, a box is the plain box it always was, so a picture of parts and
-/// what calls what needs none.
+/// The shape of a flow's box (F134.8), named only where the shape means something: a decision is a box with
+/// pointed ends (F134.12, a diamond before), data a slanted box, a start or an end a pill. Left out, a box is the
+/// plain box it always was, so a picture of parts and what calls what needs none.
 /// </summary>
 /// <remarks>
 /// The flowchart's own shapes (ISO 5807), Louis's pick of three: "a shape only where it means something". Most of

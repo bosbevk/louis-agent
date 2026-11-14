@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 966 923" width="966" height="923" role="img" aria-label="ADR 0002: which Claude tier to build on" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 717 868" width="717" height="868" role="img" aria-label="ADR 0002: which Claude tier to build on" xmlns="http://www.w3.org/2000/svg">
   <title>ADR 0002: which Claude tier to build on</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -192,57 +192,57 @@ svg {
       <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="966" height="923" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="717" height="868" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H918M0 33H918M0 55H918M0 77H918M0 99H918M0 121H918M0 143H918M0 165H918M0 187H918M0 209H918M0 231H918M0 253H918M0 275H918M0 297H918M0 319H918M0 341H918M0 363H918M0 385H918M0 407H918M0 429H918M0 451H918M0 473H918M0 495H918M0 517H918M0 539H918M0 561H918M0 583H918M0 605H918M0 627H918M0 649H918M0 671H918M0 693H918M0 715H918M0 737H918M0 759H918M0 781H918M0 803H918M0 825H918" />
+    <path class="pic-dots" d="M0 11H669M0 33H669M0 55H669M0 77H669M0 99H669M0 121H669M0 143H669M0 165H669M0 187H669M0 209H669M0 231H669M0 253H669M0 275H669M0 297H669M0 319H669M0 341H669M0 363H669M0 385H669M0 407H669M0 429H669M0 451H669M0 473H669M0 495H669M0 517H669M0 539H669M0 561H669M0 583H669M0 605H669M0 627H669M0 649H669M0 671H669M0 693H669M0 715H669M0 737H669M0 759H669" />
     <text class="pic-title" x="0" y="24" text-anchor="start">ADR 0002</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">which Claude tier to build on</text>
     <g class="flow" transform="translate(0 72)">
-      <path class="pic-line pic-edge tone-blue" d="M 226.8 52 L 226.8 112" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 226.8 52 L 226.8 112" />
-      <path class="pic-line pic-edge" d="M 226.8 204 L 226.8 270" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 226.8 204 L 226.8 270" />
-      <path class="pic-line pic-edge" d="M 226.8 204 L 226.8 216 Q 226.8 228 238.8 228 L 677.4 228 Q 698.4 228 698.4 249 L 698.4 270" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 226.8 204 L 226.8 216 Q 226.8 228 238.8 228 L 677.4 228 Q 698.4 228 698.4 249 L 698.4 270" />
-      <path class="pic-line pic-edge" d="M 698.4 362 L 698.4 374 Q 698.4 386 686.4 386 L 247.8 386 Q 226.8 386 226.8 407 L 226.8 428" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 698.4 362 L 698.4 374 Q 698.4 386 686.4 386 L 247.8 386 Q 226.8 386 226.8 407 L 226.8 428" />
-      <path class="pic-line pic-edge" d="M 698.4 362 L 698.4 428" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 698.4 362 L 698.4 428" />
-      <path class="pic-line pic-edge" d="M 698.4 520 L 698.4 532 Q 698.4 544 686.4 544 L 250.8 544 Q 226.8 544 226.8 568 L 226.8 598" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 698.4 520 L 698.4 532 Q 698.4 544 686.4 544 L 250.8 544 Q 226.8 544 226.8 568 L 226.8 598" />
-      <path class="pic-line pic-edge" d="M 698.4 520 L 698.4 598" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 698.4 520 L 698.4 598" />
-      <rect class="flow-chip pic-edge" x="232.8" y="232" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="247.3" y="244" text-anchor="middle">Yes</text>
-      <rect class="flow-chip pic-edge" x="704.4" y="232" width="169" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="788.9" y="244" text-anchor="middle">No, Claude-only is fine</text>
-      <rect class="flow-chip pic-edge" x="232.8" y="390" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="247.3" y="402" text-anchor="middle">Yes</text>
-      <rect class="flow-chip pic-edge" x="704.4" y="390" width="99" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="753.9" y="402" text-anchor="middle">No, I host it</text>
-      <rect class="flow-chip pic-edge" x="232.8" y="548" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="247.3" y="560" text-anchor="middle">Yes</text>
-      <rect class="flow-chip pic-edge" x="704.4" y="548" width="169" height="30" rx="9" />
-      <text class="flow-word pic-ink" x="788.9" y="560" text-anchor="middle">No, just a loop over my</text>
-      <text class="flow-word pic-ink" x="788.9" y="572" text-anchor="middle">own tools</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="108.6" y="0" width="236.4" height="52" rx="26" />
-      <path class="pic-sheen" d="M134.6 1.5H319" />
-      <rect class="pic-fill tone-blue" x="127.6" y="15" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="136.6" y="12" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(142.6 18) scale(0.6667)">
+      <path class="pic-line pic-edge tone-blue" d="M 156.4 52 L 156.4 112" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 156.4 52 L 156.4 112" />
+      <path class="pic-line pic-edge" d="M 156.4 180 L 156.4 246" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 156.4 180 L 156.4 246" />
+      <path class="pic-line pic-edge" d="M 156.4 180 L 156.4 192 Q 156.4 204 168.4 204 L 466.2 204 Q 487.2 204 487.2 225 L 487.2 246" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 156.4 180 L 156.4 192 Q 156.4 204 168.4 204 L 466.2 204 Q 487.2 204 487.2 225 L 487.2 246" />
+      <path class="pic-line pic-edge" d="M 487.2 314 L 487.2 326 Q 487.2 338 475.2 338 L 177.4 338 Q 156.4 338 156.4 359 L 156.4 380" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 487.2 314 L 487.2 326 Q 487.2 338 475.2 338 L 177.4 338 Q 156.4 338 156.4 359 L 156.4 380" />
+      <path class="pic-line pic-edge" d="M 487.2 314 L 487.2 380" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 487.2 314 L 487.2 380" />
+      <path class="pic-line pic-edge" d="M 487.2 448 L 487.2 460 Q 487.2 472 475.2 472 L 180.4 472 Q 156.4 472 156.4 496 L 156.4 526" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 487.2 448 L 487.2 460 Q 487.2 472 475.2 472 L 180.4 472 Q 156.4 472 156.4 496 L 156.4 526" />
+      <path class="pic-line pic-edge" d="M 487.2 448 L 487.2 526" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 487.2 448 L 487.2 526" />
+      <rect class="flow-chip pic-edge" x="162.4" y="208" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="176.9" y="220" text-anchor="middle">Yes</text>
+      <rect class="flow-chip pic-edge" x="493.2" y="208" width="169" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="577.7" y="220" text-anchor="middle">No, Claude-only is fine</text>
+      <rect class="flow-chip pic-edge" x="162.4" y="342" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="176.9" y="354" text-anchor="middle">Yes</text>
+      <rect class="flow-chip pic-edge" x="493.2" y="342" width="99" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="542.7" y="354" text-anchor="middle">No, I host it</text>
+      <rect class="flow-chip pic-edge" x="162.4" y="476" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="176.9" y="488" text-anchor="middle">Yes</text>
+      <rect class="flow-chip pic-edge" x="493.2" y="476" width="169" height="30" rx="9" />
+      <text class="flow-word pic-ink" x="577.7" y="488" text-anchor="middle">No, just a loop over my</text>
+      <text class="flow-word pic-ink" x="577.7" y="500" text-anchor="middle">own tools</text>
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="38.2" y="0" width="236.4" height="52" rx="26" />
+      <path class="pic-sheen" d="M64.2 1.5H248.6" />
+      <rect class="pic-fill tone-blue" x="57.2" y="15" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="66.2" y="12" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(72.2 18) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="172.6" y="31" text-anchor="start">Need to call Claude</text>
-      <path class="pic-panel depth-2 pic-edge flow-shape" d="M226.8 112L453.6 158L226.8 204L0 158Z" />
-      <rect class="pic-fill" x="215.8" y="131" width="22" height="4" rx="2" />
-      <text class="flow-name" x="226.8" y="155" text-anchor="middle">Need to swap model providers</text>
-      <text class="flow-name" x="226.8" y="171" text-anchor="middle">Anthropic, Ollama, etc.?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green flow-shape" x="70.4" y="270" width="312.8" height="92" rx="46" />
-      <path class="pic-sheen" d="M116.4 271.5H337.2" />
-      <rect class="pic-fill tone-green" x="89.4" y="305" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="98.4" y="302" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(104.4 308) scale(0.6667)">
+      <text class="flow-name" x="102.2" y="31" text-anchor="start">Need to call Claude</text>
+      <path class="pic-panel depth-2 pic-edge flow-shape" d="M6 146L28 112L284.8 112L306.8 146L284.8 180L28 180Z" />
+      <rect class="pic-fill" x="145.4" y="119" width="22" height="4" rx="2" />
+      <text class="flow-name" x="156.4" y="143" text-anchor="middle">Need to swap model providers</text>
+      <text class="flow-name" x="156.4" y="159" text-anchor="middle">Anthropic, Ollama, etc.?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green flow-shape" x="0" y="246" width="312.8" height="68" rx="34" />
+      <path class="pic-sheen" d="M34 247.5H278.8" />
+      <rect class="pic-fill tone-green" x="19" y="269" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="28" y="266" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(34 272) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -254,70 +254,73 @@ svg {
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="flow-name" x="134.4" y="313" text-anchor="start">Messages API + your own loop</text>
-      <text class="flow-name" x="134.4" y="329" text-anchor="start">(this is louis-agent)</text>
-      <path class="pic-panel depth-2 pic-edge flow-shape" d="M698.4 270L917.6 316L698.4 362L479.2 316Z" />
-      <rect class="pic-fill" x="687.4" y="289" width="22" height="4" rx="2" />
-      <text class="flow-name" x="698.4" y="313" text-anchor="middle">Want Anthropic to host</text>
-      <text class="flow-name" x="698.4" y="329" text-anchor="middle">the tool-execution sandbox?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="127.6" y="428" width="198.4" height="92" rx="46" />
-      <path class="pic-sheen" d="M173.6 429.5H280" />
-      <rect class="pic-fill tone-red" x="146.6" y="463" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="155.6" y="460" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(161.6 466) scale(0.6667)">
+      <text class="flow-name" x="64" y="277" text-anchor="start">Messages API + your own loop</text>
+      <text class="flow-name" x="64" y="293" text-anchor="start">(this is louis-agent)</text>
+      <path class="pic-panel depth-2 pic-edge flow-shape" d="M340.6 280L362.6 246L611.8 246L633.8 280L611.8 314L362.6 314Z" />
+      <rect class="pic-fill" x="476.2" y="253" width="22" height="4" rx="2" />
+      <text class="flow-name" x="487.2" y="277" text-anchor="middle">Want Anthropic to host</text>
+      <text class="flow-name" x="487.2" y="293" text-anchor="middle">the tool-execution sandbox?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="57.2" y="380" width="198.4" height="68" rx="34" />
+      <path class="pic-sheen" d="M91.2 381.5H221.6" />
+      <rect class="pic-fill tone-red" x="76.2" y="403" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="85.2" y="400" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(91.2 406) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="191.6" y="479" text-anchor="start">Managed Agents</text>
-      <path class="pic-panel depth-2 pic-edge flow-shape" d="M698.4 428L917.6 474L698.4 520L479.2 474Z" />
-      <rect class="pic-fill" x="687.4" y="447" width="22" height="4" rx="2" />
-      <text class="flow-name" x="698.4" y="471" text-anchor="middle">Need Claude Code's built-in</text>
-      <text class="flow-name" x="698.4" y="487" text-anchor="middle">file/bash/grep tools?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="120" y="598" width="213.6" height="52" rx="26" />
-      <path class="pic-sheen" d="M146 599.5H307.6" />
-      <rect class="pic-fill tone-red" x="139" y="613" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="148" y="610" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(154 616) scale(0.6667)">
+      <text class="flow-name" x="121.2" y="419" text-anchor="start">Managed Agents</text>
+      <path class="pic-panel depth-2 pic-edge flow-shape" d="M340.6 414L362.6 380L611.8 380L633.8 414L611.8 448L362.6 448Z" />
+      <rect class="pic-fill" x="476.2" y="387" width="22" height="4" rx="2" />
+      <text class="flow-name" x="487.2" y="411" text-anchor="middle">Need Claude Code's built-in</text>
+      <text class="flow-name" x="487.2" y="427" text-anchor="middle">file/bash/grep tools?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="49.6" y="526" width="213.6" height="52" rx="26" />
+      <path class="pic-sheen" d="M75.6 527.5H237.2" />
+      <rect class="pic-fill tone-red" x="68.6" y="541" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="77.6" y="538" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(83.6 544) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="184" y="629" text-anchor="start">Claude Agent SDK</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="600.4" y="598" width="196" height="52" rx="26" />
-      <path class="pic-sheen" d="M626.4 599.5H770.4" />
-      <rect class="pic-fill tone-red" x="619.4" y="613" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="628.4" y="610" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(634.4 616) scale(0.6667)">
+      <text class="flow-name" x="113.6" y="557" text-anchor="start">Claude Agent SDK</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="389.2" y="526" width="196" height="52" rx="26" />
+      <path class="pic-sheen" d="M415.2 527.5H559.2" />
+      <rect class="pic-fill tone-red" x="408.2" y="541" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="417.2" y="538" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(423.2 544) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="664.4" y="629" text-anchor="start">Tool Runner</text>
-      <circle class="pic-port pic-edge tone-blue" cx="226.8" cy="52" r="4" />
-      <circle class="pic-port pic-edge" cx="226.8" cy="204" r="4" />
-      <circle class="pic-port pic-edge" cx="698.4" cy="362" r="4" />
-      <circle class="pic-port pic-edge" cx="698.4" cy="520" r="4" />
+      <text class="flow-name" x="453.2" y="557" text-anchor="start">Tool Runner</text>
+      <circle class="pic-port pic-edge tone-blue" cx="156.4" cy="52" r="4" />
+      <circle class="pic-port pic-edge" cx="156.4" cy="180" r="4" />
+      <circle class="pic-port pic-edge" cx="487.2" cy="314" r="4" />
+      <circle class="pic-port pic-edge" cx="487.2" cy="448" r="4" />
     </g>
-    <text class="pic-group" x="0" y="758" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="775" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="779" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="787" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="775" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="779" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="787" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-red" x="260.3" y="775" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-red" x="264.3" y="779" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="787" text-anchor="start">outside the process</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M459 775L474 783L459 791L444 783Z" />
-    <text class="pic-note" x="482" y="787" text-anchor="start">a decision</text>
-    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="571" y="775" width="30" height="16" rx="8" />
-    <text class="pic-note" x="609" y="787" text-anchor="start">a start or an end</text>
-    <path class="flow-key pic-line pic-edge" d="M0 809H30" marker-end="url(#arrow)" />
-    <text class="pic-note" x="38" y="813" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="686" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="703" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="707" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="715" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="703" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="707" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="715" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-red" x="260.3" y="703" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-red" x="264.3" y="707" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="715" text-anchor="start">outside the process</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M444 711L452 703L466 703L474 711L466 719L452 719Z" />
+    <text class="pic-note" x="482" y="715" text-anchor="start">a decision</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="0" y="729" width="30" height="16" rx="8" />
+    <text class="pic-note" x="38" y="741" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M171.1 737H201.1" marker-end="url(#arrow)" />
+    <text class="pic-note" x="209.1" y="741" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="838" width="918" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 848) scale(0.6667)">
+  <rect class="notebar" x="0" y="766" width="669" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 776) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="860">
+  <text class="notes" x="38" y="788">
     <tspan class="note-head">Our tier:</tspan>
-    <tspan class="note-rest">the Messages API, with our own loop behind IChatClient, so any provider fits.</tspan>
+    <tspan class="note-rest">the Messages API, with our own loop behind IChatClient, so any provider</tspan>
+  </text>
+  <text class="notes" x="38" y="805">
+    <tspan class="note-rest">fits.</tspan>
   </text>
 </svg>

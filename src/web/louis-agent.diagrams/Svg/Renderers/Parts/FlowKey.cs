@@ -55,7 +55,7 @@ internal static class FlowKey
         }
     }
 
-    /// <summary>A shape's sample: a pill as a rounded box, a diamond or a slanted box by its outline.</summary>
+    /// <summary>A shape's sample: a pill as a rounded box, a decision or a slanted box by its outline.</summary>
     private static void Shape(SvgWriter writer, NodeShape shape, double x, double y)
     {
         var small = new PlacedNode(new GraphNode("", "", Shape: shape), x, y - Tall / 2, Wide + 4, Tall);

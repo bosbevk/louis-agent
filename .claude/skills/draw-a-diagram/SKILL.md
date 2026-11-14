@@ -30,7 +30,7 @@ A box of a `flow` names a `shape` only where the shape means something, and most
 
 - `data`, a slanted box: a file, a folder, a log, a database or a store. A class only when its label names the
   file or the store beside it.
-- `decision`, a diamond: a box that asks a question, or says a choice is made there, each arrow out an outcome.
+- `decision`, a box with pointed ends: a box that asks a question, or says a choice is made there, each arrow out an outcome.
 - `terminal`, a pill: a person. In a picture that tells steps in order, also what sets it off and what it ends in.
 
 ## The overview's shape

@@ -180,12 +180,12 @@ shape when the box is one of these three.
 
 | Shape | Drawn as | Name it on |
 |---|---|---|
-| `decision` | A diamond | A box that asks a question, or whose own words say a choice is made there, with each arrow out carrying an outcome. It may stay `plain`. |
+| `decision` | A box with pointed ends | A box that asks a question, or whose own words say a choice is made there, with each arrow out carrying an outcome. It may stay `plain`. |
 | `data` | A slanted box | Data at rest, not code: a file, a folder, a log, a database, a store. A class counts only when its label names the file or the store beside it. |
 | `terminal` | A pill | A person, wherever one stands. In a picture that tells steps in order, also the caller, the request or the event that sets it off, and the outcome it ends in. |
 
-A class or a program at the top of a picture of what a project holds is not a start, so it stays a box. A diamond
-shows its words and no icon, and is twice as wide and as tall as they are, so keep a question short.
+A class or a program at the top of a picture of what a project holds is not a start, so it stays a box. A
+decision shows its words and no icon, and is as tall as a plain box and a little wider.
 
 **What the picture says about itself.** A flow writes its own title inside the picture: the part of `title`
 before the first `: ` large, and the rest on a line under it. Under the drawing it has a key, *How to read it*:
