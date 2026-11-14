@@ -269,6 +269,13 @@ Each is its own plan, its own done-when and its own write-up, in this order.
 - **2026-11-15, unattended to the end.** Louis, while the rename was built: "finish on your own then merge,
   tell me only when you reach 134.1 again". What is left of CL65 is built with no stop and no question. Each
   pick made for him is recorded here as open for him to overrule, and the branch is merged at the end.
+- **2026-11-15, the `ticket` kind keeps its name for now: the third option, picked for him.** The write-up
+  below recommended `chat-card`. Starting on it turned up a cost the write-up had not weighed. Every kind's
+  part in the JSON is a field named after the kind, and the reader's refusal names it so. A kind of two words
+  is `chat-card` on the wire and `chatCard` as a field, so the one name would be two. And `card` alone means
+  renaming the overview's own records first, since `CardRow` is taken. Neither is a rename to make with nobody
+  to ask. So the record says in one line that "ticket" names the record and not the look, and the three options
+  stay open for Louis, with this cost added to the first.
 
 ## Put to Louis: the names of two kinds
 
@@ -326,6 +333,9 @@ kind whose name is a type, and the wrong one. Only one picture uses it today and
 rename is cheapest now.
 
 ### 2. The `ticket` kind
+
+**Picked unattended, 2026-11-15: the third, for now.** The entry above says why. What follows is the finding
+as it was written, before the cost of a two-word kind was seen.
 
 **What it means.** The diagrams call a thing a ticket that everything else calls a card, and that no longer
 looks like a ticket.

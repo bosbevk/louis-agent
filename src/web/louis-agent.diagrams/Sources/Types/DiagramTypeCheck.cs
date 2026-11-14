@@ -10,7 +10,7 @@ namespace LouisAgent.Diagrams.Sources.Types;
 /// </summary>
 /// <remarks>
 /// A default where there is one answer, and a refusal where there are several. It stands apart from the reader as
-/// the components' and the composite's checks do, so the reader keeps the order of the checks and each rule has
+/// the nested picture's and the composite's checks do, so the reader keeps the order of the checks and each rule has
 /// its own file.
 /// </remarks>
 public static class DiagramTypeCheck

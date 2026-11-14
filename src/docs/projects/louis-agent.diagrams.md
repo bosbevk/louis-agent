@@ -527,7 +527,8 @@ style names and fills with, and the drawing asks for each by its name.
 
 A ticket (`Tickets/`) is a read-only card an agent draws in the chat, such as a booking request. It has a kicker
 and a title in its head, an optional subtitle, a status pill in a tone, one to six rows of an icon, a label and a
-value, and a note at the foot.
+value, and a note at the foot. "Ticket" is the record's name and says nothing of the look: the web that shows
+it and the pack whose tool asks for it both call it a card.
 
 It wears the look the other pictures wear, and nothing of a paper ticket. The card is the look's glass, with the
 accent along its top. A soft light falls from the accent down the head and is gone at the hairline under it. Each
