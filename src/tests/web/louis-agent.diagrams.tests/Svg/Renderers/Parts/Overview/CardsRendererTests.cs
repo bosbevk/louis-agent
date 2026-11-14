@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Renderers;
+namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Overview;
 
 /// <summary>
 /// A cards picture is drawn in the new look (F134.9): the docs' tool and the chat both draw one through the kind's

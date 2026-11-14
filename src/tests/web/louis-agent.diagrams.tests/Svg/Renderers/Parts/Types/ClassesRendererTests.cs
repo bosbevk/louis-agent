@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Renderers;
+namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Types;
 
 /// <summary>
 /// A class chart is drawn in the cards' look (F134.11): the docs' tool and the chat both draw one through the

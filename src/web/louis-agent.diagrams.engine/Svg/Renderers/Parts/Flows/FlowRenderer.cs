@@ -1,7 +1,6 @@
-using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 
 /// <summary>
 /// Draws a flow in the new look (F134.8), <see cref="FlowDrawing"/>: its own title, boxes level with what feeds

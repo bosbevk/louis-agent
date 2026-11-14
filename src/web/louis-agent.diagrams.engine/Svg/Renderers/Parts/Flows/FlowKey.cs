@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Engine.Flow.Shapes;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Flow.Spec;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 
 /// <summary>
 /// Draws a flow's key (F134.8): a faint rule, its heading, then each item where the layout put it, a small sample

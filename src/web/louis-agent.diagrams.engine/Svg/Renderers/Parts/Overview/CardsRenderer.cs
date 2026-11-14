@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 
 /// <summary>
 /// Draws a cards picture, the overview a project doc opens with, in the new look (F134.9),

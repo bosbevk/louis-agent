@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 
 /// <summary>
 /// Draws a sequence, who calls whom in order, in the cards' look (F134.10), <see cref="SequenceDrawing"/>: each

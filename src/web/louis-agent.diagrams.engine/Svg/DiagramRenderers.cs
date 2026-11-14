@@ -2,7 +2,12 @@ using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Messages.Holes.Reading;
 using LouisAgent.Diagrams.Engine.Svg.Renderers;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg;

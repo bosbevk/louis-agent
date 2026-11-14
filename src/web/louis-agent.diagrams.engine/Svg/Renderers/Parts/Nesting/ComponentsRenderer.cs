@@ -10,7 +10,7 @@ using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
 /// <summary>
 /// Draws a component diagram (F134.7): its title as one small line over a soft light, a box inside a box for what

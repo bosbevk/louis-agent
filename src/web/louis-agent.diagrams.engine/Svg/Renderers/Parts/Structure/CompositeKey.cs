@@ -2,6 +2,7 @@ using LouisAgent.Diagrams.Composite.Spec;
 using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Messages;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 

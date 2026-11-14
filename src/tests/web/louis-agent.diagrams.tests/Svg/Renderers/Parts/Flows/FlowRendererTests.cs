@@ -1,9 +1,9 @@
 using LouisAgent.Diagrams.Engine.Svg;
-using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Renderers;
+namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Flows;
 
 /// <summary>
 /// A flow is drawn in the new look (F134.8), through the kind's one renderer.

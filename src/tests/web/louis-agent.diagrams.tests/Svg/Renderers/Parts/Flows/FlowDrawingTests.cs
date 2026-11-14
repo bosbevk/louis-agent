@@ -1,8 +1,8 @@
 using System.Xml.Linq;
-using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts;
+namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Flows;
 
 /// <summary>
 /// A flow drawn in the new look (F134.8), which since F134.12 is the others': its title as one small line over a

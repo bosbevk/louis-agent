@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 
 /// <summary>
 /// Draws a class chart, a project's interface design, in the cards' look (F134.11), <see cref="ClassesDrawing"/>:

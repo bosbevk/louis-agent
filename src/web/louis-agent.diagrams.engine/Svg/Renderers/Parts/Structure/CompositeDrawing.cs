@@ -6,6 +6,8 @@ using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Messages;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;

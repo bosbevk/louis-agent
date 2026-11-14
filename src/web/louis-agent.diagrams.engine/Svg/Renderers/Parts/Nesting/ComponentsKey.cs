@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Engine.Components.Placed.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
 /// <summary>
 /// Draws the key of a component diagram (F134.7): its heading, then a row for each thing the picture uses, each a

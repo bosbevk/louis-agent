@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Tests.Svg.Renderers;
+namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Lifelines;
 
 /// <summary>
 /// A sequence is drawn in the cards' look (F134.10): the docs' tool and the chat both draw one through the kind's

@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Components.Placed;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
 /// <summary>
 /// Draws a pin of a component diagram (F134.7): on a box's top edge, and as a sample in the picture's key.

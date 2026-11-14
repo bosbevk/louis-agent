@@ -11,7 +11,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
+namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 
 /// <summary>
 /// Draws a flow in the new look (F134.8, the others' look since F134.12): its title as one small line over a soft
