@@ -2,8 +2,9 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 
 /// <summary>
 /// What a cards picture and a sequence both wear (F134.9, F134.10, Louis's pick "Marquee" for each): the picture's
-/// small title, the soft light, the glass with the accent along its top, the pill with its code, and a node on a
-/// lit line. A flow and a component diagram wear its title and its light too (F134.12).
+/// small title, the soft light, the glass with the accent along its top, the pill with its code, a node on a
+/// lit line, and the faint rule over a key. A flow and a component diagram wear its title and its light too
+/// (F134.12).
 /// </summary>
 /// <remarks>
 /// It was the cards' own until a second kind took the look. Then what the two share moved here, as what a flow and
@@ -54,6 +55,7 @@ internal static class MarqueeLook
           .{{EdgePaint}}-0 { stop-color: var(--violet-line); stop-opacity: 0; }
           .{{EdgePaint}}-1 { stop-color: var(--violet-line); }
           .{{EdgePaint}}-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+          .mrq-rule { fill: url(#{{EdgePaint}}); opacity: .7; }
           .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
           .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
           .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }

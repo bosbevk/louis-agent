@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -172,12 +179,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-badge.tone-teal { fill: var(--teal-line); }
 .cls-badge.tone-red { fill: var(--red-line); }
 .cls-badge.tone-amber { fill: var(--amber-line); }
-.cls-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
-.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
 .cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
 .cls-line { fill: none; stroke-linecap: round; }
@@ -188,13 +190,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-line.uses {
   stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
 }
-.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .cls-chip.holds { stroke: var(--violet-line); }
 .cls-chip.inherits { stroke: var(--violet-line); }
 .cls-chip.implements { stroke: var(--violet-line); }
 .cls-chip.creates { stroke: var(--blue-line); }
 .cls-chip.uses { stroke: var(--quiet); }
-.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word { fill: var(--text); }
 .cls-word.quiet { fill: var(--quiet); }
 .end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
 .end-triangle.tone-blue { stroke: var(--blue-line); }
@@ -219,8 +220,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .end-open.tone-teal { stroke: var(--teal-line); }
 .end-open.tone-red { stroke: var(--red-line); }
 .end-open.tone-amber { stroke: var(--amber-line); }
-.cls-rule { fill: url(#mrq-edge); opacity: .7; }
-.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
 .cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
 .cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
@@ -276,27 +275,27 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 1016 504 L 1016 516 Q 1016 528 1004 528 L 627 528 Q 606 528 606 549 L 606 570" />
       <path class="cls-line holds" d="M 196 722 L 196 788" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 196 722 L 196 788" />
-      <rect class="cls-chip implements" x="202" y="304" width="78" height="18" rx="9" />
-      <text class="cls-word" x="241" y="316" text-anchor="middle">implements</text>
-      <rect class="cls-chip uses" x="202" y="128" width="43" height="18" rx="9" />
-      <text class="cls-word quiet" x="223.5" y="140" text-anchor="middle">reads</text>
-      <rect class="cls-chip creates" x="612" y="128" width="57" height="18" rx="9" />
-      <text class="cls-word" x="640.5" y="140" text-anchor="middle">creates</text>
-      <rect class="cls-chip uses" x="1022" y="128" width="43" height="18" rx="9" />
-      <text class="cls-word quiet" x="1043.5" y="140" text-anchor="middle">reads</text>
-      <rect class="cls-chip uses" x="202" y="532" width="43" height="18" rx="9" />
-      <text class="cls-word quiet" x="223.5" y="544" text-anchor="middle">gives</text>
-      <rect class="cls-chip holds" x="612" y="532" width="43" height="18" rx="9" />
-      <text class="cls-word" x="633.5" y="544" text-anchor="middle">holds</text>
-      <rect class="cls-chip holds" x="202" y="726" width="43" height="18" rx="9" />
-      <text class="cls-word" x="223.5" y="738" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip implements" x="202" y="304" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="241" y="316" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="202" y="128" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="223.5" y="140" text-anchor="middle">reads</text>
+      <rect class="pic-pill cls-chip creates" x="612" y="128" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="640.5" y="140" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="1022" y="128" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1043.5" y="140" text-anchor="middle">reads</text>
+      <rect class="pic-pill cls-chip uses" x="202" y="532" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="223.5" y="544" text-anchor="middle">gives</text>
+      <rect class="pic-pill cls-chip holds" x="612" y="532" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="633.5" y="544" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="202" y="726" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="223.5" y="738" text-anchor="middle">holds</text>
       <rect class="cls-cover" x="52.5" y="0" width="287" height="124" rx="14" />
       <rect class="mrq-glass" x="52.5" y="0" width="287" height="124" rx="14" />
       <rect class="cls-badge tone-green" x="66.5" y="24" width="28" height="28" rx="9" />
       <text class="cls-mark" x="80.5" y="42.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="104.5" y="28" text-anchor="start">DocsTools</text>
-      <text class="cls-kind" x="104.5" y="44" text-anchor="start">docs pack, changed in</text>
-      <text class="cls-kind" x="104.5" y="56" text-anchor="start">steps 1 and 8</text>
+      <text class="pic-name" x="104.5" y="28" text-anchor="start">DocsTools</text>
+      <text class="pic-note" x="104.5" y="44" text-anchor="start">docs pack, changed in</text>
+      <text class="pic-note" x="104.5" y="56" text-anchor="start">steps 1 and 8</text>
       <path class="cls-divide" d="M66.5 76H325.5" />
       <text class="cls-member" x="66.5" y="94" text-anchor="start">ListDocs, ReadDoc, SearchDocs</text>
       <text class="cls-member" x="66.5" y="108" text-anchor="start">each result ends with its source line</text>
@@ -304,17 +303,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="521" y="0" width="170" height="124" rx="14" />
       <rect class="cls-badge tone-green" x="535" y="24" width="28" height="28" rx="9" />
       <text class="cls-mark" x="549" y="42.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="573" y="28" text-anchor="start">DocsPack</text>
-      <text class="cls-kind" x="573" y="44" text-anchor="start">docs pack, changed in</text>
-      <text class="cls-kind" x="573" y="56" text-anchor="start">step 5</text>
+      <text class="pic-name" x="573" y="28" text-anchor="start">DocsPack</text>
+      <text class="pic-note" x="573" y="44" text-anchor="start">docs pack, changed in</text>
+      <text class="pic-note" x="573" y="56" text-anchor="start">step 5</text>
       <path class="cls-divide" d="M535 76H677" />
       <text class="cls-member" x="535" y="94" text-anchor="start">IDocLibrary? Docs</text>
       <rect class="cls-cover" x="925" y="0" width="182" height="124" rx="14" />
       <rect class="mrq-glass" x="925" y="0" width="182" height="124" rx="14" />
       <rect class="cls-badge tone-violet" x="939" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="953" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="977" y="28" text-anchor="start">DocsEndpoints</text>
-      <text class="cls-kind" x="977" y="44" text-anchor="start">the API, steps 6 and 7</text>
+      <text class="pic-name" x="977" y="28" text-anchor="start">DocsEndpoints</text>
+      <text class="pic-note" x="977" y="44" text-anchor="start">the API, steps 6 and 7</text>
       <path class="cls-divide" d="M939 64H1093" />
       <text class="cls-member" x="939" y="82" text-anchor="start">GET /v1/docs</text>
       <text class="cls-member" x="939" y="96" text-anchor="start">GET /v1/docs/{path}</text>
@@ -323,16 +322,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="1324.5" y="0" width="203" height="124" rx="14" />
       <rect class="cls-badge tone-violet" x="1338.5" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1352.5" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1376.5" y="28" text-anchor="start">DocResources</text>
-      <text class="cls-kind" x="1376.5" y="44" text-anchor="start">the MCP host, step 9</text>
+      <text class="pic-name" x="1376.5" y="28" text-anchor="start">DocResources</text>
+      <text class="pic-note" x="1376.5" y="44" text-anchor="start">the MCP host, step 9</text>
       <path class="cls-divide" d="M1338.5 64H1513.5" />
       <text class="cls-member" x="1338.5" y="82" text-anchor="start">doc://{path}, one per doc</text>
       <rect class="cls-cover" x="84" y="190" width="224" height="110" rx="14" />
       <rect class="mrq-glass" x="84" y="190" width="224" height="110" rx="14" />
       <rect class="cls-badge tone-green" x="98" y="208" width="28" height="28" rx="9" />
       <text class="cls-mark" x="112" y="226.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="136" y="218" text-anchor="start">DocLibrary</text>
-      <text class="cls-kind" x="136" y="234" text-anchor="start">docs pack, step 1</text>
+      <text class="pic-name" x="136" y="218" text-anchor="start">DocLibrary</text>
+      <text class="pic-note" x="136" y="234" text-anchor="start">docs pack, step 1</text>
       <path class="cls-divide" d="M98 254H294" />
       <text class="cls-member" x="98" y="272" text-anchor="start">DocLibrary(string root)</text>
       <text class="cls-member" x="98" y="286" text-anchor="start">reads each doc's header once</text>
@@ -341,8 +340,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="844" y="365.5" width="344" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="834" y="384" width="28" height="28" rx="9" />
       <text class="cls-mark" x="848" y="402.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="872" y="394" text-anchor="start">IDocLibrary</text>
-      <text class="cls-kind" x="872" y="410" text-anchor="start">interface, step 5</text>
+      <text class="pic-name" x="872" y="394" text-anchor="start">IDocLibrary</text>
+      <text class="pic-note" x="872" y="410" text-anchor="start">interface, step 5</text>
       <path class="cls-divide" d="M834 430H1198" />
       <text class="cls-member" x="834" y="448" text-anchor="start">DocSource Source</text>
       <text class="cls-member" x="834" y="462" text-anchor="start">IReadOnlyList&lt;DocInfo&gt; List()</text>
@@ -353,8 +352,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="135" y="569.5" width="122" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="125" y="588" width="28" height="28" rx="9" />
       <text class="cls-mark" x="139" y="606.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="163" y="598" text-anchor="start">DocInfo</text>
-      <text class="cls-kind" x="163" y="614" text-anchor="start">record, step 2</text>
+      <text class="pic-name" x="163" y="598" text-anchor="start">DocInfo</text>
+      <text class="pic-note" x="163" y="614" text-anchor="start">record, step 2</text>
       <path class="cls-divide" d="M125 634H267" />
       <text class="cls-member" x="125" y="652" text-anchor="start">string Path</text>
       <text class="cls-member" x="125" y="666" text-anchor="start">DocType Type</text>
@@ -366,8 +365,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="525" y="569.5" width="162" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="515" y="588" width="28" height="28" rx="9" />
       <text class="cls-mark" x="529" y="606.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="553" y="598" text-anchor="start">DocSource</text>
-      <text class="cls-kind" x="553" y="614" text-anchor="start">record, step 4</text>
+      <text class="pic-name" x="553" y="598" text-anchor="start">DocSource</text>
+      <text class="pic-note" x="553" y="614" text-anchor="start">record, step 4</text>
       <path class="cls-divide" d="M515 634H697" />
       <text class="cls-member" x="515" y="652" text-anchor="start">string? Commit</text>
       <text class="cls-member" x="515" y="666" text-anchor="start">string? Repository</text>
@@ -377,8 +376,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="955" y="569.5" width="122" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="945" y="588" width="28" height="28" rx="9" />
       <text class="cls-mark" x="959" y="606.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="983" y="598" text-anchor="start">DocPage</text>
-      <text class="cls-kind" x="983" y="614" text-anchor="start">record, step 5</text>
+      <text class="pic-name" x="983" y="598" text-anchor="start">DocPage</text>
+      <text class="pic-note" x="983" y="614" text-anchor="start">record, step 5</text>
       <path class="cls-divide" d="M945 634H1087" />
       <text class="cls-member" x="945" y="652" text-anchor="start">DocInfo Info</text>
       <text class="cls-member" x="945" y="666" text-anchor="start">string Markdown</text>
@@ -387,8 +386,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="1365" y="569.5" width="122" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="1355" y="588" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1369" y="606.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="1393" y="598" text-anchor="start">DocHit</text>
-      <text class="cls-kind" x="1393" y="614" text-anchor="start">record, step 7</text>
+      <text class="pic-name" x="1393" y="598" text-anchor="start">DocHit</text>
+      <text class="pic-note" x="1393" y="614" text-anchor="start">record, step 7</text>
       <path class="cls-divide" d="M1355 634H1497" />
       <text class="cls-member" x="1355" y="652" text-anchor="start">string Path</text>
       <text class="cls-member" x="1355" y="666" text-anchor="start">int Line</text>
@@ -398,40 +397,40 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="31" y="787.5" width="330" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="21" y="806" width="28" height="28" rx="9" />
       <text class="cls-mark" x="35" y="824.5" text-anchor="middle">E</text>
-      <text class="cls-name" x="59" y="816" text-anchor="start">DocType</text>
-      <text class="cls-kind" x="59" y="832" text-anchor="start">enum, step 2</text>
+      <text class="pic-name" x="59" y="816" text-anchor="start">DocType</text>
+      <text class="pic-note" x="59" y="832" text-anchor="start">enum, step 2</text>
       <path class="cls-divide" d="M21 852H371" />
       <text class="cls-member" x="21" y="870" text-anchor="start">Tutorial, HowTo, Reference, Explanation, Plan, Adr</text>
     </g>
     <g class="cls-legend" transform="translate(0 954)">
-      <rect class="cls-rule" x="0" y="0" width="1528" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="1528" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
       <rect class="cls-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">the framework</text>
       <rect class="cls-badge tone-teal" x="281" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="309" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="309" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="cls-key-mark" x="464.4" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="474.4" y="52" text-anchor="middle">I</text>
-      <text class="cls-key" x="494.4" y="52.5" text-anchor="start">an interface</text>
+      <text class="pic-means" x="494.4" y="52.5" text-anchor="start">an interface</text>
       <rect class="cls-key-mark" x="603.6" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="613.6" y="52" text-anchor="middle">R</text>
-      <text class="cls-key" x="633.6" y="52.5" text-anchor="start">a record</text>
+      <text class="pic-means" x="633.6" y="52.5" text-anchor="start">a record</text>
       <rect class="cls-key-mark" x="716.4" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="726.4" y="52" text-anchor="middle">E</text>
-      <text class="cls-key" x="746.4" y="52.5" text-anchor="start">an enum</text>
+      <text class="pic-means" x="746.4" y="52.5" text-anchor="start">an enum</text>
       <rect class="cls-key-mark" x="822.6" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="832.6" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="852.6" y="52.5" text-anchor="start">a class</text>
+      <text class="pic-means" x="852.6" y="52.5" text-anchor="start">a class</text>
       <path class="cls-line holds" d="M928.8 48H978.8" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <text class="cls-key" x="988.8" y="52.5" text-anchor="start">holds</text>
+      <text class="pic-means" x="988.8" y="52.5" text-anchor="start">holds</text>
       <path class="cls-line implements" d="M1051.8 48H1101.8" marker-end="url(#triangle-violet)" />
-      <text class="cls-key" x="1111.8" y="52.5" text-anchor="start">implements</text>
+      <text class="pic-means" x="1111.8" y="52.5" text-anchor="start">implements</text>
       <path class="cls-line creates" d="M1207.8 48H1257.8" marker-end="url(#arrow-blue)" />
-      <text class="cls-key" x="1267.8" y="52.5" text-anchor="start">creates</text>
+      <text class="pic-means" x="1267.8" y="52.5" text-anchor="start">creates</text>
       <path class="cls-line uses" d="M1344 48H1394" marker-end="url(#open)" />
-      <text class="cls-key" x="1404" y="52.5" text-anchor="start">uses</text>
+      <text class="pic-means" x="1404" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="1032" width="1528" height="37" rx="8" />

@@ -112,7 +112,7 @@ internal static class OverviewCards
         double top = box.Top + CardSizes.Head + (card.TitleBelow ? CardSizes.TitleLine * titles : 0);
         double code = Pill(writer, card, geometry, left, top, CardSizes.CodeRoom);
         for (int at = 0; at < card.TextLines.Count; at++)
-            writer.Text(left, top + code + CardSizes.TextTop + CardSizes.TextLine * at, card.TextLines[at], "crd-text",
+            writer.Text(left, top + code + CardSizes.TextTop + CardSizes.TextLine * at, card.TextLines[at], "pic-text",
                 "start");
     }
 
@@ -135,7 +135,7 @@ internal static class OverviewCards
         double code = Pill(writer, card, geometry, left, box.Top + QuietPill + more, CardSizes.QuietCodeRoom);
         for (int at = 0; at < card.TextLines.Count; at++)
             writer.Text(left, box.Top + CardSizes.QuietText + more + code + CardSizes.QuietLine * at,
-                card.TextLines[at], "crd-text", "start");
+                card.TextLines[at], "pic-text", "start");
     }
 
     /// <summary>

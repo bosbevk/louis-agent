@@ -42,6 +42,7 @@ public partial class MarqueeLookTests
     [TestCase(".mrq-pill")]
     [TestCase(".mrq-code")]
     [TestCase(".mrq-node")]
+    [TestCase(".mrq-rule")]
     public void TheSharedLook_HasARuleForEachSharedPart(string rule) => Assert.That(Shared, Does.Contain(rule + " "));
 
     /// <summary>

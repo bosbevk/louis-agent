@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -224,116 +224,116 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 752 636 L 752 696" />
       <path class="pic-line pic-edge tone-violet reads" d="M 752 116 L 752 131 Q 752 146 767 146 L 1345.8 146 Q 1360.8 146 1360.8 161 L 1360.8 176" marker-end="url(#arrow-violet)" />
       <path class="pic-line pic-edge tone-amber reads" d="M 1360.8 292 L 1360.8 376" marker-end="url(#arrow-amber)" />
-      <rect class="flow-chip pic-edge tone-teal" x="471.6" y="338" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-teal" x="493.1" y="350" text-anchor="middle">names</text>
-      <rect class="flow-chip pic-edge tone-teal" x="149.2" y="296" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-teal" x="170.7" y="308" text-anchor="middle">names</text>
-      <rect class="flow-chip pic-edge tone-teal" x="703" y="338" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-teal" x="724.5" y="350" text-anchor="middle">names</text>
+      <rect class="pic-pill pic-edge tone-teal" x="471.6" y="338" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="493.1" y="350" text-anchor="middle">names</text>
+      <rect class="pic-pill pic-edge tone-teal" x="149.2" y="296" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="170.7" y="308" text-anchor="middle">names</text>
+      <rect class="pic-pill pic-edge tone-teal" x="703" y="338" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="724.5" y="350" text-anchor="middle">names</text>
       <rect class="pic-panel" x="616.4" y="0" width="271.2" height="116" rx="10" />
       <rect class="pic-fill tone-violet" x="632.4" y="44" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(638.4 50) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(638.4 50) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="668.4" y="31" text-anchor="start">catalog : AgentCatalog</text>
-      <text class="flow-name" x="668.4" y="47" text-anchor="start">Identities = [demo, puls]</text>
-      <text class="flow-name" x="668.4" y="63" text-anchor="start">Packs = [shops, customers]</text>
-      <text class="flow-name" x="668.4" y="79" text-anchor="start">Toolsets = core's + shops +</text>
-      <text class="flow-name" x="668.4" y="95" text-anchor="start">customers</text>
+      <text class="pic-name" x="668.4" y="31" text-anchor="start">catalog : AgentCatalog</text>
+      <text class="pic-name" x="668.4" y="47" text-anchor="start">Identities = [demo, puls]</text>
+      <text class="pic-name" x="668.4" y="63" text-anchor="start">Packs = [shops, customers]</text>
+      <text class="pic-name" x="668.4" y="79" text-anchor="start">Toolsets = core's + shops +</text>
+      <text class="pic-name" x="668.4" y="95" text-anchor="start">customers</text>
       <rect class="pic-panel" x="26.6" y="176" width="233.2" height="116" rx="10" />
       <rect class="pic-fill tone-teal" x="42.6" y="220" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(48.6 226) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(48.6 226) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="78.6" y="207" text-anchor="start">puls : PulsIdentity</text>
-      <text class="flow-name" x="78.6" y="223" text-anchor="start">Packs = [shops]</text>
-      <text class="flow-name" x="78.6" y="239" text-anchor="start">Prompts = agent/puls/,</text>
-      <text class="flow-name" x="78.6" y="255" text-anchor="start">specialists/puls-*,</text>
-      <text class="flow-name" x="78.6" y="271" text-anchor="start">minions/puls-*</text>
+      <text class="pic-name" x="78.6" y="207" text-anchor="start">puls : PulsIdentity</text>
+      <text class="pic-name" x="78.6" y="223" text-anchor="start">Packs = [shops]</text>
+      <text class="pic-name" x="78.6" y="239" text-anchor="start">Prompts = agent/puls/,</text>
+      <text class="pic-name" x="78.6" y="255" text-anchor="start">specialists/puls-*,</text>
+      <text class="pic-name" x="78.6" y="271" text-anchor="start">minions/puls-*</text>
       <rect class="pic-panel" x="620.2" y="176" width="263.6" height="116" rx="10" />
       <rect class="pic-fill tone-teal" x="636.2" y="220" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(642.2 226) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(642.2 226) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="672.2" y="215" text-anchor="start">demo : DemoIdentity</text>
-      <text class="flow-name" x="672.2" y="231" text-anchor="start">Packs = [shops, customers]</text>
-      <text class="flow-name" x="672.2" y="247" text-anchor="start">Prompts = agent/demo/,</text>
-      <text class="flow-name" x="672.2" y="263" text-anchor="start">specialists/demo-*</text>
+      <text class="pic-name" x="672.2" y="215" text-anchor="start">demo : DemoIdentity</text>
+      <text class="pic-name" x="672.2" y="231" text-anchor="start">Packs = [shops, customers]</text>
+      <text class="pic-name" x="672.2" y="247" text-anchor="start">Prompts = agent/demo/,</text>
+      <text class="pic-name" x="672.2" y="263" text-anchor="start">specialists/demo-*</text>
       <rect class="pic-panel" x="1225.2" y="176" width="271.2" height="116" rx="10" />
       <rect class="pic-fill tone-amber" x="1241.2" y="220" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1247.2 226) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1247.2 226) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="1277.2" y="223" text-anchor="start">SkillFileSource</text>
-      <text class="flow-name" x="1277.2" y="239" text-anchor="start">core's + puls's + demo's +</text>
-      <text class="flow-name" x="1277.2" y="255" text-anchor="start">shops' + customers' prompts</text>
+      <text class="pic-name" x="1277.2" y="223" text-anchor="start">SkillFileSource</text>
+      <text class="pic-name" x="1277.2" y="239" text-anchor="start">core's + puls's + demo's +</text>
+      <text class="pic-name" x="1277.2" y="255" text-anchor="start">shops' + customers' prompts</text>
       <rect class="pic-panel" x="319.6" y="376" width="256" height="132" rx="10" />
       <rect class="pic-fill tone-teal" x="335.6" y="428" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(341.6 434) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(341.6 434) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="371.6" y="439" text-anchor="start">shops : ShopsPack</text>
-      <text class="flow-name" x="371.6" y="455" text-anchor="start">one object, named by both</text>
+      <text class="pic-name" x="371.6" y="439" text-anchor="start">shops : ShopsPack</text>
+      <text class="pic-name" x="371.6" y="455" text-anchor="start">one object, named by both</text>
       <rect class="pic-panel" x="624" y="376" width="256" height="132" rx="10" />
       <rect class="pic-fill tone-teal" x="640" y="428" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(646 434) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(646 434) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="676" y="423" text-anchor="start">customers : CustomersPack</text>
-      <text class="flow-name" x="676" y="439" text-anchor="start">Toolsets = [customers]</text>
-      <text class="flow-name" x="676" y="455" text-anchor="start">Prompts =</text>
-      <text class="flow-name" x="676" y="471" text-anchor="start">toolsets/customers.md</text>
+      <text class="pic-name" x="676" y="423" text-anchor="start">customers : CustomersPack</text>
+      <text class="pic-name" x="676" y="439" text-anchor="start">Toolsets = [customers]</text>
+      <text class="pic-name" x="676" y="455" text-anchor="start">Prompts =</text>
+      <text class="pic-name" x="676" y="471" text-anchor="start">toolsets/customers.md</text>
       <rect class="pic-panel" x="1217.6" y="376" width="286.4" height="132" rx="10" />
       <rect class="pic-fill tone-teal" x="1233.6" y="428" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1239.6 434) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1239.6 434) scale(0.6667)">
         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
         <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
-      <text class="flow-name" x="1269.6" y="407" text-anchor="start">RoleCatalog</text>
-      <text class="flow-name" x="1269.6" y="423" text-anchor="start">puls/voice-af, puls/voice-en,</text>
-      <text class="flow-name" x="1269.6" y="439" text-anchor="start">puls-cook,</text>
-      <text class="flow-name" x="1269.6" y="455" text-anchor="start">demo/voice,</text>
-      <text class="flow-name" x="1269.6" y="471" text-anchor="start">demo-invoice-clerk,</text>
-      <text class="flow-name" x="1269.6" y="487" text-anchor="start">demo-area-guide</text>
+      <text class="pic-name" x="1269.6" y="407" text-anchor="start">RoleCatalog</text>
+      <text class="pic-name" x="1269.6" y="423" text-anchor="start">puls/voice-af, puls/voice-en,</text>
+      <text class="pic-name" x="1269.6" y="439" text-anchor="start">puls-cook,</text>
+      <text class="pic-name" x="1269.6" y="455" text-anchor="start">demo/voice,</text>
+      <text class="pic-name" x="1269.6" y="471" text-anchor="start">demo-invoice-clerk,</text>
+      <text class="pic-name" x="1269.6" y="487" text-anchor="start">demo-area-guide</text>
       <rect class="pic-panel" x="639.2" y="568" width="225.6" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="655.2" y="588" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(661.2 594) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(661.2 594) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="691.2" y="599" text-anchor="start">tools : CustomerTools</text>
-      <text class="flow-name" x="691.2" y="615" text-anchor="start">built per engine</text>
+      <text class="pic-name" x="691.2" y="599" text-anchor="start">tools : CustomerTools</text>
+      <text class="pic-name" x="691.2" y="615" text-anchor="start">built per engine</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M640.6 696L881.4 696L863.4 796L622.6 796Z" />
       <rect class="pic-fill tone-amber" x="650.6" y="732" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(656.6 738) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(656.6 738) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="686.6" y="727" text-anchor="start">directory :</text>
-      <text class="flow-name" x="686.6" y="743" text-anchor="start">SampleCustomerDirectory</text>
-      <text class="flow-name" x="686.6" y="759" text-anchor="start">the embedded, made-up</text>
-      <text class="flow-name" x="686.6" y="775" text-anchor="start">customers.json</text>
+      <text class="pic-name" x="686.6" y="727" text-anchor="start">directory :</text>
+      <text class="pic-name" x="686.6" y="743" text-anchor="start">SampleCustomerDirectory</text>
+      <text class="pic-name" x="686.6" y="759" text-anchor="start">the embedded, made-up</text>
+      <text class="pic-name" x="686.6" y="775" text-anchor="start">customers.json</text>
       <circle class="pic-port pic-edge tone-violet" cx="752" cy="116" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="752" cy="292" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="143.2" cy="292" r="4" />
@@ -341,7 +341,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-green" cx="752" cy="636" r="4" />
       <circle class="pic-port pic-edge tone-amber" cx="1360.8" cy="292" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="866" width="1504" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="866" width="1504" height="1" rx="0" />
     <text class="pic-group" x="0" y="888" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-green" x="0" y="905" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="918.5" text-anchor="start">this project</text>

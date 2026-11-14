@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -172,12 +179,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-badge.tone-teal { fill: var(--teal-line); }
 .cls-badge.tone-red { fill: var(--red-line); }
 .cls-badge.tone-amber { fill: var(--amber-line); }
-.cls-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
-.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
 .cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
 .cls-line { fill: none; stroke-linecap: round; }
@@ -188,13 +190,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-line.uses {
   stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
 }
-.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .cls-chip.holds { stroke: var(--violet-line); }
 .cls-chip.inherits { stroke: var(--violet-line); }
 .cls-chip.implements { stroke: var(--violet-line); }
 .cls-chip.creates { stroke: var(--blue-line); }
 .cls-chip.uses { stroke: var(--quiet); }
-.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word { fill: var(--text); }
 .cls-word.quiet { fill: var(--quiet); }
 .end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
 .end-triangle.tone-blue { stroke: var(--blue-line); }
@@ -219,8 +220,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .end-open.tone-teal { stroke: var(--teal-line); }
 .end-open.tone-red { stroke: var(--red-line); }
 .end-open.tone-amber { stroke: var(--amber-line); }
-.cls-rule { fill: url(#mrq-edge); opacity: .7; }
-.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
 .cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
 .cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
@@ -272,34 +271,34 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 856 61 L 952 61" />
       <path class="cls-line holds" d="M 1365 201 L 1445 201" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 1365 201 L 1445 201" />
-      <rect class="cls-chip creates" x="196.5" y="52" width="57" height="18" rx="9" />
-      <text class="cls-word" x="225" y="64" text-anchor="middle">creates</text>
-      <rect class="cls-chip holds" x="522.5" y="52" width="43" height="18" rx="9" />
-      <text class="cls-word" x="544" y="64" text-anchor="middle">holds</text>
-      <rect class="cls-chip uses" x="519" y="192" width="50" height="18" rx="9" />
-      <text class="cls-word quiet" x="544" y="204" text-anchor="middle">prints</text>
-      <rect class="cls-chip holds" x="894.5" y="52" width="43" height="18" rx="9" />
-      <text class="cls-word" x="916" y="64" text-anchor="middle">holds</text>
-      <rect class="cls-chip creates" x="887.5" y="192" width="57" height="18" rx="9" />
-      <text class="cls-word" x="916" y="204" text-anchor="middle">creates</text>
-      <rect class="cls-chip holds" x="1383" y="192" width="43" height="18" rx="9" />
-      <text class="cls-word" x="1404.5" y="204" text-anchor="middle">holds</text>
-      <rect class="cls-chip uses" x="1375" y="52" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="1393" y="64" text-anchor="middle">asks</text>
+      <rect class="pic-pill cls-chip creates" x="196.5" y="52" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="225" y="64" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip holds" x="522.5" y="52" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="544" y="64" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip uses" x="519" y="192" width="50" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="544" y="204" text-anchor="middle">prints</text>
+      <rect class="pic-pill cls-chip holds" x="894.5" y="52" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="916" y="64" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="887.5" y="192" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="916" y="204" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip holds" x="1383" y="192" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1404.5" y="204" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip uses" x="1375" y="52" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1393" y="64" text-anchor="middle">asks</text>
       <rect class="cls-cover" x="0" y="13" width="189" height="96" rx="14" />
       <rect class="mrq-glass" x="0" y="13" width="189" height="96" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="31" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="49.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="41" text-anchor="start">WhereToBuyPack</text>
-      <text class="cls-kind" x="52" y="57" text-anchor="start">implements IAgentPack</text>
+      <text class="pic-name" x="52" y="41" text-anchor="start">WhereToBuyPack</text>
+      <text class="pic-note" x="52" y="57" text-anchor="start">implements IAgentPack</text>
       <path class="cls-divide" d="M14 77H175" />
       <text class="cls-member" x="14" y="95" text-anchor="start">Toolsets: where-to-buy</text>
       <rect class="cls-cover" x="285" y="6" width="203" height="110" rx="14" />
       <rect class="mrq-glass" x="285" y="6" width="203" height="110" rx="14" />
       <rect class="cls-badge tone-green" x="299" y="24" width="28" height="28" rx="9" />
       <text class="cls-mark" x="313" y="42.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="337" y="34" text-anchor="start">WhereToBuyTools</text>
-      <text class="cls-kind" x="337" y="50" text-anchor="start">the tools the model calls</text>
+      <text class="pic-name" x="337" y="34" text-anchor="start">WhereToBuyTools</text>
+      <text class="pic-note" x="337" y="50" text-anchor="start">the tools the model calls</text>
       <path class="cls-divide" d="M299 70H474" />
       <text class="cls-member" x="299" y="88" text-anchor="start">FindBranches(shop, town)</text>
       <text class="cls-member" x="299" y="102" text-anchor="start">FindShopsNear(town)</text>
@@ -307,7 +306,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="576" y="12" width="280" height="98" rx="14" />
       <rect class="cls-badge tone-green" x="590" y="24" width="28" height="28" rx="9" />
       <text class="cls-mark" x="604" y="42.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="628" y="43" text-anchor="start">BranchFinder</text>
+      <text class="pic-name" x="628" y="43" text-anchor="start">BranchFinder</text>
       <path class="cls-divide" d="M590 64H842" />
       <text class="cls-member" x="590" y="82" text-anchor="start">FindAsync(shop, town) BranchSearch?</text>
       <text class="cls-member" x="590" y="96" text-anchor="start">FindShopsAsync(town) BranchSearch?</text>
@@ -315,15 +314,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="576" y="169" width="280" height="64" rx="14" />
       <rect class="cls-badge tone-green" x="590" y="187" width="28" height="28" rx="9" />
       <text class="cls-mark" x="604" y="205.5" text-anchor="middle">S</text>
-      <text class="cls-name" x="628" y="197" text-anchor="start">BranchPrinter</text>
-      <text class="cls-kind" x="628" y="213" text-anchor="start">static, the tool's answer</text>
+      <text class="pic-name" x="628" y="197" text-anchor="start">BranchPrinter</text>
+      <text class="pic-note" x="628" y="213" text-anchor="start">static, the tool's answer</text>
       <rect class="cls-cover" x="952" y="0" width="413" height="122" rx="14" />
       <rect class="mrq-glass" x="952" y="0" width="413" height="122" rx="14" />
       <rect class="cls-badge tone-green" x="966" y="24" width="28" height="28" rx="9" />
       <text class="cls-mark" x="980" y="42.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1004" y="28" text-anchor="start">MapSearch</text>
-      <text class="cls-kind" x="1004" y="44" text-anchor="start">OpenStreetMap's search,</text>
-      <text class="cls-kind" x="1004" y="56" text-anchor="start">paced</text>
+      <text class="pic-name" x="1004" y="28" text-anchor="start">MapSearch</text>
+      <text class="pic-note" x="1004" y="44" text-anchor="start">OpenStreetMap's search,</text>
+      <text class="pic-note" x="1004" y="56" text-anchor="start">paced</text>
       <path class="cls-divide" d="M966 76H1351" />
       <text class="cls-member" x="966" y="94" text-anchor="start">TownAsync(town) MapPlace?</text>
       <text class="cls-member" x="966" y="108" text-anchor="start">NearAsync(name, town, degrees) IReadOnlyList&lt;MapPlace&gt;</text>
@@ -332,8 +331,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="976" y="145.5" width="365" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="966" y="164" width="28" height="28" rx="9" />
       <text class="cls-mark" x="980" y="182.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="1004" y="174" text-anchor="start">BranchSearch</text>
-      <text class="cls-kind" x="1004" y="190" text-anchor="start">record</text>
+      <text class="pic-name" x="1004" y="174" text-anchor="start">BranchSearch</text>
+      <text class="pic-note" x="1004" y="190" text-anchor="start">record</text>
       <path class="cls-divide" d="M966 210H1351" />
       <text class="cls-member" x="966" y="228" text-anchor="start">Town MapPlace, Shop, SearchedKm</text>
       <text class="cls-member" x="966" y="242" text-anchor="start">Branches Branch list</text>
@@ -341,42 +340,42 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="1445" y="29" width="301" height="64" rx="14" />
       <rect class="cls-badge tone-red" x="1459" y="47" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1473" y="65.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1497" y="57" text-anchor="start">OpenStreetMap's Nominatim</text>
-      <text class="cls-kind" x="1497" y="73" text-anchor="start">outside the process</text>
+      <text class="pic-name" x="1497" y="57" text-anchor="start">OpenStreetMap's Nominatim</text>
+      <text class="pic-note" x="1497" y="73" text-anchor="start">outside the process</text>
       <rect class="cls-cover" x="1445" y="153" width="301" height="96" rx="14" />
       <rect class="mrq-glass" x="1445" y="153" width="301" height="96" rx="14" />
       <rect class="mrq-edge" x="1469" y="152.5" width="253" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="1459" y="171" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1473" y="189.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="1497" y="181" text-anchor="start">Branch</text>
-      <text class="cls-kind" x="1497" y="197" text-anchor="start">record</text>
+      <text class="pic-name" x="1497" y="181" text-anchor="start">Branch</text>
+      <text class="pic-note" x="1497" y="197" text-anchor="start">record</text>
       <path class="cls-divide" d="M1459 217H1732" />
       <text class="cls-member" x="1459" y="235" text-anchor="start">Name, Street?, Place?, Km, InTownsArea</text>
     </g>
     <g class="cls-legend" transform="translate(0 332)">
-      <rect class="cls-rule" x="0" y="0" width="1746" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="1746" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
       <rect class="cls-badge tone-teal" x="137.2" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="cls-badge tone-red" x="320.6" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="348.6" y="52.5" text-anchor="start">outside the process</text>
+      <text class="pic-means" x="348.6" y="52.5" text-anchor="start">outside the process</text>
       <rect class="cls-key-mark" x="504" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="514" y="52" text-anchor="middle">R</text>
-      <text class="cls-key" x="534" y="52.5" text-anchor="start">a record</text>
+      <text class="pic-means" x="534" y="52.5" text-anchor="start">a record</text>
       <rect class="cls-key-mark" x="616.8" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="626.8" y="52" text-anchor="middle">S</text>
-      <text class="cls-key" x="646.8" y="52.5" text-anchor="start">static</text>
+      <text class="pic-means" x="646.8" y="52.5" text-anchor="start">static</text>
       <rect class="cls-key-mark" x="716.4" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="726.4" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="746.4" y="52.5" text-anchor="start">a class</text>
+      <text class="pic-means" x="746.4" y="52.5" text-anchor="start">a class</text>
       <path class="cls-line holds" d="M822.6 48H872.6" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <text class="cls-key" x="882.6" y="52.5" text-anchor="start">holds</text>
+      <text class="pic-means" x="882.6" y="52.5" text-anchor="start">holds</text>
       <path class="cls-line creates" d="M945.6 48H995.6" marker-end="url(#arrow-blue)" />
-      <text class="cls-key" x="1005.6" y="52.5" text-anchor="start">creates</text>
+      <text class="pic-means" x="1005.6" y="52.5" text-anchor="start">creates</text>
       <path class="cls-line uses" d="M1081.8 48H1131.8" marker-end="url(#open)" />
-      <text class="cls-key" x="1141.8" y="52.5" text-anchor="start">uses</text>
+      <text class="pic-means" x="1141.8" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="410" width="1746" height="37" rx="8" />

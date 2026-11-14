@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -234,100 +234,100 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 158 856 L 158 916" />
       <path class="pic-line pic-edge" d="M 619.6 958 L 990 958 Q 1014 958 1014 934 L 1014 312 Q 1014 288 990 288 L 286 288" marker-end="url(#arrow)" />
       <path class="pic-march" d="M 619.6 958 L 990 958 Q 1014 958 1014 934 L 1014 312 Q 1014 288 990 288 L 286 288" />
-      <rect class="flow-chip pic-edge" x="674" y="224" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="695.5" y="236" text-anchor="middle">valid</text>
-      <rect class="flow-chip pic-edge" x="164" y="224" width="57" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="192.5" y="236" text-anchor="middle">invalid</text>
-      <rect class="flow-chip pic-edge" x="164" y="454" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="178.5" y="466" text-anchor="middle">yes</text>
-      <rect class="flow-chip pic-edge" x="507" y="454" width="22" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="518" y="466" text-anchor="middle">no</text>
-      <rect class="flow-chip pic-edge tone-green" x="357" y="588" width="120" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="417" y="600" text-anchor="middle">done or not done</text>
-      <rect class="flow-chip pic-edge tone-green" x="164" y="588" width="57" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="192.5" y="600" text-anchor="middle">unknown</text>
-      <rect class="flow-chip pic-edge" x="498" y="722" width="57" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="526.5" y="734" text-anchor="middle">allowed</text>
-      <rect class="flow-chip pic-edge" x="182" y="722" width="120" height="30" rx="9" />
-      <text class="flow-word pic-ink" x="242" y="734" text-anchor="middle">refused, or past</text>
-      <text class="flow-word pic-ink" x="242" y="746" text-anchor="middle">MaxAttempts</text>
-      <rect class="flow-chip pic-edge" x="498" y="1004" width="50" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="523" y="1016" text-anchor="middle">passes</text>
-      <rect class="flow-chip pic-edge" x="1024" y="601" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="1045.5" y="613" text-anchor="middle">fails</text>
+      <rect class="pic-pill pic-edge" x="674" y="224" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="695.5" y="236" text-anchor="middle">valid</text>
+      <rect class="pic-pill pic-edge" x="164" y="224" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="192.5" y="236" text-anchor="middle">invalid</text>
+      <rect class="pic-pill pic-edge" x="164" y="454" width="29" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="178.5" y="466" text-anchor="middle">yes</text>
+      <rect class="pic-pill pic-edge" x="507" y="454" width="22" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="518" y="466" text-anchor="middle">no</text>
+      <rect class="pic-pill pic-edge tone-green" x="357" y="588" width="120" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="417" y="600" text-anchor="middle">done or not done</text>
+      <rect class="pic-pill pic-edge tone-green" x="164" y="588" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="192.5" y="600" text-anchor="middle">unknown</text>
+      <rect class="pic-pill pic-edge" x="498" y="722" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="526.5" y="734" text-anchor="middle">allowed</text>
+      <rect class="pic-pill pic-edge" x="182" y="722" width="120" height="30" rx="9" />
+      <text class="pic-pill-word pic-ink" x="242" y="734" text-anchor="middle">refused, or past</text>
+      <text class="pic-pill-word pic-ink" x="242" y="746" text-anchor="middle">MaxAttempts</text>
+      <rect class="pic-pill pic-edge" x="498" y="1004" width="50" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="523" y="1016" text-anchor="middle">passes</text>
+      <rect class="pic-pill pic-edge" x="1024" y="601" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="1045.5" y="613" text-anchor="middle">fails</text>
       <rect class="pic-panel flow-shape pic-edge tone-blue" x="392.8" y="0" width="198.4" height="52" rx="26" />
       <rect class="pic-fill tone-blue" x="420.8" y="12" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(426.8 18) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(426.8 18) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="456.8" y="31" text-anchor="start">Execute a step</text>
+      <text class="pic-name" x="456.8" y="31" text-anchor="start">Execute a step</text>
       <path class="pic-panel flow-shape pic-edge" d="M345.4 154L367.4 112L616.6 112L638.6 154L616.6 196L367.4 196Z" />
       <rect class="pic-fill" x="481" y="119" width="22" height="4" rx="2" />
-      <text class="flow-name" x="492" y="143" text-anchor="middle">Validate: schema, freshness</text>
-      <text class="flow-name" x="492" y="159" text-anchor="middle">(as_of), provenance,</text>
-      <text class="flow-name" x="492" y="175" text-anchor="middle">consistency, business rules</text>
+      <text class="pic-name" x="492" y="143" text-anchor="middle">Validate: schema, freshness</text>
+      <text class="pic-name" x="492" y="159" text-anchor="middle">(as_of), provenance,</text>
+      <text class="pic-name" x="492" y="175" text-anchor="middle">consistency, business rules</text>
       <rect class="pic-panel" x="30" y="262" width="256" height="52" rx="10" />
       <rect class="pic-fill tone-teal" x="46" y="274" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(52 280) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(52 280) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="82" y="293" text-anchor="start">Classify: one DataFailure</text>
+      <text class="pic-name" x="82" y="293" text-anchor="start">Classify: one DataFailure</text>
       <path class="pic-panel flow-shape pic-edge" d="M19 400L41 374L275 374L297 400L275 426L41 426Z" />
       <rect class="pic-fill" x="147" y="381" width="22" height="4" rx="2" />
-      <text class="flow-name" x="158" y="405" text-anchor="middle">Did a side effect happen?</text>
+      <text class="pic-name" x="158" y="405" text-anchor="middle">Did a side effect happen?</text>
       <rect class="pic-panel" x="33.8" y="492" width="248.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="49.8" y="512" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(55.8 518) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(55.8 518) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="85.8" y="523" text-anchor="start">Reconcile: read the real</text>
-      <text class="flow-name" x="85.8" y="539" text-anchor="start">external state</text>
+      <text class="pic-name" x="85.8" y="523" text-anchor="start">Reconcile: read the real</text>
+      <text class="pic-name" x="85.8" y="539" text-anchor="start">external state</text>
       <path class="pic-panel flow-shape pic-edge" d="M334 660L356 626L628 626L650 660L628 694L356 694Z" />
       <rect class="pic-fill" x="481" y="633" width="22" height="4" rx="2" />
-      <text class="flow-name" x="492" y="657" text-anchor="middle">RecoveryPolicy.Allows(failure,</text>
-      <text class="flow-name" x="492" y="673" text-anchor="middle">action, attempt)?</text>
+      <text class="pic-name" x="492" y="657" text-anchor="middle">RecoveryPolicy.Allows(failure,</text>
+      <text class="pic-name" x="492" y="673" text-anchor="middle">action, attempt)?</text>
       <rect class="pic-panel" x="26.2" y="772" width="263.6" height="84" rx="10" />
       <rect class="pic-fill tone-red" x="42.2" y="800" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(48.2 806) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(48.2 806) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="78.2" y="811" text-anchor="start">Escalate or stop: keep the</text>
-      <text class="flow-name" x="78.2" y="827" text-anchor="start">evidence, ask a person</text>
+      <text class="pic-name" x="78.2" y="811" text-anchor="start">Escalate or stop: keep the</text>
+      <text class="pic-name" x="78.2" y="827" text-anchor="start">evidence, ask a person</text>
       <rect class="pic-panel" x="352.6" y="772" width="278.8" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="368.6" y="800" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(374.6 806) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(374.6 806) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="404.6" y="803" text-anchor="start">Recover within bounds:</text>
-      <text class="flow-name" x="404.6" y="819" text-anchor="start">refetch, alternative source,</text>
-      <text class="flow-name" x="404.6" y="835" text-anchor="start">quarantine, compensate</text>
+      <text class="pic-name" x="404.6" y="803" text-anchor="start">Recover within bounds:</text>
+      <text class="pic-name" x="404.6" y="819" text-anchor="start">refetch, alternative source,</text>
+      <text class="pic-name" x="404.6" y="835" text-anchor="start">quarantine, compensate</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M20 916L314 916L296 1000L2 1000Z" />
       <rect class="pic-fill tone-amber" x="30" y="944" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(36 950) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(36 950) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="66" y="947" text-anchor="start">RecoveryRecord: kind, records,</text>
-      <text class="flow-name" x="66" y="963" text-anchor="start">source and version, action,</text>
-      <text class="flow-name" x="66" y="979" text-anchor="start">attempt, result, approval</text>
+      <text class="pic-name" x="66" y="947" text-anchor="start">RecoveryRecord: kind, records,</text>
+      <text class="pic-name" x="66" y="963" text-anchor="start">source and version, action,</text>
+      <text class="pic-name" x="66" y="979" text-anchor="start">attempt, result, approval</text>
       <path class="pic-panel flow-shape pic-edge" d="M364.4 958L386.4 916L597.6 916L619.6 958L597.6 1000L386.4 1000Z" />
       <rect class="pic-fill" x="481" y="939" width="22" height="4" rx="2" />
-      <text class="flow-name" x="492" y="963" text-anchor="middle">Verify before resuming</text>
+      <text class="pic-name" x="492" y="963" text-anchor="middle">Verify before resuming</text>
       <rect class="pic-panel flow-shape pic-edge tone-green" x="373.8" y="1066" width="236.4" height="52" rx="26" />
       <rect class="pic-fill tone-green" x="401.8" y="1078" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(407.8 1084) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(407.8 1084) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="437.8" y="1097" text-anchor="start">Resume the workflow</text>
+      <text class="pic-name" x="437.8" y="1097" text-anchor="start">Resume the workflow</text>
       <circle class="pic-port pic-edge tone-blue" cx="492" cy="52" r="4" />
       <circle class="pic-port pic-edge" cx="492" cy="196" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="158" cy="314" r="4" />
@@ -339,7 +339,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-red" cx="158" cy="856" r="4" />
       <circle class="pic-port pic-edge" cx="619.6" cy="958" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="1188" width="1073" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="1188" width="1073" height="1" rx="0" />
     <text class="pic-group" x="0" y="1210" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="1227" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="1240.5" text-anchor="start">starts it</text>

@@ -86,8 +86,8 @@ internal static class RelationLines
             (chip, word) = level ? (chip.Moved(by, 0), word.Moved(by, 0)) : (chip.Moved(0, by), word.Moved(0, by));
         }
 
-        writer.Box(chip, ChipCorner, $"cls-chip {kind.Wire()}");
-        string look = kind == RelationKind.Uses ? "cls-word quiet" : "cls-word";
+        writer.Box(chip, ChipCorner, $"pic-pill cls-chip {kind.Wire()}");
+        string look = kind == RelationKind.Uses ? "pic-pill-word cls-word quiet" : "pic-pill-word cls-word";
         var lines = FlowText.WordLines(edge.Edge.Word!);
         for (int at = 0; at < lines.Count; at++)
             writer.Text(word.X, word.Y - FlowText.WordRise + FlowText.WordStep * at, lines[at], look);

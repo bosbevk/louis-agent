@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -186,7 +193,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .crd-icon.quiet { stroke: var(--quiet); }
 .crd-name { fill: var(--text); font: 600 15px var(--pic-sans); }
 .crd-name.quiet { font-size: 14px; }
-.crd-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .crd-quiet {
   fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
   stroke-width: 1;
@@ -269,9 +275,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">The loop</text>
-      <text class="crd-text" x="18" y="298" text-anchor="start">Sends the history and the tools to the</text>
-      <text class="crd-text" x="18" y="316" text-anchor="start">model and runs its tool calls, up to ten</text>
-      <text class="crd-text" x="18" y="334" text-anchor="start">rounds a message.</text>
+      <text class="pic-text" x="18" y="298" text-anchor="start">Sends the history and the tools to the</text>
+      <text class="pic-text" x="18" y="316" text-anchor="start">model and runs its tool calls, up to ten</text>
+      <text class="pic-text" x="18" y="334" text-anchor="start">rounds a message.</text>
       <rect class="mrq-glass" x="306" y="222" width="284" height="132" rx="14" />
       <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
@@ -279,9 +285,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
       <text class="crd-name" x="370" y="263" text-anchor="start">Guards</text>
-      <text class="crd-text" x="324" y="298" text-anchor="start">Oversized results summarised, cut-off</text>
-      <text class="crd-text" x="324" y="316" text-anchor="start">calls never run, a failure sent back</text>
-      <text class="crd-text" x="324" y="334" text-anchor="start">with its reason.</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">Oversized results summarised, cut-off</text>
+      <text class="pic-text" x="324" y="316" text-anchor="start">calls never run, a failure sent back</text>
+      <text class="pic-text" x="324" y="334" text-anchor="start">with its reason.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="132" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
@@ -292,9 +298,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 20h14" />
       </g>
       <text class="crd-name" x="676" y="263" text-anchor="start">Usage</text>
-      <text class="crd-text" x="630" y="298" text-anchor="start">One ledger line per model request: its</text>
-      <text class="crd-text" x="630" y="316" text-anchor="start">tokens, model and time, priced by a</text>
-      <text class="crd-text" x="630" y="334" text-anchor="start">dated table.</text>
+      <text class="pic-text" x="630" y="298" text-anchor="start">One ledger line per model request: its</text>
+      <text class="pic-text" x="630" y="316" text-anchor="start">tokens, model and time, priced by a</text>
+      <text class="pic-text" x="630" y="334" text-anchor="start">dated table.</text>
       <rect class="crd-quiet" x="0" y="380" width="284" height="108" rx="14" />
       <g class="crd-icon quiet" transform="translate(20 400) scale(0.75)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -304,26 +310,26 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M21 6l0 13" />
       </g>
       <text class="crd-name quiet" x="50" y="414" text-anchor="start">Skills and prompts</text>
-      <text class="crd-text" x="20" y="440" text-anchor="start">Prompts embedded by level with the</text>
-      <text class="crd-text" x="20" y="457" text-anchor="start">principles first, and the skills an</text>
-      <text class="crd-text" x="20" y="474" text-anchor="start">agent writes.</text>
+      <text class="pic-text" x="20" y="440" text-anchor="start">Prompts embedded by level with the</text>
+      <text class="pic-text" x="20" y="457" text-anchor="start">principles first, and the skills an</text>
+      <text class="pic-text" x="20" y="474" text-anchor="start">agent writes.</text>
       <rect class="crd-quiet" x="306" y="380" width="284" height="108" rx="14" />
       <g class="crd-icon quiet" transform="translate(326 400) scale(0.75)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
       <text class="crd-name quiet" x="356" y="414" text-anchor="start">Providers</text>
-      <text class="crd-text" x="326" y="440" text-anchor="start">One chat client behind a seam. Each</text>
-      <text class="crd-text" x="326" y="457" text-anchor="start">model's SDK comes as its own small</text>
-      <text class="crd-text" x="326" y="474" text-anchor="start">library.</text>
+      <text class="pic-text" x="326" y="440" text-anchor="start">One chat client behind a seam. Each</text>
+      <text class="pic-text" x="326" y="457" text-anchor="start">model's SDK comes as its own small</text>
+      <text class="pic-text" x="326" y="474" text-anchor="start">library.</text>
       <rect class="crd-quiet" x="612" y="380" width="284" height="108" rx="14" />
       <g class="crd-icon quiet" transform="translate(632 400) scale(0.75)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
       <text class="crd-name quiet" x="662" y="414" text-anchor="start">Bootstrap</text>
-      <text class="crd-text" x="632" y="440" text-anchor="start">AgentHost reads the settings, loads the</text>
-      <text class="crd-text" x="632" y="457" text-anchor="start">skills and the client, and builds the</text>
-      <text class="crd-text" x="632" y="474" text-anchor="start">engine.</text>
+      <text class="pic-text" x="632" y="440" text-anchor="start">AgentHost reads the settings, loads the</text>
+      <text class="pic-text" x="632" y="457" text-anchor="start">skills and the client, and builds the</text>
+      <text class="pic-text" x="632" y="474" text-anchor="start">engine.</text>
     </g>
   </g>
 </svg>

@@ -26,12 +26,12 @@ internal static class SequenceKey
     public static SvgWriter Of(IReadOnlyList<SequenceKeyItem> items, double width, IGeometry geometry)
     {
         var writer = new SvgWriter();
-        KeyParts.Head(writer, geometry, 0, width, "seq-rule");
+        KeyParts.Head(writer, geometry, 0, width);
         foreach (var item in items)
         {
             var row = KeyParts.Row(geometry, item.X, item.Y, item.Sample);
             Sample(writer, item, row, geometry);
-            KeyParts.Words(writer, row, item.Words, "seq-key");
+            KeyParts.Words(writer, row, item.Words, "pic-means");
         }
 
         return writer;

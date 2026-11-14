@@ -44,6 +44,12 @@ public partial class PictureLookTests
     [TestCase(".pic-march")]
     [TestCase(".pic-port")]
     [TestCase(".pic-means")]
+    [TestCase(".pic-name")]
+    [TestCase(".pic-note")]
+    [TestCase(".pic-text")]
+    [TestCase(".pic-pill")]
+    [TestCase(".pic-pill-word")]
+    [TestCase(".pic-badge-icon")]
     public void TheSharedLook_CarriesWhatEveryPictureWears(string rule)
     {
         Assert.That(Shared, Does.Contain(rule + " "));

@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -221,96 +221,96 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-line pic-edge tone-green reads" d="M 771 404 L 771 470" marker-end="url(#arrow-green)" />
       <rect class="pic-panel" x="57" y="0" width="180" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="73" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(79 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(79 26) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="109" y="39" text-anchor="start">Puls local spec</text>
+      <text class="pic-name" x="109" y="39" text-anchor="start">Puls local spec</text>
       <rect class="pic-panel" x="327.2" y="0" width="263.6" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="343.2" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(349.2 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(349.2 26) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="379.2" y="39" text-anchor="start">Phase 3: record and replay</text>
+      <text class="pic-name" x="379.2" y="39" text-anchor="start">Phase 3: record and replay</text>
       <rect class="pic-panel" x="650.6" y="0" width="240.8" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="666.6" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(672.6 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(672.6 26) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="702.6" y="31" text-anchor="start">Phase 4: the area-guide</text>
-      <text class="flow-name" x="702.6" y="47" text-anchor="start">simulation proves it</text>
+      <text class="pic-name" x="702.6" y="31" text-anchor="start">Phase 4: the area-guide</text>
+      <text class="pic-name" x="702.6" y="47" text-anchor="start">simulation proves it</text>
       <rect class="pic-panel" x="985.4" y="0" width="195.2" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="1001.4" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1007.4 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1007.4 26) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="1037.4" y="39" text-anchor="start">Phase 9: accounts</text>
+      <text class="pic-name" x="1037.4" y="39" text-anchor="start">Phase 9: accounts</text>
       <rect class="pic-panel" x="45.6" y="128" width="202.8" height="52" rx="10" />
       <rect class="pic-fill tone-green" x="61.6" y="140" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(67.6 146) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(67.6 146) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="97.6" y="159" text-anchor="start">F35 Recipe sources</text>
+      <text class="pic-name" x="97.6" y="159" text-anchor="start">F35 Recipe sources</text>
       <rect class="pic-panel" x="998" y="128" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-green" x="1014" y="140" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1020 146) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1020 146) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="1050" y="159" text-anchor="start">F23 Credits</text>
+      <text class="pic-name" x="1050" y="159" text-anchor="start">F23 Credits</text>
       <rect class="pic-panel" x="41.8" y="240" width="210.4" height="52" rx="10" />
       <rect class="pic-fill tone-green" x="57.8" y="252" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(63.8 258) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(63.8 258) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="93.8" y="271" text-anchor="start">CL16 Reusable roles</text>
+      <text class="pic-name" x="93.8" y="271" text-anchor="start">CL16 Reusable roles</text>
       <rect class="pic-panel" x="331" y="240" width="256" height="52" rx="10" />
       <rect class="pic-fill tone-green" x="347" y="252" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(353 258) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(353 258) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="383" y="271" text-anchor="start">Sources as data, ADR 0032</text>
+      <text class="pic-name" x="383" y="271" text-anchor="start">Sources as data, ADR 0032</text>
       <rect class="pic-panel" x="665.8" y="240" width="210.4" height="52" rx="10" />
       <rect class="pic-fill tone-blue" x="681.8" y="252" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(687.8 258) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(687.8 258) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="717.8" y="271" text-anchor="start">Vision, question 15</text>
+      <text class="pic-name" x="717.8" y="271" text-anchor="start">Vision, question 15</text>
       <rect class="pic-panel" x="686" y="352" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-green" x="702" y="364" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(708 370) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(708 370) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="738" y="383" text-anchor="start">Places</text>
+      <text class="pic-name" x="738" y="383" text-anchor="start">Places</text>
       <rect class="pic-panel" x="624" y="470" width="294" height="68" rx="10" />
       <rect class="pic-fill" x="640" y="490" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(646 496) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(646 496) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="676" y="501" text-anchor="start">Local lookups, each a pack</text>
-      <text class="flow-name" x="676" y="517" text-anchor="start">when a simulation shows demand</text>
+      <text class="pic-name" x="676" y="501" text-anchor="start">Local lookups, each a pack</text>
+      <text class="pic-name" x="676" y="517" text-anchor="start">when a simulation shows demand</text>
       <rect class="pic-panel" x="989.2" y="470" width="187.6" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="1005.2" y="490" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1011.2 496) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1011.2 496) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="1041.2" y="509" text-anchor="start">Local businesses</text>
+      <text class="pic-name" x="1041.2" y="509" text-anchor="start">Local businesses</text>
       <circle class="pic-port pic-edge tone-blue" cx="147" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="459" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="147" cy="180" r="4" />
@@ -319,7 +319,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-green" cx="771" cy="404" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="1083" cy="68" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="608" width="1181" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="608" width="1181" height="1" rx="0" />
     <text class="pic-group" x="0" y="630" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="647" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="660.5" text-anchor="start">starts it</text>

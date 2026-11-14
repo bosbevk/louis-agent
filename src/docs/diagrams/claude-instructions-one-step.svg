@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -170,9 +177,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .seq-badge.tone-teal { fill: var(--teal-line); }
 .seq-badge.tone-red { fill: var(--red-line); }
 .seq-badge.tone-amber { fill: var(--amber-line); }
-.seq-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .seq-name { fill: var(--text); font: 700 16px var(--pic-sans); letter-spacing: -.2px; }
 .seq-life { fill: url(#seq-life); }
 .seq-life-0 { stop-color: var(--violet-line); stop-opacity: .7; }
@@ -193,20 +197,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 }
 .seq-call-words { fill: var(--text); font: 600 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
 .seq-answer-words { fill: var(--quiet); font: 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
-.seq-note-words { fill: var(--quiet); font: 12px var(--pic-sans); }
 .seq-cover { fill: var(--ground); }
 .seq-kind { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .seq-tab { fill: var(--text); font: 600 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
 .seq-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; stroke-dasharray: 4 6; }
 .seq-else { fill: var(--ground); stroke: var(--quiet); stroke-width: 1; stroke-opacity: .5; }
 .seq-else-word { fill: var(--quiet); font: 11px var(--mono); }
-.seq-ring { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .seq-ring.quiet { stroke: var(--quiet); }
 .seq-count { fill: var(--text); font: 700 10px var(--pic-sans); }
 .seq-quiet-node { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.5; }
-.seq-rule { fill: url(#mrq-edge); opacity: .7; }
-.seq-swatch { fill: url(#mrq-glass); stroke: var(--mrq-sheet); stroke-opacity: .3; }
-.seq-key { fill: var(--text); font: 12px var(--pic-sans); }</style>
+.seq-swatch { fill: url(#mrq-glass); stroke: var(--mrq-sheet); stroke-opacity: .3; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -311,14 +311,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="seq-quiet-node" cx="820.3" cy="694" r="4.5" />
       <text class="seq-answer-words" x="516.2" y="685" text-anchor="middle">the commit's message, no push</text>
       <rect class="seq-badge tone-blue" x="10" y="0" width="44" height="44" rx="13" />
-      <g class="seq-badge-icon" transform="translate(21 11) scale(0.9167)">
+      <g class="pic-badge-icon" transform="translate(21 11) scale(0.9167)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
       <text class="seq-name" x="32" y="68" text-anchor="middle">Louis</text>
       <circle class="mrq-node" cx="32" cy="84" r="4.5" />
       <rect class="seq-badge tone-blue" x="190" y="0" width="44" height="44" rx="13" />
-      <g class="seq-badge-icon" transform="translate(201 11) scale(0.9167)">
+      <g class="pic-badge-icon" transform="translate(201 11) scale(0.9167)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -333,13 +333,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="seq-name" x="212" y="68" text-anchor="middle">Claude</text>
       <circle class="mrq-node" cx="212" cy="84" r="4.5" />
       <rect class="seq-badge tone-violet" x="503" y="0" width="44" height="44" rx="13" />
-      <g class="seq-badge-icon" transform="translate(514 11) scale(0.9167)">
+      <g class="pic-badge-icon" transform="translate(514 11) scale(0.9167)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
       <text class="seq-name" x="525" y="68" text-anchor="middle">Always loaded</text>
       <circle class="mrq-node" cx="525" cy="84" r="4.5" />
       <rect class="seq-badge tone-teal" x="665.2" y="0" width="44" height="44" rx="13" />
-      <g class="seq-badge-icon" transform="translate(676.2 11) scale(0.9167)">
+      <g class="pic-badge-icon" transform="translate(676.2 11) scale(0.9167)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
@@ -349,7 +349,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="seq-name" x="687.2" y="68" text-anchor="middle">Rules by file</text>
       <circle class="mrq-node" cx="687.2" cy="84" r="4.5" />
       <rect class="seq-badge tone-green" x="798.3" y="0" width="44" height="44" rx="13" />
-      <g class="seq-badge-icon" transform="translate(809.3 11) scale(0.9167)">
+      <g class="pic-badge-icon" transform="translate(809.3 11) scale(0.9167)">
         <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
         <path d="M4 12l8 4l8 -4" />
         <path d="M4 16l8 4l8 -4" />
@@ -358,24 +358,24 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="mrq-node" cx="820.3" cy="84" r="4.5" />
     </g>
     <g class="seq-legend" transform="translate(0 792)">
-      <rect class="seq-rule" x="0" y="0" width="852.3" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="852.3" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="seq-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="seq-key" x="28" y="52.5" text-anchor="start">starts it</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
       <rect class="seq-badge tone-green" x="117.4" y="39" width="18" height="18" rx="6" />
-      <text class="seq-key" x="145.4" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="145.4" y="52.5" text-anchor="start">this project</text>
       <rect class="seq-badge tone-violet" x="254.6" y="39" width="18" height="18" rx="6" />
-      <text class="seq-key" x="282.6" y="52.5" text-anchor="start">the framework</text>
+      <text class="pic-means" x="282.6" y="52.5" text-anchor="start">the framework</text>
       <rect class="seq-badge tone-teal" x="398.4" y="39" width="18" height="18" rx="6" />
-      <text class="seq-key" x="426.4" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="426.4" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="seq-beam seq-beam-glow" x="586.3" y="44" width="43.5" height="8" rx="0" />
       <rect class="seq-beam" x="586.3" y="47" width="35.5" height="2" rx="0" />
       <path class="seq-tip" d="M621.8 48H629.8" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="586.3" cy="48" r="4.5" />
-      <text class="seq-key" x="639.8" y="52.5" text-anchor="start">a call</text>
+      <text class="pic-means" x="639.8" y="52.5" text-anchor="start">a call</text>
       <path class="seq-answer" d="M713.9 48H757.4" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="713.9" cy="48" r="4.5" />
-      <text class="seq-key" x="767.4" y="52.5" text-anchor="start">an answer</text>
+      <text class="pic-means" x="767.4" y="52.5" text-anchor="start">an answer</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="870" width="852.3" height="54" rx="8" />

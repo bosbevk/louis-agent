@@ -30,8 +30,8 @@ public class KeyPartsTests
     [Test]
     public void AKeysHead_IsARuleAcrossThePicture_AndItsHeadingUnderIt()
     {
-        var drawn = Drawn(KeyParts.Head(new SvgWriter(), Geometry, top: 300, width: 640, rule: "flow-rule"));
-        var rule = drawn.Single(shape => At(shape, "class") == "flow-rule");
+        var drawn = Drawn(KeyParts.Head(new SvgWriter(), Geometry, top: 300, width: 640));
+        var rule = drawn.Single(shape => At(shape, "class") == "mrq-rule");
         var heading = drawn.Single(shape => shape.Name == Svg + "text");
 
         Assert.Multiple(() =>

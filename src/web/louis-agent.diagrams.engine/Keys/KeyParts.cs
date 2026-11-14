@@ -24,11 +24,11 @@ internal static class KeyParts
     private const double Rule = 1, HeadingLine = 22;
 
     /// <summary>
-    /// The start of a key: a thin rule across the picture at the key's top, in the kind's own look, and the
-    /// heading under it at the left.
+    /// The start of a key: a thin rule across the picture at the key's top, which the shared look fills with its
+    /// accent, and the heading under it at the left.
     /// </summary>
-    public static SvgWriter Head(SvgWriter writer, IGeometry geometry, double top, double width, string rule) =>
-        writer.Box(geometry.Box(0, top, width, Rule), 0, rule)
+    public static SvgWriter Head(SvgWriter writer, IGeometry geometry, double top, double width) =>
+        writer.Box(geometry.Box(0, top, width, Rule), 0, "mrq-rule")
             .Text(0, top + HeadingLine, DiagramText.Format(DrawingMessage.KeyHeading), "pic-group", "start");
 
     /// <summary>An item's row: where its layout put it, as wide as its sample and a row tall.</summary>

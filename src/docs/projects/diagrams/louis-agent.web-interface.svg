@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -172,12 +179,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-badge.tone-teal { fill: var(--teal-line); }
 .cls-badge.tone-red { fill: var(--red-line); }
 .cls-badge.tone-amber { fill: var(--amber-line); }
-.cls-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
-.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
 .cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
 .cls-line { fill: none; stroke-linecap: round; }
@@ -188,13 +190,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-line.uses {
   stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
 }
-.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .cls-chip.holds { stroke: var(--violet-line); }
 .cls-chip.inherits { stroke: var(--violet-line); }
 .cls-chip.implements { stroke: var(--violet-line); }
 .cls-chip.creates { stroke: var(--blue-line); }
 .cls-chip.uses { stroke: var(--quiet); }
-.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word { fill: var(--text); }
 .cls-word.quiet { fill: var(--quiet); }
 .end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
 .end-triangle.tone-blue { stroke: var(--blue-line); }
@@ -219,8 +220,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .end-open.tone-teal { stroke: var(--teal-line); }
 .end-open.tone-red { stroke: var(--red-line); }
 .end-open.tone-amber { stroke: var(--amber-line); }
-.cls-rule { fill: url(#mrq-edge); opacity: .7; }
-.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
 .cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
 .cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
@@ -269,43 +268,43 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 1078 69 L 1158 69" />
       <path class="cls-line holds" d="M 1078 69 L 1110 69 Q 1134 69 1134 93 L 1134 213 Q 1134 225 1146 225 L 1158 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 1078 69 L 1110 69 Q 1134 69 1134 93 L 1134 213 Q 1134 225 1146 225 L 1158 225" />
-      <rect class="cls-chip holds" x="554" y="60" width="120" height="18" rx="9" />
-      <text class="cls-word" x="614" y="72" text-anchor="middle">the chat frame's</text>
-      <rect class="cls-chip uses" x="592.5" y="207" width="43" height="18" rx="9" />
-      <text class="cls-word quiet" x="614" y="219" text-anchor="middle">shows</text>
-      <rect class="cls-chip holds" x="1096" y="60" width="43" height="18" rx="9" />
-      <text class="cls-word" x="1117.5" y="72" text-anchor="middle">holds</text>
-      <rect class="cls-chip uses" x="1582.5" y="60" width="113" height="18" rx="9" />
-      <text class="cls-word quiet" x="1639" y="72" text-anchor="middle">reads and sends</text>
-      <rect class="cls-chip uses" x="433" y="216" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="451" y="228" text-anchor="middle">uses</text>
-      <rect class="cls-chip uses" x="417" y="372" width="50" height="18" rx="9" />
-      <text class="cls-word quiet" x="442" y="384" text-anchor="middle">places</text>
-      <rect class="cls-chip uses" x="389" y="684" width="106" height="18" rx="9" />
-      <text class="cls-word quiet" x="442" y="696" text-anchor="middle">reads a ticket</text>
-      <rect class="cls-chip uses" x="557.5" y="363" width="113" height="18" rx="9" />
-      <text class="cls-word quiet" x="614" y="375" text-anchor="middle">hands an ask to</text>
+      <rect class="pic-pill cls-chip holds" x="554" y="60" width="120" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="614" y="72" text-anchor="middle">the chat frame's</text>
+      <rect class="pic-pill cls-chip uses" x="592.5" y="207" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="614" y="219" text-anchor="middle">shows</text>
+      <rect class="pic-pill cls-chip holds" x="1096" y="60" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1117.5" y="72" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip uses" x="1582.5" y="60" width="113" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1639" y="72" text-anchor="middle">reads and sends</text>
+      <rect class="pic-pill cls-chip uses" x="433" y="216" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="451" y="228" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip uses" x="417" y="372" width="50" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="442" y="384" text-anchor="middle">places</text>
+      <rect class="pic-pill cls-chip uses" x="389" y="684" width="106" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="442" y="696" text-anchor="middle">reads a ticket</text>
+      <rect class="pic-pill cls-chip uses" x="557.5" y="363" width="113" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="614" y="375" text-anchor="middle">hands an ask to</text>
       <rect class="cls-cover" x="0" y="23" width="378" height="92" rx="14" />
       <rect class="mrq-glass" x="0" y="23" width="378" height="92" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="55" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="73.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="51" text-anchor="start">SiteShell, ChatShell,</text>
-      <text class="cls-name" x="52" y="67" text-anchor="start">AdminShell, ShowroomShell</text>
-      <text class="cls-kind" x="52" y="83" text-anchor="start">the frames a site's pages</text>
-      <text class="cls-kind" x="52" y="95" text-anchor="start">sit in</text>
+      <text class="pic-name" x="52" y="51" text-anchor="start">SiteShell, ChatShell,</text>
+      <text class="pic-name" x="52" y="67" text-anchor="start">AdminShell, ShowroomShell</text>
+      <text class="pic-note" x="52" y="83" text-anchor="start">the frames a site's pages</text>
+      <text class="pic-note" x="52" y="95" text-anchor="start">sit in</text>
       <rect class="cls-cover" x="0" y="187" width="378" height="76" rx="14" />
       <rect class="mrq-glass" x="0" y="187" width="378" height="76" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="211" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="229.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="215" text-anchor="start">SectionPage</text>
-      <text class="cls-kind" x="52" y="231" text-anchor="start">a page of sections, each</text>
-      <text class="cls-kind" x="52" y="243" text-anchor="start">with an id</text>
+      <text class="pic-name" x="52" y="215" text-anchor="start">SectionPage</text>
+      <text class="pic-note" x="52" y="231" text-anchor="start">a page of sections, each</text>
+      <text class="pic-note" x="52" y="243" text-anchor="start">with an id</text>
       <rect class="cls-cover" x="0" y="333" width="378" height="96" rx="14" />
       <rect class="mrq-glass" x="0" y="333" width="378" height="96" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="351" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="369.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="361" text-anchor="start">GraphView</text>
-      <text class="cls-kind" x="52" y="377" text-anchor="start">an animated diagram</text>
+      <text class="pic-name" x="52" y="361" text-anchor="start">GraphView</text>
+      <text class="pic-note" x="52" y="377" text-anchor="start">an animated diagram</text>
       <path class="cls-divide" d="M14 397H364" />
       <text class="cls-member" x="14" y="415" text-anchor="start">GraphSpec Spec</text>
       <rect class="cls-cover" x="0" y="483" width="378" height="108" rx="14" />
@@ -313,17 +312,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="24" y="482.5" width="330" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="14" y="507" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="525.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="52" y="511" text-anchor="start">IScreenView, IImportView</text>
-      <text class="cls-kind" x="52" y="527" text-anchor="start">interfaces, a pack's own</text>
-      <text class="cls-kind" x="52" y="539" text-anchor="start">views</text>
+      <text class="pic-name" x="52" y="511" text-anchor="start">IScreenView, IImportView</text>
+      <text class="pic-note" x="52" y="527" text-anchor="start">interfaces, a pack's own</text>
+      <text class="pic-note" x="52" y="539" text-anchor="start">views</text>
       <path class="cls-divide" d="M14 559H364" />
       <text class="cls-member" x="14" y="577" text-anchor="start">Screen ScreenReply; +Form ImportForm</text>
       <rect class="cls-cover" x="0" y="638" width="378" height="110" rx="14" />
       <rect class="mrq-glass" x="0" y="638" width="378" height="110" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="656" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="674.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="666" text-anchor="start">CardCall, OfferCall, CardsLast</text>
-      <text class="cls-kind" x="52" y="682" text-anchor="start">the calls the chat draws</text>
+      <text class="pic-name" x="52" y="666" text-anchor="start">CardCall, OfferCall, CardsLast</text>
+      <text class="pic-note" x="52" y="682" text-anchor="start">the calls the chat draws</text>
       <path class="cls-divide" d="M14 702H364" />
       <text class="cls-member" x="14" y="720" text-anchor="start">SourceOf(Block) DiagramSource?</text>
       <text class="cls-member" x="14" y="734" text-anchor="start">Of(Block) Offered?</text>
@@ -331,10 +330,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="0" y="780" width="378" height="138" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="812" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="830.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="808" text-anchor="start">InlineEdit, InlineForm,</text>
-      <text class="cls-name" x="52" y="824" text-anchor="start">TextField, TagInput</text>
-      <text class="cls-kind" x="52" y="840" text-anchor="start">pieces for a page a</text>
-      <text class="cls-kind" x="52" y="852" text-anchor="start">person edits</text>
+      <text class="pic-name" x="52" y="808" text-anchor="start">InlineEdit, InlineForm,</text>
+      <text class="pic-name" x="52" y="824" text-anchor="start">TextField, TagInput</text>
+      <text class="pic-note" x="52" y="840" text-anchor="start">pieces for a page a</text>
+      <text class="pic-note" x="52" y="852" text-anchor="start">person edits</text>
       <path class="cls-divide" d="M14 872H364" />
       <text class="cls-member" x="14" y="890" text-anchor="start">Value, ValueChanged: plain words with no listener</text>
       <text class="cls-member" x="14" y="904" text-anchor="start">PartChanges: a part listens when the whole does</text>
@@ -342,9 +341,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="686" y="1" width="392" height="136" rx="14" />
       <rect class="cls-badge tone-green" x="700" y="25" width="28" height="28" rx="9" />
       <text class="cls-mark" x="714" y="43.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="738" y="29" text-anchor="start">ChatRunner</text>
-      <text class="cls-kind" x="738" y="45" text-anchor="start">one chat's life: draft,</text>
-      <text class="cls-kind" x="738" y="57" text-anchor="start">session, stream, save</text>
+      <text class="pic-name" x="738" y="29" text-anchor="start">ChatRunner</text>
+      <text class="pic-note" x="738" y="45" text-anchor="start">one chat's life: draft,</text>
+      <text class="pic-note" x="738" y="57" text-anchor="start">session, stream, save</text>
       <path class="cls-divide" d="M700 77H1064" />
       <text class="cls-member" x="700" y="95" text-anchor="start">StartTurnAsync(message, attachments, page?, title?)</text>
       <text class="cls-member" x="700" y="109" text-anchor="start">SendAsync(), StopAsync()</text>
@@ -354,9 +353,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="710" y="163.5" width="344" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="700" y="188" width="28" height="28" rx="9" />
       <text class="cls-mark" x="714" y="206.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="738" y="192" text-anchor="start">IAccountMenu</text>
-      <text class="cls-kind" x="738" y="208" text-anchor="start">interface, a site's</text>
-      <text class="cls-kind" x="738" y="220" text-anchor="start">account corner</text>
+      <text class="pic-name" x="738" y="192" text-anchor="start">IAccountMenu</text>
+      <text class="pic-note" x="738" y="208" text-anchor="start">interface, a site's</text>
+      <text class="pic-note" x="738" y="220" text-anchor="start">account corner</text>
       <path class="cls-divide" d="M700 240H1064" />
       <text class="cls-member" x="700" y="258" text-anchor="start">Enabled, SignedIn, Name?, Email?</text>
       <text class="cls-member" x="700" y="272" text-anchor="start">LoadAsync(), SignOutAsync()</text>
@@ -364,9 +363,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="686" y="320" width="392" height="122" rx="14" />
       <rect class="cls-badge tone-green" x="700" y="344" width="28" height="28" rx="9" />
       <text class="cls-mark" x="714" y="362.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="738" y="348" text-anchor="start">AgentWindows</text>
-      <text class="cls-kind" x="738" y="364" text-anchor="start">an Observer: which window</text>
-      <text class="cls-kind" x="738" y="376" text-anchor="start">shows which agent</text>
+      <text class="pic-name" x="738" y="348" text-anchor="start">AgentWindows</text>
+      <text class="pic-note" x="738" y="364" text-anchor="start">an Observer: which window</text>
+      <text class="pic-note" x="738" y="376" text-anchor="start">shows which agent</text>
       <path class="cls-divide" d="M700 396H1064" />
       <text class="cls-member" x="700" y="414" text-anchor="start">Show(identity), Take(Block)</text>
       <text class="cls-member" x="700" y="428" text-anchor="start">event Asked, Moved</text>
@@ -374,23 +373,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="686" y="483" width="392" height="108" rx="14" />
       <rect class="cls-badge tone-green" x="700" y="507" width="28" height="28" rx="9" />
       <text class="cls-mark" x="714" y="525.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="738" y="511" text-anchor="start">SiteAddresses</text>
-      <text class="cls-kind" x="738" y="527" text-anchor="start">ADR 0107: every place its</text>
-      <text class="cls-kind" x="738" y="539" text-anchor="start">own address</text>
+      <text class="pic-name" x="738" y="511" text-anchor="start">SiteAddresses</text>
+      <text class="pic-note" x="738" y="527" text-anchor="start">ADR 0107: every place its</text>
+      <text class="pic-note" x="738" y="539" text-anchor="start">own address</text>
       <path class="cls-divide" d="M700 559H1064" />
       <text class="cls-member" x="700" y="577" text-anchor="start">SiteAddresses(home, pages)</text>
       <rect class="cls-cover" x="686" y="661" width="392" height="64" rx="14" />
       <rect class="mrq-glass" x="686" y="661" width="392" height="64" rx="14" />
       <rect class="cls-badge tone-violet" x="700" y="679" width="28" height="28" rx="9" />
       <text class="cls-mark" x="714" y="697.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="738" y="689" text-anchor="start">GraphLayout, TicketCard</text>
-      <text class="cls-kind" x="738" y="705" text-anchor="start">louis-agent.diagrams</text>
+      <text class="pic-name" x="738" y="689" text-anchor="start">GraphLayout, TicketCard</text>
+      <text class="pic-note" x="738" y="705" text-anchor="start">louis-agent.diagrams</text>
       <rect class="cls-cover" x="1158" y="0" width="413" height="138" rx="14" />
       <rect class="mrq-glass" x="1158" y="0" width="413" height="138" rx="14" />
       <rect class="cls-badge tone-green" x="1172" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1186" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1210" y="28" text-anchor="start">AgentApi</text>
-      <text class="cls-kind" x="1210" y="44" text-anchor="start">the agent API over HTTP</text>
+      <text class="pic-name" x="1210" y="28" text-anchor="start">AgentApi</text>
+      <text class="pic-note" x="1210" y="44" text-anchor="start">the agent API over HTTP</text>
       <path class="cls-divide" d="M1172 64H1557" />
       <text class="cls-member" x="1172" y="82" text-anchor="start">CreateSessionAsync(toolsets, role?) string</text>
       <text class="cls-member" x="1172" y="96" text-anchor="start">StreamMessageAsync(...) IAsyncEnumerable&lt;SessionEvent&gt;</text>
@@ -400,8 +399,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="1158" y="163" width="413" height="124" rx="14" />
       <rect class="cls-badge tone-green" x="1172" y="181" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1186" y="199.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1210" y="191" text-anchor="start">ChatStore</text>
-      <text class="cls-kind" x="1210" y="207" text-anchor="start">the browser's storage</text>
+      <text class="pic-name" x="1210" y="191" text-anchor="start">ChatStore</text>
+      <text class="pic-note" x="1210" y="207" text-anchor="start">the browser's storage</text>
       <path class="cls-divide" d="M1172 227H1557" />
       <text class="cls-member" x="1172" y="245" text-anchor="start">LoadAsync(), SaveAsync()</text>
       <text class="cls-member" x="1172" y="259" text-anchor="start">Find(sessionId) Chat?</text>
@@ -410,29 +409,29 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="1731" y="31" width="256" height="76" rx="14" />
       <rect class="cls-badge tone-violet" x="1745" y="55" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1759" y="73.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1783" y="59" text-anchor="start">louis-agent.api.contracts</text>
-      <text class="cls-kind" x="1783" y="75" text-anchor="start">the requests and replies,</text>
-      <text class="cls-kind" x="1783" y="87" text-anchor="start">shared</text>
+      <text class="pic-name" x="1783" y="59" text-anchor="start">louis-agent.api.contracts</text>
+      <text class="pic-note" x="1783" y="75" text-anchor="start">the requests and replies,</text>
+      <text class="pic-note" x="1783" y="87" text-anchor="start">shared</text>
     </g>
     <g class="cls-legend" transform="translate(0 988)">
-      <rect class="cls-rule" x="0" y="0" width="1987" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="1987" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
       <rect class="cls-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">the framework</text>
       <rect class="cls-badge tone-teal" x="281" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="309" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="309" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="cls-key-mark" x="464.4" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="474.4" y="52" text-anchor="middle">I</text>
-      <text class="cls-key" x="494.4" y="52.5" text-anchor="start">an interface</text>
+      <text class="pic-means" x="494.4" y="52.5" text-anchor="start">an interface</text>
       <rect class="cls-key-mark" x="603.6" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="613.6" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="633.6" y="52.5" text-anchor="start">a class</text>
+      <text class="pic-means" x="633.6" y="52.5" text-anchor="start">a class</text>
       <path class="cls-line holds" d="M709.8 48H759.8" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <text class="cls-key" x="769.8" y="52.5" text-anchor="start">holds</text>
+      <text class="pic-means" x="769.8" y="52.5" text-anchor="start">holds</text>
       <path class="cls-line uses" d="M832.8 48H882.8" marker-end="url(#open)" />
-      <text class="cls-key" x="892.8" y="52.5" text-anchor="start">uses</text>
+      <text class="pic-means" x="892.8" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="1066" width="1987" height="37" rx="8" />

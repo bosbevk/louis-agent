@@ -64,7 +64,7 @@ internal static class TypeCards
         // The icon stands in the badge's middle, as far in from its left as from its top.
         double inset = (size - BadgeIcon) / 2;
         if (type.Icon is { } icon)
-            writer.Icon(badge.Left + inset, badge.Top + inset, BadgeIcon, icon, "cls-badge-icon");
+            writer.Icon(badge.Left + inset, badge.Top + inset, BadgeIcon, icon, "pic-badge-icon");
         else
             writer.Text(badge.Middle.X, badge.Middle.Y + MarkDrop, TypeMarks.Letter(mark), "cls-mark");
     }
@@ -75,10 +75,10 @@ internal static class TypeCards
         double x = FlowText.LabelLeft(node), top = node.Box.Top;
         var name = FlowText.LabelLines(node.Node);
         for (int at = 0; at < name.Count; at++)
-            writer.Text(x, top + FlowText.LabelY(node) + FlowText.LabelStep * at, name[at], "cls-name", "start");
+            writer.Text(x, top + FlowText.LabelY(node) + FlowText.LabelStep * at, name[at], "pic-name", "start");
         var kind = node.Node.Note is { } words ? GraphLayout.NoteLines(words) : [];
         for (int at = 0; at < kind.Count; at++)
-            writer.Text(x, top + FlowText.NoteY(node) + FlowText.NoteStep * at, kind[at], "cls-kind", "start");
+            writer.Text(x, top + FlowText.NoteY(node) + FlowText.NoteStep * at, kind[at], "pic-note", "start");
     }
 
     /// <summary>

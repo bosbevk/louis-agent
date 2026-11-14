@@ -24,7 +24,7 @@ internal static class FlowKey
     public static void Draw(SvgWriter writer, IReadOnlyList<FlowKeyItem> items, IGeometry geometry, double top,
         double width)
     {
-        KeyParts.Head(writer, geometry, top, width, "flow-rule");
+        KeyParts.Head(writer, geometry, top, width);
         foreach (var item in items)
         {
             var row = KeyParts.Row(geometry, item.X, top + item.Y, item.Sample);

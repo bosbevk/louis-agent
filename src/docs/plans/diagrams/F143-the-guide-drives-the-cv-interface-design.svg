@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -172,12 +179,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-badge.tone-teal { fill: var(--teal-line); }
 .cls-badge.tone-red { fill: var(--red-line); }
 .cls-badge.tone-amber { fill: var(--amber-line); }
-.cls-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
-.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
 .cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
 .cls-line { fill: none; stroke-linecap: round; }
@@ -188,13 +190,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-line.uses {
   stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
 }
-.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .cls-chip.holds { stroke: var(--violet-line); }
 .cls-chip.inherits { stroke: var(--violet-line); }
 .cls-chip.implements { stroke: var(--violet-line); }
 .cls-chip.creates { stroke: var(--blue-line); }
 .cls-chip.uses { stroke: var(--quiet); }
-.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word { fill: var(--text); }
 .cls-word.quiet { fill: var(--quiet); }
 .end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
 .end-triangle.tone-blue { stroke: var(--blue-line); }
@@ -219,8 +220,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .end-open.tone-teal { stroke: var(--teal-line); }
 .end-open.tone-red { stroke: var(--red-line); }
 .end-open.tone-amber { stroke: var(--amber-line); }
-.cls-rule { fill: url(#mrq-edge); opacity: .7; }
-.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
 .cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
 .cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
@@ -264,44 +263,44 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 512 48 L 592 48" />
       <path class="cls-line holds" d="M 252 48 L 264 48 Q 276 48 276 60 L 276 138 Q 276 162 300 162 L 332 162" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 252 48 L 264 48 Q 276 48 276 60 L 276 138 Q 276 162 300 162 L 332 162" />
-      <rect class="cls-chip holds" x="530" y="39" width="43" height="18" rx="9" />
-      <text class="cls-word" x="551.5" y="51" text-anchor="middle">holds</text>
-      <rect class="cls-chip uses" x="843" y="39" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="861" y="51" text-anchor="middle">uses</text>
-      <rect class="cls-chip uses" x="839.5" y="153" width="43" height="18" rx="9" />
-      <text class="cls-word quiet" x="861" y="165" text-anchor="middle">reads</text>
-      <rect class="cls-chip uses" x="282.5" y="39" width="43" height="18" rx="9" />
-      <text class="cls-word quiet" x="304" y="51" text-anchor="middle">names</text>
-      <rect class="cls-chip holds" x="282.5" y="153" width="43" height="18" rx="9" />
-      <text class="cls-word" x="304" y="165" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="530" y="39" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="551.5" y="51" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip uses" x="843" y="39" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="861" y="51" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip uses" x="839.5" y="153" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="861" y="165" text-anchor="middle">reads</text>
+      <rect class="pic-pill cls-chip uses" x="282.5" y="39" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="304" y="51" text-anchor="middle">names</text>
+      <rect class="pic-pill cls-chip holds" x="282.5" y="153" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="304" y="165" text-anchor="middle">holds</text>
       <rect class="cls-cover" x="0" y="0" width="252" height="96" rx="14" />
       <rect class="mrq-glass" x="0" y="0" width="252" height="96" rx="14" />
       <rect class="cls-badge tone-violet" x="14" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="28" text-anchor="start">GuideIdentity</text>
-      <text class="cls-kind" x="52" y="44" text-anchor="start">identity, step 2</text>
+      <text class="pic-name" x="52" y="28" text-anchor="start">GuideIdentity</text>
+      <text class="pic-note" x="52" y="44" text-anchor="start">identity, step 2</text>
       <path class="cls-divide" d="M14 64H238" />
       <text class="cls-member" x="14" y="82" text-anchor="start">Packs: docs, leads, site, resume</text>
       <rect class="cls-cover" x="332" y="0" width="180" height="96" rx="14" />
       <rect class="mrq-glass" x="332" y="0" width="180" height="96" rx="14" />
       <rect class="cls-badge tone-green" x="346" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="360" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="384" y="28" text-anchor="start">ResumePack</text>
-      <text class="cls-kind" x="384" y="44" text-anchor="start">pack, step 1</text>
+      <text class="pic-name" x="384" y="28" text-anchor="start">ResumePack</text>
+      <text class="pic-note" x="384" y="44" text-anchor="start">pack, step 1</text>
       <path class="cls-divide" d="M346 64H498" />
       <text class="cls-member" x="346" y="82" text-anchor="start">ResumeToolset Toolset</text>
       <rect class="cls-cover" x="332" y="130" width="180" height="64" rx="14" />
       <rect class="mrq-glass" x="332" y="130" width="180" height="64" rx="14" />
       <rect class="cls-badge tone-green" x="346" y="148" width="28" height="28" rx="9" />
       <text class="cls-mark" x="360" y="166.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="384" y="158" text-anchor="start">focus-hiring.md</text>
-      <text class="cls-kind" x="384" y="174" text-anchor="start">focus skill, step 3</text>
+      <text class="pic-name" x="384" y="158" text-anchor="start">focus-hiring.md</text>
+      <text class="pic-note" x="384" y="174" text-anchor="start">focus skill, step 3</text>
       <rect class="cls-cover" x="592" y="0" width="217" height="96" rx="14" />
       <rect class="mrq-glass" x="592" y="0" width="217" height="96" rx="14" />
       <rect class="cls-badge tone-green" x="606" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="620" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="644" y="28" text-anchor="start">GetResume</text>
-      <text class="cls-kind" x="644" y="44" text-anchor="start">tool, step 1</text>
+      <text class="pic-name" x="644" y="28" text-anchor="start">GetResume</text>
+      <text class="pic-note" x="644" y="44" text-anchor="start">tool, step 1</text>
       <path class="cls-divide" d="M606 64H795" />
       <text class="cls-member" x="606" y="82" text-anchor="start">string Run(string? section)</text>
       <rect class="cls-cover" x="889" y="0" width="203" height="96" rx="14" />
@@ -309,8 +308,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="913" y="-0.5" width="155" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="903" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="917" y="36.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="941" y="28" text-anchor="start">ResumeOptions</text>
-      <text class="cls-kind" x="941" y="44" text-anchor="start">record, step 1</text>
+      <text class="pic-name" x="941" y="28" text-anchor="start">ResumeOptions</text>
+      <text class="pic-note" x="941" y="44" text-anchor="start">record, step 1</text>
       <path class="cls-divide" d="M903 64H1078" />
       <text class="cls-member" x="903" y="82" text-anchor="start">string File (RESUME_FILE)</text>
       <rect class="cls-cover" x="889" y="124" width="203" height="76" rx="14" />
@@ -318,29 +317,29 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="913" y="123.5" width="155" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="903" y="148" width="28" height="28" rx="9" />
       <text class="cls-mark" x="917" y="166.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="941" y="152" text-anchor="start">Resume</text>
-      <text class="cls-kind" x="941" y="168" text-anchor="start">record, F142 (home: open</text>
-      <text class="cls-kind" x="941" y="180" text-anchor="start">choice 1)</text>
+      <text class="pic-name" x="941" y="152" text-anchor="start">Resume</text>
+      <text class="pic-note" x="941" y="168" text-anchor="start">record, F142 (home: open</text>
+      <text class="pic-note" x="941" y="180" text-anchor="start">choice 1)</text>
     </g>
     <g class="cls-legend" transform="translate(0 280)">
-      <rect class="cls-rule" x="0" y="0" width="1092" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="1092" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
       <rect class="cls-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">the framework</text>
       <rect class="cls-badge tone-teal" x="281" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="309" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="309" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="cls-key-mark" x="464.4" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="474.4" y="52" text-anchor="middle">R</text>
-      <text class="cls-key" x="494.4" y="52.5" text-anchor="start">a record</text>
+      <text class="pic-means" x="494.4" y="52.5" text-anchor="start">a record</text>
       <rect class="cls-key-mark" x="577.2" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="587.2" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="607.2" y="52.5" text-anchor="start">a class</text>
+      <text class="pic-means" x="607.2" y="52.5" text-anchor="start">a class</text>
       <path class="cls-line holds" d="M683.4 48H733.4" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <text class="cls-key" x="743.4" y="52.5" text-anchor="start">holds</text>
+      <text class="pic-means" x="743.4" y="52.5" text-anchor="start">holds</text>
       <path class="cls-line uses" d="M806.4 48H856.4" marker-end="url(#open)" />
-      <text class="cls-key" x="866.4" y="52.5" text-anchor="start">uses</text>
+      <text class="pic-means" x="866.4" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="358" width="1092" height="37" rx="8" />

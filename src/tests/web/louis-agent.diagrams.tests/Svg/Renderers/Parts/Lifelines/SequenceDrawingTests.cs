@@ -125,7 +125,7 @@ public class SequenceDrawingTests
                 "seq-badge tone-blue", "seq-badge tone-green", "seq-badge tone-violet", "seq-badge tone-red",
                 "seq-badge"
             }));
-            Assert.That(In("seq-badge-icon", Steps()), Has.Count.EqualTo(4), "the person's too, the plain one's not");
+            Assert.That(In("pic-badge-icon", Steps()), Has.Count.EqualTo(4), "the person's too, the plain one's not");
             Assert.That(In("seq-name", Steps()).Select(name => name.Value), Is.EqualTo(new[]
             {
                 "You", "louis-agent.api", "AgentEngine", "The model that answers,", "wherever it runs", "A plain one"
@@ -242,7 +242,7 @@ public class SequenceDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(In("seq-note-words", steps).Single().Value,
+            Assert.That(In("pic-text", steps).Single().Value,
                 Is.EqualTo("every request is measured in the ledger"));
             Assert.That(In("mrq-glass", steps), Has.Count.EqualTo(4), "three frames and the note");
             Assert.That(In("seq-cover", steps), Has.Count.EqualTo(4));
@@ -275,7 +275,8 @@ public class SequenceDrawingTests
                 Is.EqualTo(Enumerable.Range(1, 10).Select(number => $"{number}")));
             Assert.That(rings, Has.Count.EqualTo(10));
             Assert.That(rings.Count(ring => Class(ring).Contains("quiet")), Is.EqualTo(3), "the answers'");
-            Assert.That(In("mrq-node", numbered), Has.Count.EqualTo(5), "only the heads'");
+            Assert.That(In("mrq-node", numbered).Except(rings).ToList(), Has.Count.EqualTo(5), "the heads'");
+            Assert.That(rings.Select(Class), Has.All.StartsWith("mrq-node "), "a ring is the look's node");
             Assert.That(In("seq-ring", Steps()), Is.Empty);
         });
     }
@@ -291,9 +292,9 @@ public class SequenceDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(In("seq-rule", key), Has.Count.EqualTo(1));
+            Assert.That(In("mrq-rule", key), Has.Count.EqualTo(1));
             Assert.That(In("pic-group", key).Single().Value, Is.EqualTo("How to read it"));
-            Assert.That(In("seq-key", key).Select(words => words.Value), Is.EquivalentTo(new[]
+            Assert.That(In("pic-means", key).Select(words => words.Value), Is.EquivalentTo(new[]
             {
                 "starts it", "this project", "the framework", "outside the process", "a call", "an answer", "a note",
                 "repeats", "only if", "one case or the other"
@@ -351,8 +352,8 @@ public class SequenceDrawingTests
         Assert.Multiple(() =>
         {
             Assert.That(Width(wide), Is.GreaterThan(Width(narrow)).And.GreaterThan(title.Length * 6.5));
-            Assert.That(Width(In("seq-rule", wide).Single()), Is.EqualTo(Width(wide) - 48).Within(0.11));
-            Assert.That(Width(In("seq-rule", narrow).Single()), Is.EqualTo(Width(narrow) - 48).Within(0.11));
+            Assert.That(Width(In("mrq-rule", wide).Single()), Is.EqualTo(Width(wide) - 48).Within(0.11));
+            Assert.That(Width(In("mrq-rule", narrow).Single()), Is.EqualTo(Width(narrow) - 48).Within(0.11));
         });
     }
 

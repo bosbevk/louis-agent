@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -215,90 +215,90 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 306 418 L 602.4 418" />
       <path class="pic-line pic-edge tone-violet" d="M 873.6 418 L 934 418" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 873.6 418 L 934 418" />
-      <rect class="flow-chip pic-edge tone-green" x="326.1" y="67" width="232" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="442.1" y="79" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
-      <rect class="flow-chip pic-edge tone-green" x="326.1" y="169" width="232" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="442.1" y="181" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
-      <rect class="flow-chip pic-edge tone-blue" x="389.1" y="271" width="106" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-blue" x="442.1" y="283" text-anchor="middle">localhost:4317</text>
-      <rect class="flow-chip pic-edge tone-green" x="378.6" y="409" width="127" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="442.1" y="421" text-anchor="middle">endpoint injected</text>
+      <rect class="pic-pill pic-edge tone-green" x="326.1" y="67" width="232" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="442.1" y="79" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
+      <rect class="pic-pill pic-edge tone-green" x="326.1" y="169" width="232" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="442.1" y="181" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
+      <rect class="pic-pill pic-edge tone-blue" x="389.1" y="271" width="106" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="442.1" y="283" text-anchor="middle">localhost:4317</text>
+      <rect class="pic-pill pic-edge tone-green" x="378.6" y="409" width="127" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="442.1" y="421" text-anchor="middle">endpoint injected</text>
       <rect class="pic-panel" x="12" y="34" width="294" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="62" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(34 68) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(34 68) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="64" y="65" text-anchor="start">code-review stack</text>
-      <text class="flow-name" x="64" y="81" text-anchor="start">api, acp-server, mcp-server,</text>
-      <text class="flow-name" x="64" y="97" text-anchor="start">local-agent</text>
+      <text class="pic-name" x="64" y="65" text-anchor="start">code-review stack</text>
+      <text class="pic-name" x="64" y="81" text-anchor="start">api, acp-server, mcp-server,</text>
+      <text class="pic-name" x="64" y="97" text-anchor="start">local-agent</text>
       <rect class="pic-panel" x="12" y="144" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="164" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(34 170) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(34 170) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="64" y="175" text-anchor="start">Puls stack</text>
-      <text class="flow-name" x="64" y="191" text-anchor="start">puls, OTEL_SERVICE_NAME=puls</text>
+      <text class="pic-name" x="64" y="175" text-anchor="start">Puls stack</text>
+      <text class="pic-name" x="64" y="191" text-anchor="start">puls, OTEL_SERVICE_NAME=puls</text>
       <rect class="pic-panel" x="12" y="246" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="28" y="266" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(34 272) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(34 272) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="64" y="277" text-anchor="start">Rider: cli, orchestrator, eval</text>
-      <text class="flow-name" x="64" y="293" text-anchor="start">runner</text>
+      <text class="pic-name" x="64" y="277" text-anchor="start">Rider: cli, orchestrator, eval</text>
+      <text class="pic-name" x="64" y="293" text-anchor="start">runner</text>
       <rect class="pic-panel" x="12" y="384" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="404" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(34 410) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(34 410) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="64" y="415" text-anchor="start">puls-app,</text>
-      <text class="flow-name" x="64" y="431" text-anchor="start">OTEL_SERVICE_NAME=puls</text>
+      <text class="pic-name" x="64" y="415" text-anchor="start">puls-app,</text>
+      <text class="pic-name" x="64" y="431" text-anchor="start">OTEL_SERVICE_NAME=puls</text>
       <rect class="pic-panel" x="602.4" y="136" width="271.2" height="84" rx="10" />
       <rect class="pic-fill tone-amber" x="618.4" y="164" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(624.4 170) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(624.4 170) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="654.4" y="167" text-anchor="start">observability stack</text>
-      <text class="flow-name" x="654.4" y="183" text-anchor="start">Aspire dashboard, UI 18888,</text>
-      <text class="flow-name" x="654.4" y="199" text-anchor="start">OTLP 4317</text>
+      <text class="pic-name" x="654.4" y="167" text-anchor="start">observability stack</text>
+      <text class="pic-name" x="654.4" y="183" text-anchor="start">Aspire dashboard, UI 18888,</text>
+      <text class="pic-name" x="654.4" y="199" text-anchor="start">OTLP 4317</text>
       <rect class="pic-panel" x="602.4" y="384" width="271.2" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="618.4" y="404" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(624.4 410) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(624.4 410) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="654.4" y="415" text-anchor="start">managed OpenTelemetry agent</text>
-      <text class="flow-name" x="654.4" y="431" text-anchor="start">gRPC, the environment's</text>
+      <text class="pic-name" x="654.4" y="415" text-anchor="start">managed OpenTelemetry agent</text>
+      <text class="pic-name" x="654.4" y="431" text-anchor="start">gRPC, the environment's</text>
       <rect class="pic-panel" x="934" y="376" width="218" height="84" rx="10" />
       <rect class="pic-fill tone-red" x="950" y="404" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(956 410) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(956 410) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="986" y="407" text-anchor="start">Application Insights</text>
-      <text class="flow-name" x="986" y="423" text-anchor="start">puls-insights</text>
-      <text class="flow-name" x="986" y="439" text-anchor="start">logs and traces</text>
+      <text class="pic-name" x="986" y="407" text-anchor="start">Application Insights</text>
+      <text class="pic-name" x="986" y="423" text-anchor="start">puls-insights</text>
+      <text class="pic-name" x="986" y="439" text-anchor="start">logs and traces</text>
       <circle class="pic-port pic-edge tone-green" cx="306" cy="76" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="306" cy="178" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="306" cy="280" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="306" cy="418" r="4" />
       <circle class="pic-port pic-edge tone-violet" cx="873.6" cy="418" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="542" width="1164" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="542" width="1164" height="1" rx="0" />
     <text class="pic-group" x="0" y="564" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="581" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="594.5" text-anchor="start">starts it</text>

@@ -25,7 +25,6 @@ public class CardsStyleTests
     [TestCase(".crd-tint")]
     [TestCase(".crd-icon")]
     [TestCase(".crd-name")]
-    [TestCase(".crd-text")]
     [TestCase(".crd-quiet")]
     public void TheStyle_HasARuleForEveryPartOfItsOwn(string rule) => Assert.That(Style, Does.Contain(rule + " "));
 

@@ -121,7 +121,7 @@ public class ClassesDrawingTests
                 "cls-badge tone-green", "cls-badge tone-green", "cls-badge tone-green", "cls-badge tone-green",
                 "cls-badge tone-teal", "cls-badge tone-teal", "cls-badge tone-teal", "cls-badge tone-violet"
             }), "the kinds' tones, and the one a type names");
-            Assert.That(In("cls-kind", types).Select(kind => kind.Value), Does.Contain("interface, step 1"));
+            Assert.That(In("pic-note", types).Select(kind => kind.Value), Does.Contain("interface, step 1"));
             Assert.That(In("cls-divide", types), Has.Count.EqualTo(4), "the four types with members");
             Assert.That(In("cls-member", types).Select(member => member.Value),
                 Does.Contain("Start(options)").And.Contain("Listen(stream) Transcript").And.None.StartsWith("+"));
@@ -140,7 +140,7 @@ public class ClassesDrawingTests
     [Test]
     public void ALongName_IsDrawnOnItsLines()
     {
-        var names = In("cls-name", Types()).Select(name => name.Value).ToList();
+        var names = In("pic-name", Types()).Select(name => name.Value).ToList();
 
         const string name = "SpeechStreamReaderForEveryProvider, SpeechStreamWriter";
         Assert.That(string.Join(" ", names), Does.Contain(name));
@@ -193,7 +193,7 @@ public class ClassesDrawingTests
             Assert.That(In("cls-word", types).Select(word => word.Value),
                 Is.EquivalentTo(new[] { "holds", "picks one", "implements", "is a", "creates", "uses", "reads with" }));
             Assert.That(In("cls-chip", types).Select(Class),
-                Does.Contain("cls-chip holds").And.Contain("cls-chip uses"));
+                Does.Contain("pic-pill cls-chip holds").And.Contain("pic-pill cls-chip uses"));
             Assert.That(In("cls-word", types).Where(word => Class(word).Contains("quiet")).Select(word => word.Value),
                 Is.EquivalentTo(new[] { "uses", "reads with" }));
         });
@@ -209,7 +209,7 @@ public class ClassesDrawingTests
         var types = Types();
         string path = (string)In("cls-line", types).Single(line => Class(line) == "cls-line holds").Attribute("d")!;
         double start = double.Parse(path.Split(' ')[1], System.Globalization.CultureInfo.InvariantCulture);
-        var pill = In("cls-chip", types).Single(chip => Class(chip) == "cls-chip holds");
+        var pill = In("cls-chip", types).Single(chip => Class(chip) == "pic-pill cls-chip holds");
 
         Assert.That((double)pill.Attribute("x")!, Is.GreaterThanOrEqualTo(start + 14), "the diamond is 14 long");
     }
@@ -225,9 +225,9 @@ public class ClassesDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(In("cls-rule", key), Has.Count.EqualTo(1));
+            Assert.That(In("mrq-rule", key), Has.Count.EqualTo(1));
             Assert.That(In("pic-group", key).Single().Value, Is.EqualTo("How to read it"));
-            Assert.That(In("cls-key", key).Select(words => words.Value), Is.EqualTo(new[]
+            Assert.That(In("pic-means", key).Select(words => words.Value), Is.EqualTo(new[]
             {
                 "this project", "the framework", "contracts and state", "an interface", "a record", "an enum",
                 "abstract", "static", "a class", "holds", "is a", "implements", "creates", "uses"

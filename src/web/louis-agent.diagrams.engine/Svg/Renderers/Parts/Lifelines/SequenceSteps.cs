@@ -131,7 +131,7 @@ internal static class SequenceSteps
             return;
         }
 
-        writer.Circle(row.FromX, row.ArrowY, Ring, call ? "seq-ring" : "seq-ring quiet")
+        writer.Circle(row.FromX, row.ArrowY, Ring, call ? "mrq-node seq-ring" : "mrq-node seq-ring quiet")
             .Text(row.FromX, row.ArrowY + CountDrop, number.ToString(CultureInfo.InvariantCulture), "seq-count");
     }
 
@@ -144,7 +144,7 @@ internal static class SequenceSteps
         writer.Box(note, Corner, "seq-cover").Box(note, Corner, "mrq-glass");
         for (int at = 0; at < row.Lines.Count; at++)
             writer.Text(note.Middle.X, note.Top + Measures.NotePad + NoteBase + at * Measures.NoteLine, row.Lines[at],
-                "seq-note-words");
+                "pic-text");
     }
 
     /// <summary>The look of a call's words, bold, or an answer's, quiet.</summary>

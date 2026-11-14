@@ -101,7 +101,7 @@ public class TitledFrameTests
             Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
             Assert.That(Words("mrq-title"), Is.EqualTo(new[] { "One chat turn" }));
             Assert.That(Words("legend"), Is.Empty, "the frame's legend");
-            Assert.That(Words("seq-key"), Is.EqualTo(new[] { "starts it", "a call" }), "the picture's own key");
+            Assert.That(Words("pic-means"), Is.EqualTo(new[] { "starts it", "a call" }), "the picture's own key");
         });
     }
 
@@ -122,7 +122,7 @@ public class TitledFrameTests
             Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
             Assert.That(Words("mrq-title"), Is.EqualTo(new[] { "Accounts: the browser's calls to the store" }));
             Assert.That(Words("legend"), Is.Empty, "the frame's legend");
-            Assert.That(Words("cls-key"), Is.EqualTo(new[] { "this project", "a class", "uses" }),
+            Assert.That(Words("pic-means"), Is.EqualTo(new[] { "this project", "a class", "uses" }),
                 "the picture's own key");
         });
     }

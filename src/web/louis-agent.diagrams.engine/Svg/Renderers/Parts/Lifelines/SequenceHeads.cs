@@ -41,7 +41,7 @@ internal static class SequenceHeads
         var badge = geometry.Box(head.Center - Badge / 2, top, Badge, Badge);
         writer.Box(badge, Corner, "seq-badge" + PictureParts.Tone(head.Participant.Tone));
         if (SequenceMeasures.IconOf(head.Participant) is { } icon)
-            writer.Icon(badge.Left + inset, badge.Top + inset, BadgeIcon, icon, "seq-badge-icon");
+            writer.Icon(badge.Left + inset, badge.Top + inset, BadgeIcon, icon, "pic-badge-icon");
 
         for (int at = 0; at < head.Lines.Count; at++)
             writer.Text(head.Center, top + NameDrop + at * SequenceMeasures.Marquee.HeadLine, head.Lines[at],

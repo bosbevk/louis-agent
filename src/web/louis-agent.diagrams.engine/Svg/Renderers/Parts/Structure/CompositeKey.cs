@@ -44,7 +44,7 @@ internal static class CompositeKey
     public static void Draw(SvgWriter writer, IReadOnlyList<CompositeKeyItem> items, string tone,
         IGeometry geometry, double top, double width)
     {
-        KeyParts.Head(writer, geometry, top, width, "flow-rule");
+        KeyParts.Head(writer, geometry, top, width);
         foreach (var item in items)
         {
             var row = KeyParts.Row(geometry, item.X, top + item.Y, item.Sample);

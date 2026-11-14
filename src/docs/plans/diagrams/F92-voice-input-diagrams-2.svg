@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -217,78 +217,78 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 196 206 L 211 206 Q 226 206 226 221 L 226 358.5 Q 226 378 245.5 378 L 265 378" />
       <rect class="pic-panel" x="0" y="8" width="196" height="52" rx="10" />
       <rect class="pic-fill tone-violet" x="16" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(22 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(22 26) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="52" y="39" text-anchor="start">AgentHostContext</text>
+      <text class="pic-name" x="52" y="39" text-anchor="start">AgentHostContext</text>
       <rect class="pic-panel flow-shape pic-edge tone-blue" x="0" y="180" width="196" height="52" rx="26" />
       <rect class="pic-fill tone-blue" x="28" y="192" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(34 198) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(34 198) scale(0.6667)">
         <path d="M8 9h8" />
         <path d="M8 13h6" />
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
-      <text class="flow-name" x="64" y="211" text-anchor="start">the request</text>
+      <text class="pic-name" x="64" y="211" text-anchor="start">the request</text>
       <rect class="pic-panel" x="256" y="8" width="294" height="52" rx="10" />
       <rect class="pic-fill tone-violet" x="272" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(278 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(278 26) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="308" y="39" text-anchor="start">SpeechClientFactory</text>
+      <text class="pic-name" x="308" y="39" text-anchor="start">SpeechClientFactory</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M274 86L550 86L532 154L256 154Z" />
       <rect class="pic-fill tone-amber" x="284" y="106" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(290 112) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(290 112) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="320" y="117" text-anchor="start">audio Stream (in memory,</text>
-      <text class="flow-name" x="320" y="133" text-anchor="start">dropped after)</text>
+      <text class="pic-name" x="320" y="117" text-anchor="start">audio Stream (in memory,</text>
+      <text class="pic-name" x="320" y="133" text-anchor="start">dropped after)</text>
       <rect class="pic-panel" x="256" y="172" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="272" y="192" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(278 198) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(278 198) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="308" y="203" text-anchor="start">ISpeechToTextClient (logging +</text>
-      <text class="flow-name" x="308" y="219" text-anchor="start">telemetry wrapped)</text>
+      <text class="pic-name" x="308" y="203" text-anchor="start">ISpeechToTextClient (logging +</text>
+      <text class="pic-name" x="308" y="219" text-anchor="start">telemetry wrapped)</text>
       <rect class="pic-panel" x="256" y="266" width="294" height="52" rx="10" />
       <rect class="pic-fill tone-teal" x="272" y="278" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(278 284) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(278 284) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="308" y="297" text-anchor="start">TranscriptionResult</text>
+      <text class="pic-name" x="308" y="297" text-anchor="start">TranscriptionResult</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M274 352L550 352L532 404L256 404Z" />
       <rect class="pic-fill tone-amber" x="284" y="364" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(290 370) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(290 370) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="320" y="383" text-anchor="start">SpeechUsage row</text>
+      <text class="pic-name" x="320" y="383" text-anchor="start">SpeechUsage row</text>
       <rect class="pic-panel" x="610" y="8" width="294" height="52" rx="10" />
       <rect class="pic-fill tone-teal" x="626" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(632 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(632 26) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="662" y="39" text-anchor="start">[WhisperSpeechProvider]</text>
+      <text class="pic-name" x="662" y="39" text-anchor="start">[WhisperSpeechProvider]</text>
       <rect class="pic-panel" x="610" y="172" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-red" x="626" y="192" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(632 198) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(632 198) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -300,14 +300,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="flow-name" x="662" y="203" text-anchor="start">Whisper model (loaded once per</text>
-      <text class="flow-name" x="662" y="219" text-anchor="start">process)</text>
+      <text class="pic-name" x="662" y="203" text-anchor="start">Whisper model (loaded once per</text>
+      <text class="pic-name" x="662" y="219" text-anchor="start">process)</text>
       <circle class="pic-port pic-edge tone-violet" cx="196" cy="34" r="4" />
       <circle class="pic-port pic-edge tone-violet" cx="550" cy="34" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="196" cy="206" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="550" cy="206" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="482" width="904" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="482" width="904" height="1" rx="0" />
     <text class="pic-group" x="0" y="504" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="521" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="534.5" text-anchor="start">starts it</text>

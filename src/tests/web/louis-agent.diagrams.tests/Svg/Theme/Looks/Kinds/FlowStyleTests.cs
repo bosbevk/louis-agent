@@ -12,12 +12,7 @@ public class FlowStyleTests
     private static readonly string Own = FlowStyle.Rules;
 
     /// <summary>The flow's style has a rule for each part that is a flow's own.</summary>
-    [TestCase(".flow-name")]
-    [TestCase(".flow-icon")]
     [TestCase(".flow-shape")]
-    [TestCase(".flow-chip")]
-    [TestCase(".flow-word")]
-    [TestCase(".flow-rule")]
     public void TheFlowsStyle_HasARuleForEachOfItsOwnParts(string rule) => Assert.That(Own, Does.Contain(rule + " "));
 
     /// <summary>
@@ -38,11 +33,6 @@ public class FlowStyleTests
     [Test]
     public void AGroupsFrame_IsAPanel_AndAKeysWordsAreShared_SoTheStyleHasNoRuleForThem() =>
         Assert.That(Own, Does.Not.Contain(".flow-group").And.Not.Contain(".flow-means"));
-
-    /// <summary>The rule over the key is filled with the accent's edge, as the other kinds' are.</summary>
-    [Test]
-    public void TheKeysRule_IsTheAccentsEdge() =>
-        Assert.That(Own, Does.Contain($".flow-rule {{ fill: url(#{MarqueeLook.EdgePaint});"));
 
     /// <summary>
     /// Each rule is written in one place: the flow's own style names nothing of the shared looks, and the same

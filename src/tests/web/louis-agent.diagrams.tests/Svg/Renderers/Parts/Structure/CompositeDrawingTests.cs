@@ -122,7 +122,7 @@ public class CompositeDrawingTests
     {
         var order = Shapes().Select(shape => shape.Class).ToList();
         int lastLine = order.FindLastIndex(cls => cls == "cps-wire" || cls == "pic-march");
-        int firstWord = order.FindIndex(cls => cls.StartsWith("flow-chip"));
+        int firstWord = order.FindIndex(cls => cls.StartsWith("pic-pill"));
 
         Assert.Multiple(() =>
         {

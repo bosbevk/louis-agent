@@ -52,7 +52,13 @@ internal static class PictureLook
           .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
           .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
           .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+          .pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
           .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+          .pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+          .pic-pill-word { font: 500 10px var(--mono); }
+          .pic-badge-icon {
+            fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+          }
           .pic-port { fill: var(--ground); stroke-width: 1.25; }
           .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
           .pic-line.reads { stroke-dasharray: 3 5; }

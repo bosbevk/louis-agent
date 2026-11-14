@@ -2,8 +2,8 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 /// <summary>
 /// What a cards picture's look adds to the shared ones (F134.9, Louis's pick of three designs, "Marquee"): the lit
-/// rail the parts hang from and its lines, a headline with its badge, a glass card's badge, name and text, and the
-/// quiet card.
+/// rail the parts hang from and its lines, a headline with its badge, a glass card's badge and name, and the
+/// quiet card. A card's text is <see cref="PictureLook"/>'s.
 /// </summary>
 /// <remarks>
 /// A card has no tone, so the colour here is the look's own: one accent, the palette's violet running to its blue.
@@ -46,7 +46,6 @@ internal static class CardsStyle
           .crd-icon.quiet { stroke: var(--quiet); }
           .crd-name { fill: var(--text); font: 600 15px var(--pic-sans); }
           .crd-name.quiet { font-size: 14px; }
-          .crd-text { fill: var(--quiet); font: 12px var(--pic-sans); }
           .crd-quiet {
             fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
             stroke-width: 1;

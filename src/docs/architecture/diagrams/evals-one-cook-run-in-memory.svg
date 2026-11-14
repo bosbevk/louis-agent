@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -226,87 +226,87 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 474.6 746 L 474.6 806" />
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M374.6 0L592.6 0L574.6 68L356.6 68Z" />
       <rect class="pic-fill tone-amber" x="384.6" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(390.6 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(390.6 26) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="flow-name" x="420.6" y="31" text-anchor="start">Evals/Cook/eval.json</text>
-      <text class="flow-name" x="420.6" y="47" text-anchor="start">identity = puls</text>
+      <text class="pic-name" x="420.6" y="31" text-anchor="start">Evals/Cook/eval.json</text>
+      <text class="pic-name" x="420.6" y="47" text-anchor="start">identity = puls</text>
       <rect class="pic-panel" x="327.6" y="128" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="343.6" y="148" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(349.6 154) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(349.6 154) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="379.6" y="159" text-anchor="start">FileEval : IEval</text>
-      <text class="flow-name" x="379.6" y="175" text-anchor="start">Name = puls-cook, Version = 11</text>
+      <text class="pic-name" x="379.6" y="159" text-anchor="start">FileEval : IEval</text>
+      <text class="pic-name" x="379.6" y="175" text-anchor="start">Name = puls-cook, Version = 11</text>
       <rect class="pic-panel" x="9" y="256" width="286.4" height="84" rx="10" />
       <rect class="pic-fill tone-teal" x="25" y="284" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(31 290) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(31 290) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="61" y="295" text-anchor="start">EvalMode puls-cook · EvalMode</text>
-      <text class="flow-name" x="61" y="311" text-anchor="start">puls-tools</text>
+      <text class="pic-name" x="61" y="295" text-anchor="start">EvalMode puls-cook · EvalMode</text>
+      <text class="pic-name" x="61" y="311" text-anchor="start">puls-tools</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M348 256L619.2 256L601.2 340L330 340Z" />
       <rect class="pic-fill tone-amber" x="358" y="284" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(364 290) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(364 290) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="394" y="287" text-anchor="start">Dataset puls-cook v7</text>
-      <text class="flow-name" x="394" y="303" text-anchor="start">dev and held-out scenarios,</text>
-      <text class="flow-name" x="394" y="319" text-anchor="start">labels</text>
+      <text class="pic-name" x="394" y="287" text-anchor="start">Dataset puls-cook v7</text>
+      <text class="pic-name" x="394" y="303" text-anchor="start">dev and held-out scenarios,</text>
+      <text class="pic-name" x="394" y="319" text-anchor="start">labels</text>
       <rect class="pic-panel" x="657.6" y="256" width="278.8" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="673.6" y="284" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(679.6 290) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(679.6 290) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="709.6" y="295" text-anchor="start">9 checks, from cook-no-error</text>
-      <text class="flow-name" x="709.6" y="311" text-anchor="start">to meal-for-people.human</text>
+      <text class="pic-name" x="709.6" y="295" text-anchor="start">9 checks, from cook-no-error</text>
+      <text class="pic-name" x="709.6" y="311" text-anchor="start">to meal-for-people.human</text>
       <rect class="pic-panel" x="5.2" y="406" width="294" height="84" rx="10" />
       <rect class="pic-fill tone-teal" x="21.2" y="434" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(27.2 440) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(27.2 440) scale(0.6667)">
         <path d="M8 9h8" />
         <path d="M8 13h6" />
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
-      <text class="flow-name" x="57.2" y="437" text-anchor="start">Trial</text>
-      <text class="flow-name" x="57.2" y="453" text-anchor="start">run 5d1fd231c9b1 · puls-cook ·</text>
-      <text class="flow-name" x="57.2" y="469" text-anchor="start">repeat 1 · cook-malmesbury</text>
+      <text class="pic-name" x="57.2" y="437" text-anchor="start">Trial</text>
+      <text class="pic-name" x="57.2" y="453" text-anchor="start">run 5d1fd231c9b1 · puls-cook ·</text>
+      <text class="pic-name" x="57.2" y="469" text-anchor="start">repeat 1 · cook-malmesbury</text>
       <rect class="pic-panel" x="16.6" y="550" width="271.2" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="32.6" y="570" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(38.6 576) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(38.6 576) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="68.6" y="581" text-anchor="start">Transcript</text>
-      <text class="flow-name" x="68.6" y="597" text-anchor="start">TurnTranscript per question</text>
+      <text class="pic-name" x="68.6" y="581" text-anchor="start">Transcript</text>
+      <text class="pic-name" x="68.6" y="597" text-anchor="start">TurnTranscript per question</text>
       <rect class="pic-panel" x="335.2" y="678" width="278.8" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="351.2" y="698" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(357.2 704) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(357.2 704) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="387.2" y="709" text-anchor="start">Grade × 9</text>
-      <text class="flow-name" x="387.2" y="725" text-anchor="start">e.g. untooled-shops 1.0 pass</text>
+      <text class="pic-name" x="387.2" y="709" text-anchor="start">Grade × 9</text>
+      <text class="pic-name" x="387.2" y="725" text-anchor="start">e.g. untooled-shops 1.0 pass</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M340.4 806L626.8 806L608.8 874L322.4 874Z" />
       <rect class="pic-fill tone-amber" x="350.4" y="826" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(356.4 832) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(356.4 832) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="386.4" y="837" text-anchor="start">ConversationEvent</text>
-      <text class="flow-name" x="386.4" y="853" text-anchor="start">grades, TrialOutcome, Metrics</text>
+      <text class="pic-name" x="386.4" y="837" text-anchor="start">ConversationEvent</text>
+      <text class="pic-name" x="386.4" y="853" text-anchor="start">grades, TrialOutcome, Metrics</text>
       <circle class="pic-port pic-edge tone-amber" cx="474.6" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="474.6" cy="196" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="152.2" cy="340" r="4" />
@@ -316,7 +316,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-teal" cx="152.2" cy="618" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="474.6" cy="746" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="944" width="937" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="944" width="937" height="1" rx="0" />
     <text class="pic-group" x="0" y="966" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="983" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="996.5" text-anchor="start">starts it</text>

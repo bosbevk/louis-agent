@@ -110,11 +110,11 @@ internal static class FlowDrawing
     /// <summary>An arrow's word, in a pill on its line where the layout kept the room clear.</summary>
     internal static void Word(SvgWriter writer, PlacedEdge edge, string tone, IGeometry geometry)
     {
-        writer.Box(FlowText.WordBox(edge, geometry), ChipCorner, $"flow-chip pic-edge{tone}");
+        writer.Box(FlowText.WordBox(edge, geometry), ChipCorner, $"pic-pill pic-edge{tone}");
         var lines = FlowText.WordLines(edge.Edge.Word!);
         for (int at = 0; at < lines.Count; at++)
             writer.Text(edge.Word.X, edge.Word.Y - FlowText.WordRise + FlowText.WordStep * at, lines[at],
-                $"flow-word pic-ink{tone}");
+                $"pic-pill-word pic-ink{tone}");
     }
 
     /// <summary>
@@ -147,7 +147,7 @@ internal static class FlowDrawing
         // The badge stands on the box's middle line, and the icon in the badge's middle.
         var badge = geometry.Box(left + BadgeIn, 0, Badge, Badge).OnLine(box.Middle.Y);
         var sign = geometry.Box(badge.Left + (Badge - BadgeIcon) / 2, 0, BadgeIcon, BadgeIcon).OnLine(box.Middle.Y);
-        writer.Box(badge, BadgeCorner, $"pic-fill{tone}").Icon(sign.Left, sign.Top, BadgeIcon, icon, "flow-icon");
+        writer.Box(badge, BadgeCorner, $"pic-fill{tone}").Icon(sign.Left, sign.Top, BadgeIcon, icon, "pic-badge-icon");
         Words(writer, node, FlowText.LabelLeft(node) + (left - box.Left), "start");
     }
 
@@ -175,7 +175,7 @@ internal static class FlowDrawing
         double top = node.Box.Top;
         var label = FlowText.LabelLines(node.Node);
         for (int at = 0; at < label.Count; at++)
-            writer.Text(x, top + FlowText.LabelY(node) + FlowText.LabelStep * at, label[at], "flow-name", anchor);
+            writer.Text(x, top + FlowText.LabelY(node) + FlowText.LabelStep * at, label[at], "pic-name", anchor);
         var note = node.Node.Note is { } words ? GraphLayout.NoteLines(words) : [];
         for (int at = 0; at < note.Count; at++)
             writer.Text(x, top + FlowText.NoteY(node) + FlowText.NoteStep * at, note[at], "pic-note", anchor);

@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -172,12 +179,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-badge.tone-teal { fill: var(--teal-line); }
 .cls-badge.tone-red { fill: var(--red-line); }
 .cls-badge.tone-amber { fill: var(--amber-line); }
-.cls-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
-.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
 .cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
 .cls-line { fill: none; stroke-linecap: round; }
@@ -188,13 +190,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-line.uses {
   stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
 }
-.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .cls-chip.holds { stroke: var(--violet-line); }
 .cls-chip.inherits { stroke: var(--violet-line); }
 .cls-chip.implements { stroke: var(--violet-line); }
 .cls-chip.creates { stroke: var(--blue-line); }
 .cls-chip.uses { stroke: var(--quiet); }
-.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word { fill: var(--text); }
 .cls-word.quiet { fill: var(--quiet); }
 .end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
 .end-triangle.tone-blue { stroke: var(--blue-line); }
@@ -219,8 +220,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .end-open.tone-teal { stroke: var(--teal-line); }
 .end-open.tone-red { stroke: var(--red-line); }
 .end-open.tone-amber { stroke: var(--amber-line); }
-.cls-rule { fill: url(#mrq-edge); opacity: .7; }
-.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
 .cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
 .cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
@@ -276,33 +275,33 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="cls-line implements" d="M 336 346 L 408 346 Q 432 346 432 322 L 432 302 Q 432 290 444 290 L 456 290 L 722 290 L 818 290 L 1224 290 L 1400 290 L 1827 290 L 1891 290 Q 1915 290 1915 314 L 1915 322 Q 1915 346 1939 346 L 2005 346" marker-end="url(#triangle-violet)" />
       <path class="cls-line holds" d="M 1827 62 L 1891 62 Q 1915 62 1915 86 L 1915 171 Q 1915 195 1939 195 L 2005 195" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 1827 62 L 1891 62 Q 1915 62 1915 86 L 1915 171 Q 1915 195 1939 195 L 2005 195" />
-      <rect class="cls-chip uses" x="366" y="195" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="384" y="207" text-anchor="middle">adds</text>
-      <rect class="cls-chip uses" x="764" y="53" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="782" y="65" text-anchor="middle">maps</text>
-      <rect class="cls-chip creates" x="753.5" y="195" width="57" height="18" rx="9" />
-      <text class="cls-word" x="782" y="207" text-anchor="middle">creates</text>
-      <rect class="cls-chip uses" x="1306" y="53" width="36" height="18" rx="9" />
-      <text class="cls-word quiet" x="1324" y="65" text-anchor="middle">uses</text>
-      <rect class="cls-chip uses" x="1260.5" y="337" width="127" height="18" rx="9" />
-      <text class="cls-word quiet" x="1324" y="349" text-anchor="middle">reads and answers</text>
-      <rect class="cls-chip holds" x="1947.5" y="186" width="43" height="18" rx="9" />
-      <text class="cls-word" x="1969" y="198" text-anchor="middle">holds</text>
-      <rect class="cls-chip creates" x="1940.5" y="53" width="57" height="18" rx="9" />
-      <text class="cls-word" x="1969" y="65" text-anchor="middle">creates</text>
-      <rect class="cls-chip uses" x="1264" y="195" width="120" height="18" rx="9" />
-      <text class="cls-word quiet" x="1324" y="207" text-anchor="middle">streams the turn</text>
-      <rect class="cls-chip uses" x="1844.5" y="195" width="71" height="18" rx="9" />
-      <text class="cls-word quiet" x="1880" y="207" text-anchor="middle">writes in</text>
-      <rect class="cls-chip implements" x="345" y="337" width="78" height="18" rx="9" />
-      <text class="cls-word" x="384" y="349" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="366" y="195" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="384" y="207" text-anchor="middle">adds</text>
+      <rect class="pic-pill cls-chip uses" x="764" y="53" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="782" y="65" text-anchor="middle">maps</text>
+      <rect class="pic-pill cls-chip creates" x="753.5" y="195" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="782" y="207" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="1306" y="53" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1324" y="65" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip uses" x="1260.5" y="337" width="127" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1324" y="349" text-anchor="middle">reads and answers</text>
+      <rect class="pic-pill cls-chip holds" x="1947.5" y="186" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1969" y="198" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="1940.5" y="53" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1969" y="65" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="1264" y="195" width="120" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1324" y="207" text-anchor="middle">streams the turn</text>
+      <rect class="pic-pill cls-chip uses" x="1844.5" y="195" width="71" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1880" y="207" text-anchor="middle">writes in</text>
+      <rect class="pic-pill cls-chip implements" x="345" y="337" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="384" y="349" text-anchor="middle">implements</text>
       <rect class="cls-cover" x="0" y="143" width="336" height="122" rx="14" />
       <rect class="mrq-glass" x="0" y="143" width="336" height="122" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="167" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="185.5" text-anchor="middle">S</text>
-      <text class="cls-name" x="52" y="171" text-anchor="start">ApiStartup</text>
-      <text class="cls-kind" x="52" y="187" text-anchor="start">static, what a program</text>
-      <text class="cls-kind" x="52" y="199" text-anchor="start">calls</text>
+      <text class="pic-name" x="52" y="171" text-anchor="start">ApiStartup</text>
+      <text class="pic-note" x="52" y="187" text-anchor="start">static, what a program</text>
+      <text class="pic-note" x="52" y="199" text-anchor="start">calls</text>
       <path class="cls-divide" d="M14 219H322" />
       <text class="cls-member" x="14" y="237" text-anchor="start">AddLouisAgentApi(builder, AgentHostContext)</text>
       <text class="cls-member" x="14" y="251" text-anchor="start">UseLouisAgentKey(app)</text>
@@ -310,16 +309,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="0" y="302" width="336" height="88" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="332" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="350.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="330" text-anchor="start">ClaudeStreamFormat</text>
-      <text class="cls-kind" x="52" y="346" text-anchor="start">Claude's events:</text>
-      <text class="cls-kind" x="52" y="358" text-anchor="start">message_start,</text>
-      <text class="cls-kind" x="52" y="370" text-anchor="start">content_block_delta...</text>
+      <text class="pic-name" x="52" y="330" text-anchor="start">ClaudeStreamFormat</text>
+      <text class="pic-note" x="52" y="346" text-anchor="start">Claude's events:</text>
+      <text class="pic-note" x="52" y="358" text-anchor="start">message_start,</text>
+      <text class="pic-note" x="52" y="370" text-anchor="start">content_block_delta...</text>
       <rect class="cls-cover" x="456" y="149" width="266" height="110" rx="14" />
       <rect class="mrq-glass" x="456" y="149" width="266" height="110" rx="14" />
       <rect class="cls-badge tone-green" x="470" y="167" width="28" height="28" rx="9" />
       <text class="cls-mark" x="484" y="185.5" text-anchor="middle">S</text>
-      <text class="cls-name" x="508" y="177" text-anchor="start">ApiMap</text>
-      <text class="cls-kind" x="508" y="193" text-anchor="start">static</text>
+      <text class="pic-name" x="508" y="177" text-anchor="start">ApiMap</text>
+      <text class="pic-note" x="508" y="193" text-anchor="start">static</text>
       <path class="cls-divide" d="M470 213H708" />
       <text class="cls-member" x="470" y="231" text-anchor="start">AddApi(services, host, openDoor?)</text>
       <text class="cls-member" x="470" y="245" text-anchor="start">every route, a named handler each</text>
@@ -327,7 +326,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="818" y="13" width="406" height="98" rx="14" />
       <rect class="cls-badge tone-green" x="832" y="25" width="28" height="28" rx="9" />
       <text class="cls-mark" x="846" y="43.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="870" y="44" text-anchor="start">SessionHandlers</text>
+      <text class="pic-name" x="870" y="44" text-anchor="start">SessionHandlers</text>
       <path class="cls-divide" d="M832 65H1210" />
       <text class="cls-member" x="832" y="83" text-anchor="start">CreateSession(request, sessions, ...) CreatedAnswer</text>
       <text class="cls-member" x="832" y="97" text-anchor="start">SendMessage, GetSession, CancelSession, DeleteSession</text>
@@ -335,9 +334,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="818" y="143" width="406" height="122" rx="14" />
       <rect class="cls-badge tone-green" x="832" y="167" width="28" height="28" rx="9" />
       <text class="cls-mark" x="846" y="185.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="870" y="171" text-anchor="start">OpenDoor</text>
-      <text class="cls-kind" x="870" y="187" text-anchor="start">the public's sessions a</text>
-      <text class="cls-kind" x="870" y="199" text-anchor="start">day</text>
+      <text class="pic-name" x="870" y="171" text-anchor="start">OpenDoor</text>
+      <text class="pic-note" x="870" y="187" text-anchor="start">the public's sessions a</text>
+      <text class="pic-note" x="870" y="199" text-anchor="start">day</text>
       <path class="cls-divide" d="M832 219H1210" />
       <text class="cls-member" x="832" y="237" text-anchor="start">ConsiderAsync(context) OpenDoorAnswer</text>
       <text class="cls-member" x="832" y="251" text-anchor="start">Admit(sessionId)</text>
@@ -345,16 +344,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="1400" y="14" width="427" height="96" rx="14" />
       <rect class="cls-badge tone-green" x="1414" y="32" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1428" y="50.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1452" y="42" text-anchor="start">AgentSessions</text>
-      <text class="cls-kind" x="1452" y="58" text-anchor="start">singleton</text>
+      <text class="pic-name" x="1452" y="42" text-anchor="start">AgentSessions</text>
+      <text class="pic-note" x="1452" y="58" text-anchor="start">singleton</text>
       <path class="cls-divide" d="M1414 78H1813" />
       <text class="cls-member" x="1414" y="96" text-anchor="start">Create(toolsets?, tags?, depth, role?, ...) AgentSession</text>
       <rect class="cls-cover" x="1400" y="149" width="427" height="110" rx="14" />
       <rect class="mrq-glass" x="1400" y="149" width="427" height="110" rx="14" />
       <rect class="cls-badge tone-green" x="1414" y="167" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1428" y="185.5" text-anchor="middle">S</text>
-      <text class="cls-name" x="1452" y="177" text-anchor="start">TurnStream</text>
-      <text class="cls-kind" x="1452" y="193" text-anchor="start">static</text>
+      <text class="pic-name" x="1452" y="177" text-anchor="start">TurnStream</text>
+      <text class="pic-note" x="1452" y="193" text-anchor="start">static</text>
       <path class="cls-divide" d="M1414 213H1813" />
       <text class="cls-member" x="1414" y="231" text-anchor="start">BuildPrompt(SendMessageRequest) string</text>
       <text class="cls-member" x="1414" y="245" text-anchor="start">StreamTurnAsync(...) IAsyncEnumerable&lt;SseItem&lt;string&gt;&gt;</text>
@@ -362,15 +361,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="1400" y="308" width="427" height="76" rx="14" />
       <rect class="cls-badge tone-teal" x="1414" y="332" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1428" y="350.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="1452" y="336" text-anchor="start">louis-agent.api.contracts</text>
-      <text class="cls-kind" x="1452" y="352" text-anchor="start">the requests and replies,</text>
-      <text class="cls-kind" x="1452" y="364" text-anchor="start">shared</text>
+      <text class="pic-name" x="1452" y="336" text-anchor="start">louis-agent.api.contracts</text>
+      <text class="pic-note" x="1452" y="352" text-anchor="start">the requests and replies,</text>
+      <text class="pic-note" x="1452" y="364" text-anchor="start">shared</text>
       <rect class="cls-cover" x="2005" y="0" width="350" height="124" rx="14" />
       <rect class="mrq-glass" x="2005" y="0" width="350" height="124" rx="14" />
       <rect class="cls-badge tone-green" x="2019" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="2033" y="36.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="2057" y="28" text-anchor="start">AgentSession</text>
-      <text class="cls-kind" x="2057" y="44" text-anchor="start">one per conversation</text>
+      <text class="pic-name" x="2057" y="28" text-anchor="start">AgentSession</text>
+      <text class="pic-note" x="2057" y="44" text-anchor="start">one per conversation</text>
       <path class="cls-divide" d="M2019 64H2341" />
       <text class="cls-member" x="2019" y="82" text-anchor="start">TryStartTurn(aborted, out turn) bool</text>
       <text class="cls-member" x="2019" y="96" text-anchor="start">EndTurn(turn)</text>
@@ -379,8 +378,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="2005" y="156" width="350" height="96" rx="14" />
       <rect class="cls-badge tone-violet" x="2019" y="174" width="28" height="28" rx="9" />
       <text class="cls-mark" x="2033" y="192.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="2057" y="184" text-anchor="start">AgentEngineFactory</text>
-      <text class="cls-kind" x="2057" y="200" text-anchor="start">louis-agent.core</text>
+      <text class="pic-name" x="2057" y="184" text-anchor="start">AgentEngineFactory</text>
+      <text class="pic-note" x="2057" y="200" text-anchor="start">louis-agent.core</text>
       <path class="cls-divide" d="M2019 220H2341" />
       <text class="cls-member" x="2019" y="238" text-anchor="start">GetOrCreate(toolsets, role?) AgentEngine</text>
       <rect class="cls-cover" x="2005" y="284" width="350" height="124" rx="14" />
@@ -388,39 +387,39 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="2029" y="283.5" width="302" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="2019" y="302" width="28" height="28" rx="9" />
       <text class="cls-mark" x="2033" y="320.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="2057" y="312" text-anchor="start">ITurnStreamFormat</text>
-      <text class="cls-kind" x="2057" y="328" text-anchor="start">interface</text>
+      <text class="pic-name" x="2057" y="312" text-anchor="start">ITurnStreamFormat</text>
+      <text class="pic-note" x="2057" y="328" text-anchor="start">interface</text>
       <path class="cls-divide" d="M2019 348H2341" />
       <text class="cls-member" x="2019" y="366" text-anchor="start">Start() SseItem</text>
       <text class="cls-member" x="2019" y="380" text-anchor="start">Content(content), Text(text)</text>
       <text class="cls-member" x="2019" y="394" text-anchor="start">Stop(reason, usage), Fail(kind, error, usage)</text>
     </g>
     <g class="cls-legend" transform="translate(0 620)">
-      <rect class="cls-rule" x="0" y="0" width="2355" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="2355" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
       <rect class="cls-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">the framework</text>
       <rect class="cls-badge tone-teal" x="281" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="309" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="309" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="cls-key-mark" x="464.4" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="474.4" y="52" text-anchor="middle">I</text>
-      <text class="cls-key" x="494.4" y="52.5" text-anchor="start">an interface</text>
+      <text class="pic-means" x="494.4" y="52.5" text-anchor="start">an interface</text>
       <rect class="cls-key-mark" x="603.6" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="613.6" y="52" text-anchor="middle">S</text>
-      <text class="cls-key" x="633.6" y="52.5" text-anchor="start">static</text>
+      <text class="pic-means" x="633.6" y="52.5" text-anchor="start">static</text>
       <rect class="cls-key-mark" x="703.2" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="713.2" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="733.2" y="52.5" text-anchor="start">a class</text>
+      <text class="pic-means" x="733.2" y="52.5" text-anchor="start">a class</text>
       <path class="cls-line holds" d="M809.4 48H859.4" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <text class="cls-key" x="869.4" y="52.5" text-anchor="start">holds</text>
+      <text class="pic-means" x="869.4" y="52.5" text-anchor="start">holds</text>
       <path class="cls-line implements" d="M932.4 48H982.4" marker-end="url(#triangle-violet)" />
-      <text class="cls-key" x="992.4" y="52.5" text-anchor="start">implements</text>
+      <text class="pic-means" x="992.4" y="52.5" text-anchor="start">implements</text>
       <path class="cls-line creates" d="M1088.4 48H1138.4" marker-end="url(#arrow-blue)" />
-      <text class="cls-key" x="1148.4" y="52.5" text-anchor="start">creates</text>
+      <text class="pic-means" x="1148.4" y="52.5" text-anchor="start">creates</text>
       <path class="cls-line uses" d="M1224.6 48H1274.6" marker-end="url(#open)" />
-      <text class="cls-key" x="1284.6" y="52.5" text-anchor="start">uses</text>
+      <text class="pic-means" x="1284.6" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="698" width="2355" height="37" rx="8" />

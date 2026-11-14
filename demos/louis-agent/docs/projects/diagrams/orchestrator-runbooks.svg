@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -186,7 +193,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .crd-icon.quiet { stroke: var(--quiet); }
 .crd-name { fill: var(--text); font: 600 15px var(--pic-sans); }
 .crd-name.quiet { font-size: 14px; }
-.crd-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .crd-quiet {
   fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
   stroke-width: 1;
@@ -263,8 +269,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">Nothing</text>
-      <text class="crd-text" x="18" y="298" text-anchor="start">An error the runbook lists as expected</text>
-      <text class="crd-text" x="18" y="316" text-anchor="start">is acknowledged and ignored.</text>
+      <text class="pic-text" x="18" y="298" text-anchor="start">An error the runbook lists as expected</text>
+      <text class="pic-text" x="18" y="316" text-anchor="start">is acknowledged and ignored.</text>
       <rect class="mrq-glass" x="306" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
@@ -274,8 +280,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 4l-4 16" />
       </g>
       <text class="crd-name" x="370" y="263" text-anchor="start">A fix</text>
-      <text class="crd-text" x="324" y="298" text-anchor="start">louis-agent fixes it, and the</text>
-      <text class="crd-text" x="324" y="316" text-anchor="start">orchestrator checks the work.</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">louis-agent fixes it, and the</text>
+      <text class="pic-text" x="324" y="316" text-anchor="start">orchestrator checks the work.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
@@ -286,7 +292,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
       <text class="crd-name" x="676" y="263" text-anchor="start">A hand-off</text>
-      <text class="crd-text" x="630" y="298" text-anchor="start">A person's team gets the case.</text>
+      <text class="pic-text" x="630" y="298" text-anchor="start">A person's team gets the case.</text>
     </g>
   </g>
 </svg>

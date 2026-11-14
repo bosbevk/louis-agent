@@ -14,7 +14,6 @@ public class SequenceStyleTests
 
     /// <summary>The style has a rule for every part that is a sequence's own.</summary>
     [TestCase(".seq-badge")]
-    [TestCase(".seq-badge-icon")]
     [TestCase(".seq-name")]
     [TestCase(".seq-life")]
     [TestCase(".seq-beam")]
@@ -24,19 +23,15 @@ public class SequenceStyleTests
     [TestCase(".seq-answer")]
     [TestCase(".seq-call-words")]
     [TestCase(".seq-answer-words")]
-    [TestCase(".seq-note-words")]
     [TestCase(".seq-cover")]
     [TestCase(".seq-kind")]
     [TestCase(".seq-tab")]
     [TestCase(".seq-divide")]
     [TestCase(".seq-else")]
     [TestCase(".seq-else-word")]
-    [TestCase(".seq-ring")]
     [TestCase(".seq-count")]
     [TestCase(".seq-quiet-node")]
-    [TestCase(".seq-rule")]
     [TestCase(".seq-swatch")]
-    [TestCase(".seq-key")]
     public void TheStyle_HasARuleForEveryPartOfItsOwn(string rule) => Assert.That(Style, Does.Contain(rule + " "));
 
     /// <summary>

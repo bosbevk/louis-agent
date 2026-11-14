@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -221,99 +221,99 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-line pic-edge tone-amber" d="M 2198.7 76 L 2400.8 76" marker-end="url(#arrow-amber)" />
       <path class="pic-march" d="M 2198.7 76 L 2400.8 76" />
       <path class="pic-line pic-edge tone-green reads" d="M 256 178 L 344.1 178 L 564.9 178 L 625 178 L 873.4 178 L 965.5 178 L 1236.7 178 L 1296.7 178 L 1575.5 178 L 1635.6 178 L 1838.4 178 L 1994.5 178 L 2207.7 178 L 2343.8 178 Q 2367.8 178 2367.8 154 L 2367.8 108.1 Q 2367.8 94 2381.9 94 L 2396 94" marker-end="url(#arrow-green)" />
-      <rect class="flow-chip pic-edge tone-blue" x="263" y="67" width="50" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-blue" x="288" y="79" text-anchor="middle">writes</text>
-      <rect class="flow-chip pic-edge tone-green" x="879.4" y="67" width="36" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="897.4" y="79" text-anchor="middle">Read</text>
-      <rect class="flow-chip pic-edge tone-violet" x="1858.5" y="307" width="92" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="1904.5" y="319" text-anchor="middle">RenderTitled</text>
-      <rect class="flow-chip pic-edge tone-amber" x="2220.7" y="67" width="134" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-amber" x="2287.7" y="79" text-anchor="middle">linked as an image</text>
-      <rect class="flow-chip pic-edge tone-green" x="266.5" y="169" width="43" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="288" y="181" text-anchor="middle">reads</text>
+      <rect class="pic-pill pic-edge tone-blue" x="263" y="67" width="50" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="288" y="79" text-anchor="middle">writes</text>
+      <rect class="pic-pill pic-edge tone-green" x="879.4" y="67" width="36" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="897.4" y="79" text-anchor="middle">Read</text>
+      <rect class="pic-pill pic-edge tone-violet" x="1858.5" y="307" width="92" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-violet" x="1904.5" y="319" text-anchor="middle">RenderTitled</text>
+      <rect class="pic-pill pic-edge tone-amber" x="2220.7" y="67" width="134" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-amber" x="2287.7" y="79" text-anchor="middle">linked as an image</text>
+      <rect class="pic-pill pic-edge tone-green" x="266.5" y="169" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="288" y="181" text-anchor="middle">reads</text>
       <rect class="pic-panel flow-shape pic-edge tone-blue" x="0" y="50" width="256" height="52" rx="26" />
       <rect class="pic-fill tone-blue" x="28" y="62" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(34 68) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(34 68) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="flow-name" x="64" y="81" text-anchor="start">Whoever writes a doc</text>
+      <text class="pic-name" x="64" y="81" text-anchor="start">Whoever writes a doc</text>
       <rect class="pic-panel" x="0" y="136" width="256" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="16" y="164" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(22 170) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(22 170) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="52" y="167" text-anchor="start">DocsDiagramsTests</text>
-      <text class="flow-name" x="52" y="183" text-anchor="start">a project with components</text>
-      <text class="flow-name" x="52" y="199" text-anchor="start">shows one, step 10</text>
+      <text class="pic-name" x="52" y="167" text-anchor="start">DocsDiagramsTests</text>
+      <text class="pic-name" x="52" y="183" text-anchor="start">a project with components</text>
+      <text class="pic-name" x="52" y="199" text-anchor="start">shows one, step 10</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M362.1 42L564.9 42L546.9 110L344.1 110Z" />
       <rect class="pic-fill tone-amber" x="372.1" y="62" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(378.1 68) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(378.1 68) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="408.1" y="73" text-anchor="start">diagrams/name.json</text>
-      <text class="flow-name" x="408.1" y="89" text-anchor="start">kind: components</text>
+      <text class="pic-name" x="408.1" y="73" text-anchor="start">diagrams/name.json</text>
+      <text class="pic-name" x="408.1" y="89" text-anchor="start">kind: components</text>
       <rect class="pic-panel" x="625" y="42" width="248.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="641" y="62" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(647 68) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(647 68) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="flow-name" x="677" y="73" text-anchor="start">louis-agent.doc-diagrams</text>
-      <text class="flow-name" x="677" y="89" text-anchor="start">as today</text>
+      <text class="pic-name" x="677" y="73" text-anchor="start">louis-agent.doc-diagrams</text>
+      <text class="pic-name" x="677" y="89" text-anchor="start">as today</text>
       <rect class="pic-panel" x="965.5" y="274" width="271.2" height="84" rx="10" />
       <rect class="pic-fill tone-violet" x="981.5" y="302" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(987.5 308) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(987.5 308) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="1017.5" y="305" text-anchor="start">DiagramReader</text>
-      <text class="flow-name" x="1017.5" y="321" text-anchor="start">the new part and its checks</text>
-      <text class="flow-name" x="1017.5" y="337" text-anchor="start">steps 2 and 3</text>
+      <text class="pic-name" x="1017.5" y="305" text-anchor="start">DiagramReader</text>
+      <text class="pic-name" x="1017.5" y="321" text-anchor="start">the new part and its checks</text>
+      <text class="pic-name" x="1017.5" y="337" text-anchor="start">steps 2 and 3</text>
       <rect class="pic-panel" x="1296.7" y="274" width="278.8" height="84" rx="10" />
       <rect class="pic-fill tone-violet" x="1312.7" y="302" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1318.7 308) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1318.7 308) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="1348.7" y="305" text-anchor="start">ComponentLayout</text>
-      <text class="flow-name" x="1348.7" y="321" text-anchor="start">places boxes, pins and lines</text>
-      <text class="flow-name" x="1348.7" y="337" text-anchor="start">steps 4 and 6</text>
+      <text class="pic-name" x="1348.7" y="305" text-anchor="start">ComponentLayout</text>
+      <text class="pic-name" x="1348.7" y="321" text-anchor="start">places boxes, pins and lines</text>
+      <text class="pic-name" x="1348.7" y="337" text-anchor="start">steps 4 and 6</text>
       <rect class="pic-panel" x="1635.6" y="274" width="202.8" height="84" rx="10" />
       <rect class="pic-fill tone-violet" x="1651.6" y="302" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1657.6 308) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1657.6 308) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="1687.6" y="305" text-anchor="start">ComponentsRenderer</text>
-      <text class="flow-name" x="1687.6" y="321" text-anchor="start">the new look</text>
-      <text class="flow-name" x="1687.6" y="337" text-anchor="start">step 5</text>
+      <text class="pic-name" x="1687.6" y="305" text-anchor="start">ComponentsRenderer</text>
+      <text class="pic-name" x="1687.6" y="321" text-anchor="start">the new look</text>
+      <text class="pic-name" x="1687.6" y="337" text-anchor="start">step 5</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M2012.5 50L2207.7 50L2189.7 102L1994.5 102Z" />
       <rect class="pic-fill tone-amber" x="2022.5" y="62" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(2028.5 68) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(2028.5 68) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="2058.5" y="81" text-anchor="start">diagrams/name.svg</text>
+      <text class="pic-name" x="2058.5" y="81" text-anchor="start">diagrams/name.svg</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M2409.8 42L2643 42L2625 110L2391.8 110Z" />
       <rect class="pic-fill tone-amber" x="2419.8" y="62" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(2425.8 68) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(2425.8 68) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="2455.8" y="73" text-anchor="start">A project's design doc</text>
-      <text class="flow-name" x="2455.8" y="89" text-anchor="start">steps 8 to 10</text>
+      <text class="pic-name" x="2455.8" y="73" text-anchor="start">A project's design doc</text>
+      <text class="pic-name" x="2455.8" y="89" text-anchor="start">steps 8 to 10</text>
       <circle class="pic-port pic-edge tone-blue" cx="256" cy="76" r="4" />
       <circle class="pic-port pic-edge tone-amber" cx="555.9" cy="76" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="873.4" cy="76" r="4" />
@@ -323,7 +323,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-amber" cx="2198.7" cy="76" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="256" cy="178" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="440" width="2643" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="440" width="2643" height="1" rx="0" />
     <text class="pic-group" x="0" y="462" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="479" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="492.5" text-anchor="start">starts it</text>

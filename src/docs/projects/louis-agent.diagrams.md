@@ -135,8 +135,8 @@ same bytes on every machine.
 picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
 too.
 
-**The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A component diagram and a flow are drawn in the new
-look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
+**The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A component
+diagram and a flow are drawn in the new look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
 whose dots march the way the arrow points. A panel is filled with a little of the page's ink, the same wherever
 it stands. So a panel inside a panel is a step deeper with no rule for its depth, and on a white page a box four
 deep is not white. A tone never tints a panel: a box's badge, its chip or its pins say its tone. What any kind
@@ -145,21 +145,28 @@ in that look wears is `PictureLook`, with class names that start `pic-`, and the
 written by the builder, so they are the same in every kind. In both kinds' keys a tone's sample is a
 small badge filled with the tone, and what an item means is written by one rule of the shared look.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
-start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a box's name and
-icon badge, the thin outline of a shape that means something, the pill an arrow's word stands in, and the rule
-over its key. The shared rules come first in a
-picture's style, so two kinds can't drift apart in what they share.
+start `cmp-`. `FlowStyle` adds a flow's own: the thin outline of a shape that means something. The shared
+rules come first in a picture's style, so two kinds can't drift apart in what they share.
+
+**What two kinds draw alike is styled once.** A box's name, a quiet line of words under it, the icon in a
+badge, the pill an arrow's word stands in and what a key's item means are `PictureLook`'s, whichever kind draws
+them: a flow's box and a class chart's type wear the same `pic-name`. The faint rule over a key and a node on a
+line are `MarqueeLook`'s. A kind may add a class of its own beside a shared one, as a class chart's pill is
+`pic-pill cls-chip holds`: the shared rule draws the pill, and the kind's own colours its edge by the kind of
+link. A test holds it (`SharedRulesTests`): no kind's style has a rule a shared look has, and no two kinds'
+styles have the same rule.
 
 **The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence
-wears it as well. A flow and a component diagram wear its title and its light. What both wear has names that start `mrq-`: the picture's small title, the soft light, the
-glass with the accent along its top, the pill with its code, and a node on a lit line. Its accent is the palette's
+wears it as well. A flow and a component diagram wear its title and its light. What both wear has names that
+start `mrq-`: the picture's small title, the soft light, the glass with the accent along its top, the pill with
+its code, a node on a lit line, and the rule over a key. Its accent is the palette's
 violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
 `CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
-lines, a headline with its badge, a glass card's badge, name and text, and the quiet card. `SequenceStyle` holds
+lines, a headline with its badge, a glass card's badge and name, and the quiet card. `SequenceStyle` holds
 what a sequence adds, with names that start `seq-`: a participant's badge in its tone and its name, the
 lifeline, a call's beam either way, an answer's quiet line and the words above them. `ClassesStyle`
 holds what a class chart adds, with names that start `cls-`: a type's badge in its tone with its
-letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends.
+letter, its members, a line for each kind of link, and the colours of a line's ends.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/Flows/FlowDrawing`). It places nothing itself: it draws what the
 layout placed.

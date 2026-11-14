@@ -34,9 +34,6 @@ internal static class SequenceStyle
 
           .seq-badge { fill: var(--quiet); }
           {{Badges(theme)}}
-          .seq-badge-icon {
-            fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-          }
           .seq-name { fill: var(--text); font: 700 16px var(--pic-sans); letter-spacing: -.2px; }
           .seq-life { fill: url(#{{LifePaint}}); }
           .{{LifePaint}}-0 { stop-color: var(--violet-line); stop-opacity: .7; }
@@ -57,20 +54,16 @@ internal static class SequenceStyle
           }
           .seq-call-words { fill: var(--text); font: 600 12.5px var(--pic-sans); {{Halo}} }
           .seq-answer-words { fill: var(--quiet); font: 12.5px var(--pic-sans); {{Halo}} }
-          .seq-note-words { fill: var(--quiet); font: 12px var(--pic-sans); }
           .seq-cover { fill: var(--ground); }
           .seq-kind { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
           .seq-tab { fill: var(--text); font: 600 12.5px var(--pic-sans); {{Halo}} }
           .seq-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; stroke-dasharray: 4 6; }
           .seq-else { fill: var(--ground); stroke: var(--quiet); stroke-width: 1; stroke-opacity: .5; }
           .seq-else-word { fill: var(--quiet); font: 11px var(--mono); }
-          .seq-ring { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
           .seq-ring.quiet { stroke: var(--quiet); }
           .seq-count { fill: var(--text); font: 700 10px var(--pic-sans); }
           .seq-quiet-node { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.5; }
-          .seq-rule { fill: url(#{{MarqueeLook.EdgePaint}}); opacity: .7; }
           .seq-swatch { fill: url(#{{MarqueeLook.GlassPaint}}); stroke: var(--mrq-sheet); stroke-opacity: .3; }
-          .seq-key { fill: var(--text); font: 12px var(--pic-sans); }
           """;
 
     /// <summary>A rule a tone: a badge is filled with its participant's tone.</summary>

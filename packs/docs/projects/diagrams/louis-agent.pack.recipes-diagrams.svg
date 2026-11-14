@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,17 +166,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.flow-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
-.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -239,125 +239,125 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 1029.8 212 L 1029.8 224 Q 1029.8 236 1041.8 236 L 1320.6 236 Q 1344.6 236 1344.6 260 L 1344.6 296 L 1344.6 364 L 1344.6 424" />
       <rect class="pic-panel" x="605" y="0" width="256" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="621" y="20" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(627 26) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(627 26) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="657" y="31" text-anchor="start">RecipesPack: the recipes</text>
-      <text class="flow-name" x="657" y="47" text-anchor="start">toolset, feed and screens</text>
+      <text class="pic-name" x="657" y="31" text-anchor="start">RecipesPack: the recipes</text>
+      <text class="pic-name" x="657" y="47" text-anchor="start">toolset, feed and screens</text>
       <rect class="pic-panel" x="308.2" y="128" width="256" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="324.2" y="156" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(330.2 162) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(330.2 162) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="360.2" y="167" text-anchor="start">RecipeTools: FindRecipes,</text>
-      <text class="flow-name" x="360.2" y="183" text-anchor="start">ReadRecipe, ScaleRecipe</text>
+      <text class="pic-name" x="360.2" y="167" text-anchor="start">RecipeTools: FindRecipes,</text>
+      <text class="pic-name" x="360.2" y="183" text-anchor="start">ReadRecipe, ScaleRecipe</text>
       <rect class="pic-panel" x="627.8" y="128" width="210.4" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="643.8" y="156" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(649.8 162) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(649.8 162) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="679.8" y="159" text-anchor="start">RecipesUsageScreen,</text>
-      <text class="flow-name" x="679.8" y="175" text-anchor="start">RecipesScreen,</text>
-      <text class="flow-name" x="679.8" y="191" text-anchor="start">ExcludedPagesScreen</text>
+      <text class="pic-name" x="679.8" y="159" text-anchor="start">RecipesUsageScreen,</text>
+      <text class="pic-name" x="679.8" y="175" text-anchor="start">RecipesScreen,</text>
+      <text class="pic-name" x="679.8" y="191" text-anchor="start">ExcludedPagesScreen</text>
       <rect class="pic-panel" x="898" y="128" width="263.6" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="914" y="156" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(920 162) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(920 162) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="950" y="175" text-anchor="start">RecipesFeed: the open feed</text>
+      <text class="pic-name" x="950" y="175" text-anchor="start">RecipesFeed: the open feed</text>
       <rect class="pic-panel" x="0" y="296" width="278.8" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="16" y="316" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(22 322) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(22 322) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="52" y="327" text-anchor="start">RecipeScatter: several sites</text>
-      <text class="flow-name" x="52" y="343" text-anchor="start">at once</text>
+      <text class="pic-name" x="52" y="327" text-anchor="start">RecipeScatter: several sites</text>
+      <text class="pic-name" x="52" y="343" text-anchor="start">at once</text>
       <rect class="pic-panel" x="300.6" y="296" width="271.2" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="316.6" y="316" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(322.6 322) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(322.6 322) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="352.6" y="327" text-anchor="start">SchemaOrgRecipe: the page's</text>
-      <text class="flow-name" x="352.6" y="343" text-anchor="start">own data</text>
+      <text class="pic-name" x="352.6" y="327" text-anchor="start">SchemaOrgRecipe: the page's</text>
+      <text class="pic-name" x="352.6" y="343" text-anchor="start">own data</text>
       <rect class="pic-panel" x="648" y="296" width="170" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="664" y="316" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(670 322) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(670 322) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="700" y="335" text-anchor="start">RecipePrinter</text>
+      <text class="pic-name" x="700" y="335" text-anchor="start">RecipePrinter</text>
       <rect class="pic-panel" x="944.8" y="296" width="170" height="68" rx="10" />
       <rect class="pic-fill tone-amber" x="960.8" y="316" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(966.8 322) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(966.8 322) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="996.8" y="335" text-anchor="start">RecipeShelf</text>
+      <text class="pic-name" x="996.8" y="335" text-anchor="start">RecipeShelf</text>
       <rect class="pic-panel" x="34.2" y="424" width="210.4" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="50.2" y="444" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(56.2 450) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(56.2 450) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="86.2" y="455" text-anchor="start">IRecipeSource, from</text>
-      <text class="flow-name" x="86.2" y="471" text-anchor="start">RecipeSourceFactory</text>
+      <text class="pic-name" x="86.2" y="455" text-anchor="start">IRecipeSource, from</text>
+      <text class="pic-name" x="86.2" y="471" text-anchor="start">RecipeSourceFactory</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M1222.8 424L1448.4 424L1430.4 492L1204.8 492Z" />
       <rect class="pic-fill tone-amber" x="1232.8" y="444" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(1238.8 450) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(1238.8 450) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="1268.8" y="463" text-anchor="start">The library, in Mongo</text>
+      <text class="pic-name" x="1268.8" y="463" text-anchor="start">The library, in Mongo</text>
       <rect class="pic-panel" x="49.4" y="552" width="180" height="52" rx="10" />
       <rect class="pic-fill tone-red" x="65.4" y="564" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(71.4 570) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(71.4 570) scale(0.6667)">
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
         <path d="M3.6 9h16.8" />
         <path d="M3.6 15h16.8" />
         <path d="M11.5 3a17 17 0 0 0 0 18" />
         <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
-      <text class="flow-name" x="101.4" y="583" text-anchor="start">WordPressSearch</text>
+      <text class="pic-name" x="101.4" y="583" text-anchor="start">WordPressSearch</text>
       <rect class="pic-panel" x="351.2" y="552" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-red" x="367.2" y="564" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(373.2 570) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(373.2 570) scale(0.6667)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="flow-name" x="403.2" y="583" text-anchor="start">SiteWebSearch</text>
+      <text class="pic-name" x="403.2" y="583" text-anchor="start">SiteWebSearch</text>
       <rect class="pic-panel" x="308.2" y="670" width="256" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="324.2" y="690" width="28" height="28" rx="9" />
-      <g class="flow-icon" transform="translate(330.2 696) scale(0.6667)">
+      <g class="pic-badge-icon" transform="translate(330.2 696) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="flow-name" x="360.2" y="701" text-anchor="start">Core's guarded browser:</text>
-      <text class="flow-name" x="360.2" y="717" text-anchor="start">robots.txt, no-AI signals</text>
+      <text class="pic-name" x="360.2" y="701" text-anchor="start">Core's guarded browser:</text>
+      <text class="pic-name" x="360.2" y="717" text-anchor="start">robots.txt, no-AI signals</text>
       <circle class="pic-port pic-edge tone-blue" cx="733" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="436.2" cy="212" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="139.4" cy="364" r="4" />
@@ -368,7 +368,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-green" cx="733" cy="212" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="1029.8" cy="212" r="4" />
     </g>
-    <rect class="flow-rule" x="0" y="808" width="1449" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="808" width="1449" height="1" rx="0" />
     <text class="pic-group" x="0" y="830" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="847" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="860.5" text-anchor="start">starts it</text>

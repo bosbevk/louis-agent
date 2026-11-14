@@ -102,7 +102,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -130,6 +136,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -156,7 +163,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .crd-icon.quiet { stroke: var(--quiet); }
 .crd-name { fill: var(--text); font: 600 15px var(--pic-sans); }
 .crd-name.quiet { font-size: 14px; }
-.crd-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .crd-quiet {
   fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
   stroke-width: 1;
@@ -245,7 +251,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="crd-name" x="64" y="185" text-anchor="start">Identity</text>
     <rect class="mrq-pill" x="18" y="202" width="94.8" height="22" rx="11" />
     <text class="mrq-code" x="28" y="217" text-anchor="start">identities/</text>
-    <text class="crd-text" x="18" y="248" text-anchor="start">Who the agent is, its roles, voice and rules.</text>
+    <text class="pic-text" x="18" y="248" text-anchor="start">Who the agent is, its roles, voice and rules.</text>
     <rect class="mrq-glass" x="459" y="144" width="437" height="138" rx="14" />
     <rect class="mrq-edge" x="487" y="143.5" width="381" height="1.6" rx="0" />
     <rect class="crd-tint" x="477" y="162" width="34" height="34" rx="10" />
@@ -257,7 +263,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     </g>
     <text class="crd-name" x="477" y="220" text-anchor="start">Everything an agent can do, as packages your own</text>
     <text class="crd-name" x="477" y="241" text-anchor="start">program names</text>
-    <text class="crd-text" x="477" y="262" text-anchor="start">What the agent can do through tools.</text>
+    <text class="pic-text" x="477" y="262" text-anchor="start">What the agent can do through tools.</text>
     <rect class="crd-badge" x="424" y="334" width="48" height="48" rx="14" />
     <g class="crd-badge-icon" transform="translate(436 346) scale(1)">
       <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
@@ -282,7 +288,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
     </g>
     <text class="crd-name" x="64" y="597" text-anchor="start">Model providers</text>
-    <text class="crd-text" x="18" y="632" text-anchor="start">Claude, Ollama and others.</text>
+    <text class="pic-text" x="18" y="632" text-anchor="start">Claude, Ollama and others.</text>
     <rect class="mrq-glass" x="459" y="556" width="437" height="96" rx="14" />
     <rect class="mrq-edge" x="487" y="555.5" width="381" height="1.6" rx="0" />
     <rect class="crd-tint" x="477" y="574" width="34" height="34" rx="10" />
@@ -291,7 +297,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path d="M2 12l5 5m5 -5l5 -5" />
     </g>
     <text class="crd-name" x="523" y="597" text-anchor="start">Evaluation</text>
-    <text class="crd-text" x="477" y="632" text-anchor="start">Recorded runs and traces.</text>
+    <text class="pic-text" x="477" y="632" text-anchor="start">Recorded runs and traces.</text>
     <rect class="crd-quiet" x="0" y="678" width="896" height="74" rx="14" />
     <g class="crd-icon quiet" transform="translate(20 698) scale(0.75)">
       <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -301,6 +307,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path d="M9 17l6 0" />
     </g>
     <text class="crd-name quiet" x="50" y="712" text-anchor="start">What else it has</text>
-    <text class="crd-text" x="20" y="738" text-anchor="start">A part no link touches.</text>
+    <text class="pic-text" x="20" y="738" text-anchor="start">A part no link touches.</text>
   </g>
 </svg>

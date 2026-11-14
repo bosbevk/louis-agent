@@ -132,7 +132,13 @@ svg {
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
 .pic-line.reads { stroke-dasharray: 3 5; }
@@ -160,6 +166,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
 .mrq-edge-1 { stop-color: var(--violet-line); }
 .mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
@@ -172,12 +179,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-badge.tone-teal { fill: var(--teal-line); }
 .cls-badge.tone-red { fill: var(--red-line); }
 .cls-badge.tone-amber { fill: var(--amber-line); }
-.cls-badge-icon {
-  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
 .cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
-.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
-.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
 .cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
 .cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
 .cls-line { fill: none; stroke-linecap: round; }
@@ -188,13 +190,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .cls-line.uses {
   stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
 }
-.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .cls-chip.holds { stroke: var(--violet-line); }
 .cls-chip.inherits { stroke: var(--violet-line); }
 .cls-chip.implements { stroke: var(--violet-line); }
 .cls-chip.creates { stroke: var(--blue-line); }
 .cls-chip.uses { stroke: var(--quiet); }
-.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word { fill: var(--text); }
 .cls-word.quiet { fill: var(--quiet); }
 .end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
 .end-triangle.tone-blue { stroke: var(--blue-line); }
@@ -219,8 +220,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .end-open.tone-teal { stroke: var(--teal-line); }
 .end-open.tone-red { stroke: var(--red-line); }
 .end-open.tone-amber { stroke: var(--amber-line); }
-.cls-rule { fill: url(#mrq-edge); opacity: .7; }
-.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
 .cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
 .cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
@@ -275,26 +274,26 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M 962.3 225 L 994.4 225 Q 1018.4 225 1018.4 249 L 1018.4 339 Q 1018.4 363 1042.4 363 L 1130.5 363" />
       <path class="cls-line holds" d="M 962.3 381 L 1130.5 381" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 962.3 381 L 1130.5 381" />
-      <rect class="cls-chip holds" x="463.7" y="60" width="43" height="18" rx="9" />
-      <text class="cls-word" x="485.2" y="72" text-anchor="middle">holds</text>
-      <rect class="cls-chip creates" x="456.7" y="216" width="57" height="18" rx="9" />
-      <text class="cls-word" x="485.2" y="228" text-anchor="middle">creates</text>
-      <rect class="cls-chip holds" x="1028.5" y="354" width="92" height="18" rx="9" />
-      <text class="cls-word" x="1074.5" y="366" text-anchor="middle">one recorder</text>
-      <rect class="cls-chip holds" x="980.3" y="372" width="43" height="18" rx="9" />
-      <text class="cls-word" x="1001.8" y="384" text-anchor="middle">holds</text>
-      <rect class="cls-chip creates" x="1371.3" y="372" width="57" height="18" rx="9" />
-      <text class="cls-word" x="1399.8" y="384" text-anchor="middle">creates</text>
-      <rect class="cls-chip creates" x="1046" y="216" width="57" height="18" rx="9" />
-      <text class="cls-word" x="1074.5" y="228" text-anchor="middle">creates</text>
-      <rect class="cls-chip uses" x="339.6" y="528" width="99" height="18" rx="9" />
-      <text class="cls-word quiet" x="389.1" y="540" text-anchor="middle">its error log</text>
+      <rect class="pic-pill cls-chip holds" x="463.7" y="60" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="485.2" y="72" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="456.7" y="216" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="485.2" y="228" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip holds" x="1028.5" y="354" width="92" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1074.5" y="366" text-anchor="middle">one recorder</text>
+      <rect class="pic-pill cls-chip holds" x="980.3" y="372" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1001.8" y="384" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="1371.3" y="372" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1399.8" y="384" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip creates" x="1046" y="216" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1074.5" y="228" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="339.6" y="528" width="99" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="389.1" y="540" text-anchor="middle">its error log</text>
       <rect class="cls-cover" x="0" y="14" width="329" height="110" rx="14" />
       <rect class="mrq-glass" x="0" y="14" width="329" height="110" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="32" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="50.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="42" text-anchor="start">TriagePack</text>
-      <text class="cls-kind" x="52" y="58" text-anchor="start">implements IAgentPack</text>
+      <text class="pic-name" x="52" y="42" text-anchor="start">TriagePack</text>
+      <text class="pic-note" x="52" y="58" text-anchor="start">implements IAgentPack</text>
       <path class="cls-divide" d="M14 78H315" />
       <text class="cls-member" x="14" y="96" text-anchor="start">TriagePack(TriageOptions)</text>
       <text class="cls-member" x="14" y="110" text-anchor="start">Toolsets: triage, off without its settings</text>
@@ -303,17 +302,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="24" y="180.5" width="281" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="14" y="211" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="229.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="52" y="209" text-anchor="start">FileTriageRecorder</text>
-      <text class="cls-kind" x="52" y="225" text-anchor="start">one JSON-lines file per</text>
-      <text class="cls-kind" x="52" y="237" text-anchor="start">run, implements</text>
-      <text class="cls-kind" x="52" y="249" text-anchor="start">ITriageRecorder</text>
+      <text class="pic-name" x="52" y="209" text-anchor="start">FileTriageRecorder</text>
+      <text class="pic-note" x="52" y="225" text-anchor="start">one JSON-lines file per</text>
+      <text class="pic-note" x="52" y="237" text-anchor="start">run, implements</text>
+      <text class="pic-note" x="52" y="249" text-anchor="start">ITriageRecorder</text>
       <rect class="cls-cover" x="0" y="319" width="329" height="124" rx="14" />
       <rect class="mrq-glass" x="0" y="319" width="329" height="124" rx="14" />
       <rect class="mrq-edge" x="24" y="318.5" width="281" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="14" y="337" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="355.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="52" y="347" text-anchor="start">IErrorFeed</text>
-      <text class="cls-kind" x="52" y="363" text-anchor="start">interface</text>
+      <text class="pic-name" x="52" y="347" text-anchor="start">IErrorFeed</text>
+      <text class="pic-note" x="52" y="363" text-anchor="start">interface</text>
       <path class="cls-divide" d="M14 383H315" />
       <text class="cls-member" x="14" y="401" text-anchor="start">ReadNew() IReadOnlyList&lt;ServiceError&gt;</text>
       <text class="cls-member" x="14" y="415" text-anchor="start">Find(id) ServiceError?</text>
@@ -322,23 +321,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="0" y="493" width="329" height="88" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="523" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="541.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="52" y="521" text-anchor="start">JsonLinesErrorFeed</text>
-      <text class="cls-kind" x="52" y="537" text-anchor="start">the log and the handled</text>
-      <text class="cls-kind" x="52" y="549" text-anchor="start">ids, for the workflow,</text>
-      <text class="cls-kind" x="52" y="561" text-anchor="start">implements IErrorFeed</text>
+      <text class="pic-name" x="52" y="521" text-anchor="start">JsonLinesErrorFeed</text>
+      <text class="pic-note" x="52" y="537" text-anchor="start">the log and the handled</text>
+      <text class="pic-note" x="52" y="549" text-anchor="start">ids, for the workflow,</text>
+      <text class="pic-note" x="52" y="561" text-anchor="start">implements IErrorFeed</text>
       <rect class="cls-cover" x="521.3" y="27" width="441" height="84" rx="14" />
       <rect class="mrq-glass" x="521.3" y="27" width="441" height="84" rx="14" />
       <rect class="cls-badge tone-green" x="535.3" y="39" width="28" height="28" rx="9" />
       <text class="cls-mark" x="549.3" y="57.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="573.3" y="58" text-anchor="start">TriageOptions</text>
+      <text class="pic-name" x="573.3" y="58" text-anchor="start">TriageOptions</text>
       <path class="cls-divide" d="M535.3 79H948.3" />
       <text class="cls-member" x="535.3" y="97" text-anchor="start">Runs?, People?, Departments?</text>
       <rect class="cls-cover" x="521.3" y="156" width="441" height="138" rx="14" />
       <rect class="mrq-glass" x="521.3" y="156" width="441" height="138" rx="14" />
       <rect class="cls-badge tone-green" x="535.3" y="174" width="28" height="28" rx="9" />
       <text class="cls-mark" x="549.3" y="192.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="573.3" y="184" text-anchor="start">TriageTools</text>
-      <text class="cls-kind" x="573.3" y="200" text-anchor="start">the roles' typed endings</text>
+      <text class="pic-name" x="573.3" y="184" text-anchor="start">TriageTools</text>
+      <text class="pic-note" x="573.3" y="200" text-anchor="start">the roles' typed endings</text>
       <path class="cls-divide" d="M535.3 220H948.3" />
       <text class="cls-member" x="535.3" y="238" text-anchor="start">SortCase(runId, department, why)</text>
       <text class="cls-member" x="535.3" y="252" text-anchor="start">ReportInvestigation(runId, where, cause, area, confidence)</text>
@@ -348,7 +347,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-glass" x="521.3" y="332" width="441" height="98" rx="14" />
       <rect class="cls-badge tone-green" x="535.3" y="344" width="28" height="28" rx="9" />
       <text class="cls-mark" x="549.3" y="362.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="573.3" y="363" text-anchor="start">RunTools</text>
+      <text class="pic-name" x="573.3" y="363" text-anchor="start">RunTools</text>
       <path class="cls-divide" d="M535.3 384H948.3" />
       <text class="cls-member" x="535.3" y="402" text-anchor="start">ReadTriageRun(runId)</text>
       <text class="cls-member" x="535.3" y="416" text-anchor="start">RaiseToPerson(runId, summary, why)</text>
@@ -357,9 +356,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="545.3" y="482.5" width="393" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="535.3" y="507" width="28" height="28" rx="9" />
       <text class="cls-mark" x="549.3" y="525.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="573.3" y="511" text-anchor="start">Department</text>
-      <text class="cls-kind" x="573.3" y="527" text-anchor="start">record, from</text>
-      <text class="cls-kind" x="573.3" y="539" text-anchor="start">departments.yaml</text>
+      <text class="pic-name" x="573.3" y="511" text-anchor="start">Department</text>
+      <text class="pic-note" x="573.3" y="527" text-anchor="start">record, from</text>
+      <text class="pic-note" x="573.3" y="539" text-anchor="start">departments.yaml</text>
       <path class="cls-divide" d="M535.3 559H948.3" />
       <text class="cls-member" x="535.3" y="577" text-anchor="start">Name, Repository, ErrorLog, People</text>
       <rect class="cls-cover" x="1130.5" y="185" width="233.2" height="80" rx="14" />
@@ -367,16 +366,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="1154.5" y="184.5" width="185.2" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="1144.5" y="211" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1158.5" y="229.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="1182.5" y="213" text-anchor="start">Investigation, Review,</text>
-      <text class="cls-name" x="1182.5" y="229" text-anchor="start">CaseDecision</text>
-      <text class="cls-kind" x="1182.5" y="245" text-anchor="start">records, behind each step</text>
+      <text class="pic-name" x="1182.5" y="213" text-anchor="start">Investigation, Review,</text>
+      <text class="pic-name" x="1182.5" y="229" text-anchor="start">CaseDecision</text>
+      <text class="pic-note" x="1182.5" y="245" text-anchor="start">records, behind each step</text>
       <rect class="cls-cover" x="1130.5" y="326" width="233.2" height="110" rx="14" />
       <rect class="mrq-glass" x="1130.5" y="326" width="233.2" height="110" rx="14" />
       <rect class="mrq-edge" x="1154.5" y="325.5" width="185.2" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="1144.5" y="344" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1158.5" y="362.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="1182.5" y="354" text-anchor="start">ITriageRecorder</text>
-      <text class="cls-kind" x="1182.5" y="370" text-anchor="start">interface</text>
+      <text class="pic-name" x="1182.5" y="354" text-anchor="start">ITriageRecorder</text>
+      <text class="pic-note" x="1182.5" y="370" text-anchor="start">interface</text>
       <path class="cls-divide" d="M1144.5 390H1349.7" />
       <text class="cls-member" x="1144.5" y="408" text-anchor="start">SaveAsync(TriageStep)</text>
       <text class="cls-member" x="1144.5" y="422" text-anchor="start">ReadAsync(runId) TriageRun?</text>
@@ -385,34 +384,34 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="1484" y="325.5" width="232" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="1474" y="344" width="28" height="28" rx="9" />
       <text class="cls-mark" x="1488" y="362.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="1512" y="354" text-anchor="start">TriageRun</text>
-      <text class="cls-kind" x="1512" y="370" text-anchor="start">record</text>
+      <text class="pic-name" x="1512" y="354" text-anchor="start">TriageRun</text>
+      <text class="pic-note" x="1512" y="370" text-anchor="start">record</text>
       <path class="cls-divide" d="M1474 390H1726" />
       <text class="cls-member" x="1474" y="408" text-anchor="start">Id, Steps TriageStep list, Outcome?</text>
       <text class="cls-member" x="1474" y="422" text-anchor="start">Of(id, steps) (static)</text>
     </g>
     <g class="cls-legend" transform="translate(0 676)">
-      <rect class="cls-rule" x="0" y="0" width="1740" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="1740" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
       <rect class="cls-badge tone-teal" x="137.2" y="39" width="18" height="18" rx="6" />
-      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">contracts and state</text>
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">contracts and state</text>
       <rect class="cls-key-mark" x="320.6" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="330.6" y="52" text-anchor="middle">I</text>
-      <text class="cls-key" x="350.6" y="52.5" text-anchor="start">an interface</text>
+      <text class="pic-means" x="350.6" y="52.5" text-anchor="start">an interface</text>
       <rect class="cls-key-mark" x="459.8" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="469.8" y="52" text-anchor="middle">R</text>
-      <text class="cls-key" x="489.8" y="52.5" text-anchor="start">a record</text>
+      <text class="pic-means" x="489.8" y="52.5" text-anchor="start">a record</text>
       <rect class="cls-key-mark" x="572.6" y="38" width="20" height="20" rx="6" />
       <text class="cls-key-letter" x="582.6" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="602.6" y="52.5" text-anchor="start">a class</text>
+      <text class="pic-means" x="602.6" y="52.5" text-anchor="start">a class</text>
       <path class="cls-line holds" d="M678.8 48H728.8" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <text class="cls-key" x="738.8" y="52.5" text-anchor="start">holds</text>
+      <text class="pic-means" x="738.8" y="52.5" text-anchor="start">holds</text>
       <path class="cls-line creates" d="M801.8 48H851.8" marker-end="url(#arrow-blue)" />
-      <text class="cls-key" x="861.8" y="52.5" text-anchor="start">creates</text>
+      <text class="pic-means" x="861.8" y="52.5" text-anchor="start">creates</text>
       <path class="cls-line uses" d="M938 48H988" marker-end="url(#open)" />
-      <text class="cls-key" x="998" y="52.5" text-anchor="start">uses</text>
+      <text class="pic-means" x="998" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
   <rect class="notebar" x="0" y="754" width="1740" height="37" rx="8" />
