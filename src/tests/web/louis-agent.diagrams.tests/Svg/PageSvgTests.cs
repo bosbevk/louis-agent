@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Paints;
+using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
@@ -101,8 +103,8 @@ public class PageSvgTests
     public void ADrawingWithPaintsAndNoArrow_KeepsItsPaints_AndBringsNoArrowhead()
     {
         var box = Geometries.InUse.Box(0, 0, 10, 10);
-        string file = new SvgWriter().Paint("fade", PaintRun.Across, 0, 1).Box(box, 2, "filled")
-            .Write(LouisAgent.Diagrams.Engine.Svg.Theme.SvgTheme.Site, "A picture", 100, 100);
+        string file = new SvgWriter().Paint(new Fade("fade", PaintRun.Across, 0, 1)).Box(box, 2, "filled")
+            .Write(SvgTheme.Site, "A picture", 100, 100);
 
         var defined = XElement.Parse(PageSvg.Of(file)).Elements(Svg + "defs").Elements().ToList();
 

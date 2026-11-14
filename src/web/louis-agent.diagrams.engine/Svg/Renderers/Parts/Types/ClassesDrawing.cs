@@ -40,8 +40,8 @@ internal static class ClassesDrawing
         // glass.
         return PictureBuilder.Titled(source.Title)
             .Type(TypeNames.Of(source))
-            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-            .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
+            .Paint(MarqueeLook.EdgeFade)
+            .Paint(MarqueeLook.GlassFade)
             .Body("cls-drawing", Types(spec, placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {

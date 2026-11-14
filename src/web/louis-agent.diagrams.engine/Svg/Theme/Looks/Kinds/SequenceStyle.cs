@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Engine.Svg.Paints;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
@@ -12,7 +13,7 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 /// in the look's one accent, violet at its sender running to blue at its receiver, so a call no longer has its
 /// sender's colour: the cost Louis was shown with the design. The small title, the light, the glass and the pill
 /// are <see cref="MarqueeLook"/>'s, and the marching dots <see cref="PictureLook"/>'s. A beam's fade and a
-/// lifeline's are paints the drawing defines under the ids here.
+/// lifeline's are paints, each named here once with how it runs, and the drawing asks for it by that name.
 /// </remarks>
 internal static class SequenceStyle
 {
@@ -21,6 +22,18 @@ internal static class SequenceStyle
     /// lifeline's down the picture.
     /// </summary>
     public const string BeamPaint = "seq-beam", BackPaint = "seq-beam-back", LifePaint = "seq-life";
+
+    /// <summary>How far down a lifeline its colour holds, before it fades to nothing at the picture's foot.</summary>
+    private const double LifeHolds = 0.85;
+
+    /// <summary>A call's beam to the right: across it, from its sender's colour to its receiver's.</summary>
+    public static readonly Fade BeamFade = new(BeamPaint, PaintRun.Across, 0, 1);
+
+    /// <summary>The beam's mirror, for a call to the left.</summary>
+    public static readonly Fade BackFade = new(BackPaint, PaintRun.Across, 0, 1);
+
+    /// <summary>A lifeline: down the picture, and out at its foot.</summary>
+    public static readonly Fade LifeFade = new(LifePaint, PaintRun.Down, 0, LifeHolds, 1);
 
     /// <summary>
     /// The halo that hides a lifeline behind words: a line of the ground's colour round each letter.

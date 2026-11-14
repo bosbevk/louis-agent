@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Engine.Svg.Paints;
+
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 /// <summary>
@@ -10,12 +12,21 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 /// What a sequence wears too, the small title, the light, the glass, the pill and a node, is
 /// <see cref="MarqueeLook"/>'s, and what every picture in the new look wears is <see cref="PictureLook"/>'s. The
 /// rail's fade and the badge's are paints: the style fills a part with one by its id and colours its stops, and
-/// the drawing defines the paint under the same id.
+/// each is named here once with how it runs, for the drawing to ask for.
 /// </remarks>
 internal static class CardsStyle
 {
     /// <summary>The ids of the cards' own fades: the rail, and a headline's badge.</summary>
     public const string RailPaint = "crd-rail", BadgePaint = "crd-badge";
+
+    /// <summary>Where along the rail it is lit in full: from a fifth of the way in to a fifth from its end.</summary>
+    private const double RailLit = 0.2, RailDims = 0.8;
+
+    /// <summary>The rail: across it, in from nothing, violet to blue while it is lit, and out to nothing.</summary>
+    public static readonly Fade RailFade = new(RailPaint, PaintRun.Across, 0, RailLit, RailDims, 1);
+
+    /// <summary>A headline's badge: corner to corner, violet to blue.</summary>
+    public static readonly Fade BadgeFade = new(BadgePaint, PaintRun.Slant, 0, 1);
 
     /// <summary>
     /// The style. It is the same for every theme, since its colours are the theme's own variables.

@@ -48,7 +48,7 @@ internal static class CompositeDrawing
         // styles are the looks it borrows, a flow's word and a component's pin and chip, and last its own.
         return PictureBuilder.Titled(source.Title)
             .Type(TypeNames.Of(source))
-            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
+            .Paint(MarqueeLook.EdgeFade)
             .Body("cps", Class(spec, placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {

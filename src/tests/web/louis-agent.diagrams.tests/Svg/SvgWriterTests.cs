@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 
 namespace LouisAgent.Diagrams.Tests.Svg;
@@ -27,7 +28,7 @@ public class SvgWriterTests
     [Test]
     public void APaint_IsWrittenUnderItsId_WithAStopForEachPlace()
     {
-        var paint = Paints(new SvgWriter().Paint("fade", PaintRun.Across, 0, 0.2, 0.8, 1)).Single();
+        var paint = Paints(new SvgWriter().Paint(new Fade("fade", PaintRun.Across, 0, 0.2, 0.8, 1))).Single();
 
         Assert.Multiple(() =>
         {
@@ -48,7 +49,7 @@ public class SvgWriterTests
     public void APaint_RunsTheWayItWasAsked(string run, string element, string x2, string y2)
     {
         // The run by its name, since the writer's own types are not a public test's to take.
-        var paint = Paints(new SvgWriter().Paint("fade", Enum.Parse<PaintRun>(run), 0, 1)).Single();
+        var paint = Paints(new SvgWriter().Paint(new Fade("fade", Enum.Parse<PaintRun>(run), 0, 1))).Single();
 
         Assert.Multiple(() =>
         {
@@ -61,21 +62,24 @@ public class SvgWriterTests
     /// <summary>A paint from the middle out is a radial one, round the middle of the shape it fills.</summary>
     [Test]
     public void APaintFromTheMiddleOut_IsRadial() =>
-        Assert.That(Paints(new SvgWriter().Paint("glow", PaintRun.Out, 0, 1)).Single().Name.LocalName,
+        Assert.That(Paints(new SvgWriter().Paint(new Fade("glow", PaintRun.Out, 0, 1))).Single().Name.LocalName,
             Is.EqualTo("radialGradient"));
 
     /// <summary>A paint asked for twice is written once, so a file holds no id twice.</summary>
     [Test]
-    public void APaintAskedForTwice_IsWrittenOnce() =>
-        Assert.That(Paints(new SvgWriter().Paint("fade", PaintRun.Across, 0, 1).Paint("fade", PaintRun.Across, 0, 1)),
-            Has.Count.EqualTo(1));
+    public void APaintAskedForTwice_IsWrittenOnce()
+    {
+        var fade = new Fade("fade", PaintRun.Across, 0, 1);
+
+        Assert.That(Paints(new SvgWriter().Paint(fade).Paint(fade)), Has.Count.EqualTo(1));
+    }
 
     /// <summary>A part drawn by another writer brings its paints with it when it is set into a picture.</summary>
     [Test]
     public void APartSetIntoAPicture_BringsItsPaints()
     {
         var box = Geometries.InUse.Box(0, 0, 10, 10);
-        var part = new SvgWriter().Paint("fade", PaintRun.Down, 0, 1).Box(box, 2, "filled");
+        var part = new SvgWriter().Paint(new Fade("fade", PaintRun.Down, 0, 1)).Box(box, 2, "filled");
 
         var picture = new SvgWriter().Group("part", 5, 5, part);
 

@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Engine.Svg.Paints;
+
 namespace LouisAgent.Diagrams.Engine.Svg.Theme;
 
 /// <summary>
@@ -20,6 +22,12 @@ internal static class TicketStyle
 {
     /// <summary>The id of the fade that is the light behind a card's head.</summary>
     public const string LightPaint = "tkt-light";
+
+    /// <summary>How far down the head the light turns from its first colour to its second.</summary>
+    private const double LightTurns = 0.55;
+
+    /// <summary>The light behind a card's head: down it, through its second colour, to nothing.</summary>
+    public static readonly Fade LightFade = new(LightPaint, PaintRun.Down, 0, LightTurns, 1);
 
     /// <summary>
     /// The ticket's rules. They come after the look's and use its variables: the light behind the head is as

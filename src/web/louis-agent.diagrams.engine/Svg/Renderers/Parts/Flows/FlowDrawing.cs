@@ -58,7 +58,7 @@ internal static class FlowDrawing
         // The flow is the body. Its key goes across the picture's width, under a rule the accent's edge fills.
         return PictureBuilder.Titled(source.Title)
             .Type(TypeNames.Of(source))
-            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
+            .Paint(MarqueeLook.EdgeFade)
             .Body("flow", Flow(placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {

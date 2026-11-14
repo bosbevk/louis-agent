@@ -1,4 +1,4 @@
-namespace LouisAgent.Diagrams.Engine.Svg;
+namespace LouisAgent.Diagrams.Engine.Svg.Paints;
 
 /// <summary>
 /// Which way a paint runs over the shape it fills: across it from the left, down it from the top, from its top

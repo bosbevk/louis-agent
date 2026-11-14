@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts;
@@ -96,8 +97,8 @@ public class PictureBuilderTests
     [Test]
     public void TheFades_AreDefinedInTheOrderCalled_AfterTheLights()
     {
-        string svg = PictureBuilder.Titled("The engine").Paint("second", PaintRun.Across, 0, 1)
-            .Paint("third", PaintRun.Down, 0, 1).Body("body", Box("box"), 300, 100).Build();
+        string svg = PictureBuilder.Titled("The engine").Paint(new Fade("second", PaintRun.Across, 0, 1))
+            .Paint(new Fade("third", PaintRun.Down, 0, 1)).Body("body", Box("box"), 300, 100).Build();
         var ids = XElement.Parse(svg).Element(Svg + "defs")!.Elements()
             .Where(paint => paint.Name.LocalName.EndsWith("Gradient")).Select(paint => (string?)paint.Attribute("id"));
 

@@ -137,4 +137,20 @@ public partial class DiagramsProjectTests
 
         Assert.That(unused, Is.Empty, "a rule for a class no drawing writes: take it out of the style");
     }
+
+    /// <summary>
+    /// A fade is named once, with the way it runs and where its stops are, beside the style that colours it
+    /// (CL65.4). A drawing asks for a fade by its name and writes none of that itself. The look's glass and its
+    /// accent were written out, with the same stops, in five drawings.
+    /// </summary>
+    [Test]
+    public void NoDrawing_WritesHowAFadeRuns()
+    {
+        var writing = ProjectSources.Of(Engine)
+            .Where(source => source.Path.Contains("/Svg/Renderers/"))
+            .Where(source => source.Text.Contains("PaintRun."))
+            .Select(source => source.Path[(Engine.Length + 1)..]).Order(StringComparer.Ordinal);
+
+        Assert.That(writing, Is.Empty, "a drawing that says how a fade runs: name the fade beside its style");
+    }
 }

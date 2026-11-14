@@ -41,11 +41,11 @@ internal static class SequenceDrawing
         // call's beam and its mirror for a call to the left, a lifeline, a frame's top edge, and the glass.
         return PictureBuilder.Titled(source.Title, Measures)
             .Type(TypeNames.Of(source))
-            .Paint(SequenceStyle.BeamPaint, PaintRun.Across, 0, 1)
-            .Paint(SequenceStyle.BackPaint, PaintRun.Across, 0, 1)
-            .Paint(SequenceStyle.LifePaint, PaintRun.Down, 0, 0.85, 1)
-            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-            .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
+            .Paint(SequenceStyle.BeamFade)
+            .Paint(SequenceStyle.BackFade)
+            .Paint(SequenceStyle.LifeFade)
+            .Paint(MarqueeLook.EdgeFade)
+            .Paint(MarqueeLook.GlassFade)
             .Body("seq-drawing", Steps(placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {

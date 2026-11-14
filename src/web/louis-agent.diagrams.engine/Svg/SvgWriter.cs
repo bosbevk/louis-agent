@@ -6,6 +6,7 @@ using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Icons;
 using LouisAgent.Diagrams.Engine.Svg.Ends;
+using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Icons;
 
@@ -47,16 +48,15 @@ internal sealed class SvgWriter
 
     /// <summary>
     /// A paint: a fade a style fills shapes with by its id, since a style alone can't give a shape a colour that
-    /// runs into another. It has a stop at each place given, from 0 to 1 along its run, and each stop is classed
-    /// by the paint's id and its number, as <c>fade-0</c>, which is how the style colours it. Asked for twice, it
-    /// is written once.
+    /// runs into another. It has a stop at each of the fade's places, and each stop is classed by the fade's id
+    /// and its number, as <c>fade-0</c>, which is how the style colours it. Asked for twice, it is written once.
     /// </summary>
-    public SvgWriter Paint(string id, PaintRun run, params double[] stops)
+    public SvgWriter Paint(Fade fade)
     {
-        if (_paints.Any(paint => (string?)paint.Attribute("id") == id)) return this;
+        if (_paints.Any(paint => (string?)paint.Attribute("id") == fade.Id)) return this;
 
         // Where a straight run ends, the shape's width and height each counted as 1. One from the middle has none.
-        (string X, string Y)? end = run switch
+        (string X, string Y)? end = fade.Run switch
         {
             PaintRun.Across => ("1", "0"),
             PaintRun.Down => ("0", "1"),
@@ -66,9 +66,10 @@ internal sealed class SvgWriter
         XAttribute[] line = end is { } to
             ? [new("x1", "0"), new("y1", "0"), new("x2", to.X), new("y2", to.Y)]
             : [];
-        _paints.Add(new XElement(Svg + (end is null ? "radialGradient" : "linearGradient"), new XAttribute("id", id),
-            line, stops.Select((place, at) => new XElement(Svg + "stop", new XAttribute("class", $"{id}-{at}"),
-                new XAttribute("offset", N(place))))));
+        var stops = fade.Stops.Select((place, at) => new XElement(Svg + "stop",
+            new XAttribute("class", $"{fade.Id}-{at}"), new XAttribute("offset", N(place))));
+        _paints.Add(new XElement(Svg + (end is null ? "radialGradient" : "linearGradient"),
+            new XAttribute("id", fade.Id), line, stops));
         return this;
     }
 

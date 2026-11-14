@@ -42,10 +42,10 @@ internal static class OverviewDrawing
         // key. Four fades are its own to ask for: the rail, the badge, a card's top edge, and the glass.
         return PictureBuilder.Titled(source.Title, Measures)
             .Type(TypeNames.Of(source))
-            .Paint(CardsStyle.RailPaint, PaintRun.Across, 0, 0.2, 0.8, 1)
-            .Paint(CardsStyle.BadgePaint, PaintRun.Slant, 0, 1)
-            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-            .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
+            .Paint(CardsStyle.RailFade)
+            .Paint(CardsStyle.BadgeFade)
+            .Paint(MarqueeLook.EdgeFade)
+            .Paint(MarqueeLook.GlassFade)
             .Lights(writer =>
             {
                 foreach (var card in placed.Cards.Where(card => card.Card.Look == CardLook.Highlight))

@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Engine.Svg.Paints;
+
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 
 /// <summary>
@@ -11,12 +13,24 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 /// a component diagram share is <see cref="PictureLook"/>'s, so neither can drift from the other in it. A kind's
 /// own style comes after it and adds only what is its own. The accent is the palette's violet running to its
 /// blue: in this look neither tone says what a box is. The fades are paints the look fills with by id and whose
-/// stops it colours, and the drawing defines each under the same id.
+/// stops it colours. Each is named here once, with how it runs, and a drawing asks for it by that name.
 /// </remarks>
 internal static class MarqueeLook
 {
     /// <summary>The ids of the shared fades: the light, the glass, and the accent along a panel's top.</summary>
     public const string LightPaint = "mrq-light", GlassPaint = "mrq-glass", EdgePaint = "mrq-edge";
+
+    /// <summary>Halfway along a fade's run: where the light is its second colour, and the accent fullest.</summary>
+    private const double Halfway = 0.5;
+
+    /// <summary>The soft light behind a picture's top: out from its middle, by its second colour, to nothing.</summary>
+    public static readonly Fade LightFade = new(LightPaint, PaintRun.Out, 0, Halfway, 1);
+
+    /// <summary>The glass of a panel: down it, from how much shows at its top to how much at its bottom.</summary>
+    public static readonly Fade GlassFade = new(GlassPaint, PaintRun.Down, 0, 1);
+
+    /// <summary>The accent along a panel's top: across it, from nothing to its fullest halfway, and back.</summary>
+    public static readonly Fade EdgeFade = new(EdgePaint, PaintRun.Across, 0, Halfway, 1);
 
     /// <summary>
     /// On a light page: how strong the light is at its middle and halfway out, the colour of the glass and how

@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
@@ -32,14 +33,14 @@ internal sealed class PictureBuilder
     /// its words stand, and where along its run the light behind the top changes from its first colour to its
     /// second.
     /// </summary>
-    private const double TypeGap = 28, CaptionRoom = 34, CaptionRise = 8, LightTurns = 0.5;
+    private const double TypeGap = 28, CaptionRoom = 34, CaptionRise = 8;
 
     /// <summary>The type's name, in its spaced capitals.</summary>
     private static readonly Face TypeFace = new(7.6);
 
     private readonly string _title;
     private readonly PictureMeasures _measures;
-    private readonly List<(string Id, PaintRun Run, double[] Stops)> _paints = [];
+    private readonly List<Fade> _paints = [];
     private readonly List<string> _styles = [];
     private string? _heading, _type, _caption;
     private Action<SvgWriter>? _lights, _body;
@@ -72,9 +73,9 @@ internal sealed class PictureBuilder
     }
 
     /// <summary>One of the kind's own fades, defined after the light's, in the order called.</summary>
-    public PictureBuilder Paint(string id, PaintRun run, params double[] stops)
+    public PictureBuilder Paint(Fade fade)
     {
-        _paints.Add((id, run, stops));
+        _paints.Add(fade);
         return this;
     }
 
@@ -145,8 +146,8 @@ internal sealed class PictureBuilder
         double height = under + (_caption is null ? 0 : CaptionRoom);
 
         // The fades first, the light's before a kind's own. Then the parts, in the one order every picture has.
-        var writer = new SvgWriter().Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, LightTurns, 1);
-        foreach (var (id, run, stops) in _paints) writer.Paint(id, run, stops);
+        var writer = new SvgWriter().Paint(MarqueeLook.LightFade);
+        foreach (var fade in _paints) writer.Paint(fade);
         if (_lights is null) Light(writer, width);
         _lights?.Invoke(writer);
         writer.Text(0, TitleLine, heading, "mrq-title", "start");

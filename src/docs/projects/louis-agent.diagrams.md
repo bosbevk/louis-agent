@@ -123,7 +123,12 @@ layout and drawn by `ClassesDrawing`, as cards. Part 2 says what each shows.
 one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
 arrowhead every picture needs are written in one place. A drawing may also define a paint, a fade from one colour
 into another that a style fills a shape with by its id, since a style alone can't give a shape one. Each stop of a
-paint is classed by the paint's id and its number, and the style colours it. A line may wear an end of its own at
+paint is classed by the paint's id and its number, and the style colours it. A fade is a small value (`Paints/Fade`):
+its id, the way it runs over the shape (`PaintRun`: across, down, corner to corner, or out from the middle) and where
+along that run each stop stands. It is named once, beside the style that colours its stops, as `MarqueeLook.GlassFade`
+and `SequenceStyle.LifeFade` are, and a drawing asks the writer for it by that name. So a fade's id, its run and its
+stops can't differ between the style and a drawing, or between two drawings, and a rule test holds that no drawing
+says how a fade runs. A line may wear an end of its own at
 either side (`Ends/LineEnd`): the arrowhead, a hollow triangle, a diamond or an open arrowhead, in the line's tone
 when it has one. An end turns with its line, is written once however many lines wear it, and only when one does.
 It is classed by its kind and its tone, as `end-triangle tone-violet`, and the look colours it. The file is built
@@ -479,7 +484,7 @@ two cards of one row, is refused when the JSON is read, with the two cards it na
 place itself: the picture's own small title, the light behind each highlighted card, the rails and the cards. The
 look is `PictureLook`, then `MarqueeLook`, then `CardsStyle`. A card has no tone, so the colour is the look's own, one accent:
 the palette's violet running to its blue. The fades, the rail's, the light's and the glass's, are paints the
-drawing defines and the style fills with.
+style names and fills with, and the drawing asks for each by its name.
 
 #### A ticket: a card an agent draws in the chat
 
@@ -620,7 +625,7 @@ src/web/louis-agent.diagrams.engine/
 ├── Keys/       # KeyParts, KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, ComponentsStyle, CompositeStyle, FlowStyle, SequenceStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, ComponentsStyle, CompositeStyle, FlowStyle, SequenceStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames

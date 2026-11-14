@@ -27,12 +27,6 @@ internal sealed class TicketRenderer : IDiagramRenderer
     private const double Radius = PictureParts.Radius, Rule = 1;
 
     /// <summary>
-    /// Where along their run the fades change: the light behind the head from its first colour to its second,
-    /// and the accent to its full strength, in its middle.
-    /// </summary>
-    private const double LightTurns = 0.55, AccentFull = 0.5;
-
-    /// <summary>
     /// An icon chip's corner, the icon's size, how far inside its chip the icon stands, and the corner of the
     /// note's well.
     /// </summary>
@@ -56,9 +50,9 @@ internal sealed class TicketRenderer : IDiagramRenderer
         // The card, back to front: its paper, the light behind its head, the glass over both, the accent along
         // its top, and a hairline under its head.
         var writer = new SvgWriter()
-            .Paint(TicketStyle.LightPaint, PaintRun.Down, 0, LightTurns, 1)
-            .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
-            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, AccentFull, 1)
+            .Paint(TicketStyle.LightFade)
+            .Paint(MarqueeLook.GlassFade)
+            .Paint(MarqueeLook.EdgeFade)
             .Box(card, Radius, "ticket-paper")
             .Path(HeadLight(placed.Head), "ticket-light", false)
             .Box(card, Radius, "mrq-glass ticket");
