@@ -119,6 +119,51 @@ kind. This is the *design doc* or *RFC* way, one proposal per piece of work, kep
 the feature doc kept as a kind beside the plan (two docs to keep in step for one feature, as F7 has today), and
 removing all ten (October's stories would leave the working folder).
 
+**The code is the master of what is: B, the docs job writes a project doc's facts around a short hand-written
+story** (card of 2026-11-14, after "should we not generate our docs throught our class comments, method comments",
+"then the docs jobs just generate it and the ai just decides what graphs must come where and update" and "I'm trying
+to get the docs from a master, so is it a good idea to make the msater the code itself?"). The rule is not one
+master for everything but **every fact has exactly one master**, and a doc that shows another master's facts
+generates them or links to them, never retypes them:
+
+| What a reader wants to know | Its master | The docs then |
+|---|---|---|
+| What exists, what it does, how it is wired, its settings | The code and its comments | Generated: the project docs' fact sections, the structure pictures, the lists |
+| Why, and what was turned down | The ADR | Written once; the code links to it from its summaries (ADR 0050) |
+| How to do a job | The how-to | Written by hand; a code sample in it comes from code that compiles, as the site's *Build your own* page is held by `BuildYourOwnTests` |
+| What is next | The TODO and the plan | Written by hand |
+| What was learned | The write-up and the lesson | Written by hand |
+
+A project doc's sections under this pick (F149 builds it, in its own plan):
+
+| Section | Who writes it | From |
+|---|---|---|
+| *Purpose*, *How it works* | A person or the AI, by hand: the short story | Nothing; the job never touches these paragraphs |
+| *Diagrams* | The AI picks which pictures the doc needs and where they go, when it finishes a step | The structure pictures (which project references which; an interface and who implements it) are diagram JSON the job writes from the code; a communication picture (one request, in order) is JSON written by hand, since no tool can pick the request worth drawing |
+| *Structure* | The job | Every class with its `<summary>` line |
+| *Configuration* | The job | The options classes and their settings |
+| *Design notes* | The job | The ADRs the project's summaries link (`<seealso>`) |
+| *Tests* | The job | The project's test project |
+| *Extending it*, *Related docs* | The job | The docs' headers (`about` names the project) |
+| *Limits and plans* | By hand, short | Settled in F149's plan |
+
+The patterns: *living documentation* (Cyrille Martraire, *Living Documentation*: the code is the source and the
+docs are drawn from it) with the *Generation Gap* (John Vlissides, *Pattern Hatching*: generated and hand-written
+parts side by side, and the generator never overwrites the hand part), on the standard
+[XML documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/).
+[Diátaxis](https://diataxis.fr/reference/) says the same of reference: it mirrors the thing it describes.
+
+What was counted on 2026-11-14: about 7,800 `<summary>` comments over 1,700 files in the framework and the packs;
+no project writes the compiler's comment file (`GenerateDocumentationFile` is off everywhere), so switching it on
+is the first step, and with it on the compiler warns of a public member with no summary (CS1591), which can hold
+ADR 0050's rule. Not picked: **A, all of it from the code**, the story in the `<remarks>` of one front class per
+project (no headings or tables fit in a comment); **C, only the parts table** (the other sections still go stale).
+Turned down before the card: a page per class with [DocFX](https://dotnet.github.io/docfx/) or
+[XMLDoc2Markdown](https://www.nuget.org/packages/XMLDoc2Markdown), about 1,700 pages that flood the guide's search
+(it earns its place when the engine ships as a package, Phase 10), and serving the comments live from the comment
+files beside the DLLs (a new contract, and only what one host loads). ADRs, how-tos, plans and write-ups stay
+written by hand either way.
+
 ### Open choices (asked one at a time)
 
 1. **Which standards the docs follow.**
