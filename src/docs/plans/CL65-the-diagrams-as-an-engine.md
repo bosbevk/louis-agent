@@ -170,6 +170,11 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     number that passes through single precision may change in its last digits, so this child cannot be proved
     by no picture changing: each picture that changes is compared and looked at. Words still need a type of
     ours, since nothing of Microsoft's measures them without a font.
+  - *Ours is kept, behind an interface.* Louis, after that pick: "we should have an interface to save ours
+    while we test the ms library". So the sums sit behind one interface with two implementations: ours in
+    double precision, which stays the one in use, and one on Microsoft's types. Every picture is drawn with
+    both and the two are compared. Which one is in use after that is his pick, with the list of pictures that
+    differ in front of him. What the interface covers is a finding for this child's own plan.
 - **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and
   each renderer stands beside its drawing. No picture changed. Its picks are in its plan as of the commit
   before the one that deleted it, and its lessons in [the write-up](../learning/18-testing-and-shipping.md).
