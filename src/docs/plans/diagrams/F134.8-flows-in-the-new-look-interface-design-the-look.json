@@ -1,0 +1,37 @@
+{
+  "kind": "classes",
+  "title": "F134.8 flows in the new look: the interface design, the look",
+  "caption": "The component diagram's look becomes one shared style, and the flow's renderer draws with it. Today's drawing gets a name of its own, and a class chart keeps it.",
+  "classes": {
+    "types": [
+      { "id": "flow", "name": "FlowRenderer", "kind": "the new look, step 7", "tone": "green",
+        "members": [ "string Render(DiagramSource source)" ] },
+      { "id": "classes", "name": "ClassesRenderer", "kind": "as today", "tone": "green",
+        "members": [ "string Render(DiagramSource source)" ] },
+      { "id": "plain", "name": "PlainFlowDrawing", "kind": "today's drawing, moved in step 6",
+        "members": [ "static string Of(DiagramSource source)" ] },
+      { "id": "components", "name": "ComponentsRenderer", "kind": "follows in step 6", "tone": "green" },
+      { "id": "look", "name": "PictureLook", "kind": "step 6, from ComponentsStyle",
+        "members": [ "static string Of(SvgTheme theme)" ] },
+      { "id": "key", "name": "PictureKey", "kind": "step 6, from ComponentsKey",
+        "members": [ "static void Draw(SvgWriter writer, PlacedKey key)" ] },
+      { "id": "placedkey", "name": "PlacedKey", "kind": "record, moved in step 6",
+        "members": [ "IReadOnlyList<KeyRow> Rows" ] },
+      { "id": "shapes", "name": "NodeShapes", "kind": "step 5",
+        "members": [ "static string PathOf(PlacedNode node)" ] },
+      { "id": "frame", "name": "TitledFrame", "kind": "changed in step 7",
+        "members": [ "static string Around(string svg, DiagramSource source)" ] }
+    ],
+    "relations": [
+      { "from": "flow", "to": "look", "kind": "uses" },
+      { "from": "flow", "to": "key", "kind": "uses" },
+      { "from": "flow", "to": "shapes", "kind": "uses" },
+      { "from": "components", "to": "look", "kind": "uses" },
+      { "from": "components", "to": "key", "kind": "uses" },
+      { "from": "key", "to": "placedkey", "kind": "uses", "word": "draws" },
+      { "from": "classes", "to": "plain", "kind": "uses", "word": "draws through" },
+      { "from": "frame", "to": "flow", "kind": "uses", "word": "no bar, no legend" },
+      { "from": "frame", "to": "classes", "kind": "uses", "word": "bar and legend, as today" }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "kind": "flow",
+  "title": "F134.8 flows in the new look: what the change reaches",
+  "caption": "One layout serves the docs and the site. A flow's lines change in both. The look changes wherever the tool draws a flow. The site's pages keep their own look, and a class chart keeps everything.",
+  "flow": {
+    "nodes": [
+      { "id": "json", "label": "91 flow pictures' JSON", "icon": "box", "tone": "amber" },
+      { "id": "card", "label": "DrawnCard\na picture shown in a page", "icon": "code", "tone": "violet" },
+      { "id": "page", "label": "Seven pages of the site\neach declares a GraphSpec", "icon": "box", "tone": "blue" },
+      { "id": "charts", "label": "58 class charts' JSON\nuntouched", "icon": "box", "tone": "amber" },
+      { "id": "layout", "label": "GraphLayout\nhanded the rule, step 3", "icon": "code", "tone": "green", "group": "diagrams" },
+      { "id": "router", "label": "EdgeRouter\na point for each arrow,\na track for each source\nsteps 3 and 4", "icon": "code", "tone": "green", "group": "diagrams" },
+      { "id": "renderer", "label": "FlowRenderer\nshapes and the new look\nsteps 5 to 7", "icon": "code", "tone": "green", "group": "diagrams" },
+      { "id": "plain", "label": "PlainFlowDrawing\ntoday's drawing, kept\nstep 6", "icon": "code", "tone": "green", "group": "diagrams" },
+      { "id": "svg", "label": "91 SVGs redrawn\nsteps 7 and 8", "icon": "box", "tone": "amber" },
+      { "id": "same", "label": "58 SVGs\nbyte for byte as before", "icon": "box", "tone": "amber" },
+      { "id": "view", "label": "GraphView\nthe site's own look\nstep 9", "icon": "code", "tone": "violet" },
+      { "id": "tests", "label": "DocsDiagramsTests\nwords and lines stay clear", "icon": "search", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "json", "to": "layout", "word": "apart" },
+      { "from": "card", "to": "layout" },
+      { "from": "page", "to": "layout", "word": "apart, step 9" },
+      { "from": "charts", "to": "layout", "word": "joined" },
+      { "from": "layout", "to": "router" },
+      { "from": "router", "to": "renderer" },
+      { "from": "router", "to": "plain" },
+      { "from": "router", "to": "view", "word": "the same lines" },
+      { "from": "renderer", "to": "svg" },
+      { "from": "plain", "to": "same" },
+      { "from": "tests", "to": "svg", "word": "reads", "style": "dashed" }
+    ],
+    "groups": [ { "id": "diagrams", "label": "louis-agent.diagrams" } ]
+  }
+}

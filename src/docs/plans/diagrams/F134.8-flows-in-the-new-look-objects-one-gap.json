@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "title": "F134.8 flows in the new look: one gap of the web's picture",
+  "caption": "Two sources cross this gap, so it holds two tracks. Two arrows end at AgentApi, so it has two entries, the upper one for the upper source.",
+  "flow": {
+    "nodes": [
+      { "id": "runner", "label": "ChatRunner\nthree arrows out, one trunk", "icon": "code", "tone": "violet" },
+      { "id": "screen", "label": "The screen page\none arrow out", "icon": "code", "tone": "green" },
+      { "id": "track1", "label": "Track 1\nChatRunner's", "icon": "box", "tone": "teal" },
+      { "id": "track2", "label": "Track 2\nthe screen page's", "icon": "box", "tone": "teal" },
+      { "id": "stream", "label": "TurnStream\none entry", "icon": "code", "tone": "teal" },
+      { "id": "store", "label": "ChatStore\none entry", "icon": "code", "tone": "amber" },
+      { "id": "api", "label": "AgentApi\nentry 1: from ChatRunner\nentry 2: from the screen page", "icon": "code", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "runner", "to": "track1" },
+      { "from": "screen", "to": "track2" },
+      { "from": "track1", "to": "stream" },
+      { "from": "track1", "to": "store" },
+      { "from": "track1", "to": "api", "word": "entry 1" },
+      { "from": "track2", "to": "api", "word": "entry 2" }
+    ]
+  }
+}
