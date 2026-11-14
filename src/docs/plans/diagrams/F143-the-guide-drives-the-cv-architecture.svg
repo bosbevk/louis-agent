@@ -138,17 +138,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F143 the guide drives the CV: the architecture</text>
     <text class="pic-group" x="1356" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 228.8 120 L 289 120" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 228.8 120 L 289 120" />
-      <path class="pic-line pic-edge tone-green" d="M 507 120 L 567.2 120" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 507 120 L 567.2 120" />
-      <path class="pic-line pic-edge tone-green" d="M 754.8 120 L 818.9 120 Q 842.9 120 842.9 144 L 842.9 194 Q 842.9 206 855 206 L 867 206" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 754.8 120 L 818.9 120 Q 842.9 120 842.9 144 L 842.9 194 Q 842.9 206 855 206 L 867 206" />
-      <path class="pic-line pic-edge tone-green" d="M 754.8 120 L 818.9 120 Q 842.9 120 842.9 96 L 842.9 46.1 Q 842.9 34 855 34 L 867 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 754.8 120 L 818.9 120 Q 842.9 120 842.9 96 L 842.9 46.1 Q 842.9 34 855 34 L 867 34" />
-      <path class="pic-line pic-edge tone-green" d="M 1107.8 34 L 1177 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1107.8 34 L 1177 34" />
-      <path class="pic-line pic-edge tone-green reads" d="M 754.8 120 L 867 120" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-blue" d="M228.8 120L289 120" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M228.8 120L289 120" />
+      <path class="pic-line pic-edge tone-green" d="M507 120L567.2 120" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M507 120L567.2 120" />
+      <path class="pic-line pic-edge tone-green" d="M754.8 120L818.9 120Q842.9 120 842.9 144L842.9 194Q842.9 206 855 206L867 206" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M754.8 120L818.9 120Q842.9 120 842.9 144L842.9 194Q842.9 206 855 206L867 206" />
+      <path class="pic-line pic-edge tone-green" d="M754.8 120L818.9 120Q842.9 120 842.9 96L842.9 46.1Q842.9 34 855 34L867 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M754.8 120L818.9 120Q842.9 120 842.9 96L842.9 46.1Q842.9 34 855 34L867 34" />
+      <path class="pic-line pic-edge tone-green" d="M1107.8 34L1177 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1107.8 34L1177 34" />
+      <path class="pic-line pic-edge tone-green reads" d="M754.8 120L867 120" marker-end="url(#arrow-green)" />
       <rect class="pic-pill pic-edge tone-green" x="763.4" y="111" width="71" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="798.9" y="123" text-anchor="middle">interview</text>
       <rect class="pic-panel flow-shape pic-edge tone-blue" x="0" y="94" width="228.8" height="52" rx="26" />

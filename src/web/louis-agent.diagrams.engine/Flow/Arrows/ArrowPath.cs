@@ -1,4 +1,3 @@
-using System.Globalization;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
@@ -16,9 +15,8 @@ namespace LouisAgent.Diagrams.Engine.Flow.Arrows;
 /// they worked out is asked of the way now, and its text is written once, at the end.
 /// </para>
 /// <para>
-/// Its numbers are kept as the picture writes them, to one decimal. That is what every one of those sums read
-/// when the way was a text, so a way moved is rounded again from the written number, as it always was, and no
-/// picture changes.
+/// Its numbers are the layout's own, exact, and are rounded only where its text is written. Two ways are the same
+/// when they write the same text.
 /// </para>
 /// </remarks>
 /// <param name="Pieces">Its places, in the order the line runs.</param>
@@ -54,9 +52,8 @@ public sealed record ArrowPath(IReadOnlyList<ArrowPiece> Pieces)
     /// <summary>The way turned over the picture's diagonal: every place's across becomes its down.</summary>
     public ArrowPath Turned() => new([.. Pieces.Select(piece => piece with { X = piece.Y, Y = piece.X })]);
 
-    /// <summary>The way moved across, each place written again from where it stood.</summary>
-    public ArrowPath Moved(double across) =>
-        new([.. Pieces.Select(piece => piece with { X = Written(piece.X + across) })]);
+    /// <summary>The way moved across.</summary>
+    public ArrowPath Moved(double across) => new([.. Pieces.Select(piece => piece with { X = piece.X + across })]);
 
     /// <summary>Where it starts.</summary>
     public ArrowPiece Start => Pieces[0];
@@ -65,12 +62,12 @@ public sealed record ArrowPath(IReadOnlyList<ArrowPiece> Pieces)
     public IEnumerable<ArrowStretch> Stretches =>
         Pieces.Zip(Pieces.Skip(1), (from, to) => new ArrowStretch(from, to));
 
-    /// <summary>Its text, as an SVG's <c>d</c> holds it, with room round every letter.</summary>
+    /// <summary>Its text, as an SVG's <c>d</c> holds it.</summary>
     public string Text
     {
         get
         {
-            var path = new PathWriter(spaced: true);
+            var path = new PathWriter();
             for (int at = 0; at < Pieces.Count; at++)
             {
                 var piece = Pieces[at];
@@ -97,10 +94,6 @@ public sealed record ArrowPath(IReadOnlyList<ArrowPiece> Pieces)
     /// <summary>The hash of its text, so two ways that are the same hash the same.</summary>
     public override int GetHashCode() => Text.GetHashCode(StringComparison.Ordinal);
 
-    /// <summary>A place, its numbers as the picture writes them.</summary>
-    private static ArrowPiece Piece(ArrowTurn turn, double x, double y) => new(turn, Written(x), Written(y));
-
-    /// <summary>A number as the picture writes it and reads it back: to one decimal.</summary>
-    private static double Written(double value) =>
-        double.Parse(SvgWriter.N(value), NumberStyles.Float, CultureInfo.InvariantCulture);
+    /// <summary>A place of a way.</summary>
+    private static ArrowPiece Piece(ArrowTurn turn, double x, double y) => new(turn, x, y);
 }

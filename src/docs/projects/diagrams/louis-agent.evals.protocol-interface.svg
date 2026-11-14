@@ -193,17 +193,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.evals.protocol: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 322 68 L 570 68 Q 594 68 594 92 L 594 452 Q 594 476 618 476 L 710 476" marker-end="url(#open)" />
-      <path class="cls-line inherits" d="M 322 222 L 552 222 Q 576 222 576 246 L 576 470 Q 576 494 600 494 L 710 494" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 322 222 L 552 222 Q 576 222 576 246 L 576 470 Q 576 494 600 494 L 710 494" />
-      <path class="cls-line inherits" d="M 322 376 L 534 376 Q 558 376 558 400 L 558 488 Q 558 512 582 512 L 710 512" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 322 376 L 534 376 Q 558 376 558 400 L 558 488 Q 558 512 582 512 L 710 512" />
-      <path class="cls-line inherits" d="M 322 530 L 710 530" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 322 530 L 710 530" />
-      <path class="cls-line inherits" d="M 322 684 L 534 684 Q 558 684 558 660 L 558 572 Q 558 548 582 548 L 710 548" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 322 684 L 534 684 Q 558 684 558 660 L 558 572 Q 558 548 582 548 L 710 548" />
-      <path class="cls-line inherits" d="M 322 838 L 552 838 Q 576 838 576 814 L 576 590 Q 576 566 600 566 L 710 566" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 322 838 L 552 838 Q 576 838 576 814 L 576 590 Q 576 566 600 566 L 710 566" />
+      <path class="cls-line uses" d="M322 68L570 68Q594 68 594 92L594 452Q594 476 618 476L710 476" marker-end="url(#open)" />
+      <path class="cls-line inherits" d="M322 222L552 222Q576 222 576 246L576 470Q576 494 600 494L710 494" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M322 222L552 222Q576 222 576 246L576 470Q576 494 600 494L710 494" />
+      <path class="cls-line inherits" d="M322 376L534 376Q558 376 558 400L558 488Q558 512 582 512L710 512" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M322 376L534 376Q558 376 558 400L558 488Q558 512 582 512L710 512" />
+      <path class="cls-line inherits" d="M322 530L710 530" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M322 530L710 530" />
+      <path class="cls-line inherits" d="M322 684L534 684Q558 684 558 660L558 572Q558 548 582 548L710 548" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M322 684L534 684Q558 684 558 660L558 572Q558 548 582 548L710 548" />
+      <path class="cls-line inherits" d="M322 838L552 838Q576 838 576 814L576 590Q576 566 600 566L710 566" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M322 838L552 838Q576 838 576 814L576 590Q576 566 600 566L710 566" />
       <rect class="pic-pill cls-chip uses" x="398" y="59" width="120" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="458" y="71" text-anchor="middle">writes and reads</text>
       <rect class="pic-pill cls-chip inherits" x="431" y="213" width="36" height="18" rx="9" />

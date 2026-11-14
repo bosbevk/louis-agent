@@ -141,22 +141,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Louis Agent: how a program, its hosts, identities and packs sit on the engine</text>
     <text class="pic-group" x="918" y="14" text-anchor="end">Package diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 84 L 459 99 Q 459 114 444 114 L 162 114 Q 147 114 147 129 L 147 144" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 84 L 459 99 Q 459 114 444 114 L 162 114 Q 147 114 147 129 L 147 144" />
-      <path class="pic-line pic-edge tone-blue" d="M 459 84 L 459 144" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 84 L 459 144" />
-      <path class="pic-line pic-edge tone-blue" d="M 459 84 L 459 99 Q 459 114 474 114 L 756 114 Q 771 114 771 129 L 771 144" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 84 L 459 99 Q 459 114 474 114 L 756 114 Q 771 114 771 129 L 771 144" />
-      <path class="pic-line pic-edge tone-violet" d="M 147 228 L 147 288" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 147 228 L 147 288" />
-      <path class="pic-line pic-edge tone-green" d="M 459 228 L 459 288 L 459 388 L 459 448" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 228 L 459 288 L 459 388 L 459 448" />
-      <path class="pic-line pic-edge tone-green" d="M 771 228 L 771 243 Q 771 258 756 258 L 492 258 Q 477 258 477 273 L 477 288 L 477 388 L 477 448" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 771 228 L 771 243 Q 771 258 756 258 L 492 258 Q 477 258 477 273 L 477 288 L 477 388 L 477 448" />
-      <path class="pic-line pic-edge tone-violet" d="M 147 388 L 147 403 Q 147 418 162 418 L 426 418 Q 441 418 441 433 L 441 448" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 147 388 L 147 403 Q 147 418 162 418 L 426 418 Q 441 418 441 433 L 441 448" />
-      <path class="pic-line pic-edge tone-violet" d="M 147 388 L 147 448" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 147 388 L 147 448" />
+      <path class="pic-line pic-edge tone-blue" d="M459 84L459 99Q459 114 444 114L162 114Q147 114 147 129L147 144" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 84L459 99Q459 114 444 114L162 114Q147 114 147 129L147 144" />
+      <path class="pic-line pic-edge tone-blue" d="M459 84L459 144" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 84L459 144" />
+      <path class="pic-line pic-edge tone-blue" d="M459 84L459 99Q459 114 474 114L756 114Q771 114 771 129L771 144" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 84L459 99Q459 114 474 114L756 114Q771 114 771 129L771 144" />
+      <path class="pic-line pic-edge tone-violet" d="M147 228L147 288" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M147 228L147 288" />
+      <path class="pic-line pic-edge tone-green" d="M459 228L459 288L459 388L459 448" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 228L459 288L459 388L459 448" />
+      <path class="pic-line pic-edge tone-green" d="M771 228L771 243Q771 258 756 258L492 258Q477 258 477 273L477 288L477 388L477 448" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 228L771 243Q771 258 756 258L492 258Q477 258 477 273L477 288L477 388L477 448" />
+      <path class="pic-line pic-edge tone-violet" d="M147 388L147 403Q147 418 162 418L426 418Q441 418 441 433L441 448" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M147 388L147 403Q147 418 162 418L426 418Q441 418 441 433L441 448" />
+      <path class="pic-line pic-edge tone-violet" d="M147 388L147 448" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M147 388L147 448" />
       <rect class="pic-panel" x="312" y="0" width="294" height="84" rx="10" />
       <rect class="pic-fill tone-blue" x="328" y="28" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(334 34) scale(0.6667)">

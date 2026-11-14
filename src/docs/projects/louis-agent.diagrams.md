@@ -560,9 +560,10 @@ lines is, or how many characters a room holds. Each kind names its faces beside 
 
 **Paths** (`Svg/Paths/PathWriter`). A drawing tells the path writer a path's pieces, from a point, a line, a
 curve, an arc, a whole oval, and takes the path's text at the end. So no drawing builds that text by hand, and
-SVG's letters and how a number is written are in one place. A flow's arrow is a type of its own,
-`Flow/Arrows/ArrowPath`: its places in the order the line runs, which knows how it is turned, moved and joined to
-another, and writes its text once.
+SVG's letters and how a number is written are in one place. Every path is written one way: a letter and its
+numbers, with nothing between two pieces. A flow's arrow is a type of its own, `Flow/Arrows/ArrowPath`: its
+places in the order the line runs, exact as the layout placed them, which knows how it is turned, moved and
+joined to another. Its numbers are rounded to one decimal only where its text is written.
 
 A rule test holds all of it (`EngineAsksItsTypesTests`). Outside the folders of these types, no record of the
 engine is a box by four numbers, no file works out a box's edge or half its size, none measures words by their
@@ -676,8 +677,6 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   that tells its pictures from ours: our own family run in `float` draws the same as it, to the byte. Beside ours
   in `double` most pictures are the same or have a few numbers a tenth of a pixel apart, and in a few flows an
   arrow takes another way. Which of the router's decisions turn on single precision is not known.
-- A path is written two ways: an arrow the flow's router routes, a class chart's lines among them, with room
-  round every letter, and every other path with none.
 - F137 takes the same idea to the site: its cards read from JSON.
 
 ## Related docs

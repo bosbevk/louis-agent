@@ -141,22 +141,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The eval studio's pages: from a site's program through the admin frame to the API</text>
     <text class="pic-group" x="882" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 52 L 459 130 L 459 182 L 459 242 L 459 310 L 459 370 L 459 438 L 459 504" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 52 L 459 130 L 459 182 L 459 242 L 459 310 L 459 370 L 459 438 L 459 504" />
-      <path class="pic-line pic-edge tone-blue" d="M 459 52 L 459 64 Q 459 76 447 76 L 171 76 Q 147 76 147 100 L 147 130" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 52 L 459 64 Q 459 76 447 76 L 171 76 Q 147 76 147 100 L 147 130" />
-      <path class="pic-line pic-edge tone-violet" d="M 147 182 L 147 242" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 147 182 L 147 242" />
-      <path class="pic-line pic-edge tone-green" d="M 147 310 L 147 370" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 310 L 147 370" />
-      <path class="pic-line pic-edge tone-green" d="M 147 438 L 147 504" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 438 L 147 504" />
-      <path class="pic-line pic-edge tone-green" d="M 147 438 L 147 459 Q 147 480 168 480 L 429 480 Q 441 480 441 492 L 441 504" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 438 L 147 459 Q 147 480 168 480 L 429 480 Q 441 480 441 492 L 441 504" />
-      <path class="pic-line pic-edge tone-green" d="M 147 310 L 147 325 Q 147 340 162 340 L 756 340 Q 771 340 771 355 L 771 370" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 310 L 147 325 Q 147 340 162 340 L 756 340 Q 771 340 771 355 L 771 370" />
-      <path class="pic-line pic-edge tone-violet" d="M 771 438 L 771 504" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 771 438 L 771 504" />
+      <path class="pic-line pic-edge tone-blue" d="M459 52L459 130L459 182L459 242L459 310L459 370L459 438L459 504" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 52L459 130L459 182L459 242L459 310L459 370L459 438L459 504" />
+      <path class="pic-line pic-edge tone-blue" d="M459 52L459 64Q459 76 447 76L171 76Q147 76 147 100L147 130" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 52L459 64Q459 76 447 76L171 76Q147 76 147 100L147 130" />
+      <path class="pic-line pic-edge tone-violet" d="M147 182L147 242" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M147 182L147 242" />
+      <path class="pic-line pic-edge tone-green" d="M147 310L147 370" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 310L147 370" />
+      <path class="pic-line pic-edge tone-green" d="M147 438L147 504" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 438L147 504" />
+      <path class="pic-line pic-edge tone-green" d="M147 438L147 459Q147 480 168 480L429 480Q441 480 441 492L441 504" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 438L147 459Q147 480 168 480L429 480Q441 480 441 492L441 504" />
+      <path class="pic-line pic-edge tone-green" d="M147 310L147 325Q147 340 162 340L756 340Q771 340 771 355L771 370" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 310L147 325Q147 340 162 340L756 340Q771 340 771 355L771 370" />
+      <path class="pic-line pic-edge tone-violet" d="M771 438L771 504" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M771 438L771 504" />
       <rect class="pic-pill pic-edge tone-blue" x="465" y="80" width="120" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="525" y="92" text-anchor="middle">EvalPages.AddTo,</text>
       <text class="pic-pill-word pic-ink tone-blue" x="525" y="104" text-anchor="middle">SiteKinds</text>

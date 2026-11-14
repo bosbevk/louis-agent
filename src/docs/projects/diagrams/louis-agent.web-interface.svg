@@ -196,18 +196,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.web: the interface design</text>
     <text class="pic-group" x="1987" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 378 69 L 518 69 Q 542 69 542 93 L 542 192 Q 542 216 566 216 L 686 216" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1571 69 L 1731 69" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 225 L 500 225 Q 524 225 524 249 L 524 513 Q 524 537 548 537 L 686 537" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 381 L 482 381 Q 506 381 506 405 L 506 651 Q 506 675 530 675 L 686 675" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 693 L 686 693" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 69 L 518 69 Q 542 69 542 93 L 542 348 Q 542 372 566 372 L 686 372" marker-end="url(#open)" />
-      <path class="cls-line holds" d="M 378 69 L 686 69" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 378 69 L 686 69" />
-      <path class="cls-line holds" d="M 1078 69 L 1158 69" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1078 69 L 1158 69" />
-      <path class="cls-line holds" d="M 1078 69 L 1110 69 Q 1134 69 1134 93 L 1134 213 Q 1134 225 1146 225 L 1158 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1078 69 L 1110 69 Q 1134 69 1134 93 L 1134 213 Q 1134 225 1146 225 L 1158 225" />
+      <path class="cls-line uses" d="M378 69L518 69Q542 69 542 93L542 192Q542 216 566 216L686 216" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1571 69L1731 69" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 225L500 225Q524 225 524 249L524 513Q524 537 548 537L686 537" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 381L482 381Q506 381 506 405L506 651Q506 675 530 675L686 675" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 693L686 693" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 69L518 69Q542 69 542 93L542 348Q542 372 566 372L686 372" marker-end="url(#open)" />
+      <path class="cls-line holds" d="M378 69L686 69" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M378 69L686 69" />
+      <path class="cls-line holds" d="M1078 69L1158 69" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1078 69L1158 69" />
+      <path class="cls-line holds" d="M1078 69L1110 69Q1134 69 1134 93L1134 213Q1134 225 1146 225L1158 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1078 69L1110 69Q1134 69 1134 93L1134 213Q1134 225 1146 225L1158 225" />
       <rect class="pic-pill cls-chip holds" x="554" y="60" width="120" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="614" y="72" text-anchor="middle">the chat frame's</text>
       <rect class="pic-pill cls-chip uses" x="592.5" y="207" width="43" height="18" rx="9" />

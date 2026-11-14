@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Rows;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Rows;
 
@@ -129,8 +130,8 @@ public class LevelRowsTests
             ],
             Groups: [new GraphGroup("site", "A site")]);
 
-        string way = GraphLayout.Place(spec).Edges.Single(edge => edge.Edge.To == "frame").Way.Text;
+        var way = GraphLayout.Place(spec).Edges.Single(edge => edge.Edge.To == "frame").Way;
 
-        Assert.That(way, Does.Not.Contain('Q'), "the page and the frame stand on one row, so the line has no bend");
+        Assert.That(Ways.Turns(way), Is.Zero, "the page and the frame stand on one row, so the line has no bend");
     }
 }

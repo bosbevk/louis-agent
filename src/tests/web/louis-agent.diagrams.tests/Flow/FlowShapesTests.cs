@@ -1,8 +1,8 @@
-using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -82,8 +82,8 @@ public class FlowShapesTests
         Assert.Multiple(() =>
         {
             Assert.That((host.Box.Width, host.Box.Height), Is.EqualTo((170d, 52d)));
-            Assert.That(starts.Way.Text, Does.StartWith($"M {host.Box.Middle.X:0.#} {host.Box.Bottom:0.#} "));
-            Assert.That(starts.Way.Text, Does.EndWith($"{engine.Box.Middle.X:0.#} {engine.Box.Top:0.#}"));
+            Assert.That(Ways.Points(starts.Way)[0], Is.EqualTo(Ways.At(host.Box.Middle.X, host.Box.Bottom)));
+            Assert.That(Ways.Points(starts.Way)[^1], Is.EqualTo(Ways.At(engine.Box.Middle.X, engine.Box.Top)));
         });
     }
 
@@ -122,8 +122,7 @@ public class FlowShapesTests
 
         var placed = GraphLayout.Place(spec);
 
-        var numbers = placed.Edges.SelectMany(edge => edge.Way.Text.Split(' '))
-            .Where(part => double.TryParse(part, out _)).Select(double.Parse);
+        var numbers = placed.Edges.SelectMany(edge => Ways.Numbers(edge.Way));
         Assert.That(numbers, Has.All.InRange(0d, Math.Max(placed.Width, placed.Height)));
     }
 
@@ -149,8 +148,7 @@ public class FlowShapesTests
         var placed = GraphLayout.Place(spec);
 
         var past = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build");
-        var numbers = past.Way.Text.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
-            .ToList();
+        var numbers = Ways.Numbers(past.Way);
         var chat = placed.Nodes.Single(node => node.Node.Id == "chat");
         var geometry = Geometries.InUse;
         var through = past.Way.Stretches.Where(stretch => chat.Box.CrossedBy(
@@ -186,8 +184,7 @@ public class FlowShapesTests
         var placed = GraphLayout.Place(spec);
 
         var engine = placed.Nodes.Single(node => node.Node.Id == "engine");
-        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build").Way.Text.Split(' ')
-            .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
+        var numbers = Ways.Numbers(placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build").Way);
         // Out of its source, along, and straight down into the target: its upright pieces stand at two places only,
         // the source's middle and the target's, with no jog through a slot between (a curve's corners left out).
         var host = placed.Nodes.Single(node => node.Node.Id == "host");
@@ -221,8 +218,7 @@ public class FlowShapesTests
 
         var logging = placed.Nodes.Single(node => node.Node.Id == "logging");
         var collector = placed.Nodes.Single(node => node.Node.Id == "collector");
-        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "the sink").Way.Text.Split(' ')
-            .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
+        var numbers = Ways.Numbers(placed.Edges.Single(edge => edge.Edge.Word == "the sink").Way);
         var xs = numbers.Where((_, at) => at % 2 == 0).ToList();
         Assert.Multiple(() =>
         {
@@ -249,11 +245,9 @@ public class FlowShapesTests
 
         var placed = GraphLayout.Place(spec);
 
-        string First(string path) => string.Join(' ', path.Split(' ').Skip(1).Take(2));
-        string Last(string path) => string.Join(' ', path.Split(' ').TakeLast(2));
         var outOf = placed.Edges.Single(edge => edge.Edge is { From: "sync", To: "client" });
         var into = placed.Edges.Single(edge => edge.Edge is { From: "engine", To: "sync" });
-        Assert.That(First(outOf.Way.Text), Is.Not.EqualTo(Last(into.Way.Text)));
+        Assert.That(Ways.Points(outOf.Way)[0], Is.Not.EqualTo(Ways.Points(into.Way)[^1]));
     }
 
     /// <summary>Down, an arrow's word starts just right of its line, and the drawing holds it.</summary>
@@ -298,12 +292,7 @@ public class FlowShapesTests
         var placed = GraphLayout.Place(spec);
 
         double drawn = Math.Max(placed.Nodes.Max(node => node.Box.Right),
-            placed.Edges.Max(edge => Xs(edge.Way.Text).Max()));
+            placed.Edges.Max(edge => Ways.Xs(edge.Way).Max()));
         Assert.That(placed.Width, Is.LessThanOrEqualTo(Math.Ceiling(drawn)));
     }
-
-    /// <summary>Every x a path passes: the first number of each pair after its commands.</summary>
-    private static IEnumerable<double> Xs(string path) => path.Split(' ')
-        .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-        .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).Where((_, at) => at % 2 == 0);
 }

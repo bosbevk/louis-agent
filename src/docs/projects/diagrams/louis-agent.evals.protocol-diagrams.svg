@@ -141,13 +141,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The eval protocol: written as JSON lines, read by the API and the web</text>
     <text class="pic-group" x="640.2" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-green" d="M 147 212 L 147 278" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 212 L 147 278" />
-      <path class="pic-line pic-edge tone-amber" d="M 147 330 L 147 396" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 147 330 L 147 396" />
-      <path class="pic-line pic-edge tone-amber" d="M 147 330 L 147 342 Q 147 354 159 354 L 438 354 Q 459 354 459 375 L 459 396" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 147 330 L 147 342 Q 147 354 159 354 L 438 354 Q 459 354 459 375 L 459 396" />
-      <path class="pic-line pic-edge tone-teal reads" d="M 147 84 L 147 144" marker-end="url(#arrow-teal)" />
+      <path class="pic-line pic-edge tone-green" d="M147 212L147 278" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 212L147 278" />
+      <path class="pic-line pic-edge tone-amber" d="M147 330L147 396" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M147 330L147 396" />
+      <path class="pic-line pic-edge tone-amber" d="M147 330L147 342Q147 354 159 354L438 354Q459 354 459 375L459 396" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M147 330L147 342Q147 354 159 354L438 354Q459 354 459 375L459 396" />
+      <path class="pic-line pic-edge tone-teal reads" d="M147 84L147 144" marker-end="url(#arrow-teal)" />
       <rect class="pic-pill pic-edge tone-green" x="153" y="216" width="155" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="230.5" y="228" text-anchor="middle">EvalProtocolJson.Line</text>
       <rect class="pic-pill pic-edge tone-amber" x="153" y="358" width="155" height="18" rx="9" />

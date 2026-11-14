@@ -141,19 +141,19 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F125 an agentic site: the architecture</text>
     <text class="pic-group" x="918" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 147 84 L 147 168" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 147 84 L 147 168" />
-      <path class="pic-line pic-edge tone-green" d="M 147 236 L 147 248 Q 147 260 159 260 L 426 260 Q 450 260 450 284 L 450 314" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 236 L 147 248 Q 147 260 159 260 L 426 260 Q 450 260 450 284 L 450 314" />
-      <path class="pic-line pic-edge tone-green reads" d="M 147 236 L 147 314" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-red" d="M 771 84 L 771 105 Q 771 126 750 126 L 489 126 Q 468 126 468 147 L 468 168 L 468 236 L 468 314" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 771 84 L 771 105 Q 771 126 750 126 L 489 126 Q 468 126 468 147 L 468 168 L 468 236 L 468 314" />
-      <path class="pic-line pic-edge tone-red" d="M 771 84 L 771 168 L 771 236 L 771 314" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 771 84 L 771 168 L 771 236 L 771 314" />
-      <path class="pic-line pic-edge tone-green" d="M 147 236 L 147 248 Q 147 260 159 260 L 729 260 Q 753 260 753 284 L 753 314" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 236 L 147 248 Q 147 260 159 260 L 729 260 Q 753 260 753 284 L 753 314" />
-      <path class="pic-line pic-edge tone-green" d="M 459 84 L 459 105 Q 459 126 438 126 L 186 126 Q 165 126 165 147 L 165 168" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 84 L 459 105 Q 459 126 438 126 L 186 126 Q 165 126 165 147 L 165 168" />
+      <path class="pic-line pic-edge tone-blue" d="M147 84L147 168" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 84L147 168" />
+      <path class="pic-line pic-edge tone-green" d="M147 236L147 248Q147 260 159 260L426 260Q450 260 450 284L450 314" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 236L147 248Q147 260 159 260L426 260Q450 260 450 284L450 314" />
+      <path class="pic-line pic-edge tone-green reads" d="M147 236L147 314" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-red" d="M771 84L771 105Q771 126 750 126L489 126Q468 126 468 147L468 168L468 236L468 314" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M771 84L771 105Q771 126 750 126L489 126Q468 126 468 147L468 168L468 236L468 314" />
+      <path class="pic-line pic-edge tone-red" d="M771 84L771 168L771 236L771 314" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M771 84L771 168L771 236L771 314" />
+      <path class="pic-line pic-edge tone-green" d="M147 236L147 248Q147 260 159 260L729 260Q753 260 753 284L753 314" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 236L147 248Q147 260 159 260L729 260Q753 260 753 284L753 314" />
+      <path class="pic-line pic-edge tone-green" d="M459 84L459 105Q459 126 438 126L186 126Q165 126 165 147L165 168" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 84L459 105Q459 126 438 126L186 126Q165 126 165 147L165 168" />
       <rect class="pic-pill pic-edge tone-blue" x="153" y="88" width="29" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="167.5" y="100" text-anchor="middle">SSE</text>
       <rect class="pic-pill pic-edge tone-green" x="310" y="264" width="134" height="30" rx="9" />

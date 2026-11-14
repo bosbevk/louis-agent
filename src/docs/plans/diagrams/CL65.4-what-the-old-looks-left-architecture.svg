@@ -138,22 +138,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL65.4 what the old looks left: the architecture</text>
     <text class="pic-group" x="1097" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-violet" d="M 550.2 68 L 550.2 134" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 550.2 68 L 550.2 134" />
-      <path class="pic-line pic-edge tone-violet" d="M 550.2 68 L 550.2 80 Q 550.2 92 562.2 92 L 902 92 Q 923 92 923 113 L 923 134" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 550.2 68 L 550.2 80 Q 550.2 92 562.2 92 L 902 92 Q 923 92 923 113 L 923 134" />
-      <path class="pic-line pic-edge tone-green" d="M 923 218 L 923 278" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 923 218 L 923 278" />
-      <path class="pic-line pic-edge tone-green" d="M 923 218 L 923 233 Q 923 248 908 248 L 565.2 248 Q 550.2 248 550.2 263 L 550.2 278" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 923 218 L 923 233 Q 923 248 908 248 L 565.2 248 Q 550.2 248 550.2 263 L 550.2 278" />
-      <path class="pic-line pic-edge tone-green" d="M 550.2 362 L 550.2 428" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 550.2 362 L 550.2 428" />
-      <path class="pic-line pic-edge tone-green" d="M 550.2 362 L 550.2 383 Q 550.2 404 529.2 404 L 189.4 404 Q 177.4 404 177.4 416 L 177.4 428" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 550.2 362 L 550.2 383 Q 550.2 404 529.2 404 L 189.4 404 Q 177.4 404 177.4 416 L 177.4 428" />
-      <path class="pic-line pic-edge tone-green" d="M 923 362 L 923 428 L 923 496 L 923 517 Q 923 538 902 538 L 571.2 538 Q 559.2 538 559.2 550 L 559.2 562" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 923 362 L 923 428 L 923 496 L 923 517 Q 923 538 902 538 L 571.2 538 Q 559.2 538 559.2 550 L 559.2 562" />
-      <path class="pic-line pic-edge tone-green" d="M 177.4 496 L 177.4 517 Q 177.4 538 198.4 538 L 529.2 538 Q 541.2 538 541.2 550 L 541.2 562" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 177.4 496 L 177.4 517 Q 177.4 538 198.4 538 L 529.2 538 Q 541.2 538 541.2 550 L 541.2 562" />
+      <path class="pic-line pic-edge tone-violet" d="M550.2 68L550.2 134" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M550.2 68L550.2 134" />
+      <path class="pic-line pic-edge tone-violet" d="M550.2 68L550.2 80Q550.2 92 562.2 92L902 92Q923 92 923 113L923 134" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M550.2 68L550.2 80Q550.2 92 562.2 92L902 92Q923 92 923 113L923 134" />
+      <path class="pic-line pic-edge tone-green" d="M923 218L923 278" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M923 218L923 278" />
+      <path class="pic-line pic-edge tone-green" d="M923 218L923 233Q923 248 908 248L565.2 248Q550.2 248 550.2 263L550.2 278" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M923 218L923 233Q923 248 908 248L565.2 248Q550.2 248 550.2 263L550.2 278" />
+      <path class="pic-line pic-edge tone-green" d="M550.2 362L550.2 428" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M550.2 362L550.2 428" />
+      <path class="pic-line pic-edge tone-green" d="M550.2 362L550.2 383Q550.2 404 529.2 404L189.4 404Q177.4 404 177.4 416L177.4 428" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M550.2 362L550.2 383Q550.2 404 529.2 404L189.4 404Q177.4 404 177.4 416L177.4 428" />
+      <path class="pic-line pic-edge tone-green" d="M923 362L923 428L923 496L923 517Q923 538 902 538L571.2 538Q559.2 538 559.2 550L559.2 562" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M923 362L923 428L923 496L923 517Q923 538 902 538L571.2 538Q559.2 538 559.2 550L559.2 562" />
+      <path class="pic-line pic-edge tone-green" d="M177.4 496L177.4 517Q177.4 538 198.4 538L529.2 538Q541.2 538 541.2 550L541.2 562" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M177.4 496L177.4 517Q177.4 538 198.4 538L529.2 538Q541.2 538 541.2 550L541.2 562" />
       <rect class="pic-pill pic-edge tone-violet" x="556.2" y="96" width="78" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-violet" x="595.2" y="108" text-anchor="middle">reads with</text>
       <rect class="pic-pill pic-edge tone-violet" x="929" y="96" width="78" height="18" rx="9" />

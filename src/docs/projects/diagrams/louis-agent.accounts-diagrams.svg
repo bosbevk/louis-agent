@@ -144,22 +144,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Accounts: the browser's calls through Identity's routes and ours to the store</text>
     <text class="pic-group" x="910" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 152.2 84 L 152.2 186" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 152.2 84 L 152.2 186" />
-      <path class="pic-line pic-edge tone-blue" d="M 152.2 84 L 152.2 96 Q 152.2 108 164.2 108 L 450.6 108 Q 474.6 108 474.6 132 L 474.6 186" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 152.2 84 L 152.2 96 Q 152.2 108 164.2 108 L 450.6 108 Q 474.6 108 474.6 132 L 474.6 186" />
-      <path class="pic-line pic-edge tone-blue" d="M 152.2 254 L 152.2 314" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 152.2 254 L 152.2 314" />
-      <path class="pic-line pic-edge tone-green" d="M 474.6 254 L 474.6 269 Q 474.6 284 459.6 284 L 185.2 284 Q 170.2 284 170.2 299 L 170.2 314" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 474.6 254 L 474.6 269 Q 474.6 284 459.6 284 L 185.2 284 Q 170.2 284 170.2 299 L 170.2 314" />
-      <path class="pic-line pic-edge tone-violet" d="M 152.2 366 L 152.2 387 Q 152.2 408 173.2 408 L 453.6 408 Q 465.6 408 465.6 420 L 465.6 432" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 152.2 366 L 152.2 387 Q 152.2 408 173.2 408 L 453.6 408 Q 465.6 408 465.6 420 L 465.6 432" />
-      <path class="pic-line pic-edge tone-blue" d="M 797 84 L 797 186 L 797 254 L 797 314 L 797 366 L 797 387 Q 797 408 776 408 L 495.6 408 Q 483.6 408 483.6 420 L 483.6 432" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 797 84 L 797 186 L 797 254 L 797 314 L 797 366 L 797 387 Q 797 408 776 408 L 495.6 408 Q 483.6 408 483.6 420 L 483.6 432" />
-      <path class="pic-line pic-edge tone-teal" d="M 474.6 500 L 474.6 560" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 474.6 500 L 474.6 560" />
-      <path class="pic-line pic-edge tone-violet" d="M 152.2 366 L 152.2 432" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 152.2 366 L 152.2 432" />
+      <path class="pic-line pic-edge tone-blue" d="M152.2 84L152.2 186" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M152.2 84L152.2 186" />
+      <path class="pic-line pic-edge tone-blue" d="M152.2 84L152.2 96Q152.2 108 164.2 108L450.6 108Q474.6 108 474.6 132L474.6 186" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M152.2 84L152.2 96Q152.2 108 164.2 108L450.6 108Q474.6 108 474.6 132L474.6 186" />
+      <path class="pic-line pic-edge tone-blue" d="M152.2 254L152.2 314" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M152.2 254L152.2 314" />
+      <path class="pic-line pic-edge tone-green" d="M474.6 254L474.6 269Q474.6 284 459.6 284L185.2 284Q170.2 284 170.2 299L170.2 314" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M474.6 254L474.6 269Q474.6 284 459.6 284L185.2 284Q170.2 284 170.2 299L170.2 314" />
+      <path class="pic-line pic-edge tone-violet" d="M152.2 366L152.2 387Q152.2 408 173.2 408L453.6 408Q465.6 408 465.6 420L465.6 432" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M152.2 366L152.2 387Q152.2 408 173.2 408L453.6 408Q465.6 408 465.6 420L465.6 432" />
+      <path class="pic-line pic-edge tone-blue" d="M797 84L797 186L797 254L797 314L797 366L797 387Q797 408 776 408L495.6 408Q483.6 408 483.6 420L483.6 432" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M797 84L797 186L797 254L797 314L797 366L797 387Q797 408 776 408L495.6 408Q483.6 408 483.6 420L483.6 432" />
+      <path class="pic-line pic-edge tone-teal" d="M474.6 500L474.6 560" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M474.6 500L474.6 560" />
+      <path class="pic-line pic-edge tone-violet" d="M152.2 366L152.2 432" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M152.2 366L152.2 432" />
       <rect class="pic-pill pic-edge tone-blue" x="158.2" y="112" width="141" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="228.7" y="124" text-anchor="middle">POST /account/login</text>
       <rect class="pic-pill pic-edge tone-blue" x="480.6" y="112" width="113" height="54" rx="9" />

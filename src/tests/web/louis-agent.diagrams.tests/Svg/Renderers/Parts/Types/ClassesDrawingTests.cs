@@ -208,7 +208,8 @@ public class ClassesDrawingTests
     {
         var types = Types();
         string path = (string)In("cls-line", types).Single(line => Class(line) == "cls-line holds").Attribute("d")!;
-        double start = double.Parse(path.Split(' ')[1], System.Globalization.CultureInfo.InvariantCulture);
+        // The line's text starts "M", then how far across it starts, then a space.
+        double start = double.Parse(path[1..path.IndexOf(' ')], System.Globalization.CultureInfo.InvariantCulture);
         var pill = In("cls-chip", types).Single(chip => Class(chip) == "pic-pill cls-chip holds");
 
         Assert.That((double)pill.Attribute("x")!, Is.GreaterThanOrEqualTo(start + 14), "the diamond is 14 long");

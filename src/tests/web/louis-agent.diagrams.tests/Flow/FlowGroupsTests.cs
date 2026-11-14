@@ -2,6 +2,7 @@ using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -116,10 +117,9 @@ public class FlowGroupsTests
         var placed = GraphLayout.Place(spec);
 
         var frame = placed.Groups.Single();
-        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && edge.Way.Text.Contains('Q'));
+        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && Ways.Turns(edge.Way) > 0);
         // The bend is the height the path runs along at: the one y two of its points share.
-        var ys = into.Way.Text.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
-            .Where((_, at) => at % 2 == 1).ToList();
+        var ys = Ways.Ys(into.Way);
         double bend = ys.GroupBy(y => y).Where(same => same.Count() > 1).Select(same => same.Key).Single();
         Assert.That(bend, Is.LessThan(frame.Box.Top), "it runs along above the frame, then drops in");
     }

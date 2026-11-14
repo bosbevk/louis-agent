@@ -190,14 +190,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F106.1 a builder for the common path: the interface design</text>
     <text class="pic-group" x="2011" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 378 396 L 666.1 396 Q 690.1 396 690.1 420 L 690.1 627 Q 690.1 648 711.1 648 L 732.1 648" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1145.1 666 L 1345.3 666" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1145.1 666 L 1157.2 666 Q 1169.2 666 1169.2 678 L 1169.2 912 Q 1169.2 936 1193.2 936 L 1345.3 936" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1145.1 666 L 1157.2 666 Q 1169.2 666 1169.2 654 L 1169.2 420 Q 1169.2 396 1193.2 396 L 1345.3 396" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1751.3 396 L 1823.4 396" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 666 L 732.1 666" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 936 L 666.1 936 Q 690.1 936 690.1 912 L 690.1 705 Q 690.1 684 711.1 684 L 732.1 684" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 378 1206 L 684.1 1206 Q 708.1 1206 708.1 1182 L 708.1 714 Q 708.1 702 720.1 702 L 732.1 702" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 396L666.1 396Q690.1 396 690.1 420L690.1 627Q690.1 648 711.1 648L732.1 648" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1145.1 666L1345.3 666" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1145.1 666L1157.2 666Q1169.2 666 1169.2 678L1169.2 912Q1169.2 936 1193.2 936L1345.3 936" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1145.1 666L1157.2 666Q1169.2 666 1169.2 654L1169.2 420Q1169.2 396 1193.2 396L1345.3 396" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1751.3 396L1823.4 396" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 666L732.1 666" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 936L666.1 936Q690.1 936 690.1 912L690.1 705Q690.1 684 711.1 684L732.1 684" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M378 1206L684.1 1206Q708.1 1206 708.1 1182L708.1 714Q708.1 702 720.1 702L732.1 702" marker-end="url(#open)" />
       <rect class="pic-pill cls-chip uses" x="421.5" y="387" width="225" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="534" y="399" text-anchor="middle">step 3 creates, runs the lambda</text>
       <rect class="pic-pill cls-chip uses" x="1186.7" y="657" width="141" height="18" rx="9" />

@@ -196,11 +196,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F125 an agentic site: the interface design</text>
     <text class="pic-group" x="1291" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 385 576 L 497 576" marker-end="url(#open)" />
-      <path class="cls-line holds" d="M 385 56 L 497 56" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 385 56 L 497 56" />
-      <path class="cls-line holds" d="M 945 56 L 1025 56" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 945 56 L 1025 56" />
+      <path class="cls-line uses" d="M385 576L497 576" marker-end="url(#open)" />
+      <path class="cls-line holds" d="M385 56L497 56" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M385 56L497 56" />
+      <path class="cls-line holds" d="M945 56L1025 56" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M945 56L1025 56" />
       <rect class="pic-pill cls-chip holds" x="407.5" y="47" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="429" y="59" text-anchor="middle">holds</text>
       <rect class="pic-pill cls-chip holds" x="963" y="47" width="43" height="18" rx="9" />

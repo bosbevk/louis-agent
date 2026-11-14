@@ -199,12 +199,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.guide: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 301 351 L 324.5 351 Q 348 351 348 327.5 L 348 231 Q 348 207 372 207 L 467 207" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 301 351 L 467 351" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 301 351 L 324.5 351 Q 348 351 348 374.5 L 348 471 Q 348 495 372 495 L 467 495" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 301 351 L 324.5 351 Q 348 351 348 327.5 L 348 87 Q 348 63 372 63 L 467 63" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 301 351 L 324.5 351 Q 348 351 348 374.5 L 348 615 Q 348 639 372 639 L 467 639" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 301 351 L 324.5 351 Q 348 351 348 374.5 L 348 615 Q 348 639 372 639 L 467 639" />
+      <path class="cls-line uses" d="M301 351L324.5 351Q348 351 348 327.5L348 231Q348 207 372 207L467 207" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M301 351L467 351" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M301 351L324.5 351Q348 351 348 374.5L348 471Q348 495 372 495L467 495" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M301 351L324.5 351Q348 351 348 327.5L348 87Q348 63 372 63L467 63" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M301 351L324.5 351Q348 351 348 374.5L348 615Q348 639 372 639L467 639" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M301 351L324.5 351Q348 351 348 374.5L348 615Q348 639 372 639L467 639" />
       <rect class="pic-pill cls-chip implements" x="368.5" y="54" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="407.5" y="66" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip uses" x="389.5" y="198" width="36" height="18" rx="9" />

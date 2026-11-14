@@ -193,15 +193,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.showroom: the interface design</text>
     <text class="pic-group" x="1117" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 583.7 225 L 704 225" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 583.7 225 L 595.8 225 Q 607.9 225 607.9 237.1 L 607.9 357 Q 607.9 381 631.9 381 L 704 381" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 583.7 225 L 595.8 225 Q 607.9 225 607.9 212.9 L 607.9 93 Q 607.9 69 631.9 69 L 704 69" marker-end="url(#triangle-violet)" />
-      <path class="cls-line inherits" d="M 210.4 69 L 234.6 69 Q 258.6 69 258.6 93 L 258.6 194.9 Q 258.6 207 270.6 207 L 282.7 207" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 210.4 69 L 234.6 69 Q 258.6 69 258.6 93 L 258.6 194.9 Q 258.6 207 270.6 207 L 282.7 207" />
-      <path class="cls-line inherits" d="M 210.4 225 L 282.7 225" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 210.4 225 L 282.7 225" />
-      <path class="cls-line inherits" d="M 210.4 381 L 234.6 381 Q 258.6 381 258.6 357 L 258.6 255.1 Q 258.6 243 270.6 243 L 282.7 243" marker-end="url(#triangle-violet)" />
-      <path class="pic-march" d="M 210.4 381 L 234.6 381 Q 258.6 381 258.6 357 L 258.6 255.1 Q 258.6 243 270.6 243 L 282.7 243" />
+      <path class="cls-line uses" d="M583.7 225L704 225" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M583.7 225L595.8 225Q607.9 225 607.9 237.1L607.9 357Q607.9 381 631.9 381L704 381" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M583.7 225L595.8 225Q607.9 225 607.9 212.9L607.9 93Q607.9 69 631.9 69L704 69" marker-end="url(#triangle-violet)" />
+      <path class="cls-line inherits" d="M210.4 69L234.6 69Q258.6 69 258.6 93L258.6 194.9Q258.6 207 270.6 207L282.7 207" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M210.4 69L234.6 69Q258.6 69 258.6 93L258.6 194.9Q258.6 207 270.6 207L282.7 207" />
+      <path class="cls-line inherits" d="M210.4 225L282.7 225" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M210.4 225L282.7 225" />
+      <path class="cls-line inherits" d="M210.4 381L234.6 381Q258.6 381 258.6 357L258.6 255.1Q258.6 243 270.6 243L282.7 243" marker-end="url(#triangle-violet)" />
+      <path class="pic-march" d="M210.4 381L234.6 381Q258.6 381 258.6 357L258.6 255.1Q258.6 243 270.6 243L282.7 243" />
       <rect class="pic-pill cls-chip implements" x="616.9" y="60" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="655.9" y="72" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip inherits" x="216.5" y="60" width="36" height="18" rx="9" />

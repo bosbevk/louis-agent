@@ -199,13 +199,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.cli: the interface design</text>
     <text class="pic-group" x="1188" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 336 183 L 348 183 Q 360 183 360 195 L 360 287 Q 360 311 384 311 L 520 311" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 336 183 L 348 183 Q 360 183 360 195 L 360 415 Q 360 439 384 439 L 520 439" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 336 183 L 520 183" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 336 183 L 348 183 Q 360 183 360 171 L 360 79 Q 360 55 384 55 L 520 55" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 336 183 L 348 183 Q 360 183 360 171 L 360 79 Q 360 55 384 55 L 520 55" />
-      <path class="cls-line holds" d="M 842 55 L 922 55" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 842 55 L 922 55" />
+      <path class="cls-line uses" d="M336 183L348 183Q360 183 360 195L360 287Q360 311 384 311L520 311" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M336 183L348 183Q360 183 360 195L360 415Q360 439 384 439L520 439" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M336 183L520 183" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M336 183L348 183Q360 183 360 171L360 79Q360 55 384 55L520 55" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M336 183L348 183Q360 183 360 171L360 79Q360 55 384 55L520 55" />
+      <path class="cls-line holds" d="M842 55L922 55" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M842 55L922 55" />
       <rect class="pic-pill cls-chip uses" x="418.5" y="302" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="440" y="314" text-anchor="middle">takes</text>
       <rect class="pic-pill cls-chip uses" x="373" y="174" width="134" height="18" rx="9" />

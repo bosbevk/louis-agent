@@ -141,28 +141,28 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Context and scope: louis-agent, its people and the systems around it</text>
     <text class="pic-group" x="1412" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 402 68 L 402 89 Q 402 110 423 110 L 634 110 Q 658 110 658 134 L 658 170 L 658 238 L 658 304" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 402 68 L 402 89 Q 402 110 423 110 L 634 110 Q 658 110 658 134 L 658 170 L 658 238 L 658 304" />
-      <path class="pic-line pic-edge tone-blue" d="M 402 68 L 402 89 Q 402 110 381 110 L 152 110 Q 128 110 128 134 L 128 170" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 402 68 L 402 89 Q 402 110 381 110 L 152 110 Q 128 110 128 134 L 128 170" />
-      <path class="pic-line pic-edge tone-red" d="M 128 238 L 128 259 Q 128 280 149 280 L 628 280 Q 640 280 640 292 L 640 304" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 128 238 L 128 259 Q 128 280 149 280 L 628 280 Q 640 280 640 292 L 640 304" />
-      <path class="pic-line pic-edge tone-blue" d="M 676 68 L 676 170 L 676 238 L 676 304" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 676 68 L 676 170 L 676 238 L 676 304" />
-      <path class="pic-line pic-edge tone-red" d="M 950 68 L 950 89 Q 950 110 929 110 L 718 110 Q 694 110 694 134 L 694 170 L 694 238 L 694 304" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 950 68 L 950 89 Q 950 110 929 110 L 718 110 Q 694 110 694 134 L 694 170 L 694 238 L 694 304" />
-      <path class="pic-line pic-edge tone-green" d="M 1224 68 L 1224 104 Q 1224 128 1200 128 L 733 128 Q 712 128 712 149 L 712 170 L 712 238 L 712 304" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1224 68 L 1224 104 Q 1224 128 1200 128 L 733 128 Q 712 128 712 149 L 712 170 L 712 238 L 712 304" />
-      <path class="pic-line pic-edge tone-green" d="M 1224 68 L 1224 170" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1224 68 L 1224 170" />
-      <path class="pic-line pic-edge tone-green" d="M 676 372 L 676 384 Q 676 396 664 396 L 426 396 Q 402 396 402 420 L 402 450" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 676 372 L 676 384 Q 676 396 664 396 L 426 396 Q 402 396 402 420 L 402 450" />
-      <path class="pic-line pic-edge tone-green" d="M 676 372 L 676 450" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 676 372 L 676 450" />
-      <path class="pic-line pic-edge tone-green" d="M 676 372 L 676 384 Q 676 396 688 396 L 926 396 Q 950 396 950 420 L 950 450" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 676 372 L 676 384 Q 676 396 688 396 L 926 396 Q 950 396 950 420 L 950 450" />
-      <path class="pic-line pic-edge tone-green" d="M 676 372 L 676 384 Q 676 396 688 396 L 1200 396 Q 1224 396 1224 420 L 1224 450" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 676 372 L 676 384 Q 676 396 688 396 L 1200 396 Q 1224 396 1224 420 L 1224 450" />
+      <path class="pic-line pic-edge tone-blue" d="M402 68L402 89Q402 110 423 110L634 110Q658 110 658 134L658 170L658 238L658 304" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M402 68L402 89Q402 110 423 110L634 110Q658 110 658 134L658 170L658 238L658 304" />
+      <path class="pic-line pic-edge tone-blue" d="M402 68L402 89Q402 110 381 110L152 110Q128 110 128 134L128 170" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M402 68L402 89Q402 110 381 110L152 110Q128 110 128 134L128 170" />
+      <path class="pic-line pic-edge tone-red" d="M128 238L128 259Q128 280 149 280L628 280Q640 280 640 292L640 304" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M128 238L128 259Q128 280 149 280L628 280Q640 280 640 292L640 304" />
+      <path class="pic-line pic-edge tone-blue" d="M676 68L676 170L676 238L676 304" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M676 68L676 170L676 238L676 304" />
+      <path class="pic-line pic-edge tone-red" d="M950 68L950 89Q950 110 929 110L718 110Q694 110 694 134L694 170L694 238L694 304" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M950 68L950 89Q950 110 929 110L718 110Q694 110 694 134L694 170L694 238L694 304" />
+      <path class="pic-line pic-edge tone-green" d="M1224 68L1224 104Q1224 128 1200 128L733 128Q712 128 712 149L712 170L712 238L712 304" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1224 68L1224 104Q1224 128 1200 128L733 128Q712 128 712 149L712 170L712 238L712 304" />
+      <path class="pic-line pic-edge tone-green" d="M1224 68L1224 170" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1224 68L1224 170" />
+      <path class="pic-line pic-edge tone-green" d="M676 372L676 384Q676 396 664 396L426 396Q402 396 402 420L402 450" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M676 372L676 384Q676 396 664 396L426 396Q402 396 402 420L402 450" />
+      <path class="pic-line pic-edge tone-green" d="M676 372L676 450" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M676 372L676 450" />
+      <path class="pic-line pic-edge tone-green" d="M676 372L676 384Q676 396 688 396L926 396Q950 396 950 420L950 450" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M676 372L676 384Q676 396 688 396L926 396Q950 396 950 420L950 450" />
+      <path class="pic-line pic-edge tone-green" d="M676 372L676 384Q676 396 688 396L1200 396Q1224 396 1224 420L1224 450" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M676 372L676 384Q676 396 688 396L1200 396Q1224 396 1224 420L1224 450" />
       <rect class="pic-pill pic-edge tone-blue" x="518" y="132" width="134" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="585" y="144" text-anchor="middle">chat: web app, CLI</text>
       <rect class="pic-pill pic-edge tone-blue" x="134" y="132" width="36" height="18" rx="9" />

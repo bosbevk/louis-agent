@@ -199,18 +199,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL64 prompts in the skill shape: the interface design</text>
     <text class="pic-group" x="1468" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 185.5 124 L 185.5 145 Q 185.5 166 206.5 166 L 553.5 166 Q 574.5 166 574.5 187 L 574.5 208" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 185.5 360 L 185.5 381 Q 185.5 402 206.5 402 L 544.5 402 Q 556.5 402 556.5 414 L 556.5 426" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 963.5 124 L 963.5 208 L 963.5 360 L 963.5 381 Q 963.5 402 942.5 402 L 604.5 402 Q 592.5 402 592.5 414 L 592.5 426" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 963.5 124 L 963.5 145 Q 963.5 166 984.5 166 L 1313.5 166 Q 1334.5 166 1334.5 187 L 1334.5 208" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 185.5 124 L 185.5 208" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 185.5 124 L 185.5 208" />
-      <path class="cls-line creates" d="M 574.5 360 L 574.5 426" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 574.5 360 L 574.5 426" />
-      <path class="cls-line holds" d="M 574.5 550 L 574.5 616" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 574.5 550 L 574.5 616" />
-      <path class="cls-line holds" d="M 1352.5 124 L 1352.5 208" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1352.5 124 L 1352.5 208" />
+      <path class="cls-line uses" d="M185.5 124L185.5 145Q185.5 166 206.5 166L553.5 166Q574.5 166 574.5 187L574.5 208" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M185.5 360L185.5 381Q185.5 402 206.5 402L544.5 402Q556.5 402 556.5 414L556.5 426" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M963.5 124L963.5 208L963.5 360L963.5 381Q963.5 402 942.5 402L604.5 402Q592.5 402 592.5 414L592.5 426" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M963.5 124L963.5 145Q963.5 166 984.5 166L1313.5 166Q1334.5 166 1334.5 187L1334.5 208" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M185.5 124L185.5 208" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M185.5 124L185.5 208" />
+      <path class="cls-line creates" d="M574.5 360L574.5 426" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M574.5 360L574.5 426" />
+      <path class="cls-line holds" d="M574.5 550L574.5 616" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M574.5 550L574.5 616" />
+      <path class="cls-line holds" d="M1352.5 124L1352.5 208" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1352.5 124L1352.5 208" />
       <rect class="pic-pill cls-chip uses" x="580.5" y="170" width="120" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="640.5" y="182" text-anchor="middle">splits each file</text>
       <rect class="pic-pill cls-chip creates" x="191.5" y="170" width="57" height="18" rx="9" />

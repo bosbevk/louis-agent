@@ -1,10 +1,10 @@
-using System.Globalization;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Shapes;
 
@@ -18,14 +18,6 @@ public class NodeShapesTests
     /// <summary>A question in three lines, the longest sixteen characters.</summary>
     private static readonly GraphNode Question = new("q", "Commit verified,\nreplay 200,\ntests pass?",
         Shape: NodeShape.Decision);
-
-    /// <summary>The last point of a path, where its arrow arrives.</summary>
-    private static (double X, double Y) End(string path)
-    {
-        var numbers = path.Split(' ', 'L', 'M', 'Q').Where(part => part.Length > 0)
-            .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).ToList();
-        return (numbers[^2], numbers[^1]);
-    }
 
     /// <summary>A plain box keeps its size, and its outline is its sides: nothing is inside it anywhere.</summary>
     [Test]
@@ -163,7 +155,7 @@ public class NodeShapesTests
         {
             foreach (var edge in placed.Edges)
             {
-                var (x, y) = End(edge.Way.Text);
+                var (x, y) = Ways.Points(edge.Way)[^1];
                 // How far the point is from the middle: across in pixels, and down as a part of half the height.
                 double across = Math.Abs(x - shape.Box.Middle.X);
                 double down = Math.Abs(y - shape.Box.Middle.Y) / shape.Box.HalfHeight;

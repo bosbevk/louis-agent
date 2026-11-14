@@ -141,22 +141,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The MCP server: from a client's call to the engine's tools, and the notice back when they change</text>
     <text class="pic-group" x="902" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 147 68 L 147 158" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 147 68 L 147 158" />
-      <path class="pic-line pic-edge tone-green" d="M 147 226 L 147 286" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 226 L 147 286" />
-      <path class="pic-line pic-edge tone-green" d="M 147 370 L 147 385 Q 147 400 162 400 L 444 400 Q 459 400 459 415 L 459 430" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 370 L 147 385 Q 147 400 162 400 L 444 400 Q 459 400 459 415 L 459 430" />
-      <path class="pic-line pic-edge tone-green" d="M 147 370 L 147 430" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 370 L 147 430" />
-      <path class="pic-line pic-edge tone-green" d="M 459 514 L 459 574" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 514 L 459 574" />
-      <path class="pic-line pic-edge tone-green" d="M 147 226 L 147 241 Q 147 256 162 256 L 444 256 Q 459 256 459 271 L 459 286" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 226 L 147 241 Q 147 256 162 256 L 444 256 Q 459 256 459 271 L 459 286" />
-      <path class="pic-line pic-edge tone-violet" d="M 587 608 L 612 608 Q 636 608 636 584 L 636 504.4 Q 636 480.4 612 480.4 L 583.2 480.4" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 587 608 L 612 608 Q 636 608 636 584 L 636 504.4 Q 636 480.4 612 480.4 L 583.2 480.4" />
-      <path class="pic-line pic-edge tone-green" d="M 583.2 463.6 L 630 463.6 Q 654 463.6 654 439.6 L 654 58 Q 654 34 630 34 L 254 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 583.2 463.6 L 630 463.6 Q 654 463.6 654 439.6 L 654 58 Q 654 34 630 34 L 254 34" />
+      <path class="pic-line pic-edge tone-blue" d="M147 68L147 158" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 68L147 158" />
+      <path class="pic-line pic-edge tone-green" d="M147 226L147 286" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 226L147 286" />
+      <path class="pic-line pic-edge tone-green" d="M147 370L147 385Q147 400 162 400L444 400Q459 400 459 415L459 430" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 370L147 385Q147 400 162 400L444 400Q459 400 459 415L459 430" />
+      <path class="pic-line pic-edge tone-green" d="M147 370L147 430" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 370L147 430" />
+      <path class="pic-line pic-edge tone-green" d="M459 514L459 574" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 514L459 574" />
+      <path class="pic-line pic-edge tone-green" d="M147 226L147 241Q147 256 162 256L444 256Q459 256 459 271L459 286" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 226L147 241Q147 256 162 256L444 256Q459 256 459 271L459 286" />
+      <path class="pic-line pic-edge tone-violet" d="M587 608L612 608Q636 608 636 584L636 504.4Q636 480.4 612 480.4L583.2 480.4" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M587 608L612 608Q636 608 636 584L636 504.4Q636 480.4 612 480.4L583.2 480.4" />
+      <path class="pic-line pic-edge tone-green" d="M583.2 463.6L630 463.6Q654 463.6 654 439.6L654 58Q654 34 630 34L254 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M583.2 463.6L630 463.6Q654 463.6 654 439.6L654 58Q654 34 630 34L254 34" />
       <rect class="pic-pill pic-edge tone-blue" x="153" y="72" width="169" height="42" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="237.5" y="84" text-anchor="middle">tools/list, tools/call,</text>
       <text class="pic-pill-word pic-ink tone-blue" x="237.5" y="96" text-anchor="middle">resources/list,</text>

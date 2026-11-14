@@ -2,6 +2,7 @@ using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Tests.Composite;
@@ -111,18 +112,16 @@ public class CompositeFlowTests
         var placed = Placed();
         var asked = Box(placed, CompositeFlow.PortId("prompts"));
         var needed = Box(placed, CompositeFlow.PortId("model"));
-        string into = placed.Edges.Single(edge => edge.Edge.From == asked.Node.Id).Way.Text;
-        string outOf = placed.Edges.Single(edge => edge.Edge.To == needed.Node.Id).Way.Text;
+        var into = placed.Edges.Single(edge => edge.Edge.From == asked.Node.Id).Way;
+        var outOf = placed.Edges.Single(edge => edge.Edge.To == needed.Node.Id).Way;
 
         Assert.Multiple(() =>
         {
             Assert.That(asked.Box.Left, Is.LessThan(Box(placed, "turns").Box.Left));
             Assert.That(needed.Box.Left, Is.GreaterThan(Box(placed, "registry").Box.Left));
             Assert.That(placed.Groups, Has.Count.EqualTo(1));
-            Assert.That(into, Does.StartWith(FormattableString.Invariant(
-                $"M {asked.Box.Right:0.#} {asked.Box.Middle.Y:0.#} ")));
-            Assert.That(outOf, Does.EndWith(FormattableString.Invariant(
-                $" {needed.Box.Left:0.#} {needed.Box.Middle.Y:0.#}")));
+            Assert.That(Ways.Points(into)[0], Is.EqualTo(Ways.At(asked.Box.Right, asked.Box.Middle.Y)));
+            Assert.That(Ways.Points(outOf)[^1], Is.EqualTo(Ways.At(needed.Box.Left, needed.Box.Middle.Y)));
         });
     }
 }

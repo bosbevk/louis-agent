@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -84,11 +85,10 @@ public class GraphLayoutTests
         var edge = placed.Edges.Single(edge => edge.Edge.To == "packs");
         Assert.Multiple(() =>
         {
-            Assert.That(edge.Way.Text, Does.StartWith($"M {left.Box.Right:0.#} {left.Box.Middle.Y:0.#} L"),
+            Assert.That(Ways.Points(edge.Way)[0], Is.EqualTo(Ways.At(left.Box.Right, left.Box.Middle.Y)),
                 "out of the middle");
-            Assert.That(edge.Way.Text, Does.EndWith($"L {right.Box.Left:0.#} {right.Box.Middle.Y:0.#}"));
-            Assert.That(edge.Way.Text, Does.Not.Contain(" C "), "no curve");
-            Assert.That(edge.Way.Text, Does.Contain(" Q "), "a rounded bend");
+            Assert.That(Ways.Points(edge.Way)[^1], Is.EqualTo(Ways.At(right.Box.Left, right.Box.Middle.Y)));
+            Assert.That(Ways.Turns(edge.Way), Is.GreaterThan(0), "a rounded bend");
             Assert.That(edge.Length, Is.GreaterThan(right.Box.Left - left.Box.Right),
                 "the bends make it longer than the gap");
             Assert.That(edge.Edge.Word, Is.EqualTo("names"));
@@ -111,10 +111,9 @@ public class GraphLayoutTests
 
         var placed = GraphLayout.Place(spec);
 
-        // The first bend's corner is on the track: "... Q trackX y ...", the same x for every arrow that bends.
-        var bent = placed.Edges.Where(edge => edge.Way.Text.Contains(" Q ")).ToList();
-        var tracks = bent.Select(edge => edge.Way.Text.Split(' ').SkipWhile(piece => piece != "Q").Skip(1).First())
-            .Distinct().ToList();
+        // The first bend's corner is on the track: the same x for every arrow that bends.
+        var bent = placed.Edges.Where(edge => Ways.Turns(edge.Way) > 0).ToList();
+        var tracks = bent.Select(edge => Ways.Corners(edge.Way)[0].X).Distinct().ToList();
         Assert.Multiple(() =>
         {
             Assert.That(bent, Has.Count.EqualTo(2), "two arrows change row, and the third runs straight");
@@ -194,11 +193,10 @@ public class GraphLayoutTests
         var back = placed.Edges.Single(edge => edge.Edge.To == "who");
         Assert.Multiple(() =>
         {
-            Assert.That(back.Way.Text,
-                Does.StartWith(
-                    $"M {session.Box.Middle.X:0.#} {session.Box.Bottom:0.#} L {session.Box.Middle.X:0.#}"),
-                "straight down out of the bottom middle");
-            Assert.That(back.Way.Text, Does.EndWith($"L {who.Box.Middle.X:0.#} {who.Box.Bottom:0.#}"),
+            Assert.That(Ways.Points(back.Way)[0], Is.EqualTo(Ways.At(session.Box.Middle.X, session.Box.Bottom)),
+                "out of the bottom middle");
+            Assert.That(Ways.Points(back.Way)[1].X, Is.EqualTo(Ways.Written(session.Box.Middle.X)), "straight down");
+            Assert.That(Ways.Points(back.Way)[^1], Is.EqualTo(Ways.At(who.Box.Middle.X, who.Box.Bottom)),
                 "up into the bottom middle");
             Assert.That(placed.Height, Is.GreaterThan(placed.Nodes.Max(node => node.Box.Bottom) + 20),
                 "room for the lane");
@@ -223,8 +221,8 @@ public class GraphLayoutTests
         var loop = placed.Edges.Single(edge => edge.Edge.From == "b" && edge.Edge.To == "b");
         Assert.Multiple(() =>
         {
-            Assert.That(loop.Way.Text, Does.StartWith($"M {b.Box.Right:0.#} "));
-            Assert.That(loop.Way.Text, Does.EndWith($"L {b.Box.Right:0.#} {b.Box.Down(0.7):0.#}"));
+            Assert.That(Ways.Points(loop.Way)[0].X, Is.EqualTo(Ways.Written(b.Box.Right)));
+            Assert.That(Ways.Points(loop.Way)[^1], Is.EqualTo(Ways.At(b.Box.Right, b.Box.Down(0.7))));
             Assert.That(loop.Word.X, Is.GreaterThan(b.Box.Right + 40), "the word sits beside the loop");
             Assert.That(placed.Width, Is.GreaterThan(880), "the drawing widens for a loop on the last column");
             Assert.That(placed.Width, Is.GreaterThanOrEqualTo(loop.Word.X + 4 * "calls another".Length),
@@ -393,8 +391,10 @@ public class GraphLayoutTests
         var drop = placed.Edges.Single(edge => edge.Edge.From == "a");
         Assert.Multiple(() =>
         {
-            Assert.That(drop.Way.Text,
-                Is.EqualTo($"M {a.Box.Middle.X:0.#} {a.Box.Bottom:0.#} L {b.Box.Middle.X:0.#} {b.Box.Top:0.#}"));
+            Assert.That(Ways.Points(drop.Way), Is.EqualTo(new[]
+            {
+                Ways.At(a.Box.Middle.X, a.Box.Bottom), Ways.At(b.Box.Middle.X, b.Box.Top)
+            }), "one straight line");
             Assert.That(drop.Word.X, Is.GreaterThan(a.Box.Middle.X), "the word stands beside the drop");
             Assert.That(drop.Word.Y, Is.GreaterThan(a.Box.Bottom).And.LessThan(b.Box.Top), "in the gap");
         });

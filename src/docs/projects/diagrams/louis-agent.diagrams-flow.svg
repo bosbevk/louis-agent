@@ -141,18 +141,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.diagrams: how a picture is made</text>
     <text class="pic-group" x="2133" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-amber" d="M 227 34 L 468 34" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 227 34 L 468 34" />
-      <path class="pic-line pic-edge tone-blue" d="M 716.4 34 L 796.5 34" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 716.4 34 L 796.5 34" />
-      <path class="pic-line pic-edge tone-green" d="M 1120.9 34 L 1180.9 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1120.9 34 L 1180.9 34" />
-      <path class="pic-line pic-edge tone-green" d="M 1474.9 34 L 1486.9 34 Q 1498.9 34 1498.9 46 L 1498.9 78 Q 1498.9 102 1522.9 102 L 1619 102" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1474.9 34 L 1486.9 34 Q 1498.9 34 1498.9 46 L 1498.9 78 Q 1498.9 102 1522.9 102 L 1619 102" />
-      <path class="pic-line pic-edge tone-green reads" d="M 1474.9 34 L 1619 34" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-green" d="M 1882.6 34 L 1951.6 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1882.6 34 L 1951.6 34" />
-      <path class="pic-line pic-edge tone-blue reads" d="M 236 120 L 468 120 L 716.4 120 L 796.5 120 L 1120.9 120 L 1180.9 120 L 1474.9 120 L 1619 120" marker-end="url(#arrow-blue)" />
+      <path class="pic-line pic-edge tone-amber" d="M227 34L468 34" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M227 34L468 34" />
+      <path class="pic-line pic-edge tone-blue" d="M716.4 34L796.5 34" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M716.4 34L796.5 34" />
+      <path class="pic-line pic-edge tone-green" d="M1120.9 34L1180.9 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1120.9 34L1180.9 34" />
+      <path class="pic-line pic-edge tone-green" d="M1474.9 34L1486.9 34Q1498.9 34 1498.9 46L1498.9 78Q1498.9 102 1522.9 102L1619 102" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1474.9 34L1486.9 34Q1498.9 34 1498.9 46L1498.9 78Q1498.9 102 1522.9 102L1619 102" />
+      <path class="pic-line pic-edge tone-green reads" d="M1474.9 34L1619 34" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-green" d="M1882.6 34L1951.6 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1882.6 34L1951.6 34" />
+      <path class="pic-line pic-edge tone-blue reads" d="M236 120L468 120L716.4 120L796.5 120L1120.9 120L1180.9 120L1474.9 120L1619 120" marker-end="url(#arrow-blue)" />
       <rect class="pic-pill pic-edge tone-blue" x="723" y="25" width="43" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="744.5" y="37" text-anchor="middle">reads</text>
       <rect class="pic-pill pic-edge tone-green" x="1534" y="93" width="50" height="18" rx="9" />

@@ -144,24 +144,24 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The general packs: from a catalogue to their tools and what they reach</text>
     <text class="pic-group" x="918" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 128" />
-      <path class="pic-line pic-edge tone-violet" d="M 459 180 L 459 195 Q 459 210 444 210 L 162 210 Q 147 210 147 225 L 147 240" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 459 180 L 459 195 Q 459 210 444 210 L 162 210 Q 147 210 147 225 L 147 240" />
-      <path class="pic-line pic-edge tone-violet" d="M 459 180 L 459 240" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 459 180 L 459 240" />
-      <path class="pic-line pic-edge tone-violet" d="M 459 180 L 459 195 Q 459 210 474 210 L 756 210 Q 771 210 771 225 L 771 240" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 459 180 L 459 195 Q 459 210 474 210 L 756 210 Q 771 210 771 225 L 771 240" />
-      <path class="pic-line pic-edge tone-green" d="M 147 308 L 147 368" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 308 L 147 368" />
-      <path class="pic-line pic-edge tone-teal" d="M 147 436 L 147 496" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 147 436 L 147 496" />
-      <path class="pic-line pic-edge tone-green" d="M 147 580 L 147 658" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 580 L 147 658" />
-      <path class="pic-line pic-edge tone-green" d="M 147 580 L 147 592 Q 147 604 159 604 L 435 604 Q 459 604 459 628 L 459 658" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 580 L 147 592 Q 147 604 159 604 L 435 604 Q 459 604 459 628 L 459 658" />
-      <path class="pic-line pic-edge tone-green" d="M 147 580 L 147 592 Q 147 604 159 604 L 747 604 Q 771 604 771 628 L 771 658" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 580 L 147 592 Q 147 604 159 604 L 747 604 Q 771 604 771 628 L 771 658" />
+      <path class="pic-line pic-edge tone-blue" d="M459 68L459 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 68L459 128" />
+      <path class="pic-line pic-edge tone-violet" d="M459 180L459 195Q459 210 444 210L162 210Q147 210 147 225L147 240" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M459 180L459 195Q459 210 444 210L162 210Q147 210 147 225L147 240" />
+      <path class="pic-line pic-edge tone-violet" d="M459 180L459 240" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M459 180L459 240" />
+      <path class="pic-line pic-edge tone-violet" d="M459 180L459 195Q459 210 474 210L756 210Q771 210 771 225L771 240" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M459 180L459 195Q459 210 474 210L756 210Q771 210 771 225L771 240" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 368" />
+      <path class="pic-line pic-edge tone-teal" d="M147 436L147 496" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M147 436L147 496" />
+      <path class="pic-line pic-edge tone-green" d="M147 580L147 658" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 580L147 658" />
+      <path class="pic-line pic-edge tone-green" d="M147 580L147 592Q147 604 159 604L435 604Q459 604 459 628L459 658" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 580L147 592Q147 604 159 604L435 604Q459 604 459 628L459 658" />
+      <path class="pic-line pic-edge tone-green" d="M147 580L147 592Q147 604 159 604L747 604Q771 604 771 628L771 658" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 580L147 592Q147 604 159 604L747 604Q771 604 771 628L771 658" />
       <rect class="pic-pill pic-edge tone-green" x="153" y="608" width="92" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="199" y="620" text-anchor="middle">the web pack</text>
       <rect class="pic-pill pic-edge tone-green" x="465" y="608" width="141" height="30" rx="9" />

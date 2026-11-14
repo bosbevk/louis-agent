@@ -138,21 +138,21 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.triage: how it works</text>
     <text class="pic-group" x="1158" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 290 120 L 350 120" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 290 120 L 350 120" />
-      <path class="pic-line pic-edge tone-green" d="M 520 120 L 532 120 Q 544 120 544 108 L 544 58 Q 544 34 568 34 L 624 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 520 120 L 532 120 Q 544 120 544 108 L 544 58 Q 544 34 568 34 L 624 34" />
-      <path class="pic-line pic-edge tone-green" d="M 520 120 L 624 120" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 520 120 L 624 120" />
-      <path class="pic-line pic-edge tone-green" d="M 520 120 L 532 120 Q 544 120 544 132 L 544 182 Q 544 206 568 206 L 624 206" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 520 120 L 532 120 Q 544 120 544 132 L 544 182 Q 544 206 568 206 L 624 206" />
-      <path class="pic-line pic-edge tone-green" d="M 918 34 L 933 34 Q 948 34 948 49 L 948 87 Q 948 102 963 102 L 978 102" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 918 34 L 933 34 Q 948 34 948 49 L 948 87 Q 948 102 963 102 L 978 102" />
-      <path class="pic-line pic-edge tone-green" d="M 918 120 L 978 120" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 918 120 L 978 120" />
-      <path class="pic-line pic-edge tone-green" d="M 918 206 L 933 206 Q 948 206 948 191 L 948 153 Q 948 138 963 138 L 978 138" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 918 206 L 933 206 Q 948 206 948 191 L 948 153 Q 948 138 963 138 L 978 138" />
-      <path class="pic-line pic-edge tone-green reads" d="M 520 120 L 532 120 Q 544 120 544 132 L 544 268 Q 544 292 568 292 L 624 292" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-blue" d="M290 120L350 120" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M290 120L350 120" />
+      <path class="pic-line pic-edge tone-green" d="M520 120L532 120Q544 120 544 108L544 58Q544 34 568 34L624 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M520 120L532 120Q544 120 544 108L544 58Q544 34 568 34L624 34" />
+      <path class="pic-line pic-edge tone-green" d="M520 120L624 120" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M520 120L624 120" />
+      <path class="pic-line pic-edge tone-green" d="M520 120L532 120Q544 120 544 132L544 182Q544 206 568 206L624 206" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M520 120L532 120Q544 120 544 132L544 182Q544 206 568 206L624 206" />
+      <path class="pic-line pic-edge tone-green" d="M918 34L933 34Q948 34 948 49L948 87Q948 102 963 102L978 102" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M918 34L933 34Q948 34 948 49L948 87Q948 102 963 102L978 102" />
+      <path class="pic-line pic-edge tone-green" d="M918 120L978 120" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M918 120L978 120" />
+      <path class="pic-line pic-edge tone-green" d="M918 206L933 206Q948 206 948 191L948 153Q948 138 963 138L978 138" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M918 206L933 206Q948 206 948 191L948 153Q948 138 963 138L978 138" />
+      <path class="pic-line pic-edge tone-green reads" d="M520 120L532 120Q544 120 544 132L544 268Q544 292 568 292L624 292" marker-end="url(#arrow-green)" />
       <rect class="pic-pill pic-edge tone-green" x="552" y="25" width="64" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="584" y="37" text-anchor="middle">AskAgent</text>
       <rect class="pic-pill pic-edge tone-green" x="555.5" y="283" width="57" height="18" rx="9" />

@@ -147,20 +147,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The Puls identity: its prompts and packs, its evals and judges</text>
     <text class="pic-group" x="964" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 154.6 68 L 154.6 134" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 154.6 68 L 154.6 134" />
-      <path class="pic-line pic-edge tone-green" d="M 154.6 186 L 154.6 252" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 154.6 186 L 154.6 252" />
-      <path class="pic-line pic-edge tone-green" d="M 154.6 186 L 154.6 198 Q 154.6 210 166.6 210 L 460.8 210 Q 481.8 210 481.8 231 L 481.8 252" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 154.6 186 L 154.6 198 Q 154.6 210 166.6 210 L 460.8 210 Q 481.8 210 481.8 231 L 481.8 252" />
-      <path class="pic-line pic-edge tone-amber" d="M 154.6 320 L 154.6 335 Q 154.6 350 169.6 350 L 448.8 350 Q 463.8 350 463.8 365 L 463.8 380" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 154.6 320 L 154.6 335 Q 154.6 350 169.6 350 L 448.8 350 Q 463.8 350 463.8 365 L 463.8 380" />
-      <path class="pic-line pic-edge tone-teal" d="M 481.8 320 L 481.8 380" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 481.8 320 L 481.8 380" />
-      <path class="pic-line pic-edge tone-violet" d="M 481.8 464 L 481.8 524" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 481.8 464 L 481.8 524" />
-      <path class="pic-line pic-edge tone-green reads" d="M 481.8 68 L 481.8 134" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-green reads" d="M 809 68 L 809 89 Q 809 110 788 110 L 511.8 110 Q 499.8 110 499.8 122 L 499.8 134" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-blue" d="M154.6 68L154.6 134" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M154.6 68L154.6 134" />
+      <path class="pic-line pic-edge tone-green" d="M154.6 186L154.6 252" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M154.6 186L154.6 252" />
+      <path class="pic-line pic-edge tone-green" d="M154.6 186L154.6 198Q154.6 210 166.6 210L460.8 210Q481.8 210 481.8 231L481.8 252" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M154.6 186L154.6 198Q154.6 210 166.6 210L460.8 210Q481.8 210 481.8 231L481.8 252" />
+      <path class="pic-line pic-edge tone-amber" d="M154.6 320L154.6 335Q154.6 350 169.6 350L448.8 350Q463.8 350 463.8 365L463.8 380" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M154.6 320L154.6 335Q154.6 350 169.6 350L448.8 350Q463.8 350 463.8 365L463.8 380" />
+      <path class="pic-line pic-edge tone-teal" d="M481.8 320L481.8 380" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M481.8 320L481.8 380" />
+      <path class="pic-line pic-edge tone-violet" d="M481.8 464L481.8 524" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M481.8 464L481.8 524" />
+      <path class="pic-line pic-edge tone-green reads" d="M481.8 68L481.8 134" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-green reads" d="M809 68L809 89Q809 110 788 110L511.8 110Q499.8 110 499.8 122L499.8 134" marker-end="url(#arrow-green)" />
       <rect class="pic-pill pic-edge tone-blue" x="160.6" y="72" width="113" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="217.1" y="84" text-anchor="middle">IDENTITIES=puls</text>
       <rect class="pic-pill pic-edge tone-green" x="160.6" y="214" width="85" height="18" rx="9" />

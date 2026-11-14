@@ -36,15 +36,15 @@ public class PathWriterTests
     }
 
     /// <summary>
-    /// A flow's arrow is written with room round every letter, as its router wrote it, since other code reads
-    /// that text back.
+    /// A path with a rounded turn is written the one way every path is: a letter and its numbers, and nothing
+    /// between two pieces. A flow's arrow had room round every letter while tests read its text back.
     /// </summary>
     [Test]
-    public void ASpacedPath_HasRoomRoundEveryLetter()
+    public void APathWithATurn_IsWrittenTheOneWay()
     {
-        var path = new PathWriter(spaced: true).From(10, 20).To(40, 20).Curve(50, 20, 50, 30).To(50, 80);
+        var path = new PathWriter().From(10, 20).To(40, 20).Curve(50, 20, 50, 30).To(50, 80);
 
-        Assert.That(path.Text, Is.EqualTo("M 10 20 L 40 20 Q 50 20 50 30 L 50 80"));
+        Assert.That(path.Text, Is.EqualTo("M10 20L40 20Q50 20 50 30L50 80"));
     }
 
     /// <summary>
@@ -71,10 +71,6 @@ public class PathWriterTests
     [Test]
     public void AnEmptyPath_IsNoText()
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(new PathWriter().Text, Is.Empty);
-            Assert.That(new PathWriter(spaced: true).Text, Is.Empty);
-        });
+        Assert.That(new PathWriter().Text, Is.Empty);
     }
 }

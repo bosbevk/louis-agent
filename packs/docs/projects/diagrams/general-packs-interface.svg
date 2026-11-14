@@ -199,13 +199,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The general packs: the interface design</text>
     <text class="pic-group" x="1205" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 731 75 L 827 75" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 731 75 L 743 75 Q 755 75 755 87 L 755 219 Q 755 243 779 243 L 827 243" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 731 75 L 743 75 Q 755 75 755 87 L 755 219 Q 755 243 779 243 L 827 243" />
-      <path class="cls-line holds" d="M 294 243 L 326 243 Q 350 243 350 219 L 350 87 Q 350 75 362 75 L 374 75" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 294 243 L 326 243 Q 350 243 350 219 L 350 87 Q 350 75 362 75 L 374 75" />
-      <path class="cls-line holds" d="M 294 243 L 374 243" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 294 243 L 374 243" />
+      <path class="cls-line uses" d="M731 75L827 75" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M731 75L743 75Q755 75 755 87L755 219Q755 243 779 243L827 243" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M731 75L743 75Q755 75 755 87L755 219Q755 243 779 243L827 243" />
+      <path class="cls-line holds" d="M294 243L326 243Q350 243 350 219L350 87Q350 75 362 75L374 75" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M294 243L326 243Q350 243 350 219L350 87Q350 75 362 75L374 75" />
+      <path class="cls-line holds" d="M294 243L374 243" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M294 243L374 243" />
       <rect class="pic-pill cls-chip holds" x="312" y="234" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="333.5" y="246" text-anchor="middle">holds</text>
       <rect class="pic-pill cls-chip creates" x="762.5" y="234" width="57" height="18" rx="9" />

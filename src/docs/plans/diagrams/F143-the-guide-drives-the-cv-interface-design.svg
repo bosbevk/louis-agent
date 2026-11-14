@@ -196,13 +196,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F143 the guide drives the CV: the interface design</text>
     <text class="pic-group" x="1092" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 809 48 L 889 48" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 809 48 L 821 48 Q 833 48 833 60 L 833 138 Q 833 162 857 162 L 889 162" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 252 48 L 332 48" marker-end="url(#open)" />
-      <path class="cls-line holds" d="M 512 48 L 592 48" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 512 48 L 592 48" />
-      <path class="cls-line holds" d="M 252 48 L 264 48 Q 276 48 276 60 L 276 138 Q 276 162 300 162 L 332 162" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 252 48 L 264 48 Q 276 48 276 60 L 276 138 Q 276 162 300 162 L 332 162" />
+      <path class="cls-line uses" d="M809 48L889 48" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M809 48L821 48Q833 48 833 60L833 138Q833 162 857 162L889 162" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M252 48L332 48" marker-end="url(#open)" />
+      <path class="cls-line holds" d="M512 48L592 48" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M512 48L592 48" />
+      <path class="cls-line holds" d="M252 48L264 48Q276 48 276 60L276 138Q276 162 300 162L332 162" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M252 48L264 48Q276 48 276 60L276 138Q276 162 300 162L332 162" />
       <rect class="pic-pill cls-chip holds" x="530" y="39" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="551.5" y="51" text-anchor="middle">holds</text>
       <rect class="pic-pill cls-chip uses" x="843" y="39" width="36" height="18" rx="9" />

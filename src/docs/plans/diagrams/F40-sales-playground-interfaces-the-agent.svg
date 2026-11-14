@@ -199,22 +199,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F40 the sales playground: the agent's interfaces</text>
     <text class="pic-group" x="2005" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 596 537 L 617 537 Q 638 537 638 516 L 638 414 Q 638 390 662 390 L 774 390" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 287 225 L 359 225 Q 383 225 383 249 L 383 360 Q 383 372 395 372 L 407 372 L 596 372 L 774 372" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 596 537 L 617 537 Q 638 537 638 558 L 638 651 Q 638 675 662 675 L 774 675" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 949 693 L 1125 693" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1377 693 L 1457 693" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1688 537 L 1760 537" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 287 693 L 359 693 Q 383 693 383 669 L 383 558 Q 383 546 395 546 L 407 546" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 287 693 L 378.5 693 Q 383 693 383 697.5 L 383 697.5 Q 383 702 387.5 702 L 407 702 L 596 702 L 615.5 702 Q 620 702 620 697.5 L 620 697.5 Q 620 693 624.5 693 L 774 693" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 596 537 L 617 537 Q 638 537 638 516 L 638 102 Q 638 78 662 78 L 774 78" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 287 225 L 359 225 Q 383 225 383 201 L 383 72 Q 383 60 395 60 L 407 60 L 596 60 L 774 60" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 949 381 L 1125 381" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 949 693 L 1077 693 Q 1101 693 1101 669 L 1101 411 Q 1101 399 1113 399 L 1125 399" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 287 381 L 407 381 L 596 381 L 608 381 Q 620 381 620 393 L 620 495 Q 620 519 644 519 L 774 519 L 949 519 L 1125 519 L 1377 519 L 1457 519" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 287 537 L 359 537 Q 383 537 383 513 L 383 483 Q 383 471 395 471 L 407 471 L 596 471 L 774 471 L 949 471 L 1125 471 L 1377 471 L 1389 471 Q 1401 471 1401 483 L 1401 513 Q 1401 537 1425 537 L 1457 537" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 1377 693 L 1389 693 Q 1401 693 1401 681 L 1401 579 Q 1401 555 1425 555 L 1457 555" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1377 693 L 1389 693 Q 1401 693 1401 681 L 1401 579 Q 1401 555 1425 555 L 1457 555" />
+      <path class="cls-line uses" d="M596 537L617 537Q638 537 638 516L638 414Q638 390 662 390L774 390" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M287 225L359 225Q383 225 383 249L383 360Q383 372 395 372L407 372L596 372L774 372" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M596 537L617 537Q638 537 638 558L638 651Q638 675 662 675L774 675" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M949 693L1125 693" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1377 693L1457 693" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1688 537L1760 537" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M287 693L359 693Q383 693 383 669L383 558Q383 546 395 546L407 546" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M287 693L378.5 693Q383 693 383 697.5L383 697.5Q383 702 387.5 702L407 702L596 702L615.5 702Q620 702 620 697.5L620 697.5Q620 693 624.5 693L774 693" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M596 537L617 537Q638 537 638 516L638 102Q638 78 662 78L774 78" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M287 225L359 225Q383 225 383 201L383 72Q383 60 395 60L407 60L596 60L774 60" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M949 381L1125 381" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M949 693L1077 693Q1101 693 1101 669L1101 411Q1101 399 1113 399L1125 399" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M287 381L407 381L596 381L608 381Q620 381 620 393L620 495Q620 519 644 519L774 519L949 519L1125 519L1377 519L1457 519" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M287 537L359 537Q383 537 383 513L383 483Q383 471 395 471L407 471L596 471L774 471L949 471L1125 471L1377 471L1389 471Q1401 471 1401 483L1401 513Q1401 537 1425 537L1457 537" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M1377 693L1389 693Q1401 693 1401 681L1401 579Q1401 555 1425 555L1457 555" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1377 693L1389 693Q1401 693 1401 681L1401 579Q1401 555 1425 555L1457 555" />
       <rect class="pic-pill cls-chip implements" x="667" y="69" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="706" y="81" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip implements" x="986" y="372" width="78" height="18" rx="9" />

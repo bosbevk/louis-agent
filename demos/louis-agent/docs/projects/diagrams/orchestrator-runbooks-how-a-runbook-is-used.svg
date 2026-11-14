@@ -141,24 +141,24 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Runbooks: how the orchestrator uses one to decide</text>
     <text class="pic-group" x="1007" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 499.2 84 L 499.2 144" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 499.2 84 L 499.2 144" />
-      <path class="pic-line pic-edge" d="M 499.2 212 L 499.2 224 Q 499.2 236 487.2 236 L 181.4 236 Q 160.4 236 160.4 257 L 160.4 278" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 499.2 212 L 499.2 224 Q 499.2 236 487.2 236 L 181.4 236 Q 160.4 236 160.4 257 L 160.4 278" />
-      <path class="pic-line pic-edge" d="M 499.2 212 L 499.2 278" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 499.2 212 L 499.2 278" />
-      <path class="pic-line pic-edge tone-teal" d="M 499.2 346 L 499.2 358 Q 499.2 370 487.2 370 L 184.4 370 Q 160.4 370 160.4 394 L 160.4 424" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 499.2 346 L 499.2 358 Q 499.2 370 487.2 370 L 184.4 370 Q 160.4 370 160.4 394 L 160.4 424" />
-      <path class="pic-line pic-edge tone-teal" d="M 499.2 346 L 499.2 424" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 499.2 346 L 499.2 424" />
-      <path class="pic-line pic-edge tone-teal" d="M 499.2 346 L 499.2 358 Q 499.2 370 511.2 370 L 823 370 Q 847 370 847 394 L 847 424 L 847 508 L 847 568 L 847 652 L 847 718" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 499.2 346 L 499.2 358 Q 499.2 370 511.2 370 L 823 370 Q 847 370 847 394 L 847 424 L 847 508 L 847 568 L 847 652 L 847 718" />
-      <path class="pic-line pic-edge tone-red" d="M 499.2 508 L 499.2 568" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 499.2 508 L 499.2 568" />
-      <path class="pic-line pic-edge" d="M 499.2 652 L 499.2 718" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 499.2 652 L 499.2 718" />
-      <path class="pic-line pic-edge" d="M 499.2 652 L 499.2 664 Q 499.2 676 511.2 676 L 808 676 Q 829 676 829 697 L 829 718" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 499.2 652 L 499.2 664 Q 499.2 676 511.2 676 L 808 676 Q 829 676 829 697 L 829 718" />
+      <path class="pic-line pic-edge tone-blue" d="M499.2 84L499.2 144" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M499.2 84L499.2 144" />
+      <path class="pic-line pic-edge" d="M499.2 212L499.2 224Q499.2 236 487.2 236L181.4 236Q160.4 236 160.4 257L160.4 278" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M499.2 212L499.2 224Q499.2 236 487.2 236L181.4 236Q160.4 236 160.4 257L160.4 278" />
+      <path class="pic-line pic-edge" d="M499.2 212L499.2 278" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M499.2 212L499.2 278" />
+      <path class="pic-line pic-edge tone-teal" d="M499.2 346L499.2 358Q499.2 370 487.2 370L184.4 370Q160.4 370 160.4 394L160.4 424" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M499.2 346L499.2 358Q499.2 370 487.2 370L184.4 370Q160.4 370 160.4 394L160.4 424" />
+      <path class="pic-line pic-edge tone-teal" d="M499.2 346L499.2 424" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M499.2 346L499.2 424" />
+      <path class="pic-line pic-edge tone-teal" d="M499.2 346L499.2 358Q499.2 370 511.2 370L823 370Q847 370 847 394L847 424L847 508L847 568L847 652L847 718" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M499.2 346L499.2 358Q499.2 370 511.2 370L823 370Q847 370 847 394L847 424L847 508L847 568L847 652L847 718" />
+      <path class="pic-line pic-edge tone-red" d="M499.2 508L499.2 568" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M499.2 508L499.2 568" />
+      <path class="pic-line pic-edge" d="M499.2 652L499.2 718" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M499.2 652L499.2 718" />
+      <path class="pic-line pic-edge" d="M499.2 652L499.2 664Q499.2 676 511.2 676L808 676Q829 676 829 697L829 718" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M499.2 652L499.2 664Q499.2 676 511.2 676L808 676Q829 676 829 697L829 718" />
       <rect class="pic-pill pic-edge" x="166.4" y="240" width="22" height="18" rx="9" />
       <text class="pic-pill-word pic-ink" x="177.4" y="252" text-anchor="middle">no</text>
       <rect class="pic-pill pic-edge" x="505.2" y="240" width="29" height="18" rx="9" />

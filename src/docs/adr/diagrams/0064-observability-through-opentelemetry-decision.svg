@@ -145,16 +145,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-group" x="14" y="19" text-anchor="start">Louis's PC</text>
       <rect class="pic-panel" x="0" y="342" width="1164" height="130" rx="14" />
       <text class="pic-group" x="14" y="361" text-anchor="start">Azure Container Apps</text>
-      <path class="pic-line pic-edge tone-green" d="M 306 76 L 554.2 76 Q 578.2 76 578.2 100 L 578.2 147.9 Q 578.2 160 590.3 160 L 602.4 160" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 306 76 L 554.2 76 Q 578.2 76 578.2 100 L 578.2 147.9 Q 578.2 160 590.3 160 L 602.4 160" />
-      <path class="pic-line pic-edge tone-green" d="M 306 178 L 602.4 178" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 306 178 L 602.4 178" />
-      <path class="pic-line pic-edge tone-blue" d="M 306 280 L 554.2 280 Q 578.2 280 578.2 256 L 578.2 208.1 Q 578.2 196 590.3 196 L 602.4 196" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 306 280 L 554.2 280 Q 578.2 280 578.2 256 L 578.2 208.1 Q 578.2 196 590.3 196 L 602.4 196" />
-      <path class="pic-line pic-edge tone-green" d="M 306 418 L 602.4 418" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 306 418 L 602.4 418" />
-      <path class="pic-line pic-edge tone-violet" d="M 873.6 418 L 934 418" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 873.6 418 L 934 418" />
+      <path class="pic-line pic-edge tone-green" d="M306 76L554.2 76Q578.2 76 578.2 100L578.2 147.9Q578.2 160 590.3 160L602.4 160" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M306 76L554.2 76Q578.2 76 578.2 100L578.2 147.9Q578.2 160 590.3 160L602.4 160" />
+      <path class="pic-line pic-edge tone-green" d="M306 178L602.4 178" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M306 178L602.4 178" />
+      <path class="pic-line pic-edge tone-blue" d="M306 280L554.2 280Q578.2 280 578.2 256L578.2 208.1Q578.2 196 590.3 196L602.4 196" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M306 280L554.2 280Q578.2 280 578.2 256L578.2 208.1Q578.2 196 590.3 196L602.4 196" />
+      <path class="pic-line pic-edge tone-green" d="M306 418L602.4 418" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M306 418L602.4 418" />
+      <path class="pic-line pic-edge tone-violet" d="M873.6 418L934 418" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M873.6 418L934 418" />
       <rect class="pic-pill pic-edge tone-green" x="326.1" y="67" width="232" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="442.1" y="79" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
       <rect class="pic-pill pic-edge tone-green" x="326.1" y="169" width="232" height="18" rx="9" />

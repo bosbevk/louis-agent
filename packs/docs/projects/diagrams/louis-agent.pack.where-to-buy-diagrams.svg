@@ -138,22 +138,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The where-to-buy pack: finding branches on the map</text>
     <text class="pic-group" x="915" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 128" />
-      <path class="pic-line pic-edge tone-green" d="M 459 196 L 459 211 Q 459 226 444 226 L 162 226 Q 147 226 147 241 L 147 256" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 196 L 459 211 Q 459 226 444 226 L 162 226 Q 147 226 147 241 L 147 256" />
-      <path class="pic-line pic-edge tone-green" d="M 147 308 L 147 368" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 308 L 147 368" />
-      <path class="pic-line pic-edge tone-green" d="M 147 308 L 147 323 Q 147 338 162 338 L 444 338 Q 459 338 459 353 L 459 368" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 308 L 147 323 Q 147 338 162 338 L 444 338 Q 459 338 459 353 L 459 368" />
-      <path class="pic-line pic-edge tone-green" d="M 147 308 L 147 323 Q 147 338 162 338 L 756 338 Q 771 338 771 353 L 771 368" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 308 L 147 323 Q 147 338 162 338 L 756 338 Q 771 338 771 353 L 771 368" />
-      <path class="pic-line pic-edge tone-green" d="M 771 436 L 771 451 Q 771 466 756 466 L 474 466 Q 459 466 459 481 L 459 496" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 771 436 L 771 451 Q 771 466 756 466 L 474 466 Q 459 466 459 481 L 459 496" />
-      <path class="pic-line pic-edge tone-green" d="M 771 436 L 771 496" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 771 436 L 771 496" />
-      <path class="pic-line pic-edge tone-green" d="M 459 196 L 459 256" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 196 L 459 256" />
+      <path class="pic-line pic-edge tone-blue" d="M459 68L459 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 68L459 128" />
+      <path class="pic-line pic-edge tone-green" d="M459 196L459 211Q459 226 444 226L162 226Q147 226 147 241L147 256" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 196L459 211Q459 226 444 226L162 226Q147 226 147 241L147 256" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 368" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 323Q147 338 162 338L444 338Q459 338 459 353L459 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 323Q147 338 162 338L444 338Q459 338 459 353L459 368" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 323Q147 338 162 338L756 338Q771 338 771 353L771 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 323Q147 338 162 338L756 338Q771 338 771 353L771 368" />
+      <path class="pic-line pic-edge tone-green" d="M771 436L771 451Q771 466 756 466L474 466Q459 466 459 481L459 496" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 436L771 451Q771 466 756 466L474 466Q459 466 459 481L459 496" />
+      <path class="pic-line pic-edge tone-green" d="M771 436L771 496" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 436L771 496" />
+      <path class="pic-line pic-edge tone-green" d="M459 196L459 256" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 196L459 256" />
       <rect class="pic-panel" x="350" y="0" width="218" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="366" y="20" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(372 26) scale(0.6667)">

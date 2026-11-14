@@ -196,16 +196,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F131 the chat on any website: the interface design</text>
     <text class="pic-group" x="992" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line implements" d="M 427 62 L 517 62 Q 541 62 541 86 L 541 298 Q 541 310 553 310 L 565 310" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 427 204 L 499 204 Q 523 204 523 228 L 523 307 Q 523 328 544 328 L 565 328" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 427 488 L 499 488 Q 523 488 523 464 L 523 385 Q 523 364 544 364 L 565 364" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 488 L 499 488 Q 523 488 523 464 L 523 385 Q 523 364 544 364 L 565 364" />
-      <path class="cls-line holds" d="M 427 630 L 565 630" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 630 L 565 630" />
-      <path class="cls-line holds" d="M 427 346 L 565 346" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 346 L 565 346" />
-      <path class="cls-line holds" d="M 427 488 L 565 488" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 488 L 565 488" />
+      <path class="cls-line implements" d="M427 62L517 62Q541 62 541 86L541 298Q541 310 553 310L565 310" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M427 204L499 204Q523 204 523 228L523 307Q523 328 544 328L565 328" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M427 488L499 488Q523 488 523 464L523 385Q523 364 544 364L565 364" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 488L499 488Q523 488 523 464L523 385Q523 364 544 364L565 364" />
+      <path class="cls-line holds" d="M427 630L565 630" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 630L565 630" />
+      <path class="cls-line holds" d="M427 346L565 346" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 346L565 346" />
+      <path class="cls-line holds" d="M427 488L565 488" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 488L565 488" />
       <rect class="pic-pill cls-chip implements" x="445" y="53" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="484" y="65" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip holds" x="453.5" y="479" width="43" height="18" rx="9" />

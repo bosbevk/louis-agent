@@ -199,23 +199,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.orchestrator: the interface design</text>
     <text class="pic-group" x="1530" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 427 838 L 571 838 Q 595 838 595 862 L 595 968 Q 595 992 619 992 L 715 992" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 427 68 L 715 68" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 427 68 L 715 68" />
-      <path class="cls-line creates" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 246 Q 595 222 619 222 L 715 222" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 246 Q 595 222 619 222 L 715 222" />
-      <path class="cls-line holds" d="M 427 530 L 715 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 530 L 715 530" />
-      <path class="cls-line holds" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 504 Q 595 480 619 480 L 715 480 L 1058 480 L 1070 480 Q 1082 480 1082 492 L 1082 509 Q 1082 530 1103 530 L 1124 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 504 Q 595 480 619 480 L 715 480 L 1058 480 L 1070 480 Q 1082 480 1082 492 L 1082 509 Q 1082 530 1103 530 L 1124 530" />
-      <path class="cls-line holds" d="M 427 530 L 571 530 Q 595 530 595 554 L 595 796 Q 595 820 619 820 L 715 820" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 554 L 595 796 Q 595 820 619 820 L 715 820" />
-      <path class="cls-line holds" d="M 1058 222 L 1079 222 Q 1100 222 1100 243 L 1100 500 Q 1100 512 1112 512 L 1124 512" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1058 222 L 1079 222 Q 1100 222 1100 243 L 1100 500 Q 1100 512 1112 512 L 1124 512" />
-      <path class="cls-line holds" d="M 427 838 L 715 838" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 838 L 715 838" />
-      <path class="cls-line holds" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 400 Q 595 376 619 376 L 715 376" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 427 530 L 571 530 Q 595 530 595 506 L 595 400 Q 595 376 619 376 L 715 376" />
+      <path class="cls-line uses" d="M427 838L571 838Q595 838 595 862L595 968Q595 992 619 992L715 992" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M427 68L715 68" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M427 68L715 68" />
+      <path class="cls-line creates" d="M427 530L571 530Q595 530 595 506L595 246Q595 222 619 222L715 222" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M427 530L571 530Q595 530 595 506L595 246Q595 222 619 222L715 222" />
+      <path class="cls-line holds" d="M427 530L715 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 530L715 530" />
+      <path class="cls-line holds" d="M427 530L571 530Q595 530 595 506L595 504Q595 480 619 480L715 480L1058 480L1070 480Q1082 480 1082 492L1082 509Q1082 530 1103 530L1124 530" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 530L571 530Q595 530 595 506L595 504Q595 480 619 480L715 480L1058 480L1070 480Q1082 480 1082 492L1082 509Q1082 530 1103 530L1124 530" />
+      <path class="cls-line holds" d="M427 530L571 530Q595 530 595 554L595 796Q595 820 619 820L715 820" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 530L571 530Q595 530 595 554L595 796Q595 820 619 820L715 820" />
+      <path class="cls-line holds" d="M1058 222L1079 222Q1100 222 1100 243L1100 500Q1100 512 1112 512L1124 512" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1058 222L1079 222Q1100 222 1100 243L1100 500Q1100 512 1112 512L1124 512" />
+      <path class="cls-line holds" d="M427 838L715 838" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 838L715 838" />
+      <path class="cls-line holds" d="M427 530L571 530Q595 530 595 506L595 400Q595 376 619 376L715 376" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M427 530L571 530Q595 530 595 506L595 400Q595 376 619 376L715 376" />
       <rect class="pic-pill cls-chip creates" x="465" y="59" width="92" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="511" y="71" text-anchor="middle">the runbooks</text>
       <rect class="pic-pill cls-chip holds" x="605.5" y="521" width="99" height="18" rx="9" />

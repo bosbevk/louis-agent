@@ -138,27 +138,27 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Puls's track: between the phases</text>
     <text class="pic-group" x="1181" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 147 68 L 147 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 147 68 L 147 128" />
-      <path class="pic-line pic-edge tone-green" d="M 459 68 L 459 83 Q 459 98 444 98 L 180 98 Q 165 98 165 113 L 165 128" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 68 L 459 83 Q 459 98 444 98 L 180 98 Q 165 98 165 113 L 165 128" />
-      <path class="pic-line pic-edge tone-green" d="M 147 180 L 147 240" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 180 L 147 240" />
-      <path class="pic-line pic-edge tone-green" d="M 147 180 L 147 195 Q 147 210 162 210 L 444 210 Q 459 210 459 225 L 459 240" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 180 L 147 195 Q 147 210 162 210 L 444 210 Q 459 210 459 225 L 459 240" />
-      <path class="pic-line pic-edge tone-green" d="M 147 180 L 147 195 Q 147 210 162 210 L 756 210 Q 771 210 771 225 L 771 240" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 180 L 147 195 Q 147 210 162 210 L 756 210 Q 771 210 771 225 L 771 240" />
-      <path class="pic-line pic-edge tone-green" d="M 459 292 L 459 307 Q 459 322 474 322 L 738 322 Q 753 322 753 337 L 753 352" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 292 L 459 307 Q 459 322 474 322 L 738 322 Q 753 322 753 337 L 753 352" />
-      <path class="pic-line pic-edge tone-green" d="M 771 68 L 771 83 Q 771 98 786 98 L 879.2 98 Q 894.2 98 894.2 113 L 894.2 128 L 894.2 180 L 894.2 240 L 894.2 292 L 894.2 307 Q 894.2 322 879.2 322 L 786 322 Q 771 322 771 337 L 771 352" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 771 68 L 771 83 Q 771 98 786 98 L 879.2 98 Q 894.2 98 894.2 113 L 894.2 128 L 894.2 180 L 894.2 240 L 894.2 292 L 894.2 307 Q 894.2 322 879.2 322 L 786 322 Q 771 322 771 337 L 771 352" />
-      <path class="pic-line pic-edge tone-green" d="M 771 404 L 771 425 Q 771 446 792 446 L 1053 446 Q 1065 446 1065 458 L 1065 470" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 771 404 L 771 425 Q 771 446 792 446 L 1053 446 Q 1065 446 1065 458 L 1065 470" />
-      <path class="pic-line pic-edge tone-green" d="M 1083 68 L 1083 83 Q 1083 98 1068 98 L 995 98 Q 980 98 980 113 L 980 128 L 980 180 L 980 240 L 980 292 L 980 352 L 980 404 L 980 416 Q 980 428 992 428 L 1062 428 Q 1083 428 1083 449 L 1083 470" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1083 68 L 1083 83 Q 1083 98 1068 98 L 995 98 Q 980 98 980 113 L 980 128 L 980 180 L 980 240 L 980 292 L 980 352 L 980 404 L 980 416 Q 980 428 992 428 L 1062 428 Q 1083 428 1083 449 L 1083 470" />
-      <path class="pic-line pic-edge tone-green" d="M 1083 68 L 1083 128" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1083 68 L 1083 128" />
-      <path class="pic-line pic-edge tone-green reads" d="M 771 404 L 771 470" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-blue" d="M147 68L147 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 68L147 128" />
+      <path class="pic-line pic-edge tone-green" d="M459 68L459 83Q459 98 444 98L180 98Q165 98 165 113L165 128" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 68L459 83Q459 98 444 98L180 98Q165 98 165 113L165 128" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 240" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 195Q147 210 162 210L444 210Q459 210 459 225L459 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 195Q147 210 162 210L444 210Q459 210 459 225L459 240" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 195Q147 210 162 210L756 210Q771 210 771 225L771 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 195Q147 210 162 210L756 210Q771 210 771 225L771 240" />
+      <path class="pic-line pic-edge tone-green" d="M459 292L459 307Q459 322 474 322L738 322Q753 322 753 337L753 352" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 292L459 307Q459 322 474 322L738 322Q753 322 753 337L753 352" />
+      <path class="pic-line pic-edge tone-green" d="M771 68L771 83Q771 98 786 98L879.2 98Q894.2 98 894.2 113L894.2 128L894.2 180L894.2 240L894.2 292L894.2 307Q894.2 322 879.2 322L786 322Q771 322 771 337L771 352" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 68L771 83Q771 98 786 98L879.2 98Q894.2 98 894.2 113L894.2 128L894.2 180L894.2 240L894.2 292L894.2 307Q894.2 322 879.2 322L786 322Q771 322 771 337L771 352" />
+      <path class="pic-line pic-edge tone-green" d="M771 404L771 425Q771 446 792 446L1053 446Q1065 446 1065 458L1065 470" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 404L771 425Q771 446 792 446L1053 446Q1065 446 1065 458L1065 470" />
+      <path class="pic-line pic-edge tone-green" d="M1083 68L1083 83Q1083 98 1068 98L995 98Q980 98 980 113L980 128L980 180L980 240L980 292L980 352L980 404L980 416Q980 428 992 428L1062 428Q1083 428 1083 449L1083 470" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1083 68L1083 83Q1083 98 1068 98L995 98Q980 98 980 113L980 128L980 180L980 240L980 292L980 352L980 404L980 416Q980 428 992 428L1062 428Q1083 428 1083 449L1083 470" />
+      <path class="pic-line pic-edge tone-green" d="M1083 68L1083 128" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1083 68L1083 128" />
+      <path class="pic-line pic-edge tone-green reads" d="M771 404L771 470" marker-end="url(#arrow-green)" />
       <rect class="pic-panel" x="57" y="0" width="180" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="73" y="20" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(79 26) scale(0.6667)">

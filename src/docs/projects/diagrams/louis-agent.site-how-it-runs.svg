@@ -141,16 +141,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.site: How it runs</text>
     <text class="pic-group" x="901" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 52 L 459 118" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 52 L 459 118" />
-      <path class="pic-line pic-edge tone-green" d="M 459 202 L 459 217 Q 459 232 444 232 L 162 232 Q 147 232 147 247 L 147 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 202 L 459 217 Q 459 232 444 232 L 162 232 Q 147 232 147 247 L 147 262" />
-      <path class="pic-line pic-edge tone-green" d="M 459 202 L 459 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 202 L 459 262" />
-      <path class="pic-line pic-edge tone-violet" d="M 459 346 L 459 406" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 459 346 L 459 406" />
-      <path class="pic-line pic-edge tone-green" d="M 459 202 L 459 217 Q 459 232 474 232 L 756 232 Q 771 232 771 247 L 771 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 202 L 459 217 Q 459 232 474 232 L 756 232 Q 771 232 771 247 L 771 262" />
+      <path class="pic-line pic-edge tone-blue" d="M459 52L459 118" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 52L459 118" />
+      <path class="pic-line pic-edge tone-green" d="M459 202L459 217Q459 232 444 232L162 232Q147 232 147 247L147 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 202L459 217Q459 232 444 232L162 232Q147 232 147 247L147 262" />
+      <path class="pic-line pic-edge tone-green" d="M459 202L459 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 202L459 262" />
+      <path class="pic-line pic-edge tone-violet" d="M459 346L459 406" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M459 346L459 406" />
+      <path class="pic-line pic-edge tone-green" d="M459 202L459 217Q459 232 474 232L756 232Q771 232 771 247L771 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 202L459 217Q459 232 474 232L756 232Q771 232 771 247L771 262" />
       <rect class="pic-pill pic-edge tone-blue" x="465" y="56" width="155" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="542.5" y="68" text-anchor="middle">https louis-agent.dev</text>
       <rect class="pic-panel flow-shape pic-edge tone-blue" x="361" y="0" width="196" height="52" rx="26" />

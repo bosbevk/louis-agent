@@ -193,13 +193,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.host-packs: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 343 341 L 375.5 341 Q 399.5 341 399.5 317 L 399.5 85 Q 399.5 61 423.5 61 L 544 61" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 343 341 L 375.5 341 Q 399.5 341 399.5 317 L 399.5 225 Q 399.5 201 423.5 201 L 544 201" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 343 341 L 544 341" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 343 341 L 375.5 341 Q 399.5 341 399.5 365 L 399.5 597 Q 399.5 621 423.5 621 L 544 621" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 343 341 L 375.5 341 Q 399.5 341 399.5 365 L 399.5 597 Q 399.5 621 423.5 621 L 544 621" />
-      <path class="cls-line creates" d="M 343 341 L 375.5 341 Q 399.5 341 399.5 365 L 399.5 457 Q 399.5 481 423.5 481 L 544 481" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 343 341 L 375.5 341 Q 399.5 341 399.5 365 L 399.5 457 Q 399.5 481 423.5 481 L 544 481" />
+      <path class="cls-line uses" d="M343 341L375.5 341Q399.5 341 399.5 317L399.5 85Q399.5 61 423.5 61L544 61" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M343 341L375.5 341Q399.5 341 399.5 317L399.5 225Q399.5 201 423.5 201L544 201" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M343 341L544 341" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M343 341L375.5 341Q399.5 341 399.5 365L399.5 597Q399.5 621 423.5 621L544 621" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M343 341L375.5 341Q399.5 341 399.5 365L399.5 597Q399.5 621 423.5 621L544 621" />
+      <path class="cls-line creates" d="M343 341L375.5 341Q399.5 341 399.5 365L399.5 457Q399.5 481 423.5 481L544 481" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M343 341L375.5 341Q399.5 341 399.5 365L399.5 457Q399.5 481 423.5 481L544 481" />
       <rect class="pic-pill cls-chip uses" x="446.8" y="52" width="50" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="471.8" y="64" text-anchor="middle">parses</text>
       <rect class="pic-pill cls-chip uses" x="425.8" y="332" width="92" height="18" rx="9" />

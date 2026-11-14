@@ -144,17 +144,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API</text>
     <text class="pic-group" x="912" y="14" text-anchor="end">Package diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 83 Q 459 98 444 98 L 162 98 Q 147 98 147 113 L 147 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 83 Q 459 98 444 98 L 162 98 Q 147 98 147 113 L 147 128" />
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 128 L 459 228 L 459 288 L 459 372 L 459 432 L 459 500 L 459 578" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 128 L 459 228 L 459 288 L 459 372 L 459 432 L 459 500 L 459 578" />
-      <path class="pic-line pic-edge tone-green" d="M 147 228 L 147 288" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 228 L 147 288" />
-      <path class="pic-line pic-edge tone-green" d="M 147 228 L 147 243 Q 147 258 162 258 L 285.6 258 Q 300.6 258 300.6 273 L 300.6 288 L 300.6 372 L 300.6 387 Q 300.6 402 285.6 402 L 180 402 Q 165 402 165 417 L 165 432" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 228 L 147 243 Q 147 258 162 258 L 285.6 258 Q 300.6 258 300.6 273 L 300.6 288 L 300.6 372 L 300.6 387 Q 300.6 402 285.6 402 L 180 402 Q 165 402 165 417 L 165 432" />
-      <path class="pic-line pic-edge tone-teal" d="M 147 372 L 147 432" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 147 372 L 147 432" />
-      <path class="pic-line pic-edge tone-violet reads" d="M 147 500 L 147 530 Q 147 554 171 554 L 429 554 Q 441 554 441 566 L 441 578" marker-end="url(#arrow-violet)" />
+      <path class="pic-line pic-edge tone-blue" d="M459 68L459 83Q459 98 444 98L162 98Q147 98 147 113L147 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 68L459 83Q459 98 444 98L162 98Q147 98 147 113L147 128" />
+      <path class="pic-line pic-edge tone-blue" d="M459 68L459 128L459 228L459 288L459 372L459 432L459 500L459 578" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 68L459 128L459 228L459 288L459 372L459 432L459 500L459 578" />
+      <path class="pic-line pic-edge tone-green" d="M147 228L147 288" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 228L147 288" />
+      <path class="pic-line pic-edge tone-green" d="M147 228L147 243Q147 258 162 258L285.6 258Q300.6 258 300.6 273L300.6 288L300.6 372L300.6 387Q300.6 402 285.6 402L180 402Q165 402 165 417L165 432" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 228L147 243Q147 258 162 258L285.6 258Q300.6 258 300.6 273L300.6 288L300.6 372L300.6 387Q300.6 402 285.6 402L180 402Q165 402 165 417L165 432" />
+      <path class="pic-line pic-edge tone-teal" d="M147 372L147 432" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M147 372L147 432" />
+      <path class="pic-line pic-edge tone-violet reads" d="M147 500L147 530Q147 554 171 554L429 554Q441 554 441 566L441 578" marker-end="url(#arrow-violet)" />
       <rect class="pic-pill pic-edge tone-violet" x="153" y="504" width="148" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-violet" x="227" y="516" text-anchor="middle">HTTP and SSE, at run</text>
       <text class="pic-pill-word pic-ink tone-violet" x="227" y="528" text-anchor="middle">time</text>

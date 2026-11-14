@@ -1,7 +1,8 @@
-using System.Globalization;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Arrows;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Tones;
 
@@ -36,7 +37,7 @@ public class FlowArrowsTests
     public void AWiderBend_StartsItsCornerFurtherOut()
     {
         double Corner(double bend) => GraphLayout.Place(Calls(), bend: bend).Edges
-            .SelectMany(edge => Corners(edge.Way.Text)).Max();
+            .SelectMany(edge => Ways.TurnStarts(edge.Way)).Max();
 
         Assert.Multiple(() =>
         {
@@ -66,38 +67,17 @@ public class FlowArrowsTests
         var ground = FlowText.WordBox(right, Geometries.InUse);
         Assert.Multiple(() =>
         {
-            Assert.That(ground.Middle.Y, Is.EqualTo(Ys(right.Way.Text).First()), "on its line");
+            Assert.That(ground.Middle.Y, Is.EqualTo(Ways.Ys(right.Way)[0]), "on its line");
             // The arrow to the box right under its source runs straight down and has no track: the other bends.
-            var bent = down.Where(edge => edge.Way.Text.Contains('Q')).ToList();
+            var bent = down.Where(edge => Ways.Turns(edge.Way) > 0).ToList();
             Assert.That(bent, Has.Count.EqualTo(1));
             foreach (var edge in bent)
                 Assert.That(FlowText.WordBox(edge, Geometries.InUse).Top,
-                    Is.GreaterThanOrEqualTo(Track(edge.Way.Text) + 4), "under its track");
+                    Is.GreaterThanOrEqualTo(Track(edge.Way) + 4), "under its track");
         });
     }
 
-    /// <summary>Every y a path passes: the second number of each pair after its commands.</summary>
-    private static List<double> Ys(string path) => path.Split(' ')
-        .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-        .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).Where((_, at) => at % 2 == 1).ToList();
-
-    /// <summary>The height a down arrow runs across at: the one y its path holds for a while.</summary>
-    private static double Track(string path) => Ys(path).GroupBy(y => y).Where(same => same.Count() > 1)
+    /// <summary>The height a down arrow runs across at: the one height its way holds for a while.</summary>
+    private static double Track(ArrowPath way) => Ways.Ys(way).GroupBy(y => y).Where(same => same.Count() > 1)
         .Select(same => same.Key).Single();
-
-    /// <summary>
-    /// How far each corner of a path starts from its turn: from the line's end to the curve's corner.
-    /// </summary>
-    private static IEnumerable<double> Corners(string path)
-    {
-        var parts = path.Split(' ');
-        for (int at = 0; at + 4 < parts.Length; at++)
-        {
-            if (parts[at] != "Q") continue;
-
-            double Number(int offset) => double.Parse(parts[at + offset], CultureInfo.InvariantCulture);
-            // The line ends at the two numbers before the Q, and the Q's first pair is the corner itself.
-            yield return Math.Abs(Number(1) - Number(-2)) + Math.Abs(Number(2) - Number(-1));
-        }
-    }
 }

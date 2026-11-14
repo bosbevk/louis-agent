@@ -141,12 +141,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.openai: How it works</text>
     <text class="pic-group" x="424" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 211.6 100 L 211.6 160" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 211.6 100 L 211.6 160" />
-      <path class="pic-line pic-edge tone-violet" d="M 211.6 212 L 211.6 272" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 211.6 212 L 211.6 272" />
-      <path class="pic-line pic-edge tone-green" d="M 211.6 340 L 211.6 400" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 211.6 340 L 211.6 400" />
+      <path class="pic-line pic-edge tone-blue" d="M211.6 100L211.6 160" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M211.6 100L211.6 160" />
+      <path class="pic-line pic-edge tone-violet" d="M211.6 212L211.6 272" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M211.6 212L211.6 272" />
+      <path class="pic-line pic-edge tone-green" d="M211.6 340L211.6 400" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M211.6 340L211.6 400" />
       <rect class="pic-panel" x="45.6" y="0" width="332" height="100" rx="10" />
       <rect class="pic-fill tone-blue" x="61.6" y="36" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(67.6 42) scale(0.6667)">

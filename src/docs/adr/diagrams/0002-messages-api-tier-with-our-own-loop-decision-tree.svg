@@ -135,20 +135,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">ADR 0002: which Claude tier to build on</text>
     <text class="pic-group" x="669" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 156.4 52 L 156.4 112" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 156.4 52 L 156.4 112" />
-      <path class="pic-line pic-edge" d="M 156.4 180 L 156.4 246" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 156.4 180 L 156.4 246" />
-      <path class="pic-line pic-edge" d="M 156.4 180 L 156.4 192 Q 156.4 204 168.4 204 L 466.2 204 Q 487.2 204 487.2 225 L 487.2 246" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 156.4 180 L 156.4 192 Q 156.4 204 168.4 204 L 466.2 204 Q 487.2 204 487.2 225 L 487.2 246" />
-      <path class="pic-line pic-edge" d="M 487.2 314 L 487.2 326 Q 487.2 338 475.2 338 L 177.4 338 Q 156.4 338 156.4 359 L 156.4 380" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 487.2 314 L 487.2 326 Q 487.2 338 475.2 338 L 177.4 338 Q 156.4 338 156.4 359 L 156.4 380" />
-      <path class="pic-line pic-edge" d="M 487.2 314 L 487.2 380" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 487.2 314 L 487.2 380" />
-      <path class="pic-line pic-edge" d="M 487.2 448 L 487.2 460 Q 487.2 472 475.2 472 L 180.4 472 Q 156.4 472 156.4 496 L 156.4 526" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 487.2 448 L 487.2 460 Q 487.2 472 475.2 472 L 180.4 472 Q 156.4 472 156.4 496 L 156.4 526" />
-      <path class="pic-line pic-edge" d="M 487.2 448 L 487.2 526" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 487.2 448 L 487.2 526" />
+      <path class="pic-line pic-edge tone-blue" d="M156.4 52L156.4 112" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M156.4 52L156.4 112" />
+      <path class="pic-line pic-edge" d="M156.4 180L156.4 246" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M156.4 180L156.4 246" />
+      <path class="pic-line pic-edge" d="M156.4 180L156.4 192Q156.4 204 168.4 204L466.2 204Q487.2 204 487.2 225L487.2 246" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M156.4 180L156.4 192Q156.4 204 168.4 204L466.2 204Q487.2 204 487.2 225L487.2 246" />
+      <path class="pic-line pic-edge" d="M487.2 314L487.2 326Q487.2 338 475.2 338L177.4 338Q156.4 338 156.4 359L156.4 380" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M487.2 314L487.2 326Q487.2 338 475.2 338L177.4 338Q156.4 338 156.4 359L156.4 380" />
+      <path class="pic-line pic-edge" d="M487.2 314L487.2 380" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M487.2 314L487.2 380" />
+      <path class="pic-line pic-edge" d="M487.2 448L487.2 460Q487.2 472 475.2 472L180.4 472Q156.4 472 156.4 496L156.4 526" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M487.2 448L487.2 460Q487.2 472 475.2 472L180.4 472Q156.4 472 156.4 496L156.4 526" />
+      <path class="pic-line pic-edge" d="M487.2 448L487.2 526" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M487.2 448L487.2 526" />
       <rect class="pic-pill pic-edge" x="162.4" y="208" width="29" height="18" rx="9" />
       <text class="pic-pill-word pic-ink" x="176.9" y="220" text-anchor="middle">Yes</text>
       <rect class="pic-pill pic-edge" x="493.2" y="208" width="169" height="18" rx="9" />

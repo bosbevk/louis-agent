@@ -147,42 +147,42 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-group" x="388.5" y="35" text-anchor="start">The playground: Puls's compose plus docker-compose.demo.yml (step 1)</text>
       <rect class="pic-panel" x="1172.6" y="866" width="1003.4" height="232" rx="14" />
       <text class="pic-group" x="1186.6" y="885" text-anchor="start">What the agents load</text>
-      <path class="pic-line pic-edge tone-green" d="M 298.4 108 L 320.4 108 Q 342.4 108 342.4 130 L 342.4 234 Q 342.4 256 364.5 256 L 386.5 256" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 298.4 108 L 320.4 108 Q 342.4 108 342.4 130 L 342.4 234 Q 342.4 256 364.5 256 L 386.5 256" />
-      <path class="pic-line pic-edge tone-green" d="M 298.4 274 L 386.5 274" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 298.4 274 L 386.5 274" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 252 L 686.5 132 Q 686.5 108 710.5 108 L 766.6 108" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 252 L 686.5 132 Q 686.5 108 710.5 108 L 766.6 108" />
-      <path class="pic-line pic-edge tone-green" d="M 1060.6 108 L 1082.6 108 Q 1104.6 108 1104.6 130 L 1104.6 1158 Q 1104.6 1182 1128.6 1182 L 1184.6 1182" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1060.6 108 L 1082.6 108 Q 1104.6 108 1104.6 130 L 1104.6 1158 Q 1104.6 1182 1128.6 1182 L 1184.6 1182" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 416 Q 686.5 440 710.5 440 L 766.6 440" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 416 Q 686.5 440 710.5 440 L 766.6 440" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 766.6 274" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 766.6 274" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 582 Q 686.5 606 710.5 606 L 775.6 606" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 582 Q 686.5 606 710.5 606 L 775.6 606" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 313 Q 686.5 337 710.5 337 L 766.6 337 L 1060.6 337 L 1116.6 337 Q 1140.6 337 1140.6 361 L 1140.6 591 Q 1140.6 615 1164.6 615 L 1191.7 615" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 313 Q 686.5 337 710.5 337 L 766.6 337 L 1060.6 337 L 1116.6 337 Q 1140.6 337 1140.6 361 L 1140.6 591 Q 1140.6 615 1164.6 615 L 1191.7 615" />
-      <path class="pic-line pic-edge tone-violet" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 573 Q 1122.6 597 1146.6 597 L 1195.6 597" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 573 Q 1122.6 597 1146.6 597 L 1195.6 597" />
-      <path class="pic-line pic-edge tone-violet" d="M 1060.6 440 L 1184.6 440" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1060.6 440 L 1184.6 440" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 927 Q 686.5 951 710.5 951 L 766.6 951 L 1060.6 951 L 1184.6 951" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 927 Q 686.5 951 710.5 951 L 766.6 951 L 1060.6 951 L 1184.6 951" />
-      <path class="pic-line pic-edge tone-violet" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 909 Q 1122.6 933 1146.6 933 L 1184.6 933" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 909 Q 1122.6 933 1146.6 933 L 1184.6 933" />
-      <path class="pic-line pic-edge tone-teal" d="M 1463.4 942 L 1523.5 942" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1463.4 942 L 1523.5 942" />
-      <path class="pic-line pic-edge tone-teal" d="M 1463.4 942 L 1478.5 942 Q 1493.5 942 1493.5 957 L 1493.5 1029 Q 1493.5 1044 1508.5 1044 L 1523.5 1044" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1463.4 942 L 1478.5 942 Q 1493.5 942 1493.5 957 L 1493.5 1029 Q 1493.5 1044 1508.5 1044 L 1523.5 1044" />
-      <path class="pic-line pic-edge tone-teal" d="M 1817.5 942 L 1877.6 942" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1817.5 942 L 1877.6 942" />
-      <path class="pic-line pic-edge tone-teal" d="M 1817.5 942 L 1832.5 942 Q 1847.6 942 1847.6 957 L 1847.6 1011 Q 1847.6 1026 1862.6 1026 L 1877.6 1026" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1817.5 942 L 1832.5 942 Q 1847.6 942 1847.6 957 L 1847.6 1011 Q 1847.6 1026 1862.6 1026 L 1877.6 1026" />
-      <path class="pic-line pic-edge tone-teal" d="M 1817.5 1044 L 1877.6 1044" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1817.5 1044 L 1877.6 1044" />
-      <path class="pic-line pic-edge tone-green" d="M 1060.6 108 L 1069.6 108 Q 1078.6 108 1078.6 117 L 1078.6 1260 Q 1078.6 1284 1054.6 1284 L 538.5 1284 Q 514.5 1284 514.5 1260 L 514.5 316" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1060.6 108 L 1069.6 108 Q 1078.6 108 1078.6 117 L 1078.6 1260 Q 1078.6 1284 1054.6 1284 L 538.5 1284 Q 514.5 1284 514.5 1260 L 514.5 316" />
+      <path class="pic-line pic-edge tone-green" d="M298.4 108L320.4 108Q342.4 108 342.4 130L342.4 234Q342.4 256 364.5 256L386.5 256" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M298.4 108L320.4 108Q342.4 108 342.4 130L342.4 234Q342.4 256 364.5 256L386.5 256" />
+      <path class="pic-line pic-edge tone-green" d="M298.4 274L386.5 274" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M298.4 274L386.5 274" />
+      <path class="pic-line pic-edge tone-green" d="M642.5 274L664.5 274Q686.5 274 686.5 252L686.5 132Q686.5 108 710.5 108L766.6 108" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M642.5 274L664.5 274Q686.5 274 686.5 252L686.5 132Q686.5 108 710.5 108L766.6 108" />
+      <path class="pic-line pic-edge tone-green" d="M1060.6 108L1082.6 108Q1104.6 108 1104.6 130L1104.6 1158Q1104.6 1182 1128.6 1182L1184.6 1182" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1060.6 108L1082.6 108Q1104.6 108 1104.6 130L1104.6 1158Q1104.6 1182 1128.6 1182L1184.6 1182" />
+      <path class="pic-line pic-edge tone-green" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 416Q686.5 440 710.5 440L766.6 440" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 416Q686.5 440 710.5 440L766.6 440" />
+      <path class="pic-line pic-edge tone-green" d="M642.5 274L766.6 274" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M642.5 274L766.6 274" />
+      <path class="pic-line pic-edge tone-green" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 582Q686.5 606 710.5 606L775.6 606" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 582Q686.5 606 710.5 606L775.6 606" />
+      <path class="pic-line pic-edge tone-green" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 313Q686.5 337 710.5 337L766.6 337L1060.6 337L1116.6 337Q1140.6 337 1140.6 361L1140.6 591Q1140.6 615 1164.6 615L1191.7 615" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 313Q686.5 337 710.5 337L766.6 337L1060.6 337L1116.6 337Q1140.6 337 1140.6 361L1140.6 591Q1140.6 615 1164.6 615L1191.7 615" />
+      <path class="pic-line pic-edge tone-violet" d="M1060.6 440L1098.6 440Q1122.6 440 1122.6 464L1122.6 573Q1122.6 597 1146.6 597L1195.6 597" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1060.6 440L1098.6 440Q1122.6 440 1122.6 464L1122.6 573Q1122.6 597 1146.6 597L1195.6 597" />
+      <path class="pic-line pic-edge tone-violet" d="M1060.6 440L1184.6 440" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1060.6 440L1184.6 440" />
+      <path class="pic-line pic-edge tone-green" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 927Q686.5 951 710.5 951L766.6 951L1060.6 951L1184.6 951" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M642.5 274L664.5 274Q686.5 274 686.5 296L686.5 927Q686.5 951 710.5 951L766.6 951L1060.6 951L1184.6 951" />
+      <path class="pic-line pic-edge tone-violet" d="M1060.6 440L1098.6 440Q1122.6 440 1122.6 464L1122.6 909Q1122.6 933 1146.6 933L1184.6 933" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1060.6 440L1098.6 440Q1122.6 440 1122.6 464L1122.6 909Q1122.6 933 1146.6 933L1184.6 933" />
+      <path class="pic-line pic-edge tone-teal" d="M1463.4 942L1523.5 942" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1463.4 942L1523.5 942" />
+      <path class="pic-line pic-edge tone-teal" d="M1463.4 942L1478.5 942Q1493.5 942 1493.5 957L1493.5 1029Q1493.5 1044 1508.5 1044L1523.5 1044" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1463.4 942L1478.5 942Q1493.5 942 1493.5 957L1493.5 1029Q1493.5 1044 1508.5 1044L1523.5 1044" />
+      <path class="pic-line pic-edge tone-teal" d="M1817.5 942L1877.6 942" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1817.5 942L1877.6 942" />
+      <path class="pic-line pic-edge tone-teal" d="M1817.5 942L1832.5 942Q1847.6 942 1847.6 957L1847.6 1011Q1847.6 1026 1862.6 1026L1877.6 1026" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1817.5 942L1832.5 942Q1847.6 942 1847.6 957L1847.6 1011Q1847.6 1026 1862.6 1026L1877.6 1026" />
+      <path class="pic-line pic-edge tone-teal" d="M1817.5 1044L1877.6 1044" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1817.5 1044L1877.6 1044" />
+      <path class="pic-line pic-edge tone-green" d="M1060.6 108L1069.6 108Q1078.6 108 1078.6 117L1078.6 1260Q1078.6 1284 1054.6 1284L538.5 1284Q514.5 1284 514.5 1260L514.5 316" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1060.6 108L1069.6 108Q1078.6 108 1078.6 117L1078.6 1260Q1078.6 1284 1054.6 1284L538.5 1284Q514.5 1284 514.5 1260L514.5 316" />
       <rect class="pic-pill pic-edge tone-green" x="701.5" y="99" width="50" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="726.5" y="111" text-anchor="middle">starts</text>
       <rect class="pic-pill pic-edge tone-green" x="694.5" y="431" width="64" height="18" rx="9" />

@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -31,8 +32,7 @@ public class LongLinesTests
 
     /// <summary>How often the line from one box to another turns.</summary>
     private static int Turns(GraphSpec spec, string from, string to) =>
-        GraphLayout.Place(spec).Edges
-            .Single(edge => edge.Edge.From == from && edge.Edge.To == to).Way.Text.Count(part => part == 'Q');
+        Ways.Turns(GraphLayout.Place(spec).Edges.Single(edge => edge.Edge.From == from && edge.Edge.To == to).Way);
 
     /// <summary>
     /// A long line whose arriving line is clear runs on it, though another long line stood there when it was
@@ -53,20 +53,18 @@ public class LongLinesTests
         var placed = GraphLayout.Place(Packs());
         var from = placed.Nodes.Single(node => node.Node.Id == "approved");
         var to = placed.Nodes.Single(node => node.Node.Id == "unavailable");
-        string path = placed.Edges.Single(edge => edge.Edge.From == "approved" && edge.Edge.To == "unavailable")
-            .Way.Text;
+        var way = placed.Edges.Single(edge => edge.Edge.From == "approved" && edge.Edge.To == "unavailable").Way;
 
         // Every height the line passes, in a picture that runs right: none above the higher of its two boxes or
         // under the lower, a box's own height allowed for.
-        var heights = path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
-            .Where((_, at) => at % 2 == 1).ToList();
+        var heights = Ways.Ys(way);
         double top = Math.Min(from.Box.Top, to.Box.Top), bottom = Math.Max(from.Box.Bottom, to.Box.Bottom);
 
         Assert.Multiple(() =>
         {
             Assert.That(heights.Min(), Is.GreaterThanOrEqualTo(top - 1), "it does not swing out above");
             Assert.That(heights.Max(), Is.LessThanOrEqualTo(bottom + 1), "nor under");
-            Assert.That(path.Count(part => part == 'Q'), Is.LessThanOrEqualTo(4));
+            Assert.That(Ways.Turns(way), Is.LessThanOrEqualTo(4));
         });
     }
 }

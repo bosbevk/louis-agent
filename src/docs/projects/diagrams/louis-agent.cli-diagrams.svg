@@ -138,18 +138,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The terminal host: from your program through ConsoleChat to the engine and the output</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 463.2 84 L 463.2 150" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 463.2 84 L 463.2 150" />
-      <path class="pic-line pic-edge tone-green" d="M 463.2 202 L 463.2 223 Q 463.2 244 484.2 244 L 775 244 Q 787 244 787 256 L 787 268 L 787 320 L 787 398" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 463.2 202 L 463.2 223 Q 463.2 244 484.2 244 L 775 244 Q 787 244 787 256 L 787 268 L 787 320 L 787 398" />
-      <path class="pic-line pic-edge tone-green" d="M 463.2 202 L 463.2 223 Q 463.2 244 442.2 244 L 160.4 244 Q 148.4 244 148.4 256 L 148.4 268" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 463.2 202 L 463.2 223 Q 463.2 244 442.2 244 L 160.4 244 Q 148.4 244 148.4 256 L 148.4 268" />
-      <path class="pic-line pic-edge tone-green" d="M 148.4 320 L 148.4 350 Q 148.4 374 172.4 374 L 757 374 Q 769 374 769 386 L 769 398" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 148.4 320 L 148.4 350 Q 148.4 374 172.4 374 L 757 374 Q 769 374 769 386 L 769 398" />
-      <path class="pic-line pic-edge tone-green" d="M 148.4 320 L 148.4 398" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 148.4 320 L 148.4 398" />
-      <path class="pic-line pic-edge tone-green" d="M 148.4 320 L 148.4 350 Q 148.4 374 172.4 374 L 451.2 374 Q 463.2 374 463.2 386 L 463.2 398" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 148.4 320 L 148.4 350 Q 148.4 374 172.4 374 L 451.2 374 Q 463.2 374 463.2 386 L 463.2 398" />
+      <path class="pic-line pic-edge tone-blue" d="M463.2 84L463.2 150" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M463.2 84L463.2 150" />
+      <path class="pic-line pic-edge tone-green" d="M463.2 202L463.2 223Q463.2 244 484.2 244L775 244Q787 244 787 256L787 268L787 320L787 398" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M463.2 202L463.2 223Q463.2 244 484.2 244L775 244Q787 244 787 256L787 268L787 320L787 398" />
+      <path class="pic-line pic-edge tone-green" d="M463.2 202L463.2 223Q463.2 244 442.2 244L160.4 244Q148.4 244 148.4 256L148.4 268" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M463.2 202L463.2 223Q463.2 244 442.2 244L160.4 244Q148.4 244 148.4 256L148.4 268" />
+      <path class="pic-line pic-edge tone-green" d="M148.4 320L148.4 350Q148.4 374 172.4 374L757 374Q769 374 769 386L769 398" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M148.4 320L148.4 350Q148.4 374 172.4 374L757 374Q769 374 769 386L769 398" />
+      <path class="pic-line pic-edge tone-green" d="M148.4 320L148.4 398" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M148.4 320L148.4 398" />
+      <path class="pic-line pic-edge tone-green" d="M148.4 320L148.4 350Q148.4 374 172.4 374L451.2 374Q463.2 374 463.2 386L463.2 398" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M148.4 320L148.4 350Q148.4 374 172.4 374L451.2 374Q463.2 374 463.2 386L463.2 398" />
       <rect class="pic-pill pic-edge tone-blue" x="469.2" y="88" width="155" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="546.7" y="100" text-anchor="middle">args and AgentCatalog</text>
       <rect class="pic-pill pic-edge tone-green" x="469.2" y="206" width="113" height="18" rx="9" />

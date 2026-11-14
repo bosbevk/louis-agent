@@ -199,10 +199,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.telemetry: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 238 225 L 340 225 Q 364 225 364 249 L 364 357 Q 364 381 388 381 L 642 381" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 238 225 L 340 225 Q 364 225 364 201 L 364 93 Q 364 69 388 69 L 642 69" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 238 225 L 642 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 238 225 L 642 225" />
+      <path class="cls-line uses" d="M238 225L340 225Q364 225 364 249L364 357Q364 381 388 381L642 381" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M238 225L340 225Q364 225 364 201L364 93Q364 69 388 69L642 69" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M238 225L642 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M238 225L642 225" />
       <rect class="pic-pill cls-chip implements" x="464" y="60" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="503" y="72" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip holds" x="432.5" y="216" width="141" height="18" rx="9" />

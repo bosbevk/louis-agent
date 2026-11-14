@@ -138,12 +138,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The calculator pack: one tool over plain arithmetic</text>
     <text class="pic-group" x="514.2" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 147 68 L 147 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 147 68 L 147 128" />
-      <path class="pic-line pic-edge tone-green" d="M 147 180 L 147 240" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 180 L 147 240" />
-      <path class="pic-line pic-edge tone-green" d="M 147 292 L 147 370" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 292 L 147 370" />
+      <path class="pic-line pic-edge tone-blue" d="M147 68L147 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 68L147 128" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 240" />
+      <path class="pic-line pic-edge tone-green" d="M147 292L147 370" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 292L147 370" />
       <rect class="pic-pill pic-edge tone-green" x="153" y="296" width="176" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="241" y="308" text-anchor="middle">digits, a point, + - * /</text>
       <text class="pic-pill-word pic-ink tone-green" x="241" y="320" text-anchor="middle">( ) only</text>

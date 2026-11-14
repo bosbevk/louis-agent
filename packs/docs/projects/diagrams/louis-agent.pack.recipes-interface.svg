@@ -202,25 +202,25 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.recipes: the interface design</text>
     <text class="pic-group" x="2169" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 628.7 240 L 640.7 240 Q 652.8 240 652.8 252 L 652.8 382 Q 652.8 406 676.8 406 L 764.8 406" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 628.7 240 L 640.7 240 Q 652.8 240 652.8 228 L 652.8 98 Q 652.8 74 676.8 74 L 764.8 74" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 628.7 240 L 640.7 240 Q 652.8 240 652.8 252 L 652.8 548 Q 652.8 572 676.8 572 L 764.8 572" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 263.6 240 L 383.7 240" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 263.6 240 L 383.7 240" />
-      <path class="cls-line creates" d="M 1086.8 74 L 1360.9 74" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 1086.8 74 L 1360.9 74" />
-      <path class="cls-line implements" d="M 263.6 406 L 335.7 406 Q 359.7 406 359.7 430 L 359.7 477 Q 359.7 489 371.7 489 L 383.7 489 L 628.7 489 L 764.8 489 L 1086.8 489 L 1134.9 489 Q 1158.9 489 1158.9 513 L 1158.9 557 Q 1158.9 581 1182.9 581 L 1360.9 581" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 263.6 572 L 335.7 572 Q 359.7 572 359.7 548 L 359.7 518 Q 359.7 506 371.7 506 L 383.7 506 L 628.7 506 L 764.8 506 L 1086.8 506 L 1360.9 506 L 1766.9 506 L 1778.9 506 Q 1791 506 1791 518 L 1791 548 Q 1791 572 1815 572 L 1889 572" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 1086.8 406 L 1152.9 406 Q 1176.9 406 1176.9 430 L 1176.9 539 Q 1176.9 563 1200.9 563 L 1360.9 563" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1086.8 406 L 1152.9 406 Q 1176.9 406 1176.9 430 L 1176.9 539 Q 1176.9 563 1200.9 563 L 1360.9 563" />
-      <path class="cls-line holds" d="M 628.7 240 L 764.8 240 L 1086.8 240 L 1134.9 240 Q 1158.9 240 1158.9 264 L 1158.9 364 Q 1158.9 388 1182.9 388 L 1360.9 388" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 628.7 240 L 764.8 240 L 1086.8 240 L 1134.9 240 Q 1158.9 240 1158.9 264 L 1158.9 364 Q 1158.9 388 1182.9 388 L 1360.9 388" />
-      <path class="cls-line holds" d="M 1086.8 406 L 1360.9 406" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1086.8 406 L 1360.9 406" />
-      <path class="cls-line holds" d="M 1766.9 406 L 1787.9 406 Q 1809 406 1809 427 L 1809 530 Q 1809 554 1833 554 L 1889 554" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1766.9 406 L 1787.9 406 Q 1809 406 1809 427 L 1809 530 Q 1809 554 1833 554 L 1889 554" />
-      <path class="cls-line holds" d="M 1766.9 406 L 1889 406" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1766.9 406 L 1889 406" />
+      <path class="cls-line uses" d="M628.7 240L640.7 240Q652.8 240 652.8 252L652.8 382Q652.8 406 676.8 406L764.8 406" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M628.7 240L640.7 240Q652.8 240 652.8 228L652.8 98Q652.8 74 676.8 74L764.8 74" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M628.7 240L640.7 240Q652.8 240 652.8 252L652.8 548Q652.8 572 676.8 572L764.8 572" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M263.6 240L383.7 240" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M263.6 240L383.7 240" />
+      <path class="cls-line creates" d="M1086.8 74L1360.9 74" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M1086.8 74L1360.9 74" />
+      <path class="cls-line implements" d="M263.6 406L335.7 406Q359.7 406 359.7 430L359.7 477Q359.7 489 371.7 489L383.7 489L628.7 489L764.8 489L1086.8 489L1134.9 489Q1158.9 489 1158.9 513L1158.9 557Q1158.9 581 1182.9 581L1360.9 581" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M263.6 572L335.7 572Q359.7 572 359.7 548L359.7 518Q359.7 506 371.7 506L383.7 506L628.7 506L764.8 506L1086.8 506L1360.9 506L1766.9 506L1778.9 506Q1791 506 1791 518L1791 548Q1791 572 1815 572L1889 572" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M1086.8 406L1152.9 406Q1176.9 406 1176.9 430L1176.9 539Q1176.9 563 1200.9 563L1360.9 563" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1086.8 406L1152.9 406Q1176.9 406 1176.9 430L1176.9 539Q1176.9 563 1200.9 563L1360.9 563" />
+      <path class="cls-line holds" d="M628.7 240L764.8 240L1086.8 240L1134.9 240Q1158.9 240 1158.9 264L1158.9 364Q1158.9 388 1182.9 388L1360.9 388" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M628.7 240L764.8 240L1086.8 240L1134.9 240Q1158.9 240 1158.9 264L1158.9 364Q1158.9 388 1182.9 388L1360.9 388" />
+      <path class="cls-line holds" d="M1086.8 406L1360.9 406" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1086.8 406L1360.9 406" />
+      <path class="cls-line holds" d="M1766.9 406L1787.9 406Q1809 406 1809 427L1809 530Q1809 554 1833 554L1889 554" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1766.9 406L1787.9 406Q1809 406 1809 427L1809 530Q1809 554 1833 554L1889 554" />
+      <path class="cls-line holds" d="M1766.9 406L1889 406" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1766.9 406L1889 406" />
       <rect class="pic-pill cls-chip creates" x="283.1" y="231" width="57" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="311.6" y="243" text-anchor="middle">creates</text>
       <rect class="pic-pill cls-chip uses" x="687.3" y="397" width="43" height="18" rx="9" />

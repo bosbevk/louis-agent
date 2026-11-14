@@ -140,20 +140,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="920.6" y="24" width="310.4" height="880" rx="14" />
       <text class="pic-group" x="934.6" y="43" text-anchor="start">the verbs read the outputs back</text>
-      <path class="pic-line pic-edge tone-amber" d="M 265 100 L 570.3 100" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 265 100 L 570.3 100" />
-      <path class="pic-line pic-edge tone-blue" d="M 864.3 100 L 932.6 100" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 864.3 100 L 932.6 100" />
-      <path class="pic-line pic-edge tone-blue" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 227.9 Q 888.5 250 910.5 250 L 932.6 250" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 227.9 Q 888.5 250 910.5 250 L 932.6 250" />
-      <path class="pic-line pic-edge tone-blue" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 377.9 Q 888.5 400 910.5 400 L 932.6 400" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 377.9 Q 888.5 400 910.5 400 L 932.6 400" />
-      <path class="pic-line pic-edge tone-blue" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 527.9 Q 888.5 550 910.5 550 L 932.6 550" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 527.9 Q 888.5 550 910.5 550 L 932.6 550" />
-      <path class="pic-line pic-edge tone-blue" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 677.9 Q 888.5 700 910.5 700 L 932.6 700" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 677.9 Q 888.5 700 910.5 700 L 932.6 700" />
-      <path class="pic-line pic-edge tone-blue" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 827.9 Q 888.5 850 910.5 850 L 932.6 850" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 864.3 100 L 876.4 100 Q 888.5 100 888.5 112.1 L 888.5 827.9 Q 888.5 850 910.5 850 L 932.6 850" />
+      <path class="pic-line pic-edge tone-amber" d="M265 100L570.3 100" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M265 100L570.3 100" />
+      <path class="pic-line pic-edge tone-blue" d="M864.3 100L932.6 100" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M864.3 100L932.6 100" />
+      <path class="pic-line pic-edge tone-blue" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 227.9Q888.5 250 910.5 250L932.6 250" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 227.9Q888.5 250 910.5 250L932.6 250" />
+      <path class="pic-line pic-edge tone-blue" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 377.9Q888.5 400 910.5 400L932.6 400" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 377.9Q888.5 400 910.5 400L932.6 400" />
+      <path class="pic-line pic-edge tone-blue" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 527.9Q888.5 550 910.5 550L932.6 550" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 527.9Q888.5 550 910.5 550L932.6 550" />
+      <path class="pic-line pic-edge tone-blue" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 677.9Q888.5 700 910.5 700L932.6 700" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 677.9Q888.5 700 910.5 700L932.6 700" />
+      <path class="pic-line pic-edge tone-blue" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 827.9Q888.5 850 910.5 850L932.6 850" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M864.3 100L876.4 100Q888.5 100 888.5 112.1L888.5 827.9Q888.5 850 910.5 850L932.6 850" />
       <rect class="pic-pill pic-edge tone-amber" x="350.1" y="91" width="120" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-amber" x="410.1" y="103" text-anchor="middle">deploy.ps1 infra</text>
       <text class="pic-pill-word pic-ink tone-amber" x="410.1" y="115" text-anchor="middle">(what-if first)</text>

@@ -148,15 +148,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <rect class="pic-tint tone-green" x="345.5" y="10" width="46.5" height="18" rx="9" />
     <text class="cmp-chip-text pic-ink tone-green" x="353.5" y="22.5" text-anchor="start">class</text>
     <text class="pic-note" x="1244.9" y="23" text-anchor="end">louis-agent.core, Agent</text>
-    <path class="cps-wire" d="M 530.9 66 L 666.9 66" />
-    <path class="cps-wire" d="M 530.9 66 L 618.9 66 Q 642.9 66 642.9 90 L 642.9 145 Q 642.9 157 654.9 157 L 666.9 157 L 892.5 157 L 952.6 157" />
-    <path class="cps-wire" d="M 892.5 66 L 907.5 66 Q 922.5 66 922.5 81 L 922.5 124 Q 922.5 139 937.5 139 L 952.6 139" />
-    <path class="pic-line pic-edge tone-green" d="M 252.8 66 L 252.8 66 L 312.9 66" marker-end="url(#arrow-green)" />
-    <path class="pic-march" d="M 252.8 66 L 252.8 66 L 312.9 66" />
-    <path class="pic-line pic-edge tone-green" d="M 246.7 148 L 252.8 148 L 312.9 148" marker-end="url(#arrow-green)" />
-    <path class="pic-march" d="M 246.7 148 L 252.8 148 L 312.9 148" />
-    <path class="pic-line pic-edge tone-teal" d="M 892.5 66 L 952.6 66 L 1170.6 66 L 1230.6 66 L 1230.6 66" marker-end="url(#arrow-teal)" />
-    <path class="pic-march" d="M 892.5 66 L 952.6 66 L 1170.6 66 L 1230.6 66 L 1230.6 66" />
+    <path class="cps-wire" d="M530.9 66L666.9 66" />
+    <path class="cps-wire" d="M530.9 66L618.9 66Q642.9 66 642.9 90L642.9 145Q642.9 157 654.9 157L666.9 157L892.5 157L952.6 157" />
+    <path class="cps-wire" d="M892.5 66L907.5 66Q922.5 66 922.5 81L922.5 124Q922.5 139 937.5 139L952.6 139" />
+    <path class="pic-line pic-edge tone-green" d="M252.8 66L252.8 66L312.9 66" marker-end="url(#arrow-green)" />
+    <path class="pic-march" d="M252.8 66L252.8 66L312.9 66" />
+    <path class="pic-line pic-edge tone-green" d="M246.7 148L252.8 148L312.9 148" marker-end="url(#arrow-green)" />
+    <path class="pic-march" d="M246.7 148L252.8 148L312.9 148" />
+    <path class="pic-line pic-edge tone-teal" d="M892.5 66L952.6 66L1170.6 66L1230.6 66L1230.6 66" marker-end="url(#arrow-teal)" />
+    <path class="pic-march" d="M892.5 66L952.6 66L1170.6 66L1230.6 66L1230.6 66" />
     <rect class="pic-pill pic-edge" x="540.9" y="57" width="92" height="18" rx="9" />
     <text class="pic-pill-word pic-ink" x="586.9" y="69" text-anchor="middle">the pipeline</text>
     <rect class="pic-panel" x="312.9" y="34" width="218" height="64" rx="10" />

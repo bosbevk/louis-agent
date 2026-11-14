@@ -199,11 +199,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.puls: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 231 225 L 327.5 225 Q 351.5 225 351.5 201 L 351.5 93 Q 351.5 69 375.5 69 L 544 69" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 231 225 L 544 225" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 231 225 L 327.5 225 Q 351.5 225 351.5 249 L 351.5 513 Q 351.5 537 375.5 537 L 544 537" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 231 225 L 327.5 225 Q 351.5 225 351.5 249 L 351.5 357 Q 351.5 381 375.5 381 L 544 381" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 231 225 L 327.5 225 Q 351.5 225 351.5 249 L 351.5 357 Q 351.5 381 375.5 381 L 544 381" />
+      <path class="cls-line uses" d="M231 225L327.5 225Q351.5 225 351.5 201L351.5 93Q351.5 69 375.5 69L544 69" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M231 225L544 225" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M231 225L327.5 225Q351.5 225 351.5 249L351.5 513Q351.5 537 375.5 537L544 537" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M231 225L327.5 225Q351.5 225 351.5 249L351.5 357Q351.5 381 375.5 381L544 381" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M231 225L327.5 225Q351.5 225 351.5 249L351.5 357Q351.5 381 375.5 381L544 381" />
       <rect class="pic-pill cls-chip implements" x="408.8" y="528" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="447.8" y="540" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip uses" x="429.8" y="60" width="36" height="18" rx="9" />

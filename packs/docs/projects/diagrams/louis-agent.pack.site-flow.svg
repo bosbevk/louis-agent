@@ -138,14 +138,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.site: how it works</text>
     <text class="pic-group" x="1578" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-violet" d="M 274.8 34 L 335 34" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 274.8 34 L 335 34" />
-      <path class="pic-line pic-edge tone-green" d="M 553 34 L 713.2 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 553 34 L 713.2 34" />
-      <path class="pic-line pic-edge tone-violet" d="M 908.4 34 L 968.6 34" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 908.4 34 L 968.6 34" />
-      <path class="pic-line pic-edge tone-violet" d="M 1141 34 L 1341.2 34" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1141 34 L 1341.2 34" />
+      <path class="pic-line pic-edge tone-violet" d="M274.8 34L335 34" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M274.8 34L335 34" />
+      <path class="pic-line pic-edge tone-green" d="M553 34L713.2 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M553 34L713.2 34" />
+      <path class="pic-line pic-edge tone-violet" d="M908.4 34L968.6 34" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M908.4 34L968.6 34" />
+      <path class="pic-line pic-edge tone-violet" d="M1141 34L1341.2 34" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1141 34L1341.2 34" />
       <rect class="pic-pill pic-edge tone-green" x="564.6" y="25" width="113" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="621.1" y="37" text-anchor="middle">shown, or Error</text>
       <rect class="pic-pill pic-edge tone-violet" x="1155.1" y="25" width="148" height="18" rx="9" />

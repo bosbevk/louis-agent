@@ -199,13 +199,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Runbooks: the interface design</text>
     <text class="pic-group" x="1300" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 371 243 L 383 243 Q 395 243 395 231 L 395 99 Q 395 75 419 75 L 611 75" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 371 243 L 383 243 Q 395 243 395 255 L 395 387 Q 395 411 419 411 L 611 411" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 954 243 L 1034 243" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 371 243 L 611 243" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 371 243 L 611 243" />
-      <path class="cls-line holds" d="M 954 75 L 1034 75" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 954 75 L 1034 75" />
+      <path class="cls-line uses" d="M371 243L383 243Q395 243 395 231L395 99Q395 75 419 75L611 75" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M371 243L383 243Q395 243 395 255L395 387Q395 411 419 411L611 411" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M954 243L1034 243" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M371 243L611 243" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M371 243L611 243" />
+      <path class="cls-line holds" d="M954 75L1034 75" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M954 75L1034 75" />
       <rect class="pic-pill cls-chip holds" x="972" y="66" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="993.5" y="78" text-anchor="middle">holds</text>
       <rect class="pic-pill cls-chip uses" x="481.5" y="66" width="43" height="18" rx="9" />

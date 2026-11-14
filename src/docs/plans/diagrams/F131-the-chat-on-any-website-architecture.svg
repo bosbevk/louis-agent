@@ -138,18 +138,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F131 the chat on any website: the architecture</text>
     <text class="pic-group" x="873" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 147 84 L 147 162" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 147 84 L 147 162" />
-      <path class="pic-line pic-edge tone-green" d="M 147 230 L 147 272 Q 147 296 171 296 L 429 296 Q 441 296 441 308 L 441 320" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 230 L 147 272 Q 147 296 171 296 L 429 296 Q 441 296 441 308 L 441 320" />
-      <path class="pic-line pic-edge tone-green" d="M 459 420 L 459 441 Q 459 462 438 462 L 159 462 Q 147 462 147 474 L 147 486" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 420 L 459 441 Q 459 462 438 462 L 159 462 Q 147 462 147 474 L 147 486" />
-      <path class="pic-line pic-edge tone-green" d="M 459 420 L 459 486" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 420 L 459 486" />
-      <path class="pic-line pic-edge tone-green" d="M 459 84 L 459 162 L 459 230 L 459 320" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 84 L 459 162 L 459 230 L 459 320" />
-      <path class="pic-line pic-edge tone-green" d="M 459 420 L 459 441 Q 459 462 480 462 L 759 462 Q 771 462 771 474 L 771 486" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 420 L 459 441 Q 459 462 480 462 L 759 462 Q 771 462 771 474 L 771 486" />
+      <path class="pic-line pic-edge tone-blue" d="M147 84L147 162" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 84L147 162" />
+      <path class="pic-line pic-edge tone-green" d="M147 230L147 272Q147 296 171 296L429 296Q441 296 441 308L441 320" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 230L147 272Q147 296 171 296L429 296Q441 296 441 308L441 320" />
+      <path class="pic-line pic-edge tone-green" d="M459 420L459 441Q459 462 438 462L159 462Q147 462 147 474L147 486" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 420L459 441Q459 462 438 462L159 462Q147 462 147 474L147 486" />
+      <path class="pic-line pic-edge tone-green" d="M459 420L459 486" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 420L459 486" />
+      <path class="pic-line pic-edge tone-green" d="M459 84L459 162L459 230L459 320" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 84L459 162L459 230L459 320" />
+      <path class="pic-line pic-edge tone-green" d="M459 420L459 441Q459 462 480 462L759 462Q771 462 771 474L771 486" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 420L459 441Q459 462 480 462L759 462Q771 462 771 474L771 486" />
       <rect class="pic-pill pic-edge tone-blue" x="153" y="88" width="134" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="220" y="100" text-anchor="middle">postMessage, exact</text>
       <text class="pic-pill-word pic-ink tone-blue" x="220" y="112" text-anchor="middle">origins</text>

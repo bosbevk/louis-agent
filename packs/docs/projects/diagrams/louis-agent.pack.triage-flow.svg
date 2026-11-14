@@ -144,17 +144,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.triage: how it works</text>
     <text class="pic-group" x="2066" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-amber" d="M 234.6 34 L 303.8 34" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 234.6 34 L 303.8 34" />
-      <path class="pic-line pic-edge tone-green" d="M 567.4 34 L 663.5 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 567.4 34 L 663.5 34" />
-      <path class="pic-line pic-edge tone-blue" d="M 873.9 34 L 986.1 34" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 873.9 34 L 986.1 34" />
-      <path class="pic-line pic-edge tone-violet" d="M 1280.1 34 L 1384.2 34" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1280.1 34 L 1384.2 34" />
-      <path class="pic-line pic-edge tone-green" d="M 1693.4 34 L 1846.6 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1693.4 34 L 1846.6 34" />
-      <path class="pic-line pic-edge tone-green reads" d="M 1693.4 34 L 1705.5 34 Q 1717.5 34 1717.5 46 L 1717.5 96 Q 1717.5 120 1741.5 120 L 1846.6 120" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-amber" d="M234.6 34L303.8 34" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M234.6 34L303.8 34" />
+      <path class="pic-line pic-edge tone-green" d="M567.4 34L663.5 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M567.4 34L663.5 34" />
+      <path class="pic-line pic-edge tone-blue" d="M873.9 34L986.1 34" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M873.9 34L986.1 34" />
+      <path class="pic-line pic-edge tone-violet" d="M1280.1 34L1384.2 34" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1280.1 34L1384.2 34" />
+      <path class="pic-line pic-edge tone-green" d="M1693.4 34L1846.6 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1693.4 34L1846.6 34" />
+      <path class="pic-line pic-edge tone-green reads" d="M1693.4 34L1705.5 34Q1717.5 34 1717.5 46L1717.5 96Q1717.5 120 1741.5 120L1846.6 120" marker-end="url(#arrow-green)" />
       <rect class="pic-pill pic-edge tone-green" x="574.9" y="25" width="57" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="603.4" y="37" text-anchor="middle">ReadNew</text>
       <rect class="pic-pill pic-edge tone-blue" x="882.5" y="25" width="71" height="18" rx="9" />

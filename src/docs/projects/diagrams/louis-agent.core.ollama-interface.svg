@@ -193,9 +193,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.ollama: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line creates" d="M 371 76 L 407 76 Q 431 76 431 100 L 431 222 Q 431 246 455 246 L 635 246" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 371 76 L 407 76 Q 431 76 431 100 L 431 222 Q 431 246 455 246 L 635 246" />
-      <path class="cls-line implements" d="M 371 76 L 635 76" marker-end="url(#triangle-violet)" />
+      <path class="cls-line creates" d="M371 76L407 76Q431 76 431 100L431 222Q431 246 455 246L635 246" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M371 76L407 76Q431 76 431 100L431 222Q431 246 455 246L635 246" />
+      <path class="cls-line implements" d="M371 76L635 76" marker-end="url(#triangle-violet)" />
       <rect class="pic-pill cls-chip implements" x="494" y="67" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="533" y="79" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip creates" x="462.5" y="237" width="141" height="18" rx="9" />

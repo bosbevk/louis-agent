@@ -138,20 +138,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.7 component diagrams: the showroom's start, as the JSON holds it</text>
     <text class="pic-group" x="1234" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-teal" d="M 641.4 52 L 641.4 64 Q 641.4 76 629.4 76 L 228.8 76 Q 207.8 76 207.8 97 L 207.8 118" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 641.4 52 L 641.4 64 Q 641.4 76 629.4 76 L 228.8 76 Q 207.8 76 207.8 97 L 207.8 118" />
-      <path class="pic-line pic-edge tone-teal" d="M 641.4 52 L 641.4 118" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 641.4 52 L 641.4 118" />
-      <path class="pic-line pic-edge tone-teal" d="M 641.4 52 L 641.4 64 Q 641.4 76 653.4 76 L 1054 76 Q 1075 76 1075 97 L 1075 118" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 641.4 52 L 641.4 64 Q 641.4 76 653.4 76 L 1054 76 Q 1075 76 1075 97 L 1075 118" />
-      <path class="pic-line pic-edge tone-green" d="M 207.8 218 L 207.8 284" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 207.8 218 L 207.8 284" />
-      <path class="pic-line pic-edge tone-green" d="M 207.8 352 L 207.8 418" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 207.8 352 L 207.8 418" />
-      <path class="pic-line pic-edge tone-green" d="M 207.8 352 L 207.8 364 Q 207.8 376 219.8 376 L 620.4 376 Q 641.4 376 641.4 397 L 641.4 418" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 207.8 352 L 207.8 364 Q 207.8 376 219.8 376 L 620.4 376 Q 641.4 376 641.4 397 L 641.4 418" />
-      <path class="pic-line pic-edge tone-green" d="M 207.8 502 L 207.8 568" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 207.8 502 L 207.8 568" />
+      <path class="pic-line pic-edge tone-teal" d="M641.4 52L641.4 64Q641.4 76 629.4 76L228.8 76Q207.8 76 207.8 97L207.8 118" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M641.4 52L641.4 64Q641.4 76 629.4 76L228.8 76Q207.8 76 207.8 97L207.8 118" />
+      <path class="pic-line pic-edge tone-teal" d="M641.4 52L641.4 118" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M641.4 52L641.4 118" />
+      <path class="pic-line pic-edge tone-teal" d="M641.4 52L641.4 64Q641.4 76 653.4 76L1054 76Q1075 76 1075 97L1075 118" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M641.4 52L641.4 64Q641.4 76 653.4 76L1054 76Q1075 76 1075 97L1075 118" />
+      <path class="pic-line pic-edge tone-green" d="M207.8 218L207.8 284" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M207.8 218L207.8 284" />
+      <path class="pic-line pic-edge tone-green" d="M207.8 352L207.8 418" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M207.8 352L207.8 418" />
+      <path class="pic-line pic-edge tone-green" d="M207.8 352L207.8 364Q207.8 376 219.8 376L620.4 376Q641.4 376 641.4 397L641.4 418" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M207.8 352L207.8 364Q207.8 376 219.8 376L620.4 376Q641.4 376 641.4 397L641.4 418" />
+      <path class="pic-line pic-edge tone-green" d="M207.8 502L207.8 568" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M207.8 502L207.8 568" />
       <rect class="pic-pill pic-edge tone-teal" x="213.8" y="80" width="36" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-teal" x="231.8" y="92" text-anchor="middle">Root</text>
       <rect class="pic-pill pic-edge tone-teal" x="647.4" y="80" width="50" height="18" rx="9" />

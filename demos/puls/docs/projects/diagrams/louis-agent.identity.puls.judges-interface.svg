@@ -202,14 +202,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.puls.judges: the interface design</text>
     <text class="pic-group" x="1965" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 950 55 L 1102 55" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1452 55 L 1692 55" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 1452 55 L 1464 55 Q 1476 55 1476 67 L 1476 159 Q 1476 183 1500 183 L 1692 183" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 566.4 55 L 686.4 55" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 566.4 55 L 686.4 55" />
-      <path class="cls-line implements" d="M 566.4 55 L 578.4 55 Q 590.4 55 590.4 67 L 590.4 159 Q 590.4 183 614.4 183 L 686.4 183" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 238 55 L 318 55" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 238 55 L 318 55" />
+      <path class="cls-line uses" d="M950 55L1102 55" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1452 55L1692 55" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1452 55L1464 55Q1476 55 1476 67L1476 159Q1476 183 1500 183L1692 183" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M566.4 55L686.4 55" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M566.4 55L686.4 55" />
+      <path class="cls-line implements" d="M566.4 55L578.4 55Q590.4 55 590.4 67L590.4 159Q590.4 183 614.4 183L686.4 183" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M238 55L318 55" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M238 55L318 55" />
       <rect class="pic-pill cls-chip holds" x="256" y="46" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="277.5" y="58" text-anchor="middle">holds</text>
       <rect class="pic-pill cls-chip implements" x="599.4" y="174" width="78" height="18" rx="9" />

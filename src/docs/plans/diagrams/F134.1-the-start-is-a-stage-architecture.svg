@@ -141,14 +141,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.1 the start is a stage: the architecture</text>
     <text class="pic-group" x="1488" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-green" d="M 764.8 42 L 824.8 42" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 764.8 42 L 824.8 42" />
-      <path class="pic-line pic-edge tone-violet" d="M 1080.8 42 L 1140.8 42" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1080.8 42 L 1140.8 42" />
-      <path class="pic-line pic-edge tone-blue" d="M 379 42 L 448 42" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 379 42 L 448 42" />
-      <path class="pic-line pic-edge tone-violet" d="M 1080.8 42 L 1095.8 42 Q 1110.8 42 1110.8 57 L 1110.8 129 Q 1110.8 144 1125.8 144 L 1140.8 144" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1080.8 42 L 1095.8 42 Q 1110.8 42 1110.8 57 L 1110.8 129 Q 1110.8 144 1125.8 144 L 1140.8 144" />
+      <path class="pic-line pic-edge tone-green" d="M764.8 42L824.8 42" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M764.8 42L824.8 42" />
+      <path class="pic-line pic-edge tone-violet" d="M1080.8 42L1140.8 42" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1080.8 42L1140.8 42" />
+      <path class="pic-line pic-edge tone-blue" d="M379 42L448 42" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M379 42L448 42" />
+      <path class="pic-line pic-edge tone-violet" d="M1080.8 42L1095.8 42Q1110.8 42 1110.8 57L1110.8 129Q1110.8 144 1125.8 144L1140.8 144" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1080.8 42L1095.8 42Q1110.8 42 1110.8 57L1110.8 129Q1110.8 144 1125.8 144L1140.8 144" />
       <path class="pic-panel flow-shape pic-edge tone-blue" d="M18 8L388 8L370 76L0 76Z" />
       <rect class="pic-fill tone-blue" x="28" y="28" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(34 34) scale(0.6667)">

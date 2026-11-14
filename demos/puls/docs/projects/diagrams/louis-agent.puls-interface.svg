@@ -196,14 +196,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.puls: the interface design</text>
     <text class="pic-group" x="1366" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 448 225 L 600.3 225" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 448 225 L 488.2 225 Q 512.2 225 512.2 201 L 512.2 93 Q 512.2 69 536.2 69 L 600.3 69" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 448 381 L 488.2 381 Q 512.2 381 512.2 405 L 512.2 495 Q 512.2 519 536.2 519 L 600.3 519" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 448 537 L 600.3 537" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 448 537 L 488.2 537 Q 512.2 537 512.2 561 L 512.2 669 Q 512.2 693 536.2 693 L 600.3 693" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 448 381 L 600.3 381" marker-end="url(#open)" />
-      <path class="cls-line holds" d="M 886.7 693 L 967 693" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 886.7 693 L 967 693" />
+      <path class="cls-line uses" d="M448 225L600.3 225" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M448 225L488.2 225Q512.2 225 512.2 201L512.2 93Q512.2 69 536.2 69L600.3 69" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M448 381L488.2 381Q512.2 381 512.2 405L512.2 495Q512.2 519 536.2 519L600.3 519" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M448 537L600.3 537" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M448 537L488.2 537Q512.2 537 512.2 561L512.2 669Q512.2 693 536.2 693L600.3 693" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M448 381L600.3 381" marker-end="url(#open)" />
+      <path class="cls-line holds" d="M886.7 693L967 693" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M886.7 693L967 693" />
       <rect class="pic-pill cls-chip uses" x="520.7" y="216" width="71" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="556.2" y="228" text-anchor="middle">registers</text>
       <rect class="pic-pill cls-chip uses" x="538.2" y="60" width="36" height="18" rx="9" />

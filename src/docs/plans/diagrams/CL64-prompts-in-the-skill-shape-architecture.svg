@@ -144,21 +144,21 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL64 prompts in the skill shape: the architecture</text>
     <text class="pic-group" x="637" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-amber" d="M 154.6 68 L 154.6 134" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 154.6 68 L 154.6 134" />
-      <path class="pic-line pic-edge tone-amber reads" d="M 154.6 218 L 154.6 284" marker-end="url(#arrow-amber)" />
-      <path class="pic-line pic-edge tone-amber" d="M 154.6 218 L 154.6 239 Q 154.6 260 175.6 260 L 469.8 260 Q 481.8 260 481.8 272 L 481.8 284" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 154.6 218 L 154.6 239 Q 154.6 260 175.6 260 L 469.8 260 Q 481.8 260 481.8 272 L 481.8 284" />
-      <path class="pic-line pic-edge tone-violet" d="M 481.8 352 L 481.8 412" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 481.8 352 L 481.8 412" />
-      <path class="pic-line pic-edge tone-violet" d="M 481.8 480 L 481.8 540" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 481.8 480 L 481.8 540" />
-      <path class="pic-line pic-edge tone-teal reads" d="M 481.8 608 L 481.8 629 Q 481.8 650 460.8 650 L 166.6 650 Q 154.6 650 154.6 662 L 154.6 674" marker-end="url(#arrow-teal)" />
-      <path class="pic-line pic-edge tone-teal" d="M 481.8 608 L 481.8 674" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 481.8 608 L 481.8 674" />
-      <path class="pic-line pic-edge tone-red" d="M 481.8 742 L 481.8 754 Q 481.8 766 469.8 766 L 175.6 766 Q 154.6 766 154.6 787 L 154.6 808" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 481.8 742 L 481.8 754 Q 481.8 766 469.8 766 L 175.6 766 Q 154.6 766 154.6 787 L 154.6 808" />
-      <path class="pic-line pic-edge tone-red reads" d="M 481.8 742 L 481.8 808" marker-end="url(#arrow-red)" />
+      <path class="pic-line pic-edge tone-amber" d="M154.6 68L154.6 134" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M154.6 68L154.6 134" />
+      <path class="pic-line pic-edge tone-amber reads" d="M154.6 218L154.6 284" marker-end="url(#arrow-amber)" />
+      <path class="pic-line pic-edge tone-amber" d="M154.6 218L154.6 239Q154.6 260 175.6 260L469.8 260Q481.8 260 481.8 272L481.8 284" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M154.6 218L154.6 239Q154.6 260 175.6 260L469.8 260Q481.8 260 481.8 272L481.8 284" />
+      <path class="pic-line pic-edge tone-violet" d="M481.8 352L481.8 412" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M481.8 352L481.8 412" />
+      <path class="pic-line pic-edge tone-violet" d="M481.8 480L481.8 540" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M481.8 480L481.8 540" />
+      <path class="pic-line pic-edge tone-teal reads" d="M481.8 608L481.8 629Q481.8 650 460.8 650L166.6 650Q154.6 650 154.6 662L154.6 674" marker-end="url(#arrow-teal)" />
+      <path class="pic-line pic-edge tone-teal" d="M481.8 608L481.8 674" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M481.8 608L481.8 674" />
+      <path class="pic-line pic-edge tone-red" d="M481.8 742L481.8 754Q481.8 766 469.8 766L175.6 766Q154.6 766 154.6 787L154.6 808" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M481.8 742L481.8 754Q481.8 766 469.8 766L175.6 766Q154.6 766 154.6 787L154.6 808" />
+      <path class="pic-line pic-edge tone-red reads" d="M481.8 742L481.8 808" marker-end="url(#arrow-red)" />
       <rect class="pic-pill pic-edge tone-amber" x="160.6" y="72" width="106" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-amber" x="213.6" y="84" text-anchor="middle">says the shape</text>
       <rect class="pic-pill pic-edge tone-amber" x="160.6" y="222" width="57" height="18" rx="9" />

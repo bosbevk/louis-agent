@@ -141,18 +141,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.leads: how it works</text>
     <text class="pic-group" x="1566" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-violet" d="M 343.2 34 L 463.3 34" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 343.2 34 L 463.3 34" />
-      <path class="pic-line pic-edge tone-green" d="M 681.3 34 L 741.4 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 681.3 34 L 741.4 34" />
-      <path class="pic-line pic-edge tone-teal" d="M 1011.8 34 L 1099.9 34" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1011.8 34 L 1099.9 34" />
-      <path class="pic-line pic-edge tone-teal" d="M 1011.8 34 L 1023.8 34 Q 1035.9 34 1035.9 46 L 1035.9 96 Q 1035.9 120 1059.9 120 L 1099.9 120" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1011.8 34 L 1023.8 34 Q 1035.9 34 1035.9 46 L 1035.9 96 Q 1035.9 120 1059.9 120 L 1099.9 120" />
-      <path class="pic-line pic-edge tone-green" d="M 1317.9 34 L 1378 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1317.9 34 L 1378 34" />
-      <path class="pic-line pic-edge tone-green" d="M 1317.9 120 L 1387 120" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1317.9 120 L 1387 120" />
+      <path class="pic-line pic-edge tone-violet" d="M343.2 34L463.3 34" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M343.2 34L463.3 34" />
+      <path class="pic-line pic-edge tone-green" d="M681.3 34L741.4 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M681.3 34L741.4 34" />
+      <path class="pic-line pic-edge tone-teal" d="M1011.8 34L1099.9 34" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1011.8 34L1099.9 34" />
+      <path class="pic-line pic-edge tone-teal" d="M1011.8 34L1023.8 34Q1035.9 34 1035.9 46L1035.9 96Q1035.9 120 1059.9 120L1099.9 120" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1011.8 34L1023.8 34Q1035.9 34 1035.9 46L1035.9 96Q1035.9 120 1059.9 120L1099.9 120" />
+      <path class="pic-line pic-edge tone-green" d="M1317.9 34L1378 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1317.9 34L1378 34" />
+      <path class="pic-line pic-edge tone-green" d="M1317.9 120L1387 120" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1317.9 120L1387 120" />
       <rect class="pic-pill pic-edge tone-violet" x="352.2" y="25" width="78" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-violet" x="391.2" y="37" text-anchor="middle">on the yes</text>
       <rect class="pic-pill pic-edge tone-teal" x="1046.4" y="25" width="43" height="18" rx="9" />

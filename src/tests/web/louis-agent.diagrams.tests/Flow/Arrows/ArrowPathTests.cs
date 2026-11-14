@@ -12,26 +12,27 @@ public class ArrowPathTests
     private static ArrowPath Way() => ArrowPath.From(10, 20).To(40, 20).Round(50, 20, 50, 30).To(50, 80);
 
     /// <summary>
-    /// Its text is the router's: room round every letter, a rounded turn as a curve through its corner.
+    /// Its text is a path's: a letter and its numbers, and a rounded turn as a curve through its corner.
     /// </summary>
     [Test]
-    public void ItsText_IsTheRouters() =>
-        Assert.That(Way().Text, Is.EqualTo("M 10 20 L 40 20 Q 50 20 50 30 L 50 80"));
+    public void ItsText_IsAPaths_ATurnACurveThroughItsCorner() =>
+        Assert.That(Way().Text, Is.EqualTo("M10 20L40 20Q50 20 50 30L50 80"));
 
     /// <summary>
-    /// Its numbers are kept as the picture writes them, to one decimal, since that is what every later sum read
-    /// when the way was a text: moved, a number is rounded again from there, not from what it was before.
+    /// Its numbers are the layout's own, exact, and are rounded to one decimal only where its text is written. So
+    /// a way that is moved is moved from where it stood, not from where it was written.
     /// </summary>
     [Test]
-    public void ItsNumbers_AreKeptAsWritten()
+    public void ItsNumbers_AreExact_AndRoundedOnlyWhereItsTextIsWritten()
     {
         var way = ArrowPath.From(10.26, 0.04).To(40.24, 0.04);
 
         Assert.Multiple(() =>
         {
-            Assert.That((way.Start.X, way.Start.Y), Is.EqualTo((10.3, 0.0)));
-            Assert.That(way.Text, Is.EqualTo("M 10.3 0 L 40.2 0"));
-            Assert.That(way.Moved(0.05).Text, Is.EqualTo("M 10.4 0 L 40.3 0"), "10.3 and 40.2, moved, then written");
+            Assert.That((way.Start.X, way.Start.Y), Is.EqualTo((10.26, 0.04)));
+            Assert.That(way.Text, Is.EqualTo("M10.3 0L40.2 0"));
+            Assert.That(way.Moved(0.05).Text, Is.EqualTo("M10.3 0L40.3 0"),
+                "10.31 and 40.29, written");
         });
     }
 
@@ -41,7 +42,7 @@ public class ArrowPathTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Way().Turned().Text, Is.EqualTo("M 20 10 L 20 40 Q 20 50 30 50 L 80 50"));
+            Assert.That(Way().Turned().Text, Is.EqualTo("M20 10L20 40Q20 50 30 50L80 50"));
             Assert.That(Way().Turned().Turned(), Is.EqualTo(Way()));
         });
     }
@@ -49,7 +50,7 @@ public class ArrowPathTests
     /// <summary>Moved, every place is further across and as far down as it was.</summary>
     [Test]
     public void Moved_EveryPlaceIsFurtherAcross() =>
-        Assert.That(Way().Moved(5.5).Text, Is.EqualTo("M 15.5 20 L 45.5 20 Q 55.5 20 55.5 30 L 55.5 80"));
+        Assert.That(Way().Moved(5.5).Text, Is.EqualTo("M15.5 20L45.5 20Q55.5 20 55.5 30L55.5 80"));
 
     /// <summary>
     /// Joined, two ways are one: the second's start is a place the line runs straight through, as a long arrow's
@@ -62,7 +63,7 @@ public class ArrowPathTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(joined.Text, Is.EqualTo("M 0 5 L 30 5 L 30 5 L 60 5"));
+            Assert.That(joined.Text, Is.EqualTo("M0 5L30 5L30 5L60 5"));
             Assert.That(joined.Pieces.Select(piece => piece.Turn), Is.EqualTo(new[]
             {
                 ArrowTurn.Start, ArrowTurn.Line, ArrowTurn.Line, ArrowTurn.Line

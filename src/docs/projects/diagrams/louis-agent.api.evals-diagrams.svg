@@ -138,20 +138,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The eval studio on the API: what a program maps, and what the studio holds</text>
     <text class="pic-group" x="1229" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 463.2 68 L 463.2 83 Q 463.2 98 478.2 98 L 1086.8 98 Q 1101.8 98 1101.8 113 L 1101.8 128 L 1101.8 196 L 1101.8 262" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 463.2 68 L 463.2 83 Q 463.2 98 478.2 98 L 1086.8 98 Q 1101.8 98 1101.8 113 L 1101.8 128 L 1101.8 196 L 1101.8 262" />
-      <path class="pic-line pic-edge tone-blue" d="M 463.2 68 L 463.2 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 463.2 68 L 463.2 128" />
-      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 1071.8 238 Q 1083.8 238 1083.8 250 L 1083.8 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 1071.8 238 Q 1083.8 238 1083.8 250 L 1083.8 262" />
-      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 217 Q 463.2 238 442.2 238 L 160.4 238 Q 148.4 238 148.4 250 L 148.4 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 463.2 196 L 463.2 217 Q 463.2 238 442.2 238 L 160.4 238 Q 148.4 238 148.4 250 L 148.4 262" />
-      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 463.2 196 L 463.2 262" />
-      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 766 238 Q 778 238 778 250 L 778 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 766 238 Q 778 238 778 250 L 778 262" />
-      <path class="pic-line pic-edge tone-green" d="M 148.4 346 L 148.4 406" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 148.4 346 L 148.4 406" />
+      <path class="pic-line pic-edge tone-blue" d="M463.2 68L463.2 83Q463.2 98 478.2 98L1086.8 98Q1101.8 98 1101.8 113L1101.8 128L1101.8 196L1101.8 262" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M463.2 68L463.2 83Q463.2 98 478.2 98L1086.8 98Q1101.8 98 1101.8 113L1101.8 128L1101.8 196L1101.8 262" />
+      <path class="pic-line pic-edge tone-blue" d="M463.2 68L463.2 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M463.2 68L463.2 128" />
+      <path class="pic-line pic-edge tone-green" d="M463.2 196L463.2 217Q463.2 238 484.2 238L1071.8 238Q1083.8 238 1083.8 250L1083.8 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M463.2 196L463.2 217Q463.2 238 484.2 238L1071.8 238Q1083.8 238 1083.8 250L1083.8 262" />
+      <path class="pic-line pic-edge tone-green" d="M463.2 196L463.2 217Q463.2 238 442.2 238L160.4 238Q148.4 238 148.4 250L148.4 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M463.2 196L463.2 217Q463.2 238 442.2 238L160.4 238Q148.4 238 148.4 250L148.4 262" />
+      <path class="pic-line pic-edge tone-green" d="M463.2 196L463.2 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M463.2 196L463.2 262" />
+      <path class="pic-line pic-edge tone-green" d="M463.2 196L463.2 217Q463.2 238 484.2 238L766 238Q778 238 778 250L778 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M463.2 196L463.2 217Q463.2 238 484.2 238L766 238Q778 238 778 250L778 262" />
+      <path class="pic-line pic-edge tone-green" d="M148.4 346L148.4 406" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M148.4 346L148.4 406" />
       <rect class="pic-pill pic-edge tone-green" x="469.2" y="200" width="99" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="518.7" y="212" text-anchor="middle">MapAdminGroup</text>
       <rect class="pic-panel" x="323.8" y="0" width="278.8" height="68" rx="10" />

@@ -141,28 +141,28 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The code-review app: its pages, the framework's shells and the API</text>
     <text class="pic-group" x="619.2" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M 436.2 538 L 436.2 598" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 436.2 538 L 436.2 598" />
-      <path class="pic-line pic-edge tone-blue" d="M 139.4 52 L 139.4 112" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 139.4 52 L 139.4 112" />
-      <path class="pic-line pic-edge tone-violet" d="M 436.2 52 L 436.2 112" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 436.2 52 L 436.2 112" />
-      <path class="pic-line pic-edge tone-green" d="M 436.2 164 L 436.2 179 Q 436.2 194 421.2 194 L 154.4 194 Q 139.4 194 139.4 209 L 139.4 224" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 436.2 164 L 436.2 179 Q 436.2 194 421.2 194 L 154.4 194 Q 139.4 194 139.4 209 L 139.4 224" />
-      <path class="pic-line pic-edge tone-green" d="M 436.2 164 L 436.2 224" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 436.2 164 L 436.2 224" />
-      <path class="pic-line pic-edge tone-green" d="M 139.4 292 L 139.4 313 Q 139.4 334 160.4 334 L 406.2 334 Q 418.2 334 418.2 346 L 418.2 358" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 139.4 292 L 139.4 313 Q 139.4 334 160.4 334 L 406.2 334 Q 418.2 334 418.2 346 L 418.2 358" />
-      <path class="pic-line pic-edge tone-green" d="M 436.2 292 L 436.2 358" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 436.2 292 L 436.2 358" />
-      <path class="pic-line pic-edge tone-green" d="M 436.2 410 L 436.2 470" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 436.2 410 L 436.2 470" />
-      <path class="pic-line pic-edge tone-violet" d="M 436.2 650 L 436.2 710" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 436.2 650 L 436.2 710" />
-      <path class="pic-line pic-edge tone-green" d="M 139.4 292 L 139.4 358 L 139.4 410 L 139.4 470 L 139.4 538 L 139.4 598 L 139.4 650 L 139.4 665 Q 139.4 680 154.4 680 L 403.2 680 Q 418.2 680 418.2 695 L 418.2 710" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 139.4 292 L 139.4 358 L 139.4 410 L 139.4 470 L 139.4 538 L 139.4 598 L 139.4 650 L 139.4 665 Q 139.4 680 154.4 680 L 403.2 680 Q 418.2 680 418.2 695 L 418.2 710" />
-      <path class="pic-line pic-edge tone-green" d="M 436.2 292 L 436.2 313 Q 436.2 334 457.2 334 L 581.6 334 Q 593.6 334 593.6 346 L 593.6 358 L 593.6 410 L 593.6 470 L 593.6 538 L 593.6 598 L 593.6 650 L 593.6 665 Q 593.6 680 578.6 680 L 469.2 680 Q 454.2 680 454.2 695 L 454.2 710" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 436.2 292 L 436.2 313 Q 436.2 334 457.2 334 L 581.6 334 Q 593.6 334 593.6 346 L 593.6 358 L 593.6 410 L 593.6 470 L 593.6 538 L 593.6 598 L 593.6 650 L 593.6 665 Q 593.6 680 578.6 680 L 469.2 680 Q 454.2 680 454.2 695 L 454.2 710" />
+      <path class="pic-line pic-edge tone-blue" d="M436.2 538L436.2 598" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M436.2 538L436.2 598" />
+      <path class="pic-line pic-edge tone-blue" d="M139.4 52L139.4 112" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M139.4 52L139.4 112" />
+      <path class="pic-line pic-edge tone-violet" d="M436.2 52L436.2 112" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M436.2 52L436.2 112" />
+      <path class="pic-line pic-edge tone-green" d="M436.2 164L436.2 179Q436.2 194 421.2 194L154.4 194Q139.4 194 139.4 209L139.4 224" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M436.2 164L436.2 179Q436.2 194 421.2 194L154.4 194Q139.4 194 139.4 209L139.4 224" />
+      <path class="pic-line pic-edge tone-green" d="M436.2 164L436.2 224" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M436.2 164L436.2 224" />
+      <path class="pic-line pic-edge tone-green" d="M139.4 292L139.4 313Q139.4 334 160.4 334L406.2 334Q418.2 334 418.2 346L418.2 358" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M139.4 292L139.4 313Q139.4 334 160.4 334L406.2 334Q418.2 334 418.2 346L418.2 358" />
+      <path class="pic-line pic-edge tone-green" d="M436.2 292L436.2 358" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M436.2 292L436.2 358" />
+      <path class="pic-line pic-edge tone-green" d="M436.2 410L436.2 470" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M436.2 410L436.2 470" />
+      <path class="pic-line pic-edge tone-violet" d="M436.2 650L436.2 710" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M436.2 650L436.2 710" />
+      <path class="pic-line pic-edge tone-green" d="M139.4 292L139.4 358L139.4 410L139.4 470L139.4 538L139.4 598L139.4 650L139.4 665Q139.4 680 154.4 680L403.2 680Q418.2 680 418.2 695L418.2 710" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M139.4 292L139.4 358L139.4 410L139.4 470L139.4 538L139.4 598L139.4 650L139.4 665Q139.4 680 154.4 680L403.2 680Q418.2 680 418.2 695L418.2 710" />
+      <path class="pic-line pic-edge tone-green" d="M436.2 292L436.2 313Q436.2 334 457.2 334L581.6 334Q593.6 334 593.6 346L593.6 358L593.6 410L593.6 470L593.6 538L593.6 598L593.6 650L593.6 665Q593.6 680 578.6 680L469.2 680Q454.2 680 454.2 695L454.2 710" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M436.2 292L436.2 313Q436.2 334 457.2 334L581.6 334Q593.6 334 593.6 346L593.6 358L593.6 410L593.6 470L593.6 538L593.6 598L593.6 650L593.6 665Q593.6 680 578.6 680L469.2 680Q454.2 680 454.2 695L454.2 710" />
       <rect class="pic-pill pic-edge tone-green" x="145.4" y="296" width="162" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="226.4" y="308" text-anchor="middle">Review or Ask: a draft</text>
       <rect class="pic-pill pic-edge tone-green" x="442.2" y="296" width="113" height="18" rx="9" />

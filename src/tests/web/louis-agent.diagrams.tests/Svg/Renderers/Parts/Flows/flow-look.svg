@@ -128,13 +128,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="flow" transform="translate(0 44)">
     <rect class="pic-panel" x="520" y="122" width="442" height="98" rx="14" />
     <text class="pic-group" x="534" y="141" text-anchor="start">Triage</text>
-    <path class="pic-line pic-edge tone-blue" d="M 196 68 L 256 68" marker-end="url(#arrow-blue)" />
-    <path class="pic-march" d="M 196 68 L 256 68" />
-    <path class="pic-line pic-edge" d="M 448 68 L 532 68" marker-end="url(#arrow)" />
-    <path class="pic-march" d="M 448 68 L 532 68" />
-    <path class="pic-line pic-edge" d="M 448 68 L 460 68 Q 472 68 472 80 L 472 158 Q 472 182 496 182 L 532 182" marker-end="url(#arrow)" />
-    <path class="pic-march" d="M 448 68 L 460 68 Q 472 68 472 80 L 472 158 Q 472 182 496 182 L 532 182" />
-    <path class="pic-line pic-edge tone-teal reads" d="M 702 182 L 771 182" marker-end="url(#arrow-teal)" />
+    <path class="pic-line pic-edge tone-blue" d="M196 68L256 68" marker-end="url(#arrow-blue)" />
+    <path class="pic-march" d="M196 68L256 68" />
+    <path class="pic-line pic-edge" d="M448 68L532 68" marker-end="url(#arrow)" />
+    <path class="pic-march" d="M448 68L532 68" />
+    <path class="pic-line pic-edge" d="M448 68L460 68Q472 68 472 80L472 158Q472 182 496 182L532 182" marker-end="url(#arrow)" />
+    <path class="pic-march" d="M448 68L460 68Q472 68 472 80L472 158Q472 182 496 182L532 182" />
+    <path class="pic-line pic-edge tone-teal reads" d="M702 182L771 182" marker-end="url(#arrow-teal)" />
     <rect class="pic-pill pic-edge" x="491" y="59" width="22" height="18" rx="9" />
     <text class="pic-pill-word pic-ink" x="502" y="71" text-anchor="middle">no</text>
     <rect class="pic-pill pic-edge" x="487.5" y="173" width="29" height="18" rx="9" />

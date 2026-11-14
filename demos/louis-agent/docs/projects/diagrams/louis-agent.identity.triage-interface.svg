@@ -196,13 +196,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.triage: the interface design</text>
     <text class="pic-group" x="1019" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 224 204 L 236.1 204 Q 248.1 204 248.1 192 L 248.1 86 Q 248.1 62 272.1 62 L 304.2 62" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 224 204 L 304.2 204" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 689.2 488 L 793.4 488" marker-end="url(#open)" />
-      <path class="cls-line holds" d="M 224 204 L 236.1 204 Q 248.1 204 248.1 216.1 L 248.1 322 Q 248.1 346 272.1 346 L 304.2 346" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 224 204 L 236.1 204 Q 248.1 204 248.1 216.1 L 248.1 322 Q 248.1 346 272.1 346 L 304.2 346" />
-      <path class="cls-line holds" d="M 224 204 L 236.1 204 Q 248.1 204 248.1 216.1 L 248.1 464 Q 248.1 488 272.1 488 L 304.2 488" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 224 204 L 236.1 204 Q 248.1 204 248.1 216.1 L 248.1 464 Q 248.1 488 272.1 488 L 304.2 488" />
+      <path class="cls-line uses" d="M224 204L236.1 204Q248.1 204 248.1 192L248.1 86Q248.1 62 272.1 62L304.2 62" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M224 204L304.2 204" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M689.2 488L793.4 488" marker-end="url(#open)" />
+      <path class="cls-line holds" d="M224 204L236.1 204Q248.1 204 248.1 216.1L248.1 322Q248.1 346 272.1 346L304.2 346" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M224 204L236.1 204Q248.1 204 248.1 216.1L248.1 322Q248.1 346 272.1 346L304.2 346" />
+      <path class="cls-line holds" d="M224 204L236.1 204Q248.1 204 248.1 216.1L248.1 464Q248.1 488 272.1 488L304.2 488" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M224 204L236.1 204Q248.1 204 248.1 216.1L248.1 464Q248.1 488 272.1 488L304.2 488" />
       <rect class="pic-pill cls-chip uses" x="258.2" y="53" width="36" height="18" rx="9" />
       <text class="pic-pill-word cls-word quiet" x="276.2" y="65" text-anchor="middle">uses</text>
       <rect class="pic-pill cls-chip holds" x="254.7" y="337" width="43" height="18" rx="9" />

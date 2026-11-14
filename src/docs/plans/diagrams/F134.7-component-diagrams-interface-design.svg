@@ -202,23 +202,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.7 component diagrams: the interface design</text>
     <text class="pic-group" x="2296" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 294 351 L 414 351" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 294 831 L 306 831 Q 318 831 318 819 L 318 615 Q 318 591 342 591 L 414 591" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 813 591 L 845 591 Q 869 591 869 615 L 869 807 Q 869 831 893 831 L 941 831" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 294 831 L 306 831 Q 318 831 318 843 L 318 1047 Q 318 1071 342 1071 L 414 1071" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 294 351 L 306 351 Q 318 351 318 339 L 318 135 Q 318 111 342 111 L 414 111" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 294 351 L 306 351 Q 318 351 318 339 L 318 135 Q 318 111 342 111 L 414 111" />
-      <path class="cls-line creates" d="M 813 591 L 941 591" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 813 591 L 941 591" />
-      <path class="cls-line implements" d="M 294 831 L 414 831" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 813 111 L 941 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 813 111 L 941 111" />
-      <path class="cls-line holds" d="M 1389 111 L 1597 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1389 111 L 1597 111" />
-      <path class="cls-line holds" d="M 1389 111 L 1401 111 Q 1413 111 1413 123 L 1413 327 Q 1413 351 1437 351 L 1597 351" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1389 111 L 1401 111 Q 1413 111 1413 123 L 1413 327 Q 1413 351 1437 351 L 1597 351" />
-      <path class="cls-line holds" d="M 1863 111 L 2079 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1863 111 L 2079 111" />
+      <path class="cls-line uses" d="M294 351L414 351" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M294 831L306 831Q318 831 318 819L318 615Q318 591 342 591L414 591" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M813 591L845 591Q869 591 869 615L869 807Q869 831 893 831L941 831" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M294 831L306 831Q318 831 318 843L318 1047Q318 1071 342 1071L414 1071" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M294 351L306 351Q318 351 318 339L318 135Q318 111 342 111L414 111" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M294 351L306 351Q318 351 318 339L318 135Q318 111 342 111L414 111" />
+      <path class="cls-line creates" d="M813 591L941 591" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M813 591L941 591" />
+      <path class="cls-line implements" d="M294 831L414 831" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M813 111L941 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M813 111L941 111" />
+      <path class="cls-line holds" d="M1389 111L1597 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1389 111L1597 111" />
+      <path class="cls-line holds" d="M1389 111L1401 111Q1413 111 1413 123L1413 327Q1413 351 1437 351L1597 351" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1389 111L1401 111Q1413 111 1413 123L1413 327Q1413 351 1437 351L1597 351" />
+      <path class="cls-line holds" d="M1863 111L2079 111" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1863 111L2079 111" />
       <rect class="pic-pill cls-chip holds" x="831" y="102" width="43" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="852.5" y="114" text-anchor="middle">holds</text>
       <rect class="pic-pill cls-chip holds" x="1473" y="102" width="64" height="18" rx="9" />

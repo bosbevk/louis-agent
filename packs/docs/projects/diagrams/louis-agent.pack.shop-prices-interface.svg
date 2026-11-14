@@ -202,23 +202,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.shop-prices: the interface design</text>
     <text class="pic-group" x="1655" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 1194 204 L 1354 204" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 736 204 L 768 204 Q 792 204 792 228 L 792 322 Q 792 346 816 346 L 872 346 L 1194 346 L 1354 346" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 294 204 L 366 204 Q 390 204 390 180 L 390 74 Q 390 62 402 62 L 414 62" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 294 204 L 366 204 Q 390 204 390 180 L 390 74 Q 390 62 402 62 L 414 62" />
-      <path class="cls-line creates" d="M 736 62 L 768 62 Q 792 62 792 86 L 792 171 Q 792 195 816 195 L 872 195" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 736 62 L 768 62 Q 792 62 792 86 L 792 171 Q 792 195 816 195 L 872 195" />
-      <path class="cls-line creates" d="M 1194 62 L 1354 62" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 1194 62 L 1354 62" />
-      <path class="cls-line creates" d="M 294 204 L 414 204" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 294 204 L 414 204" />
-      <path class="cls-line creates" d="M 294 204 L 366 204 Q 390 204 390 228 L 390 334 Q 390 346 402 346 L 414 346" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 294 204 L 366 204 Q 390 204 390 228 L 390 334 Q 390 346 402 346 L 414 346" />
-      <path class="cls-line implements" d="M 294 488 L 414 488 L 736 488 L 872 488 L 1194 488 L 1258 488 Q 1282 488 1282 464 L 1282 388 Q 1282 364 1306 364 L 1354 364" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 736 62 L 872 62" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 736 62 L 872 62" />
-      <path class="cls-line holds" d="M 1194 62 L 1258 62 Q 1282 62 1282 86 L 1282 304 Q 1282 328 1306 328 L 1354 328" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1194 62 L 1258 62 Q 1282 62 1282 86 L 1282 304 Q 1282 328 1306 328 L 1354 328" />
+      <path class="cls-line uses" d="M1194 204L1354 204" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M736 204L768 204Q792 204 792 228L792 322Q792 346 816 346L872 346L1194 346L1354 346" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M294 204L366 204Q390 204 390 180L390 74Q390 62 402 62L414 62" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M294 204L366 204Q390 204 390 180L390 74Q390 62 402 62L414 62" />
+      <path class="cls-line creates" d="M736 62L768 62Q792 62 792 86L792 171Q792 195 816 195L872 195" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M736 62L768 62Q792 62 792 86L792 171Q792 195 816 195L872 195" />
+      <path class="cls-line creates" d="M1194 62L1354 62" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M1194 62L1354 62" />
+      <path class="cls-line creates" d="M294 204L414 204" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M294 204L414 204" />
+      <path class="cls-line creates" d="M294 204L366 204Q390 204 390 228L390 334Q390 346 402 346L414 346" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M294 204L366 204Q390 204 390 228L390 334Q390 346 402 346L414 346" />
+      <path class="cls-line implements" d="M294 488L414 488L736 488L872 488L1194 488L1258 488Q1282 488 1282 464L1282 388Q1282 364 1306 364L1354 364" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M736 62L872 62" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M736 62L872 62" />
+      <path class="cls-line holds" d="M1194 62L1258 62Q1282 62 1282 86L1282 304Q1282 328 1306 328L1354 328" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1194 62L1258 62Q1282 62 1282 86L1282 304Q1282 328 1306 328L1354 328" />
       <rect class="pic-pill cls-chip creates" x="313.5" y="195" width="57" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="342" y="207" text-anchor="middle">creates</text>
       <rect class="pic-pill cls-chip holds" x="810.5" y="53" width="43" height="18" rx="9" />

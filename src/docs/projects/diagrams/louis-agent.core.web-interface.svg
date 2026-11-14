@@ -196,20 +196,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.web: the interface design</text>
     <text class="pic-group" x="1556" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 413 376 L 425 376 Q 437 376 437 364 L 437 246 Q 437 222 461 222 L 597 222" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 413 376 L 597 376" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 413 376 L 425 376 Q 437 376 437 388 L 437 506 Q 437 530 461 530 L 597 530" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M 954 530 L 1122 530" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 413 376 L 425 376 Q 437 376 437 388 L 437 660 Q 437 684 461 684 L 597 684" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 413 376 L 425 376 Q 437 376 437 388 L 437 660 Q 437 684 461 684 L 597 684" />
-      <path class="cls-line creates" d="M 954 222 L 1026 222 Q 1050 222 1050 198 L 1050 92 Q 1050 68 1074 68 L 1122 68" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 954 222 L 1026 222 Q 1050 222 1050 198 L 1050 92 Q 1050 68 1074 68 L 1122 68" />
-      <path class="cls-line creates" d="M 954 376 L 1026 376 Q 1050 376 1050 352 L 1050 255 Q 1050 231 1074 231 L 1122 231" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 954 376 L 1026 376 Q 1050 376 1050 352 L 1050 255 Q 1050 231 1074 231 L 1122 231" />
-      <path class="cls-line creates" d="M 954 530 L 1026 530 Q 1050 530 1050 506 L 1050 409 Q 1050 385 1074 385 L 1122 385" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 954 530 L 1026 530 Q 1050 530 1050 506 L 1050 409 Q 1050 385 1074 385 L 1122 385" />
-      <path class="cls-line implements" d="M 413 376 L 425 376 Q 437 376 437 364 L 437 92 Q 437 68 461 68 L 597 68" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 954 684 L 1122 684" marker-end="url(#triangle-violet)" />
+      <path class="cls-line uses" d="M413 376L425 376Q437 376 437 364L437 246Q437 222 461 222L597 222" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M413 376L597 376" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M413 376L425 376Q437 376 437 388L437 506Q437 530 461 530L597 530" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M954 530L1122 530" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M413 376L425 376Q437 376 437 388L437 660Q437 684 461 684L597 684" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M413 376L425 376Q437 376 437 388L437 660Q437 684 461 684L597 684" />
+      <path class="cls-line creates" d="M954 222L1026 222Q1050 222 1050 198L1050 92Q1050 68 1074 68L1122 68" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M954 222L1026 222Q1050 222 1050 198L1050 92Q1050 68 1074 68L1122 68" />
+      <path class="cls-line creates" d="M954 376L1026 376Q1050 376 1050 352L1050 255Q1050 231 1074 231L1122 231" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M954 376L1026 376Q1050 376 1050 352L1050 255Q1050 231 1074 231L1122 231" />
+      <path class="cls-line creates" d="M954 530L1026 530Q1050 530 1050 506L1050 409Q1050 385 1074 385L1122 385" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M954 530L1026 530Q1050 530 1050 506L1050 409Q1050 385 1074 385L1122 385" />
+      <path class="cls-line implements" d="M413 376L425 376Q437 376 437 364L437 92Q437 68 461 68L597 68" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M954 684L1122 684" marker-end="url(#triangle-violet)" />
       <rect class="pic-pill cls-chip implements" x="478" y="59" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="517" y="71" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip uses" x="457" y="213" width="120" height="18" rx="9" />

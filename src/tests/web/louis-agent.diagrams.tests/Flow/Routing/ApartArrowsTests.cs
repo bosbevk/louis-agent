@@ -1,9 +1,9 @@
-using System.Globalization;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Routing;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Routing;
 
@@ -25,14 +25,6 @@ public class ApartArrowsTests
         ["c"] = Box("c", 0, 200),
         ["x"] = Box("x", 300, targetTop)
     };
-
-    /// <summary>Every point of a path, a curve's corner and its ends each as one.</summary>
-    private static List<(double X, double Y)> Points(string path)
-    {
-        var numbers = path.Split(' ', 'L', 'M', 'Q').Where(part => part.Length > 0)
-            .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).ToList();
-        return [.. Enumerable.Range(0, numbers.Count / 2).Select(at => (numbers[2 * at], numbers[2 * at + 1]))];
-    }
 
     /// <summary>One arrow into a box arrives at the middle of its side, as it always did.</summary>
     [Test]
@@ -280,7 +272,7 @@ public class ApartArrowsTests
         var middle = placed.Nodes.Where(node => node.Node.Column == 1).ToList();
         // Where the two long arrows pass the middle column: the points of their paths from its left side to its right.
         var through = placed.Edges.Where(edge => edge.Edge is { From: "start", To: "deck" or "dock" })
-            .SelectMany(edge => Points(edge.Way.Text))
+            .SelectMany(edge => Ways.Points(edge.Way))
             .Where(point => point.X > middle[0].Box.Left - 1 && point.X < middle[0].Box.Right + 1)
             .Select(point => point.Y).ToList();
 
@@ -304,7 +296,7 @@ public class ApartArrowsTests
             .Single(edge => edge.Edge.Word is not null);
         var ground = FlowText.WordBox(worded, Geometries.InUse);
 
-        Assert.That(ground.Middle.Y, Is.EqualTo(Points(worded.Way.Text)[0].Y), "level with where its arrow leaves");
+        Assert.That(ground.Middle.Y, Is.EqualTo(Ways.Points(worded.Way)[0].Y), "level with where its arrow leaves");
     }
 
     /// <summary>
@@ -326,11 +318,11 @@ public class ApartArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Points(straight.Way.Text).Select(point => point.Y).Distinct().Count(), Is.EqualTo(1),
+            Assert.That(Ways.Points(straight.Way).Select(point => point.Y).Distinct().Count(), Is.EqualTo(1),
                 "one height from end to end");
-            Assert.That(Points(beside.Way.Text).Where(point => point.X <= column.Right).Select(point => point.Y)
+            Assert.That(Ways.Points(beside.Way).Where(point => point.X <= column.Right).Select(point => point.Y)
                 .Distinct().Count(), Is.EqualTo(1), "level past the column between");
-            Assert.That(Math.Abs(Points(beside.Way.Text)[^1].Y - Points(straight.Way.Text)[^1].Y), Is.EqualTo(18),
+            Assert.That(Math.Abs(Ways.Points(beside.Way)[^1].Y - Ways.Points(straight.Way)[^1].Y), Is.EqualTo(18),
                 "the other arrives a step beside it");
         });
     }
@@ -346,7 +338,7 @@ public class ApartArrowsTests
             [new GraphNode("a", "A", Column: 0), new GraphNode("b", "B", Column: 0), new GraphNode("x", "X", null, 2)],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x")]);
 
-        var paths = GraphLayout.Place(spec).Edges.Select(edge => Points(edge.Way.Text)).ToList();
+        var paths = GraphLayout.Place(spec).Edges.Select(edge => Ways.Points(edge.Way)).ToList();
 
         Assert.Multiple(() =>
         {

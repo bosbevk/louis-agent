@@ -144,24 +144,24 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">The orchestrator: one error, from the feed to a decision</text>
     <text class="pic-group" x="1043" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-amber" d="M 534 100 L 534 160" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 534 100 L 534 160" />
-      <path class="pic-line pic-edge tone-violet" d="M 534 260 L 534 272 Q 534 284 522 284 L 193 284 Q 172 284 172 305 L 172 326" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 534 260 L 534 272 Q 534 284 522 284 L 193 284 Q 172 284 172 305 L 172 326" />
-      <path class="pic-line pic-edge tone-violet" d="M 534 260 L 534 326" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 534 260 L 534 326" />
-      <path class="pic-line pic-edge tone-violet" d="M 534 260 L 534 272 Q 534 284 546 284 L 875 284 Q 896 284 896 305 L 896 326" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 534 260 L 534 272 Q 534 284 546 284 L 875 284 Q 896 284 896 305 L 896 326" />
-      <path class="pic-line pic-edge tone-red" d="M 896 410 L 896 470" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 896 410 L 896 470" />
-      <path class="pic-line pic-edge tone-green" d="M 172 410 L 172 425 Q 172 440 187 440 L 501 440 Q 516 440 516 455 L 516 470 L 516 554 L 516 614" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 172 410 L 172 425 Q 172 440 187 440 L 501 440 Q 516 440 516 455 L 516 470 L 516 554 L 516 614" />
-      <path class="pic-line pic-edge tone-red" d="M 534 410 L 534 470 L 534 554 L 534 614" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 534 410 L 534 470 L 534 554 L 534 614" />
-      <path class="pic-line pic-edge tone-green" d="M 896 554 L 896 569 Q 896 584 881 584 L 567 584 Q 552 584 552 599 L 552 614" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 896 554 L 896 569 Q 896 584 881 584 L 567 584 Q 552 584 552 599 L 552 614" />
-      <path class="pic-line pic-edge tone-amber" d="M 534 698 L 534 758" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 534 698 L 534 758" />
+      <path class="pic-line pic-edge tone-amber" d="M534 100L534 160" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M534 100L534 160" />
+      <path class="pic-line pic-edge tone-violet" d="M534 260L534 272Q534 284 522 284L193 284Q172 284 172 305L172 326" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M534 260L534 272Q534 284 522 284L193 284Q172 284 172 305L172 326" />
+      <path class="pic-line pic-edge tone-violet" d="M534 260L534 326" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M534 260L534 326" />
+      <path class="pic-line pic-edge tone-violet" d="M534 260L534 272Q534 284 546 284L875 284Q896 284 896 305L896 326" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M534 260L534 272Q534 284 546 284L875 284Q896 284 896 305L896 326" />
+      <path class="pic-line pic-edge tone-red" d="M896 410L896 470" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M896 410L896 470" />
+      <path class="pic-line pic-edge tone-green" d="M172 410L172 425Q172 440 187 440L501 440Q516 440 516 455L516 470L516 554L516 614" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M172 410L172 425Q172 440 187 440L501 440Q516 440 516 455L516 470L516 554L516 614" />
+      <path class="pic-line pic-edge tone-red" d="M534 410L534 470L534 554L534 614" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M534 410L534 470L534 554L534 614" />
+      <path class="pic-line pic-edge tone-green" d="M896 554L896 569Q896 584 881 584L567 584Q552 584 552 599L552 614" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M896 554L896 569Q896 584 881 584L567 584Q552 584 552 599L552 614" />
+      <path class="pic-line pic-edge tone-amber" d="M534 698L534 758" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M534 698L534 758" />
       <rect class="pic-pill pic-edge tone-violet" x="178" y="288" width="64" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-violet" x="210" y="300" text-anchor="middle">expected</text>
       <rect class="pic-pill pic-edge tone-violet" x="540" y="288" width="64" height="18" rx="9" />

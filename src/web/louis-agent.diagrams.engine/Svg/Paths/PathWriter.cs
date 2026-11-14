@@ -12,13 +12,12 @@ namespace LouisAgent.Diagrams.Engine.Svg.Paths;
 /// call for every number. Here a path is told its pieces and gives its text at the end.
 /// </para>
 /// <para>
-/// It writes what those places wrote, so no picture changes: a letter and its numbers, with nothing between
-/// two pieces. A flow's arrow is the one path with room round every letter, since other code reads that text
-/// back, and it says so with <c>spaced</c>.
+/// It writes a letter and its numbers, with nothing between two pieces, which is the one way a path is written
+/// in every picture.
 /// </para>
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
-public sealed class PathWriter(bool spaced = false)
+public sealed class PathWriter
 {
     private readonly StringBuilder _text = new();
 
@@ -65,16 +64,10 @@ public sealed class PathWriter(bool spaced = false)
     /// <summary>Back to where it started, closing the shape.</summary>
     public PathWriter Close() => Piece('Z');
 
-    /// <summary>
-    /// One piece: its letter and its numbers. A spaced path has room before every piece but the first, and
-    /// after the letter.
-    /// </summary>
+    /// <summary>One piece: its letter and its numbers.</summary>
     private PathWriter Piece(char letter, params double[] numbers)
     {
-        if (spaced && _text.Length > 0) _text.Append(' ');
-        _text.Append(letter);
-        if (spaced && numbers.Length > 0) _text.Append(' ');
-        _text.AppendJoin(' ', numbers.Select(SvgWriter.N));
+        _text.Append(letter).AppendJoin(' ', numbers.Select(SvgWriter.N));
         return this;
     }
 }

@@ -147,20 +147,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-group" x="362" y="215" text-anchor="start">louis-agent.api</text>
       <rect class="pic-panel" x="714" y="408" width="302.8" height="114" rx="14" />
       <text class="pic-group" x="728" y="427" text-anchor="start">louis-agent.core</text>
-      <path class="pic-line pic-edge tone-blue" d="M 159 102 L 159 140 Q 159 164 183 164 L 492 164 Q 516 164 516 188 L 516 230" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 159 102 L 159 140 Q 159 164 183 164 L 492 164 Q 516 164 516 188 L 516 230" />
-      <path class="pic-line pic-edge tone-green" d="M 516 314 L 516 352 Q 516 376 540 376 L 832.4 376 Q 856.4 376 856.4 400 L 856.4 442" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 516 314 L 516 352 Q 516 376 540 376 L 832.4 376 Q 856.4 376 856.4 400 L 856.4 442" />
-      <path class="pic-line pic-edge tone-violet" d="M 865.4 510 L 865.4 568.2 Q 865.4 572 869.2 572 L 869.2 572 Q 873 572 873 575.8 L 873 638" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 865.4 510 L 865.4 568.2 Q 865.4 572 869.2 572 L 869.2 572 Q 873 572 873 575.8 L 873 638" />
-      <path class="pic-line pic-edge tone-green" d="M 516 314 L 516 352 Q 516 376 492 376 L 183 376 Q 159 376 159 400 L 159 442" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 516 314 L 516 352 Q 516 376 492 376 L 183 376 Q 159 376 159 400 L 159 442" />
-      <path class="pic-line pic-edge tone-blue" d="M 159 510 L 159 548 Q 159 572 183 572 L 492 572 Q 516 572 516 596 L 516 638" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 159 510 L 159 548 Q 159 572 183 572 L 492 572 Q 516 572 516 596 L 516 638" />
-      <path class="pic-line pic-edge tone-green" d="M 516 314 L 516 442" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 516 314 L 516 442" />
-      <path class="pic-line pic-edge tone-green" d="M 873 102 L 874.4 230 L 874.4 314 L 874.4 442" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 873 102 L 874.4 230 L 874.4 314 L 874.4 442" />
+      <path class="pic-line pic-edge tone-blue" d="M159 102L159 140Q159 164 183 164L492 164Q516 164 516 188L516 230" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M159 102L159 140Q159 164 183 164L492 164Q516 164 516 188L516 230" />
+      <path class="pic-line pic-edge tone-green" d="M516 314L516 352Q516 376 540 376L832.4 376Q856.4 376 856.4 400L856.4 442" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M516 314L516 352Q516 376 540 376L832.4 376Q856.4 376 856.4 400L856.4 442" />
+      <path class="pic-line pic-edge tone-violet" d="M865.4 510L865.4 568.2Q865.4 572 869.2 572L869.2 572Q873 572 873 575.8L873 638" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M865.4 510L865.4 568.2Q865.4 572 869.2 572L869.2 572Q873 572 873 575.8L873 638" />
+      <path class="pic-line pic-edge tone-green" d="M516 314L516 352Q516 376 492 376L183 376Q159 376 159 400L159 442" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M516 314L516 352Q516 376 492 376L183 376Q159 376 159 400L159 442" />
+      <path class="pic-line pic-edge tone-blue" d="M159 510L159 548Q159 572 183 572L492 572Q516 572 516 596L516 638" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M159 510L159 548Q159 572 183 572L492 572Q516 572 516 596L516 638" />
+      <path class="pic-line pic-edge tone-green" d="M516 314L516 442" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M516 314L516 442" />
+      <path class="pic-line pic-edge tone-green" d="M873 102L874.4 230L874.4 314L874.4 442" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M873 102L874.4 230L874.4 314L874.4 442" />
       <rect class="pic-pill pic-edge tone-blue" x="165" y="106" width="78" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="204" y="118" text-anchor="middle">audio clip</text>
       <rect class="pic-pill pic-edge tone-green" x="522" y="318" width="36" height="18" rx="9" />

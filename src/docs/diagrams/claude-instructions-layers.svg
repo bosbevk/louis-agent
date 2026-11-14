@@ -141,12 +141,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">Claude's instructions: the three layers</text>
     <text class="pic-group" x="1295" y="14" text-anchor="end">Package diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-violet" d="M 211.6 84 L 211.6 99 Q 211.6 114 226.6 114 L 619.8 114 Q 634.8 114 634.8 129 L 634.8 144" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 211.6 84 L 211.6 99 Q 211.6 114 226.6 114 L 619.8 114 Q 634.8 114 634.8 129 L 634.8 144" />
-      <path class="pic-line pic-edge tone-teal" d="M 652.8 84 L 652.8 144" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 652.8 84 L 652.8 144" />
-      <path class="pic-line pic-edge tone-green" d="M 1094 84 L 1094 99 Q 1094 114 1079 114 L 685.8 114 Q 670.8 114 670.8 129 L 670.8 144" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 1094 84 L 1094 99 Q 1094 114 1079 114 L 685.8 114 Q 670.8 114 670.8 129 L 670.8 144" />
+      <path class="pic-line pic-edge tone-violet" d="M211.6 84L211.6 99Q211.6 114 226.6 114L619.8 114Q634.8 114 634.8 129L634.8 144" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M211.6 84L211.6 99Q211.6 114 226.6 114L619.8 114Q634.8 114 634.8 129L634.8 144" />
+      <path class="pic-line pic-edge tone-teal" d="M652.8 84L652.8 144" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M652.8 84L652.8 144" />
+      <path class="pic-line pic-edge tone-green" d="M1094 84L1094 99Q1094 114 1079 114L685.8 114Q670.8 114 670.8 129L670.8 144" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1094 84L1094 99Q1094 114 1079 114L685.8 114Q670.8 114 670.8 129L670.8 144" />
       <rect class="pic-panel" x="7.6" y="0" width="408" height="84" rx="10" />
       <rect class="pic-fill tone-violet" x="23.6" y="28" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(29.6 34) scale(0.6667)">

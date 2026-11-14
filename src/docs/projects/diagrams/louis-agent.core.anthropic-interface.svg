@@ -196,14 +196,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.anthropic: the interface design</text>
     <text class="pic-group" x="1306" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 392 243 L 560.4 243" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 392 243 L 404.1 243 Q 416.2 243 416.2 255.1 L 416.2 387 Q 416.2 411 440.2 411 L 560.4 411" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 392 243 L 404.1 243 Q 416.2 243 416.2 255.1 L 416.2 387 Q 416.2 411 440.2 411 L 560.4 411" />
-      <path class="cls-line creates" d="M 392 243 L 404.1 243 Q 416.2 243 416.2 255.1 L 416.2 555 Q 416.2 579 440.2 579 L 560.4 579" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 392 243 L 404.1 243 Q 416.2 243 416.2 255.1 L 416.2 555 Q 416.2 579 440.2 579 L 560.4 579" />
-      <path class="cls-line implements" d="M 392 243 L 404.1 243 Q 416.2 243 416.2 230.9 L 416.2 99 Q 416.2 75 440.2 75 L 560.4 75" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 952.4 411 L 1072.8 411" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 952.4 579 L 1072.8 579" marker-end="url(#triangle-violet)" />
+      <path class="cls-line uses" d="M392 243L560.4 243" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M392 243L404.1 243Q416.2 243 416.2 255.1L416.2 387Q416.2 411 440.2 411L560.4 411" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M392 243L404.1 243Q416.2 243 416.2 255.1L416.2 387Q416.2 411 440.2 411L560.4 411" />
+      <path class="cls-line creates" d="M392 243L404.1 243Q416.2 243 416.2 255.1L416.2 555Q416.2 579 440.2 579L560.4 579" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M392 243L404.1 243Q416.2 243 416.2 255.1L416.2 555Q416.2 579 440.2 579L560.4 579" />
+      <path class="cls-line implements" d="M392 243L404.1 243Q416.2 243 416.2 230.9L416.2 99Q416.2 75 440.2 75L560.4 75" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M952.4 411L1072.8 411" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M952.4 579L1072.8 579" marker-end="url(#triangle-violet)" />
       <rect class="pic-pill cls-chip implements" x="449.3" y="66" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="488.3" y="78" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip uses" x="428.3" y="234" width="120" height="18" rx="9" />

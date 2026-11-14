@@ -196,10 +196,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.openai: the interface design</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 248.4 204 L 593 204" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M 248.4 204 L 340.7 204 Q 364.7 204 364.7 228 L 364.7 322 Q 364.7 346 388.7 346 L 593 346" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 248.4 204 L 340.7 204 Q 364.7 204 364.7 228 L 364.7 322 Q 364.7 346 388.7 346 L 593 346" />
-      <path class="cls-line implements" d="M 248.4 204 L 340.7 204 Q 364.7 204 364.7 180 L 364.7 86 Q 364.7 62 388.7 62 L 593 62" marker-end="url(#triangle-violet)" />
+      <path class="cls-line uses" d="M248.4 204L593 204" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M248.4 204L340.7 204Q364.7 204 364.7 228L364.7 322Q364.7 346 388.7 346L593 346" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M248.4 204L340.7 204Q364.7 204 364.7 228L364.7 322Q364.7 346 388.7 346L593 346" />
+      <path class="cls-line implements" d="M248.4 204L340.7 204Q364.7 204 364.7 180L364.7 86Q364.7 62 388.7 62L593 62" marker-end="url(#triangle-violet)" />
       <rect class="pic-pill cls-chip implements" x="439.9" y="53" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="478.9" y="65" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip creates" x="422.4" y="337" width="113" height="18" rx="9" />

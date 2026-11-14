@@ -199,26 +199,26 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: the engine's interfaces, part A</text>
     <text class="pic-group" x="1114" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M 210.4 1005 L 242.5 1005 Q 266.5 1005 266.5 981 L 266.5 873 Q 266.5 849 290.5 849 L 362.7 849" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M 210.4 69 L 242.5 69 Q 266.5 69 266.5 93 L 266.5 339 Q 266.5 363 290.5 363 L 362.7 363 L 573.1 363 L 653.3 363" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 210.4 381 L 362.7 381 L 573.1 381 L 653.3 381" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 210.4 537 L 242.5 537 Q 266.5 537 266.5 561 L 266.5 669 Q 266.5 693 290.5 693 L 362.7 693 L 573.1 693 L 653.3 693 L 863.7 693 L 895.9 693 Q 919.9 693 919.9 717 L 919.9 827.9 Q 919.9 840 931.9 840 L 944 840" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M 210.4 69 L 362.7 69" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 210.4 69 L 362.7 69" />
-      <path class="cls-line holds" d="M 573.1 1161 L 605.2 1161 Q 629.2 1161 629.2 1137 L 629.2 411.1 Q 629.2 399 641.3 399 L 653.3 399" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 573.1 1161 L 605.2 1161 Q 629.2 1161 629.2 1137 L 629.2 411.1 Q 629.2 399 641.3 399 L 653.3 399" />
-      <path class="cls-line holds" d="M 573.1 1161 L 605.2 1161 Q 629.2 1161 629.2 1137 L 629.2 1017.1 Q 629.2 1005 641.3 1005 L 653.3 1005" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 573.1 1161 L 605.2 1161 Q 629.2 1161 629.2 1137 L 629.2 1017.1 Q 629.2 1005 641.3 1005 L 653.3 1005" />
-      <path class="cls-line holds" d="M 573.1 1161 L 653.3 1161" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 573.1 1161 L 653.3 1161" />
-      <path class="cls-line holds" d="M 863.7 1161 L 895.9 1161 Q 919.9 1161 919.9 1137 L 919.9 870.1 Q 919.9 858 931.9 858 L 944 858" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 863.7 1161 L 895.9 1161 Q 919.9 1161 919.9 1137 L 919.9 870.1 Q 919.9 858 931.9 858 L 944 858" />
-      <path class="cls-line holds" d="M 210.4 537 L 362.7 537" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 210.4 537 L 362.7 537" />
-      <path class="cls-line holds" d="M 210.4 1161 L 362.7 1161" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 210.4 1161 L 362.7 1161" />
-      <path class="cls-line holds" d="M 210.4 1005 L 362.7 1005" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 210.4 1005 L 362.7 1005" />
+      <path class="cls-line uses" d="M210.4 1005L242.5 1005Q266.5 1005 266.5 981L266.5 873Q266.5 849 290.5 849L362.7 849" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M210.4 69L242.5 69Q266.5 69 266.5 93L266.5 339Q266.5 363 290.5 363L362.7 363L573.1 363L653.3 363" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M210.4 381L362.7 381L573.1 381L653.3 381" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M210.4 537L242.5 537Q266.5 537 266.5 561L266.5 669Q266.5 693 290.5 693L362.7 693L573.1 693L653.3 693L863.7 693L895.9 693Q919.9 693 919.9 717L919.9 827.9Q919.9 840 931.9 840L944 840" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M210.4 69L362.7 69" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M210.4 69L362.7 69" />
+      <path class="cls-line holds" d="M573.1 1161L605.2 1161Q629.2 1161 629.2 1137L629.2 411.1Q629.2 399 641.3 399L653.3 399" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M573.1 1161L605.2 1161Q629.2 1161 629.2 1137L629.2 411.1Q629.2 399 641.3 399L653.3 399" />
+      <path class="cls-line holds" d="M573.1 1161L605.2 1161Q629.2 1161 629.2 1137L629.2 1017.1Q629.2 1005 641.3 1005L653.3 1005" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M573.1 1161L605.2 1161Q629.2 1161 629.2 1137L629.2 1017.1Q629.2 1005 641.3 1005L653.3 1005" />
+      <path class="cls-line holds" d="M573.1 1161L653.3 1161" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M573.1 1161L653.3 1161" />
+      <path class="cls-line holds" d="M863.7 1161L895.9 1161Q919.9 1161 919.9 1137L919.9 870.1Q919.9 858 931.9 858L944 858" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M863.7 1161L895.9 1161Q919.9 1161 919.9 1137L919.9 870.1Q919.9 858 931.9 858L944 858" />
+      <path class="cls-line holds" d="M210.4 537L362.7 537" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M210.4 537L362.7 537" />
+      <path class="cls-line holds" d="M210.4 1161L362.7 1161" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M210.4 1161L362.7 1161" />
+      <path class="cls-line holds" d="M210.4 1005L362.7 1005" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M210.4 1005L362.7 1005" />
       <rect class="pic-pill cls-chip implements" x="275.6" y="354" width="78" height="18" rx="9" />
       <text class="pic-pill-word cls-word" x="314.6" y="366" text-anchor="middle">implements</text>
       <rect class="pic-pill cls-chip holds" x="293.1" y="60" width="43" height="18" rx="9" />

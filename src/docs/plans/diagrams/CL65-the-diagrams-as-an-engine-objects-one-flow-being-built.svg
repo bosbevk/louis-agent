@@ -138,18 +138,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL65 the diagrams as an engine: one flow, being built</text>
     <text class="pic-group" x="987" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-teal" d="M 493.2 68 L 493.2 80 Q 493.2 92 481.2 92 L 179.4 92 Q 158.4 92 158.4 113 L 158.4 134" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 493.2 68 L 493.2 80 Q 493.2 92 481.2 92 L 179.4 92 Q 158.4 92 158.4 113 L 158.4 134" />
-      <path class="pic-line pic-edge tone-teal" d="M 158.4 202 L 158.4 268" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 158.4 202 L 158.4 268" />
-      <path class="pic-line pic-edge tone-green reads" d="M 158.4 336 L 158.4 357 Q 158.4 378 179.4 378 L 463.2 378 Q 475.2 378 475.2 390 L 475.2 402" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-teal reads" d="M 493.2 68 L 493.2 134 L 493.2 202 L 493.2 268 L 493.2 336 L 493.2 402" marker-end="url(#arrow-teal)" />
-      <path class="pic-line pic-edge tone-green" d="M 493.2 470 L 493.2 482 Q 493.2 494 481.2 494 L 179.4 494 Q 158.4 494 158.4 515 L 158.4 536" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 493.2 470 L 493.2 482 Q 493.2 494 481.2 494 L 179.4 494 Q 158.4 494 158.4 515 L 158.4 536" />
-      <path class="pic-line pic-edge tone-green" d="M 493.2 470 L 493.2 536" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 493.2 470 L 493.2 536" />
-      <path class="pic-line pic-edge tone-green" d="M 493.2 470 L 493.2 482 Q 493.2 494 505.2 494 L 807 494 Q 828 494 828 515 L 828 536" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 493.2 470 L 493.2 482 Q 493.2 494 505.2 494 L 807 494 Q 828 494 828 515 L 828 536" />
+      <path class="pic-line pic-edge tone-teal" d="M493.2 68L493.2 80Q493.2 92 481.2 92L179.4 92Q158.4 92 158.4 113L158.4 134" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M493.2 68L493.2 80Q493.2 92 481.2 92L179.4 92Q158.4 92 158.4 113L158.4 134" />
+      <path class="pic-line pic-edge tone-teal" d="M158.4 202L158.4 268" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M158.4 202L158.4 268" />
+      <path class="pic-line pic-edge tone-green reads" d="M158.4 336L158.4 357Q158.4 378 179.4 378L463.2 378Q475.2 378 475.2 390L475.2 402" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-teal reads" d="M493.2 68L493.2 134L493.2 202L493.2 268L493.2 336L493.2 402" marker-end="url(#arrow-teal)" />
+      <path class="pic-line pic-edge tone-green" d="M493.2 470L493.2 482Q493.2 494 481.2 494L179.4 494Q158.4 494 158.4 515L158.4 536" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M493.2 470L493.2 482Q493.2 494 481.2 494L179.4 494Q158.4 494 158.4 515L158.4 536" />
+      <path class="pic-line pic-edge tone-green" d="M493.2 470L493.2 536" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M493.2 470L493.2 536" />
+      <path class="pic-line pic-edge tone-green" d="M493.2 470L493.2 482Q493.2 494 505.2 494L807 494Q828 494 828 515L828 536" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M493.2 470L493.2 482Q493.2 494 505.2 494L807 494Q828 494 828 515L828 536" />
       <rect class="pic-pill pic-edge tone-teal" x="164.4" y="96" width="43" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-teal" x="185.9" y="108" text-anchor="middle">holds</text>
       <rect class="pic-pill pic-edge tone-teal" x="164.4" y="206" width="50" height="18" rx="9" />
