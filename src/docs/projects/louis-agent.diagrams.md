@@ -139,6 +139,17 @@ Whether two upright pieces overlap depends on how high the boxes stand. So `Grap
 with the columns far apart, only to learn the heights, sizes each gap from them, and then places the boxes
 where they belong.
 
+**A box's shape.** A box may name a shape where the shape means something: `decision` is a diamond, `data` a
+slanted box, `terminal` a pill for a start or an end. Left out, it is a plain box. A name that is no shape is
+refused with the shapes there are. A shape stands inside the box the layout gives it, so the layout and the
+router go on working with boxes and ask `NodeShapes` for the two things a shape changes:
+
+- *Its room.* A diamond is twice as wide and twice as tall as its words, so each line fits between the slanted
+  sides at its own height. A slanted box is 18 wider, and a pill wider by half its height.
+- *Where its outline is.* A diamond's side is inside its box everywhere but at the tip, so an arrow that arrives
+  off the middle ends on the slanted side, not at the box's edge. The same holds under a shape, where an arrow
+  back to an earlier column leaves and arrives.
+
 **A chart that runs down.** It is laid out turned, and `Turn` turns every point back. So one layout and one router
 serve both directions.
 
@@ -237,7 +248,7 @@ This section is for looking a file up.
 ```
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
-├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows)
+├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)

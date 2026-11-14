@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Routing;
+using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow;
@@ -76,7 +77,7 @@ public static class GraphLayout
     private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend, FlowRules rules)
     {
         var rule = rules.Arrows;
-        Func<GraphNode, double> wide = turned ? HeightOf : WidthOf, plain = turned ? WidthOf : HeightOf;
+        Func<GraphNode, double> wide = turned ? Height : Width, plain = turned ? Width : Height;
         // A box's side is at least as long as the arrows that arrive on it need, which their rule says.
         var arriving = Arriving(spec);
         double Tall(GraphNode node) => Math.Max(plain(node), rule.SideFor(arriving.GetValueOrDefault(node.Id)));
@@ -191,6 +192,12 @@ public static class GraphLayout
                     crossings++;
         return crossings;
     }
+
+    /// <summary>A box's width in its shape: a plain box's own, and what a diamond, a slant or a pill adds.</summary>
+    private static double Width(GraphNode node) => NodeShapes.Room(node, WidthOf(node), HeightOf(node)).W;
+
+    /// <summary>A box's height in its shape.</summary>
+    private static double Height(GraphNode node) => NodeShapes.Room(node, WidthOf(node), HeightOf(node)).H;
 
     /// <summary>A box's height: its head, and under it its members, each a line (CL60.4).</summary>
     private static double HeightOf(GraphNode node) =>

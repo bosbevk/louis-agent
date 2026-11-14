@@ -16,6 +16,9 @@ public enum DiagramMessage
     [Description("'{Value}' is not a kind of diagram. The kinds are {Kinds}.")]
     UnknownKind,
 
+    [Description("'{Value}' is not a shape a box can have. The shapes are {Shapes}.")]
+    UnknownShape,
+
     [Description("A {Kind} diagram needs its \"{Kind}\" part.")]
     MissingPart,
 

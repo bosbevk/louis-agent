@@ -35,6 +35,7 @@ public class DiagramHolesTests
     /// </summary>
     [TestCase(DiagramMessage.Unreadable)]
     [TestCase(DiagramMessage.UnknownKind)]
+    [TestCase(DiagramMessage.UnknownShape)]
     [TestCase(DiagramMessage.MissingPart)]
     [TestCase(DiagramMessage.UnknownBox)]
     [TestCase(DiagramMessage.UnknownGroup)]

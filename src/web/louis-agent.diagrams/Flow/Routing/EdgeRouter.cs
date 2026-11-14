@@ -1,5 +1,6 @@
 using System.Globalization;
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow.Routing;
@@ -107,7 +108,7 @@ internal static class EdgeRouter
         var plans = new List<Plan>();
         plans.AddRange(Forward(forward, byId, turned, rule));
         plans.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
-        if (back.Count > 0) plans.AddRange(Back(back, byId, height));
+        if (back.Count > 0) plans.AddRange(Back(back, byId, height, turned));
         int backLanes = back.Select(edge => edge.To).Distinct().Count();
 
         // An arrow whose way would cross a box it doesn't join, as a docs chart's arrow past a rank can (CL60.2),
@@ -155,8 +156,11 @@ internal static class EdgeRouter
             double x2 = to.X, y2 = rule.EntryOf(edge, forward, byId);
             var (track, last) = Track(edge, x1, x2, forward, byId, turned, rule);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
+            // An arrow starts and ends on the outline of its boxes' shapes: a diamond's side is inside its box
+            // everywhere but at its tip.
+            double leaves = x1 - NodeShapes.Exit(from, y1, turned), arrives = x2 + NodeShapes.Entry(to, y2, turned);
             // A word by its target stands past the gap's last track, clear of the other sources' lines.
-            yield return new Plan(edge, [(x1, y1), (track, y1), (track, y2), (x2, y2)],
+            yield return new Plan(edge, [(leaves, y1), (track, y1), (track, y2), (arrives, y2)],
                 bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned), bySource ? y1 : y2);
         }
     }
@@ -207,7 +211,7 @@ internal static class EdgeRouter
     /// so two sets never cross, and the tracks all start past any loop to itself and its word.
     /// </summary>
     private static IEnumerable<Plan> Back(List<GraphEdge> back, IReadOnlyDictionary<string, PlacedNode> byId,
-        double height)
+        double height, bool turned)
     {
         var targets = back.Select(edge => edge.To).Distinct().ToList();
         var sources = back.Select(edge => edge.From).ToHashSet();
@@ -223,7 +227,9 @@ internal static class EdgeRouter
             double outAt = targets.Contains(edge.From) ? 0.4 : 0.5, inAt = sources.Contains(edge.To) ? 0.6 : 0.5;
             double x1 = from.X + from.W * outAt, y1 = from.Y + from.H, lane = height + BackLane + Step * at;
             double entry = to.X + to.W * inAt, y2 = to.Y + to.H;
-            yield return new Plan(edge, [(x1, y1), (x1, lane), (entry, lane), (entry, y2)], (x1 + entry) / 2,
+            // It starts and ends on the outline, which under a diamond or a pill is higher away from the middle.
+            double leaves = y1 - NodeShapes.Under(from, x1, turned), arrives = y2 - NodeShapes.Under(to, entry, turned);
+            yield return new Plan(edge, [(x1, leaves), (x1, lane), (entry, lane), (entry, arrives)], (x1 + entry) / 2,
                 lane + 4);
         }
     }
