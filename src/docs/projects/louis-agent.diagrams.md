@@ -1,9 +1,10 @@
 # louis-agent.diagrams — design
 
-> **Kind:** Class library (`net10.0`), plain C# · **Path:** `src/web/louis-agent.diagrams/` · **References:**
-> louis-agent.choices · **Used by:** louis-agent.web (the site's `GraphView`, and the chat's `DrawnCard`), and
-> `src/tools/louis-agent.doc-diagrams`, the tool that draws the docs' pictures · **How-to:**
-> [Draw a diagram](../guides/draw-a-diagram.md)
+> **Kind:** Two class libraries (`net10.0`), plain C# · **Paths:** `src/web/louis-agent.diagrams/`, what a
+> diagram is, and `src/web/louis-agent.diagrams.engine/`, what builds one · **References:** the first references
+> louis-agent.choices, the second the first · **Used by:** louis-agent.web (the site's `GraphView`, and the
+> chat's `DrawnCard`), and `src/tools/louis-agent.doc-diagrams`, the tool that draws the docs' pictures ·
+> **How-to:** [Draw a diagram](../guides/draw-a-diagram.md)
 
 ![Diagrams from data, and their parts: a diagram as JSON, two layouts, one SVG with two looks, the icons and the docs' tool](diagrams/louis-agent.diagrams.svg)
 
@@ -18,7 +19,30 @@ test can prove that every word fits its box.
 
 *Decided in:* CL60, [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
+**Two projects, one way.** What a diagram is and what builds one are apart.
+
+- `louis-agent.diagrams` says what a diagram is: its kinds, the records each kind's JSON reads into, the reader
+  and what it refuses, a ticket made from an agent's call, and the names a record is written with, a tone, an
+  icon and a shape. It is small on purpose. Something that only writes or reads a diagram, a pack's tool or an
+  agent, takes this project and no drawing code.
+- `louis-agent.diagrams.engine` builds a diagram: every layout and what it places, the routing, the drawings,
+  the keys, the looks and the SVG writer. Its namespace is `LouisAgent.Diagrams.Engine`. It references the first
+  project and nothing else.
+
+The first never reaches for the second. A test holds that (`DiagramsProjectTests`): the small project references
+only the enum-name parser, holds no layout, renderer, drawing, look or writer, and never names the engine's
+namespace.
+
+The texts are split the same way. What the reader refuses with is `DiagramMessage`, in the small project. The
+words a drawing writes, a key's heading, what a tone means, a picture's type, are the engine's `DrawingMessage`.
+One formatter, `DiagramText`, fills either.
+
+*Decided in:* CL65.1, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
+
 ## How it works
+
+In what follows, a folder is the engine's unless it is `Sources/`, a kind's `Spec/` or `Messages/`. The lookup
+under *Structure* lists both projects' folders.
 
 This section has four parts, to be read in order. Part 1 follows one picture from its file to its SVG. Part 2
 goes through the five kinds of picture, one at a time. Part 3 is what every kind shares, tones and icons. Part 4
@@ -465,24 +489,39 @@ This section is for looking a file up.
 
 ```
 src/web/louis-agent.diagrams/
-├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
-├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
-├── Cards/          # CardsSpec, CardRow, Card, CardLook, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
-├── Sequence/       # SequenceLayout, SequenceRows, SequenceMeasures; Spec/ (Steps/), Placed/, Keys/ (SequenceKeyLayout, SequenceKeyItem, SequenceKeyKind)
-├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind), Marks/ (TypeMark, TypeMarks), Keys/ (ClassKeyLayout, ClassKeyItem, ClassKeyKind)
-├── Composite/      # CompositeFlow, CompositeCheck; Spec/ (CompositeSpec, CompositePart, CompositePort, CompositeConnector, PortSide)
-├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
-├── Tones/          # DiagramTone
-├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's, Parts/Types/ for a class chart's, Parts/Structure/ for a composite's with its renderer), Theme/ (with Looks/, and Looks/Kinds/ for a class chart's and a composite's own style)
-├── Messages/       # DiagramMessage
+├── Cards/      # Card, CardLook, CardRow, CardsSpec; Links/ (CardLink, CardLinkKind)
+├── Classes/    # Spec/ (ClassRelation, ClassType, ClassesSpec, RelationKind)
+├── Components/ # ComponentsCheck; Spec/ (ComponentBox, ComponentNeighbour, ComponentState, ComponentsSpec, NeighbourSide)
+├── Composite/  # CompositeCheck; Spec/ (CompositeConnector, CompositePart, CompositePort, CompositeSpec, PortSide)
+├── Flow/       # Shapes/ (NodeShape); Spec/ (EdgeStyle, FlowDirection, GraphEdge, GraphGroup, GraphNode, GraphSpec)
+├── Icons/      # DiagramIcon
+├── Messages/   # DiagramMessage; Holes/Components/ (DuplicateComponentHoles, UnknownComponentHoles, UnknownPinHoles); Holes/Composites/ (CompositeNoPartsHoles, DuplicatePartHoles, UnknownPartHoles); Holes/Reading/ (MissingPartHoles, UnknownKindHoles, UnknownShapeHoles, UnreadableHoles); Holes/Shapes/ (EmptyBlockHoles, NoteOverNoOneHoles, TicketHalfRowHoles, TicketRowCountHoles); Holes/Strays/ (LinkNotBetweenRowsHoles, UnknownBoxHoles, UnknownCardHoles, UnknownGroupHoles, UnknownParticipantHoles, UnknownTypeHoles)
+├── Sequence/   # Spec/ (BlockKind, Participant, SequenceSpec); Spec/Steps/ (BlockStep, ElseCase, MessageStep, NoteStep, ReplyStep, SequenceStep)
+├── Sources/    # DiagramJson, DiagramKind, DiagramReader, DiagramSource, DiagramWriter, NodeShapeConverter
+├── Tickets/    # TicketCard; Inputs/ (TicketRowInput, TicketStatusInput); Spec/ (TicketRow, TicketSpec, TicketStatus)
+├── Tones/      # DiagramTone
 └── DiagramText.cs, TextWrap.cs
+src/web/louis-agent.diagrams.engine/
+├── Cards/      # OverviewLayout; Placed/ (PlacedCard, PlacedOverview, PlacedRail, RailEnd); Rails/ (CardRails, Rail, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes)
+├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
+├── Components/ # ComponentLayout, ComponentSizes, KeyLayout, NeighbourLayout; Placed/ (PlacedBox, PlacedComponents, PlacedNeighbour, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, LinePoint, PlacedLine); Routing/ (Block, Obstacles, StateRoutes)
+├── Composite/  # CompositeFlow
+├── Flow/       # Bands, FlowRules, FlowText, GraphLayout, Ranks, Turn; Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, IArrowRule, JoinedArrows, Plan); Rows/ (BandShape, CentredRows, IRowRule, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
+├── Icons/      # IconPaths, LICENSE-tabler-icons.txt
+├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
+├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Renderers/ (CardsRenderer, ClassesRenderer, ComponentsRenderer, FlowRenderer, SequenceRenderer, TicketRenderer); Renderers/Parts/ (ComponentPins, ComponentsKey, FlowDrawing, FlowKey, PictureParts); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceSteps); Renderers/Parts/Overview/ (OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
+├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords)
+├── Tones/      # ToneMeanings
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
 ```
 
 ## Tests
 
-- `src/tests/web/louis-agent.diagrams.tests`: the layouts with numbers (no card overlaps another, every card inside
+- `src/tests/engine/louis-agent.core.tests`, `DiagramsProjectTests`: the two projects' references, that the small
+  one holds nothing that builds a diagram, and that every file of the engine is in the engine's namespace.
+- `src/tests/web/louis-agent.diagrams.tests`, one project that references and tests both: the layouts with
+  numbers (no card overlaps another, every card inside
   the frame, every line inside its card; a flow's ranks, a down chart's rows, every group's boxes inside its frame
   and no other, a chip clear of its line; a sequence's heads apart, its words between their lifelines, its frames
   round their steps and nested inside their parents; a box's members and tones in `Flow/Boxes/`; a class chart's
