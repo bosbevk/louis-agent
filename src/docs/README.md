@@ -27,9 +27,9 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Development guide](CLAUDE.md) | How-to | Work with Louis step by step, the rules that always apply (one line each, the why in its ADR, the how in `.claude/rules/`), find your way around the code |
+| [Development guide](CLAUDE.md) | How-to | Work with Louis step by step: the eleven rules, the loop of a step, the hard stops, and the skill for each job |
+| [Claude's instructions](../../.claude/README.md) | Reference | How what Claude Code reads is laid out: what loads always, what loads with a kind of file, and the skill for each job |
 | [Get started](guides/get-started.md) | How-to | Build and run the agent on your machine for the first time |
-| [Finish a step](guides/finish-a-step.md) | How-to | Build, goldens, docs, formatting with Rider's tools, showing the step, the commit |
 | [Add a skill](guides/add-a-skill.md) | How-to | Give the agent a function skill and approve it |
 | [Debug and logs](guides/debug-and-logs.md) | How-to | The tool log, the run files, the usage ledger, the Docker habits |
 | [Common errors](guides/common-errors.md) | How-to | The errors a developer meets most, by their message |
@@ -39,8 +39,8 @@ you need otherwise.
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |
 | [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
-| [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
-| [Hosts guide](../CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
+| [Write and run tests](guides/write-tests.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
+| [Hosts and web apps](../../.claude/rules/hosts-and-web.md) | How-to | A host's own message enums, a web app's folders, running a host from Rider |
 | [Deploying to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch the apps on Azure Container Apps, set their secrets, and deploy from GitHub; since 2026-11-09 only louis-agent.dev runs there |
 
 ## 4. The orchestrator

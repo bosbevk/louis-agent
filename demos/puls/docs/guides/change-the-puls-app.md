@@ -28,7 +28,7 @@ the headless browser (`puls-browser`) that the specialists use.
   empty chat and the cost line's words. `ChatPage.razor.cs` says which view shows and which toolsets a session asks for.
 - **A change to the frame** (the sidebar, the top bar, the message box, the work panel, renaming, search) goes in `louis-agent.web`, since
   every site gets it ([Change the framework's web](../../../../src/docs/guides/change-the-web.md)). Only what's Puls's own is a component under
-  `Components/Chat/`, with its C# in its `.razor.cs` ([src/CLAUDE.md](../../../../src/CLAUDE.md)).
+  `Components/Chat/`, with its C# in its `.razor.cs` ([hosts-and-web.md](../../../../.claude/rules/hosts-and-web.md)).
 - **Logic** that needs no component goes in a plain class with its test.
 - **The session** opens with `["specialists", "web"]` where the instance has them, the role `puls/voice-af` (or the
   chosen language's mode), and the user's place and time zone. A new session option is the API's first

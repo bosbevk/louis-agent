@@ -1,7 +1,7 @@
 # 0062. The studio writes what git keeps
 
 **Status:** Accepted · **Date:** 2026-10-31 (the F49.5 plan's findings R, S and T; Louis picked R and S on
-2026-11-01, and the picks of the unattended steps 1 to 8 on 2026-11-03 wait for his review on the pull request) ·
+2026-11-01) ·
 **Recorded:** 2026-11-03
 
 ## Context

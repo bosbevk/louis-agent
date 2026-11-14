@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>A site at an exact size</title>
+<!-- Holds the address in ?u= in a frame of ?w= by ?h= pixels (390 by 844 when not given), so a headless Chrome can
+     take the site's picture at exactly that size. How it is used is in SKILL.md, beside this file. -->
+<style>
+  html, body { margin: 0; background: #888; }
+  iframe { display: block; border: 0; }
+</style>
+<iframe id="site" title="The site, at the size asked for"></iframe>
+<script>
+  const asked = new URLSearchParams(location.search);
+  const site = document.getElementById("site");
+  site.style.width = (asked.get("w") ?? "390") + "px";
+  site.style.height = (asked.get("h") ?? "844") + "px";
+  site.src = asked.get("u");
+</script>

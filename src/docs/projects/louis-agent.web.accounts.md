@@ -77,16 +77,6 @@ address, the authenticator link, the second step), the components and pages with
 real side (`AccountMenuTests`). The framework's rules read this library too: it names no site, its Razor holds no code,
 its styles hold no fixed colour, and every passkey call is in its script (`louis-agent.web.tests/Rules`).
 
-## What the build decided (CL30, 2026-11-07)
-
-- The Null Object is a fallback, not a registration: there is no `AddLouisAgentWeb()`, so the menu asks the provider
-  for `IAccountMenu` once and holds `NoAccounts` when there is none; the sites and the chat's tests stay as they were.
-- The seam's real side was built with the seam, so the sites kept their menus through the move.
-- Rider's adjust-namespaces set the namespaces from the folders; it reports a razor code-behind as a conflict and
-  changes it all the same.
-- A site's stylesheet helper (`SassStylesheet`) reads the site's styles bundle with `app.css`, so a style test finds
-  an account rule by its selector although no site lists a partial for it (CL58).
-
 ## Limits and plans
 
 The QR code for the authenticator key, a passkey's name edited after the fact, and the pages seen in a browser wait.

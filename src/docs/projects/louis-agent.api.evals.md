@@ -67,12 +67,6 @@ demos/puls/tests/louis-agent.api.evals.tests/   # the studio's tests, beside the
 the studio, the reviews and calibrations, each handler through the in-memory test host (`ApiTestHost`, which maps
 the studio for them and leaves it out for the API's own route snapshot), and `EvalRoutesSnapshotTests`.
 
-## What the build decided (CL57, 2026-11-07, unattended)
-
-- The admin group is the API's to hand out: each library maps its routes on its own gated `/admin` group with the
-  same filter, so the key check is one class and the route table still says who may call what.
-- The studio's texts moved into its own enums; `InvalidApiKey` and `AdminClosed` stayed with the gate.
-
 ## Related docs
 
 [louis-agent.api](louis-agent.api.md) · [louis-agent.web.evals](louis-agent.web.evals.md) ·

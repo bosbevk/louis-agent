@@ -1,0 +1,250 @@
+<svg viewBox="-24 -24 2052 1633" width="2052" height="1633" role="img" aria-label="F134.1 the start is a stage: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F134.1 the start is a stage: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2052" height="1633" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2004" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F134.1 the start is a stage:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 1762 733 L 1834 733" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1092 521 L 1328 521" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 392 309 L 598 309 Q 622 309 622 285 L 622 121 Q 622 97 646 97 L 784 97" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1092 945 L 1262 945 Q 1286 945 1286 921 L 1286 754 Q 1286 733 1307 733 L 1328 733" marker-end="url(#arrow-green)" />
+    <path class="edge tone-teal" d="M 1092 1369 L 1328 1369 L 1762 1369 L 1786 1369 Q 1810 1369 1810 1345 L 1810 745 Q 1810 733 1822 733 L 1834 733" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 392 521 L 616 521 Q 640 521 640 497 L 640 333 Q 640 309 664 309 L 784 309" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 392 521 L 784 521" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 392 521 L 616 521 Q 640 521 640 545 L 640 709 Q 640 733 664 733 L 784 733" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 392 521 L 616 521 Q 640 521 640 545 L 640 921 Q 640 945 664 945 L 784 945" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 392 521 L 616 521 Q 640 521 640 545 L 640 1345 Q 640 1369 664 1369 L 784 1369" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 392 1157 L 544 1157 Q 568 1157 568 1181 L 568 1345 Q 568 1369 592 1369 L 784 1369" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 392 945 L 562 945 Q 586 945 586 969 L 586 1133 Q 586 1157 610 1157 L 784 1157" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 392 733 L 580 733 Q 604 733 604 757 L 604 1133 Q 604 1157 628 1157 L 784 1157" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="1768" y="711" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="1786" y="723" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="1124" y="499" width="148" height="18" rx="4" />
+    <text class="word tone-green" x="1198" y="511" text-anchor="middle">each item's distance</text>
+    <rect class="word-chip tone-green" x="485.5" y="287" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="507" y="299" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="1167.5" y="923" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1189" y="935" text-anchor="middle">draws</text>
+    <rect class="word-chip tone-teal" x="1158.5" y="1347" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1180" y="1359" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="659" y="287" width="106" height="18" rx="4" />
+    <text class="word tone-green" x="712" y="299" text-anchor="middle">draws (step 6)</text>
+    <rect class="word-chip tone-green" x="666" y="711" width="92" height="18" rx="4" />
+    <text class="word tone-green" x="712" y="723" text-anchor="middle">one per demo</text>
+    <rect class="word-chip tone-green" x="652" y="1347" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="712" y="1359" text-anchor="middle">reads the site's</text>
+    <rect class="word-chip tone-green" x="420" y="1135" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="480" y="1147" text-anchor="middle">creates the five</text>
+    <rect class="word-chip tone-green" x="467.5" y="923" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="489" y="935" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="424" y="711" width="148" height="18" rx="4" />
+    <text class="word tone-green" x="498" y="723" text-anchor="middle">filled from (step 9)</text>
+    <rect class="box tone-green" x="0" y="267" width="392" height="84" rx="10" />
+    <text class="label tone-green" x="196" y="298" text-anchor="middle">WorkBody</text>
+    <path class="frame" d="M 0 319 L 392 319" />
+    <text class="word tone-green" x="14" y="337" text-anchor="start">+IReadOnlyList&lt;WorkPane&gt; Panes (step 4)</text>
+    <rect class="box tone-green" x="0" y="472" width="392" height="98" rx="10" />
+    <text class="label tone-green" x="196" y="503" text-anchor="middle">ShowroomStart</text>
+    <path class="frame" d="M 0 524 L 392 524" />
+    <text class="word tone-green" x="14" y="542" text-anchor="start">+string Featured</text>
+    <text class="word tone-green" x="14" y="556" text-anchor="start">+RenderFragment Title, Lede (step 6)</text>
+    <rect class="box tone-green" x="0" y="677" width="392" height="112" rx="10" />
+    <text class="label tone-green" x="196" y="708" text-anchor="middle">SiteBody</text>
+    <path class="frame" d="M 0 729 L 392 729" />
+    <text class="word tone-green" x="14" y="747" text-anchor="start">+string Photo, Name, Line</text>
+    <text class="word tone-green" x="14" y="761" text-anchor="start">+string Question, Answer</text>
+    <text class="word tone-green" x="14" y="775" text-anchor="start">+RenderFragment? Shown (step 4)</text>
+    <rect class="box tone-green" x="0" y="903" width="392" height="84" rx="10" />
+    <text class="label tone-green" x="196" y="934" text-anchor="middle">SiteWindowTalks</text>
+    <path class="frame" d="M 0 955 L 392 955" />
+    <text class="word tone-green" x="14" y="973" text-anchor="start">+WindowTalk Seemeeu, Wheatfield, Koringland (step 9)</text>
+    <rect class="box tone-green" x="0" y="1115" width="392" height="84" rx="10" />
+    <text class="label tone-green" x="196" y="1146" text-anchor="middle">SiteDemos</text>
+    <path class="frame" d="M 0 1167 L 392 1167" />
+    <text class="word tone-green" x="14" y="1185" text-anchor="start">+ShowroomDemos All (steps 1, 9)</text>
+    <rect class="box tone-teal" x="784" y="42" width="308" height="110" rx="10" />
+    <text class="label tone-teal" x="938" y="70" text-anchor="middle">WorkPane</text>
+    <text class="note" x="938" y="86" text-anchor="middle">record</text>
+    <path class="frame" d="M 784 106 L 1092 106" />
+    <text class="word tone-teal" x="798" y="124" text-anchor="start">+string Heading</text>
+    <text class="word tone-teal" x="798" y="138" text-anchor="start">+IReadOnlyList&lt;string&gt; Lines</text>
+    <rect class="box tone-green" x="784" y="260" width="308" height="98" rx="10" />
+    <text class="label tone-green" x="938" y="291" text-anchor="middle">LitStage</text>
+    <path class="frame" d="M 784 312 L 1092 312" />
+    <text class="word tone-green" x="798" y="330" text-anchor="start">+TileAccent Accent</text>
+    <text class="word tone-green" x="798" y="344" text-anchor="start">+RenderFragment ChildContent (step 2)</text>
+    <rect class="box tone-green" x="784" y="458" width="308" height="126" rx="10" />
+    <text class="label tone-green" x="938" y="489" text-anchor="middle">Deck&lt;TItem&gt;</text>
+    <path class="frame" d="M 784 510 L 1092 510" />
+    <text class="word tone-green" x="798" y="528" text-anchor="start">+IReadOnlyList&lt;TItem&gt; Items</text>
+    <text class="word tone-green" x="798" y="542" text-anchor="start">+int Forward</text>
+    <text class="word tone-green" x="798" y="556" text-anchor="start">+EventCallback&lt;int&gt; ForwardChanged</text>
+    <text class="word tone-green" x="798" y="570" text-anchor="start">+RenderFragment&lt;TItem&gt; Item (step 3)</text>
+    <rect class="box tone-green" x="784" y="684" width="308" height="98" rx="10" />
+    <text class="label tone-green" x="938" y="715" text-anchor="middle">FramedWindow</text>
+    <path class="frame" d="M 784 736 L 1092 736" />
+    <text class="word tone-green" x="798" y="754" text-anchor="start">+string Address</text>
+    <text class="word tone-green" x="798" y="768" text-anchor="start">+RenderFragment ChildContent (step 4)</text>
+    <rect class="box tone-green" x="784" y="882" width="308" height="126" rx="10" />
+    <text class="label tone-green" x="938" y="913" text-anchor="middle">Dock&lt;TItem&gt;</text>
+    <path class="frame" d="M 784 934 L 1092 934" />
+    <text class="word tone-green" x="798" y="952" text-anchor="start">+IReadOnlyList&lt;TItem&gt; Items</text>
+    <text class="word tone-green" x="798" y="966" text-anchor="start">+TItem? Current</text>
+    <text class="word tone-green" x="798" y="980" text-anchor="start">+EventCallback&lt;TItem&gt; Chosen</text>
+    <text class="word tone-green" x="798" y="994" text-anchor="start">+Func&lt;TItem, LineIcon&gt; Icon (step 5)</text>
+    <rect class="box tone-teal" x="784" y="1095" width="308" height="124" rx="10" />
+    <text class="label tone-teal" x="938" y="1123" text-anchor="middle">WindowTalk</text>
+    <text class="note" x="938" y="1139" text-anchor="middle">record</text>
+    <path class="frame" d="M 784 1159 L 1092 1159" />
+    <text class="word tone-teal" x="798" y="1177" text-anchor="start">+string Question</text>
+    <text class="word tone-teal" x="798" y="1191" text-anchor="start">+string Answer</text>
+    <text class="word tone-teal" x="798" y="1205" text-anchor="start">+string Recording</text>
+    <rect class="box tone-teal" x="784" y="1293" width="308" height="152" rx="10" />
+    <text class="label tone-teal" x="938" y="1321" text-anchor="middle">ShowroomDemo</text>
+    <text class="note" x="938" y="1337" text-anchor="middle">record</text>
+    <path class="frame" d="M 784 1357 L 1092 1357" />
+    <text class="word tone-teal" x="798" y="1375" text-anchor="start">+string Address, Name, Line</text>
+    <text class="word tone-teal" x="798" y="1389" text-anchor="start">+DemoGroup Group</text>
+    <text class="word tone-teal" x="798" y="1403" text-anchor="start">+TileAccent Accent</text>
+    <text class="word tone-teal" x="798" y="1417" text-anchor="start">+LineIcon Icon (step 1, was string Sign)</text>
+    <text class="word tone-teal" x="798" y="1431" text-anchor="start">+Type? Window (step 6)</text>
+    <rect class="box tone-green" x="1328" y="479" width="434" height="84" rx="10" />
+    <text class="label tone-green" x="1545" y="510" text-anchor="middle">DeckPlace</text>
+    <path class="frame" d="M 1328 531 L 1762 531" />
+    <text class="word tone-green" x="1342" y="549" text-anchor="start">+static int Of(int index, int forward, int count) (step 3)</text>
+    <rect class="box tone-green" x="1328" y="691" width="434" height="84" rx="10" />
+    <text class="label tone-green" x="1545" y="722" text-anchor="middle">LineIconView</text>
+    <path class="frame" d="M 1328 743 L 1762 743" />
+    <text class="word tone-green" x="1342" y="761" text-anchor="start">+LineIcon Icon (step 1)</text>
+    <rect class="box tone-teal" x="1834" y="636" width="170" height="194" rx="10" />
+    <text class="label tone-teal" x="1919" y="664" text-anchor="middle">LineIcon</text>
+    <text class="note" x="1919" y="680" text-anchor="middle">enum</text>
+    <path class="frame" d="M 1834 700 L 2004 700" />
+    <text class="word tone-teal" x="1848" y="718" text-anchor="start">Bed</text>
+    <text class="word tone-teal" x="1848" y="732" text-anchor="start">Dining</text>
+    <text class="word tone-teal" x="1848" y="746" text-anchor="start">Scales</text>
+    <text class="word tone-teal" x="1848" y="760" text-anchor="start">Code</text>
+    <text class="word tone-teal" x="1848" y="774" text-anchor="start">Exchange</text>
+    <text class="word tone-teal" x="1848" y="788" text-anchor="start">Play</text>
+    <text class="word tone-teal" x="1848" y="802" text-anchor="start">Back</text>
+    <text class="word tone-teal" x="1848" y="816" text-anchor="start">Next</text>
+  </g>
+  <rect class="notebar" x="0" y="1548" width="2004" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1558) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1570">
+    <tspan class="note-rest">General parts that know nothing of demos, the showroom that composes them, and the site that fills the windows.</tspan>
+  </text>
+</svg>

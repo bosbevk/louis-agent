@@ -1,0 +1,47 @@
+@* A window's body (F134.1): a website with its chat. On the left the website: its photo, which is decoration, its
+   name as its mark, its menu's words, and a line over the photo. On the right its agent's chat: one question, the
+   answer, and one thing the agent showed. Whatever is not given is not drawn. *@
+<div class="site-body">
+    <div class="body-site">
+        <img src="@Photo" alt="" />
+        <div class="body-top">
+            <b class="body-mark">@Name</b>
+            @if (Menu.Count > 0)
+            {
+                <span class="body-menu">
+                    @foreach (string word in Menu)
+                    {
+                        <span>@word</span>
+                    }
+                </span>
+            }
+        </div>
+        <div class="body-words">
+            <b class="body-line">@Line</b>
+            @if (Note is not null)
+            {
+                <span class="body-note">@Note</span>
+            }
+        </div>
+    </div>
+    <div class="body-chat">
+        <div class="body-ask">
+            <LineIconView Icon="Icon"/>
+            <b>@Ask</b>
+            @if (AskNote is not null)
+            {
+                <em>@AskNote</em>
+            }
+        </div>
+        <p class="body-question">@Question</p>
+        <p class="body-answer">@Answer</p>
+        @if (Shown is not null)
+        {
+            <div class="body-shown">@Shown</div>
+        }
+        @if (Hint is not null)
+        {
+            <span class="body-hint">@Hint</span>
+        }
+    </div>
+</div>

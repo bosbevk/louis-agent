@@ -28,7 +28,7 @@
             @foreach (var demo in group)
             {
                 <a class="@CoverClasses(demo)" href="@demo.Address">
-                    <span class="start-sign" aria-hidden="true">@demo.Sign</span>
+                    <span class="start-sign" aria-hidden="true"><LineIconView Icon="demo.Icon"/></span>
                     <span class="start-name">@demo.Name</span>
                     <span class="start-line">@demo.Line</span>
                 </a>

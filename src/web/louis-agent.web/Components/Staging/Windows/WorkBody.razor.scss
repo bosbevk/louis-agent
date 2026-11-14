@@ -1,0 +1,36 @@
+/* Panes of work (F134.1): as many even columns as there are panes, a hairline between them, each a heading with a
+   lit dot in the accent over lines set in the code's own face. */
+.work-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--panes, 1), minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    gap: 1px;
+    background: rgba(var(--web-overlay-rgb), .06);
+}
+.work-pane {
+    display: flex;
+    flex-direction: column;
+    padding: 18px 20px;
+    overflow: clip;
+    font: 500 clamp(11px, .9vw, 13.5px)/1.9 var(--bs-font-monospace);
+    color: var(--bs-secondary-color);
+    background: var(--bs-secondary-bg);
+}
+.pane-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font: 600 13px var(--bs-font-sans-serif);
+    color: var(--bs-emphasis-color);
+}
+.pane-heading::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent, var(--web-bright));
+    box-shadow: 0 0 12px var(--accent, var(--web-bright));
+}

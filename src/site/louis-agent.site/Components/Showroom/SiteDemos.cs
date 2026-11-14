@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Tiles;
 
@@ -13,14 +14,14 @@ public static class SiteDemos
     /// <summary>The five, registered once in <c>Program.cs</c> for the showroom to draw.</summary>
     public static ShowroomDemos All { get; } = new([
         new ShowroomDemo("/guesthouse-demo", "A guesthouse", "A weekend by the beach, with the dog",
-            DemoGroup.ForYourBusiness, TileAccent.Blue, "🛏"),
+            DemoGroup.ForYourBusiness, TileAccent.Blue, DiagramIcon.Bed),
         new ShowroomDemo("/restaurant-demo", "A restaurant", "Sunday lunch at ten at night", DemoGroup.ForYourBusiness,
-            TileAccent.Green, "🍽"),
+            TileAccent.Green, DiagramIcon.Dining),
         new ShowroomDemo("/law-practice-demo", "A law practice", "No advice, a consultation", DemoGroup.ForYourBusiness,
-            TileAccent.Yellow, "⚖"),
+            TileAccent.Yellow, DiagramIcon.Scales),
         new ShowroomDemo("/coding-agent", "The coding agent", "Fixes a real bug", DemoGroup.AgentsAtWork,
-            TileAccent.Red, "{ }"),
+            TileAccent.Red, DiagramIcon.Code),
         new ShowroomDemo("/triage-demo", "The triage team", "Sorts and fixes an error", DemoGroup.AgentsAtWork,
-            TileAccent.Purple, "⇄"),
+            TileAccent.Purple, DiagramIcon.Exchange),
     ]);
 }

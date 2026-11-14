@@ -1,0 +1,59 @@
+@use "web/tools/accents";
+
+/* A lit stage (F134.1): one colour, the accent's, and white when nothing around it wears one. The light and the
+   pool are that colour laid flat and cut to their shape by a mask, where a gradient would have been simpler,
+   because a flat colour can change slowly when the stage's colour changes and a gradient can only jump. */
+@include accents.classes;
+
+.lit-stage {
+    --stage-light: var(--accent, var(--web-bright));
+    position: relative;
+    isolation: isolate;
+}
+/* The backdrop is cut at the stage's edge. What stands on the stage is not in it, so it is never cut. */
+.lit-back {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+.lit-light, .lit-pool, .lit-floor { position: absolute; }
+/* The light: a cone from above the middle, fading out. */
+.lit-light {
+    inset: 0;
+    opacity: .2;
+    background-color: var(--stage-light);
+    mask-image: radial-gradient(48% 62% at 50% 0%, var(--web-bright), transparent 72%);
+    transition: background-color 1.1s var(--web-ease);
+}
+/* The pool: where the light lands, low on the floor. */
+.lit-pool {
+    left: 12%;
+    right: 12%;
+    bottom: 14%;
+    height: 26%;
+    border-radius: 50%;
+    opacity: .2;
+    background-color: var(--stage-light);
+    filter: blur(50px);
+    transition: background-color 1.1s var(--web-ease);
+}
+/* The floor: faint lines running away from the viewer, clearer the nearer they are. It is wider than the stage,
+   since a floor seen from above narrows towards the back and would leave the stage's near corners bare. */
+.lit-floor {
+    left: -60%;
+    right: -60%;
+    bottom: 0;
+    height: 42%;
+    background:
+        linear-gradient(180deg, transparent, rgba(var(--web-overlay-rgb), .035)),
+        repeating-linear-gradient(90deg, rgba(var(--web-overlay-rgb), .045) 0 1px, transparent 1px 120px);
+    mask-image: linear-gradient(180deg, transparent, var(--web-bright) 60%);
+    transform: perspective(900px) rotateX(62deg);
+    transform-origin: 50% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lit-light, .lit-pool { transition: none; }
+}

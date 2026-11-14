@@ -1,7 +1,6 @@
 # 0063. A prompt says what it is
 
-**Status:** Accepted · **Date:** 2026-11-03 (CL27, built unattended at Louis's word; the picks wait for his review
-on the pull request) · **Recorded:** 2026-11-03
+**Status:** Accepted · **Date:** 2026-11-03 (CL27) · **Recorded:** 2026-11-03
 
 Numbered 0063 because 0062 is taken by F49.5's branch (*The studio writes what git keeps*), still open when this was
 written.

@@ -1,4 +1,4 @@
-@* The rail of every demo (F127.1): grouped by what a visitor comes for, each a cover in its colour with its sign, its
+@* The rail of every demo (F127.1): grouped by what a visitor comes for, each a cover in its colour with its icon, its
    name and a line; the one on screen lit and marked as the current page. *@
 <nav class="demo-rail" aria-label="@Text.AllDemos">
     @foreach (var group in Demos.Groups)
@@ -7,7 +7,7 @@
         @foreach (var demo in group)
         {
             <a class="@ClassesOf(demo)" href="@demo.Address" aria-current="@CurrentMark(demo)">
-                <span class="cover-sign" aria-hidden="true">@demo.Sign</span>
+                <span class="cover-sign" aria-hidden="true"><LineIconView Icon="demo.Icon"/></span>
                 <span class="cover-words"><b>@demo.Name</b><span>@demo.Line</span></span>
             </a>
         }

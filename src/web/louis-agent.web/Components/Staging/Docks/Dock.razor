@@ -1,0 +1,18 @@
+@* A dock (F134.1): a row of icon buttons, a divider where the group changes, the current one showing its name.
+   Every button carries its name for a screen reader and as a tip, since only the current one shows it. Each is a
+   card of the page (its id, data-card, open or closed), so the framework's addresses open it: /page/its-id. The dock
+   changes nothing itself. It says which was pressed, and the page decides. *@
+<nav class="dock" aria-label="@Label">
+    @foreach (var slot in Slots)
+    {
+        @if (slot.StartsGroup)
+        {
+            <span class="dock-divider" aria-hidden="true"></span>
+        }
+        <button class="@slot.Classes" type="button" id="@slot.Item.Id" data-card title="@slot.Item.Name"
+                aria-expanded="@slot.Open" @onclick="() => Chosen.InvokeAsync(slot.Item)">
+            <LineIconView Icon="slot.Item.Icon"/>
+            <span class="dock-name">@slot.Item.Name</span>
+        </button>
+    }
+</nav>

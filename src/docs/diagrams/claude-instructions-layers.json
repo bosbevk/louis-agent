@@ -1,0 +1,48 @@
+{
+  "kind": "flow",
+  "title": "Claude's instructions: the three layers",
+  "caption": "By when it is needed: what must never be missed is always loaded, the how arrives with a kind of file, and a procedure with its job.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "always",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "Always loaded\nCLAUDE.md: working with Louis, the hard stops\ndesign-rules.md, repo-map.md"
+      },
+      {
+        "id": "rules",
+        "icon": "file",
+        "tone": "teal",
+        "label": "Loaded with a kind of file\nrules for C#, summaries, Razor, CSS, docs,\nprompts, tests, hosts and web; core's CLAUDE.md"
+      },
+      {
+        "id": "skills",
+        "icon": "stack",
+        "tone": "green",
+        "label": "Loaded for a job\nnine skills: plan, do, finish, finding, fix,\ncheck a page, ship, finish a feature, draw"
+      },
+      {
+        "id": "claude",
+        "icon": "chip",
+        "tone": "blue",
+        "label": "Claude, in a session"
+      }
+    ],
+    "edges": [
+      {
+        "from": "always",
+        "to": "claude"
+      },
+      {
+        "from": "rules",
+        "to": "claude"
+      },
+      {
+        "from": "skills",
+        "to": "claude"
+      }
+    ]
+  }
+}

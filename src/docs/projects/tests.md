@@ -169,7 +169,7 @@ doc in [src/docs/features/](../features/README.md) names the tests each step add
 
 ## Related docs
 
-[Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
+[Write and run tests](../guides/write-tests.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.evals.runner](louis-agent.evals.runner.md)

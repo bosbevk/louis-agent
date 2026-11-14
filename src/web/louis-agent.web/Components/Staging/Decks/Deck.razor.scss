@@ -1,0 +1,63 @@
+@use "web/tools/glow";
+
+/* A deck (F134.1): the items stand in depth around the one forward. Each item's style gives two numbers, --d (how far
+   from the middle, and which way) and --abs (how far), and everything about its place is worked out from them here:
+   pushed sideways, pushed back, turned towards the middle and dimmed. The place that uses the deck gives it a
+   height, and may set --deck-item-height and --deck-item-ratio for the size of one item. */
+.deck {
+    position: relative;
+    perspective: 2000px;
+    outline: none;
+}
+.deck:focus-visible { outline: 2px solid var(--bs-emphasis-color); outline-offset: 4px; border-radius: 12px; }
+.deck-items { position: absolute; inset: 0; transform-style: preserve-3d; }
+.deck-item {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: var(--deck-item-height, 88%);
+    aspect-ratio: var(--deck-item-ratio, 16 / 10);
+    cursor: pointer;
+    transform:
+        translate(-50%, -50%)
+        translateX(calc(var(--d) * 47%))
+        translateZ(calc(var(--abs) * -340px))
+        rotateY(calc(var(--d) * -27deg));
+    filter: brightness(calc(1 - var(--abs) * .27)) saturate(calc(1 - var(--abs) * .3));
+    transition: transform .9s var(--web-ease), filter .9s var(--web-ease);
+    /* Its reflection on the floor, where the browser can draw one. */
+    -webkit-box-reflect: below 10px linear-gradient(transparent 72%, rgba(var(--web-shadow-rgb), .22));
+}
+.deck-item.is-forward { cursor: default; }
+.deck-item-in { width: 100%; height: 100%; }
+
+/* The arrows: round, see-through, one at each side, over the items. */
+.deck-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-top: -26px;
+    border: 0;
+    border-radius: 50%;
+    font-size: 24px;
+    color: var(--bs-emphasis-color);
+    background: rgba(var(--bs-tertiary-bg-rgb), .7);
+    backdrop-filter: blur(14px);
+    box-shadow:
+        inset 0 1px 0 rgba(var(--web-overlay-rgb), .14),
+        inset 0 0 0 1px rgba(var(--web-overlay-rgb), .1),
+        0 20px 40px -20px rgba(var(--web-shadow-rgb), 1);
+    cursor: pointer;
+    transition: transform .3s var(--web-spring), background-color .3s;
+}
+.deck-arrow:hover { transform: scale(1.1); background: glow.tint(var(--accent, var(--web-bright)), 25%); }
+.deck-before { left: max(20px, 6%); }
+.deck-next { right: max(20px, 6%); }
+
+@media (prefers-reduced-motion: reduce) {
+    .deck-item, .deck-arrow { transition: none; }
+}

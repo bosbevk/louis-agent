@@ -1,0 +1,14 @@
+@* A window's body (F134.1): panes of work, side by side, each a heading over a few lines. The style says how many
+   panes there are, so they share the window's width evenly. *@
+<div class="work-body" style="@Columns">
+    @foreach (var pane in Panes)
+    {
+        <div class="work-pane">
+            <b class="pane-heading">@pane.Heading</b>
+            @foreach (string line in pane.Lines)
+            {
+                <span class="pane-line">@line</span>
+            }
+        </div>
+    }
+</div>

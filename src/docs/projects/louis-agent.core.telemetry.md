@@ -66,13 +66,6 @@ is listened to, a call to the collector is left out; a crash is one fatal line t
 the log lines reach it with the records left out. The receiver is `louis-agent.testing/Otlp/OtlpReceiver`. Core's own
 `HostTelemetryTests` prove the seam without this library.
 
-## What the build decided (CL33, 2026-11-07, unattended)
-
-- `LastChance` stayed in core: it needed the tracer only to flush, so it is installed with the host's telemetry and
-  flushes through the seam; the web library needs nothing of this one.
-- The tests that prove lines reach a collector moved here with the sink; the receiver went to the shared test
-  library.
-
 ## Limits and plans
 
 Metrics (speed, tokens per second) are F44.1's; a second exporter is a second class on the same seam.

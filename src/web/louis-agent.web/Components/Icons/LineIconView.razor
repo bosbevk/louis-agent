@@ -1,0 +1,8 @@
+@* A line icon (F134.1): one of the framework's drawings, in strokes, in the colour and at the size of the words
+   around it. It stands beside a name that already says what it is, so a screen reader passes over it. *@
+<svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    @foreach (string stroke in Strokes)
+    {
+        <path d="@stroke"/>
+    }
+</svg>

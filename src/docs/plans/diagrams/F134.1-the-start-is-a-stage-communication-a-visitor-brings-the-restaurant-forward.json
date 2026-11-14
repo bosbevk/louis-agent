@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "title": "F134.1 the start is a stage: a visitor brings the restaurant forward",
+  "caption": "The start owns which demo is forward. The dock and the deck only say what was pressed, and both are drawn again from it.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Visitor"
+      },
+      {
+        "id": "K",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Dock"
+      },
+      {
+        "id": "S",
+        "icon": "code",
+        "tone": "violet",
+        "label": "ShowroomStart"
+      },
+      {
+        "id": "D",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Deck"
+      },
+      {
+        "id": "P",
+        "icon": "code",
+        "tone": "violet",
+        "label": "DeckPlace"
+      },
+      {
+        "id": "A",
+        "icon": "browser",
+        "tone": "green",
+        "label": "The address bar"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "K",
+        "text": "presses the restaurant's button"
+      },
+      {
+        "step": "message",
+        "from": "K",
+        "to": "S",
+        "text": "Chosen(the restaurant)"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "D",
+        "text": "Forward = 1, and its colour to the stage"
+      },
+      {
+        "step": "message",
+        "from": "D",
+        "to": "P",
+        "text": "Of(index, forward, count) for each window"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "D",
+        "text": "-1, 0, 1, 2, -2"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "A",
+        "text": "/demos/restaurant-demo"
+      },
+      {
+        "step": "reply",
+        "from": "D",
+        "to": "V",
+        "text": "the restaurant's window in the middle"
+      }
+    ]
+  }
+}

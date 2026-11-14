@@ -1,5 +1,5 @@
 # Build and test every pull request, so a regression is caught before a review, not only locally.
-# The development guide's "Finishing a step", in two steps: dotnet build, then the unit tests, then (F18 step 7.6) the integration tests, which leave their process and live in their own projects.
+# The build and the tests of a step (the finish-a-step skill), in two steps: dotnet build, then the unit tests, then (F18 step 7.6) the integration tests, which leave their process and live in their own projects.
 # already runs them on Linux in its containers, so the runner is Ubuntu. No model, no network, no secrets: the tests
 # use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing. One service: a
 # throwaway MongoDB, so the benchmark store's contract runs against the real store too (F31), not only in memory.

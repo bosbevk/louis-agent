@@ -6,7 +6,7 @@
 > [Change the framework's site](../../../../src/docs/guides/change-the-site.md). **Elsewhere:** how it works in
 > [louis-agent.code-review](../projects/louis-agent.code-review.md); what it shares with Puls in
 > [Change the framework's web](../../../../src/docs/guides/change-the-web.md); the folder rules in
-> [src/CLAUDE.md](../../../../src/CLAUDE.md).
+> [hosts-and-web.md](../../../../.claude/rules/hosts-and-web.md).
 
 The app is Blazor WebAssembly, served by the coding agent's API on the same origin, so it has no settings of its own.
 It's a small site on the framework's web: `Pages/ChatPage.razor` is a thin page on `ChatShell`, at the root and at

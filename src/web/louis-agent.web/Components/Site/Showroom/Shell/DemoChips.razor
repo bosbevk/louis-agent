@@ -1,10 +1,10 @@
-@* The demos on a phone (F127.1): the rail becomes a row of chips that scrolls sideways, each in its colour, the one on
-   screen lit. Shown only where the rail isn't. *@
+@* The demos on a phone (F127.1): the rail becomes a row of chips that scrolls sideways, each in its colour with its
+   icon, the one on screen lit. Shown only where the rail isn't. *@
 <nav class="demo-chips" aria-label="@Text.AllDemos">
     @foreach (var demo in Demos.All)
     {
         <a class="@ClassesOf(demo)" href="@demo.Address" aria-current="@CurrentMark(demo)">
-            <span class="chip-dot" aria-hidden="true"></span>@demo.Name
+            <span class="chip-icon" aria-hidden="true"><LineIconView Icon="demo.Icon"/></span>@demo.Name
         </a>
     }
 </nav>

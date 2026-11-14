@@ -1,7 +1,6 @@
 # 0065. The view is in the address
 
-**Status:** Accepted · **Date:** 2026-11-03 (F53.1, built unattended at Louis's word; the picks wait for his review
-on the pull request) · **Recorded:** 2026-11-03
+**Status:** Accepted · **Date:** 2026-11-03 (F53.1) · **Recorded:** 2026-11-03
 
 Numbered 0065 because 0064 was reserved for F52's (*OpenTelemetry*), written in the same days.
 

@@ -1,0 +1,216 @@
+<svg viewBox="-24 -24 1486 1007" width="1486" height="1007" role="img" aria-label="CL64 prompts in the skill shape: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>CL64 prompts in the skill shape: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1486" height="1007" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1438" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">CL64 prompts in the skill shape:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 380 124 L 380 178 Q 380 202 404 202 L 553.5 202 Q 574.5 202 574.5 223 L 574.5 244" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 380 124 L 380 178 Q 380 202 356 202 L 206.5 202 Q 185.5 202 185.5 223 L 185.5 244" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-teal" d="M 185.5 396 L 185.5 417 Q 185.5 438 206.5 438 L 757 438 Q 769 438 769 450 L 769 462" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-violet" d="M 574.5 396 L 574.5 417 Q 574.5 438 595.5 438 L 757 438 Q 769 438 769 450 L 769 462" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-violet" d="M 769 586 L 769 652" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-violet" d="M 769 124 L 769 244 L 769 396 L 769 462" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-violet" d="M 769 124 L 769 160 Q 769 184 793 184 L 1328.5 184 Q 1352.5 184 1352.5 208 L 1352.5 244" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-violet" d="M 1158 124 L 1158 145 Q 1158 166 1179 166 L 1328.5 166 Q 1352.5 166 1352.5 190 L 1352.5 244" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-green" x="580.5" y="206" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="640.5" y="218" text-anchor="middle">splits each file</text>
+    <rect class="word-chip tone-green" x="191.5" y="206" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="220" y="218" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-teal" x="191.5" y="400" width="106" height="18" rx="4" />
+    <text class="word tone-teal" x="244.5" y="412" text-anchor="middle">reads its body</text>
+    <rect class="word-chip tone-violet" x="580.5" y="400" width="57" height="18" rx="4" />
+    <text class="word tone-violet" x="609" y="412" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-violet" x="775" y="590" width="43" height="18" rx="4" />
+    <text class="word tone-violet" x="796.5" y="602" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-violet" x="775" y="206" width="36" height="18" rx="4" />
+    <text class="word tone-violet" x="793" y="218" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-violet" x="1358.5" y="206" width="43" height="18" rx="4" />
+    <text class="word tone-violet" x="1380" y="218" text-anchor="middle">lists</text>
+    <rect class="word-chip tone-violet" x="1164" y="128" width="43" height="18" rx="4" />
+    <text class="word tone-violet" x="1185.5" y="140" text-anchor="middle">holds</text>
+    <rect class="box tone-green" x="226" y="0" width="308" height="124" rx="10" />
+    <text class="label tone-green" x="380" y="28" text-anchor="middle">PromptShapeTests</text>
+    <text class="note" x="380" y="44" text-anchor="middle">test, step 1</text>
+    <path class="frame" d="M 226 64 L 534 64" />
+    <text class="word tone-green" x="240" y="82" text-anchor="start">EveryPrompt_FitsTheShape_OrIsOnTheList()</text>
+    <text class="word tone-green" x="240" y="96" text-anchor="start">TheList_HoldsNoPromptThatFits()</text>
+    <text class="word tone-green" x="240" y="110" text-anchor="start">AStep_IsAtMostThreeLines()</text>
+    <rect class="box tone-violet" x="583.5" y="0" width="371" height="124" rx="10" />
+    <text class="label tone-violet" x="769" y="28" text-anchor="middle">SkillLoader</text>
+    <text class="note" x="769" y="44" text-anchor="middle">step 4, by choice 3</text>
+    <path class="frame" d="M 583.5 64 L 954.5 64" />
+    <text class="word tone-violet" x="597.5" y="82" text-anchor="start">static ISkillProvider Load(AgentOptions agent, …)</text>
+    <text class="word tone-violet" x="597.5" y="96" text-anchor="start">static IReadOnlyList&lt;IdentitySkill&gt; SkillsOf(…)</text>
+    <rect class="box tone-violet" x="1042.5" y="0" width="231" height="124" rx="10" />
+    <text class="label tone-violet" x="1158" y="28" text-anchor="middle">SkillReadTools</text>
+    <text class="note" x="1158" y="44" text-anchor="middle">tool, unchanged</text>
+    <path class="frame" d="M 1042.5 64 L 1273.5 64" />
+    <text class="word tone-violet" x="1056.5" y="82" text-anchor="start">string ReadSkill(string name)</text>
+    <rect class="box tone-teal" x="38.5" y="244" width="294" height="152" rx="10" />
+    <text class="label tone-teal" x="185.5" y="272" text-anchor="middle">PromptShape</text>
+    <text class="note" x="185.5" y="288" text-anchor="middle">record, step 1</text>
+    <path class="frame" d="M 38.5 308 L 332.5 308" />
+    <text class="word tone-teal" x="52.5" y="326" text-anchor="start">int Words</text>
+    <text class="word tone-teal" x="52.5" y="340" text-anchor="start">IReadOnlyList&lt;string&gt; Never</text>
+    <text class="word tone-teal" x="52.5" y="354" text-anchor="start">IReadOnlyList&lt;string&gt; Steps</text>
+    <text class="word tone-teal" x="52.5" y="368" text-anchor="start">string? FirstHeading</text>
+    <text class="word tone-teal" x="52.5" y="382" text-anchor="start">static PromptShape Of(PromptFile file)</text>
+    <rect class="box tone-violet" x="389" y="244" width="371" height="152" rx="10" />
+    <text class="label tone-violet" x="574.5" y="272" text-anchor="middle">PromptHeaders</text>
+    <text class="note" x="574.5" y="288" text-anchor="middle">reader, unchanged</text>
+    <path class="frame" d="M 389 308 L 760 308" />
+    <text class="word tone-violet" x="403" y="326" text-anchor="start">static PromptFile Split(string path, string text)</text>
+    <rect class="box tone-violet" x="1267.5" y="244" width="170" height="152" rx="10" />
+    <text class="label tone-violet" x="1352.5" y="272" text-anchor="middle">IdentitySkill</text>
+    <text class="note" x="1352.5" y="288" text-anchor="middle">record, unchanged</text>
+    <path class="frame" d="M 1267.5 308 L 1437.5 308" />
+    <text class="word tone-violet" x="1281.5" y="326" text-anchor="start">string Name</text>
+    <text class="word tone-violet" x="1281.5" y="340" text-anchor="start">string Description</text>
+    <text class="word tone-violet" x="1281.5" y="354" text-anchor="start">SkillLoad Load</text>
+    <text class="word tone-violet" x="1281.5" y="368" text-anchor="start">string Body</text>
+    <rect class="box tone-violet" x="684" y="462" width="170" height="124" rx="10" />
+    <text class="label tone-violet" x="769" y="490" text-anchor="middle">PromptFile</text>
+    <text class="note" x="769" y="506" text-anchor="middle">record, unchanged</text>
+    <path class="frame" d="M 684 526 L 854 526" />
+    <text class="word tone-violet" x="698" y="544" text-anchor="start">string Path</text>
+    <text class="word tone-violet" x="698" y="558" text-anchor="start">PromptHeader? Header</text>
+    <text class="word tone-violet" x="698" y="572" text-anchor="start">string Body</text>
+    <rect class="box tone-violet" x="650" y="652" width="238" height="152" rx="10" />
+    <text class="label tone-violet" x="769" y="680" text-anchor="middle">PromptHeader</text>
+    <text class="note" x="769" y="696" text-anchor="middle">record, unchanged</text>
+    <path class="frame" d="M 650 716 L 888 716" />
+    <text class="word tone-violet" x="664" y="734" text-anchor="start">string Name</text>
+    <text class="word tone-violet" x="664" y="748" text-anchor="start">string Description</text>
+    <text class="word tone-violet" x="664" y="762" text-anchor="start">RoleLevel? Level</text>
+    <text class="word tone-violet" x="664" y="776" text-anchor="start">IReadOnlyList&lt;string&gt; Toolsets</text>
+    <text class="word tone-violet" x="664" y="790" text-anchor="start">SkillLoad? Load</text>
+  </g>
+  <rect class="swatch tone-green" x="0" y="886" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="896.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="126.4" y="886" width="12" height="12" rx="3" />
+  <text class="legend" x="144.4" y="896.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="260" y="886" width="12" height="12" rx="3" />
+  <text class="legend" x="278" y="896.5" text-anchor="start">contracts and state</text>
+  <rect class="notebar" x="0" y="922" width="1438" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 932) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="944">
+    <tspan class="note-head">The rule reads what the engine already has:</tspan>
+    <tspan class="note-rest">a test and one record are new, and the engine changes only if a specialist gets skills.</tspan>
+  </text>
+</svg>

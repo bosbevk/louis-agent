@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>F134 mockup F: Centre stage</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="base.css">
+<style>
+/* F · Centre stage. One demo at a time, as the thing itself: the business's website with its agent open, a window
+   standing on a lit stage, the other four waiting behind it in depth. The light is the demo's colour. Arrows, the
+   dock or a click on a window behind brings the next one forward. */
+body { overflow: hidden; height: 100vh; }
+.stage { position: relative; isolation: isolate; height: 100vh; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; justify-items: center; overflow: hidden; }
+.bar { width: 100%; }
+/* The stage light: a cone from above and a pool on the floor, one colour, the demo's. */
+.light, .pool { position: absolute; z-index: -1; background-color: rgb(var(--a-rgb)); transition: background-color 1.1s var(--ease); pointer-events: none; }
+.light { inset: 0; opacity: .2; -webkit-mask-image: radial-gradient(48% 62% at 50% 0%, #000, transparent 72%); mask-image: radial-gradient(48% 62% at 50% 0%, #000, transparent 72%); }
+.pool { left: 12%; right: 12%; bottom: 14%; height: 26%; opacity: .2; filter: blur(50px); border-radius: 50%; }
+.floor { position: absolute; z-index: -2; left: 0; right: 0; bottom: 0; height: 42%; background: linear-gradient(180deg, transparent, rgba(255, 255, 255, .035)), repeating-linear-gradient(90deg, rgba(255, 255, 255, .045) 0 1px, transparent 1px 120px); -webkit-mask-image: linear-gradient(180deg, transparent, #000 60%); mask-image: linear-gradient(180deg, transparent, #000 60%); transform: perspective(900px) rotateX(62deg); transform-origin: 50% 100%; }
+.heading { text-align: center; padding: 6px 24px 0; }
+.heading h1 { font-size: clamp(24px, 2.3vw, 38px); letter-spacing: -.03em; font-weight: 700; line-height: 1.15; }
+.heading p { margin-top: 6px; font-size: 14.5px; color: var(--muted); }
+.deck { position: relative; width: 100%; height: 100%; min-height: 0; perspective: 2000px; transform-style: preserve-3d; }
+.tilt { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .3s ease-out; transform: rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg)); }
+.win { --d: 0; --abs: 0; position: absolute; left: 50%; top: 50%; height: min(88%, 700px); aspect-ratio: 16 / 9.4; border-radius: 18px; background: #0d0e10; cursor: pointer; transform: translate(-50%, -50%) translateX(calc(var(--d) * 47%)) translateZ(calc(var(--abs) * -340px)) rotateY(calc(var(--d) * -27deg)); filter: brightness(calc(1 - var(--abs) * .27)) saturate(calc(1 - var(--abs) * .3)); box-shadow: 0 0 0 1px rgba(255, 255, 255, .1), 0 70px 120px -50px #000; transition: transform .9s var(--ease), filter .9s var(--ease), box-shadow .9s; -webkit-box-reflect: below 10px linear-gradient(transparent 72%, rgba(0, 0, 0, .22)); }
+.win.is-on { cursor: default; box-shadow: 0 0 0 1px rgba(var(--a-rgb), .7), 0 0 0 6px rgba(var(--a-rgb), .1), 0 70px 140px -50px #000, 0 0 140px -30px rgba(var(--a-rgb), .6); }
+.win-in { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; display: flex; flex-direction: column; }
+.chrome-bar { flex: none; height: 38px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: #17191c; border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.chrome-bar i { width: 10px; height: 10px; border-radius: 50%; background: #3a3e45; }
+.chrome-bar span { margin-left: 12px; padding: 4px 14px; border-radius: 8px; font: 400 12px/1.4 'Geist Mono', monospace; color: var(--muted); background: rgba(255, 255, 255, .05); }
+.body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 35%; }
+.site { position: relative; overflow: hidden; }
+.site img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.site::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0, 0, 0, .72), rgba(0, 0, 0, 0) 55%), linear-gradient(180deg, rgba(0, 0, 0, .45), transparent 26%); }
+.site nav { position: relative; z-index: 1; display: flex; gap: 22px; align-items: center; padding: 16px 22px; font-size: 13px; color: rgba(255, 255, 255, .9); }
+.site nav b { font: 600 17px Georgia, 'Times New Roman', serif; margin-right: auto; }
+.site div { position: absolute; z-index: 1; left: 22px; right: 22px; bottom: 22px; color: #fff; }
+.site div b { display: block; font: 400 clamp(24px, 2.6vw, 42px)/1.08 Georgia, 'Times New Roman', serif; letter-spacing: -.01em; }
+.site div span { display: block; margin-top: 8px; font-size: 14px; color: rgba(255, 255, 255, .85); }
+.chat { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #101113; border-left: 1px solid rgba(255, 255, 255, .07); }
+.chat header { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600; color: var(--bright); padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.chat header .icon { font-size: 17px; color: var(--a); }
+.chat header em { margin-left: auto; font-style: normal; font-weight: 400; font-size: 12px; color: var(--a); }
+.q, .a { padding: 9px 12px; font-size: 13px; line-height: 1.45; max-width: 92%; }
+.q { align-self: flex-end; border-radius: 14px 14px 4px 14px; background: #e6e8eb; color: #0b0c0e; }
+.a { align-self: flex-start; border-radius: 14px 14px 14px 4px; background: #191b1f; color: var(--text); box-shadow: inset 0 0 0 1px rgba(var(--a-rgb), .4); }
+.offer { align-self: flex-start; display: flex; gap: 10px; align-items: center; padding: 8px; border-radius: 12px; background: #191b1f; font-size: 12.5px; color: var(--soft); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.offer img { position: static; width: 54px; height: 44px; border-radius: 8px; object-fit: cover; }
+.offer b { display: block; color: var(--bright); font-size: 13px; }
+.chat .type { margin-top: auto; padding: 10px 12px; border-radius: 11px; font-size: 12.5px; color: var(--dim); background: rgba(255, 255, 255, .04); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+/* An agent at work: its window is the work. */
+.work { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255, 255, 255, .06); }
+.work.three { grid-template-columns: repeat(3, 1fr); }
+.pane { background: #0d0e10; padding: 18px 20px; font: 500 clamp(11px, .9vw, 13.5px)/1.9 'Geist Mono', monospace; color: var(--muted); overflow: hidden; }
+.pane h3 { font: 600 13px 'Geist', sans-serif; color: var(--bright); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.pane h3::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--a); box-shadow: 0 0 12px rgba(var(--a-rgb), .9); }
+.pane .bad { color: #e8a39c; } .pane .good { color: #6cbf94; } .pane .lit { color: var(--a); }
+.arrow { position: absolute; z-index: 20; top: 50%; width: 52px; height: 52px; margin-top: -26px; border: 0; border-radius: 50%; display: grid; place-items: center; font-size: 24px; color: var(--bright); cursor: pointer; background: rgba(21, 23, 26, .7); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 20px 40px -20px #000; transition: transform .3s var(--spring), background-color .3s; }
+.arrow:hover { transform: scale(1.1); background: rgba(var(--a-rgb), .25); }
+.arrow.left { left: max(20px, 6vw); } .arrow.right { right: max(20px, 6vw); }
+.caption { text-align: center; padding: 6px 24px 0; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: opacity .35s, transform .35s var(--ease); }
+.caption.is-changing { opacity: 0; transform: translateY(8px); }
+.caption h2 { font-size: clamp(30px, 3.4vw, 56px); line-height: 1; letter-spacing: -.04em; font-weight: 700; color: var(--bright); }
+.caption p { font-size: 15.5px; color: var(--soft); }
+.caption .cta { margin-top: 10px; }
+.dock { margin: 18px 0 22px; display: flex; gap: 8px; padding: 8px; border-radius: 22px; background: rgba(21, 23, 26, .66); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px rgba(255, 255, 255, .07), 0 30px 60px -30px #000; }
+.dock button { display: flex; align-items: center; gap: 0; height: 48px; padding: 0 14px; border: 0; border-radius: 15px; font: 500 14px 'Geist', sans-serif; color: var(--soft); background: transparent; cursor: pointer; transition: background-color .3s, color .3s, gap .4s var(--ease), padding .4s var(--ease); }
+.dock button .icon { font-size: 21px; color: var(--a); }
+.dock button span { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width .5s var(--ease); }
+.dock button:hover { background: rgba(255, 255, 255, .06); }
+.dock button.is-on { gap: 10px; color: var(--bright); background: rgba(var(--a-rgb), .16); box-shadow: inset 0 0 0 1px rgba(var(--a-rgb), .45); }
+.dock button.is-on span { max-width: 160px; }
+.dock hr { width: 1px; height: 26px; align-self: center; border: 0; margin: 0 4px; background: rgba(255, 255, 255, .12); }
+@media (max-width: 900px) {
+    .win { height: auto; width: 84vw; aspect-ratio: 3 / 4; transform: translate(-50%, -50%) translateX(calc(var(--d) * 92%)) scale(calc(1 - var(--abs) * .12)); -webkit-box-reflect: none; }
+    .body { grid-template-columns: 1fr; grid-template-rows: 42% 1fr; } .work, .work.three { grid-template-columns: 1fr; }
+    .arrow { display: none; } .heading p { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="stage blue" id="stage">
+    <div class="light"></div><div class="pool"></div><div class="floor"></div>
+    <header class="bar">
+        <b>louis-agent</b><span class="tag">Demos</span><span class="grow"></span>
+        <a class="back" href="#">Back to the site</a><a class="cta small" href="#">Ask for yours</a>
+    </header>
+    <div class="heading">
+        <h1 class="chrome">Watch the agents at work.</h1>
+        <p>Real runs, recorded once and played back. Made-up businesses, real agents.</p>
+    </div>
+    <div class="deck" id="deck"><div class="tilt" id="tilt">
+        <article class="win blue"><div class="win-in">
+            <div class="chrome-bar"><i></i><i></i><i></i><span>seemeeu.example</span></div>
+            <div class="body">
+                <div class="site"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-banner.webp" alt=""><nav><b>Seemeeu</b><span>Rooms</span><span>The beach</span><span>Book</span></nav><div><b>A guesthouse by the sea</b><span>Four rooms, breakfast included. The beach, a five-minute walk.</span></div></div>
+                <div class="chat"><header><svg class="icon"><use href="#i-bed"/></svg>Ask Seemeeu<em>answers in seconds</em></header><span class="q">Do you have a sea-view room for Friday and Saturday? We'd like to bring our dog.</span><span class="a">The sea-view rooms don't take dogs, but the garden room does, and it is free both nights.</span><span class="offer"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-garden.webp" alt=""><span><b>The garden room</b>Dogs welcome</span></span><span class="type">Type your question</span></div>
+            </div>
+        </div></article>
+        <article class="win green"><div class="win-in">
+            <div class="chrome-bar"><i></i><i></i><i></i><span>wheatfieldkitchen.example</span></div>
+            <div class="body">
+                <div class="site"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/wheatfield-room.webp" alt=""><nav><b>Wheatfield Kitchen</b><span>Menu</span><span>Hours</span><span>Book</span></nav><div><b>Lunch on the stoep</b><span>Tuesday to Sunday. Sixty seats, and room for the kids.</span></div></div>
+                <div class="chat"><header><svg class="icon"><use href="#i-dining"/></svg>Ask Wheatfield<em>10:02 at night</em></header><span class="q">Are you open for lunch on Sunday? We are five, with two small kids.</span><span class="a">We are, from twelve. Here is the children's menu for the two little ones.</span><span class="offer"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/wheatfield-pie.webp" alt=""><span><b>Children's menu</b>Sunday lunch</span></span><span class="type">Type your question</span></div>
+            </div>
+        </div></article>
+        <article class="win yellow"><div class="win-in">
+            <div class="chrome-bar"><i></i><i></i><i></i><span>koringland.example</span></div>
+            <div class="body">
+                <div class="site"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/koringland-study.webp" alt=""><nav><b>Koringland Attorneys</b><span>Wills</span><span>Property</span><span>Contact</span></nav><div><b>Plain answers, properly given</b><span>At the office or by video call. English and Afrikaans.</span></div></div>
+                <div class="chat"><header><svg class="icon"><use href="#i-scales"/></svg>Ask Koringland<em>no advice given here</em></header><span class="q">I need to change my will after my divorce. What should I put in it?</span><span class="a">I can't give legal advice. I can book you a first consultation about your will.</span><span class="offer"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/koringland-consultation.webp" alt=""><span><b>A first consultation</b>R650, Thursday morning</span></span><span class="type">Type your question</span></div>
+            </div>
+        </div></article>
+        <article class="win red"><div class="win-in">
+            <div class="chrome-bar"><i></i><i></i><i></i><span>the coding agent, on your repository</span></div>
+            <div class="work">
+                <div class="pane"><h3>The job</h3>The bank payments are not matching their invoices, and the tests show it. Find out why, fix the matcher, and run the tests again.</div>
+                <div class="pane"><h3>What it did</h3><span class="bad">MatcherTests  14 run, 3 failing</span><br>reads PaymentMatcher.cs<br><span class="bad">- payment.Reference == invoice.Number</span><br><span class="good">+ Normalise(payment.Reference) == …</span><br><span class="good">MatcherTests  14 run, 14 passed</span></div>
+            </div>
+        </div></article>
+        <article class="win purple"><div class="win-in">
+            <div class="chrome-bar"><i></i><i></i><i></i><span>the triage team, on a service's errors</span></div>
+            <div class="work three">
+                <div class="pane"><h3>Triage</h3>reads the error<br>finds the cause<br><span class="lit">hands it on</span></div>
+                <div class="pane"><h3>The coder</h3>writes the fix<br>adds a test<br><span class="lit">hands it on</span></div>
+                <div class="pane"><h3>The check</h3>runs the tests<br><span class="good">all passed</span><br><span class="lit">reports back</span></div>
+            </div>
+        </div></article>
+    </div></div>
+    <button class="arrow left" id="back" aria-label="The demo before"><svg class="icon"><use href="#i-left"/></svg></button>
+    <button class="arrow right" id="next" aria-label="The next demo"><svg class="icon"><use href="#i-right"/></svg></button>
+    <div class="caption" id="caption">
+        <h2 id="name">A guesthouse</h2>
+        <p id="line">A weekend by the beach, with the dog</p>
+        <a class="cta" href="#"><svg class="icon solid"><use href="#i-play"/></svg><span id="play">Watch the guesthouse</span></a>
+    </div>
+    <nav class="dock" id="dock" aria-label="All demos">
+        <button class="blue is-on"><svg class="icon"><use href="#i-bed"/></svg><span>A guesthouse</span></button>
+        <button class="green"><svg class="icon"><use href="#i-dining"/></svg><span>A restaurant</span></button>
+        <button class="yellow"><svg class="icon"><use href="#i-scales"/></svg><span>A law practice</span></button>
+        <hr>
+        <button class="red"><svg class="icon"><use href="#i-code"/></svg><span>The coding agent</span></button>
+        <button class="purple"><svg class="icon"><use href="#i-exchange"/></svg><span>The triage team</span></button>
+    </nav>
+</main>
+<script src="sprite.js"></script>
+<script>
+const demos = [
+    { c: 'blue', name: 'A guesthouse', line: 'A weekend by the beach, with the dog', play: 'Watch the guesthouse' },
+    { c: 'green', name: 'A restaurant', line: 'Sunday lunch at ten at night', play: 'Watch the restaurant' },
+    { c: 'yellow', name: 'A law practice', line: 'No advice, a consultation', play: 'Watch the law practice' },
+    { c: 'red', name: 'The coding agent', line: 'Fixes a real bug', play: 'Watch the coding agent' },
+    { c: 'purple', name: 'The triage team', line: 'Sorts and fixes an error', play: 'Watch the triage team' },
+];
+const $ = id => document.getElementById(id);
+const wins = [...document.querySelectorAll('.win')], buttons = [...document.querySelectorAll('.dock button')];
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let on = 0;
+function place(first) {
+    wins.forEach((win, i) => {
+        // How far a window stands from the middle, the short way round.
+        let d = i - on; if (d > 2) d -= 5; if (d < -2) d += 5;
+        win.style.setProperty('--d', d); win.style.setProperty('--abs', Math.abs(d));
+        win.style.zIndex = 10 - Math.abs(d); win.classList.toggle('is-on', d === 0);
+    });
+    buttons.forEach((b, i) => b.classList.toggle('is-on', i === on));
+    $('stage').className = 'stage ' + demos[on].c;
+    const set = () => { $('name').textContent = demos[on].name; $('line').textContent = demos[on].line; $('play').textContent = demos[on].play; $('caption').classList.remove('is-changing'); };
+    if (first) return set();
+    $('caption').classList.add('is-changing'); setTimeout(set, 300);
+}
+const go = i => { on = (i + 5) % 5; place(); };
+wins.forEach((win, i) => win.addEventListener('click', () => { if (i !== on) go(i); }));
+buttons.forEach((b, i) => b.addEventListener('click', () => go(i)));
+$('back').addEventListener('click', () => go(on - 1)); $('next').addEventListener('click', () => go(on + 1));
+addEventListener('keydown', e => { if (e.key === 'ArrowLeft') go(on - 1); if (e.key === 'ArrowRight') go(on + 1); });
+// The whole stage leans a little towards the cursor.
+if (!still) $('deck').addEventListener('mousemove', e => {
+    const r = $('deck').getBoundingClientRect();
+    $('tilt').style.setProperty('--ty', ((e.clientX - r.left) / r.width - .5) * 7 + 'deg');
+    $('tilt').style.setProperty('--tx', (.5 - (e.clientY - r.top) / r.height) * 5 + 'deg');
+});
+$('deck').addEventListener('mouseleave', () => { $('tilt').style.setProperty('--ty', '0deg'); $('tilt').style.setProperty('--tx', '0deg'); });
+place(true);
+</script>
+</body>
+</html>

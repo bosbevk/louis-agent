@@ -1,7 +1,7 @@
 # 0077. The films on GitHub are animated WebP, rendered from the site's CSS
 
 **Status:** Accepted · **Date:** 2026-11-05 (Louis: "we should show those animations on the github also"; he picked WebP from
-three options, and 24 frames a second at quality 75 after seeing both on GitHub; the encoder was decided unattended, below) · **Feature:** F57
+three options, and 24 frames a second at quality 75 after seeing both on GitHub) · **Feature:** F57
 
 ## Context
 

@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Shell;
 using LouisAgent.Web.Components.Site.Tiles;
@@ -16,10 +17,11 @@ public class ShowroomShellTests
 {
     private static readonly ShowroomDemos Demos = new([
         new ShowroomDemo("/bakery-demo", "A bakery", "Bread at dawn", DemoGroup.ForYourBusiness, TileAccent.Green,
-            "B"),
+            DiagramIcon.Bed),
         new ShowroomDemo("/florist-demo", "A florist", "Flowers by noon", DemoGroup.ForYourBusiness, TileAccent.Blue,
-            "F"),
-        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red, "{ }"),
+            DiagramIcon.Dining),
+        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red,
+            DiagramIcon.Code),
     ]);
 
     /// <summary>
@@ -51,7 +53,9 @@ public class ShowroomShellTests
             Assert.That(rail.QuerySelectorAll("a.demo-cover").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[] { "/bakery-demo", "/florist-demo", "/coder-demo" }));
             Assert.That(rail.QuerySelector("a[href='/coder-demo']")!.ClassList, Does.Contain("accent-red"));
-            Assert.That(rail.QuerySelector("a[href='/coder-demo'] .cover-sign")!.TextContent, Is.EqualTo("{ }"));
+            // F134.1: each demo's sign is a line drawing, never a character a system draws its own way.
+            Assert.That(rail.QuerySelectorAll("a.demo-cover .cover-sign svg.line-icon"), Has.Count.EqualTo(3));
+            Assert.That(rail.QuerySelector("a[href='/coder-demo'] .cover-sign")!.TextContent.Trim(), Is.Empty);
         });
     }
 
@@ -153,7 +157,10 @@ public class ShowroomShellTests
             cut.Find("nav.demo-rail a[aria-current='page']").GetAttribute("href")), Is.EqualTo((true, "/bakery-demo")));
     }
 
-    /// <summary>On a phone the same demos are chips, in the site's order, each in its colour.</summary>
+    /// <summary>
+    /// On a phone the same demos are chips, in the site's order, each in its colour, with its icon (F134.1) where a
+    /// plain dot used to be.
+    /// </summary>
     [Test]
     public void ThePhonesChips_AreTheSameDemos()
     {
@@ -163,6 +170,8 @@ public class ShowroomShellTests
 
         Assert.That(chips.Select(c => (c.GetAttribute("href"), c.ClassList.Contains("accent-green"))),
             Is.EqualTo(new[] { ("/bakery-demo", true), ("/florist-demo", false), ("/coder-demo", false), }));
+        Assert.That(chips.Select(chip => chip.QuerySelectorAll(".chip-icon svg.line-icon").Length),
+            Is.All.EqualTo(1));
     }
 
     /// <summary>A site's own words replace the framework's English.</summary>

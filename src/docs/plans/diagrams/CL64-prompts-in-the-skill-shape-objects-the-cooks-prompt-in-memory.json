@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "title": "CL64 prompts in the skill shape: what the cook holds in its prompt",
+  "caption": "About 5,200 words before the question today, 3,217 of them the cook's own file: steps 3 and 4 change only that file's shape and size.",
+  "flow": {
+    "nodes": [
+      { "id": "session", "icon": "message", "tone": "violet", "label": "The cook's session\nrole puls-cook" },
+      { "id": "prompt", "icon": "stack", "tone": "teal", "label": "The system prompt\nbuilt once, then cached" },
+      { "id": "principles", "icon": "shield", "tone": "violet", "label": "principles.md\n184 words" },
+      { "id": "cook", "icon": "file", "tone": "green", "label": "puls-cook.md\n3,217 words today" },
+      { "id": "guides", "icon": "book", "tone": "green", "label": "Five guides\nweb, recipes, where-to-buy,\nshop-prices, calculator\n1,817 words" },
+      { "id": "never", "icon": "shield", "tone": "teal", "label": "Never\nseven lines, first (3)" },
+      { "id": "steps", "icon": "checks", "tone": "teal", "label": "Steps\nsix, numbered (3)" },
+      { "id": "detail", "icon": "file", "tone": "teal", "label": "The detail\na section a step (3)\nsmaller (4)" },
+      { "id": "report", "icon": "message", "tone": "teal", "label": "The report's shape\nlast, one example (3)" }
+    ],
+    "edges": [
+      { "from": "session", "to": "prompt" },
+      { "from": "prompt", "to": "principles" },
+      { "from": "prompt", "to": "cook" },
+      { "from": "prompt", "to": "guides" },
+      { "from": "cook", "to": "never" },
+      { "from": "cook", "to": "steps" },
+      { "from": "cook", "to": "detail" },
+      { "from": "cook", "to": "report" }
+    ],
+    "direction": "down"
+  }
+}

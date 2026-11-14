@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Start;
 using LouisAgent.Web.Components.Site.Tiles;
@@ -14,10 +15,11 @@ public class ShowroomStartTests
 {
     private static readonly ShowroomDemos Demos = new([
         new ShowroomDemo("/bakery-demo", "A bakery", "Bread at dawn", DemoGroup.ForYourBusiness, TileAccent.Green,
-            "B"),
+            DiagramIcon.Bed),
         new ShowroomDemo("/florist-demo", "A florist", "Flowers by noon", DemoGroup.ForYourBusiness, TileAccent.Blue,
-            "F"),
-        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red, "{ }"),
+            DiagramIcon.Dining),
+        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red,
+            DiagramIcon.Code),
     ]);
 
     /// <summary>The start featuring the florist, with the site's words and a look at its website.</summary>
@@ -76,7 +78,9 @@ public class ShowroomStartTests
             Assert.That(covers.Select(cover => cover.GetAttribute("href")),
                 Is.EqualTo(new[] { "/bakery-demo", "/florist-demo", "/coder-demo" }));
             Assert.That(covers[0].ClassList, Does.Contain("accent-green"));
-            Assert.That(covers[2].QuerySelector(".start-sign")!.TextContent, Is.EqualTo("{ }"));
+            // F134.1: the sign is a line drawing, never a character a system draws its own way.
+            Assert.That(all.QuerySelectorAll("a.start-cover .start-sign svg.line-icon"), Has.Count.EqualTo(3));
+            Assert.That(covers[2].QuerySelector(".start-sign")!.TextContent.Trim(), Is.Empty);
             Assert.That(covers[1].QuerySelector(".start-name")!.TextContent, Is.EqualTo("A florist"));
             Assert.That(covers[1].QuerySelector(".start-line")!.TextContent, Is.EqualTo("Flowers by noon"));
         });

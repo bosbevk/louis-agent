@@ -1,0 +1,22 @@
+@typeparam TItem
+@* A deck (F134.1): every item drawn through the caller's template, the one forward in the middle and the rest behind
+   it at their distance, which each item's style says (--d how far and which way, --abs how far). An arrow at each
+   side, the keyboard's arrows, or a press on an item behind asks for another to come forward. What an item behind
+   holds can't be reached or read until it is forward, so only its own press works. *@
+<div class="deck" role="group" aria-label="@Label" tabindex="0" @onkeydown="KeyAsync">
+    <div class="deck-items">
+        @foreach (var slot in Slots)
+        {
+            <div class="@slot.Classes" style="@slot.Place" aria-current="@slot.Current"
+                 @onclick="() => PressAsync(slot.Index)">
+                <div class="deck-item-in" inert="@slot.Behind">@Item(slot.Item)</div>
+            </div>
+        }
+    </div>
+    <button class="deck-arrow deck-before" type="button" aria-label="@BeforeLabel" @onclick="() => StepAsync(-1)">
+        <LineIconView Icon="DiagramIcon.ChevronLeft"/>
+    </button>
+    <button class="deck-arrow deck-next" type="button" aria-label="@NextLabel" @onclick="() => StepAsync(1)">
+        <LineIconView Icon="DiagramIcon.ChevronRight"/>
+    </button>
+</div>

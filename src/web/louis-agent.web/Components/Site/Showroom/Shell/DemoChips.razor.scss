@@ -27,20 +27,15 @@
     text-decoration: none;
     background: rgba(var(--bs-secondary-bg-rgb), .7);
 }
-.chip-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-}
+/* The demo's icon, in its colour (F134.1), where a plain dot of that colour used to be. */
+.chip-icon { display: flex; font-size: 15px; color: var(--accent); }
 .demo-chip.is-current {
     border-color: transparent;
     font-weight: 600;
     color: var(--web-on-primary);
     background: glow.shade(var(--accent), 90deg);
 }
-.demo-chip.is-current .chip-dot { background: var(--web-on-primary); box-shadow: none; }
+.demo-chip.is-current .chip-icon { color: var(--web-on-primary); }
 
 @media (max-width: 900px) {
     .demo-chips { display: flex; }

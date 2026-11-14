@@ -36,160 +36,90 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
     10 says, each naming its pattern in plain words, with the sources and the one you recommend. The pick is named in
     the commit, the explanation and the `<remarks>` of each class that carries it ([ADR 0050](adr/0050-summaries-like-a-person.md)).
 
-## Steps, branches and commits
+## The loop of a step
 
-**Doing a step: test first** ([how](guides/write-tests.md#write-the-test-first)): write the test for the step's
-behaviour (a fix: one that reproduces the bug), see it fail for the expected reason and keep the output, then
-implement until it passes and tidy with the tests green. Docs-only and configuration-only steps have no test first.
+One step is one commit. How each part is done is in its skill. The waits in it hold
+whether or not a skill is loaded.
 
-**Finishing a step** ([the how-to](guides/finish-a-step.md)), before rule 5's stop:
+1. **Do it** with `/do-a-step`. The test comes first and is seen failing for the expected reason, then the code.
+   A docs-only or configuration-only step has no test first.
+2. **Finish it** with `/finish-a-step`. Test what the step touches, regenerate the golden files if what the model
+   reads changed, bring the docs and pictures along, and format the commit's C# files.
+3. **Show it, and wait.** The files it changes, the commit message and the explanation, with the test failing
+   before the code and passing after. No commit before Louis's ok.
+4. **Commit it on its own**, test and code together, and stop (rule 5). Never push without asking (rule 7).
+   The branch's name, the commit message and the pull request are in `/ship-it`.
 
-1. Build and test only what the step touches (`core.tests` too if it moves files or adds names); the full suite only once the feature is built.
-2. If tools, their descriptions, the tool texts or the prompts changed, regenerate the golden files and review their diff.
-3. Update the feature or fix doc, and the docs and diagrams of each project the step touches; on the last step,
-   *Finishing a feature* or *Finishing a fix* in their READMEs.
-4. Format every C# file in the commit, in order and once: Rider's formatter, Rider's inspections, long comment lines
-   by hand, then `dotnet format … --include <its files>` last (CI checks with it). Only the commit's files, whole.
-5. Show the step before committing: the files it changes, the commit message and the explanation (with the test
-   failing before the code and passing after), and wait for Louis's ok.
-6. Commit the step on its own, test and code together, and stop. Never push without asking (rule 7).
+**Which tests, and when.** Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main
+must be merged and full suite unit tests passes". Before a commit, run only the tests of what the step touched.
+Before a pull request, merge `main` into the branch first, and then the full suite of unit tests must pass.
 
 **In Rider, Rider's tools come first** ([ADR 0052](adr/0052-edit-never-script.md)). A session starts with `/mcp` to see
 what Rider offers, and for any job a Rider tool covers (format, inspect, build, test, rename, find usages, symbol
 info, git status) it uses that tool, never a hand edit, a script (Python, sed, PowerShell) or a search-and-replace
 that does the same thing less well: formatted with Rider's formatter, not re-typed; renamed with Rider's rename, not
 replaced; problems from Rider's inspections, not from re-reading the file. A shell command is for what no Rider tool
-does; *Brave mode* stays off. The tool-to-job table per Rider version is in [Finish a step](guides/finish-a-step.md#riders-tools-by-job).
+does; *Brave mode* stays off. The tool-to-job table per Rider version is in [the skill](../../.claude/skills/finish-a-step/SKILL.md#riders-tools-by-job).
 
-**Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
-`refactor/CL3-messages-and-logging`, `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
+## Hard stops
 
-**Commit messages** are `type(scope): step N - what changed` (`feat(f22): step 3 - ReadTable for spreadsheets`,
-`fix(fx14): the prompt budget counts cached tokens`, `docs(f5): review of PR #27 - toolset guides`), and the body says
-why. `type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`,
-`f49.1`), or the area when there is none (`ollama`, `guide`); `step N -` only on a plan's steps.
+Never without Louis's word, each time. His yes for one is not a yes for the next.
 
-## Rules that always apply
+- **A push or a merge.** He merges, unless he says "merge" (rule 7).
+- **A run that spends real money.** A test call of the guide or an agent is the exception: Louis, 2026-11-09, "I have
+  250$ of credit do not worry about spending". Run it, and report what it cost after. Still ask before anything much
+  larger, such as a long eval series.
+- **A new package.** Three options first, with what speaks for and against each.
+- **A new ADR, or a new rule in one.** Propose it in a few lines and wait.
+- **A design choice the plan doesn't settle** (rules 10 and 11).
+- **A commit.** Show the step first, and wait for his ok.
+- **The next step.** Stop after each one (rule 5).
 
-The design decisions every change keeps, one line each: the *why* is its ADR in [src/docs/adr/](adr/README.md), the
-*how* of the C#, Razor, CSS and docs rules loads with the file you edit, from `.claude/rules/`.
+Three more ways of working, in his words:
 
-**The engine and its parts**
+- **Research first.** Louis, 2026-11-13: "do research first", and of planning, "the research also applies".
+  Before an answer, a finding, a plan or a doc: read the code for what is there, and read a tool's own docs when
+  the work rests on it. Nothing is said from memory. What could not be confirmed is said plainly.
+- **Say what you are busy with.** Louis, 2026-11-08: "i need to always see what you are busy with?". One plain line
+  before every batch of work, saying what it does. He follows the work as it happens and can't tell a stall from
+  thinking.
+- **Do the work yourself.** Louis, 2026-11-04: "do not pass on the work you do it". No build work is handed to another
+  agent unless he asks for one.
 
-- **Reuse before building, and keep it simple** — reuse the repo's components and maintained packages (MIT, Apache,
-  BSD); the simplest design that meets the step, nothing for a future no plan names. [ADR 0030](adr/0030-build-or-adopt.md), [ADR 0055](adr/0055-keep-it-simple.md).
-- **A tool when it improves the prompt** — if a tool would make a prompt's job work better or more accurately, make the
-  tool instead of another prompt rule; judgement stays in the prompt. [ADR 0080](adr/0080-a-tool-when-it-improves-the-prompt.md).
-- **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
-  sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
-- **Framework and implementation are split, and this comes first** — `src/` is framework only, a demo holds its own
-  config, docker, skills, deploy and tests; the solution tree is the disk; core ships no agent and every tool the model asks for is a pack. [ADR 0074](adr/0074-the-folders-say-what-ships.md), [0076](adr/0076-core-ships-no-agent.md).
-- **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
-  references no other pack, identity or eval; only `demos/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
-  the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
-- **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
-  model**: `louis-agent.mcp` hands an external client the raw tools; to have the agent do a whole task, call
-  the API's sessions. [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
-- **Provider strategies** — where providers differ, one interface with an implementation per provider, picked in
-  `LlmClientFactory`; never branch on the provider's name elsewhere. [ADR 0003](adr/0003-provider-strategies.md).
-- **Toolsets per session** — a session names its toolsets when it opens and keeps them; an engine per toolset list; a
-  role's file may add its own, `?` only where the instance has it. [ADR 0006](adr/0006-toolsets-per-session.md),
-  [ADR 0025](adr/0025-a-role-declares-its-toolsets.md).
-- **Skill files follow the levels, a level-0 session is a mode, every agent loads the principles first** — prompts
-  are embedded content, by level, one mode file per product, `principles.md` opening every prompt.
-  [ADR 0011](adr/0011-prompts-are-content.md), [0017](adr/0017-skills-by-level.md), [0018](adr/0018-built-in-prompts-embedded.md),
-  [0019](adr/0019-modes-one-file-per-product.md), [0020](adr/0020-principles-for-every-agent.md).
-- **Orchestration is an engine function** — agents as tools, typed results checked in code, one policy per turn
-  tree; the orchestrator is an identity on core. [ADR 0031](adr/0031-orchestration-is-an-engine-function.md).
+## What is loaded with this file
 
-**Safety and measurement**
+Two rules files load in every session beside this one. If either is not in your context, read it before any change.
 
-- **Arguments as data** (never through a shell) and **guard the context** (oversized results summarised, cut-off
-  calls never run, failures carry their reason). [ADR 0004](adr/0004-arguments-as-data.md), [0005](adr/0005-guard-the-context.md).
-- **History is append-only** — nothing edits the system prompt, tools or earlier messages mid-conversation; the
-  finished streamed turn is appended whole, thinking blocks included. [ADR 0008](adr/0008-history-is-append-only.md).
-- **The browser says what it is, and takes a site's no** — Chrome's own user agent or an honest name, never a disguise;
-  every fetch obeys `robots.txt` and the page's no-AI signals, in code; a page's own data (JSON-LD) is read in code
-  before its text. [ADR 0038](adr/0038-the-browser-says-what-it-is.md), [0068](adr/0068-every-fetch-obeys-robots-txt.md), [0067](adr/0067-a-pages-own-data-before-its-text.md).
-- **Measure every request, and show it** — the usage ledger is the only source of cost, priced by a dated table;
-  unknown is `null`, never 0; every host shows the same totals. [ADR 0007](adr/0007-measure-every-request.md).
-- **Evals in C#** — every check is a C# eval on one harness, under `evals/`, apart from what it proves; one event
-  contract; a live run waits for Louis's go. [ADR 0029](adr/0029-simulations-in-csharp.md),
-  [ADR 0047](adr/0047-protocol-v2-one-event-contract.md).
-- **Nothing is backward compatible until something is sold** — no migration, alias, lenient reader or second parser
-  for what we store or send between our own parts. [ADR 0049](adr/0049-nothing-is-compatible-before-a-sale.md).
+- [The design rules every change keeps](../../.claude/rules/design-rules.md): the decisions of the engine, safety,
+  the code, the web and the docs, one line each with its ADR.
+- [Where things are in the repo](../../.claude/rules/repo-map.md).
 
-**The code** (the how in `.claude/rules/csharp.md`)
+How all of Claude's instructions are laid out is in [.claude/README.md](../../.claude/README.md).
 
-- **No message text inline in C#**, and stdout is a protocol: logs go through `ILogger` to stderr; **no anonymous
-  types or `dynamic`**: a message's holes are a record, an object built for a call a named local first. [ADR 0009](adr/0009-message-text-as-enum-templates.md), [0119](adr/0119-declare-name-then-pass.md).
-- **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
-  name is an enum too. [ADR 0024](adr/0024-choices-are-enums.md), [ADR 0043](adr/0043-repeated-names-are-enums.md).
-- **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static
-  `Of` to build one from another; **dates are UTC**. [ADR 0040](adr/0040-records-for-values-classes-for-things.md),
-  [0041](adr/0041-json-through-records-by-hand-only-for-bytes.md), [0048](adr/0048-mongo-through-records.md),
-  [0046](adr/0046-dates-are-utc.md).
-- **Separate by concern**: 200 lines of code per file (tests 400), one concern per folder, namespace = folder path,
-  dependencies one way. [ADR 0010](adr/0010-folders-by-concern.md), [0034](adr/0034-code-a-person-can-maintain.md),
-  [0044](adr/0044-the-size-limit-counts-code.md).
-- **Every class and method has a summary**, written like a person, with its pattern and its ADRs; a step inside a
-  method gets one plain line. [ADR 0050](adr/0050-summaries-like-a-person.md).
-- **No nested conditionals, and an endpoint is a named method** returning `TypedResults`.
-  [ADR 0051](adr/0051-flat-conditionals-and-named-endpoints.md), [ADR 0045](adr/0045-typed-answers-and-a-shared-contract.md).
-- **Edit, never a script; layout only through the formatter; a rename through Rider; Rider's tools first.**
-  [ADR 0052](adr/0052-edit-never-script.md).
-- **Test first**, and tests are platform-neutral (they run on Linux in the agent's containers).
-  [ADR 0014](adr/0014-test-first.md). **Test what you touch** while coding; the full suite once, when the feature is built. [ADR 0075](adr/0075-test-what-you-touch.md).
+## Skills
 
-**The web and the docs** (the how in `.claude/rules/razor.md` and `docs.md`)
+A skill is a procedure that loads for its job. Use the one that fits.
 
-- **Every site is built on the framework's web:** what would be the same on every site is in `louis-agent.web`, which names no
-  site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses, and names its areas with `AddSiteAreas`, **nothing wired by hand from the framework**; every
-  place on a page has its own address, `/proof/rand`, never a `#`. [ADR 0084](adr/0084-every-site-is-built-on-the-frameworks-web.md), [0107](adr/0107-every-section-has-an-address.md), [0120](adr/0120-nothing-is-hand-wired-from-the-framework.md).
-- **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.
-  [ADR 0034](adr/0034-code-a-person-can-maintain.md), [ADR 0042](adr/0042-the-web-shows-the-live-results.md).
-- **One type per doc**; plans, feature and fix docs have a lifecycle and a done plan is deleted.
-  [ADR 0013](adr/0013-documentation-structure.md).
+| Job | Skill |
+|---|---|
+| A plan is written, changed or finished | `/plan-a-feature` |
+| A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
+| A step starts | `/do-a-step` |
+| A step's test passes, and it is to be shown and committed | `/finish-a-step` |
+| Something a visitor sees changed, or was deployed | `/check-a-page` |
+| Something broke, and a fix starts | `/fix-a-bug` |
+| A commit, a push, a pull request or a merge | `/ship-it` |
+| The last step of a feature or a cleanup | `/finish-a-feature` |
+| A picture in the docs is added or changed | `/draw-a-diagram` |
 
-## Project structure
+## Where the rest is
 
-Where things are. What's inside each project is in its design doc in [projects/](projects/README.md); core's folders
-in [Project layout](../engine/louis-agent.core/CLAUDE.md#project-layout).
+Start with [Get started](guides/get-started.md). The how of a kind of file is a rules file in `.claude/rules/`,
+and core has a `CLAUDE.md` of its own. Claude Code loads each when such a file is worked on.
+[.claude/README.md](../../.claude/README.md) lists them, with what each holds and when it loads.
 
-```
-src/engine/              # louis-agent.core (the loop, delegation, web access and its guards, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on); louis-agent.core.web (the browser, search, robots, rendering, the recorders), .core.telemetry (the tracer, the collector's sink), .core.anthropic, .core.ollama and .core.openai (one model SDK each), each on core behind a seam, a host opts in (CL33, CL57)
-src/hosts/               # louis-agent.cli, .acp (Rider, with its tool discovery), .api (sessions + SSE; serves a web app), .api.evals (the eval studio, a program opts in), .api.contracts, .accounts, .accounts.contracts, .mcp (the tools, no model)
-src/web/                 # louis-agent.web: the framework's web, what every site shares; louis-agent.web.accounts: the account pages, louis-agent.web.evals: the eval studio's pages, a site opts into each; louis-agent.diagrams: the diagrams drawn from data, plain C# the web and the docs' tool share
-src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
-src/site/                # The framework's own website (F124, ADR 0111): louis-agent.site (the visitor area), louis-agent.identity.guide (the guide in its corner), louis-agent.identity.showroom (three made-up businesses' agents), louis-agent.site-api (its host), config/, docker/, deploy/; the one place in src/ that uses packs and an identity, and nothing else in src/ references it
-packs/                   # What an agent can do, one area (CL32): tools/ (the packs, tools only: files, git, dotnet, shell, web, paymo, devops, calculator, where-to-buy, shop-prices, recipes, docs, leads, site, triage), evals/ (what proves a pack, apart so someone can take the tools without it; only the runner references these), tests/ and web/ (a pack's own tests and its own web views, apart from its tools, ADR 0086), docs/
-demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/, docs/, and git-ignored data/ and logs/
-demos/louis-agent/       # Our own demo: identity/ (the coding agent, the triage team), web/ (code review: the coding agent's chat and admin), hosts/ (the orchestrator POC, and the programs that start the framework's hosts), config/, docker/, skills/, tests/, docs/, and git-ignored data/ and logs/
-demos/starter/           # The smallest site (web/), its API program (hosts/) and what `dotnet new louis-site` makes ([Spawn a site](guides/spawn-a-site.md))
-src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger. louis-agent.film-export: the site's films to WebP. louis-agent.doc-diagrams: the docs' diagrams from their JSON
-src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs/tests/ the packs'; the ones that leave their process are *.integration-tests
-src/docs/                # The framework's docs: this guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
-.claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path
-```
-
-## Development workflow
-
-Start with [Get started](guides/get-started.md). **The how-tos for one folder live in that folder's `CLAUDE.md`**, and
-the how of a kind of file in `.claude/rules/`; Claude Code loads each only when it works on such a file:
-
-| Guide | Loads for | Holds |
-|---|---|---|
-| [src/tests/CLAUDE.md](../tests/CLAUDE.md) | `src/tests/` | Running the tests, the golden files, fakes and platform-neutral tests |
-| [src/CLAUDE.md](../CLAUDE.md) | `src/` | The hosts' own message enums, adding a web theme |
-| [src/engine/louis-agent.core/CLAUDE.md](../engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
-| `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: summaries, conditionals, records, enums, size, formatting |
-| `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
-| `.claude/rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
-| `.claude/rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
-
-Every `CLAUDE.md` and every rules file holds at most 200 lines (`ClaudeMdSizeTests`); the rest of the how-tos are
-in [guides/](guides/README.md): [Finish a step](guides/finish-a-step.md), [Add a skill](guides/add-a-skill.md),
-modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
+The how-tos are in [guides/](guides/README.md): [Add a skill](guides/add-a-skill.md), modes and roles in
+[Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../../TODO.md#known-limitations); when work removes one, delete it there.

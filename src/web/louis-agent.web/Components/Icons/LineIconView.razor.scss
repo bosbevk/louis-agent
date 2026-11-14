@@ -1,0 +1,12 @@
+/* A line icon (F134.1): strokes only, round at their ends, in the colour of the words around it and as tall as
+   they are, so the place that holds it sets both with its own colour and font size. */
+.line-icon {
+    flex: none;
+    width: 1em;
+    height: 1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}

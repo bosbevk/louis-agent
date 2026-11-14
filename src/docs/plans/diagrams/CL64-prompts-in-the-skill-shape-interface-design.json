@@ -1,0 +1,36 @@
+{
+  "kind": "classes",
+  "title": "CL64 prompts in the skill shape: the interface design",
+  "caption": "The rule reads what the engine already has: a test and one record are new, and the engine changes only if a specialist gets skills.",
+  "classes": {
+    "types": [
+      { "id": "tests", "name": "PromptShapeTests", "kind": "test, step 1", "tone": "green",
+        "members": [ "EveryPrompt_FitsTheShape_OrIsOnTheList()", "TheList_HoldsNoPromptThatFits()", "AStep_IsAtMostThreeLines()" ] },
+      { "id": "shape", "name": "PromptShape", "kind": "record, step 1", "tone": "teal",
+        "members": [ "int Words", "IReadOnlyList<string> Never", "IReadOnlyList<string> Steps", "string? FirstHeading", "static PromptShape Of(PromptFile file)" ] },
+      { "id": "headers", "name": "PromptHeaders", "kind": "reader, unchanged", "tone": "violet",
+        "members": [ "static PromptFile Split(string path, string text)" ] },
+      { "id": "file", "name": "PromptFile", "kind": "record, unchanged", "tone": "violet",
+        "members": [ "string Path", "PromptHeader? Header", "string Body" ] },
+      { "id": "header", "name": "PromptHeader", "kind": "record, unchanged", "tone": "violet",
+        "members": [ "string Name", "string Description", "RoleLevel? Level", "IReadOnlyList<string> Toolsets", "SkillLoad? Load" ] },
+      { "id": "loader", "name": "SkillLoader", "kind": "step 4, by choice 3", "tone": "violet",
+        "members": [ "static ISkillProvider Load(AgentOptions agent, …)", "static IReadOnlyList<IdentitySkill> SkillsOf(…)" ] },
+      { "id": "skill", "name": "IdentitySkill", "kind": "record, unchanged", "tone": "violet",
+        "members": [ "string Name", "string Description", "SkillLoad Load", "string Body" ] },
+      { "id": "read", "name": "SkillReadTools", "kind": "tool, unchanged", "tone": "violet",
+        "members": [ "string ReadSkill(string name)" ] }
+    ],
+    "relations": [
+      { "from": "tests", "to": "headers", "kind": "uses", "word": "splits each file" },
+      { "from": "tests", "to": "shape", "kind": "creates" },
+      { "from": "shape", "to": "file", "kind": "uses", "word": "reads its body" },
+      { "from": "headers", "to": "file", "kind": "creates" },
+      { "from": "file", "to": "header", "kind": "holds" },
+      { "from": "loader", "to": "file", "kind": "uses" },
+      { "from": "loader", "to": "skill", "kind": "uses", "word": "lists" },
+      { "from": "read", "to": "skill", "kind": "holds" }
+    ],
+    "direction": "down"
+  }
+}

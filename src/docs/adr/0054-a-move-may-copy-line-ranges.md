@@ -32,7 +32,7 @@ check caught it before anything was committed.
 ## Links
 
 [0052](0052-edit-never-script.md), which this amends · [0053](0053-stylesheets-by-concern.md) (the split it was made
-for) · [Finish a step](../guides/finish-a-step.md)
+for) · the [finish-a-step](../../../.claude/skills/finish-a-step/SKILL.md) skill
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

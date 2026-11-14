@@ -1,0 +1,35 @@
+/* Shared by the three F134 "fancier" mockups: the brand's own colours and type (black, silver, Geist), the five
+   demo colours, the top bar and the icons. Each page adds its own layout. */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap');
+:root {
+    --bg: #070708; --panel: #0d0e10; --menu: #15171a; --line: #2c2f35;
+    --text: #e6e8eb; --soft: #c9ccd1; --muted: #9aa0a8; --dim: #7c828a; --bright: #fff;
+    --ease: cubic-bezier(.2, .8, .2, 1); --spring: cubic-bezier(.34, 1.56, .64, 1);
+    color-scheme: dark;
+}
+.blue { --a: #7fa8e8; --a-rgb: 127, 168, 232; }
+.green { --a: #6cbf94; --a-rgb: 108, 191, 148; }
+.yellow { --a: #e8c15a; --a-rgb: 232, 193, 90; }
+.red { --a: #e8a39c; --a-rgb: 232, 163, 156; }
+.purple { --a: #a98be0; --a-rgb: 169, 139, 224; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 15px/1.55 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p, blockquote { margin: 0; }
+.mono { font-family: 'Geist Mono', ui-monospace, Consolas, monospace; }
+.icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.icon.solid { fill: currentColor; stroke: none; }
+/* The site's silver letters: one metal, light at the top. */
+.chrome { background: linear-gradient(180deg, #fff 0%, #c9ccd1 55%, #8d939c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.bar { position: relative; z-index: 5; display: flex; align-items: center; gap: 12px; padding: 14px 28px; }
+.bar b { font-weight: 700; color: var(--bright); letter-spacing: -.01em; }
+.bar .tag { font: 500 11px/1 'Geist Mono', monospace; padding: 5px 9px; border-radius: 999px; border: 1px solid #3a3e45; color: var(--soft); }
+.bar .grow { flex: 1; }
+.bar .back { font-size: 13.5px; color: var(--muted); padding: 8px 10px; border-radius: 9px; transition: color .2s; }
+.bar .back:hover { color: var(--bright); }
+.cta { display: inline-flex; align-items: center; gap: 9px; padding: 11px 18px; border-radius: 12px; font-weight: 600; font-size: 14.5px; color: #070708; background: linear-gradient(180deg, #fff, #b9bec6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 12px 28px -12px rgba(0, 0, 0, .9); transition: transform .25s var(--spring), box-shadow .25s; }
+.cta:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 18px 36px -12px rgba(255, 255, 255, .25); }
+.cta.small { padding: 9px 15px; font-size: 13.5px; border-radius: 10px; }
+:focus-visible { outline: 2px solid var(--bright); outline-offset: 3px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

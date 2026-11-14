@@ -7,6 +7,9 @@ namespace LouisAgent.Core.Tests;
 /// </summary>
 public class SolutionLayoutTests
 {
+    /// <summary>The one dot folder that is in the solution: where Claude's instructions live.</summary>
+    private const string InstructionsFolder = ".claude";
+
     /// <summary>What marks a solution folder in the solution file, rather than a project.</summary>
     private const string SolutionFolder = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 
@@ -203,9 +206,36 @@ public class SolutionLayoutTests
     }
 
     /// <summary>
+    /// Every file that instructs Claude is in the solution (CL63, Louis: "it should be attached to the solution"),
+    /// so Rider's tree shows them as it shows the docs: the README of the instructions, the rules files and each
+    /// skill. Only <c>src/docs/CLAUDE.md</c> used to be there.
+    /// </summary>
+    [Test]
+    public void EveryInstructionFile_IsASolutionItem()
+    {
+        string solution = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
+        string claude = Path.Combine(TestPaths.RepoRoot, InstructionsFolder);
+        string skillFolder = Path.Combine(TestPaths.RepoRoot, ".claude/skills");
+
+        // What Claude Code reads under .claude, and the README that explains it.
+        var files = Directory.EnumerateFiles(Path.Combine(claude, "rules"), "*.md")
+            .Concat(Directory.Exists(skillFolder)
+                ? Directory.EnumerateFiles(skillFolder, "*.md", SearchOption.AllDirectories)
+                : [])
+            .Concat(Directory.EnumerateFiles(claude, "README.md"));
+        var missing = files
+            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('/', '\\'))
+            .Where(item => !solution.Contains($"{item} = {item}", StringComparison.Ordinal));
+
+        Assert.That(missing, Is.Empty);
+    }
+
+    /// <summary>
     /// The folders at the top and the solution's groups at the top are the same list. Dot folders are not part of the
     /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move
-    /// left.
+    /// left. One dot folder is in the solution by name: <c>.claude</c>, which holds Claude's instructions (CL63,
+    /// Louis's pick of three, after "it should be attached to the solution"), so Rider shows the rules and the skills
+    /// where they are on disk.
     /// </summary>
     [Test]
     public void TheTopLevelFolders_AreTheSolutionsGroups()
@@ -218,7 +248,7 @@ public class SolutionLayoutTests
         var folders = Directory.EnumerateDirectories(TestPaths.RepoRoot)
             .Where(HoldsMoreThanBuildOutput)
             .Select(path => Path.GetFileName(path))
-            .Where(name => !name.StartsWith('.'));
+            .Where(name => !name.StartsWith('.') || name == InstructionsFolder);
 
         Assert.That(folders, Is.EquivalentTo(groups));
     }
