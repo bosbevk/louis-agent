@@ -1,0 +1,28 @@
+{
+  "kind": "sequence",
+  "title": "F134.13 a composite structure diagram: one composite is drawn",
+  "caption": "The drawing decides one place itself, the frame: everything else is where the flow's layout put it.",
+  "sequence": {
+    "participants": [
+      { "id": "tool", "label": "doc-diagrams", "icon": "terminal", "tone": "blue" },
+      { "id": "reader", "label": "DiagramReader", "icon": "code", "tone": "green" },
+      { "id": "drawing", "label": "CompositeDrawing", "icon": "code", "tone": "green" },
+      { "id": "adapter", "label": "CompositeFlow", "icon": "code", "tone": "green" },
+      { "id": "layout", "label": "GraphLayout", "icon": "chart", "tone": "green" },
+      { "id": "parts", "label": "PictureParts", "icon": "box", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "tool", "to": "reader", "text": "Read(json)" },
+      { "step": "note", "over": [ "reader" ], "text": "CompositeCheck: a part to every port and connector" },
+      { "step": "reply", "from": "reader", "to": "tool", "text": "DiagramSource with its CompositeSpec" },
+      { "step": "message", "from": "tool", "to": "drawing", "text": "Of(source), through its renderer" },
+      { "step": "message", "from": "drawing", "to": "adapter", "text": "Of(spec)" },
+      { "step": "reply", "from": "adapter", "to": "drawing", "text": "a flow: parts and ports in one group, by column" },
+      { "step": "message", "from": "drawing", "to": "layout", "text": "Place(flow, FlowRules.Straight)" },
+      { "step": "reply", "from": "layout", "to": "drawing", "text": "PlacedGraph" },
+      { "step": "message", "from": "drawing", "to": "parts", "text": "Open(title, width, the type's name)" },
+      { "step": "note", "over": [ "drawing" ], "text": "the frame round the parts, through the pins; then lines, parts, pins and the key" },
+      { "step": "reply", "from": "drawing", "to": "tool", "text": "the SVG" }
+    ]
+  }
+}

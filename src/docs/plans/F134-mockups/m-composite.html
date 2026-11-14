@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>F134.13: a composite structure diagram, three designs</title>
+<style>
+  body { margin: 0; padding: 32px; background: #15161b; color: #e8eaee; font: 15px/1.5 "Segoe UI", system-ui, sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; } h2 { font-size: 15px; margin: 40px 0 8px; } p, li { max-width: 78ch; color: #b6bac2; margin: 0 0 12px; }
+  img { max-width: 100%; height: auto; display: block; border-radius: 14px; } code { color: #e8eaee; }
+</style>
+<h1>F134.13: a composite structure diagram</h1>
+<p>UML's words for it: it shows the inside of one class. Its parts, the ports on its edge, and the connectors that join them. A class chart shows whole classes and how they relate. This shows the pieces one class is built from, each by the role it plays.</p>
+<p>All three designs draw the same real class, <code>AgentEngine</code> in <code>louis-agent.core</code>, read from its constructor: the six parts it builds, the three things it is handed, and which part is handed which. Each picture follows your system's colour scheme.</p>
+<h2>What UML asks for, and what was read</h2>
+<ul>
+  <li>The class is a frame with its name. A part is a box inside it, written <code>role : Type</code>, with how many in brackets or a corner. A part the class only refers to has a dashed edge.</li>
+  <li>A port is a small square on the frame's edge, with a name. What it offers is a ball on a stem, and what it needs is a cup a ball fits.</li>
+  <li>A connector is a plain line between two parts, or between a port and a part. It may carry a name.</li>
+  <li>Read: the page you sent, Wikipedia, Visual Paradigm's guide and IBM's. Two pages that hold the fine detail could not be opened, so two things are from memory and not confirmed: how a line from a port to a part is marked as passing a request on, and how a port that the class itself answers is drawn.</li>
+</ul>
+<h2>A. By the book</h2>
+<p>UML's own shapes on the plain panels a flow and a component diagram have. A part reads <code>turns : TurnRunner</code>. Ports are squares on the edge, with a ball for what the engine offers and a cup for what it needs. Parts that work together are joined by a plain line with no arrowhead, as UML draws a connector.</p>
+<img src="m-composite-a.svg" alt="">
+<h2>B. Glass</h2>
+<p>The same shapes on the glass cards a class chart has: a badge in the part's tone, its role in bold, its type under it, and how many in the corner. What comes in runs violet and what goes out runs blue, as a sequence's call does.</p>
+<img src="m-composite-b.svg" alt="">
+<h2>C. Pins</h2>
+<p>Our component diagram's own words. A port is a pin with its name on the frame's edge, down for what is asked of the engine and up for what it needs. A part shows its type large and its role in a chip. It is the nearest to what we have, and the furthest from UML: no squares, no ball and no cup.</p>
+<img src="m-composite-c.svg" alt="">
+<h2>Your pick: C, laid out by the flow's layout. And "the type of diagram must always display"</h2>
+<p>Three places the type could stand, each on design C.</p>
+<h2>Type 1: at the right of the title's line</h2>
+<p>Small quiet capitals in the top right corner, the way a group's name and the key's heading are written. The title stays where every picture has it.</p>
+<img src="m-composite-type-1.svg" alt="">
+<h2>Type 2: a pill before the title</h2>
+<p>The type first, in the pill a card's code name has, and the title after it. It is the first thing read, and the title starts further in.</p>
+<img src="m-composite-type-2.svg" alt="">
+<h2>Type 3: beside the key's heading</h2>
+<p>At the right of "How to read it", under the rule. The top of the picture stays as it is, and the type is said where the picture explains itself.</p>
+<img src="m-composite-type-3.svg" alt="">
