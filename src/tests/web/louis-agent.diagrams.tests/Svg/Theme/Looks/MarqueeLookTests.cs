@@ -65,6 +65,19 @@ public partial class MarqueeLookTests
     }
 
     /// <summary>
+    /// On a light page the glass and its hairline have body, so a card reads as a card on white (F134.12, Louis:
+    /// "all whites overall can be a tad darker"). A dark page is as it was.
+    /// </summary>
+    [Test]
+    public void OnALightPage_TheGlassHasBody_AndADarkPageIsAsItWas() => Assert.Multiple(() =>
+    {
+        Assert.That(Shared, Does.Contain(
+            "--mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18);"));
+        Assert.That(Shared, Does.Contain(
+            "--mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1);"));
+    });
+
+    /// <summary>
     /// The light, the glass and the accent edge are paints the look fills with by id and whose stops it colours.
     /// </summary>
     [TestCase(MarqueeLook.LightPaint, 3)]

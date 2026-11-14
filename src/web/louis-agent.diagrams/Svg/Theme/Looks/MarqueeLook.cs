@@ -19,11 +19,13 @@ internal static class MarqueeLook
 
     /// <summary>
     /// On a light page: how strong the light is at its middle and halfway out, the colour of the glass and how
-    /// much of it shows at a panel's top and bottom, and a panel's hairline.
+    /// much of it shows at a panel's top and bottom, and a panel's hairline. The glass and the hairline have
+    /// enough of their dark blue for a card to read as a card on white (F134.12, Louis: "all whites overall can
+    /// be a tad darker").
     /// </summary>
     private const string Light =
-        "--mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; " +
-        "--mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13);";
+        "--mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; " +
+        "--mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18);";
 
     /// <summary>The same on a dark page, where the glass is white and the light stronger.</summary>
     private const string Dark =
