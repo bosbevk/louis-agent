@@ -23,7 +23,7 @@ internal static class ComponentsKey
     /// <summary>The key, where the layout put it.</summary>
     public static void Draw(SvgWriter writer, PlacedKey key)
     {
-        writer.Text(key.X, key.Y + 10, DiagramText.Format(DiagramMessage.ComponentKey), "pic-group", "start");
+        writer.Text(key.X, key.Y + 10, DiagramText.Format(DiagramMessage.KeyHeading), "pic-group", "start");
         foreach (var (row, at) in key.Rows.Select((row, at) => (row, at)))
             DrawRow(writer, row, key.X, key.Y + KeyLayout.Heading + at * KeyLayout.Row + KeyLayout.Row / 2);
     }

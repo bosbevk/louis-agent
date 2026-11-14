@@ -78,9 +78,17 @@ public enum DiagramMessage
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 
+    // The heading over a picture's own key, in any kind that has one.
+    [Description("How to read it")] KeyHeading,
+
+    // The words a flow's key says of a shape and of a line (F134.8).
+    [Description("a decision")] FlowDecision,
+    [Description("data in or out")] FlowData,
+    [Description("a start or an end")] FlowTerminal,
+    [Description("a line has the colour of the box it leaves")] FlowLine,
+
     // The words a component diagram draws itself (F134.7): on a line to a service, and in its key.
     [Description("reads")] ComponentReads,
-    [Description("How to read it")] ComponentKey,
     [Description("handed down")] ComponentHandedDown,
     [Description("a parameter")] ComponentParameter,
     [Description("said back up")] ComponentSaidBackUp,

@@ -72,6 +72,27 @@ public static class NodeShapes
         : Inset(node.Node.Shape, ShapeSide.Bottom, node.W, node.H, x - node.X);
 
     /// <summary>
+    /// The outline of a diamond or a slanted box as a path, round the box the layout placed. Nothing for a plain
+    /// box or a pill, which are drawn as a rounded box.
+    /// </summary>
+    public static string? PathOf(PlacedNode node)
+    {
+        double left = node.X, right = node.X + node.W, top = node.Y, bottom = node.Y + node.H;
+        double across = node.X + node.W / 2, down = node.Y + node.H / 2;
+        return node.Node.Shape switch
+        {
+            NodeShape.Decision => Closed((across, top), (right, down), (across, bottom), (left, down)),
+            NodeShape.Data => Closed((left + Skew, top), (right, top), (right - Skew, bottom), (left, bottom)),
+            _ => null
+        };
+    }
+
+    /// <summary>A closed path through corners, each number as an SVG writes it.</summary>
+    private static string Closed(params (double X, double Y)[] corners) =>
+        "M" + string.Join("L", corners.Select(corner => FormattableString.Invariant($"{corner.X:0.#} {corner.Y:0.#}")))
+            + "Z";
+
+    /// <summary>
     /// A diamond for a box's words: twice as wide and twice as tall as the words, with the label's room round them.
     /// A line of words then fits between the slanted sides at its own height. It shows its label and no icon, since
     /// its shape already says what it is.

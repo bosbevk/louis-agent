@@ -129,6 +129,16 @@ internal sealed class SvgWriter
         return this;
     }
 
+    /// <summary>
+    /// Everything another writer drew, moved together by a distance, with the arrowheads its arrows wear: a part of
+    /// a picture drawn on its own, from where its layout starts, and set down where the picture wants it.
+    /// </summary>
+    public SvgWriter Group(string cls, double dx, double dy, SvgWriter drawn)
+    {
+        _tones.AddRange(drawn._tones);
+        return Group(cls, dx, dy, drawn._shapes);
+    }
+
     /// <summary>The shapes added so far, for a frame to put round another picture's.</summary>
     public IReadOnlyList<XElement> Shapes => _shapes;
 
