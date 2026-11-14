@@ -30,7 +30,7 @@ public static class SequenceLayout
     public static PlacedSequence Place(SequenceSpec spec, SequenceMeasures measures)
     {
         var lines = spec.Participants.Select(measures.HeadLines).ToList();
-        var widths = spec.Participants.Select((head, at) => measures.HeadWidth(head, lines[at])).ToList();
+        var widths = lines.Select(measures.HeadWidth).ToList();
         var index = spec.Participants.Select((head, at) => (head.Id, at)).ToDictionary(StringComparer.Ordinal);
         var centers = Centers(spec, widths, index, measures);
         double headHeight = lines.Max(measures.HeadHeight);

@@ -31,7 +31,7 @@ public class SequenceBlocksTests
     [Test]
     public void AFrame_HoldsEveryStepInside()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var loop = placed.Blocks.Single(block => block.Block.Block == BlockKind.Loop);
         var inside = placed.Rows.Skip(1).Take(3).ToList();
 
@@ -49,7 +49,7 @@ public class SequenceBlocksTests
     [Test]
     public void ANestedFrame_StandsInsideItsParent()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var loop = placed.Blocks.Single(block => block.Block.Block == BlockKind.Loop);
         var alt = placed.Blocks.Single(block => block.Block.Block == BlockKind.Alt);
 
@@ -67,7 +67,7 @@ public class SequenceBlocksTests
     [Test]
     public void AnElse_DividesTheCases()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var alt = placed.Blocks.Single(block => block.Block.Block == BlockKind.Alt);
         var reply = placed.Rows[2];
         var note = placed.Rows[3];
@@ -84,7 +84,7 @@ public class SequenceBlocksTests
     [Test]
     public void TheNumbers_RunOnThroughBlocks()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
 
         Assert.That(placed.Rows.Select(row => row.Number), Is.EqualTo(new int?[] { 1, 2, 3, null, 4 }));
     }
@@ -98,7 +98,7 @@ public class SequenceBlocksTests
             Steps = [new BlockStep(BlockKind.Opt, "a name nobody knows", [new MessageStep("E", "E", "refuse it")])]
         };
 
-        var frame = SequenceLayout.Place(spec, SequenceMeasures.Boxed).Blocks.Single();
+        var frame = SequenceLayout.Place(spec, SequenceMeasures.Marquee).Blocks.Single();
 
         Assert.That(frame.X, Is.GreaterThanOrEqualTo(0));
     }

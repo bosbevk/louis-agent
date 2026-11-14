@@ -52,8 +52,8 @@ public class SequenceMeasuresTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Marquee.HeadWidth(oneLetter, Marquee.HeadLines(oneLetter)), Is.EqualTo(64));
-            Assert.That(Marquee.HeadWidth(longName, Marquee.HeadLines(longName)), Is.EqualTo(24 * 9.4).Within(0.001));
+            Assert.That(Marquee.HeadWidth(Marquee.HeadLines(oneLetter)), Is.EqualTo(64));
+            Assert.That(Marquee.HeadWidth(Marquee.HeadLines(longName)), Is.EqualTo(24 * 9.4).Within(0.001));
             Assert.That(Marquee.HeadHeight(Marquee.HeadLines(oneLetter)), Is.EqualTo(84));
             Assert.That(Marquee.HeadLines(two), Has.Count.EqualTo(2));
             Assert.That(Marquee.HeadHeight(Marquee.HeadLines(two)), Is.EqualTo(104));
@@ -135,7 +135,7 @@ public class SequenceMeasuresTests
 
     /// <summary>
     /// A block's tab stands a little inside its frame, so a frame is as wide as that, its kind's pill, its label
-    /// and the room after it need, and so is one for an else's label. Today's tab starts at the frame's edge.
+    /// and the room after it need, and so is one for an else's label.
     /// </summary>
     [Test]
     public void AFrame_IsWideEnoughForItsTab_FromWhereTheTabStands()
@@ -150,13 +150,12 @@ public class SequenceMeasuresTests
                 Is.EqualTo(14 + Marquee.KindWidth(BlockKind.Alt) + words));
             Assert.That(Marquee.ElseWidth(label),
                 Is.EqualTo(14 + Marquee.WordsWidth([SequenceMeasures.ElseWord]) + words));
-            Assert.That(SequenceMeasures.Boxed.TabLeft, Is.Zero);
         });
     }
 
     /// <summary>
     /// What comes after a block starts a little under its frame, so a frame never touches a note, a divider or
-    /// another frame under it. Today's frames have no such room.
+    /// another frame under it.
     /// </summary>
     [Test]
     public void WhatComesAfterABlock_StartsALittleUnderItsFrame()
@@ -168,7 +167,6 @@ public class SequenceMeasuresTests
         {
             Assert.That(Marquee.BlockGap, Is.EqualTo(12));
             Assert.That(placed.Rows[^1].Y, Is.EqualTo(block.Y + block.H + 12), "the last answer, after the block");
-            Assert.That(SequenceMeasures.Boxed.BlockGap, Is.Zero);
         });
     }
 
@@ -206,18 +204,10 @@ public class SequenceMeasuresTests
     }
 
     /// <summary>
-    /// Today's measures are untouched by the new ones: a head is still a flow's box, 52 tall and at least 120 wide.
+    /// The one look there is holds the record's own numbers, so a look that needs others says only which ones
+    /// differ.
     /// </summary>
     [Test]
-    public void TodaysMeasures_AreAsTheyWere()
-    {
-        var head = new Participant("a", "A", DiagramIcon.Box);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(SequenceMeasures.Boxed.HeadWidth(head, ["A"]), Is.EqualTo(120));
-            Assert.That(SequenceMeasures.Boxed.HeadHeight(["A"]), Is.EqualTo(52));
-            Assert.That(SequenceMeasures.Boxed.LineStep, Is.EqualTo(14));
-        });
-    }
+    public void TheOneLook_HoldsTheRecordsOwnNumbers() =>
+        Assert.That(SequenceMeasures.Marquee, Is.EqualTo(new SequenceMeasures()));
 }

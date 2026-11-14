@@ -7,131 +7,96 @@ using LouisAgent.Diagrams.Sequence.Spec;
 namespace LouisAgent.Diagrams.Sequence;
 
 /// <summary>
-/// The measures of a sequence, as one value the layout, the renderer and the checks are handed: how wide a head is
-/// for its label, how a message's words break and where they stand above their arrow, how tall a note and a block's
-/// tab are.
+/// The measures of a sequence, as one value the layout, the drawing and the checks read: how wide a head is for its
+/// name, how a message's words break and where they stand above their line, how tall a note and a block's tab are.
 /// </summary>
 /// <remarks>
-/// A Parameter Object (Fowler, <i>Introduce Parameter Object</i>), Louis's pick of three (F134.10). The numbers were
-/// constants every part read. As one value, the same layout places a sequence by today's numbers or by another
-/// look's, so a new look needs no second layout, and the two can't drift apart in how they space lifelines or frame
-/// a block. <see cref="Boxed"/> is today's: every word in the code font, so a line's width is its length times one
-/// number, and a head takes a flow's box measures, so a participant looks like a box in a flow.
+/// A Parameter Object (Fowler, <i>Introduce Parameter Object</i>), Louis's pick of three (F134.10). The layout is
+/// handed the numbers and holds none of its own, so a look that needs other numbers is another instance of this
+/// record and no second layout, and two looks can't drift apart in how they space lifelines or frame a block.
+/// <see cref="Marquee"/> is the one look there is.
 /// </remarks>
 public sealed record SequenceMeasures
 {
-    /// <summary>The word on an alt's divider, in a chip like a block's kind.</summary>
+    /// <summary>The word on an alt's divider, in a pill like a block's kind.</summary>
     public const string ElseWord = "else";
-
-    /// <summary>Today's measures: a head as a flow's box, and every word in the code font.</summary>
-    public static SequenceMeasures Boxed { get; } = new();
 
     /// <summary>
     /// The cards' look (F134.10, Louis's pick "Marquee"): a head is a badge with its name under it and no box, so
-    /// it is as wide as the name alone and tall for the badge. The words are in the sans font, a little larger,
-    /// and stand above their line. A block's frame reaches well left of what it holds, for its tab.
+    /// it is as wide as the name alone and tall for the badge. The words are in the sans font and stand above
+    /// their line. A block's frame reaches well left of what it holds, for its tab.
     /// </summary>
-    public static SequenceMeasures Marquee { get; } = new()
-    {
-        LineStep = 15,
-        ArrowGap = 6,
-        RowEnd = 22,
-        SelfOut = 34,
-        SelfDrop = 18,
-        HeadMin = 0,
-        HeadMinWidth = 64,
-        HeadPad = 32,
-        HeadChar = 9.4,
-        HeadSide = 0,
-        HeadIconRoom = 0,
-        HeadLine = 20,
-        NoteLine = 16,
-        NotePad = 9,
-        NoteReach = 24,
-        InsetLeft = 62,
-        InsetRight = 22,
-        TabPad = 9.5,
-        TabLeft = 14,
-        BlockGap = 12
-    };
+    public static SequenceMeasures Marquee { get; } = new();
 
     /// <summary>A message's words break at this many characters (Claude's pick Q2).</summary>
     public int MessageWidth { get; init; } = 40;
 
-    /// <summary>A head's label breaks at this many characters, so a long name doesn't spread its column.</summary>
+    /// <summary>A head's name breaks at this many characters, so a long name doesn't spread its column.</summary>
     public int HeadLabelWidth { get; init; } = 24;
 
     /// <summary>A message's line: its height.</summary>
-    public double LineStep { get; init; } = 14;
+    public double LineStep { get; init; } = 15;
 
     /// <summary>The room above a message's first line.</summary>
     public double TextTop { get; init; } = 8;
 
     /// <summary>The room between a message's last line and its arrow.</summary>
-    public double ArrowGap { get; init; } = 8;
+    public double ArrowGap { get; init; } = 6;
 
     /// <summary>The words' room around their ink.</summary>
     public double WordPad { get; init; } = 8;
 
     /// <summary>How far a message to oneself turns out of its lifeline.</summary>
-    public double SelfOut { get; init; } = 28;
+    public double SelfOut { get; init; } = 34;
 
     /// <summary>How far down a message to oneself comes back.</summary>
-    public double SelfDrop { get; init; } = 16;
+    public double SelfDrop { get; init; } = 18;
 
-    /// <summary>A head's height at the least, the height of a flow's box; a longer label adds a line each.</summary>
-    public double HeadMin { get; init; } = 52;
+    /// <summary>
+    /// Half of what a head is taller than its name's lines: the badge over the name, and the room round both.
+    /// </summary>
+    public double HeadPad { get; init; } = 32;
 
-    /// <summary>The room above and under a head's label.</summary>
-    public double HeadPad { get; init; } = 18;
+    /// <summary>How wide a character of a head's name is taken to be.</summary>
+    public double HeadChar { get; init; } = 9.4;
 
-    /// <summary>How wide a character of a head's label is taken to be.</summary>
-    public double HeadChar { get; init; } = GraphLayout.LabelCharWidth;
-
-    /// <summary>The room beside a head's label, both sides together.</summary>
-    public double HeadSide { get; init; } = 2 * GraphLayout.LabelPad;
-
-    /// <summary>The room a head's icon takes beside its label. Nothing, where the icon stands over the label.</summary>
-    public double HeadIconRoom { get; init; } = FlowText.IconRoom;
-
-    /// <summary>A line of a head's label.</summary>
-    public double HeadLine { get; init; } = FlowText.LabelStep;
+    /// <summary>A line of a head's name.</summary>
+    public double HeadLine { get; init; } = 20;
 
     /// <summary>The room under a row's arrow, or under its note.</summary>
-    public double RowEnd { get; init; } = 12;
+    public double RowEnd { get; init; } = 22;
 
     /// <summary>A line of a note's words.</summary>
-    public double NoteLine { get; init; } = 14;
+    public double NoteLine { get; init; } = 16;
 
     /// <summary>The room above and under a note's words.</summary>
-    public double NotePad { get; init; } = 8;
+    public double NotePad { get; init; } = 9;
 
-    /// <summary>A head's width at the least, so a short name still reads as a box.</summary>
-    public double HeadMinWidth { get; init; } = 120;
+    /// <summary>A head's width at the least, so a short name still has room for its badge.</summary>
+    public double HeadMinWidth { get; init; } = 64;
 
     /// <summary>How far a note reaches past the outermost lifelines it stands over.</summary>
-    public double NoteReach { get; init; } = 16;
+    public double NoteReach { get; init; } = 24;
 
     /// <summary>A note's room above.</summary>
     public double NoteTop { get; init; } = 4;
 
     /// <summary>
-    /// How far a block's frame reaches left of what it holds, so a nested one sits inside. A frame whose tab
-    /// stands left of the first lifeline reaches further.
+    /// How far a block's frame reaches left of what it holds, so a nested one sits inside, with room for its tab.
     /// </summary>
-    public double InsetLeft { get; init; } = 14;
+    public double InsetLeft { get; init; } = 62;
 
     /// <summary>How far a block's frame reaches right of what it holds.</summary>
-    public double InsetRight { get; init; } = 14;
+    public double InsetRight { get; init; } = 22;
 
     /// <summary>The room round a block's tab's words.</summary>
-    public double TabPad { get; init; } = 6;
+    public double TabPad { get; init; } = 9.5;
 
-    /// <summary>The room under a block's frame, before what comes next. Today's frames have none.</summary>
-    public double BlockGap { get; init; }
+    /// <summary>The room under a block's frame, before what comes next.</summary>
+    public double BlockGap { get; init; } = 12;
 
-    /// <summary>How far inside its frame a block's tab starts. Today's starts at the frame's edge.</summary>
-    public double TabLeft { get; init; }
+    /// <summary>How far inside its frame a block's tab starts.</summary>
+    public double TabLeft { get; init; } = 14;
 
     /// <summary>The room under a block's last row.</summary>
     public double BlockEnd { get; init; } = 8;
@@ -145,20 +110,15 @@ public sealed record SequenceMeasures
     /// </summary>
     public IReadOnlyList<string> Lines(string text) => Broken(text, MessageWidth);
 
-    /// <summary>A head's label, broken into lines the same way.</summary>
+    /// <summary>A head's name, broken into lines the same way.</summary>
     public IReadOnlyList<string> HeadLines(Participant participant) => Broken(participant.Label, HeadLabelWidth);
 
-    /// <summary>How wide a head is for its label and its icon.</summary>
-    public double HeadWidth(Participant participant, IReadOnlyList<string> lines)
-    {
-        double label = lines.Max(line => line.Length) * HeadChar + HeadSide;
-        double icon = IconOf(participant) is null ? 0 : HeadIconRoom;
-        return Math.Max(HeadMinWidth, label + icon);
-    }
+    /// <summary>How wide a head is for its name. Its icon stands over the name and takes no room beside it.</summary>
+    public double HeadWidth(IReadOnlyList<string> lines) =>
+        Math.Max(HeadMinWidth, lines.Max(line => line.Length) * HeadChar);
 
-    /// <summary>How tall a head is for its label's lines.</summary>
-    public double HeadHeight(IReadOnlyList<string> lines) =>
-        Math.Max(HeadMin, lines.Count * HeadLine + 2 * HeadPad);
+    /// <summary>How tall a head is for its name's lines.</summary>
+    public double HeadHeight(IReadOnlyList<string> lines) => lines.Count * HeadLine + 2 * HeadPad;
 
     /// <summary>How wide a message's words are, their room included.</summary>
     public double WordsWidth(IReadOnlyList<string> lines) =>
@@ -192,17 +152,17 @@ public sealed record SequenceMeasures
     /// <summary>How tall a block's tab is, or an else's divider with its label, for the label's lines.</summary>
     public double TabHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * TabPad + 4;
 
-    /// <summary>How wide the chip naming a block's kind is.</summary>
+    /// <summary>How wide the pill naming a block's kind is.</summary>
     public double KindWidth(BlockKind kind) => kind.Wire().Length * FlowText.WordChar + 2 * WordPad;
 
     /// <summary>
-    /// How wide a frame must be for its tab: from where the tab starts, the kind's chip and the label beside it.
+    /// How wide a frame must be for its tab: from where the tab starts, the kind's pill and the label beside it.
     /// </summary>
     public double TabWidth(BlockKind kind, IReadOnlyList<string> lines) =>
         TabLeft + KindWidth(kind) + WordsWidth(lines) + TabPad;
 
     /// <summary>
-    /// How wide a frame must be for a divider: from where the tab starts, its chip and its case's label beside it.
+    /// How wide a frame must be for a divider: from where the tab starts, its pill and its case's label beside it.
     /// </summary>
     public double ElseWidth(IReadOnlyList<string> lines) =>
         TabLeft + WordsWidth([ElseWord]) + WordsWidth(lines) + TabPad;

@@ -26,8 +26,8 @@ public class SequenceNotesTests
     [Test]
     public void ANote_SpansTheLifelinesItNames()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
-        var (x, _, w, _) = SequenceMeasures.Boxed.NoteBox(placed.Rows[2]);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
+        var (x, _, w, _) = SequenceMeasures.Marquee.NoteBox(placed.Rows[2]);
 
         Assert.Multiple(() =>
         {
@@ -40,8 +40,8 @@ public class SequenceNotesTests
     [Test]
     public void ANoteOverOne_StandsOnItsLifeline_InsideTheDrawing()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
-        var (x, _, w, _) = SequenceMeasures.Boxed.NoteBox(placed.Rows[0]);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
+        var (x, _, w, _) = SequenceMeasures.Marquee.NoteBox(placed.Rows[0]);
 
         Assert.Multiple(() =>
         {
@@ -55,7 +55,7 @@ public class SequenceNotesTests
     [Test]
     public void TheNumbers_RunInOrder_OverMessagesOnly()
     {
-        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Boxed);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
 
         Assert.That(placed.Rows.Select(row => row.Number), Is.EqualTo(new int?[] { null, 1, null, 2 }));
     }
