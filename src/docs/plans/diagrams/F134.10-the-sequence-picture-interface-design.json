@@ -1,0 +1,204 @@
+{
+  "kind": "classes",
+  "title": "F134.10 the sequence picture: the interface design",
+  "caption": "One layout, two sets of numbers: the measures are a value the layout is handed, today's until the switch and design C's after it.",
+  "classes": {
+    "types": [
+      {
+        "id": "spec",
+        "name": "SequenceSpec",
+        "kind": "record, as today",
+        "tone": "teal",
+        "members": [
+          "IReadOnlyList<Participant> Participants",
+          "IReadOnlyList<SequenceStep> Steps",
+          "bool Numbered"
+        ]
+      },
+      {
+        "id": "measures",
+        "name": "SequenceMeasures",
+        "kind": "record, step 3",
+        "tone": "teal",
+        "members": [
+          "Boxed: today's numbers, deleted in step 8",
+          "Marquee: design C's, step 4",
+          "HeadWidth, HeadHeight, Lines, WordBox, NoteBox, TabHeight"
+        ]
+      },
+      {
+        "id": "text",
+        "name": "SequenceText",
+        "kind": "folded into the measures, step 3",
+        "tone": "red",
+        "members": [
+          "constants and static functions"
+        ]
+      },
+      {
+        "id": "layout",
+        "name": "SequenceLayout",
+        "kind": "changed in step 3",
+        "tone": "green",
+        "members": [
+          "PlacedSequence Place(SequenceSpec spec, SequenceMeasures measures)"
+        ]
+      },
+      {
+        "id": "rows",
+        "name": "SequenceRows",
+        "kind": "changed in step 3",
+        "tone": "green",
+        "members": [
+          "Walk(steps, y, depth)"
+        ]
+      },
+      {
+        "id": "placed",
+        "name": "PlacedSequence",
+        "kind": "record, as today",
+        "tone": "teal",
+        "members": [
+          "Heads",
+          "Rows",
+          "Blocks",
+          "double Width",
+          "double Height"
+        ]
+      },
+      {
+        "id": "row",
+        "name": "PlacedRow",
+        "kind": "record, changed in step 3",
+        "tone": "teal",
+        "members": [
+          "SequenceStep Step",
+          "Lines",
+          "double FromX, ToX, Y, H",
+          "double ArrowY, now a value"
+        ]
+      },
+      {
+        "id": "shared",
+        "name": "MarqueeLook",
+        "kind": "step 5",
+        "tone": "green",
+        "members": [
+          "the mrq- rules: title, light, glass, edge, pill, node"
+        ]
+      },
+      {
+        "id": "style",
+        "name": "SequenceStyle",
+        "kind": "step 5",
+        "tone": "green",
+        "members": [
+          "the seq- rules: badge, name, beam, answer, lifeline"
+        ]
+      },
+      {
+        "id": "cards",
+        "name": "CardsStyle",
+        "kind": "loses what moved, step 5",
+        "tone": "green",
+        "members": [
+          "the crd- rules that are a card's own"
+        ]
+      },
+      {
+        "id": "key",
+        "name": "SequenceKeyLayout",
+        "kind": "step 6",
+        "tone": "green",
+        "members": [
+          "Of(SequenceSpec spec, double width)"
+        ]
+      },
+      {
+        "id": "drawing",
+        "name": "SequenceDrawing",
+        "kind": "step 7",
+        "tone": "green",
+        "members": [
+          "string Of(DiagramSource source)"
+        ]
+      },
+      {
+        "id": "renderer",
+        "name": "SequenceRenderer",
+        "kind": "IDiagramRenderer, changed in step 8",
+        "tone": "green",
+        "members": [
+          "string Render(DiagramSource source)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "measures",
+        "to": "text",
+        "kind": "uses",
+        "word": "takes its place"
+      },
+      {
+        "from": "layout",
+        "to": "measures",
+        "kind": "uses",
+        "word": "is handed"
+      },
+      {
+        "from": "layout",
+        "to": "rows",
+        "kind": "creates"
+      },
+      {
+        "from": "layout",
+        "to": "placed",
+        "kind": "creates"
+      },
+      {
+        "from": "placed",
+        "to": "row",
+        "kind": "holds"
+      },
+      {
+        "from": "layout",
+        "to": "spec",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "layout",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "key",
+        "kind": "uses"
+      },
+      {
+        "from": "drawing",
+        "to": "style",
+        "kind": "uses"
+      },
+      {
+        "from": "style",
+        "to": "shared",
+        "kind": "uses",
+        "word": "after it"
+      },
+      {
+        "from": "cards",
+        "to": "shared",
+        "kind": "uses",
+        "word": "after it"
+      },
+      {
+        "from": "renderer",
+        "to": "drawing",
+        "kind": "uses",
+        "word": "from step 8"
+      }
+    ]
+  }
+}

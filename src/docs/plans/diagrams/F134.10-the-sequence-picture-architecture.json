@@ -1,0 +1,134 @@
+{
+  "kind": "flow",
+  "title": "F134.10 the sequence picture: what the change reaches",
+  "caption": "The layout stays and only its numbers change: steps 3 and 4 hand them in, steps 5 to 7 build the look, and step 8 switches the 64 pictures.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "you",
+        "label": "Whoever writes a doc",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "json",
+        "label": "64 sequence pictures' JSON\nas they are, none edited",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "tool",
+        "label": "louis-agent.doc-diagrams\nas today",
+        "icon": "terminal",
+        "tone": "green"
+      },
+      {
+        "id": "renderer",
+        "label": "SequenceRenderer\nhanded the new drawing\nstep 8",
+        "icon": "stack",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "measures",
+        "label": "SequenceMeasures\ntoday's, then design C's\nsteps 3 and 4",
+        "icon": "settings",
+        "tone": "teal",
+        "group": "diagrams"
+      },
+      {
+        "id": "layout",
+        "label": "SequenceLayout, SequenceRows\nas today, handed the measures\nstep 3",
+        "icon": "chart",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "looks",
+        "label": "MarqueeLook, SequenceStyle\nshared with the cards\nstep 5",
+        "icon": "code",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "drawing",
+        "label": "SequenceDrawing, SequenceKeyLayout\nthe new look and its key\nsteps 6 and 7",
+        "icon": "code",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "cards",
+        "label": "45 cards pictures\nnames only, the same images\nstep 5",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "svg",
+        "label": "64 SVGs redrawn\nstep 8",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "doc",
+        "label": "A project's design doc\nshows its main case",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "you",
+        "to": "json"
+      },
+      {
+        "from": "json",
+        "to": "tool"
+      },
+      {
+        "from": "tool",
+        "to": "renderer"
+      },
+      {
+        "from": "renderer",
+        "to": "drawing"
+      },
+      {
+        "from": "measures",
+        "to": "layout"
+      },
+      {
+        "from": "drawing",
+        "to": "layout"
+      },
+      {
+        "from": "drawing",
+        "to": "looks"
+      },
+      {
+        "from": "looks",
+        "to": "cards"
+      },
+      {
+        "from": "drawing",
+        "to": "svg"
+      },
+      {
+        "from": "svg",
+        "to": "doc"
+      }
+    ],
+    "groups": [
+      {
+        "id": "diagrams",
+        "label": "louis-agent.diagrams"
+      }
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "kind": "flow",
+  "title": "F134.10 the sequence picture: the diagrams' sequence, placed",
+  "caption": "The picture Louis picked the design on: five heads, ten rows, and one block whose two cases hold a row each.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "placed",
+        "label": "PlacedSequence\nby SequenceMeasures.Marquee",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "heads",
+        "label": "PlacedHead x 5\nDiagramSync to The SVG on disk",
+        "icon": "users",
+        "tone": "teal"
+      },
+      {
+        "id": "calls",
+        "label": "PlacedRow x 5\ncalls, each with where its beam runs",
+        "icon": "message",
+        "tone": "teal"
+      },
+      {
+        "id": "answers",
+        "label": "PlacedRow x 3\nanswers",
+        "icon": "message",
+        "tone": "teal"
+      },
+      {
+        "id": "notes",
+        "label": "PlacedRow x 2\nnotes, each over one lifeline",
+        "icon": "file",
+        "tone": "teal"
+      },
+      {
+        "id": "block",
+        "label": "PlacedBlock: alt\nit changed",
+        "icon": "branch",
+        "tone": "teal"
+      },
+      {
+        "id": "case",
+        "label": "PlacedCase: else\nthe same",
+        "icon": "branch",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "placed",
+        "to": "heads"
+      },
+      {
+        "from": "placed",
+        "to": "calls"
+      },
+      {
+        "from": "placed",
+        "to": "answers"
+      },
+      {
+        "from": "placed",
+        "to": "notes"
+      },
+      {
+        "from": "placed",
+        "to": "block"
+      },
+      {
+        "from": "block",
+        "to": "case"
+      }
+    ]
+  }
+}
