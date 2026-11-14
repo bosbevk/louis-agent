@@ -17,6 +17,10 @@ measures every turn on its own `ActivitySource`, which nothing listens to, and s
 
 ## How it works
 
+A host's telemetry, step by step.
+
+![Telemetry: the crash handler installed, the tracer built when a collector is set, its own traffic left out, and what is held sent at the end](diagrams/louis-agent.core.telemetry-flow.svg)
+
 `OtlpTelemetry` is core's `IHostTelemetry` seam made real, a singleton for the process:
 
 - **`AddSinks(logging)`**, called by `AgentLogging.Configure` with the host's configuration: with

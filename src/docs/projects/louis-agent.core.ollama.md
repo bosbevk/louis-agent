@@ -14,6 +14,10 @@ talks to a local model through OllamaSharp. A program hands `OllamaProvider.Inst
 
 ## How it works
 
+How a client is made, step by step.
+
+![A client: at the endpoint given or Ollama's own port, over an HttpClient with a ten-minute timeout](diagrams/louis-agent.core.ollama-flow.svg)
+
 `OllamaProvider` is core's `ILlmProvider` seam made real, a singleton: named `ollama`; `Create(options)` is
 OllamaSharp's client over an `HttpClient` at `LLM_ENDPOINT`, or Ollama's own port on this machine, with a ten-minute
 timeout, since a small GPU writes about five tokens a second and HttpClient's default 100 seconds cancelled replies

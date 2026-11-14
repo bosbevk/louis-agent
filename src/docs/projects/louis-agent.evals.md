@@ -17,6 +17,10 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 
 ## How it works
 
+One run, step by step.
+
+![One run: the dataset loaded strictly, each trial a conversation, a failure of the plumbing kept apart, the rest graded](diagrams/louis-agent.evals-flow.svg)
+
 - **An eval is a C# class.** `IEval` names its modes (`EvalMode`: the toolsets and role a session opens with), its
   dataset and its graders, and the identity it proves, which `EVALS=` chooses by. Since F49.2, `Files/FileEval` is
   the one that reads a folder of files; the stub and the template's example are the C# ones left.

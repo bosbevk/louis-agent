@@ -1,0 +1,88 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "louis-agent.usage-probe: a probe, step by step",
+  "caption": "The probe builds the client and the mapper the agents use, sends a few one-word requests with a long system prompt, both ways, and prints what the provider reported beside what the ledger would write.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "dotnet run\nthe provider from config",
+        "icon": "terminal",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "client",
+        "label": "Build the client and\nthe usage mapper",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "anthropic",
+        "label": "Anthropic?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "cached",
+        "label": "Plain, then a cache write\nand a read: 6 requests",
+        "icon": "stack",
+        "tone": "green"
+      },
+      {
+        "id": "plain",
+        "label": "Plain, then the same again:\n4 requests",
+        "icon": "stack",
+        "tone": "green"
+      },
+      {
+        "id": "both",
+        "label": "Each streaming\nand not",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "end",
+        "label": "Print each: what was reported,\nand the ledger: line",
+        "icon": "file",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "client"
+      },
+      {
+        "from": "client",
+        "to": "anthropic"
+      },
+      {
+        "from": "anthropic",
+        "to": "cached",
+        "word": "yes"
+      },
+      {
+        "from": "anthropic",
+        "to": "plain",
+        "word": "no"
+      },
+      {
+        "from": "cached",
+        "to": "both"
+      },
+      {
+        "from": "plain",
+        "to": "both"
+      },
+      {
+        "from": "both",
+        "to": "end"
+      }
+    ]
+  }
+}

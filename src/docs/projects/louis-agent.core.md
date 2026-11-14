@@ -14,6 +14,10 @@ protocol to and from `AgentEngine`; behaviour changes belong here.
 
 ## How it works
 
+One turn, step by step, before the parts that make it are told one by one below.
+
+![One turn: the message is appended, the model asked, each tool call run behind the guards round after round, and the whole turn appended at the end](diagrams/louis-agent.core-flow.svg)
+
 ![louis-agent.core: How it works](diagrams/louis-agent.core-how-it-works.svg)
 
 1. **Bootstrap** (`AgentHost.Build()`): load `config/.env.secrets` then `config/.env` (searching upward from the working

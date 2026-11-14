@@ -16,6 +16,10 @@ host on a local model ships none of this, and core itself ships no SDK.
 
 ## How it works
 
+How a client is made, step by step.
+
+![A client: refused without a key, the SDK's client built, wrapped for a fixed thinking budget on older models, and for caching by the factory](diagrams/louis-agent.core.anthropic-flow.svg)
+
 `AnthropicProvider` is core's `ILlmProvider` seam made real, a singleton:
 
 - **`Name`** is `anthropic`, what `LLM_PROVIDER` picks it by.

@@ -24,15 +24,7 @@ public class ProjectDocsTests
         ["packs/docs/projects/louis-agent.pack.calculator.md"] = [DiagramType.Activity],
         ["packs/docs/projects/louis-agent.pack.recipes.md"] = [DiagramType.Activity],
         ["packs/docs/projects/louis-agent.pack.shop-prices.md"] = [DiagramType.Activity],
-        ["packs/docs/projects/louis-agent.pack.where-to-buy.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.core.anthropic.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.core.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.core.ollama.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.core.openai.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.core.telemetry.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.core.web.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.evals.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.usage-probe.md"] = [DiagramType.Activity]
+        ["packs/docs/projects/louis-agent.pack.where-to-buy.md"] = [DiagramType.Activity]
     };
 
     /// <summary>The doc's path from the repo's root, as a person would find it.</summary>

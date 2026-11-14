@@ -15,6 +15,10 @@ spike.
 
 ## How it works
 
+One probe, step by step.
+
+![A probe: the client and mapper built, six requests for Anthropic or four for others, each both ways, and what each reported printed](diagrams/louis-agent.usage-probe-flow.svg)
+
 It builds the client and the usage mapper the agents use (`LlmClientFactory.Create` and `CreateUsageMapper`) and sends a
 few one-word requests with a long system prompt, both non-streaming and streaming. For each one it prints:
 

@@ -17,6 +17,10 @@ Object).
 
 ## How it works
 
+One fetch, step by step.
+
+![One fetch: a recorded answer in a replay; live, robots.txt first, the SSRF guard, the fetch or visit, and the answer written down](diagrams/louis-agent.core.web-flow.svg)
+
 `WebAccess.Create(options, replay)` builds, once per process, what `AgentEngineFactory` built itself before:
 
 - **One robots.txt policy** (`Robots/RobotsPolicy`, F35, [ADR 0068](../adr/0068-every-fetch-obeys-robots-txt.md)),

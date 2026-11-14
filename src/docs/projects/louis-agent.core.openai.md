@@ -16,6 +16,10 @@ ships no SDK.
 
 ## How it works
 
+How a client is made, step by step.
+
+![A client: refused without an endpoint, built with the key given or a placeholder](diagrams/louis-agent.core.openai-flow.svg)
+
 `OpenAiCompatibleProvider` is core's `ILlmProvider` seam made real, a singleton: named `openai-compatible`;
 `Create(options)` refuses settings without `LLM_ENDPOINT`, and builds the OpenAI SDK's client with the key given or
 a placeholder, since a local server often wants none and the SDK wants something. It reports usage in the standard

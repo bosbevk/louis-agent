@@ -1,0 +1,114 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "louis-agent.core.web: one fetch, step by step",
+  "caption": "In a replay the recorded answer is read back. Live, every fetch and every visit asks the one robots.txt policy first, passes the SSRF guard, and is written down where a store is kept.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "A tool asks\nfor a page",
+        "icon": "chip",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "replay",
+        "label": "A replay?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "recorded",
+        "label": "Read the recorded answer",
+        "icon": "database",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "robots",
+        "label": "robots.txt\nallows it?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "refuse",
+        "label": "Say the site said no",
+        "icon": "shield",
+        "tone": "red",
+        "shape": "terminal"
+      },
+      {
+        "id": "guard",
+        "label": "The SSRF guard\nno private address",
+        "icon": "shield",
+        "tone": "green"
+      },
+      {
+        "id": "fetch",
+        "label": "Fetch it, or visit it\nwith headless Chrome",
+        "icon": "browser",
+        "tone": "green"
+      },
+      {
+        "id": "record",
+        "label": "Write it down\nwhere a store is kept",
+        "icon": "database",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "end",
+        "label": "The answer,\nto the tool",
+        "icon": "file",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "replay"
+      },
+      {
+        "from": "replay",
+        "to": "recorded",
+        "word": "yes"
+      },
+      {
+        "from": "replay",
+        "to": "robots",
+        "word": "no"
+      },
+      {
+        "from": "robots",
+        "to": "refuse",
+        "word": "no"
+      },
+      {
+        "from": "robots",
+        "to": "guard",
+        "word": "yes"
+      },
+      {
+        "from": "guard",
+        "to": "fetch"
+      },
+      {
+        "from": "fetch",
+        "to": "record"
+      },
+      {
+        "from": "record",
+        "to": "end"
+      },
+      {
+        "from": "recorded",
+        "to": "end"
+      }
+    ]
+  }
+}
