@@ -113,19 +113,19 @@ public class DocsDiagramsTests
 
     /// <summary>
     /// In every flow picture, a class chart's too (CL60.4, drawn as a flow), no word leaves the drawing or sits on a
-    /// box, and no line crosses a box it doesn't join. Each is laid out by the rules it is drawn by: a flow straight
-    /// and level (F134.8), a class chart joined.
+    /// box, and no line crosses a box it doesn't join. Each is laid out as it is drawn: straight and level
+    /// (F134.8), and a class chart with its names wrapped and a badge's room beside each (F134.11).
     /// </summary>
     [Test]
     public void EveryFlow_KeepsItsWordsAndLinesClear()
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
             .Select(pair => (pair.json,
-                flow: pair.source.Flow ?? (pair.source.Classes is { } classes ? ClassFlow.Of(classes) : null),
-                rules: pair.source.Flow is null ? FlowRules.Joined : FlowRules.Straight))
+                flow: pair.source.Flow ??
+                      (pair.source.Classes is { } classes ? ClassFlow.Of(classes) : null)))
             .Where(pair => pair.flow is not null)
             .SelectMany(pair => Clearance
-                .Faults(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: pair.rules))
+                .Faults(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: FlowRules.Straight))
                 .Select(fault => $"{Path.GetFileNameWithoutExtension(pair.json)}: {fault}")).ToList();
 
         // The whole list, one fault a line: a list cut short hides the picture still to fix.
@@ -134,13 +134,17 @@ public class DocsDiagramsTests
 
     /// <summary>
     /// Laid out by the rules a flow gets (F134.8), arrows apart and boxes level, no flow in the docs has two lines
-    /// from different boxes lying on one another: each line can be followed from its box to where it arrives.
+    /// from different boxes lying on one another: each line can be followed from its box to where it arrives. A
+    /// class chart is laid out the same way now (F134.11), so it is held to the same.
     /// </summary>
     [Test]
     public void EveryFlow_LaidOutApart_HasNoTwoLinesOnOneAnother()
     {
         var rules = FlowRules.Straight;
-        var lying = Diagrams().Select(json => (json, flow: DiagramReader.Read(File.ReadAllText(json)).Flow))
+        var lying = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
+            .Select(pair => (pair.json,
+                flow: pair.source.Flow ??
+                      (pair.source.Classes is { } classes ? ClassFlow.Of(classes) : null)))
             .Where(pair => pair.flow is not null)
             .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: rules))
                 .Select(lines => $"{Path.GetFileNameWithoutExtension(pair.json)}: {lines}")).ToList();

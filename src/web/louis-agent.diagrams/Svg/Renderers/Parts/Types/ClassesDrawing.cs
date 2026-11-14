@@ -45,7 +45,7 @@ internal static class ClassesDrawing
     public static string Of(DiagramSource source)
     {
         var spec = source.Classes!;
-        var flow = ClassFlow.Of(spec, carded: true);
+        var flow = ClassFlow.Of(spec);
         var placed = GraphLayout.Place(flow, bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
 
         // As wide as the types, or as its own title when that is wider. The key goes across that width.

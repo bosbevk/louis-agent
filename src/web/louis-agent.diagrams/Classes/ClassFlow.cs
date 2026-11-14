@@ -20,21 +20,18 @@ namespace LouisAgent.Diagrams.Classes;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data</seealso>
 public static class ClassFlow
 {
-    /// <summary>
-    /// A type's name breaks at this many characters in a carded chart, so one long name doesn't widen a column.
-    /// </summary>
+    /// <summary>A type's name breaks at this many characters, so one long name doesn't widen a column.</summary>
     public const int NameWidth = 30;
 
     /// <summary>
-    /// The flow a class chart is drawn as: a box a type, and an arrow a relation, in the relations' order. For a
-    /// chart drawn as cards (F134.11), a long name is wrapped and every type asks for a badge's room beside its
-    /// name. A flow gives that room to a box that names an icon, so a type that names none is handed one, and the
-    /// drawing shows the letter of what the type is in its place.
+    /// The flow a class chart is drawn as: a box a type, and an arrow a relation, in the relations' order. A long
+    /// name is wrapped, and every type asks for a badge's room beside its name (F134.11). A flow gives that room
+    /// to a box that names an icon, so a type that names none is handed one, and the drawing shows the letter of
+    /// what the type is in its place.
     /// </summary>
-    public static GraphSpec Of(ClassesSpec spec, bool carded = false) =>
-        new(spec.Types.Select(type => new GraphNode(type.Id, carded ? Wrapped(type.Name) : type.Name, type.Kind,
-                Group: type.Group, Icon: type.Icon ?? (carded ? DiagramIcon.Code : null), Tone: ToneOf(type),
-                Members: type.Members)).ToList(),
+    public static GraphSpec Of(ClassesSpec spec) =>
+        new(spec.Types.Select(type => new GraphNode(type.Id, Wrapped(type.Name), type.Kind, Group: type.Group,
+                Icon: type.Icon ?? DiagramIcon.Code, Tone: ToneOf(type), Members: type.Members)).ToList(),
             Once(spec.Relations.Select(Edge)),
             spec.Direction,
             spec.Groups);

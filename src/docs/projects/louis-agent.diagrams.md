@@ -80,8 +80,7 @@ lines, a headline with its badge, a glass card's badge, name and text, and the q
 what a sequence adds, with names that start `seq-`: a participant's badge in its tone and its name, the
 lifeline, a call's beam either way, an answer's quiet line and the words above them. `ClassesStyle`
 (`Looks/Kinds/`) holds what a class chart adds, with names that start `cls-`: a type's badge in its tone with its
-letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends. No class
-chart is drawn with it yet.
+letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
@@ -95,11 +94,9 @@ layout placed by `FlowRules.Straight`.
   leaves.
 
 **Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
-the picture bare and then frames it: a navy title bar, a legend of the tones the chart uses, and a note bar from
-its caption. A component diagram, a flow and a sequence write their own title and their own key inside the
-picture, so they get only the note bar. A cards picture writes its own title too, and has no tones to explain, so
-it gets only the note bar as well. Of the kinds the docs draw, that leaves the bar and the legend to a class
-chart. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
+the picture bare and then frames it: a note bar under the drawing from its caption, with the part before the first
+colon in bold. That is all the frame adds. Every kind writes its own title inside the picture, and every kind
+whose colours or lines mean something says so in its own key. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
 cards draw, is unchanged.
 
 #### The tool that draws the docs' pictures
@@ -272,10 +269,43 @@ comes from the same answer.
 the chart has, and each kind of relation it has, the structure first (holds, is a, implements, then creates and
 uses). The items stand side by side across a width and go on to a new row when one is full.
 
-`ClassesDrawing` (`Svg/Renderers/Parts/Types/`) draws a class chart as cards: a type a glass card with a badge
-that says what it is, a relation a line whose colour and ends say its kind. For it the adapter wraps a name at 30
-characters and asks for a badge's room beside every name. The class chart's renderer doesn't hand it a picture
-yet, so the docs' class charts are still drawn the old way.
+**What a class chart's drawing shows** (`Svg/Renderers/Parts/Types/`). `ClassesDrawing` draws what the flow's
+layout placed and decides no place itself, with one exception named below. The look is `PictureLook`, then
+`MarqueeLook`, then `ClassesStyle`.
+
+- *Its own title*, small, in the top left corner, on a soft light. A picture is as wide as its title when the
+  title is the wider.
+- *A type* is a glass card. A badge in its tone holds a letter for what it is: I an interface, R a record, E an
+  enum, A abstract, S static, C a plain class. A type that names an icon shows the icon instead. Its name stands
+  beside the badge, its kind under the name, and its members under a hairline, each without the plus it is
+  written with. A contract, an interface, a record or an enum, wears the accent along its top.
+- *A long name wraps* at 30 characters, so one name doesn't widen a whole column. The adapter does that, and asks
+  for a badge's room beside every name. A flow gives that room to a box that names an icon, so a type that names
+  none is handed one, and the drawing shows its letter in the icon's place.
+- *A relation's kind is in its line*, and not in the colour of the box it leaves, which is what a flow's line
+  says:
+
+  | Kind | Line | Its ends | Dots run along it |
+  |---|---|---|---|
+  | `holds` | whole, violet | a diamond at the holder, an arrowhead at what it holds | yes |
+  | `inherits` | whole, violet | a hollow triangle at the base type | yes |
+  | `implements` | dashed, violet | a hollow triangle at the interface | no |
+  | `creates` | dotted, blue | an arrowhead | yes |
+  | `uses` | dashed, grey, thin | an open arrowhead | no |
+
+  So a chart's structure, what holds what and what is what, stands out from what merely calls what. The lines
+  are drawn loosest first, so the structure lies on top where two cross.
+- *A relation's word* stands in a pill on its line, in the code font, edged in the line's colour: a flow's pill,
+  by a flow's measures. A `holds` line starts in a diamond just where a flow stands a word, so that one pill is
+  moved along its line until it is clear of the diamond. It is the one thing this drawing moves.
+- *Which line is which relation.* A flow's arrow doesn't say what kind of link it is, and the layout hands back a
+  copy of some arrows. So a placed line is matched to its relation by the two types it joins, and two relations
+  between the same two types in the order they were written.
+- *The key* (`ClassesKey`) stands under a faint line across the picture's width. A link's sample is a short line
+  drawn by the code that draws the real one.
+
+A class chart is laid out by the rule a flow is drawn by, each arrow at its own place and the lines of a gap
+turning on one line.
 
 #### Cards: a project's overview
 
@@ -396,7 +426,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
   trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
-  `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
+  `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,

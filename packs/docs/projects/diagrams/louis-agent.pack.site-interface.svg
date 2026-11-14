@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1326 653" width="1326" height="653" role="img" aria-label="louis-agent.pack.site: the interface design" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1207 711" width="1207" height="711" role="img" aria-label="louis-agent.pack.site: the interface design" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.pack.site: the interface design</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -89,96 +89,310 @@ svg {
 .swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
 .swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
+}
+.pic-dots {
+  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-panel.tone-green { --pic-tone: var(--green-fill); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-panel.tone-red { --pic-tone: var(--red-fill); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel {
+  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
+  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
+}
+.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
+.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
+.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
+.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
+.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
+.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
+.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-swatch { stroke-width: 1; }
+.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.cls-cover { fill: var(--ground); }
+.cls-group { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-badge { fill: var(--quiet); }
+.cls-badge.tone-blue { fill: var(--blue-line); }
+.cls-badge.tone-green { fill: var(--green-line); }
+.cls-badge.tone-violet { fill: var(--violet-line); }
+.cls-badge.tone-teal { fill: var(--teal-line); }
+.cls-badge.tone-red { fill: var(--red-line); }
+.cls-badge.tone-amber { fill: var(--amber-line); }
+.cls-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
+.cls-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.cls-kind { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
+.cls-line { fill: none; stroke-linecap: round; }
+.cls-line.holds { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.inherits { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.implements { stroke: var(--violet-line); stroke-width: 1.8; stroke-dasharray: 6 5; }
+.cls-line.creates { stroke: var(--blue-line); stroke-width: 1.6; stroke-dasharray: 2 5; }
+.cls-line.uses {
+  stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
+}
+.cls-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.cls-chip.holds { stroke: var(--violet-line); }
+.cls-chip.inherits { stroke: var(--violet-line); }
+.cls-chip.implements { stroke: var(--violet-line); }
+.cls-chip.creates { stroke: var(--blue-line); }
+.cls-chip.uses { stroke: var(--quiet); }
+.cls-word { fill: var(--text); font: 500 10px var(--mono); }
+.cls-word.quiet { fill: var(--quiet); }
+.end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
+.end-triangle.tone-blue { stroke: var(--blue-line); }
+.end-triangle.tone-green { stroke: var(--green-line); }
+.end-triangle.tone-violet { stroke: var(--violet-line); }
+.end-triangle.tone-teal { stroke: var(--teal-line); }
+.end-triangle.tone-red { stroke: var(--red-line); }
+.end-triangle.tone-amber { stroke: var(--amber-line); }
+.end-diamond { fill: var(--quiet); }
+.end-diamond.tone-blue { fill: var(--blue-line); }
+.end-diamond.tone-green { fill: var(--green-line); }
+.end-diamond.tone-violet { fill: var(--violet-line); }
+.end-diamond.tone-teal { fill: var(--teal-line); }
+.end-diamond.tone-red { fill: var(--red-line); }
+.end-diamond.tone-amber { fill: var(--amber-line); }
+.end-open {
+  fill: none; stroke: var(--quiet); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.end-open.tone-blue { stroke: var(--blue-line); }
+.end-open.tone-green { stroke: var(--green-line); }
+.end-open.tone-violet { stroke: var(--violet-line); }
+.end-open.tone-teal { stroke: var(--teal-line); }
+.end-open.tone-red { stroke: var(--red-line); }
+.end-open.tone-amber { stroke: var(--amber-line); }
+.cls-rule { fill: url(#mrq-edge); opacity: .7; }
+.cls-key { fill: var(--text); font: 12px var(--pic-sans); }
+.cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
+.cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
     <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-open" d="M 1 1 L 9 5 L 1 9" />
+    </marker>
+    <marker id="diamond-violet" viewBox="0 0 14 10" refX="14" refY="5" markerWidth="14" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-diamond tone-violet" d="M 0 5 L 7 1 L 14 5 L 7 9 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1326" height="653" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="1278" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="1207" height="711" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a603.5 190 0 1 0 1207 0a603.5 190 0 1 0 -1207 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.site: the interface design</text>
+    <g class="cls-drawing" transform="translate(0 44)">
+      <path class="cls-line uses" d="M 853.4 381 L 925.8 381" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 853.4 69 L 877.6 69 Q 901.6 69 901.6 93 L 901.6 203.9 Q 901.6 216 913.7 216 L 925.8 216" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 853.4 381 L 877.6 381 Q 901.6 381 901.6 357 L 901.6 246.1 Q 901.6 234 913.7 234 L 925.8 234" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M 218 381 L 426.4 381" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M 218 225 L 330.2 225 Q 354.2 225 354.2 201 L 354.2 93 Q 354.2 69 378.2 69 L 426.4 69" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 218 225 L 330.2 225 Q 354.2 225 354.2 201 L 354.2 93 Q 354.2 69 378.2 69 L 426.4 69" />
+      <path class="cls-line creates" d="M 218 225 L 330.2 225 Q 354.2 225 354.2 249 L 354.2 339 Q 354.2 363 378.2 363 L 426.4 363" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 218 225 L 330.2 225 Q 354.2 225 354.2 249 L 354.2 339 Q 354.2 363 378.2 363 L 426.4 363" />
+      <path class="cls-line holds" d="M 218 225 L 426.4 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 218 225 L 426.4 225" />
+      <rect class="cls-chip creates" x="361.8" y="60" width="57" height="18" rx="9" />
+      <text class="cls-word" x="390.3" y="72" text-anchor="middle">creates</text>
+      <rect class="cls-chip holds" x="368.8" y="216" width="43" height="18" rx="9" />
+      <text class="cls-word" x="390.3" y="228" text-anchor="middle">holds</text>
+      <rect class="cls-chip uses" x="859.5" y="372" width="36" height="18" rx="9" />
+      <text class="cls-word quiet" x="877.5" y="384" text-anchor="middle">uses</text>
+      <rect class="cls-chip uses" x="859.5" y="60" width="36" height="18" rx="9" />
+      <text class="cls-word quiet" x="877.5" y="72" text-anchor="middle">uses</text>
+      <rect class="cls-chip uses" x="229.6" y="372" width="113" height="18" rx="9" />
+      <text class="cls-word quiet" x="286.1" y="384" text-anchor="middle">reads each call</text>
+      <rect class="cls-cover" x="0" y="177" width="218" height="96" rx="14" />
+      <rect class="mrq-glass" x="0" y="177" width="218" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="195" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="213.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="52" y="205" text-anchor="start">SitePack</text>
+      <text class="cls-kind" x="52" y="221" text-anchor="start">implements IAgentPack</text>
+      <path class="cls-divide" d="M14 241H204" />
+      <text class="cls-member" x="14" y="259" text-anchor="start">Toolsets: site, always on</text>
+      <rect class="cls-cover" x="0" y="335" width="218" height="92" rx="14" />
+      <rect class="mrq-glass" x="0" y="335" width="218" height="92" rx="14" />
+      <rect class="cls-badge tone-violet" x="14" y="367" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="385.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="52" y="363" text-anchor="start">CardCall, OfferCall,</text>
+      <text class="cls-name" x="52" y="379" text-anchor="start">AskForCall</text>
+      <text class="cls-kind" x="52" y="395" text-anchor="start">louis-agent.web, the</text>
+      <text class="cls-kind" x="52" y="407" text-anchor="start">widget draws</text>
+      <rect class="cls-cover" x="426.4" y="15" width="427" height="108" rx="14" />
+      <rect class="mrq-glass" x="426.4" y="15" width="427" height="108" rx="14" />
+      <rect class="cls-badge tone-green" x="440.4" y="39" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="454.4" y="57.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="478.4" y="43" text-anchor="start">SiteTools</text>
+      <text class="cls-kind" x="478.4" y="59" text-anchor="start">the tool that moves the</text>
+      <text class="cls-kind" x="478.4" y="71" text-anchor="start">page</text>
+      <path class="cls-divide" d="M440.4 91H839.4" />
+      <text class="cls-member" x="440.4" y="109" text-anchor="start">ShowPage(path) string</text>
+      <rect class="cls-cover" x="426.4" y="187" width="427" height="76" rx="14" />
+      <rect class="mrq-glass" x="426.4" y="187" width="427" height="76" rx="14" />
+      <rect class="cls-badge tone-amber" x="440.4" y="211" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="454.4" y="229.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="478.4" y="215" text-anchor="start">prompts/toolsets/site.md</text>
+      <text class="cls-kind" x="478.4" y="231" text-anchor="start">when to move, show a card</text>
+      <text class="cls-kind" x="478.4" y="243" text-anchor="start">or offer</text>
+      <rect class="cls-cover" x="426.4" y="312" width="427" height="138" rx="14" />
+      <rect class="mrq-glass" x="426.4" y="312" width="427" height="138" rx="14" />
+      <rect class="cls-badge tone-green" x="440.4" y="330" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="454.4" y="348.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="478.4" y="340" text-anchor="start">CardTools</text>
+      <text class="cls-kind" x="478.4" y="356" text-anchor="start">the tools that draw</text>
+      <path class="cls-divide" d="M440.4 376H839.4" />
+      <text class="cls-member" x="440.4" y="394" text-anchor="start">ShowCard(kicker, title, rows, subtitle?, status?, note?)</text>
+      <text class="cls-member" x="440.4" y="408" text-anchor="start">  string</text>
+      <text class="cls-member" x="440.4" y="422" text-anchor="start">Offer(question, choices) string, ends the turn</text>
+      <text class="cls-member" x="440.4" y="436" text-anchor="start">AskFor(question, fields) string, ends the turn</text>
+      <rect class="cls-cover" x="925.8" y="187" width="233.2" height="76" rx="14" />
+      <rect class="mrq-glass" x="925.8" y="187" width="233.2" height="76" rx="14" />
+      <rect class="mrq-edge" x="949.8" y="186.5" width="185.2" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="939.8" y="211" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="953.8" y="229.5" text-anchor="middle">E</text>
+      <text class="cls-name" x="977.8" y="215" text-anchor="start">SiteToolMessage</text>
+      <text class="cls-kind" x="977.8" y="231" text-anchor="start">enum, shown, or Error</text>
+      <text class="cls-kind" x="977.8" y="243" text-anchor="start">with the reason</text>
+      <rect class="cls-cover" x="925.8" y="319" width="233.2" height="124" rx="14" />
+      <rect class="mrq-glass" x="925.8" y="319" width="233.2" height="124" rx="14" />
+      <rect class="cls-badge tone-green" x="939.8" y="351" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="953.8" y="369.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="977.8" y="347" text-anchor="start">CardCheck, OfferCheck,</text>
+      <text class="cls-name" x="977.8" y="363" text-anchor="start">FormCheck</text>
+      <text class="cls-kind" x="977.8" y="379" text-anchor="start">the library's rules, a</text>
+      <text class="cls-kind" x="977.8" y="391" text-anchor="start">tested duplicate</text>
+      <path class="cls-divide" d="M939.8 411H1145" />
+      <text class="cls-member" x="939.8" y="429" text-anchor="start">Problem(...) string?</text>
+    </g>
+    <g class="cls-legend" transform="translate(0 520)">
+      <rect class="cls-rule" x="0" y="0" width="1159" height="1" rx="0" />
+      <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
+      <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
+      <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
+      <rect class="cls-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
+      <text class="cls-key" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <rect class="cls-badge tone-teal" x="281" y="39" width="18" height="18" rx="6" />
+      <text class="cls-key" x="309" y="52.5" text-anchor="start">contracts and state</text>
+      <rect class="cls-badge tone-amber" x="464.4" y="39" width="18" height="18" rx="6" />
+      <text class="cls-key" x="492.4" y="52.5" text-anchor="start">files and data</text>
+      <rect class="cls-key-mark" x="614.8" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="624.8" y="52" text-anchor="middle">E</text>
+      <text class="cls-key" x="644.8" y="52.5" text-anchor="start">an enum</text>
+      <rect class="cls-key-mark" x="721" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="731" y="52" text-anchor="middle">C</text>
+      <text class="cls-key" x="751" y="52.5" text-anchor="start">a class</text>
+      <path class="cls-line holds" d="M827.2 48H877.2" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <text class="cls-key" x="887.2" y="52.5" text-anchor="start">holds</text>
+      <path class="cls-line creates" d="M950.2 48H1000.2" marker-end="url(#arrow-blue)" />
+      <text class="cls-key" x="1010.2" y="52.5" text-anchor="start">creates</text>
+      <path class="cls-line uses" d="M0 76H50" marker-end="url(#open)" />
+      <text class="cls-key" x="60" y="80.5" text-anchor="start">uses</text>
+    </g>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">louis-agent.pack.site:</tspan>
-    <tspan class="title-rest">the interface design</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="edge dashed tone-green" d="M 263.6 147 L 393.7 147 Q 417.7 147 417.7 123 L 417.7 93 Q 417.7 69 441.7 69 L 489.7 69" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 263.6 147 L 393.7 147 Q 417.7 147 417.7 171 L 417.7 357 Q 417.7 381 441.7 381 L 489.7 381" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 263.6 147 L 393.7 147 Q 417.7 147 417.7 171 L 417.7 201 Q 417.7 225 441.7 225 L 489.7 225" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 916.7 381 L 940.8 381 Q 964.8 381 964.8 357 L 964.8 324 Q 964.8 303 985.8 303 L 1006.8 303" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 916.7 69 L 958.8 69 Q 982.8 69 982.8 93 L 982.8 135 Q 982.8 147 994.8 147 L 1006.8 147" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 916.7 381 L 940.8 381 Q 964.8 381 964.8 357 L 964.8 168 Q 964.8 147 985.8 147 L 1006.8 147" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-violet" d="M 263.6 303 L 375.7 303 Q 399.7 303 399.7 327 L 399.7 357 Q 399.7 381 423.7 381 L 489.7 381" marker-end="url(#arrow-violet)" />
-    <rect class="word-chip tone-green" x="425.2" y="47" width="57" height="18" rx="4" />
-    <text class="word tone-green" x="453.7" y="59" text-anchor="middle">creates</text>
-    <rect class="word-chip tone-green" x="432.2" y="203" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="453.7" y="215" text-anchor="middle">holds</text>
-    <rect class="word-chip tone-green" x="922.7" y="359" width="36" height="18" rx="4" />
-    <text class="word tone-green" x="940.7" y="371" text-anchor="middle">uses</text>
-    <rect class="word-chip tone-green" x="931.7" y="47" width="36" height="18" rx="4" />
-    <text class="word tone-green" x="949.7" y="59" text-anchor="middle">uses</text>
-    <rect class="word-chip tone-violet" x="275.1" y="281" width="113" height="18" rx="4" />
-    <text class="word tone-violet" x="331.6" y="293" text-anchor="middle">reads each call</text>
-    <rect class="box tone-green" x="0" y="99" width="263.6" height="96" rx="10" />
-    <text class="label tone-green" x="131.8" y="127" text-anchor="middle">SitePack</text>
-    <text class="note" x="131.8" y="143" text-anchor="middle">implements IAgentPack</text>
-    <path class="frame" d="M 0 163 L 263.6 163" />
-    <text class="word tone-green" x="14" y="181" text-anchor="start">+Toolsets: site, always on</text>
-    <rect class="box tone-violet" x="0" y="265" width="263.6" height="76" rx="10" />
-    <text class="label tone-violet" x="131.8" y="293" text-anchor="middle">CardCall, OfferCall, AskForCall</text>
-    <text class="note" x="131.8" y="309" text-anchor="middle">louis-agent.web, the</text>
-    <text class="note" x="131.8" y="321" text-anchor="middle">widget draws</text>
-    <rect class="box tone-green" x="489.7" y="15" width="427" height="108" rx="10" />
-    <text class="label tone-green" x="703.2" y="43" text-anchor="middle">SiteTools</text>
-    <text class="note" x="703.2" y="59" text-anchor="middle">the tool that moves the</text>
-    <text class="note" x="703.2" y="71" text-anchor="middle">page</text>
-    <path class="frame" d="M 489.7 91 L 916.7 91" />
-    <text class="word tone-green" x="503.7" y="109" text-anchor="start">+ShowPage(path) string</text>
-    <rect class="box tone-amber" x="489.7" y="187" width="427" height="76" rx="10" />
-    <text class="label tone-amber" x="703.2" y="215" text-anchor="middle">prompts/toolsets/site.md</text>
-    <text class="note" x="703.2" y="231" text-anchor="middle">when to move, show a card</text>
-    <text class="note" x="703.2" y="243" text-anchor="middle">or offer</text>
-    <rect class="box tone-green" x="489.7" y="312" width="427" height="138" rx="10" />
-    <text class="label tone-green" x="703.2" y="340" text-anchor="middle">CardTools</text>
-    <text class="note" x="703.2" y="356" text-anchor="middle">the tools that draw</text>
-    <path class="frame" d="M 489.7 376 L 916.7 376" />
-    <text class="word tone-green" x="503.7" y="394" text-anchor="start">+ShowCard(kicker, title, rows, subtitle?, status?, note?)</text>
-    <text class="word tone-green" x="503.7" y="408" text-anchor="start">  string</text>
-    <text class="word tone-green" x="503.7" y="422" text-anchor="start">+Offer(question, choices) string, ends the turn</text>
-    <text class="word tone-green" x="503.7" y="436" text-anchor="start">+AskFor(question, fields) string, ends the turn</text>
-    <rect class="box tone-teal" x="1006.8" y="109" width="271.2" height="76" rx="10" />
-    <text class="label tone-teal" x="1142.4" y="137" text-anchor="middle">SiteToolMessage</text>
-    <text class="note" x="1142.4" y="153" text-anchor="middle">enum, shown, or Error</text>
-    <text class="note" x="1142.4" y="165" text-anchor="middle">with the reason</text>
-    <rect class="box tone-green" x="1006.8" y="249" width="271.2" height="108" rx="10" />
-    <text class="label tone-green" x="1142.4" y="277" text-anchor="middle">CardCheck, OfferCheck, FormCheck</text>
-    <text class="note" x="1142.4" y="293" text-anchor="middle">the library's rules, a</text>
-    <text class="note" x="1142.4" y="305" text-anchor="middle">tested duplicate</text>
-    <path class="frame" d="M 1006.8 325 L 1278 325" />
-    <text class="word tone-green" x="1020.8" y="343" text-anchor="start">+Problem(...) string?</text>
-  </g>
-  <rect class="swatch tone-violet" x="0" y="532" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="542.5" text-anchor="start">the framework</text>
-  <rect class="swatch tone-amber" x="133.6" y="532" width="12" height="12" rx="3" />
-  <text class="legend" x="151.6" y="542.5" text-anchor="start">files and data</text>
-  <rect class="notebar" x="0" y="568" width="1278" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 578) scale(0.6667)">
+  <rect class="notebar" x="0" y="626" width="1159" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 636) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="590">
+  <text class="notes" x="38" y="648">
     <tspan class="note-head">Tools that move and draw nothing:</tspan>
     <tspan class="note-rest">they check what the agent wrote and say it is shown, and the widget that reads the call does the moving and the drawing.</tspan>
   </text>

@@ -1,41 +1,29 @@
 using System.Globalization;
 using System.Xml.Linq;
-using LouisAgent.Choices;
 using LouisAgent.Diagrams.Icons;
-using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Theme;
-using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Svg;
 
 /// <summary>
-/// The docs' frame round a finished picture (CL60.2, Louis's pick "Both looks"): a navy title bar on top, an icon,
-/// a rule and the title, its part before the first colon in bold; the drawing under it as it was; a legend of the
-/// colours it uses; and the caption as a note bar under the drawing, an info icon and its lead in bold.
+/// The docs' frame round a finished picture: the caption as a note bar under the drawing, an info icon and its
+/// lead in bold, the drawing itself as it was. Every kind of picture writes its own title and its own key inside
+/// the drawing (F134.7 to F134.11), so the note is all the frame adds.
 /// </summary>
 /// <remarks>
-/// Decorator (Refactoring.Guru): the frame wraps whatever a renderer drew, a flow or the cards, without either
-/// renderer knowing, so the docs ask for the framed picture and the chat's tool cards, which will draw with this
-/// library too, ask for the bare one. A flag on each renderer would put the same bar in two places, and a bar in
-/// <see cref="SvgWriter"/> itself would leave no picture without it.
+/// Decorator (Refactoring.Guru): the frame wraps whatever a renderer drew without the renderer knowing, so the
+/// docs ask for the framed picture and the chat's tool cards, which draw with this library too, ask for the bare
+/// one. A flag on each renderer would put the same note in every one of them.
 /// </remarks>
 public static class TitledFrame
 {
     /// <summary>
-    /// How wide a character of the title's 15px font is, measured generously, since no font is measured.
+    /// How wide a character of the note's 12px font is, measured generously, since no font is measured.
     /// </summary>
-    public const double TitleChar = 8.6;
-
-    /// <summary>How wide a character of the note's 12px font is, measured the same way.</summary>
     private const double NoteChar = 7.2;
 
-    /// <summary>
-    /// The bar's room round its words, a title line's height, where the title starts, its icon's size.
-    /// </summary>
-    private const double BarPad = 14, TitleLine = 22, TitleLeft = 64, TitleIcon = 22;
-
-    /// <summary>The room between the bar, the drawing and the note.</summary>
+    /// <summary>The room between the drawing and the note.</summary>
     private const double Gap = 16;
 
     /// <summary>
@@ -43,10 +31,7 @@ public static class TitledFrame
     /// </summary>
     private const double NotePad = 10, NoteLine = 17, NoteLeft = 38, NoteIcon = 16;
 
-    /// <summary>A legend swatch's size, a legend row's height, and the room after each of its items.</summary>
-    private const double Swatch = 12, LegendRow = 20, LegendGap = 22;
-
-    /// <summary>The picture inside the frame: the drawing moved down under the bar, the note under it.</summary>
+    /// <summary>The picture inside the frame: the drawing as it was, and the note under it.</summary>
     public static string Around(string svg, DiagramSource source)
     {
         var root = XElement.Parse(svg);
@@ -54,40 +39,20 @@ public static class TitledFrame
             .Select(number => double.Parse(number, CultureInfo.InvariantCulture)).ToArray();
         double pad = -view[0], width = view[2] - 2 * pad, height = view[3] - 2 * pad;
 
-        // The bar and the note are as tall as their words need at the drawing's width.
-        var title = Lines(source.Title, width - TitleLeft - BarPad, TitleChar, "title", boldWithoutColon: true);
-        var note = source.Caption is { } caption
-            ? Lines(caption, width - NoteLeft - NotePad, NoteChar, "note", boldWithoutColon: false)
-            : [];
-        // A component diagram, a flow and a sequence write their own title inside the picture and say in their
-        // own key what their tones mean (F134.7, F134.8, F134.10), so they get no bar and no legend, only the
-        // note. A cards picture writes its own title too, and has no tones to explain (F134.9).
-        bool ownTitle = source.Kind is DiagramKind.Components or DiagramKind.Flow or DiagramKind.Cards
-            or DiagramKind.Sequence;
-        double bar = ownTitle ? 0 : 2 * BarPad + TitleLine * title.Count, shift = ownTitle ? 0 : bar + Gap;
+        // The note is as tall as its words need at the drawing's width.
+        var note = source.Caption is { } caption ? Lines(caption, width - NoteLeft - NotePad) : [];
         double noteHeight = note.Count == 0 ? 0 : 2 * NotePad + NoteLine * note.Count;
-        // The legend names the tones the chart uses, row after row as the width allows.
-        var legend = ownTitle ? [] : LegendItems(source, width);
-        double legendHeight = legend.Count == 0 ? 0 : Gap + LegendRow * (legend.Max(item => item.Row) + 1);
 
-        // Everything the renderer drew on the ground moves down under the bar, whole.
+        // Everything the renderer drew on the ground is kept together, whole, and the note goes under it.
         var ground = root.Elements().First(element => (string?)element.Attribute("class") == "ground");
         var drawing = ground.ElementsAfterSelf().ToList();
         drawing.ForEach(element => element.Remove());
-        var head = ownTitle ? new SvgWriter() : TitleBar(new SvgWriter(), title, width, bar);
-        var frame = head.Group("drawing", 0, shift, drawing);
-        foreach (var (tone, meaning, x, row) in legend)
-        {
-            double top = shift + height + Gap + LegendRow * row;
-            frame.Box(x, top, Swatch, Swatch, 3, $"swatch tone-{tone}")
-                .Text(x + Swatch + 6, top + Swatch - 1.5, meaning, "legend", "start");
-        }
-
-        if (note.Count > 0) NoteBar(frame, note, width, shift + height + legendHeight + Gap, noteHeight);
+        var frame = new SvgWriter().Group("drawing", 0, 0, drawing);
+        if (note.Count > 0) NoteBar(frame, note, width, height + Gap, noteHeight);
         ground.AddAfterSelf(frame.Shapes);
 
-        // The picture grows by the bar, the legend and the note, and its style learns their look.
-        double outer = view[3] + shift + legendHeight + (note.Count == 0 ? 0 : Gap + noteHeight);
+        // The picture grows by the note, and its style learns the note's look.
+        double outer = view[3] + (note.Count == 0 ? 0 : Gap + noteHeight);
         root.SetAttributeValue("viewBox",
             $"{SvgWriter.N(view[0])} {SvgWriter.N(view[1])} {SvgWriter.N(view[2])} {SvgWriter.N(outer)}");
         root.SetAttributeValue("height", SvgWriter.N(outer));
@@ -95,44 +60,6 @@ public static class TitledFrame
         var style = root.Elements().First(element => element.Name.LocalName == "style");
         style.Value += SvgStyle.Frame(SvgTheme.Site);
         return SvgWriter.Serialize(root);
-    }
-
-    /// <summary>
-    /// The legend's swatches, one for each tone a chart's boxes wear, in the tones' order, each with what it means
-    /// (Louis: "can we have a legend for the color"), placed left to right and onto a new row when the drawing's
-    /// width is full; a chart without colours, and the cards, have none. A component diagram, a flow and a
-    /// sequence have none here either: each one's own key says what its tones mean.
-    /// </summary>
-    private static List<(string Tone, string Meaning, double X, int Row)> LegendItems(DiagramSource source,
-        double width)
-    {
-        var tones = (source.Flow?.Nodes ?? []).Select(node => node.Tone)
-            .Concat((source.Classes?.Types ?? []).Select(type => type.Tone))
-            .Where(tone => tone != DiagramTone.Plain).Distinct().Order();
-        var items = new List<(string, string, double, int)>();
-        double x = 0;
-        int row = 0;
-        foreach (var tone in tones)
-        {
-            string meaning = ToneMeanings.Of(tone);
-            double room = Swatch + 6 + meaning.Length * NoteChar + LegendGap;
-            if (x > 0 && x + room - LegendGap > width) (x, row) = (0, row + 1);
-            items.Add((tone.Wire(), meaning, x, row));
-            x += room;
-        }
-
-        return items;
-    }
-
-    /// <summary>The navy bar: its icon, a thin rule, and the title's lines after them.</summary>
-    private static SvgWriter TitleBar(SvgWriter writer, List<List<(string, string)>> lines, double width, double bar)
-    {
-        writer.Box(0, 0, width, bar, 10, "titlebar")
-            .Icon(BarPad + 2, bar / 2 - TitleIcon / 2, TitleIcon, DiagramIcon.Stack, "title-icon")
-            .Box(TitleLeft - 14, BarPad, 1, bar - 2 * BarPad, 0, "title-rule");
-        for (int at = 0; at < lines.Count; at++)
-            writer.Spans(TitleLeft, BarPad + 16 + TitleLine * at, "heading", lines[at]);
-        return writer;
     }
 
     /// <summary>The note bar under the drawing: an info icon by its first line, and the caption's lines.</summary>
@@ -146,24 +73,18 @@ public static class TitledFrame
     }
 
     /// <summary>
-    /// Words wrapped to a width, each line its spans: the part up to the first colon is the head, in bold, and the
-    /// rest plain; words without a colon are all head in a title, as a card overview's is, and all plain in a note.
+    /// A caption wrapped to a width, each line its spans: the part up to the first colon is the head, in bold, and
+    /// the rest plain. A caption without a colon is all plain.
     /// </summary>
-    private static List<List<(string, string)>> Lines(string text, double width, double charWidth, string kind,
-        bool boldWithoutColon)
+    private static List<List<(string, string)>> Lines(string text, double width)
     {
         int colon = text.IndexOf(": ", StringComparison.Ordinal);
-        (string head, string rest) = (colon, boldWithoutColon) switch
-        {
-            ( >= 0, _) => (text[..(colon + 1)], text[(colon + 2)..]),
-            (_, true) => (text, ""),
-            _ => ("", text)
-        };
-        var words = head.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(word => (word, $"{kind}-head"))
-            .Concat(rest.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(word => (word, $"{kind}-rest")));
+        (string head, string rest) = colon >= 0 ? (text[..(colon + 1)], text[(colon + 2)..]) : ("", text);
+        var words = head.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(word => (word, "note-head"))
+            .Concat(rest.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(word => (word, "note-rest")));
 
         // Words taken in order while a line holds them; a word too long for any line stands on one of its own.
-        int most = Math.Max(8, (int)(width / charWidth));
+        int most = Math.Max(8, (int)(width / NoteChar));
         var lines = new List<List<(string Word, string Cls)>> { new() };
         foreach (var word in words)
         {
