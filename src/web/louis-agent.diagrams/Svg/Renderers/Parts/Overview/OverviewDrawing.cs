@@ -12,9 +12,9 @@ namespace LouisAgent.Diagrams.Svg.Renderers.Parts.Overview;
 /// </summary>
 /// <remarks>
 /// It draws what <see cref="OverviewLayout"/> placed and decides no place itself. The look is the shared
-/// <see cref="PictureLook"/> and what <see cref="CardsStyle"/> adds, and it names no colour: a part gets a class,
-/// and a fade gets a paint the style fills with. <see cref="OverviewRails"/> draws a rail and
-/// <see cref="OverviewCards"/> a card.
+/// <see cref="PictureLook"/>, then <see cref="MarqueeLook"/>, which a sequence wears too, then what
+/// <see cref="CardsStyle"/> adds. The drawing names no colour: a part gets a class, and a fade gets a paint the
+/// style fills with. <see cref="OverviewRails"/> draws a rail and <see cref="OverviewCards"/> a card.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0118-a-diagram-is-data-our-renderer-draws.md">ADR 0118: a diagram is data our renderer draws</seealso>
 internal static class OverviewDrawing
@@ -41,16 +41,18 @@ internal static class OverviewDrawing
         // The light first, so the rails and the cards stand on it.
         foreach (var card in placed.Cards.Where(card => card.Card.Look == CardLook.Highlight))
             Light(writer, card);
-        writer.Text(0, TitleLine, source.Title, "crd-title", "start");
+        writer.Text(0, TitleLine, source.Title, "mrq-title", "start");
         writer.Group("crd-cards", 0, Head, Cards(placed));
         if (source.Caption is { } caption) writer.Text(0, height - 8, caption, "caption", "start");
 
-        // The shared look first, then what is a cards picture's own.
-        string style = PictureLook.Of(SvgTheme.Site) + CardsStyle.Rules;
+        // What every picture in the new look wears, then what a sequence wears too, then a cards picture's own.
+        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + CardsStyle.Rules;
         return writer.Write(SvgTheme.Site, source.Title, placed.Width, height, style);
     }
 
-    /// <summary>The rails and the cards, from where the layout starts. A rail is drawn first, under its cards.</summary>
+    /// <summary>
+    /// The rails and the cards, from where the layout starts. A rail is drawn first, under its cards.
+    /// </summary>
     private static SvgWriter Cards(PlacedOverview placed)
     {
         var writer = new SvgWriter();
@@ -64,18 +66,19 @@ internal static class OverviewDrawing
     /// a card's top edge across, the badge on a slant, and the glass down.
     /// </summary>
     private static SvgWriter Paints(SvgWriter writer) => writer
-        .Paint(CardsStyle.LightPaint, PaintRun.Out, 0, 0.5, 1)
+        .Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, 0.5, 1)
         .Paint(CardsStyle.RailPaint, PaintRun.Across, 0, 0.2, 0.8, 1)
         .Paint(CardsStyle.BadgePaint, PaintRun.Slant, 0, 1)
-        .Paint(CardsStyle.EdgePaint, PaintRun.Across, 0, 0.5, 1)
-        .Paint(CardsStyle.GlassPaint, PaintRun.Down, 0, 1);
+        .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
+        .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1);
 
     /// <summary>The light behind a highlighted card: an oval round the card's badge and title.</summary>
     private static void Light(SvgWriter writer, PlacedCard card)
     {
         double x = card.X + card.W / 2, y = Head + card.Y + LightDrop;
         string across = SvgWriter.N(LightAcross), down = SvgWriter.N(LightDown);
-        writer.Path($"M{SvgWriter.N(x - LightAcross)} {SvgWriter.N(y)}a{across} {down} 0 1 0 {SvgWriter.N(2 * LightAcross)} 0" +
-                    $"a{across} {down} 0 1 0 {SvgWriter.N(-2 * LightAcross)} 0Z", "crd-light", false);
+        string left = SvgWriter.N(x - LightAcross), there = SvgWriter.N(2 * LightAcross);
+        writer.Path($"M{left} {SvgWriter.N(y)}a{across} {down} 0 1 0 {there} 0a{across} {down} 0 1 0 -{there} 0Z",
+            "mrq-light", false);
     }
 }

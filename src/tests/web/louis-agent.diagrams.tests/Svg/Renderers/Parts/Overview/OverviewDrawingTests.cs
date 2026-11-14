@@ -86,7 +86,7 @@ public class OverviewDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(In("crd-title", svg).Single().Value, Is.EqualTo("The layers at a glance"));
+            Assert.That(In("mrq-title", svg).Single().Value, Is.EqualTo("The layers at a glance"));
             Assert.That(svg, Does.Contain(".pic-march").And.Contain(".crd-rail"));
             Assert.That(svg.IndexOf(".pic-march", StringComparison.Ordinal),
                 Is.LessThan(svg.IndexOf(".crd-rail", StringComparison.Ordinal)), "the shared look first");
@@ -103,8 +103,8 @@ public class OverviewDrawingTests
         Assert.That(In("crd-headline").Single().Value, Is.EqualTo("Core engine"));
         Assert.That(In("crd-heading").Single().Value, Is.EqualTo("Your application"));
         Assert.That(In("crd-badge"), Has.Count.EqualTo(1));
-        Assert.That(In("crd-light"), Has.Count.EqualTo(1));
-        Assert.That(In("crd-code").Select(code => code.Value), Does.Contain("louis-agent.core"));
+        Assert.That(In("mrq-light"), Has.Count.EqualTo(1));
+        Assert.That(In("mrq-code").Select(code => code.Value), Does.Contain("louis-agent.core"));
     });
 
     /// <summary>
@@ -114,8 +114,8 @@ public class OverviewDrawingTests
     [Test]
     public void APlainCard_IsGlass_AndOneNoLinkTouchesIsQuiet() => Assert.Multiple(() =>
     {
-        Assert.That(In("crd-glass"), Has.Count.EqualTo(4), "left, right, one and two");
-        Assert.That(In("crd-edge"), Has.Count.EqualTo(4));
+        Assert.That(In("mrq-glass"), Has.Count.EqualTo(4), "left, right, one and two");
+        Assert.That(In("mrq-edge"), Has.Count.EqualTo(4));
         Assert.That(In("crd-tint"), Has.Count.EqualTo(4));
         Assert.That(In("crd-quiet"), Has.Count.EqualTo(1));
         Assert.That(In("crd-name").Select(name => (string)name.Attribute("class")!),
@@ -143,7 +143,7 @@ public class OverviewDrawingTests
         Assert.That(In("crd-rail"), Has.Count.EqualTo(3));
         Assert.That(In("crd-rail-glow"), Has.Count.EqualTo(3));
         Assert.That(In("crd-line"), Has.Count.EqualTo(9));
-        Assert.That(In("crd-node"), Has.Count.EqualTo(9));
+        Assert.That(In("mrq-node"), Has.Count.EqualTo(9));
     });
 
     /// <summary>
@@ -178,7 +178,7 @@ public class OverviewDrawingTests
     {
         var classes = Shapes(Drawn()).Select(shape => shape.Class).ToList();
 
-        Assert.That(classes.IndexOf("crd-light"), Is.LessThan(classes.IndexOf("crd-rail-glow")));
+        Assert.That(classes.IndexOf("mrq-light"), Is.LessThan(classes.IndexOf("crd-rail-glow")));
     }
 
     /// <summary>A picture with no highlighted card has no light, and one with no links no rail.</summary>
@@ -191,7 +191,7 @@ public class OverviewDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(In("crd-light", bare), Is.Empty);
+            Assert.That(In("mrq-light", bare), Is.Empty);
             Assert.That(In("crd-rail", bare), Is.Empty);
             Assert.That(In("crd-quiet", bare), Is.Empty, "with no links, no card is quiet");
         });
@@ -206,8 +206,8 @@ public class OverviewDrawingTests
 
         Assert.That(ids, Is.EquivalentTo(new[]
         {
-            CardsStyle.LightPaint, CardsStyle.RailPaint, CardsStyle.BadgePaint, CardsStyle.EdgePaint,
-            CardsStyle.GlassPaint
+            MarqueeLook.LightPaint, CardsStyle.RailPaint, CardsStyle.BadgePaint, MarqueeLook.EdgePaint,
+            MarqueeLook.GlassPaint
         }));
     }
 

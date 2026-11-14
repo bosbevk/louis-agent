@@ -164,15 +164,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
-svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top: .035; --crd-sheet-end: .015; --crd-hair: rgba(27, 42, 74, .13); }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
 @media (prefers-color-scheme: dark) {
-  svg { --crd-glow: .34; --crd-glow-far: .1; --crd-sheet: #ffffff; --crd-sheet-top: .07; --crd-sheet-end: .02; --crd-hair: rgba(255, 255, 255, .1); }
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
 }
-.crd-title { fill: var(--text); font: 600 13px var(--pic-sans); }
-.crd-light { fill: url(#crd-light); }
-.crd-light-0 { stop-color: var(--violet-line); stop-opacity: var(--crd-glow); }
-.crd-light-1 { stop-color: var(--blue-line); stop-opacity: var(--crd-glow-far); }
-.crd-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .crd-rail { fill: url(#crd-rail); }
 .crd-rail-glow { fill: url(#crd-rail); opacity: .5; filter: blur(5px); }
 .crd-rail-0 { stop-color: var(--violet-line); stop-opacity: 0; }
@@ -180,7 +190,6 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
 .crd-rail-2 { stop-color: var(--blue-line); }
 .crd-rail-3 { stop-color: var(--blue-line); stop-opacity: 0; }
 .crd-line { fill: none; stroke: var(--violet-line); stroke-width: 1.5; stroke-opacity: .85; }
-.crd-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .crd-badge { fill: url(#crd-badge); }
 .crd-badge-0 { stop-color: var(--violet-line); }
 .crd-badge-1 { stop-color: var(--blue-line); }
@@ -190,15 +199,6 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
 .crd-headline { fill: var(--text); font: 700 30px var(--pic-sans); letter-spacing: -.4px; }
 .crd-heading { fill: var(--text); font: 700 22px var(--pic-sans); letter-spacing: -.3px; }
 .crd-lede { fill: var(--quiet); font: 13px var(--pic-sans); }
-.crd-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
-.crd-code { fill: var(--violet-ink); font: 11px var(--mono); }
-.crd-glass { fill: url(#crd-glass); stroke: var(--crd-hair); stroke-width: 1; }
-.crd-glass-0 { stop-color: var(--crd-sheet); stop-opacity: var(--crd-sheet-top); }
-.crd-glass-1 { stop-color: var(--crd-sheet); stop-opacity: var(--crd-sheet-end); }
-.crd-edge { fill: url(#crd-edge); }
-.crd-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
-.crd-edge-1 { stop-color: var(--violet-line); }
-.crd-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
 .crd-tint { fill: var(--violet-line); fill-opacity: .16; }
 .crd-icon {
   fill: none; stroke: var(--violet-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
@@ -208,7 +208,7 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
 .crd-name.quiet { font-size: 14px; }
 .crd-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .crd-quiet {
-  fill: var(--crd-sheet); fill-opacity: .018; stroke: var(--crd-sheet); stroke-opacity: .08;
+  fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
   stroke-width: 1;
 }</style>
   <defs>
@@ -218,10 +218,10 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
     <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <radialGradient id="crd-light">
-      <stop class="crd-light-0" offset="0" />
-      <stop class="crd-light-1" offset="0.5" />
-      <stop class="crd-light-2" offset="1" />
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
     </radialGradient>
     <linearGradient id="crd-rail" x1="0" y1="0" x2="1" y2="0">
       <stop class="crd-rail-0" offset="0" />
@@ -233,20 +233,20 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <stop class="crd-badge-0" offset="0" />
       <stop class="crd-badge-1" offset="1" />
     </linearGradient>
-    <linearGradient id="crd-edge" x1="0" y1="0" x2="1" y2="0">
-      <stop class="crd-edge-0" offset="0" />
-      <stop class="crd-edge-1" offset="0.5" />
-      <stop class="crd-edge-2" offset="1" />
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
     </linearGradient>
-    <linearGradient id="crd-glass" x1="0" y1="0" x2="0" y2="1">
-      <stop class="crd-glass-0" offset="0" />
-      <stop class="crd-glass-1" offset="1" />
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
   <rect class="ground" x="-24" y="-24" width="944" height="540" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="crd-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="crd-title" x="0" y="14" text-anchor="start">louis-agent.core.web at a glance</text>
+    <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.web at a glance</text>
     <g class="crd-cards" transform="translate(0 38)">
       <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
       <rect class="crd-rail" x="58" y="189.3" width="780" height="1.5" rx="0" />
@@ -258,10 +258,10 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <path class="pic-march" d="M448 190V222" />
       <path class="crd-line" d="M754 190V222" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M754 190V222" />
-      <circle class="crd-node" cx="448" cy="190" r="4.5" />
-      <circle class="crd-node" cx="142" cy="190" r="4.5" />
-      <circle class="crd-node" cx="448" cy="190" r="4.5" />
-      <circle class="crd-node" cx="754" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="142" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="754" cy="190" r="4.5" />
       <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
       <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
@@ -271,11 +271,11 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
         <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">Web access</text>
-      <rect class="crd-pill" x="368" y="108" width="160" height="24" rx="12" />
-      <text class="crd-code" x="448" y="124" text-anchor="middle">louis-agent.core.web</text>
+      <rect class="mrq-pill" x="368" y="108" width="160" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.core.web</text>
       <text class="crd-lede" x="448" y="160" text-anchor="middle">The web on core: what a host hands the engine when its agent may read pages.</text>
-      <rect class="crd-glass" x="0" y="222" width="284" height="132" rx="14" />
-      <rect class="crd-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="0" y="222" width="284" height="132" rx="14" />
+      <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 248) scale(0.75)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
@@ -283,8 +283,8 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <text class="crd-name" x="64" y="263" text-anchor="start">One robots policy</text>
       <text class="crd-text" x="18" y="298" text-anchor="start">Every fetch and every visit obeys</text>
       <text class="crd-text" x="18" y="316" text-anchor="start">robots.txt and a page's no to AI.</text>
-      <rect class="crd-glass" x="306" y="222" width="284" height="132" rx="14" />
-      <rect class="crd-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="306" y="222" width="284" height="132" rx="14" />
+      <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(332 248) scale(0.75)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
@@ -294,8 +294,8 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <text class="crd-name" x="370" y="263" text-anchor="start">The browser</text>
       <text class="crd-text" x="324" y="298" text-anchor="start">Headless Chrome under its own name,</text>
       <text class="crd-text" x="324" y="316" text-anchor="start">wrapped by the policy and the recorder.</text>
-      <rect class="crd-glass" x="612" y="222" width="284" height="132" rx="14" />
-      <rect class="crd-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="612" y="222" width="284" height="132" rx="14" />
+      <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(638 248) scale(0.75)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />

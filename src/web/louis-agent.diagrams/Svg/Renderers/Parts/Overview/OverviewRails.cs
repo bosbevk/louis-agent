@@ -40,6 +40,6 @@ internal static class OverviewRails
         }
 
         // The nodes last, over the lines' ends.
-        foreach (var end in rail.Ends) writer.Circle(end.X, rail.Y, Node, "crd-node");
+        foreach (var end in rail.Ends) writer.Circle(end.X, rail.Y, Node, "mrq-node");
     }
 }

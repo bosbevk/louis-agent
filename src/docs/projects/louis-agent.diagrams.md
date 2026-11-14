@@ -64,10 +64,15 @@ lines whose dots march the way the arrow points. What any kind in that look wear
 names that start `pic-`, and the parts drawn with it are `PictureParts`: the ground, the title and a panel.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
 start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a group's frame, a box's name and
-icon badge, the glow round a shape, and the pill an arrow's word stands in. `CardsStyle` holds what a cards
-picture will wear, with names that start `crd-`: the light behind a headline, the lit rail, the glass card and the
-quiet one. The shared rules come first in a picture's style, so two kinds can't
-drift apart in what they share.
+icon badge, the glow round a shape, and the pill an arrow's word stands in. The shared rules come first in a
+picture's style, so two kinds can't drift apart in what they share.
+
+**The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence is
+to wear it as well. What both wear has names that start `mrq-`: the picture's small title, the soft light, the
+glass with the accent along its top, the pill with its code, and a node on a lit line. Its accent is the palette's
+violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
+`CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
+lines, a headline with its badge, a glass card's badge, name and text, and the quiet card.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
@@ -254,7 +259,7 @@ two cards of one row, is refused when the JSON is read, with the two cards it na
 
 **The drawing** (`Svg/Renderers/Parts/Overview/`). `OverviewDrawing` draws what the layout placed and decides no
 place itself: the picture's own small title, the light behind each highlighted card, the rails and the cards. The
-look is `PictureLook` with `CardsStyle` after it. A card has no tone, so the colour is the look's own, one accent:
+look is `PictureLook`, then `MarqueeLook`, then `CardsStyle`. A card has no tone, so the colour is the look's own, one accent:
 the palette's violet running to its blue. The fades, the rail's, the light's and the glass's, are paints the
 drawing defines and the style fills with.
 

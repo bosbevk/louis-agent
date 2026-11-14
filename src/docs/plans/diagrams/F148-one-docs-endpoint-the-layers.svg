@@ -164,15 +164,25 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   .pic-march { display: none; }
 }
-svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top: .035; --crd-sheet-end: .015; --crd-hair: rgba(27, 42, 74, .13); }
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .035; --mrq-sheet-end: .015; --mrq-hair: rgba(27, 42, 74, .13); }
 @media (prefers-color-scheme: dark) {
-  svg { --crd-glow: .34; --crd-glow-far: .1; --crd-sheet: #ffffff; --crd-sheet-top: .07; --crd-sheet-end: .02; --crd-hair: rgba(255, 255, 255, .1); }
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
 }
-.crd-title { fill: var(--text); font: 600 13px var(--pic-sans); }
-.crd-light { fill: url(#crd-light); }
-.crd-light-0 { stop-color: var(--violet-line); stop-opacity: var(--crd-glow); }
-.crd-light-1 { stop-color: var(--blue-line); stop-opacity: var(--crd-glow-far); }
-.crd-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .crd-rail { fill: url(#crd-rail); }
 .crd-rail-glow { fill: url(#crd-rail); opacity: .5; filter: blur(5px); }
 .crd-rail-0 { stop-color: var(--violet-line); stop-opacity: 0; }
@@ -180,7 +190,6 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
 .crd-rail-2 { stop-color: var(--blue-line); }
 .crd-rail-3 { stop-color: var(--blue-line); stop-opacity: 0; }
 .crd-line { fill: none; stroke: var(--violet-line); stroke-width: 1.5; stroke-opacity: .85; }
-.crd-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
 .crd-badge { fill: url(#crd-badge); }
 .crd-badge-0 { stop-color: var(--violet-line); }
 .crd-badge-1 { stop-color: var(--blue-line); }
@@ -190,15 +199,6 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
 .crd-headline { fill: var(--text); font: 700 30px var(--pic-sans); letter-spacing: -.4px; }
 .crd-heading { fill: var(--text); font: 700 22px var(--pic-sans); letter-spacing: -.3px; }
 .crd-lede { fill: var(--quiet); font: 13px var(--pic-sans); }
-.crd-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
-.crd-code { fill: var(--violet-ink); font: 11px var(--mono); }
-.crd-glass { fill: url(#crd-glass); stroke: var(--crd-hair); stroke-width: 1; }
-.crd-glass-0 { stop-color: var(--crd-sheet); stop-opacity: var(--crd-sheet-top); }
-.crd-glass-1 { stop-color: var(--crd-sheet); stop-opacity: var(--crd-sheet-end); }
-.crd-edge { fill: url(#crd-edge); }
-.crd-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
-.crd-edge-1 { stop-color: var(--violet-line); }
-.crd-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
 .crd-tint { fill: var(--violet-line); fill-opacity: .16; }
 .crd-icon {
   fill: none; stroke: var(--violet-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
@@ -208,7 +208,7 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
 .crd-name.quiet { font-size: 14px; }
 .crd-text { fill: var(--quiet); font: 12px var(--pic-sans); }
 .crd-quiet {
-  fill: var(--crd-sheet); fill-opacity: .018; stroke: var(--crd-sheet); stroke-opacity: .08;
+  fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
   stroke-width: 1;
 }</style>
   <defs>
@@ -218,10 +218,10 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
     <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <radialGradient id="crd-light">
-      <stop class="crd-light-0" offset="0" />
-      <stop class="crd-light-1" offset="0.5" />
-      <stop class="crd-light-2" offset="1" />
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
     </radialGradient>
     <linearGradient id="crd-rail" x1="0" y1="0" x2="1" y2="0">
       <stop class="crd-rail-0" offset="0" />
@@ -233,20 +233,20 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <stop class="crd-badge-0" offset="0" />
       <stop class="crd-badge-1" offset="1" />
     </linearGradient>
-    <linearGradient id="crd-edge" x1="0" y1="0" x2="1" y2="0">
-      <stop class="crd-edge-0" offset="0" />
-      <stop class="crd-edge-1" offset="0.5" />
-      <stop class="crd-edge-2" offset="1" />
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
     </linearGradient>
-    <linearGradient id="crd-glass" x1="0" y1="0" x2="0" y2="1">
-      <stop class="crd-glass-0" offset="0" />
-      <stop class="crd-glass-1" offset="1" />
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
   <rect class="ground" x="-24" y="-24" width="944" height="1166" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="crd-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="crd-title" x="0" y="14" text-anchor="start">F148 the docs in layers: from the front door down to one decision</text>
+    <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">F148 the docs in layers: from the front door down to one decision</text>
     <g class="crd-cards" transform="translate(0 38)">
       <rect class="crd-rail-glow" x="364" y="186" width="168" height="8" rx="0" />
       <rect class="crd-rail" x="364" y="189.3" width="168" height="1.5" rx="0" />
@@ -254,16 +254,16 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <path class="pic-march" d="M448 174V190" />
       <path class="crd-line" d="M448 190V222" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M448 190V222" />
-      <circle class="crd-node" cx="448" cy="190" r="4.5" />
-      <circle class="crd-node" cx="448" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
       <rect class="crd-rail-glow" x="364" y="362" width="168" height="8" rx="0" />
       <rect class="crd-rail" x="364" y="365.3" width="168" height="1.5" rx="0" />
       <path class="crd-line" d="M448 346V366" />
       <path class="pic-march" d="M448 346V366" />
       <path class="crd-line" d="M448 366V398" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M448 366V398" />
-      <circle class="crd-node" cx="448" cy="366" r="4.5" />
-      <circle class="crd-node" cx="448" cy="366" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="366" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="366" r="4.5" />
       <rect class="crd-rail-glow" x="134.5" y="538" width="627" height="8" rx="0" />
       <rect class="crd-rail" x="134.5" y="541.3" width="627" height="1.5" rx="0" />
       <path class="crd-line" d="M448 522V542" />
@@ -272,9 +272,9 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <path class="pic-march" d="M218.5 542V574" />
       <path class="crd-line" d="M677.5 542V574" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M677.5 542V574" />
-      <circle class="crd-node" cx="448" cy="542" r="4.5" />
-      <circle class="crd-node" cx="218.5" cy="542" r="4.5" />
-      <circle class="crd-node" cx="677.5" cy="542" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="542" r="4.5" />
+      <circle class="mrq-node" cx="218.5" cy="542" r="4.5" />
+      <circle class="mrq-node" cx="677.5" cy="542" r="4.5" />
       <rect class="crd-rail-glow" x="58" y="714" width="474" height="8" rx="0" />
       <rect class="crd-rail" x="58" y="717.3" width="474" height="1.5" rx="0" />
       <path class="crd-line" d="M218.5 698V718" />
@@ -283,17 +283,17 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
       <path class="pic-march" d="M142 718V750" />
       <path class="crd-line" d="M448 718V750" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M448 718V750" />
-      <circle class="crd-node" cx="218.5" cy="718" r="4.5" />
-      <circle class="crd-node" cx="142" cy="718" r="4.5" />
-      <circle class="crd-node" cx="448" cy="718" r="4.5" />
+      <circle class="mrq-node" cx="218.5" cy="718" r="4.5" />
+      <circle class="mrq-node" cx="142" cy="718" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="718" r="4.5" />
       <rect class="crd-rail-glow" x="593.5" y="714" width="244.5" height="8" rx="0" />
       <rect class="crd-rail" x="593.5" y="717.3" width="244.5" height="1.5" rx="0" />
       <path class="crd-line" d="M677.5 698V718" />
       <path class="pic-march" d="M677.5 698V718" />
       <path class="crd-line" d="M754 718V750" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M754 718V750" />
-      <circle class="crd-node" cx="677.5" cy="718" r="4.5" />
-      <circle class="crd-node" cx="754" cy="718" r="4.5" />
+      <circle class="mrq-node" cx="677.5" cy="718" r="4.5" />
+      <circle class="mrq-node" cx="754" cy="718" r="4.5" />
       <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
       <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -303,22 +303,22 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
         <path d="M21 6l0 13" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">1. The front door</text>
-      <rect class="crd-pill" x="357.8" y="108" width="180.4" height="24" rx="12" />
-      <text class="crd-code" x="448" y="124" text-anchor="middle">README · ROADMAP · TODO</text>
+      <rect class="mrq-pill" x="357.8" y="108" width="180.4" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">README · ROADMAP · TODO</text>
       <text class="crd-lede" x="448" y="160" text-anchor="middle">What it is, where it is going, what is next. 3 docs at the root.</text>
-      <rect class="crd-glass" x="0" y="222" width="896" height="124" rx="14" />
-      <rect class="crd-edge" x="28" y="221.5" width="840" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="0" y="222" width="896" height="124" rx="14" />
+      <rect class="mrq-edge" x="28" y="221.5" width="840" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 248) scale(0.75)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">2. The index and the standing pages</text>
-      <rect class="crd-pill" x="18" y="280" width="142.4" height="22" rx="11" />
-      <text class="crd-code" x="28" y="295" text-anchor="start">src/docs/README.md</text>
+      <rect class="mrq-pill" x="18" y="280" width="142.4" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="295" text-anchor="start">src/docs/README.md</text>
       <text class="crd-text" x="18" y="326" text-anchor="start">Every doc by kind, and the pages that always hold: GOAL, SETUP, MODELS, the work log, the development guide. 7 docs.</text>
-      <rect class="crd-glass" x="0" y="398" width="896" height="124" rx="14" />
-      <rect class="crd-edge" x="28" y="397.5" width="840" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="0" y="398" width="896" height="124" rx="14" />
+      <rect class="mrq-edge" x="28" y="397.5" width="840" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="416" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 424) scale(0.75)">
         <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
@@ -326,11 +326,11 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
         <path d="M4 16l8 4l8 -4" />
       </g>
       <text class="crd-name" x="64" y="439" text-anchor="start">3. The whole</text>
-      <rect class="crd-pill" x="18" y="456" width="108.4" height="22" rx="11" />
-      <text class="crd-code" x="28" y="471" text-anchor="start">architecture/</text>
+      <rect class="mrq-pill" x="18" y="456" width="108.4" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="471" text-anchor="start">architecture/</text>
       <text class="crd-text" x="18" y="502" text-anchor="start">How the parts fit, across projects. Kind: explanation. 13 docs.</text>
-      <rect class="crd-glass" x="0" y="574" width="437" height="124" rx="14" />
-      <rect class="crd-edge" x="28" y="573.5" width="381" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="0" y="574" width="437" height="124" rx="14" />
+      <rect class="mrq-edge" x="28" y="573.5" width="381" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="592" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 600) scale(0.75)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -339,33 +339,33 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
         <path d="M12 12l-8 -4.5" />
       </g>
       <text class="crd-name" x="64" y="615" text-anchor="start">4. One project</text>
-      <rect class="crd-pill" x="18" y="632" width="81.2" height="22" rx="11" />
-      <text class="crd-code" x="28" y="647" text-anchor="start">projects/</text>
+      <rect class="mrq-pill" x="18" y="632" width="81.2" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="647" text-anchor="start">projects/</text>
       <text class="crd-text" x="18" y="678" text-anchor="start">A design doc per project. Kind: project. 34 docs.</text>
-      <rect class="crd-glass" x="459" y="574" width="437" height="124" rx="14" />
-      <rect class="crd-edge" x="487" y="573.5" width="381" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="459" y="574" width="437" height="124" rx="14" />
+      <rect class="mrq-edge" x="487" y="573.5" width="381" height="1.6" rx="0" />
       <rect class="crd-tint" x="477" y="592" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(485 600) scale(0.75)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
       <text class="crd-name" x="523" y="615" text-anchor="start">4. Doing one job</text>
-      <rect class="crd-pill" x="477" y="632" width="67.6" height="22" rx="11" />
-      <text class="crd-code" x="487" y="647" text-anchor="start">guides/</text>
+      <rect class="mrq-pill" x="477" y="632" width="67.6" height="22" rx="11" />
+      <text class="mrq-code" x="487" y="647" text-anchor="start">guides/</text>
       <text class="crd-text" x="477" y="678" text-anchor="start">A how-to per job on a project. Kind: how-to. 23 docs.</text>
-      <rect class="crd-glass" x="0" y="750" width="284" height="142" rx="14" />
-      <rect class="crd-edge" x="28" y="749.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="0" y="750" width="284" height="142" rx="14" />
+      <rect class="mrq-edge" x="28" y="749.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="768" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 776) scale(0.75)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
       <text class="crd-name" x="64" y="791" text-anchor="start">5. Why</text>
-      <rect class="crd-pill" x="18" y="808" width="47.2" height="22" rx="11" />
-      <text class="crd-code" x="28" y="823" text-anchor="start">adr/</text>
+      <rect class="mrq-pill" x="18" y="808" width="47.2" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="823" text-anchor="start">adr/</text>
       <text class="crd-text" x="18" y="854" text-anchor="start">One decision each. Kind: ADR. 114 docs.</text>
-      <rect class="crd-glass" x="306" y="750" width="284" height="142" rx="14" />
-      <rect class="crd-edge" x="334" y="749.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="306" y="750" width="284" height="142" rx="14" />
+      <rect class="mrq-edge" x="334" y="749.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="768" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(332 776) scale(0.75)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -374,20 +374,20 @@ svg { --crd-glow: .2; --crd-glow-far: .07; --crd-sheet: #1b2a4a; --crd-sheet-top
         <path d="M4 20h14" />
       </g>
       <text class="crd-name" x="370" y="791" text-anchor="start">5. What it taught</text>
-      <rect class="crd-pill" x="324" y="808" width="81.2" height="22" rx="11" />
-      <text class="crd-code" x="334" y="823" text-anchor="start">learning/</text>
+      <rect class="mrq-pill" x="324" y="808" width="81.2" height="22" rx="11" />
+      <text class="mrq-code" x="334" y="823" text-anchor="start">learning/</text>
       <text class="crd-text" x="324" y="854" text-anchor="start">A write-up per skill, and a lesson per</text>
       <text class="crd-text" x="324" y="872" text-anchor="start">fix. Kinds: write-up, lesson. 14 docs.</text>
-      <rect class="crd-glass" x="612" y="750" width="284" height="142" rx="14" />
-      <rect class="crd-edge" x="640" y="749.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="612" y="750" width="284" height="142" rx="14" />
+      <rect class="mrq-edge" x="640" y="749.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="768" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(638 776) scale(0.75)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
       <text class="crd-name" x="676" y="791" text-anchor="start">5. Being built</text>
-      <rect class="crd-pill" x="630" y="808" width="203.6" height="22" rx="11" />
-      <text class="crd-code" x="640" y="823" text-anchor="start">plans/ · features/ · fixes/</text>
+      <rect class="mrq-pill" x="630" y="808" width="203.6" height="22" rx="11" />
+      <text class="mrq-code" x="640" y="823" text-anchor="start">plans/ · features/ · fixes/</text>
       <text class="crd-text" x="630" y="854" text-anchor="start">Kinds: plan, feature doc, fix doc.</text>
       <text class="crd-text" x="630" y="872" text-anchor="start">Deleted when the work is done.</text>
       <g class="crd-icon quiet" transform="translate(437 918) scale(0.9167)">

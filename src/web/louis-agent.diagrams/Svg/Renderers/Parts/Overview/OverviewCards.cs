@@ -70,8 +70,8 @@ internal static class OverviewCards
         if (card.Card.Code is { } code)
         {
             double width = code.Length * CodeChar + 2 * PillPad;
-            writer.Box(centre - width / 2, titleY + PillDrop, width, PillHeight, PillHeight / 2, "crd-pill")
-                .Text(centre, titleY + PillDrop + 16, code, "crd-code");
+            writer.Box(centre - width / 2, titleY + PillDrop, width, PillHeight, PillHeight / 2, "mrq-pill")
+                .Text(centre, titleY + PillDrop + 16, code, "mrq-code");
             under += CardSizes.PillRoom;
         }
 
@@ -87,8 +87,8 @@ internal static class OverviewCards
     {
         double left = card.X + CardSizes.Pad;
         int titles = card.TitleLines.Count;
-        writer.Box(card.X, card.Y, card.W, card.H, Corner, "crd-glass")
-            .Box(card.X + EdgeIn, card.Y - 0.5, card.W - 2 * EdgeIn, 1.6, 0, "crd-edge")
+        writer.Box(card.X, card.Y, card.W, card.H, Corner, "mrq-glass")
+            .Box(card.X + EdgeIn, card.Y - 0.5, card.W - 2 * EdgeIn, 1.6, 0, "mrq-edge")
             .Box(left, card.Y + CardSizes.Pad, Tint, Tint, 10, "crd-tint")
             .Icon(left + (Tint - TintIcon) / 2, card.Y + CardSizes.Pad + (Tint - TintIcon) / 2, TintIcon,
                 card.Card.Icon, "crd-icon");
@@ -137,8 +137,8 @@ internal static class OverviewCards
     {
         if (card.Card.Code is not { } code) return 0;
 
-        writer.Box(left, top, code.Length * CodeChar + 2 * CodePad, CodeHeight, CodeHeight / 2, "crd-pill")
-            .Text(left + CodePad, top + 15, code, "crd-code", "start");
+        writer.Box(left, top, code.Length * CodeChar + 2 * CodePad, CodeHeight, CodeHeight / 2, "mrq-pill")
+            .Text(left + CodePad, top + 15, code, "mrq-code", "start");
         return room;
     }
 }

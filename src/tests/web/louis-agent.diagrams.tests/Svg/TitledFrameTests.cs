@@ -73,7 +73,7 @@ public class TitledFrameTests
         {
             Assert.That(Rects(svg, "titlebar"), Is.Empty);
             Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
-            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "crd-title")
+            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "mrq-title")
                 .Select(text => text.Value), Is.EqualTo(new[] { "A project at a glance" }));
         });
     }

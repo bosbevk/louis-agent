@@ -41,7 +41,7 @@ public class CardsRendererTests
         Assert.Multiple(() =>
         {
             Assert.That(drawn, Is.EqualTo(OverviewDrawing.Of(Overview)));
-            Assert.That(drawn, Does.Contain("class=\"crd-title\"").And.Contain("crd-headline").And.Contain("crd-rail"));
+            Assert.That(drawn, Does.Contain("class=\"mrq-title\"").And.Contain("crd-headline").And.Contain("crd-rail"));
             Assert.That(drawn, Does.Not.Contain("class=\"frame\"").And.Not.Contain("class=\"card"));
         });
     }
@@ -55,7 +55,7 @@ public class CardsRendererTests
     {
         string page = DiagramRenderers.RenderForPage(Overview);
 
-        Assert.That(page, Does.Contain("crd-headline").And.Contain("<radialGradient id=\"crd-light\"").And
+        Assert.That(page, Does.Contain("crd-headline").And.Contain("<radialGradient id=\"mrq-light\"").And
             .Contain("@scope"));
     }
 }
