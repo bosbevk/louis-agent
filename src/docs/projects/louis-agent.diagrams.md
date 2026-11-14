@@ -70,8 +70,9 @@ in that look wears is `PictureLook`, with class names that start `pic-`, and the
 `PictureParts`: the start of a picture, which is the light with the title over it, and a panel. The title and
 the light are `MarqueeLook`'s, so they are the same in every kind.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
-start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a group's frame, a box's name and
-icon badge, the glow round a shape, and the pill an arrow's word stands in. The shared rules come first in a
+start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a box's name and
+icon badge, the thin outline of a shape that means something, the pill an arrow's word stands in, and the rule
+and the words of its key. The shared rules come first in a
 picture's style, so two kinds can't drift apart in what they share.
 
 **The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence
@@ -89,12 +90,15 @@ letter, its name, kind and members, a line for each kind of link, and the colour
 layout placed by `FlowRules.Straight`.
 
 - *The title.* The picture's whole title as one small line, in the top left corner, on a soft light.
-- *A box.* A panel in its shape, with its icon in a badge in its tone.
+- *A box.* A panel in its shape, with its icon in a badge in its tone. A shape that means something, a decision,
+  data, a start or an end, has a thin outline: grey, or its tone's colour when it has one.
+- *A group.* Its frame is a panel too, with its name in the corner, so a box in a group is a step deeper.
 - *A line.* It has the colour of the box it leaves, and a ring stands where a box's line leaves it. Dots march
   along it to its head. A dashed arrow has no dots.
-- *The key* (`FlowKey`, placed by `Flow/Keys/FlowKeyLayout`). Across the picture's width, under the drawing: an
-  item for each tone and each shape the picture uses, and one that says a line has the colour of the box it
-  leaves.
+- *The key* (`FlowKey`, placed by `Flow/Keys/FlowKeyLayout`). Across the picture's width, under the drawing and
+  under a faint rule: an item for each tone and each shape the picture uses, and one that says a line has the
+  colour of the box it leaves. A tone's sample is a small badge filled with it, as a box's badge is. A shape's
+  is the shape itself, small. The rule, the heading and the rows stand as they do in the other kinds' keys.
 
 **Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
 the picture bare and then frames it: a note bar under the drawing from its caption, with the part before the first

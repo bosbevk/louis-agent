@@ -32,10 +32,10 @@ internal static class FlowDrawing
     private const double Head = PictureParts.Head, KeyGap = 26, CaptionRoom = 34;
 
     /// <summary>
-    /// A plain box's corner, a badge's size and the icon's in it, and how far a pill's and a slanted box's insides
-    /// stand in from where a plain box's do.
+    /// A plain box's corner, a badge's size, its corner and the icon's size in it, and how far a pill's and a
+    /// slanted box's insides stand in from where a plain box's do.
     /// </summary>
-    private const double Corner = 10, Badge = 28, BadgeIcon = 16, Inside = 12;
+    private const double Corner = 10, Badge = 28, BadgeCorner = 9, BadgeIcon = 16, Inside = 12;
 
     /// <summary>The flow a source holds, as one SVG file's text.</summary>
     public static string Of(DiagramSource source)
@@ -48,26 +48,28 @@ internal static class FlowDrawing
         double keyTop = Head + placed.Height + KeyGap;
         double height = keyTop + keyHeight + (source.Caption is null ? 0 : CaptionRoom);
 
-        // The light and the title first, so everything stands on them. Then the flow, and the key under it.
-        var writer = PictureParts.Open(source.Title, width).Group("flow", 0, Head, Flow(placed));
-        FlowKey.Draw(writer, items, 0, keyTop);
+        // The light and the title first, so everything stands on them. Then the flow, and the key under it,
+        // whose rule is filled with the accent's edge.
+        var writer = PictureParts.Open(source.Title, width).Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
+            .Group("flow", 0, Head, Flow(placed));
+        FlowKey.Draw(writer, items, 0, keyTop, width);
         if (source.Caption is { } caption) writer.Text(0, height - 8, caption, "caption", "start");
 
         // What every picture in the new look wears, then the title and the light the other kinds wear too, then
         // what is a flow's own.
-        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + FlowStyle.Of(SvgTheme.Site);
+        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + FlowStyle.Rules;
         return writer.Write(SvgTheme.Site, source.Title, width, height, style);
     }
 
     /// <summary>
-    /// Everything the layout placed, from where the layout starts: the groups behind, then the lines, the words on
-    /// them, the boxes over the lines' ends, and last the ring where each box's line leaves.
+    /// Everything the layout placed, from where the layout starts: the groups' panels behind, then the lines, the
+    /// words on them, the boxes over the lines' ends, and last the ring where each box's line leaves.
     /// </summary>
     private static SvgWriter Flow(PlacedGraph placed)
     {
         var writer = new SvgWriter();
         foreach (var group in placed.Groups)
-            writer.Box(group.X, group.Y, group.W, group.H, PictureParts.Radius, "flow-group")
+            PictureParts.Panel(writer, group.X, group.Y, group.W, group.H)
                 .Text(group.X + 14, group.Y + 19, group.Group.Label, "pic-group", "start");
 
         // A line, its word and its ring are in the tone of the box the line leaves.
@@ -132,7 +134,7 @@ internal static class FlowDrawing
             return;
         }
 
-        writer.Box(left + 16, middle - Badge / 2, Badge, Badge, 8, $"pic-fill{tone}")
+        writer.Box(left + 16, middle - Badge / 2, Badge, Badge, BadgeCorner, $"pic-fill{tone}")
             .Icon(left + 16 + (Badge - BadgeIcon) / 2, middle - BadgeIcon / 2, BadgeIcon, icon, "flow-icon");
         Words(writer, node, FlowText.LabelLeft(node) + (left - node.X), "start");
     }

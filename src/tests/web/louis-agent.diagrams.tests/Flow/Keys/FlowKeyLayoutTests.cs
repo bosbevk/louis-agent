@@ -52,6 +52,28 @@ public class FlowKeyLayoutTests
         });
     }
 
+    /// <summary>
+    /// An item says how wide its sample is, so its words start close after it: a tone's small badge is narrower
+    /// than a shape or a line. The first row stands under the key's rule and its heading, in the room the other
+    /// kinds' keys give theirs (F134.12).
+    /// </summary>
+    [Test]
+    public void AnItem_SaysHowWideItsSampleIs_AndTheRowsStandUnderTheHeading()
+    {
+        PlacedNode[] nodes = [Box(DiagramTone.Blue), Box(DiagramTone.Plain, NodeShape.Decision)];
+
+        var items = FlowKeyLayout.Of(nodes, 880).Items;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(items[0].Sample, Is.EqualTo(18), "a tone's badge");
+            Assert.That(items[1].Sample, Is.EqualTo(30), "a shape");
+            Assert.That(items[^1].Sample, Is.EqualTo(30), "a line");
+            Assert.That(items.Select(item => item.Y), Is.All.EqualTo(34), "under the rule and the heading");
+            Assert.That(items[1].X, Is.GreaterThan(items[0].X + 18 + FlowKeyLayout.Words), "after the first's words");
+        });
+    }
+
     /// <summary>The last item says what a line's colour means, in every flow.</summary>
     [Test]
     public void TheLastItem_SaysWhatALinesColourMeans()

@@ -1,42 +1,31 @@
-using LouisAgent.Choices;
-
 namespace LouisAgent.Diagrams.Svg.Theme.Looks;
 
 /// <summary>
-/// What a flow's look adds to the shared one (F134.8): the frame of a group, a box's name and the icon in its
-/// badge, the full outline and soft glow of a shape that means something, and the pill an arrow's word stands in.
+/// What a flow's look adds to the shared one (F134.8): a box's name and the icon in its badge, the thin outline of
+/// a shape that means something, the pill an arrow's word stands in, and the rule and the words of its key.
 /// </summary>
 /// <remarks>
-/// Everything a component diagram wears too, the ground, the panels, the lines and their marching dots, is
+/// Everything a component diagram wears too, the panels, the lines and their marching dots, is
 /// <see cref="PictureLook"/>'s. Its rules come first in the picture's style, and these after them. A decision,
-/// data and a start or an end glow in their tone so the eye finds them first (Louis: the shapes must pop as a
-/// component's panel does).
+/// data and a start or an end have an outline, grey until the shape's tone colours it, so each reads as its shape
+/// on a panel that is otherwise a plain box's. They glowed before, and no other kind glows (F134.12, Louis: "make
+/// the theme of the flow and component diagrams resemble the others"). A group's frame is a panel, so it has no
+/// rule here. The same rules serve every theme, since their colours are the theme's own variables.
 /// </remarks>
 internal static class FlowStyle
 {
-    /// <summary>The style, for a theme's tones.</summary>
-    public static string Of(SvgTheme theme) =>
+    /// <summary>The style.</summary>
+    public const string Rules =
         $$"""
 
-          .flow-group {
-            fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
-          }
-          .flow-name { fill: var(--text); font: 600 14px var(--pic-sans); }
+          .flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
           .flow-icon {
             fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
           }
-          .flow-shape {
-            stroke-width: 1.5; stroke-opacity: 1; stroke-linejoin: round;
-            filter: drop-shadow(0 0 7px color-mix(in srgb, var(--flow-glow, var(--quiet)) 55%, transparent))
-              drop-shadow(0 8px 9px var(--pic-lift));
-          }
-          {{Glows(theme)}}
+          .flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
           .flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
           .flow-word { font: 500 10px var(--mono); }
+          .flow-rule { fill: url(#{{MarqueeLook.EdgePaint}}); opacity: .7; }
+          .flow-means { fill: var(--text); font: 12px var(--pic-sans); }
           """;
-
-    /// <summary>A rule a tone: a shape glows in its own colour.</summary>
-    private static string Glows(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
-        .Select(tone => tone.Wire())
-        .Select(name => $".flow-shape.tone-{name} {{ --flow-glow: var(--{name}-line); }}"));
 }

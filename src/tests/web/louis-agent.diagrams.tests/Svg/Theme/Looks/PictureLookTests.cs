@@ -80,7 +80,7 @@ public partial class PictureLookTests
     [Test]
     public void BothSchemes_SetEveryVariableAnyRuleReads()
     {
-        string every = Shared + FlowStyle.Of(SvgTheme.Site) + ComponentsStyle.Of(SvgTheme.Site);
+        string every = Shared + FlowStyle.Rules + ComponentsStyle.Of(SvgTheme.Site);
         var read = Read().Matches(every).Select(match => match.Groups[1].Value).ToHashSet();
         var light = SetIn("svg {");
 

@@ -18,17 +18,15 @@ namespace LouisAgent.Diagrams.Svg.Theme.Looks;
 /// </remarks>
 internal static class PictureLook
 {
-    /// <summary>
-    /// A panel's body and its hairline, a group's ground, the shadow and the marching dots, on a light page.
-    /// </summary>
+    /// <summary>A panel's body and its hairline, and the marching dots, on a light page.</summary>
     private const string Light =
-        "--pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); " +
-        "--pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);";
+        "--pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); " +
+        "--pic-march: rgba(255, 255, 255, .95);";
 
     /// <summary>The same on a dark page, where a panel is a little of white and each depth a step lighter.</summary>
     private const string Dark =
-        "--pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); " +
-        "--pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75);";
+        "--pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); " +
+        "--pic-march: rgba(255, 255, 255, .75);";
 
     /// <summary>The style, for a theme's tones.</summary>
     public static string Of(SvgTheme theme) =>

@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1552 1015" width="1552" height="1015" role="img" aria-label="F40 the sales playground: in memory with two identities" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1552 1029" width="1552" height="1029" role="img" aria-label="F40 the sales playground: in memory with two identities" xmlns="http://www.w3.org/2000/svg">
   <title>F40 the sales playground: in memory with two identities</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,11 +91,11 @@ svg {
 </style>
   <style>
 svg {
-  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
@@ -163,26 +163,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-group {
-  fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.flow-name { fill: var(--text); font: 600 14px var(--pic-sans); }
+.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .flow-icon {
   fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
-.flow-shape {
-  stroke-width: 1.5; stroke-opacity: 1; stroke-linejoin: round;
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--flow-glow, var(--quiet)) 55%, transparent))
-    drop-shadow(0 8px 9px var(--pic-lift));
-}
-.flow-shape.tone-blue { --flow-glow: var(--blue-line); }
-.flow-shape.tone-green { --flow-glow: var(--green-line); }
-.flow-shape.tone-violet { --flow-glow: var(--violet-line); }
-.flow-shape.tone-teal { --flow-glow: var(--teal-line); }
-.flow-shape.tone-red { --flow-glow: var(--red-line); }
-.flow-shape.tone-amber { --flow-glow: var(--amber-line); }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
 .flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }</style>
+.flow-word { font: 500 10px var(--mono); }
+.flow-rule { fill: url(#mrq-edge); opacity: .7; }
+.flow-means { fill: var(--text); font: 12px var(--pic-sans); }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -204,8 +193,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-light-1" offset="0.5" />
       <stop class="mrq-light-2" offset="1" />
     </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1552" height="1015" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1552" height="1029" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a776 190 0 1 0 1552 0a776 190 0 1 0 -1552 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F40 the sales playground: in memory with two identities</text>
@@ -237,7 +231,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="flow-chip pic-edge tone-teal" x="703" y="338" width="43" height="18" rx="9" />
       <text class="flow-word pic-ink tone-teal" x="724.5" y="350" text-anchor="middle">names</text>
       <rect class="pic-panel" x="616.4" y="0" width="271.2" height="116" rx="10" />
-      <rect class="pic-fill tone-violet" x="632.4" y="44" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-violet" x="632.4" y="44" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(638.4 50) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -251,7 +245,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="668.4" y="79" text-anchor="start">Toolsets = core's + shops +</text>
       <text class="flow-name" x="668.4" y="95" text-anchor="start">customers</text>
       <rect class="pic-panel" x="26.6" y="176" width="233.2" height="116" rx="10" />
-      <rect class="pic-fill tone-teal" x="42.6" y="220" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="42.6" y="220" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(48.6 226) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -262,7 +256,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="78.6" y="255" text-anchor="start">specialists/puls-*,</text>
       <text class="flow-name" x="78.6" y="271" text-anchor="start">minions/puls-*</text>
       <rect class="pic-panel" x="620.2" y="176" width="263.6" height="116" rx="10" />
-      <rect class="pic-fill tone-teal" x="636.2" y="220" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="636.2" y="220" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(642.2 226) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -272,7 +266,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="672.2" y="247" text-anchor="start">Prompts = agent/demo/,</text>
       <text class="flow-name" x="672.2" y="263" text-anchor="start">specialists/demo-*</text>
       <rect class="pic-panel" x="1225.2" y="176" width="271.2" height="116" rx="10" />
-      <rect class="pic-fill tone-amber" x="1241.2" y="220" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-amber" x="1241.2" y="220" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(1247.2 226) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -284,7 +278,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="1277.2" y="239" text-anchor="start">core's + puls's + demo's +</text>
       <text class="flow-name" x="1277.2" y="255" text-anchor="start">shops' + customers' prompts</text>
       <rect class="pic-panel" x="319.6" y="376" width="256" height="132" rx="10" />
-      <rect class="pic-fill tone-teal" x="335.6" y="428" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="335.6" y="428" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(341.6 434) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
@@ -294,7 +288,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="371.6" y="439" text-anchor="start">shops : ShopsPack</text>
       <text class="flow-name" x="371.6" y="455" text-anchor="start">one object, named by both</text>
       <rect class="pic-panel" x="624" y="376" width="256" height="132" rx="10" />
-      <rect class="pic-fill tone-teal" x="640" y="428" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="640" y="428" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(646 434) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
@@ -306,7 +300,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="676" y="455" text-anchor="start">Prompts =</text>
       <text class="flow-name" x="676" y="471" text-anchor="start">toolsets/customers.md</text>
       <rect class="pic-panel" x="1217.6" y="376" width="286.4" height="132" rx="10" />
-      <rect class="pic-fill tone-teal" x="1233.6" y="428" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="1233.6" y="428" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(1239.6 434) scale(0.6667)">
         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
         <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -320,7 +314,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="1269.6" y="471" text-anchor="start">demo-invoice-clerk,</text>
       <text class="flow-name" x="1269.6" y="487" text-anchor="start">demo-area-guide</text>
       <rect class="pic-panel" x="639.2" y="568" width="225.6" height="68" rx="10" />
-      <rect class="pic-fill tone-green" x="655.2" y="588" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-green" x="655.2" y="588" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(661.2 594) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
@@ -328,7 +322,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="691.2" y="599" text-anchor="start">tools : CustomerTools</text>
       <text class="flow-name" x="691.2" y="615" text-anchor="start">built per engine</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M640.6 696L881.4 696L863.4 796L622.6 796Z" />
-      <rect class="pic-fill tone-amber" x="650.6" y="732" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-amber" x="650.6" y="732" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(656.6 738) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
@@ -347,31 +341,28 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-green" cx="752" cy="636" r="4" />
       <circle class="pic-port pic-edge tone-amber" cx="1360.8" cy="292" r="4" />
     </g>
-    <text class="pic-group" x="0" y="876" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="0" y="893" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="4" y="897" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="905" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="139.6" y="893" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="143.6" y="897" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="177.6" y="905" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="285.5" y="893" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="289.5" y="897" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="323.5" y="905" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="469.2" y="893" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="473.2" y="897" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="507.2" y="905" text-anchor="start">files and data</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M639.4 893L651.4 893L633.4 909L621.4 909Z" />
-    <text class="pic-note" x="659.4" y="905" text-anchor="start">data in or out</text>
-    <path class="flow-key pic-line pic-edge" d="M773.6 901H803.6" marker-end="url(#arrow)" />
-    <text class="pic-note" x="811.6" y="905" text-anchor="start">a line has the colour of the box it leaves</text>
+    <rect class="flow-rule" x="0" y="866" width="1504" height="1" rx="0" />
+    <text class="pic-group" x="0" y="888" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-green" x="0" y="905" width="18" height="18" rx="6" />
+    <text class="flow-means" x="28" y="918.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-violet" x="137.2" y="905" width="18" height="18" rx="6" />
+    <text class="flow-means" x="165.2" y="918.5" text-anchor="start">the framework</text>
+    <rect class="pic-fill tone-teal" x="281" y="905" width="18" height="18" rx="6" />
+    <text class="flow-means" x="309" y="918.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-amber" x="464.4" y="905" width="18" height="18" rx="6" />
+    <text class="flow-means" x="492.4" y="918.5" text-anchor="start">files and data</text>
+    <path class="pic-panel flow-shape pic-edge" d="M632.8 906L644.8 906L626.8 922L614.8 922Z" />
+    <text class="flow-means" x="654.8" y="918.5" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M777.2 914H807.2" marker-end="url(#arrow)" />
+    <text class="flow-means" x="817.2" y="918.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="930" width="1504" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 940) scale(0.6667)">
+  <rect class="notebar" x="0" y="944" width="1504" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 954) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="952">
+  <text class="notes" x="38" y="966">
     <tspan class="note-head">One shops pack, shared:</tspan>
     <tspan class="note-rest">with IDENTITIES=demo,puls both identities name it, and the customers are data inside the pack's assembly, never a file on a workspace.</tspan>
   </text>

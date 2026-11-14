@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 985 1153" width="985" height="1153" role="img" aria-label="The evals: one cook run, in memory" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 985 1169" width="985" height="1169" role="img" aria-label="The evals: one cook run, in memory" xmlns="http://www.w3.org/2000/svg">
   <title>The evals: one cook run, in memory</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,11 +91,11 @@ svg {
 </style>
   <style>
 svg {
-  --pic-1: #f4f6f9; --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-lift: rgba(27, 42, 74, .14); --pic-march: rgba(255, 255, 255, .95);
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
   --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --pic-1: #151920; --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-lift: rgba(0, 0, 0, .5); --pic-march: rgba(255, 255, 255, .75); }
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
 }
 .pic-edge { stroke: var(--quiet); }
 .pic-tint { fill: var(--chip); }
@@ -163,26 +163,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-group {
-  fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
-}
-.flow-name { fill: var(--text); font: 600 14px var(--pic-sans); }
+.flow-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .flow-icon {
   fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
-.flow-shape {
-  stroke-width: 1.5; stroke-opacity: 1; stroke-linejoin: round;
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--flow-glow, var(--quiet)) 55%, transparent))
-    drop-shadow(0 8px 9px var(--pic-lift));
-}
-.flow-shape.tone-blue { --flow-glow: var(--blue-line); }
-.flow-shape.tone-green { --flow-glow: var(--green-line); }
-.flow-shape.tone-violet { --flow-glow: var(--violet-line); }
-.flow-shape.tone-teal { --flow-glow: var(--teal-line); }
-.flow-shape.tone-red { --flow-glow: var(--red-line); }
-.flow-shape.tone-amber { --flow-glow: var(--amber-line); }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
 .flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
-.flow-word { font: 500 10px var(--mono); }</style>
+.flow-word { font: 500 10px var(--mono); }
+.flow-rule { fill: url(#mrq-edge); opacity: .7; }
+.flow-means { fill: var(--text); font: 12px var(--pic-sans); }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -204,8 +193,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-light-1" offset="0.5" />
       <stop class="mrq-light-2" offset="1" />
     </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="985" height="1153" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="985" height="1169" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a492.5 190 0 1 0 985 0a492.5 190 0 1 0 -985 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The evals: one cook run, in memory</text>
@@ -231,14 +225,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-line pic-edge tone-teal" d="M 474.6 746 L 474.6 806" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M 474.6 746 L 474.6 806" />
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M374.6 0L592.6 0L574.6 68L356.6 68Z" />
-      <rect class="pic-fill tone-amber" x="384.6" y="20" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-amber" x="384.6" y="20" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(390.6 26) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
       <text class="flow-name" x="420.6" y="31" text-anchor="start">Evals/Cook/eval.json</text>
       <text class="flow-name" x="420.6" y="47" text-anchor="start">identity = puls</text>
       <rect class="pic-panel" x="327.6" y="128" width="294" height="68" rx="10" />
-      <rect class="pic-fill tone-blue" x="343.6" y="148" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-blue" x="343.6" y="148" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(349.6 154) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
@@ -246,7 +240,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="379.6" y="159" text-anchor="start">FileEval : IEval</text>
       <text class="flow-name" x="379.6" y="175" text-anchor="start">Name = puls-cook, Version = 11</text>
       <rect class="pic-panel" x="9" y="256" width="286.4" height="84" rx="10" />
-      <rect class="pic-fill tone-teal" x="25" y="284" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="25" y="284" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(31 290) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
@@ -254,7 +248,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="61" y="295" text-anchor="start">EvalMode puls-cook · EvalMode</text>
       <text class="flow-name" x="61" y="311" text-anchor="start">puls-tools</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M348 256L619.2 256L601.2 340L330 340Z" />
-      <rect class="pic-fill tone-amber" x="358" y="284" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-amber" x="358" y="284" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(364 290) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
@@ -266,7 +260,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="394" y="303" text-anchor="start">dev and held-out scenarios,</text>
       <text class="flow-name" x="394" y="319" text-anchor="start">labels</text>
       <rect class="pic-panel" x="657.6" y="256" width="278.8" height="84" rx="10" />
-      <rect class="pic-fill tone-green" x="673.6" y="284" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-green" x="673.6" y="284" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(679.6 290) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
@@ -274,7 +268,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="709.6" y="295" text-anchor="start">9 checks, from cook-no-error</text>
       <text class="flow-name" x="709.6" y="311" text-anchor="start">to meal-for-people.human</text>
       <rect class="pic-panel" x="5.2" y="406" width="294" height="84" rx="10" />
-      <rect class="pic-fill tone-teal" x="21.2" y="434" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="21.2" y="434" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(27.2 440) scale(0.6667)">
         <path d="M8 9h8" />
         <path d="M8 13h6" />
@@ -284,7 +278,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="57.2" y="453" text-anchor="start">run 5d1fd231c9b1 · puls-cook ·</text>
       <text class="flow-name" x="57.2" y="469" text-anchor="start">repeat 1 · cook-malmesbury</text>
       <rect class="pic-panel" x="16.6" y="550" width="271.2" height="68" rx="10" />
-      <rect class="pic-fill tone-teal" x="32.6" y="570" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="32.6" y="570" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(38.6 576) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
@@ -295,7 +289,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="68.6" y="581" text-anchor="start">Transcript</text>
       <text class="flow-name" x="68.6" y="597" text-anchor="start">TurnTranscript per question</text>
       <rect class="pic-panel" x="335.2" y="678" width="278.8" height="68" rx="10" />
-      <rect class="pic-fill tone-teal" x="351.2" y="698" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-teal" x="351.2" y="698" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(357.2 704) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -305,7 +299,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="flow-name" x="387.2" y="709" text-anchor="start">Grade × 9</text>
       <text class="flow-name" x="387.2" y="725" text-anchor="start">e.g. untooled-shops 1.0 pass</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M340.4 806L626.8 806L608.8 874L322.4 874Z" />
-      <rect class="pic-fill tone-amber" x="350.4" y="826" width="28" height="28" rx="8" />
+      <rect class="pic-fill tone-amber" x="350.4" y="826" width="28" height="28" rx="9" />
       <g class="flow-icon" transform="translate(356.4 832) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
@@ -322,38 +316,35 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="pic-port pic-edge tone-teal" cx="152.2" cy="618" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="474.6" cy="746" r="4" />
     </g>
-    <text class="pic-group" x="0" y="954" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="971" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="975" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="983" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="971" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="975" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="983" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="260.3" y="971" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-teal" x="264.3" y="975" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="983" text-anchor="start">contracts and state</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="444" y="971" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="448" y="975" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="482" y="983" text-anchor="start">files and data</text>
-    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M614.2 971L626.2 971L608.2 987L596.2 987Z" />
-    <text class="pic-note" x="634.2" y="983" text-anchor="start">data in or out</text>
-    <path class="flow-key pic-line pic-edge" d="M0 1005H30" marker-end="url(#arrow)" />
-    <text class="pic-note" x="38" y="1009" text-anchor="start">a line has the colour of the box it leaves</text>
+    <rect class="flow-rule" x="0" y="944" width="937" height="1" rx="0" />
+    <text class="pic-group" x="0" y="966" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="983" width="18" height="18" rx="6" />
+    <text class="flow-means" x="28" y="996.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-green" x="117.4" y="983" width="18" height="18" rx="6" />
+    <text class="flow-means" x="145.4" y="996.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-teal" x="254.6" y="983" width="18" height="18" rx="6" />
+    <text class="flow-means" x="282.6" y="996.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-amber" x="438" y="983" width="18" height="18" rx="6" />
+    <text class="flow-means" x="466" y="996.5" text-anchor="start">files and data</text>
+    <path class="pic-panel flow-shape pic-edge" d="M606.4 984L618.4 984L600.4 1000L588.4 1000Z" />
+    <text class="flow-means" x="628.4" y="996.5" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M0 1020H30" marker-end="url(#arrow)" />
+    <text class="flow-means" x="40" y="1024.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1034" width="937" height="71" rx="8" />
-  <g class="note-icon" transform="translate(12 1044) scale(0.6667)">
+  <rect class="notebar" x="0" y="1050" width="937" height="71" rx="8" />
+  <g class="note-icon" transform="translate(12 1060) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1056">
+  <text class="notes" x="38" y="1072">
     <tspan class="note-head">One run, in memory:</tspan>
     <tspan class="note-rest">an eval's folder becomes trials, and each trial's checks grade it into events. The folder is</tspan>
   </text>
-  <text class="notes" x="38" y="1073">
+  <text class="notes" x="38" y="1089">
     <tspan class="note-rest">demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its nine checks are cook-no-error, routed-to,</tspan>
   </text>
-  <text class="notes" x="38" y="1090">
+  <text class="notes" x="38" y="1106">
     <tspan class="note-rest">within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, meal-for-people and meal-for-people.human.</tspan>
   </text>
 </svg>
