@@ -23,13 +23,13 @@ internal static class ComponentsStyle
     private const string Light =
         "--cmp-0: #ffffff; --cmp-1: #f4f6f9; --cmp-2: #ffffff; --cmp-3: #f4f6f9; --cmp-4: #ffffff; " +
         "--cmp-5: #f4f6f9; --cmp-lift: rgba(27, 42, 74, .14); --cmp-dot: rgba(15, 23, 42, .075); " +
-        "--cmp-march: rgba(255, 255, 255, .95);";
+        "--cmp-march: rgba(255, 255, 255, .95); --cmp-sheen: rgba(255, 255, 255, .9);";
 
     /// <summary>The same on a dark page, where each depth is a little lighter than the one that holds it.</summary>
     private const string Dark =
         "--cmp-0: #11141a; --cmp-1: #151920; --cmp-2: #191e26; --cmp-3: #1d232c; --cmp-4: #212832; " +
         "--cmp-5: #262e39; --cmp-lift: rgba(0, 0, 0, .5); --cmp-dot: rgba(255, 255, 255, .055); " +
-        "--cmp-march: rgba(255, 255, 255, .75);";
+        "--cmp-march: rgba(255, 255, 255, .75); --cmp-sheen: rgba(255, 255, 255, .09);";
 
     /// <summary>The style, for a theme's tones.</summary>
     public static string Of(SvgTheme theme) =>
@@ -50,8 +50,18 @@ internal static class ComponentsStyle
           .cmp-fill { fill: var(--quiet); }
           .cmp-ink { fill: var(--text); }
           {{Tones(theme)}}
-          .cmp-panel { stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--cmp-lift)); }
+          .cmp-panel {
+            fill: color-mix(in srgb, var(--cmp-tone, var(--cmp-depth)) 42%, var(--cmp-depth));
+            stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--cmp-lift));
+          }
           {{Depths()}}
+          .cmp-sheen { fill: none; stroke: var(--cmp-sheen); stroke-width: 1; stroke-linecap: round; }
+          .cmp-swatch { stroke-width: 1; }
+          .cmp-title { fill: var(--text); font: 700 21px var(--cmp-sans); letter-spacing: -.2px; }
+          .cmp-group {
+            fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+          }
+          .cmp-code { font: 500 11px var(--mono); }
           .cmp-ghost { fill: none; stroke-width: 1; stroke-dasharray: 4 4; stroke-opacity: .7; }
           .cmp-name { fill: var(--text); font: 600 15px var(--cmp-sans); }
           .cmp-code-name { fill: var(--text); font: 600 12.5px var(--mono); }
@@ -79,19 +89,25 @@ internal static class ComponentsStyle
           }
           """;
 
-    /// <summary>A rule a depth: the panel's fill at that depth.</summary>
+    /// <summary>
+    /// A rule a depth: the colour a panel at that depth starts from, before its tone tints it.
+    /// </summary>
     private static string Depths() => string.Join("\n", Enumerable.Range(0, Deepest + 1)
-        .Select(depth => $".cmp-panel.depth-{depth} {{ fill: var(--cmp-{depth}); }}"));
+        .Select(depth => $".cmp-panel.depth-{depth} {{ --cmp-depth: var(--cmp-{depth}); }}"));
 
     /// <summary>A rule a tone: a pill glows in the colour of the box that holds it.</summary>
     private static string Glows(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
         .Select(tone => tone.Wire())
         .Select(name => $".cmp-pill.tone-{name} {{ filter: drop-shadow(0 0 8px var(--{name}-line)); }}"));
 
-    /// <summary>Four rules a tone: its line, its tint, its solid fill and its ink, for whatever wears it.</summary>
+    /// <summary>
+    /// Five rules a tone: its line, the tint of a panel in it, its own tint, its solid fill and its ink, for
+    /// whatever wears it.
+    /// </summary>
     private static string Tones(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
         .Select(tone => tone.Wire()).Select(name =>
             $".cmp-edge.tone-{name} {{ stroke: var(--{name}-line); }}\n" +
+            $".cmp-panel.tone-{name} {{ --cmp-tone: var(--{name}-fill); }}\n" +
             $".cmp-tint.tone-{name} {{ fill: var(--{name}-fill); }}\n" +
             $".cmp-fill.tone-{name} {{ fill: var(--{name}-line); }}\n" +
             $".cmp-ink.tone-{name} {{ fill: var(--{name}-ink); }}"));

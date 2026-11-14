@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Components.Placed.Keys;
 using LouisAgent.Diagrams.Components.Placed.Lines;
 
 namespace LouisAgent.Diagrams.Components.Placed;
@@ -12,10 +13,12 @@ namespace LouisAgent.Diagrams.Components.Placed;
 /// <param name="Pins">Every pin, on its box's top edge.</param>
 /// <param name="Neighbours">What stands around the root.</param>
 /// <param name="Lines">The lines between a neighbour and its box, and from a state to its pins.</param>
+/// <param name="Key">How to read the picture: a row for each thing it uses.</param>
 public sealed record PlacedComponents(
     double Width,
     double Height,
     IReadOnlyList<PlacedBox> Boxes,
     IReadOnlyList<PlacedPin> Pins,
     IReadOnlyList<PlacedNeighbour> Neighbours,
-    IReadOnlyList<PlacedLine> Lines);
+    IReadOnlyList<PlacedLine> Lines,
+    PlacedKey Key);

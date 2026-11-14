@@ -59,7 +59,9 @@ public static class TitledFrame
         var note = source.Caption is { } caption
             ? Lines(caption, width - NoteLeft - NotePad, NoteChar, "note", boldWithoutColon: false)
             : [];
-        double bar = 2 * BarPad + TitleLine * title.Count, shift = bar + Gap;
+        // A component diagram writes its own title inside the picture (F134.7), so it gets no bar, only the note.
+        bool ownTitle = source.Kind == DiagramKind.Components;
+        double bar = ownTitle ? 0 : 2 * BarPad + TitleLine * title.Count, shift = ownTitle ? 0 : bar + Gap;
         double noteHeight = note.Count == 0 ? 0 : 2 * NotePad + NoteLine * note.Count;
         // The legend names the tones the chart uses, row after row as the width allows.
         var legend = LegendItems(source, width);
@@ -69,7 +71,8 @@ public static class TitledFrame
         var ground = root.Elements().First(element => (string?)element.Attribute("class") == "ground");
         var drawing = ground.ElementsAfterSelf().ToList();
         drawing.ForEach(element => element.Remove());
-        var frame = TitleBar(new SvgWriter(), title, width, bar).Group("drawing", 0, shift, drawing);
+        var head = ownTitle ? new SvgWriter() : TitleBar(new SvgWriter(), title, width, bar);
+        var frame = head.Group("drawing", 0, shift, drawing);
         foreach (var (tone, meaning, x, row) in legend)
         {
             double top = shift + height + Gap + LegendRow * row;
@@ -92,10 +95,11 @@ public static class TitledFrame
     }
 
     /// <summary>
-    /// The legend's swatches, one for each tone a flow's boxes, a sequence's heads or a component diagram's boxes and
-    /// neighbours wear, in the tones' order, each with what it means
+    /// The legend's swatches, one for each tone a flow's boxes or a sequence's heads wear, in the tones' order, each
+    /// with what it means
     /// (Louis: "can we have a legend for the color"), placed left to right and onto a new row when the drawing's
-    /// width is full; a chart without colours, and the cards, have none.
+    /// width is full; a chart without colours, and the cards, have none. A component diagram has none here either:
+    /// its own key says what its tones mean.
     /// </summary>
     private static List<(string Tone, string Meaning, double X, int Row)> LegendItems(DiagramSource source,
         double width)
@@ -103,15 +107,13 @@ public static class TitledFrame
         var tones = (source.Flow?.Nodes ?? []).Select(node => node.Tone)
             .Concat((source.Sequence?.Participants ?? []).Select(head => head.Tone))
             .Concat((source.Classes?.Types ?? []).Select(type => type.Tone))
-            .Concat((source.Components?.Root.Within() ?? []).Select(box => box.Tone))
-            .Concat((source.Components?.Around ?? []).Select(neighbour => neighbour.Tone))
             .Where(tone => tone != DiagramTone.Plain).Distinct().Order();
         var items = new List<(string, string, double, int)>();
         double x = 0;
         int row = 0;
         foreach (var tone in tones)
         {
-            string meaning = DiagramText.Format(Meaning(tone));
+            string meaning = ToneMeanings.Of(tone);
             double room = Swatch + 6 + meaning.Length * NoteChar + LegendGap;
             if (x > 0 && x + room - LegendGap > width) (x, row) = (0, row + 1);
             items.Add((tone.Wire(), meaning, x, row));
@@ -120,17 +122,6 @@ public static class TitledFrame
 
         return items;
     }
-
-    /// <summary>What a tone means in every docs chart.</summary>
-    private static DiagramMessage Meaning(DiagramTone tone) => tone switch
-    {
-        DiagramTone.Blue => DiagramMessage.LegendBlue,
-        DiagramTone.Green => DiagramMessage.LegendGreen,
-        DiagramTone.Violet => DiagramMessage.LegendViolet,
-        DiagramTone.Teal => DiagramMessage.LegendTeal,
-        DiagramTone.Red => DiagramMessage.LegendRed,
-        _ => DiagramMessage.LegendAmber
-    };
 
     /// <summary>The navy bar: its icon, a thin rule, and the title's lines after them.</summary>
     private static SvgWriter TitleBar(SvgWriter writer, List<List<(string, string)>> lines, double width, double bar)

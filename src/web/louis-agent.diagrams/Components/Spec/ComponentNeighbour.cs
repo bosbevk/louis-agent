@@ -11,6 +11,8 @@ namespace LouisAgent.Diagrams.Components.Spec;
 /// <param name="Side">Before the root, or after it.</param>
 /// <param name="Kind">The few words in its chip.</param>
 /// <param name="Note">A line of what it does.</param>
+/// <param name="Code">A line of code under its name, such as the functions a script has.</param>
+/// <param name="Heading">The words over it, when it opens a group of neighbours.</param>
 /// <param name="Tone">Its colour, as a box's.</param>
 /// <param name="To">The box it stands by. The root, when it names none.</param>
 /// <param name="Gives">What it hands to that box, each on a line of its own.</param>
@@ -23,6 +25,8 @@ public sealed record ComponentNeighbour(
     NeighbourSide Side,
     string? Kind = null,
     string? Note = null,
+    string? Code = null,
+    string? Heading = null,
     DiagramTone Tone = DiagramTone.Plain,
     string? To = null,
     IReadOnlyList<string>? Gives = null,

@@ -5,14 +5,16 @@ using LouisAgent.Diagrams.Components.Placed.Lines;
 using LouisAgent.Diagrams.Components.Spec;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Svg.Renderers;
 
 /// <summary>
-/// Draws a component diagram (F134.7): a box inside a box for what holds what, pins on a box's top edge for what
-/// is handed down and said back up, a pill for the one thing a box holds, and the neighbours beside the root.
+/// Draws a component diagram (F134.7): its own title, a box inside a box for what holds what, pins on a box's top
+/// edge for what is handed down and said back up, a pill for the one thing a box holds, the neighbours beside the
+/// root, and the key that says how to read it.
 /// </summary>
 /// <remarks>
 /// Strategy, as every kind's renderer is: one <see cref="IDiagramRenderer"/> a kind, picked by
@@ -23,9 +25,10 @@ namespace LouisAgent.Diagrams.Svg.Renderers;
 internal sealed class ComponentsRenderer : IDiagramRenderer
 {
     /// <summary>
-    /// A panel's corner, the room the key takes under the drawing, and how far apart the ground's dots are.
+    /// A panel's corner, how far apart the ground's dots are, and how far short of a box a line's arrow stops, so
+    /// it points at the port on the box's edge.
     /// </summary>
-    private const double Radius = 14, KeyRow = 44, DotStep = 22;
+    private const double Radius = 14, DotStep = 22, Short = 5;
 
     /// <summary>This is the component diagram's.</summary>
     public DiagramKind Kind => DiagramKind.Components;
@@ -33,48 +36,58 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     /// <summary>The picture as an SVG, drawn from what the layout placed.</summary>
     public string Render(DiagramSource source)
     {
-        var placed = ComponentLayout.Of(source.Components!);
-        double height = placed.Height + KeyRow;
-        var writer = new SvgWriter().Path(Dots(placed.Width, height), "cmp-dots", false);
+        var components = source.Components!;
+        var placed = ComponentLayout.Of(components);
+        var writer = new SvgWriter().Path(Dots(placed.Width, placed.Height), "cmp-dots", false)
+            .Text(0, 24, source.Title, "cmp-title", "start");
+        if (components.Subtitle is { } subtitle) writer.Text(0, 46, subtitle, "cmp-group", "start");
 
         foreach (var neighbour in placed.Neighbours) DrawNeighbour(writer, neighbour);
         foreach (var box in placed.Boxes) DrawBox(writer, box);
         foreach (var line in placed.Lines) DrawLine(writer, line);
         foreach (var box in placed.Boxes.Where(box => box.Pill is not null)) DrawPill(writer, box);
-        foreach (var pin in placed.Pins) DrawPin(writer, pin, ToneOf(placed, pin), "cmp-pin");
-        DrawKey(writer, placed.Height + KeyRow - ComponentSizes.PinHeight);
+        foreach (var pin in placed.Pins) ComponentPins.Draw(writer, pin, ToneOf(placed, pin), "cmp-pin");
+        ComponentsKey.Draw(writer, placed.Key);
 
-        return writer.Write(SvgTheme.Site, source.Title, placed.Width, height, ComponentsStyle.Of(SvgTheme.Site));
+        string style = ComponentsStyle.Of(SvgTheme.Site);
+        return writer.Write(SvgTheme.Site, source.Title, placed.Width, placed.Height, style);
     }
 
-    /// <summary>A box: its panel by its depth, a marker in its tone, its name, its chip and its note.</summary>
+    /// <summary>
+    /// A box: its panel by its depth, tinted in its tone, with its name, its chip, the words at its right and its
+    /// note.
+    /// </summary>
     private static void DrawBox(SvgWriter writer, PlacedBox placed)
     {
         var box = placed.Box;
-        string tone = Tone(box.Tone);
+        string tone = Tone(box.Tone), ghost = $"cmp-ghost cmp-edge{tone}";
         int depth = Math.Min(placed.Depth, ComponentsStyle.Deepest);
-        string ghost = $"cmp-ghost cmp-edge{tone}";
         if (box.Ghost) writer.Box(placed.X + .5, placed.Y + .5, placed.Width - 1, placed.Height - 1, Radius, ghost);
         if (!box.Ghost) Panel(writer, placed.X, placed.Y, placed.Width, placed.Height, depth, tone);
 
         writer.Text(placed.X + 22, placed.Y + 29, box.Name, "cmp-name", "start");
         if (box.Kind is { } kind)
             Chip(writer, placed.X + 22 + ComponentSizes.NameWidth(box.Name) + 8, placed.Y + 16, kind, tone);
+        if (box.Aside is { } aside) writer.Text(placed.Right - 16, placed.Y + 29, aside, "cmp-note", "end");
         foreach (var (line, at) in placed.NoteLines.Select((line, at) => (line, at)))
             writer.Text(placed.X + 22, placed.Y + 50 + at * ComponentSizes.NoteLine, line, "cmp-note", "start");
     }
 
     /// <summary>
-    /// A neighbour: a panel with its name in the code's face, its chip, its note and a row for each thing it gives.
+    /// A neighbour: its heading when it opens a group, then a panel with its name in the code's face, its chip, its
+    /// line of code, its note and a row for each thing it gives.
     /// </summary>
     private static void DrawNeighbour(SvgWriter writer, PlacedNeighbour placed)
     {
         var neighbour = placed.Neighbour;
         string tone = Tone(neighbour.Tone);
         bool before = neighbour.Side == NeighbourSide.Before;
+        if (neighbour.Heading is { } heading) writer.Text(placed.X, placed.Y - 10, heading, "cmp-group", "start");
         Panel(writer, placed.X, placed.Y, placed.Width, placed.Height, 1, tone);
         writer.Text(placed.X + 22, placed.Y + 29, neighbour.Name, "cmp-code-name", "start");
         if (neighbour.Kind is { } kind) Chip(writer, placed.X + 22, placed.Y + 40, kind, tone);
+        if (neighbour.Code is { } code)
+            writer.Text(placed.X + 22, NeighbourLayout.CodeY(placed), code, $"cmp-code cmp-ink{tone}", "start");
         foreach (var (line, at) in placed.NoteLines.Select((line, at) => (line, at)))
             writer.Text(placed.X + 22, NeighbourLayout.NoteY(placed, at), line, "cmp-note", "start");
 
@@ -88,10 +101,13 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         }
     }
 
-    /// <summary>A panel with its marker: the shape a box and a neighbour share.</summary>
+    /// <summary>
+    /// A panel with its marker and the highlight along its top: the shape a box and a neighbour share.
+    /// </summary>
     private static void Panel(SvgWriter writer, double x, double y, double width, double height, int depth,
         string tone) => writer
         .Box(x, y, width, height, Radius, $"cmp-panel depth-{depth} cmp-edge{tone}")
+        .Path($"M{N(x + Radius)} {N(y + 1.5)}H{N(x + width - Radius)}", "cmp-sheen", false)
         .Box(x + 7, y + 14, 4, Math.Min(height - 28, 22), 2, $"cmp-fill{tone}");
 
     /// <summary>A chip: a few words in the box's tone.</summary>
@@ -110,28 +126,19 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     }
 
     /// <summary>
-    /// A pin: filled with an arrow down for what is handed down, hollow with an arrow up for what is said back up.
+    /// A line with its arrow, the dots that march along it unless it is only a read, its word, and a port on the
+    /// box's edge where it leaves the box or arrives at it.
     /// </summary>
-    private static void DrawPin(SvgWriter writer, PlacedPin pin, string tone, string cls)
-    {
-        double half = ComponentSizes.PinHeight / 2, arrow = pin.X + 12;
-        string look = pin.Up ? $"{cls} cmp-edge{tone} up" : $"{cls} cmp-edge cmp-tint{tone}";
-        string tip = pin.Up
-            ? $"M{N(arrow - 4)} {N(pin.Y + 2.5)}L{N(arrow)} {N(pin.Y - 3.5)}L{N(arrow + 4)} {N(pin.Y + 2.5)}Z"
-            : $"M{N(arrow - 4)} {N(pin.Y - 3)}L{N(arrow)} {N(pin.Y + 3)}L{N(arrow + 4)} {N(pin.Y - 3)}Z";
-        writer.Box(pin.X, pin.Y - half, pin.Width, ComponentSizes.PinHeight, half, look)
-            .Path(tip, $"cmp-fill{tone}", false)
-            .Text(arrow + 9, pin.Y + 3.5, pin.Name, $"cmp-pin-text cmp-ink{tone}", "start");
-    }
-
-    /// <summary>A line with its arrow, the dots that march along it unless it is only a read, and its word.</summary>
     private static void DrawLine(SvgWriter writer, PlacedLine line)
     {
-        string data = LinePath.Of(line.Points);
-        bool reads = line.Kind == LineKind.Reads;
+        // A call leaves the box, so its port is where it starts. Every other line arrives, so its port is its end.
+        bool leaves = line.Kind == LineKind.Calls, reads = line.Kind == LineKind.Reads;
+        var port = leaves ? line.Points[0] : line.Points[^1];
+        string data = LinePath.Of(leaves ? line.Points : Shortened(line.Points));
         string? tone = line.Tone == DiagramTone.Plain ? null : line.Tone.Wire();
         writer.Path(data, $"cmp-line cmp-edge{Tone(line.Tone)}{(reads ? " reads" : "")}", true, tone: tone);
         if (!reads) writer.Path(data, "cmp-march", false);
+        writer.Circle(port.X, port.Y, 4, $"cmp-port cmp-edge{Tone(line.Tone)}");
 
         // What a neighbour gives is written in the neighbour. Any other word stands over its line.
         string? word = reads ? DiagramText.Format(DiagramMessage.ComponentReads) : line.Word;
@@ -139,15 +146,13 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         writer.Text((line.Points[0].X + line.Points[^1].X) / 2, line.Points[0].Y - 7, word, "cmp-word");
     }
 
-    /// <summary>The key under the drawing: what a pin's arrow means, each way.</summary>
-    private static void DrawKey(SvgWriter writer, double y)
+    /// <summary>A line's points with the last pulled back a little, so its arrow stops at the port's rim.</summary>
+    private static IReadOnlyList<LinePoint> Shortened(IReadOnlyList<LinePoint> points)
     {
-        string down = DiagramText.Format(DiagramMessage.ComponentHandedDown);
-        string up = DiagramText.Format(DiagramMessage.ComponentSaidBackUp);
-        var handedDown = new PlacedPin("", down, false, 0, y, ComponentSizes.PinWidth(down));
-        var saidBackUp = new PlacedPin("", up, true, handedDown.Width + 12, y, ComponentSizes.PinWidth(up));
-        DrawPin(writer, handedDown, "", "cmp-key cmp-pin");
-        DrawPin(writer, saidBackUp, "", "cmp-key cmp-pin");
+        var last = points[^1];
+        var before = points[^2];
+        double x = last.X - Short * Math.Sign(last.X - before.X), y = last.Y - Short * Math.Sign(last.Y - before.Y);
+        return [.. points.Take(points.Count - 1), new LinePoint(x, y)];
     }
 
     /// <summary>The ground's dots: a row of them every so far, each row one dashed line with round ends.</summary>

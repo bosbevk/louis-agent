@@ -77,8 +77,14 @@ public enum DiagramMessage
 
     // The words a component diagram draws itself (F134.7): on a line to a service, and in its key.
     [Description("reads")] ComponentReads,
+    [Description("How to read it")] ComponentKey,
     [Description("handed down")] ComponentHandedDown,
+    [Description("a parameter")] ComponentParameter,
     [Description("said back up")] ComponentSaidBackUp,
+    [Description("a callback")] ComponentCallback,
+    [Description("reads a service")] ComponentReadsAService,
+    [Description("the one thing it holds")] ComponentHolds,
+    [Description("A box inside a box is held by it.")] ComponentHeldBy,
 
     // What each tone means in the docs' legend (CL60.2): the role a box of that colour plays in every chart.
     [Description("starts it")] LegendBlue,

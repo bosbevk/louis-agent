@@ -5,4 +5,8 @@ namespace LouisAgent.Diagrams.Components.Spec;
 /// </summary>
 /// <param name="Root">The component the picture is of. What it holds is inside it.</param>
 /// <param name="Around">What stands beside the root: who hands it things, what it reads, what it calls.</param>
-public sealed record ComponentsSpec(ComponentBox Root, IReadOnlyList<ComponentNeighbour>? Around = null);
+/// <param name="Subtitle">The small line under the picture's title, such as where the component is.</param>
+public sealed record ComponentsSpec(
+    ComponentBox Root,
+    IReadOnlyList<ComponentNeighbour>? Around = null,
+    string? Subtitle = null);

@@ -41,6 +41,11 @@ public class ComponentsReaderTests
             Assert.That(components.Around!.Select(neighbour => neighbour.Side),
                 Is.EqualTo(new[] { NeighbourSide.Before, NeighbourSide.Before, NeighbourSide.After }));
             Assert.That(components.Around![2].To, Is.EqualTo("deck"));
+            Assert.That(components.Subtitle, Is.EqualTo("louis-agent.web, Site / Showroom / Start"));
+            Assert.That(components.Root.Aside, Is.EqualTo("Components/Site/Showroom/Start"));
+            Assert.That(components.Around.Select(neighbour => neighbour.Heading),
+                Is.EqualTo(new[] { "The site's page", "What the start reads", "Runs in the browser" }));
+            Assert.That(components.Around[2].Code, Is.EqualTo("watch, bring"));
         });
     }
 

@@ -71,12 +71,14 @@ internal static class ComponentSizes
     }
 
     /// <summary>
-    /// How wide a box must be: for its name and chip, its note, its pins, its pill, and the widest box it holds
-    /// with room at both sides.
+    /// How wide a box must be: for its name, its chip and the words at its right, its note, its pins, its pill,
+    /// and the widest box it holds with room at both sides.
     /// </summary>
     public static double Width(ComponentBox box)
     {
-        double name = 22 + NameWidth(box.Name) + (box.Kind is { } kind ? 8 + ChipWidth(kind) : 0) + Pad;
+        double chip = box.Kind is { } kind ? 8 + ChipWidth(kind) : 0;
+        double aside = box.Aside is { } words ? 24 + words.Length * NoteChar : 0;
+        double name = 22 + NameWidth(box.Name) + chip + aside + Pad;
         double note = NoteLines(box.Note).Select(line => 22 + line.Length * NoteChar + Pad).DefaultIfEmpty(0).Max();
         double pins = PinsWidth(box) + 2 * PinInset;
         double pill = box.State is { } state ? PillWidth(state.Says) + 2 * Pad : 0;

@@ -39,6 +39,17 @@ public class ComponentsRendererTests
     [TestCase("the site's list")]
     [TestCase("Deck.razor.js")]
     [TestCase("Viewed")]
+    [TestCase("How to read it")]
+    [TestCase("The start: what it is made of")]
+    [TestCase("louis-agent.web, Site / Showroom / Start")]
+    [TestCase("Components/Site/Showroom/Start")]
+    [TestCase("What the start reads")]
+    [TestCase("watch, bring")]
+    [TestCase("a parameter")]
+    [TestCase("a callback")]
+    [TestCase("reads a service")]
+    [TestCase("the one thing it holds")]
+    [TestCase("A box inside a box is held by it.")]
     public void EveryWord_IsInThePicture(string word)
     {
         var words = XElement.Parse(Drawn()).Descendants(Svg + "text").Select(text => text.Value);
@@ -65,7 +76,11 @@ public class ComponentsRendererTests
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pin ") && cls.Contains(" up")), Is.EqualTo(2));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pin ")), Is.EqualTo(9));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pill ")), Is.EqualTo(1));
-            Assert.That(classes.Count(cls => cls.Contains("cmp-line") && cls.Contains("reads")), Is.EqualTo(1));
+            Assert.That(classes.Count(cls => cls.StartsWith("cmp-port ")), Is.EqualTo(7),
+                "a port where each of the five lines leaves or arrives at the root or the deck, and on what is given");
+            Assert.That(classes, Has.None.EqualTo("titlebar"), "the picture has its own title, and no bar");
+            Assert.That(classes, Has.Some.EqualTo("notebar"), "the docs' note stays");
+            Assert.That(classes.Count(cls => cls.StartsWith("cmp-line ") && cls.Contains("reads")), Is.EqualTo(1));
         });
     }
 
@@ -88,17 +103,18 @@ public class ComponentsRendererTests
     }
 
     /// <summary>
-    /// The docs' frame is the shared one: the title bar, the note, and a legend of the tones it uses.
+    /// The docs' frame is the shared one, with its title bar and its note. What each tone means is said once, in
+    /// the picture's own key, and not a second time in the frame's legend.
     /// </summary>
     [TestCase("this project")]
     [TestCase("starts it")]
     [TestCase("contracts and state")]
     [TestCase("One thing held, handed down and said back up.")]
-    public void TheDocsFrame_NamesItsTonesAndItsNote(string words)
+    public void TheDocsFrame_HasItsNote_AndATonesMeaningIsSaidOnce(string words)
     {
         var texts = XElement.Parse(Drawn()).Descendants(Svg + "text").Select(text => text.Value);
 
-        Assert.That(texts, Has.Some.Contains(words));
+        Assert.That(texts.Count(text => text.Contains(words)), Is.EqualTo(1));
     }
 
     /// <summary>On a page the same picture is drawn without the docs' frame.</summary>

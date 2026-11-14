@@ -16,8 +16,10 @@ internal static class ComponentSamples
                                   "title": "The start: what it is made of",
                                   "caption": "One thing held, handed down and said back up.",
                                   "components": {
+                                    "subtitle": "louis-agent.web, Site / Showroom / Start",
                                     "root": {
                                       "id": "start", "name": "ShowroomStart", "kind": "component", "tone": "green",
+                                      "aside": "Components/Site/Showroom/Start",
                                       "state": {
                                         "says": "which demo is forward",
                                         "down": [ "stage.Accent", "deck.Forward", "dock.Current" ],
@@ -43,10 +45,12 @@ internal static class ComponentSamples
                                     },
                                     "around": [
                                       { "id": "page", "name": "DemosPage", "side": "before", "kind": "page",
-                                        "tone": "blue", "gives": [ "Featured", "Group" ] },
+                                        "heading": "The site's page", "tone": "blue",
+                                        "gives": [ "Featured", "Group" ] },
                                       { "id": "demos", "name": "ShowroomDemos", "side": "before", "tone": "teal",
-                                        "note": "the site's list", "reads": true },
+                                        "heading": "What the start reads", "note": "the site's list", "reads": true },
                                       { "id": "script", "name": "Deck.razor.js", "side": "after", "to": "deck",
+                                        "heading": "Runs in the browser", "code": "watch, bring",
                                         "note": "says which window a swipe left in the middle",
                                         "calls": "calls", "back": "Viewed" }
                                     ]

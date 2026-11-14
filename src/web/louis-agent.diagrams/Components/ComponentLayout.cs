@@ -5,7 +5,7 @@ namespace LouisAgent.Diagrams.Components;
 
 /// <summary>
 /// Places a component diagram (F134.7): every box inside the one that holds it, every pin on its box's top edge,
-/// and every neighbour beside the root. No place is written in a picture's JSON: it all comes from here.
+/// every neighbour beside the root, and the key. No place is written in a picture's JSON: it all comes from here.
 /// </summary>
 /// <remarks>
 /// A layout as a pure function of data, over the Composite pattern's tree, walked once: a box is as wide as its own
@@ -15,6 +15,9 @@ namespace LouisAgent.Diagrams.Components;
 /// <seealso href="https://refactoring.guru/design-patterns/composite">Composite (Refactoring.Guru)</seealso>
 public static class ComponentLayout
 {
+    /// <summary>The room the picture's title and the line under it take, above everything else.</summary>
+    public const double TitleRoom = 64;
+
     /// <summary>The room above the root, and between the root and a column of neighbours for their lines.</summary>
     private const double Top = 12, ColumnGap = 60;
 
@@ -23,19 +26,24 @@ public static class ComponentLayout
     {
         var around = components.Around ?? [];
 
-        // The root stands after the column of what comes before it, when there is one.
-        double before = NeighbourLayout.ColumnWidth(around, NeighbourSide.Before);
+        // The root stands after the column of what comes before it, when there is one. The key stands under that
+        // column, so the column is never narrower than the key.
+        double column = NeighbourLayout.ColumnWidth(around, NeighbourSide.Before);
+        double before = column == 0 ? 0 : Math.Max(column, KeyLayout.Width);
         double left = before == 0 ? 0 : before + ColumnGap;
-        var boxes = Boxes(components.Root, left, Top, ComponentSizes.Width(components.Root), 0).ToList();
+        var boxes = Boxes(components.Root, left, TitleRoom + Top, ComponentSizes.Width(components.Root), 0).ToList();
         var root = boxes[0];
 
-        var neighbours = NeighbourLayout.Place(around, boxes, root.Right + ColumnGap);
+        var neighbours = NeighbourLayout.Place(around, boxes, before, root.Right + ColumnGap);
         var lines = neighbours.SelectMany(neighbour => NeighbourLayout.Lines(neighbour, boxes)).ToList();
         var pins = boxes.SelectMany(Pins).ToList();
+        var key = KeyLayout.Of(components, root, neighbours);
 
-        double width = neighbours.Select(neighbour => neighbour.Right).Append(root.Right).Max();
-        double height = neighbours.Select(neighbour => neighbour.Bottom).Append(root.Bottom).Max();
-        return new PlacedComponents(width, height, boxes, pins, neighbours, lines);
+        double width = neighbours.Select(neighbour => neighbour.Right)
+            .Append(root.Right).Append(key.X + key.Width).Max();
+        double height = neighbours.Select(neighbour => neighbour.Bottom)
+            .Append(root.Bottom).Append(key.Bottom).Max();
+        return new PlacedComponents(width, height, boxes, pins, neighbours, lines, key);
     }
 
     /// <summary>

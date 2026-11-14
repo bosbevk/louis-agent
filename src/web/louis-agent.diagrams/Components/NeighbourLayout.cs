@@ -19,14 +19,16 @@ internal static class NeighbourLayout
     private const double Narrowest = 190;
 
     /// <summary>
-    /// From its top edge to under its name, a row for its chip, a line of its note, a row for a thing given.
+    /// From its top edge to under its name, a row for its chip, its line of code, a line of its note, a row for a
+    /// thing given.
     /// </summary>
-    private const double Header = 44, ChipRow = 24, NoteLine = 16, Row = 24;
+    private const double Header = 44, ChipRow = 24, CodeLine = 20, NoteLine = 16, Row = 24;
 
     /// <summary>
-    /// The room at its foot, between two neighbours in a column, and how near a box's corner a line may end.
+    /// The room at its foot, between two neighbours in a column, how near a box's corner a line may end, and the
+    /// room a heading takes over the neighbour it opens a group with.
     /// </summary>
-    private const double Foot = 14, Between = 18, Corner = 8;
+    private const double Foot = 14, Between = 18, Corner = 8, HeadingRoom = 14;
 
     /// <summary>How far under a neighbour's top its first line runs, and its second.</summary>
     private const double FirstLine = 30, SecondLine = 54;
@@ -46,14 +48,15 @@ internal static class NeighbourLayout
         around.Where(neighbour => neighbour.Side == side).Select(Width).DefaultIfEmpty(0).Max();
 
     /// <summary>
-    /// Every neighbour at its place: what comes before the root in a column at the left, what comes after in a
-    /// column that starts where it is told. In a column each is level with its box, or under the one above.
+    /// Every neighbour at its place: what comes before the root in a column at the left, as wide as it is told,
+    /// and what comes after in a column that starts where it is told. In a column each is level with its box, or
+    /// under the one above.
     /// </summary>
     public static IReadOnlyList<PlacedNeighbour> Place(IReadOnlyList<ComponentNeighbour> around,
-        IReadOnlyList<PlacedBox> boxes, double after) =>
+        IReadOnlyList<PlacedBox> boxes, double before, double after) =>
     [
-        .. Column(around, boxes, NeighbourSide.Before, 0),
-        .. Column(around, boxes, NeighbourSide.After, after)
+        .. Column(around, boxes, NeighbourSide.Before, 0, before),
+        .. Column(around, boxes, NeighbourSide.After, after, ColumnWidth(around, NeighbourSide.After))
     ];
 
     /// <summary>The lines between a neighbour and the box it talks to, each straight across.</summary>
@@ -88,28 +91,36 @@ internal static class NeighbourLayout
         }
     }
 
-    /// <summary>The middle, top to bottom, of the row a neighbour gives its thing number so-many on.</summary>
-    public static double RowY(PlacedNeighbour placed, int at)
-    {
-        double chipRow = placed.Neighbour.Kind is null ? 0 : ChipRow;
-        return placed.Y + Header + chipRow + placed.NoteLines.Count * NoteLine + at * Row + Row / 2;
-    }
+    /// <summary>The baseline of a neighbour's line of code, under its name and its chip.</summary>
+    public static double CodeY(PlacedNeighbour placed) => Under(placed) + 8;
 
     /// <summary>
-    /// Where a neighbour's note starts: the baseline of its first line, under its name and its chip. Each next
-    /// line is a note's line lower.
+    /// The baseline of a line of a neighbour's note, under its name, its chip and its line of code. Each next line
+    /// is a note's line lower.
     /// </summary>
     public static double NoteY(PlacedNeighbour placed, int line) =>
-        placed.Y + Header + (placed.Neighbour.Kind is null ? 0 : ChipRow) + 8 + line * NoteLine;
+        Under(placed) + (placed.Neighbour.Code is null ? 0 : CodeLine) + 8 + line * NoteLine;
 
-    /// <summary>One side's column: its neighbours from the top down, in the order of the boxes they talk to.</summary>
+    /// <summary>The middle, top to bottom, of the row a neighbour gives its thing number so-many on.</summary>
+    public static double RowY(PlacedNeighbour placed, int at) =>
+        Under(placed) + (placed.Neighbour.Code is null ? 0 : CodeLine) + placed.NoteLines.Count * NoteLine +
+        at * Row + Row / 2;
+
+    /// <summary>Where a neighbour's own rows start: under its name, and under its chip when it has one.</summary>
+    private static double Under(PlacedNeighbour placed) =>
+        placed.Y + Header + (placed.Neighbour.Kind is null ? 0 : ChipRow);
+
+    /// <summary>
+    /// One side's column: its neighbours from the top down, in the order of the boxes they talk to. One that opens
+    /// a group stands a little lower, for its heading.
+    /// </summary>
     private static IEnumerable<PlacedNeighbour> Column(IReadOnlyList<ComponentNeighbour> around,
-        IReadOnlyList<PlacedBox> boxes, NeighbourSide side, double x)
+        IReadOnlyList<PlacedBox> boxes, NeighbourSide side, double x, double width)
     {
-        double width = ColumnWidth(around, side), free = 0;
+        double free = 0;
         foreach (var neighbour in around.Where(one => one.Side == side).OrderBy(one => BoxOf(one, boxes).Y))
         {
-            double y = Math.Max(BoxOf(neighbour, boxes).Y, free);
+            double y = Math.Max(BoxOf(neighbour, boxes).Y, free) + (neighbour.Heading is null ? 0 : HeadingRoom);
             double height = Height(neighbour);
             yield return new PlacedNeighbour(neighbour, x, y, width, height, NoteLines(neighbour));
             free = y + height + Between;
@@ -124,25 +135,28 @@ internal static class NeighbourLayout
     private static IReadOnlyList<string> NoteLines(ComponentNeighbour neighbour) =>
         neighbour.Note is null ? [] : TextWrap.Lines(neighbour.Note, NoteWrap);
 
-    /// <summary>How wide a neighbour must be: for its name, its chip, its note and the things it gives.</summary>
+    /// <summary>
+    /// How wide a neighbour must be: for its name, its chip, its line of code, its note and the things it gives.
+    /// </summary>
     private static double Width(ComponentNeighbour neighbour)
     {
         double name = 22 + neighbour.Name.Length * NameChar + 20;
         double chip = neighbour.Kind is null ? 0 : 22 + ComponentSizes.ChipWidth(neighbour.Kind) + 20;
+        double code = neighbour.Code is null ? 0 : 22 + neighbour.Code.Length * RowChar + 20;
         double note = NoteLines(neighbour).Select(line => 22 + line.Length * NoteChar + 20).DefaultIfEmpty(0).Max();
         double rows = (neighbour.Gives ?? []).Select(given => 22 + given.Length * RowChar + 34).DefaultIfEmpty(0).Max();
 
-        return new[] { Narrowest, name, chip, note, rows }.Max();
+        return new[] { Narrowest, name, chip, code, note, rows }.Max();
     }
 
     /// <summary>
-    /// How tall a neighbour is: its name, its chip, its note and a row for each thing it gives, and never shorter
-    /// than the two lines a call and its answer need.
+    /// How tall a neighbour is: its name, its chip, its line of code, its note and a row for each thing it gives,
+    /// and never shorter than the two lines a call and its answer need.
     /// </summary>
     private static double Height(ComponentNeighbour neighbour)
     {
-        double own = Header + (neighbour.Kind is null ? 0 : ChipRow) + NoteLines(neighbour).Count * NoteLine +
-                     (neighbour.Gives?.Count ?? 0) * Row + Foot;
+        double own = Header + (neighbour.Kind is null ? 0 : ChipRow) + (neighbour.Code is null ? 0 : CodeLine) +
+                     NoteLines(neighbour).Count * NoteLine + (neighbour.Gives?.Count ?? 0) * Row + Foot;
         return Math.Max(own, SecondLine + Foot + 6);
     }
 }

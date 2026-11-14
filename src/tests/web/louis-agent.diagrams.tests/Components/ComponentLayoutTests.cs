@@ -1,7 +1,9 @@
 using LouisAgent.Diagrams.Components;
 using LouisAgent.Diagrams.Components.Placed;
+using LouisAgent.Diagrams.Components.Placed.Keys;
 using LouisAgent.Diagrams.Components.Placed.Lines;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Components;
 
@@ -143,11 +145,66 @@ public class ComponentLayoutTests
         {
             Assert.That(page.Right, Is.LessThan(start.X - 30), "before the root, with room for its lines");
             Assert.That(script.X, Is.GreaterThan(start.Right + 30), "after the root");
-            Assert.That(page.Y, Is.EqualTo(start.Y), "level with the root");
+            Assert.That(page.Y, Is.InRange(start.Y, start.Y + 20), "level with the root, under its heading");
+            Assert.That(start.Y, Is.GreaterThanOrEqualTo(60), "under the picture's title");
             Assert.That(demos.Y, Is.GreaterThan(page.Bottom), "under the first in its column");
             Assert.That(script.Y, Is.InRange(deck.Y, deck.Bottom), "level with the deck it talks to");
             Assert.That(placed.Width, Is.GreaterThanOrEqualTo(script.Right));
             Assert.That(placed.Height, Is.GreaterThanOrEqualTo(Math.Max(start.Bottom, demos.Bottom)));
+        });
+    }
+
+    /// <summary>
+    /// The picture says how to read it (Louis, of the key in the design he picked: "where is this?"). The key
+    /// stands under the column before the root, clear of it and of the root, with a row for each thing the picture
+    /// really uses: its tones in their order, a pin each way, a read, the one thing held, and that a box inside a
+    /// box is held by it.
+    /// </summary>
+    [Test]
+    public void TheKey_StandsUnderTheColumnBeforeTheRoot_WithARowForWhatThePictureUses()
+    {
+        var placed = Placed();
+        var key = placed.Key;
+        var start = Box(placed, "start");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(key.Rows.Select(row => row.Kind), Is.EqualTo(new[]
+            {
+                KeyRowKind.Tone, KeyRowKind.Tone, KeyRowKind.Tone, KeyRowKind.HandedDown, KeyRowKind.SaidBackUp,
+                KeyRowKind.Reads, KeyRowKind.Holds, KeyRowKind.Sentence
+            }));
+            Assert.That(key.Rows.Take(3).Select(row => row.Tone),
+                Is.EqualTo(new[] { DiagramTone.Blue, DiagramTone.Green, DiagramTone.Teal }));
+            Assert.That(key.Rows.Take(3).Select(row => row.Words),
+                Is.EqualTo(new[] { "starts it", "this project", "contracts and state" }));
+            Assert.That(key.Y, Is.GreaterThan(Neighbour(placed, "demos").Bottom + 16), "under the column");
+            Assert.That(key.X + key.Width, Is.LessThan(start.X), "clear of the root");
+            Assert.That(placed.Height, Is.GreaterThanOrEqualTo(key.Bottom), "inside the picture");
+        });
+    }
+
+    /// <summary>
+    /// A picture with nothing before its root has its key under the root, and a row only for what it uses: no read
+    /// and nothing held make no rows for them.
+    /// </summary>
+    [Test]
+    public void WithNothingBeforeTheRoot_TheKeyStandsUnderIt_WithoutRowsForWhatIsNotThere()
+    {
+        const string alone = """
+                             { "kind": "components", "title": "A dock",
+                               "components": { "root": { "id": "dock", "name": "Dock", "tone": "green",
+                                                         "in": [ "Items" ] } } }
+                             """;
+
+        var placed = ComponentLayout.Of(DiagramReader.Read(alone).Components!);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(placed.Key.Rows.Select(row => row.Kind),
+                Is.EqualTo(new[] { KeyRowKind.Tone, KeyRowKind.HandedDown }));
+            Assert.That(placed.Key.Y, Is.GreaterThan(placed.Boxes[0].Bottom));
+            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(placed.Key.X + placed.Key.Width));
         });
     }
 

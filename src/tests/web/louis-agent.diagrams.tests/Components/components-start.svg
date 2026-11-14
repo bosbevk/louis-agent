@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 969.6 837" width="969.6" height="837" role="img" aria-label="The start: what it is made of" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1075.9 755" width="1075.9" height="755" role="img" aria-label="The start: what it is made of" xmlns="http://www.w3.org/2000/svg">
   <title>The start: what it is made of</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -91,11 +91,11 @@ svg {
 </style>
   <style>
 svg {
-  --cmp-0: #ffffff; --cmp-1: #f4f6f9; --cmp-2: #ffffff; --cmp-3: #f4f6f9; --cmp-4: #ffffff; --cmp-5: #f4f6f9; --cmp-lift: rgba(27, 42, 74, .14); --cmp-dot: rgba(15, 23, 42, .075); --cmp-march: rgba(255, 255, 255, .95);
+  --cmp-0: #ffffff; --cmp-1: #f4f6f9; --cmp-2: #ffffff; --cmp-3: #f4f6f9; --cmp-4: #ffffff; --cmp-5: #f4f6f9; --cmp-lift: rgba(27, 42, 74, .14); --cmp-dot: rgba(15, 23, 42, .075); --cmp-march: rgba(255, 255, 255, .95); --cmp-sheen: rgba(255, 255, 255, .9);
   --cmp-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --cmp-0: #11141a; --cmp-1: #151920; --cmp-2: #191e26; --cmp-3: #1d232c; --cmp-4: #212832; --cmp-5: #262e39; --cmp-lift: rgba(0, 0, 0, .5); --cmp-dot: rgba(255, 255, 255, .055); --cmp-march: rgba(255, 255, 255, .75); }
+  svg { --cmp-0: #11141a; --cmp-1: #151920; --cmp-2: #191e26; --cmp-3: #1d232c; --cmp-4: #212832; --cmp-5: #262e39; --cmp-lift: rgba(0, 0, 0, .5); --cmp-dot: rgba(255, 255, 255, .055); --cmp-march: rgba(255, 255, 255, .75); --cmp-sheen: rgba(255, 255, 255, .09); }
 }
 .cmp-dots {
   fill: none; stroke: var(--cmp-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
@@ -105,36 +105,52 @@ svg {
 .cmp-fill { fill: var(--quiet); }
 .cmp-ink { fill: var(--text); }
 .cmp-edge.tone-blue { stroke: var(--blue-line); }
+.cmp-panel.tone-blue { --cmp-tone: var(--blue-fill); }
 .cmp-tint.tone-blue { fill: var(--blue-fill); }
 .cmp-fill.tone-blue { fill: var(--blue-line); }
 .cmp-ink.tone-blue { fill: var(--blue-ink); }
 .cmp-edge.tone-green { stroke: var(--green-line); }
+.cmp-panel.tone-green { --cmp-tone: var(--green-fill); }
 .cmp-tint.tone-green { fill: var(--green-fill); }
 .cmp-fill.tone-green { fill: var(--green-line); }
 .cmp-ink.tone-green { fill: var(--green-ink); }
 .cmp-edge.tone-violet { stroke: var(--violet-line); }
+.cmp-panel.tone-violet { --cmp-tone: var(--violet-fill); }
 .cmp-tint.tone-violet { fill: var(--violet-fill); }
 .cmp-fill.tone-violet { fill: var(--violet-line); }
 .cmp-ink.tone-violet { fill: var(--violet-ink); }
 .cmp-edge.tone-teal { stroke: var(--teal-line); }
+.cmp-panel.tone-teal { --cmp-tone: var(--teal-fill); }
 .cmp-tint.tone-teal { fill: var(--teal-fill); }
 .cmp-fill.tone-teal { fill: var(--teal-line); }
 .cmp-ink.tone-teal { fill: var(--teal-ink); }
 .cmp-edge.tone-red { stroke: var(--red-line); }
+.cmp-panel.tone-red { --cmp-tone: var(--red-fill); }
 .cmp-tint.tone-red { fill: var(--red-fill); }
 .cmp-fill.tone-red { fill: var(--red-line); }
 .cmp-ink.tone-red { fill: var(--red-ink); }
 .cmp-edge.tone-amber { stroke: var(--amber-line); }
+.cmp-panel.tone-amber { --cmp-tone: var(--amber-fill); }
 .cmp-tint.tone-amber { fill: var(--amber-fill); }
 .cmp-fill.tone-amber { fill: var(--amber-line); }
 .cmp-ink.tone-amber { fill: var(--amber-ink); }
-.cmp-panel { stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--cmp-lift)); }
-.cmp-panel.depth-0 { fill: var(--cmp-0); }
-.cmp-panel.depth-1 { fill: var(--cmp-1); }
-.cmp-panel.depth-2 { fill: var(--cmp-2); }
-.cmp-panel.depth-3 { fill: var(--cmp-3); }
-.cmp-panel.depth-4 { fill: var(--cmp-4); }
-.cmp-panel.depth-5 { fill: var(--cmp-5); }
+.cmp-panel {
+  fill: color-mix(in srgb, var(--cmp-tone, var(--cmp-depth)) 42%, var(--cmp-depth));
+  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--cmp-lift));
+}
+.cmp-panel.depth-0 { --cmp-depth: var(--cmp-0); }
+.cmp-panel.depth-1 { --cmp-depth: var(--cmp-1); }
+.cmp-panel.depth-2 { --cmp-depth: var(--cmp-2); }
+.cmp-panel.depth-3 { --cmp-depth: var(--cmp-3); }
+.cmp-panel.depth-4 { --cmp-depth: var(--cmp-4); }
+.cmp-panel.depth-5 { --cmp-depth: var(--cmp-5); }
+.cmp-sheen { fill: none; stroke: var(--cmp-sheen); stroke-width: 1; stroke-linecap: round; }
+.cmp-swatch { stroke-width: 1; }
+.cmp-title { fill: var(--text); font: 700 21px var(--cmp-sans); letter-spacing: -.2px; }
+.cmp-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.cmp-code { font: 500 11px var(--mono); }
 .cmp-ghost { fill: none; stroke-width: 1; stroke-dasharray: 4 4; stroke-opacity: .7; }
 .cmp-name { fill: var(--text); font: 600 15px var(--cmp-sans); }
 .cmp-code-name { fill: var(--text); font: 600 12.5px var(--mono); }
@@ -173,127 +189,148 @@ svg {
       <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="969.6" height="837" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="921.6" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="1075.9" height="755" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="cmp-dots" d="M0 11H1027.9M0 33H1027.9M0 55H1027.9M0 77H1027.9M0 99H1027.9M0 121H1027.9M0 143H1027.9M0 165H1027.9M0 187H1027.9M0 209H1027.9M0 231H1027.9M0 253H1027.9M0 275H1027.9M0 297H1027.9M0 319H1027.9M0 341H1027.9M0 363H1027.9M0 385H1027.9M0 407H1027.9M0 429H1027.9M0 451H1027.9M0 473H1027.9M0 495H1027.9M0 517H1027.9M0 539H1027.9M0 561H1027.9M0 583H1027.9M0 605H1027.9M0 627H1027.9M0 649H1027.9" />
+    <text class="cmp-title" x="0" y="24" text-anchor="start">The start: what it is made of</text>
+    <text class="cmp-group" x="0" y="46" text-anchor="start">louis-agent.web, Site / Showroom / Start</text>
+    <text class="cmp-group" x="0" y="80" text-anchor="start">The site's page</text>
+    <rect class="cmp-panel depth-1 cmp-edge tone-blue" x="0" y="90" width="250" height="130" rx="14" />
+    <path class="cmp-sheen" d="M14 91.5H236" />
+    <rect class="cmp-fill tone-blue" x="7" y="104" width="4" height="22" rx="2" />
+    <text class="cmp-code-name" x="22" y="119" text-anchor="start">DemosPage</text>
+    <rect class="cmp-tint tone-blue" x="22" y="130" width="40.4" height="18" rx="9" />
+    <text class="cmp-chip-text cmp-ink tone-blue" x="30" y="142.5" text-anchor="start">page</text>
+    <text class="cmp-pin-text cmp-ink tone-blue" x="236" y="173.5" text-anchor="end">Featured</text>
+    <circle class="cmp-port cmp-edge tone-blue" cx="250" cy="170" r="4" />
+    <text class="cmp-pin-text cmp-ink tone-blue" x="236" y="197.5" text-anchor="end">Group</text>
+    <circle class="cmp-port cmp-edge tone-blue" cx="250" cy="194" r="4" />
+    <text class="cmp-group" x="0" y="242" text-anchor="start">What the start reads</text>
+    <rect class="cmp-panel depth-1 cmp-edge tone-teal" x="0" y="252" width="250" height="74" rx="14" />
+    <path class="cmp-sheen" d="M14 253.5H236" />
+    <rect class="cmp-fill tone-teal" x="7" y="266" width="4" height="22" rx="2" />
+    <text class="cmp-code-name" x="22" y="281" text-anchor="start">ShowroomDemos</text>
+    <text class="cmp-note" x="22" y="304" text-anchor="start">the site's list</text>
+    <text class="cmp-group" x="808.9" y="272" text-anchor="start">Runs in the browser</text>
+    <rect class="cmp-panel depth-1 cmp-edge" x="808.9" y="282" width="219" height="110" rx="14" />
+    <path class="cmp-sheen" d="M822.9 283.5H1013.9" />
+    <rect class="cmp-fill" x="815.9" y="296" width="4" height="22" rx="2" />
+    <text class="cmp-code-name" x="830.9" y="311" text-anchor="start">Deck.razor.js</text>
+    <text class="cmp-code cmp-ink" x="830.9" y="334" text-anchor="start">watch, bring</text>
+    <text class="cmp-note" x="830.9" y="354" text-anchor="start">says which window a swipe left</text>
+    <text class="cmp-note" x="830.9" y="370" text-anchor="start">in the middle</text>
+    <rect class="cmp-panel depth-0 cmp-edge tone-green" x="310" y="76" width="438.9" height="578" rx="14" />
+    <path class="cmp-sheen" d="M324 77.5H734.9" />
+    <rect class="cmp-fill tone-green" x="317" y="90" width="4" height="22" rx="2" />
+    <text class="cmp-name" x="332" y="105" text-anchor="start">ShowroomStart</text>
+    <rect class="cmp-tint tone-green" x="457" y="92" width="70.9" height="18" rx="9" />
+    <text class="cmp-chip-text cmp-ink tone-green" x="465" y="104.5" text-anchor="start">component</text>
+    <text class="cmp-note" x="732.9" y="105" text-anchor="end">Components/Site/Showroom/Start</text>
+    <rect class="cmp-panel depth-1 cmp-edge tone-green" x="330" y="198" width="398.9" height="436" rx="14" />
+    <path class="cmp-sheen" d="M344 199.5H714.9" />
+    <rect class="cmp-fill tone-green" x="337" y="212" width="4" height="22" rx="2" />
+    <text class="cmp-name" x="352" y="227" text-anchor="start">LitStage</text>
+    <rect class="cmp-tint tone-green" x="432" y="214" width="89.2" height="18" rx="9" />
+    <text class="cmp-chip-text cmp-ink tone-green" x="440" y="226.5" text-anchor="start">general part</text>
+    <rect class="cmp-panel depth-2 cmp-edge tone-green" x="350" y="268" width="358.9" height="264" rx="14" />
+    <path class="cmp-sheen" d="M364 269.5H694.9" />
+    <rect class="cmp-fill tone-green" x="357" y="282" width="4" height="22" rx="2" />
+    <text class="cmp-name" x="372" y="297" text-anchor="start">Deck</text>
+    <rect class="cmp-tint tone-green" x="416" y="284" width="70.9" height="18" rx="9" />
+    <text class="cmp-chip-text cmp-ink tone-green" x="424" y="296.5" text-anchor="start">templated</text>
+    <text class="cmp-note" x="372" y="318" text-anchor="start">one forward, the rest behind it</text>
+    <rect class="cmp-panel depth-3 cmp-edge tone-green" x="370" y="356" width="318.9" height="56" rx="14" />
+    <path class="cmp-sheen" d="M384 357.5H674.9" />
+    <rect class="cmp-fill tone-green" x="377" y="370" width="4" height="22" rx="2" />
+    <text class="cmp-name" x="392" y="385" text-anchor="start">FramedWindow</text>
+    <rect class="cmp-ghost cmp-edge tone-green" x="370.5" y="438.5" width="317.9" height="73" rx="14" />
+    <text class="cmp-name" x="392" y="467" text-anchor="start">PlainBody</text>
+    <text class="cmp-note" x="392" y="488" text-anchor="start">when a demo names no window</text>
+    <rect class="cmp-panel depth-2 cmp-edge tone-green" x="350" y="558" width="358.9" height="56" rx="14" />
+    <path class="cmp-sheen" d="M364 559.5H694.9" />
+    <rect class="cmp-fill tone-green" x="357" y="572" width="4" height="22" rx="2" />
+    <text class="cmp-name" x="372" y="587" text-anchor="start">Dock</text>
+    <rect class="cmp-tint tone-green" x="416" y="574" width="89.2" height="18" rx="9" />
+    <text class="cmp-chip-text cmp-ink tone-green" x="424" y="586.5" text-anchor="start">general part</text>
+    <path class="cmp-line cmp-edge tone-blue" d="M250 170L305 170" marker-end="url(#arrow-blue)" />
+    <path class="cmp-march" d="M250 170L305 170" />
+    <circle class="cmp-port cmp-edge tone-blue" cx="310" cy="170" r="4" />
+    <path class="cmp-line cmp-edge tone-blue" d="M250 194L305 194" marker-end="url(#arrow-blue)" />
+    <path class="cmp-march" d="M250 194L305 194" />
+    <circle class="cmp-port cmp-edge tone-blue" cx="310" cy="194" r="4" />
+    <path class="cmp-line cmp-edge reads" d="M250 282L305 282" marker-end="url(#arrow)" />
+    <circle class="cmp-port cmp-edge" cx="310" cy="282" r="4" />
+    <text class="cmp-word" x="280" y="275" text-anchor="middle">reads</text>
+    <path class="cmp-line cmp-edge" d="M708.9 312L808.9 312" marker-end="url(#arrow)" />
+    <path class="cmp-march" d="M708.9 312L808.9 312" />
+    <circle class="cmp-port cmp-edge" cx="708.9" cy="312" r="4" />
+    <text class="cmp-word" x="758.9" y="305" text-anchor="middle">calls</text>
+    <path class="cmp-line cmp-edge" d="M808.9 336L713.9 336" marker-end="url(#arrow)" />
+    <path class="cmp-march" d="M808.9 336L713.9 336" />
+    <circle class="cmp-port cmp-edge" cx="708.9" cy="336" r="4" />
+    <text class="cmp-word" x="758.9" y="329" text-anchor="middle">Viewed</text>
+    <rect class="cmp-pill cmp-tint cmp-edge tone-green" x="426.9" y="124" width="205.1" height="36" rx="18" />
+    <circle class="cmp-pulse cmp-fill tone-green" cx="448.9" cy="142" r="4.5" />
+    <text class="cmp-pill-text" x="464.9" y="146.5" text-anchor="start">which demo is forward</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="638.3" y="189" width="66.6" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M646.3 195L650.3 201L654.3 195Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="659.3" y="201.5" text-anchor="start">Accent</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="420.3" y="259" width="60.5" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M428.3 265L432.3 271L436.3 265Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="441.3" y="271.5" text-anchor="start">Items</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="488.8" y="259" width="72.7" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M496.8 265L500.8 271L504.8 265Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="509.8" y="271.5" text-anchor="start">Forward</text>
+    <rect class="cmp-pin cmp-edge tone-green up" x="569.5" y="259" width="115.4" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M577.5 270.5L581.5 264.5L585.5 270.5Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="590.5" y="271.5" text-anchor="start">ForwardChanged</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="535.9" y="347" width="72.7" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M543.9 353L547.9 359L551.9 353Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="556.9" y="359.5" text-anchor="start">Address</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="616.6" y="347" width="48.3" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M624.6 353L628.6 359L632.6 353Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="637.6" y="359.5" text-anchor="start">Lit</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="469.1" y="549" width="60.5" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M477.1 555L481.1 561L485.1 555Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="490.1" y="561.5" text-anchor="start">Items</text>
+    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="537.6" y="549" width="72.7" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M545.6 555L549.6 561L553.6 555Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="558.6" y="561.5" text-anchor="start">Current</text>
+    <rect class="cmp-pin cmp-edge tone-green up" x="618.3" y="549" width="66.6" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M626.3 560.5L630.3 554.5L634.3 560.5Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="639.3" y="561.5" text-anchor="start">Chosen</text>
+    <text class="cmp-group" x="0" y="376" text-anchor="start">How to read it</text>
+    <rect class="cmp-swatch cmp-tint cmp-edge tone-blue" x="0" y="402" width="26" height="16" rx="5" />
+    <rect class="cmp-fill tone-blue" x="4" y="406" width="3" height="8" rx="1.5" />
+    <text class="cmp-note" x="38" y="414" text-anchor="start">starts it</text>
+    <rect class="cmp-swatch cmp-tint cmp-edge tone-green" x="0" y="430" width="26" height="16" rx="5" />
+    <rect class="cmp-fill tone-green" x="4" y="434" width="3" height="8" rx="1.5" />
+    <text class="cmp-note" x="38" y="442" text-anchor="start">this project</text>
+    <rect class="cmp-swatch cmp-tint cmp-edge tone-teal" x="0" y="458" width="26" height="16" rx="5" />
+    <rect class="cmp-fill tone-teal" x="4" y="462" width="3" height="8" rx="1.5" />
+    <text class="cmp-note" x="38" y="470" text-anchor="start">contracts and state</text>
+    <rect class="cmp-key cmp-pin cmp-edge cmp-tint tone-green" x="0" y="485" width="97.1" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M8 491L12 497L16 491Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="21" y="497.5" text-anchor="start">handed down</text>
+    <text class="cmp-note" x="109.1" y="498" text-anchor="start">a parameter</text>
+    <rect class="cmp-key cmp-pin cmp-edge tone-green up" x="0" y="513" width="103.2" height="18" rx="9" />
+    <path class="cmp-fill tone-green" d="M8 524.5L12 518.5L16 524.5Z" />
+    <text class="cmp-pin-text cmp-ink tone-green" x="21" y="525.5" text-anchor="start">said back up</text>
+    <text class="cmp-note" x="115.2" y="526" text-anchor="start">a callback</text>
+    <path class="cmp-key cmp-line cmp-edge reads" d="M0 550H76" marker-end="url(#arrow)" />
+    <text class="cmp-note" x="88" y="554" text-anchor="start">reads a service</text>
+    <rect class="cmp-key cmp-pill cmp-tint cmp-edge tone-green" x="0" y="568" width="76" height="20" rx="10" />
+    <circle class="cmp-fill tone-green" cx="12" cy="578" r="3.5" />
+    <text class="cmp-note" x="88" y="582" text-anchor="start">the one thing it holds</text>
+    <text class="cmp-note" x="0" y="610" text-anchor="start">A box inside a box is held by it.</text>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">The start:</tspan>
-    <tspan class="title-rest">what it is made of</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="cmp-dots" d="M0 11H921.6M0 33H921.6M0 55H921.6M0 77H921.6M0 99H921.6M0 121H921.6M0 143H921.6M0 165H921.6M0 187H921.6M0 209H921.6M0 231H921.6M0 253H921.6M0 275H921.6M0 297H921.6M0 319H921.6M0 341H921.6M0 363H921.6M0 385H921.6M0 407H921.6M0 429H921.6M0 451H921.6M0 473H921.6M0 495H921.6M0 517H921.6M0 539H921.6M0 561H921.6M0 583H921.6M0 605H921.6M0 627H921.6" />
-    <rect class="cmp-panel depth-1 cmp-edge tone-blue" x="0" y="12" width="190" height="130" rx="14" />
-    <rect class="cmp-fill tone-blue" x="7" y="26" width="4" height="22" rx="2" />
-    <text class="cmp-code-name" x="22" y="41" text-anchor="start">DemosPage</text>
-    <rect class="cmp-tint tone-blue" x="22" y="52" width="40.4" height="18" rx="9" />
-    <text class="cmp-chip-text cmp-ink tone-blue" x="30" y="64.5" text-anchor="start">page</text>
-    <text class="cmp-pin-text cmp-ink tone-blue" x="176" y="95.5" text-anchor="end">Featured</text>
-    <circle class="cmp-port cmp-edge tone-blue" cx="190" cy="92" r="4" />
-    <text class="cmp-pin-text cmp-ink tone-blue" x="176" y="119.5" text-anchor="end">Group</text>
-    <circle class="cmp-port cmp-edge tone-blue" cx="190" cy="116" r="4" />
-    <rect class="cmp-panel depth-1 cmp-edge tone-teal" x="0" y="160" width="190" height="74" rx="14" />
-    <rect class="cmp-fill tone-teal" x="7" y="174" width="4" height="22" rx="2" />
-    <text class="cmp-code-name" x="22" y="189" text-anchor="start">ShowroomDemos</text>
-    <text class="cmp-note" x="22" y="212" text-anchor="start">the site's list</text>
-    <rect class="cmp-panel depth-1 cmp-edge" x="702.6" y="204" width="219" height="90" rx="14" />
-    <rect class="cmp-fill" x="709.6" y="218" width="4" height="22" rx="2" />
-    <text class="cmp-code-name" x="724.6" y="233" text-anchor="start">Deck.razor.js</text>
-    <text class="cmp-note" x="724.6" y="256" text-anchor="start">says which window a swipe left</text>
-    <text class="cmp-note" x="724.6" y="272" text-anchor="start">in the middle</text>
-    <rect class="cmp-panel depth-0 cmp-edge tone-green" x="250" y="12" width="392.6" height="578" rx="14" />
-    <rect class="cmp-fill tone-green" x="257" y="26" width="4" height="22" rx="2" />
-    <text class="cmp-name" x="272" y="41" text-anchor="start">ShowroomStart</text>
-    <rect class="cmp-tint tone-green" x="397" y="28" width="70.9" height="18" rx="9" />
-    <text class="cmp-chip-text cmp-ink tone-green" x="405" y="40.5" text-anchor="start">component</text>
-    <rect class="cmp-panel depth-1 cmp-edge tone-green" x="270" y="134" width="352.6" height="436" rx="14" />
-    <rect class="cmp-fill tone-green" x="277" y="148" width="4" height="22" rx="2" />
-    <text class="cmp-name" x="292" y="163" text-anchor="start">LitStage</text>
-    <rect class="cmp-tint tone-green" x="372" y="150" width="89.2" height="18" rx="9" />
-    <text class="cmp-chip-text cmp-ink tone-green" x="380" y="162.5" text-anchor="start">general part</text>
-    <rect class="cmp-panel depth-2 cmp-edge tone-green" x="290" y="204" width="312.6" height="264" rx="14" />
-    <rect class="cmp-fill tone-green" x="297" y="218" width="4" height="22" rx="2" />
-    <text class="cmp-name" x="312" y="233" text-anchor="start">Deck</text>
-    <rect class="cmp-tint tone-green" x="356" y="220" width="70.9" height="18" rx="9" />
-    <text class="cmp-chip-text cmp-ink tone-green" x="364" y="232.5" text-anchor="start">templated</text>
-    <text class="cmp-note" x="312" y="254" text-anchor="start">one forward, the rest behind it</text>
-    <rect class="cmp-panel depth-3 cmp-edge tone-green" x="310" y="292" width="272.6" height="56" rx="14" />
-    <rect class="cmp-fill tone-green" x="317" y="306" width="4" height="22" rx="2" />
-    <text class="cmp-name" x="332" y="321" text-anchor="start">FramedWindow</text>
-    <rect class="cmp-ghost cmp-edge tone-green" x="310.5" y="374.5" width="271.6" height="73" rx="14" />
-    <text class="cmp-name" x="332" y="403" text-anchor="start">PlainBody</text>
-    <text class="cmp-note" x="332" y="424" text-anchor="start">when a demo names no window</text>
-    <rect class="cmp-panel depth-2 cmp-edge tone-green" x="290" y="494" width="312.6" height="56" rx="14" />
-    <rect class="cmp-fill tone-green" x="297" y="508" width="4" height="22" rx="2" />
-    <text class="cmp-name" x="312" y="523" text-anchor="start">Dock</text>
-    <rect class="cmp-tint tone-green" x="356" y="510" width="89.2" height="18" rx="9" />
-    <text class="cmp-chip-text cmp-ink tone-green" x="364" y="522.5" text-anchor="start">general part</text>
-    <path class="cmp-line cmp-edge tone-blue" d="M190 92L250 92" marker-end="url(#arrow-blue)" />
-    <path class="cmp-march" d="M190 92L250 92" />
-    <path class="cmp-line cmp-edge tone-blue" d="M190 116L250 116" marker-end="url(#arrow-blue)" />
-    <path class="cmp-march" d="M190 116L250 116" />
-    <path class="cmp-line cmp-edge reads" d="M190 190L250 190" marker-end="url(#arrow)" />
-    <text class="cmp-word" x="220" y="183" text-anchor="middle">reads</text>
-    <path class="cmp-line cmp-edge" d="M602.6 234L702.6 234" marker-end="url(#arrow)" />
-    <path class="cmp-march" d="M602.6 234L702.6 234" />
-    <text class="cmp-word" x="652.6" y="227" text-anchor="middle">calls</text>
-    <path class="cmp-line cmp-edge" d="M702.6 258L602.6 258" marker-end="url(#arrow)" />
-    <path class="cmp-march" d="M702.6 258L602.6 258" />
-    <text class="cmp-word" x="652.6" y="251" text-anchor="middle">Viewed</text>
-    <rect class="cmp-pill cmp-tint cmp-edge tone-green" x="343.8" y="60" width="205.1" height="36" rx="18" />
-    <circle class="cmp-pulse cmp-fill tone-green" cx="365.8" cy="78" r="4.5" />
-    <text class="cmp-pill-text" x="381.8" y="82.5" text-anchor="start">which demo is forward</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="532" y="125" width="66.6" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M540 131L544 137L548 131Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="553" y="137.5" text-anchor="start">Accent</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="314" y="195" width="60.5" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M322 201L326 207L330 201Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="335" y="207.5" text-anchor="start">Items</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="382.5" y="195" width="72.7" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M390.5 201L394.5 207L398.5 201Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="403.5" y="207.5" text-anchor="start">Forward</text>
-    <rect class="cmp-pin cmp-edge tone-green up" x="463.2" y="195" width="115.4" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M471.2 206.5L475.2 200.5L479.2 206.5Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="484.2" y="207.5" text-anchor="start">ForwardChanged</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="429.6" y="283" width="72.7" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M437.6 289L441.6 295L445.6 289Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="450.6" y="295.5" text-anchor="start">Address</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="510.3" y="283" width="48.3" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M518.3 289L522.3 295L526.3 289Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="531.3" y="295.5" text-anchor="start">Lit</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="362.8" y="485" width="60.5" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M370.8 491L374.8 497L378.8 491Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="383.8" y="497.5" text-anchor="start">Items</text>
-    <rect class="cmp-pin cmp-edge cmp-tint tone-green" x="431.3" y="485" width="72.7" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M439.3 491L443.3 497L447.3 491Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="452.3" y="497.5" text-anchor="start">Current</text>
-    <rect class="cmp-pin cmp-edge tone-green up" x="512" y="485" width="66.6" height="18" rx="9" />
-    <path class="cmp-fill tone-green" d="M520 496.5L524 490.5L528 496.5Z" />
-    <text class="cmp-pin-text cmp-ink tone-green" x="533" y="497.5" text-anchor="start">Chosen</text>
-    <rect class="cmp-key cmp-pin cmp-edge cmp-tint" x="0" y="607" width="97.1" height="18" rx="9" />
-    <path class="cmp-fill" d="M8 613L12 619L16 613Z" />
-    <text class="cmp-pin-text cmp-ink" x="21" y="619.5" text-anchor="start">handed down</text>
-    <rect class="cmp-key cmp-pin cmp-edge up" x="109.1" y="607" width="103.2" height="18" rx="9" />
-    <path class="cmp-fill" d="M117.1 618.5L121.1 612.5L125.1 618.5Z" />
-    <text class="cmp-pin-text cmp-ink" x="130.1" y="619.5" text-anchor="start">said back up</text>
-  </g>
-  <rect class="swatch tone-blue" x="0" y="716" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="726.5" text-anchor="start">starts it</text>
-  <rect class="swatch tone-green" x="104.8" y="716" width="12" height="12" rx="3" />
-  <text class="legend" x="122.8" y="726.5" text-anchor="start">this project</text>
-  <rect class="swatch tone-teal" x="231.2" y="716" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="726.5" text-anchor="start">contracts and state</text>
-  <rect class="notebar" x="0" y="752" width="921.6" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 762) scale(0.6667)">
+  <rect class="notebar" x="0" y="670" width="1027.9" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 680) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="774">
+  <text class="notes" x="38" y="692">
     <tspan class="note-rest">One thing held, handed down and said back up.</tspan>
   </text>
 </svg>

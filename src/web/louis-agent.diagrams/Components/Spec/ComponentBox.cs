@@ -10,6 +10,7 @@ namespace LouisAgent.Diagrams.Components.Spec;
 /// <param name="Name">Its name, as the code has it.</param>
 /// <param name="Kind">The few words in its chip, such as "general part".</param>
 /// <param name="Note">A line of what it does.</param>
+/// <param name="Aside">A few words at the right of its name, such as where it is.</param>
 /// <param name="Tone">Its colour, which means what it means in every picture: green is this project's own.</param>
 /// <param name="In">What is handed down to it: its parameters, each a pin with an arrow down.</param>
 /// <param name="Out">What it says back up: its callbacks, each a pin with an arrow up.</param>
@@ -21,6 +22,7 @@ public sealed record ComponentBox(
     string Name,
     string? Kind = null,
     string? Note = null,
+    string? Aside = null,
     DiagramTone Tone = DiagramTone.Plain,
     IReadOnlyList<string>? In = null,
     IReadOnlyList<string>? Out = null,
