@@ -52,6 +52,13 @@ public sealed class PathWriter(bool spaced = false)
     public PathWriter ArcBy(double radiusX, double radiusY, bool large, bool sweep, double across, double down) =>
         Piece('a', radiusX, radiusY, 0, large ? 1 : 0, sweep ? 1 : 0, across, down);
 
+    /// <summary>
+    /// A whole oval round a point, reaching that far across and down each way: from its left, round over the
+    /// top and back under, as the soft light behind a picture's top is drawn.
+    /// </summary>
+    public PathWriter Oval(double x, double y, double across, double down) => From(x - across, y)
+        .ArcBy(across, down, true, false, 2 * across, 0).ArcBy(across, down, true, false, -(2 * across), 0).Close();
+
     /// <summary>Back to where it started, closing the shape.</summary>
     public PathWriter Close() => Piece('Z');
 

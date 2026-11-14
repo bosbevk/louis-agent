@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Engine.Svg;
@@ -40,7 +41,7 @@ public class CardsRendererTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(drawn, Is.EqualTo(OverviewDrawing.Of(Overview)));
+            Assert.That(drawn, Is.EqualTo(OverviewDrawing.Of(Overview, Geometries.InUse)));
             Assert.That(drawn, Does.Contain("class=\"mrq-title\"").And.Contain("crd-headline").And.Contain("crd-rail"));
             Assert.That(drawn, Does.Not.Contain("class=\"frame\"").And.Not.Contain("class=\"card"));
         });

@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Sources;
@@ -61,7 +62,8 @@ public class OverviewDrawingTests
                                   }
                                   """;
 
-    private static string Drawn(string json = Layers) => OverviewDrawing.Of(DiagramReader.Read(json));
+    private static string Drawn(string json = Layers) =>
+        OverviewDrawing.Of(DiagramReader.Read(json), Geometries.InUse);
 
     /// <summary>Every shape of a drawing that has a class, with that class.</summary>
     private static List<(XElement Shape, string Class)> Shapes(string svg) =>

@@ -64,7 +64,6 @@ public partial class EngineAsksItsTypesTests
     /// <summary>The records that are still a box by four numbers.</summary>
     private static readonly string[] BoxesByNumbers =
     [
-        "Cards/Placed/PlacedCard.cs",
         "Components/Placed/Keys/PlacedKey.cs",
         "Components/Placed/PlacedBox.cs",
         "Components/Placed/PlacedNeighbour.cs",
@@ -79,7 +78,6 @@ public partial class EngineAsksItsTypesTests
     /// <summary>The files that still work out a box's edge or half its size.</summary>
     private static readonly string[] BoxSums =
     [
-        "Cards/OverviewLayout.cs",
         "Components/ComponentLayout.cs",
         "Components/Routing/Obstacles.cs",
         "Components/Routing/StateRoutes.cs",
@@ -87,20 +85,16 @@ public partial class EngineAsksItsTypesTests
         "Svg/Renderers/Parts/Lifelines/SequenceFrames.cs",
         "Svg/Renderers/Parts/Lifelines/SequenceHeads.cs",
         "Svg/Renderers/Parts/Nesting/ComponentsRenderer.cs",
-        "Svg/Renderers/Parts/Overview/OverviewCards.cs",
-        "Svg/Renderers/Parts/Overview/OverviewDrawing.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];
 
     /// <summary>The files that still measure words by their length.</summary>
     private static readonly string[] WordsMeasured =
     [
-        "Cards/Sizes/CardSizes.cs",
         "Components/ComponentSizes.cs",
         "Components/NeighbourLayout.cs",
         "Keys/KeyRows.cs",
         "Sequence/SequenceMeasures.cs",
-        "Svg/Renderers/Parts/Overview/OverviewCards.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
         "Tickets/TicketLayout.cs"
     ];
@@ -113,8 +107,6 @@ public partial class EngineAsksItsTypesTests
         "Svg/Renderers/Parts/Lifelines/SequenceSteps.cs",
         "Svg/Renderers/Parts/Nesting/ComponentPins.cs",
         "Svg/Renderers/Parts/Nesting/ComponentsKey.cs",
-        "Svg/Renderers/Parts/Overview/OverviewDrawing.cs",
-        "Svg/Renderers/Parts/Overview/OverviewRails.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];

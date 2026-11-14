@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
@@ -12,5 +13,5 @@ internal sealed class CardsRenderer : IDiagramRenderer
 {
     public DiagramKind Kind => DiagramKind.Cards;
 
-    public string Render(DiagramSource source) => OverviewDrawing.Of(source);
+    public string Render(DiagramSource source) => OverviewDrawing.Of(source, Geometries.InUse);
 }

@@ -1,5 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
@@ -21,25 +23,26 @@ internal static class OverviewRails
     private static readonly string Accent = DiagramTone.Violet.Wire();
 
     /// <summary>A rail and its ends, in a picture that wide.</summary>
-    public static void Draw(SvgWriter writer, PlacedRail rail, double width)
+    public static void Draw(SvgWriter writer, PlacedRail rail, double width, IGeometry geometry)
     {
+        // The glow and the line are two strips on the rail's height, one over the other, as long as the rail runs.
         double left = Math.Max(-Over, rail.Left - Reach), right = Math.Min(width + Over, rail.Right + Reach);
-        writer.Box(left, rail.Y - Glow / 2, right - left, Glow, 0, "crd-rail-glow")
-            .Box(left, rail.Y - Line / 2, right - left, Line, 0, "crd-rail");
+        writer.Box(geometry.Box(left, 0, right - left, Glow).OnLine(rail.Y), 0, "crd-rail-glow")
+            .Box(geometry.Box(left, 0, right - left, Line).OnLine(rail.Y), 0, "crd-rail");
 
         // Dots say one way, so they run only where every link of the rail points down.
         bool down = rail.Ends.All(end => end.Arrow != end.Above);
         foreach (var end in rail.Ends)
         {
             // From the top down, whichever side of the rail the card is on, so the dots fall and never rise.
-            string path = $"M{SvgWriter.N(end.X)} {SvgWriter.N(Math.Min(end.Y, rail.Y))}" +
-                          $"V{SvgWriter.N(Math.Max(end.Y, rail.Y))}";
+            string path = new PathWriter().From(end.At.X, Math.Min(end.At.Y, rail.Y))
+                .Down(Math.Max(end.At.Y, rail.Y)).Text;
             writer.Path(path, "crd-line", arrow: end is { Arrow: true, Above: false },
                 arrowAtStart: end is { Arrow: true, Above: true }, tone: end.Arrow ? Accent : null);
             if (down) writer.Path(path, "pic-march", arrow: false);
         }
 
         // The nodes last, over the lines' ends.
-        foreach (var end in rail.Ends) writer.Circle(end.X, rail.Y, Node, "mrq-node");
+        foreach (var end in rail.Ends) writer.Circle(end.At.X, rail.Y, Node, "mrq-node");
     }
 }

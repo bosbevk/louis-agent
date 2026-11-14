@@ -42,11 +42,11 @@ public class OverviewLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(row.Select(card => card.W), Is.All.EqualTo(284));
-            Assert.That(row.Select(card => card.X), Is.EqualTo(new[] { 0d, 306, 612 }));
-            Assert.That(row.Select(card => card.H).Distinct().Count(), Is.EqualTo(1));
-            Assert.That(row.Select(card => card.Y).Distinct().Count(), Is.EqualTo(1));
-            Assert.That(Card(placed, "top").W, Is.EqualTo(896), "a card alone has the whole width");
+            Assert.That(row.Select(card => card.Box.Width), Is.All.EqualTo(284));
+            Assert.That(row.Select(card => card.Box.Left), Is.EqualTo(new[] { 0d, 306, 612 }));
+            Assert.That(row.Select(card => card.Box.Height).Distinct().Count(), Is.EqualTo(1));
+            Assert.That(row.Select(card => card.Box.Top).Distinct().Count(), Is.EqualTo(1));
+            Assert.That(Card(placed, "top").Box.Width, Is.EqualTo(896), "a card alone has the whole width");
         });
     }
 
@@ -62,11 +62,11 @@ public class OverviewLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(top.Y, Is.Zero);
-            Assert.That(placed.Rails.Single().Y, Is.EqualTo(top.H + RailPlaces.Stem));
-            Assert.That(part.Y, Is.EqualTo(top.H + RailPlaces.Stem + RailPlaces.Drop));
-            Assert.That(loose.Y, Is.EqualTo(part.Y + part.H + OverviewLayout.RowGap));
-            Assert.That((placed.Width, placed.Height), Is.EqualTo((896d, loose.Y + loose.H)));
+            Assert.That(top.Box.Top, Is.Zero);
+            Assert.That(placed.Rails.Single().Y, Is.EqualTo(top.Box.Height + RailPlaces.Stem));
+            Assert.That(part.Box.Top, Is.EqualTo(top.Box.Height + RailPlaces.Stem + RailPlaces.Drop));
+            Assert.That(loose.Box.Top, Is.EqualTo(part.Box.Bottom + OverviewLayout.RowGap));
+            Assert.That((placed.Width, placed.Height), Is.EqualTo((896d, loose.Box.Bottom)));
         });
     }
 
@@ -83,10 +83,10 @@ public class OverviewLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That((above.Card, above.X, above.Y),
-                Is.EqualTo(("top", 448d, Card(placed, "top").H + OverviewLayout.HeadlineClear)));
-            Assert.That(rail.Ends.Where(end => !end.Above).Select(end => (end.Card, end.X, end.Y)), Is.EqualTo(
-                new[] { "a", "b", "c" }.Select(id => (id, Card(placed, id).X + 142, Card(placed, id).Y))));
+            Assert.That((above.Card, above.At.X, above.At.Y),
+                Is.EqualTo(("top", 448d, Card(placed, "top").Box.Height + OverviewLayout.HeadlineClear)));
+            Assert.That(rail.Ends.Where(end => !end.Above).Select(end => (end.Card, end.At.X, end.At.Y)), Is.EqualTo(
+                new[] { "a", "b", "c" }.Select(id => (id, Card(placed, id).Box.Left + 142, Card(placed, id).Box.Top))));
             Assert.That((rail.Left, rail.Right), Is.EqualTo((142d, 754d)));
         });
     }
@@ -106,10 +106,10 @@ public class OverviewLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(placed.Rails.Single().Ends.Single(end => !end.Above).Y,
-                Is.EqualTo(Card(placed, "engine").Y - OverviewLayout.HeadlineClear));
-            Assert.That(placed.Rails.Single().Ends.Where(end => end.Above).Select(end => end.Y),
-                Is.All.EqualTo(Card(placed, "a").H));
+            Assert.That(placed.Rails.Single().Ends.Single(end => !end.Above).At.Y,
+                Is.EqualTo(Card(placed, "engine").Box.Top - OverviewLayout.HeadlineClear));
+            Assert.That(placed.Rails.Single().Ends.Where(end => end.Above).Select(end => end.At.Y),
+                Is.All.EqualTo(Card(placed, "a").Box.Height));
         });
     }
 
@@ -143,7 +143,7 @@ public class OverviewLayoutTests
         {
             Assert.That(linked.Cards.Where(card => card.Quiet).Select(card => card.Card.Id),
                 Is.EqualTo(new[] { "loose", "spare" }));
-            Assert.That(Card(linked, "loose").H, Is.LessThan(Card(linked, "a").H));
+            Assert.That(Card(linked, "loose").Box.Height, Is.LessThan(Card(linked, "a").Box.Height));
             Assert.That(unlinked.Cards.Select(card => card.Quiet), Is.All.False);
             Assert.That(unlinked.Rails, Is.Empty);
         });
@@ -161,13 +161,14 @@ public class OverviewLayoutTests
             [new CardLink("one", "a"), new CardLink("one", "b"), new CardLink("two", "b")]);
 
         var placed = OverviewLayout.Place(spec);
-        double bottom = Card(placed, "one").H;
+        double bottom = Card(placed, "one").Box.Height;
 
         Assert.Multiple(() =>
         {
             Assert.That(placed.Rails.Select(rail => rail.Y),
                 Is.EqualTo(new[] { bottom + RailPlaces.Stem, bottom + RailPlaces.Stem + RailPlaces.Step }));
-            Assert.That(Card(placed, "a").Y, Is.EqualTo(bottom + RailPlaces.Stem + RailPlaces.Step + RailPlaces.Drop));
+            Assert.That(Card(placed, "a").Box.Top,
+                Is.EqualTo(bottom + RailPlaces.Stem + RailPlaces.Step + RailPlaces.Drop));
         });
     }
 
@@ -182,11 +183,11 @@ public class OverviewLayoutTests
         {
             for (int a = 0; a < cards.Count; a++)
                 for (int b = a + 1; b < cards.Count; b++)
-                    Assert.That(cards[a].X + cards[a].W <= cards[b].X || cards[b].X + cards[b].W <= cards[a].X
-                                || cards[a].Y + cards[a].H <= cards[b].Y || cards[b].Y + cards[b].H <= cards[a].Y,
+                    Assert.That(cards[a].Box.Right <= cards[b].Box.Left || cards[b].Box.Right <= cards[a].Box.Left
+                                || cards[a].Box.Bottom <= cards[b].Box.Top || cards[b].Box.Bottom <= cards[a].Box.Top,
                         $"{cards[a].Card.Id} and {cards[b].Card.Id}");
-            Assert.That(cards.Max(card => card.X + card.W), Is.LessThanOrEqualTo(placed.Width));
-            Assert.That(cards.Max(card => card.Y + card.H), Is.LessThanOrEqualTo(placed.Height));
+            Assert.That(cards.Max(card => card.Box.Right), Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(cards.Max(card => card.Box.Bottom), Is.LessThanOrEqualTo(placed.Height));
         });
     }
 }

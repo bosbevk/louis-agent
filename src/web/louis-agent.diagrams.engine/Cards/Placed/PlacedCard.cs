@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Engine.Geometry;
 
 namespace LouisAgent.Diagrams.Engine.Cards.Placed;
 
@@ -8,10 +9,7 @@ namespace LouisAgent.Diagrams.Engine.Cards.Placed;
 /// </summary>
 public sealed record PlacedCard(
     Card Card,
-    double X,
-    double Y,
-    double W,
-    double H,
+    IBox Box,
     IReadOnlyList<string> TitleLines,
     bool TitleBelow,
     IReadOnlyList<string> TextLines,

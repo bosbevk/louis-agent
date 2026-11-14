@@ -2,6 +2,7 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
 using LouisAgent.Diagrams.Engine.Cards.Rails;
 using LouisAgent.Diagrams.Engine.Cards.Sizes;
+using LouisAgent.Diagrams.Engine.Geometry;
 
 namespace LouisAgent.Diagrams.Engine.Cards;
 
@@ -28,17 +29,22 @@ public static class OverviewLayout
     /// </summary>
     public const double HeadlineClear = 4;
 
-    /// <summary>The overview placed across the given width, from the origin.</summary>
-    public static PlacedOverview Place(CardsSpec spec, int width = 896)
+    /// <summary>
+    /// The overview placed across the given width, from the origin. Its boxes and points are of the geometry
+    /// handed in, and of the one in use when none is.
+    /// </summary>
+    public static PlacedOverview Place(CardsSpec spec, int width = 896, IGeometry? geometry = null)
     {
+        geometry ??= Geometries.InUse;
+
         // A card no link touches is quiet, in a picture that has links.
         var linked = spec.Links.SelectMany(link => new[] { link.From, link.To }).ToHashSet(StringComparer.Ordinal);
         bool Quiet(Card card) => linked.Count > 0 && !linked.Contains(card.Id);
 
         // Each row across the width first, since where a rail stands depends only on where its cards' middles are.
-        var rows = spec.Rows.Select(row => Across(row, width, Quiet)).ToList();
+        var rows = spec.Rows.Select(row => Across(row, width, Quiet, geometry)).ToList();
         var centres = rows.SelectMany(row => row)
-            .ToDictionary(card => card.Card.Id, card => card.X + card.W / 2, StringComparer.Ordinal);
+            .ToDictionary(card => card.Card.Id, card => card.Box.Middle.X, StringComparer.Ordinal);
         var spans = RailPlaces.Across(CardRails.Of(spec), centres);
 
         // Then down the picture: a row, and under it a gap as tall as its rails need, or the plain gap.
@@ -48,8 +54,9 @@ public static class OverviewLayout
         for (int at = 0; at < rows.Count; at++)
         {
             double top = y;
-            cards.AddRange(rows[at].Select(card => card with { Y = top }));
-            bottom = top + rows[at].Select(card => card.H).DefaultIfEmpty(0).Max();
+            var row = rows[at].Select(card => card with { Box = card.Box.Moved(0, top) }).ToList();
+            cards.AddRange(row);
+            bottom = row.Select(card => card.Box.Bottom).DefaultIfEmpty(top).Max();
 
             var inGap = spans.Where(span => span.Rail.Gap == at).ToList();
             foreach (var span in inGap) heights[span] = bottom + RailPlaces.Stem + RailPlaces.Step * span.Level;
@@ -61,12 +68,12 @@ public static class OverviewLayout
         return new PlacedOverview(width, bottom, cards,
         [
             .. spans.Select(span =>
-                new PlacedRail(span.Rail, heights[span], span.Left, span.Right, Ends(span, byId)))
+                new PlacedRail(span.Rail, heights[span], span.Left, span.Right, Ends(span, byId, geometry)))
         ]);
     }
 
     /// <summary>A row's cards across the width: a gap between them, each as tall as the row's tallest.</summary>
-    private static List<PlacedCard> Across(CardRow row, double width, Func<Card, bool> quiet)
+    private static List<PlacedCard> Across(CardRow row, double width, Func<Card, bool> quiet, IGeometry geometry)
     {
         int count = row.Cards.Count;
         double cardWidth = (width - Gap * (count - 1)) / count;
@@ -74,8 +81,9 @@ public static class OverviewLayout
         double height = sizes.Select(size => size.Height).DefaultIfEmpty(0).Max();
         return
         [
-            .. row.Cards.Select((card, at) => new PlacedCard(card, at * (cardWidth + Gap), 0, cardWidth, height,
-                sizes[at].TitleLines, sizes[at].TitleBelow, sizes[at].TextLines, sizes[at].Quiet))
+            .. row.Cards.Select((card, at) => new PlacedCard(card,
+                geometry.Box(at * (cardWidth + Gap), 0, cardWidth, height), sizes[at].TitleLines,
+                sizes[at].TitleBelow, sizes[at].TextLines, sizes[at].Quiet))
         ];
     }
 
@@ -83,18 +91,19 @@ public static class OverviewLayout
     /// A rail's ends on its cards' edges: the bottom of a card above it and the top of a card below it, a little
     /// clear of a headline, each with an arrowhead where a link points at its card.
     /// </summary>
-    private static List<RailEnd> Ends(RailSpan span, Dictionary<string, PlacedCard> cards) =>
+    private static List<RailEnd> Ends(RailSpan span, Dictionary<string, PlacedCard> cards, IGeometry geometry) =>
     [
-        .. span.Spots.Select(spot => new RailEnd(spot.Card, spot.X, Edge(cards[spot.Card], spot.Above), spot.Above,
+        .. span.Spots.Select(spot => new RailEnd(spot.Card,
+            geometry.Point(spot.X, Edge(cards[spot.Card], spot.Above)), spot.Above,
             RailPlaces.PointsAt(span.Rail, spot.Card)))
     ];
 
     /// <summary>The edge of a card a rail's line runs to.</summary>
     private static double Edge(PlacedCard card, bool above) => (above, card.Card.Look) switch
     {
-        (true, CardLook.Plain) => card.Y + card.H,
-        (false, CardLook.Plain) => card.Y,
-        (true, _) => card.Y + card.H + HeadlineClear,
-        _ => card.Y - HeadlineClear
+        (true, CardLook.Plain) => card.Box.Bottom,
+        (false, CardLook.Plain) => card.Box.Top,
+        (true, _) => card.Box.Bottom + HeadlineClear,
+        _ => card.Box.Top - HeadlineClear
     };
 }

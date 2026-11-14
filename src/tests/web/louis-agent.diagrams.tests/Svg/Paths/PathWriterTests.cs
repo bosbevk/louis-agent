@@ -47,6 +47,15 @@ public class PathWriterTests
         Assert.That(path.Text, Is.EqualTo("M 10 20 L 40 20 Q 50 20 50 30 L 50 80"));
     }
 
+    /// <summary>
+    /// An oval round a point is two half turns from its left and back, the way the soft light behind a card is
+    /// drawn: the text two drawings wrote by hand.
+    /// </summary>
+    [Test]
+    public void AnOval_IsTwoHalfTurnsFromItsLeft() =>
+        Assert.That(new PathWriter().Oval(50, 60, 20, 10).Text,
+            Is.EqualTo("M30 60a20 10 0 1 0 40 0a20 10 0 1 0 -40 0Z"));
+
     /// <summary>A path with nothing in it is no text.</summary>
     [Test]
     public void AnEmptyPath_IsNoText()

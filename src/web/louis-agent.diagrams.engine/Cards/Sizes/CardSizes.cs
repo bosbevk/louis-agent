@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Engine.Words;
 
 namespace LouisAgent.Diagrams.Engine.Cards.Sizes;
 
@@ -17,10 +18,11 @@ public static class CardSizes
     public const double Pad = 18, QuietPad = 20;
 
     /// <summary>
-    /// How wide a character is taken to be: of a glass card's 15px title, of a quiet card's 14px title, of a
-    /// card's 12px text and of a headline's 13px text.
+    /// The faces a card's words are measured in: a glass card's 15px title, a quiet card's 14px title, a card's
+    /// 12px text and a headline's 13px text.
     /// </summary>
-    public const double TitleChar = 8, QuietTitleChar = 7.6, TextChar = 6.1, HeadlineChar = 6.6;
+    public static readonly Face TitleFace = new(8), QuietTitleFace = new(7.6), TextFace = new(6.1),
+        HeadlineFace = new(6.6);
 
     /// <summary>
     /// A headline, from its top: where a highlighted card's title stands under its badge and a heading's under its
@@ -60,7 +62,7 @@ public static class CardSizes
     /// </summary>
     private static CardSize Headline(Card card, double width, double title, double text, double line)
     {
-        var lines = TextWrap.Lines(card.Text, (int)((width - 2 * HeadlineSide) / HeadlineChar));
+        var lines = TextWrap.Lines(card.Text, (int)HeadlineFace.Holds(width - 2 * HeadlineSide));
         double pill = card.Code is null ? 0 : PillRoom;
         return new CardSize(title + pill + text + line * (lines.Count - 1) + HeadlineEnd, [card.Title], false, lines,
             false);
@@ -72,9 +74,9 @@ public static class CardSizes
     /// </summary>
     private static CardSize Glass(Card card, double width)
     {
-        bool below = card.Title.Length * TitleChar > width - TitleLeft - TitleEnd;
-        var titles = below ? TextWrap.Lines(card.Title, (int)((width - 2 * Pad) / TitleChar)) : [card.Title];
-        var lines = TextWrap.Lines(card.Text, (int)((width - 2 * Pad) / TextChar));
+        bool below = TitleFace.Width(card.Title) > width - TitleLeft - TitleEnd;
+        var titles = below ? TextWrap.Lines(card.Title, (int)TitleFace.Holds(width - 2 * Pad)) : [card.Title];
+        var lines = TextWrap.Lines(card.Text, (int)TextFace.Holds(width - 2 * Pad));
         double head = Head + (below ? TitleLine * titles.Count : 0), code = card.Code is null ? 0 : CodeRoom;
         return new CardSize(head + code + TextTop + TextLine * (lines.Count - 1) + End, titles, below, lines, false);
     }
@@ -85,8 +87,8 @@ public static class CardSizes
     /// </summary>
     private static CardSize Quiet(Card card, double width)
     {
-        var titles = TextWrap.Lines(card.Title, (int)((width - QuietTitleLeft - QuietPad) / QuietTitleChar));
-        var lines = TextWrap.Lines(card.Text, (int)((width - 2 * QuietPad) / TextChar));
+        var titles = TextWrap.Lines(card.Title, (int)QuietTitleFace.Holds(width - QuietTitleLeft - QuietPad));
+        var lines = TextWrap.Lines(card.Text, (int)TextFace.Holds(width - 2 * QuietPad));
         double code = card.Code is null ? 0 : QuietCodeRoom;
         return new CardSize(
             QuietText + QuietTitleLine * (titles.Count - 1) + code + QuietLine * (lines.Count - 1) + QuietEnd, titles,

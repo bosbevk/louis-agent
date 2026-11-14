@@ -86,7 +86,7 @@ public class CardSizesTests
         {
             Assert.That(under.TitleBelow, Is.True);
             Assert.That(under.TitleLines, Has.Count.GreaterThan(1));
-            Assert.That(under.TitleLines.Max(line => line.Length) * CardSizes.TitleChar,
+            Assert.That(CardSizes.TitleFace.Widest(under.TitleLines),
                 Is.LessThanOrEqualTo(207 - 2 * CardSizes.Pad));
             Assert.That(under.Height, Is.EqualTo(beside.Height + CardSizes.TitleLine * under.TitleLines.Count));
         });
@@ -136,11 +136,11 @@ public class CardSizesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(glass.TextLines.Max(line => line.Length) * CardSizes.TextChar,
+            Assert.That(CardSizes.TextFace.Widest(glass.TextLines),
                 Is.LessThanOrEqualTo(width - 2 * CardSizes.Pad), "glass");
-            Assert.That(quiet.TextLines.Max(line => line.Length) * CardSizes.TextChar,
+            Assert.That(CardSizes.TextFace.Widest(quiet.TextLines),
                 Is.LessThanOrEqualTo(width - 2 * CardSizes.QuietPad), "quiet");
-            Assert.That(headline.TextLines.Max(line => line.Length) * CardSizes.HeadlineChar,
+            Assert.That(CardSizes.HeadlineFace.Widest(headline.TextLines),
                 Is.LessThanOrEqualTo(width - 2 * CardSizes.Pad), "a headline");
             Assert.That(string.Join(" ", glass.TextLines), Is.EqualTo(LongText), "no word is lost");
         });
