@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Tones;
+
 namespace LouisAgent.Diagrams.Components.Placed.Lines;
 
 /// <summary>
@@ -7,4 +9,9 @@ namespace LouisAgent.Diagrams.Components.Placed.Lines;
 /// <param name="Kind">What it carries.</param>
 /// <param name="Points">Its points, in the direction it flows.</param>
 /// <param name="Word">The word written on it. None when it carries none.</param>
-public sealed record PlacedLine(LineKind Kind, IReadOnlyList<LinePoint> Points, string? Word = null);
+/// <param name="Tone">Its colour: that of what it comes from. Plain for a call, an answer and a read.</param>
+public sealed record PlacedLine(
+    LineKind Kind,
+    IReadOnlyList<LinePoint> Points,
+    string? Word = null,
+    DiagramTone Tone = DiagramTone.Plain);

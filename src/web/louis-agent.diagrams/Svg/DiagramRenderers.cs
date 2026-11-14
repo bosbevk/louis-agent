@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Messages;
+using LouisAgent.Diagrams.Messages.Holes.Reading;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Renderers;
 
@@ -15,14 +16,20 @@ public static class DiagramRenderers
 {
     /// <summary>Every kind's renderer.</summary>
     private static readonly IReadOnlyList<IDiagramRenderer> All =
-        [new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer(), new TicketRenderer()];
+    [
+        new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer(), new TicketRenderer(),
+        new ComponentsRenderer()
+    ];
 
     /// <summary>The diagram as one SVG file's text.</summary>
-    public static string Render(DiagramSource source) =>
-        (All.FirstOrDefault(renderer => renderer.Kind == source.Kind)
-         ?? throw new NotSupportedException(
-             DiagramText.Format(DiagramMessage.NoRenderer, new { Kind = source.Kind.Wire() })))
-        .Render(source);
+    public static string Render(DiagramSource source)
+    {
+        var renderer = All.FirstOrDefault(one => one.Kind == source.Kind);
+        if (renderer is not null) return renderer.Render(source);
+
+        var noRenderer = new NoRendererHoles(source.Kind.Wire());
+        throw new NotSupportedException(DiagramText.Format(DiagramMessage.NoRenderer, noRenderer));
+    }
 
     /// <summary>
     /// The diagram as a page holds it inline (F127.4.1): the same drawing, its styles kept to itself

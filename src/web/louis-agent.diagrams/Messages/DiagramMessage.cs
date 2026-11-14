@@ -75,6 +75,11 @@ public enum DiagramMessage
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 
+    // The words a component diagram draws itself (F134.7): on a line to a service, and in its key.
+    [Description("reads")] ComponentReads,
+    [Description("handed down")] ComponentHandedDown,
+    [Description("said back up")] ComponentSaidBackUp,
+
     // What each tone means in the docs' legend (CL60.2): the role a box of that colour plays in every chart.
     [Description("starts it")] LegendBlue,
     [Description("this project")] LegendGreen,

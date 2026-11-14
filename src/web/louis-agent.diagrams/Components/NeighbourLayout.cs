@@ -63,13 +63,11 @@ internal static class NeighbourLayout
         var box = BoxOf(neighbour, boxes);
         double near = neighbour.Side == NeighbourSide.Before ? placed.Right : placed.X;
 
-        // Each thing it gives is a row of its own, with its own line to the box.
-        double chipRow = neighbour.Kind is null ? 0 : ChipRow;
-        double firstRow = placed.Y + Header + chipRow + placed.NoteLines.Count * NoteLine;
+        // Each thing it gives is a row of its own, with its own line to the box, in the neighbour's colour.
         foreach (var (given, at) in (neighbour.Gives ?? []).Select((given, at) => (given, at)))
         {
-            double y = firstRow + at * Row + Row / 2;
-            yield return new PlacedLine(LineKind.Gives, [new(near, y), new(Far(y), y)], given);
+            double y = RowY(placed, at);
+            yield return new PlacedLine(LineKind.Gives, [new(near, y), new(Far(y), y)], given, neighbour.Tone);
         }
 
         double first = placed.Y + FirstLine, second = placed.Y + SecondLine;
@@ -89,6 +87,20 @@ internal static class NeighbourLayout
             return neighbour.Side == NeighbourSide.Before ? met.X : met.Right;
         }
     }
+
+    /// <summary>The middle, top to bottom, of the row a neighbour gives its thing number so-many on.</summary>
+    public static double RowY(PlacedNeighbour placed, int at)
+    {
+        double chipRow = placed.Neighbour.Kind is null ? 0 : ChipRow;
+        return placed.Y + Header + chipRow + placed.NoteLines.Count * NoteLine + at * Row + Row / 2;
+    }
+
+    /// <summary>
+    /// Where a neighbour's note starts: the baseline of its first line, under its name and its chip. Each next
+    /// line is a note's line lower.
+    /// </summary>
+    public static double NoteY(PlacedNeighbour placed, int line) =>
+        placed.Y + Header + (placed.Neighbour.Kind is null ? 0 : ChipRow) + 8 + line * NoteLine;
 
     /// <summary>One side's column: its neighbours from the top down, in the order of the boxes they talk to.</summary>
     private static IEnumerable<PlacedNeighbour> Column(IReadOnlyList<ComponentNeighbour> around,
