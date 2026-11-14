@@ -1,0 +1,147 @@
+{
+  "kind": "sequence",
+  "title": "F134.9 the cards picture: one overview is drawn",
+  "caption": "The layout decides every place and the drawing none: the rails are built from the links first, then stood between the rows they join.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "tool",
+        "label": "doc-diagrams",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "reader",
+        "label": "DiagramReader",
+        "icon": "checks",
+        "tone": "green"
+      },
+      {
+        "id": "renderer",
+        "label": "CardsRenderer",
+        "icon": "stack",
+        "tone": "green"
+      },
+      {
+        "id": "layout",
+        "label": "OverviewLayout",
+        "icon": "chart",
+        "tone": "green"
+      },
+      {
+        "id": "rails",
+        "label": "CardRails",
+        "icon": "branch",
+        "tone": "green"
+      },
+      {
+        "id": "drawing",
+        "label": "OverviewDrawing",
+        "icon": "code",
+        "tone": "green"
+      },
+      {
+        "id": "frame",
+        "label": "TitledFrame",
+        "icon": "info",
+        "tone": "green"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "tool",
+        "to": "reader",
+        "text": "the JSON's text"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "a link skips a row, or stays in one",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "reader",
+            "to": "tool",
+            "text": "refused, with the two cards"
+          }
+        ],
+        "else": [
+          {
+            "label": "every link joins neighbouring rows",
+            "steps": [
+              {
+                "step": "reply",
+                "from": "reader",
+                "to": "tool",
+                "text": "a DiagramSource"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "tool",
+        "to": "renderer",
+        "text": "RenderTitled(source)"
+      },
+      {
+        "step": "message",
+        "from": "renderer",
+        "to": "drawing",
+        "text": "Of(source)"
+      },
+      {
+        "step": "message",
+        "from": "drawing",
+        "to": "layout",
+        "text": "Place(spec)"
+      },
+      {
+        "step": "message",
+        "from": "layout",
+        "to": "rails",
+        "text": "Of(spec)"
+      },
+      {
+        "step": "reply",
+        "from": "rails",
+        "to": "layout",
+        "text": "a rail for the cards that feed the same cards"
+      },
+      {
+        "step": "note",
+        "over": [
+          "layout"
+        ],
+        "text": "rows, then each gap as tall as its rails need"
+      },
+      {
+        "step": "reply",
+        "from": "layout",
+        "to": "drawing",
+        "text": "PlacedOverview: cards and rails"
+      },
+      {
+        "step": "reply",
+        "from": "drawing",
+        "to": "renderer",
+        "text": "the SVG, its own title in it"
+      },
+      {
+        "step": "message",
+        "from": "renderer",
+        "to": "frame",
+        "text": "Around(svg, source)"
+      },
+      {
+        "step": "reply",
+        "from": "frame",
+        "to": "tool",
+        "text": "the SVG, with a note bar if it has a caption"
+      }
+    ],
+    "numbered": true
+  }
+}

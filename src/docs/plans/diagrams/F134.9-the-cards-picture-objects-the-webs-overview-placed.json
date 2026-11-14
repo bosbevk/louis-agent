@@ -1,0 +1,97 @@
+{
+  "kind": "flow",
+  "title": "F134.9 the cards picture: the web's overview, placed",
+  "caption": "Three links, one rail: the headline is its one card above, and its three parts hang from it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "placed",
+        "label": "PlacedOverview\n880 wide",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "web",
+        "label": "PlacedCard: web\nLook = highlight, the headline",
+        "icon": "browser",
+        "tone": "teal"
+      },
+      {
+        "id": "rail",
+        "label": "PlacedRail\nAbove = [web]\nBelow = [chat, admin, site]",
+        "icon": "branch",
+        "tone": "teal"
+      },
+      {
+        "id": "chat",
+        "label": "PlacedCard: chat\nplain, on the rail",
+        "icon": "message",
+        "tone": "teal"
+      },
+      {
+        "id": "admin",
+        "label": "PlacedCard: admin\nplain, on the rail",
+        "icon": "settings",
+        "tone": "teal"
+      },
+      {
+        "id": "site",
+        "label": "PlacedCard: site\nplain, on the rail",
+        "icon": "world",
+        "tone": "teal"
+      },
+      {
+        "id": "look",
+        "label": "PlacedCard: look\nplain, no link: quiet",
+        "icon": "code",
+        "tone": "teal"
+      },
+      {
+        "id": "seams",
+        "label": "PlacedCard: seams\nplain, no link: quiet",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "ends",
+        "label": "RailEnd x 4\none above, three below, each\nbelow with an arrow",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "placed",
+        "to": "web"
+      },
+      {
+        "from": "placed",
+        "to": "rail"
+      },
+      {
+        "from": "placed",
+        "to": "chat"
+      },
+      {
+        "from": "placed",
+        "to": "admin"
+      },
+      {
+        "from": "placed",
+        "to": "site"
+      },
+      {
+        "from": "placed",
+        "to": "look"
+      },
+      {
+        "from": "placed",
+        "to": "seams"
+      },
+      {
+        "from": "rail",
+        "to": "ends"
+      }
+    ]
+  }
+}

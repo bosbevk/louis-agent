@@ -1,0 +1,97 @@
+{
+  "kind": "classes",
+  "title": "F134.9 the cards picture: the interface design, the data and its rails",
+  "caption": "A rail is built from the links alone: the cards above that feed the same cards below share one, before anything has a place.",
+  "classes": {
+    "types": [
+      {
+        "id": "spec",
+        "name": "CardsSpec",
+        "kind": "record, as today",
+        "tone": "teal",
+        "members": [
+          "IReadOnlyList<CardRow> Rows",
+          "IReadOnlyList<CardLink> Links"
+        ]
+      },
+      {
+        "id": "card",
+        "name": "Card",
+        "kind": "record, as today",
+        "tone": "teal",
+        "members": [
+          "string Id",
+          "DiagramIcon Icon",
+          "string Title",
+          "string? Code",
+          "string Text",
+          "CardLook Look"
+        ]
+      },
+      {
+        "id": "link",
+        "name": "CardLink",
+        "kind": "record, as today",
+        "tone": "teal",
+        "members": [
+          "string From",
+          "string To",
+          "CardLinkKind Kind"
+        ]
+      },
+      {
+        "id": "reader",
+        "name": "DiagramReader",
+        "kind": "step 3",
+        "tone": "green",
+        "members": [
+          "CheckCards: a link joins two neighbouring rows"
+        ]
+      },
+      {
+        "id": "rails",
+        "name": "CardRails",
+        "kind": "step 4",
+        "tone": "green",
+        "members": [
+          "IReadOnlyList<Rail> Of(CardsSpec spec)"
+        ]
+      },
+      {
+        "id": "rail",
+        "name": "Rail",
+        "kind": "record, step 4",
+        "tone": "teal",
+        "members": [
+          "int Gap",
+          "IReadOnlyList<string> Above",
+          "IReadOnlyList<string> Below",
+          "IReadOnlyList<CardLink> Links"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "spec",
+        "to": "card",
+        "kind": "holds"
+      },
+      {
+        "from": "spec",
+        "to": "link",
+        "kind": "holds"
+      },
+      {
+        "from": "reader",
+        "to": "spec",
+        "kind": "creates",
+        "word": "or refuses"
+      },
+      {
+        "from": "rails",
+        "to": "rail",
+        "kind": "creates"
+      }
+    ]
+  }
+}

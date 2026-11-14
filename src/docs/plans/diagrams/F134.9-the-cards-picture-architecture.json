@@ -1,0 +1,134 @@
+{
+  "kind": "flow",
+  "title": "F134.9 the cards picture: what the change reaches",
+  "caption": "One renderer, two callers: the docs' tool and the chat both draw a cards picture through it, so both get the new look in step 8.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "you",
+        "label": "Whoever writes a doc",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "json",
+        "label": "45 cards pictures' JSON\nas they are, none edited",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "tool",
+        "label": "louis-agent.doc-diagrams\nas today",
+        "icon": "terminal",
+        "tone": "green"
+      },
+      {
+        "id": "chat",
+        "label": "DrawnCard, in the chat\nas today",
+        "icon": "message",
+        "tone": "violet"
+      },
+      {
+        "id": "reader",
+        "label": "DiagramReader\na link joins neighbouring rows\nstep 3",
+        "icon": "checks",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "renderer",
+        "label": "CardsRenderer\nhanded the new drawing\nstep 8",
+        "icon": "stack",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "layout",
+        "label": "OverviewLayout, CardRails\ncards and rails placed\nsteps 4 and 5",
+        "icon": "chart",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "drawing",
+        "label": "OverviewDrawing, CardsStyle\nthe new look\nsteps 6 and 7",
+        "icon": "code",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "frame",
+        "label": "TitledFrame\nonly the note bar\nstep 8",
+        "icon": "info",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "svg",
+        "label": "45 SVGs redrawn\nstep 8",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "doc",
+        "label": "A project's design doc\nopens with its overview",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "you",
+        "to": "json"
+      },
+      {
+        "from": "json",
+        "to": "tool"
+      },
+      {
+        "from": "tool",
+        "to": "reader"
+      },
+      {
+        "from": "reader",
+        "to": "renderer"
+      },
+      {
+        "from": "chat",
+        "to": "renderer",
+        "word": "RenderForPage"
+      },
+      {
+        "from": "renderer",
+        "to": "layout"
+      },
+      {
+        "from": "layout",
+        "to": "drawing"
+      },
+      {
+        "from": "drawing",
+        "to": "frame"
+      },
+      {
+        "from": "frame",
+        "to": "svg"
+      },
+      {
+        "from": "svg",
+        "to": "doc"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "diagrams",
+        "label": "louis-agent.diagrams"
+      }
+    ]
+  }
+}
