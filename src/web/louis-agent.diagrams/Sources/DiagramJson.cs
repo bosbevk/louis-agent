@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LouisAgent.Diagrams.Sources.Types;
 
 namespace LouisAgent.Diagrams.Sources;
 
@@ -20,6 +21,7 @@ internal static class DiagramJson
         Converters =
         {
             new NodeShapeConverter(),
+            new DiagramTypeConverter(),
             new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false)
         },
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,

@@ -11,6 +11,7 @@ using LouisAgent.Diagrams.Messages.Holes.Shapes;
 using LouisAgent.Diagrams.Messages.Holes.Strays;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
+using LouisAgent.Diagrams.Sources.Types;
 using LouisAgent.Diagrams.Tickets.Spec;
 
 namespace LouisAgent.Diagrams.Sources;
@@ -33,6 +34,9 @@ public static class DiagramReader
         var source = Deserialize(json);
         if (string.IsNullOrWhiteSpace(source.Title)) throw Refused(DiagramMessage.MissingTitle);
         CheckPart(kind, source);
+
+        // Its type is its kind's own when it wrote none, and is refused when it is not one its kind may be.
+        source = source with { Type = DiagramTypeCheck.Of(kind, source.Type) };
         if (source.Flow is { } flow) CheckFlow(flow);
         if (source.Cards is { } cards) CheckCards(cards);
         if (source.Sequence is { } sequence) CheckSequence(sequence);

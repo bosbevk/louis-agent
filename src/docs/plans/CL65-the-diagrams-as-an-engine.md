@@ -179,6 +179,13 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     is generic over the number type, by .NET's generic math, with `double` the type in use, so no number
     changes. Run with `float`, it also shows what in a difference is single precision's doing and what is
     the library's.
+  - *Its decision is an ADR, with a C# standard.* Louis, during CL65.3: "CL 65.6 must be an ADR, we cannot
+    write spaghetti code." and "and a csharp standard". So the rule that the engine's sums go through its
+    geometry types, behind the interface, is an ADR, and how such code is written is a part of
+    `.claude/rules/csharp.md`. The ADR's wording is put to him in a few lines before its file is written.
+    Both are written with this child, and a rule test holds them.
+- **2026-11-14, found in CL65.3, for CL65.4's list.** A cards picture whose file has no `"links"` is not
+  refused: the reader fails on it with .NET's own error, which names nothing a person wrote.
 - **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and
   each renderer stands beside its drawing. No picture changed. Its picks are in its plan as of the commit
   before the one that deleted it, and its lessons in [the write-up](../learning/18-testing-and-shipping.md).

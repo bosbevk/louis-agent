@@ -26,7 +26,7 @@ public class DrawingMessageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(refusals, Has.Length.EqualTo(25));
+            Assert.That(refusals, Has.Length.EqualTo(28));
             Assert.That(refusals.Intersect(words), Is.Empty);
             Assert.That(words, Does.Contain("KeyHeading").And.Contain("NoRenderer").And.Contain("LegendGreen"));
             Assert.That(words, Has.Length.EqualTo(43));
