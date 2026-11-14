@@ -62,8 +62,10 @@ lines whose dots march the way the arrow points. What any kind in that look wear
 names that start `pic-`, and the parts drawn with it are `PictureParts`: the ground, the title and a panel.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
 start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a group's frame, a box's name and
-icon badge, the glow round a shape, and the pill an arrow's word stands in. The shared rules come first in a
-picture's style, so two kinds can't drift apart in what they share.
+icon badge, the glow round a shape, and the pill an arrow's word stands in. `CardsStyle` holds what a cards
+picture will wear, with names that start `crd-`: the light behind a headline, the lit rail, the glass card and the
+quiet one. No picture is drawn with it yet. The shared rules come first in a picture's style, so two kinds can't
+drift apart in what they share.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
