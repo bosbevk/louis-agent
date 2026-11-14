@@ -11,16 +11,26 @@
         </defs>
         @foreach (var edge in Placed.Edges)
         {
-            <path class="edge" d="@edge.Path" style="@EdgeStyle(edge)" marker-end="@ArrowRef" />
-            @if (edge.Edge.Word is { } word)
-            {
-                @Word(edge, word)
-            }
+            <path class="edge" d="@edge.Way.Text" style="@EdgeStyle(edge)" marker-end="@ArrowRef" />
+        }
+        @* A word stands on its own line, on a ground that hides the line behind it. Every word is drawn after every
+           line, so none runs over a word. *@
+        @foreach (var edge in Placed.Edges.Where(edge => edge.Edge.Word is not null))
+        {
+            @WordGround(edge)
+            @Word(edge, edge.Edge.Word!)
         }
         @foreach (var node in Placed.Nodes)
         {
             <g class="node" transform="@Translate(node)" style="@NodeStyle(node)">
-                <rect width="@N(node.W)" height="@N(node.H)" rx="10" />
+                @if (Outline(node) is { } outline)
+                {
+                    <path d="@outline" />
+                }
+                else
+                {
+                    <rect width="@N(node.Box.Width)" height="@N(node.Box.Height)" rx="@Corner(node)" />
+                }
                 @Label(node)
                 @if (node.Node.Note is { } note)
                 {

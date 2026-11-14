@@ -16,6 +16,21 @@ public enum DiagramMessage
     [Description("'{Value}' is not a kind of diagram. The kinds are {Kinds}.")]
     UnknownKind,
 
+    [Description("'{Value}' is not a shape a box can have. The shapes are {Shapes}.")]
+    UnknownShape,
+
+    [Description("'{Value}' is not a type of diagram. The types are {Types}.")]
+    UnknownDiagramType,
+
+    [Description("A {Kind} picture can't be a '{Type}' diagram. Its \"type\" may be: {Types}.")]
+    WrongDiagramType,
+
+    [Description("A {Kind} is not a diagram of any type. Take its \"type\" out.")]
+    NoDiagramType,
+
+    [Description("A {Kind} picture must say what type of diagram it is. Its \"type\" may be: {Types}.")]
+    MissingDiagramType,
+
     [Description("A {Kind} diagram needs its \"{Kind}\" part.")]
     MissingPart,
 
@@ -30,6 +45,10 @@ public enum DiagramMessage
 
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
     UnknownCard,
+
+    [Description("The link from '{From}' to '{To}' doesn't join two neighbouring rows. A link runs from a card to " +
+                 "one in the row just above or just under it.")]
+    LinkNotBetweenRows,
 
     [Description("A step names '{Id}', which no participant in the diagram has: \"{Step}\".")]
     UnknownParticipant,
@@ -61,14 +80,25 @@ public enum DiagramMessage
     [Description("The status's tone '{Tone}' isn't one there is; use one of {Tones}.")]
     UnknownTone,
 
-    [Description("There is no renderer for a {Kind} diagram yet.")]
-    NoRenderer,
+    [Description("The id '{Id}' is used twice in the nested diagram. Every box and every neighbour needs an id " +
+                 "of its own.")]
+    DuplicateNestedId,
 
-    // What each tone means in the docs' legend (CL60.2): the role a box of that colour plays in every chart.
-    [Description("starts it")] LegendBlue,
-    [Description("this project")] LegendGreen,
-    [Description("the framework")] LegendViolet,
-    [Description("contracts and state")] LegendTeal,
-    [Description("outside the process")] LegendRed,
-    [Description("files and data")] LegendAmber
+    [Description("The state of '{Holder}' names '{Pin}', which is no pin it can reach. Write it as box.Pin, where " +
+                 "the box is one that '{Holder}' holds and the pin is in that box's \"{List}\".")]
+    UnknownPin,
+
+    [Description("The neighbour '{Neighbour}' stands by '{To}', which no box in the nested diagram has.")]
+    UnknownNestedBox,
+
+    [Description("The class '{Name}' has no part. A composite structure diagram shows what a class is built " +
+                 "from, so give it one part at least.")]
+    CompositeNoParts,
+
+    [Description("The id '{Id}' is used twice in the composite structure diagram. Every part needs an id of its " +
+                 "own.")]
+    DuplicatePart,
+
+    [Description("'{By}' names the part '{Part}', which the class doesn't have. Name a part by its \"id\".")]
+    UnknownPart
 }

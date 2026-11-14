@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F131 the chat on any website: the architecture",
   "caption": "One script tag: our widget runs in a frame on the customer's page, with a door per site on the API and its own limits.",
   "flow": {
@@ -24,12 +25,14 @@
       },
       {
         "id": "Store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Sites in MongoDB\nper tenant F131.4"
       },
       {
         "id": "Ledger",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "Usage ledger\nsite:name tag"

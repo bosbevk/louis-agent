@@ -1,4 +1,5 @@
-using LouisAgent.Diagrams.Sequence;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
@@ -26,13 +27,13 @@ public class SequenceNotesTests
     [Test]
     public void ANote_SpansTheLifelinesItNames()
     {
-        var placed = SequenceLayout.Place(Spec);
-        var (x, _, w, _) = SequenceText.NoteBox(placed.Rows[2]);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
+        var note = SequenceMeasures.Marquee.NoteBox(placed.Rows[2], Geometries.InUse);
 
         Assert.Multiple(() =>
         {
-            Assert.That(x, Is.LessThan(placed.Heads[0].Center));
-            Assert.That(x + w, Is.GreaterThan(placed.Heads[1].Center));
+            Assert.That(note.Left, Is.LessThan(placed.Heads[0].Center));
+            Assert.That(note.Right, Is.GreaterThan(placed.Heads[1].Center));
         });
     }
 
@@ -40,14 +41,14 @@ public class SequenceNotesTests
     [Test]
     public void ANoteOverOne_StandsOnItsLifeline_InsideTheDrawing()
     {
-        var placed = SequenceLayout.Place(Spec);
-        var (x, _, w, _) = SequenceText.NoteBox(placed.Rows[0]);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
+        var note = SequenceMeasures.Marquee.NoteBox(placed.Rows[0], Geometries.InUse);
 
         Assert.Multiple(() =>
         {
-            Assert.That(x + w / 2, Is.EqualTo(placed.Heads[0].Center).Within(0.001));
-            Assert.That(x, Is.GreaterThanOrEqualTo(0));
-            Assert.That(x + w, Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(note.Middle.X, Is.EqualTo(placed.Heads[0].Center).Within(0.001));
+            Assert.That(note.Left, Is.GreaterThanOrEqualTo(0));
+            Assert.That(note.Right, Is.LessThanOrEqualTo(placed.Width));
         });
     }
 
@@ -55,7 +56,7 @@ public class SequenceNotesTests
     [Test]
     public void TheNumbers_RunInOrder_OverMessagesOnly()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
 
         Assert.That(placed.Rows.Select(row => row.Number), Is.EqualTo(new int?[] { null, 1, null, 2 }));
     }

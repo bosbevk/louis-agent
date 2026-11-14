@@ -2,8 +2,8 @@ using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Site.Pages;
 using LouisAgent.Site.Pages.Agents;
 using LouisAgent.Site.Pages.Business;
-using LouisAgent.Web.Text;
-using Microsoft.Extensions.DependencyInjection;
+using LouisAgent.SiteApi;
+using LouisAgent.SiteApi.Resumes;
 
 namespace LouisAgent.Site.Tests.Pages.Meta;
 
@@ -16,11 +16,8 @@ public class PageTitlesTests
     /// <summary>The page comes out of the host's prerenderer, with the services the host gives it.</summary>
     private static async Task<string> TitleOf(Type page, string address)
     {
-        var prerenderer = new PagePrerenderer(services =>
-        {
-            services.AddSingleton(new ChatText());
-            services.AddSingleton(new HttpClient());
-        });
+        // The host's own list (FX155), with no folder for the CV, so it is the built-in one.
+        var prerenderer = new PagePrerenderer(services => SitePageServices.Register(services, new ResumeStore(null)));
 
         var rendered = await prerenderer.RenderAsync(page, new Uri(new Uri("https://louis-agent.dev"), address));
 

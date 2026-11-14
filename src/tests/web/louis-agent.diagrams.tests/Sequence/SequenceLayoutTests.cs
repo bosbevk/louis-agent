@@ -1,5 +1,5 @@
-using LouisAgent.Diagrams.Sequence;
-using LouisAgent.Diagrams.Sequence.Placed;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
@@ -26,14 +26,14 @@ public class SequenceLayoutTests
     [Test]
     public void TheHeads_StandInARow_Apart()
     {
-        var heads = SequenceLayout.Place(Spec).Heads;
+        var heads = SequenceLayout.Place(Spec, SequenceMeasures.Marquee).Heads;
 
         Assert.Multiple(() =>
         {
             Assert.That(heads.Select(head => head.Participant.Id), Is.EqualTo(new[] { "P", "S", "B" }));
-            Assert.That(heads.Select(head => head.Y).Distinct(), Has.Exactly(1).Items);
+            Assert.That(heads.Select(head => head.Box.Top).Distinct(), Has.Exactly(1).Items);
             for (int at = 1; at < heads.Count; at++)
-                Assert.That(heads[at].X, Is.GreaterThan(heads[at - 1].X + heads[at - 1].W), heads[at].Participant.Id);
+                Assert.That(heads[at].Box.Left, Is.GreaterThan(heads[at - 1].Box.Right), heads[at].Participant.Id);
         });
     }
 
@@ -43,15 +43,15 @@ public class SequenceLayoutTests
     [Test]
     public void AMessagesWords_KeepBetweenItsLifelines()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
 
         Assert.Multiple(() =>
         {
             foreach (var row in placed.Rows.Where(row => row.FromX != row.ToX))
             {
-                var box = SequenceText.WordBox(row);
-                Assert.That(box.X, Is.GreaterThan(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
-                Assert.That(box.X + box.W, Is.LessThan(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
+                var box = SequenceMeasures.Marquee.WordBox(row, Geometries.InUse);
+                Assert.That(box.Left, Is.GreaterThan(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
+                Assert.That(box.Right, Is.LessThan(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
             }
         });
     }
@@ -60,7 +60,7 @@ public class SequenceLayoutTests
     [Test]
     public void ALongMessage_WrapsAtForty()
     {
-        var lambda = SequenceLayout.Place(Spec).Rows[1];
+        var lambda = SequenceLayout.Place(Spec, SequenceMeasures.Marquee).Rows[1];
 
         Assert.Multiple(() =>
         {
@@ -80,7 +80,7 @@ public class SequenceLayoutTests
         var spec = new SequenceSpec([new Participant("P", "Program.cs\n(the host)"), new Participant("S", "S")],
             [new MessageStep("P", "S", "Build()\nchecked"), new ReplyStep("S", "P", "")]);
 
-        var placed = SequenceLayout.Place(spec);
+        var placed = SequenceLayout.Place(spec, SequenceMeasures.Marquee);
 
         Assert.Multiple(() =>
         {
@@ -94,8 +94,8 @@ public class SequenceLayoutTests
     [Test]
     public void TheRows_RunDownInOrder()
     {
-        var placed = SequenceLayout.Place(Spec);
-        double headsEnd = placed.Heads.Max(head => head.Y + head.H);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
+        double headsEnd = placed.Heads.Max(head => head.Box.Bottom);
 
         Assert.Multiple(() =>
         {
@@ -113,15 +113,15 @@ public class SequenceLayoutTests
     [Test]
     public void AMessageToOneself_TurnsBackBesideItsLifeline()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var self = placed.Rows[2];
-        var box = SequenceText.WordBox(self);
+        var box = SequenceMeasures.Marquee.WordBox(self, Geometries.InUse);
 
         Assert.Multiple(() =>
         {
             Assert.That(self.FromX, Is.EqualTo(self.ToX));
-            Assert.That(box.X, Is.GreaterThan(self.FromX));
-            Assert.That(box.X + box.W, Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(box.Left, Is.GreaterThan(self.FromX));
+            Assert.That(box.Right, Is.LessThanOrEqualTo(placed.Width));
         });
     }
 }

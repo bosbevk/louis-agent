@@ -20,7 +20,7 @@ public class SolutionLayoutTests
     [TestCase("src/hosts", "louis-agent.acp", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
         "louis-agent.mcp", "louis-agent.accounts", "louis-agent.accounts.contracts", "louis-agent.api.evals")]
     [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts", "louis-agent.web.evals",
-        "louis-agent.diagrams")]
+        "louis-agent.diagrams", "louis-agent.diagrams.engine")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
     [TestCase("packs/tools", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",

@@ -1,5 +1,5 @@
+using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.DocDiagrams;
 
 namespace LouisAgent.DocDiagrams.Tests;
@@ -14,6 +14,7 @@ public class DiagramSyncTests
     private const string Flow = """
                                 {
                                   "kind": "flow",
+                                  "type": "component",
                                   "title": "Two boxes",
                                   "flow": {
                                     "nodes": [

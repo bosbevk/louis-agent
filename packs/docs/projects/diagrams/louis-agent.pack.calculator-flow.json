@@ -1,0 +1,75 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "louis-agent.pack.calculator: one sum, step by step",
+  "caption": "Only arithmetic gets in: a sum with anything else is refused before .NET's evaluator sees it. Every whole number becomes a decimal first, so a big product can't outgrow an int.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "A sum\nfrom the model",
+        "icon": "chip",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "only",
+        "label": "Only digits, a point,\n+ - * / ( ) and spaces,\n200 characters at most?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "refuse",
+        "label": "Refuse that sum\nalone",
+        "icon": "shield",
+        "tone": "red",
+        "shape": "terminal"
+      },
+      {
+        "id": "decimal",
+        "label": "Every whole number\nmade a decimal",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "compute",
+        "label": "DataTable.Compute\n.NET's own evaluator",
+        "icon": "code",
+        "tone": "violet"
+      },
+      {
+        "id": "end",
+        "label": "The answer",
+        "icon": "file",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "only"
+      },
+      {
+        "from": "only",
+        "to": "refuse",
+        "word": "no"
+      },
+      {
+        "from": "only",
+        "to": "decimal",
+        "word": "yes"
+      },
+      {
+        "from": "decimal",
+        "to": "compute"
+      },
+      {
+        "from": "compute",
+        "to": "end"
+      }
+    ]
+  }
+}

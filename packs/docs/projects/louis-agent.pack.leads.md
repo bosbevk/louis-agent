@@ -5,7 +5,7 @@
 > [louis-agent.identity.guide](../../../src/docs/projects/louis-agent.identity.guide.md); how a pack is
 > shaped in [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
-> **Kind:** Class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.leads/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.leads/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.coding-catalog`, for the guide
 
 ![The leads pack: SendLead, a sender behind a seam, and failures as text](diagrams/louis-agent.pack.leads.svg)
@@ -35,6 +35,12 @@ after the visitor's yes (the rule is in the guide's voice).
   demonstration (`SentDemo`, `LoggedDemo`), so it tells the visitor. One pack, one `SendLead`
   ([ADR 0116](../../../src/docs/adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)).
 
+![How it works: a lead is sent once, on the yes, and the key picks Resend or the log](diagrams/louis-agent.pack.leads-flow.svg)
+
+![One lead sent: a missing part is asked for, a whole one is mailed, and a failure comes back as text](diagrams/louis-agent.pack.leads-sequence.svg)
+
+![The types: one tool, a lead record and the sender seam with its two senders](diagrams/louis-agent.pack.leads-interface.svg)
+
 ## Settings
 
 | Setting | Means |
@@ -42,14 +48,6 @@ after the visitor's yes (the rule is in the guide's voice).
 | `LEADS_TO` | Louis's address. Unset, the toolset is off and the guide has no tool. |
 | `LEADS_FROM` | The verified sender, `guide@louis-agent.dev` by default. |
 | `RESEND_API_KEY` | In the secrets. Unset, the log sender. |
-
-## Diagrams
-
-![How it works: a lead is sent once, on the yes, and the key picks Resend or the log](diagrams/louis-agent.pack.leads-flow.svg)
-
-![One lead sent: a missing part is asked for, a whole one is mailed, and a failure comes back as text](diagrams/louis-agent.pack.leads-sequence.svg)
-
-![The types: one tool, a lead record and the sender seam with its two senders](diagrams/louis-agent.pack.leads-interface.svg)
 
 ## Tests
 

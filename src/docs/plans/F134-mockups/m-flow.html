@@ -1,0 +1,65 @@
+<!doctype html><meta charset="utf-8"><title>A flow in the new look: a design</title>
+<style>
+  body { margin: 0; padding: 40px 48px 80px; background: #0b0d11; color: #e9ebee;
+         font: 15px/1.55 "Segoe UI", system-ui, sans-serif; }
+  h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -.3px; }
+  p, li { max-width: 78ch; margin: 0 0 10px; color: #a9b0ba; }
+  h2 { margin: 48px 0 10px; font-size: 18px; } h3 { margin: 22px 0 10px; font-size: 13px; color: #a9b0ba; }
+  img { display: block; max-width: 100%; height: auto; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+  .pair { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; } .pair > div { flex: 1 1 380px; }
+</style>
+<h1>A flow in the new look</h1>
+<p>Four drawings, each on a dark page and on a light one. They are drawn by hand from two real pictures of the
+docs, in the colours and icons the tool has, to settle how a flow looks before its renderer is built.</p>
+
+<h2>1. Parts and calls: the web's picture</h2>
+<p>No shapes, since nothing here is a decision or a start. A box stands level with the box that feeds it wherever a
+row is free, so a line from one box to one box runs straight across: the chat page to <code>ChatShell</code>, the
+admin layout to <code>AdminShell</code>, <code>ChatRunner</code> to <code>TurnStream</code>, <code>AgentApi</code>
+to <code>louis-agent.api</code>. A line bends only where one box feeds several or several feed one. At
+<code>AgentApi</code> the violet and the green line arrive at two points, the upper source at the upper one.</p>
+<h3>On a dark page</h3><img src="m-flow-web-dark.svg" alt="The web's picture in the new look, on a dark page">
+<h3>On a light page</h3><img src="m-flow-web-light.svg" alt="The web's picture in the new look, on a light page">
+
+<h2>2. A procedure: how the orchestrator uses a runbook</h2>
+<p>This one is a procedure, so it has shapes: its start is a pill and its two questions are diamonds. It runs
+down, so level here means in line: each box stands under the box that feeds it where it can. The last box has two
+arrows in, from the diamond's "no" and from "anything else, or in doubt", and they arrive side by side.</p>
+<div class="pair">
+  <div><h3>On a dark page</h3><img src="m-flow-runbook-dark.svg" alt="The runbook picture with shapes, on a dark page"></div>
+  <div><h3>On a light page</h3><img src="m-flow-runbook-light.svg" alt="The runbook picture with shapes, on a light page"></div>
+</div>
+
+<h2>3. When two lines would share a stretch</h2>
+<p>Lines in a gap turn on one line as long as their upright pieces are clear of each other. Only when two uprights
+would lie on one another does the second get a track of its own, a step beside the first.</p>
+<div class="pair">
+  <div><img src="m-flow-beside-dark.svg" alt="Two lines side by side, on a dark page"></div>
+  <div><img src="m-flow-beside-light.svg" alt="Two lines side by side, on a light page"></div>
+</div>
+
+<h2>4. The shapes a box may have</h2>
+<div class="pair">
+  <div><img src="m-flow-shapes-dark.svg" alt="The four shapes on a dark page"></div>
+  <div><img src="m-flow-shapes-light.svg" alt="The four shapes on a light page"></div>
+</div>
+
+<h2>What this design settles, if it is approved</h2>
+<ul>
+  <li><b>The title.</b> A flow's title up to its first colon is the picture's title, and the rest is the line under
+  it. No field is added to the JSON.</li>
+  <li><b>A box.</b> A panel tinted in its tone. At its left a solid bar in its colour, as a component's panel has,
+  then its icon in a solid badge of that colour, then its words in the sans face.</li>
+  <li><b>A shape that means something.</b> A decision, data and a start or an end have their outline at full
+  strength with a soft glow in their colour, so the eye finds them first.</li>
+  <li><b>A group.</b> A lifted panel behind its boxes, its label at the top left.</li>
+  <li><b>Where a box stands.</b> Level with the box that feeds it, where a row is free, so the line between them
+  is straight.</li>
+  <li><b>Where a line turns.</b> Every line of a gap turns on the same line. A second track, a step beside it,
+  only for an upright piece that would otherwise lie on another.</li>
+  <li><b>A line.</b> The colour of the box it leaves, a small ring where it leaves, dots that march to its arrowhead.</li>
+  <li><b>A word.</b> A small pill on its line, in the line's colour.</li>
+  <li><b>The key.</b> Under the drawing, across its width: a row for each tone and each shape the picture uses.</li>
+  <li><b>A diamond shows no icon</b>, and its words stand in the middle under a short bar in its colour. Its shape
+  already says what it is.</li>
+</ul>

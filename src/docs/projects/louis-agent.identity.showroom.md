@@ -5,8 +5,9 @@
 > [louis-agent.pack.leads](../../../packs/docs/projects/louis-agent.pack.leads.md); the site they show on in
 > [louis-agent.site](louis-agent.site.md); the decisions in [ADR 0112](../adr/0112-the-site-sells-first.md) and
 > [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
+> **Also shows:** `activity`, `sequence`
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/site/louis-agent.identity.showroom/` · **References:**
+> **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.showroom/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), behind its key
 
 ![The showroom's agents: a guesthouse, a restaurant and a law practice, on the leads and the site packs](diagrams/louis-agent.identity.showroom.svg)
@@ -51,8 +52,6 @@ Nothing runs for a visitor who watches; since F127.2 a visitor can try each agen
   down in its own voice, with its own packs and nothing to ask further with, since a role's level comes from its
   file's folder, not from who asks. The
   leads pack's texts name no owner, so the same tool that sends Louis a lead sends a practice its booking request.
-
-## Diagrams
 
 ![How it works: recorded once and tried live after, each business on the leads and site packs](diagrams/louis-agent.identity.showroom-flow.svg)
 

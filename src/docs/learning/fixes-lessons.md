@@ -431,5 +431,34 @@ shared list runs the tests of everything that reads it. The link now takes the i
 (Louis's pick), which is what the CV's own print sheet was already making it do. Skill 18 (testing and
 shipping: the check has to be of what ships).
 
+## FX155 · A list written twice is two lists
+
+The site's own program registers what its pages ask for, for the browser. The site's host registers what its pages
+ask for, for the page it draws for a search engine. They were two lists written by hand, and when the showroom
+came, its demos went into one. So a crawler's showroom had a heading and no demo, on the live site, and no test
+said so: each test that drew a page "as the host serves it" wrote a third list of its own. The fix gives the host
+one named list a test can call, and every such test now draws with it. A test that builds its own copy of the
+thing under test proves the copy.
+
+Three things were said about this before they were checked, and all three were wrong: that the old start gave a
+crawler a link per demo, that a demo's page gave it an empty rail, and that each demo's address would be its own
+page. One request to the running site, read as a crawler reads it, settled each one. The host draws a page once, at
+its own route and without its layout, and serves that for every place on the page. So what a crawler gets is asked
+of the server, never worked out from the components. Testing and shipping (skill 18).
+
+## FX156 · A shared look is only shared by what names it
+
+The pictures got one look in steps, a kind at a time: the component diagram, the cards, the sequence, the class
+chart, the flow. Each step moved the kind it was about. The card an agent draws in the chat was built
+before any of them, with a style of its own, and no step was about it, so it stayed a navy band over a torn edge
+beside a page of glass. Nothing was broken and no test could fail: a rule held that every drawing goes through the
+one builder, and it named the ticket as the exception. An exception written into a rule is a place nobody looks
+again. When a look is meant for everything, the check to write is the list of what does not wear it yet, and it
+should be empty or say why.
+
+It was also a look decided by looking. Three drawn options were put, and the pick was made sharper once it was
+on screen: glass, and nothing of a ticket. The words "our theme" would not have settled that. Skill 18 (testing
+and shipping: what a visitor sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

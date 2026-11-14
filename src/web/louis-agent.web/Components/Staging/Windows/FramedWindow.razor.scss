@@ -42,8 +42,17 @@
     color: var(--bs-secondary-color);
     background: rgba(var(--web-overlay-rgb), .05);
 }
-/* The body takes what is left and cuts what doesn't fit. It can't be scrolled, so nothing can push the bar away. */
-.window-body { flex: 1; min-height: 0; overflow: clip; display: flex; flex-direction: column; }
+/* The body takes what is left and cuts what doesn't fit. It can't be scrolled, so nothing can push the bar away.
+   What it holds may lay itself out by the body's width (a container query), since a window can be narrow on a wide
+   screen. */
+.window-body {
+    flex: 1;
+    min-height: 0;
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    container-type: inline-size;
+}
 
 @media (prefers-reduced-motion: reduce) {
     .framed-window { transition: none; }

@@ -1,79 +1,26 @@
-<svg viewBox="-24 -24 1385 831" width="1385" height="831" role="img" aria-label="Puls's track: between the phases" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1229 771" width="1229" height="771" role="img" aria-label="Puls's track: between the phases" xmlns="http://www.w3.org/2000/svg">
   <title>Puls's track: between the phases</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
-.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.label { fill: var(--text); font: 600 12px var(--mono); }
-.note { fill: var(--quiet); font: 10px var(--mono); }
-.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.dashed { stroke-dasharray: 5 4; }
-.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.group-label {
-  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-}
-.word { fill: var(--text); font: 500 10px var(--mono); }
-.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.frame { fill: none; stroke: var(--line); stroke-width: 1; }
-.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.highlight { fill: var(--tint); stroke: var(--accent); }
-.title { fill: var(--text); font: 600 13px var(--mono); }
-.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }
-.badge { fill: var(--quiet); }
-.badge-icon {
-  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
-.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
-.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
-.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
-.label.tone-green, .word.tone-green { fill: var(--green-ink); }
-.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
-.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
-.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
-.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
-.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
-.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
-.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
-.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
-.label.tone-red, .word.tone-red { fill: var(--red-ink); }
-.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
-.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
-.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
-.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
 svg {
   --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
-}
-.titlebar { fill: var(--banner); }
-.title-icon {
-  fill: none; stroke: var(--banner-ink); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.title-rule { fill: var(--banner-line); }
-.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
-.title-head { font-weight: 700; }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -81,14 +28,89 @@ svg {
 }
 .notes { fill: var(--quiet); font: 400 12px var(--sans); }
 .note-head { fill: var(--text); font-weight: 700; }
-.legend { fill: var(--quiet); font: 400 12px var(--sans); }
-.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -99,135 +121,160 @@ svg {
     <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1385" height="831" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="1337" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="1229" height="771" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a614.5 190 0 1 0 1229 0a614.5 190 0 1 0 -1229 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">Puls's track: between the phases</text>
+    <text class="pic-group" x="1181" y="14" text-anchor="end">Activity diagram</text>
+    <g class="flow" transform="translate(0 44)">
+      <path class="pic-line pic-edge tone-blue" d="M147 68L147 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 68L147 128" />
+      <path class="pic-line pic-edge tone-green" d="M459 68L459 83Q459 98 444 98L180 98Q165 98 165 113L165 128" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 68L459 83Q459 98 444 98L180 98Q165 98 165 113L165 128" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 240" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 195Q147 210 162 210L444 210Q459 210 459 225L459 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 195Q147 210 162 210L444 210Q459 210 459 225L459 240" />
+      <path class="pic-line pic-edge tone-green" d="M147 180L147 195Q147 210 162 210L756 210Q771 210 771 225L771 240" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 180L147 195Q147 210 162 210L756 210Q771 210 771 225L771 240" />
+      <path class="pic-line pic-edge tone-green" d="M459 292L459 307Q459 322 474 322L738 322Q753 322 753 337L753 352" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 292L459 307Q459 322 474 322L738 322Q753 322 753 337L753 352" />
+      <path class="pic-line pic-edge tone-green" d="M771 68L771 83Q771 98 786 98L879.2 98Q894.2 98 894.2 113L894.2 128L894.2 180L894.2 240L894.2 292L894.2 307Q894.2 322 879.2 322L786 322Q771 322 771 337L771 352" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 68L771 83Q771 98 786 98L879.2 98Q894.2 98 894.2 113L894.2 128L894.2 180L894.2 240L894.2 292L894.2 307Q894.2 322 879.2 322L786 322Q771 322 771 337L771 352" />
+      <path class="pic-line pic-edge tone-green" d="M771 404L771 425Q771 446 792 446L1053 446Q1065 446 1065 458L1065 470" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 404L771 425Q771 446 792 446L1053 446Q1065 446 1065 458L1065 470" />
+      <path class="pic-line pic-edge tone-green" d="M1083 68L1083 83Q1083 98 1068 98L995 98Q980 98 980 113L980 128L980 180L980 240L980 292L980 352L980 404L980 416Q980 428 992 428L1062 428Q1083 428 1083 449L1083 470" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1083 68L1083 83Q1083 98 1068 98L995 98Q980 98 980 113L980 128L980 180L980 240L980 292L980 352L980 404L980 416Q980 428 992 428L1062 428Q1083 428 1083 449L1083 470" />
+      <path class="pic-line pic-edge tone-green" d="M1083 68L1083 128" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1083 68L1083 128" />
+      <path class="pic-line pic-edge tone-green reads" d="M771 404L771 470" marker-end="url(#arrow-green)" />
+      <rect class="pic-panel" x="57" y="0" width="180" height="68" rx="10" />
+      <rect class="pic-fill tone-blue" x="73" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(79 26) scale(0.6667)">
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6l0 13" />
+        <path d="M12 6l0 13" />
+        <path d="M21 6l0 13" />
+      </g>
+      <text class="pic-name" x="109" y="39" text-anchor="start">Puls local spec</text>
+      <rect class="pic-panel" x="327.2" y="0" width="263.6" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="343.2" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(349.2 26) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="379.2" y="39" text-anchor="start">Phase 3: record and replay</text>
+      <rect class="pic-panel" x="650.6" y="0" width="240.8" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="666.6" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(672.6 26) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="702.6" y="31" text-anchor="start">Phase 4: the area-guide</text>
+      <text class="pic-name" x="702.6" y="47" text-anchor="start">simulation proves it</text>
+      <rect class="pic-panel" x="985.4" y="0" width="195.2" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="1001.4" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1007.4 26) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="1037.4" y="39" text-anchor="start">Phase 9: accounts</text>
+      <rect class="pic-panel" x="45.6" y="128" width="202.8" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="61.6" y="140" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(67.6 146) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="97.6" y="159" text-anchor="start">F35 Recipe sources</text>
+      <rect class="pic-panel" x="998" y="128" width="170" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="1014" y="140" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1020 146) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="1050" y="159" text-anchor="start">F23 Credits</text>
+      <rect class="pic-panel" x="41.8" y="240" width="210.4" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="57.8" y="252" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(63.8 258) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="93.8" y="271" text-anchor="start">CL16 Reusable roles</text>
+      <rect class="pic-panel" x="331" y="240" width="256" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="347" y="252" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(353 258) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="383" y="271" text-anchor="start">Sources as data, ADR 0032</text>
+      <rect class="pic-panel" x="665.8" y="240" width="210.4" height="52" rx="10" />
+      <rect class="pic-fill tone-blue" x="681.8" y="252" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(687.8 258) scale(0.6667)">
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6l0 13" />
+        <path d="M12 6l0 13" />
+        <path d="M21 6l0 13" />
+      </g>
+      <text class="pic-name" x="717.8" y="271" text-anchor="start">Vision, question 15</text>
+      <rect class="pic-panel" x="686" y="352" width="170" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="702" y="364" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(708 370) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="738" y="383" text-anchor="start">Places</text>
+      <rect class="pic-panel" x="624" y="470" width="294" height="68" rx="10" />
+      <rect class="pic-fill" x="640" y="490" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(646 496) scale(0.6667)">
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
+      </g>
+      <text class="pic-name" x="676" y="501" text-anchor="start">Local lookups, each a pack</text>
+      <text class="pic-name" x="676" y="517" text-anchor="start">when a simulation shows demand</text>
+      <rect class="pic-panel" x="989.2" y="470" width="187.6" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="1005.2" y="490" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1011.2 496) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="1041.2" y="509" text-anchor="start">Local businesses</text>
+      <circle class="pic-port pic-edge tone-blue" cx="147" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="459" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="147" cy="180" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="459" cy="292" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="771" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="771" cy="404" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="1083" cy="68" r="4" />
+    </g>
+    <rect class="mrq-rule" x="0" y="608" width="1181" height="1" rx="0" />
+    <text class="pic-group" x="0" y="630" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="647" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="660.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-green" x="117.4" y="647" width="18" height="18" rx="6" />
+    <text class="pic-means" x="145.4" y="660.5" text-anchor="start">this project</text>
+    <path class="flow-key pic-line pic-edge" d="M254.6 656H284.6" marker-end="url(#arrow)" />
+    <text class="pic-means" x="294.6" y="660.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">Puls's track:</tspan>
-    <tspan class="title-rest">between the phases</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="edge tone-blue" d="M 303 68 L 303 170" marker-end="url(#arrow-blue)" />
-    <path class="edge tone-green" d="M 615 68 L 615 122 Q 615 146 591 146 L 315 146 Q 303 146 303 158 L 303 170" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 303 222 L 303 258 Q 303 282 279 282 L 159 282 Q 147 282 147 294 L 147 306" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 303 222 L 303 258 Q 303 282 327 282 L 447 282 Q 459 282 459 294 L 459 306" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 303 222 L 303 258 Q 303 282 327 282 L 759 282 Q 771 282 771 294 L 771 306" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 459 358 L 459 394 Q 459 418 483 418 L 603 418 Q 615 418 615 430 L 615 442" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 927 68 L 927 80 Q 927 92 915 92 L 639 92 Q 615 92 615 116 L 615 170 L 615 222 L 615 306 L 615 358 L 615 442" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 615 494 L 615 515 Q 615 536 636 536 L 915 536 Q 927 536 927 548 L 927 560" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1239 68 L 1239 170 L 1239 222 L 1239 306 L 1239 358 L 1239 442 L 1239 494 L 1239 506 Q 1239 518 1227 518 L 948 518 Q 927 518 927 539 L 927 560" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1239 68 L 1239 89 Q 1239 110 1218 110 L 951 110 Q 927 110 927 134 L 927 170" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 615 494 L 615 560" marker-end="url(#arrow-green)" />
-    <rect class="box tone-blue" x="213" y="0" width="180" height="68" rx="10" />
-    <circle class="badge tone-blue" cx="241" cy="34" r="14" />
-    <g class="badge-icon" transform="translate(233 26) scale(0.6667)">
-      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6l0 13" />
-      <path d="M12 6l0 13" />
-      <path d="M21 6l0 13" />
-    </g>
-    <text class="label tone-blue" x="265" y="39" text-anchor="start">Puls local spec</text>
-    <rect class="box tone-green" x="483.2" y="0" width="263.6" height="68" rx="10" />
-    <circle class="badge tone-green" cx="511.2" cy="34" r="14" />
-    <g class="badge-icon" transform="translate(503.2 26) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="535.2" y="39" text-anchor="start">Phase 3: record and replay</text>
-    <rect class="box tone-green" x="806.6" y="0" width="240.8" height="68" rx="10" />
-    <circle class="badge tone-green" cx="834.6" cy="34" r="14" />
-    <g class="badge-icon" transform="translate(826.6 26) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="858.6" y="31" text-anchor="start">Phase 4: the area-guide</text>
-    <text class="label tone-green" x="858.6" y="47" text-anchor="start">simulation proves it</text>
-    <rect class="box tone-green" x="1141.4" y="0" width="195.2" height="68" rx="10" />
-    <circle class="badge tone-green" cx="1169.4" cy="34" r="14" />
-    <g class="badge-icon" transform="translate(1161.4 26) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="1193.4" y="39" text-anchor="start">Phase 9: accounts</text>
-    <rect class="box tone-green" x="201.6" y="170" width="202.8" height="52" rx="10" />
-    <circle class="badge tone-green" cx="229.6" cy="196" r="14" />
-    <g class="badge-icon" transform="translate(221.6 188) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="253.6" y="201" text-anchor="start">F35 Recipe sources</text>
-    <rect class="box tone-green" x="842" y="170" width="170" height="52" rx="10" />
-    <circle class="badge tone-green" cx="870" cy="196" r="14" />
-    <g class="badge-icon" transform="translate(862 188) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="894" y="201" text-anchor="start">F23 Credits</text>
-    <rect class="box tone-green" x="41.8" y="306" width="210.4" height="52" rx="10" />
-    <circle class="badge tone-green" cx="69.8" cy="332" r="14" />
-    <g class="badge-icon" transform="translate(61.8 324) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="93.8" y="337" text-anchor="start">CL16 Reusable roles</text>
-    <rect class="box tone-green" x="331" y="306" width="256" height="52" rx="10" />
-    <circle class="badge tone-green" cx="359" cy="332" r="14" />
-    <g class="badge-icon" transform="translate(351 324) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="383" y="337" text-anchor="start">Sources as data, ADR 0032</text>
-    <rect class="box tone-blue" x="665.8" y="306" width="210.4" height="52" rx="10" />
-    <circle class="badge tone-blue" cx="693.8" cy="332" r="14" />
-    <g class="badge-icon" transform="translate(685.8 324) scale(0.6667)">
-      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6l0 13" />
-      <path d="M12 6l0 13" />
-      <path d="M21 6l0 13" />
-    </g>
-    <text class="label tone-blue" x="717.8" y="337" text-anchor="start">Vision, question 15</text>
-    <rect class="box tone-green" x="530" y="442" width="170" height="52" rx="10" />
-    <circle class="badge tone-green" cx="558" cy="468" r="14" />
-    <g class="badge-icon" transform="translate(550 460) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="582" y="473" text-anchor="start">Places</text>
-    <rect class="box" x="468" y="560" width="294" height="68" rx="10" />
-    <circle class="badge" cx="496" cy="594" r="14" />
-    <g class="badge-icon" transform="translate(488 586) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label" x="520" y="591" text-anchor="start">Local lookups, each a pack</text>
-    <text class="label" x="520" y="607" text-anchor="start">when a simulation shows demand</text>
-    <rect class="box tone-green" x="833.2" y="560" width="187.6" height="68" rx="10" />
-    <circle class="badge tone-green" cx="861.2" cy="594" r="14" />
-    <g class="badge-icon" transform="translate(853.2 586) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="885.2" y="599" text-anchor="start">Local businesses</text>
-  </g>
-  <rect class="swatch tone-blue" x="0" y="710" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="720.5" text-anchor="start">starts it</text>
-  <rect class="swatch tone-green" x="104.8" y="710" width="12" height="12" rx="3" />
-  <text class="legend" x="122.8" y="720.5" text-anchor="start">this project</text>
-  <rect class="notebar" x="0" y="746" width="1337" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 756) scale(0.6667)">
+  <rect class="notebar" x="0" y="686" width="1181" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 696) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="768">
+  <text class="notes" x="38" y="708">
     <tspan class="note-head">Each step waits for what it needs:</tspan>
     <tspan class="note-rest">an arrow points from what comes first, and a local lookup becomes a pack only when a simulation shows demand.</tspan>
   </text>

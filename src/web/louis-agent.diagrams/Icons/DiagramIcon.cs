@@ -46,5 +46,6 @@ public enum DiagramIcon
     [WireName("scales")] Scales,
     [WireName("exchange")] Exchange,
     [WireName("chevron-left")] ChevronLeft,
-    [WireName("chevron-right")] ChevronRight
+    [WireName("chevron-right")] ChevronRight,
+    [WireName("play")] Play
 }

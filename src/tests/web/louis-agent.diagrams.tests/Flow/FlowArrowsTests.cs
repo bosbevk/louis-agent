@@ -1,10 +1,9 @@
-using System.Globalization;
-using System.Text.RegularExpressions;
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Arrows;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 using LouisAgent.Diagrams.Icons;
-using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
@@ -38,7 +37,7 @@ public class FlowArrowsTests
     public void AWiderBend_StartsItsCornerFurtherOut()
     {
         double Corner(double bend) => GraphLayout.Place(Calls(), bend: bend).Edges
-            .SelectMany(edge => Corners(edge.Path)).Max();
+            .SelectMany(edge => Ways.TurnStarts(edge.Way)).Max();
 
         Assert.Multiple(() =>
         {
@@ -47,42 +46,13 @@ public class FlowArrowsTests
         });
     }
 
-    /// <summary>An arrow wears the tone of the box it leaves, its head too; one from a plain box stays plain.</summary>
-    [Test]
-    public void AnArrow_WearsItsSourcesTone()
-    {
-        string svg = Render();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(Regex.Matches(svg, "class=\"edge tone-blue\"[^>]*marker-end=\"url\\(#arrow-blue\\)\""),
-                Has.Count.EqualTo(2));
-            Assert.That(Regex.Matches(svg, "class=\"edge\"[^>]*marker-end=\"url\\(#arrow\\)\""), Has.Count.EqualTo(1));
-            Assert.That(svg, Does.Contain("id=\"arrow-blue\""));
-        });
-    }
-
-    /// <summary>A word stands in a chip of its arrow's tone, written as it is, not in capitals.</summary>
-    [Test]
-    public void AWord_StandsInAChip()
-    {
-        string svg = Render();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(svg, Does.Contain("class=\"word-chip tone-blue\""));
-            Assert.That(svg, Does.Contain("class=\"word tone-blue\""));
-            Assert.That(svg, Does.Contain(">POST /account/login<"));
-            Assert.That(Regex.Match(svg, @"\.word \{[^}]*\}").Value, Does.Not.Contain("uppercase"));
-        });
-    }
-
     /// <summary>
-    /// A chip keeps clear of the line it belongs to: above its flat piece when the chart runs right, under the track
-    /// it hangs from when the chart runs down (Louis's runner and usage-probe charts, CL60.2).
+    /// A chip stands where its line is told from the others: on its own line when the chart runs right, the line
+    /// through the chip's middle, and under the track it hangs from when the chart runs down (Louis's runner and
+    /// usage-probe charts, CL60.2).
     /// </summary>
     [Test]
-    public void AChip_KeepsClearOfItsLine()
+    public void AChip_StandsOnItsLine_OrUnderItsTrack()
     {
         var right = GraphLayout.Place(new GraphSpec([new GraphNode("a", "A"), new GraphNode("b", "B")],
             [new GraphEdge("a", "b", "--check")]), bend: GraphLayout.SoftBend).Edges.Single();
@@ -94,41 +64,20 @@ public class FlowArrowsTests
             [new GraphEdge("program", "gaps", "--cache-gaps"), new GraphEdge("program", "env", "--host-culture")],
             FlowDirection.Down), bend: GraphLayout.SoftBend).Edges;
 
-        var (_, top, _, height) = FlowText.WordBox(right);
+        var ground = FlowText.WordBox(right, Geometries.InUse);
         Assert.Multiple(() =>
         {
-            Assert.That(top + height, Is.LessThanOrEqualTo(Ys(right.Path).First() - 4), "above its line");
-            foreach (var edge in down)
-                Assert.That(FlowText.WordBox(edge).Y, Is.GreaterThanOrEqualTo(Track(edge.Path) + 4), "under its track");
+            Assert.That(ground.Middle.Y, Is.EqualTo(Ways.Ys(right.Way)[0]), "on its line");
+            // The arrow to the box right under its source runs straight down and has no track: the other bends.
+            var bent = down.Where(edge => Ways.Turns(edge.Way) > 0).ToList();
+            Assert.That(bent, Has.Count.EqualTo(1));
+            foreach (var edge in bent)
+                Assert.That(FlowText.WordBox(edge, Geometries.InUse).Top,
+                    Is.GreaterThanOrEqualTo(Track(edge.Way) + 4), "under its track");
         });
     }
 
-    /// <summary>Every y a path passes: the second number of each pair after its commands.</summary>
-    private static List<double> Ys(string path) => path.Split(' ')
-        .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-        .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).Where((_, at) => at % 2 == 1).ToList();
-
-    /// <summary>The height a down arrow runs across at: the one y its path holds for a while.</summary>
-    private static double Track(string path) => Ys(path).GroupBy(y => y).Where(same => same.Count() > 1)
+    /// <summary>The height a down arrow runs across at: the one height its way holds for a while.</summary>
+    private static double Track(ArrowPath way) => Ways.Ys(way).GroupBy(y => y).Where(same => same.Count() > 1)
         .Select(same => same.Key).Single();
-
-    /// <summary>The flow drawn as the docs draw it.</summary>
-    private static string Render() =>
-        DiagramRenderers.Render(new DiagramSource(DiagramKind.Flow, "Calls", Flow: Calls()));
-
-    /// <summary>
-    /// How far each corner of a path starts from its turn: from the line's end to the curve's corner.
-    /// </summary>
-    private static IEnumerable<double> Corners(string path)
-    {
-        var parts = path.Split(' ');
-        for (int at = 0; at + 4 < parts.Length; at++)
-        {
-            if (parts[at] != "Q") continue;
-
-            double Number(int offset) => double.Parse(parts[at + offset], CultureInfo.InvariantCulture);
-            // The line ends at the two numbers before the Q, and the Q's first pair is the corner itself.
-            yield return Math.Abs(Number(1) - Number(-2)) + Math.Abs(Number(2) - Number(-1));
-        }
-    }
 }

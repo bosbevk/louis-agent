@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F134.1 the start is a stage: the start in memory",
   "caption": "One list of five demos and one number. The deck and the dock are both drawn from them, so they cannot disagree.",
   "flow": {

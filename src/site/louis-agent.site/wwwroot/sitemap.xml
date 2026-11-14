@@ -76,7 +76,13 @@
     <loc>https://louis-agent.dev/demos</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/demos/every-demo</loc>
+    <loc>https://louis-agent.dev/demos/guesthouse-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/demos/restaurant-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/demos/law-practice-demo</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/architecture</loc>

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "A site is a small program on top of this library: it says who it is and what it uses, and the framework does the rest.",
   "title": "The framework's web: a site's pages in the chat's and the admin's frames, and the API they call",
   "flow": {
@@ -57,6 +58,7 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "ChatStore: localStorage"

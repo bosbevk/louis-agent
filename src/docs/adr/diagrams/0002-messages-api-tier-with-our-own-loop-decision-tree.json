@@ -1,50 +1,59 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "ADR 0002: which Claude tier to build on",
   "caption": "Our tier: the Messages API, with our own loop behind IChatClient, so any provider fits.",
   "flow": {
     "nodes": [
       {
         "id": "A",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "Need to call Claude"
       },
       {
         "id": "B",
+        "shape": "decision",
         "icon": "search",
         "label": "Need to swap model providers\nAnthropic, Ollama, etc.?"
       },
       {
         "id": "C",
+        "shape": "terminal",
         "icon": "chip",
         "tone": "green",
         "label": "Messages API + your own loop\n(this is louis-agent)"
       },
       {
         "id": "D",
+        "shape": "decision",
         "icon": "search",
         "label": "Want Anthropic to host\nthe tool-execution sandbox?"
       },
       {
         "id": "E",
+        "shape": "terminal",
         "icon": "cloud",
         "tone": "red",
         "label": "Managed Agents"
       },
       {
         "id": "F",
+        "shape": "decision",
         "icon": "search",
         "label": "Need Claude Code's built-in\nfile/bash/grep tools?"
       },
       {
         "id": "G",
+        "shape": "terminal",
         "icon": "cloud",
         "tone": "red",
         "label": "Claude Agent SDK"
       },
       {
         "id": "H",
+        "shape": "terminal",
         "icon": "cloud",
         "tone": "red",
         "label": "Tool Runner"

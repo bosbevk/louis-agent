@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Puls's judges: from the runner's catalogue to a model's verdict",
   "caption": "Apart from the identity: a judge is built on the harness, and an identity must never reference it. Only the runner references this.",
   "flow": {
@@ -42,6 +43,7 @@
       },
       {
         "id": "rubric",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "meal-for-people.md, in the\ncook\u0027s eval folder"

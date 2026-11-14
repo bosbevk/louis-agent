@@ -1,17 +1,20 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Building blocks, level 2: the containers",
   "caption": "Many hosts, one core: the hosts that load an agent read its identities and packs through the composition root (Plugins.FromEnvironment()), and everything ends in core. A dashed line means uses.",
   "flow": {
     "nodes": [
       {
         "id": "dev",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "Developer"
       },
       {
         "id": "puser",
+        "shape": "terminal",
         "icon": "users",
         "tone": "blue",
         "label": "Puls user"
@@ -90,12 +93,14 @@
       },
       {
         "id": "ws",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "Workspace"
       },
       {
         "id": "ledger",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "logs/: run files, usage ledger"

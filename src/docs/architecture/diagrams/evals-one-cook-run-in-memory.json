@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "The evals: one cook run, in memory",
   "caption": "One run, in memory: an eval's folder becomes trials, and each trial's checks grade it into events. The folder is demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its nine checks are cook-no-error, routed-to, within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, meal-for-people and meal-for-people.human.",
   "flow": {
     "nodes": [
       {
         "id": "set",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "Evals/Cook/eval.json\nidentity = puls"
@@ -24,6 +26,7 @@
       },
       {
         "id": "data",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "Dataset puls-cook v7\ndev and held-out scenarios,\nlabels"
@@ -54,6 +57,7 @@
       },
       {
         "id": "conv",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "ConversationEvent\ngrades, TrialOutcome, Metrics"

@@ -1,79 +1,26 @@
-<svg viewBox="-24 -24 986 690" width="986" height="690" role="img" aria-label="F125 an agentic site: the architecture" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 966 676" width="966" height="676" role="img" aria-label="F125 an agentic site: the architecture" xmlns="http://www.w3.org/2000/svg">
   <title>F125 an agentic site: the architecture</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
-.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.label { fill: var(--text); font: 600 12px var(--mono); }
-.note { fill: var(--quiet); font: 10px var(--mono); }
-.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.dashed { stroke-dasharray: 5 4; }
-.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.group-label {
-  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-}
-.word { fill: var(--text); font: 500 10px var(--mono); }
-.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.frame { fill: none; stroke: var(--line); stroke-width: 1; }
-.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.highlight { fill: var(--tint); stroke: var(--accent); }
-.title { fill: var(--text); font: 600 13px var(--mono); }
-.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }
-.badge { fill: var(--quiet); }
-.badge-icon {
-  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
-.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
-.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
-.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
-.label.tone-green, .word.tone-green { fill: var(--green-ink); }
-.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
-.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
-.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
-.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
-.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
-.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
-.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
-.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
-.label.tone-red, .word.tone-red { fill: var(--red-ink); }
-.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
-.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
-.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
-.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
 svg {
   --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
-}
-.titlebar { fill: var(--banner); }
-.title-icon {
-  fill: none; stroke: var(--banner-ink); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.title-rule { fill: var(--banner-line); }
-.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
-.title-head { font-weight: 700; }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -81,14 +28,89 @@ svg {
 }
 .notes { fill: var(--quiet); font: 400 12px var(--sans); }
 .note-head { fill: var(--text); font-weight: 700; }
-.legend { fill: var(--quiet); font: 400 12px var(--sans); }
-.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -102,122 +124,142 @@ svg {
     <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="986" height="690" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="938" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="966" height="676" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a483 190 0 1 0 966 0a483 190 0 1 0 -966 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">F125 an agentic site: the architecture</text>
+    <text class="pic-group" x="918" y="14" text-anchor="end">Component diagram</text>
+    <g class="flow" transform="translate(0 44)">
+      <path class="pic-line pic-edge tone-blue" d="M147 84L147 168" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M147 84L147 168" />
+      <path class="pic-line pic-edge tone-green" d="M147 236L147 248Q147 260 159 260L426 260Q450 260 450 284L450 314" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 236L147 248Q147 260 159 260L426 260Q450 260 450 284L450 314" />
+      <path class="pic-line pic-edge tone-green reads" d="M147 236L147 314" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-red" d="M771 84L771 105Q771 126 750 126L489 126Q468 126 468 147L468 168L468 236L468 314" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M771 84L771 105Q771 126 750 126L489 126Q468 126 468 147L468 168L468 236L468 314" />
+      <path class="pic-line pic-edge tone-red" d="M771 84L771 168L771 236L771 314" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M771 84L771 168L771 236L771 314" />
+      <path class="pic-line pic-edge tone-green" d="M147 236L147 248Q147 260 159 260L729 260Q753 260 753 284L753 314" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 236L147 248Q147 260 159 260L729 260Q753 260 753 284L753 314" />
+      <path class="pic-line pic-edge tone-green" d="M459 84L459 105Q459 126 438 126L186 126Q165 126 165 147L165 168" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 84L459 105Q459 126 438 126L186 126Q165 126 165 147L165 168" />
+      <rect class="pic-pill pic-edge tone-blue" x="153" y="88" width="29" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="167.5" y="100" text-anchor="middle">SSE</text>
+      <rect class="pic-pill pic-edge tone-green" x="310" y="264" width="134" height="30" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="377" y="276" text-anchor="middle">TOOL_TRANSPORT=mcp</text>
+      <text class="pic-pill-word pic-ink tone-green" x="377" y="288" text-anchor="middle">F125.8</text>
+      <rect class="pic-pill pic-edge tone-green" x="153" y="264" width="127" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="216.5" y="276" text-anchor="middle">in-process, tests</text>
+      <rect class="pic-pill pic-edge tone-red" x="474" y="130" width="162" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-red" x="555" y="142" text-anchor="middle">search + fetch, doc://</text>
+      <rect class="pic-pill pic-edge tone-red" x="777" y="130" width="64" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-red" x="809" y="142" text-anchor="middle">finds it</text>
+      <rect class="pic-pill pic-edge tone-green" x="592" y="264" width="155" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="669.5" y="276" text-anchor="middle">FindMcpServers F125.8</text>
+      <rect class="pic-panel flow-shape pic-edge tone-blue" x="1.8" y="0" width="290.4" height="84" rx="42" />
+      <rect class="pic-fill tone-blue" x="29.8" y="28" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(35.8 34) scale(0.6667)">
+        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+        <path d="M4 8h16" />
+        <path d="M8 4v4" />
+      </g>
+      <text class="pic-name" x="65.8" y="31" text-anchor="start">Visitor's browser</text>
+      <text class="pic-name" x="65.8" y="47" text-anchor="start">widget: ShowPage, Offer,</text>
+      <text class="pic-name" x="65.8" y="63" text-anchor="start">ShowCard</text>
+      <rect class="pic-panel" x="315.8" y="0" width="286.4" height="84" rx="10" />
+      <rect class="pic-fill tone-green" x="331.8" y="28" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(337.8 34) scale(0.6667)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="pic-name" x="367.8" y="39" text-anchor="start">Admin page</text>
+      <text class="pic-name" x="367.8" y="55" text-anchor="start">gaps F125.6, approvals F125.8</text>
+      <rect class="pic-panel" x="650.6" y="0" width="240.8" height="84" rx="10" />
+      <rect class="pic-fill tone-red" x="666.6" y="28" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(672.6 34) scale(0.6667)">
+        <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+      </g>
+      <text class="pic-name" x="702.6" y="47" text-anchor="start">Claude, ChatGPT, Cursor</text>
+      <rect class="pic-panel" x="7.6" y="168" width="278.8" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="23.6" y="188" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(29.6 194) scale(0.6667)">
+        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+        <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+        <path d="M7 8l0 .01" />
+        <path d="M7 16l0 .01" />
+      </g>
+      <text class="pic-name" x="59.6" y="199" text-anchor="start">louis-agent.api</text>
+      <text class="pic-name" x="59.6" y="215" text-anchor="start">the guide, rate limit F125.5</text>
+      <rect class="pic-panel" x="62" y="314" width="170" height="84" rx="10" />
+      <rect class="pic-fill tone-teal" x="78" y="342" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(84 348) scale(0.6667)">
+        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+        <path d="M12 12l8 -4.5" />
+        <path d="M12 12l0 9" />
+        <path d="M12 12l-8 -4.5" />
+      </g>
+      <text class="pic-name" x="114" y="361" text-anchor="start">Packs as DLLs</text>
+      <rect class="pic-panel" x="338.6" y="314" width="240.8" height="84" rx="10" />
+      <rect class="pic-fill tone-green" x="354.6" y="342" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(360.6 348) scale(0.6667)">
+        <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+      </g>
+      <text class="pic-name" x="390.6" y="353" text-anchor="start">louis-agent.mcp</text>
+      <text class="pic-name" x="390.6" y="369" text-anchor="start">docs, site, leads, gaps</text>
+      <rect class="pic-panel" x="624" y="314" width="294" height="84" rx="10" />
+      <rect class="pic-fill tone-red" x="640" y="342" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(646 348) scale(0.6667)">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M3.6 9h16.8" />
+        <path d="M3.6 15h16.8" />
+        <path d="M11.5 3a17 17 0 0 0 0 18" />
+        <path d="M12.5 3a17 17 0 0 1 0 18" />
+      </g>
+      <text class="pic-name" x="676" y="345" text-anchor="start">Official MCP Registry</text>
+      <text class="pic-name" x="676" y="361" text-anchor="start">+ /.well-known/ai-catalog.json</text>
+      <text class="pic-name" x="676" y="377" text-anchor="start">F125.2</text>
+      <circle class="pic-port pic-edge tone-blue" cx="147" cy="84" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="147" cy="236" r="4" />
+      <circle class="pic-port pic-edge tone-red" cx="771" cy="84" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="459" cy="84" r="4" />
+    </g>
+    <rect class="mrq-rule" x="0" y="468" width="918" height="1" rx="0" />
+    <text class="pic-group" x="0" y="490" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="507" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="520.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-green" x="117.4" y="507" width="18" height="18" rx="6" />
+    <text class="pic-means" x="145.4" y="520.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-teal" x="254.6" y="507" width="18" height="18" rx="6" />
+    <text class="pic-means" x="282.6" y="520.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-red" x="438" y="507" width="18" height="18" rx="6" />
+    <text class="pic-means" x="466" y="520.5" text-anchor="start">outside the process</text>
+    <rect class="pic-panel flow-shape pic-edge" x="621.4" y="508" width="30" height="16" rx="8" />
+    <text class="pic-means" x="661.4" y="520.5" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M0 544H30" marker-end="url(#arrow)" />
+    <text class="pic-means" x="40" y="548.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">F125 an agentic site:</tspan>
-    <tspan class="title-rest">the architecture</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="edge tone-blue" d="M 147 84 L 147 204" marker-end="url(#arrow-blue)" />
-    <path class="edge tone-green" d="M 147 272 L 147 308 Q 147 332 171 332 L 435 332 Q 459 332 459 356 L 459 386" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 147 272 L 147 386" marker-end="url(#arrow-green)" />
-    <path class="edge tone-red" d="M 771 84 L 771 120 Q 771 144 747 144 L 483 144 Q 459 144 459 168 L 459 204 L 459 272 L 459 386" marker-end="url(#arrow-red)" />
-    <path class="edge tone-red" d="M 771 84 L 771 204 L 771 272 L 771 386" marker-end="url(#arrow-red)" />
-    <path class="edge tone-green" d="M 147 272 L 147 308 Q 147 332 171 332 L 747 332 Q 771 332 771 356 L 771 386" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 459 84 L 459 105 Q 459 126 438 126 L 171 126 Q 147 126 147 150 L 147 204" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-blue" x="153" y="88" width="29" height="18" rx="4" />
-    <text class="word tone-blue" x="167.5" y="100" text-anchor="middle">SSE</text>
-    <rect class="word-chip tone-green" x="465" y="336" width="134" height="30" rx="4" />
-    <text class="word tone-green" x="532" y="348" text-anchor="middle">TOOL_TRANSPORT=mcp</text>
-    <text class="word tone-green" x="532" y="360" text-anchor="middle">F125.8</text>
-    <rect class="word-chip tone-green" x="153" y="336" width="127" height="18" rx="4" />
-    <text class="word tone-green" x="216.5" y="348" text-anchor="middle">in-process, tests</text>
-    <rect class="word-chip tone-red" x="465" y="166" width="162" height="18" rx="4" />
-    <text class="word tone-red" x="546" y="178" text-anchor="middle">search + fetch, doc://</text>
-    <rect class="word-chip tone-red" x="777" y="166" width="64" height="18" rx="4" />
-    <text class="word tone-red" x="809" y="178" text-anchor="middle">finds it</text>
-    <rect class="word-chip tone-green" x="777" y="336" width="155" height="18" rx="4" />
-    <text class="word tone-green" x="854.5" y="348" text-anchor="middle">FindMcpServers F125.8</text>
-    <rect class="box tone-blue" x="22.8" y="0" width="248.4" height="84" rx="10" />
-    <circle class="badge tone-blue" cx="50.8" cy="42" r="14" />
-    <g class="badge-icon" transform="translate(42.8 34) scale(0.6667)">
-      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
-      <path d="M4 8h16" />
-      <path d="M8 4v4" />
-    </g>
-    <text class="label tone-blue" x="74.8" y="31" text-anchor="start">Visitor's browser</text>
-    <text class="label tone-blue" x="74.8" y="47" text-anchor="start">widget: ShowPage, Offer,</text>
-    <text class="label tone-blue" x="74.8" y="63" text-anchor="start">ShowCard</text>
-    <rect class="box tone-green" x="315.8" y="0" width="286.4" height="84" rx="10" />
-    <circle class="badge tone-green" cx="343.8" cy="42" r="14" />
-    <g class="badge-icon" transform="translate(335.8 34) scale(0.6667)">
-      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-    </g>
-    <text class="label tone-green" x="367.8" y="39" text-anchor="start">Admin page</text>
-    <text class="label tone-green" x="367.8" y="55" text-anchor="start">gaps F125.6, approvals F125.8</text>
-    <rect class="box tone-red" x="650.6" y="0" width="240.8" height="84" rx="10" />
-    <circle class="badge tone-red" cx="678.6" cy="42" r="14" />
-    <g class="badge-icon" transform="translate(670.6 34) scale(0.6667)">
-      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
-    </g>
-    <text class="label tone-red" x="702.6" y="47" text-anchor="start">Claude, ChatGPT, Cursor</text>
-    <rect class="box tone-green" x="7.6" y="204" width="278.8" height="68" rx="10" />
-    <circle class="badge tone-green" cx="35.6" cy="238" r="14" />
-    <g class="badge-icon" transform="translate(27.6 230) scale(0.6667)">
-      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-      <path d="M7 8l0 .01" />
-      <path d="M7 16l0 .01" />
-    </g>
-    <text class="label tone-green" x="59.6" y="235" text-anchor="start">louis-agent.api</text>
-    <text class="label tone-green" x="59.6" y="251" text-anchor="start">the guide, rate limit F125.5</text>
-    <rect class="box tone-teal" x="62" y="386" width="170" height="84" rx="10" />
-    <circle class="badge tone-teal" cx="90" cy="428" r="14" />
-    <g class="badge-icon" transform="translate(82 420) scale(0.6667)">
-      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-      <path d="M12 12l8 -4.5" />
-      <path d="M12 12l0 9" />
-      <path d="M12 12l-8 -4.5" />
-    </g>
-    <text class="label tone-teal" x="114" y="433" text-anchor="start">Packs as DLLs</text>
-    <rect class="box tone-green" x="338.6" y="386" width="240.8" height="84" rx="10" />
-    <circle class="badge tone-green" cx="366.6" cy="428" r="14" />
-    <g class="badge-icon" transform="translate(358.6 420) scale(0.6667)">
-      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
-    </g>
-    <text class="label tone-green" x="390.6" y="425" text-anchor="start">louis-agent.mcp</text>
-    <text class="label tone-green" x="390.6" y="441" text-anchor="start">docs, site, leads, gaps</text>
-    <rect class="box tone-red" x="624" y="386" width="294" height="84" rx="10" />
-    <circle class="badge tone-red" cx="652" cy="428" r="14" />
-    <g class="badge-icon" transform="translate(644 420) scale(0.6667)">
-      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-      <path d="M3.6 9h16.8" />
-      <path d="M3.6 15h16.8" />
-      <path d="M11.5 3a17 17 0 0 0 0 18" />
-      <path d="M12.5 3a17 17 0 0 1 0 18" />
-    </g>
-    <text class="label tone-red" x="676" y="417" text-anchor="start">Official MCP Registry</text>
-    <text class="label tone-red" x="676" y="433" text-anchor="start">+ /.well-known/ai-catalog.json</text>
-    <text class="label tone-red" x="676" y="449" text-anchor="start">F125.2</text>
-  </g>
-  <rect class="swatch tone-blue" x="0" y="552" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="562.5" text-anchor="start">starts it</text>
-  <rect class="swatch tone-green" x="104.8" y="552" width="12" height="12" rx="3" />
-  <text class="legend" x="122.8" y="562.5" text-anchor="start">this project</text>
-  <rect class="swatch tone-teal" x="231.2" y="552" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="562.5" text-anchor="start">contracts and state</text>
-  <rect class="swatch tone-red" x="408" y="552" width="12" height="12" rx="3" />
-  <text class="legend" x="426" y="562.5" text-anchor="start">outside the process</text>
-  <rect class="notebar" x="0" y="588" width="938" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 598) scale(0.6667)">
+  <rect class="notebar" x="0" y="574" width="918" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 584) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="610">
+  <text class="notes" x="38" y="596">
     <tspan class="note-head">Tools go over MCP:</tspan>
     <tspan class="note-rest">the guide's tools run in the MCP server, agents elsewhere find us through the registry, and the admin</tspan>
   </text>
-  <text class="notes" x="38" y="627">
+  <text class="notes" x="38" y="613">
     <tspan class="note-rest">page sees the gaps.</tspan>
   </text>
 </svg>

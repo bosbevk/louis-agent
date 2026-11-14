@@ -1,8 +1,9 @@
 # louis-agent.pack.shop-prices — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.shop-prices/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.shop-prices/` · **References:**
 > louis-agent.composition, MongoDB.Driver, ExcelDataReader, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=shop-prices`, or
 > an identity that names it (Puls) · **Uses:** MongoDB when `SHOP_PRICES_MONGO_URL` is set
+> **Also shows:** `component`
 
 ![The shop prices pack: EstimatePrices, the price tables, and the store and the upload](diagrams/louis-agent.pack.shop-prices.svg)
 
@@ -17,6 +18,10 @@ another kind of price (rent, fuel) is another price file of the same shape. Wher
 job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ## How it works
+
+One basket, step by step.
+
+![One basket: each line matched to a product and priced from its province and pack, or a question mark, then the total](diagrams/louis-agent.pack.shop-prices-flow.svg)
 
 - **One toolset, `shop-prices`.** `ShopPricesPack` defines it with its guide (`prompts/toolsets/shop-prices.md`) and
   one tool. It needs no setting, so it loads wherever it is named.
@@ -55,6 +60,12 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
   months first, then the older ones, newest first, so a product the newest month lacks is priced from the newest
   month that has it, and the line names that month (`from July 2026, the newest month that prices it`).
 
+![The shop-prices pack: its tools, the prices and the estimate](diagrams/louis-agent.pack.shop-prices-diagrams.svg)
+
+![Pricing a shopping list: each line is matched to a product in the price book and priced for the province, then printed with the total and the credit](diagrams/louis-agent.pack.shop-prices-diagrams-2.svg)
+
+![The types: Stats SA's prices imported into a store, read into a cached book, and a basket estimated from it](diagrams/louis-agent.pack.shop-prices-interface.svg)
+
 ## Design notes
 
 - **The sums are code, never the model's.** The model copies each estimate, the total and the price per person; the
@@ -68,14 +79,6 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
   restart; a newly shipped month joins the history.
 - **The unit is kept by its member's name in MongoDB** (`Gram`), the amounts as decimals; the shipped JSON uses the
   wire names (`g`).
-
-## Diagrams
-
-![The shop-prices pack: its tools, the prices and the estimate](diagrams/louis-agent.pack.shop-prices-diagrams.svg)
-
-![Pricing a shopping list: each line is matched to a product in the price book and priced for the province, then printed with the total and the credit](diagrams/louis-agent.pack.shop-prices-diagrams-2.svg)
-
-![The types: Stats SA's prices imported into a store, read into a cached book, and a basket estimated from it](diagrams/louis-agent.pack.shop-prices-interface.svg)
 
 ## Structure
 

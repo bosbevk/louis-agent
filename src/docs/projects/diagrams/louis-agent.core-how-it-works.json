@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "One engine for every host: settings and skills go in, a model and guarded tools come out, and every request to the model is measured.",
   "title": "louis-agent.core: How it works",
   "flow": {
     "nodes": [
       {
         "id": "Env",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "config/.env \u002B .env.secrets\n\u002B LLM profile\n.env.{LLM_PROFILE}\n(AgentHost.LoadEnvironment)"
@@ -60,6 +62,7 @@
       },
       {
         "id": "Ledger",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "JsonlUsageSink\n{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"

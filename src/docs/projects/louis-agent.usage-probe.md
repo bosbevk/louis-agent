@@ -1,7 +1,8 @@
 # louis-agent.usage-probe — design
 
-> **Kind:** console app (developer tool) · **Path:** `src/tools/louis-agent.usage-probe/` · **References:** louis-agent.core
+> **Kind:** console tool (a console app) · **Path:** `src/tools/louis-agent.usage-probe/` · **References:** louis-agent.core
 > · **Docker service:** none
+> **Also shows:** `component`, `sequence`
 
 ![The usage probe, and what it shows: the raw report, the ledger's line, and a ledger priced](diagrams/louis-agent.usage-probe.svg)
 
@@ -13,6 +14,10 @@ right as the mapping in `IUsageMapper`, and the adapters don't all report the sa
 spike.
 
 ## How it works
+
+One probe, step by step.
+
+![A probe: the client and mapper built, six requests for Anthropic or four for others, each both ways, and what each reported printed](diagrams/louis-agent.usage-probe-flow.svg)
 
 It builds the client and the usage mapper the agents use (`LlmClientFactory.Create` and `CreateUsageMapper`) and sends a
 few one-word requests with a long system prompt, both non-streaming and streaming. For each one it prints:
@@ -56,8 +61,6 @@ invariant), checks it names a region, prints the currency and today's rate, and 
 **Every request goes to the real provider.** With Anthropic and the default prompt that is about 62,000 input tokens,
 roughly $0.05 on Haiku 4.5. Anthropic only caches a prompt above a minimum size (4,096 tokens on Haiku 4.5), which is
 why its prompt is long.
-
-## Diagrams
 
 ![The usage probe: each command and the parts it uses](diagrams/louis-agent.usage-probe-diagrams.svg)
 

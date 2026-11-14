@@ -1,7 +1,8 @@
 # louis-agent.core.ollama — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.ollama/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.ollama/` · **References:** louis-agent.core,
 > OllamaSharp · **Used by:** every program whose agent may talk to a local model through Ollama
+> **Also shows:** `component`
 
 ![Ollama's provider, and its parts: the client and its long timeout](diagrams/louis-agent.core.ollama.svg)
 
@@ -13,14 +14,16 @@ talks to a local model through OllamaSharp. A program hands `OllamaProvider.Inst
 
 ## How it works
 
+How a client is made, step by step.
+
+![A client: at the endpoint given or Ollama's own port, over an HttpClient with a ten-minute timeout](diagrams/louis-agent.core.ollama-flow.svg)
+
 `OllamaProvider` is core's `ILlmProvider` seam made real, a singleton: named `ollama`; `Create(options)` is
 OllamaSharp's client over an `HttpClient` at `LLM_ENDPOINT`, or Ollama's own port on this machine, with a ten-minute
 timeout, since a small GPU writes about five tokens a second and HttpClient's default 100 seconds cancelled replies
 Ollama was still writing. It reports usage in the standard fields and marks no cache, so the seam's defaults hold.
 
 ![louis-agent.core.ollama: How it works](diagrams/louis-agent.core.ollama-how-it-works.svg)
-
-## Diagrams
 
 ![One reply from a local model: the provider builds the client, then the engine talks to Ollama through OllamaSharp](diagrams/louis-agent.core.ollama-sequence.svg)
 

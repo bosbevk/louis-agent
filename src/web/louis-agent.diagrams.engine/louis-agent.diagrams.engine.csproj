@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Diagrams.Engine</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.diagrams.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- CL65.1 (Louis: ".diagrams must be split into a diagrams and what builds the diagrams"): what builds a
+         diagram sits on what a diagram is (ADR 0092: a dotted name sits on the thing before the dot). It
+         references that project alone, and through it the enum-name parser. No package. -->
+    <ProjectReference Include="..\louis-agent.diagrams\louis-agent.diagrams.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is built or
+         copied. -->
+    <None Include="..\..\docs\projects\louis-agent.diagrams.md" Link="docs\louis-agent.diagrams.md" />
+    <None Include="..\..\docs\guides\draw-a-diagram.md" Link="docs\draw-a-diagram.md" />
+  </ItemGroup>
+
+</Project>

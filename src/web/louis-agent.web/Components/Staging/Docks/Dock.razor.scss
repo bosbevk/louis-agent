@@ -3,7 +3,8 @@
 
 /* A dock (F134.1): a see-through bar of round-cornered buttons. Each button's icon is in its colour, the accent's,
    or in the colour of the place the dock stands in. The current one is tinted and ringed in that colour and opens to
-   show its name. The others keep their name in the page, folded to no width, so it is read out but not seen. */
+   show its name. The others keep their name in the page, folded to no width, so it is read out but not seen. On a
+   narrow screen the current one stays folded too. */
 @include accents.classes;
 
 .dock {
@@ -50,6 +51,13 @@
     height: 26px;
     margin: 0 4px;
     background: rgba(var(--web-overlay-rgb), .12);
+}
+
+/* On a narrow screen the dock is its icons only, so it fits a phone. The current one keeps its tint and ring, and
+   its name stays folded as the others' are: read out, not seen. */
+@media (max-width: 900px) {
+    .dock-item.is-current { gap: 0; }
+    .dock-item.is-current .dock-name { max-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "activity",
   "caption": "Code runs the fixed steps and saves after each: the manager decides and checks, the others work, and a branch is left, never a PR.",
   "title": "F106: the framework\u0027s track: the triage workflow, drawn",
   "flow": {
     "nodes": [
       {
         "id": "poll",
+        "shape": "terminal",
         "icon": "terminal",
         "tone": "blue",
         "label": "1 Poll the log",
@@ -20,6 +22,7 @@
       },
       {
         "id": "save",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Saved after every step\nMongo, restart from here",
@@ -27,6 +30,7 @@
       },
       {
         "id": "branch",
+        "shape": "terminal",
         "icon": "branch",
         "tone": "green",
         "label": "9 A branch, never a PR",
@@ -34,6 +38,7 @@
       },
       {
         "id": "sorter",
+        "shape": "decision",
         "icon": "search",
         "tone": "teal",
         "label": "2b Sorter\nwhich department?",
@@ -41,6 +46,7 @@
       },
       {
         "id": "m1",
+        "shape": "decision",
         "icon": "user",
         "tone": "violet",
         "label": "3 Manager\nworth investigating?",
@@ -55,6 +61,7 @@
       },
       {
         "id": "m2",
+        "shape": "decision",
         "icon": "shield",
         "tone": "violet",
         "label": "5 Manager \u002B a rule in code\nhuman or auto?",
@@ -76,6 +83,7 @@
       },
       {
         "id": "rev",
+        "shape": "decision",
         "icon": "checks",
         "tone": "green",
         "label": "8 Reviewer\nhappy?",
@@ -83,12 +91,14 @@
       },
       {
         "id": "human",
+        "shape": "terminal",
         "icon": "user",
         "tone": "red",
         "label": "Endpoint: needs a person"
       },
       {
         "id": "ops",
+        "shape": "terminal",
         "icon": "settings",
         "tone": "red",
         "label": "Another department\u0027s workflow\nits own manager and steps"

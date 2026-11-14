@@ -3,6 +3,7 @@ using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Sources.Types;
 
 namespace LouisAgent.Diagrams.Tests.Sources;
 
@@ -16,6 +17,7 @@ public class DiagramReaderTests
     private const string Flow = """
                                 {
                                   "kind": "flow",
+                                  "type": "component",
                                   "title": "A turn",
                                   "flow": {
                                     "nodes": [
@@ -53,6 +55,34 @@ public class DiagramReaderTests
                                    }
                                  }
                                  """;
+
+    /// <summary>
+    /// A cards picture whose file says nothing of links has none: there is one thing no links can mean, so the
+    /// reader fills it in and refuses nothing (CL65.4). It failed with .NET's own error, which named nothing the
+    /// file's writer wrote.
+    /// </summary>
+    [Test]
+    public void CardsWithNoLinksWritten_HaveNone()
+    {
+        const string noLinks = """
+                               {
+                                 "kind": "cards",
+                                 "title": "Two cards",
+                                 "cards": { "rows": [ { "cards": [
+                                   { "id": "one", "icon": "chip", "title": "One", "text": "The first." },
+                                   { "id": "two", "icon": "box", "title": "Two", "text": "The second." }
+                                 ] } ] }
+                               }
+                               """;
+
+        var cards = DiagramReader.Read(noLinks).Cards!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cards.Links, Is.Empty);
+            Assert.That(cards.Rows.Single().Cards.Select(card => card.Id), Is.EqualTo(new[] { "one", "two" }));
+        });
+    }
 
     /// <summary>A flow file reads into its boxes and arrows.</summary>
     [Test]
@@ -112,7 +142,8 @@ public class DiagramReaderTests
         var flow = new GraphSpec(
             [new GraphNode("a", "A\nfirst", Group: "g"), new GraphNode("b", "B")],
             [new GraphEdge("a", "b", "calls", EdgeStyle.Dashed)], FlowDirection.Down, [new GraphGroup("g", "A group")]);
-        string json = DiagramWriter.Write(new DiagramSource(DiagramKind.Flow, "Written", Flow: flow));
+        var written = new DiagramSource(DiagramKind.Flow, "Written", Flow: flow, Type: DiagramType.Component);
+        string json = DiagramWriter.Write(written);
 
         Assert.Multiple(() =>
         {
@@ -159,6 +190,53 @@ public class DiagramReaderTests
     public void ALinkToAMissingCard_IsRefused_NamingIt() =>
         Assert.That(() => DiagramReader.Read(Cards.Replace("\"to\": \"packs\"", "\"to\": \"pack\"")),
             Throws.TypeOf<InvalidDataException>().With.Message.Contain("pack"));
+
+    /// <summary>
+    /// Three rows of cards, a over b and c over d, with the one link a test gives it: the least that has a row to
+    /// skip and a row with two cards.
+    /// </summary>
+    private static string ThreeRows(string from, string to) =>
+        $$"""
+          {
+            "kind": "cards",
+            "title": "Three rows",
+            "cards": {
+              "rows": [
+                { "cards": [ { "id": "a", "icon": "chip", "title": "A", "text": "On top." } ] },
+                { "cards": [
+                  { "id": "b", "icon": "box", "title": "B", "text": "In the middle." },
+                  { "id": "c", "icon": "box", "title": "C", "text": "In the middle." }
+                ] },
+                { "cards": [ { "id": "d", "icon": "box", "title": "D", "text": "At the bottom." } ] }
+              ],
+              "links": [ { "from": "{{from}}", "to": "{{to}}" } ]
+            }
+          }
+          """;
+
+    /// <summary>
+    /// A link joins a card to one in the row just above or just under it (F134.9), whichever way it is written:
+    /// that is the gap its rail stands in.
+    /// </summary>
+    [TestCase("a", "b")]
+    [TestCase("c", "a")]
+    [TestCase("b", "d")]
+    public void ALinkBetweenNeighbouringRows_Reads(string from, string to) =>
+        Assert.That(DiagramReader.Read(ThreeRows(from, to)).Cards!.Links, Has.Count.EqualTo(1));
+
+    /// <summary>A link that skips a row is refused, naming its two cards: no rail can draw it.</summary>
+    [Test]
+    public void ALinkThatSkipsARow_IsRefused_NamingItsCards() =>
+        Assert.That(() => DiagramReader.Read(ThreeRows("a", "d")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'a' to 'd'").And.Message
+                .Contain("neighbouring rows"));
+
+    /// <summary>A link between two cards of one row is refused the same way.</summary>
+    [Test]
+    public void ALinkInsideARow_IsRefused_NamingItsCards() =>
+        Assert.That(() => DiagramReader.Read(ThreeRows("b", "c")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'b' to 'c'").And.Message
+                .Contain("neighbouring rows"));
 
     /// <summary>A kind without its own part (a cards diagram with no cards) is refused.</summary>
     [Test]

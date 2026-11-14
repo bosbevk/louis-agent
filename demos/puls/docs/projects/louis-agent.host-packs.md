@@ -1,8 +1,9 @@
 # louis-agent.host-packs — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
 > the Puls identity and the packs Puls's programs can load · **Used by:**
 > louis-agent.puls-api, louis-agent.puls-eval-runner
+> **Also shows:** `component`
 
 ![Puls's composition: one call at start-up, names become enums, a setting not a build](diagrams/louis-agent.host-packs.svg)
 
@@ -13,6 +14,10 @@ Puls's side of the composition: the one project that knows every identity and pa
 thin and never references an identity or a pack; and which agent a host runs is a setting, not a build.
 
 ## How it works
+
+Start-up, step by step.
+
+![Start-up: the names read and parsed, each identity and its packs created, the catalogue checked before any engine](diagrams/louis-agent.host-packs-flow.svg)
 
 - **One call at start-up.** `louis-agent.puls-api` starts with `AgentHost.Build(Plugins.FromEnvironment())`. `FromEnvironment` loads `config/.env` first, since the hosts load it only inside `Build`, which runs
   after this, then reads `IDENTITIES` and `PACKS`.
@@ -26,8 +31,6 @@ thin and never references an identity or a pack; and which agent a host runs is 
   a name used twice, a pack an identity names but nobody registered, a `Requires` cycle, a prompt path two of them
   share, and a tool name two toolsets share or that is the engine's own. The host hands it to `AgentHost`, which
   registers the prompts with `SkillFileSource` and builds every engine from it.
-
-## Diagrams
 
 ![Host packs: the program's plugins, the identity and the packs, into the catalogue](diagrams/louis-agent.host-packs-diagrams.svg)
 

@@ -1,0 +1,78 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "louis-agent.accounts: where it runs",
+  "caption": "The accounts run inside the API's program, beside the API, and keep people and tenants in SQL Server: on the PC the Puls compose's puls-sql, on a Docker volume.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "browser",
+        "label": "A browser\nsigns in, reads the cookie",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "program",
+        "label": "A demo's API program\nAddLouisAgentAccounts",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "accounts",
+        "label": "louis-agent.accounts\nIdentity, the tenant",
+        "icon": "shield",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "sql",
+        "label": "SQL Server\nACCOUNTS_SQL_URL",
+        "icon": "database",
+        "tone": "amber",
+        "group": "sql",
+        "shape": "data"
+      },
+      {
+        "id": "providers",
+        "label": "Google, Microsoft, LinkedIn\nwhen their keys are set",
+        "icon": "world",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "browser",
+        "to": "program",
+        "word": "the sign-in routes"
+      },
+      {
+        "from": "program",
+        "to": "accounts",
+        "word": "adds"
+      },
+      {
+        "from": "accounts",
+        "to": "sql",
+        "word": "people, tenants"
+      },
+      {
+        "from": "accounts",
+        "to": "providers",
+        "word": "an outside sign-in",
+        "style": "dashed"
+      }
+    ],
+    "groups": [
+      {
+        "id": "app",
+        "label": "Docker: the API's container"
+      },
+      {
+        "id": "sql",
+        "label": "Docker: container puls_sql, port 1433"
+      }
+    ]
+  }
+}

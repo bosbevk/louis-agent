@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The recipes pack: its tools, its sources and the library",
   "caption": "Two ways in, for the model and for a person: the model's tools search and read pages, every page goes through core's guarded browser, and what they read fills the library the admin screens look after.",
   "flow": {
@@ -78,6 +79,7 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "The library, in Mongo"

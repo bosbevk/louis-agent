@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Building blocks, level 3: the engine's parts",
   "caption": "One concern a folder: hosting, the agent, the model, tools, skills, usage and guards are core's components, each depending only on the ones under it.",
   "flow": {

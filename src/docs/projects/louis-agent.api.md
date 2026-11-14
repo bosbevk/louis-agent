@@ -1,8 +1,9 @@
 # louis-agent.api — design
 
-> **Kind:** library, ASP.NET Core minimal API · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and no web
+> **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and no web
 > app: a demo's program references the one it serves ·
 > **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` (5070)
+> **Also shows:** `component`
 
 ![The agent over HTTP, and its parts: sessions, the routes, the site's pages, the workspace and the admin key](diagrams/louis-agent.api.svg)
 
@@ -120,9 +121,7 @@ remembers the visitor it counts for ([ADR 0099](../adr/0099-the-guide-answers-wi
 (`AgentSession.Who`), and each turn sets it ambient (`TurnIdentity`, with the user's place and the rest, in
 `Sessions/Streaming/TurnAmbience`), so a pack can tell a demonstration's turn from a real one.
 
-## Diagrams
-
-The diagram under *How it works* shows the routes; this is the main one, opening a session and asking it something.
+The main route, opening a session and asking it something:
 
 ![A session and a message to it: the key gate, the session with its shared engine, and the turn streamed back as Server-Sent Events](diagrams/louis-agent.api-diagrams.svg)
 
@@ -157,6 +156,10 @@ The diagram under *How it works* shows the routes; this is the main one, opening
 | `Endpoints/Admin/AdminGroup.cs`, `AdminGateFilter.cs`, `AdminEndpoints.cs` | The gated `/admin` group the API hands out (CL57): one filter that refuses without the key, a group per library that maps on it; the API's own admin routes are the overview, the prompts, the imports and the screens, and the eval routes are `louis-agent.api.evals`'s ([its doc](louis-agent.api.evals.md)) |
 
 ## Configuration
+
+Where it runs: inside the program that adds it, one container a demo, reached on the PC's own address.
+
+![Where the API runs: in the demo's program in its container, reached by a browser on 127.0.0.1, reaching a model, the collector and its mounted folders](diagrams/louis-agent.api-deployment.svg)
 
 Core settings (`WEB_REPLAY` and `REPLAY_DIRECTORY` among them: F18 step 4a, read through `ReplayResolution` and `AgentOptions.KeepsRecordings`), plus: `AGENT_API_KEY` (required on every `/v1` route but the prices, the rates and the feeds; without it the API
 refuses to start unless `AGENT_AUTH=off`, FX18), `API_PORT` (host port in

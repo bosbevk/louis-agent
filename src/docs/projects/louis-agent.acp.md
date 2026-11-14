@@ -1,7 +1,8 @@
 # louis-agent.acp — design
 
-> **Kind:** library (JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp/` · **References:**
+> **Kind:** host (a library, JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp/` · **References:**
 > louis-agent.core · **Docker service:** `acp-server`, one container per Rider chat
+> **Also shows:** `component`
 
 ![Rider's chat host, and its parts: the protocol, sessions and files, and Rider's own tools](diagrams/louis-agent.acp.svg)
 
@@ -40,9 +41,7 @@ Rider sends prompts (with attached files), and the server streams back thinking,
   else; `LOG_CONTENT=full` shows the text, on your own machine. The protocol on stdout is unchanged. Paths to a developer's own files
   stay in the log: they are out of scope.
 
-## Diagrams
-
-The flow is under *How it works*; these are the pieces.
+The pieces:
 
 ![Rider's chat: from AcpHost through the prompt handler to Rider, and back](diagrams/louis-agent.acp-diagrams.svg)
 
@@ -66,6 +65,10 @@ The flow is under *How it works*; these are the pieces.
 `ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agentacptests)).
 
 ## Configuration
+
+Where it runs: Rider starts a fresh `acp-server` container for each chat.
+
+![Where the ACP server runs: Rider starts a container a chat and speaks JSON-RPC to it, and the server asks Rider's MCP server for its tools](diagrams/louis-agent.acp-deployment.svg)
 
 Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider/rider-acp.example.json`.
 

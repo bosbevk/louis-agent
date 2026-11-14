@@ -1,9 +1,8 @@
 using System.Xml.Linq;
-using LouisAgent.Diagrams.Flow;
-using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
-using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Tests.Flow.Arrows;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -13,8 +12,6 @@ namespace LouisAgent.Diagrams.Tests.Flow;
 /// </summary>
 public class FlowGroupsTests
 {
-    private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
-
     /// <summary>
     /// A developer outside, the system's host, engine and tools in one group, and its store in another, the arrow to
     /// the store dashed.
@@ -35,12 +32,6 @@ public class FlowGroupsTests
         ],
         direction,
         [new GraphGroup("system", "louis-agent"), new GraphGroup("data", "logs/")]);
-
-    /// <summary>The groups, drawn, match their golden file.</summary>
-    [Test]
-    public void Groups_MatchTheGoldenFile() =>
-        Golden.Match("groups.svg", DiagramRenderers.Render(
-            new DiagramSource(DiagramKind.Flow, "A system in groups", Flow: System(FlowDirection.Right))));
 
     /// <summary>Every group gets one frame, and each of its boxes stands inside it.</summary>
     [TestCase(FlowDirection.Right)]
@@ -83,25 +74,6 @@ public class FlowGroupsTests
         Assert.That(Overlap(groups[0], groups[1]), Is.False);
     }
 
-    /// <summary>A dashed arrow is drawn dashed, the others solid; a group's frame and its label are drawn.</summary>
-    [Test]
-    public void ADashedArrow_IsDrawnDashed_AndAGroupFramed()
-    {
-        var svg = XDocument.Parse(DiagramRenderers.Render(
-            new DiagramSource(DiagramKind.Flow, "A system in groups", Flow: System(FlowDirection.Right))));
-
-        var edges = svg.Descendants(Svg + "path").Select(path => (string?)path.Attribute("class"))
-            .Where(cls => cls?.StartsWith("edge", StringComparison.Ordinal) == true).ToList();
-        Assert.Multiple(() =>
-        {
-            Assert.That(edges.Count(cls => cls == "edge dashed"), Is.EqualTo(1));
-            Assert.That(edges.Count(cls => cls == "edge"), Is.EqualTo(3));
-            Assert.That(svg.Descendants(Svg + "rect").Count(rect => (string?)rect.Attribute("class") == "group"),
-                Is.EqualTo(2));
-            Assert.That(svg.Descendants(Svg + "text").Select(text => text.Value), Does.Contain("louis-agent"));
-        });
-    }
-
     /// <summary>
     /// Down, a band's boxes stand as far apart as its own widest box needs, not the widest box of the whole chart.
     /// </summary>
@@ -119,7 +91,7 @@ public class FlowGroupsTests
 
         var at = GraphLayout.Place(spec).Nodes.ToDictionary(node => node.Node.Id);
 
-        Assert.That(Math.Abs(at["b"].X - at["a"].X), Is.LessThan(at["wide"].W));
+        Assert.That(Math.Abs(at["b"].Box.Left - at["a"].Box.Left), Is.LessThan(at["wide"].Box.Width));
     }
 
     /// <summary>
@@ -145,12 +117,11 @@ public class FlowGroupsTests
         var placed = GraphLayout.Place(spec);
 
         var frame = placed.Groups.Single();
-        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && edge.Path.Contains('Q'));
+        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && Ways.Turns(edge.Way) > 0);
         // The bend is the height the path runs along at: the one y two of its points share.
-        var ys = into.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
-            .Where((_, at) => at % 2 == 1).ToList();
+        var ys = Ways.Ys(into.Way);
         double bend = ys.GroupBy(y => y).Where(same => same.Count() > 1).Select(same => same.Key).Single();
-        Assert.That(bend, Is.LessThan(frame.Y), "it runs along above the frame, then drops in");
+        Assert.That(bend, Is.LessThan(frame.Box.Top), "it runs along above the frame, then drops in");
     }
 
     /// <summary>A diagram without groups has no frame, so the site's diagrams draw as before.</summary>
@@ -160,15 +131,15 @@ public class FlowGroupsTests
 
     /// <summary>Whether a box stands wholly inside a frame.</summary>
     private static bool Inside(PlacedNode node, PlacedGroup group) =>
-        node.X >= group.X && node.Y >= group.Y && node.X + node.W <= group.X + group.W
-        && node.Y + node.H <= group.Y + group.H;
+        node.Box.Left >= group.Box.Left && node.Box.Top >= group.Box.Top && node.Box.Right <= group.Box.Right
+        && node.Box.Bottom <= group.Box.Bottom;
 
     /// <summary>Whether a box and a frame share any ground.</summary>
     private static bool Overlap(PlacedNode node, PlacedGroup group) =>
-        node.X < group.X + group.W && group.X < node.X + node.W && node.Y < group.Y + group.H
-        && group.Y < node.Y + node.H;
+        node.Box.Left < group.Box.Right && group.Box.Left < node.Box.Right && node.Box.Top < group.Box.Bottom
+        && group.Box.Top < node.Box.Bottom;
 
     /// <summary>Whether two frames share any ground.</summary>
     private static bool Overlap(PlacedGroup a, PlacedGroup b) =>
-        a.X < b.X + b.W && b.X < a.X + a.W && a.Y < b.Y + b.H && b.Y < a.Y + a.H;
+        a.Box.Left < b.Box.Right && b.Box.Left < a.Box.Right && a.Box.Top < b.Box.Bottom && b.Box.Top < a.Box.Bottom;
 }

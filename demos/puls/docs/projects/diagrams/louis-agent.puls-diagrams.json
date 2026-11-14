@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The Puls app: its pages, the framework's shells and the API",
   "caption": "A small program on the framework's web: what's here is what makes it Puls, its words, its look, its landing page and which websites matter to it.",
   "flow": {

@@ -59,6 +59,21 @@ public class DockTests
         });
     }
 
+    /// <summary>
+    /// A card of the page says its name in its title, which is where the page's list for a site's guide reads it. So
+    /// every button's name is its card's title, and the guide can name each one and open it.
+    /// </summary>
+    [Test]
+    public void EveryButton_SaysItsName_AsACardsTitle()
+    {
+        using var ctx = new BunitContext();
+
+        var titles = Dock(ctx, "florist").FindAll("button[data-card][id] .card-title");
+
+        Assert.That(titles.Select(title => title.TextContent),
+            Is.EqualTo(new[] { "A bakery", "A florist", "A coder" }));
+    }
+
     /// <summary>The current one is marked, and open as a card is. The rest are closed.</summary>
     [Test]
     public void TheCurrentOne_IsMarked_AndOpen()
@@ -136,6 +151,26 @@ public class DockTests
         {
             Assert.That(pressed.Item, Is.EqualTo(Items[2]));
             Assert.That(dock.Find("button#bakery").ClassList, Does.Contain("is-current"), "the page decides");
+        });
+    }
+
+    /// <summary>
+    /// On a narrow screen the dock is its icons only (Louis's pick of three, 2026-11-14: open, the dock was 408 wide
+    /// on a 390 phone and cut at both sides). The current button keeps its tint and ring, and its name stays folded
+    /// as the others' are, so it is still read out.
+    /// </summary>
+    [Test]
+    public void OnANarrowScreen_TheCurrentOne_KeepsItsNameFolded()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Staging/Docks/Dock.razor.scss")).ReplaceLineEndings("\n");
+        int start = styles.IndexOf("@media (max-width: 900px) {", StringComparison.Ordinal);
+        string narrow = start < 0 ? "" : styles[start..styles.IndexOf("\n}", start, StringComparison.Ordinal)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(narrow, Does.Contain(".dock-item.is-current { gap: 0; }"));
+            Assert.That(narrow, Does.Contain(".dock-item.is-current .dock-name { max-width: 0; }"));
         });
     }
 }

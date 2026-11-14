@@ -1,7 +1,8 @@
 # louis-agent.mcp — design
 
-> **Kind:** library, serving stdio or ASP.NET Core (Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp/` ·
+> **Kind:** host (a library, serving stdio or ASP.NET Core, Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp/` ·
 > **References:** louis-agent.core, louis-agent.composition, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
+> **Also shows:** `component`
 
 ![The MCP server, and its parts: the tools in sync, the feeds as resources, and its two transports](diagrams/louis-agent.mcp.svg)
 
@@ -34,9 +35,7 @@ call at a time. (To have louis-agent do a whole task itself, use the API's sessi
   client's child process.
 - **Approval stays with the user:** approving agent-built tools is not exposed over MCP.
 
-## Diagrams
-
-The architecture is under *How it works*; this is a client using it.
+A client using it:
 
 ![A client using the tools: it lists and calls the engine's tools through the SDK's server, hears when they change, and reads a feed](diagrams/louis-agent.mcp-diagrams.svg)
 
@@ -52,6 +51,10 @@ The architecture is under *How it works*; this is a client using it.
 | `Resources/` | `FeedResources` (feeds → resources), `ResourceScheme` (`feed`) |
 
 ## Configuration
+
+Where it runs: in its program, in the `mcp-server` container, over stdio or on the PC's own address.
+
+![Where the MCP server runs: a client reaches its container over stdio or on 127.0.0.1:5090, and it reaches the collector and its folders](diagrams/louis-agent.mcp-deployment.svg)
 
 Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY`, `AGENT_AUTH`. Client entry for Rider:
 `config/rider/rider-mcp-servers.example.json`.

@@ -1,15 +1,24 @@
 {
   "kind": "classes",
   "title": "louis-agent.diagrams: the interface design",
-  "caption": "A diagram is a record read from JSON, its kind picks a renderer, each renderer lays it out and writes the SVG, and the docs' frame wraps it.",
+  "caption": "A diagram is a record read from JSON. Its kind picks one of seven renderers, each is handed the geometry to place with, and the docs' frame wraps what it drew.",
   "classes": {
     "types": [
       {
         "id": "reader",
         "name": "DiagramReader",
         "kind": "static",
+        "group": "what",
         "members": [
-          "+Read(json) DiagramSource",
+          "+Read(json) DiagramSource"
+        ]
+      },
+      {
+        "id": "dwriter",
+        "name": "DiagramWriter",
+        "kind": "static",
+        "group": "what",
+        "members": [
           "+Write(DiagramSource) string"
         ]
       },
@@ -17,112 +26,193 @@
         "id": "source",
         "name": "DiagramSource",
         "kind": "record",
+        "group": "what",
         "members": [
           "+DiagramKind Kind, Title, Caption?",
-          "+Flow, Cards, Sequence, Classes, Ticket (one set)"
-        ]
-      },
-      {
-        "id": "renderers",
-        "name": "DiagramRenderers",
-        "kind": "static",
-        "members": [
-          "+Render(source) string",
-          "+RenderTitled(source) string",
-          "+RenderForPage(source) string"
+          "+DiagramType? Type",
+          "+Flow, Cards, Sequence, Classes,",
+          " Ticket, Nested, Composite (one set)"
         ]
       },
       {
         "id": "ticketcard",
         "name": "TicketCard",
         "kind": "static, from a call to a ticket",
+        "group": "what",
         "members": [
           "+Of(kicker, title, rows, subtitle?, status?, note?) DiagramSource",
           "+FromCall(input) DiagramSource?"
         ]
       },
       {
-        "id": "ticket",
-        "name": "TicketLayout",
+        "id": "renderers",
+        "name": "DiagramRenderers",
         "kind": "static",
+        "group": "in",
         "members": [
-          "+Place(TicketSpec, width = 320) PlacedTicket"
+          "+Render(source, geometry?) string",
+          "+RenderTitled(source, geometry?) string",
+          "+RenderForPage(source) string"
         ]
       },
       {
         "id": "irenderer",
         "name": "IDiagramRenderer",
         "kind": "interface",
+        "group": "in",
         "members": [
           "+Kind",
-          "+Render(DiagramSource) string"
+          "+Render(DiagramSource, IGeometry) string"
         ]
       },
       {
-        "id": "kinds",
-        "name": "FlowRenderer, CardsRenderer, SequenceRenderer, ClassesRenderer, TicketRenderer",
-        "kind": "one per kind, each an IDiagramRenderer"
-      },
-      {
-        "id": "graph",
-        "name": "GraphLayout",
-        "kind": "static, ADR 0103's row grid",
+        "id": "geometry",
+        "name": "IGeometry",
+        "kind": "interface",
+        "group": "in",
         "members": [
-          "+Place(GraphSpec, width, bend) PlacedGraph"
-        ]
-      },
-      {
-        "id": "cards",
-        "name": "CardLayout",
-        "kind": "static",
-        "members": [
-          "+Place(CardsSpec, width) PlacedCards"
-        ]
-      },
-      {
-        "id": "sequence",
-        "name": "SequenceLayout",
-        "kind": "static",
-        "members": [
-          "+Place(SequenceSpec) PlacedSequence"
-        ]
-      },
-      {
-        "id": "classflow",
-        "name": "ClassFlow",
-        "kind": "static, an Adapter",
-        "members": [
-          "+Of(ClassesSpec) GraphSpec"
-        ]
-      },
-      {
-        "id": "writer",
-        "name": "SvgWriter",
-        "members": [
-          "+Box, Path, Text, Icon, Group",
-          "+Write(theme, title, width, height) string"
+          "+Box(x, y, width, height) IBox",
+          "+Point(x, y) IPoint",
+          "+Around(boxes) IBox"
         ]
       },
       {
         "id": "frame",
         "name": "TitledFrame",
         "kind": "static, a Decorator",
+        "group": "in",
         "members": [
-          "+Around(svg, source) string"
+          "+Around(svg, source, geometry) string"
         ]
+      },
+      {
+        "id": "flow",
+        "name": "FlowRenderer",
+        "kind": "class",
+        "group": "kinds"
+      },
+      {
+        "id": "classes",
+        "name": "ClassesRenderer",
+        "kind": "class",
+        "group": "kinds"
+      },
+      {
+        "id": "composite",
+        "name": "CompositeRenderer",
+        "kind": "class",
+        "group": "kinds"
+      },
+      {
+        "id": "cards",
+        "name": "CardsRenderer",
+        "kind": "class",
+        "group": "kinds"
+      },
+      {
+        "id": "sequence",
+        "name": "SequenceRenderer",
+        "kind": "class",
+        "group": "kinds"
+      },
+      {
+        "id": "components",
+        "name": "NestedRenderer",
+        "kind": "class",
+        "group": "kinds"
+      },
+      {
+        "id": "ticket",
+        "name": "TicketRenderer",
+        "kind": "class",
+        "group": "kinds"
       }
     ],
     "relations": [
-      { "from": "reader", "to": "source", "kind": "creates" },
-      { "from": "ticketcard", "to": "reader", "kind": "uses", "word": "checks with" },
-      { "from": "kinds", "to": "ticket", "kind": "uses" },
-      { "from": "renderers", "to": "irenderer", "kind": "uses", "word": "picks by kind" },
-      { "from": "renderers", "to": "frame", "kind": "uses", "word": "titled" },
-      { "from": "kinds", "to": "graph", "kind": "uses", "word": "lays out" },
-      { "from": "kinds", "to": "cards", "kind": "uses" },
-      { "from": "kinds", "to": "sequence", "kind": "uses" },
-      { "from": "kinds", "to": "classflow", "kind": "uses" },
-      { "from": "kinds", "to": "writer", "kind": "uses", "word": "draws with" }
+      {
+        "from": "reader",
+        "to": "source",
+        "kind": "creates"
+      },
+      {
+        "from": "dwriter",
+        "to": "source",
+        "kind": "uses",
+        "word": "writes"
+      },
+      {
+        "from": "ticketcard",
+        "to": "reader",
+        "kind": "uses",
+        "word": "checks with"
+      },
+      {
+        "from": "renderers",
+        "to": "irenderer",
+        "kind": "uses",
+        "word": "picks by kind"
+      },
+      {
+        "from": "renderers",
+        "to": "frame",
+        "kind": "uses",
+        "word": "titled"
+      },
+      {
+        "from": "renderers",
+        "to": "geometry",
+        "kind": "uses",
+        "word": "hands on"
+      },
+      {
+        "from": "flow",
+        "to": "irenderer",
+        "kind": "implements"
+      },
+      {
+        "from": "classes",
+        "to": "irenderer",
+        "kind": "implements"
+      },
+      {
+        "from": "composite",
+        "to": "irenderer",
+        "kind": "implements"
+      },
+      {
+        "from": "cards",
+        "to": "irenderer",
+        "kind": "implements"
+      },
+      {
+        "from": "sequence",
+        "to": "irenderer",
+        "kind": "implements"
+      },
+      {
+        "from": "components",
+        "to": "irenderer",
+        "kind": "implements"
+      },
+      {
+        "from": "ticket",
+        "to": "irenderer",
+        "kind": "implements"
+      }
+    ],
+    "groups": [
+      {
+        "id": "what",
+        "label": "louis-agent.diagrams: what a diagram is"
+      },
+      {
+        "id": "in",
+        "label": "louis-agent.diagrams.engine: the way in"
+      },
+      {
+        "id": "kinds",
+        "label": "A renderer per kind"
+      }
     ]
   }
 }

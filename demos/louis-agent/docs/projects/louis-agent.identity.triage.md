@@ -4,6 +4,9 @@
 > [the F106.3 plan](../../../../src/docs/plans/F106.3-triage-and-fix-a-service.md); the pack it ends its work with in
 > [louis-agent.pack.triage](../../../../packs/docs/projects/louis-agent.pack.triage.md); building an identity in
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md).
+> **Kind:** contracts library (`net10.0`, an identity's prompts)
+> · **Path:** `demos/louis-agent/identity/louis-agent.identity.triage/`
+> **Also shows:** `activity`, `sequence`
 
 ![The triage team: the manager, and the sorter, the investigator, the reviewer and the coder who work for it](diagrams/louis-agent.identity.triage.svg)
 
@@ -27,8 +30,6 @@ voice is the mode, the three are `specialists/triage-*.md`, and the packs are na
   and its reasons, one per line.
 - The triage pack's tools refuse a run id they don't know, so a mistyped id makes no stray run; in an eval's trial
   an unknown run starts with its first step instead, since a trial's fresh session has none behind it (Louis's pick).
-
-## Diagrams
 
 ![How it works: the manager asks each role by its address, every role ends with its typed tool, and the manager ends the case](diagrams/louis-agent.identity.triage-flow.svg)
 

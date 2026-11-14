@@ -1,79 +1,26 @@
-<svg viewBox="-24 -24 959 767" width="959" height="767" role="img" aria-label="The where-to-buy pack: finding branches on the map" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 963 825" width="963" height="825" role="img" aria-label="The where-to-buy pack: finding branches on the map" xmlns="http://www.w3.org/2000/svg">
   <title>The where-to-buy pack: finding branches on the map</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
-.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.label { fill: var(--text); font: 600 12px var(--mono); }
-.note { fill: var(--quiet); font: 10px var(--mono); }
-.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.dashed { stroke-dasharray: 5 4; }
-.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.group-label {
-  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-}
-.word { fill: var(--text); font: 500 10px var(--mono); }
-.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.frame { fill: none; stroke: var(--line); stroke-width: 1; }
-.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.highlight { fill: var(--tint); stroke: var(--accent); }
-.title { fill: var(--text); font: 600 13px var(--mono); }
-.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }
-.badge { fill: var(--quiet); }
-.badge-icon {
-  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
-.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
-.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
-.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
-.label.tone-green, .word.tone-green { fill: var(--green-ink); }
-.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
-.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
-.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
-.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
-.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
-.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
-.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
-.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
-.label.tone-red, .word.tone-red { fill: var(--red-ink); }
-.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
-.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
-.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
-.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
 svg {
   --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
-}
-.titlebar { fill: var(--banner); }
-.title-icon {
-  fill: none; stroke: var(--banner-ink); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.title-rule { fill: var(--banner-line); }
-.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
-.title-head { font-weight: 700; }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -81,14 +28,89 @@ svg {
 }
 .notes { fill: var(--quiet); font: 400 12px var(--sans); }
 .note-head { fill: var(--text); font-weight: 700; }
-.legend { fill: var(--quiet); font: 400 12px var(--sans); }
-.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -99,128 +121,148 @@ svg {
     <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="959" height="767" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="911" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="963" height="825" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a481.5 190 0 1 0 963 0a481.5 190 0 1 0 -963 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">The where-to-buy pack: finding branches on the map</text>
+    <text class="pic-group" x="915" y="14" text-anchor="end">Component diagram</text>
+    <g class="flow" transform="translate(0 44)">
+      <path class="pic-line pic-edge tone-blue" d="M459 68L459 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M459 68L459 128" />
+      <path class="pic-line pic-edge tone-green" d="M459 196L459 211Q459 226 444 226L162 226Q147 226 147 241L147 256" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 196L459 211Q459 226 444 226L162 226Q147 226 147 241L147 256" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 368" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 323Q147 338 162 338L444 338Q459 338 459 353L459 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 323Q147 338 162 338L444 338Q459 338 459 353L459 368" />
+      <path class="pic-line pic-edge tone-green" d="M147 308L147 323Q147 338 162 338L756 338Q771 338 771 353L771 368" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M147 308L147 323Q147 338 162 338L756 338Q771 338 771 353L771 368" />
+      <path class="pic-line pic-edge tone-green" d="M771 436L771 451Q771 466 756 466L474 466Q459 466 459 481L459 496" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 436L771 451Q771 466 756 466L474 466Q459 466 459 481L459 496" />
+      <path class="pic-line pic-edge tone-green" d="M771 436L771 496" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M771 436L771 496" />
+      <path class="pic-line pic-edge tone-green" d="M459 196L459 256" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M459 196L459 256" />
+      <rect class="pic-panel" x="350" y="0" width="218" height="68" rx="10" />
+      <rect class="pic-fill tone-blue" x="366" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(372 26) scale(0.6667)">
+        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+        <path d="M12 12l8 -4.5" />
+        <path d="M12 12l0 9" />
+        <path d="M12 12l-8 -4.5" />
+      </g>
+      <text class="pic-name" x="402" y="31" text-anchor="start">WhereToBuyPack: the</text>
+      <text class="pic-name" x="402" y="47" text-anchor="start">where-to-buy toolset</text>
+      <rect class="pic-panel" x="312" y="128" width="294" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="328" y="148" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(334 154) scale(0.6667)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="pic-name" x="364" y="159" text-anchor="start">WhereToBuyTools: FindBranches,</text>
+      <text class="pic-name" x="364" y="175" text-anchor="start">FindShopsNear</text>
+      <rect class="pic-panel" x="62" y="256" width="170" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="78" y="268" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(84 274) scale(0.6667)">
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
+      </g>
+      <text class="pic-name" x="114" y="287" text-anchor="start">BranchFinder</text>
+      <rect class="pic-panel" x="374" y="256" width="170" height="52" rx="10" />
+      <rect class="pic-fill tone-green" x="390" y="268" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(396 274) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="pic-name" x="426" y="287" text-anchor="start">BranchPrinter</text>
+      <rect class="pic-panel" x="7.6" y="368" width="278.8" height="68" rx="10" />
+      <rect class="pic-fill tone-teal" x="23.6" y="388" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(29.6 394) scale(0.6667)">
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6l0 13" />
+        <path d="M12 6l0 13" />
+        <path d="M21 6l0 13" />
+      </g>
+      <text class="pic-name" x="59.6" y="407" text-anchor="start">ShopNames: PnP is Pick n Pay</text>
+      <rect class="pic-panel" x="374" y="368" width="170" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="390" y="388" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(396 394) scale(0.6667)">
+        <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M4 20h14" />
+      </g>
+      <text class="pic-name" x="426" y="407" text-anchor="start">Distance</text>
+      <rect class="pic-panel" x="631.6" y="368" width="278.8" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="647.6" y="388" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(653.6 394) scale(0.6667)">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M3.6 9h16.8" />
+        <path d="M3.6 15h16.8" />
+        <path d="M11.5 3a17 17 0 0 0 0 18" />
+        <path d="M12.5 3a17 17 0 0 1 0 18" />
+      </g>
+      <text class="pic-name" x="683.6" y="399" text-anchor="start">MapSearch: one request a</text>
+      <text class="pic-name" x="683.6" y="415" text-anchor="start">second, an honest User-Agent</text>
+      <rect class="pic-panel" x="331" y="496" width="256" height="68" rx="10" />
+      <rect class="pic-fill tone-red" x="347" y="516" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(353 522) scale(0.6667)">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M3.6 9h16.8" />
+        <path d="M3.6 15h16.8" />
+        <path d="M11.5 3a17 17 0 0 0 0 18" />
+        <path d="M12.5 3a17 17 0 0 1 0 18" />
+      </g>
+      <text class="pic-name" x="383" y="535" text-anchor="start">OpenStreetMap's Nominatim</text>
+      <rect class="pic-panel" x="627.8" y="496" width="286.4" height="68" rx="10" />
+      <rect class="pic-fill tone-teal" x="643.8" y="516" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(649.8 522) scale(0.6667)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="pic-name" x="679.8" y="527" text-anchor="start">MapPlace and MapAddress: what</text>
+      <text class="pic-name" x="679.8" y="543" text-anchor="start">the map answered</text>
+      <circle class="pic-port pic-edge tone-blue" cx="459" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="459" cy="196" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="147" cy="308" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="771" cy="436" r="4" />
+    </g>
+    <rect class="mrq-rule" x="0" y="634" width="915" height="1" rx="0" />
+    <text class="pic-group" x="0" y="656" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="673" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="686.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-green" x="117.4" y="673" width="18" height="18" rx="6" />
+    <text class="pic-means" x="145.4" y="686.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-teal" x="254.6" y="673" width="18" height="18" rx="6" />
+    <text class="pic-means" x="282.6" y="686.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-red" x="438" y="673" width="18" height="18" rx="6" />
+    <text class="pic-means" x="466" y="686.5" text-anchor="start">outside the process</text>
+    <path class="flow-key pic-line pic-edge" d="M0 710H30" marker-end="url(#arrow)" />
+    <text class="pic-means" x="40" y="714.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">The where-to-buy pack:</tspan>
-    <tspan class="title-rest">finding branches on the map</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="edge tone-blue" d="M 459 68 L 459 128" marker-end="url(#arrow-blue)" />
-    <path class="edge tone-green" d="M 459 196 L 459 211 Q 459 226 444 226 L 318 226 Q 303 226 303 241 L 303 256" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 303 308 L 303 323 Q 303 338 288 338 L 162 338 Q 147 338 147 353 L 147 368" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 303 308 L 303 323 Q 303 338 318 338 L 444 338 Q 459 338 459 353 L 459 368" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 303 308 L 303 323 Q 303 338 318 338 L 756 338 Q 771 338 771 353 L 771 368" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 771 436 L 771 451 Q 771 466 756 466 L 318 466 Q 303 466 303 481 L 303 496" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 771 436 L 771 451 Q 771 466 756 466 L 630 466 Q 615 466 615 481 L 615 496" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 459 196 L 459 211 Q 459 226 474 226 L 600 226 Q 615 226 615 241 L 615 256" marker-end="url(#arrow-green)" />
-    <rect class="box tone-blue" x="350" y="0" width="218" height="68" rx="10" />
-    <circle class="badge tone-blue" cx="378" cy="34" r="14" />
-    <g class="badge-icon" transform="translate(370 26) scale(0.6667)">
-      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-      <path d="M12 12l8 -4.5" />
-      <path d="M12 12l0 9" />
-      <path d="M12 12l-8 -4.5" />
-    </g>
-    <text class="label tone-blue" x="402" y="31" text-anchor="start">WhereToBuyPack: the</text>
-    <text class="label tone-blue" x="402" y="47" text-anchor="start">where-to-buy toolset</text>
-    <rect class="box tone-green" x="312" y="128" width="294" height="68" rx="10" />
-    <circle class="badge tone-green" cx="340" cy="162" r="14" />
-    <g class="badge-icon" transform="translate(332 154) scale(0.6667)">
-      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-    </g>
-    <text class="label tone-green" x="364" y="159" text-anchor="start">WhereToBuyTools: FindBranches,</text>
-    <text class="label tone-green" x="364" y="175" text-anchor="start">FindShopsNear</text>
-    <rect class="box tone-green" x="218" y="256" width="170" height="52" rx="10" />
-    <circle class="badge tone-green" cx="246" cy="282" r="14" />
-    <g class="badge-icon" transform="translate(238 274) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label tone-green" x="270" y="287" text-anchor="start">BranchFinder</text>
-    <rect class="box tone-green" x="530" y="256" width="170" height="52" rx="10" />
-    <circle class="badge tone-green" cx="558" cy="282" r="14" />
-    <g class="badge-icon" transform="translate(550 274) scale(0.6667)">
-      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-      <path d="M9 9l1 0" />
-      <path d="M9 13l6 0" />
-      <path d="M9 17l6 0" />
-    </g>
-    <text class="label tone-green" x="582" y="287" text-anchor="start">BranchPrinter</text>
-    <rect class="box tone-teal" x="7.6" y="368" width="278.8" height="68" rx="10" />
-    <circle class="badge tone-teal" cx="35.6" cy="402" r="14" />
-    <g class="badge-icon" transform="translate(27.6 394) scale(0.6667)">
-      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6l0 13" />
-      <path d="M12 6l0 13" />
-      <path d="M21 6l0 13" />
-    </g>
-    <text class="label tone-teal" x="59.6" y="407" text-anchor="start">ShopNames: PnP is Pick n Pay</text>
-    <rect class="box tone-green" x="374" y="368" width="170" height="68" rx="10" />
-    <circle class="badge tone-green" cx="402" cy="402" r="14" />
-    <g class="badge-icon" transform="translate(394 394) scale(0.6667)">
-      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-      <path d="M4 20h14" />
-    </g>
-    <text class="label tone-green" x="426" y="407" text-anchor="start">Distance</text>
-    <rect class="box tone-green" x="631.6" y="368" width="278.8" height="68" rx="10" />
-    <circle class="badge tone-green" cx="659.6" cy="402" r="14" />
-    <g class="badge-icon" transform="translate(651.6 394) scale(0.6667)">
-      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-      <path d="M3.6 9h16.8" />
-      <path d="M3.6 15h16.8" />
-      <path d="M11.5 3a17 17 0 0 0 0 18" />
-      <path d="M12.5 3a17 17 0 0 1 0 18" />
-    </g>
-    <text class="label tone-green" x="683.6" y="399" text-anchor="start">MapSearch: one request a</text>
-    <text class="label tone-green" x="683.6" y="415" text-anchor="start">second, an honest User-Agent</text>
-    <rect class="box tone-red" x="175" y="496" width="256" height="68" rx="10" />
-    <circle class="badge tone-red" cx="203" cy="530" r="14" />
-    <g class="badge-icon" transform="translate(195 522) scale(0.6667)">
-      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-      <path d="M3.6 9h16.8" />
-      <path d="M3.6 15h16.8" />
-      <path d="M11.5 3a17 17 0 0 0 0 18" />
-      <path d="M12.5 3a17 17 0 0 1 0 18" />
-    </g>
-    <text class="label tone-red" x="227" y="535" text-anchor="start">OpenStreetMap's Nominatim</text>
-    <rect class="box tone-teal" x="471.8" y="496" width="286.4" height="68" rx="10" />
-    <circle class="badge tone-teal" cx="499.8" cy="530" r="14" />
-    <g class="badge-icon" transform="translate(491.8 522) scale(0.6667)">
-      <path d="M7 8l-4 4l4 4" />
-      <path d="M17 8l4 4l-4 4" />
-      <path d="M14 4l-4 16" />
-    </g>
-    <text class="label tone-teal" x="523.8" y="527" text-anchor="start">MapPlace and MapAddress: what</text>
-    <text class="label tone-teal" x="523.8" y="543" text-anchor="start">the map answered</text>
-  </g>
-  <rect class="swatch tone-blue" x="0" y="646" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="656.5" text-anchor="start">starts it</text>
-  <rect class="swatch tone-green" x="104.8" y="646" width="12" height="12" rx="3" />
-  <text class="legend" x="122.8" y="656.5" text-anchor="start">this project</text>
-  <rect class="swatch tone-teal" x="231.2" y="646" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="656.5" text-anchor="start">contracts and state</text>
-  <rect class="swatch tone-red" x="408" y="646" width="12" height="12" rx="3" />
-  <text class="legend" x="426" y="656.5" text-anchor="start">outside the process</text>
-  <rect class="notebar" x="0" y="682" width="911" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 692) scale(0.6667)">
+  <rect class="notebar" x="0" y="740" width="915" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 750) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="704">
+  <text class="notes" x="38" y="762">
     <tspan class="note-head">Two tools over one polite map client:</tspan>
     <tspan class="note-rest">it asks the map in code and hands the model a short table.</tspan>
   </text>

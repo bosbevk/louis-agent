@@ -30,13 +30,8 @@ app.MapMovedPages();
 var resumes = ResumeStore.FromEnvironment();
 
 app.MapStaticAssets();
-app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly, services =>
-{
-    services.AddSingleton(new LouisAgent.Web.Text.ChatText());
-    services.AddSingleton(new HttpClient());
-    // A page rendered here reads the CV from the store, where the browser asks the API.
-    services.AddSingleton<IResumeSource>(new StoredResumeSource(resumes));
-}, home: "home");
+app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly,
+    services => SitePageServices.Register(services, resumes), home: SitePageServices.Home);
 
 app.MapLouisAgentApi(host);
 

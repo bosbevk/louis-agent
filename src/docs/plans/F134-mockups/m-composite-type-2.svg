@@ -1,0 +1,193 @@
+<svg viewBox="-24 -24 1200 740" width="1200" height="740" role="img" aria-label="AgentEngine: what it is made of" xmlns="http://www.w3.org/2000/svg"><title>AgentEngine: what it is made of</title><style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+
+
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.cmp-code { font: 500 11px var(--mono); }
+.cmp-ghost { fill: none; stroke-width: 1; stroke-dasharray: 4 4; stroke-opacity: .7; }
+.cmp-code-name { fill: var(--text); font: 600 12.5px var(--mono); }
+.cmp-chip-text, .cmp-pin-text { font: 500 10px var(--mono); }
+.cmp-pin { stroke-width: 1.25; }
+.cmp-pin.up { fill: var(--ground); }
+.cmp-pill { stroke-width: 1.5; }
+.cmp-pill-text { fill: var(--text); font: 600 12.5px var(--pic-sans); }
+.cmp-pulse { animation: cmp-pulse 2.4s ease-in-out infinite; }
+@keyframes cmp-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) {
+  .cmp-pulse { animation: none; }
+}
+.m-role { fill: var(--text); font: 600 12.5px var(--mono); }
+.m-type { fill: var(--quiet); font: 500 12.5px var(--mono); }
+.m-wire { fill: none; stroke: var(--quiet); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.m-port { fill: var(--ground); stroke: var(--text); stroke-width: 1.5; }
+.m-ball { fill: var(--ground); stroke-width: 1.5; }
+.m-sock, .m-stem { fill: none; stroke-width: 1.5; stroke-linecap: round; }
+.m-iface { font: 500 11px var(--mono); }
+.m-port-name { fill: var(--quiet); font: 500 10.5px var(--mono); }
+.m-rule { fill: url(#mrq-edge); opacity: .7; }
+.m-ref { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-dasharray: 4 4; }
+.m-key { fill: var(--text); font: 12px var(--pic-sans); }
+.m-glass-name { fill: var(--text); font: 700 13.5px var(--pic-sans); }
+.m-pin { stroke-width: 1.25; }
+.m-pin-text { font: 500 10px var(--mono); }
+.m-letter { fill: var(--ground); font: 700 12px var(--mono); }
+.m-big { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+</style><defs><marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow" d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" /></marker><radialGradient id="mrq-light"><stop class="mrq-light-0" offset="0" /><stop class="mrq-light-1" offset="0.5" /><stop class="mrq-light-2" offset="1" /></radialGradient><linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0"><stop class="mrq-edge-0" offset="0" /><stop class="mrq-edge-1" offset="0.5" /><stop class="mrq-edge-2" offset="1" /></linearGradient><linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1"><stop class="mrq-glass-0" offset="0" /><stop class="mrq-glass-1" offset="1" /></linearGradient></defs><rect class="ground" x="-24" y="-24" width="1200" height="740" rx="14" /><path class="mrq-light" d="M-24 74a600.0 190 0 1 0 1200 0a600.0 190 0 1 0 -1200 0Z" /><rect class="mrq-pill" x="0" y="0" width="198.2" height="20" rx="10" /><text class="mrq-code" x="99.1" y="14" text-anchor="middle">composite structure diagram</text><text class="mrq-title" x="210.2" y="14" text-anchor="start">AgentEngine: what it is made of</text><rect class="pic-panel" x="240" y="64" width="720" height="476" rx="14" /><text class="pic-name" x="262" y="94" text-anchor="start">AgentEngine</text><rect class="pic-tint tone-green" x="356" y="80" width="44" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="378" y="92.5" text-anchor="middle">class</text><text class="pic-note" x="942" y="94" text-anchor="end">louis-agent.core, Agent</text><path class="m-wire" d="M570 152.0H660" /><path class="m-wire" d="M445.0 186V220" /><path class="m-wire" d="M680 186V203H530V220" /><path class="m-wire" d="M570 254.0H660" /><path class="m-wire" d="M570 356.0H785.0V288" /><path class="m-wire" d="M445.0 390V424" /><rect class="pic-panel" x="320" y="118" width="250" height="68" rx="10" /><text class="pic-name" x="336" y="146" text-anchor="start">TurnRunner</text><rect class="pic-tint tone-green" x="511" y="132" width="47" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="534.5" y="144.5" text-anchor="middle">turns</text><text class="pic-note" x="336" y="166" text-anchor="start">one turn on the pipeline</text><rect class="pic-panel" x="660" y="118" width="250" height="68" rx="10" /><text class="pic-name" x="676" y="146" text-anchor="start">ToolCallGuards</text><rect class="pic-tint tone-green" x="844.8" y="132" width="53.2" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="871.4" y="144.5" text-anchor="middle">guards</text><text class="pic-note" x="676" y="166" text-anchor="start">stops a cut-off call, sums up a big result</text><rect class="pic-panel" x="320" y="220" width="250" height="68" rx="10" /><text class="pic-name" x="336" y="248" text-anchor="start">ToolRegistry</text><rect class="pic-tint tone-green" x="492.4" y="234" width="65.6" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="525.2" y="246.5" text-anchor="middle">registry</text><text class="pic-note" x="336" y="268" text-anchor="start">the tools the model is offered</text><rect class="pic-panel" x="660" y="220" width="250" height="68" rx="10" /><text class="pic-name" x="676" y="248" text-anchor="start">AgentBuiltTools</text><rect class="pic-tint tone-green" x="789" y="234" width="109" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="843.5" y="246.5" text-anchor="middle">agentBuiltTools</text><text class="pic-note" x="676" y="268" text-anchor="start">the tools the agent wrote itself</text><rect class="pic-panel" x="320" y="322" width="250" height="68" rx="10" /><text class="pic-name" x="336" y="350" text-anchor="start">UserCommands</text><rect class="pic-tint tone-green" x="492.4" y="336" width="65.6" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="525.2" y="348.5" text-anchor="middle">commands</text><text class="pic-note" x="336" y="370" text-anchor="start">what the user types, the model never sees</text><rect class="pic-panel" x="320" y="424" width="250" height="68" rx="10" /><text class="pic-name" x="336" y="452" text-anchor="start">SkillTools</text><rect class="pic-tint tone-green" x="480" y="438" width="78" height="18" rx="9" /><text class="cmp-chip-text pic-ink tone-green" x="519" y="450.5" text-anchor="middle">skillTools</text><text class="pic-note" x="336" y="472" text-anchor="start">the system prompt, running and writing skills</text><path class="pic-line pic-edge tone-green" d="M276.35 152.0H320" marker-end="url(#arrow-green)"/><path class="pic-march" d="M276.35 152.0H320" /><rect class="m-pin pic-tint pic-edge tone-green" x="203.7" y="142" width="72.7" height="20" rx="10" /><path class="pic-fill tone-green" d="M212.65 149.0h7l-3.5 6z" /><text class="m-pin-text pic-ink tone-green" x="225.7" y="155.5" text-anchor="start">prompts</text><text class="m-iface pic-ink tone-green" x="184" y="156" text-anchor="end">ProcessPromptAsync</text><path class="pic-line pic-edge tone-green" d="M270.25 254.0H320" marker-end="url(#arrow-green)"/><path class="pic-march" d="M270.25 254.0H320" /><rect class="m-pin pic-tint pic-edge tone-green" x="209.8" y="244" width="60.5" height="20" rx="10" /><path class="pic-fill tone-green" d="M218.75 251.0h7l-3.5 6z" /><text class="m-pin-text pic-ink tone-green" x="231.8" y="257.5" text-anchor="start">tools</text><text class="m-iface pic-ink tone-green" x="184" y="258" text-anchor="end">RegisterDiscoveredTool</text><path class="pic-line pic-edge tone-green" d="M279.4 356.0H320" marker-end="url(#arrow-green)"/><path class="pic-march" d="M279.4 356.0H320" /><rect class="m-pin pic-tint pic-edge tone-green" x="200.6" y="346" width="78.8" height="20" rx="10" /><path class="pic-fill tone-green" d="M209.6 353.0h7l-3.5 6z" /><text class="m-pin-text pic-ink tone-green" x="222.6" y="359.5" text-anchor="start">commands</text><text class="m-iface pic-ink tone-green" x="184" y="360" text-anchor="end">HandleUserCommand</text><path class="pic-line pic-edge tone-green" d="M273.3 458.0H320" marker-end="url(#arrow-green)"/><path class="pic-march" d="M273.3 458.0H320" /><rect class="m-pin pic-tint pic-edge tone-green" x="206.7" y="448" width="66.6" height="20" rx="10" /><path class="pic-fill tone-green" d="M215.7 455.0h7l-3.5 6z" /><text class="m-pin-text pic-ink tone-green" x="228.7" y="461.5" text-anchor="start">skills</text><text class="m-iface pic-ink tone-green" x="184" y="462" text-anchor="end">ExecuteSkill</text><path class="pic-line pic-edge tone-teal" d="M910 152.0H929.75" marker-end="url(#arrow-teal)"/><path class="pic-march" d="M910 152.0H929.75" /><rect class="m-pin pic-tint pic-edge tone-teal" x="929.8" y="142" width="60.5" height="20" rx="10" /><path class="pic-fill tone-teal" d="M938.75 155.0h7l-3.5 -6z" /><text class="m-pin-text pic-ink tone-teal" x="951.8" y="155.5" text-anchor="start">model</text><text class="m-iface pic-ink tone-teal" x="1002.2" y="156" text-anchor="start">IChatClient</text><path class="pic-line pic-edge tone-teal" d="M570 458.0H905.35" marker-end="url(#arrow-teal)"/><path class="pic-march" d="M570 458.0H905.35" /><rect class="m-pin pic-tint pic-edge tone-teal" x="905.4" y="448" width="109.3" height="20" rx="10" /><path class="pic-fill tone-teal" d="M914.35 461.0h7l-3.5 -6z" /><text class="m-pin-text pic-ink tone-teal" x="927.4" y="461.5" text-anchor="start">skillProvider</text><text class="m-iface pic-ink tone-teal" x="1026.7" y="462" text-anchor="start">ISkillProvider</text><path class="pic-line pic-edge tone-teal" d="M445.0 118V76" marker-end="url(#arrow-teal)"/><path class="pic-march" d="M445.0 118V76" /><rect class="m-pin pic-tint pic-edge tone-teal" x="414.8" y="54" width="60.5" height="20" rx="10" /><path class="pic-fill tone-teal" d="M423.75 67h7l-3.5 -6z" /><text class="m-pin-text pic-ink tone-teal" x="436.8" y="67.5" text-anchor="start">usage</text><text class="m-iface pic-ink tone-teal" x="495" y="60" text-anchor="start">IUsageSink [0..1]</text><rect class="m-rule" x="0" y="566" width="1152" height="1" rx="0" /><text class="pic-group" x="0" y="588" text-anchor="start">How to read it</text><g transform="translate(0 614)"><rect class="m-pin pic-tint pic-edge tone-green" x="6.8" y="-10" width="54.4" height="20" rx="10" /><path class="pic-fill tone-green" d="M15.8 -3h7l-3.5 6z" /><text class="m-pin-text pic-ink tone-green" x="28.8" y="3.5" text-anchor="start">name</text></g><text class="m-key" x="78" y="618.5" text-anchor="start">asked of the engine</text><g transform="translate(233.39999999999998 614)"><rect class="m-pin pic-tint pic-edge tone-teal" x="6.8" y="-10" width="54.4" height="20" rx="10" /><path class="pic-fill tone-teal" d="M15.8 3h7l-3.5 -6z" /><text class="m-pin-text pic-ink tone-teal" x="28.8" y="3.5" text-anchor="start">name</text></g><text class="m-key" x="311.4" y="618.5" text-anchor="start">what the engine needs</text><g transform="translate(480.0 614)"><path class="m-wire" d="M0 0H30" /></g><text class="m-key" x="520" y="618.5" text-anchor="start">two parts work together</text><g transform="translate(701.8 614)"><path class="pic-line pic-edge tone-green" d="M0 0H30" marker-end="url(#arrow-green)"/></g><text class="m-key" x="741.8" y="618.5" text-anchor="start">passed on</text><rect class="notebar" x="0" y="655" width="1152" height="37" rx="8" /><text class="notes" x="16" y="678"><tspan class="note-lead" font-weight="700" fill="var(--text)">One engine, six parts:</tspan><tspan class="note-rest"> the engine builds its parts once, hands each what it needs, and passes what it is asked on to the part that does it.</tspan></text></svg>

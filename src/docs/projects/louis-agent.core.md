@@ -1,7 +1,8 @@
 # louis-agent.core — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `src/engine/louis-agent.core/` · **References:** Microsoft.Extensions.AI,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core/` · **References:** Microsoft.Extensions.AI,
 > Anthropic SDK, OpenAI and Ollama clients, dotenv.net, YamlDotNet (a prompt's header, CL27) · **Used by:** every host, the orchestrator, the tests
+> **Also shows:** `composite-structure`, `component`
 
 ![The engine, and its parts: the loop, the guards, usage, skills and prompts, providers and bootstrap](diagrams/louis-agent.core.svg)
 
@@ -12,6 +13,10 @@ loop, the model providers, configuration, logging and bootstrap. The hosts (CLI,
 protocol to and from `AgentEngine`; behaviour changes belong here.
 
 ## How it works
+
+One turn, step by step, before the parts that make it are told one by one below.
+
+![One turn: the message is appended, the model asked, each tool call run behind the guards round after round, and the whole turn appended at the end](diagrams/louis-agent.core-flow.svg)
 
 ![louis-agent.core: How it works](diagrams/louis-agent.core-how-it-works.svg)
 
@@ -90,14 +95,17 @@ protocol to and from `AgentEngine`; behaviour changes belong here.
 
 The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
-## Diagrams
-
-The diagram under *How it works* shows how the engine is put together; this is what happens when a host hands it a
-message.
+What happens when a host hands the engine a message:
 
 ![One turn: the engine runs the tool loop, each model request measured and each tool call guarded, and the turn joins the history at the end](diagrams/louis-agent.core-diagrams.svg)
 
 ![The types a host meets: AgentHost builds the context from a catalogue of identities and packs, an engine per toolset list, and the model from a provider](diagrams/louis-agent.core-interface.svg)
+
+The engine from the inside. It builds six parts once, in its constructor. On the left is what a host asks of it,
+each passed on to the part that does it. On the right is what it is handed from outside. A plain line joins two
+parts where one is built with the other.
+
+![AgentEngine from the inside: what is asked of it on the left, its six parts and which is built with which, and what it is handed on the right](diagrams/louis-agent.core-agent-engine.svg)
 
 ## Structure
 

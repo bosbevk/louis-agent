@@ -1,8 +1,9 @@
 # louis-agent.web.evals — design
 
-> **Kind:** Razor class library (`net10.0`) · **Path:** `src/web/louis-agent.web.evals/` · **References:** louis-agent.web,
+> **Kind:** Razor library (`net10.0`) · **Path:** `src/web/louis-agent.web.evals/` · **References:** louis-agent.web,
 > louis-agent.evals.protocol · **Used by:** a site that opts into the eval studio (Puls, the code-review app, the starter), at
 > `/admin/evals`, an area inside the admin's frame (F144) · **How to change them:** [Change the eval pages](../guides/change-the-eval-pages.md)
+> **Also shows:** `component`, `sequence`
 
 Since CL57 ([ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)) the studio is a library on the
 framework's web, not a part of it: a site references it, calls `AddLouisAgentEvals()` and lists
@@ -30,19 +31,11 @@ Almost nothing, which is the point ([ADR 0084](../adr/0084-every-site-is-built-o
   and the addresses it takes. A website goes under the first kind it fits, the first kind is green, and what fits none is grey and called
   *elsewhere*. With none named, everything is one grey slice. Puls's list is `PulsSites`.
 
-## Diagrams
-
-Where the pieces sit, and what a site adds:
-
-![The eval studio's pages: from a site's program through the admin frame to the API](diagrams/louis-agent.web.evals-diagrams.svg)
-
-What happens when someone starts a run and watches it:
-
-![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
-
-![The types: a site adds the pages in one call, a run's events build its live view and its stored lines its tree](diagrams/louis-agent.web.evals-interface.svg)
-
 ## How it works
+
+The Evals page is the studio's front: the list of evals, the chosen one's details, and the run in progress.
+
+![The Evals page holds the list, the chosen eval's details that start a run, and the live panel that follows it](diagrams/louis-agent.web.evals-components-evals.svg)
 
 **Organised by job** (F53), in English, as they're the builders' screens. `/admin/evals` is the Evals page (F18, CL26, F53.2; under the admin's home since F144, its address written once as `EvalAddress.Studio`), in list/details shape:
 the list pane names every eval the runner has, an eval that never ran included, with its last run's status, when it
@@ -86,6 +79,16 @@ the standard records alone: `GraderList` above the explorer (the run's eval, ver
 it recorded none) and `GradeChips` on each conversation's row (its outcome and one chip per grade, in the run's grader order,
 the reason on hover; "no grades" for a run from before F18 step 2a, never 0). The readers and the chip list are plain classes in
 `Admin/Grades/`, the components in `Components/Evals/Grades/`.
+
+Where the pieces sit, and what a site adds:
+
+![The eval studio's pages: from a site's program through the admin frame to the API](diagrams/louis-agent.web.evals-diagrams.svg)
+
+What happens when someone starts a run and watches it:
+
+![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
+
+![The types: a site adds the pages in one call, a run's events build its live view and its stored lines its tree](diagrams/louis-agent.web.evals-interface.svg)
 
 ## Structure
 

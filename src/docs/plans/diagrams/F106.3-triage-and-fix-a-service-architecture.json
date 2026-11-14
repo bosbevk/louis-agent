@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F106.3 triage and fix a service: the architecture",
   "caption": "A visitor watches a real run: the triage workflow's steps stream to the page, and the guide in the corner can read the run.",
   "flow": {
     "nodes": [
       {
         "id": "visitor",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "A visitor on louis-agent.dev"
@@ -87,6 +89,7 @@
       },
       {
         "id": "mongo",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Mongo: runs and steps (F43)"

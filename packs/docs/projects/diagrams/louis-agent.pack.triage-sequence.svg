@@ -1,79 +1,26 @@
-<svg viewBox="-24 -24 1047.4 625" width="1047.4" height="625" role="img" aria-label="louis-agent.pack.triage: an investigation reported" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 963.1 777" width="963.1" height="777" role="img" aria-label="louis-agent.pack.triage: an investigation reported" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.pack.triage: an investigation reported</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
-.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.label { fill: var(--text); font: 600 12px var(--mono); }
-.note { fill: var(--quiet); font: 10px var(--mono); }
-.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.dashed { stroke-dasharray: 5 4; }
-.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.group-label {
-  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-}
-.word { fill: var(--text); font: 500 10px var(--mono); }
-.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.frame { fill: none; stroke: var(--line); stroke-width: 1; }
-.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.highlight { fill: var(--tint); stroke: var(--accent); }
-.title { fill: var(--text); font: 600 13px var(--mono); }
-.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }
-.badge { fill: var(--quiet); }
-.badge-icon {
-  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
-.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
-.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
-.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
-.label.tone-green, .word.tone-green { fill: var(--green-ink); }
-.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
-.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
-.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
-.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
-.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
-.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
-.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
-.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
-.label.tone-red, .word.tone-red { fill: var(--red-ink); }
-.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
-.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
-.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
-.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
 svg {
   --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
-}
-.titlebar { fill: var(--banner); }
-.title-icon {
-  fill: none; stroke: var(--banner-ink); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.title-rule { fill: var(--banner-line); }
-.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
-.title-head { font-weight: 700; }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -81,125 +28,280 @@ svg {
 }
 .notes { fill: var(--quiet); font: 400 12px var(--sans); }
 .note-head { fill: var(--text); font-weight: 700; }
-.legend { fill: var(--quiet); font: 400 12px var(--sans); }
-.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.seq-badge { fill: var(--quiet); }
+.seq-badge.tone-blue { fill: var(--blue-line); }
+.seq-badge.tone-green { fill: var(--green-line); }
+.seq-badge.tone-violet { fill: var(--violet-line); }
+.seq-badge.tone-teal { fill: var(--teal-line); }
+.seq-badge.tone-red { fill: var(--red-line); }
+.seq-badge.tone-amber { fill: var(--amber-line); }
+.seq-name { fill: var(--text); font: 700 16px var(--pic-sans); letter-spacing: -.2px; }
+.seq-life { fill: url(#seq-life); }
+.seq-life-0 { stop-color: var(--violet-line); stop-opacity: .7; }
+.seq-life-1 { stop-color: var(--blue-line); stop-opacity: .35; }
+.seq-life-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.seq-beam { fill: url(#seq-beam); }
+.seq-beam.back { fill: url(#seq-beam-back); }
+.seq-beam-glow { opacity: .45; filter: blur(4px); }
+.seq-beam-0 { stop-color: var(--violet-line); }
+.seq-beam-1 { stop-color: var(--blue-line); }
+.seq-beam-back-0 { stop-color: var(--blue-line); }
+.seq-beam-back-1 { stop-color: var(--violet-line); }
+.seq-tip { fill: none; }
+.seq-turn { fill: none; stroke: var(--violet-line); stroke-width: 2; stroke-linecap: round; }
+.seq-answer {
+  fill: none; stroke: var(--quiet); stroke-opacity: .8; stroke-width: 1.5; stroke-dasharray: 3 6;
+  stroke-linecap: round;
+}
+.seq-call-words { fill: var(--text); font: 600 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
+.seq-answer-words { fill: var(--quiet); font: 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
+.seq-cover { fill: var(--ground); }
+.seq-kind { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.seq-tab { fill: var(--text); font: 600 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
+.seq-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; stroke-dasharray: 4 6; }
+.seq-else { fill: var(--ground); stroke: var(--quiet); stroke-width: 1; stroke-opacity: .5; }
+.seq-else-word { fill: var(--quiet); font: 11px var(--mono); }
+.seq-ring.quiet { stroke: var(--quiet); }
+.seq-count { fill: var(--text); font: 700 10px var(--pic-sans); }
+.seq-quiet-node { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.5; }
+.seq-swatch { fill: url(#mrq-glass); stroke: var(--mrq-sheet); stroke-opacity: .3; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="seq-beam" x1="0" y1="0" x2="1" y2="0">
+      <stop class="seq-beam-0" offset="0" />
+      <stop class="seq-beam-1" offset="1" />
+    </linearGradient>
+    <linearGradient id="seq-beam-back" x1="0" y1="0" x2="1" y2="0">
+      <stop class="seq-beam-back-0" offset="0" />
+      <stop class="seq-beam-back-1" offset="1" />
+    </linearGradient>
+    <linearGradient id="seq-life" x1="0" y1="0" x2="0" y2="1">
+      <stop class="seq-life-0" offset="0" />
+      <stop class="seq-life-1" offset="0.9" />
+      <stop class="seq-life-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1047.4" height="625" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="999.4" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="963.1" height="777" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 84a481.6 170 0 1 0 963.1 0a481.6 170 0 1 0 -963.1 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.triage: an investigation reported</text>
+    <text class="pic-group" x="915.1" y="14" text-anchor="end">Sequence diagram</text>
+    <g class="seq-drawing" transform="translate(0 48)">
+      <rect class="seq-cover" x="13.2" y="170" width="580.3" height="237" rx="14" />
+      <rect class="mrq-glass" x="13.2" y="170" width="580.3" height="237" rx="14" />
+      <rect class="mrq-edge" x="41.2" y="169.5" width="524.3" height="1.6" rx="0" />
+      <rect class="seq-life" x="74.5" y="84" width="1.5" height="453" rx="0" />
+      <rect class="seq-life" x="394.5" y="84" width="1.5" height="453" rx="0" />
+      <rect class="seq-life" x="570.8" y="84" width="1.5" height="453" rx="0" />
+      <rect class="seq-life" x="876.8" y="84" width="1.5" height="453" rx="0" />
+      <rect class="seq-kind" x="27.2" y="180" width="37" height="20" rx="10" />
+      <text class="mrq-code" x="45.7" y="194" text-anchor="middle">alt</text>
+      <text class="seq-tab" x="74.2" y="194.5" text-anchor="start">a value not in its enum</text>
+      <path class="seq-divide" d="M13.2 259H593.5" />
+      <rect class="seq-else" x="27.2" y="269" width="44" height="20" rx="10" />
+      <text class="seq-else-word" x="49.2" y="283" text-anchor="middle">else</text>
+      <text class="seq-tab" x="81.2" y="283.5" text-anchor="start">every value good</text>
+      <rect class="seq-beam seq-beam-glow" x="75.2" y="144" width="320" height="8" rx="0" />
+      <rect class="seq-beam" x="75.2" y="147" width="312" height="2" rx="0" />
+      <path class="pic-march" d="M75.2 148H387.2" />
+      <path class="seq-tip" d="M387.2 148H395.2" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="75.2" cy="148" r="4.5" />
+      <text class="seq-call-words" x="235.2" y="124" text-anchor="middle">ReportInvestigation(runId, where, cause,</text>
+      <text class="seq-call-words" x="235.2" y="139" text-anchor="middle">area, confidence)</text>
+      <path class="seq-answer" d="M395.2 237H75.2" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="395.2" cy="237" r="4.5" />
+      <text class="seq-answer-words" x="235.2" y="228" text-anchor="middle">refused, the choices named</text>
+      <rect class="seq-beam seq-beam-glow" x="395.2" y="322" width="176.3" height="8" rx="0" />
+      <rect class="seq-beam" x="395.2" y="325" width="168.3" height="2" rx="0" />
+      <path class="pic-march" d="M395.2 326H563.5" />
+      <path class="seq-tip" d="M563.5 326H571.5" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="395.2" cy="326" r="4.5" />
+      <text class="seq-call-words" x="483.4" y="317" text-anchor="middle">SaveAsync(step)</text>
+      <path class="seq-answer" d="M395.2 377H75.2" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="395.2" cy="377" r="4.5" />
+      <text class="seq-answer-words" x="235.2" y="368" text-anchor="middle">recorded</text>
+      <rect class="seq-beam seq-beam-glow back" x="571.5" y="444" width="306" height="8" rx="0" />
+      <rect class="seq-beam back" x="579.5" y="447" width="298" height="2" rx="0" />
+      <path class="pic-march" d="M877.5 448H579.5" />
+      <path class="seq-tip" d="M579.5 448H571.5" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="877.5" cy="448" r="4.5" />
+      <text class="seq-call-words" x="724.5" y="439" text-anchor="middle">ReadAsync(runId), for ReadTriageRun</text>
+      <path class="seq-answer" d="M571.5 499H877.5" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="571.5" cy="499" r="4.5" />
+      <text class="seq-answer-words" x="724.5" y="490" text-anchor="middle">the run, one line a step, how it ended</text>
+      <rect class="seq-badge tone-violet" x="53.2" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(64.2 11) scale(0.9167)">
+        <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+        <path d="M9 9h6v6h-6z" />
+        <path d="M3 10h2" />
+        <path d="M3 14h2" />
+        <path d="M10 3v2" />
+        <path d="M14 3v2" />
+        <path d="M21 10h-2" />
+        <path d="M21 14h-2" />
+        <path d="M14 21v-2" />
+        <path d="M10 21v-2" />
+      </g>
+      <text class="seq-name" x="75.2" y="68" text-anchor="middle">The investigator</text>
+      <circle class="mrq-node" cx="75.2" cy="84" r="4.5" />
+      <rect class="seq-badge tone-green" x="373.2" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(384.2 11) scale(0.9167)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="seq-name" x="395.2" y="68" text-anchor="middle">TriageTools</text>
+      <circle class="mrq-node" cx="395.2" cy="84" r="4.5" />
+      <rect class="seq-badge tone-amber" x="549.5" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(560.5 11) scale(0.9167)">
+        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+      </g>
+      <text class="seq-name" x="571.5" y="68" text-anchor="middle">FileTriageRecorder</text>
+      <circle class="mrq-node" cx="571.5" cy="84" r="4.5" />
+      <rect class="seq-badge tone-green" x="855.5" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(866.5 11) scale(0.9167)">
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6l0 13" />
+        <path d="M12 6l0 13" />
+        <path d="M21 6l0 13" />
+      </g>
+      <text class="seq-name" x="877.5" y="68" text-anchor="middle">RunTools</text>
+      <circle class="mrq-node" cx="877.5" cy="84" r="4.5" />
+    </g>
+    <g class="seq-legend" transform="translate(0 597)">
+      <rect class="mrq-rule" x="0" y="0" width="915.1" height="1" rx="0" />
+      <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
+      <rect class="seq-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
+      <rect class="seq-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <rect class="seq-badge tone-amber" x="281" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="309" y="52.5" text-anchor="start">files and data</text>
+      <rect class="seq-beam seq-beam-glow" x="435.9" y="44" width="43.5" height="8" rx="0" />
+      <rect class="seq-beam" x="435.9" y="47" width="35.5" height="2" rx="0" />
+      <path class="seq-tip" d="M471.4 48H479.4" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="435.9" cy="48" r="4.5" />
+      <text class="pic-means" x="489.4" y="52.5" text-anchor="start">a call</text>
+      <path class="seq-answer" d="M563.5 48H607" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="563.5" cy="48" r="4.5" />
+      <text class="pic-means" x="617" y="52.5" text-anchor="start">an answer</text>
+      <rect class="seq-kind" x="706.4" y="38" width="37" height="20" rx="10" />
+      <text class="mrq-code" x="724.9" y="52" text-anchor="middle">alt</text>
+      <text class="pic-means" x="753.4" y="52.5" text-anchor="start">one case or the other</text>
+    </g>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">louis-agent.pack.triage:</tspan>
-    <tspan class="title-rest">an investigation reported</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <rect class="group" x="79.8" y="128" width="564.2" height="194" rx="8" />
-    <path class="edge dashed" d="M 93.8 52 L 93.8 422" />
-    <path class="edge dashed" d="M 413.8 52 L 413.8 422" />
-    <path class="edge dashed" d="M 630 52 L 630 422" />
-    <path class="edge dashed" d="M 936 52 L 936 422" />
-    <rect class="word-chip" x="79.8" y="128" width="37" height="20" rx="6" />
-    <text class="word" x="98.3" y="142" text-anchor="middle">alt</text>
-    <text class="word" x="122.8" y="142" text-anchor="start">a value not in its enum</text>
-    <path class="edge dashed" d="M 79.8 200 L 644 200" />
-    <rect class="word-chip" x="79.8" y="200" width="44" height="20" rx="6" />
-    <text class="word" x="101.8" y="214" text-anchor="middle">else</text>
-    <text class="word" x="129.8" y="214" text-anchor="start">every value good</text>
-    <path class="edge tone-violet" d="M 93.8 116 L 411.8 116" marker-end="url(#arrow-violet)" />
-    <rect class="word-chip tone-violet" x="105.8" y="76" width="296" height="36" rx="4" />
-    <text class="word tone-violet" x="253.8" y="90" text-anchor="middle">ReportInvestigation(runId, where, cause,</text>
-    <text class="word tone-violet" x="253.8" y="104" text-anchor="middle">area, confidence)</text>
-    <path class="edge dashed tone-green" d="M 413.8 188 L 95.8 188" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="154.8" y="162" width="198" height="22" rx="4" />
-    <text class="word tone-green" x="253.8" y="176" text-anchor="middle">refused, the choices named</text>
-    <path class="edge tone-green" d="M 413.8 260 L 628 260" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="461.4" y="234" width="121" height="22" rx="4" />
-    <text class="word tone-green" x="521.9" y="248" text-anchor="middle">SaveAsync(step)</text>
-    <path class="edge dashed tone-green" d="M 413.8 302 L 95.8 302" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="217.8" y="276" width="72" height="22" rx="4" />
-    <text class="word tone-green" x="253.8" y="290" text-anchor="middle">recorded</text>
-    <path class="edge tone-green" d="M 936 352 L 632 352" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="652.5" y="326" width="261" height="22" rx="4" />
-    <text class="word tone-green" x="783" y="340" text-anchor="middle">ReadAsync(runId), for ReadTriageRun</text>
-    <path class="edge dashed tone-amber" d="M 630 394 L 934 394" marker-end="url(#arrow-amber)" />
-    <rect class="word-chip tone-amber" x="642" y="368" width="282" height="22" rx="4" />
-    <text class="word tone-amber" x="783" y="382" text-anchor="middle">the run, one line a step, how it ended</text>
-    <rect class="box tone-violet" x="0" y="0" width="187.6" height="52" rx="10" />
-    <circle class="badge tone-violet" cx="28" cy="26" r="14" />
-    <g class="badge-icon" transform="translate(20 18) scale(0.6667)">
-      <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
-      <path d="M9 9h6v6h-6z" />
-      <path d="M3 10h2" />
-      <path d="M3 14h2" />
-      <path d="M10 3v2" />
-      <path d="M14 3v2" />
-      <path d="M21 10h-2" />
-      <path d="M21 14h-2" />
-      <path d="M14 21v-2" />
-      <path d="M10 21v-2" />
-    </g>
-    <text class="label tone-violet" x="52" y="30" text-anchor="start">The investigator</text>
-    <rect class="box tone-green" x="339" y="0" width="149.6" height="52" rx="10" />
-    <circle class="badge tone-green" cx="367" cy="26" r="14" />
-    <g class="badge-icon" transform="translate(359 18) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="391" y="30" text-anchor="start">TriageTools</text>
-    <rect class="box tone-amber" x="528.6" y="0" width="202.8" height="52" rx="10" />
-    <circle class="badge tone-amber" cx="556.6" cy="26" r="14" />
-    <g class="badge-icon" transform="translate(548.6 18) scale(0.6667)">
-      <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
-    </g>
-    <text class="label tone-amber" x="580.6" y="30" text-anchor="start">FileTriageRecorder</text>
-    <rect class="box tone-green" x="872.6" y="0" width="126.8" height="52" rx="10" />
-    <circle class="badge tone-green" cx="900.6" cy="26" r="14" />
-    <g class="badge-icon" transform="translate(892.6 18) scale(0.6667)">
-      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-      <path d="M3 6l0 13" />
-      <path d="M12 6l0 13" />
-      <path d="M21 6l0 13" />
-    </g>
-    <text class="label tone-green" x="924.6" y="30" text-anchor="start">RunTools</text>
-  </g>
-  <rect class="swatch tone-green" x="0" y="504" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="514.5" text-anchor="start">this project</text>
-  <rect class="swatch tone-violet" x="126.4" y="504" width="12" height="12" rx="3" />
-  <text class="legend" x="144.4" y="514.5" text-anchor="start">the framework</text>
-  <rect class="swatch tone-amber" x="260" y="504" width="12" height="12" rx="3" />
-  <text class="legend" x="278" y="514.5" text-anchor="start">files and data</text>
-  <rect class="notebar" x="0" y="540" width="999.4" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 550) scale(0.6667)">
+  <rect class="notebar" x="0" y="675" width="915.1" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 685) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="562">
+  <text class="notes" x="38" y="697">
     <tspan class="note-head">A typed ending, never prose read by a pattern:</tspan>
-    <tspan class="note-rest">a bad value comes back with its choices, and a good one is a step on the run.</tspan>
+    <tspan class="note-rest">a bad value comes back with its choices, and a good one is a step on the</tspan>
+  </text>
+  <text class="notes" x="38" y="714">
+    <tspan class="note-rest">run.</tspan>
   </text>
 </svg>

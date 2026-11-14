@@ -6,8 +6,9 @@
 > the decisions in [ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
 > [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md) and
 > [ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md).
+> **Also shows:** `activity`, `sequence`
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/site/louis-agent.identity.guide/` · **References:**
+> **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.guide/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), and the coding agent's
 > catalogue beside the coding identity
 
@@ -70,6 +71,12 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   window shows. Asked what happened, it retells it from the line under the answer or from `ReadAgentWork`, which reads
   the business's whole session, the window's turns included.
 
+![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
+
+![One question answered: it searches the docs, reads the best section, opens the page and answers](diagrams/louis-agent.identity.guide-sequence.svg)
+
+![The types: GuideIdentity and three enums, its name, its packs and the businesses it may ask](diagrams/louis-agent.identity.guide-interface.svg)
+
 ## Open on purpose
 
 The guide is more open than most agents on business sites (Louis, 2026-11-09: "quite open if compared to how other
@@ -82,14 +89,6 @@ and an agent that answers freely and honestly is the demo.
 What stays closed is held in code, not by narrowing what it talks about. Its host loads only its three packs, so it has
 no files, git or shell. It sends a lead only on the visitor's yes. It never quotes Louis's own money, numbers, risks or
 notes. A cap limits what a visitor can spend (ADR 0099).
-
-## Diagrams
-
-![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
-
-![One question answered: it searches the docs, reads the best section, opens the page and answers](diagrams/louis-agent.identity.guide-sequence.svg)
-
-![The types: GuideIdentity and three enums, its name, its packs and the businesses it may ask](diagrams/louis-agent.identity.guide-interface.svg)
 
 ## Tests
 

@@ -1,8 +1,9 @@
 # louis-agent.api.evals — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/hosts/louis-agent.api.evals/` · **References:** louis-agent.api,
+> **Kind:** host (a library, `net10.0`) · **Path:** `src/hosts/louis-agent.api.evals/` · **References:** louis-agent.api,
 > louis-agent.core, louis-agent.evals.protocol, louis-agent.evals.checks, MongoDB.Driver · **Used by:** a program that
 > wants the eval studio: the Puls API, the coding API, the starter API
+> **Also shows:** `component`
 
 ![The eval studio, and its parts: the runner, the stores and the admin routes](diagrams/louis-agent.api.evals.svg)
 
@@ -36,8 +37,6 @@ The API keeps the admin gate, the key, its own admin routes (prompts, imports, s
 studio's replies are built here (`Replies/`, the `Of` factories), its texts in `Messages/` (`EvalApiLogMessage`,
 `EvalApiUserText`, the draft, listing, note and review texts).
 
-## Diagrams
-
 ![The eval studio on the API: what a program maps, and what the studio holds](diagrams/louis-agent.api.evals-diagrams.svg)
 
 ![Starting a run: the gate lets the browser in, the studio stores a run row and answers 202, and the page reads the runner's events](diagrams/louis-agent.api.evals-diagrams-2.svg)
@@ -58,6 +57,10 @@ demos/puls/tests/louis-agent.api.evals.tests/   # the studio's tests, beside the
 ```
 
 ## Configuration
+
+Where it runs: inside a demo's API program, with the eval runner a child process in the same container.
+
+![Where the eval studio runs: in the API's container, starting the runner as a child process and keeping runs in MongoDB](diagrams/louis-agent.api.evals-deployment.svg)
 
 `EVALS_MONGO_URL`, `EVALS_MONGO_DATABASE`, `EVAL_RUNNER`, `BENCHMARK_API_URL`; the key is the API's `ADMIN_API_KEY`.
 

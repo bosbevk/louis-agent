@@ -1,0 +1,83 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "louis-agent.orchestrator: where it runs",
+  "caption": "The orchestrator runs as its own program beside the service it watches: it reads the service's error log, asks louis-agent's API to fix what a runbook allows, and writes what it decided.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "service",
+        "label": "The watched service\nits error log, JSON lines",
+        "icon": "server",
+        "tone": "blue",
+        "shape": "data"
+      },
+      {
+        "id": "orchestrator",
+        "label": "louis-agent.orchestrator\nDockerfile.orchestrator, or dotnet run",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "box"
+      },
+      {
+        "id": "api",
+        "label": "louis-agent.api\nLOUIS_AGENT_URL, sessions over SSE",
+        "icon": "server",
+        "tone": "green"
+      },
+      {
+        "id": "logs",
+        "label": "Its records\nfixes, escalations, decisions",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "models",
+        "label": "A model's server\nAnthropic over HTTPS, or Ollama\non 11434",
+        "icon": "cloud",
+        "tone": "violet"
+      },
+      {
+        "id": "otel",
+        "label": "The telemetry collector\nOTLP on host.docker.internal:4317",
+        "icon": "chart",
+        "tone": "amber"
+      }
+    ],
+    "edges": [
+      {
+        "from": "orchestrator",
+        "to": "service",
+        "word": "polls"
+      },
+      {
+        "from": "orchestrator",
+        "to": "api",
+        "word": "a fix, by HTTP"
+      },
+      {
+        "from": "orchestrator",
+        "to": "models",
+        "word": "its decisions"
+      },
+      {
+        "from": "orchestrator",
+        "to": "logs",
+        "word": "writes"
+      },
+      {
+        "from": "orchestrator",
+        "to": "otel",
+        "word": "logs and traces"
+      }
+    ],
+    "groups": [
+      {
+        "id": "box",
+        "label": "Its own container, or the PC"
+      }
+    ]
+  }
+}

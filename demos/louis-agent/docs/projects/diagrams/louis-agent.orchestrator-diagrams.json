@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The orchestrator: the poll, its engine and tools, and what it writes down",
   "caption": "A second agent on the same core: it talks to louis-agent the way anyone would, over HTTP.",
   "flow": {
@@ -18,6 +19,7 @@
       },
       {
         "id": "errors",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "logs/errors.jsonl,\nprocessed.txt"
@@ -66,12 +68,14 @@
       },
       {
         "id": "comms",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "CommsLog: agent-comms.md"
       },
       {
         "id": "state",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "StateFiles: fixes,\nescalations, acknowledged"

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F40 the sales playground: by step",
   "caption": "Two agents, one stack: the demo's clerk and Puls share the shops pack, the run store and the ledger, and the control room shows the runs live.",
   "flow": {
@@ -48,6 +49,7 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "puls-mongo\nthe run store (F31)",
@@ -55,6 +57,7 @@
       },
       {
         "id": "ledger",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "usage ledger\none folder for the three\nagents",

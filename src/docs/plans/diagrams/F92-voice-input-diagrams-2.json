@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F92 voice: one transcription, in memory",
   "caption": "Nothing kept: the audio stays in memory and is dropped after, and only a usage row is written.",
   "flow": {
@@ -24,12 +25,14 @@
       },
       {
         "id": "Request",
+        "shape": "terminal",
         "icon": "message",
         "tone": "blue",
         "label": "the request"
       },
       {
         "id": "Stream",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "audio Stream (in memory,\ndropped after)"
@@ -54,6 +57,7 @@
       },
       {
         "id": "Row",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "SpeechUsage row"

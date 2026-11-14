@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "One process, two jobs: the API runs sessions and streams their turns back, and serves the web app beside them.",
   "title": "louis-agent.api: How it works",
   "flow": {
     "nodes": [
       {
         "id": "Client",
+        "shape": "terminal",
         "icon": "browser",
         "tone": "blue",
         "label": "Web app \u00B7 curl \u00B7 orchestrator"
@@ -36,6 +38,7 @@
       },
       {
         "id": "Files",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "Workspace"

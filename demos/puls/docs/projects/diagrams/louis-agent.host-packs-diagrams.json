@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Host packs: the program's plugins, the identity and the packs, into the catalogue",
   "caption": "It knows every identity and pack Puls can load: so core and the hosts don't have to. Only a host's own program calls it.",
   "flow": {

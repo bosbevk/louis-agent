@@ -21,7 +21,7 @@ public static class CardCheck
         "chip", "user", "users", "box", "server", "database", "world", "message", "shield", "code", "folder", "file",
         "browser", "checks", "chart", "cloud", "settings", "branch", "mail", "search", "book", "terminal", "stack",
         "info", "calendar", "clock", "phone", "home", "tag", "paw", "bed", "dining", "scales", "exchange",
-        "chevron-left", "chevron-right"
+        "chevron-left", "chevron-right", "play"
     ];
 
     /// <summary>The tones a status may wear, by name.</summary>

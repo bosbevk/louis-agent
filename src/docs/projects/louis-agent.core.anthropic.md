@@ -1,8 +1,9 @@
 # louis-agent.core.anthropic — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.anthropic/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.anthropic/` · **References:** louis-agent.core,
 > Anthropic (the SDK) · **Used by:** every program whose agent may talk to Claude: the demos' hosts, the eval runners,
 > the orchestrator, the usage probe
+> **Also shows:** `component`
 
 ![Claude's provider, and its parts: the client, the usage mapper and prompt caching](diagrams/louis-agent.core.anthropic.svg)
 
@@ -14,6 +15,10 @@ prompt-cache markers. A program hands `AnthropicProvider.Instance` to `AgentHost
 host on a local model ships none of this, and core itself ships no SDK.
 
 ## How it works
+
+How a client is made, step by step.
+
+![A client: refused without a key, the SDK's client built, wrapped for a fixed thinking budget on older models, and for caching by the factory](diagrams/louis-agent.core.anthropic-flow.svg)
 
 `AnthropicProvider` is core's `ILlmProvider` seam made real, a singleton:
 
@@ -29,8 +34,6 @@ host on a local model ships none of this, and core itself ships no SDK.
 
 `LlmClientFactory` in core is the registry: it finds the provider by name, wraps the client for caching, and asks the
 provider for its mapper and its markers; with no providers it says every name is unknown.
-
-## Diagrams
 
 ![Claude's provider: from a program through the client factory to the SDK and its parts](diagrams/louis-agent.core.anthropic-diagrams.svg)
 

@@ -1,10 +1,11 @@
 # louis-agent.identity.puls — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `demos/puls/identity/louis-agent.identity.puls/` · **References:**
+> **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `demos/puls/identity/louis-agent.identity.puls/` · **References:**
 > louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
 > sets it) · **Names:** the `where-to-buy`, `shop-prices`, `recipes`, `web` and `calculator` packs · **Its evals:**
 > `demos/puls/evals/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
 > references it, [ADR 0073](../../../../src/docs/adr/0073-packs-reference-no-evals.md))
+> **Also shows:** `component`, `sequence`
 
 ![Puls: its voice, its specialists and the packs it names](diagrams/louis-agent.identity.puls.svg)
 
@@ -48,8 +49,6 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   rules are the where-to-buy pack's checks project's (F49.3), with the reading of the scenario's shop: Puls has no check of its own left.
   Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
   [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
-
-## Diagrams
 
 ![The Puls identity: its prompts and packs, its evals and judges](diagrams/louis-agent.identity.puls-diagrams.svg)
 

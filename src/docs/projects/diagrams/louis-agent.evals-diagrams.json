@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "An eval only says what it asks and how it grades: the harness does the rest. The API on the far side is an ordinary client's view of the agent, so an eval proves what a user would get.",
   "title": "The eval harness: what the runner uses, and where a run's events go",
   "flow": {
@@ -12,6 +13,7 @@
       },
       {
         "id": "dataset",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "Datasets: dataset.json and the\nscenarios"
@@ -78,6 +80,7 @@
       },
       {
         "id": "writer",
+        "shape": "data",
         "icon": "terminal",
         "tone": "amber",
         "label": "ProtocolWriter: one JSON line\nan event, on stdout"

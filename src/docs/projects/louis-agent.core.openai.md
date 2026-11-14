@@ -1,8 +1,9 @@
 # louis-agent.core.openai — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.openai/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.openai/` · **References:** louis-agent.core,
 > Microsoft.Extensions.AI.OpenAI (over the OpenAI SDK) · **Used by:** every program whose agent may talk to a server
 > that speaks OpenAI's chat API
+> **Also shows:** `component`
 
 ![The OpenAI-compatible provider, and its parts: your endpoint and the standard usage](diagrams/louis-agent.core.openai.svg)
 
@@ -15,14 +16,16 @@ ships no SDK.
 
 ## How it works
 
+How a client is made, step by step.
+
+![A client: refused without an endpoint, built with the key given or a placeholder](diagrams/louis-agent.core.openai-flow.svg)
+
 `OpenAiCompatibleProvider` is core's `ILlmProvider` seam made real, a singleton: named `openai-compatible`;
 `Create(options)` refuses settings without `LLM_ENDPOINT`, and builds the OpenAI SDK's client with the key given or
 a placeholder, since a local server often wants none and the SDK wants something. It reports usage in the standard
 fields and marks no cache, so the seam's defaults hold.
 
 ![louis-agent.core.openai: How it works](diagrams/louis-agent.core.openai-how-it-works.svg)
-
-## Diagrams
 
 ![One reply from your endpoint: no endpoint and the provider refuses, with one the engine talks to it through the OpenAI SDK](diagrams/louis-agent.core.openai-sequence.svg)
 

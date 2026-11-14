@@ -1,0 +1,61 @@
+{
+  "kind": "nested",
+  "title": "The showroom's start: what it is made of",
+  "caption": "The start holds one thing: which demo is forward. Every part is told it, and says back what a visitor asked for, so the arrows and the buttons can't disagree.",
+  "nested": {
+    "subtitle": "louis-agent.web, Components / Site / Showroom / Start",
+    "root": {
+      "id": "start", "name": "ShowroomStart", "kind": "component", "tone": "green",
+      "aside": "the showroom's front page",
+      "state": {
+        "says": "which demo is forward",
+        "down": [ "stage.Accent", "deck.Forward", "window.Lit", "dock.Current" ],
+        "up": [ "deck.ForwardChanged", "dock.Chosen" ]
+      },
+      "holds": [
+        { "id": "stage", "name": "LitStage", "kind": "general part", "tone": "green",
+          "note": "a light from above, in the forward demo's colour",
+          "in": [ "Accent" ],
+          "holds": [
+            { "id": "deck", "name": "Deck<TItem>", "kind": "general part", "tone": "green",
+              "note": "one item forward, the rest behind it in depth. Its Item slot is drawn for each demo:",
+              "in": [ "Items", "Forward", "Item", "Label", "BeforeLabel", "NextLabel" ],
+              "out": [ "ForwardChanged" ],
+              "holds": [
+                { "id": "window", "name": "FramedWindow", "kind": "general part", "tone": "green",
+                  "note": "a bar like a browser's, then a body:",
+                  "in": [ "Address", "Lit" ],
+                  "holds": [
+                    { "id": "own", "name": "the demo's own window", "kind": "a site's component", "tone": "blue",
+                      "note": "the component the site names for the demo, drawn without the framework knowing what it is" },
+                    { "id": "plain", "name": "PlainBody", "kind": "general part", "tone": "green",
+                      "note": "when a demo names no window: its icon over its name and line",
+                      "in": [ "Icon", "Name", "Line" ], "ghost": true }
+                  ] }
+              ] },
+            { "id": "dock", "name": "Dock", "kind": "general part", "tone": "green",
+              "note": "a button for each demo, the current one open to show its name",
+              "in": [ "Items", "Current", "Label" ], "out": [ "Chosen" ] }
+          ] }
+      ]
+    },
+    "around": [
+      { "id": "page", "name": "a site's page", "side": "before", "kind": "page", "tone": "blue",
+        "heading": "Who puts it on a page",
+        "gives": [ "Featured", "Group", "Title", "Lede" ] },
+      { "id": "demos", "name": "ShowroomDemos", "side": "before", "tone": "teal",
+        "heading": "What the start reads",
+        "note": "the site's list of demos", "reads": true },
+      { "id": "addresses", "name": "SiteAddresses", "side": "before", "tone": "teal",
+        "note": "an address for every place", "reads": true },
+      { "id": "text", "name": "ShowroomText", "side": "before", "tone": "teal",
+        "note": "the words, a site's own or the English", "reads": true },
+      { "id": "bar", "name": "ShowroomStart.razor.js", "side": "after",
+        "heading": "Runs in the browser", "code": "show(address)",
+        "note": "puts the forward demo's address in the bar", "calls": "calls" },
+      { "id": "row", "name": "Deck.razor.js", "side": "after", "to": "deck", "code": "watch, bring",
+        "note": "says which item a swipe left in the middle, brings the row to one, and leans the items to the mouse",
+        "calls": "calls", "back": "Viewed" }
+    ]
+  }
+}

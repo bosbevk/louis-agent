@@ -1,8 +1,9 @@
 # louis-agent.puls — design
 
-> **Kind:** Blazor WebAssembly app · **Path:** `demos/puls/web/louis-agent.puls/` · **Served by:** louis-agent.api built with
+> **Kind:** web app (Blazor WebAssembly) · **Path:** `demos/puls/web/louis-agent.puls/` · **Served by:** louis-agent.api built with
 > `louis-agent.puls-api` (`demos/puls/docker/images/Dockerfile.puls`, `demos/puls/docker/docker-compose.puls.yml`, port 5070) · **References:**
 > louis-agent.web, Bootstrap 5.3 (CDN, SRI-pinned), highlight.js (CDN), Montserrat (Google Fonts)
+> **Also shows:** `component`, `sequence`
 
 ![Puls's web app: the landing page, the chat, and pay as you go](diagrams/louis-agent.puls.svg)
 
@@ -15,6 +16,10 @@ task to a specialist (F5) and shows that work as it happens. It's chat only: its
 as you go: every answer shows what it cost, specialists included.
 
 ## How it works
+
+The landing page lists its sections in order, each a component of its own.
+
+![The landing page holds the water and the sections in order, and starts its script after it is drawn](diagrams/louis-agent.puls-components-landing.svg)
 
 - **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one small page, `ChatPage.razor`, at `/gesels`,
   `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`. It fills the framework's `ChatShell` with what's Puls's own
@@ -35,8 +40,6 @@ as you go: every answer shows what it cost, specialists included.
 - **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, whether
   the sidebar and the Werk panel are hidden, and whether the animations are on although the system asks for less
   (`chat.motion`, F24).
-
-## Diagrams
 
 ![The Puls app: its pages, the framework's shells and the API](diagrams/louis-agent.puls-diagrams.svg)
 

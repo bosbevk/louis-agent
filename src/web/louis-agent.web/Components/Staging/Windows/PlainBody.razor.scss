@@ -1,0 +1,32 @@
+@use "web/tools/glow";
+
+/* The plain body (F134.1): in the middle of its window, the icon large in the accent with a glow of it, over the
+   name and the line. In white where nothing around it wears an accent. */
+.plain-body {
+    --plain-light: var(--accent, var(--web-bright));
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px;
+    text-align: center;
+    background: var(--bs-secondary-bg);
+}
+.plain-icon {
+    display: grid;
+    place-items: center;
+    margin-bottom: 8px;
+    font-size: clamp(56px, 7vw, 104px);
+    color: var(--plain-light);
+    filter: drop-shadow(0 0 28px glow.tint(var(--plain-light), 60%));
+}
+.plain-name {
+    font-size: clamp(20px, 2.2vw, 30px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--bs-emphasis-color);
+}
+.plain-line { font-size: 14.5px; color: var(--bs-secondary-color); }

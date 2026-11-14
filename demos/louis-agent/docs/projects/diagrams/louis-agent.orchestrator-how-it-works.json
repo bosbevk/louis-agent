@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "The orchestrator: one error, from the feed to a decision",
   "caption": "Every error ends in one decision: ignored, escalated or fixed, written to decisions.jsonl.",
   "flow": {
     "nodes": [
       {
         "id": "Feed",
+        "shape": "terminal",
         "icon": "file",
         "tone": "amber",
         "label": "JsonLinesErrorFeed (the triage\npack)\nnew events in\nlogs/errors.jsonl"
@@ -42,12 +44,14 @@
       },
       {
         "id": "Decision",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "DECISION line \u2192\ndecisions.jsonl,\nCommsLog, processed.txt"
       },
       {
         "id": "Main",
+        "shape": "terminal",
         "icon": "branch",
         "tone": "blue",
         "label": "back to main for the next\nerror"

@@ -1,0 +1,98 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "louis-agent.core.telemetry: a host's telemetry, step by step",
+  "caption": "With a collector's address set, the logs and the traces go to it, the collector's own traffic left out; without one the host pays nothing. At the end, or at a crash, what is held is sent, three seconds at most.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "AgentHost.Build\nthe .env files loaded",
+        "icon": "terminal",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "crash",
+        "label": "Install the crash handler\nLastChance",
+        "icon": "shield",
+        "tone": "green"
+      },
+      {
+        "id": "endpoint",
+        "label": "OTEL_EXPORTER_OTLP_ENDPOINT\nset?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "none",
+        "label": "No exporter\nthe host pays nothing",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "tracer",
+        "label": "Build the tracer\nturns, model requests, tools, HTTP",
+        "icon": "chart",
+        "tone": "green"
+      },
+      {
+        "id": "filter",
+        "label": "Leave out spans\nto the collector itself",
+        "icon": "shield",
+        "tone": "green"
+      },
+      {
+        "id": "send",
+        "label": "Logs and traces\nto the collector",
+        "icon": "cloud",
+        "tone": "amber"
+      },
+      {
+        "id": "end",
+        "label": "At exit or a crash\nflush, three seconds at most",
+        "icon": "clock",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "crash"
+      },
+      {
+        "from": "crash",
+        "to": "endpoint"
+      },
+      {
+        "from": "endpoint",
+        "to": "none",
+        "word": "no"
+      },
+      {
+        "from": "endpoint",
+        "to": "tracer",
+        "word": "yes"
+      },
+      {
+        "from": "tracer",
+        "to": "filter"
+      },
+      {
+        "from": "filter",
+        "to": "send"
+      },
+      {
+        "from": "send",
+        "to": "end"
+      },
+      {
+        "from": "none",
+        "to": "end"
+      }
+    ]
+  }
+}

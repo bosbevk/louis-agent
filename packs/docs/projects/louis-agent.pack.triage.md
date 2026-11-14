@@ -5,6 +5,7 @@
 > [Build a pack](../../../src/docs/guides/build-a-pack.md); the service it reads, the louis-agent demo's
 > [samples](../../../demos/louis-agent/samples/README.md); the orchestrator that read the feed before, in
 > [its doc](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md).
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.triage/`
 
 ![The triage pack: the error feed, a run's steps, typed endings, a person and a run read back, and the departments](diagrams/louis-agent.pack.triage.svg)
 
@@ -66,8 +67,6 @@ are `Styles/pack-triage/_demo.scss`, which a site forwards. It references the fr
 keeps its own copy of a step (`TriageStepView`), and `louis-agent.pack.triage.web.tests` writes a step with the
 recorder's options and reads it back field for field. The louis-agent site plays a recorded run on `/triage-demo` until
 F106.3.3's workflow runs live.
-
-## Diagrams
 
 ![How it works: the workflow reads the feed, the roles end with typed tools, and every step is written to the run](diagrams/louis-agent.pack.triage-flow.svg)
 

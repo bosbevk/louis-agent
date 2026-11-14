@@ -36,6 +36,7 @@
     <ProjectReference Include="..\..\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
     <!-- CL60.1: the diagrams GraphView draws, in their own plain-C# library, which the docs' tool draws with too. -->
     <ProjectReference Include="..\louis-agent.diagrams\louis-agent.diagrams.csproj" />
+    <ProjectReference Include="..\louis-agent.diagrams.engine\louis-agent.diagrams.engine.csproj" />
     <!-- F144: the web's own messages, filled as every project's are (MessageText, [Holes]; ADR 0009, 0119). -->
     <ProjectReference Include="..\..\engine\louis-agent.composition\louis-agent.composition.csproj" />
 

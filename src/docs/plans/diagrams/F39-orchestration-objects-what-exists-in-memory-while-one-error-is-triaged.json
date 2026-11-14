@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F39 orchestration: one error triaged, in memory",
   "caption": "One error, one tree: the workflow decides, a child fixes it on the coding peer, and the fix is confirmed before the outcome is written.",
   "flow": {
@@ -18,12 +19,14 @@
       },
       {
         "id": "feed",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "feed\n: JsonLinesErrorFeed\nthe seeded service\u0027s\nlogs/errors.jsonl"
       },
       {
         "id": "rec",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "recorder\n: JsonLinesTriageRecorder\ndecisions.jsonl"

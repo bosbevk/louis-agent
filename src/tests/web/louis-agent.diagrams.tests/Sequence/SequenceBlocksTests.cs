@@ -1,5 +1,4 @@
-using LouisAgent.Diagrams.Sequence;
-using LouisAgent.Diagrams.Sequence.Placed;
+using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
@@ -31,17 +30,17 @@ public class SequenceBlocksTests
     [Test]
     public void AFrame_HoldsEveryStepInside()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var loop = placed.Blocks.Single(block => block.Block.Block == BlockKind.Loop);
         var inside = placed.Rows.Skip(1).Take(3).ToList();
 
         Assert.Multiple(() =>
         {
-            Assert.That(loop.X, Is.LessThan(placed.Heads[0].Center));
-            Assert.That(loop.X + loop.W, Is.GreaterThan(placed.Heads[1].Center));
-            Assert.That(loop.Y, Is.LessThan(inside[0].Y));
-            Assert.That(loop.Y + loop.H, Is.GreaterThanOrEqualTo(inside[^1].Y + inside[^1].H));
-            Assert.That(placed.Rows[^1].Y, Is.GreaterThanOrEqualTo(loop.Y + loop.H));
+            Assert.That(loop.Box.Left, Is.LessThan(placed.Heads[0].Center));
+            Assert.That(loop.Box.Right, Is.GreaterThan(placed.Heads[1].Center));
+            Assert.That(loop.Box.Top, Is.LessThan(inside[0].Y));
+            Assert.That(loop.Box.Bottom, Is.GreaterThanOrEqualTo(inside[^1].Y + inside[^1].H));
+            Assert.That(placed.Rows[^1].Y, Is.GreaterThanOrEqualTo(loop.Box.Bottom));
         });
     }
 
@@ -49,17 +48,17 @@ public class SequenceBlocksTests
     [Test]
     public void ANestedFrame_StandsInsideItsParent()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var loop = placed.Blocks.Single(block => block.Block.Block == BlockKind.Loop);
         var alt = placed.Blocks.Single(block => block.Block.Block == BlockKind.Alt);
 
         Assert.Multiple(() =>
         {
             Assert.That(alt.Depth, Is.EqualTo(loop.Depth + 1));
-            Assert.That(alt.X, Is.GreaterThan(loop.X));
-            Assert.That(alt.X + alt.W, Is.LessThan(loop.X + loop.W));
-            Assert.That(alt.Y, Is.GreaterThan(loop.Y));
-            Assert.That(alt.Y + alt.H, Is.LessThan(loop.Y + loop.H));
+            Assert.That(alt.Box.Left, Is.GreaterThan(loop.Box.Left));
+            Assert.That(alt.Box.Right, Is.LessThan(loop.Box.Right));
+            Assert.That(alt.Box.Top, Is.GreaterThan(loop.Box.Top));
+            Assert.That(alt.Box.Bottom, Is.LessThan(loop.Box.Bottom));
         });
     }
 
@@ -67,7 +66,7 @@ public class SequenceBlocksTests
     [Test]
     public void AnElse_DividesTheCases()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var alt = placed.Blocks.Single(block => block.Block.Block == BlockKind.Alt);
         var reply = placed.Rows[2];
         var note = placed.Rows[3];
@@ -84,7 +83,7 @@ public class SequenceBlocksTests
     [Test]
     public void TheNumbers_RunOnThroughBlocks()
     {
-        var placed = SequenceLayout.Place(Spec);
+        var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
 
         Assert.That(placed.Rows.Select(row => row.Number), Is.EqualTo(new int?[] { 1, 2, 3, null, 4 }));
     }
@@ -98,9 +97,9 @@ public class SequenceBlocksTests
             Steps = [new BlockStep(BlockKind.Opt, "a name nobody knows", [new MessageStep("E", "E", "refuse it")])]
         };
 
-        var frame = SequenceLayout.Place(spec).Blocks.Single();
+        var frame = SequenceLayout.Place(spec, SequenceMeasures.Marquee).Blocks.Single();
 
-        Assert.That(frame.X, Is.GreaterThanOrEqualTo(0));
+        Assert.That(frame.Box.Left, Is.GreaterThanOrEqualTo(0));
     }
 
     /// <summary>A block reads from its file with its cases, and one naming a stranger inside is refused.</summary>

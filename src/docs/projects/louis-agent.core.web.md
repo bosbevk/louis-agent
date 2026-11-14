@@ -1,8 +1,9 @@
 # louis-agent.core.web — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core,
 > louis-agent.composition, louis-agent.choices, PuppeteerSharp · **Used by:** every host that gives its agent the web:
 > the API, the CLI, the ACP and MCP hosts, the demos' programs; the eval runner through the API's settings
+> **Also shows:** `component`
 
 ![Web access, and its parts: the robots policy, the browser, search and rendering, and the recorders](diagrams/louis-agent.core.web.svg)
 
@@ -15,6 +16,10 @@ that doesn't ships no browser binary, and its web tools say web access isn't set
 Object).
 
 ## How it works
+
+One fetch, step by step.
+
+![One fetch: a recorded answer in a replay; live, robots.txt first, the SSRF guard, the fetch or visit, and the answer written down](diagrams/louis-agent.core.web-flow.svg)
 
 `WebAccess.Create(options, replay)` builds, once per process, what `AgentEngineFactory` built itself before:
 
@@ -37,8 +42,6 @@ Object).
 
 What a pack gets is unchanged: its `IPackContext` (`ToolsetContext`) answers `WebSearch`, `Browser`, `Renderer` and
 `NewFetcher()` from the seam.
-
-## Diagrams
 
 ![Web access: from a host's program to IWebAccess and the parts behind it](diagrams/louis-agent.core.web-diagrams.svg)
 

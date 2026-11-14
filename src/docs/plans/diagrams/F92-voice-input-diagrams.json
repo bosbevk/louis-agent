@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F92 voice: the parts, by step",
   "caption": "Speech is a provider like a model: a factory picks it, the API takes the audio, and the ledger counts it.",
   "flow": {
@@ -34,6 +35,7 @@
       },
       {
         "id": "L",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "Usage ledger: speech row (step\n4)",

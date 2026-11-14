@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F106.1 a builder for the common path: the architecture",
   "caption": "One call sets up the engine: a program adds louis-agent and names its providers and packs, and each host takes the rest from the services.",
   "flow": {

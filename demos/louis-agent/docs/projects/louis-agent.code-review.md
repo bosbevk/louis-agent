@@ -1,8 +1,9 @@
 # louis-agent.code-review — design
 
-> **Kind:** Blazor WebAssembly app · **Path:** `demos/louis-agent/web/louis-agent.code-review/` · **Served by:**
+> **Kind:** web app (Blazor WebAssembly) · **Path:** `demos/louis-agent/web/louis-agent.code-review/` · **Served by:**
 > `louis-agent.coding-api` (same origin), on 127.0.0.1:5082 · **References:** louis-agent.web (with Markdig),
 > highlight.js (from a CDN)
+> **Also shows:** `component`, `sequence`
 
 ![The code review app: chat, the workspace and branches](diagrams/louis-agent.code-review.svg)
 
@@ -16,6 +17,10 @@ F109.1 to F124 it also carried the framework's website; that is now the framewor
 admin, on this PC.
 
 ## How it works
+
+The chat page is the framework's chat shell, given the app's own parts in its slots.
+
+![The chat page holds the framework's chat shell, with the app's name, its links, its theme picker and its boot screen in the shell's slots](diagrams/louis-agent.code-review-components-chat.svg)
 
 ![The code-review app: its pages, the framework's shells and the API](diagrams/louis-agent.code-review-how-it-works.svg)
 
@@ -32,9 +37,7 @@ admin, on this PC.
   the framework's colour names, built to `wwwroot/css/themes/`, loaded after `app.css` and swapped while the page runs.
   `wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
 
-## Diagrams
-
-The architecture is under *How it works*; this is reviewing a change, the job it's for.
+Reviewing a change, the job the app is for:
 
 ![Reviewing a change: the review button builds the prompt and hands it to the chat's message box, and the reviewer sends it](diagrams/louis-agent.code-review-diagrams.svg)
 

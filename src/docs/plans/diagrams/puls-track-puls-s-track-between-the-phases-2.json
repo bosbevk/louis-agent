@@ -1,11 +1,13 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "Puls's track: one town's answer",
   "caption": "The same identity in every town: the places pack reads the town's own sources, and the answer and the web app's colours follow the town.",
   "flow": {
     "nodes": [
       {
         "id": "town",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "Your town: Malmesbury, from\nthe place you shared"
@@ -24,6 +26,7 @@
       },
       {
         "id": "answer",
+        "shape": "terminal",
         "icon": "message",
         "tone": "green",
         "label": "Puls answers: Swartland\nmunicipality, what's near and\nhow far, each with its source"

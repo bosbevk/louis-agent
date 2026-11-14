@@ -1,7 +1,8 @@
 using LouisAgent.Diagrams;
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Sources.Types;
 
 namespace LouisAgent.DocDiagrams.Mermaid.Readers;
 
@@ -61,14 +62,20 @@ public static class MermaidFlowReader
         // narrow enough, so the narrower way wins (CL60.2, Claude's pick while unattended).
         var flow = Worded(boxes.Flow(arrows, groups, direction));
         int width = GraphLayout.Place(flow).Width;
-        if (width <= WidestAcross) return new DiagramSource(DiagramKind.Flow, title, Flow: flow);
+        if (width <= WidestAcross) return Imported(title, flow);
         var turned = Worded(flow with
         {
             Direction = flow.Direction == FlowDirection.Right ? FlowDirection.Down : FlowDirection.Right
         });
-        return new DiagramSource(DiagramKind.Flow, title,
-            Flow: GraphLayout.Place(turned).Width < width ? turned : flow);
+        return Imported(title, GraphLayout.Place(turned).Width < width ? turned : flow);
     }
+
+    /// <summary>
+    /// A flowchart as a flow. A flow must say its type, and the import can't tell what the chart shows, so it
+    /// says what UML calls a flowchart, an activity diagram. A person changes it when the chart is another type.
+    /// </summary>
+    private static DiagramSource Imported(string title, GraphSpec flow) =>
+        new(DiagramKind.Flow, title, Flow: flow, Type: DiagramType.Activity);
 
     /// <summary>The widest a chart may be and still read in a doc's column, in the SVG's pixels.</summary>
     private const int WidestAcross = 1100;

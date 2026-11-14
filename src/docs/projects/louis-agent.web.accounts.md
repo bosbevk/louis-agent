@@ -1,8 +1,9 @@
 # louis-agent.web.accounts — design
 
-> **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.accounts/` ·
+> **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.accounts/` ·
 > **References:** louis-agent.web, louis-agent.accounts.contracts, Microsoft.AspNetCore.Components.Authorization ·
 > **Used by:** a site that has accounts: louis-agent.puls, louis-agent.starter, louis-agent.code-review
+> **Also shows:** `component`, `sequence`
 
 ![The account pages, and their parts: the pages, the client and passkeys](diagrams/louis-agent.web.accounts.svg)
 
@@ -16,6 +17,10 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
 [louis-agent.accounts](louis-agent.accounts.md).
 
 ## How it works
+
+The profile page shows how the pages are put together: one page, a section for each change, each asking the account API for its own.
+
+![The profile page holds a section for each change, hands each the person signed in, and the last says back when the account is gone](diagrams/louis-agent.web.accounts-components-profile.svg)
 
 - **The client** (`Client/`). `AccountApi` talks to the API's `/account` routes (Identity's and ours), every call
   marked as the app's own (`X-Requested-With`), which is what lets a signed-in person's cookie count in place of a
@@ -44,8 +49,6 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
   inside it in `AccountShell.razor.scss`, the notice's, the password field's, the providers' divider's, the facts' and
   the key's in their own files; scoped and bundled by the build, so a site lists nothing of them; colours from
   variables only.
-
-## Diagrams
 
 ![louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web](diagrams/louis-agent.web.accounts-diagrams.svg)
 

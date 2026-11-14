@@ -2,8 +2,9 @@
 @* A deck (F134.1): every item drawn through the caller's template, the one forward in the middle and the rest behind
    it at their distance, which each item's style says (--d how far and which way, --abs how far). An arrow at each
    side, the keyboard's arrows, or a press on an item behind asks for another to come forward. What an item behind
-   holds can't be reached or read until it is forward, so only its own press works. *@
-<div class="deck" role="group" aria-label="@Label" tabindex="0" @onkeydown="KeyAsync">
+   holds can't be reached or read until it is forward, so only its own press works. On a narrow screen the same
+   items are a row the visitor swipes, and the deck's module says which one a swipe left in the middle. *@
+<div class="deck" role="group" aria-label="@Label" tabindex="0" @ref="_deck" @onkeydown="KeyAsync">
     <div class="deck-items">
         @foreach (var slot in Slots)
         {

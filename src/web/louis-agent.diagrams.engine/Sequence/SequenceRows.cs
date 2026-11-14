@@ -1,0 +1,133 @@
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Sequence.Placed;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
+
+namespace LouisAgent.Diagrams.Engine.Sequence;
+
+/// <summary>
+/// Walks a sequence's steps down the page with the lifelines where they stand: a row for each message, reply and
+/// note, a frame round each block's rows, and how far left and right it all reaches.
+/// </summary>
+/// <remarks>
+/// It walks the Composite the steps make: a block lays its own steps one level deeper, then frames what came back,
+/// so a nested frame always sits inside its parent and the numbers run on in the order the steps happen. It holds
+/// the rows, the frames and the count while it walks, so it is a class rather than a set of functions.
+/// </remarks>
+internal sealed class SequenceRows(
+    IReadOnlyList<double> centers,
+    IReadOnlyDictionary<string, int> index,
+    bool numbered,
+    SequenceMeasures measures,
+    IGeometry geometry)
+{
+    /// <summary>Clear room between a turn to oneself's words and the drawing's edge.</summary>
+    private const double Clear = 12;
+
+    /// <summary>The messages, replies and notes, top to bottom.</summary>
+    public List<PlacedRow> Rows { get; } = [];
+
+    /// <summary>The blocks' frames, each after the frames inside it.</summary>
+    public List<PlacedBlock> Blocks { get; } = [];
+
+    /// <summary>How many arrows a numbered chart has counted so far.</summary>
+    private int _number;
+
+    /// <summary>
+    /// Lays steps from the given height down: the height under them, and how far left and right they reach.
+    /// </summary>
+    public (double Y, double Left, double Right) Walk(IReadOnlyList<SequenceStep> steps, double y, int depth)
+    {
+        double left = double.MaxValue, right = double.MinValue;
+        foreach (var step in steps)
+        {
+            var (bottom, from, to) = step is BlockStep block ? Block(block, y, depth) : Leaf(step, y);
+            (y, left, right) = (bottom, Math.Min(left, from), Math.Max(right, to));
+        }
+
+        return (y, left, right);
+    }
+
+    /// <summary>A step's words.</summary>
+    public static string Text(SequenceStep step) =>
+        step switch
+        {
+            MessageStep message => message.Text,
+            ReplyStep reply => reply.Text,
+            NoteStep note => note.Text,
+            BlockStep block => block.Label,
+            _ => throw new NotSupportedException(step.GetType().Name)
+        };
+
+    /// <summary>A message, a reply or a note: its row, numbered when the chart counts its arrows.</summary>
+    private (double Y, double Left, double Right) Leaf(SequenceStep step, double y)
+    {
+        int? count = numbered && step is not NoteStep ? ++_number : null;
+        var row = Row(step, y) with { Number = count };
+        Rows.Add(row);
+        var (left, right) = Reach(row);
+        return (y + row.H, left, right);
+    }
+
+    /// <summary>
+    /// A block: its tab, its steps a level deeper, each other case under a divider, and a frame round them all, wide
+    /// enough for its tab and its cases' labels. What comes next starts the measures' gap under the frame.
+    /// </summary>
+    private (double Y, double Left, double Right) Block(BlockStep block, double top, int depth)
+    {
+        var lines = measures.Lines(block.Label);
+        var (y, left, right) = Walk(block.Steps, top + measures.TabHeight(lines), depth + 1);
+
+        var cases = new List<PlacedCase>();
+        foreach (var @case in block.Else ?? [])
+        {
+            var caseLines = measures.Lines(@case.Label);
+            cases.Add(new PlacedCase(@case.Label, caseLines, y));
+            var inner = Walk(@case.Steps, y + measures.TabHeight(caseLines), depth + 1);
+            (y, left, right) = (inner.Y, Math.Min(left, inner.Left), Math.Max(right, inner.Right));
+        }
+
+        double x = left - measures.InsetLeft;
+        double width = cases.Select(@case => measures.ElseWidth(@case.Lines))
+            .Append(measures.TabWidth(block.Block, lines))
+            .Append(right + measures.InsetRight - x)
+            .Max();
+        double bottom = y + measures.BlockEnd;
+        var frame = geometry.Box(x, top, width, bottom - top);
+        Blocks.Add(new PlacedBlock(block, lines, cases, depth, frame));
+        return (bottom + measures.BlockGap, frame.Left, frame.Right);
+    }
+
+    /// <summary>
+    /// A step's row at the given height: a note over the lifelines it names, an arrow between its two, as tall as
+    /// its words, a turn to oneself a little taller.
+    /// </summary>
+    private PlacedRow Row(SequenceStep step, double y)
+    {
+        var xs = step.Names().Select(id => centers[index[id]]).ToList();
+        var words = measures.Lines(Text(step));
+        // Where its arrow runs: under its words. A note has no arrow, and the height is of no use to it.
+        double arrow = y + measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap;
+        if (step is NoteStep)
+            return new PlacedRow(step, words, xs.Min(), xs.Max(), y,
+                measures.NoteTop + measures.NoteHeight(words) + measures.RowEnd, arrow);
+
+        double height = measures.TextTop + words.Count * measures.LineStep + measures.ArrowGap + measures.RowEnd
+                        + (xs[0] == xs[1] ? measures.SelfDrop : 0);
+        return new PlacedRow(step, words, xs[0], xs[1], y, height, arrow);
+    }
+
+    /// <summary>
+    /// How far left and right a row reaches: a note's panel, a turn to oneself's words, or its arrow.
+    /// </summary>
+    private (double Left, double Right) Reach(PlacedRow row)
+    {
+        if (row.Step is NoteStep)
+        {
+            var note = measures.NoteBox(row, geometry);
+            return (note.Left, note.Right);
+        }
+
+        if (!row.Self) return (Math.Min(row.FromX, row.ToX), Math.Max(row.FromX, row.ToX));
+        return (row.FromX, measures.WordBox(row, geometry).Right + Clear);
+    }
+}

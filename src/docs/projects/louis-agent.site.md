@@ -1,8 +1,9 @@
 # louis-agent.site — design
 
-> **Kind:** Blazor WebAssembly app, and its host `louis-agent.site-api` · **Path:** `src/site/` · **References:**
+> **Kind:** web app (Blazor WebAssembly), and its host `louis-agent.site-api` · **Path:** `src/site/` · **References:**
 > `louis-agent.web`, the guide (`louis-agent.identity.guide`), the triage pack's web project; the host also the
 > framework's API and the docs, leads and site packs · **Runs:** louis-agent.dev, and the review copy on 127.0.0.1:5080
+> **Also shows:** `component`, `sequence`
 
 ![The framework's website, and its parts: the pages, the guide, the showroom, its own host and its image](diagrams/louis-agent.site.svg)
 
@@ -23,6 +24,12 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
   the default, on exactly the three packs it names; the program serves the site's pages as HTML (F121) and the API the
   guide's chat runs on, behind the key check with the guide's open door, and nothing else: no accounts, no eval
   studio, no coding agent with a shell. `SiteCatalogTests` holds both.
+- **What a page the host renders asks for is one named list**, `SitePageServices`: the chat's words, an HTTP
+  client, the saved CV, and the site's addresses and areas as the site's own program registers them. With the
+  areas the showroom's start has its demos in the HTML a search engine reads. `PagesForACrawlerTests` draws
+  every page with that list, so a page that can no longer be drawn there fails a test instead of quietly going
+  out as the plain shell. The host draws a page once, at its own route and without its layout, and serves
+  that for every place on the page.
 - **Its admin** (F127.8) is the framework's, named in `LouisAgentDevAreas` with the site's own `Layout/AdminLayout`:
   `/admin/overview` shows the guide's talks today and this month, their cost in rand, the leads (its `SendLead` calls),
   the parts of the site and the demo businesses they were on, and the latest talks, from the turn log and the ledger in
@@ -33,6 +40,10 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
   `src/site/deploy/azure/louis-agent-app.yaml` the Container App louis-agent.dev runs (`SiteImageTests`).
 
 ## The pages and films
+
+The home page is a run of bands the visitor scrolls, inside the site's layout.
+
+![The home page holds its bands in order, from the hero to the contact strip, inside the site's layout](diagrams/louis-agent.site-components-home.svg)
 
 Every page is a `Band` per section with an id in words (F117), so every place has its own address (ADR 0107) and the
 guide can take a visitor there; the sitemap lists them all, and a test writes it from the pages. A grid that carried a
@@ -61,7 +72,15 @@ with the business's agent in the same corner, the page naming its identity and a
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
-since F127.1 on the same stage, in their own players. The framework's own pages
+since F127.1 on the same stage, in their own players. On `/demos` the start shows the three businesses only,
+each as a window: a still look at its website with one moment of its recorded talk, which is the first question
+its demo plays, one whole sentence of the agent's recorded answer, and the place the agent showed. The windows are
+in `Components/Showroom/Windows/`, one small component a business, and `SiteWindowTalks` holds the three talks.
+The talk and the website's words are written a second time there, so `WindowWordsTests` holds each to its
+source: the talk to the demo's page and its recording, and the website's name, line, note, photo and menu, and
+the name of the place shown, to the demo's own mock website. The chat's title, the words in its box and the few
+words under the place's name are the window's own. The coding agent and the triage team have no window on the start. They keep their own pages, and their
+place on the rail beside a demo's page. The framework's own pages
 sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):
 `/framework/how-it-works` (the detailed film, one turn through core, the rules every turn keeps),
 `/framework/architecture` (every project that ships, by family, `src/site` among them), `/framework/identities`,
@@ -87,8 +106,6 @@ letter. The detailed film's six slabs inside core are the chat pipeline's middle
 and encodes the frames in Docker; `films.sha256` records what each was made of, and `ExportedFilmsTests` fails until a
 changed film is re-exported ([ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md)).
 
-## Diagrams
-
 ![A visitor opens a page and asks: the page comes prerendered, and the guide's answer streams from the same host](diagrams/louis-agent.site-sequence.svg)
 
 ![The types: the site holds its words, places, demos and diagrams, on the framework's shell](diagrams/louis-agent.site-interface.svg)
@@ -100,7 +117,7 @@ changed film is re-exported ([ADR 0077](../../../demos/louis-agent/docs/adr/0077
 | `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the demos (`RecordedChat` plays `wwwroot/recordings/coding-session.sse`; [how to record it again](../../../demos/louis-agent/recordings/README.md)) |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
-| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/` |
+| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
 | `Content/`, `Graphs/` | `SiteDoors`, `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F39 orchestration: the architecture",
   "caption": "Orchestration is an engine function: delegation, the turn and the loop live in core, and the voorman is an identity on it.",
   "flow": {

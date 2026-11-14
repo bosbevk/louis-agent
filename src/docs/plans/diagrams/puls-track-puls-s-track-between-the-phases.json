@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "Puls's track: between the phases",
   "caption": "Each step waits for what it needs: an arrow points from what comes first, and a local lookup becomes a pack only when a simulation shows demand.",
   "flow": {

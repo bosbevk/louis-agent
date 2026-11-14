@@ -348,6 +348,782 @@ can do, and a how-to for the part only a person can.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a test of the parts is not a test of the page, and a
 `curl` of what ships is part of the check. With [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
 
+## A layout proved with numbers, then switched in one step (F134.8, 2026-11-14)
+
+**What it is.** Every flow in the docs, 93 pictures, was redrawn: a new look, straight lines, an arrow into a box
+at a point of its own, and shapes. The AI-engineering idea is not about pictures. It is how to change something a
+reader sees in 93 places without ever showing it half changed: **build the new way behind a rule, measure it over
+the real data, and hand it over in one step.**
+
+**What was built, in order.** The arrows' way of running became a rule the layout is handed (`IArrowRule`), with
+the old way as its first implementation, so nothing changed. Then the new rule, a piece at a time: a point for
+each arrow, one bend line a gap, and a second rule for where boxes stand (`IRowRule`), level with what feeds them.
+Then shapes as a field in the data. Then the look, shared with the component diagram. Only then did the flow's
+renderer ask for the new rules, and all 93 pictures changed in that one commit. Class charts never asked, so not
+one of theirs changed. The site's pages followed, and last each picture's JSON named its shapes.
+
+**What was measured.** A layout is a pure function of its data, so it is counted, not eyeballed. Throwaway tests
+ran every rule over the docs' real flows:
+
+| Over the 93 flows | Joined, before | Apart and level, after |
+|---|---|---|
+| Pairs of lines from different boxes lying on one another | 231 | 0 |
+| Crossings | 161 | 65 |
+| Forward arrows with no bend, of 830 | 226 | 377 |
+
+Six pictures grew taller, most by 40 px, and eight grew shorter. The first number is now a test: no two lines of
+different boxes may lie on one another in any flow.
+
+**What changed on the way, and why.**
+
+- *"Parallel" meant straight and level.* You said the lines were not parallel, twice. I first gave every box a
+  track of its own, then lined the bends up. Both were wrong. A drawn alternative settled it in one answer: a box
+  stands level with the box that feeds it, so the line between them has no bend. A picture of two options is a
+  better question than a paragraph.
+- *A literal rule made one picture 700 px taller.* "One row height for groups beside each other" was right for
+  two groups and absurd for a group with one tall box. The count caught it before any picture was committed. The
+  rule became: groups that start at the top share a row height, and a far taller one spans an odd number of rows.
+- *The shapes did not pop.* The first design had outlined badges and no colour bar, and you saw it at once beside
+  the component diagram. The fix was to share the look's parts, not to copy them.
+- *The switch found what the counts could not.* With boxes level, a box often stood at both heights a long arrow
+  could run at, and the arrow looped round the whole column. No count flagged it, since nothing overlapped. It was
+  seen by looking at all 93 pictures on contact sheets. Such an arrow now passes between two boxes.
+- *A word on its line needs a ground.* On the site a word had only a halo round its letters, and the line showed
+  through the space between two words: "A TURN" read as "A—TURN". Seen only in the browser.
+
+**What the tests hold.** Each rule with numbers, on small made-up pictures. A golden file for the new drawing.
+Over every flow in the docs: no line through a box it doesn't join, no word on a line that isn't its own, no two
+lines of different boxes on one another. Every SVG is what its JSON draws, byte for byte. A shape that is no shape
+is refused with the shapes there are.
+
+**The patterns.** Strategy, twice: one job done two ways behind an interface, so a kind of picture that has not
+had its turn keeps the old way and the old way is deleted later without touching the router. A Parameter Object
+(`FlowRules`) hands the two rules over as one, so nobody can pair level boxes with joined arrows by accident.
+
+**What didn't work, or cost time.**
+
+- A test that could not fail. My first test for the looping arrow asked that "all points inside the column" be
+  between two boxes. There were no points strictly inside it, so it passed on the bug. It now counts the points
+  first. A test of "all" needs a test of "some".
+- I built the pass-between rule without putting it to you first. It was shown with the step, but a choice about
+  how lines run is yours before it is built, not after.
+- Naming shapes took a rule three tries to say. "By what the box is" needed two more lines: a class counts as
+  data only when its label names the file beside it, and a class at the top of a structure picture is not a
+  start. Without them 468 of 845 boxes would have been pills.
+
+**Where it sits.** Skill 18, testing and shipping: a change measured over real data and shipped in one step. Skill
+20, extensibility, for the two rules.
+
+## Built beside the old, switched in one commit (F134.9, 2026-11-14)
+
+**What it is.** The cards picture, the overview every project doc opens with, was redone: the project is a
+headline on a light, and its parts hang from a lit rail. You picked the design from three, each drawn from a real
+picture's data. The engineering idea is the one F134.8 taught, used a second way: **when nothing keeps the old
+way, don't build a switch. Build the new way beside the old, prove it alone, and swap them in one commit.**
+
+**What was built, in order.** The reader's check that a link joins two neighbouring rows. The rails, grouped from
+the links with no places at all. How tall each kind of card is. The layout, which places cards and stands rails.
+The style. The writer's way to define a gradient. The drawing, with a golden. Then one commit that handed the
+renderer the new drawing, deleted the old layout, and redrew all 45 pictures.
+
+**Why no rule object this time.** F134.8 handed the layout a rule (Strategy), because class charts had to keep
+the old lines. Here nothing kept the old drawing. A Strategy with one strategy is a switch nobody flips, so the
+old and the new were two plain classes for six commits, and the old one was deleted in the seventh.
+
+**How the layout was split so each part is proved alone.**
+
+| Part | What it knows | What its tests need |
+|---|---|---|
+| `CardRails` | which links share a rail | ids only |
+| `CardSizes` | how tall a card is, where words break | a card and a width |
+| `RailPlaces` | where a gap's rails stand | the middle of each card, as numbers |
+| `OverviewLayout` | rows, gaps, a rail's ends | the three above |
+| `OverviewDrawing` | nothing about places or colours | the layout's result |
+
+Each row was a commit with its tests seen failing first. None needed a browser.
+
+**What was measured.** Over the 45 real pictures: 51 rails, 19 quiet cards, no gap with rails at two heights, and
+3.6% more height in all. After the switch the docs' tool wrote 45 pictures and left the other 219 untouched,
+which is the proof that no other kind of picture changed.
+
+**What looking found that numbers did not.**
+
+- An arrowhead of a link up stood tight under a headline's text. A stem under a headline now starts a little
+  clear of it.
+- In a row of four cards one title went under its badge beside three that didn't. The layout kept 18 at a card's
+  right where the approved mockup kept 14. A measure can be right and still differ from the design by a number.
+- The first mockup's rail said nothing about direction once motion is off. Small arrowheads were added before
+  any code, in the design step.
+
+**What it cost to leave a fixed-width font.** The old picture set every word in the code font, so a line's width
+was its length times one number, and a test could prove a line fits. The new look sets words in a font whose
+letters differ in width. The layout now takes a character's width as a number chosen wide. The tests still say
+every line fits by that measure, but the real proof is looking at the 45.
+
+**What didn't work, or cost time.**
+
+- Two test cards were named "web" and "files", which are toolset names, and a rule test that reads the whole repo
+  failed. The fix was a rename, but it shows a made-up id is never free in a repo with rules about names.
+- A test of mine assumed a title would break over two lines on a half-width card. It fits on one. The code was
+  right and the test was a guess about the data.
+- A command over Bash's length limit wrote nothing at all. A long file is written with the file tool.
+- CSS cannot give an SVG shape a gradient fill. I found that only at the style step, so the drawing step grew a
+  part: the writer learning to define a paint, and a page's copy learning to keep it.
+
+**Where it sits.** Skill 18, testing and shipping: a change proved in parts and shipped in one step. Skill 20,
+extensibility: one shared look under three kinds of picture, each adding only its own.
+
+## One layout, two looks, by the numbers it is handed (F134.10, 2026-11-14)
+
+**What it is.** The sequence picture, who calls whom in order, was redone in the cards' look. A participant is a
+badge in its tone with its name under it. A call is a lit line that runs from violet to blue. An answer is a thin
+dashed grey line. Under the steps the picture has a key. You picked the design from three, after asking how the
+key would look on it. The engineering idea is the third way to change a drawing, after F134.8 and F134.9: **when
+only the numbers differ, don't write a second layout. Hand the one layout its numbers.**
+
+**The three ways, side by side.**
+
+| Feature | What differed between old and new | What was done |
+|---|---|---|
+| F134.8, flows | how an arrow is routed, and class charts kept the old way | a rule object the layout is handed (Strategy) |
+| F134.9, cards | the idea itself: rails instead of lines | a second layout beside the first, then the first deleted |
+| F134.10, sequences | only sizes: a head's height, a line's step, a frame's reach | one value of numbers the layout is handed (Parameter Object) |
+
+The sequence's layout already did what the new look needs: lifelines as far apart as the words between them
+need, rows down the page, a frame round each block. Its numbers were constants in one class that four other
+classes read. Step 3 turned them into one record, `SequenceMeasures`, with one instance holding the old numbers.
+Step 4 added a second instance for the new look. Step 8 deleted the first.
+
+**How step 3 was proved.** It changed 9 files and no picture. The proof was not a test I wrote: the diagrams'
+409 tests passed unchanged, the sequence's golden among them, and the docs' tool, which redraws every picture
+and compares bytes, wrote none. A refactor that touches a layout is proved by the pictures it does not move.
+
+**How the shared look was proved.** The cards and the sequence wear the same title, light, glass and pill. Those
+rules moved out of the cards' style into a shared one, and their names changed from `crd-` to `mrq-`. So all 45
+cards pictures changed as text. To prove they did not change as pictures, each was shot before and after, in both
+colour schemes: 92 images, and one hash over them that was the same both times.
+
+**What was built, in order.** The measures as a value. The new look's numbers, with tests that hold relations
+(heads apart, words between their lifelines, a frame round its rows) and a check over the 64 real pictures. The
+shared look, then the sequence's own style. The key's layout, a pure function of the data. The drawing, with a
+golden. The switch, and all the pictures redrawn. Then the old numbers deleted.
+
+**What looking found that numbers did not.** The drawing's first picture passed every test and had three faults:
+
+- A frame sat on what followed it. An inner frame's bottom touched its parent's dashed line, and a note stood 4
+  under a frame. The layout had no room under a frame, because the old look's frames were plain boxes that could
+  touch. A new measure, 12 under a frame, fixed it.
+- A frame's tab stands 14 inside the frame in this look, and the layout's least width for a frame did not count
+  that. A long label in a narrow frame would have run to the frame's edge. A second new measure fixed it.
+- A long title over two participants was cut off at the picture's edge. The picture is now as wide as its title
+  when the title is the wider, as a flow's is.
+
+All three were found by looking at the first pictures drawn, and none by the drawing's tests. Then all 65
+redrawn pictures were looked at, on 20 sheets dark and 8 light, and nothing more was found.
+
+**What the look cost.** In the old picture a line had its sender's tone, so you could follow one participant's
+calls by colour. In this look every call is one accent, and a tone is on a badge only. You were shown that with
+the design. The key is what makes up for it: it says what each badge's tone means.
+
+**Three small things CSS and SVG would not do.**
+
+- A gradient can't fill a straight line: a line has no height for the gradient to be measured in. So a beam is a
+  thin box, two high.
+- A box has no arrowhead. So the arrowhead sits on a short path of its own that shows nothing else.
+- The moving dots are hidden for a reader who asked for no motion. So the arrowhead can't sit on the dots' path
+  either, or the direction would disappear with them.
+
+**What didn't work, or cost time.**
+
+- I committed step 3 without its wrapped lines and its docs. A script failed, and the commit after a `;` went
+  through anyway. Fixed with a second commit. A commit now runs in its own command, after the checks.
+- My check for lines over 120 characters counted a line ending that new files don't have, so it let 121 through.
+  It now strips the ending first.
+- A test asked NUnit for "all equal to this, and five of them" in one constraint, which asks each item for a
+  count. Two assertions say it.
+- The plan said 64 pictures and four drawing classes. It was 65, since the plan's own communication picture is a
+  sequence, and five, since a frame is drawn in two goes and earned a class.
+
+**Where it sits.** Skill 18, testing and shipping: a refactor proved by what it does not move, and a rename
+proved by identical images. Skill 20, extensibility: one layout that serves any look whose numbers it is handed,
+and one shared look under two kinds of picture.
+
+## An adapter that kept paying, and what a real chart found (F134.11, 2026-11-14)
+
+**What it is.** The class chart, a project's interface design, was redone in the cards' look. A type is a glass
+card with a badge that says what it is. A link's kind is in its line: violet for what holds what and what is
+what, blue for what creates what, thin grey for what only uses what. You approved one design, and shaped it
+while it was built: "should these lines not also be animated like the rest?", then, of a flow's line with its
+word in a pill, "can we do it like this", then "parallel align" of a picture drawn with the old routing.
+
+**The idea: an adapter that kept paying.** A class chart never had a layout. From the day the kind was added,
+`ClassFlow` turns it into a flow, and the flow's layout places it. The reason written on the adapter is that
+every fix a flow gets then reaches a class chart too. It did, three times here:
+
+- The new look needed only a drawing. No layout was written.
+- F134.8 built a routing rule for flows, where the lines of a gap turn on one line. Class charts were left on
+  the old rule then. Switching them was one argument, and all 59 charts kept their words and lines clear by
+  the new rule the first time the check ran.
+- The check that no two lines from different boxes lie on one another held flows only. It took four lines to
+  hold class charts too, and "parallel align" became a test.
+
+**What was built, in order.** A line's ends in the shared writer: a hollow triangle, a diamond, an open
+arrowhead. The class chart's style. What a type is, read from the words of its kind, and the key. The drawing,
+with a golden. The switch, and all the charts redrawn. Then the old flow drawing deleted, since the class chart
+was its last user.
+
+**What a real chart found that the golden's chart could not.** The drawing has to know which placed line is
+which relation, since a flow's arrow doesn't say. I matched them by the arrow object itself. Twelve tests and a
+golden passed. Then I drew core's real chart and it threw: the layout hands back a copy of some arrows, and my
+test chart had none of those. The fix was to match a line by the two types it joins, and the test chart got such
+a link. A golden made from a chart I wrote proves the cases I thought of. Drawing five real charts before the
+commit is what found the one I hadn't.
+
+**What looking found.** A "holds" pill sat on its diamond. A flow stands a word just after a line's start, and
+only a class chart's "holds" has something there. The pill is now moved along its line past the diamond. It is
+the one place this drawing moves something the layout placed, and it is written down as that.
+
+**What the repo's own rules found.**
+
+- The folder rule, twice. `Svg/` and `Svg/Theme/Looks/` each held six source files, the most a folder may, so
+  the new enum and the new style each got a folder of their own. The second leaves one kind's style apart from
+  the other four, which is untidy and is noted for the refactor.
+- The rule against `ToString()` on an enum we declare. A badge's letter was the first letter of the enum's name.
+  It is a switch now.
+
+**What the frame became.** With a class chart writing its own title and key, no kind the docs draw was left to
+get the frame's title bar or legend. Both were deleted from the code with their tests. Their style rules stay,
+because the frame's style is in every framed picture's file and removing two rules rewrites all of them.
+
+**What it did not change.** The layout. A chart is as tall and as empty on the left as before, and a line still
+comes down a row where its target stands lower, which is what you asked about with "why not just straight".
+Packing a chart tighter is a layout change, and was left out on purpose.
+
+**What was measured.** 59 pictures redrawn, the docs' 58 and the plan's own, and each one's JSON says `classes`,
+so no other kind changed. All 59 looked at on 14 sheets dark and 7 light. With the old drawing went 13 tests and
+4 goldens that read its markup.
+
+**What didn't work, or cost time.**
+
+- A Bash command over its length limit ran nothing, again. Long files are written with the file tool.
+- A `\n` inside a line of C# in a scripted swap became a real line break and broke the build, for the third time
+  on this branch. Any line that holds one is edited with the edit tool.
+- I switched the renderer before running its new tests, so they first ran green. I put the old renderer back,
+  saw the three fail, and switched again. The order matters even when the outcome is the same.
+
+**Where it sits.** Skill 20, extensibility: an Adapter that made a new look a drawing and nothing more, and a
+small general part, a line's ends, added to the shared writer where one kind needed it. Skill 18, testing and
+shipping: real data drawn before the commit, and an old drawing deleted in the step after its last user left.
+
+## A look in one place, and a rule that had to be looked at (F134.12, 2026-11-14)
+
+**What it is.** The flow and the component diagram were the first two kinds redone, and the three kinds after
+them settled on a look these two did not have. You said "make the theme of the flow and component diagrams
+resemble the others, it is now a bit out of date". Now every kind opens the same way: one small title over a
+soft light. A box is a plain panel with a little body. A decision is a box with pointed ends, your pick of three
+after "these look a bit weird". The keys match the other kinds' keys. On a light page nothing is plain white any
+more: "composite diagrams white is too white", then "all whites overall can be a tad darker".
+
+**The idea: a look that lives in one place.** F134.8 moved what a flow and a component diagram share into one
+shared look and one set of shared parts. That paid here. The title, the light and the panel changed in two
+small files, and both kinds changed with them. Neither kind's layout was touched: a look is class names and a
+few shapes, and a layout never reads them.
+
+- *A panel has body, and no depth.* A component diagram nests boxes four or five deep. The old look gave each
+  depth its own colour, by a rule a depth. Now a panel is filled with a little of the page's ink, the same
+  wherever it stands. A panel on a panel is a step deeper by itself, because the two fills add up. Six rules
+  and six variables went, and a box five deep still reads.
+- *One rule, where two kinds show the same thing.* Step 4 wrote the words of a flow's key in the flow's own
+  style. Step 5 needed the same words in a component diagram's key. A second copy would have let them drift,
+  so the rule moved to the shared look, and the 93 flows changed in one class's name.
+- *A style with no theme in it is a constant.* The flow's and the component's styles each took a theme only to
+  write a glow a tone. With the glow gone they are plain text, and say so.
+
+**A test that makes a variable earn its place.** The shared look sets a handful of colours for a light page and
+again for a dark one. A test now holds three things: every variable a rule reads is set, a dark page sets the
+same ones a light page does, and none is set that nothing reads. The third is what removed the old look's
+leftovers. Each step that deleted a rule failed that test until the variable went too.
+
+**The routing fix, which you asked for on the way.** Of one picture you asked "can we fix this here since we are
+here", a dashed line that stepped right, down, right, down, and "why did it take a longer route? and why is
+that line not straight", a line that swung out past its target and back. Both were one method, the one that
+leads a long line past the boxes in its way.
+
+- It looked at each long line once, in the order written. A line was judged taken by a neighbour that had not
+  yet moved to a line of its own. Now the long lines are looked at again while one still moves.
+- It moved a line only when one line was clear the whole way. Now a line may run on the line it leaves on as
+  far as it must and on the line it arrives on from there. Failing that, it runs on a third line past the boxes:
+  between two of a column, or 18 beside one.
+
+The ways are listed best first and the first clear one is taken. A shortest path worked out column by column
+would find ways with more steps, and no picture in the docs needs one, so it was not built.
+
+**What looking found that the tests could not.** The two new tests passed, and the rule that keeps words and
+lines clear passed on all 263 pictures. Then every picture the fix changed was looked at, before beside after.
+One was worse. Two lines from one box had shared a line and forked. Now one of them had taken a line beside a
+box that stood only 8 from the next box, and ran 5 beside its sibling. The rule was tightened: a line beside a
+box keeps 18 from every box of that column. That picture went back to what it was, and the other 18 stayed
+better. No test would have said "worse" there. Both pictures were valid.
+
+**What was measured.**
+
+- 93 flows and 1 component diagram drawn in the new look, each looked at on a sheet after steps 3 and 4, dark
+  and light. The plan counted 91 flows: the other two were its own pictures.
+- 18 pictures changed by the routing fix. In one, a line that crossed four others now crosses two.
+- A style-only change proved by text: with the style taken out, each of the other 169 pictures was the same
+  before and after, at every step.
+- No site page draws a decision, and the site's flows wear the site's own look, so nothing changed on the site.
+  The web's 933 tests and the site's 632 pass.
+
+**What didn't work, or cost time.**
+
+- My first test for the routing fault used a small made-up picture, and it passed before any fix. It proved
+  nothing. The test that failed was built from the real picture's own boxes and arrows.
+- A command over the length limit ran nothing, again. A script goes in a file.
+- I measured a line's distance from a box on a scaled-down screenshot and got it wrong. The numbers are in the
+  picture's file. Read them there.
+- For step 6 I looked at three of six sheets, not all six. The change was one rule, the same in every picture,
+  and the shapes were proved unchanged. That is said in the commit, so nobody takes it for a full look.
+
+**Where it sits.** Skill 20, extensibility: what two kinds share lives in one place, so one change reaches
+both and neither can drift. Skill 18, testing and shipping: a variable that must be read to be set, a style
+change proved by taking the style out, and a rule change judged by looking at every picture it touched.
+
+## A new kind as a translation and a drawing, and a doubt drawn before the plan (F134.13, 2026-11-14)
+
+**What it is.** A new kind of picture: UML's composite structure diagram. It shows one class from the inside:
+the parts it is built from, the ports on its edge, and which parts work together. I first read your "134.13
+composite diagram" as the component diagram redone. You said "no do research", with UML's own line for it. You
+picked design C of three, "Pins": a port is a named pin on the class's edge. You picked the flow's layout
+through an adapter. And you gave a new rule: "the type of diagram must always display".
+
+**The idea: a kind without a layout.** A layout is the expensive part of a kind: placing boxes, routing lines,
+keeping words clear. This kind has none. A small class, `CompositeFlow`, turns a composite into a flow: every
+part and port a box in one group, every connector and port an arrow. The flow's layout places it. So the kind is
+five records, that translation, and a drawing. Every fix the layout gets from now on reaches it for free, as it
+does for a class chart.
+
+**Columns do the reading order.** What is asked of the class stands in the first column. A part stands one past
+the furthest part that uses it. What the class needs stands in the last. That one rule makes the picture read
+from what comes in to what goes out, with nothing placed by hand.
+
+**The doubt, drawn before the plan.** The adapter had one risk: UML puts a port on the class's edge, and a
+flow's layout knows boxes and groups, not edges. I drew the real class as a plain flow twice, with a throwaway
+test, before writing the plan.
+
+- With the ports outside the group, the layout put them in a band above it. Three lines crossed the frame's top
+  18 apart, too close for three pins.
+- With the ports inside the group, in the first and last columns, it came out clean: asked on the left, parts
+  in the middle, needed on the right.
+
+So the drawing keeps the layout's places and draws its own frame: round the parts, its edges through the
+middle of the pins. That is the one place the drawing decides. Had the second drawing failed too, the plan
+would have been a different plan.
+
+**A label as a measure.** The layout sizes a box by the length of its label. A part's box holds a large type
+and a chip, which is wider than its words. So the adapter pads each label to the width the drawing needs, and
+the drawing writes none of that label itself. It is a small trick, and it keeps the layout unchanged.
+
+**What looking found.** You saw the first drawing in your editor and circled a pill: "line issue". A line ran
+across the words of "the pipeline". Two lines that leave one part share their first stretch, and I drew each
+line's word right after its own line, so the next line ran over it. A flow draws every line first and every
+word after. Now this does too, and a test holds the order.
+
+**What I got wrong.** After step 2 I ran only the diagrams' own tests. A rule in another project asks an
+example in the guide of every kind the reader knows. It went red with that commit, and two commits went in
+with it red before I ran it. The fix was the guide's section, which was due anyway. The lesson is the one from
+the skill: a shared file is tested by everything that reads it, and an enum of kinds is a shared file.
+
+**What was measured.** Three test projects run each step from step 4 on. The golden, and the real picture in
+core's design doc: `AgentEngine`, six parts, five ways in, three things it is handed. Both were looked at dark
+and light. The real picture is busier than the hand-placed design, because the layout orders parts by which
+uses which. Every line can be followed, and the docs' rules for clear words and lines pass on it.
+
+**What is left.** Only this kind shows its type. The other kinds get theirs in the refactor, where each
+picture's UML type is settled: a `flow` draws several UML types today, so its type can't come from its kind.
+The key's items are placed by the same few steps in a fourth class. A part's note wraps at a flow's width
+though a part's box is wider.
+
+**Where it sits.** Skill 20, extensibility: an Adapter onto a layout that exists, so a new kind costs a
+translation and a drawing. Skill 18, testing and shipping: a doubt proved with a throwaway drawing before the
+plan rested on it, and a rule test that belongs to everything that reads a shared enum.
+
+## One project cut in two along a line that was already there (CL65.1, 2026-11-14)
+
+**What it is.** The diagrams were one project. You said ".diagrams must be split into a diagrams --> and what
+builds the diagrams". Now `louis-agent.diagrams` says what a diagram is: its kinds, its records, its reader.
+`louis-agent.diagrams.engine` builds one: the layouts, the routing, the drawings, the looks, the writer. The
+engine references the diagrams, never the other way.
+
+**The idea: nobody takes what they don't use.** That is the Common Reuse Principle, which the repo already
+follows for the API's contracts. Something that only writes or reads a diagram's JSON, a pack's tool or an
+agent, should not carry four thousand lines of drawing code to do it. The small project is what both sides
+agree on.
+
+**The line was already there.** Before moving anything I asked of each file: does it say what a diagram is, or
+build one? A file that said what a diagram is used only other such files. No record reached for a layout. So
+the move was 130 files changing project and namespace, and no code changing what it does.
+
+**The one thread across.** The reader's refusals and the drawings' words were one enum with one formatter.
+That was the only real coupling, and it was cut first, in its own commit, while there was still one project:
+two enums, and one formatter that fills either. Doing it first made the move itself mechanical.
+
+**Two commits became one.** The plan moved the drawings first and the layouts after. But a key's layout uses
+the drawing's words, and a drawing uses a layout's sizes. A half-moved state would have had the small project
+open its internals to the engine, for the length of one commit. One move has no such in-between, so it was one
+commit.
+
+**The proof is that nothing changed.** After the move, the docs' tool redrew all 268 pictures and wrote none.
+No golden changed. That one check says more than the test count: every layout, every line and every style
+string came out the same, byte for byte.
+
+**A rule so it stays split.** A test holds four things: the small project references only the enum-name
+parser; the engine references only the small project; the small project holds no layout, renderer, drawing,
+look or writer and never names the engine; every file of the engine is in its namespace. I saw it fail before
+the move.
+
+**What I got wrong.** I guessed two hundred files would move, and 130 did. I counted the enum's members as 69,
+and there are 68. Both numbers were in the plan before I had counted properly, and both were corrected there.
+And the shell halves a doubled backslash inside a script it is handed, which broke three scripts before I
+wrote them as files.
+
+**What was left as it was.** One test project still tests both, because most kinds' tests mix a reader's case
+with a drawing's and share a sample. One design doc covers both projects and the tool, because its story
+follows one picture across all three.
+
+**Where it sits.** Skill 20, extensibility: a small project both sides agree on, and a rule test that keeps the
+dependency one way. Skill 18, testing and shipping: a refactor proved by an output that does not change by a
+byte.
+
+## A kind is how it is laid out, a type is what it shows (CL65.3, 2026-11-14)
+
+**What it is.** You sent a page of UML's diagram types and said "our graph types must match", and then "the type
+of diagram must always display". Now every picture says what type of diagram it is, at the right of its title's
+line: "Sequence diagram", "Class diagram", "Overview". And a flow's file has to say which type it is.
+
+**The idea: two questions that looked like one.** A picture's `kind` answers "how is this laid out": boxes and
+arrows, lifelines, cards. Its `type` answers "what is this a picture of". For most kinds the two go together.
+Lifelines are always a sequence diagram. For a flow they don't: the same boxes and arrows draw the steps of a
+procedure, the parts of a system, or the objects in memory. Your pick of three was to keep a kind a layout and
+let a picture state its type.
+
+**A default where there is one answer, a refusal where there are several.** That is the rule for data someone
+else writes: fill in what can only be one thing, and refuse what you would have to guess.
+
+- Five kinds are only ever one type, so their files write nothing and the reader fills it in.
+- A flow may be eight, so one that says none is refused, with the eight.
+- A ticket is a card in a chat. It has none, and one that writes a type is told to take it out.
+
+Each refusal says what may be written, so the person who gets it knows the fix without opening the guide.
+
+**Reading 95 flows.** I gave each flow its type by reading it: 54 component, 16 activity, 16 object, 6 package
+and 3 deployment. The surprise was the first number. Most of our pictures titled "how it works" are not
+procedures. Their boxes are parts, and their arrows are calls. Only 16 flows have steps, a start and an end.
+None is a state machine, a use case or a communication diagram. That says something about our docs: we draw
+what a thing is made of far more often than what it does in order, and we leave the order to the sequences.
+
+**Proving a change to every picture.** 267 of the docs' 268 pictures were redrawn, in two steps. The one left
+was the composite, which already said its type. "They all changed" proves nothing, so a script took the type's
+line out of each new picture and held the rest against the commit before. 260 were the same but for that line.
+Seven were also wider, because a title and a type now have to stand side by side. I had counted which pictures
+would grow before changing anything, and the count named those seven.
+
+**What went wrong on the way.**
+
+- The plan put the type's names in the engine's `Messages` folder. A rule test holds that a `Messages` folder has
+  only message enums, so they are in a folder of their own. I wrote the plan's map without asking which rule
+  tests read that folder.
+- The docs' test first looked for the type's line at the top of a picture's file. The docs draw a picture
+  inside a frame, one level down. So the test failed for every picture when the code was already right. Seeing
+  a test fail is not enough. It has to fail for the reason you expect.
+- The import from Mermaid wrote flows with no type. Its own tests found it the moment the refusal landed. It
+  writes `activity` now, which is what UML calls a flowchart.
+- The builder had a step that kept two kinds as wide as their body whatever their title. With a type on the
+  title's line, that would let a type stand over a long title one day. I counted first: none of the 46 pictures
+  of those kinds needed it. So the step is gone, and one rule gives every picture its width.
+
+**What is open for you.** Ten of the flows' types are doubtful, and listed in the parent's plan. A body narrower
+than its picture stands at the left in the seven that grew: whether it should stand in the middle is your call.
+
+**Where it sits.** Skill 5, structured outputs: a default where there is one answer and a refusal that names the
+choices where there are several. Skill 18, testing and shipping: a change to every picture proved by taking the
+change out again, and a count made before the change that says what should differ.
+
+## Six methods that did the same thing, and one builder (CL65.2, 2026-11-14)
+
+**What it is.** Six kinds of picture each had a method that put the picture together: work out its width and
+height, draw the light and the title, place the body and the key, write the caption, join the styles. You said
+"then use builder pattern for implementation", and picked one fluent builder with each kind's drawing as its
+director. Now a drawing places with its own layout and tells `PictureBuilder` its parts. The builder does the
+rest, once.
+
+**The idea: write the steps once, and let what differs be said by name.** A Builder puts a complex thing
+together step by step. The trap is a builder full of "if this kind, then". This one has none. I read all six
+methods line by line first and wrote down what differed:
+
+- Four numbers: the room above, the room before the key, how far down the light is, how deep it is. They became
+  one record, with a flow's as the usual. A sequence hands in its own.
+- Each kind's own fades, and the order they are defined in.
+- Whether a long title widens the picture. For a cards picture and a component diagram it does not.
+- Where the light is. A cards picture has one behind each highlighted card, so it hands in its own.
+
+Each of those is something a kind tells the builder. So the builder never needs to know the kind.
+
+**Nothing is written until the end.** A key's rows wrap at the picture's width, and the width depends on the
+title, which may be wider than the body. So the key is handed over as a function of the width, and the builder
+asks for it last. That one fact decided the builder's shape: it holds what it is told, and writes everything in
+`Build`.
+
+**The proof was the same as for the split.** After the six kinds moved onto the builder, the docs' tool redrew
+all 268 pictures and wrote none, and no golden changed. A builder that put one part a pixel off, or defined one
+fade out of order, would have shown as a changed file.
+
+**A rule so it stays.** A test holds that nothing under the engine's renderers but the builder writes a title, a
+caption or the SVG itself, and only a cards picture a light. I wrote it after the drawings had moved, which is
+the wrong order. So I ran it against the drawings as they were, to see it fail, before trusting it.
+
+**Two smaller things in the same child.**
+
+- Four kinds placed their key's items by the same loop with the same five numbers. One placer does it now.
+- Five of seven renderers only handed on to their drawing, in a folder that was full. Each now stands beside its
+  drawing. That move had to come before the builder, not after as planned: the builder's two files were a
+  seventh and eighth in a folder that holds six.
+
+**What you added on the way, for later children.** The pictures a project needs should follow from its type
+and its requirements, and stand where the text needs them. And the engine's arithmetic should be small types
+that carry their own sums, on Microsoft's `RectangleF` and `Vector2`.
+
+**Where it sits.** Skill 20, extensibility: a Builder with a Strategy as its director and a Parameter Object
+for what differs, so a new kind writes a body and a key and gets the rest. Skill 18, testing and shipping: a
+refactor proved by output that does not change by a byte, and a rule test seen failing even when it was written
+late.
+
+## Sums that live on the thing they are about (CL65.6, 2026-11-14)
+
+**What it is.** You looked at the engine and asked: "with all these math in the egine, can we not have something
+like a calculator which does it neatly." Then: "we cannot write spaghetti code". Now a box knows its own edges
+and middle, a face knows how wide words are, and a path writer writes a path. A layout and a drawing ask them,
+and work nothing out where they stand. The rule behind it is ADR 0123, *Ask the type*, and this was the first
+code brought under it whole.
+
+**The idea: a number with a meaning wants a type.** The engine held a box as four bare numbers, in thirteen
+records, some spelled `W` and `H` and some `Width` and `Height`. Every place that needed its right edge added
+the left to the width again. I counted before planning: a right edge worked out in 33 places, a bottom edge in
+38, half a size in 39, words measured by their length in 20 with 11 different widths of a character, and a path
+built as text in 20. That shape has a name, Primitive Obsession, and its cure is a small value type that carries
+its own sums. Your pick was small types, not one calculator class: a calculator would still be handed the four
+numbers each time.
+
+**Two families behind one seam.** You wanted Microsoft's `RectangleF` tried and ours kept: "our own will be
+Box<T>", then "keep ours and MS's but use ours." So a box and a point are interfaces, and one geometry makes both
+of the same family. That is an Abstract Factory. Ours is written once over any number type, by .NET's generic
+math, and runs in `double`. That choice paid twice. Run in `float`, our own box answers exactly what Microsoft's
+does. So when Microsoft's differs from ours in `double`, we know all of it is single precision and none of it is
+the library.
+
+**The proof was a picture that does not change.** Every step from 5 to 9 moved one kind onto the types. After
+each, the docs' tool redrew every picture and had to write none. It wrote none of the 269, after every one of
+those steps. To keep that, each sum on a box is written in the order the layouts wrote it by hand: `left + width / 2`,
+never `(2 * left + width) / 2`. The two are the same number on paper and can differ in the last digit in a
+computer, and a layout that halves a number and rounds it to one decimal shows that digit.
+
+**A ratchet, and then just a rule.** A test read the engine's source for four shapes and held a list of the
+files that still had each: 13 records, 22 files, 10 files, 16 files. A file new to a list failed it, and so did
+a listed file that had been cleaned and not taken off. So each list could only shrink. It caught its own author:
+in the last kind I wrote "where a line of words ends" as a start plus a width, and the test named my new file.
+With the lists empty the test is four plain rules, and a fifth: no drawing picks its own geometry.
+
+**"Always fix touched files" decided the size of a step.** The flow could not move in two commits. The class
+that turns a picture, the router and two drawings each read a box and also read an arrow's path back as text,
+number by number. Touching one meant fixing it whole, and fixing it whole reached the next. So the flow was one
+commit of 66 files, and an arrow's way became a type of its own, which the plan had not listed.
+
+**Tests moved by the compiler's own word.** The records lost their four numbers, and in the flow's step alone
+268 places in the tests read them. Rider's rename can't resolve a record's positional parameter. So a script built the tests,
+took each place the compiler said no longer compiled, by file, line and column, and replaced the member there
+and nowhere else. A search and replace over `X` and `W` would have changed things that were never a box.
+
+**What both families draw.** A test now draws each of the docs' pictures three ways. There were 269 when it
+was measured, five of them this plan's own, which went with the plan. Microsoft's family
+refuses none. Our own in `float` draws every one exactly as Microsoft's, to the byte. Beside ours in `double`,
+184 pictures are the same, 78 have a few numbers a tenth of a pixel apart, and in 7 flows an arrow takes another
+way. I looked at one of the seven: two arrows that arrive at the same box had swapped places on its top edge,
+and the picture read as well either way. Which of the router's decisions turn on single precision I did not look
+into.
+
+**What went wrong on the way.**
+
+- The moves were not test first. They were held by the pictures, and the tests for the members a box and a
+  point learnt on the way were written after the code. Each commit says so.
+- A member built ahead was thrown away. Step 2 gave a box "joined with another" because a box obviously joins.
+  Nothing ever asked, a group's frame asks the geometry for the box round several, and step 9 took it out. The
+  rule is in the ADR: a member is added by the step that first asks for it.
+- My first count in step 10 said 84 pictures differed in shape. The pictures were fine and the count was wrong.
+  The same comparison with one option of the regular expression taken off said 2, and reading both drawings as
+  XML said every picture has the same shapes in the same order. A measure gets checked like code: by a second
+  way of counting.
+- The ticket wrote its paths a third way, with a space before each letter. I moved it onto the writer the other
+  drawings use, so two golden files changed, by spaces only. A golden that changes in a refactor needs its own
+  proof, so I read each path as letters and numbers before and after and held them equal.
+
+**What is open for you.**
+
+- The names picked unattended: a pin's `On` for the box it stands on and a placed box's `Component`, since
+  `Box` is the box itself now.
+- The ticket's paths on the common writer, which changed its golden by spaces.
+- The bound in the last test, nine pictures in ten the same to a tenth. It is loose on purpose, since the docs'
+  pictures change with every plan.
+- Left for CL65.4's list: one way to write a path where there are two, the look's glass and accent defined with
+  the same numbers in five drawings, and the name of the `ticket` kind now that it is no longer drawn as one.
+
+**Where it sits.** Skill 20, extensibility: an Abstract Factory with two families, and generic math so one type
+does its sums over any number. Skill 19, measuring: what single precision does to a picture, shown by running
+our own type in `float` beside the other. Skill 18, testing and shipping: a ratchet whose lists only shrink, a
+refactor proved by output that does not change by a byte, and a second implementation that is only kept if
+something runs it.
+
+## Taking out what nothing draws, and proving a rewrite by undoing it (CL65.4, 2026-11-15)
+
+**What it is.** Every kind of picture was redone in one look, a kind at a time, and each time a little of the
+look before stayed behind: style rules for shapes nobody draws, two layout rules no picture is laid out by, a
+second way to write a path. This cleanup took it out. The engine now holds only what a picture is drawn with
+today, and three rule tests keep it so.
+
+**The idea: code that is tested looks alive.** The two old layout rules, arrows that join and boxes centred,
+were drawn by nothing. Every drawing and the web's `GraphView` asked for the new pair by name. But the layout's
+own default was still the old pair, so 47 calls in the tests laid a flow out by rules no picture had. They
+passed, and passing made the old rules look used. I measured before planning: with the default switched for a
+moment, 8 of the 714 tests failed and 706 held. So I read the eight one by one. Two were about the rules that
+went, and went with them. Six were about the layout and now hold under the rules that are drawn. A test says
+the code works. It does not say anything uses it, and a default is where unused code hides.
+
+**A strategy is worth its interface while it has two.** The two rules sat behind two interfaces and a record
+that paired them. With the old pair gone each interface had one implementation, and ADR 0055 says that is a
+class. So the layout asks `ApartArrows` and `LevelRows` themselves. Three of the answers on those interfaces
+had only existed so the two rules could differ. How far apart two lines keep became a number. Whether an arrow
+may pass between two boxes was always yes, so the branch it guarded went too. A seam costs more than its lines:
+it keeps questions alive that have one answer.
+
+**A rule test written first found more than I had.** The plan named two things styled twice, a word's pill and
+the faint line over a key. I wrote the test first, that no kind's style has a rule a shared look has, and it
+named eleven. A box's name, a class's kind, the icon in three kinds' badges, a sequence's ring, a card's text:
+each had a twin. All eleven are folded. Reading the styles had found two, and the test found the rest in a
+second.
+
+**A change to every file, proved by undoing it.** Three steps rewrote every picture of the docs: 283 files,
+then 277, then 161. Nobody can look that over. So each step had a script that takes exactly its change out
+again, and what is left had to be the commit before, to the byte.
+
+- *Class names moved to the shared look:* map the eighteen new names back, and every drawing is the same.
+- *Old rules out of the style:* compare the drawings and leave the style out, then read the two styles as
+  rules: 61 went and 11 came, and each of the 11 is named.
+- *One way to write a path:* read each of the 2,458 paths as its letters and numbers, and hold them equal.
+
+After each I also drew a few pictures before and after in headless Chrome and compared the pixels. They were
+the same. The script proves the file, and the pixels prove the script reads the right thing.
+
+**Move the readers first, then change what they read.** An arrow's path was written with a space round every
+letter, and every other path without. The writer's own remark said why: other code read that text back. The
+other code was the tests, about 45 lines that split an arrow's text on its spaces to find where it turns. I
+moved those onto asking the arrow for its places, through one small helper, and left the text alone. All 696
+tests passed, so the move had changed no test's meaning. Only then did the text change. Had both changed in one
+go, a red test could have meant either. Then I tried keeping an arrow's numbers exact, where they had been
+rounded to the one decimal the text held. The docs' tool wrote none of the 269 pictures, so the rounding by
+writing and reading a text is gone.
+
+**A fade is named once.** The look's accent was written out in six drawings and its glass in four, each time
+with its id, the way it runs and the same stops. Now a fade is a small record, named beside the style that
+colours its stops, and a drawing asks for it by name. The plan named the look's three. Six more were written
+out the same way, so nine are named.
+
+**What went wrong on the way.**
+
+- Step 2 was planned as a refusal and built as a default. The plan said a cards picture with no `links` is
+  refused by name. Read again, no links can only mean none, and one picture of the docs already says so. The
+  rule from CL65.3 is a default where there is one answer and a refusal where there are several. I had planned
+  against our own rule.
+- One test had no chart left. It laid arrows out by the new rule on boxes placed by the old one, a pair no
+  picture ever had. Under the drawn rules its chart does something else, so the test now says what that is.
+- The first rule test for the fades named the writer too. The writer is where a run becomes markup, so it
+  must name one. I read the list a failing rule test gave me and narrowed the rule to the drawings. A rule
+  test's first failure is read like a finding, and not only made to pass.
+- The diagrams' own interface picture, drawn from the code, had 24 boxes and 30 lines, and its middle was a
+  knot. It is two pictures now, the way in and a kind's own parts. The old one read well because it left
+  two renderers and the builder out.
+
+**What is open for you.**
+
+- The picks made unattended, in CL65's plan as of commit `a9a875cda`: the strategy folded, the cards' default,
+  one test project and one design doc for the two projects, a kind's class beside a shared one, nine fades, two
+  pictures.
+- The names of two kinds, each put to you there with three options: `components`, which reads as UML's
+  component diagram and shows a composite structure, and `ticket`, which is a glass card now. Since then
+  `components` is `nested`, your pick, and `ticket` is CL66. I could not read uml-diagrams.org for the first,
+  its certificate failed, so that finding rests on the GeeksforGeeks page you named.
+- Six messages still named `Legend…`, from when the docs' frame had a legend.
+
+**Where it sits.** Skill 18, testing and shipping: a rewrite of every file proved by taking the change out
+again, a rule test written before the cleanup it holds, and readers moved before what they read. Skill 20,
+extensibility: when a seam earns its keep, and when a strategy is a class. Skill 5, structured outputs: a
+default where data someone else writes can mean one thing, and a refusal where it can mean several.
+
+## The pictures a project needs, and a rule that reads the docs' own words (CL65.5, 2026-11-15)
+
+**What it is.** Every project doc used to show the same four pictures, whatever the project was. You said the
+project's type should decide: "the project type and requirements must drive which diagrams is required", and "if
+diagrams is missing add them". Now each doc says what kind of project it is about in its first lines, its kind
+sets the least it shows, and the doc names what it shows beyond that. A test holds every doc to exactly that, and
+the 27 pictures the new rule found missing are drawn.
+
+**A rule a person writes once, and a test that reads it.** The floor is a table in the guide: a library shows its
+main path and a sequence, a host where it runs, a web project what its main page is made of. The same table is a
+switch in the test project, `ProjectFloor`, and a test reads the guide's rows and holds them equal to the switch.
+So the rule a person reads and the rule the test keeps can't drift apart, and changing one fails until the other
+follows.
+
+**The doc's first lines are the data.** A doc already opened with a `**Kind:**` line in free words: "class
+library", "Blazor WebAssembly app", "library, ASP.NET Core minimal API". Its first words are now a kind from a list
+of nine, read with the same parser every choice in the code goes through, and the free words move into brackets
+after it. A second line names what the doc shows beyond its floor, by the type names the pictures carry. Held as an
+equality, not a minimum, those two lines are a true list of the doc's pictures: a doc that shows more than it says
+fails too.
+
+**A ratchet, as CL65.6 had.** When the rule first ran, 27 pictures were missing: 14 main paths, 8 places where a
+host runs, 5 web pages. The test listed them by doc, and a doc whose picture was drawn had to come off the list.
+Four steps later the list was empty and the rule a plain one. A list that only shrinks lets a rule land before
+the work it asks for is done, without a single day where the rule is off.
+
+**Every picture is a claim about the code.** A deployment diagram says which container a host runs in and what port
+it is reached on; I read the compose files, the Dockerfiles and the programs for each. An activity diagram says
+what happens in which order; I drew only what the doc's own story and the code it names confirm. Where they didn't
+settle an order, as in a web fetch, where I could not confirm whether robots.txt is asked before a replay is
+read, I drew the order the doc does state and left the rest out.
+
+**No section apart.** You also said "graphs must also be placed where it is used ort needed not a section". 40
+docs kept their pictures in a *Diagrams* section. A test now fails on one, and each section's pictures joined the
+story they explain, its few sentences that pointed from one section to the other said again for where they stand.
+
+**What went wrong on the way.**
+
+- The first kind line I read stopped at the first comma, and two docs' old words had a comma before their path.
+  The parse was right and the line was wrong: the old words went into brackets after the kind.
+- A file of secrets holds the port the API is reached on, so I could not read it, and the doc and the compose
+  file disagree. The picture says `API_PORT` rather than guess a number.
+- Moving a picture to the exact paragraph it explains, rather than to the end of the story, needs a person to
+  read each doc. Each picture now closes its doc's *How it works*; finer placing is left for when a doc is next
+  touched.
+
+**What is open for you.**
+
+- The picks made unattended, in CL65.5's plan as of commit `a9a875cda`: nine kinds where the floor you saw named
+  five, the equality rather than a minimum, a web project's composite structure drawn as a nested picture, and the
+  rule's types in the test project.
+- The `ticket` kind's name, CL66 in the TODO, with its three options in CL65's plan as of the same commit.
+
+**Where it sits.** Skill 18, testing and shipping: a rule stated once for people and held by a test that reads it, a
+ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
+of a design: every picture is drawn from what the code and its compose files say.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Diagrams.Sources.Types;
 
 namespace LouisAgent.Diagrams.Sources;
 
@@ -9,6 +10,11 @@ namespace LouisAgent.Diagrams.Sources;
 public static class DiagramWriter
 {
     /// <summary>The diagram's file, ending in a new line.</summary>
-    public static string Write(DiagramSource source) =>
-        JsonSerializer.Serialize(source, DiagramJson.Options).ReplaceLineEndings("\n") + "\n";
+    public static string Write(DiagramSource source)
+    {
+        // A kind's own type is its default, which the reader fills in again, so it is left out like any other.
+        var written = source.Type == DiagramTypes.Own(source.Kind) ? source with { Type = null } : source;
+
+        return JsonSerializer.Serialize(written, DiagramJson.Options).ReplaceLineEndings("\n") + "\n";
+    }
 }

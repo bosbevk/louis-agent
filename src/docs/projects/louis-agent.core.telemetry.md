@@ -1,8 +1,9 @@
 # louis-agent.core.telemetry — design
 
-> **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.telemetry/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.telemetry/` · **References:**
 > louis-agent.core, OpenTelemetry, OpenTelemetry.Exporter.OpenTelemetryProtocol, Serilog.Sinks.OpenTelemetry ·
 > **Used by:** every host's program, the eval runner, the orchestrator
+> **Also shows:** `component`
 
 ![Telemetry, and its parts: the tracer, the log sink, and the filter that keeps our own traffic out](diagrams/louis-agent.core.telemetry.svg)
 
@@ -15,6 +16,10 @@ handing `AgentHost.Build` a `HostServices` with `OtlpTelemetry.Instance`; core a
 measures every turn on its own `ActivitySource`, which nothing listens to, and still logs a crash once.
 
 ## How it works
+
+A host's telemetry, step by step.
+
+![Telemetry: the crash handler installed, the tracer built when a collector is set, its own traffic left out, and what is held sent at the end](diagrams/louis-agent.core.telemetry-flow.svg)
 
 `OtlpTelemetry` is core's `IHostTelemetry` seam made real, a singleton for the process:
 
@@ -33,8 +38,6 @@ measures every turn on its own `ActivitySource`, which nothing listens to, and s
 
 What stays in core: `TurnSpans` (a span per turn, on the GenAI conventions), `SpanTag`, `LastChance`, and the
 seam with its Null Object.
-
-## Diagrams
 
 ![Telemetry: the log sink and the tracer, out to the collector](diagrams/louis-agent.core.telemetry-diagrams.svg)
 

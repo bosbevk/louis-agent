@@ -1,8 +1,9 @@
 # louis-agent.web — design
 
-> **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
+> **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
 > **References:** Markdig, Net.Codecrete.QrCodeGenerator, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
 > louis-agent.code-review, louis-agent.puls and louis-agent.starter
+> **Also shows:** `component`, `sequence`
 
 ![The framework's web, and its parts: the chat's frame, the admin's frame, the site's parts, styles and scripts, and the seams](diagrams/louis-agent.web.svg)
 
@@ -204,10 +205,15 @@ stacks the row.
 **A diagram on a page.** `GraphView` draws a diagram from data. A page declares a `GraphSpec`: nodes with an id, a
 label, a note and a column, and edges between ids, with a word when one helps. The spec is plain C# in the diagrams
 library, which the docs' tool draws with too. `GraphLayout.Place` puts the columns across the width on one row
-grid and orders each by its neighbours. It hands the arrows to `EdgeRouter`, which draws each as a connector:
-right-angle bends, one track per gap, back arrows under the drawing, loops to the right, words on flat pieces with
-room, each gap as wide as the words that cross it, and the bend just after a word. The view writes one SVG that
-scales to its box.
+grid and orders each by its neighbours. The view asks for the rules a flow in the docs is drawn by: a box stands
+level with the box that feeds it, and each arrow into a box arrives at a point of its own. It hands the arrows to
+`EdgeRouter`, which draws each as a connector: right-angle bends, the lines of a gap turning on one line, back
+arrows under the drawing, loops to the right, words on flat pieces with room, each gap as wide as the words that
+cross it, and the bend just after a word. The view writes one SVG that scales to its box.
+
+A word stands on its own arrow's line, on a small ground of the page's colour that hides the line behind it. A
+box that names a shape is drawn in it: a decision as a diamond, data as a slanted box, a start or an end as a
+pill. The seven pages' diagrams name none today.
 
 The diagram plays once as it enters the screen: each arrow draws itself and each box rises, a column at a time. At
 rest it is fully drawn. The SVG's text goes out as markup from the code-behind, since Razor keeps the `text` tag
@@ -261,10 +267,42 @@ folders, and this part takes them in the order a visitor meets them.
 **The frame** (`Shell/`). `ShowroomShell` is a slim bar, a rail of the demos grouped by what a visitor comes for,
 and the corner beside the frame. On a phone the rail becomes a row of chips. The whole frame is in the colour of
 the demo on screen. An open guide takes the rail's place. Each demo names its icon, one of the framework's line
-icons, which the rail, the chips and the start draw.
+icons, which the rail, the chips and the start draw. On a page that is no demo, such as the start, the frame
+draws no rail and no chips, and the stage takes the whole width: the start shows the demos itself.
 
-**The start** (`Start/`). `ShowroomStart` is the showroom's front page: a big start for the main demo, then a
-cover for every demo.
+**The start** (`Start/`). `ShowroomStart` is the showroom's front page, and it is a stage. Every demo it
+shows is a framed window on a deck, with one forward in the light. Under the deck are the forward demo's name,
+its line and its way in, and a dock with a button per demo. The stage is lit in the forward demo's colour, and
+each window wears its own.
+
+A demo's window is filled by the component the site names for it. A demo that names none gets the plain body:
+its icon over its name and its line. The window's bar says the word the demo names, or the demo's own address
+when it names none.
+
+The start holds one thing, which demo is forward. The deck and the dock are both told, and each only says what
+a visitor asked for, so the arrows and the buttons can't disagree. The demo the site features is forward first.
+
+The page may name one group of the site's demos, such as the ones made for a visitor's own business. The start
+then shows that group alone: its windows on the deck, its buttons on the dock, and its addresses. A demo outside
+the group has no window there, so its address opens the start with the featured demo forward. The site's list
+stays whole, so the rail beside a demo's page still offers every demo. With no group named, the start shows
+them all.
+
+Each demo's window has its own address under the start's, such as `/demos/restaurant-demo`. The start reads the
+address it was opened at, and if it names a demo, that demo is forward from the first draw. When a visitor
+brings another forward, by the dock, an arrow or a key, the start's own small module puts that demo's address
+in the bar. It replaces the entry, so the back button still leaves the page. On a site whose places have no
+addresses, nothing is read and nothing is written.
+
+On a phone the start is the same page with less on it. The title stands alone, without the lede. The deck is a
+row of upright windows, swiped one at a time, and a swipe brings a demo forward as an arrow does, so the name,
+the dock and the address follow it. The dock shows its icons only.
+
+The picture shows the start as its components. A box inside a box is held by it. A pin on a box's top edge is a
+parameter handed down to it, or a callback it says back up. The pill is the one thing the start holds, and the
+lines from it show which pins carry it.
+
+![The start holds which demo is forward. It hands that down to the lit stage, the deck, each framed window and the dock, and hears it back from the deck and the dock. A site's page, three things it reads and two scripts stand around it](diagrams/louis-agent.web-components-showroom-start.svg)
 
 **A demo's page** (`Stage/`). `DemoStage` lays one out: a kicker, the page's one h1, a lede, the player, the cues,
 the notes and the offer. The cues are lit in step with the play, and each is a button that plays from its turn.
@@ -389,13 +427,33 @@ page and a diagram never hold two copies of a drawing.
   An arrow at each side, the keyboard's arrows, or a press on an item behind asks for another to come forward.
   What an item behind holds can't be reached until it is forward. `DeckPlace` is the deck's one rule: how far from
   the middle each item stands, counted the short way round.
+
+  On a wide screen the items together lean a little towards the mouse while it is over the deck: at most 7
+  degrees sideways and 5 up or down, with the mouse at an edge, and straight again when it leaves. The deck's
+  module writes how far as two numbers on the deck, and the styles turn the items by them. It is only how the
+  deck looks, so nothing the page holds changes. A finger is not followed, and a visitor who asked for less
+  motion gets no lean.
+
+  On a screen up to 900 wide there is no room for depth, so the same items are a row. The styles make the row:
+  each item upright, most of the row's width and never wider than a phone's, with its neighbours showing at the
+  sides and no arrows. The browser does the swiping, and is told to stop on each item. The deck's module does
+  the two things styles can't. When a swipe comes to rest it says which item stands in the middle, and the deck
+  asks the page for that one, as an arrow would. When the page puts another item forward, it brings the row to
+  it. On a wide screen nothing scrolls, so of these two the module does neither. The place that uses the deck lets
+  go of the height it gave, since the row is as tall as its items.
 - `FramedWindow` is a bar like a browser's, with an address word, then a body. The body can't outgrow the frame or
-  be scrolled inside it. The framework offers two bodies, which hold no words of their own. `SiteBody` is a
+  be scrolled inside it. The framework offers three bodies, which hold no words of their own. `SiteBody` is a
   website with its chat: a photo with a name and a line over it, and one question, its answer and one thing the
-  agent showed. `WorkBody` is panes of work, each a heading over plain lines.
+  agent showed. That thing is drawn as a small card: a photo if the site gives one, a name in bold and a few
+  words. In a window narrower than 520 the website stands over its chat, and only the website's name and line
+  and the chat's question and answer are drawn. The body goes by the width of its window, not the screen's:
+  the frame's body is a container its content can measure. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is for a thing with
+  nothing of its own to show yet: its icon, large, over its name and a line.
 - `Dock` is a row of icon buttons drawn from `DockItem`s, with a divider where the group changes. The current
-  button shows its name, and the rest keep theirs for a screen reader. Each button carries an id and is marked
-  as a card of the page.
+  button shows its name, and the rest keep theirs for a screen reader. On a screen up to 900 wide the dock is
+  its icons only, so it fits a phone: the current one keeps its tint and ring. Each button carries an id, is marked
+  as a card of the page, and says its name as the card's title, which is where the page's list for a site's
+  guide reads it.
 
 The deck and the dock share one idea: **the page owns the choice.** Which item is forward or current comes in from
 the page, and the part only says what the visitor asked for.
@@ -410,8 +468,6 @@ that each give a new list. `Inline/` is for a page edited where it stands: click
 cross, Enter keeps and Escape drops.
 
 *Decided in:* F134.1 (icons and the stage), FX154 (paper), F142 (editing).
-
-## Diagrams
 
 The [eval pages](louis-agent.web.evals.md) have pictures of their own.
 
@@ -445,7 +501,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Styles/web/` | The globals: `settings/_colours.scss`, `tools/` (`_colours.scss`, both forms of a colour from one value; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
 | `Components/Editing/` | Pieces for a page a person edits (F142). The framework decides nothing about how a site edits its pages. louis-agent.dev builds its CV's editor from them ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md), the site's own): `TextField` and `FieldGroup` (a labelled box, a few under a heading), `TagInput` (words as chips), `ListEdits` (add, take out, replace, move, each a new list) and `EditedItem` (an item with the way to hand back a changed copy). `Inline/` is for a page edited where it stands: `InlineEdit` (click the words, a box with a tick and a cross, Enter keeps, Escape drops, and plain words when nobody listens), `InlineForm` (the same for an item of several fields), `ItemTools` and `ItemAdd` (move, remove, open and add for a list on the page), and `PartChanges`, which gives a part a listener exactly when the whole has one |
 | `Components/Icons/` | `LineIconView`, a line icon from the framework's one set (part 8) |
-| `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `WorkBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |
+| `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `WorkBody`, `PlainBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |
 | `Components/Paper/`, `Paper/` | What a page needs when it is printed (FX154, Louis: "in a pdf hyperlinks is qr codes always"): `PaperLink`, a link as it is printed, its QR code with its words and its address written short, drawn on paper only, in the ink of the page that prints it, and still a link in a PDF read on a screen; `QrImage`, a code as a picture; `QrDrawing`, a code as data (the one place that names Net.Codecrete.QrCodeGenerator), and `PaperAddress`, an address written short |
 | `Scripts/` | `JsModule`, the proxy that imports a module once and lets it go; `FrameworkScripts`, the modules' paths named once; `ChatModules`, the frame's three modules on one runtime (CL31) |
 | `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |

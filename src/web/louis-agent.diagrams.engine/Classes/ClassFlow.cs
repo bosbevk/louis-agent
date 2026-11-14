@@ -1,0 +1,85 @@
+using LouisAgent.Choices;
+using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Classes.Marks;
+using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Icons;
+using LouisAgent.Diagrams.Tones;
+
+namespace LouisAgent.Diagrams.Engine.Classes;
+
+/// <summary>
+/// Turns a class chart into a flow, so the flows' layout, router, tones, chips and checks draw it: each type a box
+/// with its kind under its name and its members under a divider, each relation an arrow whose style and word say
+/// what kind of link it is.
+/// </summary>
+/// <remarks>
+/// Adapter (Refactoring.Guru): a class chart and a flow are the same boxes and arrows with different words, so the
+/// classes kind is translated into the flow's spec rather than given a layout of its own, and every fix the flows get
+/// reaches the class charts too (Claude's pick Q1 while unattended, CL60.4).
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data</seealso>
+public static class ClassFlow
+{
+    /// <summary>A type's name breaks at this many characters, so one long name doesn't widen a column.</summary>
+    public const int NameWidth = 30;
+
+    /// <summary>
+    /// The flow a class chart is drawn as: a box a type, and an arrow a relation, in the relations' order. A long
+    /// name is wrapped, and every type asks for a badge's room beside its name (F134.11). A flow gives that room
+    /// to a box that names an icon, so a type that names none is handed one, and the drawing shows the letter of
+    /// what the type is in its place.
+    /// </summary>
+    public static GraphSpec Of(ClassesSpec spec) =>
+        new(spec.Types.Select(type => new GraphNode(type.Id, Wrapped(type.Name), type.Kind, Group: type.Group,
+                Icon: type.Icon ?? DiagramIcon.Code, Tone: ToneOf(type), Members: type.Members)).ToList(),
+            Once(spec.Relations.Select(Edge)),
+            spec.Direction,
+            spec.Groups);
+
+    /// <summary>A name over as many lines as it needs, each written break kept.</summary>
+    private static string Wrapped(string name) =>
+        string.Join('\n', name.Split('\n').SelectMany(part => TextWrap.Lines(part, NameWidth)));
+
+    /// <summary>
+    /// The arrows, a word shared by several into the same type, or out of it, kept on the first only (CL60.4), so a
+    /// fan of implementers or of held parts doesn't pile its chips up by the type; the rest keep their style.
+    /// </summary>
+    private static List<GraphEdge> Once(IEnumerable<GraphEdge> edges)
+    {
+        var into = new HashSet<(string Type, string Word)>();
+        var outOf = new HashSet<(string Type, string Word)>();
+        return edges.Select(edge =>
+        {
+            if (edge.Word is not { } word) return edge;
+            // Both are noted, so the first arrow of each fan keeps its word whichever end it shares.
+            bool newInto = into.Add((edge.To, word)), newOutOf = outOf.Add((edge.From, word));
+            return newInto && newOutOf ? edge : edge with { Word = null };
+        }).ToList();
+    }
+
+    /// <summary>
+    /// A type's tone: the one it names, or its kind's, so a chart reads in colour before anyone tones it: an interface,
+    /// a record or an enum is a contract or state (teal), anything else this project's own (green).
+    /// </summary>
+    internal static DiagramTone ToneOf(ClassType type)
+    {
+        if (type.Tone != DiagramTone.Plain) return type.Tone;
+        return TypeMarks.Contract(TypeMarks.Of(type)) ? DiagramTone.Teal : DiagramTone.Green;
+    }
+
+    /// <summary>
+    /// A relation's arrow: dashed for a link in name (implements, uses, creates), solid for one in fact (a kind of,
+    /// holds); its word the relation's own, or its kind's for a kind of and implements, which always say so.
+    /// </summary>
+    private static GraphEdge Edge(ClassRelation relation) =>
+        relation.Kind switch
+        {
+            RelationKind.Inherits => new GraphEdge(relation.From, relation.To, "is a"),
+            RelationKind.Implements => new GraphEdge(relation.From, relation.To, "implements", EdgeStyle.Dashed),
+            RelationKind.Holds => new GraphEdge(relation.From, relation.To, relation.Word ?? "holds"),
+            RelationKind.Uses => new GraphEdge(relation.From, relation.To, relation.Word ?? "uses", EdgeStyle.Dashed),
+            RelationKind.Creates =>
+                new GraphEdge(relation.From, relation.To, relation.Word ?? "creates", EdgeStyle.Dashed),
+            _ => throw new NotSupportedException(relation.Kind.Wire())
+        };
+}

@@ -1,79 +1,26 @@
-<svg viewBox="-24 -24 1055 1458" width="1055" height="1458" role="img" aria-label="F39 orchestration: the recovery contract" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1121 1396" width="1121" height="1396" role="img" aria-label="F39 orchestration: the recovery contract" xmlns="http://www.w3.org/2000/svg">
   <title>F39 orchestration: the recovery contract</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
-.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.label { fill: var(--text); font: 600 12px var(--mono); }
-.note { fill: var(--quiet); font: 10px var(--mono); }
-.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.dashed { stroke-dasharray: 5 4; }
-.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.group-label {
-  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-}
-.word { fill: var(--text); font: 500 10px var(--mono); }
-.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.frame { fill: none; stroke: var(--line); stroke-width: 1; }
-.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.highlight { fill: var(--tint); stroke: var(--accent); }
-.title { fill: var(--text); font: 600 13px var(--mono); }
-.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }
-.badge { fill: var(--quiet); }
-.badge-icon {
-  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
-.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
-.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
-.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
-.label.tone-green, .word.tone-green { fill: var(--green-ink); }
-.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
-.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
-.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
-.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
-.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
-.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
-.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
-.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
-.label.tone-red, .word.tone-red { fill: var(--red-ink); }
-.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
-.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
-.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
-.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
 svg {
   --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
-}
-.titlebar { fill: var(--banner); }
-.title-icon {
-  fill: none; stroke: var(--banner-ink); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.title-rule { fill: var(--banner-line); }
-.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
-.title-head { font-weight: 700; }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -81,14 +28,89 @@ svg {
 }
 .notes { fill: var(--quiet); font: 400 12px var(--sans); }
 .note-head { fill: var(--text); font-weight: 700; }
-.legend { fill: var(--quiet); font: 400 12px var(--sans); }
-.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -105,167 +127,190 @@ svg {
     <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1055" height="1458" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="1007" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="1121" height="1396" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a560.5 190 0 1 0 1121 0a560.5 190 0 1 0 -1121 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: the recovery contract</text>
+    <text class="pic-group" x="1073" y="14" text-anchor="end">Activity diagram</text>
+    <g class="flow" transform="translate(0 44)">
+      <path class="pic-line pic-edge tone-blue" d="M492 52L492 112" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M492 52L492 112" />
+      <path class="pic-line pic-edge" d="M492 196L492 208Q492 220 504 220L647 220Q668 220 668 241L668 262L668 314L668 374L668 426L668 492L668 560L668 626L668 694L668 772L668 856L668 916L668 1000L668 1021Q668 1042 647 1042L522 1042Q510 1042 510 1054L510 1066" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M492 196L492 208Q492 220 504 220L647 220Q668 220 668 241L668 262L668 314L668 374L668 426L668 492L668 560L668 626L668 694L668 772L668 856L668 916L668 1000L668 1021Q668 1042 647 1042L522 1042Q510 1042 510 1054L510 1066" />
+      <path class="pic-line pic-edge" d="M492 196L492 208Q492 220 480 220L179 220Q158 220 158 241L158 262" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M492 196L492 208Q492 220 480 220L179 220Q158 220 158 241L158 262" />
+      <path class="pic-line pic-edge tone-teal" d="M158 314L158 374" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M158 314L158 374" />
+      <path class="pic-line pic-edge" d="M158 426L158 492" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M158 426L158 492" />
+      <path class="pic-line pic-edge" d="M158 426L158 438Q158 450 170 450L480 450Q501 450 501 471L501 492L501 560L501 626" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M158 426L158 438Q158 450 170 450L480 450Q501 450 501 471L501 492L501 560L501 626" />
+      <path class="pic-line pic-edge tone-green" d="M158 560L158 572Q158 584 170 584L462 584Q483 584 483 605L483 626" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M158 560L158 572Q158 584 170 584L462 584Q483 584 483 605L483 626" />
+      <path class="pic-line pic-edge tone-green" d="M158 560L158 626L158 694L158 772" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M158 560L158 626L158 694L158 772" />
+      <path class="pic-line pic-edge" d="M492 694L492 772" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M492 694L492 772" />
+      <path class="pic-line pic-edge" d="M492 694L492 706Q492 718 480 718L200 718Q176 718 176 742L176 772" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M492 694L492 706Q492 718 480 718L200 718Q176 718 176 742L176 772" />
+      <path class="pic-line pic-edge tone-green" d="M492 856L492 916" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M492 856L492 916" />
+      <path class="pic-line pic-edge" d="M492 1000L492 1066" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M492 1000L492 1066" />
+      <path class="pic-line pic-edge tone-green" d="M492 856L492 871Q492 886 477 886L191 886Q176 886 176 901L176 916" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M492 856L492 871Q492 886 477 886L191 886Q176 886 176 901L176 916" />
+      <path class="pic-line pic-edge tone-red" d="M158 856L158 916" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M158 856L158 916" />
+      <path class="pic-line pic-edge" d="M619.6 958L990 958Q1014 958 1014 934L1014 312Q1014 288 990 288L286 288" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M619.6 958L990 958Q1014 958 1014 934L1014 312Q1014 288 990 288L286 288" />
+      <rect class="pic-pill pic-edge" x="674" y="224" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="695.5" y="236" text-anchor="middle">valid</text>
+      <rect class="pic-pill pic-edge" x="164" y="224" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="192.5" y="236" text-anchor="middle">invalid</text>
+      <rect class="pic-pill pic-edge" x="164" y="454" width="29" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="178.5" y="466" text-anchor="middle">yes</text>
+      <rect class="pic-pill pic-edge" x="507" y="454" width="22" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="518" y="466" text-anchor="middle">no</text>
+      <rect class="pic-pill pic-edge tone-green" x="357" y="588" width="120" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="417" y="600" text-anchor="middle">done or not done</text>
+      <rect class="pic-pill pic-edge tone-green" x="164" y="588" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="192.5" y="600" text-anchor="middle">unknown</text>
+      <rect class="pic-pill pic-edge" x="498" y="722" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="526.5" y="734" text-anchor="middle">allowed</text>
+      <rect class="pic-pill pic-edge" x="182" y="722" width="120" height="30" rx="9" />
+      <text class="pic-pill-word pic-ink" x="242" y="734" text-anchor="middle">refused, or past</text>
+      <text class="pic-pill-word pic-ink" x="242" y="746" text-anchor="middle">MaxAttempts</text>
+      <rect class="pic-pill pic-edge" x="498" y="1004" width="50" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="523" y="1016" text-anchor="middle">passes</text>
+      <rect class="pic-pill pic-edge" x="1024" y="601" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="1045.5" y="613" text-anchor="middle">fails</text>
+      <rect class="pic-panel flow-shape pic-edge tone-blue" x="392.8" y="0" width="198.4" height="52" rx="26" />
+      <rect class="pic-fill tone-blue" x="420.8" y="12" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(426.8 18) scale(0.6667)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="pic-name" x="456.8" y="31" text-anchor="start">Execute a step</text>
+      <path class="pic-panel flow-shape pic-edge" d="M345.4 154L367.4 112L616.6 112L638.6 154L616.6 196L367.4 196Z" />
+      <rect class="pic-fill" x="481" y="119" width="22" height="4" rx="2" />
+      <text class="pic-name" x="492" y="143" text-anchor="middle">Validate: schema, freshness</text>
+      <text class="pic-name" x="492" y="159" text-anchor="middle">(as_of), provenance,</text>
+      <text class="pic-name" x="492" y="175" text-anchor="middle">consistency, business rules</text>
+      <rect class="pic-panel" x="30" y="262" width="256" height="52" rx="10" />
+      <rect class="pic-fill tone-teal" x="46" y="274" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(52 280) scale(0.6667)">
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
+      </g>
+      <text class="pic-name" x="82" y="293" text-anchor="start">Classify: one DataFailure</text>
+      <path class="pic-panel flow-shape pic-edge" d="M19 400L41 374L275 374L297 400L275 426L41 426Z" />
+      <rect class="pic-fill" x="147" y="381" width="22" height="4" rx="2" />
+      <text class="pic-name" x="158" y="405" text-anchor="middle">Did a side effect happen?</text>
+      <rect class="pic-panel" x="33.8" y="492" width="248.4" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="49.8" y="512" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(55.8 518) scale(0.6667)">
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
+      </g>
+      <text class="pic-name" x="85.8" y="523" text-anchor="start">Reconcile: read the real</text>
+      <text class="pic-name" x="85.8" y="539" text-anchor="start">external state</text>
+      <path class="pic-panel flow-shape pic-edge" d="M334 660L356 626L628 626L650 660L628 694L356 694Z" />
+      <rect class="pic-fill" x="481" y="633" width="22" height="4" rx="2" />
+      <text class="pic-name" x="492" y="657" text-anchor="middle">RecoveryPolicy.Allows(failure,</text>
+      <text class="pic-name" x="492" y="673" text-anchor="middle">action, attempt)?</text>
+      <rect class="pic-panel" x="26.2" y="772" width="263.6" height="84" rx="10" />
+      <rect class="pic-fill tone-red" x="42.2" y="800" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(48.2 806) scale(0.6667)">
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+      </g>
+      <text class="pic-name" x="78.2" y="811" text-anchor="start">Escalate or stop: keep the</text>
+      <text class="pic-name" x="78.2" y="827" text-anchor="start">evidence, ask a person</text>
+      <rect class="pic-panel" x="352.6" y="772" width="278.8" height="84" rx="10" />
+      <rect class="pic-fill tone-green" x="368.6" y="800" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(374.6 806) scale(0.6667)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="pic-name" x="404.6" y="803" text-anchor="start">Recover within bounds:</text>
+      <text class="pic-name" x="404.6" y="819" text-anchor="start">refetch, alternative source,</text>
+      <text class="pic-name" x="404.6" y="835" text-anchor="start">quarantine, compensate</text>
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M20 916L314 916L296 1000L2 1000Z" />
+      <rect class="pic-fill tone-amber" x="30" y="944" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(36 950) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="pic-name" x="66" y="947" text-anchor="start">RecoveryRecord: kind, records,</text>
+      <text class="pic-name" x="66" y="963" text-anchor="start">source and version, action,</text>
+      <text class="pic-name" x="66" y="979" text-anchor="start">attempt, result, approval</text>
+      <path class="pic-panel flow-shape pic-edge" d="M364.4 958L386.4 916L597.6 916L619.6 958L597.6 1000L386.4 1000Z" />
+      <rect class="pic-fill" x="481" y="939" width="22" height="4" rx="2" />
+      <text class="pic-name" x="492" y="963" text-anchor="middle">Verify before resuming</text>
+      <rect class="pic-panel flow-shape pic-edge tone-green" x="373.8" y="1066" width="236.4" height="52" rx="26" />
+      <rect class="pic-fill tone-green" x="401.8" y="1078" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(407.8 1084) scale(0.6667)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="pic-name" x="437.8" y="1097" text-anchor="start">Resume the workflow</text>
+      <circle class="pic-port pic-edge tone-blue" cx="492" cy="52" r="4" />
+      <circle class="pic-port pic-edge" cx="492" cy="196" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="158" cy="314" r="4" />
+      <circle class="pic-port pic-edge" cx="158" cy="426" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="158" cy="560" r="4" />
+      <circle class="pic-port pic-edge" cx="492" cy="694" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="492" cy="856" r="4" />
+      <circle class="pic-port pic-edge" cx="492" cy="1000" r="4" />
+      <circle class="pic-port pic-edge tone-red" cx="158" cy="856" r="4" />
+      <circle class="pic-port pic-edge" cx="619.6" cy="958" r="4" />
+    </g>
+    <rect class="mrq-rule" x="0" y="1188" width="1073" height="1" rx="0" />
+    <text class="pic-group" x="0" y="1210" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="1227" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="1240.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-green" x="117.4" y="1227" width="18" height="18" rx="6" />
+    <text class="pic-means" x="145.4" y="1240.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-teal" x="254.6" y="1227" width="18" height="18" rx="6" />
+    <text class="pic-means" x="282.6" y="1240.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-red" x="438" y="1227" width="18" height="18" rx="6" />
+    <text class="pic-means" x="466" y="1240.5" text-anchor="start">outside the process</text>
+    <rect class="pic-fill tone-amber" x="621.4" y="1227" width="18" height="18" rx="6" />
+    <text class="pic-means" x="649.4" y="1240.5" text-anchor="start">files and data</text>
+    <path class="pic-panel flow-shape pic-edge" d="M771.8 1236L779.8 1228L793.8 1228L801.8 1236L793.8 1244L779.8 1244Z" />
+    <text class="pic-means" x="811.8" y="1240.5" text-anchor="start">a decision</text>
+    <path class="pic-panel flow-shape pic-edge" d="M925.8 1228L937.8 1228L919.8 1244L907.8 1244Z" />
+    <text class="pic-means" x="947.8" y="1240.5" text-anchor="start">data in or out</text>
+    <rect class="pic-panel flow-shape pic-edge" x="0" y="1256" width="30" height="16" rx="8" />
+    <text class="pic-means" x="40" y="1268.5" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M182.2 1264H212.2" marker-end="url(#arrow)" />
+    <text class="pic-means" x="222.2" y="1268.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">F39 orchestration:</tspan>
-    <tspan class="title-rest">the recovery contract</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="edge tone-blue" d="M 459 52 L 459 112" marker-end="url(#arrow-blue)" />
-    <path class="edge" d="M 459 196 L 459 208 Q 459 220 471 220 L 594 220 Q 615 220 615 241 L 615 262 L 615 314 L 615 380 L 615 432 L 615 444 Q 615 456 627 456 L 747 456 Q 771 456 771 480 L 771 516 L 771 584 L 771 686 L 771 754 L 771 868 L 771 952 L 771 1036 L 771 1120 L 771 1141 Q 771 1162 750 1162 L 471 1162 Q 459 1162 459 1174 L 459 1186" marker-end="url(#arrow)" />
-    <path class="edge" d="M 459 196 L 459 208 Q 459 220 447 220 L 324 220 Q 303 220 303 241 L 303 262" marker-end="url(#arrow)" />
-    <path class="edge tone-teal" d="M 303 314 L 303 380" marker-end="url(#arrow-teal)" />
-    <path class="edge" d="M 303 432 L 303 453 Q 303 474 282 474 L 168 474 Q 147 474 147 495 L 147 516" marker-end="url(#arrow)" />
-    <path class="edge" d="M 303 432 L 303 453 Q 303 474 324 474 L 438 474 Q 459 474 459 495 L 459 516 L 459 584 L 459 686" marker-end="url(#arrow)" />
-    <path class="edge tone-green" d="M 147 584 L 147 620 Q 147 644 171 644 L 438 644 Q 459 644 459 665 L 459 686" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 147 584 L 147 686 L 147 754 L 147 868" marker-end="url(#arrow-green)" />
-    <path class="edge" d="M 459 754 L 459 868" marker-end="url(#arrow)" />
-    <path class="edge" d="M 459 754 L 459 790 Q 459 814 435 814 L 171 814 Q 147 814 147 838 L 147 868" marker-end="url(#arrow)" />
-    <path class="edge tone-green" d="M 459 952 L 459 1036" marker-end="url(#arrow-green)" />
-    <path class="edge" d="M 459 1120 L 459 1186" marker-end="url(#arrow)" />
-    <path class="edge tone-green" d="M 459 952 L 459 988 Q 459 1012 435 1012 L 159 1012 Q 147 1012 147 1024 L 147 1036" marker-end="url(#arrow-green)" />
-    <path class="edge tone-red" d="M 147 952 L 147 1036" marker-end="url(#arrow-red)" />
-    <path class="edge" d="M 575.6 1078 L 924 1078 Q 948 1078 948 1054 L 948 312 Q 948 288 924 288 L 431 288" marker-end="url(#arrow)" />
-    <rect class="word-chip" x="621" y="224" width="43" height="18" rx="4" />
-    <text class="word" x="642.5" y="236" text-anchor="middle">valid</text>
-    <rect class="word-chip" x="309" y="224" width="57" height="18" rx="4" />
-    <text class="word" x="337.5" y="236" text-anchor="middle">invalid</text>
-    <rect class="word-chip" x="153" y="478" width="29" height="18" rx="4" />
-    <text class="word" x="167.5" y="490" text-anchor="middle">yes</text>
-    <rect class="word-chip" x="465" y="478" width="22" height="18" rx="4" />
-    <text class="word" x="476" y="490" text-anchor="middle">no</text>
-    <rect class="word-chip tone-green" x="465" y="648" width="120" height="18" rx="4" />
-    <text class="word tone-green" x="525" y="660" text-anchor="middle">done or not done</text>
-    <rect class="word-chip tone-green" x="153" y="648" width="57" height="18" rx="4" />
-    <text class="word tone-green" x="181.5" y="660" text-anchor="middle">unknown</text>
-    <rect class="word-chip" x="465" y="818" width="57" height="18" rx="4" />
-    <text class="word" x="493.5" y="830" text-anchor="middle">allowed</text>
-    <rect class="word-chip" x="153" y="818" width="120" height="30" rx="4" />
-    <text class="word" x="213" y="830" text-anchor="middle">refused, or past</text>
-    <text class="word" x="213" y="842" text-anchor="middle">MaxAttempts</text>
-    <rect class="word-chip" x="465" y="1124" width="50" height="18" rx="4" />
-    <text class="word" x="490" y="1136" text-anchor="middle">passes</text>
-    <rect class="word-chip" x="958" y="661" width="43" height="18" rx="4" />
-    <text class="word" x="979.5" y="673" text-anchor="middle">fails</text>
-    <rect class="box tone-blue" x="372.8" y="0" width="172.4" height="52" rx="10" />
-    <circle class="badge tone-blue" cx="400.8" cy="26" r="14" />
-    <g class="badge-icon" transform="translate(392.8 18) scale(0.6667)">
-      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-    </g>
-    <text class="label tone-blue" x="424.8" y="31" text-anchor="start">Execute a step</text>
-    <rect class="box" x="323.4" y="112" width="271.2" height="84" rx="10" />
-    <circle class="badge" cx="351.4" cy="154" r="14" />
-    <g class="badge-icon" transform="translate(343.4 146) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label" x="375.4" y="143" text-anchor="start">Validate: schema, freshness</text>
-    <text class="label" x="375.4" y="159" text-anchor="start">(as_of), provenance,</text>
-    <text class="label" x="375.4" y="175" text-anchor="start">consistency, business rules</text>
-    <rect class="box tone-teal" x="175" y="262" width="256" height="52" rx="10" />
-    <circle class="badge tone-teal" cx="203" cy="288" r="14" />
-    <g class="badge-icon" transform="translate(195 280) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label tone-teal" x="227" y="293" text-anchor="start">Classify: one DataFailure</text>
-    <rect class="box" x="175" y="380" width="256" height="52" rx="10" />
-    <circle class="badge" cx="203" cy="406" r="14" />
-    <g class="badge-icon" transform="translate(195 398) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label" x="227" y="411" text-anchor="start">Did a side effect happen?</text>
-    <rect class="box tone-green" x="22.8" y="516" width="248.4" height="68" rx="10" />
-    <circle class="badge tone-green" cx="50.8" cy="550" r="14" />
-    <g class="badge-icon" transform="translate(42.8 542) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label tone-green" x="74.8" y="547" text-anchor="start">Reconcile: read the real</text>
-    <text class="label tone-green" x="74.8" y="563" text-anchor="start">external state</text>
-    <rect class="box" x="312" y="686" width="294" height="68" rx="10" />
-    <circle class="badge" cx="340" cy="720" r="14" />
-    <g class="badge-icon" transform="translate(332 712) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label" x="364" y="717" text-anchor="start">RecoveryPolicy.Allows(failure,</text>
-    <text class="label" x="364" y="733" text-anchor="start">action, attempt)?</text>
-    <rect class="box tone-red" x="15.2" y="868" width="263.6" height="84" rx="10" />
-    <circle class="badge tone-red" cx="43.2" cy="910" r="14" />
-    <g class="badge-icon" transform="translate(35.2 902) scale(0.6667)">
-      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-    </g>
-    <text class="label tone-red" x="67.2" y="907" text-anchor="start">Escalate or stop: keep the</text>
-    <text class="label tone-red" x="67.2" y="923" text-anchor="start">evidence, ask a person</text>
-    <rect class="box tone-green" x="319.6" y="868" width="278.8" height="84" rx="10" />
-    <circle class="badge tone-green" cx="347.6" cy="910" r="14" />
-    <g class="badge-icon" transform="translate(339.6 902) scale(0.6667)">
-      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-    </g>
-    <text class="label tone-green" x="371.6" y="899" text-anchor="start">Recover within bounds:</text>
-    <text class="label tone-green" x="371.6" y="915" text-anchor="start">refetch, alternative source,</text>
-    <text class="label tone-green" x="371.6" y="931" text-anchor="start">quarantine, compensate</text>
-    <rect class="box tone-amber" x="0" y="1036" width="294" height="84" rx="10" />
-    <circle class="badge tone-amber" cx="28" cy="1078" r="14" />
-    <g class="badge-icon" transform="translate(20 1070) scale(0.6667)">
-      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-      <path d="M9 9l1 0" />
-      <path d="M9 13l6 0" />
-      <path d="M9 17l6 0" />
-    </g>
-    <text class="label tone-amber" x="52" y="1067" text-anchor="start">RecoveryRecord: kind, records,</text>
-    <text class="label tone-amber" x="52" y="1083" text-anchor="start">source and version, action,</text>
-    <text class="label tone-amber" x="52" y="1099" text-anchor="start">attempt, result, approval</text>
-    <rect class="box" x="342.4" y="1036" width="233.2" height="84" rx="10" />
-    <circle class="badge" cx="370.4" cy="1078" r="14" />
-    <g class="badge-icon" transform="translate(362.4 1070) scale(0.6667)">
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </g>
-    <text class="label" x="394.4" y="1083" text-anchor="start">Verify before resuming</text>
-    <rect class="box tone-green" x="353.8" y="1186" width="210.4" height="52" rx="10" />
-    <circle class="badge tone-green" cx="381.8" cy="1212" r="14" />
-    <g class="badge-icon" transform="translate(373.8 1204) scale(0.6667)">
-      <path d="M7 12l5 5l10 -10" />
-      <path d="M2 12l5 5m5 -5l5 -5" />
-    </g>
-    <text class="label tone-green" x="405.8" y="1217" text-anchor="start">Resume the workflow</text>
-  </g>
-  <rect class="swatch tone-blue" x="0" y="1320" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="1330.5" text-anchor="start">starts it</text>
-  <rect class="swatch tone-green" x="104.8" y="1320" width="12" height="12" rx="3" />
-  <text class="legend" x="122.8" y="1330.5" text-anchor="start">this project</text>
-  <rect class="swatch tone-teal" x="231.2" y="1320" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="1330.5" text-anchor="start">contracts and state</text>
-  <rect class="swatch tone-red" x="408" y="1320" width="12" height="12" rx="3" />
-  <text class="legend" x="426" y="1330.5" text-anchor="start">outside the process</text>
-  <rect class="swatch tone-amber" x="584.8" y="1320" width="12" height="12" rx="3" />
-  <text class="legend" x="602.8" y="1330.5" text-anchor="start">files and data</text>
-  <rect class="notebar" x="0" y="1356" width="1007" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 1366) scale(0.6667)">
+  <rect class="notebar" x="0" y="1294" width="1073" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 1304) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1378">
+  <text class="notes" x="38" y="1316">
     <tspan class="note-head">When data goes bad mid-run:</tspan>
-    <tspan class="note-rest">the workflow classifies it, reconciles after a side effect, recovers only within its policy, and verifies</tspan>
+    <tspan class="note-rest">the workflow classifies it, reconciles after a side effect, recovers only within its policy, and verifies before</tspan>
   </text>
-  <text class="notes" x="38" y="1395">
-    <tspan class="note-rest">before it resumes.</tspan>
+  <text class="notes" x="38" y="1333">
+    <tspan class="note-rest">it resumes.</tspan>
   </text>
 </svg>

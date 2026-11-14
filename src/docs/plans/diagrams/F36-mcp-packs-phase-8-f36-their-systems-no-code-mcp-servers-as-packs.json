@@ -1,28 +1,33 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "F36 MCP servers as packs: one pack, as the host starts",
   "caption": "Their systems, no code: a server becomes a pack only when its command or address, its tools and its pin all check out, and every one of its tools runs inside a guard.",
   "flow": {
     "nodes": [
       {
         "id": "named",
+        "shape": "terminal",
         "icon": "terminal",
         "tone": "blue",
         "label": "Host starts,\nMCP_PACKS=pricerules"
       },
       {
         "id": "settings",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "config/mcp/pricerules.json\nread: command or URL,\nallowlist, prefix, trusted,\neffects, pin"
       },
       {
         "id": "approved",
+        "shape": "decision",
         "icon": "search",
         "label": "stdio: was this exact command\napproved?"
       },
       {
         "id": "unavailable",
+        "shape": "terminal",
         "icon": "shield",
         "tone": "red",
         "label": "pack unavailable, with its\nreason"
@@ -41,6 +46,7 @@
       },
       {
         "id": "drift",
+        "shape": "decision",
         "icon": "search",
         "label": "every allowlisted tool listed?"
       },
@@ -52,6 +58,7 @@
       },
       {
         "id": "pin",
+        "shape": "decision",
         "icon": "search",
         "label": "pin matches: version when\nreported, hash always"
       },
@@ -69,18 +76,21 @@
       },
       {
         "id": "sessions",
+        "shape": "terminal",
         "icon": "message",
         "tone": "violet",
         "label": "sessions open with it; each\nchat keeps the list it opened\nwith (FX4)"
       },
       {
         "id": "changed",
+        "shape": "terminal",
         "icon": "cloud",
         "tone": "red",
         "label": "tools/list_changed from the\nserver"
       },
       {
         "id": "refresh",
+        "shape": "terminal",
         "icon": "settings",
         "tone": "blue",
         "label": "admin refresh (step 9a)"

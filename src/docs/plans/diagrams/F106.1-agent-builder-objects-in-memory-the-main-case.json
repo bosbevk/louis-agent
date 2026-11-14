@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F106.1 a builder for the common path: objects in memory",
   "caption": "One provider, one context: the service provider holds the host's context, its own engine and the factory that builds one engine per toolset list.",
   "flow": {

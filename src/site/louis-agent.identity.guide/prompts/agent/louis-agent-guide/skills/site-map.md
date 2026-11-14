@@ -53,9 +53,10 @@ comes from, what is built on the framework), so when words are not enough, point
 - `/pricing`: the two plans, Starter and Business, what each includes, and what is quoted on the short call (the
   building fee, the first files, a custom agent). Send anyone who asks what it costs here. The site's own words.
 - `/contact`: how to reach the project. The site's own words.
-- `/demos`: the demos in one place, each a real run recorded once and played back. Send someone who asks what the
-  framework can do, or for a demo, here, and explain each demo from its doc: what it shows, how it was made, what is
-  real and what it would mean for their business. Sources: `demos/louis-agent/docs/demos.md`.
+- `/demos`: the three businesses' demos in one place, each a real run recorded once and played back. The coding
+  agent and the triage team are not on this page: they have their own, below. Send someone who asks what the
+  framework can do, or for a demo, here, and explain each demo from its doc: what it shows, how it was made, what
+  is real and what it would mean for their business. Sources: `demos/louis-agent/docs/demos.md`.
 - `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`: three made-up businesses' agents (Seemeeu
   Guesthouse in Yzerfontein, Wheatfield Kitchen, Koringland Attorneys), each a real conversation recorded once and
   played on a mock of the business's own website: a customer asks, the agent answers from the business's own facts

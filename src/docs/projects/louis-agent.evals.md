@@ -1,8 +1,9 @@
 # louis-agent.evals — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `src/evals/louis-agent.evals/` · **References:** louis-agent.core,
+> **Kind:** library (`net10.0`) · **Path:** `src/evals/louis-agent.evals/` · **References:** louis-agent.core,
 > louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner,
 > louis-agent.identity.puls.judges
+> **Also shows:** `component`
 
 ![The eval harness, and its parts: an eval as a class, trials, checks and metrics, the protocol and the judge's calibration](diagrams/louis-agent.evals.svg)
 
@@ -15,6 +16,10 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 ([ADR 0029](../adr/0029-simulations-in-csharp.md)).
 
 ## How it works
+
+One run, step by step.
+
+![One run: the dataset loaded strictly, each trial a conversation, a failure of the plumbing kept apart, the rest graded](diagrams/louis-agent.evals-flow.svg)
 
 - **An eval is a C# class.** `IEval` names its modes (`EvalMode`: the toolsets and role a session opens with), its
   dataset and its graders, and the identity it proves, which `EVALS=` chooses by. Since F49.2, `Files/FileEval` is
@@ -68,8 +73,6 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 - **Checks of the checks.** `Conformance/` runs every eval's reference transcripts (each must pass its required
   graders) and known-bad ones (each required grader must fail one); `Labels/` writes the sheet a person labels and
   calibrates a model judge against the labels (90% of each class, ADR 0029).
-
-## Diagrams
 
 ![The eval harness: what the runner uses, and where a run's events go](diagrams/louis-agent.evals-diagrams.svg)
 

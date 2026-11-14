@@ -1,79 +1,26 @@
-<svg viewBox="-24 -24 1765 1721" width="1765" height="1721" role="img" aria-label="F39 orchestration: the triage service's interfaces, part B" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1628 1751" width="1628" height="1751" role="img" aria-label="F39 orchestration: the triage service's interfaces, part B" xmlns="http://www.w3.org/2000/svg">
   <title>F39 orchestration: the triage service's interfaces, part B</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
-.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.label { fill: var(--text); font: 600 12px var(--mono); }
-.note { fill: var(--quiet); font: 10px var(--mono); }
-.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.dashed { stroke-dasharray: 5 4; }
-.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.group-label {
-  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-}
-.word { fill: var(--text); font: 500 10px var(--mono); }
-.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.frame { fill: none; stroke: var(--line); stroke-width: 1; }
-.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
-.highlight { fill: var(--tint); stroke: var(--accent); }
-.title { fill: var(--text); font: 600 13px var(--mono); }
-.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
-.code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }
-.badge { fill: var(--quiet); }
-.badge-icon {
-  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
-.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
-.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
-.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
-.label.tone-green, .word.tone-green { fill: var(--green-ink); }
-.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
-.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
-.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
-.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
-.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
-.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
-.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
-.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
-.label.tone-red, .word.tone-red { fill: var(--red-ink); }
-.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
-.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
-.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
-.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
 svg {
   --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
-}
-.titlebar { fill: var(--banner); }
-.title-icon {
-  fill: none; stroke: var(--banner-ink); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.title-rule { fill: var(--banner-line); }
-.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
-.title-head { font-weight: 700; }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -81,173 +28,410 @@ svg {
 }
 .notes { fill: var(--quiet); font: 400 12px var(--sans); }
 .note-head { fill: var(--text); font-weight: 700; }
-.legend { fill: var(--quiet); font: 400 12px var(--sans); }
-.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
 </style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.cls-cover { fill: var(--ground); }
+.cls-group { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-badge { fill: var(--quiet); }
+.cls-badge.tone-blue { fill: var(--blue-line); }
+.cls-badge.tone-green { fill: var(--green-line); }
+.cls-badge.tone-violet { fill: var(--violet-line); }
+.cls-badge.tone-teal { fill: var(--teal-line); }
+.cls-badge.tone-red { fill: var(--red-line); }
+.cls-badge.tone-amber { fill: var(--amber-line); }
+.cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
+.cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
+.cls-line { fill: none; stroke-linecap: round; }
+.cls-line.holds { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.inherits { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.implements { stroke: var(--violet-line); stroke-width: 1.8; stroke-dasharray: 6 5; }
+.cls-line.creates { stroke: var(--blue-line); stroke-width: 1.6; stroke-dasharray: 2 5; }
+.cls-line.uses {
+  stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
+}
+.cls-chip.holds { stroke: var(--violet-line); }
+.cls-chip.inherits { stroke: var(--violet-line); }
+.cls-chip.implements { stroke: var(--violet-line); }
+.cls-chip.creates { stroke: var(--blue-line); }
+.cls-chip.uses { stroke: var(--quiet); }
+.cls-word { fill: var(--text); }
+.cls-word.quiet { fill: var(--quiet); }
+.end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
+.end-triangle.tone-blue { stroke: var(--blue-line); }
+.end-triangle.tone-green { stroke: var(--green-line); }
+.end-triangle.tone-violet { stroke: var(--violet-line); }
+.end-triangle.tone-teal { stroke: var(--teal-line); }
+.end-triangle.tone-red { stroke: var(--red-line); }
+.end-triangle.tone-amber { stroke: var(--amber-line); }
+.end-diamond { fill: var(--quiet); }
+.end-diamond.tone-blue { fill: var(--blue-line); }
+.end-diamond.tone-green { fill: var(--green-line); }
+.end-diamond.tone-violet { fill: var(--violet-line); }
+.end-diamond.tone-teal { fill: var(--teal-line); }
+.end-diamond.tone-red { fill: var(--red-line); }
+.end-diamond.tone-amber { fill: var(--amber-line); }
+.end-open {
+  fill: none; stroke: var(--quiet); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.end-open.tone-blue { stroke: var(--blue-line); }
+.end-open.tone-green { stroke: var(--green-line); }
+.end-open.tone-violet { stroke: var(--violet-line); }
+.end-open.tone-teal { stroke: var(--teal-line); }
+.end-open.tone-red { stroke: var(--red-line); }
+.end-open.tone-amber { stroke: var(--amber-line); }
+.cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
+.cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-open" d="M 1 1 L 9 5 L 1 9" />
+    </marker>
+    <marker id="triangle-violet" viewBox="0 0 14 12" refX="13" refY="6" markerWidth="14" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-triangle tone-violet" d="M 1 1 L 13 6 L 1 11 z" />
+    </marker>
+    <marker id="diamond-violet" viewBox="0 0 14 10" refX="14" refY="5" markerWidth="14" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-diamond tone-violet" d="M 0 5 L 7 1 L 14 5 L 7 9 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1765" height="1721" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="1717" height="50" rx="10" />
-  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
-    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-    <path d="M4 12l8 4l8 -4" />
-    <path d="M4 16l8 4l8 -4" />
+  <rect class="ground" x="-24" y="-24" width="1628" height="1751" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a814 190 0 1 0 1628 0a814 190 0 1 0 -1628 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: the triage service's interfaces, part B</text>
+    <text class="pic-group" x="1580" y="14" text-anchor="end">Class diagram</text>
+    <g class="cls-drawing" transform="translate(0 44)">
+      <path class="cls-line uses" d="M240.8 695L312.8 695Q336.8 695 336.8 719L336.8 927Q336.8 951 360.8 951L448.9 951" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M240.8 695L312.8 695Q336.8 695 336.8 719L336.8 1183Q336.8 1207 360.8 1207L448.9 1207" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M240.8 695L448.9 695" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1225.9 951L1400 951" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M686.9 951L736.9 951Q760.9 951 760.9 927L760.9 591Q760.9 567 784.9 567L938.9 567" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M686.9 1207L718.9 1207Q742.9 1207 742.9 1183L742.9 984Q742.9 960 766.9 960L938.9 960" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M686.9 1207L718.9 1207Q742.9 1207 742.9 1231L742.9 1439Q742.9 1463 766.9 1463L938.9 1463" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M240.8 695L312.8 695Q336.8 695 336.8 671L336.8 591Q336.8 567 360.8 567L448.9 567" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M686.9 951L736.9 951Q760.9 951 760.9 975L760.9 1302Q760.9 1326 784.9 1326L938.9 1326" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M686.9 1207L718.9 1207Q742.9 1207 742.9 1231L742.9 1320Q742.9 1344 766.9 1344L938.9 1344" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M1225.9 951L1262 951Q1286 951 1286 927L1286 600Q1286 576 1310 576L1400 576" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M240.8 1079L448.9 1079L686.9 1079L938.9 1079L1225.9 1079L1400 1079" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M240.8 439L312.8 439Q336.8 439 336.8 415L336.8 189Q336.8 165 360.8 165L448.9 165L686.9 165L938.9 165L1225.9 165L1400 165" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M240.8 823L448.9 823L686.9 823L938.9 823L1225.9 823L1280 823Q1304 823 1304 799L1304 746Q1304 722 1328 722L1400 722" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M686.9 695L754.9 695Q778.9 695 778.9 671L778.9 335Q778.9 311 802.9 311L938.9 311" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M686.9 695L754.9 695Q778.9 695 778.9 671L778.9 335Q778.9 311 802.9 311L938.9 311" />
+      <path class="cls-line holds" d="M686.9 695L754.9 695Q778.9 695 778.9 719L778.9 1174Q778.9 1198 802.9 1198L938.9 1198" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M686.9 695L754.9 695Q778.9 695 778.9 719L778.9 1174Q778.9 1198 802.9 1198L938.9 1198" />
+      <path class="cls-line holds" d="M686.9 695L938.9 695L1225.9 695L1247 695Q1268 695 1268 674L1268 582Q1268 558 1292 558L1400 558" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M686.9 695L938.9 695L1225.9 695L1247 695Q1268 695 1268 674L1268 582Q1268 558 1292 558L1400 558" />
+      <path class="cls-line holds" d="M686.9 695L754.9 695Q778.9 695 778.9 671L778.9 207Q778.9 183 802.9 183L938.9 183L1225.9 183L1400 183" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M686.9 695L754.9 695Q778.9 695 778.9 671L778.9 207Q778.9 183 802.9 183L938.9 183L1225.9 183L1400 183" />
+      <path class="cls-line holds" d="M686.9 695L938.9 695L1225.9 695L1299.5 695Q1304 695 1304 699.5L1304 699.5Q1304 704 1308.5 704L1400 704" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M686.9 695L938.9 695L1225.9 695L1299.5 695Q1304 695 1304 699.5L1304 699.5Q1304 704 1308.5 704L1400 704" />
+      <path class="cls-line holds" d="M1225.9 951L1262 951Q1286 951 1286 975L1286 1037Q1286 1061 1310 1061L1400 1061" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1225.9 951L1262 951Q1286 951 1286 975L1286 1037Q1286 1061 1310 1061L1400 1061" />
+      <path class="cls-line holds" d="M1225.9 567L1238 567Q1250 567 1250 555L1250 225Q1250 201 1274 201L1400 201" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1225.9 567L1238 567Q1250 567 1250 555L1250 225Q1250 201 1274 201L1400 201" />
+      <path class="cls-line holds" d="M1225.9 567L1238 567Q1250 567 1250 579L1250 662Q1250 686 1274 686L1400 686" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1225.9 567L1238 567Q1250 567 1250 579L1250 662Q1250 686 1274 686L1400 686" />
+      <rect class="pic-pill cls-chip implements" x="353.9" y="558" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="392.9" y="570" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip implements" x="819.9" y="1317" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="858.9" y="1329" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="346.9" y="942" width="92" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="392.9" y="954" text-anchor="middle">names triage</text>
+      <rect class="pic-pill cls-chip uses" x="346.9" y="1198" width="92" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="392.9" y="1210" text-anchor="middle">names fixing</text>
+      <rect class="pic-pill cls-chip uses" x="374.9" y="686" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="392.9" y="698" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip holds" x="711.4" y="686" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="732.9" y="698" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip implements" x="1313" y="567" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1352" y="579" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip holds" x="1330.5" y="1052" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1352" y="1064" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip uses" x="1334" y="942" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1352" y="954" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip implements" x="249.8" y="1070" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="288.8" y="1082" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip implements" x="249.8" y="430" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="288.8" y="442" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip implements" x="249.8" y="814" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="288.8" y="826" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="805.9" y="558" width="106" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="858.9" y="570" text-anchor="middle">triage toolset</text>
+      <rect class="pic-pill cls-chip uses" x="840.9" y="951" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="858.9" y="963" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip uses" x="791.9" y="1454" width="134" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="858.9" y="1466" text-anchor="middle">fix-result toolset</text>
+      <rect class="cls-cover" x="0" y="407" width="240.8" height="64" rx="14" />
+      <rect class="mrq-glass" x="0" y="407" width="240.8" height="64" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="425" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="443.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="435" text-anchor="start">JsonLinesErrorFeed</text>
+      <text class="pic-note" x="52" y="451" text-anchor="start">moved from ErrorFeed, B1</text>
+      <rect class="cls-cover" x="0" y="647" width="240.8" height="96" rx="14" />
+      <rect class="mrq-glass" x="0" y="647" width="240.8" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="665" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="683.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="675" text-anchor="start">OpsIdentity</text>
+      <text class="pic-note" x="52" y="691" text-anchor="start">B1</text>
+      <path class="cls-divide" d="M14 711H226.8" />
+      <text class="cls-member" x="14" y="729" text-anchor="start">packs by name</text>
+      <rect class="cls-cover" x="0" y="775" width="240.8" height="96" rx="14" />
+      <rect class="mrq-glass" x="0" y="775" width="240.8" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="793" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="811.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="803" text-anchor="start">JsonLinesTriageRecorder</text>
+      <text class="pic-note" x="52" y="819" text-anchor="start">moved from Program, B1</text>
+      <path class="cls-divide" d="M14 839H226.8" />
+      <text class="cls-member" x="14" y="857" text-anchor="start">decisions.jsonl</text>
+      <rect class="cls-cover" x="0" y="1041" width="240.8" height="76" rx="14" />
+      <rect class="mrq-glass" x="0" y="1041" width="240.8" height="76" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="1065" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="1083.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="1069" text-anchor="start">CliReplay</text>
+      <text class="pic-note" x="52" y="1085" text-anchor="start">moved from ReplayRequest,</text>
+      <text class="pic-note" x="52" y="1097" text-anchor="start">B3</text>
+      <rect class="cls-cover" x="448.9" y="535" width="238" height="64" rx="14" />
+      <rect class="mrq-glass" x="448.9" y="535" width="238" height="64" rx="14" />
+      <rect class="mrq-edge" x="472.9" y="534.5" width="190" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="462.9" y="553" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="476.9" y="571.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="500.9" y="563" text-anchor="start">IAgentIdentity</text>
+      <text class="pic-note" x="500.9" y="579" text-anchor="start">interface, Phase 2</text>
+      <rect class="cls-cover" x="448.9" y="647" width="238" height="96" rx="14" />
+      <rect class="mrq-glass" x="448.9" y="647" width="238" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="462.9" y="665" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="476.9" y="683.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="500.9" y="675" text-anchor="start">TriageWorkflow</text>
+      <text class="pic-note" x="500.9" y="691" text-anchor="start">B4</text>
+      <path class="cls-divide" d="M462.9 711H672.9" />
+      <text class="cls-member" x="462.9" y="729" text-anchor="start">HandleAsync()</text>
+      <rect class="cls-cover" x="448.9" y="896" width="238" height="110" rx="14" />
+      <rect class="mrq-glass" x="448.9" y="896" width="238" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="462.9" y="914" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="476.9" y="932.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="500.9" y="924" text-anchor="start">TriagePack</text>
+      <text class="pic-note" x="500.9" y="940" text-anchor="start">B1</text>
+      <path class="cls-divide" d="M462.9 960H672.9" />
+      <text class="cls-member" x="462.9" y="978" text-anchor="start">Feed</text>
+      <text class="cls-member" x="462.9" y="992" text-anchor="start">Recorder</text>
+      <rect class="cls-cover" x="448.9" y="1159" width="238" height="96" rx="14" />
+      <rect class="mrq-glass" x="448.9" y="1159" width="238" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="462.9" y="1177" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="476.9" y="1195.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="500.9" y="1187" text-anchor="start">FixingPack</text>
+      <text class="pic-note" x="500.9" y="1203" text-anchor="start">B1</text>
+      <path class="cls-divide" d="M462.9 1223H672.9" />
+      <text class="cls-member" x="462.9" y="1241" text-anchor="start">voorman-fixer role, fix-result</text>
+      <rect class="cls-cover" x="938.9" y="279" width="287" height="64" rx="14" />
+      <rect class="mrq-glass" x="938.9" y="279" width="287" height="64" rx="14" />
+      <rect class="cls-badge tone-violet" x="952.9" y="297" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="966.9" y="315.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="990.9" y="307" text-anchor="start">RouteClassifier</text>
+      <text class="pic-note" x="990.9" y="323" text-anchor="start">part A</text>
+      <rect class="cls-cover" x="938.9" y="519" width="287" height="96" rx="14" />
+      <rect class="mrq-glass" x="938.9" y="519" width="287" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="952.9" y="537" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="966.9" y="555.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="990.9" y="547" text-anchor="start">TriageTools</text>
+      <text class="pic-note" x="990.9" y="563" text-anchor="start">B1, B5</text>
+      <path class="cls-divide" d="M952.9 583H1211.9" />
+      <text class="cls-member" x="952.9" y="601" text-anchor="start">Acknowledge, Escalate, RecordDecision</text>
+      <rect class="cls-cover" x="938.9" y="919" width="287" height="64" rx="14" />
+      <rect class="mrq-glass" x="938.9" y="919" width="287" height="64" rx="14" />
+      <rect class="cls-badge tone-green" x="952.9" y="937" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="966.9" y="955.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="990.9" y="947" text-anchor="start">ConfirmFix</text>
+      <text class="pic-note" x="990.9" y="963" text-anchor="start">B3</text>
+      <rect class="cls-cover" x="938.9" y="1175" width="287" height="64" rx="14" />
+      <rect class="mrq-glass" x="938.9" y="1175" width="287" height="64" rx="14" />
+      <rect class="cls-badge tone-violet" x="952.9" y="1193" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="966.9" y="1211.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="990.9" y="1203" text-anchor="start">ChildAgentClient</text>
+      <text class="pic-note" x="990.9" y="1219" text-anchor="start">part A</text>
+      <rect class="cls-cover" x="938.9" y="1303" width="287" height="64" rx="14" />
+      <rect class="mrq-glass" x="938.9" y="1303" width="287" height="64" rx="14" />
+      <rect class="mrq-edge" x="962.9" y="1302.5" width="239" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="952.9" y="1321" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="966.9" y="1339.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="990.9" y="1331" text-anchor="start">IAgentPack</text>
+      <text class="pic-note" x="990.9" y="1347" text-anchor="start">interface, Phase 2</text>
+      <rect class="cls-cover" x="938.9" y="1431" width="287" height="64" rx="14" />
+      <rect class="mrq-glass" x="938.9" y="1431" width="287" height="64" rx="14" />
+      <rect class="cls-badge tone-violet" x="952.9" y="1449" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="966.9" y="1467.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="990.9" y="1459" text-anchor="start">ResultToolset</text>
+      <text class="pic-note" x="990.9" y="1475" text-anchor="start">part A</text>
+      <rect class="cls-cover" x="1400" y="128" width="180" height="110" rx="14" />
+      <rect class="mrq-glass" x="1400" y="128" width="180" height="110" rx="14" />
+      <rect class="mrq-edge" x="1424" y="127.5" width="132" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1414" y="146" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1428" y="164.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="1452" y="156" text-anchor="start">IErrorFeed</text>
+      <text class="pic-note" x="1452" y="172" text-anchor="start">interface, B1</text>
+      <path class="cls-divide" d="M1414 192H1566" />
+      <text class="cls-member" x="1414" y="210" text-anchor="start">ReadNewAsync()</text>
+      <text class="cls-member" x="1414" y="224" text-anchor="start">MarkProcessedAsync()</text>
+      <rect class="cls-cover" x="1400" y="535" width="180" height="64" rx="14" />
+      <rect class="mrq-glass" x="1400" y="535" width="180" height="64" rx="14" />
+      <rect class="cls-badge tone-violet" x="1414" y="553" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1428" y="571.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1452" y="563" text-anchor="start">IResultCheck&lt;T&gt;</text>
+      <text class="pic-note" x="1452" y="579" text-anchor="start">part A</text>
+      <rect class="cls-cover" x="1400" y="647" width="180" height="96" rx="14" />
+      <rect class="mrq-glass" x="1400" y="647" width="180" height="96" rx="14" />
+      <rect class="mrq-edge" x="1424" y="646.5" width="132" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1414" y="665" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1428" y="683.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="1452" y="675" text-anchor="start">ITriageRecorder</text>
+      <text class="pic-note" x="1452" y="691" text-anchor="start">interface, B1</text>
+      <path class="cls-divide" d="M1414 711H1566" />
+      <text class="cls-member" x="1414" y="729" text-anchor="start">RecordAsync()</text>
+      <rect class="cls-cover" x="1400" y="919" width="180" height="64" rx="14" />
+      <rect class="mrq-glass" x="1400" y="919" width="180" height="64" rx="14" />
+      <rect class="mrq-edge" x="1424" y="918.5" width="132" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1414" y="937" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1428" y="955.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="1452" y="947" text-anchor="start">FixResult</text>
+      <text class="pic-note" x="1452" y="963" text-anchor="start">record, B1</text>
+      <rect class="cls-cover" x="1400" y="1047" width="180" height="64" rx="14" />
+      <rect class="mrq-glass" x="1400" y="1047" width="180" height="64" rx="14" />
+      <rect class="mrq-edge" x="1424" y="1046.5" width="132" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1414" y="1065" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1428" y="1083.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="1452" y="1075" text-anchor="start">IReplay</text>
+      <text class="pic-note" x="1452" y="1091" text-anchor="start">interface, B3</text>
+    </g>
+    <g class="cls-legend" transform="translate(0 1588)">
+      <rect class="mrq-rule" x="0" y="0" width="1580" height="1" rx="0" />
+      <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
+      <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
+      <rect class="cls-badge tone-violet" x="137.2" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">the framework</text>
+      <rect class="cls-badge tone-teal" x="281" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="309" y="52.5" text-anchor="start">contracts and state</text>
+      <rect class="cls-key-mark" x="464.4" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="474.4" y="52" text-anchor="middle">I</text>
+      <text class="pic-means" x="494.4" y="52.5" text-anchor="start">an interface</text>
+      <rect class="cls-key-mark" x="603.6" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="613.6" y="52" text-anchor="middle">R</text>
+      <text class="pic-means" x="633.6" y="52.5" text-anchor="start">a record</text>
+      <rect class="cls-key-mark" x="716.4" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="726.4" y="52" text-anchor="middle">C</text>
+      <text class="pic-means" x="746.4" y="52.5" text-anchor="start">a class</text>
+      <path class="cls-line holds" d="M822.6 48H872.6" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <text class="pic-means" x="882.6" y="52.5" text-anchor="start">holds</text>
+      <path class="cls-line implements" d="M945.6 48H995.6" marker-end="url(#triangle-violet)" />
+      <text class="pic-means" x="1005.6" y="52.5" text-anchor="start">implements</text>
+      <path class="cls-line uses" d="M1101.6 48H1151.6" marker-end="url(#open)" />
+      <text class="pic-means" x="1161.6" y="52.5" text-anchor="start">uses</text>
+    </g>
   </g>
-  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
-  <text class="heading" x="64" y="30">
-    <tspan class="title-head">F39 orchestration:</tspan>
-    <tspan class="title-rest">the triage service's interfaces, part B</tspan>
-  </text>
-  <g class="drawing" transform="translate(0 66)">
-    <path class="edge dashed tone-green" d="M 202.8 695 L 310.8 695 Q 334.8 695 334.8 671 L 334.8 527 Q 334.8 503 358.8 503 L 464.9 503" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 702.9 887 L 770.9 887 Q 794.9 887 794.9 911 L 794.9 1311 Q 794.9 1335 818.9 1335 L 1008.9 1335" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 702.9 1143 L 734.9 1143 Q 758.9 1143 758.9 1167 L 758.9 1311 Q 758.9 1335 782.9 1335 L 1008.9 1335" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 202.8 695 L 310.8 695 Q 334.8 695 334.8 719 L 334.8 863 Q 334.8 887 358.8 887 L 464.9 887" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 202.8 695 L 310.8 695 Q 334.8 695 334.8 719 L 334.8 1119 Q 334.8 1143 358.8 1143 L 464.9 1143" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 202.8 695 L 310.8 695 Q 334.8 695 334.8 671 L 334.8 655 Q 334.8 631 358.8 631 L 464.9 631" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 702.9 631 L 806.9 631 Q 830.9 631 830.9 607 L 830.9 335 Q 830.9 311 854.9 311 L 1008.9 311" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 702.9 631 L 806.9 631 Q 830.9 631 830.9 655 L 830.9 1183 Q 830.9 1207 854.9 1207 L 1008.9 1207" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 702.9 631 L 1008.9 631 L 1295.9 631 L 1542 631" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 702.9 631 L 806.9 631 Q 830.9 631 830.9 607 L 830.9 527 Q 830.9 503 854.9 503 L 1008.9 503 L 1295.9 503 L 1542 503" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 702.9 631 L 806.9 631 Q 830.9 631 830.9 655 L 830.9 735 Q 830.9 759 854.9 759 L 1008.9 759 L 1295.9 759 L 1542 759" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 1295.9 951 L 1317 951 Q 1338 951 1338 930 L 1338 655 Q 1338 631 1362 631 L 1542 631" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1295.9 951 L 1317 951 Q 1338 951 1338 972 L 1338 991 Q 1338 1015 1362 1015 L 1542 1015" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 1295.9 951 L 1317 951 Q 1338 951 1338 930 L 1338 911 Q 1338 887 1362 887 L 1542 887" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 202.8 951 L 274.8 951 Q 298.8 951 298.8 975 L 298.8 991 Q 298.8 1015 322.8 1015 L 464.9 1015 L 702.9 1015 L 1008.9 1015 L 1295.9 1015 L 1542 1015" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 202.8 567 L 328.8 567 Q 352.8 567 352.8 543 L 352.8 399 Q 352.8 375 376.8 375 L 464.9 375 L 702.9 375 L 824.9 375 Q 848.9 375 848.9 351 L 848.9 79 Q 848.9 55 872.9 55 L 1008.9 55 L 1295.9 55 L 1422 55 Q 1446 55 1446 79 L 1446 479 Q 1446 503 1470 503 L 1542 503" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 202.8 823 L 292.8 823 Q 316.8 823 316.8 799 L 316.8 783 Q 316.8 759 340.8 759 L 464.9 759 L 702.9 759 L 1008.9 759 L 1295.9 759 L 1542 759" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 702.9 887 L 770.9 887 Q 794.9 887 794.9 863 L 794.9 591 Q 794.9 567 818.9 567 L 1008.9 567" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1295.9 567 L 1404 567 Q 1428 567 1428 543 L 1428 527 Q 1428 503 1452 503 L 1542 503" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1295.9 567 L 1404 567 Q 1428 567 1428 591 L 1428 735 Q 1428 759 1452 759 L 1542 759" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 702.9 1143 L 734.9 1143 Q 758.9 1143 758.9 1119 L 758.9 975 Q 758.9 951 782.9 951 L 1008.9 951" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 702.9 1143 L 734.9 1143 Q 758.9 1143 758.9 1167 L 758.9 1439 Q 758.9 1463 782.9 1463 L 1008.9 1463" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="369.9" y="481" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="408.9" y="493" text-anchor="middle">implements</text>
-    <rect class="word-chip tone-green" x="889.9" y="1313" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="928.9" y="1325" text-anchor="middle">implements</text>
-    <rect class="word-chip tone-green" x="362.9" y="865" width="92" height="18" rx="4" />
-    <text class="word tone-green" x="408.9" y="877" text-anchor="middle">names triage</text>
-    <rect class="word-chip tone-green" x="362.9" y="1121" width="92" height="18" rx="4" />
-    <text class="word tone-green" x="408.9" y="1133" text-anchor="middle">names fixing</text>
-    <rect class="word-chip tone-green" x="390.9" y="609" width="36" height="18" rx="4" />
-    <text class="word tone-green" x="408.9" y="621" text-anchor="middle">uses</text>
-    <rect class="word-chip tone-green" x="745.4" y="609" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="766.9" y="621" text-anchor="middle">holds</text>
-    <rect class="word-chip tone-green" x="1455" y="609" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="1494" y="621" text-anchor="middle">implements</text>
-    <rect class="word-chip tone-green" x="1472.5" y="993" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="1494" y="1005" text-anchor="middle">holds</text>
-    <rect class="word-chip tone-green" x="1476" y="865" width="36" height="18" rx="4" />
-    <text class="word tone-green" x="1494" y="877" text-anchor="middle">uses</text>
-    <rect class="word-chip tone-green" x="211.8" y="929" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="250.8" y="941" text-anchor="middle">implements</text>
-    <rect class="word-chip tone-green" x="238.8" y="545" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="277.8" y="557" text-anchor="middle">implements</text>
-    <rect class="word-chip tone-green" x="220.8" y="801" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="259.8" y="813" text-anchor="middle">implements</text>
-    <rect class="word-chip tone-green" x="875.9" y="545" width="106" height="18" rx="4" />
-    <text class="word tone-green" x="928.9" y="557" text-anchor="middle">triage toolset</text>
-    <rect class="word-chip tone-green" x="910.9" y="929" width="36" height="18" rx="4" />
-    <text class="word tone-green" x="928.9" y="941" text-anchor="middle">uses</text>
-    <rect class="word-chip tone-green" x="861.9" y="1441" width="134" height="18" rx="4" />
-    <text class="word tone-green" x="928.9" y="1453" text-anchor="middle">fix-result toolset</text>
-    <rect class="box tone-green" x="0" y="535" width="202.8" height="64" rx="10" />
-    <text class="label tone-green" x="101.4" y="563" text-anchor="middle">JsonLinesErrorFeed</text>
-    <text class="note" x="101.4" y="579" text-anchor="middle">moved from ErrorFeed, B1</text>
-    <rect class="box tone-green" x="0" y="647" width="202.8" height="96" rx="10" />
-    <text class="label tone-green" x="101.4" y="675" text-anchor="middle">OpsIdentity</text>
-    <text class="note" x="101.4" y="691" text-anchor="middle">B1</text>
-    <path class="frame" d="M 0 711 L 202.8 711" />
-    <text class="word tone-green" x="14" y="729" text-anchor="start">packs by name</text>
-    <rect class="box tone-green" x="0" y="775" width="202.8" height="96" rx="10" />
-    <text class="label tone-green" x="101.4" y="803" text-anchor="middle">JsonLinesTriageRecorder</text>
-    <text class="note" x="101.4" y="819" text-anchor="middle">moved from Program, B1</text>
-    <path class="frame" d="M 0 839 L 202.8 839" />
-    <text class="word tone-green" x="14" y="857" text-anchor="start">decisions.jsonl</text>
-    <rect class="box tone-green" x="0" y="913" width="202.8" height="76" rx="10" />
-    <text class="label tone-green" x="101.4" y="941" text-anchor="middle">CliReplay</text>
-    <text class="note" x="101.4" y="957" text-anchor="middle">moved from ReplayRequest,</text>
-    <text class="note" x="101.4" y="969" text-anchor="middle">B3</text>
-    <rect class="box tone-teal" x="464.9" y="471" width="238" height="64" rx="10" />
-    <text class="label tone-teal" x="583.9" y="499" text-anchor="middle">IAgentIdentity</text>
-    <text class="note" x="583.9" y="515" text-anchor="middle">interface, Phase 2</text>
-    <rect class="box tone-green" x="464.9" y="583" width="238" height="96" rx="10" />
-    <text class="label tone-green" x="583.9" y="611" text-anchor="middle">TriageWorkflow</text>
-    <text class="note" x="583.9" y="627" text-anchor="middle">B4</text>
-    <path class="frame" d="M 464.9 647 L 702.9 647" />
-    <text class="word tone-green" x="478.9" y="665" text-anchor="start">+HandleAsync()</text>
-    <rect class="box tone-green" x="464.9" y="832" width="238" height="110" rx="10" />
-    <text class="label tone-green" x="583.9" y="860" text-anchor="middle">TriagePack</text>
-    <text class="note" x="583.9" y="876" text-anchor="middle">B1</text>
-    <path class="frame" d="M 464.9 896 L 702.9 896" />
-    <text class="word tone-green" x="478.9" y="914" text-anchor="start">+Feed</text>
-    <text class="word tone-green" x="478.9" y="928" text-anchor="start">+Recorder</text>
-    <rect class="box tone-green" x="464.9" y="1095" width="238" height="96" rx="10" />
-    <text class="label tone-green" x="583.9" y="1123" text-anchor="middle">FixingPack</text>
-    <text class="note" x="583.9" y="1139" text-anchor="middle">B1</text>
-    <path class="frame" d="M 464.9 1159 L 702.9 1159" />
-    <text class="word tone-green" x="478.9" y="1177" text-anchor="start">voorman-fixer role, fix-result</text>
-    <rect class="box tone-violet" x="1008.9" y="279" width="287" height="64" rx="10" />
-    <text class="label tone-violet" x="1152.4" y="307" text-anchor="middle">RouteClassifier</text>
-    <text class="note" x="1152.4" y="323" text-anchor="middle">part A</text>
-    <rect class="box tone-green" x="1008.9" y="519" width="287" height="96" rx="10" />
-    <text class="label tone-green" x="1152.4" y="547" text-anchor="middle">TriageTools</text>
-    <text class="note" x="1152.4" y="563" text-anchor="middle">B1, B5</text>
-    <path class="frame" d="M 1008.9 583 L 1295.9 583" />
-    <text class="word tone-green" x="1022.9" y="601" text-anchor="start">Acknowledge, Escalate, RecordDecision</text>
-    <rect class="box tone-green" x="1008.9" y="919" width="287" height="64" rx="10" />
-    <text class="label tone-green" x="1152.4" y="947" text-anchor="middle">ConfirmFix</text>
-    <text class="note" x="1152.4" y="963" text-anchor="middle">B3</text>
-    <rect class="box tone-violet" x="1008.9" y="1175" width="287" height="64" rx="10" />
-    <text class="label tone-violet" x="1152.4" y="1203" text-anchor="middle">ChildAgentClient</text>
-    <text class="note" x="1152.4" y="1219" text-anchor="middle">part A</text>
-    <rect class="box tone-teal" x="1008.9" y="1303" width="287" height="64" rx="10" />
-    <text class="label tone-teal" x="1152.4" y="1331" text-anchor="middle">IAgentPack</text>
-    <text class="note" x="1152.4" y="1347" text-anchor="middle">interface, Phase 2</text>
-    <rect class="box tone-violet" x="1008.9" y="1431" width="287" height="64" rx="10" />
-    <text class="label tone-violet" x="1152.4" y="1459" text-anchor="middle">ResultToolset</text>
-    <text class="note" x="1152.4" y="1475" text-anchor="middle">part A</text>
-    <rect class="box tone-teal" x="1542" y="448" width="175" height="110" rx="10" />
-    <text class="label tone-teal" x="1629.5" y="476" text-anchor="middle">IErrorFeed</text>
-    <text class="note" x="1629.5" y="492" text-anchor="middle">interface, B1</text>
-    <path class="frame" d="M 1542 512 L 1717 512" />
-    <text class="word tone-teal" x="1556" y="530" text-anchor="start">+ReadNewAsync()</text>
-    <text class="word tone-teal" x="1556" y="544" text-anchor="start">+MarkProcessedAsync()</text>
-    <rect class="box tone-violet" x="1542" y="599" width="175" height="64" rx="10" />
-    <text class="label tone-violet" x="1629.5" y="627" text-anchor="middle">IResultCheck&lt;T&gt;</text>
-    <text class="note" x="1629.5" y="643" text-anchor="middle">part A</text>
-    <rect class="box tone-teal" x="1542" y="711" width="175" height="96" rx="10" />
-    <text class="label tone-teal" x="1629.5" y="739" text-anchor="middle">ITriageRecorder</text>
-    <text class="note" x="1629.5" y="755" text-anchor="middle">interface, B1</text>
-    <path class="frame" d="M 1542 775 L 1717 775" />
-    <text class="word tone-teal" x="1556" y="793" text-anchor="start">+RecordAsync()</text>
-    <rect class="box tone-teal" x="1542" y="855" width="175" height="64" rx="10" />
-    <text class="label tone-teal" x="1629.5" y="883" text-anchor="middle">FixResult</text>
-    <text class="note" x="1629.5" y="899" text-anchor="middle">record, B1</text>
-    <rect class="box tone-teal" x="1542" y="983" width="175" height="64" rx="10" />
-    <text class="label tone-teal" x="1629.5" y="1011" text-anchor="middle">IReplay</text>
-    <text class="note" x="1629.5" y="1027" text-anchor="middle">interface, B3</text>
-  </g>
-  <rect class="swatch tone-violet" x="0" y="1600" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="1610.5" text-anchor="start">the framework</text>
-  <rect class="notebar" x="0" y="1636" width="1717" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 1646) scale(0.6667)">
+  <rect class="notebar" x="0" y="1666" width="1580" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1676) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1658">
+  <text class="notes" x="38" y="1688">
     <tspan class="note-rest">The feed, the recorder and the replay each sit behind an interface with a fake for tests; the violet boxes are part A's engine pieces.</tspan>
   </text>
 </svg>

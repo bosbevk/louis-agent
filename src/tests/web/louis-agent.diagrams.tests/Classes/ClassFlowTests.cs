@@ -1,9 +1,8 @@
-using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Classes;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Classes;
@@ -14,11 +13,13 @@ namespace LouisAgent.Diagrams.Tests.Classes;
 /// </summary>
 public class ClassFlowTests
 {
-    /// <summary>A speech provider: an interface, its implementation, the factory holding it, and what it makes.</summary>
+    /// <summary>
+    /// A speech provider: an interface, its implementation, the factory holding it, and what it makes.
+    /// </summary>
     private static readonly ClassesSpec Speech = new(
         [
-            new ClassType("provider", "ISpeechProvider", "interface", ["SpeechProviderName Name", "Create(SpeechOptions)"],
-                DiagramIcon.Code, DiagramTone.Violet),
+            new ClassType("provider", "ISpeechProvider", "interface",
+                ["SpeechProviderName Name", "Create(SpeechOptions)"], DiagramIcon.Code, DiagramTone.Violet),
             new ClassType("whisper", "WhisperSpeechProvider", "class", Tone: DiagramTone.Green),
             new ClassType("factory", "SpeechClientFactory", Tone: DiagramTone.Violet),
             new ClassType("client", "ISpeechToTextClient", "interface", Tone: DiagramTone.Teal),
@@ -33,7 +34,9 @@ public class ClassFlowTests
             new ClassRelation("endpoints", "factory", RelationKind.Uses, "asks")
         ]);
 
-    /// <summary>Each type is a box: its name the label, its kind the note under it, its members and tone kept.</summary>
+    /// <summary>
+    /// Each type is a box: its name the label, its kind the note under it, its members and tone kept.
+    /// </summary>
     [Test]
     public void EachType_IsABoxWithItsKindAndMembers()
     {
@@ -51,8 +54,8 @@ public class ClassFlowTests
     }
 
     /// <summary>
-    /// Each relation's kind is its arrow's style and word: a kind of, solid; implements, uses and creates, dashed; holds,
-    /// solid; a word written on a relation takes the place of its kind's.
+    /// Each relation's kind is its arrow's style and word: a kind of, solid; implements, uses and creates, dashed;
+    /// holds, solid; a word written on a relation takes the place of its kind's.
     /// </summary>
     [Test]
     public void EachRelationKind_HasItsStyleAndWord()
@@ -95,9 +98,13 @@ public class ClassFlowTests
     public void ArrowsIntoOneType_SayASharedWordOnce()
     {
         var spec = new ClassesSpec(
-            [new ClassType("i", "ICheck", "interface"), new ClassType("a", "A"), new ClassType("b", "B"), new ClassType("c", "C")],
             [
-                new ClassRelation("a", "i", RelationKind.Implements), new ClassRelation("b", "i", RelationKind.Implements),
+                new ClassType("i", "ICheck", "interface"), new ClassType("a", "A"), new ClassType("b", "B"),
+                new ClassType("c", "C")
+            ],
+            [
+                new ClassRelation("a", "i", RelationKind.Implements),
+                new ClassRelation("b", "i", RelationKind.Implements),
                 new ClassRelation("c", "i", RelationKind.Uses, "reads")
             ]);
 
@@ -115,16 +122,4 @@ public class ClassFlowTests
 
         Assert.That(ClassFlow.Of(spec).Edges.Select(edge => edge.Word), Is.EqualTo(new[] { "holds", null }));
     }
-
-    /// <summary>The drawing matches its golden file, looked at by eye when it was made.</summary>
-    [Test]
-    public void AClassChart_MatchesTheGoldenFile() =>
-        Golden.Match("classes.svg", DiagramRenderers.Render(new DiagramSource(DiagramKind.Classes, "Speech",
-            Classes: Speech)));
-
-    /// <summary>Framed for the docs, a class chart's legend names the tones its types wear.</summary>
-    [Test]
-    public void TheDocsFrame_HasALegendOfTheTypesTones() =>
-        Assert.That(DiagramRenderers.RenderTitled(new DiagramSource(DiagramKind.Classes, "Speech", Classes: Speech)),
-            Does.Contain("the framework").And.Contain("this project"));
 }

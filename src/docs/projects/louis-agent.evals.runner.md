@@ -1,11 +1,12 @@
 # louis-agent.evals.runner — design
 
-> **Kind:** console app (`net10.0`) · **Path:** `src/evals/louis-agent.evals.runner/` · **References:**
+> **Kind:** program (a console app, `net10.0`) · **Path:** `src/evals/louis-agent.evals.runner/` · **References:**
 > louis-agent.evals, louis-agent.composition (the toolsets an eval's modes name, ADR 0027), and what proves each identity
 > and pack, which only the runner references so no host carries it (ADR 0073): louis-agent.identity.puls.evals (its eval
 > folders and readers), louis-agent.identity.puls.judges (its judge), louis-agent.pack.where-to-buy.checks and
 > louis-agent.pack.recipes.checks · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
+> **Also shows:** `component`
 
 ![The eval runner, and what it does: the catalogue, a run or a re-score, and the judge](diagrams/louis-agent.evals.runner.svg)
 
@@ -50,8 +51,6 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 - **The stub eval** (`Evals/Stub/`) answers from canned events through a `CannedSessionClient`: no session, no model.
   It proves the runner end to end in the tests and in the portal for free.
 
-## Diagrams
-
 ![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
 ![A run from the Evals page: the API starts the runner as a child process, reads its lines on stdout for the live view, and stores the run](diagrams/louis-agent.evals.runner-diagrams-2.svg)
@@ -74,6 +73,10 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 The one package of its own is **YamlDotNet** (MIT, 18.1.0), for promptfoo's YAML; no host carries it.
 
 ## Configuration
+
+Where it runs: started by the API inside its container, or by hand from a terminal.
+
+![Where the eval runner runs: the API starts it as a child process, or you start it from a terminal, and it reaches a model and the collector](diagrams/louis-agent.evals.runner-deployment.svg)
 
 | Setting | What it does |
 |---|---|

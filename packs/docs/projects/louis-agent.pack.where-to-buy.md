@@ -1,8 +1,9 @@
 # louis-agent.pack.where-to-buy — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.where-to-buy/` · **References:**
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.where-to-buy/` · **References:**
 > louis-agent.composition, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:**
 > `PACKS=where-to-buy`, or an identity that names it (Puls) · **Uses:** OpenStreetMap's Nominatim
+> **Also shows:** `component`
 
 ![The where-to-buy pack: FindBranches, FindShopsNear and one polite map client](diagrams/louis-agent.pack.where-to-buy.svg)
 
@@ -18,6 +19,10 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 ([louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md)).
 
 ## How it works
+
+One shop's branches, step by step.
+
+![Branches: the town found, the shop asked for in a box widened only when empty, the three nearest kept](diagrams/louis-agent.pack.where-to-buy-flow.svg)
 
 - **One toolset, `where-to-buy`.** `WhereToBuyPack` defines it with its guide (`prompts/toolsets/where-to-buy.md`)
   and two tools. It needs no setting, so it loads wherever it is named.
@@ -46,6 +51,12 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   [ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price given as fact,
   the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
 
+![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
+
+![Finding a shop's branches: the town is found on the map, then ever bigger boxes round it until one holds the shop, and the three nearest are printed](diagrams/louis-agent.pack.where-to-buy-diagrams-2.svg)
+
+![The types: two tools over the map, the town first, then the shop's branches around it](diagrams/louis-agent.pack.where-to-buy-interface.svg)
+
 ## Design notes
 
 - **In the town's municipality, not within a radius.** A branch is the town's when the map files it under the same
@@ -56,14 +67,6 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   and the cook say *Branches from © OpenStreetMap contributors.* under the branches.
 - **The map is a shared public service.** One request a second is the policy; a busy public Puls needs its own
   Nominatim or a paid geocoder (*Limits and plans*).
-
-## Diagrams
-
-![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
-
-![Finding a shop's branches: the town is found on the map, then ever bigger boxes round it until one holds the shop, and the three nearest are printed](diagrams/louis-agent.pack.where-to-buy-diagrams-2.svg)
-
-![The types: two tools over the map, the town first, then the shop's branches around it](diagrams/louis-agent.pack.where-to-buy-interface.svg)
 
 ## Structure
 

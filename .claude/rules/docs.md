@@ -43,8 +43,9 @@ records, links, and how big a file that Claude loads may be.
     list of types and folders is a table at the end, marked as the place to look things up.
   - **Ids and ADR links close a section** (*Decided in:* F127.6, ADR 0120). They are not wedged into a sentence.
   - **A project doc keeps its shared sections**, the ones *Each doc covers* lists in the projects' index:
-    *Purpose*, *How it works*, *Diagrams*, *Structure* and the rest, by those names, so every project doc is
-    found the same way. The story is told inside *How it works*, in numbered parts. *Structure* is the lookup.
+    *Purpose*, *How it works*, *Structure* and the rest, by those names, so every project doc is found the same
+    way. The story is told inside *How it works*, in numbered parts, each picture beside the part it explains and
+    none in a section apart. *Structure* is the lookup.
   - **A robot index fails**: a bold label followed by type names in brackets with ids between them. A doc that
     reads that way is rewritten when it is next touched, the explaining part first.
 - **In plain words** (Louis, 2026-10-26): the way a friend would explain it, casual but straight to the point, in

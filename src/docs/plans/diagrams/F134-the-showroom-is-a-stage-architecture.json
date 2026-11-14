@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F134 the showroom is a stage: the architecture",
   "caption": "The site names its demos and fills their windows, the framework's general parts draw the stage and the bar, and the guide moves them with its tools.",
   "flow": {
@@ -36,6 +37,7 @@
       },
       {
         "id": "browser",
+        "shape": "terminal",
         "icon": "browser",
         "tone": "blue",
         "label": "the visitor's browser"

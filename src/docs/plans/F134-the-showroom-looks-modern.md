@@ -91,6 +91,73 @@ Built in this order, one pull request each. A child's plan is written and approv
 
 Parked, a feature of its own: **see it as yours**, the visitor's own business on the stage, live.
 
+## Approved during the build
+
+- **2026-11-14: three children for the docs' pictures.** Louis, of the docs' pictures beside the new showroom:
+  the component diagram first, then the flows, then the cards.
+  - **F134.7 Component diagrams** ([plan](F134.7-component-diagrams.md)): a new kind of picture drawn from JSON
+    in a new look. Done when every project that has components shows one in its design doc.
+  - **F134.8 Flows in the new look**, built 2026-11-14: every flow in the docs and the site's eight diagrams in
+    the new look and on the new lines, a shape where it means something, no class chart changed. How it works
+    is in [the diagrams' design doc](../projects/louis-agent.diagrams.md), the rule in
+    [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md), the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md).
+  - **F134.9 The cards picture, redone**, built 2026-11-14: Louis, of "louis-agent.web at a glance": "this one
+    must be super fancy he can follow a diff style, keep it like dark tones but may introduce limited colors".
+    His pick of three designs: A, the project a headline on a light, its parts hung from a lit rail. All 45
+    cards pictures are drawn that way. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The designs are in
+    [m-cards.html](F134-mockups/m-cards.html).
+  - **F134.10 The sequence picture, redone**, built 2026-11-14: Louis, "now 134.10 now we need to redo this
+    one. same as with the others". His pick of three designs: C, the cards' look, with its key. All 64 sequence
+    pictures are drawn that way. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The designs are in
+    [m-sequence.html](F134-mockups/m-sequence.html).
+  - **F134.11 The class chart, redone**, built 2026-11-14: Louis, "next will be F134.11 which will be the
+    redesign of the interface diagram". His approved design: a type a glass card with a badge for its kind, a
+    link's kind in its line. All 58 class charts are drawn that way. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The design is in
+    [m-classes.html](F134-mockups/m-classes.html).
+  - **F134.12 Flows and component diagrams in the shared look**, built 2026-11-14: Louis, "make the theme of
+    the flow and component diagrams resemble the others, it is now a bit out of date". All 93 flows and the
+    component diagram are drawn that way, a decision is a box with pointed ends, and on a light page the
+    panels and the glass have body. On the way a long line was made to run straight. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The design is in
+    [m-look.html](F134-mockups/m-look.html). Its picks are in its plan as of the commit before this one.
+  - **F134.13 A composite structure diagram**, built 2026-11-14: Louis, "then we need 134.13 composite
+    diagram", and of my first reading of it, "no do research", with UML's line for it: "the internal parts,
+    ports, and connectors of a structured class". A new kind, `composite`: his picks were design C, a port a
+    named pin on the class's edge, and the flow's layout through an adapter. `AgentEngine` is drawn that way
+    in core's design doc. How it works is in [the diagrams' design doc](../projects/louis-agent.diagrams.md),
+    and the lessons in [the write-up](../learning/18-testing-and-shipping.md). The designs are in
+    [m-composite.html](F134-mockups/m-composite.html). Its picks are in its plan as of the commit before this
+    one.
+  - **Left for the project refactor Louis asked for after F134.11:** nothing, since 2026-11-15. The list kept
+    here as each kind was redone is empty. CL65.2 took out the light each kind drew itself, the keys' placing
+    written four times and the full renderers' folder. CL65.4 took out the rest: the old rules in the shared
+    style and the frame's, the two layout rules nothing drew by, the kinds' styles in two folders, what two
+    kinds styled alike, the long lines in the class that gives a box its column, and the diagrams' own
+    interface picture.
+  - **In that refactor every kind shows its type.** Louis, 2026-11-14: "the type of diagram must always
+    display." The composite shows its own, through the shared start of a picture, which takes a type. The
+    other kinds hand it none yet, because a `flow` draws several UML types today and its type can't come
+    from its kind. Settling each picture's type is part of matching the kinds to UML's.
+  - **In that refactor the kinds of picture must match UML's.** Louis, 2026-11-14: "read here when you
+    refactor, our graph types must match", with
+    [GeeksforGeeks' introduction to UML](https://www.geeksforgeeks.org/system-design/unified-modeling-language-uml-introduction/).
+    Its plan starts by reading that page and holding each of our kinds against the UML type it is meant to be.
+    Each mismatch is put to him. None is renamed without his pick.
+  - **And it is thought of as a diagram engine.** Louis, 2026-11-14: "when we come to the refactoring, think of
+    it as an diagram engine so we can split it into engine --> engine.diagrams of some sort." Its plan says
+    what in the diagrams knows no kind and what is a kind's own, and puts the split to him before anything
+    moves. And the same day, more exactly: ".diagrams must be split into a diagrams --> and what builds the
+    diagrams." So what a picture is, its records, its kinds and its reader, stands apart from what builds it,
+    the layouts, the routing, the drawings and the looks, with the dependency one way.
+
 ## Verification
 
 - Each child runs the tests of what it touches, and the full suite once before its pull request.

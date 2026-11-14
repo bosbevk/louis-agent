@@ -1,0 +1,105 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "The general packs: a toolset opened, then a call, step by step",
+  "caption": "A session names its toolsets; a toolset missing a setting can't open it. Each opened toolset builds its tools from what the engine hands it, and the engine's guards run every call the model makes.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "A session\nnames its toolsets",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "find",
+        "label": "The catalogue finds\neach by name",
+        "icon": "search",
+        "tone": "violet"
+      },
+      {
+        "id": "missing",
+        "label": "A setting\nmissing?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "listed",
+        "label": "Listed with\nwhat it lacks",
+        "icon": "info",
+        "tone": "amber",
+        "shape": "terminal"
+      },
+      {
+        "id": "tools",
+        "label": "Build its tools\nfrom what the engine hands",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "call",
+        "label": "The model calls a tool\narguments as data",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "guards",
+        "label": "The engine's guards\nToolCallGuards",
+        "icon": "shield",
+        "tone": "violet"
+      },
+      {
+        "id": "run",
+        "label": "The pack's tool runs\nin the workspace",
+        "icon": "folder",
+        "tone": "green"
+      },
+      {
+        "id": "end",
+        "label": "The result, summarised\nif it is too long",
+        "icon": "file",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "find"
+      },
+      {
+        "from": "find",
+        "to": "missing"
+      },
+      {
+        "from": "missing",
+        "to": "listed",
+        "word": "yes"
+      },
+      {
+        "from": "missing",
+        "to": "tools",
+        "word": "no"
+      },
+      {
+        "from": "tools",
+        "to": "call"
+      },
+      {
+        "from": "call",
+        "to": "guards"
+      },
+      {
+        "from": "guards",
+        "to": "run"
+      },
+      {
+        "from": "run",
+        "to": "end"
+      }
+    ]
+  }
+}

@@ -3,6 +3,8 @@
 > **Explanation.** How the framework's accounts work: who a person is to a site, which tenant they belong to, how they
 > sign in and what the browser app reads. **Elsewhere:** why in [ADR 0087](../adr/0087-identity-is-the-identity-server.md)
 > and [ADR 0088](../adr/0088-a-tenant-on-every-account.md); how to change the web in [Change the web](../guides/change-the-web.md).
+> **Kind:** host (a library, ASP.NET Core Identity) · **Path:** `src/hosts/louis-agent.accounts/`
+> **Also shows:** `component`
 
 ![Accounts, and their parts: ASP.NET Core Identity, our routes beside it, and the tenant](diagrams/louis-agent.accounts.svg)
 
@@ -111,6 +113,10 @@ tenant's row. A schema change is `dotnet ef migrations add {Name} --project src/
 model from the code. If it writes the model snapshot under `LouisAgent/Accounts/Migrations/`, move it to `Migrations/`.
 
 ## Configuration
+
+Where it runs: inside a demo's API program, with its people and tenants in SQL Server.
+
+![Where the accounts run: in the API's container, keeping people and tenants in the SQL Server container, and asking an outside provider when its keys are set](diagrams/louis-agent.accounts-deployment.svg)
 
 | Setting | File | Means |
 |---|---|---|

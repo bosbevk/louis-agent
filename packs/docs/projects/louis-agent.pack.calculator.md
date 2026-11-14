@@ -3,6 +3,8 @@
 > **Explanation.** What the calculator pack does and why it's built this way. **Elsewhere:** the rule behind it in
 > [ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md); building a pack in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
+> **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.calculator/`
+> **Also shows:** `component`
 
 ![The calculator: many sums in one call, a bad sum alone, four decimals](diagrams/louis-agent.pack.calculator.svg)
 
@@ -26,6 +28,10 @@ so it loads wherever it's named.
 
 ## How it works
 
+One sum, step by step.
+
+![One sum: refused unless it is only arithmetic, every whole number made a decimal, then .NET's evaluator](diagrams/louis-agent.pack.calculator-flow.svg)
+
 `Sums/Arithmetic.cs` uses .NET's own expression evaluator (`DataTable.Compute`), so there's no package and no parser of our
 own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep that safe and correct:
 
@@ -34,8 +40,6 @@ own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep 
   code and no shell ([ADR 0004](../../../src/docs/adr/0004-arguments-as-data.md)).
 - **Every number is a decimal.** The evaluator reads a whole number as an int, and `100000*100000` outgrows one, so each whole
   number gets a point first.
-
-## Diagrams
 
 ![The calculator pack: one tool over plain arithmetic](diagrams/louis-agent.pack.calculator-diagrams.svg)
 

@@ -1,4 +1,4 @@
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
@@ -71,7 +71,7 @@ public class RanksTests
     {
         var placed = GraphLayout.Place(Spec(["a", "b", "c"], ("a", "b"), ("b", "c")));
 
-        var x = placed.Nodes.ToDictionary(node => node.Node.Id, node => node.X);
+        var x = placed.Nodes.ToDictionary(node => node.Node.Id, node => node.Box.Left);
         Assert.That(x["a"], Is.LessThan(x["b"]).And.LessThan(x["c"]));
         Assert.That(x["b"], Is.LessThan(x["c"]));
     }

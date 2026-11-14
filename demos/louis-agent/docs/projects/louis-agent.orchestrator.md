@@ -1,8 +1,9 @@
 # louis-agent.orchestrator — design
 
-> **Kind:** console app · **Path:** `demos/louis-agent/hosts/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
+> **Kind:** program (a console app) · **Path:** `demos/louis-agent/hosts/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
 > louis-agent.api over HTTP + SSE · **Docker:** `Dockerfile.orchestrator` (its demo compose file was removed in CL10) ·
 > **Status:** proof of concept
+> **Also shows:** `component`, `activity`
 
 ![The orchestrator: it watches a log, reads its runbook, and has louis-agent fix it](diagrams/louis-agent.orchestrator.svg)
 
@@ -34,9 +35,7 @@ itself before calling anything fixed. It never edits code.
    currency (F14: rates from demo-api's `/v1/rates`, one rate for both agents), with the rate and the USD charged under the
    run total; the jsonl files keep USD.
 
-## Diagrams
-
-The flow is under *How it works*; these are the pieces.
+The pieces:
 
 ![The orchestrator: the poll, its engine and tools, and what it writes down](diagrams/louis-agent.orchestrator-diagrams.svg)
 
@@ -60,6 +59,10 @@ The flow is under *How it works*; these are the pieces.
 | `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 
 ## Configuration
+
+Where it runs: as its own program beside the service it watches, in its own container or on the PC.
+
+![Where the orchestrator runs: beside the watched service, polling its error log, asking louis-agent's API for a fix and writing its records](diagrams/louis-agent.orchestrator-deployment.svg)
 
 `ORCHESTRATOR_SERVICE_ROOT` (required), `ORCHESTRATOR_SERVICE`, `ORCHESTRATOR_SERVICE_PROJECT`, `LOUIS_AGENT_URL`,
 `LOUIS_AGENT_API_KEY` (falls back to `AGENT_API_KEY`), `ORCHESTRATOR_STATE_DIRECTORY`, `ORCHESTRATOR_COMMS_LOG`,

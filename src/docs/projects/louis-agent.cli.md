@@ -1,7 +1,8 @@
 # louis-agent.cli — design
 
-> **Kind:** library · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
+> **Kind:** host (a library) · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
 > `local-agent`
+> **Also shows:** `component`
 
 ![The terminal host, and what it does: a chat, one prompt for a script, and its local commands](diagrams/louis-agent.cli.svg)
 
@@ -35,8 +36,6 @@ You: exit
   the session total, so stdout stays the answer alone for scripts. Only with the ledger on (`LOG_DIRECTORY` set).
 - Outside Docker, `config/.env` and the repository root are found from any folder inside the repository.
 
-## Diagrams
-
 ![The terminal host: from your program through ConsoleChat to the engine and the output](diagrams/louis-agent.cli-diagrams.svg)
 
 ![One line typed: a command is answered with no model, a message streams from the engine with its usage at the end](diagrams/louis-agent.cli-diagrams-2.svg)
@@ -54,6 +53,10 @@ The program that starts it is your own. The coding agent's is `demos/louis-agent
 packs ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
 
 ## Configuration
+
+Where it runs: in its program, in the `local-agent` container, with a terminal attached.
+
+![Where the CLI runs: you type in a terminal, the program in its container answers, reaching a model, the collector and its folders](diagrams/louis-agent.cli-deployment.svg)
 
 The core settings ([Setup](../SETUP.md)); nothing CLI-specific.
 

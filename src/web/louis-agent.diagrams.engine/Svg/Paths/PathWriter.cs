@@ -1,0 +1,73 @@
+using System.Text;
+
+namespace LouisAgent.Diagrams.Engine.Svg.Paths;
+
+/// <summary>
+/// Writes the path an SVG draws, piece by piece: from a point, a line, a curve, an arc. It knows SVG's letters
+/// and how a number is written, so a drawing says what the line does and never builds its text.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Builder (Refactoring.Guru): twenty places built this text by hand, each with its own letters and its own
+/// call for every number. Here a path is told its pieces and gives its text at the end.
+/// </para>
+/// <para>
+/// It writes a letter and its numbers, with nothing between two pieces, which is the one way a path is written
+/// in every picture.
+/// </para>
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
+public sealed class PathWriter
+{
+    private readonly StringBuilder _text = new();
+
+    /// <summary>A level line's text: from one place across to another, at one height.</summary>
+    public static string Level(double from, double to, double y) => new PathWriter().From(from, y).Across(to).Text;
+
+    /// <summary>The path's text, as an SVG's <c>d</c> holds it.</summary>
+    public string Text => _text.ToString();
+
+    /// <summary>Starts at a point.</summary>
+    public PathWriter From(double x, double y) => Piece('M', x, y);
+
+    /// <summary>A straight line to a point.</summary>
+    public PathWriter To(double x, double y) => Piece('L', x, y);
+
+    /// <summary>A line straight across, to a place.</summary>
+    public PathWriter Across(double x) => Piece('H', x);
+
+    /// <summary>A line straight down or up, to a height.</summary>
+    public PathWriter Down(double y) => Piece('V', y);
+
+    /// <summary>A curve to a point, pulled toward the point it bends through.</summary>
+    public PathWriter Curve(double throughX, double throughY, double x, double y) =>
+        Piece('Q', throughX, throughY, x, y);
+
+    /// <summary>
+    /// An arc to a point, of an oval with these radii: the long way round or the short, and turning with the
+    /// clock or against it.
+    /// </summary>
+    public PathWriter Arc(double radiusX, double radiusY, bool large, bool sweep, double x, double y) =>
+        Piece('A', radiusX, radiusY, 0, large ? 1 : 0, sweep ? 1 : 0, x, y);
+
+    /// <summary>The same arc, by how far across and down it goes from where the path is.</summary>
+    public PathWriter ArcBy(double radiusX, double radiusY, bool large, bool sweep, double across, double down) =>
+        Piece('a', radiusX, radiusY, 0, large ? 1 : 0, sweep ? 1 : 0, across, down);
+
+    /// <summary>
+    /// A whole oval round a point, reaching that far across and down each way: from its left, round over the
+    /// top and back under, as the soft light behind a picture's top is drawn.
+    /// </summary>
+    public PathWriter Oval(double x, double y, double across, double down) => From(x - across, y)
+        .ArcBy(across, down, true, false, 2 * across, 0).ArcBy(across, down, true, false, -(2 * across), 0).Close();
+
+    /// <summary>Back to where it started, closing the shape.</summary>
+    public PathWriter Close() => Piece('Z');
+
+    /// <summary>One piece: its letter and its numbers.</summary>
+    private PathWriter Piece(char letter, params double[] numbers)
+    {
+        _text.Append(letter).AppendJoin(' ', numbers.Select(SvgWriter.N));
+        return this;
+    }
+}

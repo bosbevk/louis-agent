@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "One program with four jobs, picked by its arguments: only the default job calls a model, and the others read a file or this PC.",
   "title": "The usage probe: each command and the parts it uses",
   "flow": {
@@ -48,6 +49,7 @@
       },
       {
         "id": "ledger",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "usage-YYYY-MM.jsonl"
@@ -66,6 +68,7 @@
       },
       {
         "id": "file",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "config/.env"

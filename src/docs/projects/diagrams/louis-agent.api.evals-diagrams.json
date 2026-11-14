@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "The studio is opt-in: a program maps it after the API, and the runner it starts is a process of its own.",
   "title": "The eval studio on the API: what a program maps, and what the studio holds",
   "flow": {
@@ -30,6 +31,7 @@
       },
       {
         "id": "stores",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Mongo stores: runs, reviews,\ndrafts, calibrations"

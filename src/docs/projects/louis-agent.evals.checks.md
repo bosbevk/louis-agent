@@ -1,8 +1,9 @@
 # louis-agent.evals.checks — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
+> **Kind:** contracts library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
 > louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
 > harness); from F49.3, the packs
+> **Also shows:** `component`, `sequence`
 
 ![The check contract: it reads a trial, returns a grade, and the checks themselves live elsewhere](diagrams/louis-agent.evals.checks.svg)
 
@@ -58,8 +59,6 @@ It references only what a pack already references, each for one thing:
 - **louis-agent.evals.protocol** for `CheckKind` and `GradeOutcome`, the kinds a grade carries on the wire.
 
 Never the harness, a pack, an identity or a package: the harness keeps `Microsoft.Extensions.AI.Evaluation`.
-
-## Diagrams
 
 ![The check contract: who lists checks, and how a check is built, reads and grades](diagrams/louis-agent.evals.checks-diagrams.svg)
 

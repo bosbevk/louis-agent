@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "deployment",
   "title": "ADR 0064: where the telemetry goes, on the PC and in Azure",
   "caption": "One pipe: every process sends OTLP, to the Aspire dashboard on the PC and to Application Insights in Azure.",
   "flow": {

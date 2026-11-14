@@ -1,17 +1,16 @@
 # Test projects — design
 
-> **Kind:** NUnit test projects · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
+> **Kind:** test projects (NUnit) · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
 > `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs/tests/louis-agent.pack.where-to-buy.tests/`, `packs/tests/louis-agent.pack.shop-prices.tests/`,
 > `packs/tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs/tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs/tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
 > `demos/louis-agent/tests/louis-agent.code-review.tests/`; the tests that leave their process in `src/tests/engine/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `src/tests/shared/louis-agent.testing/` and, for the web apps,
 > `src/tests/web/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
+> **Also shows:** `package`, `sequence`
 
 ## Unit and integration, apart (F18 step 7.6)
 
 A test that starts a real process, opens Mongo or needs the Puls stack is an integration test: its class is `[Category("Integration")]` and it lives in `{name}.integration-tests`, so a unit project never starts a process. Solution folders `unit`, `integration` and `shared` hold the projects; CI runs `--filter "Category!=Integration"` and then `--filter "Category=Integration"` with `INTEGRATION_REQUIRED=1`. `louis-agent.api.testing` (shared) holds the in-memory API host, the built runner and stand-in dlls and the store contracts, so each is written once and run against memory (unit) and Mongo (integration). Two ratchets in `core.tests/Categories/` hold it: `IntegrationTestsAreMarkedTests` (a test that asks for the outside or uses a process, Mongo or the runner is marked; no raw skip) and `IntegrationPlacementTests` (the mark and the project agree).
-
-## Diagrams
 
 ![The tests: what CI runs, and the two testing libraries they share](diagrams/tests-diagrams.svg)
 

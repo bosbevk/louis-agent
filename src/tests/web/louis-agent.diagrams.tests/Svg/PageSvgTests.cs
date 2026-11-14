@@ -1,9 +1,12 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Paints;
+using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tickets.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Svg;
@@ -91,6 +94,22 @@ public class PageSvgTests
     [Test]
     public void ADrawingWithArrows_KeepsItsArrowhead() =>
         Assert.That(DiagramRenderers.RenderForPage(Flow()), Does.Contain("<marker"));
+
+    /// <summary>
+    /// A drawing with paints and no arrow keeps its paints in the page's copy, since its shapes are filled with
+    /// them, and still brings no arrowhead.
+    /// </summary>
+    [Test]
+    public void ADrawingWithPaintsAndNoArrow_KeepsItsPaints_AndBringsNoArrowhead()
+    {
+        var box = Geometries.InUse.Box(0, 0, 10, 10);
+        string file = new SvgWriter().Paint(new Fade("fade", PaintRun.Across, 0, 1)).Box(box, 2, "filled")
+            .Write(SvgTheme.Site, "A picture", 100, 100);
+
+        var defined = XElement.Parse(PageSvg.Of(file)).Elements(Svg + "defs").Elements().ToList();
+
+        Assert.That(defined.Select(element => element.Name.LocalName), Is.EqualTo(new[] { "linearGradient" }));
+    }
 
     /// <summary>The file for the docs stays as it was: its styles plain, read by any viewer.</summary>
     [Test]

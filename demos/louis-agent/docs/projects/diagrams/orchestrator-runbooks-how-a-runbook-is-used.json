@@ -1,34 +1,40 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "Runbooks: how the orchestrator uses one to decide",
   "caption": "A runbook per method: without one, the error goes straight to the service's own team.",
   "flow": {
     "nodes": [
       {
         "id": "E",
+        "shape": "terminal",
         "icon": "message",
         "tone": "blue",
         "label": "Error event\nmethod = refund,\nInvalidOperationException \u2026"
       },
       {
         "id": "R",
+        "shape": "decision",
         "icon": "search",
         "label": "Runbook for\nthis method?"
       },
       {
         "id": "H1",
+        "shape": "terminal",
         "icon": "user",
         "tone": "red",
         "label": "EscalateToHuman\n(service\u0027s owning team)"
       },
       {
         "id": "C",
+        "shape": "decision",
         "icon": "book",
         "tone": "teal",
         "label": "Classify with\nthe runbook"
       },
       {
         "id": "A",
+        "shape": "terminal",
         "icon": "checks",
         "tone": "green",
         "label": "AcknowledgeError\nDECISION: ignored"
@@ -41,17 +47,20 @@
       },
       {
         "id": "H2",
+        "shape": "terminal",
         "icon": "user",
         "tone": "red",
         "label": "EscalateToHuman\n(the runbook\u0027s team)\nDECISION: escalated"
       },
       {
         "id": "V",
+        "shape": "decision",
         "icon": "search",
         "label": "Commit verified,\nreplay 200,\ntests pass?"
       },
       {
         "id": "OK",
+        "shape": "terminal",
         "icon": "checks",
         "tone": "green",
         "label": "DECISION: fixed\n(branch waits for a human to\nmerge)"

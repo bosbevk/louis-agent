@@ -1,0 +1,104 @@
+{
+  "kind": "nested",
+  "title": "The home page: what it is made of",
+  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then the demos and the framework as the proof. The frame lists each band in its section index.",
+  "nested": {
+    "subtitle": "louis-agent.site, Pages / HomePage",
+    "root": {
+      "id": "page",
+      "name": "HomePage",
+      "kind": "page",
+      "tone": "blue",
+      "aside": "/",
+      "holds": [
+        {
+          "id": "hero",
+          "name": "Hero",
+          "kind": "a band",
+          "tone": "blue",
+          "note": "what it is, and the way to try it"
+        },
+        {
+          "id": "does",
+          "name": "WhatItDoes",
+          "kind": "a band",
+          "tone": "blue"
+        },
+        {
+          "id": "how",
+          "name": "HowItWorksForYou",
+          "kind": "a band",
+          "tone": "blue"
+        },
+        {
+          "id": "custom",
+          "name": "Band",
+          "kind": "general part",
+          "tone": "green",
+          "note": "custom agents: three tiles and a live turn",
+          "in": [
+            "Id",
+            "Kicker"
+          ],
+          "holds": [
+            {
+              "id": "tiles",
+              "name": "TileRow",
+              "kind": "general part",
+              "tone": "green",
+              "note": "three Tiles",
+              "in": [
+                "Columns"
+              ]
+            },
+            {
+              "id": "turn",
+              "name": "LiveTurn",
+              "kind": "the site's own",
+              "tone": "blue",
+              "note": "a turn played as it happened"
+            }
+          ]
+        },
+        {
+          "id": "demos",
+          "name": "LandingDemos",
+          "kind": "a band",
+          "tone": "blue",
+          "note": "the three businesses' agents"
+        },
+        {
+          "id": "proof",
+          "name": "ProofTiles",
+          "kind": "a band",
+          "tone": "blue",
+          "note": "the framework, as the proof"
+        },
+        {
+          "id": "contact",
+          "name": "ContactStrip",
+          "kind": "a band",
+          "tone": "blue"
+        }
+      ]
+    },
+    "around": [
+      {
+        "id": "shell",
+        "name": "SiteLayout",
+        "side": "before",
+        "tone": "blue",
+        "kind": "layout",
+        "heading": "Who draws it",
+        "note": "the site's layout, on the framework's SiteShell: the header, the progress line, the section index"
+      },
+      {
+        "id": "head",
+        "name": "PageHead",
+        "side": "before",
+        "tone": "green",
+        "note": "the page's description and its structured data"
+      }
+    ]
+  }
+}

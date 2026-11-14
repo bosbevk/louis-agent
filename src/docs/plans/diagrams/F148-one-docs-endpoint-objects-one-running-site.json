@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F148 one docs endpoint: one running site in memory",
   "caption": "One DocLibrary per process: the pack makes it, the catalogue hands it to the API, and the tools hold the same one.",
   "flow": {
@@ -11,7 +12,7 @@
       { "id": "library", "icon": "book", "tone": "green", "label": "DocLibrary\nroot /app/docs" },
       { "id": "source", "icon": "file", "tone": "teal", "label": "DocSource\ncommit 527ab4e" },
       { "id": "infos", "icon": "file", "tone": "teal", "label": "388 DocInfo\npath, type, title, about" },
-      { "id": "files", "icon": "folder", "tone": "amber", "label": "the markdown files\nread when a doc is asked for" }
+      { "id": "files", "shape": "data", "icon": "folder", "tone": "amber", "label": "the markdown files\nread when a doc is asked for" }
     ],
     "edges": [
       { "from": "catalog", "to": "pack" },

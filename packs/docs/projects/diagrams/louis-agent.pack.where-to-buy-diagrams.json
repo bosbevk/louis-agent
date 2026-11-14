@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The where-to-buy pack: finding branches on the map",
   "caption": "Two tools over one polite map client: it asks the map in code and hands the model a short table.",
   "flow": {

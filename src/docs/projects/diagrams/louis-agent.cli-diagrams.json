@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "caption": "The host is one small call on top of core: all the agent's work is in the engine, and ConsoleChat only draws it.",
   "title": "The terminal host: from your program through ConsoleChat to the engine and the output",
   "flow": {
@@ -30,12 +31,14 @@
       },
       {
         "id": "out",
+        "shape": "data",
         "icon": "terminal",
         "tone": "amber",
         "label": "stdout: the answer, thinking\nand tool lines"
       },
       {
         "id": "err",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "stderr: the usage line"

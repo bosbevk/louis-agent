@@ -1,8 +1,9 @@
 # louis-agent.identity.puls.judges — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `demos/puls/evals/louis-agent.identity.puls.judges/` · **References:**
+> **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `demos/puls/evals/louis-agent.identity.puls.judges/` · **References:**
 > louis-agent.evals (the harness), louis-agent.identity.puls (the cook's expectations and messages) · **Used by:**
 > louis-agent.evals.runner only
+> **Also shows:** `component`, `sequence`
 
 ![Puls's judge: its rubric, on the harness's judge, referenced by the runner only](diagrams/louis-agent.identity.puls.judges.svg)
 
@@ -22,8 +23,6 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
   but not required until its calibration passes. A person's review of it (`human`) asks the rubric's title.
 - **The list** (`PulsJudges.All`) is what an eval file can name; the runner gathers it with the harness's general
   checks and Puls's fixed rules (`PulsCatalogs`).
-
-## Diagrams
 
 ![Puls's judges: from the runner's catalogue to a model's verdict](diagrams/louis-agent.identity.puls.judges-diagrams.svg)
 
