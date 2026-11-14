@@ -39,8 +39,11 @@ of the engine.
 
 **Step 2: the kind picks a renderer** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind, a
 Strategy. There is one per kind in `Svg/Renderers/`: `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`,
-`TicketRenderer`, and `ClassesRenderer`, which turns a class chart into a flow and hands it to the flow renderer.
-Each renderer has a layout that places every box and word, and then draws. Part 2 explains each layout.
+`TicketRenderer`, `ComponentsRenderer`, and `ClassesRenderer`, which turns a class chart into a flow. Each
+renderer has a layout that places every box and word, and then draws. Part 2 explains each layout.
+
+A flow and a class chart are drawn by the same drawing, `PlainFlowDrawing`: boxes in their tone with a round
+icon badge, arrows that join, a word in a chip. It has a name of its own so the two renderers can change apart.
 
 **How a renderer writes the file** (`SvgWriter`). It is a Builder: a renderer adds boxes, paths and words one by
 one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
@@ -51,6 +54,14 @@ same bytes on every machine.
 **The picture carries both looks** (`Svg/Theme/`). The site's palette and its light twin are CSS variables in the
 picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
 too.
+
+**The new look is one shared style** (`Svg/Theme/Looks/`). A component diagram is drawn in a look of its own: a
+ground of faint dots, the picture's own title, panels tinted in their tone and lifted by a shadow, and lines
+whose dots march the way the arrow points. What any kind in that look wears is `PictureLook`, with class names
+that start `pic-`, and the parts drawn with it are `PictureParts`: the ground, the title and a panel.
+`ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
+start `cmp-`. The shared rules come first in a picture's style, so two kinds can't drift apart in what they
+share.
 
 **Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
 the picture bare and then frames it: a navy title bar, a legend of the tones the chart uses, and a note bar from
@@ -255,7 +266,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/, Theme/
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/), Theme/ (with Looks/)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/

@@ -68,19 +68,19 @@ public class ComponentsRendererTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(classes.Count(cls => cls.Contains("cmp-panel") && cls.Contains("depth-0")), Is.EqualTo(1));
-            Assert.That(classes.Count(cls => cls.Contains("cmp-panel") && cls.Contains("depth-3")), Is.EqualTo(1),
+            Assert.That(classes.Count(cls => cls.Contains("pic-panel") && cls.Contains("depth-0")), Is.EqualTo(1));
+            Assert.That(classes.Count(cls => cls.Contains("pic-panel") && cls.Contains("depth-3")), Is.EqualTo(1),
                 "the window, three boxes deep");
             Assert.That(classes.Count(cls => cls.Contains("cmp-ghost")), Is.EqualTo(1));
-            Assert.That(classes.Where(cls => cls.Contains("cmp-panel")), Has.Some.Contains("tone-green"));
+            Assert.That(classes.Where(cls => cls.Contains("pic-panel")), Has.Some.Contains("tone-green"));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pin ") && cls.Contains(" up")), Is.EqualTo(2));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pin ")), Is.EqualTo(9));
             Assert.That(classes.Count(cls => cls.StartsWith("cmp-pill ")), Is.EqualTo(1));
-            Assert.That(classes.Count(cls => cls.StartsWith("cmp-port ")), Is.EqualTo(7),
+            Assert.That(classes.Count(cls => cls.StartsWith("pic-port ")), Is.EqualTo(7),
                 "a port where each of the five lines leaves or arrives at the root or the deck, and on what is given");
             Assert.That(classes, Has.None.EqualTo("titlebar"), "the picture has its own title, and no bar");
             Assert.That(classes, Has.Some.EqualTo("notebar"), "the docs' note stays");
-            Assert.That(classes.Count(cls => cls.StartsWith("cmp-line ") && cls.Contains("reads")), Is.EqualTo(1));
+            Assert.That(classes.Count(cls => cls.StartsWith("pic-line ") && cls.Contains("reads")), Is.EqualTo(1));
         });
     }
 
@@ -96,9 +96,9 @@ public class ComponentsRendererTests
         Assert.Multiple(() =>
         {
             Assert.That(drawn, Does.Contain("@media (prefers-reduced-motion: reduce)"));
-            Assert.That(drawn, Does.Contain(".cmp-march { display: none; }"));
+            Assert.That(drawn, Does.Contain(".pic-march { display: none; }"));
             Assert.That(drawn, Does.Contain("@media (prefers-color-scheme: dark)"));
-            Assert.That(drawn, Does.Contain("--cmp-0:"));
+            Assert.That(drawn, Does.Contain("--pic-0:"));
         });
     }
 

@@ -23,7 +23,7 @@ internal static class ComponentsKey
     /// <summary>The key, where the layout put it.</summary>
     public static void Draw(SvgWriter writer, PlacedKey key)
     {
-        writer.Text(key.X, key.Y + 10, DiagramText.Format(DiagramMessage.ComponentKey), "cmp-group", "start");
+        writer.Text(key.X, key.Y + 10, DiagramText.Format(DiagramMessage.ComponentKey), "pic-group", "start");
         foreach (var (row, at) in key.Rows.Select((row, at) => (row, at)))
             DrawRow(writer, row, key.X, key.Y + KeyLayout.Heading + at * KeyLayout.Row + KeyLayout.Row / 2);
     }
@@ -40,15 +40,15 @@ internal static class ComponentsKey
             KeyRowKind.Holds => Pill(writer, Tone(row), x, y),
             _ => 0
         };
-        writer.Text(x + words, y + 4, row.Words, "cmp-note", "start");
+        writer.Text(x + words, y + 4, row.Words, "pic-note", "start");
     }
 
     /// <summary>A tone's sample: a small panel in that tone, with its marker. Says where its words start.</summary>
     private static double Swatch(SvgWriter writer, KeyRow row, double x, double y)
     {
         string tone = Tone(row);
-        writer.Box(x, y - 8, 26, 16, 5, $"cmp-swatch cmp-tint cmp-edge{tone}")
-            .Box(x + 4, y - 4, 3, 8, 1.5, $"cmp-fill{tone}");
+        writer.Box(x, y - 8, 26, 16, 5, $"pic-swatch pic-tint pic-edge{tone}")
+            .Box(x + 4, y - 4, 3, 8, 1.5, $"pic-fill{tone}");
         return SwatchWords;
     }
 
@@ -65,15 +65,15 @@ internal static class ComponentsKey
     private static double Read(SvgWriter writer, double x, double y)
     {
         string line = $"M{SvgWriter.N(x)} {SvgWriter.N(y)}H{SvgWriter.N(x + Sample)}";
-        writer.Path(line, "cmp-key cmp-line cmp-edge reads", true);
+        writer.Path(line, "cmp-key pic-line pic-edge reads", true);
         return Words;
     }
 
     /// <summary>A held thing's sample: a small pill with its dot. Says where its words start.</summary>
     private static double Pill(SvgWriter writer, string tone, double x, double y)
     {
-        writer.Box(x, y - 10, Sample, 20, 10, $"cmp-key cmp-pill cmp-tint cmp-edge{tone}")
-            .Circle(x + 12, y, 3.5, $"cmp-fill{tone}");
+        writer.Box(x, y - 10, Sample, 20, 10, $"cmp-key cmp-pill pic-tint pic-edge{tone}")
+            .Circle(x + 12, y, 3.5, $"pic-fill{tone}");
         return Words;
     }
 
