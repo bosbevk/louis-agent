@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Tones;
 using LouisAgent.Diagrams.Flow.Shapes;
@@ -22,16 +23,10 @@ public static class FlowKeyLayout
     /// The room the key's rule and its heading take, and how tall a row of items is: the same as in the other
     /// kinds' keys (F134.12).
     /// </summary>
-    public const double Heading = 34, Row = 28;
+    public const double Heading = KeyRows.Heading, Row = KeyRows.Row;
 
     /// <summary>How far after its sample an item's words start.</summary>
-    public const double Words = 10;
-
-    /// <summary>
-    /// How wide a character of an item's words is taken to be, generously, since no font is measured, and the room
-    /// between two items.
-    /// </summary>
-    private const double Char = 6.6, Gap = 30;
+    public const double Words = KeyRows.Words;
 
     /// <summary>How wide a tone's small badge is, and how wide the sample of a shape or of a line.</summary>
     private const double Badge = 18, Wide = 30;
@@ -47,17 +42,8 @@ public static class FlowKeyLayout
         var line = new FlowKeyItem(FlowKeyKind.Line, DiagramText.Format(DrawingMessage.FlowLine), 0, 0, Wide);
 
         // Side by side, each after the one before, and on to a new row at the left when the width is full.
-        var items = new List<FlowKeyItem>();
-        double x = 0, y = Heading;
-        foreach (var item in tones.Concat(shapes).Append(line))
-        {
-            double room = item.Sample + Words + item.Words.Length * Char;
-            if (x > 0 && x + room > width) (x, y) = (0, y + Row);
-            items.Add(item with { X = x, Y = y });
-            x += room + Gap;
-        }
-
-        return (items, y + Row);
+        return KeyRows.Place(tones.Concat(shapes).Append(line), item => item.Sample, item => item.Words,
+            (item, x, y) => item with { X = x, Y = y }, width);
     }
 
     /// <summary>The few words for what a shape means.</summary>

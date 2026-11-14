@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Composite.Spec;
 using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Components.Placed;
+using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
@@ -18,16 +19,11 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 internal static class CompositeKey
 {
     /// <summary>
-    /// The room the rule and the heading take, a row's height, where the heading's words stand under the rule, and
-    /// how far under a row's middle an item's words do.
+    /// A row's height and how far after its sample an item's words start, which are every key's, where the
+    /// heading's words stand under the rule, how far under a row's middle an item's words do, and how long a
+    /// line's sample is.
     /// </summary>
-    private const double Heading = 34, Row = 28, HeadingLine = 22, WordDrop = 4.5;
-
-    /// <summary>
-    /// How far after its sample an item's words start, the room between two items, how wide a character of the
-    /// words is taken to be, and how long a line's sample is.
-    /// </summary>
-    private const double Words = 10, Gap = 30, Char = 6.6, Line = 30;
+    private const double Row = KeyRows.Row, Words = KeyRows.Words, HeadingLine = 22, WordDrop = 4.5, Line = 30;
 
     /// <summary>
     /// The key's items for a composite, across a width, and how tall the key is. An item only for what the
@@ -45,17 +41,8 @@ internal static class CompositeKey
         if (ports.Count > 0) shown.Add((DrawingMessage.CompositePassedOn, Line));
 
         // Side by side, each after the one before, and on to a new row at the left when the width is full.
-        var items = new List<(DrawingMessage, double, double, double)>();
-        double x = 0, y = Heading;
-        foreach (var (means, wide) in shown)
-        {
-            double room = wide + Words + DiagramText.Format(means).Length * Char;
-            if (x > 0 && x + room > width) (x, y) = (0, y + Row);
-            items.Add((means, x, y, wide));
-            x += room + Gap;
-        }
-
-        return (items, y + Row);
+        return KeyRows.Place(shown.Select(item => (item.Means, X: 0.0, Y: 0.0, item.Wide)), item => item.Wide,
+            item => DiagramText.Format(item.Means), (item, x, y) => (item.Means, x, y, item.Wide), width);
     }
 
     /// <summary>The key for a picture that wide, its top at a height, its pins in the class's tone.</summary>

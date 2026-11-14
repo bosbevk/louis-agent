@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Tones;
 using LouisAgent.Diagrams.Sequence.Spec;
@@ -19,16 +20,10 @@ namespace LouisAgent.Diagrams.Engine.Sequence.Keys;
 public static class SequenceKeyLayout
 {
     /// <summary>The room the key's heading takes, and how tall a row of items is.</summary>
-    public const double Heading = 34, Row = 28;
+    public const double Heading = KeyRows.Heading, Row = KeyRows.Row;
 
     /// <summary>How far after its sample an item's words start.</summary>
-    public const double Words = 10;
-
-    /// <summary>
-    /// How wide a character of an item's words is taken to be, generously, since no font is measured, and the room
-    /// between two items.
-    /// </summary>
-    private const double Char = 6.6, Gap = 30;
+    public const double Words = KeyRows.Words;
 
     /// <summary>
     /// How wide a sample is: a tone's swatch, a call's or an answer's line, and a note's panel. A block's is its
@@ -42,17 +37,9 @@ public static class SequenceKeyLayout
         var steps = spec.Steps.SelectMany(step => step.All()).ToList();
 
         // Side by side, each after the one before, and on to a new row at the left when the width is full.
-        var items = new List<SequenceKeyItem>();
-        double x = 0, y = Heading;
-        foreach (var item in Tones(spec).Concat(Lines(steps)).Concat(Blocks(steps)))
-        {
-            double room = item.Sample + Words + item.Words.Length * Char;
-            if (x > 0 && x + room > width) (x, y) = (0, y + Row);
-            items.Add(item with { X = x, Y = y });
-            x += room + Gap;
-        }
-
-        return (items, y + Row);
+        var items = Tones(spec).Concat(Lines(steps)).Concat(Blocks(steps));
+        return KeyRows.Place(items, item => item.Sample, item => item.Words,
+            (item, x, y) => item with { X = x, Y = y }, width);
     }
 
     /// <summary>An item for each tone a badge wears, in the tones' own order, with what the tone means.</summary>

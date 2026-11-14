@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Engine.Classes.Marks;
+using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Tones;
 using LouisAgent.Diagrams.Tones;
@@ -19,16 +20,10 @@ namespace LouisAgent.Diagrams.Engine.Classes.Keys;
 public static class ClassKeyLayout
 {
     /// <summary>The room the key's heading takes, and how tall a row of items is.</summary>
-    public const double Heading = 34, Row = 28;
+    public const double Heading = KeyRows.Heading, Row = KeyRows.Row;
 
     /// <summary>How far after its sample an item's words start.</summary>
-    public const double Words = 10;
-
-    /// <summary>
-    /// How wide a character of an item's words is taken to be, generously, since no font is measured, and the room
-    /// between two items.
-    /// </summary>
-    private const double Char = 6.6, Gap = 30;
+    public const double Words = KeyRows.Words;
 
     /// <summary>How wide a sample is: a tone's swatch, a letter's small badge, and a link's short line.</summary>
     private const double Swatch = 18, Badge = 20, Line = 50;
@@ -43,17 +38,9 @@ public static class ClassKeyLayout
     public static (IReadOnlyList<ClassKeyItem> Items, double Height) Of(ClassesSpec spec, double width)
     {
         // Side by side, each after the one before, and on to a new row at the left when the width is full.
-        var items = new List<ClassKeyItem>();
-        double x = 0, y = Heading;
-        foreach (var item in Tones(spec).Concat(Marks(spec)).Concat(Kinds(spec)))
-        {
-            double room = item.Sample + Words + item.Words.Length * Char;
-            if (x > 0 && x + room > width) (x, y) = (0, y + Row);
-            items.Add(item with { X = x, Y = y });
-            x += room + Gap;
-        }
-
-        return (items, y + Row);
+        var items = Tones(spec).Concat(Marks(spec)).Concat(Kinds(spec));
+        return KeyRows.Place(items, item => item.Sample, item => item.Words,
+            (item, x, y) => item with { X = x, Y = y }, width);
     }
 
     /// <summary>
