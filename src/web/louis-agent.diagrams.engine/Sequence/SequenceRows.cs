@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
@@ -16,7 +17,8 @@ internal sealed class SequenceRows(
     IReadOnlyList<double> centers,
     IReadOnlyDictionary<string, int> index,
     bool numbered,
-    SequenceMeasures measures)
+    SequenceMeasures measures,
+    IGeometry geometry)
 {
     /// <summary>Clear room between a turn to oneself's words and the drawing's edge.</summary>
     private const double Clear = 12;
@@ -90,8 +92,9 @@ internal sealed class SequenceRows(
             .Append(right + measures.InsetRight - x)
             .Max();
         double bottom = y + measures.BlockEnd;
-        Blocks.Add(new PlacedBlock(block, lines, cases, depth, x, top, width, bottom - top));
-        return (bottom + measures.BlockGap, x, x + width);
+        var frame = geometry.Box(x, top, width, bottom - top);
+        Blocks.Add(new PlacedBlock(block, lines, cases, depth, frame));
+        return (bottom + measures.BlockGap, frame.Left, frame.Right);
     }
 
     /// <summary>
@@ -120,12 +123,11 @@ internal sealed class SequenceRows(
     {
         if (row.Step is NoteStep)
         {
-            var note = measures.NoteBox(row);
-            return (note.X, note.X + note.W);
+            var note = measures.NoteBox(row, geometry);
+            return (note.Left, note.Right);
         }
 
         if (!row.Self) return (Math.Min(row.FromX, row.ToX), Math.Max(row.FromX, row.ToX));
-        var words = measures.WordBox(row);
-        return (row.FromX, words.X + words.W + Clear);
+        return (row.FromX, measures.WordBox(row, geometry).Right + Clear);
     }
 }

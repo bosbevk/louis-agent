@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Classes;
 using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
@@ -202,13 +203,13 @@ public class DocsDiagramsTests
     /// </summary>
     private static IEnumerable<string> Outside(SequenceSpec sequence, SequenceMeasures measures)
     {
-        var placed = SequenceLayout.Place(sequence, measures);
+        var geometry = Geometries.InUse;
+        var placed = SequenceLayout.Place(sequence, measures, geometry);
         var boxes = placed.Rows
             .Select(row => (What: row.Lines.FirstOrDefault() ?? "",
-                Box: row.Step is NoteStep ? measures.NoteBox(row) : measures.WordBox(row)))
-            .Concat(placed.Blocks.Select(block =>
-                (What: block.Block.Label, Box: (block.X, block.Y, block.W, block.H))));
-        return boxes.Where(item => item.Box.Item1 < 0 || item.Box.Item1 + item.Box.Item3 > placed.Width + 0.001)
+                Box: row.Step is NoteStep ? measures.NoteBox(row, geometry) : measures.WordBox(row, geometry)))
+            .Concat(placed.Blocks.Select(block => (What: block.Block.Label, block.Box)));
+        return boxes.Where(item => item.Box.Left < 0 || item.Box.Right > placed.Width + 0.001)
             .Select(item => $"'{item.What}'");
     }
 

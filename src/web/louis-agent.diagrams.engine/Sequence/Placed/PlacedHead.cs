@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sequence.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Sequence.Placed;
@@ -8,11 +9,8 @@ namespace LouisAgent.Diagrams.Engine.Sequence.Placed;
 public sealed record PlacedHead(
     Participant Participant,
     IReadOnlyList<string> Lines,
-    double X,
-    double Y,
-    double W,
-    double H)
+    IBox Box)
 {
     /// <summary>Where the lifeline runs, down the head's middle.</summary>
-    public double Center => X + W / 2;
+    public double Center => Box.Middle.X;
 }

@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
@@ -12,5 +13,5 @@ internal sealed class SequenceRenderer : IDiagramRenderer
 {
     public DiagramKind Kind => DiagramKind.Sequence;
 
-    public string Render(DiagramSource source) => SequenceDrawing.Of(source);
+    public string Render(DiagramSource source) => SequenceDrawing.Of(source, Geometries.InUse);
 }

@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 using LouisAgent.Diagrams.Sources;
 
@@ -68,7 +69,7 @@ public class SequenceDrawingTests
                                 }
                                 """;
 
-    private static string Drawn(string json = Turn) => SequenceDrawing.Of(DiagramReader.Read(json));
+    private static string Drawn(string json = Turn) => SequenceDrawing.Of(DiagramReader.Read(json), Geometries.InUse);
 
     /// <summary>The shapes drawn in a class, anywhere in a drawing or under one of its shapes.</summary>
     private static List<XElement> In(string cls, XElement? under = null) =>

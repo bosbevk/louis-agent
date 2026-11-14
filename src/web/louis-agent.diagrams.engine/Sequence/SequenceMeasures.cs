@@ -1,6 +1,8 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
+using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sequence.Spec;
 
@@ -57,8 +59,8 @@ public sealed record SequenceMeasures
     /// </summary>
     public double HeadPad { get; init; } = 32;
 
-    /// <summary>How wide a character of a head's name is taken to be.</summary>
-    public double HeadChar { get; init; } = 9.4;
+    /// <summary>The face a head's name is measured in.</summary>
+    public Face HeadFace { get; init; } = new(9.4);
 
     /// <summary>A line of a head's name.</summary>
     public double HeadLine { get; init; } = 20;
@@ -115,24 +117,23 @@ public sealed record SequenceMeasures
 
     /// <summary>How wide a head is for its name. Its icon stands over the name and takes no room beside it.</summary>
     public double HeadWidth(IReadOnlyList<string> lines) =>
-        Math.Max(HeadMinWidth, lines.Max(line => line.Length) * HeadChar);
+        Math.Max(HeadMinWidth, HeadFace.Widest(lines));
 
     /// <summary>How tall a head is for its name's lines.</summary>
     public double HeadHeight(IReadOnlyList<string> lines) => lines.Count * HeadLine + 2 * HeadPad;
 
     /// <summary>How wide a message's words are, their room included.</summary>
-    public double WordsWidth(IReadOnlyList<string> lines) =>
-        lines.Select(line => line.Length).DefaultIfEmpty(0).Max() * FlowText.WordChar + 2 * WordPad;
+    public double WordsWidth(IReadOnlyList<string> lines) => FlowText.Word.Widest(lines) + 2 * WordPad;
 
     /// <summary>
     /// The ground a message's words take: centred between its lifelines, or for a message to oneself, just right of
     /// its lifeline beside the turn.
     /// </summary>
-    public (double X, double Y, double W, double H) WordBox(PlacedRow row)
+    public IBox WordBox(PlacedRow row, IGeometry geometry)
     {
         double width = WordsWidth(row.Lines), height = row.Lines.Count * LineStep + WordPad;
         double left = row.Self ? row.FromX + SelfOut + WordPad : (row.FromX + row.ToX) / 2 - width / 2;
-        return (left, row.Y + TextTop - WordPad / 2, width, height);
+        return geometry.Box(left, row.Y + TextTop - WordPad / 2, width, height);
     }
 
     /// <summary>How wide a note is: its words, or the span of its lifelines and a reach each side, the wider.</summary>
@@ -143,17 +144,20 @@ public sealed record SequenceMeasures
     public double NoteHeight(IReadOnlyList<string> lines) => lines.Count * NoteLine + 2 * NotePad;
 
     /// <summary>The panel a note stands on, centred over the lifelines it names.</summary>
-    public (double X, double Y, double W, double H) NoteBox(PlacedRow row)
+    public IBox NoteBox(PlacedRow row, IGeometry geometry)
     {
         double width = NoteWidth(row.Lines, row.ToX - row.FromX);
-        return ((row.FromX + row.ToX) / 2 - width / 2, row.Y + NoteTop, width, NoteHeight(row.Lines));
+        return geometry.Box((row.FromX + row.ToX) / 2 - width / 2, row.Y + NoteTop, width, NoteHeight(row.Lines));
     }
 
     /// <summary>How tall a block's tab is, or an else's divider with its label, for the label's lines.</summary>
-    public double TabHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * TabPad + 4;
+    public double TabHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * TabPad + TabExtra;
+
+    /// <summary>What a tab's height has beyond its label's lines and the room round them.</summary>
+    public double TabExtra { get; init; } = 4;
 
     /// <summary>How wide the pill naming a block's kind is.</summary>
-    public double KindWidth(BlockKind kind) => kind.Wire().Length * FlowText.WordChar + 2 * WordPad;
+    public double KindWidth(BlockKind kind) => FlowText.Word.Width(kind.Wire()) + 2 * WordPad;
 
     /// <summary>
     /// How wide a frame must be for its tab: from where the tab starts, the kind's pill and the label beside it.

@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -30,9 +31,9 @@ public class SequenceLayoutTests
         Assert.Multiple(() =>
         {
             Assert.That(heads.Select(head => head.Participant.Id), Is.EqualTo(new[] { "P", "S", "B" }));
-            Assert.That(heads.Select(head => head.Y).Distinct(), Has.Exactly(1).Items);
+            Assert.That(heads.Select(head => head.Box.Top).Distinct(), Has.Exactly(1).Items);
             for (int at = 1; at < heads.Count; at++)
-                Assert.That(heads[at].X, Is.GreaterThan(heads[at - 1].X + heads[at - 1].W), heads[at].Participant.Id);
+                Assert.That(heads[at].Box.Left, Is.GreaterThan(heads[at - 1].Box.Right), heads[at].Participant.Id);
         });
     }
 
@@ -48,9 +49,9 @@ public class SequenceLayoutTests
         {
             foreach (var row in placed.Rows.Where(row => row.FromX != row.ToX))
             {
-                var box = SequenceMeasures.Marquee.WordBox(row);
-                Assert.That(box.X, Is.GreaterThan(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
-                Assert.That(box.X + box.W, Is.LessThan(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
+                var box = SequenceMeasures.Marquee.WordBox(row, Geometries.InUse);
+                Assert.That(box.Left, Is.GreaterThan(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
+                Assert.That(box.Right, Is.LessThan(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
             }
         });
     }
@@ -94,7 +95,7 @@ public class SequenceLayoutTests
     public void TheRows_RunDownInOrder()
     {
         var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
-        double headsEnd = placed.Heads.Max(head => head.Y + head.H);
+        double headsEnd = placed.Heads.Max(head => head.Box.Bottom);
 
         Assert.Multiple(() =>
         {
@@ -114,13 +115,13 @@ public class SequenceLayoutTests
     {
         var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
         var self = placed.Rows[2];
-        var box = SequenceMeasures.Marquee.WordBox(self);
+        var box = SequenceMeasures.Marquee.WordBox(self, Geometries.InUse);
 
         Assert.Multiple(() =>
         {
             Assert.That(self.FromX, Is.EqualTo(self.ToX));
-            Assert.That(box.X, Is.GreaterThan(self.FromX));
-            Assert.That(box.X + box.W, Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(box.Left, Is.GreaterThan(self.FromX));
+            Assert.That(box.Right, Is.LessThanOrEqualTo(placed.Width));
         });
     }
 }

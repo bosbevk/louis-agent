@@ -56,6 +56,17 @@ public class PathWriterTests
         Assert.That(new PathWriter().Oval(50, 60, 20, 10).Text,
             Is.EqualTo("M30 60a20 10 0 1 0 40 0a20 10 0 1 0 -40 0Z"));
 
+    /// <summary>A level line is from one place across to another at one height, whichever way it runs.</summary>
+    [Test]
+    public void ALevelLine_RunsAcrossAtOneHeight()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(PathWriter.Level(120, 150, 348), Is.EqualTo("M120 348H150"));
+            Assert.That(PathWriter.Level(150, 120.26, 348), Is.EqualTo("M150 348H120.3"));
+        });
+    }
+
     /// <summary>A path with nothing in it is no text.</summary>
     [Test]
     public void AnEmptyPath_IsNoText()

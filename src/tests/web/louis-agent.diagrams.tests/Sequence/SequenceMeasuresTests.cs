@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
 using LouisAgent.Diagrams.Icons;
@@ -66,7 +67,8 @@ public class SequenceMeasuresTests
     {
         var heads = Placed().Heads;
 
-        Assert.That(heads.Zip(heads.Skip(1), (left, right) => right.X - (left.X + left.W)), Is.All.GreaterThan(0));
+        Assert.That(heads.Zip(heads.Skip(1), (left, right) => right.Box.Left - left.Box.Right),
+            Is.All.GreaterThan(0));
     }
 
     /// <summary>
@@ -82,10 +84,10 @@ public class SequenceMeasuresTests
         {
             foreach (var row in rows)
             {
-                var (x, y, w, h) = Marquee.WordBox(row);
-                Assert.That(x, Is.GreaterThanOrEqualTo(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
-                Assert.That(x + w, Is.LessThanOrEqualTo(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
-                Assert.That(y + h, Is.LessThanOrEqualTo(row.ArrowY), row.Lines[0]);
+                var words = Marquee.WordBox(row, Geometries.InUse);
+                Assert.That(words.Left, Is.GreaterThanOrEqualTo(Math.Min(row.FromX, row.ToX)), row.Lines[0]);
+                Assert.That(words.Right, Is.LessThanOrEqualTo(Math.Max(row.FromX, row.ToX)), row.Lines[0]);
+                Assert.That(words.Bottom, Is.LessThanOrEqualTo(row.ArrowY), row.Lines[0]);
             }
         });
     }
@@ -102,12 +104,12 @@ public class SequenceMeasuresTests
             Participants = [.. Spec.Participants, new Participant("X", "Next")]
         }, Marquee);
         var self = placed.Rows.Single(row => row.Self);
-        var box = Marquee.WordBox(self);
+        var box = Marquee.WordBox(self, Geometries.InUse);
 
         Assert.Multiple(() =>
         {
-            Assert.That(box.X, Is.EqualTo(self.FromX + Marquee.SelfOut + Marquee.WordPad));
-            Assert.That(box.X + box.W, Is.LessThan(placed.Heads[3].Center));
+            Assert.That(box.Left, Is.EqualTo(self.FromX + Marquee.SelfOut + Marquee.WordPad));
+            Assert.That(box.Right, Is.LessThan(placed.Heads[3].Center));
             Assert.That(self.H, Is.EqualTo(placed.Rows[0].H + Marquee.SelfDrop));
         });
     }
@@ -121,15 +123,15 @@ public class SequenceMeasuresTests
     {
         var placed = Placed();
         var block = placed.Blocks.Single();
-        var inside = placed.Rows.Where(row => row.Y > block.Y && row.Y < block.Y + block.H).ToList();
+        var inside = placed.Rows.Where(row => row.Y > block.Box.Top && row.Y < block.Box.Bottom).ToList();
 
         Assert.Multiple(() =>
         {
             Assert.That(inside, Has.Count.EqualTo(2), "the answer and the note");
-            Assert.That(block.X, Is.EqualTo(placed.Heads[0].Center - Marquee.InsetLeft));
-            Assert.That(block.X + block.W, Is.GreaterThanOrEqualTo(placed.Heads[2].Center + Marquee.InsetRight));
+            Assert.That(block.Box.Left, Is.EqualTo(placed.Heads[0].Center - Marquee.InsetLeft));
+            Assert.That(block.Box.Right, Is.GreaterThanOrEqualTo(placed.Heads[2].Center + Marquee.InsetRight));
             Assert.That(block.Cases.Single().Y, Is.InRange(inside[0].Y + inside[0].H, inside[1].Y));
-            Assert.That(inside[0].Y, Is.EqualTo(block.Y + Marquee.TabHeight(block.Lines)));
+            Assert.That(inside[0].Y, Is.EqualTo(block.Box.Top + Marquee.TabHeight(block.Lines)));
         });
     }
 
@@ -166,7 +168,7 @@ public class SequenceMeasuresTests
         Assert.Multiple(() =>
         {
             Assert.That(Marquee.BlockGap, Is.EqualTo(12));
-            Assert.That(placed.Rows[^1].Y, Is.EqualTo(block.Y + block.H + 12), "the last answer, after the block");
+            Assert.That(placed.Rows[^1].Y, Is.EqualTo(block.Box.Bottom + 12), "the last answer, after the block");
         });
     }
 
@@ -176,13 +178,13 @@ public class SequenceMeasuresTests
     {
         var placed = Placed();
         var note = placed.Rows.Single(row => row.Step is NoteStep);
-        var (x, _, w, h) = Marquee.NoteBox(note);
+        var panel = Marquee.NoteBox(note, Geometries.InUse);
 
         Assert.Multiple(() =>
         {
-            Assert.That(x, Is.LessThanOrEqualTo(placed.Heads[1].Center - Marquee.NoteReach));
-            Assert.That(x + w, Is.GreaterThanOrEqualTo(placed.Heads[2].Center + Marquee.NoteReach));
-            Assert.That(h, Is.EqualTo(34), "one line: 16 and 9 above and under");
+            Assert.That(panel.Left, Is.LessThanOrEqualTo(placed.Heads[1].Center - Marquee.NoteReach));
+            Assert.That(panel.Right, Is.GreaterThanOrEqualTo(placed.Heads[2].Center + Marquee.NoteReach));
+            Assert.That(panel.Height, Is.EqualTo(34), "one line: 16 and 9 above and under");
         });
     }
 
@@ -197,9 +199,9 @@ public class SequenceMeasuresTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(placed.Blocks.Min(block => block.X), Is.GreaterThanOrEqualTo(0));
-            Assert.That(placed.Heads[0].X, Is.GreaterThanOrEqualTo(0));
-            Assert.That(placed.Blocks.Max(block => block.X + block.W), Is.LessThanOrEqualTo(placed.Width + 0.001));
+            Assert.That(placed.Blocks.Min(block => block.Box.Left), Is.GreaterThanOrEqualTo(0));
+            Assert.That(placed.Heads[0].Box.Left, Is.GreaterThanOrEqualTo(0));
+            Assert.That(placed.Blocks.Max(block => block.Box.Right), Is.LessThanOrEqualTo(placed.Width + 0.001));
         });
     }
 

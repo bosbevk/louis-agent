@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -27,12 +28,12 @@ public class SequenceNotesTests
     public void ANote_SpansTheLifelinesItNames()
     {
         var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
-        var (x, _, w, _) = SequenceMeasures.Marquee.NoteBox(placed.Rows[2]);
+        var note = SequenceMeasures.Marquee.NoteBox(placed.Rows[2], Geometries.InUse);
 
         Assert.Multiple(() =>
         {
-            Assert.That(x, Is.LessThan(placed.Heads[0].Center));
-            Assert.That(x + w, Is.GreaterThan(placed.Heads[1].Center));
+            Assert.That(note.Left, Is.LessThan(placed.Heads[0].Center));
+            Assert.That(note.Right, Is.GreaterThan(placed.Heads[1].Center));
         });
     }
 
@@ -41,13 +42,13 @@ public class SequenceNotesTests
     public void ANoteOverOne_StandsOnItsLifeline_InsideTheDrawing()
     {
         var placed = SequenceLayout.Place(Spec, SequenceMeasures.Marquee);
-        var (x, _, w, _) = SequenceMeasures.Marquee.NoteBox(placed.Rows[0]);
+        var note = SequenceMeasures.Marquee.NoteBox(placed.Rows[0], Geometries.InUse);
 
         Assert.Multiple(() =>
         {
-            Assert.That(x + w / 2, Is.EqualTo(placed.Heads[0].Center).Within(0.001));
-            Assert.That(x, Is.GreaterThanOrEqualTo(0));
-            Assert.That(x + w, Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(note.Middle.X, Is.EqualTo(placed.Heads[0].Center).Within(0.001));
+            Assert.That(note.Left, Is.GreaterThanOrEqualTo(0));
+            Assert.That(note.Right, Is.LessThanOrEqualTo(placed.Width));
         });
     }
 

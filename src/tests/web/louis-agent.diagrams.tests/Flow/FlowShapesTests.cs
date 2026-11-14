@@ -292,11 +292,11 @@ public class FlowShapesTests
 
         var a = placed.Nodes.Single(node => node.Node.Id == "a");
         var edge = placed.Edges.Single();
-        double left = edge.Word.X - word.Length * FlowText.WordChar / 2;
+        double left = edge.Word.X - FlowText.Word.Width(word) / 2;
         Assert.Multiple(() =>
         {
             Assert.That(left, Is.GreaterThan(a.Box.Middle.X), "it starts right of the line");
-            Assert.That(edge.Word.X + word.Length * FlowText.WordChar / 2, Is.LessThanOrEqualTo(placed.Width));
+            Assert.That(edge.Word.X + FlowText.Word.Width(word) / 2, Is.LessThanOrEqualTo(placed.Width));
         });
     }
 

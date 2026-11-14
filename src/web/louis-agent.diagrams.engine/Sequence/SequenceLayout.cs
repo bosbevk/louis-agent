@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -27,8 +28,9 @@ public static class SequenceLayout
     private const double LifelineEnd = 16;
 
     /// <summary>Where every head, every step and every block's frame stands, by the measures it is handed.</summary>
-    public static PlacedSequence Place(SequenceSpec spec, SequenceMeasures measures)
+    public static PlacedSequence Place(SequenceSpec spec, SequenceMeasures measures, IGeometry? geometry = null)
     {
+        geometry ??= Geometries.InUse;
         var lines = spec.Participants.Select(measures.HeadLines).ToList();
         var widths = lines.Select(measures.HeadWidth).ToList();
         var index = spec.Participants.Select((head, at) => (head.Id, at)).ToDictionary(StringComparer.Ordinal);
@@ -36,20 +38,20 @@ public static class SequenceLayout
         double headHeight = lines.Max(measures.HeadHeight);
 
         // A note or a frame may reach left of the first head: then every lifeline moves right and the rows go again.
-        var rows = new SequenceRows(centers, index, spec.Numbered, measures);
+        var rows = new SequenceRows(centers, index, spec.Numbered, measures, geometry);
         var (bottom, left, right) = rows.Walk(spec.Steps, headHeight + RowGap, 0);
         if (left < 0)
         {
             centers = centers.Select(center => center - left).ToArray();
-            rows = new SequenceRows(centers, index, spec.Numbered, measures);
+            rows = new SequenceRows(centers, index, spec.Numbered, measures, geometry);
             (bottom, _, right) = rows.Walk(spec.Steps, headHeight + RowGap, 0);
         }
 
         var heads = spec.Participants
             .Select((head, at) =>
-                new PlacedHead(head, lines[at], centers[at] - widths[at] / 2, 0, widths[at], headHeight))
+                new PlacedHead(head, lines[at], geometry.Box(centers[at] - widths[at] / 2, 0, widths[at], headHeight)))
             .ToList();
-        double width = Math.Max(right, heads[^1].X + heads[^1].W);
+        double width = Math.Max(right, heads[^1].Box.Right);
         return new PlacedSequence(heads, rows.Rows, rows.Blocks, width, bottom + LifelineEnd);
     }
 

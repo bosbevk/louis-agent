@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 using LouisAgent.Diagrams.Icons;
@@ -34,7 +35,7 @@ public class SequenceRendererTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(drawn, Is.EqualTo(SequenceDrawing.Of(Chat)));
+            Assert.That(drawn, Is.EqualTo(SequenceDrawing.Of(Chat, Geometries.InUse)));
             Assert.That(drawn, Does.Contain("class=\"mrq-title\"").And.Contain("seq-badge tone-blue").And
                 .Contain("class=\"seq-beam\"").And.Contain("class=\"seq-key\""));
             Assert.That(drawn, Does.Not.Contain("class=\"box").And.Not.Contain("class=\"word-chip"));

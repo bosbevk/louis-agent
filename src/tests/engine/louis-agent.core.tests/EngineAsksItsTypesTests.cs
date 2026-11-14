@@ -69,9 +69,6 @@ public partial class EngineAsksItsTypesTests
         "Components/Placed/PlacedNeighbour.cs",
         "Components/Placed/PlacedPill.cs",
         "Components/Routing/Block.cs",
-        "Sequence/Placed/PlacedBlock.cs",
-        "Sequence/Placed/PlacedHead.cs",
-        "Sequence/SequenceMeasures.cs",
         "Tickets/Placed/PlacedPill.cs"
     ];
 
@@ -81,9 +78,6 @@ public partial class EngineAsksItsTypesTests
         "Components/ComponentLayout.cs",
         "Components/Routing/Obstacles.cs",
         "Components/Routing/StateRoutes.cs",
-        "Sequence/SequenceRows.cs",
-        "Svg/Renderers/Parts/Lifelines/SequenceFrames.cs",
-        "Svg/Renderers/Parts/Lifelines/SequenceHeads.cs",
         "Svg/Renderers/Parts/Nesting/ComponentsRenderer.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];
@@ -94,7 +88,6 @@ public partial class EngineAsksItsTypesTests
         "Components/ComponentSizes.cs",
         "Components/NeighbourLayout.cs",
         "Keys/KeyRows.cs",
-        "Sequence/SequenceMeasures.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
         "Tickets/TicketLayout.cs"
     ];
@@ -103,8 +96,6 @@ public partial class EngineAsksItsTypesTests
     private static readonly string[] PathsAsText =
     [
         "Components/Placed/Lines/LinePath.cs",
-        "Svg/Renderers/Parts/Lifelines/SequenceFrames.cs",
-        "Svg/Renderers/Parts/Lifelines/SequenceSteps.cs",
         "Svg/Renderers/Parts/Nesting/ComponentPins.cs",
         "Svg/Renderers/Parts/Nesting/ComponentsKey.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",

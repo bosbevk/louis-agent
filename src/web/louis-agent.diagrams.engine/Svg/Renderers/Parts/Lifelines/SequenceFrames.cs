@@ -1,7 +1,8 @@
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
-using static LouisAgent.Diagrams.Engine.Svg.SvgWriter;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 
@@ -17,8 +18,8 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 /// </remarks>
 internal static class SequenceFrames
 {
-    /// <summary>A frame's corner, how far in its accent starts along its top, and how thick the accent is.</summary>
-    private const double Corner = 14, EdgeIn = 28, Edge = 1.6;
+    /// <summary>A frame's corner, and how far in its accent starts along its top.</summary>
+    private const double Corner = 14, EdgeIn = 28;
 
     /// <summary>
     /// A pill: how far under the frame's top or a divider it stands and how tall it is, where its word stands,
@@ -29,36 +30,40 @@ internal static class SequenceFrames
     private static readonly SequenceMeasures Measures = SequenceMeasures.Marquee;
 
     /// <summary>A frame's panel, where the layout put it: the cover, the glass and the accent along its top.</summary>
-    public static void Panel(SvgWriter writer, PlacedBlock block) => writer
-        .Box(block.X, block.Y, block.W, block.H, Corner, "seq-cover")
-        .Box(block.X, block.Y, block.W, block.H, Corner, "mrq-glass")
-        .Box(block.X + EdgeIn, block.Y - 0.5, Math.Max(0, block.W - 2 * EdgeIn), Edge, 0, "mrq-edge");
+    public static void Panel(SvgWriter writer, PlacedBlock block, IGeometry geometry)
+    {
+        writer.Box(block.Box, Corner, "seq-cover").Box(block.Box, Corner, "mrq-glass");
+        PictureParts.Accent(writer, geometry, block.Box, EdgeIn);
+    }
 
     /// <summary>
     /// A frame's tab, its kind in a pill and its label, and for each other case a divider across the frame with
     /// "else" in a quiet pill and the case's label.
     /// </summary>
-    public static void Tabs(SvgWriter writer, PlacedBlock block)
+    public static void Tabs(SvgWriter writer, PlacedBlock block, IGeometry geometry)
     {
         var kind = block.Block.Block;
-        Tab(writer, block.X, block.Y, kind.Wire(), Measures.KindWidth(kind), "seq-kind", "mrq-code", block.Lines);
+        var frame = block.Box;
+        double left = frame.Left + Measures.TabLeft;
+        var tab = geometry.Box(left, frame.Top + PillTop, Measures.KindWidth(kind), PillHeight);
+        Tab(writer, tab, frame.Top, kind.Wire(), "seq-kind", "mrq-code", block.Lines);
         foreach (var @case in block.Cases)
         {
-            writer.Path($"M{N(block.X)} {N(@case.Y)}H{N(block.X + block.W)}", "seq-divide", false);
-            Tab(writer, block.X, @case.Y, SequenceMeasures.ElseWord, Measures.WordsWidth([SequenceMeasures.ElseWord]),
-                "seq-else", "seq-else-word", @case.Lines);
+            writer.Path(PathWriter.Level(frame.Left, frame.Right, @case.Y), "seq-divide", false);
+            double wide = Measures.WordsWidth([SequenceMeasures.ElseWord]);
+            var other = geometry.Box(left, @case.Y + PillTop, wide, PillHeight);
+            Tab(writer, other, @case.Y, SequenceMeasures.ElseWord, "seq-else", "seq-else-word", @case.Lines);
         }
     }
 
-    /// <summary>A pill with a word in it, a little inside the frame, and a label's lines beside it.</summary>
-    private static void Tab(SvgWriter writer, double x, double y, string word, double wide, string pill,
-        string look, IReadOnlyList<string> lines)
+    /// <summary>
+    /// A pill with a word in it, a little inside the frame and under a height, and a label's lines beside it.
+    /// </summary>
+    private static void Tab(SvgWriter writer, IBox pill, double y, string word, string look, string words,
+        IReadOnlyList<string> lines)
     {
-        double left = x + Measures.TabLeft;
-        writer.Box(left, y + PillTop, wide, PillHeight, PillHeight / 2, pill)
-            .Text(left + wide / 2, y + WordDrop, word, look);
+        writer.Box(pill, pill.HalfHeight, look).Text(pill.Middle.X, y + WordDrop, word, words);
         for (int at = 0; at < lines.Count; at++)
-            writer.Text(left + wide + LabelGap, y + LabelDrop + at * Measures.LineStep, lines[at], "seq-tab",
-                "start");
+            writer.Text(pill.Right + LabelGap, y + LabelDrop + at * Measures.LineStep, lines[at], "seq-tab", "start");
     }
 }

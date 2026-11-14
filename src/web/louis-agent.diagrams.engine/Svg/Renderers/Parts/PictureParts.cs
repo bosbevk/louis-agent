@@ -25,6 +25,17 @@ internal static class PictureParts
     public static SvgWriter Panel(SvgWriter writer, double x, double y, double width, double height) =>
         writer.Box(x, y, width, height, Radius, "pic-panel");
 
+    /// <summary>
+    /// The accent along the top of a glass box: a thin strip on its top edge, starting and ending a way in from
+    /// its sides.
+    /// </summary>
+    public static SvgWriter Accent(SvgWriter writer, IGeometry geometry, IBox box, double inset) => writer.Box(
+        geometry.Box(box.Left + inset, box.Top - AccentRise, Math.Max(0, box.Width - 2 * inset), AccentThick), 0,
+        "mrq-edge");
+
+    /// <summary>How thick the accent along a glass box's top is, and how far above the box's top it starts.</summary>
+    private const double AccentThick = 1.6, AccentRise = 0.5;
+
     /// <summary>A panel, where a box of the layout stands.</summary>
     public static SvgWriter Panel(SvgWriter writer, IBox box) => writer.Box(box, Radius, "pic-panel");
 

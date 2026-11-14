@@ -1,10 +1,11 @@
 using System.Globalization;
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Tones;
-using static LouisAgent.Diagrams.Engine.Svg.SvgWriter;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
 
@@ -32,10 +33,11 @@ internal static class SequenceSteps
 
     /// <summary>
     /// The words: how far above its line a message's last line stands, how far a number is dropped to sit in the
-    /// middle of its ring, how round a turn's corners are, how far after a turn its words start, and how far
-    /// under a note's padding its first line stands.
+    /// middle of its ring, how round a turn's corners are, how far after a turn its words start, how far under
+    /// the middle of a turn its words' middle line stands, and how far under a note's padding its first line
+    /// stands.
     /// </summary>
-    private const double WordRise = 9, CountDrop = 3.5, Round = 8, TurnGap = 12, NoteBase = 12;
+    private const double WordRise = 9, CountDrop = 3.5, Round = 8, TurnGap = 12, TurnDrop = 4, NoteBase = 12;
 
     /// <summary>A note's corner.</summary>
     private const double Corner = 12;
@@ -47,46 +49,47 @@ internal static class SequenceSteps
 
     /// <summary>One step, where the layout put it.</summary>
     /// <remarks>A switch on the row's shape, one arm a kind (ADR 0051).</remarks>
-    public static void Draw(SvgWriter writer, PlacedRow row)
+    public static void Draw(SvgWriter writer, PlacedRow row, IGeometry geometry)
     {
         switch (row)
         {
             case { Step: NoteStep }:
-                Note(writer, row);
+                Note(writer, row, geometry);
                 break;
             case { Self: true }:
                 Turn(writer, row);
                 break;
             default:
-                Across(writer, row);
+                Across(writer, row, geometry);
                 break;
         }
     }
 
     /// <summary>
     /// A call's line from its sender to its receiver: the glow, the beam, the arrowhead where it arrives, and the
-    /// dots that run along it when it moves.
+    /// dots that run along it when it moves. The glow and the beam are two strips on the line's height.
     /// </summary>
-    public static void Beam(SvgWriter writer, double from, double to, double y, bool dots)
+    public static void Beam(SvgWriter writer, IGeometry geometry, double from, double to, double y, bool dots)
     {
         double way = Math.Sign(to - from), left = Math.Min(from, to), wide = Math.Abs(to - from);
         // A call to the left is filled with the beam's mirror, so violet stays at its sender.
         string back = way < 0 ? " back" : "";
-        writer.Box(left, y - Glow / 2, wide, Glow, 0, "seq-beam seq-beam-glow" + back)
-            .Box(way < 0 ? left + Tip : left, y - Line / 2, wide - Tip, Line, 0, "seq-beam" + back);
-        if (dots) writer.Path($"M{N(from)} {N(y)}H{N(to - way * Tip)}", "pic-march", false);
-        writer.Path($"M{N(to - way * Tip)} {N(y)}H{N(to)}", "seq-tip", true, tone: Arrives);
+        var glow = geometry.Box(left, 0, wide, Glow).OnLine(y);
+        var beam = geometry.Box(way < 0 ? left + Tip : left, 0, wide - Tip, Line).OnLine(y);
+        writer.Box(glow, 0, "seq-beam seq-beam-glow" + back).Box(beam, 0, "seq-beam" + back);
+        if (dots) writer.Path(PathWriter.Level(from, to - way * Tip, y), "pic-march", false);
+        writer.Path(PathWriter.Level(to - way * Tip, to, y), "seq-tip", true, tone: Arrives);
     }
 
     /// <summary>An answer's line: thin, dashed and quiet, with a plain arrowhead. It stands still.</summary>
     public static void Dashes(SvgWriter writer, double from, double to, double y) =>
-        writer.Path($"M{N(from)} {N(y)}H{N(to)}", "seq-answer", true);
+        writer.Path(PathWriter.Level(from, to, y), "seq-answer", true);
 
     /// <summary>A call or an answer between two lifelines: its line, its node, and its words above the line.</summary>
-    private static void Across(SvgWriter writer, PlacedRow row)
+    private static void Across(SvgWriter writer, PlacedRow row, IGeometry geometry)
     {
         bool call = row.Step is MessageStep;
-        if (call) Beam(writer, row.FromX, row.ToX, row.ArrowY, dots: true);
+        if (call) Beam(writer, geometry, row.FromX, row.ToX, row.ArrowY, dots: true);
         else Dashes(writer, row.FromX, row.ToX, row.ArrowY);
         Start(writer, row, call);
 
@@ -104,14 +107,14 @@ internal static class SequenceSteps
     {
         bool call = row.Step is MessageStep;
         double x = row.FromX, y = row.ArrowY, far = x + Measures.SelfOut, under = y + Measures.SelfDrop;
-        string path = $"M{N(x)} {N(y)}H{N(far - Round)}Q{N(far)} {N(y)} {N(far)} {N(y + Round)}" +
-                      $"V{N(under - Round)}Q{N(far)} {N(under)} {N(far - Round)} {N(under)}H{N(x)}";
+        string path = new PathWriter().From(x, y).Across(far - Round).Curve(far, y, far, y + Round)
+            .Down(under - Round).Curve(far, under, far - Round, under).Across(x).Text;
         writer.Path(path, call ? "seq-turn" : "seq-answer", true, tone: call ? Turns : null);
         if (call) writer.Path(path, "pic-march", false);
         Start(writer, row, call);
 
         // The words' lines centred on the turn's height, starting after it.
-        double middle = (y + under) / 2 + 4 - (row.Lines.Count - 1) * Measures.LineStep / 2;
+        double middle = (y + under) / 2 + TurnDrop - (row.Lines.Count - 1) * Measures.LineStep / 2;
         for (int at = 0; at < row.Lines.Count; at++)
             writer.Text(far + TurnGap, middle + at * Measures.LineStep, row.Lines[at], Words(call), "start");
     }
@@ -135,12 +138,12 @@ internal static class SequenceSteps
     /// <summary>
     /// A note: glass over the lifelines it names, on a cover that hides them, its words centred on it.
     /// </summary>
-    private static void Note(SvgWriter writer, PlacedRow row)
+    private static void Note(SvgWriter writer, PlacedRow row, IGeometry geometry)
     {
-        var (x, y, w, h) = Measures.NoteBox(row);
-        writer.Box(x, y, w, h, Corner, "seq-cover").Box(x, y, w, h, Corner, "mrq-glass");
+        var note = Measures.NoteBox(row, geometry);
+        writer.Box(note, Corner, "seq-cover").Box(note, Corner, "mrq-glass");
         for (int at = 0; at < row.Lines.Count; at++)
-            writer.Text(x + w / 2, y + Measures.NotePad + NoteBase + at * Measures.NoteLine, row.Lines[at],
+            writer.Text(note.Middle.X, note.Top + Measures.NotePad + NoteBase + at * Measures.NoteLine, row.Lines[at],
                 "seq-note-words");
     }
 

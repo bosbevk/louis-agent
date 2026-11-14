@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Types;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Engine.Sequence.Keys;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
@@ -30,10 +31,10 @@ internal static class SequenceDrawing
     private static readonly PictureMeasures Measures = new(Head: 48, KeyGap: 12, LightDrop: 36, LightDown: 170);
 
     /// <summary>The sequence a source holds, as one SVG file's text.</summary>
-    public static string Of(DiagramSource source)
+    public static string Of(DiagramSource source, IGeometry geometry)
     {
         var spec = source.Sequence!;
-        var placed = SequenceLayout.Place(spec, SequenceMeasures.Marquee);
+        var placed = SequenceLayout.Place(spec, SequenceMeasures.Marquee, geometry);
 
         // The steps are the body, and the key goes across under them. Five fades are a sequence's to ask for: a
         // call's beam and its mirror for a call to the left, a lifeline, a frame's top edge, and the glass.
@@ -44,11 +45,12 @@ internal static class SequenceDrawing
             .Paint(SequenceStyle.LifePaint, PaintRun.Down, 0, 0.85, 1)
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
             .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
-            .Body("seq-drawing", Steps(placed), placed.Width, placed.Height)
+            .Body("seq-drawing", Steps(placed, geometry), placed.Width, placed.Height)
             .Key(width =>
             {
                 var (items, height) = SequenceKeyLayout.Of(spec, width);
-                return (height, (writer, top) => writer.Group("seq-legend", 0, top, SequenceKey.Of(items, width)));
+                return (height, (writer, top) =>
+                    writer.Group("seq-legend", 0, top, SequenceKey.Of(items, width, geometry)));
             })
             .Caption(source.Caption)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, SequenceStyle.Of(SvgTheme.Site))
@@ -60,15 +62,15 @@ internal static class SequenceDrawing
     /// outer under the inner, the lifelines over them, the frames' tabs over the lifelines, then each step, and
     /// the participants last.
     /// </summary>
-    private static SvgWriter Steps(PlacedSequence placed)
+    private static SvgWriter Steps(PlacedSequence placed, IGeometry geometry)
     {
         var writer = new SvgWriter();
         var frames = placed.Blocks.OrderBy(block => block.Depth).ToList();
-        foreach (var block in frames) SequenceFrames.Panel(writer, block);
-        foreach (var head in placed.Heads) SequenceHeads.Lifeline(writer, head, placed.Height);
-        foreach (var block in frames) SequenceFrames.Tabs(writer, block);
-        foreach (var row in placed.Rows) SequenceSteps.Draw(writer, row);
-        foreach (var head in placed.Heads) SequenceHeads.Draw(writer, head);
+        foreach (var block in frames) SequenceFrames.Panel(writer, block, geometry);
+        foreach (var head in placed.Heads) SequenceHeads.Lifeline(writer, head, placed.Height, geometry);
+        foreach (var block in frames) SequenceFrames.Tabs(writer, block, geometry);
+        foreach (var row in placed.Rows) SequenceSteps.Draw(writer, row, geometry);
+        foreach (var head in placed.Heads) SequenceHeads.Draw(writer, head, geometry);
         return writer;
     }
 }

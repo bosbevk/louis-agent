@@ -22,6 +22,9 @@ public sealed class PathWriter(bool spaced = false)
 {
     private readonly StringBuilder _text = new();
 
+    /// <summary>A level line's text: from one place across to another, at one height.</summary>
+    public static string Level(double from, double to, double y) => new PathWriter().From(from, y).Across(to).Text;
+
     /// <summary>The path's text, as an SVG's <c>d</c> holds it.</summary>
     public string Text => _text.ToString();
 

@@ -27,7 +27,7 @@ public class FlowMembersTests
     /// <summary>A box is as wide as its longest member needs.</summary>
     [Test]
     public void ABoxWithMembers_IsWideEnoughForTheLongest() =>
-        Assert.That(Size(LongMember)[0], Is.GreaterThanOrEqualTo(LongMember.Length * FlowText.WordChar));
+        Assert.That(Size(LongMember)[0], Is.GreaterThanOrEqualTo(FlowText.Word.Width(LongMember)));
 
     /// <summary>
     /// A member longer than the width members break at goes on over lines, each after the first indented, so a long

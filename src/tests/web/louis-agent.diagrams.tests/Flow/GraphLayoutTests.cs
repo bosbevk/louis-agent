@@ -316,7 +316,7 @@ public class GraphLayoutTests
         var placed = GraphLayout.Place(spec);
 
         var boxes = placed.Nodes.OrderBy(node => node.Box.Left).ToList();
-        double Gap(int left) => boxes[left + 1].Box.Left - (boxes[left].Box.Right);
+        double Gap(int left) => boxes[left + 1].Box.Left - boxes[left].Box.Right;
         Assert.Multiple(() =>
         {
             Assert.That(Gap(1), Is.GreaterThanOrEqualTo(8 * 19 + 16), "the long word has its room");

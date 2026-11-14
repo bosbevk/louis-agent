@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Engine.Sequence.Placed;
 
@@ -27,23 +28,24 @@ internal static class SequenceHeads
     /// A participant's lifeline, from under its name down to where the picture's steps end. It is a thin box and
     /// not a line, so the fade that runs down it has a width to be drawn in.
     /// </summary>
-    public static void Lifeline(SvgWriter writer, PlacedHead head, double bottom)
+    public static void Lifeline(SvgWriter writer, PlacedHead head, double bottom, IGeometry geometry)
     {
-        double top = head.Y + head.H;
-        writer.Box(head.Center - Line / 2, top, Line, bottom - top, 0, "seq-life");
+        double top = head.Box.Bottom;
+        writer.Box(geometry.Box(head.Center - Line / 2, top, Line, bottom - top), 0, "seq-life");
     }
 
     /// <summary>A participant where the layout put it: its badge, its icon, its name and the node under it.</summary>
-    public static void Draw(SvgWriter writer, PlacedHead head)
+    public static void Draw(SvgWriter writer, PlacedHead head, IGeometry geometry)
     {
-        double left = head.Center - Badge / 2, inset = (Badge - BadgeIcon) / 2;
-        writer.Box(left, head.Y, Badge, Badge, Corner, "seq-badge" + PictureParts.Tone(head.Participant.Tone));
+        double top = head.Box.Top, inset = (Badge - BadgeIcon) / 2;
+        var badge = geometry.Box(head.Center - Badge / 2, top, Badge, Badge);
+        writer.Box(badge, Corner, "seq-badge" + PictureParts.Tone(head.Participant.Tone));
         if (SequenceMeasures.IconOf(head.Participant) is { } icon)
-            writer.Icon(left + inset, head.Y + inset, BadgeIcon, icon, "seq-badge-icon");
+            writer.Icon(badge.Left + inset, badge.Top + inset, BadgeIcon, icon, "seq-badge-icon");
 
         for (int at = 0; at < head.Lines.Count; at++)
-            writer.Text(head.Center, head.Y + NameDrop + at * SequenceMeasures.Marquee.HeadLine, head.Lines[at],
+            writer.Text(head.Center, top + NameDrop + at * SequenceMeasures.Marquee.HeadLine, head.Lines[at],
                 "seq-name");
-        writer.Circle(head.Center, head.Y + head.H, Node, "mrq-node");
+        writer.Circle(head.Center, head.Box.Bottom, Node, "mrq-node");
     }
 }

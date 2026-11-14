@@ -15,13 +15,10 @@ public static class FlowText
     public const double NoteTop = 44, NoteStep = 12;
 
     /// <summary>
-    /// How wide a character of an arrow's word is: the 10px code font with a little to spare, so a font that runs
-    /// wide still fits its chip (CL60.2).
+    /// The face an arrow's word and a member's line are measured in: the 10px code font with a little to spare,
+    /// so a font that runs wide still fits its chip (CL60.2).
     /// </summary>
-    public const double WordChar = 7;
-
-    /// <summary>An arrow's word, and a member's line: the face that measures them.</summary>
-    public static readonly Face Word = new(WordChar);
+    public static readonly Face Word = new(7);
 
     /// <summary>How far a word's next line stands under the one before.</summary>
     public const double WordStep = 12;

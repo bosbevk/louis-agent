@@ -30,11 +30,8 @@ internal static class OverviewCards
     /// </summary>
     private const double TitleDrop = 41, EdgeIn = 28, QuietIcon = 20, QuietTitle = 34, QuietPill = 44;
 
-    /// <summary>
-    /// A glass card's accent: how thick it is and how far above the card's top it starts. And where a code
-    /// name's words stand in its pill, under a headline's title and in a plain card.
-    /// </summary>
-    private const double Edge = 1.6, EdgeRise = 0.5, PillLine = 16, CodeLine = 15;
+    /// <summary>Where a code name's words stand in its pill, under a headline's title and in a plain card.</summary>
+    private const double PillLine = 16, CodeLine = 15;
 
     /// <summary>A code name, in its 11px code font.</summary>
     private static readonly Face Code = new(6.8);
@@ -98,9 +95,9 @@ internal static class OverviewCards
         var box = card.Box;
         double left = box.Left + CardSizes.Pad;
         int titles = card.TitleLines.Count;
-        var accent = geometry.Box(box.Left + EdgeIn, box.Top - EdgeRise, box.Width - 2 * EdgeIn, Edge);
         var tint = geometry.Box(left, box.Top + CardSizes.Pad, Tint, Tint);
-        writer.Box(box, Corner, "mrq-glass").Box(accent, 0, "mrq-edge").Box(tint, TintCorner, "crd-tint")
+        writer.Box(box, Corner, "mrq-glass");
+        PictureParts.Accent(writer, geometry, box, EdgeIn).Box(tint, TintCorner, "crd-tint")
             .Icon(tint.Left + (Tint - TintIcon) / 2, tint.Top + (Tint - TintIcon) / 2, TintIcon, card.Card.Icon,
                 "crd-icon");
 

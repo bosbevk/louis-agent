@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 namespace LouisAgent.Diagrams.Engine.Sequence.Placed;
@@ -11,7 +12,4 @@ public sealed record PlacedBlock(
     IReadOnlyList<string> Lines,
     IReadOnlyList<PlacedCase> Cases,
     int Depth,
-    double X,
-    double Y,
-    double W,
-    double H);
+    IBox Box);

@@ -22,11 +22,8 @@ internal static class TypeCards
     /// <summary>A card's corner, a badge's corner, and the icon in a badge.</summary>
     private const double Corner = 14, BadgeCorner = 9, BadgeIcon = 16;
 
-    /// <summary>
-    /// How far in a contract's accent starts along its top, how thick it is, and how far above the card's top it
-    /// starts, so it lies on the card's edge.
-    /// </summary>
-    private const double EdgeIn = 24, Edge = 1.6, EdgeRise = 0.5;
+    /// <summary>How far in a contract's accent starts along its top.</summary>
+    private const double EdgeIn = 24;
 
     /// <summary>How far under a badge's middle its letter stands, and under a member's row its words.</summary>
     private const double MarkDrop = 4.5, MemberDrop = 10;
@@ -41,11 +38,7 @@ internal static class TypeCards
         var box = node.Box;
         double head = FlowText.HeadHeight(node);
         writer.Box(box, Corner, "cls-cover").Box(box, Corner, "mrq-glass");
-        if (TypeMarks.Contract(mark))
-        {
-            var accent = geometry.Box(box.Left + EdgeIn, box.Top - EdgeRise, Math.Max(0, box.Width - 2 * EdgeIn), Edge);
-            writer.Box(accent, 0, "mrq-edge");
-        }
+        if (TypeMarks.Contract(mark)) PictureParts.Accent(writer, geometry, box, EdgeIn);
 
         Badge(writer, node, type, mark, head, geometry);
         Words(writer, node);
@@ -99,7 +92,7 @@ internal static class TypeCards
 
         double divider = node.Box.Top + head, left = node.Box.Left + GraphLayout.LabelPad;
         double right = node.Box.Right - GraphLayout.LabelPad;
-        writer.Path(new PathWriter().From(left, divider).Across(right).Text, "cls-divide", false);
+        writer.Path(PathWriter.Level(left, right, divider), "cls-divide", false);
         for (int at = 0; at < members.Count; at++)
             writer.Text(left, divider + FlowText.MemberTop + MemberDrop + FlowText.MemberStep * at,
                 members[at].TrimStart('+'), "cls-member", "start");

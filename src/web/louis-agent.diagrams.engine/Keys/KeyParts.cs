@@ -41,7 +41,7 @@ internal static class KeyParts
         geometry.Box(row.Left, 0, wide, tall).OnLine(row.Middle.Y);
 
     /// <summary>A sample line's path: along its row's middle line, from the row's left to its right.</summary>
-    public static string Line(IBox row) => new PathWriter().From(row.Left, row.Middle.Y).Across(row.Right).Text;
+    public static string Line(IBox row) => PathWriter.Level(row.Left, row.Right, row.Middle.Y);
 
     /// <summary>An item's words: after its sample, a little under the row's middle line.</summary>
     public static SvgWriter Words(SvgWriter writer, IBox row, string words, string cls) =>
