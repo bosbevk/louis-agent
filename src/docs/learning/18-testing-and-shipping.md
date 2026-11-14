@@ -1053,18 +1053,76 @@ out the same way, so nine are named.
 
 **What is open for you.**
 
-- The picks made unattended, listed in CL65's plan: the strategy folded, the cards' default, one test project
-  and one design doc for the two projects, a kind's class beside a shared one, nine fades, two pictures.
+- The picks made unattended, in CL65's plan as of commit `a9a875cda`: the strategy folded, the cards' default,
+  one test project and one design doc for the two projects, a kind's class beside a shared one, nine fades, two
+  pictures.
 - The names of two kinds, each put to you there with three options: `components`, which reads as UML's
-  component diagram and shows a composite structure, and `ticket`, which is a glass card now. Neither is
-  renamed. I could not read uml-diagrams.org for the first, its certificate failed, so that finding rests on
-  the GeeksforGeeks page you named.
+  component diagram and shows a composite structure, and `ticket`, which is a glass card now. Since then
+  `components` is `nested`, your pick, and `ticket` is CL66. I could not read uml-diagrams.org for the first,
+  its certificate failed, so that finding rests on the GeeksforGeeks page you named.
 - Six messages still named `Legend…`, from when the docs' frame had a legend.
 
 **Where it sits.** Skill 18, testing and shipping: a rewrite of every file proved by taking the change out
 again, a rule test written before the cleanup it holds, and readers moved before what they read. Skill 20,
 extensibility: when a seam earns its keep, and when a strategy is a class. Skill 5, structured outputs: a
 default where data someone else writes can mean one thing, and a refusal where it can mean several.
+
+## The pictures a project needs, and a rule that reads the docs' own words (CL65.5, 2026-11-15)
+
+**What it is.** Every project doc used to show the same four pictures, whatever the project was. You said the
+project's type should decide: "the project type and requirements must drive which diagrams is required", and "if
+diagrams is missing add them". Now each doc says what kind of project it is about in its first lines, its kind
+sets the least it shows, and the doc names what it shows beyond that. A test holds every doc to exactly that, and
+the 27 pictures the new rule found missing are drawn.
+
+**A rule a person writes once, and a test that reads it.** The floor is a table in the guide: a library shows its
+main path and a sequence, a host where it runs, a web project what its main page is made of. The same table is a
+switch in the test project, `ProjectFloor`, and a test reads the guide's rows and holds them equal to the switch.
+So the rule a person reads and the rule the test keeps can't drift apart, and changing one fails until the other
+follows.
+
+**The doc's first lines are the data.** A doc already opened with a `**Kind:**` line in free words: "class
+library", "Blazor WebAssembly app", "library, ASP.NET Core minimal API". Its first words are now a kind from a list
+of nine, read with the same parser every choice in the code goes through, and the free words move into brackets
+after it. A second line names what the doc shows beyond its floor, by the type names the pictures carry. Held as an
+equality, not a minimum, those two lines are a true list of the doc's pictures: a doc that shows more than it says
+fails too.
+
+**A ratchet, as CL65.6 had.** When the rule first ran, 27 pictures were missing: 14 main paths, 8 places where a
+host runs, 5 web pages. The test listed them by doc, and a doc whose picture was drawn had to come off the list.
+Four steps later the list was empty and the rule a plain one. A list that only shrinks lets a rule land before
+the work it asks for is done, without a single day where the rule is off.
+
+**Every picture is a claim about the code.** A deployment diagram says which container a host runs in and what port
+it is reached on; I read the compose files, the Dockerfiles and the programs for each. An activity diagram says
+what happens in which order; I drew only what the doc's own story and the code it names confirm. Where they didn't
+settle an order, as in a web fetch, where I could not confirm whether robots.txt is asked before a replay is
+read, I drew the order the doc does state and left the rest out.
+
+**No section apart.** You also said "graphs must also be placed where it is used ort needed not a section". 40
+docs kept their pictures in a *Diagrams* section. A test now fails on one, and each section's pictures joined the
+story they explain, its few sentences that pointed from one section to the other said again for where they stand.
+
+**What went wrong on the way.**
+
+- The first kind line I read stopped at the first comma, and two docs' old words had a comma before their path.
+  The parse was right and the line was wrong: the old words went into brackets after the kind.
+- A file of secrets holds the port the API is reached on, so I could not read it, and the doc and the compose
+  file disagree. The picture says `API_PORT` rather than guess a number.
+- Moving a picture to the exact paragraph it explains, rather than to the end of the story, needs a person to
+  read each doc. Each picture now closes its doc's *How it works*; finer placing is left for when a doc is next
+  touched.
+
+**What is open for you.**
+
+- The picks made unattended, in CL65.5's plan as of commit `a9a875cda`: nine kinds where the floor you saw named
+  five, the equality rather than a minimum, a web project's composite structure drawn as a nested picture, and the
+  rule's types in the test project.
+- The `ticket` kind's name, CL66 in the TODO, with its three options in CL65's plan as of the same commit.
+
+**Where it sits.** Skill 18, testing and shipping: a rule stated once for people and held by a test that reads it, a
+ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
+of a design: every picture is drawn from what the code and its compose files say.
 
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
