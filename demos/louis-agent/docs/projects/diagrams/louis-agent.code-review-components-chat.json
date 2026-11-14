@@ -1,0 +1,95 @@
+{
+  "kind": "nested",
+  "title": "The chat page: what it is made of",
+  "caption": "The code-review app's chat page is the framework's chat shell, given the app's name, its links to the packs' screens, its theme picker and its boot screen.",
+  "nested": {
+    "subtitle": "louis-agent.code-review, Pages / ChatPage",
+    "root": {
+      "id": "page",
+      "name": "ChatPage",
+      "kind": "page",
+      "tone": "blue",
+      "aside": "/ and /chat",
+      "in": [
+        "SessionId"
+      ],
+      "holds": [
+        {
+          "id": "shell",
+          "name": "ChatShell",
+          "kind": "general part",
+          "tone": "green",
+          "note": "the framework's chat: the sidebar, the header, the messages, the box and the work panel",
+          "in": [
+            "SessionId",
+            "Title",
+            "OpenSession",
+            "Features"
+          ],
+          "holds": [
+            {
+              "id": "logo",
+              "name": "Logo",
+              "kind": "a slot",
+              "tone": "blue",
+              "note": "LOUIS AGENT"
+            },
+            {
+              "id": "views",
+              "name": "Views",
+              "kind": "a slot",
+              "tone": "blue",
+              "note": "links to the packs' Files, Changes and Branches"
+            },
+            {
+              "id": "settings",
+              "name": "ThemeSwitcher",
+              "kind": "the app's own",
+              "tone": "blue",
+              "note": "in the Settings slot"
+            },
+            {
+              "id": "empty",
+              "name": "EmptyChat",
+              "kind": "the app's own",
+              "tone": "blue",
+              "note": "the boot screen in the Empty slot",
+              "in": [
+                "Composer"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "around": [
+      {
+        "id": "layout",
+        "name": "ChatLayout",
+        "side": "before",
+        "tone": "blue",
+        "kind": "layout",
+        "heading": "Who draws it",
+        "note": "nothing round it: the shell is full-screen"
+      },
+      {
+        "id": "handoff",
+        "name": "ChatHandoff",
+        "side": "before",
+        "tone": "teal",
+        "heading": "What the page reads",
+        "note": "a prompt from an admin screen, put in the box",
+        "reads": true
+      },
+      {
+        "id": "api",
+        "name": "AgentApi",
+        "side": "after",
+        "tone": "teal",
+        "heading": "What it asks",
+        "note": "a new chat's session, with every toolset",
+        "calls": "opens"
+      }
+    ]
+  }
+}

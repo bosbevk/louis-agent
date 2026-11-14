@@ -41,6 +41,10 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
 
 ## The pages and films
 
+The home page is a run of bands the visitor scrolls, inside the site's layout.
+
+![The home page holds its bands in order, from the hero to the contact strip, inside the site's layout](diagrams/louis-agent.site-components-home.svg)
+
 Every page is a `Band` per section with an id in words (F117), so every place has its own address (ADR 0107) and the
 guide can take a visitor there; the sitemap lists them all, and a test writes it from the pages. A grid that carried a
 summary and a story each is a deck of cards that open (F113). Every page that explains a part of the framework shows

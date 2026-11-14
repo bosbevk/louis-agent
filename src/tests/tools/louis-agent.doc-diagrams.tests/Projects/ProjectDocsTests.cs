@@ -19,9 +19,7 @@ public class ProjectDocsTests
     /// </summary>
     private static readonly Dictionary<string, DiagramType[]> StillMissing = new()
     {
-        ["demos/louis-agent/docs/projects/louis-agent.code-review.md"] = [DiagramType.CompositeStructure],
         ["demos/puls/docs/projects/louis-agent.host-packs.md"] = [DiagramType.Activity],
-        ["demos/puls/docs/projects/louis-agent.puls.md"] = [DiagramType.CompositeStructure],
         ["packs/docs/projects/general-packs.md"] = [DiagramType.Activity],
         ["packs/docs/projects/louis-agent.pack.calculator.md"] = [DiagramType.Activity],
         ["packs/docs/projects/louis-agent.pack.recipes.md"] = [DiagramType.Activity],
@@ -34,10 +32,7 @@ public class ProjectDocsTests
         ["src/docs/projects/louis-agent.core.telemetry.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.core.web.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.evals.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.site.md"] = [DiagramType.CompositeStructure],
-        ["src/docs/projects/louis-agent.usage-probe.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.web.accounts.md"] = [DiagramType.CompositeStructure],
-        ["src/docs/projects/louis-agent.web.evals.md"] = [DiagramType.CompositeStructure]
+        ["src/docs/projects/louis-agent.usage-probe.md"] = [DiagramType.Activity]
     };
 
     /// <summary>The doc's path from the repo's root, as a person would find it.</summary>

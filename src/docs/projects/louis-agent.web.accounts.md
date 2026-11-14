@@ -18,6 +18,10 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
 
 ## How it works
 
+The profile page shows how the pages are put together: one page, a section for each change, each asking the account API for its own.
+
+![The profile page holds a section for each change, hands each the person signed in, and the last says back when the account is gone](diagrams/louis-agent.web.accounts-components-profile.svg)
+
 - **The client** (`Client/`). `AccountApi` talks to the API's `/account` routes (Identity's and ours), every call
   marked as the app's own (`X-Requested-With`), which is what lets a signed-in person's cookie count in place of a
   key; a refusal is an `AccountApiException` carrying the route's `AccountProblem`. `AccountState` is the one truth

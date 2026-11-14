@@ -1,0 +1,155 @@
+{
+  "kind": "nested",
+  "title": "The profile page: what it is made of",
+  "caption": "The page reads who is signed in from the account state and hands each section that person; each section asks the account API for its own change, and the last one says back when the account is gone.",
+  "nested": {
+    "subtitle": "louis-agent.web.accounts, Pages / ProfilePage",
+    "root": {
+      "id": "page",
+      "name": "ProfilePage",
+      "kind": "page",
+      "tone": "green",
+      "aside": "/profile",
+      "in": [
+        "Failed"
+      ],
+      "holds": [
+        {
+          "id": "details",
+          "name": "ProfileDetails",
+          "kind": "a section",
+          "tone": "green",
+          "note": "the name",
+          "in": [
+            "Me"
+          ]
+        },
+        {
+          "id": "email",
+          "name": "ChangeEmail",
+          "kind": "a section",
+          "tone": "green",
+          "note": "a new email, confirmed by mail"
+        },
+        {
+          "id": "password",
+          "name": "ChangePassword",
+          "kind": "a section",
+          "tone": "green",
+          "note": "the old and the new",
+          "in": [
+            "Me"
+          ]
+        },
+        {
+          "id": "set",
+          "name": "SetPassword",
+          "kind": "a section",
+          "tone": "green",
+          "note": "for one who signed up with a provider",
+          "in": [
+            "Me"
+          ]
+        },
+        {
+          "id": "notice",
+          "name": "AccountNotice",
+          "kind": "general part",
+          "tone": "green",
+          "note": "a provider that couldn't be linked",
+          "in": [
+            "Message",
+            "IsError"
+          ]
+        },
+        {
+          "id": "linked",
+          "name": "LinkedLogins",
+          "kind": "a section",
+          "tone": "green",
+          "note": "the providers it signs in with",
+          "in": [
+            "Me"
+          ]
+        },
+        {
+          "id": "passkeys",
+          "name": "PasskeyList",
+          "kind": "a section",
+          "tone": "green",
+          "note": "the passkeys, added and removed"
+        },
+        {
+          "id": "twofactor",
+          "name": "TwoFactorSection",
+          "kind": "a section",
+          "tone": "green",
+          "note": "a code from an app",
+          "in": [
+            "Me"
+          ]
+        },
+        {
+          "id": "delete",
+          "name": "DeleteAccount",
+          "kind": "a section",
+          "tone": "green",
+          "note": "the way out",
+          "in": [
+            "Me"
+          ],
+          "out": [
+            "OnDeleted"
+          ]
+        }
+      ]
+    },
+    "around": [
+      {
+        "id": "frame",
+        "name": "AccountFrame",
+        "side": "before",
+        "tone": "blue",
+        "kind": "layout",
+        "heading": "Who draws it",
+        "note": "the account pages' layout"
+      },
+      {
+        "id": "state",
+        "name": "AccountState",
+        "side": "before",
+        "tone": "teal",
+        "heading": "What the page reads",
+        "note": "who is signed in, Me",
+        "reads": true
+      },
+      {
+        "id": "text",
+        "name": "AccountText",
+        "side": "before",
+        "tone": "teal",
+        "note": "the words",
+        "reads": true
+      },
+      {
+        "id": "api",
+        "name": "AccountApi",
+        "side": "after",
+        "tone": "teal",
+        "heading": "What the sections ask",
+        "note": "the host's account routes",
+        "calls": "calls"
+      },
+      {
+        "id": "js",
+        "name": "passkeys.js",
+        "side": "after",
+        "tone": "blue",
+        "note": "the browser's passkey prompt",
+        "code": "create",
+        "to": "passkeys",
+        "calls": "calls"
+      }
+    ]
+  }
+}

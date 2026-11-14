@@ -18,6 +18,10 @@ admin, on this PC.
 
 ## How it works
 
+The chat page is the framework's chat shell, given the app's own parts in its slots.
+
+![The chat page holds the framework's chat shell, with the app's name, its links, its theme picker and its boot screen in the shell's slots](diagrams/louis-agent.code-review-components-chat.svg)
+
 ![The code-review app: its pages, the framework's shells and the API](diagrams/louis-agent.code-review-how-it-works.svg)
 
 - **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs'

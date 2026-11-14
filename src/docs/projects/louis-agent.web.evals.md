@@ -45,6 +45,10 @@ What happens when someone starts a run and watches it:
 
 ## How it works
 
+The Evals page is the studio's front: the list of evals, the chosen one's details, and the run in progress.
+
+![The Evals page holds the list, the chosen eval's details that start a run, and the live panel that follows it](diagrams/louis-agent.web.evals-components-evals.svg)
+
 **Organised by job** (F53), in English, as they're the builders' screens. `/admin/evals` is the Evals page (F18, CL26, F53.2; under the admin's home since F144, its address written once as `EvalAddress.Studio`), in list/details shape:
 the list pane names every eval the runner has, an eval that never ran included, with its last run's status, when it
 ran and per mode the last pass@k with its move against the mode's run before (`EvalList`, `EvalListItem`; the

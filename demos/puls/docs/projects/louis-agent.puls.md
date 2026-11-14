@@ -17,6 +17,10 @@ as you go: every answer shows what it cost, specialists included.
 
 ## How it works
 
+The landing page lists its sections in order, each a component of its own.
+
+![The landing page holds the water and the sections in order, and starts its script after it is drawn](diagrams/louis-agent.puls-components-landing.svg)
+
 - **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one small page, `ChatPage.razor`, at `/gesels`,
   `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`. It fills the framework's `ChatShell` with what's Puls's own
   (see [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)), and redraws on every address change, since Blazor wouldn't for
