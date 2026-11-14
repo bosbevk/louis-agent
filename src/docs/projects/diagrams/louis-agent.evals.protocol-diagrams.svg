@@ -242,15 +242,14 @@ svg {
       </g>
       <text class="flow-name" x="97.6" y="175" text-anchor="start">ProtocolWriter, in</text>
       <text class="flow-name" x="97.6" y="191" text-anchor="start">louis-agent.evals</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="45.6" y="278" width="202.8" height="52" rx="10" />
-      <path class="pic-sheen" d="M55.6 279.5H238.4" />
-      <rect class="pic-fill tone-amber" x="52.6" y="293" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="61.6" y="290" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(67.6 296) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M54.6 278L257.4 278L239.4 330L36.6 330Z" />
+      <rect class="pic-fill tone-amber" x="55.6" y="293" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="64.6" y="290" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(70.6 296) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="flow-name" x="97.6" y="309" text-anchor="start">stdout: JSON Lines</text>
+      <text class="flow-name" x="100.6" y="309" text-anchor="start">stdout: JSON Lines</text>
       <rect class="pic-panel depth-2 pic-edge tone-red" x="0" y="396" width="294" height="68" rx="10" />
       <path class="pic-sheen" d="M10 397.5H284" />
       <rect class="pic-fill tone-red" x="7" y="419" width="4" height="22" rx="2" />
@@ -293,8 +292,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="0" y="615" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="4" y="619" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="38" y="627" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M152.2 623H182.2" marker-end="url(#arrow)" />
-    <text class="pic-note" x="190.2" y="627" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M170.2 615L182.2 615L164.2 631L152.2 631Z" />
+    <text class="pic-note" x="190.2" y="627" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M304.4 623H334.4" marker-end="url(#arrow)" />
+    <text class="pic-note" x="342.4" y="627" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="652" width="626" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 662) scale(0.6667)">

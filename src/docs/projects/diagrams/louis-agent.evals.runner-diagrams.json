@@ -36,6 +36,7 @@
       },
       {
         "id": "folders",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "EvalFolders: every eval.json\nunder EvalFiles"

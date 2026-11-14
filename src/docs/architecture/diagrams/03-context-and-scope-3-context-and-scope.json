@@ -6,12 +6,14 @@
     "nodes": [
       {
         "id": "dev",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "Developer\n[person]"
       },
       {
         "id": "puser",
+        "shape": "terminal",
         "icon": "users",
         "tone": "blue",
         "label": "Puls user\n[person]"
@@ -48,6 +50,7 @@
       },
       {
         "id": "repo",
+        "shape": "data",
         "icon": "branch",
         "tone": "amber",
         "label": "Repositories\nmounted workspace"

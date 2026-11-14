@@ -30,12 +30,14 @@
       },
       {
         "id": "out",
+        "shape": "data",
         "icon": "terminal",
         "tone": "amber",
         "label": "stdout: the answer, thinking\nand tool lines"
       },
       {
         "id": "err",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "stderr: the usage line"

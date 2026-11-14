@@ -387,11 +387,10 @@ svg {
       <text class="flow-name" x="721.6" y="573" text-anchor="start">Model</text>
       <text class="flow-name" x="721.6" y="589" text-anchor="start">(Claude / Ollama /</text>
       <text class="flow-name" x="721.6" y="605" text-anchor="start">OpenAI-compatible)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="996.8" y="542" width="172.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M1006.8 543.5H1159.2" />
-      <rect class="pic-fill tone-amber" x="1003.8" y="573" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="1012.8" y="570" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1018.8 576) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1005.8 542L1178.2 542L1160.2 626L987.8 626Z" />
+      <rect class="pic-fill tone-amber" x="1006.8" y="573" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="1015.8" y="570" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1021.8 576) scale(0.6667)">
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -399,8 +398,8 @@ svg {
         <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
         <path d="M14 14l3 -3l3 3" />
       </g>
-      <text class="flow-name" x="1048.8" y="581" text-anchor="start">Workspace</text>
-      <text class="flow-name" x="1048.8" y="597" text-anchor="start">git repository</text>
+      <text class="flow-name" x="1051.8" y="581" text-anchor="start">Workspace</text>
+      <text class="flow-name" x="1051.8" y="597" text-anchor="start">git repository</text>
       <circle class="pic-port pic-edge tone-blue" cx="147" cy="84" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="459" cy="84" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="771" cy="84" r="4" />
@@ -428,8 +427,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="751" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="593.9" y="755" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="627.9" y="763" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M742.1 759H772.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="780.1" y="763" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M760.1 751L772.1 751L754.1 767L742.1 767Z" />
+    <text class="pic-note" x="780.1" y="763" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M894.3 759H924.3" marker-end="url(#arrow)" />
+    <text class="pic-note" x="932.3" y="763" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="788" width="1569" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 798) scale(0.6667)">

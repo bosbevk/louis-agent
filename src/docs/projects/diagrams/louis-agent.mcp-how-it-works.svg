@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 950 889" width="950" height="889" role="img" aria-label="The MCP server: from a client's call to the engine's tools, and the notice back when they change" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 950 915" width="950" height="915" role="img" aria-label="The MCP server: from a client's call to the engine's tools, and the notice back when they change" xmlns="http://www.w3.org/2000/svg">
   <title>The MCP server: from a client's call to the engine's tools, and the notice back when they change</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -198,9 +198,9 @@ svg {
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="950" height="889" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="950" height="915" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H902M0 33H902M0 55H902M0 77H902M0 99H902M0 121H902M0 143H902M0 165H902M0 187H902M0 209H902M0 231H902M0 253H902M0 275H902M0 297H902M0 319H902M0 341H902M0 363H902M0 385H902M0 407H902M0 429H902M0 451H902M0 473H902M0 495H902M0 517H902M0 539H902M0 561H902M0 583H902M0 605H902M0 627H902M0 649H902M0 671H902M0 693H902M0 715H902M0 737H902M0 759H902M0 781H902" />
+    <path class="pic-dots" d="M0 11H902M0 33H902M0 55H902M0 77H902M0 99H902M0 121H902M0 143H902M0 165H902M0 187H902M0 209H902M0 231H902M0 253H902M0 275H902M0 297H902M0 319H902M0 341H902M0 363H902M0 385H902M0 407H902M0 429H902M0 451H902M0 473H902M0 495H902M0 517H902M0 539H902M0 561H902M0 583H902M0 605H902M0 627H902M0 649H902M0 671H902M0 693H902M0 715H902M0 737H902M0 759H902M0 781H902M0 803H902M0 825H902" />
     <text class="pic-title" x="0" y="24" text-anchor="start">The MCP server</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">from a client's call to the engine's tools, and the notice back when they change</text>
     <g class="flow" transform="translate(0 72)">
@@ -218,8 +218,8 @@ svg {
       <path class="pic-march" d="M 147 226 L 147 241 Q 147 256 162 256 L 444 256 Q 459 256 459 271 L 459 286" />
       <path class="pic-line pic-edge tone-violet" d="M 587 608 L 612 608 Q 636 608 636 584 L 636 504.4 Q 636 480.4 612 480.4 L 583.2 480.4" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 587 608 L 612 608 Q 636 608 636 584 L 636 504.4 Q 636 480.4 612 480.4 L 583.2 480.4" />
-      <path class="pic-line pic-edge tone-green" d="M 583.2 463.6 L 630 463.6 Q 654 463.6 654 439.6 L 654 58 Q 654 34 630 34 L 237 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 583.2 463.6 L 630 463.6 Q 654 463.6 654 439.6 L 654 58 Q 654 34 630 34 L 237 34" />
+      <path class="pic-line pic-edge tone-green" d="M 583.2 463.6 L 630 463.6 Q 654 463.6 654 439.6 L 654 58 Q 654 34 630 34 L 254 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 583.2 463.6 L 630 463.6 Q 654 463.6 654 439.6 L 654 58 Q 654 34 630 34 L 254 34" />
       <rect class="flow-chip pic-edge tone-blue" x="153" y="72" width="169" height="42" rx="9" />
       <text class="flow-word pic-ink tone-blue" x="237.5" y="84" text-anchor="middle">tools/list, tools/call,</text>
       <text class="flow-word pic-ink tone-blue" x="237.5" y="96" text-anchor="middle">resources/list,</text>
@@ -228,15 +228,15 @@ svg {
       <text class="flow-word pic-ink tone-violet" x="692" y="534.2" text-anchor="middle">ToolsChanged</text>
       <rect class="flow-chip pic-edge tone-green" x="664" y="226.8" width="232" height="18" rx="9" />
       <text class="flow-word pic-ink tone-green" x="780" y="238.8" text-anchor="middle">notifications/tools/list_changed</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="57" y="0" width="180" height="68" rx="10" />
-      <path class="pic-sheen" d="M67 1.5H227" />
-      <rect class="pic-fill tone-blue" x="64" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="73" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(79 26) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="40" y="0" width="214" height="68" rx="34" />
+      <path class="pic-sheen" d="M74 1.5H220" />
+      <rect class="pic-fill tone-blue" x="59" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="68" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(74 26) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="109" y="31" text-anchor="start">MCP client</text>
-      <text class="flow-name" x="109" y="47" text-anchor="start">(its own model)</text>
+      <text class="flow-name" x="104" y="31" text-anchor="start">MCP client</text>
+      <text class="flow-name" x="104" y="47" text-anchor="start">(its own model)</text>
       <rect class="pic-panel depth-2 pic-edge tone-green" x="15.2" y="158" width="263.6" height="68" rx="10" />
       <path class="pic-sheen" d="M25.2 159.5H268.8" />
       <rect class="pic-fill tone-green" x="22.2" y="181" width="4" height="22" rx="2" />
@@ -339,16 +339,18 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-teal" x="406.2" y="767" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-teal" x="410.2" y="771" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="444.2" y="779" text-anchor="start">contracts and state</text>
-    <path class="flow-key pic-line pic-edge" d="M589.9 775H619.9" marker-end="url(#arrow)" />
-    <text class="pic-note" x="627.9" y="779" text-anchor="start">a line has the colour of the box it leaves</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="589.9" y="767" width="30" height="16" rx="8" />
+    <text class="pic-note" x="627.9" y="779" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M0 801H30" marker-end="url(#arrow)" />
+    <text class="pic-note" x="38" y="805" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="804" width="902" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 814) scale(0.6667)">
+  <rect class="notebar" x="0" y="830" width="902" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 840) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="826">
+  <text class="notes" x="38" y="852">
     <tspan class="note-head">Tools, not a model:</tspan>
     <tspan class="note-rest">an MCP client calls the engine's tools, and hears when they change.</tspan>
   </text>

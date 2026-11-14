@@ -79,6 +79,7 @@
       },
       {
         "id": "Repo",
+        "shape": "data",
         "icon": "branch",
         "tone": "amber",
         "label": "Workspace\ngit repository"

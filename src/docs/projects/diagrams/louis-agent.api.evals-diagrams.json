@@ -30,6 +30,7 @@
       },
       {
         "id": "stores",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Mongo stores: runs, reviews,\ndrafts, calibrations"

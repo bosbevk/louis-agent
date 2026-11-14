@@ -12,6 +12,7 @@
       },
       {
         "id": "out",
+        "shape": "data",
         "icon": "terminal",
         "tone": "amber",
         "label": "stdout: JSON Lines"

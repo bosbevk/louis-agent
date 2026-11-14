@@ -42,6 +42,7 @@
       },
       {
         "id": "db",
+        "shape": "data",
         "label": "AccountsDbContext: SQL Server",
         "icon": "database",
         "tone": "amber"

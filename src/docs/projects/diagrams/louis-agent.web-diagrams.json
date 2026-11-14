@@ -57,6 +57,7 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "ChatStore: localStorage"

@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "Client",
+        "shape": "terminal",
         "icon": "cloud",
         "tone": "blue",
         "label": "MCP client\n(its own model)"

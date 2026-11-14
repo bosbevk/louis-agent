@@ -216,8 +216,8 @@ svg {
       <path class="pic-march" d="M 536.6 178 L 596.7 178" />
       <path class="pic-line pic-edge tone-violet" d="M 875.5 76 L 935.7 76" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 875.5 76 L 935.7 76" />
-      <path class="pic-line pic-edge tone-violet" d="M 875.5 76 L 890.5 76 Q 905.6 76 905.6 91 L 905.6 163 Q 905.6 178 920.6 178 L 935.7 178" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 875.5 76 L 890.5 76 Q 905.6 76 905.6 91 L 905.6 163 Q 905.6 178 920.6 178 L 935.7 178" />
+      <path class="pic-line pic-edge tone-violet" d="M 875.5 76 L 890.5 76 Q 905.6 76 905.6 91 L 905.6 158.5 Q 905.6 178 925.1 178 L 944.7 178" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 875.5 76 L 890.5 76 Q 905.6 76 905.6 91 L 905.6 158.5 Q 905.6 178 925.1 178 L 944.7 178" />
       <path class="pic-line pic-edge tone-violet" d="M 875.5 76 L 890.5 76 Q 905.6 76 905.6 91 L 905.6 256 Q 905.6 271 920.6 271 L 935.7 271" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 875.5 76 L 890.5 76 Q 905.6 76 905.6 91 L 905.6 256 Q 905.6 271 920.6 271 L 935.7 271" />
       <path class="pic-line pic-edge tone-green" d="M 536.6 280 L 596.7 280" marker-end="url(#arrow-green)" />
@@ -349,16 +349,15 @@ svg {
       </g>
       <text class="flow-name" x="987.7" y="73" text-anchor="start">TurnStream: events become a</text>
       <text class="flow-name" x="987.7" y="89" text-anchor="start">Turn</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="935.7" y="152" width="271.2" height="52" rx="10" />
-      <path class="pic-sheen" d="M945.7 153.5H1196.9" />
-      <rect class="pic-fill tone-amber" x="942.7" y="167" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="951.7" y="164" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(957.7 170) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M953.7 152L1206.9 152L1188.9 204L935.7 204Z" />
+      <rect class="pic-fill tone-amber" x="954.7" y="167" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="963.7" y="164" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(969.7 170) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="987.7" y="183" text-anchor="start">ChatStore: localStorage</text>
+      <text class="flow-name" x="999.7" y="183" text-anchor="start">ChatStore: localStorage</text>
       <rect class="pic-panel depth-2 pic-edge tone-green" x="935.7" y="254" width="271.2" height="52" rx="10" />
       <path class="pic-sheen" d="M945.7 255.5H1196.9" />
       <rect class="pic-fill tone-green" x="942.7" y="269" width="4" height="22" rx="2" />
@@ -405,8 +404,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="561" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="777.6" y="565" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="811.6" y="573" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M925.8 569H955.8" marker-end="url(#arrow)" />
-    <text class="pic-note" x="963.8" y="573" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M943.8 561L955.8 561L937.8 577L925.8 577Z" />
+    <text class="pic-note" x="963.8" y="573" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M1078 569H1108" marker-end="url(#arrow)" />
+    <text class="pic-note" x="1116" y="573" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="598" width="1683" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 608) scale(0.6667)">

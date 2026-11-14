@@ -69,6 +69,7 @@
       },
       {
         "id": "Files",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "FileEval\neval folders copied beside it",
@@ -88,18 +89,21 @@
       },
       {
         "id": "Store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Mongo: runs, conversations,\nturns, requests, reviews,\ncalibrations, notes"
       },
       {
         "id": "Ledger",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "Usage ledger\nusage-YYYY-MM.jsonl"
       },
       {
         "id": "RStore",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "Replay store\nREPLAY_DIRECTORY"

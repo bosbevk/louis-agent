@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "Env",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "config/.env \u002B .env.secrets\n\u002B LLM profile\n.env.{LLM_PROFILE}\n(AgentHost.LoadEnvironment)"
@@ -60,6 +61,7 @@
       },
       {
         "id": "Ledger",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "JsonlUsageSink\n{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"

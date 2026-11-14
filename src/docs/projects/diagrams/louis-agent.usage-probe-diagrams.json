@@ -48,6 +48,7 @@
       },
       {
         "id": "ledger",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "usage-YYYY-MM.jsonl"
@@ -66,6 +67,7 @@
       },
       {
         "id": "file",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "config/.env"

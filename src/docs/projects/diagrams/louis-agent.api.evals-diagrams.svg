@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1267 747" width="1267" height="747" role="img" aria-label="The eval studio on the API: what a program maps, and what the studio holds" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1277 747" width="1277" height="747" role="img" aria-label="The eval studio on the API: what a program maps, and what the studio holds" xmlns="http://www.w3.org/2000/svg">
   <title>The eval studio on the API: what a program maps, and what the studio holds</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -195,110 +195,109 @@ svg {
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1267" height="747" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1277" height="747" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1219M0 33H1219M0 55H1219M0 77H1219M0 99H1219M0 121H1219M0 143H1219M0 165H1219M0 187H1219M0 209H1219M0 231H1219M0 253H1219M0 275H1219M0 297H1219M0 319H1219M0 341H1219M0 363H1219M0 385H1219M0 407H1219M0 429H1219M0 451H1219M0 473H1219M0 495H1219M0 517H1219M0 539H1219M0 561H1219M0 583H1219M0 605H1219M0 627H1219M0 649H1219" />
+    <path class="pic-dots" d="M0 11H1229M0 33H1229M0 55H1229M0 77H1229M0 99H1229M0 121H1229M0 143H1229M0 165H1229M0 187H1229M0 209H1229M0 231H1229M0 253H1229M0 275H1229M0 297H1229M0 319H1229M0 341H1229M0 363H1229M0 385H1229M0 407H1229M0 429H1229M0 451H1229M0 473H1229M0 495H1229M0 517H1229M0 539H1229M0 561H1229M0 583H1229M0 605H1229M0 627H1229M0 649H1229" />
     <text class="pic-title" x="0" y="24" text-anchor="start">The eval studio on the API</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">what a program maps, and what the studio holds</text>
     <g class="flow" transform="translate(0 72)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 83 Q 459 98 474 98 L 1077 98 Q 1092 98 1092 113 L 1092 128 L 1092 196 L 1092 262" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 83 Q 459 98 474 98 L 1077 98 Q 1092 98 1092 113 L 1092 128 L 1092 196 L 1092 262" />
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 128" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 128" />
-      <path class="pic-line pic-edge tone-green" d="M 459 196 L 459 217 Q 459 238 480 238 L 1062 238 Q 1074 238 1074 250 L 1074 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 196 L 459 217 Q 459 238 480 238 L 1062 238 Q 1074 238 1074 250 L 1074 262" />
-      <path class="pic-line pic-edge tone-green" d="M 459 196 L 459 217 Q 459 238 438 238 L 159 238 Q 147 238 147 250 L 147 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 196 L 459 217 Q 459 238 438 238 L 159 238 Q 147 238 147 250 L 147 262" />
-      <path class="pic-line pic-edge tone-green" d="M 459 196 L 459 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 196 L 459 262" />
-      <path class="pic-line pic-edge tone-green" d="M 459 196 L 459 217 Q 459 238 480 238 L 759 238 Q 771 238 771 250 L 771 262" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 196 L 459 217 Q 459 238 480 238 L 759 238 Q 771 238 771 250 L 771 262" />
-      <path class="pic-line pic-edge tone-green" d="M 147 346 L 147 406" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 346 L 147 406" />
-      <rect class="flow-chip pic-edge tone-green" x="465" y="200" width="99" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="514.5" y="212" text-anchor="middle">MapAdminGroup</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="319.6" y="0" width="278.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M329.6 1.5H588.4" />
-      <rect class="pic-fill tone-blue" x="326.6" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="335.6" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(341.6 26) scale(0.6667)">
+      <path class="pic-line pic-edge tone-blue" d="M 463.2 68 L 463.2 83 Q 463.2 98 478.2 98 L 1086.8 98 Q 1101.8 98 1101.8 113 L 1101.8 128 L 1101.8 196 L 1101.8 262" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 463.2 68 L 463.2 83 Q 463.2 98 478.2 98 L 1086.8 98 Q 1101.8 98 1101.8 113 L 1101.8 128 L 1101.8 196 L 1101.8 262" />
+      <path class="pic-line pic-edge tone-blue" d="M 463.2 68 L 463.2 128" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 463.2 68 L 463.2 128" />
+      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 1071.8 238 Q 1083.8 238 1083.8 250 L 1083.8 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 1071.8 238 Q 1083.8 238 1083.8 250 L 1083.8 262" />
+      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 217 Q 463.2 238 442.2 238 L 160.4 238 Q 148.4 238 148.4 250 L 148.4 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 463.2 196 L 463.2 217 Q 463.2 238 442.2 238 L 160.4 238 Q 148.4 238 148.4 250 L 148.4 262" />
+      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 463.2 196 L 463.2 262" />
+      <path class="pic-line pic-edge tone-green" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 766 238 Q 778 238 778 250 L 778 262" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 463.2 196 L 463.2 217 Q 463.2 238 484.2 238 L 766 238 Q 778 238 778 250 L 778 262" />
+      <path class="pic-line pic-edge tone-green" d="M 148.4 346 L 148.4 406" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 148.4 346 L 148.4 406" />
+      <rect class="flow-chip pic-edge tone-green" x="469.2" y="200" width="99" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="518.7" y="212" text-anchor="middle">MapAdminGroup</text>
+      <rect class="pic-panel depth-2 pic-edge tone-blue" x="323.8" y="0" width="278.8" height="68" rx="10" />
+      <path class="pic-sheen" d="M333.8 1.5H592.6" />
+      <rect class="pic-fill tone-blue" x="330.8" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="339.8" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(345.8 26) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="flow-name" x="371.6" y="31" text-anchor="start">A program: MapLouisAgentApi,</text>
-      <text class="flow-name" x="371.6" y="47" text-anchor="start">then MapLouisAgentEvals</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="342.4" y="128" width="233.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M352.4 129.5H565.6" />
-      <rect class="pic-fill tone-green" x="349.4" y="151" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="358.4" y="148" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(364.4 154) scale(0.6667)">
+      <text class="flow-name" x="375.8" y="31" text-anchor="start">A program: MapLouisAgentApi,</text>
+      <text class="flow-name" x="375.8" y="47" text-anchor="start">then MapLouisAgentEvals</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="346.6" y="128" width="233.2" height="68" rx="10" />
+      <path class="pic-sheen" d="M356.6 129.5H569.8" />
+      <rect class="pic-fill tone-green" x="353.6" y="151" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="362.6" y="148" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(368.6 154) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="394.4" y="159" text-anchor="start">louis-agent.api.evals:</text>
-      <text class="flow-name" x="394.4" y="175" text-anchor="start">EvalsStartup</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="0" y="262" width="294" height="84" rx="10" />
-      <path class="pic-sheen" d="M10 263.5H284" />
-      <rect class="pic-fill tone-green" x="7" y="293" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="16" y="290" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(22 296) scale(0.6667)">
+      <text class="flow-name" x="398.6" y="159" text-anchor="start">louis-agent.api.evals:</text>
+      <text class="flow-name" x="398.6" y="175" text-anchor="start">EvalsStartup</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="1.4" y="262" width="294" height="84" rx="10" />
+      <path class="pic-sheen" d="M11.4 263.5H285.4" />
+      <rect class="pic-fill tone-green" x="8.4" y="293" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="17.4" y="290" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(23.4 296) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="52" y="293" text-anchor="start">EvalAdminEndpoints: runs,</text>
-      <text class="flow-name" x="52" y="309" text-anchor="start">drafts, reviews, calibrations,</text>
-      <text class="flow-name" x="52" y="325" text-anchor="start">notes, studio, trends</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="319.6" y="262" width="278.8" height="84" rx="10" />
-      <path class="pic-sheen" d="M329.6 263.5H588.4" />
-      <rect class="pic-fill tone-amber" x="326.6" y="293" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="335.6" y="290" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(341.6 296) scale(0.6667)">
+      <text class="flow-name" x="53.4" y="293" text-anchor="start">EvalAdminEndpoints: runs,</text>
+      <text class="flow-name" x="53.4" y="309" text-anchor="start">drafts, reviews, calibrations,</text>
+      <text class="flow-name" x="53.4" y="325" text-anchor="start">notes, studio, trends</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M332.8 262L611.6 262L593.6 346L314.8 346Z" />
+      <rect class="pic-fill tone-amber" x="333.8" y="293" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="342.8" y="290" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(348.8 296) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="371.6" y="301" text-anchor="start">Mongo stores: runs, reviews,</text>
-      <text class="flow-name" x="371.6" y="317" text-anchor="start">drafts, calibrations</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="631.6" y="262" width="278.8" height="84" rx="10" />
-      <path class="pic-sheen" d="M641.6 263.5H900.4" />
-      <rect class="pic-fill tone-red" x="638.6" y="293" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="647.6" y="290" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(653.6 296) scale(0.6667)">
+      <text class="flow-name" x="378.8" y="301" text-anchor="start">Mongo stores: runs, reviews,</text>
+      <text class="flow-name" x="378.8" y="317" text-anchor="start">drafts, calibrations</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red" x="638.6" y="262" width="278.8" height="84" rx="10" />
+      <path class="pic-sheen" d="M648.6 263.5H907.4" />
+      <rect class="pic-fill tone-red" x="645.6" y="293" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="654.6" y="290" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(660.6 296) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="flow-name" x="683.6" y="301" text-anchor="start">EvalProcess: the runner dll,</text>
-      <text class="flow-name" x="683.6" y="317" text-anchor="start">BENCHMARK_API_URL</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="947.4" y="262" width="271.2" height="84" rx="10" />
-      <path class="pic-sheen" d="M957.4 263.5H1208.6" />
-      <rect class="pic-fill tone-violet" x="954.4" y="293" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="963.4" y="290" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(969.4 296) scale(0.6667)">
+      <text class="flow-name" x="690.6" y="301" text-anchor="start">EvalProcess: the runner dll,</text>
+      <text class="flow-name" x="690.6" y="317" text-anchor="start">BENCHMARK_API_URL</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="957.2" y="262" width="271.2" height="84" rx="10" />
+      <path class="pic-sheen" d="M967.2 263.5H1218.4" />
+      <rect class="pic-fill tone-violet" x="964.2" y="293" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="973.2" y="290" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(979.2 296) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="999.4" y="293" text-anchor="start">louis-agent.api: MapApi,</text>
-      <text class="flow-name" x="999.4" y="309" text-anchor="start">MapAdmin (prompts, imports,</text>
-      <text class="flow-name" x="999.4" y="325" text-anchor="start">screens), MapAdminGroup</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="15.2" y="406" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M25.2 407.5H268.8" />
-      <rect class="pic-fill tone-teal" x="22.2" y="429" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-teal" x="31.2" y="426" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(37.2 432) scale(0.6667)">
+      <text class="flow-name" x="1009.2" y="293" text-anchor="start">louis-agent.api: MapApi,</text>
+      <text class="flow-name" x="1009.2" y="309" text-anchor="start">MapAdmin (prompts, imports,</text>
+      <text class="flow-name" x="1009.2" y="325" text-anchor="start">screens), MapAdminGroup</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="16.6" y="406" width="263.6" height="68" rx="10" />
+      <path class="pic-sheen" d="M26.6 407.5H270.2" />
+      <rect class="pic-fill tone-teal" x="23.6" y="429" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="32.6" y="426" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(38.6 432) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="67.2" y="437" text-anchor="start">Replies: the contracts' Of</text>
-      <text class="flow-name" x="67.2" y="453" text-anchor="start">factories</text>
-      <circle class="pic-port pic-edge tone-blue" cx="459" cy="68" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="459" cy="196" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="147" cy="346" r="4" />
+      <text class="flow-name" x="68.6" y="437" text-anchor="start">Replies: the contracts' Of</text>
+      <text class="flow-name" x="68.6" y="453" text-anchor="start">factories</text>
+      <circle class="pic-port pic-edge tone-blue" cx="463.2" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="463.2" cy="196" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="148.4" cy="346" r="4" />
     </g>
     <text class="pic-group" x="0" y="582" text-anchor="start">How to read it</text>
     <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="599" width="26" height="16" rx="5" />
@@ -319,10 +318,12 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="599" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="777.6" y="603" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="811.6" y="611" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M943.8 599L955.8 599L937.8 615L925.8 615Z" />
+    <text class="pic-note" x="963.8" y="611" text-anchor="start">data in or out</text>
     <path class="flow-key pic-line pic-edge" d="M0 633H30" marker-end="url(#arrow)" />
     <text class="pic-note" x="38" y="637" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="662" width="1219" height="37" rx="8" />
+  <rect class="notebar" x="0" y="662" width="1229" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 672) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />

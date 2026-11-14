@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1647 783" width="1647" height="783" role="img" aria-label="The eval runner: its host, its commands, and the API that starts it" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1657 783" width="1657" height="783" role="img" aria-label="The eval runner: its host, its commands, and the API that starts it" xmlns="http://www.w3.org/2000/svg">
   <title>The eval runner: its host, its commands, and the API that starts it</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -204,44 +204,44 @@ svg {
       <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1647" height="783" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1657" height="783" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1599M0 33H1599M0 55H1599M0 77H1599M0 99H1599M0 121H1599M0 143H1599M0 165H1599M0 187H1599M0 209H1599M0 231H1599M0 253H1599M0 275H1599M0 297H1599M0 319H1599M0 341H1599M0 363H1599M0 385H1599M0 407H1599M0 429H1599M0 451H1599M0 473H1599M0 495H1599M0 517H1599M0 539H1599M0 561H1599M0 583H1599M0 605H1599M0 627H1599M0 649H1599M0 671H1599M0 693H1599" />
+    <path class="pic-dots" d="M0 11H1609M0 33H1609M0 55H1609M0 77H1609M0 99H1609M0 121H1609M0 143H1609M0 165H1609M0 187H1609M0 209H1609M0 231H1609M0 253H1609M0 275H1609M0 297H1609M0 319H1609M0 341H1609M0 363H1609M0 385H1609M0 407H1609M0 429H1609M0 451H1609M0 473H1609M0 495H1609M0 517H1609M0 539H1609M0 561H1609M0 583H1609M0 605H1609M0 627H1609M0 649H1609M0 671H1609M0 693H1609" />
     <text class="pic-title" x="0" y="24" text-anchor="start">The eval runner</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">its host, its commands, and the API that starts it</text>
     <g class="flow" transform="translate(0 72)">
-      <path class="pic-line pic-edge tone-blue" d="M 256 206 L 316.2 206" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 256 206 L 316.2 206" />
-      <path class="pic-line pic-edge tone-green" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 194 L 512.7 58 Q 512.7 34 536.7 34 L 832.8 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 194 L 512.7 58 Q 512.7 34 536.7 34 L 832.8 34" />
-      <path class="pic-line pic-edge tone-green" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 194 L 512.7 144 Q 512.7 120 536.7 120 L 832.8 120" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 194 L 512.7 144 Q 512.7 120 536.7 120 L 832.8 120" />
-      <path class="pic-line pic-edge tone-teal" d="M 1096.4 120 L 1312.6 120" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 1096.4 120 L 1312.6 120" />
-      <path class="pic-line pic-edge tone-green" d="M 488.6 206 L 832.8 206" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 488.6 206 L 832.8 206" />
-      <path class="pic-line pic-edge tone-green" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 218.1 L 512.7 268 Q 512.7 292 536.7 292 L 832.8 292" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 218.1 L 512.7 268 Q 512.7 292 536.7 292 L 832.8 292" />
-      <path class="pic-line pic-edge tone-green" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 218.1 L 512.7 354 Q 512.7 378 536.7 378 L 832.8 378" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 218.1 L 512.7 354 Q 512.7 378 536.7 378 L 832.8 378" />
-      <path class="pic-line pic-edge tone-green" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 218.1 L 512.7 440 Q 512.7 464 536.7 464 L 832.8 464" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 488.6 206 L 500.7 206 Q 512.7 206 512.7 218.1 L 512.7 440 Q 512.7 464 536.7 464 L 832.8 464" />
-      <path class="pic-line pic-edge tone-violet" d="M 1096.4 206 L 1312.6 206" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1096.4 206 L 1312.6 206" />
-      <path class="pic-line pic-edge tone-red" d="M 1455.8 240 L 1455.8 504 Q 1455.8 528 1431.8 528 L 426.4 528 Q 402.4 528 402.4 504 L 402.4 232" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 1455.8 240 L 1455.8 504 Q 1455.8 528 1431.8 528 L 426.4 528 Q 402.4 528 402.4 504 L 402.4 232" />
-      <rect class="flow-chip pic-edge tone-green" x="658.3" y="197" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="672.8" y="209" text-anchor="middle">run</text>
-      <rect class="flow-chip pic-edge tone-green" x="644.3" y="283" width="57" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="672.8" y="295" text-anchor="middle">--check</text>
-      <rect class="flow-chip pic-edge tone-green" x="535.8" y="369" width="274" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="672.8" y="381" text-anchor="middle">--import-promptfoo, --export-promptfoo</text>
-      <rect class="flow-chip pic-edge tone-green" x="577.8" y="455" width="190" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="672.8" y="467" text-anchor="middle">--label-sheet, --calibrate</text>
-      <rect class="flow-chip pic-edge tone-violet" x="1111.5" y="197" width="162" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-violet" x="1192.5" y="209" text-anchor="middle">protocol v2, on stdout</text>
-      <rect class="flow-chip pic-edge tone-red" x="844.6" y="510" width="169" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-red" x="929.1" y="522" text-anchor="middle">starts it, reads stdout</text>
+      <path class="pic-line pic-edge tone-blue" d="M 256 206 L 316.1 206" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 256 206 L 316.1 206" />
+      <path class="pic-line pic-edge tone-green" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 194 L 512.5 58 Q 512.5 34 536.5 34 L 832.5 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 194 L 512.5 58 Q 512.5 34 536.5 34 L 832.5 34" />
+      <path class="pic-line pic-edge tone-green" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 194 L 512.5 144 Q 512.5 120 536.5 120 L 832.5 120" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 194 L 512.5 144 Q 512.5 120 536.5 120 L 832.5 120" />
+      <path class="pic-line pic-edge tone-teal" d="M 1096.1 120 L 1321.2 120" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 1096.1 120 L 1321.2 120" />
+      <path class="pic-line pic-edge tone-green" d="M 488.5 206 L 832.5 206" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 488.5 206 L 832.5 206" />
+      <path class="pic-line pic-edge tone-green" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 218 L 512.5 268 Q 512.5 292 536.5 292 L 832.5 292" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 218 L 512.5 268 Q 512.5 292 536.5 292 L 832.5 292" />
+      <path class="pic-line pic-edge tone-green" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 218 L 512.5 354 Q 512.5 378 536.5 378 L 832.5 378" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 218 L 512.5 354 Q 512.5 378 536.5 378 L 832.5 378" />
+      <path class="pic-line pic-edge tone-green" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 218 L 512.5 440 Q 512.5 464 536.5 464 L 832.5 464" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 488.5 206 L 500.5 206 Q 512.5 206 512.5 218 L 512.5 440 Q 512.5 464 536.5 464 L 832.5 464" />
+      <path class="pic-line pic-edge tone-violet" d="M 1096.1 206 L 1312.2 206" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1096.1 206 L 1312.2 206" />
+      <path class="pic-line pic-edge tone-red" d="M 1460.6 240 L 1460.6 504 Q 1460.6 528 1436.6 528 L 426.3 528 Q 402.3 528 402.3 504 L 402.3 232" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M 1460.6 240 L 1460.6 504 Q 1460.6 528 1436.6 528 L 426.3 528 Q 402.3 528 402.3 504 L 402.3 232" />
+      <rect class="flow-chip pic-edge tone-green" x="658" y="197" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="672.5" y="209" text-anchor="middle">run</text>
+      <rect class="flow-chip pic-edge tone-green" x="644" y="283" width="57" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="672.5" y="295" text-anchor="middle">--check</text>
+      <rect class="flow-chip pic-edge tone-green" x="535.5" y="369" width="274" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="672.5" y="381" text-anchor="middle">--import-promptfoo, --export-promptfoo</text>
+      <rect class="flow-chip pic-edge tone-green" x="577.5" y="455" width="190" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="672.5" y="467" text-anchor="middle">--label-sheet, --calibrate</text>
+      <rect class="flow-chip pic-edge tone-violet" x="1111.2" y="197" width="162" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-violet" x="1192.2" y="209" text-anchor="middle">protocol v2, on stdout</text>
+      <rect class="flow-chip pic-edge tone-red" x="846.9" y="510" width="169" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-red" x="931.4" y="522" text-anchor="middle">starts it, reads stdout</text>
       <rect class="pic-panel depth-2 pic-edge tone-blue" x="0" y="172" width="256" height="68" rx="10" />
       <path class="pic-sheen" d="M10 173.5H246" />
       <rect class="pic-fill tone-blue" x="7" y="195" width="4" height="22" rx="2" />
@@ -252,44 +252,44 @@ svg {
       </g>
       <text class="flow-name" x="52" y="203" text-anchor="start">A demo's program: what it</text>
       <text class="flow-name" x="52" y="219" text-anchor="start">knows, in RunnerCatalogs</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="316.2" y="180" width="172.4" height="52" rx="10" />
-      <path class="pic-sheen" d="M326.2 181.5H478.6" />
-      <rect class="pic-fill tone-green" x="323.2" y="195" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="332.2" y="192" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(338.2 198) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="316.1" y="180" width="172.4" height="52" rx="10" />
+      <path class="pic-sheen" d="M326.1 181.5H478.5" />
+      <rect class="pic-fill tone-green" x="323.1" y="195" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="332.1" y="192" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(338.1 198) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="368.2" y="211" text-anchor="start">EvalRunnerHost</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.8" y="8" width="263.6" height="52" rx="10" />
-      <path class="pic-sheen" d="M842.8 9.5H1086.4" />
-      <rect class="pic-fill tone-green" x="839.8" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="848.8" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(854.8 26) scale(0.6667)">
+      <text class="flow-name" x="368.1" y="211" text-anchor="start">EvalRunnerHost</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.5" y="8" width="263.6" height="52" rx="10" />
+      <path class="pic-sheen" d="M842.5 9.5H1086.1" />
+      <rect class="pic-fill tone-green" x="839.5" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="848.5" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(854.5 26) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="884.8" y="39" text-anchor="start">CommandLine</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="832.8" y="94" width="263.6" height="52" rx="10" />
-      <path class="pic-sheen" d="M842.8 95.5H1086.4" />
-      <rect class="pic-fill tone-teal" x="839.8" y="109" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-teal" x="848.8" y="106" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(854.8 112) scale(0.6667)">
+      <text class="flow-name" x="884.5" y="39" text-anchor="start">CommandLine</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="832.5" y="94" width="263.6" height="52" rx="10" />
+      <path class="pic-sheen" d="M842.5 95.5H1086.1" />
+      <rect class="pic-fill tone-teal" x="839.5" y="109" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="848.5" y="106" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(854.5 112) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="884.8" y="125" text-anchor="start">EvalCatalog</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="832.8" y="180" width="263.6" height="52" rx="10" />
-      <path class="pic-sheen" d="M842.8 181.5H1086.4" />
-      <rect class="pic-fill tone-violet" x="839.8" y="195" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="848.8" y="192" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(854.8 198) scale(0.6667)">
+      <text class="flow-name" x="884.5" y="125" text-anchor="start">EvalCatalog</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="832.5" y="180" width="263.6" height="52" rx="10" />
+      <path class="pic-sheen" d="M842.5 181.5H1086.1" />
+      <rect class="pic-fill tone-violet" x="839.5" y="195" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="848.5" y="192" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(854.5 198) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -301,65 +301,64 @@ svg {
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="flow-name" x="884.8" y="211" text-anchor="start">EvalRunner, in the harness</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.8" y="266" width="263.6" height="52" rx="10" />
-      <path class="pic-sheen" d="M842.8 267.5H1086.4" />
-      <rect class="pic-fill tone-green" x="839.8" y="281" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="848.8" y="278" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(854.8 284) scale(0.6667)">
+      <text class="flow-name" x="884.5" y="211" text-anchor="start">EvalRunner, in the harness</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.5" y="266" width="263.6" height="52" rx="10" />
+      <path class="pic-sheen" d="M842.5 267.5H1086.1" />
+      <rect class="pic-fill tone-green" x="839.5" y="281" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="848.5" y="278" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(854.5 284) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="884.8" y="297" text-anchor="start">CheckCommand</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.8" y="344" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M842.8 345.5H1086.4" />
-      <rect class="pic-fill tone-green" x="839.8" y="367" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="848.8" y="364" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(854.8 370) scale(0.6667)">
+      <text class="flow-name" x="884.5" y="297" text-anchor="start">CheckCommand</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.5" y="344" width="263.6" height="68" rx="10" />
+      <path class="pic-sheen" d="M842.5 345.5H1086.1" />
+      <rect class="pic-fill tone-green" x="839.5" y="367" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="848.5" y="364" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(854.5 370) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="884.8" y="375" text-anchor="start">PromptfooImport,</text>
-      <text class="flow-name" x="884.8" y="391" text-anchor="start">PromptfooExport</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.8" y="430" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M842.8 431.5H1086.4" />
-      <rect class="pic-fill tone-green" x="839.8" y="453" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="848.8" y="450" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(854.8 456) scale(0.6667)">
+      <text class="flow-name" x="884.5" y="375" text-anchor="start">PromptfooImport,</text>
+      <text class="flow-name" x="884.5" y="391" text-anchor="start">PromptfooExport</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="832.5" y="430" width="263.6" height="68" rx="10" />
+      <path class="pic-sheen" d="M842.5 431.5H1086.1" />
+      <rect class="pic-fill tone-green" x="839.5" y="453" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="848.5" y="450" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(854.5 456) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="884.8" y="461" text-anchor="start">LabelSheetCommand,</text>
-      <text class="flow-name" x="884.8" y="477" text-anchor="start">CalibrateCommand</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="1312.6" y="86" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M1322.6 87.5H1589" />
-      <rect class="pic-fill tone-amber" x="1319.6" y="109" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="1328.6" y="106" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1334.6 112) scale(0.6667)">
+      <text class="flow-name" x="884.5" y="461" text-anchor="start">LabelSheetCommand,</text>
+      <text class="flow-name" x="884.5" y="477" text-anchor="start">CalibrateCommand</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1330.2 86L1609 86L1591 154L1312.2 154Z" />
+      <rect class="pic-fill tone-amber" x="1331.2" y="109" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="1340.2" y="106" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1346.2 112) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="flow-name" x="1364.6" y="117" text-anchor="start">EvalFolders: every eval.json</text>
-      <text class="flow-name" x="1364.6" y="133" text-anchor="start">under EvalFiles</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="1312.6" y="172" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M1322.6 173.5H1589" />
-      <rect class="pic-fill tone-red" x="1319.6" y="195" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="1328.6" y="192" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1334.6 198) scale(0.6667)">
+      <text class="flow-name" x="1376.2" y="117" text-anchor="start">EvalFolders: every eval.json</text>
+      <text class="flow-name" x="1376.2" y="133" text-anchor="start">under EvalFiles</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red" x="1312.2" y="172" width="296.8" height="68" rx="10" />
+      <path class="pic-sheen" d="M1322.2 173.5H1599" />
+      <rect class="pic-fill tone-red" x="1319.2" y="195" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="1328.2" y="192" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1334.2 198) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="1364.6" y="203" text-anchor="start">louis-agent.api: EvalProcess,</text>
-      <text class="flow-name" x="1364.6" y="219" text-anchor="start">RunnerProcess</text>
+      <text class="flow-name" x="1364.2" y="203" text-anchor="start">louis-agent.api: EvalProcess,</text>
+      <text class="flow-name" x="1364.2" y="219" text-anchor="start">RunnerProcess</text>
       <circle class="pic-port pic-edge tone-blue" cx="256" cy="206" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="488.6" cy="206" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="1096.4" cy="120" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="1096.4" cy="206" r="4" />
-      <circle class="pic-port pic-edge tone-red" cx="1455.8" cy="240" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="488.5" cy="206" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="1096.1" cy="120" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="1096.1" cy="206" r="4" />
+      <circle class="pic-port pic-edge tone-red" cx="1460.6" cy="240" r="4" />
     </g>
     <text class="pic-group" x="0" y="644" text-anchor="start">How to read it</text>
     <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="661" width="26" height="16" rx="5" />
@@ -380,10 +379,12 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="773.6" y="661" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="777.6" y="665" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="811.6" y="673" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M925.8 669H955.8" marker-end="url(#arrow)" />
-    <text class="pic-note" x="963.8" y="673" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M943.8 661L955.8 661L937.8 677L925.8 677Z" />
+    <text class="pic-note" x="963.8" y="673" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M1078 669H1108" marker-end="url(#arrow)" />
+    <text class="pic-note" x="1116" y="673" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="698" width="1599" height="37" rx="8" />
+  <rect class="notebar" x="0" y="698" width="1609" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 708) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />

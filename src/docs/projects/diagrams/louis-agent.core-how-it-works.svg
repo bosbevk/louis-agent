@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 730 1158" width="730" height="1158" role="img" aria-label="louis-agent.core: How it works" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 766 1158" width="766" height="1158" role="img" aria-label="louis-agent.core: How it works" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.core: How it works</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -201,85 +201,84 @@ svg {
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="730" height="1158" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="766" height="1158" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H682M0 33H682M0 55H682M0 77H682M0 99H682M0 121H682M0 143H682M0 165H682M0 187H682M0 209H682M0 231H682M0 253H682M0 275H682M0 297H682M0 319H682M0 341H682M0 363H682M0 385H682M0 407H682M0 429H682M0 451H682M0 473H682M0 495H682M0 517H682M0 539H682M0 561H682M0 583H682M0 605H682M0 627H682M0 649H682M0 671H682M0 693H682M0 715H682M0 737H682M0 759H682M0 781H682M0 803H682M0 825H682M0 847H682M0 869H682M0 891H682M0 913H682M0 935H682M0 957H682M0 979H682M0 1001H682M0 1023H682M0 1045H682" />
+    <path class="pic-dots" d="M0 11H718M0 33H718M0 55H718M0 77H718M0 99H718M0 121H718M0 143H718M0 165H718M0 187H718M0 209H718M0 231H718M0 253H718M0 275H718M0 297H718M0 319H718M0 341H718M0 363H718M0 385H718M0 407H718M0 429H718M0 451H718M0 473H718M0 495H718M0 517H718M0 539H718M0 561H718M0 583H718M0 605H718M0 627H718M0 649H718M0 671H718M0 693H718M0 715H718M0 737H718M0 759H718M0 781H718M0 803H718M0 825H718M0 847H718M0 869H718M0 891H718M0 913H718M0 935H718M0 957H718M0 979H718M0 1001H718M0 1023H718M0 1045H718" />
     <text class="pic-title" x="0" y="24" text-anchor="start">louis-agent.core</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">How it works</text>
     <g class="flow" transform="translate(0 72)">
-      <path class="pic-line pic-edge tone-amber" d="M 166 100 L 166 160" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 166 100 L 166 160" />
-      <path class="pic-line pic-edge tone-teal" d="M 166 212 L 166 272" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 166 212 L 166 272" />
-      <path class="pic-line pic-edge tone-teal" d="M 166 212 L 166 227 Q 166 242 181 242 L 501 242 Q 516 242 516 257 L 516 272" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 166 212 L 166 227 Q 166 242 181 242 L 501 242 Q 516 242 516 257 L 516 272" />
-      <path class="pic-line pic-edge tone-teal" d="M 166 356 L 166 416" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 166 356 L 166 416" />
-      <path class="pic-line pic-edge tone-violet" d="M 516 356 L 516 371 Q 516 386 501 386 L 199 386 Q 184 386 184 401 L 184 416" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 516 356 L 516 371 Q 516 386 501 386 L 199 386 Q 184 386 184 401 L 184 416" />
-      <path class="pic-line pic-edge tone-violet" d="M 166 468 L 166 528" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 166 468 L 166 528" />
-      <path class="pic-line pic-edge tone-violet" d="M 166 596 L 166 656" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 166 596 L 166 656" />
-      <path class="pic-line pic-edge tone-green" d="M 166 724 L 166 784" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 166 724 L 166 784" />
-      <path class="pic-line pic-edge tone-violet" d="M 166 596 L 166 611 Q 166 626 181 626 L 501 626 Q 516 626 516 641 L 516 656" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 166 596 L 166 611 Q 166 626 181 626 L 501 626 Q 516 626 516 641 L 516 656" />
-      <path class="pic-line pic-edge tone-teal" d="M 516 724 L 516 784" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 516 724 L 516 784" />
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="30.4" y="0" width="271.2" height="100" rx="10" />
-      <path class="pic-sheen" d="M40.4 1.5H291.6" />
-      <rect class="pic-fill tone-amber" x="37.4" y="39" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="46.4" y="36" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(52.4 42) scale(0.6667)">
+      <path class="pic-line pic-edge tone-amber" d="M 175 100 L 175 160" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M 175 100 L 175 160" />
+      <path class="pic-line pic-edge tone-teal" d="M 175 212 L 175 272" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 175 212 L 175 272" />
+      <path class="pic-line pic-edge tone-teal" d="M 175 212 L 175 227 Q 175 242 190 242 L 528 242 Q 543 242 543 257 L 543 272" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 175 212 L 175 227 Q 175 242 190 242 L 528 242 Q 543 242 543 257 L 543 272" />
+      <path class="pic-line pic-edge tone-teal" d="M 175 356 L 175 416" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 175 356 L 175 416" />
+      <path class="pic-line pic-edge tone-violet" d="M 543 356 L 543 371 Q 543 386 528 386 L 208 386 Q 193 386 193 401 L 193 416" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 543 356 L 543 371 Q 543 386 528 386 L 208 386 Q 193 386 193 401 L 193 416" />
+      <path class="pic-line pic-edge tone-violet" d="M 175 468 L 175 528" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 175 468 L 175 528" />
+      <path class="pic-line pic-edge tone-violet" d="M 175 596 L 175 656" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 175 596 L 175 656" />
+      <path class="pic-line pic-edge tone-green" d="M 175 724 L 175 784" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 175 724 L 175 784" />
+      <path class="pic-line pic-edge tone-violet" d="M 175 596 L 175 611 Q 175 626 190 626 L 528 626 Q 543 626 543 641 L 543 656" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 175 596 L 175 611 Q 175 626 190 626 L 528 626 Q 543 626 543 641 L 543 656" />
+      <path class="pic-line pic-edge tone-teal" d="M 543 724 L 543 784" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 543 724 L 543 784" />
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M48.4 0L319.6 0L301.6 100L30.4 100Z" />
+      <rect class="pic-fill tone-amber" x="49.4" y="39" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="58.4" y="36" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(64.4 42) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="82.4" y="31" text-anchor="start">config/.env + .env.secrets</text>
-      <text class="flow-name" x="82.4" y="47" text-anchor="start">+ LLM profile</text>
-      <text class="flow-name" x="82.4" y="63" text-anchor="start">.env.{LLM_PROFILE}</text>
-      <text class="flow-name" x="82.4" y="79" text-anchor="start">(AgentHost.LoadEnvironment)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="38" y="160" width="256" height="52" rx="10" />
-      <path class="pic-sheen" d="M48 161.5H284" />
-      <rect class="pic-fill tone-teal" x="45" y="175" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-teal" x="54" y="172" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(60 178) scale(0.6667)">
+      <text class="flow-name" x="94.4" y="31" text-anchor="start">config/.env + .env.secrets</text>
+      <text class="flow-name" x="94.4" y="47" text-anchor="start">+ LLM profile</text>
+      <text class="flow-name" x="94.4" y="63" text-anchor="start">.env.{LLM_PROFILE}</text>
+      <text class="flow-name" x="94.4" y="79" text-anchor="start">(AgentHost.LoadEnvironment)</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="47" y="160" width="256" height="52" rx="10" />
+      <path class="pic-sheen" d="M57 161.5H293" />
+      <rect class="pic-fill tone-teal" x="54" y="175" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="63" y="172" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(69 178) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="90" y="191" text-anchor="start">LlmOptions + AgentOptions</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="41.8" y="272" width="248.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M51.8 273.5H280.2" />
-      <rect class="pic-fill tone-teal" x="48.8" y="303" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-teal" x="57.8" y="300" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(63.8 306) scale(0.6667)">
+      <text class="flow-name" x="99" y="191" text-anchor="start">LlmOptions + AgentOptions</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="50.8" y="272" width="248.4" height="84" rx="10" />
+      <path class="pic-sheen" d="M60.8 273.5H289.2" />
+      <rect class="pic-fill tone-teal" x="57.8" y="303" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="66.8" y="300" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(72.8 306) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="93.8" y="303" text-anchor="start">SkillLoader.Load</text>
-      <text class="flow-name" x="93.8" y="319" text-anchor="start">→ CompositeSkillProvider</text>
-      <text class="flow-name" x="93.8" y="335" text-anchor="start">(system prompt + skills)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="422.2" y="272" width="187.6" height="84" rx="10" />
-      <path class="pic-sheen" d="M432.2 273.5H599.8" />
-      <rect class="pic-fill tone-violet" x="429.2" y="303" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="438.2" y="300" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(444.2 306) scale(0.6667)">
+      <text class="flow-name" x="102.8" y="303" text-anchor="start">SkillLoader.Load</text>
+      <text class="flow-name" x="102.8" y="319" text-anchor="start">→ CompositeSkillProvider</text>
+      <text class="flow-name" x="102.8" y="335" text-anchor="start">(system prompt + skills)</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="449.2" y="272" width="187.6" height="84" rx="10" />
+      <path class="pic-sheen" d="M459.2 273.5H626.8" />
+      <rect class="pic-fill tone-violet" x="456.2" y="303" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="465.2" y="300" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(471.2 306) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="474.2" y="311" text-anchor="start">LlmClientFactory</text>
-      <text class="flow-name" x="474.2" y="327" text-anchor="start">→ IChatClient</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="81" y="416" width="170" height="52" rx="10" />
-      <path class="pic-sheen" d="M91 417.5H241" />
-      <rect class="pic-fill tone-violet" x="88" y="431" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="97" y="428" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(103 434) scale(0.6667)">
+      <text class="flow-name" x="501.2" y="311" text-anchor="start">LlmClientFactory</text>
+      <text class="flow-name" x="501.2" y="327" text-anchor="start">→ IChatClient</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="90" y="416" width="170" height="52" rx="10" />
+      <path class="pic-sheen" d="M100 417.5H250" />
+      <rect class="pic-fill tone-violet" x="97" y="431" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="106" y="428" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(112 434) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -291,12 +290,12 @@ svg {
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="flow-name" x="133" y="447" text-anchor="start">AgentEngine</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="19" y="528" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M29 529.5H303" />
-      <rect class="pic-fill tone-violet" x="26" y="551" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="35" y="548" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(41 554) scale(0.6667)">
+      <text class="flow-name" x="142" y="447" text-anchor="start">AgentEngine</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="28" y="528" width="294" height="68" rx="10" />
+      <path class="pic-sheen" d="M38 529.5H312" />
+      <rect class="pic-fill tone-violet" x="35" y="551" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="44" y="548" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(50 554) scale(0.6667)">
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -304,61 +303,60 @@ svg {
         <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
         <path d="M14 14l3 -3l3 3" />
       </g>
-      <text class="flow-name" x="71" y="559" text-anchor="start">FunctionInvokingChatClient</text>
-      <text class="flow-name" x="71" y="575" text-anchor="start">(≤ 10 tool rounds per message)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="34.2" y="656" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M44.2 657.5H287.8" />
-      <rect class="pic-fill tone-green" x="41.2" y="679" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="50.2" y="676" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(56.2 682) scale(0.6667)">
+      <text class="flow-name" x="80" y="559" text-anchor="start">FunctionInvokingChatClient</text>
+      <text class="flow-name" x="80" y="575" text-anchor="start">(≤ 10 tool rounds per message)</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="43.2" y="656" width="263.6" height="68" rx="10" />
+      <path class="pic-sheen" d="M53.2 657.5H296.8" />
+      <rect class="pic-fill tone-green" x="50.2" y="679" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="59.2" y="676" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(65.2 682) scale(0.6667)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
-      <text class="flow-name" x="86.2" y="687" text-anchor="start">ToolCallGuards.InvokeAsync</text>
-      <text class="flow-name" x="86.2" y="703" text-anchor="start">log · run · guard result</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="376.6" y="656" width="278.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M386.6 657.5H645.4" />
-      <rect class="pic-fill tone-teal" x="383.6" y="679" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-teal" x="392.6" y="676" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(398.6 682) scale(0.6667)">
+      <text class="flow-name" x="95.2" y="687" text-anchor="start">ToolCallGuards.InvokeAsync</text>
+      <text class="flow-name" x="95.2" y="703" text-anchor="start">log · run · guard result</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="403.6" y="656" width="278.8" height="68" rx="10" />
+      <path class="pic-sheen" d="M413.6 657.5H672.4" />
+      <rect class="pic-fill tone-teal" x="410.6" y="679" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="419.6" y="676" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(425.6 682) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="428.6" y="687" text-anchor="start">UsageRecordingChatClient</text>
-      <text class="flow-name" x="428.6" y="703" text-anchor="start">one record per model request</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="22.8" y="784" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M32.8 785.5H299.2" />
-      <rect class="pic-fill tone-green" x="29.8" y="815" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="38.8" y="812" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(44.8 818) scale(0.6667)">
+      <text class="flow-name" x="455.6" y="687" text-anchor="start">UsageRecordingChatClient</text>
+      <text class="flow-name" x="455.6" y="703" text-anchor="start">one record per model request</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="31.8" y="784" width="286.4" height="84" rx="10" />
+      <path class="pic-sheen" d="M41.8 785.5H308.2" />
+      <rect class="pic-fill tone-green" x="38.8" y="815" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="47.8" y="812" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(53.8 818) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="74.8" y="815" text-anchor="start">Tool classes</text>
-      <text class="flow-name" x="74.8" y="831" text-anchor="start">(files, git, dotnet, scripts,</text>
-      <text class="flow-name" x="74.8" y="847" text-anchor="start">web, Paymo, DevOps, skills)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="350" y="784" width="332" height="84" rx="10" />
-      <path class="pic-sheen" d="M360 785.5H672" />
-      <rect class="pic-fill tone-amber" x="357" y="815" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="366" y="812" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(372 818) scale(0.6667)">
+      <text class="flow-name" x="83.8" y="815" text-anchor="start">Tool classes</text>
+      <text class="flow-name" x="83.8" y="831" text-anchor="start">(files, git, dotnet, scripts,</text>
+      <text class="flow-name" x="83.8" y="847" text-anchor="start">web, Paymo, DevOps, skills)</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M386 784L718 784L700 868L368 868Z" />
+      <rect class="pic-fill tone-amber" x="387" y="815" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="396" y="812" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(402 818) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="402" y="823" text-anchor="start">JsonlUsageSink</text>
-      <text class="flow-name" x="402" y="839" text-anchor="start">{LOG_DIRECTORY}/usage-YYYY-MM.jsonl</text>
-      <circle class="pic-port pic-edge tone-amber" cx="166" cy="100" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="166" cy="212" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="166" cy="356" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="516" cy="356" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="166" cy="468" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="166" cy="596" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="166" cy="724" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="516" cy="724" r="4" />
+      <text class="flow-name" x="432" y="823" text-anchor="start">JsonlUsageSink</text>
+      <text class="flow-name" x="432" y="839" text-anchor="start">{LOG_DIRECTORY}/usage-YYYY-MM.jsonl</text>
+      <circle class="pic-port pic-edge tone-amber" cx="175" cy="100" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="175" cy="212" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="175" cy="356" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="543" cy="356" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="175" cy="468" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="175" cy="596" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="175" cy="724" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="543" cy="724" r="4" />
     </g>
     <text class="pic-group" x="0" y="976" text-anchor="start">How to read it</text>
     <rect class="pic-swatch pic-tint pic-edge tone-green" x="0" y="993" width="26" height="16" rx="5" />
@@ -373,10 +371,12 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="469.2" y="993" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="473.2" y="997" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="507.2" y="1005" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M0 1027H30" marker-end="url(#arrow)" />
-    <text class="pic-note" x="38" y="1031" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M18 1019L30 1019L12 1035L0 1035Z" />
+    <text class="pic-note" x="38" y="1031" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M152.2 1027H182.2" marker-end="url(#arrow)" />
+    <text class="pic-note" x="190.2" y="1031" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1056" width="682" height="54" rx="8" />
+  <rect class="notebar" x="0" y="1056" width="718" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 1066) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
@@ -384,9 +384,9 @@ svg {
   </g>
   <text class="notes" x="38" y="1078">
     <tspan class="note-head">One engine for every host:</tspan>
-    <tspan class="note-rest">settings and skills go in, a model and guarded tools come</tspan>
+    <tspan class="note-rest">settings and skills go in, a model and guarded tools come out, and</tspan>
   </text>
   <text class="notes" x="38" y="1095">
-    <tspan class="note-rest">out, and every request to the model is measured.</tspan>
+    <tspan class="note-rest">every request to the model is measured.</tspan>
   </text>
 </svg>

@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "visitor",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "A visitor"
@@ -30,6 +31,7 @@
       },
       {
         "id": "cv",
+        "shape": "data",
         "icon": "file",
         "tone": "green",
         "label": "cv.json on the share:\nread by /cv, saved from\nthe admin"

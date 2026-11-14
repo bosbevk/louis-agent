@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "set",
+        "shape": "data",
         "icon": "folder",
         "tone": "amber",
         "label": "Evals/Cook/eval.json\nidentity = puls"
@@ -24,6 +25,7 @@
       },
       {
         "id": "data",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "Dataset puls-cook v7\ndev and held-out scenarios,\nlabels"
@@ -54,6 +56,7 @@
       },
       {
         "id": "conv",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "ConversationEvent\ngrades, TrialOutcome, Metrics"
