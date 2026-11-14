@@ -117,7 +117,7 @@ A flow is boxes and arrows on the row grid of [ADR 0103](../adr/0103-a-diagram-i
   "caption": "One chat, one engine: the console reads a line and the engine answers it.",
   "flow": {
     "nodes": [
-      { "id": "you", "label": "Your program", "icon": "terminal", "tone": "blue" },
+      { "id": "you", "label": "Your program", "icon": "terminal", "tone": "blue", "shape": "terminal" },
       { "id": "chat", "label": "ConsoleChat\nreads a line", "icon": "message", "tone": "green", "group": "cli" },
       { "id": "engine", "label": "AgentEngine", "icon": "chip", "tone": "violet" }
     ],
@@ -131,8 +131,9 @@ A flow is boxes and arrows on the row grid of [ADR 0103](../adr/0103-a-diagram-i
 }
 ```
 
-**Reading the example.** There are three boxes and two arrows. The picture runs down the page. The middle box
-belongs to a group, which is drawn as a labelled frame round it. The second arrow is dashed and carries a word.
+**Reading the example.** There are three boxes and two arrows. The picture runs down the page. The first box is a
+pill, since your program is what sets the story off. The middle box belongs to a group, which is drawn as a
+labelled frame round it. The second arrow is dashed and carries a word.
 
 **Where a box goes.** You don't place boxes. A box's column comes from its arrows: it stands one column past the
 furthest box that points at it. Set `column` on a box only when you want to move it.
@@ -145,7 +146,8 @@ furthest box that points at it. Set `column` on a box only when you want to move
 | `direction` | `right` (the default), `down` | Which way the chart runs. |
 | `group` on a box, with `groups` | a group's id | Puts a labelled frame round the group's boxes. |
 | `style` on an arrow | `solid` (the default), `dashed` | How the arrow is drawn. |
-| `word` on an arrow | a few words | Shown in a chip on the arrow. |
+| `word` on an arrow | a few words | Shown in a pill on the arrow's own line. |
+| `shape` on a box | `decision`, `data`, `terminal` | Draws the box in that shape. Left out, it is a plain box. |
 
 **A box's tone says what it is, and means the same in every chart.**
 
@@ -158,12 +160,30 @@ furthest box that points at it. Set `column` on a box only when you want to move
 | `amber` | Files, databases and logs |
 | `red` | What runs outside the process: a model, another server |
 
-A decision stays `plain`, the default, and takes the `search` icon. An arrow takes the tone of the box it leaves.
+An arrow takes the tone of the box it leaves.
 
-**What the docs' frame adds.** The tool draws a frame round every picture in the docs. It has a title bar from
-`title`, with the part before the first `: ` in bold. It has a legend of the tones the chart uses. And it has a
-note bar from `caption`, with the part before the colon in bold. That is why every chart has a caption: it is the
-one thing to take from the picture, so the doc doesn't have to say it again.
+**A shape, only where it means something.** Most boxes name none: a class or a project is a plain box. Name a
+shape when the box is one of these three.
+
+| Shape | Drawn as | Name it on |
+|---|---|---|
+| `decision` | A diamond | A box that asks a question, or whose own words say a choice is made there, with each arrow out carrying an outcome. It may stay `plain`. |
+| `data` | A slanted box | Data at rest, not code: a file, a folder, a log, a database, a store. A class counts only when its label names the file or the store beside it. |
+| `terminal` | A pill | A person, wherever one stands. In a picture that tells steps in order, also the caller, the request or the event that sets it off, and the outcome it ends in. |
+
+A class or a program at the top of a picture of what a project holds is not a start, so it stays a box. A diamond
+shows its words and no icon, and is twice as wide and as tall as they are, so keep a question short.
+
+**What the picture says about itself.** A flow writes its own title inside the picture: the part of `title`
+before the first `: ` large, and the rest on a line under it. Under the drawing it has a key, *How to read it*:
+each tone and each shape the picture uses, and that a line has the colour of the box it leaves. You write none of
+that.
+
+**What the docs' frame adds.** The tool draws a frame round every picture in the docs. Round a flow or a component
+diagram, which have their own title and key, it adds only a note bar from `caption`, with the part before the
+colon in bold. Round every other kind it also has a title bar from `title`, with the part before the first `: `
+in bold, and a legend of the tones the chart uses. That is why every chart has a caption: it is the one thing to
+take from the picture, so the doc doesn't have to say it again.
 
 ### Sequence: who calls whom, in order
 

@@ -24,6 +24,15 @@ before writing a kind you have not written in this session.
 3. **Link it** in the doc as a markdown image whose alt text says what the picture shows.
 4. **Check it.** `dotnet test src/tests/tools/louis-agent.doc-diagrams.tests`, then look at the SVG yourself.
 
+## A shape on a flow's box
+
+A box of a `flow` names a `shape` only where the shape means something, and most name none.
+
+- `data`, a slanted box: a file, a folder, a log, a database or a store. A class only when its label names the
+  file or the store beside it.
+- `decision`, a diamond: a box that asks a question, or says a choice is made there, each arrow out an outcome.
+- `terminal`, a pill: a person. In a picture that tells steps in order, also what sets it off and what it ends in.
+
 ## Where a project doc's pictures go
 
 Every project doc shows four: its overview (`cards`) just above its *Purpose*, and a `flow`, a `sequence` and a

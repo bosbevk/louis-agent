@@ -348,6 +348,72 @@ can do, and a how-to for the part only a person can.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a test of the parts is not a test of the page, and a
 `curl` of what ships is part of the check. With [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
 
+## A layout proved with numbers, then switched in one step (F134.8, 2026-11-14)
+
+**What it is.** Every flow in the docs, 93 pictures, was redrawn: a new look, straight lines, an arrow into a box
+at a point of its own, and shapes. The AI-engineering idea is not about pictures. It is how to change something a
+reader sees in 93 places without ever showing it half changed: **build the new way behind a rule, measure it over
+the real data, and hand it over in one step.**
+
+**What was built, in order.** The arrows' way of running became a rule the layout is handed (`IArrowRule`), with
+the old way as its first implementation, so nothing changed. Then the new rule, a piece at a time: a point for
+each arrow, one bend line a gap, and a second rule for where boxes stand (`IRowRule`), level with what feeds them.
+Then shapes as a field in the data. Then the look, shared with the component diagram. Only then did the flow's
+renderer ask for the new rules, and all 93 pictures changed in that one commit. Class charts never asked, so not
+one of theirs changed. The site's pages followed, and last each picture's JSON named its shapes.
+
+**What was measured.** A layout is a pure function of its data, so it is counted, not eyeballed. Throwaway tests
+ran every rule over the docs' real flows:
+
+| Over the 93 flows | Joined, before | Apart and level, after |
+|---|---|---|
+| Pairs of lines from different boxes lying on one another | 231 | 0 |
+| Crossings | 161 | 65 |
+| Forward arrows with no bend, of 830 | 226 | 377 |
+
+Six pictures grew taller, most by 40 px, and eight grew shorter. The first number is now a test: no two lines of
+different boxes may lie on one another in any flow.
+
+**What changed on the way, and why.**
+
+- *"Parallel" meant straight and level.* You said the lines were not parallel, twice. I first gave every box a
+  track of its own, then lined the bends up. Both were wrong. A drawn alternative settled it in one answer: a box
+  stands level with the box that feeds it, so the line between them has no bend. A picture of two options is a
+  better question than a paragraph.
+- *A literal rule made one picture 700 px taller.* "One row height for groups beside each other" was right for
+  two groups and absurd for a group with one tall box. The count caught it before any picture was committed. The
+  rule became: groups that start at the top share a row height, and a far taller one spans an odd number of rows.
+- *The shapes did not pop.* The first design had outlined badges and no colour bar, and you saw it at once beside
+  the component diagram. The fix was to share the look's parts, not to copy them.
+- *The switch found what the counts could not.* With boxes level, a box often stood at both heights a long arrow
+  could run at, and the arrow looped round the whole column. No count flagged it, since nothing overlapped. It was
+  seen by looking at all 93 pictures on contact sheets. Such an arrow now passes between two boxes.
+- *A word on its line needs a ground.* On the site a word had only a halo round its letters, and the line showed
+  through the space between two words: "A TURN" read as "A—TURN". Seen only in the browser.
+
+**What the tests hold.** Each rule with numbers, on small made-up pictures. A golden file for the new drawing.
+Over every flow in the docs: no line through a box it doesn't join, no word on a line that isn't its own, no two
+lines of different boxes on one another. Every SVG is what its JSON draws, byte for byte. A shape that is no shape
+is refused with the shapes there are.
+
+**The patterns.** Strategy, twice: one job done two ways behind an interface, so a kind of picture that has not
+had its turn keeps the old way and the old way is deleted later without touching the router. A Parameter Object
+(`FlowRules`) hands the two rules over as one, so nobody can pair level boxes with joined arrows by accident.
+
+**What didn't work, or cost time.**
+
+- A test that could not fail. My first test for the looping arrow asked that "all points inside the column" be
+  between two boxes. There were no points strictly inside it, so it passed on the bug. It now counts the points
+  first. A test of "all" needs a test of "some".
+- I built the pass-between rule without putting it to you first. It was shown with the step, but a choice about
+  how lines run is yours before it is built, not after.
+- Naming shapes took a rule three tries to say. "By what the box is" needed two more lines: a class counts as
+  data only when its label names the file beside it, and a class at the top of a structure picture is not a
+  start. Without them 468 of 845 boxes would have been pills.
+
+**Where it sits.** Skill 18, testing and shipping: a change measured over real data and shipped in one step. Skill
+20, extensibility, for the two rules.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into
