@@ -1,0 +1,30 @@
+{
+  "kind": "classes",
+  "title": "CL65.3 every picture says its type: the interface design",
+  "caption": "A kind is how a picture is laid out and a type is what it shows: the source holds both.",
+  "classes": {
+    "types": [
+      { "id": "source", "name": "DiagramSource", "kind": "record, step 2", "group": "diagrams", "members": [ "Kind", "Type", "Title, Caption, …" ] },
+      { "id": "kind", "name": "DiagramKind", "kind": "enum, as today", "group": "diagrams" },
+      { "id": "type", "name": "DiagramType", "kind": "enum, step 2", "group": "diagrams", "members": [ "Class, CompositeStructure, Object,", "Component, Deployment, Package,", "Activity, Sequence, … , Overview" ] },
+      { "id": "types", "name": "DiagramTypes", "kind": "static, step 2", "group": "diagrams", "members": [ "Own(kind) DiagramType?", "MayBe(kind) the types a kind may say" ] },
+      { "id": "reader", "name": "DiagramReader", "kind": "static, steps 2 and 4", "group": "diagrams", "members": [ "Read(json) DiagramSource" ] },
+      { "id": "names", "name": "TypeNames", "kind": "static, step 3", "group": "engine", "members": [ "Of(type) string" ] },
+      { "id": "builder", "name": "PictureBuilder", "kind": "class, as today", "group": "engine", "members": [ "Type(name)" ] },
+      { "id": "drawing", "name": "FlowDrawing", "kind": "static, one of six, step 3", "group": "engine" }
+    ],
+    "relations": [
+      { "from": "source", "to": "kind", "kind": "holds" },
+      { "from": "source", "to": "type", "kind": "holds" },
+      { "from": "reader", "to": "source", "kind": "creates" },
+      { "from": "reader", "to": "types", "kind": "uses", "word": "fills or refuses" },
+      { "from": "drawing", "to": "names", "kind": "uses" },
+      { "from": "drawing", "to": "builder", "kind": "uses", "word": "tells its type" },
+      { "from": "names", "to": "type", "kind": "uses", "word": "names" }
+    ],
+    "groups": [
+      { "id": "diagrams", "label": "louis-agent.diagrams" },
+      { "id": "engine", "label": "louis-agent.diagrams.engine" }
+    ]
+  }
+}
