@@ -19,7 +19,8 @@ The guide has every field and a whole example of each kind of picture: `src/docs
 before writing a kind you have not written in this session.
 
 1. **Write the JSON** in the `diagrams/` folder beside the doc, named for what it shows. Every file has a `kind`
-   (`cards`, `flow`, `sequence`, `classes`, `components` or `ticket`), a `title`, a `caption`, and the kind's own part.
+   (`cards`, `flow`, `sequence`, `classes`, `components`, `composite` or `ticket`), a `title`, a `caption`,
+   and the kind's own part.
 2. **Draw it.** `dotnet run --project src/tools/louis-agent.doc-diagrams` draws every picture that changed.
 3. **Link it** in the doc as a markdown image whose alt text says what the picture shows.
 4. **Check it.** `dotnet test src/tests/tools/louis-agent.doc-diagrams.tests`, then look at the SVG yourself.
@@ -62,3 +63,7 @@ A project that has components shows them too: a `components` picture for each of
 one picture is of one component. Name each `{project}-components-{what}`. It shows what holds what, what is
 handed down and what is said back up. Read the component's markup and its code-behind before you write it:
 every box, pin and neighbour is one the code has.
+
+A class worth opening up gets a `composite` picture: one class, the parts its constructor builds, a port for
+each thing asked of it and each thing it is handed. Name it `{project}-{class}`. Read the class's fields, its
+constructor and its public methods first: every part, port and connector is one the code has.

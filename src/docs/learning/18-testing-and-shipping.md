@@ -689,6 +689,65 @@ better. No test would have said "worse" there. Both pictures were valid.
 both and neither can drift. Skill 18, testing and shipping: a variable that must be read to be set, a style
 change proved by taking the style out, and a rule change judged by looking at every picture it touched.
 
+## A new kind as a translation and a drawing, and a doubt drawn before the plan (F134.13, 2026-11-14)
+
+**What it is.** A new kind of picture: UML's composite structure diagram. It shows one class from the inside:
+the parts it is built from, the ports on its edge, and which parts work together. I first read your "134.13
+composite diagram" as the component diagram redone. You said "no do research", with UML's own line for it. You
+picked design C of three, "Pins": a port is a named pin on the class's edge. You picked the flow's layout
+through an adapter. And you gave a new rule: "the type of diagram must always display".
+
+**The idea: a kind without a layout.** A layout is the expensive part of a kind: placing boxes, routing lines,
+keeping words clear. This kind has none. A small class, `CompositeFlow`, turns a composite into a flow: every
+part and port a box in one group, every connector and port an arrow. The flow's layout places it. So the kind is
+five records, that translation, and a drawing. Every fix the layout gets from now on reaches it for free, as it
+does for a class chart.
+
+**Columns do the reading order.** What is asked of the class stands in the first column. A part stands one past
+the furthest part that uses it. What the class needs stands in the last. That one rule makes the picture read
+from what comes in to what goes out, with nothing placed by hand.
+
+**The doubt, drawn before the plan.** The adapter had one risk: UML puts a port on the class's edge, and a
+flow's layout knows boxes and groups, not edges. I drew the real class as a plain flow twice, with a throwaway
+test, before writing the plan.
+
+- With the ports outside the group, the layout put them in a band above it. Three lines crossed the frame's top
+  18 apart, too close for three pins.
+- With the ports inside the group, in the first and last columns, it came out clean: asked on the left, parts
+  in the middle, needed on the right.
+
+So the drawing keeps the layout's places and draws its own frame: round the parts, its edges through the
+middle of the pins. That is the one place the drawing decides. Had the second drawing failed too, the plan
+would have been a different plan.
+
+**A label as a measure.** The layout sizes a box by the length of its label. A part's box holds a large type
+and a chip, which is wider than its words. So the adapter pads each label to the width the drawing needs, and
+the drawing writes none of that label itself. It is a small trick, and it keeps the layout unchanged.
+
+**What looking found.** You saw the first drawing in your editor and circled a pill: "line issue". A line ran
+across the words of "the pipeline". Two lines that leave one part share their first stretch, and I drew each
+line's word right after its own line, so the next line ran over it. A flow draws every line first and every
+word after. Now this does too, and a test holds the order.
+
+**What I got wrong.** After step 2 I ran only the diagrams' own tests. A rule in another project asks an
+example in the guide of every kind the reader knows. It went red with that commit, and two commits went in
+with it red before I ran it. The fix was the guide's section, which was due anyway. The lesson is the one from
+the skill: a shared file is tested by everything that reads it, and an enum of kinds is a shared file.
+
+**What was measured.** Three test projects run each step from step 4 on. The golden, and the real picture in
+core's design doc: `AgentEngine`, six parts, five ways in, three things it is handed. Both were looked at dark
+and light. The real picture is busier than the hand-placed design, because the layout orders parts by which
+uses which. Every line can be followed, and the docs' rules for clear words and lines pass on it.
+
+**What is left.** Only this kind shows its type. The other kinds get theirs in the refactor, where each
+picture's UML type is settled: a `flow` draws several UML types today, so its type can't come from its kind.
+The key's items are placed by the same few steps in a fourth class. A part's note wraps at a flow's width
+though a part's box is wider.
+
+**Where it sits.** Skill 20, extensibility: an Adapter onto a layout that exists, so a new kind costs a
+translation and a drawing. Skill 18, testing and shipping: a doubt proved with a throwaway drawing before the
+plan rested on it, and a rule test that belongs to everything that reads a shared enum.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

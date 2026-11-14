@@ -128,10 +128,14 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
     [the write-up](../learning/18-testing-and-shipping.md). The design is in
     [m-look.html](F134-mockups/m-look.html). Its picks are in its plan as of the commit before this one.
-  - **F134.13 A composite structure diagram**, not planned yet: Louis, 2026-11-14, "then we need 134.13
-    composite diagram", and of my first reading of it, "no do research", with UML's line for it: "the
-    internal parts, ports, and connectors of a structured class". It is a new kind. Research and designs come
-    first, and he picks before a plan is written.
+  - **F134.13 A composite structure diagram**, built 2026-11-14: Louis, "then we need 134.13 composite
+    diagram", and of my first reading of it, "no do research", with UML's line for it: "the internal parts,
+    ports, and connectors of a structured class". A new kind, `composite`: his picks were design C, a port a
+    named pin on the class's edge, and the flow's layout through an adapter. `AgentEngine` is drawn that way
+    in core's design doc. How it works is in [the diagrams' design doc](../projects/louis-agent.diagrams.md),
+    and the lessons in [the write-up](../learning/18-testing-and-shipping.md). The designs are in
+    [m-composite.html](F134-mockups/m-composite.html). Its picks are in its plan as of the commit before this
+    one.
   - **Left for the project refactor Louis asked for after F134.11:** every docs kind is redone now, so what
     the old looks left behind can go in one piece of work with a plan of its own. The old rules for a card's
     frame, a box, a chip and a group are still in the pictures' shared style (`SvgStyle`), and the title bar's
@@ -141,7 +145,14 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     flow and a class chart each have the same two rules for a word's pill. And the class that gives a box its
     column (`Ranks`) also leads the long lines, at 185 of its 200 lines since F134.12. A cards picture, a
     sequence and a class chart each draw the light themselves, by the steps the shared part now has, and each
-    kind's key has a rule of its own for the same faint line.
+    kind's key has a rule of its own for the same faint line. A fourth key, the composite's, places its
+    items by those same steps. The renderers' folder is full, so the composite's renderer stands beside its
+    drawing. The diagrams' own interface picture names neither the component diagram's renderer nor the
+    composite's.
+  - **In that refactor every kind shows its type.** Louis, 2026-11-14: "the type of diagram must always
+    display." The composite shows its own, through the shared start of a picture, which takes a type. The
+    other kinds hand it none yet, because a `flow` draws several UML types today and its type can't come
+    from its kind. Settling each picture's type is part of matching the kinds to UML's.
   - **In that refactor the kinds of picture must match UML's.** Louis, 2026-11-14: "read here when you
     refactor, our graph types must match", with
     [GeeksforGeeks' introduction to UML](https://www.geeksforgeeks.org/system-design/unified-modeling-language-uml-introduction/).
@@ -150,7 +161,9 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
   - **And it is thought of as a diagram engine.** Louis, 2026-11-14: "when we come to the refactoring, think of
     it as an diagram engine so we can split it into engine --> engine.diagrams of some sort." Its plan says
     what in the diagrams knows no kind and what is a kind's own, and puts the split to him before anything
-    moves.
+    moves. And the same day, more exactly: ".diagrams must be split into a diagrams --> and what builds the
+    diagrams." So what a picture is, its records, its kinds and its reader, stands apart from what builds it,
+    the layouts, the routing, the drawings and the looks, with the dependency one way.
 
 ## Verification
 

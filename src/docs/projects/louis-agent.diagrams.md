@@ -474,7 +474,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's, Parts/Types/ for a class chart's), Theme/ (with Looks/, and Looks/Kinds/ for a class chart's own style)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's, Parts/Types/ for a class chart's, Parts/Structure/ for a composite's with its renderer), Theme/ (with Looks/, and Looks/Kinds/ for a class chart's and a composite's own style)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
