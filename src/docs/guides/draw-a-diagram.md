@@ -45,9 +45,10 @@ Every file has the same four things at the top.
 | `sequence` | Who calls whom, in order | One case, step by step |
 | `classes` | Types, their members and how they relate | An interface design |
 | `components` | One component, the boxes it holds, and what stands around it | What a component is made of: what holds what, what is handed down and what is said back up |
+| `composite` | One class, its parts, the ports on its edge and what joins them | What a single class is made of |
 | `ticket` | A read-only card, such as a booking request | What an agent draws in the chat |
 
-The six parts below take one kind each. Each starts with a whole example, then says what its pieces mean.
+The seven parts below take one kind each. Each starts with a whole example, then says what its pieces mean.
 
 ### Cards: a project's overview
 
@@ -430,6 +431,67 @@ only the note bar from `caption`.
 neighbour stands level with the box it talks to. A line from a pill goes straight where it can, and otherwise
 down the left side of the box that holds the pin's box.
 
+### Composite: the inside of one class
+
+A composite structure diagram shows one class from the inside: the parts it is built from, the ports on its edge,
+and which parts work together. A class chart shows whole classes and how they relate. Use this one when the
+question is what a single class is made of, and how what it is asked reaches the part that does it.
+
+```json
+{
+  "kind": "composite",
+  "title": "AgentEngine: what it is made of",
+  "caption": "One engine: it builds its parts once and passes what it is asked on to the part that does it.",
+  "composite": {
+    "name": "AgentEngine",
+    "kind": "class",
+    "aside": "louis-agent.core, Agent",
+    "tone": "green",
+    "parts": [
+      { "id": "turns", "type": "TurnRunner", "role": "turns", "note": "one turn on the pipeline" },
+      { "id": "guards", "type": "ToolCallGuards", "role": "guards", "note": "stops a cut-off call" },
+      { "id": "registry", "type": "ToolRegistry", "role": "registry", "note": "the tools the model is offered" }
+    ],
+    "ports": [
+      { "name": "prompts", "side": "in", "part": "turns", "label": "ProcessPromptAsync" },
+      { "name": "model", "side": "out", "part": "guards", "label": "IChatClient", "tone": "teal" }
+    ],
+    "connectors": [
+      { "from": "turns", "to": "guards", "word": "the pipeline" },
+      { "from": "turns", "to": "registry" },
+      { "from": "guards", "to": "registry" }
+    ]
+  }
+}
+```
+
+**The class.** `name` is the class the picture is of. `kind` is a few words for what it is, such as `class`, and
+`aside` a few words for where it is. Its `tone` means what a tone means in every picture.
+
+**A part.** A piece the class is built from. Read them from the class's own code: the fields its constructor
+fills.
+
+| Field | What it is |
+|---|---|
+| `id` | What a port or a connector names it by. |
+| `type` | Its type, as the code has it. |
+| `role` | The name the class holds it by: the field's name. |
+| `note` | A line of what it does. |
+
+**A port.** A way in or out on the class's edge.
+
+| Field | What it is |
+|---|---|
+| `name` | Its name. No two ports of a class share one. |
+| `side` | `in` for what is asked of the class, `out` for what the class needs from outside. |
+| `part` | For `in`, the part that does what is asked. For `out`, the part that needs what comes in. |
+| `label` | What is asked or needed, in the code's own words: a method, or an interface. |
+| `tone` | Its colour. A port with none wears the class's. Give what the class needs `teal` when it is a contract. |
+
+**A connector.** Two parts that work together. Write it `from` the part that uses the other, `to` the part it
+uses, and give it a `word` when the link has a name. The picture is laid out from that: what is asked first,
+then the part that does it, then the parts that part uses, and last what the class needs.
+
 ### Ticket: a card an agent draws
 
 A ticket is a read-only card, such as a booking request. An agent draws one in the chat with the site pack's
@@ -476,6 +538,9 @@ says which.
 In a component diagram it also refuses an id used twice, a state that names a pin its box can't reach (a box
 it doesn't hold, or a pin that isn't in that box's `in` for a way down or its `out` for a way up), and a
 neighbour that stands by a box the picture doesn't have.
+
+In a composite it also refuses a class with no part, an id two parts share, and a port or a connector that names
+a part the class doesn't have.
 
 ## Step 2: draw it
 

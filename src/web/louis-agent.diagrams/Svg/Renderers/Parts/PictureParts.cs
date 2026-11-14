@@ -6,7 +6,7 @@ namespace LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 /// <summary>
 /// The parts every picture in the new look is drawn from (F134.7, shared since F134.8): the start of a picture,
-/// which is the soft light behind its top with its title over it, and a panel.
+/// which is the soft light behind its top with its title over it and what type of diagram it is, and a panel.
 /// </summary>
 /// <remarks>
 /// They wear <see cref="PictureLook"/>'s classes, so a kind that draws with them looks like the others without
@@ -26,23 +26,37 @@ internal static class PictureParts
     public const double TitleChar = 7;
 
     /// <summary>
+    /// How wide a character of the type's name is taken to be, in its spaced capitals, and the room kept between
+    /// the title and it.
+    /// </summary>
+    private const double TypeChar = 7.6, TypeGap = 28;
+
+    /// <summary>
     /// The light behind the top of the picture: how far under the title's room its middle is, and how far it
     /// reaches down. Across, it reaches the picture's sides, where it has faded to nothing.
     /// </summary>
     private const double LightDrop = 30, LightDown = 190;
 
     /// <summary>
-    /// A picture begun: the light first, an oval as wide as the picture, so everything stands on it, and the
-    /// title over it as one small line.
+    /// How wide a picture must be at least for its title and its type to stand side by side on one line.
     /// </summary>
-    public static SvgWriter Open(string title, double width)
+    public static double HeadWidth(string title, string? type) =>
+        title.Length * TitleChar + (type is null ? 0 : TypeGap + type.Length * TypeChar);
+
+    /// <summary>
+    /// A picture begun: the light first, an oval as wide as the picture, so everything stands on it, and the
+    /// title over it as one small line. A picture that names its type has it at the right of that line (F134.13,
+    /// Louis: "the type of diagram must always display").
+    /// </summary>
+    public static SvgWriter Open(string title, double width, string? type = null)
     {
         double reach = width / 2 + SvgWriter.Pad, y = Head + LightDrop;
         string across = N(reach), down = N(LightDown), there = N(2 * reach);
-        return new SvgWriter().Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, 0.5, 1)
+        var writer = new SvgWriter().Paint(MarqueeLook.LightPaint, PaintRun.Out, 0, 0.5, 1)
             .Path($"M{N(-SvgWriter.Pad)} {N(y)}a{across} {down} 0 1 0 {there} 0a{across} {down} 0 1 0 -{there} 0Z",
                 "mrq-light", false)
             .Text(0, TitleLine, title, "mrq-title", "start");
+        return type is null ? writer : writer.Text(width, TitleLine, type, "pic-group", "end");
     }
 
     /// <summary>
