@@ -34,7 +34,7 @@ Every file has the same four things at the top.
 | `kind` | Which kind of picture this is. The next part helps you choose. |
 | `title` | What the picture is. A screen reader is told it, and the docs' frame shows it. |
 | `caption` | Optional in the file, but every chart in the docs has one: the one thing to take from the picture. |
-| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `ticket`) that holds the picture. |
+| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `components`, `ticket`) that holds the picture. |
 
 ### Choose the kind
 
@@ -44,9 +44,10 @@ Every file has the same four things at the top.
 | `flow` | Boxes and arrows | How something works |
 | `sequence` | Who calls whom, in order | One case, step by step |
 | `classes` | Types, their members and how they relate | An interface design |
+| `components` | One component, the boxes it holds, and what stands around it | What a component is made of: what holds what, what is handed down and what is said back up |
 | `ticket` | A read-only card, such as a booking request | What an agent draws in the chat |
 
-The five parts below take one kind each. Each starts with a whole example, then says what its pieces mean.
+The six parts below take one kind each. Each starts with a whole example, then says what its pieces mean.
 
 ### Cards: a project's overview
 
@@ -261,6 +262,110 @@ word, it is shown once.
 `direction` and `groups` work as they do in a flow. Over about twenty types the arrows tangle. Split such a chart
 into two pictures.
 
+### Components: what a component is made of
+
+A component diagram shows one component, everything it holds, and what stands around it. Use it for a project's
+components: a page, a frame or a part that is put together from others.
+
+```json
+{
+  "kind": "components",
+  "title": "The showroom's start: what it is made of",
+  "caption": "One thing held: which demo is forward. The deck and the dock are told it, and each says back what a visitor asked for.",
+  "components": {
+    "subtitle": "louis-agent.web, Components / Site / Showroom / Start",
+    "root": {
+      "id": "start", "name": "ShowroomStart", "kind": "component", "tone": "green",
+      "state": {
+        "says": "which demo is forward",
+        "down": [ "stage.Accent", "deck.Forward", "dock.Current" ],
+        "up": [ "deck.ForwardChanged", "dock.Chosen" ]
+      },
+      "holds": [
+        { "id": "stage", "name": "LitStage", "kind": "general part", "tone": "green", "in": [ "Accent" ],
+          "holds": [
+            { "id": "deck", "name": "Deck", "kind": "general part", "tone": "green",
+              "note": "one forward, the rest behind it in depth",
+              "in": [ "Items", "Forward" ], "out": [ "ForwardChanged" ],
+              "holds": [
+                { "id": "window", "name": "FramedWindow", "kind": "general part", "tone": "green",
+                  "in": [ "Address", "Lit" ],
+                  "holds": [
+                    { "id": "plain", "name": "PlainBody", "tone": "green",
+                      "note": "when a demo names no window", "ghost": true }
+                  ] }
+              ] },
+            { "id": "dock", "name": "Dock", "kind": "general part", "tone": "green",
+              "in": [ "Items", "Current" ], "out": [ "Chosen" ] }
+          ] }
+      ]
+    },
+    "around": [
+      { "id": "page", "name": "DemosPage", "side": "before", "kind": "page", "tone": "blue",
+        "heading": "The site's page", "gives": [ "Featured", "Group" ] },
+      { "id": "demos", "name": "ShowroomDemos", "side": "before", "tone": "teal",
+        "heading": "What it reads", "note": "the site's list of demos", "reads": true },
+      { "id": "script", "name": "Deck.razor.js", "side": "after", "to": "deck",
+        "heading": "Runs in the browser", "code": "watch, bring",
+        "note": "says which item a swipe left in the middle", "calls": "calls", "back": "Viewed" }
+    ]
+  }
+}
+```
+
+**Reading the example.** The root is the start. It holds a lit stage, which holds a deck and a dock, each drawn
+inside the one that holds it. The deck holds a framed window, and the window a ghost. The start holds one thing
+of its own, which demo is forward. That goes down to three pins and comes back up from two. A page stands before
+the root and hands it two things. A list stands before it too and is only read. A script stands after it, beside
+the deck it belongs to.
+
+**How to read the picture.**
+
+- **A box inside a box is held by it.** The boxes one box holds are stacked in the order you name them.
+- **A pin on a box's top edge is what crosses it.** A filled pin with an arrow down is handed down to the box: a
+  parameter. A hollow pin with an arrow up is said back up: a callback.
+- **A pill under a box's name is the one thing it holds.** A line runs from it down to each pin it feeds, and back
+  up from each pin that changes it.
+- **A ghost is drawn dashed.** It is what stands in that place when the usual box does not.
+
+The picture draws its own key, "how to read it", with a row for each of these it really uses.
+
+**A box.**
+
+| Field | What it is |
+|---|---|
+| `id` | Its id. A state and a neighbour name a box by it. It is used once in the picture. |
+| `name` | Its name, as the code has it. |
+| `kind` | The few words in its chip, such as "general part". |
+| `note` | A line under its name: what it does. A long one wraps. |
+| `aside` | A few words at the right of its name, such as the folder it is in. |
+| `tone` | Its colour. It means what it means in every picture: `green` is this project's own. |
+| `in` | The names of what is handed down to it. |
+| `out` | The names of what it says back up. |
+| `holds` | The boxes inside it. |
+| `state` | The one thing it holds: what it `says`, and the pins that carry it `down` and `up`, each written `box.Pin`. |
+| `ghost` | `true` draws it dashed. |
+
+**A neighbour**, in the list `around`.
+
+| Field | What it is |
+|---|---|
+| `id`, `name`, `kind`, `note`, `tone` | As a box's. Its name is written in the code's face. |
+| `side` | `before` the root, at the left, or `after` it, at the right. |
+| `to` | The id of the box it stands by. The root, when you leave it out. |
+| `heading` | The words over it. Give it to the first of a group of neighbours. |
+| `code` | A line of code under its name, such as a script's functions. |
+| `gives` | What it hands to its box. Each is a row with a line of its own. |
+| `reads` | `true` when its box only reads it. It is drawn as one dashed line. |
+| `calls`, `back` | The word on the line from the box out to it, and on the line from it back. |
+
+**The title is in the picture.** A component diagram writes its `title` and its `subtitle` inside itself. So the
+docs' frame gives it no title bar and no legend, only the note bar from `caption`.
+
+**What the tool places.** Everything. A box is as wide as its words, its pins and the boxes it holds need. A
+neighbour stands level with the box it talks to. A line from a pill goes straight where it can, and otherwise
+down the left side of the box that holds the pin's box.
+
 ### Ticket: a card an agent draws
 
 A ticket is a read-only card, such as a booking request. An agent draws one in the chat with the site pack's
@@ -304,6 +409,10 @@ kept to the drawing. The docs' tool draws it like any other picture.
 The reader refuses a file with a misspelt field, a link to an id that no card has, or a missing title. The tool
 says which.
 
+In a component diagram it also refuses an id used twice, a state that names a pin its box can't reach (a box
+it doesn't hold, or a pin that isn't in that box's `in` for a way down or its `out` for a way up), and a
+neighbour that stands by a box the picture doesn't have.
+
 ## Step 2: draw it
 
 ```bash
@@ -340,6 +449,13 @@ In the doc, link the SVG as a markdown image. Its alt text says what the picture
 | Its interface design: the types someone using or extending it meets, about twelve at most | `classes` | The same |
 
 Name the last three `{project}-flow`, `{project}-sequence` and `{project}-interface` when they are new.
+
+**A project that has components shows them too** (Louis, 2026-11-14: "all projects which has components should
+have an component diagram in their documentation", and of one picture for a whole project: "of it's main
+components? plural"). Each of its main components gets a `components` picture of its own, since one picture is
+of one component: a frame, a page that is put together from parts, a part others are built on. Name each
+`{project}-components-{what}`, such as `louis-agent.web-components-showroom-start`, and put it beside the part
+of *How it works* that tells of that component.
 
 ## Step 4: check it
 
