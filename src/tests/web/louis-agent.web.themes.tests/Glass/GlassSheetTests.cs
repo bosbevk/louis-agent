@@ -11,20 +11,12 @@ namespace LouisAgent.Web.Themes.Tests.Glass;
 /// </summary>
 public class GlassSheetTests
 {
-    /// <summary>The CSS the themes project's build made.</summary>
-    private static string Css()
-    {
-        string compiled = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot/css/app.css");
-        Assert.That(File.Exists(compiled), Is.True, "the themes project's build compiled its sheets");
-        return File.ReadAllText(compiled);
-    }
-
     /// <summary>In each style, glass leaves none of the framework's names unset.</summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
     public void EachStyle_SetsEveryNameTheFrameworkDoes(SiteStyle style)
     {
-        string css = Css();
+        string css = CompiledThemes.Css();
         var names = ThemeSheet.NamesToSet(css);
         Assert.That(names, Has.Count.GreaterThan(50), "the framework's names were read");
 

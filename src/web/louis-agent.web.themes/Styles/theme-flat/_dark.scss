@@ -1,0 +1,104 @@
+/* Flat, in the dark (F151.2, ADR 0124): the flat mockup's dark values, under "Finish two: flat". Every surface is one
+   solid colour with a hairline round it: no gradient, no shadow, no blur, anywhere. The page is black, a pane a
+   near-black grey, the words white, the purple Ultraviolet. A press is solid violet with white words, and the second
+   a white outline. The mark is a flat violet disc with a white l. The red, amber, blue and green, the caption on a
+   photo's mat and the hover grey are the framework's own, and the faces and the easing the framework's. */
+
+@use "web/tools/colours";
+
+:root[data-theme="flat"][data-style="dark"] {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
+    @include colours.both(bs-danger, #d9675f);
+    @include colours.both(bs-warning, #d4a72c);
+    @include colours.both(bs-info, #7fa8e8);
+    @include colours.both(web-ok, #6cbf94);
+    @include colours.both(web-purple, #9282ff);          // the purple accent, light enough to read on black
+    @include colours.both(bs-body-bg, #000000);          // the page
+    @include colours.both(bs-secondary-bg, #101013);     // a panel
+    @include colours.both(bs-tertiary-bg, #1a1a1f);      // the menu
+    @include colours.both(bs-success-text-emphasis, #dcdce6, web-success-text);
+    @include colours.both(web-menu-bg, #1a1a1f);
+
+    // Only ever see-through.
+    @include colours.numbers(web-overlay, #ffffff);
+    @include colours.numbers(web-shadow, #000000);
+    @include colours.numbers(web-failed, #d9675f);
+    @include colours.numbers(web-backdrop, #000000);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #3a22c4;
+    --bs-primary-bg-subtle: #110a40;
+    --bs-primary-text-emphasis: #e2dfff;
+    --bs-success: #2b2b33;                                // your messages, under the same white ink as a press
+    --web-success-deep: #1a1a1f;
+    --bs-success-bg-subtle: #1a1a1f;
+    --web-sidebar-foot: #101013;
+    --web-sidebar-foot-deep: #000000;
+    --bs-link-color: #f4f4f6;
+
+    --web-on-primary: #ffffff;
+    --web-bright: #ffffff;
+    --web-soft-text: #c9c9d1;
+    --web-settings-text: #c9c9d1;
+    --web-error-text: #e8a39c;
+    --web-photo-text: #333333;
+    --web-border-hover: #55555f;
+    --web-scrollbar: #2b2b33;
+    --web-dialog-bg: #101013;
+    --web-code-number: #c9c9d1;
+    --web-code-comment: #7c7c88;
+    --web-live-dot: #9282ff;
+
+    --bs-emphasis-color: #ffffff;
+    --bs-body-color: #f4f4f6;
+    --bs-secondary-color: #a3a3ad;
+    --bs-tertiary-color: #7c7c88;
+    --bs-border-color: #2b2b33;
+    --web-code-bg: #1a1a1f;
+    --web-cta: #6b4dff;
+    --bs-box-shadow-sm: none;
+    --bs-box-shadow: none;
+    --web-glow: 0 0 0 2px #6b4dff;
+    --bs-font-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    // A pane: one solid grey and a hairline, nothing else.
+    --web-pane-fill: #101013;
+    --web-pane-edge: 1px solid #2b2b33;
+    --web-pane-rim: none;
+    --web-pane-light: none;
+    --web-pane-shadow: none;
+    --web-pane-blur: none;
+    --web-pane-radius: 22px;
+
+    // A bar: as black as the page, one hairline towards it.
+    --web-bar-fill: #000000;
+    --web-bar-edge: 1px solid #2b2b33;
+    --web-bar-blur: none;
+
+    // A press: solid violet, white words; the second a white outline.
+    --web-press-fill: #6b4dff;
+    --web-press-ink: #ffffff;
+    --web-press-edge: 1.5px solid #ffffff;
+
+    // The mark: a flat violet disc, a white l.
+    --web-mark-fill: #6b4dff;
+    --web-mark-gloss: none;
+    --web-mark-ink: #ffffff;
+
+    // You, and the agent.
+    --web-you: #ffffff;
+    --web-agent: #9282ff;
+
+    // Ultraviolet, light to dark.
+    --web-violet-0: #e2dfff;
+    --web-violet-1: #9282ff;
+    --web-violet-2: #6b4dff;
+    --web-violet-3: #3a22c4;
+    --web-violet-4: #110a40;
+
+    color-scheme: dark;
+}
