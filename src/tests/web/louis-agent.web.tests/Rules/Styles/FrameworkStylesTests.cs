@@ -326,6 +326,18 @@ public partial class FrameworkStylesTests
         });
     }
 
+    /// <summary>
+    /// F151.4: the four tools that drew a surface before the surface tool now draw through it, so the pieces that
+    /// include them wear a theme: a window's frame is a pane, the chat card is set into the page, a field is a field,
+    /// and a pressed look lays the picked drawing.
+    /// </summary>
+    [TestCase("_window.scss", "@include surface.pane(")]
+    [TestCase("_chat-card.scss", "@include surface.inset(")]
+    [TestCase("_field.scss", "@include surface.field(")]
+    [TestCase("_pressed.scss", "@include surface.picked(")]
+    public void AnOldTool_DrawsThroughTheSurfaceTool(string tool, string include) =>
+        Assert.That(File.ReadAllText(Path.Combine(Styles, "tools", tool)), Does.Contain(include));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()

@@ -6,6 +6,8 @@
    A pane is a card or a panel: its fill, its edge (a border), its rim (an image drawn as its edge line), the light
    inside its corners, the shadow it throws, how it blurs what is behind it, and its corner. Today it is the panel
    colour in the shared frame's hairline and corner, with none of the rest.
+   An inset is a piece set into the page, such as the chat's card and a field (F151.4): its fill and its edge, the
+   page's colour and the hairline today.
    A bar is the header, the footer and the agent's bar: its fill, its edge and its blur, as the site's header has
    them today.
    A press is the main button, its words, and the second button's outline.
@@ -26,6 +28,9 @@
     --web-pane-shadow: none;
     --web-pane-blur: none;
     --web-pane-radius: 12px;
+
+    --web-inset-fill: var(--bs-body-bg);
+    --web-inset-edge: 1px solid var(--bs-border-color);
 
     --web-bar-fill: rgba(var(--bs-body-bg-rgb), .86);
     --web-bar-edge: 1px solid var(--bs-border-color);

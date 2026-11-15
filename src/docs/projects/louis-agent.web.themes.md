@@ -46,8 +46,10 @@ and blur. When the page's `<html>` says that theme and that style, the block's v
 
 Glass in the dark is black with white words and Ultraviolet for the purple. A pane is almost clear, has no border
 of its own, takes its edge from a rim that is brightest at the bottom left and the top right, has two lights inside
-those corners, blurs what is behind it and throws no shadow. A bar is solid with a hairline, and a press is solid
-violet with white words. The mark is a ball of violet glass with a white letter.
+those corners, blurs what is behind it and throws no shadow. A piece set into the page, an inset such as the chat's
+card or a field, is as see-through as a pane, its edge drawn by its drawing. A bar is solid with a hairline, and a
+press is solid violet with white words. The mark is a ball of violet glass with a white letter. Flat sets an inset
+to its page's colour with its hairline.
 
 Glass in the light turns white and black over and keeps the purple. The page is a pale wash of the violet, mixed
 from its second step a third of the way into white, so it follows the purple. The words are black, and a

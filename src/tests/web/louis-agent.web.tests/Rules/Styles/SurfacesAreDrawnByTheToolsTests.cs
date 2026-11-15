@@ -170,6 +170,9 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("chip")]
     [TestCase("tag")]
     [TestCase("well")]
+    [TestCase("inset")]
+    [TestCase("field")]
+    [TestCase("picked")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

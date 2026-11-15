@@ -30,6 +30,7 @@ public class SurfaceNamesTests
     [
         "--web-pane-fill", "--web-pane-edge", "--web-pane-rim", "--web-pane-light", "--web-pane-shadow",
         "--web-pane-blur", "--web-pane-radius",
+        "--web-inset-fill", "--web-inset-edge",
         "--web-bar-fill", "--web-bar-edge", "--web-bar-blur",
         "--web-press-fill", "--web-press-ink", "--web-press-edge",
         "--web-mark-fill", "--web-mark-gloss", "--web-mark-ink",

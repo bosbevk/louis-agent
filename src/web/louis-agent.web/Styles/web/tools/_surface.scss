@@ -18,23 +18,50 @@
 /* How much smaller a piece is while it is pressed. */
 $-pressed: scale(.97);
 
-/* A card or a panel: its fill and its drawing, its edge and corner, the shadow it throws and the blur behind it. */
-@mixin pane() {
-    border: var(--web-pane-edge);
-    border-radius: var(--web-pane-radius);
+/* Only a state's drawing, laid on a piece over whatever fill it has, so the piece keeps its own. */
+@mixin -drawing($art) {
+    background-image: var(--web-art-#{$art});
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+/* A card or a panel: its fill and its drawing, its edge and corner, the shadow it throws and the blur behind it. A
+   piece that has its own corner or look today passes it, and the theme's names stand in for the rest. */
+@mixin pane($fill: var(--web-pane-fill), $edge: var(--web-pane-edge), $radius: var(--web-pane-radius)) {
+    border: $edge;
+    border-radius: $radius;
     box-shadow: var(--web-pane-shadow);
     -webkit-backdrop-filter: var(--web-pane-blur);
     backdrop-filter: var(--web-pane-blur);
-    @include -drawn(pane-rest, var(--web-pane-fill));
+    @include -drawn(pane-rest, $fill);
 
-    &:hover { @include -drawn(pane-hover, var(--web-pane-fill)); }
+    &:hover { @include -drawn(pane-hover, $fill); }
 }
 
-/* A pane the visitor picked: written where the component says a piece is picked. */
-@mixin pane-picked() { @include -drawn(pane-picked, var(--web-pane-fill)); }
+/* A piece set into the page, such as the chat's card (Louis's pick C of three): a pane with the inset's fill and
+   edge, see-through in glass as a pane is. */
+@mixin inset($fill: var(--web-inset-fill), $edge: var(--web-inset-edge), $radius: var(--web-pane-radius)) {
+    border: $edge;
+    border-radius: $radius;
+    -webkit-backdrop-filter: var(--web-pane-blur);
+    backdrop-filter: var(--web-pane-blur);
+    @include -drawn(pane-rest, $fill);
+}
 
-/* A pane the agent is showing: written where the component says the agent lit it. */
-@mixin pane-showing() { @include -drawn(pane-showing, var(--web-pane-fill)); }
+/* A field of a form: set into the page as an inset is, with its own drawing at rest and in focus. */
+@mixin field($fill: var(--web-inset-fill), $edge: var(--web-inset-edge), $radius: var(--bs-border-radius)) {
+    border: $edge;
+    border-radius: $radius;
+    @include -drawn(field-rest, $fill);
+
+    &:focus { @include -drawn(field-focus, $fill); }
+}
+
+/* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. */
+@mixin picked() { @include -drawing(pane-picked); }
+
+/* A piece the agent is showing: its showing drawing laid on it, written where the component says the agent lit it. */
+@mixin showing() { @include -drawing(pane-showing); }
 
 /* The header, the footer or the agent's bar: its fill and drawing, a hairline towards the page, and its blur. */
 @mixin bar() {

@@ -89,6 +89,10 @@
     --web-pane-blur: blur(14px) brightness(1.12);
     --web-pane-radius: 22px;
 
+    // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
+    --web-inset-fill: rgba(255, 255, 255, .012);
+    --web-inset-edge: none;
+
     // A bar: the page shows through it a little, blurred, over a hairline.
     --web-bar-fill: rgba(5, 5, 6, .86);
     --web-bar-edge: 1px solid rgba(255, 255, 255, .12);

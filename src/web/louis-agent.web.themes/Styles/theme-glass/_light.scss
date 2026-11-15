@@ -94,6 +94,10 @@ $page: color.mix(#9282ff, #ffffff, 34%);
     --web-pane-blur: blur(18px) saturate(1.35);
     --web-pane-radius: 22px;
 
+    // An inset, set into the page: white glass, as see-through as a pane, its edge drawn by its drawing.
+    --web-inset-fill: rgba(255, 255, 255, .4);
+    --web-inset-edge: none;
+
     // A bar: near-white over the page, a violet-dark hairline.
     --web-bar-fill: rgba(255, 255, 255, .78);
     --web-bar-edge: 1px solid rgba(30, 16, 90, .16);
