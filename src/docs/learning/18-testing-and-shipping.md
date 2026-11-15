@@ -1124,6 +1124,43 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## One engine, a second look, and an orb that only says what is true (F134.3, 2026-11-15)
+
+**What it is.** In the showroom the guide was a button in a corner. Now it is a bar at the foot of the page, as the
+J and K mockups drew it: an orb that shows what the guide is doing, a line of words saying so, a box that is always
+there to type in, and the guide's suggestions as chips. You asked for it as "chatwidget layout type", and that is
+what it is: the same widget with a second layout, not a second widget.
+
+**One engine, two looks.** The widget already did everything a chat needs: its runner, the session, the page that
+travels with a message, the guide's way of showing places. A bar that did those again would drift from the corner
+the first time either changed. So the bar is only a view: it reads the widget's runner and hands a send back to the
+widget. The test of that is simple: the corner's two golden files didn't change by a character.
+
+**The orb reads, it never guesses.** An orb that pulses while the agent is idle would be a small lie on screen.
+Its state is a rule over three facts the chat already knows: a place was just shown, the answer is streaming, the
+answer's words have come. Whether the words have come is the turn's own knowledge now, `EndsInWords`, asked where
+it lives. The rule is a plain class with its cases tested, and the component only draws what it is told.
+
+**A limit that shaped the design.** The widget's code-behind sat at its 200-line limit, so every new parameter cost
+a line somewhere else. The size's classes moved onto the size's own type, which was also the cure for a switch two
+components had copied. And the suggestions came in the way a site names its other parts, through its areas
+builder, so the widget didn't grow at all. A size limit is a design pressure, and here it pushed things to where
+they belong.
+
+**A live check, and what it found.** The real guide walked the start, and a typed question mid-walk was answered,
+with its next choices after it: two turns, five requests on Haiku 5.5, US$0.0051. The look at 390 px found what the
+tests didn't: the chips wrapped to three rows on a phone and stood over the end of every demo page. One sideways row
+fixed it.
+
+**What went wrong on the way.**
+
+- The talk's test raced the stream's redraws and passed only sometimes. It waits for the orb to be idle now, and
+  passed three runs in a row.
+- The phone fix was written before its test, from what the look showed, and the commit says so.
+
+**Where it sits.** Skill 4 (tool design) and skill 17 (observability): an orb that shows the agent's state read from
+the chat itself. Skill 20 (extensibility): one engine with a second layout.
+
 ## A page restyled without moving the guide (F134.2, 2026-11-15)
 
 **What it is.** After F134.1 the start was a stage and a demo's own page still wore the look before it, so walking
