@@ -1,0 +1,120 @@
+{
+  "kind": "classes",
+  "title": "F151.3 the two switches: the interface design",
+  "caption": "One component, drawn by the frame itself: it offers the themes the site named and the two styles, and its own script does the writing in the browser.",
+  "classes": {
+    "types": [
+      {
+        "id": "switch",
+        "name": "LookSwitch",
+        "kind": "component, step 2",
+        "members": [
+          "SiteAreas Areas (injected)",
+          "IReadOnlyList<SiteTheme> Themes",
+          "Task PickTheme(SiteTheme theme)",
+          "Task PickStyle(SiteStyle style)"
+        ]
+      },
+      {
+        "id": "js",
+        "name": "LookSwitch.razor.js",
+        "kind": "module, step 3",
+        "members": [
+          "read(): { theme, style }",
+          "pickTheme(id)",
+          "pickStyle(style)",
+          "follow(other tabs)"
+        ]
+      },
+      {
+        "id": "shell",
+        "name": "SiteShell",
+        "kind": "component, changed in step 4",
+        "members": [
+          "RenderFragment? Actions",
+          "RenderFragment? Links",
+          "RenderFragment? Brand"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "chat",
+        "name": "ChatShell",
+        "kind": "component, changed in step 5",
+        "members": [
+          "RenderFragment? Settings"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "areas",
+        "name": "SiteAreas",
+        "kind": "from F151.1",
+        "members": [
+          "IReadOnlyList<SiteTheme> Themes",
+          "SiteTheme? DefaultTheme"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "look",
+        "name": "SiteLook",
+        "kind": "static, from F151.1",
+        "members": [
+          "ThemeKey",
+          "StyleKey",
+          "ThemeAttribute",
+          "StyleAttribute",
+          "DefaultStyle"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "style",
+        "name": "SiteStyle",
+        "kind": "enum, from F151.1",
+        "members": [
+          "Light",
+          "Dark"
+        ],
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "shell",
+        "to": "switch",
+        "kind": "holds",
+        "word": "in its header"
+      },
+      {
+        "from": "chat",
+        "to": "switch",
+        "kind": "holds",
+        "word": "in its settings"
+      },
+      {
+        "from": "switch",
+        "to": "areas",
+        "kind": "uses"
+      },
+      {
+        "from": "switch",
+        "to": "js",
+        "kind": "uses",
+        "word": "through JS interop"
+      },
+      {
+        "from": "js",
+        "to": "look",
+        "kind": "uses",
+        "word": "the same keys and attributes"
+      },
+      {
+        "from": "switch",
+        "to": "style",
+        "kind": "uses"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 4, the site's parts",
+  "caption": "The biggest family: the bands, cards, tiles, hero, strip, slides, menu and the frame's own header and footer.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the Site family's sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Components/Site/\n26 sheets, 213 lines that\ndraw a surface",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "s",
+        "label": "SiteShell.razor.scss\nheader and footer from the bar names",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "c",
+        "label": "the starter, four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "f",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

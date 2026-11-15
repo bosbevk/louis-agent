@@ -1,0 +1,107 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: the architecture",
+  "caption": "The contract is four things in the framework's web and one helper for tests: the types, the slot, the names, and the script that applies what the browser remembers.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "types",
+        "label": "Components/Areas/Themes/\nSiteTheme, SiteStyle, SiteLook\n(2)",
+        "icon": "box",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "slot",
+        "label": "Components/Areas/\nSiteArea.Theme, SiteAreas.Themes\n(3)",
+        "icon": "box",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "names",
+        "label": "Styles/web/settings/\n_surfaces.scss: the surface names,\nwith today's look as their values (5)",
+        "icon": "book",
+        "tone": "teal",
+        "group": "web"
+      },
+      {
+        "id": "paint",
+        "label": "wwwroot/js/first-paint.js\napplies site.theme and site.style (6)",
+        "icon": "settings",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "check",
+        "label": "louis-agent.web.testing\nThemeSheet: does a theme set\nevery name, in both styles? (4)",
+        "icon": "chart",
+        "tone": "teal",
+        "group": "tests"
+      },
+      {
+        "id": "rule",
+        "label": "Rules/Sites/\nSitesSayTheirLookTests (7)",
+        "icon": "chart",
+        "tone": "teal",
+        "group": "tests"
+      },
+      {
+        "id": "index",
+        "label": "each site's index.html\n<html data-style=\"light\">\n(7)",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data",
+        "group": "sites"
+      }
+    ],
+    "edges": [
+      {
+        "from": "types",
+        "to": "slot"
+      },
+      {
+        "from": "slot",
+        "to": "rule",
+        "word": "the default theme"
+      },
+      {
+        "from": "names",
+        "to": "check",
+        "word": "the list to hold a theme to"
+      },
+      {
+        "from": "types",
+        "to": "paint",
+        "word": "the keys and attributes",
+        "style": "dashed"
+      },
+      {
+        "from": "rule",
+        "to": "index",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "paint",
+        "to": "index",
+        "word": "runs in its head"
+      }
+    ],
+    "groups": [
+      {
+        "id": "web",
+        "label": "louis-agent.web"
+      },
+      {
+        "id": "tests",
+        "label": "the tests"
+      },
+      {
+        "id": "sites",
+        "label": "the four sites"
+      }
+    ]
+  }
+}

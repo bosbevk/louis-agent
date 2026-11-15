@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.2 the two packages: step 2, the glass project",
+  "caption": "A new project with one class: naming it lists a theme called glass. Its test project, its design doc and the solution come with it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "GlassThemeTests\nnaming Glass lists the theme,\nonce, with id glass",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "c",
+        "label": "GlassTheme.cs\nGlass(this SiteAreasBuilder)",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "proj",
+        "label": "louis-agent.web.theme.glass.csproj\nset up as the accounts library is",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "doc",
+        "label": "projects/louis-agent.web.theme.glass.md\nthe solution, the projects' index,\nthe repo map",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "proj"
+      },
+      {
+        "from": "proj",
+        "to": "doc",
+        "word": "documented by"
+      }
+    ]
+  }
+}

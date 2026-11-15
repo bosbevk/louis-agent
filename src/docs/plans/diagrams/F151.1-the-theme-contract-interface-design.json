@@ -1,0 +1,116 @@
+{
+  "kind": "classes",
+  "title": "F151.1 the theme contract: the interface design",
+  "caption": "One new slot on an area, as the admin's card was: an area may be a theme, and the site's areas list the themes in the order named.",
+  "classes": {
+    "types": [
+      {
+        "id": "area",
+        "name": "SiteArea",
+        "kind": "record, step 3",
+        "members": [
+          "string Name",
+          "Action<IServiceCollection> Services",
+          "IReadOnlyList<Assembly> Pages",
+          "Type? AdminLinks",
+          "Type? AccountLayout",
+          "Type? AdminCard",
+          "SiteTheme? Theme"
+        ]
+      },
+      {
+        "id": "areas",
+        "name": "SiteAreas",
+        "kind": "step 3",
+        "members": [
+          "IReadOnlyList<string> Names",
+          "Assembly[] PageAssemblies",
+          "IReadOnlyList<Type> AdminLinks",
+          "IReadOnlyList<Type> AdminCards",
+          "IReadOnlyList<SiteTheme> Themes",
+          "SiteTheme? DefaultTheme"
+        ]
+      },
+      {
+        "id": "builder",
+        "name": "SiteAreasBuilder",
+        "kind": "unchanged",
+        "members": [
+          "SiteAreasBuilder Add(SiteArea area)"
+        ]
+      },
+      {
+        "id": "theme",
+        "name": "SiteTheme",
+        "kind": "record, step 2",
+        "members": [
+          "string Id",
+          "string Name"
+        ]
+      },
+      {
+        "id": "style",
+        "name": "SiteStyle",
+        "kind": "enum, step 2",
+        "members": [
+          "Light",
+          "Dark"
+        ]
+      },
+      {
+        "id": "look",
+        "name": "SiteLook",
+        "kind": "static, step 2",
+        "members": [
+          "const string ThemeKey = \"site.theme\"",
+          "const string StyleKey = \"site.style\"",
+          "const string ThemeAttribute = \"data-theme\"",
+          "const string StyleAttribute = \"data-style\"",
+          "SiteStyle DefaultStyle = SiteStyle.Light"
+        ]
+      },
+      {
+        "id": "check",
+        "name": "ThemeSheet",
+        "kind": "static, step 4, louis-agent.web.testing",
+        "members": [
+          "IReadOnlyList<string> NamesToSet(string frameworkCss)",
+          "IReadOnlyList<string> Missing(string css, SiteTheme theme, SiteStyle style, IReadOnlyList<string> names)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "builder",
+        "to": "areas",
+        "kind": "creates"
+      },
+      {
+        "from": "areas",
+        "to": "area",
+        "kind": "holds"
+      },
+      {
+        "from": "area",
+        "to": "theme",
+        "kind": "holds",
+        "word": "its theme, if it is one"
+      },
+      {
+        "from": "look",
+        "to": "style",
+        "kind": "uses"
+      },
+      {
+        "from": "check",
+        "to": "theme",
+        "kind": "uses"
+      },
+      {
+        "from": "check",
+        "to": "style",
+        "kind": "uses"
+      }
+    ]
+  }
+}

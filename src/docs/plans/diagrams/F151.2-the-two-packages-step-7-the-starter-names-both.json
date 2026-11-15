@@ -1,0 +1,58 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.2 the two packages: step 7, the starter names both",
+  "caption": "The starter opts in, so there is one site to look at the themes on: its areas, its Sass paths, its sheet and its default in index.html.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "a",
+        "label": "WebsiteAreas.Name\n… .Glass().Flat()",
+        "icon": "settings",
+        "tone": "blue"
+      },
+      {
+        "id": "s",
+        "label": "sasscompiler.json, app.scss\nthe two themes' sheets forwarded",
+        "icon": "book",
+        "tone": "green"
+      },
+      {
+        "id": "i",
+        "label": "index.html\n<html data-theme=\"glass\" data-style=\"light\">",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "StarterSiteTests,\nSitesSayTheirLookTests",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "a",
+        "to": "s"
+      },
+      {
+        "from": "a",
+        "to": "i",
+        "word": "its default"
+      },
+      {
+        "from": "x",
+        "to": "i",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "x",
+        "to": "a",
+        "word": "holds",
+        "style": "dashed"
+      }
+    ]
+  }
+}

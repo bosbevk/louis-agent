@@ -1,0 +1,105 @@
+{
+  "kind": "sequence",
+  "title": "F151.2 the two packages: the starter opens in glass, light",
+  "caption": "The starter names glass first, so glass is its default: its file writes the pair, and the stylesheet's block for the pair gives every name its value.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "label": "The starter's Program.cs",
+        "tone": "blue",
+        "icon": "terminal"
+      },
+      {
+        "id": "B",
+        "label": "SiteAreasBuilder",
+        "tone": "violet",
+        "icon": "settings"
+      },
+      {
+        "id": "G",
+        "label": "GlassTheme",
+        "tone": "green",
+        "icon": "box"
+      },
+      {
+        "id": "F",
+        "label": "FlatTheme",
+        "tone": "green",
+        "icon": "box"
+      },
+      {
+        "id": "W",
+        "label": "The browser",
+        "tone": "blue",
+        "icon": "world"
+      },
+      {
+        "id": "S",
+        "label": "The starter's app.css",
+        "tone": "green",
+        "icon": "book"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "B",
+        "text": "AddSiteAreas(areas => areas.Glass().Flat())"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "G",
+        "text": "Glass(areas)"
+      },
+      {
+        "step": "reply",
+        "from": "G",
+        "to": "B",
+        "text": "Add(the glass area)"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "F",
+        "text": "Flat(areas)"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "B",
+        "text": "Add(the flat area)"
+      },
+      {
+        "step": "note",
+        "over": [
+          "B"
+        ],
+        "text": "Themes is [glass, flat], DefaultTheme is glass"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "<html data-theme=\"glass\" data-style=\"light\">"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "W",
+        "text": "the glass light block: every name's value"
+      },
+      {
+        "step": "note",
+        "over": [
+          "W",
+          "S"
+        ],
+        "text": "set data-style to dark by hand, and the glass dark block answers"
+      }
+    ],
+    "numbered": true
+  }
+}

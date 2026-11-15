@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 3, the frame and the name",
+  "caption": "The name is drawn with the mark as its o, in the header and the footer, by a part of the framework's.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "WordmarkTests; SiteLayoutTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "w",
+        "label": "louis-agent.web\nComponents/Site/Brand/Wordmark",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "l",
+        "label": "SiteLayout, ShowroomLayout,\nAdminLayout",
+        "icon": "chip",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "w"
+      },
+      {
+        "from": "w",
+        "to": "l",
+        "word": "drawn by"
+      }
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "kind": "flow",
+  "type": "package",
+  "title": "F151.5 the libraries and the other sites: the architecture",
+  "caption": "Three libraries move to the surface tool, and three sites take their place: the starter is done, code-review names the themes, Puls keeps its own.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "tool",
+        "label": "louis-agent.web\nthe surface tool",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "acc",
+        "label": "louis-agent.web.accounts\n6 sheets (2)",
+        "icon": "chip",
+        "tone": "green",
+        "group": "lib"
+      },
+      {
+        "id": "ev",
+        "label": "louis-agent.web.evals\n71 sheets (3, 4, 5)",
+        "icon": "chip",
+        "tone": "green",
+        "group": "lib"
+      },
+      {
+        "id": "packs",
+        "label": "packs/web\n3 sheets (6)",
+        "icon": "chip",
+        "tone": "green",
+        "group": "lib"
+      },
+      {
+        "id": "cr",
+        "label": "code-review\nGlass, Flat and Retro;\nits own picker gone (7)",
+        "icon": "world",
+        "tone": "blue",
+        "group": "sites"
+      },
+      {
+        "id": "puls",
+        "label": "Puls\nits brand on top;\nbuilds and stays green (8)",
+        "icon": "world",
+        "tone": "blue",
+        "group": "sites"
+      },
+      {
+        "id": "st",
+        "label": "the starter\nwhere each is looked at",
+        "icon": "world",
+        "tone": "blue",
+        "group": "sites"
+      }
+    ],
+    "edges": [
+      {
+        "from": "acc",
+        "to": "tool",
+        "word": "draws through"
+      },
+      {
+        "from": "ev",
+        "to": "tool",
+        "word": "draws through"
+      },
+      {
+        "from": "packs",
+        "to": "tool",
+        "word": "draws through"
+      },
+      {
+        "from": "st",
+        "to": "acc"
+      },
+      {
+        "from": "st",
+        "to": "ev"
+      },
+      {
+        "from": "cr",
+        "to": "packs"
+      },
+      {
+        "from": "puls",
+        "to": "tool"
+      }
+    ],
+    "groups": [
+      {
+        "id": "lib",
+        "label": "the libraries above the framework's web"
+      },
+      {
+        "id": "sites",
+        "label": "the other sites"
+      }
+    ]
+  }
+}

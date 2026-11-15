@@ -1,0 +1,87 @@
+{
+  "kind": "sequence",
+  "title": "F151.5 the libraries and the other sites: code-review opens, and a person picks retro",
+  "caption": "Retro is a theme now: the framework's switch offers it beside glass and flat, and the demo's own picker and its files are gone.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "label": "code-review's Program.cs",
+        "tone": "blue",
+        "icon": "terminal"
+      },
+      {
+        "id": "B",
+        "label": "SiteAreasBuilder",
+        "tone": "violet",
+        "icon": "settings"
+      },
+      {
+        "id": "V",
+        "label": "A person",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "SW",
+        "label": "LookSwitch",
+        "tone": "violet",
+        "icon": "settings"
+      },
+      {
+        "id": "H",
+        "label": "<html>",
+        "tone": "blue",
+        "icon": "world"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "B",
+        "text": "… .Glass().Flat().Retro()"
+      },
+      {
+        "step": "note",
+        "over": [
+          "B"
+        ],
+        "text": "Themes is [glass, flat, retro]"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "SW",
+        "text": "opens the chat's settings"
+      },
+      {
+        "step": "reply",
+        "from": "SW",
+        "to": "V",
+        "text": "Glass · Flat · Retro, and Dark · Light"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "SW",
+        "text": "presses Retro"
+      },
+      {
+        "step": "message",
+        "from": "SW",
+        "to": "H",
+        "text": "data-theme = retro"
+      },
+      {
+        "step": "note",
+        "over": [
+          "SW",
+          "H"
+        ],
+        "text": "what retro does about Light is Louis's pick, before step 7"
+      }
+    ],
+    "numbered": true
+  }
+}

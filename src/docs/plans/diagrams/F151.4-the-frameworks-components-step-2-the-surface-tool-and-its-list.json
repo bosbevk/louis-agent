@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 2, the surface tool, and the list that shrinks",
+  "caption": "One new tool that draws every kind of surface from the names, and a rule test that lists the stylesheets not yet using it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "SurfacesAreDrawnByTheToolsTests\nevery sheet that draws a surface\nby hand is on its list",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "tool",
+        "label": "tools/_surface.scss\npane, bar, press, press-quiet,\nchip, tag, well",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "names",
+        "label": "settings/_surfaces.scss",
+        "icon": "book",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "tool"
+      },
+      {
+        "from": "tool",
+        "to": "names",
+        "word": "reads"
+      }
+    ]
+  }
+}

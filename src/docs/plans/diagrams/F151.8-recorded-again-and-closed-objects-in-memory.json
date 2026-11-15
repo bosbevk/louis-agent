@@ -1,0 +1,68 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151.8 recorded again, and closed: what a demo page holds",
+  "caption": "A demo page plays a recording: the page's questions and its website's places must be the ones the recording was sent.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "page",
+        "label": "a business's demo page",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "q",
+        "label": "its questions",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "places",
+        "label": "its website's places",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "rec",
+        "label": "its recording",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "ShowroomPagesTests",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "page",
+        "to": "q"
+      },
+      {
+        "from": "page",
+        "to": "places"
+      },
+      {
+        "from": "page",
+        "to": "rec",
+        "word": "plays"
+      },
+      {
+        "from": "x",
+        "to": "q",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "x",
+        "to": "rec",
+        "word": "holds",
+        "style": "dashed"
+      }
+    ]
+  }
+}

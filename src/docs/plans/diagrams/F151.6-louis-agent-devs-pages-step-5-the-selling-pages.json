@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 5, the selling pages",
+  "caption": "What we build, the price, the contact form and the page for an address nothing answers.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "each page's own tests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "p",
+        "label": "Pages/Business/, ContactPage,\nErrors/NotFound",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "c",
+        "label": "four routes beside the mockup,\nfour looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "p"
+      },
+      {
+        "from": "p",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

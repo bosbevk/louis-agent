@@ -1,0 +1,107 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151 two themes, each light and dark: objects in memory, one page",
+  "caption": "Two areas, two themes: the areas keep the themes in the order the site named them, and the first is the default.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "sp",
+        "label": "ServiceProvider",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "areas",
+        "label": "SiteAreas",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "a1",
+        "label": "SiteArea \"theme-glass\"",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "a2",
+        "label": "SiteArea \"theme-flat\"",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "t1",
+        "label": "SiteTheme(\"glass\", \"Glass\")",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "t2",
+        "label": "SiteTheme(\"flat\", \"Flat\")",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "sw",
+        "label": "LookSwitch",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "doc",
+        "label": "document.documentElement\ndataset.theme = \"glass\"\ndataset.style = \"light\"",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "ls",
+        "label": "localStorage\nempty on a first visit",
+        "icon": "box",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "sp",
+        "to": "areas"
+      },
+      {
+        "from": "areas",
+        "to": "a1"
+      },
+      {
+        "from": "areas",
+        "to": "a2"
+      },
+      {
+        "from": "a1",
+        "to": "t1"
+      },
+      {
+        "from": "a2",
+        "to": "t2"
+      },
+      {
+        "from": "areas",
+        "to": "t1",
+        "word": "DefaultTheme",
+        "style": "dashed"
+      },
+      {
+        "from": "sw",
+        "to": "areas"
+      },
+      {
+        "from": "sw",
+        "to": "doc",
+        "word": "writes"
+      },
+      {
+        "from": "sw",
+        "to": "ls",
+        "word": "writes"
+      }
+    ]
+  }
+}

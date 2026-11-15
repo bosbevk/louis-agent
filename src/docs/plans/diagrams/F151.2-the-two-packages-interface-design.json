@@ -1,0 +1,103 @@
+{
+  "kind": "classes",
+  "title": "F151.2 the two packages: the interface design",
+  "caption": "Each package is one small class and two sheets: the class adds an area that carries the theme, and the sheets set every name for dark and for light.",
+  "classes": {
+    "types": [
+      {
+        "id": "builder",
+        "name": "SiteAreasBuilder",
+        "kind": "unchanged",
+        "members": [
+          "SiteAreasBuilder Add(SiteArea area)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "area",
+        "name": "SiteArea",
+        "kind": "record, from F151.1",
+        "members": [
+          "string Name",
+          "SiteTheme? Theme"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "theme",
+        "name": "SiteTheme",
+        "kind": "record, from F151.1",
+        "members": [
+          "string Id",
+          "string Name"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "glass",
+        "name": "GlassTheme",
+        "kind": "static, step 2",
+        "members": [
+          "const string Id = \"glass\"",
+          "SiteArea Area",
+          "SiteAreasBuilder Glass(this SiteAreasBuilder areas)"
+        ]
+      },
+      {
+        "id": "flat",
+        "name": "FlatTheme",
+        "kind": "static, step 3",
+        "members": [
+          "const string Id = \"flat\"",
+          "SiteArea Area",
+          "SiteAreasBuilder Flat(this SiteAreasBuilder areas)"
+        ]
+      },
+      {
+        "id": "sheet",
+        "name": "ThemeSheet",
+        "kind": "static, from F151.1, the tests' library",
+        "members": [
+          "IReadOnlyList<string> NamesToSet(string frameworkCss)",
+          "IReadOnlyList<string> Missing(string css, SiteTheme theme, SiteStyle style, IReadOnlyList<string> names)"
+        ],
+        "tone": "teal"
+      }
+    ],
+    "relations": [
+      {
+        "from": "glass",
+        "to": "area",
+        "kind": "creates"
+      },
+      {
+        "from": "flat",
+        "to": "area",
+        "kind": "creates"
+      },
+      {
+        "from": "area",
+        "to": "theme",
+        "kind": "holds"
+      },
+      {
+        "from": "glass",
+        "to": "builder",
+        "kind": "uses",
+        "word": "Add"
+      },
+      {
+        "from": "flat",
+        "to": "builder",
+        "kind": "uses",
+        "word": "Add"
+      },
+      {
+        "from": "sheet",
+        "to": "theme",
+        "kind": "uses",
+        "word": "holds each sheet to the names"
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "F151.1 the theme contract: step 8, the docs and the pull request",
+  "caption": "The framework web's design doc says what a theme and a style are, the write-up is added, main is merged in and the full unit suite passes.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "doc",
+        "label": "projects/louis-agent.web.md\nand its pictures",
+        "icon": "book",
+        "tone": "green",
+        "shape": "data"
+      },
+      {
+        "id": "learn",
+        "label": "learning/: the write-up",
+        "icon": "book",
+        "tone": "green",
+        "shape": "data"
+      },
+      {
+        "id": "suite",
+        "label": "merge main, then\nthe full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request to main",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "doc",
+        "to": "suite"
+      },
+      {
+        "from": "learn",
+        "to": "suite"
+      },
+      {
+        "from": "suite",
+        "to": "pr"
+      }
+    ]
+  }
+}

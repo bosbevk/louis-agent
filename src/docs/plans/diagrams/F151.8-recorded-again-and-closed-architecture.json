@@ -1,0 +1,97 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "F151.8 recorded again, and closed: the architecture",
+  "caption": "The recording runs the site's own image on this PC, on a spare port, and saves what each business's agent said. The films are exported from the pages as they now look.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "l",
+        "label": "Louis's go",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "img",
+        "label": "the site's image, on\nlocalhost:5079",
+        "icon": "server",
+        "tone": "green"
+      },
+      {
+        "id": "m",
+        "label": "the model",
+        "icon": "cloud",
+        "tone": "red"
+      },
+      {
+        "id": "mail",
+        "label": "one mail a booking,\nto Louis",
+        "icon": "message",
+        "tone": "red"
+      },
+      {
+        "id": "json",
+        "label": "wwwroot/recordings/showroom/\nthree files",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "fx",
+        "label": "louis-agent.film-export",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "films",
+        "label": "the films, as WebP",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "live",
+        "label": "louis-agent.dev, live",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "l",
+        "to": "img",
+        "word": "SEND_MAIL=1"
+      },
+      {
+        "from": "img",
+        "to": "m",
+        "word": "each turn"
+      },
+      {
+        "from": "img",
+        "to": "mail",
+        "word": "on a yes"
+      },
+      {
+        "from": "img",
+        "to": "json",
+        "word": "saves"
+      },
+      {
+        "from": "fx",
+        "to": "films",
+        "word": "writes"
+      },
+      {
+        "from": "json",
+        "to": "live"
+      },
+      {
+        "from": "films",
+        "to": "live"
+      }
+    ]
+  }
+}

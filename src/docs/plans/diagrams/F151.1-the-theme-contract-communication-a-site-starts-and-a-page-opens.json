@@ -1,0 +1,99 @@
+{
+  "kind": "sequence",
+  "title": "F151.1 the theme contract: a site starts, and a page opens",
+  "caption": "No theme is named yet in this child, so the list is empty and the page keeps today's look: the contract is in place and nothing looks different.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "label": "Program.cs",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "B",
+        "label": "SiteAreasBuilder",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "A",
+        "label": "SiteAreas",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "W",
+        "label": "The browser",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "FP",
+        "label": "first-paint.js",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "LS",
+        "label": "localStorage",
+        "icon": "box",
+        "tone": "amber"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "B",
+        "text": "AddSiteAreas(areas => …)"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "B",
+        "text": "Add(area) for each area named"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "new SiteAreas(areas)"
+      },
+      {
+        "step": "note",
+        "over": [
+          "A"
+        ],
+        "text": "Themes is empty and DefaultTheme is null: no package names a theme until F151.2"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "FP",
+        "text": "runs it in the head of index.html"
+      },
+      {
+        "step": "message",
+        "from": "FP",
+        "to": "LS",
+        "text": "site.theme? site.style?"
+      },
+      {
+        "step": "reply",
+        "from": "LS",
+        "to": "FP",
+        "text": "nothing kept"
+      },
+      {
+        "step": "note",
+        "over": [
+          "FP",
+          "W"
+        ],
+        "text": "<html data-style=\"light\"> stays as the file wrote it"
+      }
+    ],
+    "numbered": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: step 7, every site says its default",
+  "caption": "Each site's index.html writes its default style, and its default theme once it names one: a rule test holds the file to the site's areas.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "areas",
+        "label": "the site's areas\nDefaultTheme, SiteLook.DefaultStyle",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "rule",
+        "label": "SitesSayTheirLookTests\nbeside SitesNameTheirAreasTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "i1",
+        "label": "louis-agent.site\nindex.html",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "i2",
+        "label": "code-review, Puls and the starter,\nwhich is also the template",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "areas",
+        "to": "rule"
+      },
+      {
+        "from": "rule",
+        "to": "i1",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "rule",
+        "to": "i2",
+        "word": "holds",
+        "style": "dashed"
+      }
+    ]
+  }
+}

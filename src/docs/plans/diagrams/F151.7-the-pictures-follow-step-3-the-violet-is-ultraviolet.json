@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: step 3, the violet is Ultraviolet",
+  "caption": "The pictures' violet becomes the brand's, in both of the look's sets of values.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the theme's own tests\nthe violet's three values, twice",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "l",
+        "label": "Svg/Theme/SvgTheme.cs",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "v",
+        "label": "#e2dfff, #9282ff, #6b4dff,\n#3a22c4, #110a40",
+        "icon": "book",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "l"
+      },
+      {
+        "from": "v",
+        "to": "l",
+        "word": "the values"
+      }
+    ]
+  }
+}

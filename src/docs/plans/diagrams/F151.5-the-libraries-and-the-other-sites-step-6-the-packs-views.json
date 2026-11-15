@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 6, the packs' views",
+  "caption": "Three sheets, 42 lines: the triage demo's shared sheet and the two packs' screens.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the packs' sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "packs/web\n3 sheets, 42 lines",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "t",
+        "label": "the packs' own tests",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "t",
+        "to": "f",
+        "word": "hold",
+        "style": "dashed"
+      }
+    ]
+  }
+}

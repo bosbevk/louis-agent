@@ -1,0 +1,41 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.2 the two packages: step 4, glass in the dark",
+  "caption": "The first sheet of values: every name the framework lists, as the glass mockup draws them in its dark style.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "m",
+        "label": "plans/F151-mockups/glass.html\nDark",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "GlassSheetTests\nMissing(glass, Dark) is empty",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "s",
+        "label": "Styles/theme-glass/_dark.scss\n:root[data-theme=glass][data-style=dark]",
+        "icon": "book",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "m",
+        "to": "s",
+        "word": "the values"
+      },
+      {
+        "from": "x",
+        "to": "s",
+        "word": "holds"
+      }
+    ]
+  }
+}

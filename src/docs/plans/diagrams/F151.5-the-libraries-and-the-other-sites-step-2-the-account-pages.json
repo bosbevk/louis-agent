@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 2, the account pages",
+  "caption": "Six sheets and six routes: sign in, register, the profile and the three about a password or an address.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list gains the accounts' sheets,\nthen loses them",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "louis-agent.web.accounts\n6 sheets, 16 lines",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "c",
+        "label": "the starter: six routes, four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "f",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

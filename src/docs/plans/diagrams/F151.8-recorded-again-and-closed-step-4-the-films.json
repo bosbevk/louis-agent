@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 4, the films",
+  "caption": "A film whose styles changed has a new hash, so it is exported again from the page as it now looks.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "louis-agent.film-export.tests\nthe hashes",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "t",
+        "label": "louis-agent.film-export",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "f",
+        "label": "the films, as WebP",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "t"
+      },
+      {
+        "from": "t",
+        "to": "f",
+        "word": "writes"
+      }
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "kind": "sequence",
+  "title": "F151.6 louis-agent.dev's pages: the site turns over",
+  "caption": "Until this child is merged the live site names no theme and looks as it does today. Its pull request is the moment louis-agent.dev opens in glass, light.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "L",
+        "label": "Louis",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "PR",
+        "label": "The pull request",
+        "tone": "blue",
+        "icon": "world"
+      },
+      {
+        "id": "D",
+        "label": "The deploy",
+        "tone": "red",
+        "icon": "server"
+      },
+      {
+        "id": "V",
+        "label": "A visitor",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "S",
+        "label": "louis-agent.dev",
+        "tone": "green",
+        "icon": "world"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "L",
+        "to": "PR",
+        "text": "reviews each step, and each route beside its mockup"
+      },
+      {
+        "step": "message",
+        "from": "L",
+        "to": "PR",
+        "text": "merges"
+      },
+      {
+        "step": "message",
+        "from": "PR",
+        "to": "D",
+        "text": "the deploy starts by itself"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "S",
+        "text": "opens any page"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "V",
+        "text": "glass, light, with the two switches"
+      },
+      {
+        "step": "note",
+        "over": [
+          "V",
+          "S"
+        ],
+        "text": "a search engine's page is rendered in the default too"
+      }
+    ],
+    "numbered": true
+  }
+}

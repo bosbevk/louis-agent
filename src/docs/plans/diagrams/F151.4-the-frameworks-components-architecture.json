@@ -1,0 +1,114 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: the architecture",
+  "caption": "The tools are changed once and the families follow in five steps, biggest first, each checked on the starter in all four looks.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "names",
+        "label": "settings/_surfaces.scss\nthe names, from F151.1",
+        "icon": "book",
+        "tone": "teal"
+      },
+      {
+        "id": "tool",
+        "label": "tools/_surface.scss (2)\nand the four tools that draw\na surface today (3)",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "site",
+        "label": "Site: 26 sheets (4)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "fam"
+      },
+      {
+        "id": "stage",
+        "label": "Site/Showroom and Staging:\nthe stage and its windows (5)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "fam"
+      },
+      {
+        "id": "widget",
+        "label": "Widget: the bar, the caption,\nthe door, the mark (6)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "fam"
+      },
+      {
+        "id": "chat",
+        "label": "Chat: 18 sheets, and the\nshared chat and layout sheets (7)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "fam"
+      },
+      {
+        "id": "rest",
+        "label": "Admin, Screens, Editing,\nBlocks and the rest (8)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "fam"
+      },
+      {
+        "id": "rule",
+        "label": "SurfacesAreDrawnByTheToolsTests\nits list shrinks to nothing",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "starter",
+        "label": "the starter, in four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "names",
+        "to": "tool",
+        "word": "read by"
+      },
+      {
+        "from": "tool",
+        "to": "site"
+      },
+      {
+        "from": "tool",
+        "to": "stage"
+      },
+      {
+        "from": "tool",
+        "to": "widget"
+      },
+      {
+        "from": "tool",
+        "to": "chat"
+      },
+      {
+        "from": "tool",
+        "to": "rest"
+      },
+      {
+        "from": "rule",
+        "to": "tool",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "rest",
+        "to": "starter",
+        "word": "looked at on"
+      }
+    ],
+    "groups": [
+      {
+        "id": "fam",
+        "label": "the families of louis-agent.web"
+      }
+    ]
+  }
+}

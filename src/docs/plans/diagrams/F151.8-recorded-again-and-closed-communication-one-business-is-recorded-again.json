@@ -1,0 +1,91 @@
+{
+  "kind": "sequence",
+  "title": "F151.8 recorded again, and closed: one business is recorded again",
+  "caption": "A dry run first, which costs a few cents and sends nothing. The real recording waits for Louis, since it sends him a mail and spends money.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "B",
+        "label": "The builder",
+        "tone": "blue",
+        "icon": "terminal"
+      },
+      {
+        "id": "S",
+        "label": "record-showroom.sh",
+        "tone": "violet",
+        "icon": "terminal"
+      },
+      {
+        "id": "A",
+        "label": "The business's agent",
+        "tone": "green",
+        "icon": "chip"
+      },
+      {
+        "id": "L",
+        "label": "Louis",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "F",
+        "label": "The recording's file",
+        "tone": "amber",
+        "icon": "book"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "B",
+        "to": "S",
+        "text": "a dry run, ONLY=seemeeu-guesthouse"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "A",
+        "text": "the page's questions, word for word"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "S",
+        "text": "its answers and its calls"
+      },
+      {
+        "step": "note",
+        "over": [
+          "S"
+        ],
+        "text": "no mail goes out, nothing is kept"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "L",
+        "text": "the dry run's answers, and what the real one costs"
+      },
+      {
+        "step": "reply",
+        "from": "L",
+        "to": "B",
+        "text": "go"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "S",
+        "text": "SEND_MAIL=1"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "F",
+        "text": "saves the conversation"
+      }
+    ],
+    "numbered": true
+  }
+}

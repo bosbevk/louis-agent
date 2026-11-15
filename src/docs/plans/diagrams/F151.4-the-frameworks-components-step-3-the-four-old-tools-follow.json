@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 3, the four old tools follow",
+  "caption": "The tools that draw a frame, a chat card, a field and a pressed look today draw through the new one, so the 15 sheets that include them move at once.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "FrameworkStylesTests\nthe four tools include the surface tool",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "old",
+        "label": "_window, _chat-card,\n_field, _pressed",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "tool",
+        "label": "tools/_surface.scss",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "s",
+        "label": "the 15 sheets that\ninclude them",
+        "icon": "chip",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "old"
+      },
+      {
+        "from": "old",
+        "to": "tool",
+        "word": "draw through"
+      },
+      {
+        "from": "s",
+        "to": "old",
+        "word": "already include"
+      }
+    ]
+  }
+}

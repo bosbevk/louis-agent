@@ -1,0 +1,73 @@
+{
+  "kind": "flow",
+  "type": "package",
+  "title": "F151.1 the theme contract: step 1, the plan is kept",
+  "caption": "Docs only: the two plans, their pictures, the two designs and the three records go in together.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "p",
+        "label": "plans/F151-themes-and-styles.md\nplans/F151.1-the-theme-contract.md",
+        "icon": "book",
+        "tone": "green",
+        "shape": "data"
+      },
+      {
+        "id": "d",
+        "label": "plans/diagrams/F151*.json\nand their SVGs",
+        "icon": "book",
+        "tone": "green",
+        "shape": "data"
+      },
+      {
+        "id": "m",
+        "label": "plans/F151-mockups/\nglass.html, flat.html",
+        "icon": "book",
+        "tone": "green",
+        "shape": "data"
+      },
+      {
+        "id": "r",
+        "label": "TODO.md, plans/README.md,\nwork-log.md",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "t",
+        "label": "WorkLogTests, the docs' rules,\nthe diagrams' tests",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "p",
+        "to": "d",
+        "word": "shows"
+      },
+      {
+        "from": "p",
+        "to": "m",
+        "word": "keeps"
+      },
+      {
+        "from": "p",
+        "to": "r",
+        "word": "is listed in"
+      },
+      {
+        "from": "r",
+        "to": "t",
+        "word": "held by",
+        "style": "dashed"
+      },
+      {
+        "from": "d",
+        "to": "t",
+        "word": "held by",
+        "style": "dashed"
+      }
+    ]
+  }
+}

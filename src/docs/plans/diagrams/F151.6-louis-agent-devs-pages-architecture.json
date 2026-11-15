@@ -1,0 +1,120 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: the architecture",
+  "caption": "The site's own layer is thin: its tokens and elements read the theme's names, and its 22 routes are built from the framework's parts, which already wear the themes.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "areas",
+        "label": "LouisAgentDevAreas\nnames Glass, then Flat (2)",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "tok",
+        "label": "Styles/site/settings/_tokens.scss\nStyles/site/base/_elements.scss (2)",
+        "icon": "book",
+        "tone": "green"
+      },
+      {
+        "id": "frame",
+        "label": "SiteLayout, ShowroomLayout,\nAdminLayout: the Wordmark (3)",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "land",
+        "label": "the landing (4)",
+        "icon": "world",
+        "tone": "green",
+        "group": "pages"
+      },
+      {
+        "id": "sell",
+        "label": "what we build, pricing,\ncontact, not found (5)",
+        "icon": "world",
+        "tone": "green",
+        "group": "pages"
+      },
+      {
+        "id": "show",
+        "label": "the showroom's six (6)",
+        "icon": "world",
+        "tone": "green",
+        "group": "pages"
+      },
+      {
+        "id": "fw",
+        "label": "the framework's nine (7)",
+        "icon": "world",
+        "tone": "green",
+        "group": "pages"
+      },
+      {
+        "id": "cv",
+        "label": "the CV and its editor (8)",
+        "icon": "world",
+        "tone": "green",
+        "group": "pages"
+      },
+      {
+        "id": "phone",
+        "label": "every route at a phone's width (9)",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "brand",
+        "label": "the tab icon, the app icon,\nthe share card, the brand guide (10)",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "areas",
+        "to": "tok"
+      },
+      {
+        "from": "tok",
+        "to": "frame"
+      },
+      {
+        "from": "frame",
+        "to": "land"
+      },
+      {
+        "from": "frame",
+        "to": "sell"
+      },
+      {
+        "from": "frame",
+        "to": "show"
+      },
+      {
+        "from": "frame",
+        "to": "fw"
+      },
+      {
+        "from": "frame",
+        "to": "cv"
+      },
+      {
+        "from": "cv",
+        "to": "phone"
+      },
+      {
+        "from": "phone",
+        "to": "brand"
+      }
+    ],
+    "groups": [
+      {
+        "id": "pages",
+        "label": "the 22 routes"
+      }
+    ]
+  }
+}

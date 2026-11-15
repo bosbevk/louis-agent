@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: step 2, the switch is drawn",
+  "caption": "The component's markup: a group of buttons for the themes when there are two or more, a group for the styles when there is at least one, and nothing with none.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "LookSwitchTests\nnone, one and two themes;\nthe pressed button; the labels",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "c",
+        "label": "LookSwitch.razor, .razor.cs, .razor.scss",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "w",
+        "label": "the words Dark and Light\nfrom the web's own texts",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "w",
+        "word": "reads"
+      }
+    ]
+  }
+}

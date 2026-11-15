@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: step 3, the switch writes in the browser",
+  "caption": "The script module: it sets the attribute, remembers the word, and follows a change made in another tab.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "LookSwitchScriptTests\nreads the module: SiteLook's keys\nand attributes, the two checks",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "js",
+        "label": "LookSwitch.razor.js",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "cr",
+        "label": "code-review's wwwroot/js/theme.js\nthe pattern it lifts",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "js"
+      },
+      {
+        "from": "cr",
+        "to": "js",
+        "word": "the way to follow"
+      }
+    ]
+  }
+}

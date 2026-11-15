@@ -1,0 +1,85 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151.1 the theme contract: objects in memory, in the slot's own test",
+  "caption": "The test names two themes through two areas, and the areas hand them back in that order with the first as the default.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "b",
+        "label": "SiteAreasBuilder",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "areas",
+        "label": "SiteAreas",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "a1",
+        "label": "SiteArea \"first\"",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "a2",
+        "label": "SiteArea \"second\"",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "a3",
+        "label": "SiteArea \"plain\"\nTheme is null",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "t1",
+        "label": "SiteTheme(\"first\", \"First\")",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "t2",
+        "label": "SiteTheme(\"second\", \"Second\")",
+        "icon": "box",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "b",
+        "to": "areas",
+        "word": "builds"
+      },
+      {
+        "from": "areas",
+        "to": "a1"
+      },
+      {
+        "from": "areas",
+        "to": "a2"
+      },
+      {
+        "from": "areas",
+        "to": "a3"
+      },
+      {
+        "from": "a1",
+        "to": "t1"
+      },
+      {
+        "from": "a2",
+        "to": "t2"
+      },
+      {
+        "from": "areas",
+        "to": "t1",
+        "word": "DefaultTheme",
+        "style": "dashed"
+      }
+    ]
+  }
+}

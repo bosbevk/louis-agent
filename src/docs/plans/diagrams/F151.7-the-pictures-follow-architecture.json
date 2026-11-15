@@ -1,0 +1,73 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: the architecture",
+  "caption": "Two places a picture is seen: as a file in the docs, where the device decides, and drawn into a page, where the page's style decides.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "eng",
+        "label": "louis-agent.diagrams.engine\nSvgStyle (2), SvgTheme (3)",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "tool",
+        "label": "louis-agent.doc-diagrams\nredraws every picture (4)",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "docs",
+        "label": "the docs' SVG files\nabout 300",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "gh",
+        "label": "read on GitHub:\nthe device's setting",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "card",
+        "label": "DrawnCard, in the chat (5)",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "page",
+        "label": "a page with data-style",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "eng",
+        "to": "tool"
+      },
+      {
+        "from": "tool",
+        "to": "docs",
+        "word": "writes"
+      },
+      {
+        "from": "docs",
+        "to": "gh"
+      },
+      {
+        "from": "eng",
+        "to": "card"
+      },
+      {
+        "from": "card",
+        "to": "page",
+        "word": "follows the switch"
+      }
+    ]
+  }
+}

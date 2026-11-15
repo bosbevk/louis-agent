@@ -1,0 +1,107 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: the architecture",
+  "caption": "The switch is the framework's, so every site has it without writing a line: the frame draws it, and it shows only what a site's themes make possible.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "v",
+        "label": "A visitor",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "sw",
+        "label": "Components/Site/Looks/\nLookSwitch.razor (2)",
+        "icon": "settings",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "js",
+        "label": "LookSwitch.razor.js (3)",
+        "icon": "settings",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "shell",
+        "label": "SiteShell\ndraws it beside the site's actions (4)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "chat",
+        "label": "ChatShell\ndraws it in the settings (5)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "web"
+      },
+      {
+        "id": "html",
+        "label": "<html data-theme data-style>",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "ls",
+        "label": "localStorage\nsite.theme · site.style",
+        "icon": "box",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "other",
+        "label": "another tab of the site",
+        "icon": "world",
+        "tone": "blue"
+      }
+    ],
+    "edges": [
+      {
+        "from": "v",
+        "to": "sw"
+      },
+      {
+        "from": "shell",
+        "to": "sw",
+        "word": "draws"
+      },
+      {
+        "from": "chat",
+        "to": "sw",
+        "word": "draws"
+      },
+      {
+        "from": "sw",
+        "to": "js",
+        "word": "calls"
+      },
+      {
+        "from": "js",
+        "to": "html",
+        "word": "sets"
+      },
+      {
+        "from": "js",
+        "to": "ls",
+        "word": "remembers"
+      },
+      {
+        "from": "ls",
+        "to": "other",
+        "word": "a storage event",
+        "style": "dashed"
+      }
+    ],
+    "groups": [
+      {
+        "id": "web",
+        "label": "louis-agent.web"
+      }
+    ]
+  }
+}

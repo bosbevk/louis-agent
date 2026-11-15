@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 9, the docs and the pull request",
+  "caption": "The admin's seven routes looked at in four looks on the starter, the design doc and its pictures, the full suite, the pull request.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "c",
+        "label": "the starter's admin, by eye:\nseven routes, four looks",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "d",
+        "label": "projects/louis-agent.web.md\nand its pictures",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "s",
+        "label": "merge main, the full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "c",
+        "to": "d"
+      },
+      {
+        "from": "d",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "pr"
+      }
+    ]
+  }
+}

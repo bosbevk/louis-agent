@@ -1,0 +1,38 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 8, the admin and the rest",
+  "caption": "What is left: the admin, the packs' screens, the inline editor, the blocks and the base elements. The list is then empty.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "SurfacesAreDrawnByTheToolsTests\nthe list is empty",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Admin, Screens, Editing, Blocks,\nPaper, Graphs, Icons, Imports,\nRecorded, Layout, Pages",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "b",
+        "label": "Styles/web/base/_elements.scss",
+        "icon": "book",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "x",
+        "to": "b"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 10, the brand, and the pull request",
+  "caption": "The flat disc as the tab icon, the app icon and the share card, the brand guide rewritten, every route checked, and the pull request that turns the site over.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "b",
+        "label": "favicon.svg, icon-192.png,\napple-touch-icon.png, social-card.png,\nbrand/mark.svg, docs/brand/",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "SiteLinkCardTests, SiteLayoutTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "c",
+        "label": "22 routes beside the mockups,\nfour looks, wide and phone",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "b"
+      },
+      {
+        "from": "b",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "pr"
+      }
+    ]
+  }
+}

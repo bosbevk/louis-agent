@@ -1,0 +1,51 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: step 5, the surfaces get names",
+  "caption": "The new names a theme sets beside the colours, each with today's look as its value, so nothing changes yet.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "today",
+        "label": "the shared tools draw\nborder, radius, fill\nfrom the colour names",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "names",
+        "label": "settings/_surfaces.scss\n--web-pane-*, --web-press-*,\n--web-bar-*, --web-mark-*,\n--web-you, --web-agent, --web-violet-0..4",
+        "icon": "book",
+        "tone": "teal"
+      },
+      {
+        "id": "app",
+        "label": "each site's app.scss\nforwards it after the colours",
+        "icon": "book",
+        "tone": "green"
+      },
+      {
+        "id": "test",
+        "label": "FrameworkStylesTests\nevery name has a framework value",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "today",
+        "to": "names",
+        "word": "become the values"
+      },
+      {
+        "from": "names",
+        "to": "app"
+      },
+      {
+        "from": "names",
+        "to": "test",
+        "word": "held by",
+        "style": "dashed"
+      }
+    ]
+  }
+}

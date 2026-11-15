@@ -1,0 +1,92 @@
+{
+  "kind": "classes",
+  "title": "F151.6 louis-agent.dev's pages: the interface design",
+  "caption": "One new part, in the framework since any site could draw it: the name with the mark as its o. Everything else is the site naming its themes and its sheets reading the names.",
+  "classes": {
+    "types": [
+      {
+        "id": "word",
+        "name": "Wordmark",
+        "kind": "component, step 3, louis-agent.web",
+        "members": [
+          "string Before",
+          "string After",
+          "string Label"
+        ]
+      },
+      {
+        "id": "orb",
+        "name": "Orb",
+        "kind": "component, from F151.4",
+        "members": [
+          "OrbState State",
+          "string Label",
+          "string? Mark"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "layout",
+        "name": "SiteLayout",
+        "kind": "the site's layout, changed in step 3",
+        "members": [
+          "Brand",
+          "Tagline",
+          "Links",
+          "Footer",
+          "Corner"
+        ]
+      },
+      {
+        "id": "areas",
+        "name": "LouisAgentDevAreas",
+        "kind": "static, changed in step 2",
+        "members": [
+          "void Name(SiteAreasBuilder areas)"
+        ]
+      },
+      {
+        "id": "glass",
+        "name": "GlassTheme",
+        "kind": "static, from F151.2",
+        "members": [
+          "SiteAreasBuilder Glass(this SiteAreasBuilder areas)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "flat",
+        "name": "FlatTheme",
+        "kind": "static, from F151.2",
+        "members": [
+          "SiteAreasBuilder Flat(this SiteAreasBuilder areas)"
+        ],
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "layout",
+        "to": "word",
+        "kind": "holds",
+        "word": "in its header and footer"
+      },
+      {
+        "from": "word",
+        "to": "orb",
+        "kind": "holds",
+        "word": "as the o"
+      },
+      {
+        "from": "areas",
+        "to": "glass",
+        "kind": "uses"
+      },
+      {
+        "from": "areas",
+        "to": "flat",
+        "kind": "uses"
+      }
+    ]
+  }
+}

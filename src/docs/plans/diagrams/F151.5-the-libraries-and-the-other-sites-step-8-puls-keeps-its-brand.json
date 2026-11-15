@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 8, Puls keeps its brand",
+  "caption": "Puls names no theme and shows no switch. It sets each new name after the framework's, builds, and its tests pass.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "SiteColoursTests\nPuls sets every name\nthe framework does",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Puls's Styles/settings/_tokens.scss",
+        "icon": "book",
+        "tone": "green"
+      },
+      {
+        "id": "b",
+        "label": "Puls builds;\nits tests pass",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "f",
+        "to": "b"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.2 the two packages: step 3, the flat project",
+  "caption": "The same for flat: its project, its one class, its test project and its design doc.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "FlatThemeTests\nnaming Flat lists the theme,\nonce, with id flat",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "c",
+        "label": "FlatTheme.cs\nFlat(this SiteAreasBuilder)",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "proj",
+        "label": "louis-agent.web.theme.flat.csproj",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "doc",
+        "label": "projects/louis-agent.web.theme.flat.md",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "proj"
+      },
+      {
+        "from": "proj",
+        "to": "doc",
+        "word": "documented by"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 7, the records, and the plans go",
+  "caption": "The work log gains its rows, the TODO loses F151, the goal's map and the write-ups are brought up to date, and the nine plans and the mockups are deleted.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "w",
+        "label": "work-log.md, TODO.md, GOAL.md,\nlearning/",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "WorkLogTests, WriteUpsTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "g",
+        "label": "deleted: the nine F151 plans,\ntheir pictures, F151-mockups/",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "w"
+      },
+      {
+        "from": "w",
+        "to": "g"
+      }
+    ]
+  }
+}

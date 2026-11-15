@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 7, the framework's pages",
+  "caption": "The eight under /framework/ and the comparison page, built from the site's architecture parts.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "each page's own tests,\nand the claims' tests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "p",
+        "label": "Pages/Framework/, and the parts\nin Components/",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "c",
+        "label": "nine routes, four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "p"
+      },
+      {
+        "from": "p",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 8, the CV",
+  "caption": "The CV and its editor in the admin. A printed CV is on white paper whatever the look, so the print sheet is not touched.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the CV's tests, ResumePrintTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "p",
+        "label": "Components/Cv/ (10 sheets),\nAdmin/ (3 sheets), CvPage",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "pr",
+        "label": "site/cv/_print.scss\nuntouched",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "p"
+      },
+      {
+        "from": "p",
+        "to": "pr",
+        "word": "leaves alone",
+        "style": "dashed"
+      }
+    ]
+  }
+}

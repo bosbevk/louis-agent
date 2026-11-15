@@ -1,0 +1,38 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 5, the live site",
+  "caption": "After the deploy, every route is opened on louis-agent.dev in all four looks, wide and at a phone's width, and a real question is asked of the guide.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "d",
+        "label": "the deploy, after the merge",
+        "icon": "server",
+        "tone": "red"
+      },
+      {
+        "id": "c",
+        "label": "/check-a-page:\n22 routes, four looks",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "g",
+        "label": "one real question to the guide",
+        "icon": "message",
+        "tone": "blue"
+      }
+    ],
+    "edges": [
+      {
+        "from": "d",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "g"
+      }
+    ]
+  }
+}

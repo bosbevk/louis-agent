@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 5, reviewing and building",
+  "caption": "The rest of the studio: Reviews, Studio, and the single sheets left.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the studio's last sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Reviews 6, Studio 8, Notes, Head,\nChartInfo, RunExplorer",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "c",
+        "label": "/admin/review, /admin/studio,\n/admin/prompts, four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "f",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

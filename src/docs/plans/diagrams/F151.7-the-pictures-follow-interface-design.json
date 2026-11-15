@@ -1,0 +1,76 @@
+{
+  "kind": "classes",
+  "title": "F151.7 the pictures follow: the interface design",
+  "caption": "A picture keeps following the device when it is a file, and follows the page when it is drawn into one: one more rule in the style every picture writes.",
+  "classes": {
+    "types": [
+      {
+        "id": "style",
+        "name": "SvgStyle",
+        "kind": "static, changed in step 2",
+        "members": [
+          "the light values on svg",
+          "@media (prefers-color-scheme: dark)",
+          "[data-style] on the page, when drawn inline (new)"
+        ]
+      },
+      {
+        "id": "pic",
+        "name": "SvgTheme",
+        "kind": "static, changed in step 3",
+        "members": [
+          "DiagramTone.Violet, dark: fill, line, ink",
+          "DiagramTone.Violet, light: fill, line, ink",
+          "the values: Ultraviolet (new)"
+        ]
+      },
+      {
+        "id": "mrq",
+        "name": "MarqueeLook",
+        "kind": "static, changed in step 3",
+        "members": [
+          "GlassFade",
+          "EdgeFade",
+          "the accent"
+        ]
+      },
+      {
+        "id": "ticket",
+        "name": "TicketStyle",
+        "kind": "static, changed in step 5",
+        "members": [
+          "var(--ticket-*, the look's)"
+        ]
+      },
+      {
+        "id": "card",
+        "name": "DrawnCard",
+        "kind": "component, changed in step 5",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "pic",
+        "to": "style",
+        "kind": "uses"
+      },
+      {
+        "from": "mrq",
+        "to": "pic",
+        "kind": "uses"
+      },
+      {
+        "from": "ticket",
+        "to": "mrq",
+        "kind": "uses"
+      },
+      {
+        "from": "card",
+        "to": "ticket",
+        "kind": "uses",
+        "word": "sets the page's names for it"
+      }
+    ]
+  }
+}
