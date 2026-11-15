@@ -2,7 +2,7 @@
    The agent's name on it, its words, the choices it offered drawn as the talk draws them, and a way into the box
    under them: a label for the box, so a press puts the visitor there with no script. *@
 @using LouisAgent.Web.Components.Blocks
-<aside class="agent-caption" aria-live="polite">
+<aside class="agent-caption" aria-live="polite" @ref="_caption">
     <div class="caption-who">@Title</div>
     @if (Words.Length > 0)
     {

@@ -140,6 +140,7 @@ export function showArea(name, pageAddress, address) {
                 document.dispatchEvent(new CustomEvent("piece-shown", { detail: area.id }));
             }
             const target = card ? area.closest(".card-deck") ?? area : area;
+            markLit(target);
             if (page) turnToPage(area, Number(page));
             else turnTo(target);
             holdSnap();
@@ -220,6 +221,13 @@ const holdSnap = () => {
     clearTimeout(snapHeld);
     root.style.scrollSnapType = "none";
     snapHeld = setTimeout(() => root.style.removeProperty("scroll-snap-type"), spotlightMs);
+};
+
+// The place the guide lit last carries a mark (F134.4), which stays after the spotlight goes: the guide's answer ends
+// after the place is lit, and its caption then stands beside the marked place.
+const markLit = (target) => {
+    for (const marked of document.querySelectorAll("[data-lit]")) delete marked.dataset.lit;
+    target.dataset.lit = "";
 };
 
 // One spotlight at a time: a new one takes the old one down first.

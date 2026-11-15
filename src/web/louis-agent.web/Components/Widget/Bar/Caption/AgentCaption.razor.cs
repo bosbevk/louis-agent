@@ -1,6 +1,8 @@
 using LouisAgent.Web.Chats.Calls;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Widget.Bar.Caption;
 
@@ -9,11 +11,12 @@ namespace LouisAgent.Web.Components.Widget.Bar.Caption;
 /// way into the box. The choices it offered, when it offered some, stand in it too.
 /// </summary>
 /// <remarks>
-/// It draws what it is given and moves nothing: the agent's own call to show a place is what lit the place (F134's
-/// rule 2), and <see cref="Captioned"/> decides when an answer stands as a caption. Its choices are the talk's own
-/// cards, so a choice looks and answers the same wherever it is drawn.
+/// It draws what it is given and moves nothing but itself: the agent's own call to show a place is what lit the place
+/// (F134's rule 2), and the caption's module only stands the caption beside it, on a wide screen.
+/// <see cref="Captioned"/> decides when an answer stands as a caption. Its choices are the talk's own cards, so a
+/// choice looks and answers the same wherever it is drawn.
 /// </remarks>
-public partial class AgentCaption
+public partial class AgentCaption : IAsyncDisposable
 {
     /// <summary>Who is speaking: the agent's name.</summary>
     [Parameter, EditorRequired]
@@ -38,4 +41,39 @@ public partial class AgentCaption
     /// <summary>The chat's words.</summary>
     [Inject]
     private ChatText Text { get; set; } = null!;
+
+    /// <summary>The browser, for the module that stands the caption beside the place.</summary>
+    [Inject]
+    private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The caption on the page.</summary>
+    private ElementReference _caption;
+
+    /// <summary>The caption's module, loaded once it is drawn.</summary>
+    private JsModule? _module;
+
+    /// <summary>Once on the page, the caption asks its module to stand it beside the place the agent lit.</summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        _module = new JsModule(JS, FrameworkScripts.Caption);
+        await _module.InvokeVoidAsync("standBeside", _caption);
+    }
+
+    /// <summary>The caption is going: its module stops following the page, and is let go.</summary>
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is null) return;
+        // The browser may be gone already, with the page.
+        try
+        {
+            await _module.InvokeVoidAsync("letGo", _caption);
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        await _module.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
 }

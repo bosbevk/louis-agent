@@ -45,3 +45,15 @@
     cursor: pointer;
 }
 .caption-talk:hover { color: var(--bs-emphasis-color); background: rgba(var(--web-overlay-rgb), .14); }
+
+/* On a wide screen the caption's module stands it beside the place the agent lit, by offsets from the bar's corner,
+   since the bar holds its position (--caption-x, --caption-y). On a phone it stays over the bar. */
+@media (min-width: 901px) {
+    .agent-caption.is-beside {
+        position: absolute;
+        left: var(--caption-x);
+        top: var(--caption-y);
+        width: 340px;
+        max-height: 60vh;
+    }
+}

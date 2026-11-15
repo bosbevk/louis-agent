@@ -45,6 +45,9 @@ public static class FrameworkScripts
     /// <summary>The page the visitor is reading, for the guide in a site's corner (F115).</summary>
     public const string Widget = Content + "Components/Widget/ChatWidget.razor.js";
 
+    /// <summary>The agent's caption standing beside the place it lit, on a wide screen (F134.4).</summary>
+    public const string Caption = Content + "Components/Widget/Bar/Caption/AgentCaption.razor.js";
+
     /// <summary>A piece the visitor selects for the guide, ringed on the page (F127.7).</summary>
     public const string PieceWatch = Content + "Components/Widget/Pieces/PieceWatch.razor.js";
 
