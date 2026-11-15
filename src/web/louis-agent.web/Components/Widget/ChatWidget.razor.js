@@ -139,7 +139,8 @@ export function showArea(name, pageAddress, address) {
             if (!card && area.matches("[data-piece]")) {
                 document.dispatchEvent(new CustomEvent("piece-shown", { detail: area.id }));
             }
-            const target = card ? area.closest(".card-deck") ?? area : area;
+            const target = card ? area.closest(".card-deck") ?? shownBy(area) : area;
+            markLit(target);
             if (page) turnToPage(area, Number(page));
             else turnTo(target);
             holdSnap();
@@ -155,6 +156,11 @@ export function showArea(name, pageAddress, address) {
     };
     attempt();
 }
+
+// What a card brings up when it is pressed, where it says so (aria-controls), as a dock's button does of its window
+// on a deck (F134.4): the light falls on the thing shown, not on the small button. A card that names nothing is lit
+// itself.
+const shownBy = (card) => document.getElementById(card.getAttribute("aria-controls") ?? "") ?? card;
 
 // An area inside a band paged sideways (F118) may stand on a later page: the band's body turns to that page first.
 const turnTo = (target) => {
@@ -177,7 +183,8 @@ const turnToPage = (band, page) => {
 // parts"): a band is a screen tall on a page of slides, mostly room, so its box is its content's, the kicker to the
 // last line, and on a page paged sideways its body and pager. Any other section, such as a site's hero, is a screen
 // tall too, so its box is what it holds (FX121, Louis: "highlight too big"); a card or a smaller place is its own box.
-const boxOf = (target) => {
+// The agent's caption asks for the same box (F134.4), so it stands beside what the spotlight lit.
+export function boxOf(target) {
     if (target.matches(".band")) {
         const paged = target.matches(".is-paged");
         return unionOf(target, paged
@@ -185,7 +192,7 @@ const boxOf = (target) => {
             : [...(target.querySelector(".band-body")?.children ?? [])]);
     }
     return target.matches("section") ? unionOf(target, [...target.children]) : target.getBoundingClientRect();
-};
+}
 
 // The box around the parts that show; the target's own box when none does.
 const unionOf = (target, parts) => {
@@ -220,6 +227,15 @@ const holdSnap = () => {
     clearTimeout(snapHeld);
     root.style.scrollSnapType = "none";
     snapHeld = setTimeout(() => root.style.removeProperty("scroll-snap-type"), spotlightMs);
+};
+
+// The place the guide lit last carries a mark (F134.4), which stays after the spotlight goes: the guide's answer ends
+// after the place is lit, and its caption then stands beside the marked place. A caption that already stands, since
+// the answer's words came first, hears that a place was lit and moves beside it.
+const markLit = (target) => {
+    for (const marked of document.querySelectorAll("[data-lit]")) delete marked.dataset.lit;
+    target.dataset.lit = "";
+    document.dispatchEvent(new CustomEvent("place-lit"));
 };
 
 // One spotlight at a time: a new one takes the old one down first.

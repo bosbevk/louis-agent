@@ -82,11 +82,11 @@ Built in this order, one pull request each. A child's plan is written and approv
 
 | Child | What it builds | Done when |
 |---|---|---|
-| **F134.1 The start is a stage** ([plan](F134.1-the-start-is-a-stage.md)) | The general parts (line icons, the lit stage, the deck, the framed window with its two bodies, the dock) and the start built from them, each window at its address, swiped on a phone. The site fills its five windows. | `/demos` is the stage at 1920×1080 and at 390 px, `/demos/restaurant-demo` opens with the restaurant forward, and a test holds each window's words to its recording. |
-| **F134.2 A demo on the stage** | A demo's page as the window grown to fill the stage, what to watch as chapters under it, the rail as a slim dock of icons, and a body for an agent at work. | The five demo pages play as today in the new look, at both widths, and the guide's stops are the same places. |
-| **F134.3 The agent bar** | The chat widget's layout (`Corner`, `Bar`), the orb with its four states, the suggestions as chips, the box that is always there, and the frame keeping the page clear of the bar. | The showroom's guide is the bar, a typed question is answered mid-walk, and no page ends under the bar. |
-| **F134.4 The agent runs the room** | The guide's last answer as a caption beside the place it lights, its `Offer` drawn there, a window coming forward on `ShowPage`, the guide holding a demo's play while it talks about it, and the talk as a drawer. | A live walk of the start and of one demo page, by the real guide, moves the stage only through its tools. |
-| **F134.5 See how it did that** | The caption's other side: the tools called, the time, the tokens and the cost of that answer, the drawer's total, and the pieces of a page ringed so they can be asked about. | Every answer of a live walk turns over to numbers that match the usage ledger. |
+| **F134.1 The start is a stage**, built 2026-11-15 (its plan as of commit 34a61a224) | The general parts (line icons, the lit stage, the deck, the framed window with its two bodies, the dock) and the start built from them, each window at its address, swiped on a phone. The site fills its five windows. | `/demos` is the stage at 1920×1080 and at 390 px, `/demos/restaurant-demo` opens with the restaurant forward, and a test holds each window's words to its recording. |
+| **F134.2 A demo on the stage**, built 2026-11-15 (its plan as of commit 71cd1a178) | A demo's page as the window grown to fill the stage, what to watch as chapters under it, the rail as a slim dock of icons, and a body for an agent at work. | The five demo pages play as today in the new look, at both widths, and the guide's stops are the same places. |
+| **F134.3 The agent bar**, built 2026-11-15 (its plan as of commit fc50c29d8) | The chat widget's layout (`Corner`, `Bar`), the orb with its four states, the suggestions as chips, the box that is always there, and the frame keeping the page clear of the bar. | The showroom's guide is the bar, a typed question is answered mid-walk, and no page ends under the bar. |
+| **F134.4 The agent runs the room**, built 2026-11-15 (its plan as of commit 9db5c1ed9) | The guide's last answer as a caption beside the place it lights, its `Offer` drawn there, a window coming forward on `ShowPage`, the guide holding a demo's play while it talks about it, and the talk as a drawer. | A live walk of the start and of one demo page, by the real guide, moves the stage only through its tools. |
+| **F134.5 See how it did that**, built 2026-11-15 (its plan as of commit 47b9ac3e9) | The caption's other side: the tools called, the time, the tokens and the cost of that answer, the drawer's total, and the pieces of a page ringed so they can be asked about. | Every answer of a live walk turns over to numbers that match the usage ledger. |
 | **F134.6 Better photos** | The photos Louis picks from Pexels, with their record. | The three business demos show the new photos, each listed with its source and licence. |
 
 Parked, a feature of its own: **see it as yours**, the visitor's own business on the stage, live.
@@ -95,7 +95,7 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
 
 - **2026-11-14: three children for the docs' pictures.** Louis, of the docs' pictures beside the new showroom:
   the component diagram first, then the flows, then the cards.
-  - **F134.7 Component diagrams** ([plan](F134.7-component-diagrams.md)): a new kind of picture drawn from JSON
+  - **F134.7 Component diagrams**, built 2026-11-15 (its plan as of commit 9230cb481): a new kind of picture drawn from JSON
     in a new look. Done when every project that has components shows one in its design doc.
   - **F134.8 Flows in the new look**, built 2026-11-14: every flow in the docs and the site's eight diagrams in
     the new look and on the new lines, a shape where it means something, no class chart changed. How it works
@@ -157,6 +157,30 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     moves. And the same day, more exactly: ".diagrams must be split into a diagrams --> and what builds the
     diagrams." So what a picture is, its records, its kinds and its reader, stands apart from what builds it,
     the layouts, the routing, the drawings and the looks, with the dependency one way.
+- **2026-11-15: the look held against the mockups, before the merge.** Louis, having looked at the local site:
+  "relook at the design and look local and fix". The bar, the caption and the start were held against J and K
+  and brought back to them, with what he saw on the way: "leave space at the bottom for this", "make sure all
+  transitions is smooth", "must the pulse glow out of bounds? and missing icon", "button goes invis behind
+  background", "this does nothing" (of a choice to write), "these 2 button should be generated based on where the
+  last convo was", "ask it live must be asked inside the demo", and "should guide me in the door with options to
+  what to ask". What was built is in the web's and the site's design docs. These picks were made on the way,
+  unattended, and are open for him to overrule:
+  - *Every answer is a caption.* The folded talk is gone. An answer a caption can't hold (a form, a drawn card, an
+    error) opens the whole talk by itself. This replaces F134.3's pick that the talk folds to its last answer.
+  - *The caption's choices are pills*, as the mockups drew them, a choice's why as its tip. This replaces
+    F134.4's pick that the caption reuses the talk's choice cards.
+  - *Where a caption with no place stands.* The mockup's rule gives a caption a spot beside the place, and inside
+    the place's corner when the place is too big. Too big, it now stands at the bar's left beside the orb, and over
+    the bar only on a narrower screen. The corner would have covered a demo's live window.
+  - *The light.* The mockup keeps the page dimmed while a caption stands. The site keeps the spotlight's four
+    seconds and leaves a quiet ring on the place, with no dim, so the page stays usable.
+  - *A close on the caption*, which the mockups don't have: without it an answer stood over the page until the
+    next one.
+  - *The chips after the first answer*: the site's first question, then two of the guide's last choices.
+  - *The stage on a shorter screen*: it gives up its lede under 1,000 tall, and under 820 the forward demo's name
+    and button share a row.
+  - *The guide's words*: "Walk me through this page" as the first chip, and "Open this demo" as the choice at a
+    window on the start.
 
 ## Verification
 
@@ -171,4 +195,4 @@ agent's tool calls as the only cause of what the screen does. In F134.5, skill 1
 skill 17 (observability): the framework's own records of an answer, shown to the person who asked.
 
 ---
-[Docs index](../README.md) · Related: [Plans](README.md) · [F134.1](F134.1-the-start-is-a-stage.md)
+[Docs index](../README.md) · Related: [Plans](README.md)

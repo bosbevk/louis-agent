@@ -1,0 +1,62 @@
+/* The agent's orb (F134.3), as the J and K mockups drew it: a silver disc with a soft light and the agent's mark on
+   it. Idle it breathes, thinking an arc goes round it, showing rings go out from it, speaking it pulses. Its rings
+   keep close to it in every state, so they stay inside whatever holds the orb. Under less motion it holds still, and
+   its state is still in its class and its label. */
+.orb {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font: 700 17px/1 inherit;
+    color: var(--web-on-primary);
+    background:
+        radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));
+    box-shadow:
+        inset 0 -3px 8px rgba(var(--web-shadow-rgb), .25),
+        0 0 18px -4px rgba(var(--web-overlay-rgb), .6);
+}
+.orb::before, .orb::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+.orb::before {
+    box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .35);
+    animation: orb-breathe 3.2s ease-in-out infinite;
+}
+.orb.is-thinking::before {
+    box-shadow: none;
+    background: conic-gradient(var(--web-bright) 0 70deg, transparent 70deg);
+    mask: radial-gradient(closest-side, transparent calc(100% - 3px), var(--web-bright) calc(100% - 2.5px));
+    animation: orb-spin .9s linear infinite;
+}
+.orb.is-showing::before, .orb.is-showing::after {
+    box-shadow: 0 0 0 2px rgba(var(--web-overlay-rgb), .8);
+    animation: orb-ping 1.1s ease-out infinite;
+}
+.orb.is-showing::after { animation-delay: .45s; }
+.orb.is-speaking { animation: orb-speak .5s ease-in-out infinite alternate; }
+
+@keyframes orb-breathe { 50% { transform: scale(1.08); opacity: .35; } }
+@keyframes orb-spin { to { transform: rotate(360deg); } }
+@keyframes orb-ping {
+    from { transform: scale(.85); opacity: 1; }
+    to { transform: scale(1.15); opacity: 0; }
+}
+@keyframes orb-speak {
+    to {
+        transform: scale(1.06);
+        box-shadow:
+            inset 0 -3px 8px rgba(var(--web-shadow-rgb), .25),
+            0 0 22px 1px rgba(var(--web-overlay-rgb), .8);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .orb, .orb::before, .orb::after { animation: none; }
+}

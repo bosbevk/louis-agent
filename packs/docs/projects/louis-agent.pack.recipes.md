@@ -3,7 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.recipes/` · **References:** louis-agent.composition,
 > Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
 > **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
-> **Also shows:** `component`
+> **Also shows:** `composite-structure`, `component`
 
 ![The recipes pack: FindRecipes, ReadRecipe and the library](diagrams/louis-agent.pack.recipes.svg)
 
@@ -227,6 +227,10 @@ on another host is dropped. Puls names the pack from F35.2 step 1, so the cook's
 prompt starts using them in step 2, until then it still reads pages the old way.
 
 ## The library's counter
+
+The library's screen is the framework's table with one line of its own:
+
+![The library view is the framework's table, with the library's own line in the slot above its rows](diagrams/louis-agent.pack.recipes.web-components-library.svg)
 
 `Library/Usage/` keeps one record per UTC day in `library_usage`, on the library's database: *Kept* (a page we didn't hold
 yet), *Offered* (hits of ours a search showed, not what it held), *Served* (`ReadRecipe` from us) and *Failed* (a read we

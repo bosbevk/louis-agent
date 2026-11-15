@@ -4,8 +4,8 @@ using LouisAgent.Web.Components.Site.Tiles;
 namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
-/// F127.1: a demo page is a stage in its demo's colour: a strip, the kicker, the title as the page's one h1, the lede,
-/// then the player with the cues beside it, and the offer under them.
+/// F127.1: a demo page is a stage in its demo's colour, standing on the lit stage since F134.2: the kicker, the title
+/// as the page's one h1, the lede, then the player with what to watch, and the offer under them.
 /// </summary>
 public class DemoStageTests
 {
@@ -40,20 +40,42 @@ public class DemoStageTests
         });
     }
 
-    /// <summary>The player comes first and the cues beside it; the offer comes after both.</summary>
+    /// <summary>
+    /// A demo's page stands on the start's stage (F134.2): the lit stage in the demo's colour holds the whole page, and
+    /// the strip of the older look is gone.
+    /// </summary>
     [Test]
-    public void ThePlayer_HasTheCuesBesideIt_AndTheOfferUnder()
+    public void TheStage_StandsInTheLight_OfItsColour()
+    {
+        using var ctx = new BunitContext();
+        var cut = Stage(ctx);
+
+        var lit = cut.Find(".lit-stage");
+        Assert.Multiple(() =>
+        {
+            Assert.That(lit.ClassList, Does.Contain("accent-green"));
+            Assert.That(lit.QuerySelector(".demo-stage"), Is.Not.Null, "the page stands on it");
+            Assert.That(cut.FindAll(".stage-strip"), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// The player comes first, the whole width of the stage, and what to watch stands under it as chapters, as the K
+    /// mockup has it (F134.2); the offer comes after both.
+    /// </summary>
+    [Test]
+    public void ThePlayer_HasWhatToWatchUnderIt_AndTheOfferUnderBoth()
     {
         using var ctx = new BunitContext();
 
         var cut = Stage(ctx);
 
-        var body = cut.Find(".stage-body");
         Assert.Multiple(() =>
         {
-            Assert.That(body.Children.Select(c => c.ClassName), Is.EqualTo(new[] { "stage-player", "stage-cues" }));
-            Assert.That(body.QuerySelector(".stage-player .player")!.TextContent, Is.EqualTo("The chat"));
-            Assert.That(cut.Find(".stage-body + .stage-offer a").GetAttribute("href"), Is.EqualTo("/contact"));
+            Assert.That(cut.FindAll(".demo-stage > *").Select(part => part.Id),
+                Is.EqualTo(new[] { "top", "the-demo", "what-to-watch", "ask" }));
+            Assert.That(cut.Find("#the-demo .player").TextContent, Is.EqualTo("The chat"));
+            Assert.That(cut.Find("#what-to-watch + .stage-offer a").GetAttribute("href"), Is.EqualTo("/contact"));
         });
     }
 
@@ -95,18 +117,18 @@ public class DemoStageTests
 
         Assert.That(cut.FindAll(".demo-stage > *")
                 .Select(part => string.IsNullOrEmpty(part.Id) ? part.ClassName : part.Id),
-            Is.EqualTo(new[] { "stage-strip", "top", "stage-body is-alone", "make-it-yours", "ask" }));
+            Is.EqualTo(new[] { "top", "the-demo", "make-it-yours", "ask" }));
     }
 
-    /// <summary>A demo without cues (its player shows its own steps) gives the player the whole width.</summary>
+    /// <summary>A demo without cues (its player shows its own steps) has no chapters under it.</summary>
     [Test]
-    public void WithoutCues_ThePlayerHasTheWholeWidth()
+    public void WithoutCues_NoChaptersStandUnderThePlayer()
     {
         using var ctx = new BunitContext();
 
-        var body = Stage(ctx, cues: false).Find(".stage-body");
+        var cut = Stage(ctx, cues: false);
 
-        Assert.That((body.ClassList.Contains("is-alone"), body.QuerySelectorAll(".stage-cues").Length),
-            Is.EqualTo((true, 0)));
+        Assert.That(cut.FindAll(".demo-stage > *").Select(part => part.Id),
+            Is.EqualTo(new[] { "top", "the-demo", "ask" }));
     }
 }

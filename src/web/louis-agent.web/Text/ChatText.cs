@@ -28,7 +28,9 @@ public sealed record ChatText
     /// <summary>The tag on the choice the agent suggests, among the cards it offers (F127.4.1).</summary>
     public string Suggested { get; init; } = "Suggested";
 
-    /// <summary>The chip over the guide's box while a piece of the page is selected (F127.7); {0} its heading.</summary>
+    /// <summary>
+    /// The chip over the guide's box while a piece of the page is selected (F127.7); {0} its heading.
+    /// </summary>
     public string AboutPiece { get; init; } = "About: {0}";
 
     /// <summary>What a picked piece asks the guide (F127.7); {0} its heading.</summary>
@@ -166,6 +168,54 @@ public sealed record ChatText
     public string SendTitle { get; init; } = "Send (Enter)";
     public string StopTitle { get; init; } = "Stop";
 
+    /// <summary>What the agent bar says while the agent's words arrive (F134.3).</summary>
+    public string AgentSpeaking { get; init; } = "Answering…";
+
+    /// <summary>What the agent bar says while the agent shows a place on the page (F134.3).</summary>
+    public string AgentShowing { get; init; } = "Showing you the place…";
+
+    /// <summary>The last word among the agent bar's chips: the box is there too (F134.3).</summary>
+    public string OrTypeYourOwn { get; init; } = "or type your own";
+
+    /// <summary>Under the agent's caption, the way into the box (F134.4).</summary>
+    public string OrAskAnything { get; init; } = "Or ask me anything, in your own words";
+
+    /// <summary>
+    /// The caption's button that turns it over to how the answer was made, and its back's title (F134.5).
+    /// </summary>
+    public string HowIDidThat { get; init; } = "How I did that";
+
+    /// <summary>The button on the caption's back that turns it to the answer again (F134.5).</summary>
+    public string BackToTheAnswer { get; init; } = "Back to the answer";
+
+    /// <summary>Beside the back's title: whose numbers these are (F134.5).</summary>
+    public string MeasuredByTheFramework { get; init; } = "measured by the framework";
+
+    /// <summary>A time in seconds, as the caption's back writes it (F134.5); {0} the number.</summary>
+    public string Seconds { get; init; } = "{0}s";
+
+    /// <summary>Under the back's figures (F134.5): the time it thought, and what the answer cost.</summary>
+    public string WorkThinking { get; init; } = "thinking";
+
+    public string WorkThisAnswer { get; init; } = "this answer";
+
+    /// <summary>Under the tokens an answer wrote (F134.5), alone or with what it read from the cache, {0}.</summary>
+    public string WorkTokensOut { get; init; } = "tokens out";
+
+    public string WorkTokensOutCached { get; init; } = "tokens out, {0} cached";
+
+    /// <summary>The caption's close button, read aloud and as its tip: the answer is put away (F134.4).</summary>
+    public string CloseCaption { get; init; } = "Put this answer away";
+
+    /// <summary>The caption's button that opens the whole talk (F134.3).</summary>
+    public string TalkOpen { get; init; } = "Show the whole talk";
+
+    /// <summary>The whole talk's close, read aloud and as its tip (F134.3).</summary>
+    public string TalkClose { get; init; } = "Fold the talk";
+
+    /// <summary>The heading over the whole talk (F134.4).</summary>
+    public string TalkTitle { get; init; } = "The talk so far";
+
     /// <summary>A chat window folds to its head (F127.2).</summary>
     public string Minimise { get; init; } = "Minimise";
 
@@ -241,6 +291,18 @@ public sealed record ChatText
 
     /// <summary>{0} the base currency, {1} the rate, {2} the shown currency, {3} the rates' date.</summary>
     public string ConvertedAt { get; init; } = "1 {0} = {1} {2} on {3}; the ledger keeps what was charged";
+
+    /// <summary>One answer, or several, as the agent bar's total counts them (F134.5).</summary>
+    public string AnswerOne { get; init; } = "answer";
+
+    public string AnswerMany { get; init; } = "answers";
+
+    /// <summary>"tokens out, 37k cached" in this language, or "tokens out" when nothing came from the cache.</summary>
+    public string TokensOut(string? cached) =>
+        cached is null ? WorkTokensOut : string.Format(WorkTokensOutCached, cached);
+
+    /// <summary>"2 answers" in this language.</summary>
+    public string Answers(int count) => $"{count} {(count == 1 ? AnswerOne : AnswerMany)}";
 
     /// <summary>"3 tool calls, 1 thought" in this language.</summary>
     public string Steps(int tools, int thoughts) =>

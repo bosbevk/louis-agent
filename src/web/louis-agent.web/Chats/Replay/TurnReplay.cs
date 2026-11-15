@@ -13,15 +13,16 @@ public static class TurnReplay
 {
     /// <summary>
     /// Plays the steps into the turn, asking for a redraw now and then and once at the end, and telling each tool call
-    /// the moment it starts, when asked to.
+    /// the moment it starts, when asked to. Given a hold (F134.4), each step first waits for it to be let go.
     /// </summary>
     public static async Task PlayAsync(Turn turn, IReadOnlyList<ReplayStep> steps, Action redraw,
-        CancellationToken stop, Action<Block>? toolCalled = null)
+        CancellationToken stop, Action<Block>? toolCalled = null, Func<Task>? held = null)
     {
         stop.ThrowIfCancellationRequested();
         int since = 0;
         foreach (var step in steps)
         {
+            if (held is not null) await held().WaitAsync(stop);
             if (step.WaitMs > 0) await Task.Delay(step.WaitMs, stop);
             // A tool call is one new block the moment it starts, as the live runner sees it; its result adds none.
             int blocks = turn.Blocks.Count;

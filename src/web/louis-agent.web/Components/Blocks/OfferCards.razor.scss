@@ -15,6 +15,8 @@ button.offer-card[disabled] { cursor: default; opacity: .6; }
 .offer ::deep .offer-card.is-suggested { border-color: var(--bs-primary); box-shadow: 0 0 0 1px var(--bs-primary); }
 .offer-card.is-chosen { border-color: var(--bs-primary); background: rgba(var(--bs-primary-rgb), .08); }
 .offer ::deep .offer-label { font-weight: 600; font-size: 14px; }
+/* The suggested card's tag stands in its top corner, so its label keeps clear of it, however narrow the card. */
+.offer ::deep .offer-card.is-suggested .offer-label { padding-right: 84px; }
 .offer ::deep .offer-why { font-size: 12.5px; color: var(--bs-secondary-color); }
 .offer ::deep .offer-tag {
     position: absolute; top: 10px; right: 12px; font-size: 10.5px; font-weight: 600; letter-spacing: .6px;

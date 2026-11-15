@@ -129,9 +129,10 @@ and a first question.
 ### 5. The coding agent and the triage team
 
 `/coding-agent` shows the coding agent fixing a bug, recorded once and played back. `/triage-demo` shows the triage
-team. Both are in the showroom, on the same stage, in their own players.
+team. Both are in the showroom, on the same stage, in their own players. Each player stands in a lit framed window,
+whose bar says `louis-agent · the coding agent` or `louis-agent · the triage team`.
 
-*Decided in:* [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md), F127.1.
+*Decided in:* [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md), F127.1, F134.
 
 ### 6. The windows on the demos' start
 
@@ -148,7 +149,29 @@ the few words under the place's name belong to the window alone.
 The coding agent and the triage team have no window on the start. They keep their own pages, and their place on the
 rail beside a demo's page.
 
-### 7. The framework's own pages
+### 7. The guide in the showroom
+
+In the showroom the guide stands as the bar at the page's foot, with its chips "Walk me through this page", "Which
+demo is like my business?" and "What does it cost?". The first is the bright one, and it's true on the start and on
+every demo's page, since the same three stand on all of them. On the rest of the site the guide keeps its corner.
+
+A walk of the start goes from its top to each business's window in turn. When the guide shows a demo, its window
+comes forward, and on a wide screen the guide's answer stands beside it. A window on the start is a picture of its
+demo, so no business answers there, and the guide doesn't offer to ask one live on the start. At each window it
+offers to open the demo instead.
+
+Chosen, it takes the visitor to the demo's own page and meets them there with two questions to put to the business,
+then a walk of the page, then a stop. A question pressed there is asked of the business, which answers in its own
+window on that page, and the guide keeps the demo itself on screen while it does. The guide's rules for this are in
+its skills, `focus-demos` for the showroom and `live-demo` for asking a business, and `GuideSkillsTests` holds them.
+
+While the guide talks, a business's recorded demo holds its play, and goes on once the guide is done, so the visitor
+follows one voice at a time. Each answer turns over to show how it was made and what it cost, the bar carries the
+talk's total, and each of a demo's "could also" notes is a piece a visitor presses to ask about.
+
+*Decided in:* F134.
+
+### 8. The framework's own pages
 
 The framework's pages sit under `/framework`, so the site sells first and they can move whole to
 `framework.louis-agent.dev` one day. `/framework/how-it-works` has the detailed film, one turn through core, and the
@@ -163,18 +186,18 @@ on it.
 
 *Decided in:* F128.1, F130, F123.
 
-### 8. Every claim held to the repo
+### 9. Every claim held to the repo
 
 The pages are written from the docs the guide reads. Every number comes from the ledger or an eval run, and each claim
-is held to the repo by a test. The repository is private, so no page links to it. The landing's `PageHead` carries the
-site's facts for search engines (`Content/SiteFacts.cs`).
+is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
+search engines (`Content/SiteFacts.cs`).
 
 Louis in the corner is the guide's identity. The widget is titled "Louis · AI", and hides its work
 (`ShowWork="false"`).
 
 *Decided in:* F123, [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
 
-### 9. The two films
+### 10. The two films
 
 The two films are made of CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to
 its container, a floor seen from above, each part a slab raised off it, the turn as a light flying above them with its
@@ -188,7 +211,7 @@ The films are the content, so a visitor's reduced-motion setting never stills th
 
 *Decided in:* FX35.
 
-### 10. The films on GitHub
+### 11. The films on GitHub
 
 The exports for GitHub, in `src/docs/films/`, are rendered from that same CSS, frame by frame, by
 `src/tools/louis-agent.film-export`. It starts this host on a spare port, seeks each animation in a headless Chrome,

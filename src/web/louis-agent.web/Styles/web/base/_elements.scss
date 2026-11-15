@@ -45,3 +45,17 @@ html:has(.layout-slides) { scroll-snap-type: y mandatory; }
 @media (prefers-reduced-motion: reduce) {
     .area-spotlight { animation: none; }
 }
+
+/* The ring a place keeps while the guide's caption stands beside it (F134.4): the spotlight's ring left on, quieter
+   and with no dim, so the page stays as it is and the caption and its place read as one. The caption's module lays
+   it over the place and takes it away with the caption. */
+.caption-ring {
+    position: absolute;
+    z-index: 9;
+    pointer-events: none;
+    border-radius: var(--bs-border-radius-xl);
+    box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .55), 0 0 44px -6px rgba(var(--web-overlay-rgb), .4);
+    opacity: 0;
+    transition: opacity .4s;
+}
+.caption-ring.is-on { opacity: 1; }

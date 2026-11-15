@@ -155,6 +155,22 @@ public class DockTests
     }
 
     /// <summary>
+    /// A button may say what on the page it brings up, as the thing it controls. A button that names nothing says
+    /// nothing.
+    /// </summary>
+    [Test]
+    public void AButton_SaysWhatItShows_WhenItsItemNamesIt()
+    {
+        using var ctx = new BunitContext();
+        DockItem[] items = [Items[0] with { Shows = "bakery-window" }, Items[1]];
+
+        var dock = Dock(ctx, "bakery", items: items);
+
+        Assert.That(dock.FindAll("button.dock-item").Select(button => button.GetAttribute("aria-controls")),
+            Is.EqualTo(new[] { "bakery-window", null }));
+    }
+
+    /// <summary>
     /// On a narrow screen the dock is its icons only (Louis's pick of three, 2026-11-14: open, the dock was 408 wide
     /// on a 390 phone and cut at both sides). The current button keeps its tint and ring, and its name stays folded
     /// as the others' are, so it is still read out.

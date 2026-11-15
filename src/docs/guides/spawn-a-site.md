@@ -30,6 +30,10 @@ and packs, and reference your site from it.
 
 ## Make it yours
 
+The chat page it makes is the framework's chat shell with your site's name in its logo slot; the other slots are yours to fill:
+
+![A new site's chat page holds the framework's chat shell with the site's name in its logo slot](diagrams/spawn-a-site-components-chat.svg)
+
 | You want | Do this |
 |---|---|
 | Your own colours | Add a partial setting Bootstrap's colour names after `web/settings/colours` in `Styles/app.scss`; `web/settings/_colours.scss` lists them. A name you leave out keeps the framework's |

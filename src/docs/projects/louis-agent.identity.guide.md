@@ -132,7 +132,17 @@ the same session. The guide's own chat says so in one line, and on a phone it fo
 If the visitor asks what happened, it retells it from the line under the answer, or from `ReadAgentWork`. That reads
 the business's whole session, including the turns in the window.
 
-*Decided in:* F127.4.2.
+A business has that window only on its own demo page. The showroom's start shows each demo as a window on a stage,
+and such a window is a picture of the demo, so no business answers there. So on the start the guide never offers
+*Ask it live*. Walking the start, it stops at each business's window in turn and offers *Open this demo* there,
+which is the suggested choice at the last window. Its `focus-demos` skill has this.
+
+Chosen, it takes the visitor to the demo's own page with `ShowPage` and meets them at the door with exactly four
+choices: two questions to put to the business, a walk of the page, and a stop. It never calls `AskAgent` on any
+page but the business's own demo page, and in an answer where it does ask, the only place it shows is the demo
+itself, so the business's window stays on the visitor's screen while it answers.
+
+*Decided in:* F127.4.2, F134.
 
 ![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
 

@@ -78,4 +78,25 @@ public class TurnReplayTests
         Assert.That(async () => await TurnReplay.PlayAsync(new Turn(), steps, () => { }, stop.Token),
             Throws.InstanceOf<OperationCanceledException>());
     }
+
+    /// <summary>
+    /// A held play (F134.4) waits before each step until it is let go, and then plays on to the end: a showroom's demo
+    /// waits while the guide talks.
+    /// </summary>
+    [Test]
+    public async Task AHeldPlay_DoesNotMoveOn_AndGoesOnWhenLetGo()
+    {
+        var events = await SessionStreamFixture.EventsAsync();
+        var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var played = new Turn();
+
+        var playing = TurnReplay.PlayAsync(played, events.Select(e => new ReplayStep(e, 0)).ToList(), () => { },
+            CancellationToken.None, held: () => gate.Task);
+        await Task.Delay(200);
+        int whileHeld = played.Blocks.Count;
+        gate.SetResult();
+        await playing;
+
+        Assert.That((whileHeld, played.StopReason is not null), Is.EqualTo((0, true)));
+    }
 }

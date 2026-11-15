@@ -32,9 +32,11 @@
 .body-mark { margin-right: auto; font: 600 17px var(--site-body-serif, Georgia, "Times New Roman", serif); }
 .body-menu { display: flex; gap: 22px; }
 .body-words { position: absolute; z-index: 1; left: 22px; right: 22px; bottom: 22px; }
+/* The line is as large as its window lets it be: a share of the window's own width, within limits. A window can be
+   small on a wide screen, and a line sized by the screen ran into the website's name and menu there. */
 .body-line {
     display: block;
-    font: 400 clamp(24px, 2.6vw, 42px)/1.08 var(--site-body-serif, Georgia, "Times New Roman", serif);
+    font: 400 clamp(17px, 5.6cqi, 42px)/1.08 var(--site-body-serif, Georgia, "Times New Roman", serif);
     letter-spacing: -.01em;
 }
 .body-note { display: block; margin-top: 8px; font-size: 14px; opacity: .85; }
@@ -110,8 +112,9 @@
 }
 
 /* In a narrow window, such as one on a phone, the website stands over its chat. There is room for the talk alone:
-   the website keeps its name and its line, and the chat its question and its answer. */
-@container (max-width: 520px) {
+   the website keeps its name and its line, and the chat its question and its answer. Narrow is a phone's upright
+   window. A small window on a wide screen is low as well, so it keeps the two side by side. */
+@container (max-width: 400px) {
     .site-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: 36% minmax(0, 1fr); }
     .body-menu, .body-note, .body-ask, .body-shown, .body-hint { display: none; }
     .body-top { padding: 12px 14px; }

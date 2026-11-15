@@ -1,0 +1,91 @@
+@* The agent's caption (F134.4): its last answer as a card with two sides, as the J and K mockups have it. The front
+   holds the agent's orb and name with what the answer cost, its words, the choices it offered as pills, and a way
+   into the box under them, which asks whoever holds the box to put the visitor in it. The card turns
+   over (F134.5) to how the answer was made: the tools it called, then how long it thought, what it wrote and what
+   it cost, as the framework measured them. The side turned away is out of reach. *@
+@using LouisAgent.Web.Usage
+<aside class="@Classes" aria-live="polite" data-beside="@Beside" @ref="_caption">
+    <div class="caption-flip">
+        <div class="caption-face caption-front" inert="@_turned">
+            <div class="caption-who">
+                <i class="caption-orb" aria-hidden="true"></i>
+                <b>@Title</b>
+                @if (Work.Usage is { } cost)
+                {
+                    <span class="caption-cost">@UsageFormat.Cost(cost, Currency)</span>
+                }
+                @if (OnClose.HasDelegate)
+                {
+                    <button class="caption-close" type="button" title="@Text.CloseCaption"
+                            aria-label="@Text.CloseCaption" @onclick="OnClose">×</button>
+                }
+            </div>
+            @if (Words.Length > 0)
+            {
+                <div class="caption-says">@Markdown.ToHtml(Words)</div>
+            }
+            @if (Offer is { } offer)
+            {
+                @if (Question is not null)
+                {
+                    <div class="caption-question">@Question</div>
+                }
+                <div class="caption-choices">
+                    @foreach (var choice in offer.Choices)
+                    {
+                        @* A choice that is the visitor's own words puts them in the box, where they write it. *@
+                        @if (choice.Writes is not null)
+                        {
+                            <button class="@ChoiceClasses(choice)" type="button" title="@choice.Why"
+                                    @onclick="OnWrite">@choice.Label</button>
+                        }
+                        else
+                        {
+                            <button class="@ChoiceClasses(choice)" type="button" title="@choice.Why"
+                                    disabled="@Streaming"
+                                    @onclick="() => OnChoose.InvokeAsync(choice.Label)">@choice.Label</button>
+                        }
+                    }
+                </div>
+            }
+            <button class="caption-ask" type="button" @onclick="OnWrite">@Text.OrAskAnything</button>
+            <div class="caption-foot">
+                <button class="caption-turn" type="button" @onclick="Turn">@Text.HowIDidThat</button>
+                <button class="caption-talk" type="button" @onclick="OnTalk">@Text.TalkOpen</button>
+            </div>
+        </div>
+        <div class="caption-face caption-back" inert="@(!_turned)">
+            <div class="caption-who">
+                <i class="caption-orb" aria-hidden="true"></i>
+                <b>@Text.HowIDidThat</b>
+                <span class="caption-note">@Text.MeasuredByTheFramework</span>
+            </div>
+            <ul class="caption-tools">
+                @foreach (var tool in Work.Tools)
+                {
+                    <li><b>@tool.Name</b> @tool.What</li>
+                }
+            </ul>
+            <div class="caption-sum" title="@Detail">
+                @if (Work.ThoughtShows)
+                {
+                    <span class="caption-figure">
+                        <b>@string.Format(Text.Seconds, Work.ThoughtSeconds)</b><span>@Text.WorkThinking</span>
+                    </span>
+                }
+                @if (Work.Usage is { } usage)
+                {
+                    <span class="caption-figure">
+                        <b>@UsageFormat.Tokens(usage.OutputTokens)</b><span>@Text.TokensOut(Work.Cached)</span>
+                    </span>
+                    <span class="caption-figure">
+                        <b>@UsageFormat.Cost(usage, Currency)</b><span>@Text.WorkThisAnswer</span>
+                    </span>
+                }
+            </div>
+            <div class="caption-foot">
+                <button class="caption-turn" type="button" @onclick="Turn">@Text.BackToTheAnswer</button>
+            </div>
+        </div>
+    </div>
+</aside>

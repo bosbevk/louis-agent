@@ -93,6 +93,8 @@ public class SiteBodyTests
     /// <summary>
     /// In a narrow window, such as one on a phone, the website stands over its chat and no longer beside it. The
     /// body goes by the width of the window it is in, not the screen's, so the frame's body is what it measures.
+    /// Narrow is a phone's upright window, up to 400 wide. A small window on a wide screen is low as well, and
+    /// stacked in it the website's name and line ran into each other, so it keeps the two side by side.
     /// </summary>
     [Test]
     public void InANarrowWindow_TheWebsiteStandsOverItsChat()
@@ -100,7 +102,7 @@ public class SiteBodyTests
         string folder = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Components/Staging/Windows");
         string body = File.ReadAllText(Path.Combine(folder, "SiteBody.razor.scss")).ReplaceLineEndings("\n");
         string frame = File.ReadAllText(Path.Combine(folder, "FramedWindow.razor.scss"));
-        int start = body.IndexOf("@container (max-width: 520px) {", StringComparison.Ordinal);
+        int start = body.IndexOf("@container (max-width: 400px) {", StringComparison.Ordinal);
         string narrow = start < 0 ? "" : body[start..body.IndexOf("\n}", start, StringComparison.Ordinal)];
 
         Assert.Multiple(() =>
@@ -109,5 +111,20 @@ public class SiteBodyTests
             Assert.That(narrow, Does.Contain("grid-template-columns: minmax(0, 1fr);"), "one column");
             Assert.That(narrow, Does.Contain("grid-template-rows: 36% minmax(0, 1fr);"), "the website, then the chat");
         });
+    }
+
+    /// <summary>
+    /// The website's line is as large as its window lets it be, not as the screen does: a window can be small on a
+    /// wide screen, and a line sized by the screen ran into the website's name and menu there.
+    /// </summary>
+    [Test]
+    public void TheWebsitesLine_FollowsItsWindow_NotTheScreen()
+    {
+        string body = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Staging/Windows/SiteBody.razor.scss")).ReplaceLineEndings("\n");
+        int start = body.IndexOf("\n.body-line {", StringComparison.Ordinal);
+        string line = start < 0 ? "" : body[start..body.IndexOf("\n}", start + 1, StringComparison.Ordinal)];
+
+        Assert.That(line, Does.Contain("cqi").And.Not.Contain("vw"));
     }
 }

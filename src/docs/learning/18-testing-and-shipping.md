@@ -1135,6 +1135,280 @@ same commit.
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## The look held against the design, and the flow walked three times (F134, 2026-11-15)
+
+**What it is.** F134.2 to F134.5 were built without a stop after each step, and every one of them passed its tests
+and its own live check. Then you looked at the local site and it was not the design. This is the pass that held
+the site against the J and K mockups, side by side in a browser, and then walked the whole flow with the real
+guide until it went right three times in a row.
+
+**What the tests had not seen.** Every fault here had green tests over it. The guide's answer stood in a folded
+box with "PROCESSING" in it, the site's chips stood on top of that, and both stood on the start's dock. Each part
+was tested alone, and nothing tested the three together on one screen. The caption was as wide as the bar, with
+the talk's big cards stacked in half of it. Its test asked that the choices were there, which they were.
+
+Turning the caption over threw it back over the bar. The module marked the caption with a class, and the page
+writes the caption's classes again when they change. A test of the module's names can't see that. Only the press
+did. A choice to write in your own words did nothing on a demo's page. It was a label for the box by its id, and
+that page has the business's own chat with a box of the same id. The test page had one box.
+
+And on the start the guide offered "Ask it live", asked a business that has no window there, and told you to
+answer in a window you could not see. Its instructions were written when the start was a page of covers, and no
+test walks the guide.
+
+**What that teaches.** A markup test proves a part exists, and a style test proves a rule is written. Neither
+proves the page looks right or that a walk makes sense. The mockup is the test for the look, and it has to be
+opened beside the built page, at more than one window size, before a child is called done. The walk is the test
+for the flow, and it has to be made by pressing what a visitor presses, more than once, since the guide does not
+answer the same way twice: in one round it met you at a demo's door with three questions and no walk, and its rule
+had to say "exactly four choices, in this order" before it held.
+
+**How the rounds were run.** A small script in the browser read the page's state after each answer as data: the
+address, the orb, the chips, the caption's words and choices, where it stood, what was lit, whether the live
+window was on screen. A screenshot showed what data can't. Three rounds each took one business from the start's
+tour, through "Open this demo", a question at the door answered live in the business's window, the walk of the
+demo's page, the caption turned over, the whole talk, an answer put away, a pressed note and "Stop here". The
+parts that changed after a round were run three more times on their own.
+
+**Sharing one browser.** You were pressing in one tab while I drove another, and twice I drove yours. A tab that
+is not in front has no size, so every measure from it read nothing. A fresh tab of my own fixed that. A frame on a
+scratch page stood in for a phone and for a short laptop screen, since a maximised window takes no new size.
+
+**What it cost.** About US$0.28 for 545 requests on Haiku 5.5, by the usage ledger, from 05:23 to 08:08 UTC. That
+is everything asked of the local site in that time, your own presses included.
+
+**Where it sits.** Skill 18, testing and shipping: what a test can prove and what only looking can, and a walk by
+the real agent as the last check before a thing is called working. Skill 4, tool design: the guide's rule for the
+start is a prompt rule, and a tool that refuses to ask a business with no window on the page would hold it harder.
+
+## Every answer turns over to the ledger's own numbers (F134.5, 2026-11-15)
+
+**What it is.** The guide's caption now has a back. "How I did that" turns it over to the answer's work: the tools
+it called in order, each with what it was about, how long it thought, and its usage line, the tokens by kind and
+the cost, with the exact figures in the tooltip. The front carries the cost beside the guide's name. The bar carries
+what the whole talk has cost so far, which opens the drawer, and the drawer ends with the same total. On a demo's
+page each "could also" note became a piece the visitor can press to ask about, and the bar shows the selected
+piece's chip, as the corner always did.
+
+**Nothing new was measured.** The research found every number already there: each turn's usage, which the API
+priced from the usage ledger and sent with the answer, the chat's sum of them, and one class that writes them. So
+this child adds a reading, `AnswerWork.Of(turn)`, and a drawing, and no number of its own. That is what made the
+done-when a fair test: the back of a live answer said 4 requests, 10 input, 20,766 cache write, 59,574 cache read
+and 1,177 output tokens, US$0.00378, and the ledger's four rows for that turn sum to exactly that. Showing a person
+the framework's own record, rather than a second count of it, is what keeps the two from ever disagreeing.
+
+**What the back honestly shows.** The first live answer listed `Offer` twice: once by its name alone, once with its
+question. The pack had refused the first call and the model offered again. The back shows what happened, a refused
+call included, because it reads the turn and nothing else. Whether a refused call should be marked as refused is a
+small question left open.
+
+**Reuse.** The chip in the bar is the corner's chip: the widget's four chip rules now reach into the bar, rather
+than being copied into its styles. A note became a piece by doing what a tile does, an id from its title through
+`PieceId`, the piece mark, a heading the scripts read, and the shared pressed look.
+
+**What looking found.** The caption beside a place is 340 wide, and its foot squeezed two buttons beside the way
+into the box, each wrapping onto two or three lines. The foot wraps now. Tests said the buttons were there; only the
+screen said they were cramped.
+
+**What it cost.** Two live walks of the real guide on Haiku 5.5: US$0.0074 for seven requests.
+
+**Where it sits.** Skill 13 (cost and token economics): every answer's cost from the same ledger the owner is billed
+from. Skill 17 (observability): the framework's own records of an answer, shown to the person who asked.
+
+## The agent runs the room, and nothing moves that it didn't move (F134.4, 2026-11-15)
+
+**What it is.** The guide at the foot of the showroom now runs the room from there. When it shows a place, its
+answer stands as a caption beside that place on a wide screen, with the choices it offered drawn in it, the
+suggested one marked. When it shows a demo on the start, that demo's window comes forward. While it talks, a
+business's recorded demo holds its play, and goes on when the guide is done. And the whole talk opens as a drawer at
+the side, or as a sheet on a phone.
+
+**Nothing moves on its own.** F134's rule 2 says nothing on the page moves unless an agent's tool call caused it.
+So the caption doesn't place itself where it likes: the guide's own call lit a place, the widget's script leaves a
+mark on it, and the caption stands beside that mark. The window that comes forward is the same story. The guide
+shows the demo's address, the script presses the place the address names, and that place is the dock's button.
+That one was already true before the step started, found while the plan was researched, so its step is only a test.
+A behaviour that already works is still worth pinning, and the test was seen failing once by taking the dock's mark
+away.
+
+**Reuse twice.** The caption's choices are the talk's own cards, so a choice looks and answers the same in both
+places, a box choice too. And the shared state that tells a demo the guide is talking is the same Observer the
+showroom already used twice, registered beside them. Neither needed a new idea.
+
+**A race, caught by a flaky run.** The bar told the page "talking" straight from the runner's event. The runner
+raises that event from its stream and from a redraw timer, on different threads. A late timer call could read
+"streaming" just before the end and leave the guide talking for good, which would hold a demo forever. The test
+passed alone and failed once in a batch, with the wrong two values. Telling the page on the bar's own dispatcher,
+reading the runner as it is then, closed it, and the test passed three runs in a row.
+
+**What looking found.** The tests said the caption was right; the screen said it was crowded. With a caption
+standing, the site's suggestion chips stood over it too, two rows of shortcuts at once. On a phone, with the whole
+talk open, the chips came back above the sheet and covered the header's button. Both are now held by tests: the
+chips give way to a caption and to the open talk. The CSS also had a trap: the bar was centred with a transform,
+and a transform makes the bar the frame for anything fixed inside it, so the drawer couldn't reach the screen's
+edge. Centring by margins put the bar where it was and freed the drawer.
+
+**What it cost.** Five live turns of the real guide on Haiku 5.5: the caption beside the restaurant's page head
+(US$0.0042), the drawer (US$0.0034), and a walk of the start and one at 390 px (US$0.0049 together). About
+US$0.0125 in all.
+
+**What went wrong on the way.**
+
+- The caption's first test streamed a turn through the client and failed inside the stream reader, on the fixture's
+  shape, not on the caption. It now hands the bar a runner whose chat holds the turn.
+- The held recorded chat's test timed out at bUnit's one-second wait, though the play was right: the whole recording
+  plays once let go. It waits five seconds now.
+- On the start the caption stands beside the dock's button the guide lit, so it covers the right edge of the window
+  that came forward. Lighting the forward window instead would place it better; it is left for Louis to decide.
+
+**Where it sits.** Skill 4 (tool design): every movement on the page is a tool call's effect. Skill 20
+(extensibility): a player that can wait, told by a state any part can read.
+
+## One engine, a second look, and an orb that only says what is true (F134.3, 2026-11-15)
+
+**What it is.** In the showroom the guide was a button in a corner. Now it is a bar at the foot of the page, as the
+J and K mockups drew it: an orb that shows what the guide is doing, a line of words saying so, a box that is always
+there to type in, and the guide's suggestions as chips. You asked for it as "chatwidget layout type", and that is
+what it is: the same widget with a second layout, not a second widget.
+
+**One engine, two looks.** The widget already did everything a chat needs: its runner, the session, the page that
+travels with a message, the guide's way of showing places. A bar that did those again would drift from the corner
+the first time either changed. So the bar is only a view: it reads the widget's runner and hands a send back to the
+widget. The test of that is simple: the corner's two golden files didn't change by a character.
+
+**The orb reads, it never guesses.** An orb that pulses while the agent is idle would be a small lie on screen.
+Its state is a rule over three facts the chat already knows: a place was just shown, the answer is streaming, the
+answer's words have come. Whether the words have come is the turn's own knowledge now, `EndsInWords`, asked where
+it lives. The rule is a plain class with its cases tested, and the component only draws what it is told.
+
+**A limit that shaped the design.** The widget's code-behind sat at its 200-line limit, so every new parameter cost
+a line somewhere else. The size's classes moved onto the size's own type, which was also the cure for a switch two
+components had copied. And the suggestions came in the way a site names its other parts, through its areas
+builder, so the widget didn't grow at all. A size limit is a design pressure, and here it pushed things to where
+they belong.
+
+**A live check, and what it found.** The real guide walked the start, and a typed question mid-walk was answered,
+with its next choices after it: two turns, five requests on Haiku 5.5, US$0.0051. The look at 390 px found what the
+tests didn't: the chips wrapped to three rows on a phone and stood over the end of every demo page. One sideways row
+fixed it.
+
+**What went wrong on the way.**
+
+- The talk's test raced the stream's redraws and passed only sometimes. It waits for the orb to be idle now, and
+  passed three runs in a row.
+- The phone fix was written before its test, from what the look showed, and the commit says so.
+
+**Where it sits.** Skill 4 (tool design) and skill 17 (observability): an orb that shows the agent's state read from
+the chat itself. Skill 20 (extensibility): one engine with a second layout.
+
+## A page restyled without moving the guide (F134.2, 2026-11-15)
+
+**What it is.** After F134.1 the start was a stage and a demo's own page still wore the look before it, so walking
+in from the start dropped a visitor into an older page. Now a demo's page stands in the same light, in the K
+mockup's look: the title and the lede side by side, the player the stage's whole width, what to watch as a row of
+chapters under it, and the rail a slim column of icons. The coding agent and the triage team, whose players had no
+window, now stand in one.
+
+**The places held by their ids.** The guide's tour stops at a demo page's places: the story, the demo, what to
+watch, the notes and the offer. Each is a section with an id. A new look could easily move one, or wrap two in a
+new box, and the tour would stop somewhere else. So the tests hold the order of those ids, and a redesign is free
+to change everything else. When the cues moved from beside the player to under it, the change was one fewer box
+round them, and the test of the order failed first on exactly that.
+
+**When the plan's part was the wrong part.** The plan drew the rail with the start's dock. Looking closer, the dock
+draws buttons that tell the page what was pressed, and the rail's demos are links: each is a page of its own that
+an address, a search engine or the guide opens. Turning them into buttons would have cost every demo page its link.
+So the rail kept its links and took the dock's look. A general part is for what it does, not for how it looks.
+
+**What went wrong on the way.**
+
+- The phone's rules were written with the parts they stack, so the phone step's test held them rather than driving
+  them. It passed on its first run, and the commit says so.
+- The window was feared to cut a long recording, since a framed window cuts what doesn't fit. It doesn't here: the
+  frame fills the place it stands in, and a player's place has no fixed height. Measured on the triage page, the
+  player and the window's body are the same height.
+
+**Checked by eye.** Each demo page at full width on the local site, and the guesthouse, the coding agent and the
+triage team at 390 px in a frame of a phone's width, none scrolling sideways.
+
+**Where it sits.** Skill 18, testing and shipping: a page's places held by their ids, so a new look can't move the
+guide's stops. Skill 20, extensibility: a general part used for what it does, not for how it looks.
+
+## A new kind of picture, then one for every project that has parts (F134.7, 2026-11-15)
+
+**What it is.** You asked that "all projects which has components should have an component diagram in their
+documentation". So the diagrams gained a kind, a component and everything it holds, drawn as boxes inside a box
+with the pins that carry what is handed down and said back up. Since CL65 it is called `nested`, and its UML type
+is a composite structure. Every project that holds Razor components now shows one of them, and a test fails when
+one doesn't.
+
+**One picture is of one component.** The plan gave a project one picture. Of the guide's "its main component" you
+asked "of it's main components? plural". A test can't tell which components are main, so the rule asks for at least
+one, named by the picture's subtitle, which starts with the project's name. Which ones are main stays a person's
+judgement.
+
+**Every picture is read from the markup.** A box's pins are its real parameters and callbacks; a neighbour is a
+service the code-behind injects or an address it calls. Before each picture I read the page's `.razor` and its
+`.razor.cs`, and where the two disagreed with the plan, the code won: the dock takes a record a button, not a
+function per fact, so its picture shows the record.
+
+**A rule seen failing on exactly the right five.** The last pictures were set aside, and the rule ran: it named the
+four packs' web views and the starter, and nothing else. Back in place, it passes. That is the smallest proof a rule
+reads the right thing: it fails on the cases you expect, by name, and on no others.
+
+**What went wrong on the way.**
+
+- The starter has no design doc, so its picture had nowhere to stand. It stands in *Spawn a site*, beside the
+  part that tells you what to make your own, since that is where a reader meets the starter.
+- The first look had no key. Of the first drawing you asked "where is this?", and the key, the headings over the
+  neighbours and the pins' samples were added after step 5.
+
+**Where it sits.** Skill 18, testing and shipping: a rule whose first failure names exactly the cases it should.
+Skill 17, observability of a design: a component's picture drawn from its parameters, not from memory.
+
+## Parts any site can use, proved alone, then one page built from them (F134.1, 2026-11-15)
+
+**What it is.** `/demos` was a feature card and a row of small flat covers, each with an emoji Windows drew black.
+You picked "centre stage": one demo at a time as a window in the light, the others behind it in depth, a dock under
+it. And you set the rule for how: "things that can be shared, must go to framework", "like cool components we
+could reuse later in other projects". So the start is built from five general parts in the framework's web, each
+with its own test, and only then put together.
+
+**The parts know nothing of demos.** A line icon, a lit stage, a deck, a framed window with three bodies, and a
+dock. Each was built and tested alone before anything used it: the deck's markup with five items and the first
+forward, the dock's buttons and its divider, the window's address word. The deck's one real rule, how far an item
+stands from the one forward, the short way round, is a plain class, `DeckPlace`, tested with no browser at all.
+That is the pattern of a presentation rule kept out of the component: the part that can be wrong in a way a
+person can't see is the part that has a test of its own.
+
+**The page owns what it shows.** Which window is forward comes into the deck as a parameter and goes out as an
+event, so the start holds it, reads it from the address, and writes it back when a visitor moves the deck. A
+window's address, `/demos/restaurant-demo`, opens the start with that window forward. The frame's own script
+couldn't do that here, as step 7 found, so the start reads its address and a small script of its own writes it.
+
+**The site fills a slot by naming a type.** A demo's record names the component that fills its window, as a site
+names its admin card. The framework draws the frame and the bar; the site draws a business's website and one
+moment of its recorded talk. A test holds every word a window shows to the recording it comes from.
+
+**What your picks changed on the way.** One icon set, the diagrams', not a second one. The dock takes a record a
+button, not a function for each fact. On a phone the dock is its icons only, since with a name open it was wider
+than the phone. The coding agent and the triage team came off the start, so it shows the three businesses, and the
+page says which group it shows. A window's answer is one whole sentence of the recording, not a cut-off answer.
+
+**What went wrong on the way.**
+
+- The plan named a part's address word nowhere, and a window needs one. It is a field on the demo's record now.
+- The page a search engine is given had no demos in it, on `main` too. It was fixed here, at your word, as FX155.
+- The lean towards the cursor was in the design and in no step. It became its own step, built last.
+
+**Checked by eye.** `/demos` at full width in Chrome, each of the three windows brought forward in turn, and each
+at 390 px in a frame of a phone's width. Windows' display scaling makes Chrome's page 1538 wide when the window is
+1920, so the wide check is at that width.
+
+**Where it sits.** Skill 18, testing and shipping: a general part proved alone by a markup test before anything is
+built from it, and a rule kept out of the component so it is tested with no browser. Skill 20, extensibility: a slot
+a site fills by naming a type.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

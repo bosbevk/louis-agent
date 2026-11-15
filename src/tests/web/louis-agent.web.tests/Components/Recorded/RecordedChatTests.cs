@@ -232,4 +232,29 @@ public class RecordedChatTests
 
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
     }
+
+    /// <summary>
+    /// Held (F134.4), the play doesn't move on: not even its question shows, and once let go it goes on from there.
+    /// </summary>
+    [Test]
+    public void AHeldPlay_WaitsUntilLetGo()
+    {
+        using var ctx = Context();
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, OneTurn)
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.Hold, true)
+            .Add(chat => chat.Ending, Offer));
+
+        Thread.Sleep(400);
+        bool askedWhileHeld = cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal);
+        cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
+
+        // Its question shows as soon as the play goes on. A wait for a state, not an assertion: NUnit counts each
+        // failed try inside a retried assertion against the test, even when a later try passes.
+        cut.WaitForState(() => cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal),
+            TimeSpan.FromSeconds(5));
+
+        Assert.That(askedWhileHeld, Is.False, "the question waited while the play was held");
+    }
 }

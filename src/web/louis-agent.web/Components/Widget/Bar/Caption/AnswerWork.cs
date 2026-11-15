@@ -1,0 +1,46 @@
+using System.Globalization;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Chats.Calls;
+using LouisAgent.Web.Usage;
+
+namespace LouisAgent.Web.Components.Widget.Bar.Caption;
+
+/// <summary>
+/// What an answer did (F134.5), as the back of its caption shows it: the tools it called in order, how long it thought,
+/// and what the framework measured of it, the same usage the ledger holds for its requests.
+/// </summary>
+/// <remarks>
+/// Ask the type: the caption asks this record and only draws it, so reading a turn's work lives in one place with its
+/// own tests. It reads only what the turn already holds; nothing here is worked out or guessed.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
+public sealed record AnswerWork(IReadOnlyList<AnswerTool> Tools, double Thought, TurnUsage? Usage)
+{
+    /// <summary>What this turn did: its tool calls, its thinking time together, and its usage.</summary>
+    public static AnswerWork Of(Turn turn)
+    {
+        var tools = turn.Blocks.Where(block => block.Kind == BlockKind.Tool).Select(ToolOf).ToList();
+        double thought = turn.Blocks.Sum(block => block.ThinkingSeconds ?? 0);
+        return new AnswerWork(tools, thought, turn.Usage);
+    }
+
+    /// <summary>The least time worth showing: what is written to a tenth of a second as more than nothing.</summary>
+    private const double LeastShown = 0.05;
+
+    /// <summary>How long it thought, in seconds to a tenth, as the caption writes it: <c>1.3</c>.</summary>
+    public string ThoughtSeconds => Thought.ToString("0.#", CultureInfo.InvariantCulture);
+
+    /// <summary>Whether the time it thought is worth showing: less would be written as nothing.</summary>
+    public bool ThoughtShows => Thought >= LeastShown;
+
+    /// <summary>
+    /// What it read from the cache, as the caption writes it beside the tokens it wrote: <c>37k</c>. None when it
+    /// read nothing from it, or nothing was measured.
+    /// </summary>
+    public string? Cached =>
+        Usage is { CacheReadInputTokens: > 0 } usage ? UsageFormat.Tokens(usage.CacheReadInputTokens) : null;
+
+    /// <summary>A call by its name, and what it was about: a shown place's address, or an offer's question.</summary>
+    private static AnswerTool ToolOf(Block call) =>
+        new(call.ToolName ?? "", ShowPageCall.PathOf(call) ?? OfferCall.Of(call)?.Question);
+}

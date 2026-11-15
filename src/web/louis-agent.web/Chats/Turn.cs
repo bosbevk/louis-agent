@@ -22,4 +22,17 @@ public sealed class Turn
 
     /// <summary>What the turn's model requests used, from <c>message_delta.usage</c>; null for commands.</summary>
     public TurnUsage? Usage { get; set; }
+
+    /// <summary>
+    /// The answer's words are what came last (F134.3): the turn ends in text, not in thinking or a tool call. The
+    /// agent's orb speaks while they arrive.
+    /// </summary>
+    public bool EndsInWords => Blocks is [.., { Kind: BlockKind.Text, Text.Length: > 0 }];
+
+    /// <summary>The agent showed a place on the page in this turn (F134.4): its answer then stands beside it.</summary>
+    public bool ShowedAPlace => Blocks.Any(block => ShowPageCall.PathOf(block) is not null);
+
+    /// <summary>What the agent said in this turn, its text blocks in order, a blank line between (F134.4).</summary>
+    public string Words => string.Join("\n\n",
+        Blocks.Where(block => block is { Kind: BlockKind.Text, Text.Length: > 0 }).Select(block => block.Text));
 }

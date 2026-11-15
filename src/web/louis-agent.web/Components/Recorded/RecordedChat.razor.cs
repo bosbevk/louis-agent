@@ -79,6 +79,32 @@ public partial class RecordedChat : IDisposable
     [Parameter]
     public EventCallback<Block> ToolCalled { get; set; }
 
+    /// <summary>
+    /// While on, the play waits where it is (F134.4), and goes on from there once let go: a showroom's demo waits while
+    /// the guide talks.
+    /// </summary>
+    [Parameter]
+    public bool Hold { get; set; }
+
+    /// <summary>What the play waits on while it is held; none while it plays.</summary>
+    private TaskCompletionSource? _held;
+
+    /// <summary>A hold put on starts the wait; a hold let go ends it, and the play goes on.</summary>
+    protected override void OnParametersSet()
+    {
+        if (Hold)
+        {
+            _held ??= new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            return;
+        }
+
+        _held?.TrySetResult();
+        _held = null;
+    }
+
+    /// <summary>Done at once while the play is not held; else once it is let go.</summary>
+    private Task WhileHeld() => _held?.Task ?? Task.CompletedTask;
+
     /// <summary>Starts playing once the window is on the page.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -111,6 +137,7 @@ public partial class RecordedChat : IDisposable
             {
                 // A breath before the next question, as a person reads the answer and types; none while catching up.
                 if (number > from && TurnGap > 0) await Task.Delay(TurnGap, stop);
+                await WhileHeld().WaitAsync(stop);
                 await TurnStarted.InvokeAsync(number);
                 await PlayTurnAsync(Turns[number - 1], number < from ? 0 : Pace, stop);
             }
@@ -136,7 +163,7 @@ public partial class RecordedChat : IDisposable
         _chat.Turns.Add(turn);
         StateHasChanged();
         await TurnReplay.PlayAsync(turn, RecordingPace.Steps(events, pace), () => _ = InvokeAsync(StateHasChanged),
-            stop, call => _ = InvokeAsync(() => ToolCalled.InvokeAsync(call)));
+            stop, call => _ = InvokeAsync(() => ToolCalled.InvokeAsync(call)), WhileHeld);
     }
 
     /// <summary>

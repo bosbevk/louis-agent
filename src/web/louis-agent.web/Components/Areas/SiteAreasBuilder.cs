@@ -8,6 +8,7 @@ using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Screens;
 using LouisAgent.Web.Components.Site.Showroom;
+using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Messages;
 using LouisAgent.Web.Messages.Holes;
@@ -88,7 +89,17 @@ public sealed class SiteAreasBuilder
             services.TryAddSingleton<GuideDoor>();
             services.TryAddSingleton<AgentWindows>();
             services.TryAddSingleton<GuideKeeper>();
+            services.TryAddSingleton<GuideActivity>();
         }, []));
+
+    /// <summary>
+    /// What the site's guide offers to be asked (F134.3): the questions its bar shows as chips while it waits.
+    /// </summary>
+    public SiteAreasBuilder Suggestions(params string[] questions)
+    {
+        var suggestions = new AgentSuggestions(questions);
+        return Add(new SiteArea("suggestions", services => services.TryAddSingleton(suggestions), []));
+    }
 
     /// <summary>
     /// Each part's focus (F127.7): the focus a page takes from its address, which the guide's widget sends with the

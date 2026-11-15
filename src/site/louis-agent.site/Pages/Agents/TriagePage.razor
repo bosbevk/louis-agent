@@ -18,11 +18,14 @@
             you watch.</span>
     </Lede>
     <Player>
-        <TriagePlayer Source="recordings/triage-run.jsonl">
-            <Actions>
-                <GuideButton Class="is-plain" Question="I watched the triage team fix the order service. What just happened, and could I get a team like that?">Ask the guide what happened</GuideButton>
-            </Actions>
-        </TriagePlayer>
+        @* The team at work, in a window in the light as a business's website is (F134.2). *@
+        <FramedWindow Address="louis-agent · the triage team" Lit="true">
+            <TriagePlayer Source="recordings/triage-run.jsonl">
+                <Actions>
+                    <GuideButton Class="is-plain" Question="I watched the triage team fix the order service. What just happened, and could I get a team like that?">Ask the guide what happened</GuideButton>
+                </Actions>
+            </TriagePlayer>
+        </FramedWindow>
     </Player>
     <Offer>
         <span>Want a team like this on your own services?</span>

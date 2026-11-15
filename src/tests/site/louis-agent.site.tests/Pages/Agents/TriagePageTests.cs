@@ -50,8 +50,29 @@ public class TriagePageTests
                 .Cast<LayoutAttribute>().Single().LayoutType, Is.EqualTo(typeof(ShowroomLayout)));
             Assert.That(cut.Find(".demo-stage").ClassList, Does.Contain("accent-purple"));
             Assert.That(cut.Find("#the-demo .triage-player"), Is.Not.Null);
-            Assert.That(cut.Find(".stage-body").ClassList, Does.Contain("is-alone"));
+            Assert.That(cut.FindAll("#what-to-watch"), Is.Empty, "no chapters: the player shows its own steps");
             Assert.That(cut.Find("#ask a").GetAttribute("href"), Is.EqualTo("/contact"));
+        });
+    }
+
+    /// <summary>
+    /// The team at work stands in a window in the light, as the businesses' websites do (F134.2): the player is in a
+    /// framed window with the word of where it runs in its bar.
+    /// </summary>
+    [Test]
+    public void ThePlayer_StandsInAWindowInTheLight()
+    {
+        using var ctx = SitePageContext.Create();
+
+        var cut = ctx.Render<TriagePage>();
+
+        var window = cut.Find("#the-demo .framed-window");
+        Assert.Multiple(() =>
+        {
+            Assert.That(window.ClassList, Does.Contain("is-lit"));
+            Assert.That(window.QuerySelector(".window-address")!.TextContent,
+                Is.EqualTo("louis-agent · the triage team"));
+            Assert.That(window.QuerySelector(".window-body .triage-player"), Is.Not.Null);
         });
     }
 }

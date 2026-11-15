@@ -5,7 +5,7 @@
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 > **Kind:** library (`net10.0`, one a pack)
 > · **Paths:** `packs/tools/louis-agent.pack.files/`, `.git`, `.dotnet`, `.shell`, `.web`, `.paymo` and `.devops`
-> **Also shows:** `component`
+> **Also shows:** `composite-structure`, `component`
 
 ![The general packs: files, git, .NET, shell, web, Paymo and Azure DevOps](diagrams/general-packs.svg)
 
@@ -36,6 +36,14 @@ A toolset opened, then a call, step by step.
 ![A session and a tool call: the factory finds each toolset and builds its tools, and the guards run a call the model makes](diagrams/general-packs-diagrams-2.svg)
 
 ![The types: every pack the same shape, its toolsets building their tool classes from what the engine hands them](diagrams/general-packs-interface.svg)
+
+Two of the packs bring screens of their own to the admin. The files pack's is the workspace's tree beside the open file:
+
+![The files view holds the workspace's tree beside the open file, reads them from the API and hands a question to the chat](diagrams/louis-agent.pack.files.web-components-files.svg)
+
+The git pack's is what changed, beside the diff that's open:
+
+![The changes view holds the staged and unstaged groups beside the open diff, and hands a review to the chat](diagrams/louis-agent.pack.git.web-components-changes.svg)
 
 **Tests** are in `packs/tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
 `APackInstallsAsAPackageTests` proves a pack runs from a NuGet package with no engine in its dependencies.

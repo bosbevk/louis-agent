@@ -121,14 +121,21 @@ public partial class ShowroomStart : IAsyncDisposable
     /// <summary>The stage's colour: the forward demo's, the showroom's purple when the site has no demos.</summary>
     private TileAccent StageAccent => Forward?.Accent ?? TileAccent.Purple;
 
-    /// <summary>A button per demo shown for the dock, in the site's order, grouped as the demos are.</summary>
-    private IReadOnlyList<DockItem> DockItems =>
-    [
-        .. _shown.Select(demo => new DockItem(IdOf(demo), demo.Name, demo.Icon, demo.Accent, demo.Group.Wire()))
-    ];
+    /// <summary>
+    /// A button per demo shown for the dock, in the site's order, grouped as the demos are. Each says which window it
+    /// brings forward, so a site's guide lights the window and not the button.
+    /// </summary>
+    private IReadOnlyList<DockItem> DockItems => [.. _shown.Select(ButtonOf)];
+
+    /// <summary>A demo's button on the dock.</summary>
+    private static DockItem ButtonOf(ShowroomDemo demo) =>
+        new(IdOf(demo), demo.Name, demo.Icon, demo.Accent, demo.Group.Wire(), WindowIdOf(demo));
 
     /// <summary>A demo's id on the page: its address without the slash, such as <c>guesthouse-demo</c>.</summary>
     private static string IdOf(ShowroomDemo demo) => demo.Address.Trim('/');
+
+    /// <summary>The id of a demo's window on the deck, such as <c>guesthouse-demo-window</c>.</summary>
+    private static string WindowIdOf(ShowroomDemo demo) => $"{IdOf(demo)}-window";
 
     /// <summary>Where the demo with this id is among the demos shown; none when none of them has it.</summary>
     private int? PlaceOf(string id) =>

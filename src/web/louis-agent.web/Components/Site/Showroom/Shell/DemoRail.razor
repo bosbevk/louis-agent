@@ -1,14 +1,15 @@
-@* The rail of every demo (F127.1): grouped by what a visitor comes for, each a cover in its colour with its icon, its
-   name and a line; the one on screen lit and marked as the current page. *@
+@* The rail of every demo (F127.1), since F134.2 a slim column of icons as the K mockup has it: grouped by what a
+   visitor comes for, each demo a link that shows its icon in its colour, its name its label and its tip; the one on
+   screen lit and marked as the current page. A group's name is for a screen reader; a line stands between groups. *@
 <nav class="demo-rail" aria-label="@Text.AllDemos">
     @foreach (var group in Demos.Groups)
     {
         <span class="rail-group">@Text.NameOf(group.Key)</span>
         @foreach (var demo in group)
         {
-            <a class="@ClassesOf(demo)" href="@demo.Address" aria-current="@CurrentMark(demo)">
+            <a class="@ClassesOf(demo)" href="@demo.Address" aria-current="@CurrentMark(demo)"
+               aria-label="@demo.Name" title="@demo.Name">
                 <span class="cover-sign" aria-hidden="true"><LineIconView Icon="demo.Icon"/></span>
-                <span class="cover-words"><b>@demo.Name</b><span>@demo.Line</span></span>
             </a>
         }
     }

@@ -49,4 +49,14 @@ public class WindowButtonsTests
         Assert.That(buttons.Select(b => (b.GetAttribute("aria-label"), b.GetAttribute("aria-pressed"))),
             Is.EqualTo(new[] { (first, firstPressed), (second, secondPressed) }));
     }
+
+    /// <summary>
+    /// A size is drawn as one class on the window, for every chat that has the buttons: the guide's widget and a mock
+    /// website's chat ask the size for it, so the two can't name a size differently.
+    /// </summary>
+    [TestCase(ChatWindowSize.Normal, "chat")]
+    [TestCase(ChatWindowSize.Minimised, "chat is-min")]
+    [TestCase(ChatWindowSize.Maximised, "chat is-max")]
+    public void ASize_IsDrawnAsItsClass(ChatWindowSize size, string classes) =>
+        Assert.That(size.ClassesOf("chat"), Is.EqualTo(classes));
 }

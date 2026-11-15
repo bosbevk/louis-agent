@@ -756,7 +756,8 @@ The golden files are `Svg/Renderers/Parts/Flows/flow-look.svg`, `Svg/Renderers/P
 
 `src/tests/tools/louis-agent.doc-diagrams.tests` tests the tool on a temporary folder, and the import on samples of
 each Mermaid form. `Projects/ProjectDocsTests` checks that every project doc states its kind and shows exactly what its
-kind and its own line ask for, with the table in the guide. `DocsDiagramsTests` runs on the real docs: every picture
+kind and its own line ask for, with the table in the guide, and that every project that holds components shows one
+of them as a nested picture. `DocsDiagramsTests` runs on the real docs: every picture
 is what its JSON draws, a doc shows it, and every picture a doc shows is there. Every flow and class chart keeps its
 words and lines clear (`EveryFlow_KeepsItsWordsAndLinesClear`), every sequence keeps its words inside its drawing, every `diagrams` folder is one
 the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`). `DocsTypesTests` checks that every picture with a type

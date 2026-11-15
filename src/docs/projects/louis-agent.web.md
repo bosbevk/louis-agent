@@ -170,8 +170,113 @@ The widget knows the page. A script module beside it reads the page's address, t
 is sent, and the runner sends them with the first message written from a page. So the guide answers about what
 the visitor sees.
 
-*Decided in:* F109.3 (the widget), F115 and ADR 0104 (it knows the page), F127.4.1 (cards), F127.4.2 and ADR 0117
-(one agent asking another), FX22 (a tool's own images),
+The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
+`Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
+message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
+centred at the page's foot, at most 760 wide, in glass. In it sit the agent's orb, a line of what the agent is
+doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
+in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
+
+The orb (`Widget/Orb`) is a general part of its own: a silver disc with four states, and the agent's mark on it,
+which the bar makes the first letter of the agent's name. Idle it breathes, thinking an arc goes round it, showing
+rings go out from it, and speaking it pulses. Which state it shows is a rule, `OrbStates.Of`, that reads only what
+the chat says of itself: a place the agent just showed, then whether it is streaming, then whether the answer's
+words have come. So the orb never shows a state the agent isn't in. Its rings keep close to the disc in every
+state, and the bar's row cuts whatever glow would still reach past its edge, so the orb's light stays inside the
+bar.
+
+While the agent waits, questions stand over the bar as chips, one of them drawn bright. A site names its own once
+through its areas builder, `.Suggestions(...)`, as it names its other parts, and the first it names is the bright
+one. A chip asks its question through the widget, and the chips end with "or type your own", since a chip is a
+shortcut and never the only way in. Before anything is asked the chips are the site's. Once there is a talk they
+follow it: the site's first question stays, and the next two are choices the agent last offered, its suggested one
+first and bright. That rule is `AgentChips.Of`. The chips step aside while an answer or the whole talk stands over
+the bar. They stay drawn then, folded to no height and out of reach, so they ease away and back and never pop. On
+a phone they are one row that scrolls sideways.
+
+The bar is fixed over the page, so the page can't see how tall it stands. The bar's own module tells it, as a
+variable on the page, `--bar-room`: the distance from the top of the bar, with whatever stands over its row, down
+to the screen's foot, and a little air. A frame that holds the bar keeps that room free at its foot, so no page
+ends under it. The room never drops under the resting bar's with its chips, so a page doesn't shift each time the
+chips step aside, and it is never more than 45% of the screen's height, so a long answer over the bar can't take
+the page away.
+
+Every answer with something to say stands as a caption (`Widget/Bar/Caption/AgentCaption`), from its first words
+on, while it is still coming in. A caption is a card of glass 400 wide with two sides. The front has the agent's
+orb and name, what the answer cost, a close, the answer's words, the question the agent asked over its choices,
+and the choices as pills, the suggested one bright and a choice's why as its tip. The pills wait until the answer
+is whole. Under them is a way into the box, and two quiet links: to the card's other side, and to the whole talk.
+Whether an answer is a caption, and what it holds, is asked of a small record beside it, `Captioned.Of(turn)`. An
+answer with no words of its own says what it asked over its choices as its words. One kind of answer is no caption:
+one that went wrong, asks with a form, or drew a card. A caption holds words and choices only, so such an answer
+opens the whole talk by itself, where those are drawn. The close puts an answer away until the next one comes, and
+the chips come back.
+
+A choice the visitor writes in their own words is a pill that puts them in the box, and so does the way in under
+the choices. Neither names the box by its id. A page can hold another chat's box with the same id, as a demo's page
+holds the business's own chat, and a label that named the id reached that one. So the caption asks the bar, and the
+bar asks its own box, which has a way in of its own (`Composer.FocusAsync`).
+
+On a wide screen, from 901 wide, the caption's module decides where it stands. An answer that showed a place
+stands beside it: to the right of the place where the screen has room, else to its left, else under it. The
+widget's script leaves a mark (`data-lit`) on the place it lit, which stays after the spotlight fades, and says so
+when it lights another, so a caption that already stands moves there. An answer that lit no place stands the same
+way beside the piece of the page the visitor chose to ask about, when one is chosen. While a caption stands beside
+a place, the place keeps a quiet ring, the spotlight's own ring left on with no dim, so the two read as one. A
+caption with no place to stand beside (none lit or chosen, a place as wide as the screen, or one scrolled off)
+stands at the bar's left, beside the orb, where the screen has room for it. Only where it has none does it stand
+over the bar, and then the page makes room for it as the paragraph above tells. On a phone, up to 900 wide, the
+caption always stays over the bar.
+
+The caption follows its place. It is placed again when the page scrolls, when the screen changes size, when the
+caption itself grows with its answer, and frame by frame for a moment after a place is lit, since a place just lit
+may still be moving, as a window coming forward on a deck is. When a place is lit after the caption already stood
+somewhere, it glides there over half a second, and a visitor who asked for less motion gets the move alone. The
+module's mark on a caption it has stood is an attribute of its own (`data-stands`), never a class: the page writes
+the caption's classes again whenever they change, as when it turns over, and that would wipe a class the module
+had added.
+
+The light falls on what a press brings up. A card of the page that says what it controls (`aria-controls`) is
+pressed as before, and the light then falls on the thing it controls and not on the card. A dock's button says so
+when its item names what it shows (`DockItem.Shows`), which is how the showroom's start gets the light on the
+window that came forward and not on the dock's small button.
+
+The whole talk (`Widget/Bar/Talk/AgentTalk`) opens from the caption's link or from the bar's total. It has a
+heading and a close, every turn of the chat as the chat's own list draws them, and what the talk has cost at its
+foot. On a wide screen it is a drawer fixed to the screen's right side, from under the header to the bar's foot,
+420 wide, so the page stays in view beside it. On a phone it is a sheet over the bar, 70% of the screen tall. The
+bar is centred by its margins rather than moved by a transform, because a transform would hold anything fixed
+inside it to the bar's own box, and the drawer could not reach the screen's edge. Folding a talk that opened by
+itself, for a form, puts that answer away, or it would open again at once.
+
+The page also learns when the agent is talking. `GuideActivity` is one small shared object, kept as an Observer
+the way `GuideDoor` and `AgentWindows` are: the bar tells it whether an answer is streaming, and anything on the
+page can listen. The runner says it has moved on from its stream and from its redraw timer, so the bar tells the
+activity on its own dispatcher and reads the runner as it is then. That way a late timer call can't leave the
+agent talking after its answer ended. A site's showroom registers it with its other shared parts, and a recorded
+demo holds its play while the agent talks, as part 4 tells.
+
+A caption turns over, on its upright axis, to show how its answer was made. Both sides are always drawn, so the
+card can turn, and the one turned away takes no press and is not read aloud. "How I did that" brings the back to
+the front: the tools the answer called in order, each on a row with what it was about (a shown place's address, an
+offer's question), then three figures side by side. They are how long it thought, shown only from a tenth of a
+second, the tokens it wrote with what it read from the cache, and what the answer cost. The exact figures are in
+their tooltip. Every number is the framework's own: the turn's usage, which the API priced from the usage ledger,
+written by the same `UsageFormat` the talk uses. So the back of an answer and the ledger's rows for its requests
+say the same thing. The caption asks a small record for what to show, `AnswerWork.Of(turn)`, so it only draws.
+
+The bar also carries what the talk has cost so far over how many answers it holds, in the box's end before the
+send button, with the chat's usage line in its tooltip. A press opens the whole talk, whose foot says the same
+total. A talk with nothing measured shows no total, rather than a cost of nothing. And a piece the visitor
+selected on the page shows its chip over the bar, as it does in the corner's panel, with its close; the chip's look
+stays the widget's.
+
+Nothing the bar shows pops in or snaps from one spot to another. The chips and the caption ease, the card turns,
+the total and a piece's chip rise in, and each holds still for a visitor who asked for less motion.
+
+*Decided in:* F109.3 (the widget), F134.3 (the bar and the orb), F134.4 (the caption, its place, the drawer and the
+agent's activity), F134.5 (the caption turned over, the talk's total, the piece in the bar), F115 and ADR 0104 (it knows
+the page), F127.4.1 (cards), F127.4.2 and ADR 0117 (one agent asking another), FX22 (a tool's own images),
 [F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) (currency).
 
 ### 3. Someone reads the site: public pages
@@ -246,9 +351,9 @@ place while it plays, so a page that is still settling, with an image loading or
 place. A card is opened as a visitor's click would open it, and the light falls on its whole deck, so the card and
 its story are lit together. If the place never appears, the widget gives up quietly after two seconds.
 
-**Every part is ready for an agent.** A tile with a title or a number, and a deck's card, are **pieces**. Each has
-an id, so `/home/100-adrs` opens it. Three things select a piece: a click on it, which asks the guide about it. A
-card the visitor opens. And a piece the guide shows. The last two select it with nothing sent. A selected piece is
+**Every part is ready for an agent.** A tile with a title or a number, a deck's card, and a demo's note are **pieces**.
+Each has an id, so `/home/100-adrs` opens it. Three things select a piece: a click on it, which asks the guide about it.
+A card the visitor opens. And a piece the guide shows. The last two select it with nothing sent. A selected piece is
 drawn pressed, a chip in the guide's box names it, and every message carries it until the chip is closed.
 
 **Found by search.** A site lists every page and place in its `sitemap.xml`, which a site test writes from the
@@ -271,10 +376,14 @@ The showroom is the area a site shows its demos in. Its code is under `Component
 folders, and this part takes them in the order a visitor meets them.
 
 **The frame** (`Shell/`). `ShowroomShell` is a slim bar, a rail of the demos grouped by what a visitor comes for,
-and the corner beside the frame. On a phone the rail becomes a row of chips. The whole frame is in the colour of
-the demo on screen. An open guide takes the rail's place. Each demo names its icon, one of the framework's line
-icons, which the rail, the chips and the start draw. On a page that is no demo, such as the start, the frame
-draws no rail and no chips, and the stage takes the whole width: the start shows the demos itself.
+and the corner beside the frame. The rail is a slim glass column of icons: each demo is a link that shows its icon
+on a tile in its colour, with its name as its label for a screen reader and as its tip, and the one on screen is
+ringed with a lit dot beside it. A short line stands between the groups, whose names a screen reader still hears.
+The demos stay links, so each is a page of its own that an address or a search engine opens. On a phone the rail
+becomes a row of chips. The whole frame is in the colour of the demo on screen, and an open guide takes the rail's
+place. Each demo names its icon, one of the framework's line icons, which the rail, the chips and the start draw.
+On a page that is no demo, such as the start, the frame draws no rail and no chips, and the stage takes the whole
+width: the start shows the demos itself.
 
 **The start** (`Start/`). `ShowroomStart` is the showroom's front page, and it is a stage. Every demo it
 shows is a framed window on a deck, with one forward in the light. Under the deck are the forward demo's name,
@@ -300,6 +409,25 @@ brings another forward, by the dock, an arrow or a key, the start's own small mo
 in the bar. It replaces the entry, so the back button still leaves the page. On a site whose places have no
 addresses, nothing is read and nothing is written.
 
+The guide can bring a demo forward too. When it shows a demo's address on the start, the widget's script opens
+that place as a visitor's press would, and the place is the dock's button for that demo, which is a card of the
+page. So the demo comes forward exactly as if the visitor had pressed it, and the guide needs no tool of its own
+for it. Each button also says which window it brings forward, as the thing it controls, so the guide's light
+falls on the window that came forward and its answer stands beside that, not beside the small button.
+
+The whole stage stands on one screen. The deck is as tall as the screen leaves it once the stage's other parts
+and the room the frame keeps at its foot are taken off, between a floor and 640 pixels, and it gives way smoothly
+when that room changes. The floor is 290 pixels, the least at which a window still keeps its website and its chat
+side by side. On a wide screen less than 1,000 tall the stage gives up its lede and a little of its sizes, and
+under 820 tall the forward demo's name and its way in share one row and its line goes, since the dock's own
+button names the demo. From about 770 tall the stage then needs no scroll. Where the stage stands alone, as it
+does on the start, its light reaches down into the room the frame keeps, so a bar at the page's foot floats on
+the stage's floor.
+
+A window's website line is sized by the window's own width and not by the screen's, since a window can be small
+on a wide screen. A window stacks its website over its chat only when it is a phone's upright one, up to 400
+wide.
+
 On a phone the start is the same page with less on it. The title stands alone, without the lede. The deck is a
 row of upright windows, swiped one at a time, and a swipe brings a demo forward as an arrow does, so the name,
 the dock and the address follow it. The dock shows its icons only.
@@ -310,9 +438,18 @@ lines from it show which pins carry it.
 
 ![The start holds which demo is forward. It hands that down to the lit stage, the deck, each framed window and the dock, and hears it back from the deck and the dock. A site's page, three things it reads and two scripts stand around it](diagrams/louis-agent.web-components-showroom-start.svg)
 
-**A demo's page** (`Stage/`). `DemoStage` lays one out: a kicker, the page's one h1, a lede, the player, the cues,
-the notes and the offer. The cues are lit in step with the play, and each is a button that plays from its turn.
-The notes say what a custom agent could add. Each part is a section with its own address.
+**A demo's page** (`Stage/`). A demo's page stands on the same lit stage as the start, in the demo's colour, so
+walking in from the start feels like the window coming forward and growing. `DemoStage` lays it out. The kicker
+and the page's one h1 stand on the left, with the lede beside them on a wide screen. Under them the player takes
+the stage's whole width: a business's mock website is a window already, and a page whose agent is at work puts its
+player in a lit framed window with the word of where it runs.
+
+Under the player, what to watch is a glass panel of chapters side by side, a line of progress over them. Each is
+lit in step with the play, the newest pulsing, and each is a button that plays from its turn. Then come the notes,
+which say what a custom agent could add, each one a piece a visitor can press to ask the guide about it, and the
+offer. Each part is a section with its own address, so the guide's
+tour stops at the same places whatever the page looks like. On a phone the title and the lede stack, and so do the
+chapters.
 
 **A business's website, as a mock** (`Mock/`). `SiteMock` is a browser bar, the business's sample brand, a page
 that scrolls inside the mock, and its agent's widget in the corner. The page comes in one of three looks, with a
@@ -334,6 +471,10 @@ reading speed, a beat per tool. It folds the events with the same loop the eval 
 keeps one height: the list gives up room for the ending. The window's look is a Sass mixin of the framework's,
 which a site's own animated panels use too. A site can make the ending's guide button plain.
 
+**The play can wait.** A recorded chat takes a `Hold`. While it is on, the play waits before its next step and
+its next turn, and once it is let go it goes on from where it stood. A business's demo holds its play while the
+site's guide is talking, so the visitor follows one voice at a time.
+
 **The play moves the mock.** A recorded chat tells its page each tool call as it plays. So a mock goes to the
 place its agent showed: a section under the guide's spotlight, or a card pressed.
 
@@ -342,7 +483,7 @@ page's words, every page's places by address and the menu as links with each new
 the hint is a question to tap, the cues wait, and no usage line shows. The mock's chat and the guide's minimise
 and maximise with the same buttons.
 
-*Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`.
+*Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`, F134.4's `AHeldPlay` tests.
 
 *Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons),
 [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md),
@@ -426,45 +567,49 @@ Some parts know nothing of chats, demos or admins, so any page of any site can u
 size of the words around it. A screen reader passes over it. The icons are the diagrams library's one set, so a
 page and a diagram never hold two copies of a drawing.
 
-**A stage, and what stands on it** (`Components/Staging/`). Four parts, each usable alone.
+**A stage, and what stands on it** (`Components/Staging/`). There are four parts here, and each can be used alone.
 
-`LitStage` puts a light from above, a pool of it on the floor and the floor's lines behind whatever it holds.
-Its colour is an accent. With none, it is the colour of the place it stands in. The colour changes slowly when
-it changes, and at once for a visitor who asked for less motion.
+The first is the stage itself. `LitStage` puts a light from above, a pool of it on the floor and the floor's lines
+behind whatever it holds. Its colour is an accent. With none, it is the colour of the place it stands in. The
+colour changes slowly when it changes, and at once for a visitor who asked for less motion. A page that keeps
+empty room under the stage may let the light reach down into that room, by a variable the stage reads
+(`--lit-below`).
 
-`Deck` draws any items through the caller's template: one forward in the middle, the rest behind it in depth.
-An arrow at each side, the keyboard's arrows, or a press on an item behind asks for another to come forward.
-What an item behind holds can't be reached until it is forward. `DeckPlace` is the deck's one rule: how far from
-the middle each item stands, counted the short way round.
+The second is the deck. `Deck` draws any items through the caller's template: one forward in the middle, the rest
+behind it in depth. An arrow at each side, the keyboard's arrows, or a press on an item behind asks for another to
+come forward. What an item behind holds can't be reached until it is forward. `DeckPlace` is the deck's one rule:
+how far from the middle each item stands, counted the short way round.
 
-On a wide screen the items together lean a little towards the mouse while it is over the deck: at most 7
+On a wide screen the deck's items together lean a little towards the mouse while it is over the deck: at most 7
 degrees sideways and 5 up or down, with the mouse at an edge, and straight again when it leaves. The deck's
-module writes how far as two numbers on the deck, and the styles turn the items by them. It is only how the
-deck looks, so nothing the page holds changes. A finger is not followed, and a visitor who asked for less
-motion gets no lean.
+module writes how far as two numbers on the deck, and the styles turn the items by them. It is only how the deck
+looks, so nothing the page holds changes. A finger is not followed, and a visitor who asked for less motion gets
+no lean.
 
-On a screen up to 900 wide there is no room for depth, so the same items are a row. The styles make the row:
-each item upright, most of the row's width and never wider than a phone's, with its neighbours showing at the
-sides and no arrows. The browser does the swiping, and is told to stop on each item. The deck's module does
-the two things styles can't. When a swipe comes to rest it says which item stands in the middle, and the deck
-asks the page for that one, as an arrow would. When the page puts another item forward, it brings the row to
-it. On a wide screen nothing scrolls, so of these two the module does neither. The place that uses the deck lets
-go of the height it gave, since the row is as tall as its items.
+On a screen up to 900 wide there is no room for depth, so the same items are a row. The styles make the row: each
+item upright, most of the row's width and never wider than a phone's, with its neighbours showing at the sides
+and no arrows. The browser does the swiping, and is told to stop on each item. The deck's module does the two
+things styles can't. When a swipe comes to rest it says which item stands in the middle, and the deck asks the
+page for that one, as an arrow would. When the page puts another item forward, it brings the row to it. On a wide
+screen nothing scrolls, so of these two the module does neither. The place that uses the deck lets go of the
+height it gave, since the row is as tall as its items.
 
-`FramedWindow` is a bar like a browser's, with an address word, then a body. The body can't outgrow the frame or
-be scrolled inside it. The framework offers three bodies, which hold no words of their own. `SiteBody` is a
-website with its chat: a photo with a name and a line over it, and one question, its answer and one thing the
-agent showed. That thing is drawn as a small card: a photo if the site gives one, a name in bold and a few
-words. In a window narrower than 520 the website stands over its chat, and only the website's name and line
-and the chat's question and answer are drawn. The body goes by the width of its window, not the screen's:
-the frame's body is a container its content can measure. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is for a thing with
-nothing of its own to show yet: its icon, large, over its name and a line.
+The third is the window. `FramedWindow` is a bar like a browser's, with an address word, then a body. The body
+can't outgrow the frame or be scrolled inside it. The framework offers three bodies, which hold no words of their
+own. `SiteBody` is a website with its chat: a photo with a name and a line over it, and one question, its answer
+and one thing the agent showed. That thing is drawn as a small card: a photo if the site gives one, a name in bold
+and a few words. The body goes by the width of its window, not the screen's: the frame's body is a container its
+content can measure. So the website's line is a share of the window's width, within limits, and in a window up to
+400 wide, a phone's upright one, the website stands over its chat, and only the website's name and line and the
+chat's question and answer are drawn. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is
+for a thing with nothing of its own to show yet: its icon, large, over its name and a line.
 
-`Dock` is a row of icon buttons drawn from `DockItem`s, with a divider where the group changes. The current
-button shows its name, and the rest keep theirs for a screen reader. On a screen up to 900 wide the dock is
-its icons only, so it fits a phone: the current one keeps its tint and ring. Each button carries an id, is marked
-as a card of the page, and says its name as the card's title, which is where the page's list for a site's
-guide reads it.
+The fourth is the dock. `Dock` is a row of icon buttons drawn from `DockItem`s, with a divider where the group
+changes. The current button shows its name, and the rest keep theirs for a screen reader. On a screen up to 900
+wide the dock is its icons only, so it fits a phone: the current one keeps its tint and ring. Each button carries
+an id, is marked as a card of the page, and says its name as the card's title, which is where the page's list for
+a site's guide reads it. A button whose item names what it brings up (`DockItem.Shows`) also says it controls
+that, so a site's guide lights the thing shown and not the button.
 
 The deck and the dock share one idea: **the page owns the choice.** Which item is forward or current comes in from
 the page, and the part only says what the visitor asked for.

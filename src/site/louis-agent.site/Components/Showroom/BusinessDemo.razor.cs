@@ -4,6 +4,7 @@ using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
+using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Door;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -210,9 +211,19 @@ public partial class BusinessDemo : IDisposable
     /// <summary>The page's windows, if the site has them.</summary>
     private AgentWindows? Windows => Services.GetService<AgentWindows>();
 
-    /// <summary>The demo shows its business, so an ask the guide makes to it comes here.</summary>
+    /// <summary>Whether the site's guide is talking, if the site keeps it (F134.4).</summary>
+    private GuideActivity? Activity => Services.GetService<GuideActivity>();
+
+    /// <summary>The recording holds while the site's guide talks, so the visitor follows one voice at a time.</summary>
+    private bool GuideTalking => Activity?.Talking == true;
+
+    /// <summary>
+    /// The demo hears the guide start and stop talking, and shows its business, so an ask the guide makes to it comes
+    /// here.
+    /// </summary>
     protected override void OnInitialized()
     {
+        if (Activity is { } activity) activity.Changed += OnGuide;
         if (Windows is not { } windows) return;
         // The window's page is its website's, read as its own message reads it, so the guide's ask can send it on.
         _window = windows.Show(Identity, () => _mock?.ReadPageAsync() ?? Task.FromResult<Page?>(null));
@@ -232,9 +243,13 @@ public partial class BusinessDemo : IDisposable
         StateHasChanged();
     });
 
-    /// <summary>Lets go of the business and the windows' news with the demo.</summary>
+    /// <summary>The guide started or stopped talking: the recording is told whether to hold.</summary>
+    private void OnGuide() => InvokeAsync(StateHasChanged);
+
+    /// <summary>Lets go of the business, the windows' news and the guide's with the demo.</summary>
     public void Dispose()
     {
+        if (Activity is { } activity) activity.Changed -= OnGuide;
         if (Windows is { } windows) windows.Asked -= OnAsked;
         _window?.Dispose();
         GC.SuppressFinalize(this);

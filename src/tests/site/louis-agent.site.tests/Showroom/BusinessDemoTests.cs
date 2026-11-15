@@ -3,6 +3,7 @@ using System.Text;
 using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
@@ -231,5 +232,27 @@ public class BusinessDemoTests
             Assert.That(cut.FindAll(".recorded-chat"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll(".mock-live-tag"), Is.Empty);
         });
+    }
+
+    /// <summary>
+    /// While the site's guide talks (F134.4), the business's recorded play holds where it is, and once the guide is
+    /// done it goes on, so the visitor follows one voice at a time.
+    /// </summary>
+    [Test]
+    public void WhileTheGuideTalks_TheDemosPlayHolds()
+    {
+        using var ctx = Context();
+        var activity = new GuideActivity();
+        ctx.Services.AddSingleton(activity);
+        var cut = Demo(ctx);
+
+        // Waits for each state rather than retrying an assertion, which NUnit would count against the test.
+        activity.Set(true);
+        cut.WaitForState(() => cut.FindComponent<RecordedChat>().Instance.Hold);
+        activity.Set(false);
+        cut.WaitForState(() => !cut.FindComponent<RecordedChat>().Instance.Hold);
+
+        Assert.That(cut.FindComponent<RecordedChat>().Instance.Hold, Is.False,
+            "the play goes on once the guide is done");
     }
 }

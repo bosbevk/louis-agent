@@ -1,4 +1,5 @@
 @use "web/tools/glow";
+@use "web/tools/pressed";
 
 /* What a custom agent could add (F127.1): a panel lit from the left in the demo's colour (--accent, from the stage),
    its kicker in the colour, its heading, and the notes as cards in a row, each led by a plus in the colour. Every
@@ -53,5 +54,11 @@
     background: var(--accent);
     box-shadow: 0 0 12px var(--accent);
 }
-.note-title { font-size: 14px; color: var(--bs-emphasis-color); }
+.note-title { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.3; color: var(--bs-emphasis-color); }
+
+/* A note is a piece the visitor can select (F134.5), as a tile is: a pointer and a soft ring on hover, and pressed
+   once selected. */
+.note[data-piece] { cursor: pointer; transition: box-shadow .15s; }
+.note[data-piece]:hover { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .25); }
+.note[data-piece][data-selected] { @include pressed.look; }
 .note-text { font-size: 13px; line-height: 1.5; color: var(--bs-secondary-color); }

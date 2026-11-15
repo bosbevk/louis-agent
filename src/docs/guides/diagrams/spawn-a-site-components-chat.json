@@ -1,0 +1,62 @@
+{
+  "kind": "nested",
+  "title": "A new site's chat page: what it is made of",
+  "caption": "The site dotnet new makes is the framework's chat shell with the site's name in its logo slot: its views, its empty chat and its settings are the slots it can fill.",
+  "nested": {
+    "subtitle": "louis-agent.starter, Pages / ChatPage",
+    "root": {
+      "id": "page",
+      "name": "ChatPage",
+      "kind": "page",
+      "tone": "blue",
+      "aside": "/chat",
+      "in": [
+        "SessionId"
+      ],
+      "holds": [
+        {
+          "id": "shell",
+          "name": "ChatShell",
+          "kind": "general part",
+          "tone": "green",
+          "note": "the framework's chat: the sidebar, the header, the messages, the box and the work panel",
+          "in": [
+            "SessionId",
+            "Title",
+            "OpenSession",
+            "Features"
+          ],
+          "holds": [
+            {
+              "id": "logo",
+              "name": "Logo",
+              "kind": "a slot",
+              "tone": "blue",
+              "note": "the site's name"
+            }
+          ]
+        }
+      ]
+    },
+    "around": [
+      {
+        "id": "handoff",
+        "name": "ChatHandoff",
+        "side": "before",
+        "tone": "teal",
+        "heading": "What the page reads",
+        "note": "a prompt from an admin screen, put in the box",
+        "reads": true
+      },
+      {
+        "id": "api",
+        "name": "AgentApi",
+        "side": "after",
+        "tone": "teal",
+        "heading": "What it asks",
+        "note": "a new chat's session",
+        "calls": "opens"
+      }
+    ]
+  }
+}

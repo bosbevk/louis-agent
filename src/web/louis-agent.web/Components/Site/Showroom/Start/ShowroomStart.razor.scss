@@ -34,11 +34,18 @@
     text-wrap: balance;
 }
 
-/* The deck is as wide as the stage, and tall with the screen within limits. Each window fills its place on it. */
+/* The deck is as wide as the stage, and as tall as the screen leaves it, within limits: the screen's height less
+   everything else the stage holds (--start-rest: the frame's bar, the heading, the forward demo's name and way in,
+   and the dock) and less the room the frame keeps at its foot (--corner-room). So the whole stage stands on one
+   screen, clear of whatever is at the page's foot, and when that room changes the deck gives way smoothly. It is
+   never lower than a window needs to keep its website and its chat side by side (--deck-least): on a screen too
+   short for that, the page scrolls. Each window fills its place on it. */
+.start-stage { --start-rest: 490px; --deck-least: 290px; }
 .start-stage ::deep .deck {
     align-self: stretch;
-    height: clamp(320px, 54dvh, 640px);
+    height: clamp(var(--deck-least), calc(100dvh - var(--start-rest) - var(--corner-room, 0px)), 640px);
     margin-top: 10px;
+    transition: height .5s var(--web-ease, ease-out);
 }
 .start-window { width: 100%; height: 100%; }
 
@@ -85,6 +92,26 @@
     .start-lede { display: none; }
 }
 
+/* On a wide screen less tall than a large monitor's, the stage gives up its lede, a little of the forward demo's
+   name and some of the dock's margins, so the deck keeps the height its windows need and the stage still stands
+   on one screen above the bar. */
+@media (min-width: 901px) and (max-height: 1000px) {
+    .start-stage { --start-rest: 400px; }
+    .start-lede { display: none; }
+    .start-name { font-size: clamp(28px, 3vw, 44px); }
+    .start-stage ::deep .dock { margin: 12px 0 14px; }
+}
+
+/* On a short one, as a small laptop's is, the forward demo's name and its way in share one row and its line goes,
+   since the dock's own button already names it. */
+@media (min-width: 901px) and (max-height: 820px) {
+    .start-stage { --start-rest: 312px; }
+    .start-caption { flex-direction: row; justify-content: center; align-items: center; gap: 18px; }
+    .start-name { font-size: clamp(24px, 2.6vw, 32px); }
+    .start-line { display: none; }
+    .start-play { margin-top: 0; padding: 9px 18px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .start-play { transition: none; }
+    .start-play, .start-stage ::deep .deck { transition: none; }
 }
