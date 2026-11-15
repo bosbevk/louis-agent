@@ -102,11 +102,14 @@
     .start-stage ::deep .dock { margin: 12px 0 14px; }
 }
 
-/* On a short one, as a small laptop's is, it gives up a little more of its size. */
+/* On a short one, as a small laptop's is, the forward demo's name and its way in share one row and its line goes,
+   since the dock's own button already names it. */
 @media (min-width: 901px) and (max-height: 820px) {
-    .start-stage { --start-rest: 380px; }
-    .start-name { font-size: clamp(26px, 2.8vw, 36px); }
-    .start-play { margin-top: 6px; padding: 9px 18px; }
+    .start-stage { --start-rest: 312px; }
+    .start-caption { flex-direction: row; justify-content: center; align-items: center; gap: 18px; }
+    .start-name { font-size: clamp(24px, 2.6vw, 32px); }
+    .start-line { display: none; }
+    .start-play { margin-top: 0; padding: 9px 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
