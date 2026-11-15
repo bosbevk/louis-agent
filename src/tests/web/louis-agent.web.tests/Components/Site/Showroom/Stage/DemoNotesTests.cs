@@ -29,10 +29,32 @@ public class DemoNotesTests
             Assert.That(cut.Find(".notes-kicker").TextContent, Is.EqualTo("Make it yours"));
             Assert.That(cut.Find("h2.notes-heading").TextContent,
                 Is.EqualTo("A custom agent for your bakery could also"));
-            Assert.That(cut.FindAll("li.note .note-title").Select(title => title.TextContent),
+            Assert.That(cut.FindAll("li.note h3.note-title").Select(title => title.TextContent),
                 Is.EqualTo(new[] { "Take the orders", "Answer on WhatsApp" }));
             Assert.That(cut.Find("li.note .note-text").TextContent,
                 Is.EqualTo("It books the bread into your order book."));
+        });
+    }
+
+    /// <summary>
+    /// Each note is a piece of the page (F134.5), as a tile is: its id is its title's, and its title is the heading the
+    /// guide and the piece watch read, so a visitor can select it and ask about it.
+    /// </summary>
+    [Test]
+    public void EachNote_IsAPiece_ByItsTitle()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<DemoNotes>(parameters => parameters
+            .Add(notes => notes.Heading, "A custom agent for your bakery could also")
+            .Add(notes => notes.Notes, [new DemoNote("Take the orders", "It books the bread into your order book.")]));
+
+        var note = cut.Find("li.note");
+        Assert.Multiple(() =>
+        {
+            Assert.That(note.HasAttribute("data-piece"), Is.True);
+            Assert.That(note.Id, Is.EqualTo("take-the-orders"));
+            Assert.That(note.QuerySelector("h3")?.TextContent, Is.EqualTo("Take the orders"));
         });
     }
 }
