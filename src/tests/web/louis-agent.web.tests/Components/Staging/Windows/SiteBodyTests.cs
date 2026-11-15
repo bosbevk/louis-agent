@@ -110,4 +110,19 @@ public class SiteBodyTests
             Assert.That(narrow, Does.Contain("grid-template-rows: 36% minmax(0, 1fr);"), "the website, then the chat");
         });
     }
+
+    /// <summary>
+    /// The website's line is as large as its window lets it be, not as the screen does: a window can be small on a
+    /// wide screen, and a line sized by the screen ran into the website's name and menu there.
+    /// </summary>
+    [Test]
+    public void TheWebsitesLine_FollowsItsWindow_NotTheScreen()
+    {
+        string body = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Staging/Windows/SiteBody.razor.scss")).ReplaceLineEndings("\n");
+        int start = body.IndexOf("\n.body-line {", StringComparison.Ordinal);
+        string line = start < 0 ? "" : body[start..body.IndexOf("\n}", start + 1, StringComparison.Ordinal)];
+
+        Assert.That(line, Does.Contain("cqi").And.Not.Contain("vw"));
+    }
 }

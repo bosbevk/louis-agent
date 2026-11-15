@@ -233,16 +233,36 @@ public class ShowroomShellTests
 
     /// <summary>
     /// A frame whose corner holds the guide as a bar keeps the bar's room free at the stage's foot (F134.3, F134's
-    /// rule 5), so no page ends under the bar: the room the corner kept grows to the bar's height.
+    /// rule 5), so no page ends under the bar. The room is the height the bar says it stands, its chips or the answer
+    /// over it and all, and the bar's usual height until it has said.
     /// </summary>
     [Test]
-    public void WithTheGuideAsABar_TheStageKeepsItsRoom()
+    public void WithTheGuideAsABar_TheStageKeepsTheRoomTheBarSays()
     {
         string path = Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Showroom/Shell/ShowroomShell.razor.scss");
         string styles = File.ReadAllText(path).ReplaceLineEndings("\n");
 
-        Assert.That(styles,
-            Does.Contain(".showroom:has(~ .showroom-corner .chat-widget.is-bar) { --corner-room: 150px; }"));
+        Assert.That(styles, Does.Contain(
+            ".showroom:has(~ .showroom-corner .chat-widget.is-bar) { --corner-room: var(--bar-room, 150px); }"));
+    }
+
+    /// <summary>
+    /// Where the stage stands alone, as on the start, its light reaches down into the room kept for the bar, so the
+    /// bar floats on the stage's floor as the design drew it, and not on a dark band under the stage.
+    /// </summary>
+    [Test]
+    public void AStageThatStandsAlone_IsLitDownIntoTheBarsRoom()
+    {
+        string web = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Components");
+        string frame = File.ReadAllText(Path.Combine(web, "Site/Showroom/Shell/ShowroomShell.razor.scss"));
+        string stage = File.ReadAllText(Path.Combine(web, "Staging/LitStage.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(frame,
+                Does.Contain(".showroom-body.is-alone .showroom-stage { --lit-below: var(--corner-room); }"));
+            Assert.That(stage, Does.Contain("bottom: calc(-1 * var(--lit-below, 0px));"));
+        });
     }
 }

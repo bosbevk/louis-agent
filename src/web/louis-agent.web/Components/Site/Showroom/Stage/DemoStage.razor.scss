@@ -25,12 +25,13 @@
     text-transform: uppercase;
     color: var(--accent);
 }
+/* The title is as large as K drew it: it follows the screen's width, between a phone's size and a headline's. */
 .stage-title {
     margin: 8px 0 0;
-    font-size: 36px;
+    font-size: clamp(34px, 3.7vw, 60px);
     font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -.02em;
+    line-height: 1.04;
+    letter-spacing: -.035em;
     text-wrap: balance;
     padding-bottom: .1em;
     @include glow.text-fade(var(--accent));

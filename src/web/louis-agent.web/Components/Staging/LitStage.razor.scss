@@ -10,10 +10,12 @@
     position: relative;
     isolation: isolate;
 }
-/* The backdrop is cut at the stage's edge. What stands on the stage is not in it, so it is never cut. */
+/* The backdrop is cut at the stage's edge. What stands on the stage is not in it, so it is never cut. A page that
+   keeps room under the stage, with nothing in it, may let the backdrop reach down into that room (--lit-below). */
 .lit-back {
     position: absolute;
     inset: 0;
+    bottom: calc(-1 * var(--lit-below, 0px));
     z-index: -1;
     overflow: hidden;
     pointer-events: none;

@@ -19,6 +19,23 @@ public class DemoStageOnAPhoneTests
         return start < 0 ? "" : styles[start..styles.IndexOf("\n}", start, StringComparison.Ordinal)];
     }
 
+    /// <summary>
+    /// A demo's title is as large as the K mockup drew it, following the screen's width between its limits, and
+    /// keeps its smaller size on a phone.
+    /// </summary>
+    [Test]
+    public void TheTitle_FollowsTheScreen_AndStaysSmallOnAPhone()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Stage/DemoStage.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(styles, Does.Contain("font-size: clamp(34px, 3.7vw, 60px);"));
+            Assert.That(PhoneRules("DemoStage"), Does.Contain(".stage-title { font-size: 26px; }"));
+        });
+    }
+
     /// <summary>The head's two columns are a wide screen's: on a phone the title and the lede stack.</summary>
     [Test]
     public void OnAPhone_TheHeadStacks() =>
