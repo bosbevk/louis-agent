@@ -82,6 +82,24 @@ public class ThemeSheetTests
         });
     }
 
+    /// <summary>
+    /// F151.2: Sass writes an attribute's value without its quotes, <c>[data-theme=glass]</c>, and the block is still
+    /// the theme's.
+    /// </summary>
+    [Test]
+    public void ABlockAsSassWritesIt_WithoutQuotes_IsTheThemes()
+    {
+        const string theme = """
+                             :root[data-theme=glass][data-style=dark] {
+                               --web-ink: #f5f5f5;
+                               --web-panel: #000000;
+                               --web-pane-fill: rgba(255, 255, 255, .06);
+                             }
+                             """;
+
+        Assert.That(ThemeSheet.Missing(theme, Glass, SiteStyle.Dark, Names), Is.Empty);
+    }
+
     /// <summary>A sheet with no block for the theme leaves every name unset, even with another theme's in it.</summary>
     [Test]
     public void ASheetWithNoBlockForTheTheme_LeavesEveryNameUnset()

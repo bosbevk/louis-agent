@@ -1,0 +1,121 @@
+/* Glass, in the dark (F151.2, ADR 0124): the glass mockup's dark values, under "Finish one: glass cards". Black is
+   the base, white carries the words, and the purple is Ultraviolet. Only a pane is glass: almost clear, with no
+   border of its own, a bright rim that is brightest at the bottom left and the top right, the lights inside those
+   corners, a blur of what is behind it, and no shadow. A bar is solid with a hairline, and a press is solid violet
+   with white words. The red, amber, blue and green of errors, warnings and the eval screens, the caption on a photo's
+   mat and the hover grey are the framework's own, since the mockup does not show them. The faces and the easing are
+   the mockup's, which are the framework's. A theme sets every name the framework sets; ThemeSheet holds it. */
+
+@use "web/tools/colours";
+
+:root[data-theme="glass"][data-style="dark"] {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
+    @include colours.both(bs-danger, #d9675f);
+    @include colours.both(bs-warning, #d4a72c);
+    @include colours.both(bs-info, #7fa8e8);
+    @include colours.both(web-ok, #6cbf94);
+    @include colours.both(web-purple, #9282ff);          // the purple accent, light enough to read on black
+    @include colours.both(bs-body-bg, #050506);          // the page
+    @include colours.both(bs-secondary-bg, #101013);     // a panel
+    @include colours.both(bs-tertiary-bg, #19191e);      // the menu
+    @include colours.both(bs-success-text-emphasis, #dcdce6, web-success-text);
+    @include colours.both(web-menu-bg, #19191e);
+
+    // Only ever see-through.
+    @include colours.numbers(web-overlay, #ffffff);
+    @include colours.numbers(web-shadow, #000000);
+    @include colours.numbers(web-failed, #d9675f);
+    @include colours.numbers(web-backdrop, #000000);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #3a22c4;
+    --bs-primary-bg-subtle: #110a40;
+    --bs-primary-text-emphasis: #e2dfff;
+    --bs-success: #dcdce6;
+    --web-success-deep: #a3a3ad;
+    --bs-success-bg-subtle: #19191e;
+    --web-sidebar-foot: #101013;
+    --web-sidebar-foot-deep: #050506;
+    --bs-link-color: #f4f4f6;
+
+    --web-on-primary: #ffffff;
+    --web-bright: #ffffff;
+    --web-soft-text: #dcdce6;
+    --web-settings-text: #dcdce6;
+    --web-error-text: #e8a39c;
+    --web-photo-text: #333333;
+    --web-border-hover: #3a3a44;
+    --web-scrollbar: #24242b;
+    --web-dialog-bg: #101013;
+    --web-code-number: #dcdce6;
+    --web-code-comment: #7c7c88;
+    --web-live-dot: #9282ff;
+
+    --bs-emphasis-color: #ffffff;
+    --bs-body-color: #f4f4f6;
+    --bs-secondary-color: #a3a3ad;
+    --bs-tertiary-color: #7c7c88;
+    --bs-border-color: #24242b;
+    --web-code-bg: #19191e;
+    --web-cta: #6b4dff;
+    --bs-box-shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
+    --bs-box-shadow: 0 24px 50px -24px #000;
+    --web-glow: 0 0 0 4px rgba(107, 77, 255, .18), 0 10px 30px -10px rgba(107, 77, 255, .3);
+    --bs-font-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    // A pane: almost clear, its edge drawn by the rim, the lights inside two corners, no shadow.
+    --web-pane-fill:
+        linear-gradient(125deg, rgba(255, 255, 255, .12) 0%, rgba(255, 255, 255, .035) 36%,
+            rgba(255, 255, 255, .012) 60%, rgba(255, 255, 255, .07) 100%),
+        rgba(255, 255, 255, .012);
+    --web-pane-edge: none;
+    --web-pane-rim:
+        conic-gradient(from 218deg, #fff 0deg, rgba(255, 255, 255, .42) 46deg, rgba(255, 255, 255, .8) 96deg,
+            rgba(255, 255, 255, .32) 148deg, #fff 180deg, rgba(255, 255, 255, .42) 232deg,
+            rgba(255, 255, 255, .8) 280deg, rgba(255, 255, 255, .34) 330deg, #fff 360deg);
+    --web-pane-light:
+        radial-gradient(84px 8px at 17% 100%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(8px 64px at 0% 78%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(92px 8px at 80% 0%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(8px 56px at 100% 23%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(44px 6px at 10% 0%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(6px 40px at 100% 85%, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, 0) 70%);
+    --web-pane-shadow: none;
+    --web-pane-blur: blur(14px) brightness(1.12);
+    --web-pane-radius: 22px;
+
+    // A bar: the page shows through it a little, blurred, over a hairline.
+    --web-bar-fill: rgba(5, 5, 6, .86);
+    --web-bar-edge: 1px solid rgba(255, 255, 255, .12);
+    --web-bar-blur: blur(12px);
+
+    // A press: solid violet, white words; the second an outline.
+    --web-press-fill: #6b4dff;
+    --web-press-ink: #ffffff;
+    --web-press-edge: 1.5px solid rgba(255, 255, 255, .34);
+
+    // The mark: a ball of violet glass, a light from below, a rim of the palest violet, a white letter.
+    --web-mark-fill:
+        radial-gradient(58% 58% at 50% 100%, rgba(226, 223, 255, .85) 0%, rgba(146, 130, 255, .3) 45%,
+            rgba(146, 130, 255, 0) 100%),
+        radial-gradient(64% 64% at 50% 40%, #9282ff 0%, #6b4dff 50%, #3a22c4 86%, #110a40 100%);
+    --web-mark-gloss: inset 0 0 0 1.5px rgba(226, 223, 255, .55), inset 0 -3px 8px rgba(17, 10, 64, .35);
+    --web-mark-ink: #ffffff;
+
+    // You, and the agent.
+    --web-you: #ffffff;
+    --web-agent: #9282ff;
+
+    // Ultraviolet, light to dark.
+    --web-violet-0: #e2dfff;
+    --web-violet-1: #9282ff;
+    --web-violet-2: #6b4dff;
+    --web-violet-3: #3a22c4;
+    --web-violet-4: #110a40;
+
+    color-scheme: dark;
+}

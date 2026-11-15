@@ -36,12 +36,35 @@ framework checks the id when the theme is made.
 
 ![The types: a class per theme adds its area through the framework's builder, the area carries the theme, and the site's areas list it](diagrams/louis-agent.web.themes-interface.svg)
 
+### 3. A theme's values
+
+A theme's look is a sheet of values for each style, in its folder under `Styles/`, such as
+`Styles/theme-glass/_dark.scss`. The sheet is one block, under `:root[data-theme="glass"][data-style="dark"]`,
+that sets every name the framework sets: about sixty colours, each written through the framework's `colours.both`
+or `colours.numbers` so its two forms agree, the faces and the easing, and the surfaces, such as a pane's fill, rim
+and blur. When the page's `<html>` says that theme and that style, the block's values win over the framework's.
+
+Glass in the dark is black with white words and Ultraviolet for the purple. A pane is almost clear, has no border
+of its own, takes its edge from a rim that is brightest at the bottom left and the top right, has two lights inside
+those corners, blurs what is behind it and throws no shadow. A bar is solid with a hairline, and a press is solid
+violet with white words. The mark is a ball of violet glass with a white letter.
+
+### 4. Held to the framework's names
+
+The project's own build compiles `Styles/themes.scss` to `wwwroot/css/themes.css`, through the same Sass compiler
+the sites use. That sheet forwards the framework's colours and surfaces, then every theme's sheets, so the
+compiled file holds the framework's names and each theme's blocks. No site loads it. It is there so the tests can
+ask the framework's `ThemeSheet` which names a theme's block for one style leaves unset, against the names the
+framework really sets.
+
 ## Structure
 
 | Path | What's in it |
 |---|---|
 | `Glass/GlassTheme.cs` | The glass theme, its area's name, and `Glass()`, the extension a site names |
 | `Flat/FlatTheme.cs` | The flat theme, its area's name, and `Flat()` |
+| `Styles/theme-glass/_dark.scss` | Glass's values in the dark style |
+| `Styles/themes.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`wwwroot/css/`, not in git) |
 
 ## Configuration
 
@@ -60,12 +83,15 @@ for each style.
 
 The tests are in `src/tests/web/louis-agent.web.themes.tests`, on NUnit, a folder per theme as the project has.
 `GlassThemeTests` and `FlatThemeTests` name each theme on a site's areas and check that they list it by its id and
-its name, once, even when it is named twice, and that glass named before flat comes first.
+its name, once, even when it is named twice, and that glass named before flat comes first. `GlassSheetTests` reads
+the compiled `themes.css` and asks `ThemeSheet` which of the framework's names glass leaves unset in the dark
+style; the answer must be none.
 
 ## Limits and plans
 
-The themes hold no sheet of values yet, so a site that names one lists it among its themes and still looks as it
-did. No site names one yet.
+Glass sets its dark style only, and flat neither, so a page in glass's light style or in flat keeps the
+framework's values. No site names a theme yet, and no site lists a theme's sheets, so no site looks different.
+Today's components read the colours, not yet the surface names, so a pane is not glass anywhere yet.
 
 ## Related docs
 
