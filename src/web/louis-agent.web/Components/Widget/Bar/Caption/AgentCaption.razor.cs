@@ -1,6 +1,7 @@
 using LouisAgent.Web.Chats.Calls;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -30,6 +31,14 @@ public partial class AgentCaption : IAsyncDisposable
     [Parameter]
     public Offered? Offer { get; set; }
 
+    /// <summary>How the answer was made (F134.5), shown on the caption's back.</summary>
+    [Parameter, EditorRequired]
+    public AnswerWork Work { get; set; } = null!;
+
+    /// <summary>The currency the answer's cost is shown in, as the talk's is.</summary>
+    [Parameter]
+    public CurrencyChoice? Currency { get; set; }
+
     /// <summary>Asks with a choice's label, as a card in the talk does.</summary>
     [Parameter]
     public EventCallback<string> OnChoose { get; set; }
@@ -51,6 +60,12 @@ public partial class AgentCaption : IAsyncDisposable
 
     /// <summary>The caption's module, loaded once it is drawn.</summary>
     private JsModule? _module;
+
+    /// <summary>Whether the caption is turned over to how the answer was made.</summary>
+    private bool _turned;
+
+    /// <summary>Turns the caption over, or back to the answer.</summary>
+    private void Turn() => _turned = !_turned;
 
     /// <summary>Once on the page, the caption asks its module to stand it beside the place the agent lit.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)

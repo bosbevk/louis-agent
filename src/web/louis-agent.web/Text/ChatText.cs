@@ -180,6 +180,14 @@ public sealed record ChatText
     /// <summary>Under the agent's caption, the way into the box (F134.4).</summary>
     public string OrAskAnything { get; init; } = "Or ask me anything, in your own words";
 
+    /// <summary>
+    /// The caption's button that turns it over to how the answer was made, and its back's title (F134.5).
+    /// </summary>
+    public string HowIDidThat { get; init; } = "How I did that";
+
+    /// <summary>The button on the caption's back that turns it to the answer again (F134.5).</summary>
+    public string BackToTheAnswer { get; init; } = "Back to the answer";
+
     /// <summary>The agent bar's button that opens the whole talk, and folds it again (F134.3).</summary>
     public string TalkOpen { get; init; } = "Show the whole talk";
 

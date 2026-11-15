@@ -1,19 +1,59 @@
 @* The agent's caption (F134.4): its last answer, standing beside the place it showed, as the J and K mockups have it.
-   The agent's name on it, its words, the choices it offered drawn as the talk draws them, and a way into the box
-   under them: a label for the box, so a press puts the visitor there with no script. *@
+   The agent's name on it with what the answer cost, its words, the choices it offered drawn as the talk draws them,
+   and a way into the box under them: a label for the box, so a press puts the visitor there with no script. It turns
+   over (F134.5) to how the answer was made: the tools it called, how long it thought, and what the framework
+   measured of it, the line the ledger's numbers make. *@
 @using LouisAgent.Web.Components.Blocks
+@using LouisAgent.Web.Usage
 <aside class="agent-caption" aria-live="polite" @ref="_caption">
-    <div class="caption-who">@Title</div>
-    @if (Words.Length > 0)
+    @if (_turned)
     {
-        <div class="caption-says">@Markdown.ToHtml(Words)</div>
+        <div class="caption-who">@Text.HowIDidThat</div>
+        <ul class="caption-tools">
+            @foreach (var tool in Work.Tools)
+            {
+                <li><b>@tool.Name</b> @tool.What</li>
+            }
+        </ul>
+        <div class="caption-sum">
+            @if (Work.Thought > 0)
+            {
+                <span class="caption-thought">@string.Format(Text.ThoughtFor, Work.ThoughtSeconds)</span>
+            }
+            @if (Work.Usage is { } usage)
+            {
+                <span class="caption-usage" title="@UsageFormat.Detail(usage, Currency)">
+                    @UsageFormat.Line(usage, Currency)
+                </span>
+            }
+        </div>
+        <div class="caption-foot">
+            <button class="caption-turn" type="button" @onclick="Turn">@Text.BackToTheAnswer</button>
+        </div>
     }
-    @if (Offer is { } offer)
+    else
     {
-        <OfferCards Offer="offer" Chosen="OnChoose"/>
+        <div class="caption-who">
+            @Title
+            @if (Work.Usage is { } usage)
+            {
+                <span class="caption-cost">@UsageFormat.Cost(usage, Currency)</span>
+            }
+        </div>
+        @if (Words.Length > 0)
+        {
+            <div class="caption-says">@Markdown.ToHtml(Words)</div>
+        }
+        @if (Offer is { } offer)
+        {
+            <OfferCards Offer="offer" Chosen="OnChoose"/>
+        }
+        <div class="caption-foot">
+            <label class="caption-ask" for="composer-input">@Text.OrAskAnything</label>
+            <span class="caption-buttons">
+                <button class="caption-turn" type="button" @onclick="Turn">@Text.HowIDidThat</button>
+                <button class="caption-talk" type="button" @onclick="OnTalk">@Text.TalkOpen</button>
+            </span>
+        </div>
     }
-    <div class="caption-foot">
-        <label class="caption-ask" for="composer-input">@Text.OrAskAnything</label>
-        <button class="caption-talk" type="button" @onclick="OnTalk">@Text.TalkOpen</button>
-    </div>
 </aside>

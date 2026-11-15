@@ -1,3 +1,4 @@
+using System.Globalization;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Chats.Calls;
 using LouisAgent.Web.Usage;
@@ -22,6 +23,9 @@ public sealed record AnswerWork(IReadOnlyList<AnswerTool> Tools, double Thought,
         double thought = turn.Blocks.Sum(block => block.ThinkingSeconds ?? 0);
         return new AnswerWork(tools, thought, turn.Usage);
     }
+
+    /// <summary>How long it thought, in seconds to a tenth, as the caption writes it: <c>1.3</c>.</summary>
+    public string ThoughtSeconds => Thought.ToString("0.#", CultureInfo.InvariantCulture);
 
     /// <summary>A call by its name, and what it was about: a shown place's address, or an offer's question.</summary>
     private static AnswerTool ToolOf(Block call) =>
