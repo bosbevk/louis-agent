@@ -1124,6 +1124,55 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## The agent runs the room, and nothing moves that it didn't move (F134.4, 2026-11-15)
+
+**What it is.** The guide at the foot of the showroom now runs the room from there. When it shows a place, its
+answer stands as a caption beside that place on a wide screen, with the choices it offered drawn in it, the
+suggested one marked. When it shows a demo on the start, that demo's window comes forward. While it talks, a
+business's recorded demo holds its play, and goes on when the guide is done. And the whole talk opens as a drawer at
+the side, or as a sheet on a phone.
+
+**Nothing moves on its own.** F134's rule 2 says nothing on the page moves unless an agent's tool call caused it.
+So the caption doesn't place itself where it likes: the guide's own call lit a place, the widget's script leaves a
+mark on it, and the caption stands beside that mark. The window that comes forward is the same story. The guide
+shows the demo's address, the script presses the place the address names, and that place is the dock's button.
+That one was already true before the step started, found while the plan was researched, so its step is only a test.
+A behaviour that already works is still worth pinning, and the test was seen failing once by taking the dock's mark
+away.
+
+**Reuse twice.** The caption's choices are the talk's own cards, so a choice looks and answers the same in both
+places, a box choice too. And the shared state that tells a demo the guide is talking is the same Observer the
+showroom already used twice, registered beside them. Neither needed a new idea.
+
+**A race, caught by a flaky run.** The bar told the page "talking" straight from the runner's event. The runner
+raises that event from its stream and from a redraw timer, on different threads. A late timer call could read
+"streaming" just before the end and leave the guide talking for good, which would hold a demo forever. The test
+passed alone and failed once in a batch, with the wrong two values. Telling the page on the bar's own dispatcher,
+reading the runner as it is then, closed it, and the test passed three runs in a row.
+
+**What looking found.** The tests said the caption was right; the screen said it was crowded. With a caption
+standing, the site's suggestion chips stood over it too, two rows of shortcuts at once. On a phone, with the whole
+talk open, the chips came back above the sheet and covered the header's button. Both are now held by tests: the
+chips give way to a caption and to the open talk. The CSS also had a trap: the bar was centred with a transform,
+and a transform makes the bar the frame for anything fixed inside it, so the drawer couldn't reach the screen's
+edge. Centring by margins put the bar where it was and freed the drawer.
+
+**What it cost.** Five live turns of the real guide on Haiku 5.5: the caption beside the restaurant's page head
+(US$0.0042), the drawer (US$0.0034), and a walk of the start and one at 390 px (US$0.0049 together). About
+US$0.0125 in all.
+
+**What went wrong on the way.**
+
+- The caption's first test streamed a turn through the client and failed inside the stream reader, on the fixture's
+  shape, not on the caption. It now hands the bar a runner whose chat holds the turn.
+- The held recorded chat's test timed out at bUnit's one-second wait, though the play was right: the whole recording
+  plays once let go. It waits five seconds now.
+- On the start the caption stands beside the dock's button the guide lit, so it covers the right edge of the window
+  that came forward. Lighting the forward window instead would place it better; it is left for Louis to decide.
+
+**Where it sits.** Skill 4 (tool design): every movement on the page is a tool call's effect. Skill 20
+(extensibility): a player that can wait, told by a state any part can read.
+
 ## One engine, a second look, and an orb that only says what is true (F134.3, 2026-11-15)
 
 **What it is.** In the showroom the guide was a button in a corner. Now it is a bar at the foot of the page, as the
