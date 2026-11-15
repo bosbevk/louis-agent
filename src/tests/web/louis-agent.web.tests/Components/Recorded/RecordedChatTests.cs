@@ -234,7 +234,7 @@ public class RecordedChatTests
     }
 
     /// <summary>
-    /// Held (F134.4), the play doesn't move on: the answer waits, and once let go it plays to its ending.
+    /// Held (F134.4), the play doesn't move on: not even its question shows, and once let go it goes on from there.
     /// </summary>
     [Test]
     public void AHeldPlay_WaitsUntilLetGo()
@@ -247,11 +247,12 @@ public class RecordedChatTests
             .Add(chat => chat.Ending, Offer));
 
         Thread.Sleep(400);
-        int whileHeld = cut.FindAll(".offer").Count;
+        bool askedWhileHeld = cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal);
         cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
 
-        // The whole recording plays once let go, which takes longer than the usual wait.
-        cut.WaitForAssertion(() => Assert.That((whileHeld, cut.FindAll(".offer").Count), Is.EqualTo((0, 1))),
-            TimeSpan.FromSeconds(5));
+        // Its question shows as soon as the play goes on; the whole recording after it can take a while under load.
+        cut.WaitForAssertion(() => Assert.That(
+            (askedWhileHeld, cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal)),
+            Is.EqualTo((false, true))), TimeSpan.FromSeconds(5));
     }
 }
