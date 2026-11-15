@@ -90,7 +90,7 @@ public class BusinessDemoTests
             .Add(demo => demo.Mark, (RenderFragment)(_ => { }))
             .Add(demo => demo.Tagline, "Guesthouse · Yzerfontein")
             .Add(demo => demo.HeroLine, "Four rooms, five minutes from the beach.")
-            .Add(demo => demo.HeroPhoto, "images/showroom/seemeeu-banner.webp")
+            .Add(demo => demo.HeroPhoto, "images/showroom/seemeeu-lounge.webp")
             .Add(demo => demo.HeroPhotoAlt, "Waves on the rocks")
             .Add(demo => demo.HeroAction, "Book a room")
             .Add(demo => demo.Pages, (RenderFragment)(_ => { }))

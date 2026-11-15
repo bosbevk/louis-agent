@@ -124,8 +124,21 @@ yourself* puts the visitor in a live chat with the business's agent, in the same
 and a first question.
 
 A website's places are the ones its recording was sent with its first question, kept in
-`src/site/recordings/pages/`, and a test holds the two lists equal. So a website can gain a photo or words on a
-place it has without anything else changing, and a new section or card means recording the conversation again.
+`src/site/recordings/pages/`, and a test holds the two lists equal. Its home page's words were sent too. So a
+website can gain a photo without anything else changing, and new words, a new section or a new card mean recording
+the conversation again.
+
+The photos are in `wwwroot/images/showroom/`, each a WebP the site serves itself. They are third-party, from Pexels
+under its licence, chosen with no recognisable person or brand in them. The three hero photos are recorded here
+with where they came from. Two of them are cut from the bottom of the original, which takes a real business's sign
+and a flag out of the stoep, and a painting of people out of the study. Where the other photos came from is not
+recorded in the repo.
+
+| Photo | What it shows | Its page on Pexels |
+|---|---|---|
+| `seemeeu-lounge.webp` | A lounge that opens onto the sea | [14746032](https://www.pexels.com/photo/hotel-room-with-view-on-the-sea-14746032/) |
+| `wheatfield-stoep.webp` | A stoep's tables in the late sun | [19648312](https://www.pexels.com/photo/patio-of-a-restaurant-19648312/) |
+| `koringland-desk.webp` | A study, a desk under a lamp | [12900435](https://www.pexels.com/photo/stack-of-books-on-wooden-table-12900435/) |
 
 *Decided in:* F128.2, F127.1, F127.2,
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).

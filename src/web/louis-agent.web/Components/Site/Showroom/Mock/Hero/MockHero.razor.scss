@@ -101,13 +101,16 @@
 .look-editorial .mock-scene.is-photo { border-radius: .3em; box-shadow: 0 1.6em 3em -1.8em var(--mock-brand); }
 .look-editorial .mock-action { border-radius: .25em; }
 
-/* Banner: the photo a tall band across the whole page, washed deep in the brand colour from its foot, with the words
-   set on that wash in the colour that reads on the brand, and the button turned round to match. */
+/* Banner: the photo a tall band across the whole page, washed deep in the brand colour from its foot and from the
+   side its words stand on, with the words set on that wash in the colour that reads on the brand, and the button
+   turned round to match. */
 .look-banner .mock-hero { position: relative; display: block; min-height: 0; }
 .look-banner .mock-scene { height: 27em; }
 .look-banner .mock-scene ::deep svg { height: 100%; }
 .look-banner .mock-scene.is-photo::after {
-    background: linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 88%, transparent) 8%, transparent 70%);
+    background:
+        linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 88%, transparent) 8%, transparent 70%),
+        linear-gradient(to right, color-mix(in srgb, var(--mock-brand) 60%, transparent), transparent 55%);
 }
 .look-banner .mock-photo-badge { top: 1.6em; bottom: auto; left: var(--mock-gutter); }
 .look-banner .mock-hero-words {

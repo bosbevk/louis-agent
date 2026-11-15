@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 117 | 93 |
+| Features (`F`) | 119 | 94 |
 | Fixes (`FX`) | 144 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (129 in the TODO)
+## Open (130 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -58,7 +58,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
-| F134 | The showroom is a stage the agent runs (Louis, 2026-11-11: "this looks off and those icons", "everything is a bit too flat"; 2026-11-13: "make it very fancy", his pick F, centre stage, then "the agent must do it all", "things that can be shared, must go to framework"), a parent with eight children: F134.1 the start is a stage, from general parts of the framework (line icons, a lit stage, a deck, a framed window, a dock), done when `/demos` is the stage at both widths and each window's words are held to its recording (built 2026-11-15); F134.2 a demo on the stage, done when the five demo pages play in the new look (built 2026-11-15); F134.3 the agent bar, the chat widget's `Corner` or `Bar` layout, done when a typed question is answered mid-walk and no page ends under the bar (built 2026-11-15); F134.4 the agent runs the room, done when a live walk moves the stage only through its tools (built 2026-11-15); F134.5 see how it did that, done when every answer turns over to numbers that match the ledger (built 2026-11-15); F134.6 better photos; F134.7 component diagrams, a new kind of picture in our own tool drawn from JSON in a new look, done when every project that has components shows one in its design doc; F134.8 flows in the new look, only the flow kind: a track for each source and a point for each arrow so lines run side by side, a shape on a box where it means something, and the component diagram's look, done when the docs' flows and the site's seven pages are drawn that way and no class chart's picture changed (built 2026-11-14); F134.9 the cards picture redone, the overview every project doc opens with: the project a headline on a light, its parts hung from a lit rail, one accent, done when the 45 cards pictures are drawn that way (built 2026-11-14; the old card rules stay in the pictures' shared style until the next kind is redone); F134.10 the sequence picture redone in the cards' look: a participant a badge and a name, a lifeline a faint lit rail, a call a beam from violet to blue, a key for what the picture has, done when the 64 sequence pictures are drawn that way (built 2026-11-14); F134.11 the class chart redone in the cards' look: a type a glass card with a badge for its kind, a link's kind in its line with the structure in the accent and a use in grey, a key for what the picture has, done when the 58 class charts are drawn that way (built 2026-11-14); F134.12 flows and component diagrams brought into that look: glass panels, a small title, no dot grid, a decision as a box with pointed ends, and on a light page whites a tad darker, done when the 91 flows and the component diagram are drawn that way (built 2026-11-14); F134.13 a composite structure diagram, a new kind: the inside of one class, its parts, the ports on its edge as pins and what joins them, placed by the flow's layout, done when AgentEngine is drawn that way in core's design doc (built 2026-11-14) | Next |
+| F151 | The rest of the site in the showroom's look, with the agent bar on it (Louis, 2026-11-15: "we need to update the rest of the website to a more modern design also with the new agent chat widget as a new feature", "give me 3 design for a new website theme, based on our new chat widget", "super fancy and modern, think out of the box"): three designs as pages he can open first, then his pick and its own plan | Now, next |
+| F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
@@ -152,10 +153,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (117 done)
+## Features (119 done)
 
 | Id | When | What |
 |---|---|---|
+| F134 | 2026-11-15 | The showroom is a stage the agent runs, closed: its thirteen children built, a demo's own website sized by its window with its chat beside it (Louis: "each inner website, needs to be expanded, and made pretty and bigger", "everything must kinda fit 1080p"), and its rules kept in the web's design doc and ADR 0115 |
+| F134.6 | 2026-11-15 | Better photos (Louis's pick of the three candidates): a lounge onto the sea, a stoep in the late sun and a study as the three hero photos, from Pexels, two of them cut so that no real business's sign, flag or painted face shows; each listed with its page in the site's design doc |
 | F134.5 | 2026-11-15 | See how it did that (unattended): the caption turns over to the answer's tools, thinking time and usage line (`AnswerWork`), its cost on the front; the bar carries the talk's total and opens the drawer; a selected piece's chip in the bar; a demo's notes are pieces; a live answer's back matched its four ledger rows exactly; walks US$0.0074 |
 | F134.4 | 2026-11-15 | The agent runs the room (unattended): the guide's answer as a caption beside the place it lit, with its offered choices; a demo's window forward when the guide shows it; a business's demo held while the guide talks (`GuideActivity`, `RecordedChat.Hold`); the whole talk a drawer on a wide screen and a sheet on a phone; the chips give way; the site's design doc rewritten as talk; live checks about US$0.0125 |
 | F134.3 | 2026-11-15 | The agent bar (the J and K mockups' bar, unattended): the chat widget's second layout, one engine; the orb in four states read from the chat by a rule; the box always there; the site's suggestions as chips; the showroom keeps the bar's room; the showroom's guide is the bar; a live walk with a typed question cost US$0.0051 |

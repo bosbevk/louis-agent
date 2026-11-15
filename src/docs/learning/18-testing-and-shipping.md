@@ -1193,8 +1193,17 @@ and 390×844, and the phone picture caught a fault of this very change, a window
 
 One thing stopped short. The websites were to gain sections, and a test refused: it holds each website's places
 equal to the list its recording was sent, since the agent could only show what it was told was there. A new
-section means recording the conversation again, and that is a run to ask for, not to slip in. So the websites
-gained photos and words on the places they already had.
+section means recording the conversation again, and that is a run to ask for, not to slip in. The home page's
+words were sent too, so the paragraphs first added there came out again, and the websites gained photos on the
+cards they already had.
+
+**The photos (F134.6).** You chose the three candidates from a page that set each beside the photo it would
+replace. At that page's size they were clean. At the size a hero draws them, two were not: the stoep had a real
+business's sign and a flag in it, and the study had a painting of people along its top. The showroom's rule for
+photos (ADR 0115) is no recognisable person or brand, so both were fetched again, cut from the bottom, and the
+stoep lost its string lights along with its sign. A photo is checked at the size it will be shown, not at the size
+it was chosen. The photo host serves WebP itself, so nothing had to be converted. The three files are 247, 115 and
+49 KB.
 
 **Where it sits.** Skill 18, testing and shipping: what a test can prove and what only looking can, and a walk by
 the real agent as the last check before a thing is called working. Skill 4, tool design: the guide's rule for the

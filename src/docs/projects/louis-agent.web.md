@@ -375,6 +375,12 @@ a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 010
 The showroom is the area a site shows its demos in. Its code is under `Components/Site/Showroom/`, in four
 folders, and this part takes them in the order a visitor meets them.
 
+Two things hold on every showroom page. Nothing moves by a script: what moves, moves because the visitor pressed
+something or because a tool call of the guide said so. The light on a place is the guide's `ShowPage`, the choices
+are its `Offer`, and a window comes forward because the guide showed its address. There is no scripted tour and no
+Back or Next. And the guide's box is always there: its choices are shortcuts, and a visitor can type anything at
+any time.
+
 **The frame** (`Shell/`). `ShowroomShell` is a slim bar, a rail of the demos grouped by what a visitor comes for,
 and the corner beside the frame. The rail is a slim glass column of icons that stays beside the stage, about the
 middle of the screen. Each demo is a link that shows its line icon in its colour. Its name is its label for a screen

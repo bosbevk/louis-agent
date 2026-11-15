@@ -206,8 +206,8 @@ public class ShowroomPagesTests
 
     /// <summary>
     /// A business's website shows real photos (Louis: "more detail and images", "like having a real image of the
-    /// room"), each one the site serves: the guesthouse its banner, rooms, breakfast and beach; the restaurant its
-    /// dining room, its five dishes and its wine; the law practice its rooms and what to bring. Each home page's
+    /// room"), each one the site serves: the guesthouse its lounge, rooms, breakfast and beach; the restaurant its
+    /// stoep, its five dishes and its wine; the law practice its rooms and what to bring. Each home page's
     /// two ways in show one of them again, so a home is never words alone.
     /// </summary>
     [TestCase(typeof(GuesthouseDemoPage), 8)]

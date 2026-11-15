@@ -1,13 +1,11 @@
 @* Seemeeu Guesthouse's website (F127.1; three pages since F127.2): home, with its two ways in each a card with a
    photo, its rooms with a card and a photo a kind, and the stay, with breakfast on the stoep and the beach each beside
-   a photo and how a stay works. Every fact is one its agent knows. Its places are the ones its recording was sent,
-   so a new one means recording it again. *@
+   a photo and how a stay works. Every fact is one its agent knows. Its words and its places are the ones its
+   recording was sent, so changing either means recording it again. *@
 <MockPage Path="/" Label="Home">
     <MockSection Path="/welcome" Heading="Welcome to Seemeeu">
         <ChildContent>
             <p>A guesthouse five minutes from the beach in Yzerfontein, with breakfast on the stoep every morning.</p>
-            <p>Dogs are welcome in the garden room, which has its own gate to the fenced garden. Sixteen Mile Beach
-                and the harbour are a short drive, and the West Coast National Park about twenty minutes away.</p>
         </ChildContent>
         <Cards>
             <MockCard Path="/welcome/rooms" Title="Four rooms" Opens="/rooms"
@@ -24,7 +22,7 @@
 <MockPage Path="/rooms" Label="Rooms">
     <MockSection Path="/rooms/choose" Heading="Each with its own bathroom">
         <ChildContent>
-            <p>Four rooms, breakfast included. Each has its own bathroom and wifi, and parking is in the yard.</p>
+            <p>Four rooms, breakfast included.</p>
         </ChildContent>
         <Cards>
             <MockCard Path="/rooms/sea-view" Title="The sea-view doubles" Note="R1,450 a night"
