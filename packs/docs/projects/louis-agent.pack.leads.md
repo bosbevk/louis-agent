@@ -19,21 +19,39 @@ after the visitor's yes (the rule is in the guide's voice).
 
 ## How it works
 
-- `Tools/LeadTools.SendLead(name, contact, wants)`: refuses a lead with a part missing and says which, so the guide asks
-  for it; sends a whole one with the clock's UTC time; a sender's failure comes back as text with its reason, never a
-  throw into the loop (ADR 0005). Its texts are `Messages/LeadsToolMessage`.
-- `Sending/ILeadSender` is the seam (Strategy with a Null Object): `LogLeadSender` writes the lead to the log, so the PC
-  and the tests never send; `ResendLeadSender` posts a `ResendMessage` to Resend's API with the key as a bearer
-  token. A sender says whether it `Mails`, and the tool tells the model when a lead only reached the log, so the
-  guide never says Louis has it when he doesn't.
-- `LeadsPack`: toolset `leads`, off without `LEADS_TO`; the sender picked by `RESEND_API_KEY`; the guide
-  (`prompts/toolsets/leads.md`) says to ask for the three things one at a time, repeat them back, and send on yes, once.
-  The decision is [ADR 0101](../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md).
-- A demonstration's lead (F127.2): the turn carries who it runs as (`TurnIdentity`, ambient, from
-  `louis-agent.composition`), and when that identity is a demonstration (a showroom business), the lead names it, the
-  mail's subject is `[demo] {Identity}: {Name}` (`LeadsMailText`), and the reply tells the model it was a
-  demonstration (`SentDemo`, `LoggedDemo`), so it tells the visitor. One pack, one `SendLead`
-  ([ADR 0116](../../../src/docs/adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)).
+### 1. Sending a lead
+
+`Tools/LeadTools.SendLead(name, contact, wants)` is the one tool. A lead with a part missing is refused, and the
+answer says which part, so the guide asks for it. A whole lead is sent with the clock's UTC time. If the sender fails,
+the failure comes back as text with its reason, never as an exception thrown into the loop. The tool's texts are in
+`Messages/LeadsToolMessage`.
+
+*Decided in:* ADR 0005.
+
+### 2. The sender behind a seam
+
+`Sending/ILeadSender` is the seam, a Strategy with a Null Object. `LogLeadSender` writes the lead to the log, so the
+PC and the tests never send anything. `ResendLeadSender` posts a `ResendMessage` to Resend's API, with the key as a
+bearer token. Each sender says whether it `Mails`, and the tool tells the model when a lead only reached the log, so
+the guide never says Louis has it when he doesn't.
+
+### 3. The pack and its guide
+
+`LeadsPack` holds the toolset `leads`, which is off without `LEADS_TO`. `RESEND_API_KEY` picks the sender. The guide,
+`prompts/toolsets/leads.md`, says to ask for the three things one at a time, repeat them back, and send on the
+visitor's yes, once.
+
+*Decided in:* [ADR 0101](../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md).
+
+### 4. A demonstration's lead
+
+The turn carries who it runs as, `TurnIdentity`, an ambient value from `louis-agent.composition`. When that identity
+is a demonstration, one of the showroom's businesses, the lead names it, the mail's subject is
+`[demo] {Identity}: {Name}` (`LeadsMailText`), and the reply tells the model it was a demonstration (`SentDemo`,
+`LoggedDemo`), so the model tells the visitor. It's still one pack with one `SendLead`.
+
+*Decided in:* F127.2,
+[ADR 0116](../../../src/docs/adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
 ![How it works: a lead is sent once, on the yes, and the key picks Resend or the log](diagrams/louis-agent.pack.leads-flow.svg)
 

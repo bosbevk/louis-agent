@@ -37,12 +37,27 @@ write first.
 
 ## Where a test goes
 
-- **The folder mirrors the source**, and the namespace is the folder: a test of `src/engine/louis-agent.core.web/Robots/RobotsPolicy.cs`
-  is `src/tests/engine/louis-agent.core.web.tests/Robots/RobotsPolicyTests.cs`, in `LouisAgent.Core.Web.Tests.Robots`.
-- **A test that leaves its process is an integration test** (F18 step 7.6): it starts a real process (git, bash, an interpreter, `dotnet`, the eval runner), opens Mongo or needs the Puls stack. It lives in a sibling project, `{name}.integration-tests` (`src/tests/engine/louis-agent.core.integration-tests`, `.api.`, `.orchestrator.`, `.pack.shop-prices.`), its class is `[Category("Integration")]`, and it asks for the tool through `Outside.Tool` (a missing tool skips the test on your machine and fails it on CI) or `Outside.Stack` (the Puls stack's browser or SearXNG: always skips when its address is not set). What a unit and an integration project share goes in a library beside them (`louis-agent.api.testing`: the in-memory API host, the built runner dlls, the store contracts that run against memory and Mongo). `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests` hold it. In the solution they sit in the folders `unit`, `integration` and `shared`.
-- **The project mirrors the project:** a pack's tests in `packs/tests/louis-agent.pack.{name}.tests`, an identity's in
-  `demos/{name}/tests/louis-agent.identity.{name}.tests`. No test project references another.
-- A test file holds at most 400 lines; split a long one by what it tests.
+A test's folder mirrors the source, and its namespace is the folder. So a test of
+`src/engine/louis-agent.core.web/Robots/RobotsPolicy.cs` is
+`src/tests/engine/louis-agent.core.web.tests/Robots/RobotsPolicyTests.cs`, in `LouisAgent.Core.Web.Tests.Robots`. The
+project mirrors the project, too. A pack's tests are in `packs/tests/louis-agent.pack.{name}.tests`, and an identity's
+in `demos/{name}/tests/louis-agent.identity.{name}.tests`. No test project references another, and a test file holds
+at most 400 lines, so split a long one by what it tests.
+
+A test that leaves its process is an integration test. That's one that starts a real process (git, bash, an
+interpreter, `dotnet`, the eval runner), opens Mongo, or needs the Puls stack. It lives in a sibling project named
+`{name}.integration-tests`, such as `src/tests/engine/louis-agent.core.integration-tests`, the API's in
+`demos/puls/tests/`, the orchestrator's in `demos/louis-agent/tests/`, and the packs' in `packs/tests/`. Its class is
+`[Category("Integration")]`.
+
+It asks for what it needs from outside in one of two ways. `Outside.Tool` asks for a program, and a missing one skips
+the test on your machine but fails it on CI. `Outside.Stack` asks for the Puls stack's browser or SearXNG, and always
+skips when its address isn't set. Whatever a unit project and an integration project share goes in a library beside
+them, such as `louis-agent.api.testing`, which holds the in-memory API host, the built runner dlls, and the store
+contracts that run against both memory and Mongo. `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests`
+hold all this, and in the solution the projects sit in the folders `unit`, `integration` and `shared`.
+
+*Decided in:* F18 step 7.6.
 
 ## Use the shared fakes
 

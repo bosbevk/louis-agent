@@ -24,32 +24,53 @@ One shop's branches, step by step.
 
 ![Branches: the town found, the shop asked for in a box widened only when empty, the three nearest kept](diagrams/louis-agent.pack.where-to-buy-flow.svg)
 
-- **One toolset, `where-to-buy`.** `WhereToBuyPack` defines it with its guide (`prompts/toolsets/where-to-buy.md`)
-  and two tools. It needs no setting, so it loads wherever it is named.
-- **The town.** `FindBranches(shop, town)` asks Nominatim for the town (South Africa only, the first answer), which
-  gives its centre, its municipality and its province.
-- **The branches.** `BranchFinder` asks for the shop by name in a box around the town, about 16 km each way, then half
-  a degree, then a degree and a half, widening only when a box finds none. The smallest comes first because the map
-  answers at most 20 hits in no distance order, so a box that reaches a city loses the town's own branch to the city's
-  (FX39). Only places Nominatim files as a shop count, and `ShopNames` reads
-  a short name as the full one (`PnP` is `Pick n Pay`, `Woolies` is `Woolworths`). It keeps the three nearest, by the
-  distance from the town's centre (`Distance`, the haversine formula).
-- **Shops near the user.** `FindShopsNear(town)` is the same search for someone who named no shop: `q=supermarket` in a
-  box of about 3 km, then 16, then 55, keeping what the map files as a supermarket and has a name for, the ten nearest.
-  The first box is small because a city's 16 km box holds 20 hits in no order: Sea Point's real answer held a fabric shop
-  and lost the nearest (FX43).
-- **The place.** A branch's place is the smallest name the map gives, but never an election ward: the map files
-  *Swartland Ward 10* where a suburb goes, so `MapAddress` skips it for the town or city above it.
-- **The answer.** `BranchPrinter` writes the town's municipality and province (the province is what `EstimatePrices`
-  needs), then a table: each branch's name, street, place, distance and whether it is in the town's municipality,
-  framed as untrusted map data. With none in the town, the note says so and names the nearest.
-- **Being a good guest.** `MapSearch` keeps Nominatim's usage policy: one request a second for the whole process, a
-  User-Agent that names the app, a ten-second limit. A map that doesn't answer is logged and said, never retried in a
-  loop (`MapUnavailableException`, `WhereToBuyLogMessage`).
-- **The shop rules.** The checks an eval file names to prove an answer about shops live apart from the pack, in
-  `packs/evals/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
-  [ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price given as fact,
-  the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
+One toolset, `where-to-buy`. `WhereToBuyPack` defines it with its guide (`prompts/toolsets/where-to-buy.md`) and two
+tools. It needs no setting, so it loads wherever it is named.
+
+### 1. The town
+
+`FindBranches(shop, town)` asks Nominatim for the town (South Africa only, the first answer), which gives its centre,
+its municipality and its province.
+
+### 2. The branches
+
+`BranchFinder` asks for the shop by name in a box around the town, about 16 km each way, then half a degree, then a
+degree and a half, widening only when a box finds none. The smallest comes first because the map answers at most 20
+hits in no distance order, so a box that reaches a city loses the town's own branch to the city's (FX39). Only places
+Nominatim files as a shop count, and `ShopNames` reads a short name as the full one (`PnP` is `Pick n Pay`, `Woolies`
+is `Woolworths`). It keeps the three nearest, by the distance from the town's centre (`Distance`, the haversine
+formula).
+
+### 3. Shops near the user
+
+`FindShopsNear(town)` is the same search for someone who named no shop: `q=supermarket` in a box of about 3 km, then
+16, then 55, keeping what the map files as a supermarket and has a name for, the ten nearest. The first box is small
+because a city's 16 km box holds 20 hits in no order: Sea Point's real answer held a fabric shop and lost the nearest
+(FX43).
+
+### 4. The place
+
+A branch's place is the smallest name the map gives, but never an election ward: the map files *Swartland Ward 10*
+where a suburb goes, so `MapAddress` skips it for the town or city above it.
+
+### 5. The answer
+
+`BranchPrinter` writes the town's municipality and province (the province is what `EstimatePrices` needs), then a
+table: each branch's name, street, place, distance and whether it is in the town's municipality, framed as untrusted
+map data. With none in the town, the note says so and names the nearest.
+
+### 6. Being a good guest
+
+`MapSearch` keeps Nominatim's usage policy: one request a second for the whole process, a User-Agent that names the
+app, a ten-second limit. A map that doesn't answer is logged and said, never retried in a loop
+(`MapUnavailableException`, `WhereToBuyLogMessage`).
+
+### 7. The shop rules
+
+The checks an eval file names to prove an answer about shops live apart from the pack, in
+`packs/evals/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
+[ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price
+given as fact, the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
 
 ![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
 
@@ -59,14 +80,17 @@ One shop's branches, step by step.
 
 ## Design notes
 
-- **In the town's municipality, not within a radius.** A branch is the town's when the map files it under the same
-  municipality: Malmesbury's Checkers on the N7 is outside the town's edge but is the town's shop. A radius would
-  call a branch in the next town "in town".
-- **The nearest three, never more.** Enough to choose from, small enough that the model never reads a long list.
-- **Credit the map.** OpenStreetMap's data is under the ODbL, which asks for credit wherever it is shown, so the guide
-  and the cook say *Branches from © OpenStreetMap contributors.* under the branches.
-- **The map is a shared public service.** One request a second is the policy; a busy public Puls needs its own
-  Nominatim or a paid geocoder (*Limits and plans*).
+In the town's municipality, not within a radius. A branch is the town's when the map files it under the same
+municipality: Malmesbury's Checkers on the N7 is outside the town's edge but is the town's shop. A radius would call a
+branch in the next town "in town".
+
+The nearest three, never more. Enough to choose from, small enough that the model never reads a long list.
+
+Credit the map. OpenStreetMap's data is under the ODbL, which asks for credit wherever it is shown, so the guide and
+the cook say *Branches from © OpenStreetMap contributors.* under the branches.
+
+The map is a shared public service. One request a second is the policy; a busy public Puls needs its own Nominatim or
+a paid geocoder (*Limits and plans*).
 
 ## Structure
 
@@ -86,11 +110,12 @@ None. The User-Agent and the pace are code, so a change to either is a reviewed 
 
 ## Extending it
 
-- **Another kind of shop** needs nothing: a hardware store or a pharmacy is the same `FindBranches` call. A short name
-  people use for it is a line in `ShopNames`.
-- **Another map** (our own Nominatim, a paid geocoder) is another `MapSearch`, behind an interface when a second one
-  exists.
-- A new pack like this one is [Build a pack](../../../src/docs/guides/build-a-pack.md).
+Another kind of shop needs nothing: a hardware store or a pharmacy is the same `FindBranches` call. A short name
+people use for it is a line in `ShopNames`.
+
+Another map (our own Nominatim, a paid geocoder) is another `MapSearch`, behind an interface when a second one exists.
+
+A new pack like this one is [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
 ## Tests
 
@@ -103,9 +128,9 @@ its golden of the model-facing texts. The checks' tests are in `packs/tests/loui
 
 ## Limits and plans
 
-- Nominatim's public service allows one request a second; Puls in public needs its own instance.
-- The map holds what its mappers added: a branch it lacks can't be named, and the note says so.
-- The fixtures are hand-written in Nominatim's shape; a live check against the real service is a hand check.
+Nominatim's public service allows one request a second; Puls in public needs its own instance. The map holds what its
+mappers added: a branch it lacks can't be named, and the note says so. The fixtures are hand-written in Nominatim's
+shape; a live check against the real service is a hand check.
 
 ## Related docs
 

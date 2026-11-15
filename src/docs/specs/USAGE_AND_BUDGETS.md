@@ -33,19 +33,20 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 
 ## 2. What exists today
 
-- **Recorded (F1, F2):** every model request is one line in the usage ledger (§4.1), priced from `config/prices.json`
-  (§4.2), and tagged with its task and run (§4.3). The M1 baseline is in
-  [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
-- **Shown (F3):** a usage line after every answer (CLI on stderr, the web app with the chat's total, Rider with
-  `USAGE_IN_CHAT=true`), `/usage` in every host, `usage` on the API's `message_delta` (Claude's four token fields,
-  summed over the turn, plus `requests`, `cost`, `currency`, `unpriced`) and on `error` when a request had returned,
-  and cost per reply, per error and per run in the orchestrator's comms log, which equals the ledger's total for the
-  run. A usage tab and API over the whole ledger are F11.
-- The only limit is the Anthropic account's own: a credit balance and a monthly spend limit, set in the Anthropic
-  Console. When either is hit, every request fails with a 400 ("credit balance is too low" / "reached your specified
-  API usage limits") and the orchestrator marks each remaining error as failed. `-Resume` recovers afterwards, but
-  nothing warned beforehand.
-- No estimates and no louis-agent budgets yet (F6, F7).
+**Recorded (F1, F2).** Every model request is one line in the usage ledger (§4.1), priced from `config/prices.json`
+(§4.2), and tagged with its task and run (§4.3). The M1 baseline is in
+[BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
+
+**Shown (F3).** A usage line after every answer (CLI on stderr, the web app with the chat's total, Rider with
+`USAGE_IN_CHAT=true`), `/usage` in every host, `usage` on the API's `message_delta` (Claude's four token fields,
+summed over the turn, plus `requests`, `cost`, `currency`, `unpriced`) and on `error` when a request had returned, and
+cost per reply, per error and per run in the orchestrator's comms log, which equals the ledger's total for the run. A
+usage tab and API over the whole ledger are F11.
+
+The only limit is the Anthropic account's own: a credit balance and a monthly spend limit, set in the Anthropic
+Console. When either is hit, every request fails with a 400 ("credit balance is too low" / "reached your specified API
+usage limits") and the orchestrator marks each remaining error as failed. `-Resume` recovers afterwards, but nothing
+warned beforehand. No estimates and no louis-agent budgets yet (F6, F7).
 
 ## 3. Concepts
 
@@ -88,42 +89,46 @@ is off, with a warning.
 }
 ```
 
-- Token counts come from `UsageDetails`: `cache_read` = `CachedInputTokenCount`, `cache_write` =
-  `AdditionalCounts["CacheCreationInputTokens"]`, `output` = `OutputTokenCount`, `reasoning` = `ReasoningTokenCount`.
-  The four kinds don't overlap: the Anthropic adapter's `InputTokenCount` is the whole prompt, so `input` =
-  `InputTokenCount − cache_read − cache_write` (measured; see the optimisation spec's *What the Anthropic adapter
-  reports*). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded
-  separately only to show how much of the output was thinking. The Anthropic adapter doesn't report them, so
-  `reasoning` is `null` there. Providers that report nothing (some Ollama models) record counts as `null`, never as 0.
-- **The prompt's hash** (F18 step 4c): `prompt_hash` is a SHA-256 over the leading system messages, `ChatOptions.Instructions`
-  and the tools in the order sent (each one's name, description and JSON schema), written as compact UTF-8 JSON. The
-  conversation after the prompt, the model and the settings (temperature, output limit, thinking) are not hashed, so two runs
-  whose rows differ only in `prompt_hash` are an A/B comparison of a prompt change. It is taken in
-  `UsageRecordingChatClient` when the request starts, before any provider strategy, so the same prompt hashes the same on
-  every provider, and every round of a turn carries the same one. A cancelled request has its hash too; a sub-session roll-up
-  has none (it is no request of its own) and its line is unchanged. Rows written before 2026-10-25 read back as null: unknown,
-  never `""`. The encoding is pinned by a test: changing it changes every hash.
-- **A replayed answer** (F18 step 4e): when an eval replays a recording's model answers, the request is still a row, with
-  `cache_hit: true` (written only then; every other line is unchanged). Its tokens are known zeros (`0`, never `null`, and never the
-  recorded counts) and its cost is a known `0` in the table's currency and `as_of`, even for a model the table doesn't price
-  (`CostCalculator`), so a replay's total is $0 and a ledger reading adds a hit up like any other row (ADR 0007). Rows written
-  before step 4e read back with `cache_hit` null.
-- The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
-  below. Several processes can append to it at once (the API and the orchestrator share one in the demo).
-- Sessions are in memory, but the ledger is not: totals survive restarts.
-- **A sub-session's roll-up** (F5): when a turn asks another agent (`AskAgent`), each reply of that agent adds one row
-  with `purpose: "sub_session"`, `round: 0`, `stop: "sub_session"`, `model: "sub-session:{peer}"`, the parent's host,
-  session and turn, the child's four token counts and charged cost, and a `requests` field saying how many model
-  requests it stands for (`requests` is written on these rows only). It is written to the parent's ledger *and* added
-  to the parent turn's in-memory records, so the usage line, the chat total, `/usage` and `GET /v1/sessions/{id}` count the
-  specialist's work, weighted by `requests`. The specialist's own rows are in the ledger it ran on (the same file when
-  peers share `LOG_DIRECTORY`, as Puls and its specialist do), linked by `parent`, so **ledger reports list roll-ups
-  without totalling them** (`usage-probe --ledger`, `--cache-gaps`): a turn counts its roll-up, a ledger counts the
-  requests. The row stays so a session's full cost, delegation included, can be read back later (credits,
-  reconciliation). Two limits: the child's `unpriced` count isn't carried, since a row has one cost or none, so a
-  specialist with some unpriced requests looks priced in the parent (its own rows still say which); and a reply that
-  times out before its usage event rolls up nothing, though the specialist was charged for what it had done (again,
-  its own rows have it).
+Token counts come from `UsageDetails`: `cache_read` = `CachedInputTokenCount`, `cache_write` =
+`AdditionalCounts["CacheCreationInputTokens"]`, `output` = `OutputTokenCount`, `reasoning` = `ReasoningTokenCount`.
+The four kinds don't overlap: the Anthropic adapter's `InputTokenCount` is the whole prompt, so `input` =
+`InputTokenCount − cache_read − cache_write` (measured; see the optimisation spec's *What the Anthropic adapter
+reports*). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded separately
+only to show how much of the output was thinking. The Anthropic adapter doesn't report them, so `reasoning` is `null`
+there. Providers that report nothing (some Ollama models) record counts as `null`, never as 0.
+
+The prompt's hash (F18 step 4c): `prompt_hash` is a SHA-256 over the leading system messages,
+`ChatOptions.Instructions` and the tools in the order sent (each one's name, description and JSON schema), written as
+compact UTF-8 JSON. The conversation after the prompt, the model and the settings (temperature, output limit,
+thinking) are not hashed, so two runs whose rows differ only in `prompt_hash` are an A/B comparison of a prompt
+change. It is taken in `UsageRecordingChatClient` when the request starts, before any provider strategy, so the same
+prompt hashes the same on every provider, and every round of a turn carries the same one. A cancelled request has its
+hash too; a sub-session roll-up has none (it is no request of its own) and its line is unchanged. Rows written before
+2026-10-25 read back as null: unknown, never `""`. The encoding is pinned by a test: changing it changes every hash.
+
+A replayed answer (F18 step 4e): when an eval replays a recording's model answers, the request is still a row, with
+`cache_hit: true` (written only then; every other line is unchanged). Its tokens are known zeros (`0`, never `null`,
+and never the recorded counts) and its cost is a known `0` in the table's currency and `as_of`, even for a model the
+table doesn't price (`CostCalculator`), so a replay's total is $0 and a ledger reading adds a hit up like any other
+row (ADR 0007). Rows written before step 4e read back with `cache_hit` null.
+
+The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
+below. Several processes can append to it at once (the API and the orchestrator share one in the demo). Sessions are
+in memory, but the ledger is not: totals survive restarts.
+
+A sub-session's roll-up (F5): when a turn asks another agent (`AskAgent`), each reply of that agent adds one row with
+`purpose: "sub_session"`, `round: 0`, `stop: "sub_session"`, `model: "sub-session:{peer}"`, the parent's host, session
+and turn, the child's four token counts and charged cost, and a `requests` field saying how many model requests it
+stands for (`requests` is written on these rows only). It is written to the parent's ledger *and* added to the parent
+turn's in-memory records, so the usage line, the chat total, `/usage` and `GET /v1/sessions/{id}` count the
+specialist's work, weighted by `requests`. The specialist's own rows are in the ledger it ran on (the same file when
+peers share `LOG_DIRECTORY`, as Puls and its specialist do), linked by `parent`, so **ledger reports list roll-ups
+without totalling them** (`usage-probe --ledger`, `--cache-gaps`): a turn counts its roll-up, a ledger counts the
+requests. The row stays so a session's full cost, delegation included, can be read back later (credits,
+reconciliation). Two limits: the child's `unpriced` count isn't carried, since a row has one cost or none, so a
+specialist with some unpriced requests looks priced in the parent (its own rows still say which); and a reply that
+times out before its usage event rolls up nothing, though the specialist was charged for what it had done (again, its
+own rows have it).
 
 ### 4.2 Prices
 
@@ -157,10 +162,10 @@ read as free. Local models (Ollama) are priced at 0 on purpose; a model without 
 
 A session can be tagged so its usage rolls up to a task and a run:
 
-- `POST /v1/sessions` accepts optional `{ "task": "fix:<error id>", "run": "<run id>", "service": "<name>" }`; the
-  orchestrator sets them for every fix (and build, in the build-mode POC).
-- The orchestrator's own triage requests are recorded with `host: "orchestrator"`, `purpose: "triage"`, session
-  `triage_{error id}` and the same run id (no task), so a run's total includes both agents.
+`POST /v1/sessions` accepts optional `{ "task": "fix:<error id>", "run": "<run id>", "service": "<name>" }`; the
+orchestrator sets them for every fix (and build, in the build-mode POC). The orchestrator's own triage requests are
+recorded with `host: "orchestrator"`, `purpose: "triage"`, session `triage_{error id}` and the same run id (no task),
+so a run's total includes both agents.
 
 ### 4.4 Reconciling with the real bill (optional)
 
@@ -215,16 +220,16 @@ Budgets live in `config/budgets.json` (not secret; an example ships):
 }
 ```
 
-- **Scopes:** session, task (by kind: fix, build, triage), run, day, month — optionally narrowed by host, model or
-  service. Limits in money (`usd`) or tokens (`tokens`, for unpriced or local models).
-- **Several budgets can apply at once**; the tightest one decides.
-- **Actions when reached:**
-  - `warn` — note it and carry on;
-  - `ask` — finish the current request, then pause and ask the person (web app / CLI / Rider) whether to continue,
-    and by how much;
-  - `stop` — finish the current request, then end the turn or task cleanly with a clear message.
-- A request already sent is never cut off mid-answer: budgets are checked **before** each model request, using the
-  next request's estimated cost (its prefix plus history at input price, plus the output cap's typical use).
+A budget's scope is a session, a task (by kind: fix, build, triage), a run, a day or a month, and it can be narrowed
+by host, model or service. Its limit is in money (`usd`) or in tokens (`tokens`, for unpriced or local models).
+Several budgets can apply at once, and the tightest one decides.
+
+When a budget is reached, its action says what happens. `warn` notes it and carries on. `ask` finishes the current
+request, then pauses and asks the person (in the web app, the CLI or Rider) whether to continue, and by how much.
+`stop` finishes the current request, then ends the turn or the task cleanly with a clear message.
+
+A request that's already been sent is never cut off mid-answer. Budgets are checked before each model request, using
+the next request's estimated cost: its prefix plus the history at the input price, plus the output cap's typical use.
 
 ### 6.2 Enforcement points
 
@@ -261,27 +266,30 @@ Same `AGENT_API_KEY` rules as the other endpoints.
 
 ### 7.2 Web app
 
-- **Chat:** a small line under each answer — `1.9k in · 26k cached · 412 out · $0.004` — and the chat's total in the
-  header; a budget bar appears when a session budget exists, and turns amber at a warning threshold.
-- **Usage tab** (new, beside Branches): today / this month, by model, host and service; the most expensive sessions
-  and tasks; cache-hit rate; budgets with used / remaining and their status; links from a task to its comms log.
-- **Ask action:** when a budget's action is `ask`, the reply ends with "Budget reached ($0.50 for this chat). Continue
-  with another $0.50?" and buttons, instead of an error.
+**Chat.** A small line under each answer — `1.9k in · 26k cached · 412 out · $0.004` — and the chat's total in the header;
+a budget bar appears when a session budget exists, and turns amber at a warning threshold.
+
+Usage tab (new, beside Branches): today / this month, by model, host and service; the most expensive sessions and
+tasks; cache-hit rate; budgets with used / remaining and their status; links from a task to its comms log.
+
+**Ask action.** When a budget's action is `ask`, the reply ends with "Budget reached ($0.50 for this chat). Continue with
+another $0.50?" and buttons, instead of an error.
 
 ### 7.3 CLI and Rider
 
-- CLI: one line after each answer (`turn: 3 requests · 31k tokens (26k cached) · $0.006 · chat total $0.04`), and
-  `/usage` and `/budget` commands that answer locally, like `/tools`.
-- Rider (ACP): the same one-line summary as a final `agent_message_chunk` when enabled (`USAGE_IN_CHAT=true`), since
-  Rider has no dedicated usage UI.
+CLI: one line after each answer (`turn: 3 requests · 31k tokens (26k cached) · $0.006 · chat total $0.04`), and
+`/usage` and `/budget` commands that answer locally, like `/tools`. Rider (ACP): the same one-line summary as a final
+`agent_message_chunk` when enabled (`USAGE_IN_CHAT=true`), since Rider has no dedicated usage UI.
 
 ### 7.4 Orchestrator and demo
 
-- **Comms log:** tokens and cost per message and per fix (louis-agent and the orchestrator's own triage shown
-  separately), the estimate next to the actual, and run totals plus budget status in the run summary.
-- **`fixes.jsonl` / `decisions.jsonl`:** tokens, cost and estimate per entry.
-- **Demo script:** the up-front estimate (5.2), and at the end: total cost, cost per fix, estimate accuracy, and the
-  budgets' remaining amounts.
+**Comms log.** Tokens and cost per message and per fix (louis-agent and the orchestrator's own triage shown separately),
+the estimate next to the actual, and run totals plus budget status in the run summary.
+
+**`fixes.jsonl` / `decisions.jsonl`.** Tokens, cost and estimate per entry.
+
+**Demo script.** The up-front estimate (5.2), and at the end: total cost, cost per fix, estimate accuracy, and the
+budgets' remaining amounts.
 
 ## 8. Configuration
 
@@ -307,12 +315,11 @@ Same `AGENT_API_KEY` rules as the other endpoints.
 
 **Accept when:**
 
-- A demo run's ledger total is within 5% of the Console's figure for the same period (same key, nothing else using it).
-- The demo script shows an estimate before starting, and its run summary shows estimate vs actual per fix.
-- With a run budget below the full run's cost, the orchestrator stops cleanly, defers the remaining errors, and
-  `-Resume` with a larger budget completes them.
-- When the provider refuses with a credit or usage limit, the run stops at the first refusal with a clear message
-  (no cascade of failed errors).
+A demo run's ledger total is within 5% of the Console's figure for the same period (same key, nothing else using it).
+The demo script shows an estimate before starting, and its run summary shows estimate vs actual per fix. With a run
+budget below the full run's cost, the orchestrator stops cleanly, defers the remaining errors, and `-Resume` with a
+larger budget completes them. When the provider refuses with a credit or usage limit, the run stops at the first
+refusal with a clear message (no cascade of failed errors).
 
 ## 10. Risks and open questions
 

@@ -18,33 +18,38 @@ counts (`cache_read` is null, meaning "not reported", not "not cached").
 
 **F12-S1 — Speed on every record.** As an *operator*, I want each usage record to say how long the model took to start
 answering and how fast it wrote, so that I can compare models and providers.
-- *Given* a streamed request on any provider *then* its record has `ttft_ms` (request start to the first update that
-  carries text, thinking or a tool call) next to `duration_ms`.
-- *Given* a non-streaming request *then* `ttft_ms` is `null`: no first token can be observed.
-- *Given* a record with output tokens and a `ttft_ms` *then* its output speed is
-  `output / (duration_ms − ttft_ms) × 1000` tokens per second, computed where it is shown, never stored.
+
+*Given* a streamed request on any provider *then* its record has `ttft_ms` (request start to the first update that
+carries text, thinking or a tool call) next to `duration_ms`. *Given* a non-streaming request *then* `ttft_ms` is
+`null`: no first token can be observed. *Given* a record with output tokens and a `ttft_ms` *then* its output speed is
+`output / (duration_ms − ttft_ms) × 1000` tokens per second, computed where it is shown, never stored.
 
 **F12-S2 — The provider's own timings, where it gives them.** As a *developer*, I want provider-reported timings kept
 when the adapter exposes them, so that a local model's load time and prompt processing are visible.
-- *Given* Ollama reports model load, prompt evaluation and generation durations *then* the record keeps them under
-  `timing.provider` (`load_ms`, `prompt_ms`, `generate_ms`).
-- *Given* a provider that reports none (Anthropic today) *then* `timing.provider` is `null`.
+
+*Given* Ollama reports model load, prompt evaluation and generation durations *then* the record keeps them under
+`timing.provider` (`load_ms`, `prompt_ms`, `generate_ms`). *Given* a provider that reports none (Anthropic today)
+*then* `timing.provider` is `null`.
 
 **F12-S3 — See it.** As a *user*, I want the speed shown with the usage, so that I notice when a model is slow.
-- *Given* an answer in the web app, CLI or Rider *then* the usage line from F3 adds `1.2 s to first token · 48 tok/s`.
-- *Given* the Usage tab (F11) *then* it shows median time to first token and tokens per second per model and provider.
+
+*Given* an answer in the web app, CLI or Rider *then* the usage line from F3 adds `1.2 s to first token · 48 tok/s`.
+*Given* the Usage tab (F11) *then* it shows median time to first token and tokens per second per model and provider.
 
 ## Design
 
-- **Measured, not reported, for all providers.** `UsageRecordingChatClient` already times every request; in the
-  streaming path it also notes the time of the first update with content. Nothing provider-specific, so it works for
-  Anthropic, Ollama and OpenAI-compatible servers alike.
-- **Provider timings through the mapper.** `IUsageMapper` grows a second job: read timings from the response
-  (`AdditionalProperties` or `RawRepresentation`). `StandardUsageMapper` returns null; an `OllamaUsageMapper` reads
-  Ollama's `load_duration`, `prompt_eval_duration` and `eval_duration` (nanoseconds). Whether OllamaSharp exposes them,
-  and where, is step 1.
-- **The record:** `UsageRecord` gets `Timing(long? TtftMs, ProviderTiming? Provider)`; `duration_ms` stays where it is.
-- **Benchmark:** add time to first token and tokens per second to the benchmark's demo-run numbers, per model.
+Measured, not reported, for all providers. `UsageRecordingChatClient` already times every request; in the streaming
+path it also notes the time of the first update with content. Nothing provider-specific, so it works for Anthropic,
+Ollama and OpenAI-compatible servers alike.
+
+Provider timings through the mapper. `IUsageMapper` grows a second job: read timings from the response
+(`AdditionalProperties` or `RawRepresentation`). `StandardUsageMapper` returns null; an `OllamaUsageMapper` reads
+Ollama's `load_duration`, `prompt_eval_duration` and `eval_duration` (nanoseconds). Whether OllamaSharp exposes them,
+and where, is step 1.
+
+**The record.** `UsageRecord` gets `Timing(long? TtftMs, ProviderTiming? Provider)`; `duration_ms` stays where it is.
+
+**Benchmark.** Add time to first token and tokens per second to the benchmark's demo-run numbers, per model.
 
 ## Implementation steps
 
@@ -62,10 +67,11 @@ when the adapter exposes them, so that a local model's load time and prompt proc
 
 ## Done when
 
-- Every streamed record has `ttft_ms`, and Ollama records carry its own timings.
-- The usage line shows time to first token and tokens per second.
-- One comparison of Claude Haiku 4.5 and `llama3.1` on the same prompt is written down in MODELS.md.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)).
+Every streamed record has `ttft_ms`, and Ollama records carry its own timings. The usage line shows time to first
+token and tokens per second. One comparison of Claude Haiku 4.5 and `llama3.1` on the same prompt is written down in
+MODELS.md.
+
+Then finish up (see [Finishing a feature](README.md#finishing-a-feature)).
 
 ## Not in this feature
 

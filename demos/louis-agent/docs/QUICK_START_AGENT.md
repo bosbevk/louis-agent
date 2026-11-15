@@ -18,14 +18,15 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 
 Open **http://127.0.0.1:5082**.
 
-- **Chats** — answers stream with collapsible thinking, tool cards (click for input and result) and highlighted code.
-  📎 attaches text files. Enter sends, Shift+Enter is a new line, **Stop** ends a reply.
-- **Files** — browse the repo, open a file, **Ask agent to review**.
-- **Changes** — see what changed, open a diff, tick files to **Stage**, **Unstage** or **Discard**, write a message and
-  **Commit**, or **Review all** with the agent. Pushing stays with you.
-- **Branches** — see every branch and all commits, open a commit or a branch to read its diff, **Merge** a branch into
-  the checked-out one, and delete merged branches.
-- **Theme** — switch between *Retro terminal* and *Paper (soft light)* at the bottom of the sidebar.
+The web app has a view for each job, and a theme switch:
+
+| View | What you do there |
+|---|---|
+| **Chats** | Answers stream with collapsible thinking, tool cards (click for input and result) and highlighted code. 📎 attaches text files. Enter sends, Shift+Enter is a new line, **Stop** ends a reply. |
+| **Files** | Browse the repo, open a file, **Ask agent to review**. |
+| **Changes** | See what changed, open a diff, tick files to **Stage**, **Unstage** or **Discard**, write a message and **Commit**, or **Review all** with the agent. Pushing stays with you. |
+| **Branches** | See every branch and all commits, open a commit or a branch to read its diff, **Merge** a branch into the checked-out one, and delete merged branches. |
+| **Theme** | Switch between *Retro terminal* and *Paper (soft light)*, at the bottom of the sidebar. |
 
 ### Puls (the general assistant, in Afrikaans)
 

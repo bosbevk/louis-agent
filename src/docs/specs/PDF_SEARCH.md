@@ -45,24 +45,27 @@ caching.
 
 Guesses to test, not decisions:
 
-- **A pack, not core.** A `documents` pack with a search tool that takes text and returns framed text keeps the
-  [MCP rule](../adr/0028-packs-stay-convertible-to-mcp.md): it could be served as an MCP server, or an MCP server
-  could stand in for it. Ingestion is a job (a host command or an admin page), not a chat tool.
-- **Adopt before building** ([ADR 0030](../adr/0030-build-or-adopt.md)): look at `Microsoft.Extensions.VectorData`
-  and its PostgreSQL connector, `IEmbeddingGenerator` from Microsoft.Extensions.AI, and whatever Microsoft ships for
-  document ingestion by then.
-- **The embedding model is a provider choice**, so its differences go behind a strategy in `LlmClientFactory`
-  ([ADR 0003](../adr/0003-provider-strategies.md)); Anthropic has no embedding model of its own.
-- **Proven by a simulation** ([ADR 0029](../adr/0029-simulations-in-csharp.md)): a set of real PDFs and labelled
-  questions, scored on recall@20 before and after each change.
+A pack, not core. A `documents` pack with a search tool that takes text and returns framed text keeps the
+[MCP rule](../adr/0028-packs-stay-convertible-to-mcp.md): it could be served as an MCP server, or an MCP server could
+stand in for it. Ingestion is a job (a host command or an admin page), not a chat tool.
+
+Adopt before building ([ADR 0030](../adr/0030-build-or-adopt.md)): look at `Microsoft.Extensions.VectorData` and its
+PostgreSQL connector, `IEmbeddingGenerator` from Microsoft.Extensions.AI, and whatever Microsoft ships for document
+ingestion by then.
+
+The embedding model is a provider choice, so its differences go behind a strategy in `LlmClientFactory`
+([ADR 0003](../adr/0003-provider-strategies.md)); Anthropic has no embedding model of its own.
+
+Proven by a simulation ([ADR 0029](../adr/0029-simulations-in-csharp.md)): a set of real PDFs and labelled questions,
+scored on recall@20 before and after each change.
 
 ## Open questions
 
-- Which store: PostgreSQL with pgvector, or the MongoDB the API already runs (Atlas vector search)?
-- Which embedding model, and does it run locally (Ollama) for a customer who keeps their data in?
-- Whose PDFs: one tenant's, per identity, per session? Who may upload, and who approves (ADR 0033's scopes)?
-- Is contextual retrieval's extra model call per chunk worth its cost for our documents? Measure it.
-- Which real task proves it first: a Puls specialist's guides, or a company's manuals and policies?
+Which store: PostgreSQL with pgvector, or the MongoDB the API already runs (Atlas vector search)? Which embedding
+model, and does it run locally (Ollama) for a customer who keeps their data in? Whose PDFs: one tenant's, per
+identity, per session? Who may upload, and who approves (ADR 0033's scopes)? Is contextual retrieval's extra model
+call per chunk worth its cost for our documents? Measure it. Which real task proves it first: a Puls specialist's
+guides, or a company's manuals and policies?
 
 ---
 [Docs index](../README.md) · Related: [Session architecture](SESSION_ARCHITECTURE.md) · [GOAL skill 8](../GOAL.md)

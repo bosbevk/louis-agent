@@ -47,31 +47,38 @@ enum with a switch in the harness (the harness would have to reference every pac
 
 ADR 0055 (*keep it simple*) did most of the work in this feature:
 
-- **No `regex` check.** The plan had one because "the field uses it" (promptfoo has both). No eval of ours needs a
-  pattern, and a pattern in a file is a language to learn, a slow-match risk (ReDoS) and hard to read back.
-  `contains` takes a list of texts instead (one is enough, case and accents ignored), which covers "one of these words".
-  The question became a rule for the code too: [ADR 0057](../adr/0057-regex-is-the-last-option.md).
-- **No `routed-to` entry.** Its expected role is a function that reads a scenario key and the mode's toolsets. A file
-  can't hold a function, so it waits for F49.2's eval file to settle how a route is stated.
-- **The runner doesn't build the catalogue yet.** Nothing reads one until F49.2's file reader; `GeneralChecksTests`
-  proves the catalogue on every test run in the meantime.
-- **No `judge` or `human` entry.** They need a rubric as a file, which is F49.2's.
+No `regex` check. The plan had one because "the field uses it" (promptfoo has both). No eval of ours needs a pattern,
+and a pattern in a file is a language to learn, a slow-match risk (ReDoS) and hard to read back. `contains` takes a
+list of texts instead (one is enough, case and accents ignored), which covers "one of these words". The question
+became a rule for the code too: [ADR 0057](../adr/0057-regex-is-the-last-option.md).
+
+No `routed-to` entry. Its expected role is a function that reads a scenario key and the mode's toolsets. A file can't
+hold a function, so it waits for F49.2's eval file to settle how a route is stated.
+
+The runner doesn't build the catalogue yet. Nothing reads one until F49.2's file reader; `GeneralChecksTests` proves
+the catalogue on every test run in the meantime.
+
+No `judge` or `human` entry. They need a rubric as a file, which is F49.2's.
 
 ## What was learned
 
-- **A rename stops at the wire.** `IGrader` became `ICheck` in C# (through Rider, one commit with nothing else in it),
-  but the JSON keys stayed `graders`/`grader`: a stored run is data someone else may read, and ADR 0049 forbids an
-  alias. The protocol tests and the golden files proved the wire didn't move.
-- **A pure move is provable.** Steps 2 and 3 moved thirteen files with `git mv` and a SHA-256 check of each, and kept
-  their namespaces (a namespace is logical, an assembly physical), so none of the 118 files using them changed.
-- **A folder name is a namespace, and it can hide a name.** The plan's `Grading/Common/Text/` made a namespace `Text`,
-  and the tests' `TrialBuilder.Text(…)` stopped compiling. The folder became `Answers/`, which also says better what
-  the check reads.
-- **Who did the work matters less than whether it was done.** `tool-used` counts a specialist's call too: Puls hands
-  the meal to its cook, and an eval that asks "was the shop searched?" would otherwise fail because the work was
-  delegated. The reason says who called it, so nothing is hidden.
-- **One check, one question.** `tool-used` ignores a streamed error; `no-error` reports it. An eval that wants both
-  lists both, and each grade says one thing.
+A rename stops at the wire. `IGrader` became `ICheck` in C# (through Rider, one commit with nothing else in it), but
+the JSON keys stayed `graders`/`grader`: a stored run is data someone else may read, and ADR 0049 forbids an alias.
+The protocol tests and the golden files proved the wire didn't move.
+
+A pure move is provable. Steps 2 and 3 moved thirteen files with `git mv` and a SHA-256 check of each, and kept their
+namespaces (a namespace is logical, an assembly physical), so none of the 118 files using them changed.
+
+A folder name is a namespace, and it can hide a name. The plan's `Grading/Common/Text/` made a namespace `Text`, and
+the tests' `TrialBuilder.Text(…)` stopped compiling. The folder became `Answers/`, which also says better what the
+check reads.
+
+Who did the work matters less than whether it was done. `tool-used` counts a specialist's call too: Puls hands the
+meal to its cook, and an eval that asks "was the shop searched?" would otherwise fail because the work was delegated.
+The reason says who called it, so nothing is hidden.
+
+One check, one question. `tool-used` ignores a streamed error; `no-error` reports it. An eval that wants both lists
+both, and each grade says one thing.
 
 ## An eval as a folder of files (F49.2)
 
@@ -96,28 +103,33 @@ that throw.
 
 **What F49.2 taught:**
 
-- **Prove a move with the thing it must not change.** The cook moved from C# to files in step 8b, and a free replay
-  of the recorded baseline (`--replay`, every model answer from the recording) graded 140 of 140 the same: outcome,
-  score, version, reason and the judge's prompt hash. A test suite proves the code; a replay proves the stored meaning.
-- **Same name, same meaning, or a new name.** The cook's `cook-no-error` looked like the general `no-error`, but the
-  cook's leaves a broken turn Unknown before counting errors and the general one fails on an error first, with other
-  reasons. Swapping one for the other would have changed what stored grades mean under the same name, so the cook's
-  stayed its own entry.
-- **A rubric is content, and its words are its identity.** The judge's prompt left its embedded resource for a file
-  in the eval's folder word for word, and the review found its hash was of the bytes: `161e5cebcc15` on a Windows
-  checkout (CRLF), another on Linux (CI went red). `RubricHash` now makes the line endings LF before hashing, so one
-  rubric is one hash (`438a8deb91f4`) everywhere; the 36 labels the judge was calibrated against still describe it,
-  and the runs recorded before carry the old hash as another measure.
-- **A dependency rule finds the design for you.** "The identity never references the harness" is what put the judge
-  in a project of its own; a check the identity's code could hold (the six fixed rules) went beside it, one that
-  needed the harness couldn't. Writing the rule as a test (`ArchitectureTests`) keeps it.
-- **Keep a move reviewable.** Step 9b moved 60 files with `git mv` and a byte check, and only their namespaces
-  changed, so git showed 60 renames; their missing summaries and long comments were tidied in a step of their own
-  (9c), checked by comparing each file's code with comments and whitespace stripped. Mixed in one commit, the moves
-  would have read as rewrites.
-- **A plan is cut where the work turns out to be.** Nine steps became fourteen: the cook needed its checks named from
-  a file before it could become one (7, 8a), the sets had to go after both evals were files (8c), the judge needed a
-  home before the rest could move (9a), and the template and the docs were each a review of their own (10a to 10c).
+Prove a move with the thing it must not change. The cook moved from C# to files in step 8b, and a free replay of the
+recorded baseline (`--replay`, every model answer from the recording) graded 140 of 140 the same: outcome, score,
+version, reason and the judge's prompt hash. A test suite proves the code; a replay proves the stored meaning.
+
+Same name, same meaning, or a new name. The cook's `cook-no-error` looked like the general `no-error`, but the cook's
+leaves a broken turn Unknown before counting errors and the general one fails on an error first, with other reasons.
+Swapping one for the other would have changed what stored grades mean under the same name, so the cook's stayed its
+own entry.
+
+A rubric is content, and its words are its identity. The judge's prompt left its embedded resource for a file in the
+eval's folder word for word, and the review found its hash was of the bytes: `161e5cebcc15` on a Windows checkout
+(CRLF), another on Linux (CI went red). `RubricHash` now makes the line endings LF before hashing, so one rubric is
+one hash (`438a8deb91f4`) everywhere; the 36 labels the judge was calibrated against still describe it, and the runs
+recorded before carry the old hash as another measure.
+
+A dependency rule finds the design for you. "The identity never references the harness" is what put the judge in a
+project of its own; a check the identity's code could hold (the six fixed rules) went beside it, one that needed the
+harness couldn't. Writing the rule as a test (`ArchitectureTests`) keeps it.
+
+Keep a move reviewable. Step 9b moved 60 files with `git mv` and a byte check, and only their namespaces changed, so
+git showed 60 renames; their missing summaries and long comments were tidied in a step of their own (9c), checked by
+comparing each file's code with comments and whitespace stripped. Mixed in one commit, the moves would have read as
+rewrites.
+
+A plan is cut where the work turns out to be. Nine steps became fourteen: the cook needed its checks named from a file
+before it could become one (7, 8a), the sets had to go after both evals were files (8c), the judge needed a home
+before the rest could move (9a), and the template and the docs were each a review of their own (10a to 10c).
 
 **Left out on purpose:** the cook's shop hosts are no longer a turn's facts (the harness reads the URLs a tool was
 given, and a passing cook run calls no shop tool), and a check of an identity's own is still C#: a rule is code, and
@@ -143,13 +155,16 @@ the pack's own (`ShopsChecks.All`), so a pack is complete on its own and the ide
 **Dependencies one way is the whole job.** A pack may not reference an identity, an identity may not reference a
 pack, and neither may reference the harness (every host loads them). So every move asked the same question: *who
 else needs this?*
-- **Shared by everyone, and plain:** reading a markdown table, a link, a site's host. It moved *down* to the check
-  contract (`Markdown/`), where all three can reach it (Fowler's Move Method).
-- **What only the identity knows:** how Puls writes a rand price, or what counts as one given as fact. It came in
-  *sideways*, as a reader the eval file names (`IPriceReader`, Puls's `rand-prices`): the same seam as F49.2b's.
-- **What both sides need, and only seven rows long:** the table of shops' names and sites. It lives twice, and a test
-  in the one project that sees both (`ShopTableTests`) fails if the copies ever differ. That's cheaper than a third
-  project, and honest about the cost.
+
+**Shared by everyone, and plain.** Reading a markdown table, a link, a site's host. It moved *down* to the check contract
+(`Markdown/`), where all three can reach it (Fowler's Move Method).
+
+**What only the identity knows.** How Puls writes a rand price, or what counts as one given as fact. It came in
+*sideways*, as a reader the eval file names (`IPriceReader`, Puls's `rand-prices`): the same seam as F49.2b's.
+
+**What both sides need, and only seven rows long.** The table of shops' names and sites. It lives twice, and a test in the
+one project that sees both (`ShopTableTests`) fails if the copies ever differ. That's cheaper than a third project,
+and honest about the cost.
 
 **The plan was cut where the work turned out to be.** Its step 2 was "move all the shop helpers", but their only users
 stayed in Puls until steps 3 and 4, so each helper moved *with* the check that used it. Step 2 became the one change
@@ -176,12 +191,14 @@ exporter · promptfoo, *assertions* (`icontains-any`) · Inspect AI, *scorers* (
 The test of an extensible engine is whether its own first product could be anyone's. Ours couldn't: the coding agent lived in
 core. Moving it out showed three kinds of code that all looked like "tools":
 
-- **What the model asks for** is a plugin. It needs only a contract, so it can ship alone: a console app ran the git pack from
-  a NuGet package with no engine in its dependency graph.
-- **What every plugin relies on** is a platform service. The guards around a fetch stay in the engine, and a plugin asks for a
-  guarded fetcher. That is safer than a shared helper, because the plugin has no way to skip the check.
-- **What needs the engine's insides** stays. Delegation opens sessions and rolls up their usage; making it a plugin would have
-  pushed those insides into the contract, which is the coupling the split exists to remove.
+What the model asks for is a plugin. It needs only a contract, so it can ship alone: a console app ran the git pack
+from a NuGet package with no engine in its dependency graph.
+
+What every plugin relies on is a platform service. The guards around a fetch stay in the engine, and a plugin asks for
+a guarded fetcher. That is safer than a shared helper, because the plugin has no way to skip the check.
+
+What needs the engine's insides stays. Delegation opens sessions and rolls up their usage; making it a plugin would
+have pushed those insides into the contract, which is the coupling the split exists to remove.
 
 The golden files were the safety net. A move this size should change nothing the model reads, and when one did change, the
 order of a Puls session's guides, the test caught it. The order looks cosmetic, but it is part of the prefix the prompt cache
@@ -199,12 +216,10 @@ and nobody had noticed, because nothing checked. Now a test reads every file, an
 under the rule with nobody listing it. The second test is a *ratchet*: what's still too long sits on a list, and the list can only
 shrink. It's how you adopt a rule the code doesn't meet yet without pretending it does.
 
-**A tool that says it worked may not have.** Rider's namespace tool did the rename, and the build and most tests stayed green while:
-
-- it dropped `@using` lines from `_Imports.razor`. Razor treats a component it can't find as a plain HTML tag, so that's a warning, not
-  an error, and only the page tests noticed;
-- it rewrote markup such as `Chat` into `Chats.Chat`, in 16 files;
-- it removed `using` lines that were still needed, and left old ones behind.
+**A tool that says it worked may not have.** Rider's namespace tool did the rename, and the build and most tests stayed
+green. Meanwhile it had dropped `@using` lines from `_Imports.razor`. Razor treats a component it can't find as a plain
+HTML tag, so that's a warning, not an error, and only the page tests noticed. It had rewritten markup such as `Chat`
+into `Chats.Chat`, in 16 files. And it had removed `using` lines that were still needed, and left old ones behind.
 
 What caught it was reading the diff with a question in mind: *which lines changed that aren't a namespace or a `using`?* In a rename
 that should be almost nothing, so anything there is the bug. No golden file moved at the end, which is the evidence that the pages
@@ -299,13 +314,15 @@ Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns:
 The admin's frame moved to the framework, and Puls's layout shrank to what's its own. Two patterns carry it, and both solve the same
 problem from different sides: the framework needs a site's things, but can't name them.
 
-- **Template Method, for the frame.** `AdminShell` keeps the sidebar and the column, and a site fills the parts that differ as slots. The
-  other option was a settings object listing the logo and links, which gives a site nothing to write, but checks its types only when the
-  page runs. Slots cost a demo fifteen lines and the compiler checks them.
-- **Bridge, for the layout.** A Blazor page's layout is an attribute, fixed when it's compiled, so a page in the framework can't name a
-  layout in a site. And a page naming none gets the router's default, which on Puls is the chat's. So a framework page names `AdminFrame`,
-  whose only job is to draw inside the layout the site chose. The first test runs through the real `RouteView`, because the trap is in
-  the router: a test of `AdminFrame` alone would pass and the page would still sit inside the chat's layout.
+Template Method, for the frame. `AdminShell` keeps the sidebar and the column, and a site fills the parts that differ
+as slots. The other option was a settings object listing the logo and links, which gives a site nothing to write, but
+checks its types only when the page runs. Slots cost a demo fifteen lines and the compiler checks them.
+
+Bridge, for the layout. A Blazor page's layout is an attribute, fixed when it's compiled, so a page in the framework
+can't name a layout in a site. And a page naming none gets the router's default, which on Puls is the chat's. So a
+framework page names `AdminFrame`, whose only job is to draw inside the layout the site chose. The first test runs
+through the real `RouteView`, because the trap is in the router: a test of `AdminFrame` alone would pass and the page
+would still sit inside the chat's layout.
 
 **Pin before you move.** The golden file for Puls's layout was written from the old layout, before anyone touched it, and the new one had
 to match. That's a stronger claim than "it looks right", and it's cheap. It proves the markup is the same; it doesn't cover states the
@@ -361,16 +378,19 @@ change was small because the seams were already there: the catalogue answers an 
 role is; a session carries `identity` and takes that identity's default voice as its role; the engine factory already
 kept an engine per role, so a second identity costs no new cache key. What the day taught:
 
-- **An identity is a folder of markdown and one class.** The expert is a voice file and a class naming one pack; the
-  packs it names are what it can do, and the docs pack is read-only by construction, so the guide can't act.
-- **A test that routes every toolset has to know whose toolsets they are.** The coding agent's router test named
-  every toolset of the catalogue; with two identities it names the first identity's packs' toolsets, since the
-  expert's docs are not the coding agent's to route.
-- **Names that repeat are enums, even in tests.** The wire-name rule caught `"puls"`, `"files"` and
-  `"rate_limit_error"` spelled out in new tests; each became its enum's `.Wire()`.
-- **A widget is a facade over parts that already exist.** The corner's chat is the chat frame's list, composer and
-  runner behind one tag with the identity as its setting, on a store of its own so a site's chat page never lists
-  the widget's conversations.
+An identity is a folder of markdown and one class. The expert is a voice file and a class naming one pack; the packs
+it names are what it can do, and the docs pack is read-only by construction, so the guide can't act.
+
+A test that routes every toolset has to know whose toolsets they are. The coding agent's router test named every
+toolset of the catalogue; with two identities it names the first identity's packs' toolsets, since the expert's docs
+are not the coding agent's to route.
+
+Names that repeat are enums, even in tests. The wire-name rule caught `"puls"`, `"files"` and `"rate_limit_error"`
+spelled out in new tests; each became its enum's `.Wire()`.
+
+A widget is a facade over parts that already exist. The corner's chat is the chat frame's list, composer and runner
+behind one tag with the identity as its setting, on a store of its own so a site's chat page never lists the widget's
+conversations.
 
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)
@@ -472,16 +492,19 @@ F122 put the two demos in one place: a Demos menu, a demo index, and a doc the g
 work came from looking at one page, the triage demo, on a real 1080p screen, and each fix asked the F118 question
 again: is this the page's problem, or the framework's?
 
-- **A band that must stay whole.** The slide frame pages any section taller than a screen, which is right for words
-  and wrong for a demo that plays: its controls ended up on one page and its list on another. The fix was not a
-  special case for that page but a parameter every site has, `Band Paged="false"`, honoured by the frame's module.
-- **Layout as plain code.** The swimlanes look like a drawing, but where each dot goes is arithmetic: its agent's
-  lane, one column right of the step before. Putting that in `SwimlaneLayout`, apart from the SVG, gave it four quick
-  tests and left the component only the drawing (the same split as `GraphLayout` and `GraphView`).
-- **Slots over copies.** The triage player gained `Intro` and `Actions`, so the site puts its own words in the left
-  column and its own button at the end of the controls, and the pack still names no site.
-- **The guide reads what is written.** "Make sure the agent can explain them" meant a doc, `docs/demos.md`, and one
-  line in the voice naming it, held by a test; the guide's answers come from that doc, not from the page alone.
+A band that must stay whole. The slide frame pages any section taller than a screen, which is right for words and
+wrong for a demo that plays: its controls ended up on one page and its list on another. The fix was not a special case
+for that page but a parameter every site has, `Band Paged="false"`, honoured by the frame's module.
+
+Layout as plain code. The swimlanes look like a drawing, but where each dot goes is arithmetic: its agent's lane, one
+column right of the step before. Putting that in `SwimlaneLayout`, apart from the SVG, gave it four quick tests and
+left the component only the drawing (the same split as `GraphLayout` and `GraphView`).
+
+Slots over copies. The triage player gained `Intro` and `Actions`, so the site puts its own words in the left column
+and its own button at the end of the controls, and the pack still names no site.
+
+The guide reads what is written. "Make sure the agent can explain them" meant a doc, `docs/demos.md`, and one line in
+the voice naming it, held by a test; the guide's answers come from that doc, not from the page alone.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md).
 
@@ -491,23 +514,27 @@ The framework's website had lived for three features inside the coding agent's d
 tree and said it plainly: the website is the framework's, the code review is a demo. F124 moved it to `src/site/` with
 its guide and a host of its own. Most of the work was moving files, and that is where the lessons were.
 
-- **A composition root decides what the public can reach.** The site used to run on the coding agent's program, so
-  louis-agent.dev carried a coding agent with a shell, files and git, even though no page ever used it. Its own host
-  names the guide and three packs, nothing more. The safest tool is the one that isn't loaded.
-- **An exception to a rule is a rule of its own.** `src/` had held only the framework. The site needs packs and an
-  identity, so instead of quietly breaking the rule, `SiteBoundaryTests` says both halves: only `src/site/` may use
-  them, and nothing else in `src/` may use the site. The engine can still leave for its own repository.
-- **Move and rename in separate commits.** The guide moved in one step and was renamed `louis-agent-guide` in the
-  next, so each diff says one thing. Rider moved namespaces, renamed classes and found the uses; `git mv` kept each
-  file's history.
-- **Tooling has edges, and the tests find them.** Rider's namespace fix dropped the `using` lines it could not resolve,
-  turned a file-scoped namespace into a block, and once wrote a stale buffer after an edit. Building and running the
-  tests after each tool call found every one; reading the tool's "applied" alone would not have.
-- **Hashes that include paths change when files move.** The films' record hashes each file's path with its text, on
-  purpose. Moving the files changed the record without changing the films, so the record was renewed and the commit
-  says why.
-- **Ship what you checked.** The site's image was built and run on this PC before the deploy files changed, because a
-  merge releases it straight away.
+A composition root decides what the public can reach. The site used to run on the coding agent's program, so
+louis-agent.dev carried a coding agent with a shell, files and git, even though no page ever used it. Its own host
+names the guide and three packs, nothing more. The safest tool is the one that isn't loaded.
+
+An exception to a rule is a rule of its own. `src/` had held only the framework. The site needs packs and an identity,
+so instead of quietly breaking the rule, `SiteBoundaryTests` says both halves: only `src/site/` may use them, and
+nothing else in `src/` may use the site. The engine can still leave for its own repository.
+
+Move and rename in separate commits. The guide moved in one step and was renamed `louis-agent-guide` in the next, so
+each diff says one thing. Rider moved namespaces, renamed classes and found the uses; `git mv` kept each file's
+history.
+
+Tooling has edges, and the tests find them. Rider's namespace fix dropped the `using` lines it could not resolve,
+turned a file-scoped namespace into a block, and once wrote a stale buffer after an edit. Building and running the
+tests after each tool call found every one; reading the tool's "applied" alone would not have.
+
+Hashes that include paths change when files move. The films' record hashes each file's path with its text, on purpose.
+Moving the files changed the record without changing the films, so the record was renewed and the commit says why.
+
+Ship what you checked. The site's image was built and run on this PC before the deploy files changed, because a merge
+releases it straight away.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a host is a few lines that name what it serves, and a folder
 rule held by a test lets the framework grow a site without growing into it.
@@ -519,32 +546,37 @@ every demo, a stage per demo in its colour, and a business's agent playing on a 
 It was built unattended, with Louis looking in and steering by screenshot, and grew from ten planned steps to about
 thirty commits as each look led to the next idea.
 
-- **Put the area in the framework, and let the site bring only data and words.** The frame, the stage, the start and
-  the mock website live in `louis-agent.web`. The site registers its demos as a list (`ShowroomDemos`) and fills
-  slots. The rail, the phone's chips, the start's covers and the sitemap all read that one list, so a new demo is one
-  line and one page. That is the same Bridge-and-slots idea as the site frame (F118), and it is why the guesthouse
-  could replace the doctor's practice in an hour.
-- **A slot beats a parameter for anything a site draws.** The mock takes its places, its scene and its notes as
-  render fragments: the site writes its own markup, the framework draws the frame round it. Where the framework must
-  know something about what the site drew (which place is lit), a cascading value hands it down, so the site never
-  says "this one is shown".
-- **Reuse the live path in the replay.** The business agents show their website with the guide's own `ShowPage`
-  tool, and the recorded chat tells its page about each tool call exactly as the live runner does. Nothing in the
-  demo is faked: the agent really called the tool, with the page the recording sent, the way a customer's site
-  would. Reading the call moved into one class (`ShowPageCall`), shared by the widget and the showroom.
-- **Hold the page and the agent to each other with a test.** A mock website that says R1,450 while the agent says
-  R1,250 would undo the demo. A test reads every price and time on each mock and finds it in that agent's voice, and
-  another holds the page a recording sends to the places the mock draws.
-- **A refresh is a different road from a click.** A place's address worked when clicked, because Blazor never
-  reloads. Loaded afresh, the router's catch-all drew it in the default layout, outside the showroom. The fix
-  (`PlaceLayout`) uses the router's own `DefaultLayout`, so nothing of how Blazor draws a page was copied.
-- **Look at it, on the real screen.** Several bugs only showed in the browser: a corner inside a stacking context went
-  under the guide's light, a ring on a full-width place gave the page a sideways scroll, a tall photo left a hero
-  empty, a positioned photo covered the words on it. Every one was a style the tests passed.
-- **What I'd do differently.** Twice I wrote throwaway stubs with `printf` instead of an edit, and twice I wrote code
-  before its test had failed and had to put a stub back to see it fail. Chrome froze three times, most likely from
-  checking pages inside a frame of the site itself or from a tab left open while its container restarted; I stopped
-  both.
+Put the area in the framework, and let the site bring only data and words. The frame, the stage, the start and the
+mock website live in `louis-agent.web`. The site registers its demos as a list (`ShowroomDemos`) and fills slots. The
+rail, the phone's chips, the start's covers and the sitemap all read that one list, so a new demo is one line and one
+page. That is the same Bridge-and-slots idea as the site frame (F118), and it is why the guesthouse could replace the
+doctor's practice in an hour.
+
+A slot beats a parameter for anything a site draws. The mock takes its places, its scene and its notes as render
+fragments: the site writes its own markup, the framework draws the frame round it. Where the framework must know
+something about what the site drew (which place is lit), a cascading value hands it down, so the site never says "this
+one is shown".
+
+Reuse the live path in the replay. The business agents show their website with the guide's own `ShowPage` tool, and
+the recorded chat tells its page about each tool call exactly as the live runner does. Nothing in the demo is faked:
+the agent really called the tool, with the page the recording sent, the way a customer's site would. Reading the call
+moved into one class (`ShowPageCall`), shared by the widget and the showroom.
+
+Hold the page and the agent to each other with a test. A mock website that says R1,450 while the agent says R1,250
+would undo the demo. A test reads every price and time on each mock and finds it in that agent's voice, and another
+holds the page a recording sends to the places the mock draws.
+
+A refresh is a different road from a click. A place's address worked when clicked, because Blazor never reloads.
+Loaded afresh, the router's catch-all drew it in the default layout, outside the showroom. The fix (`PlaceLayout`)
+uses the router's own `DefaultLayout`, so nothing of how Blazor draws a page was copied.
+
+Look at it, on the real screen. Several bugs only showed in the browser: a corner inside a stacking context went under
+the guide's light, a ring on a full-width place gave the page a sideways scroll, a tall photo left a hero empty, a
+positioned photo covered the words on it. Every one was a style the tests passed.
+
+What I'd do differently. Twice I wrote throwaway stubs with `printf` instead of an edit, and twice I wrote code before
+its test had failed and had to put a stub back to see it fail. Chrome froze three times, most likely from checking
+pages inside a frame of the site itself or from a tab left open while its container restarted; I stopped both.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): an area of the framework a site fills with data, words and
 slots, and a replay that speaks the live runner's events, so a demo is the real thing played back.
@@ -556,29 +588,35 @@ agent themselves when the recording ends. It was built unattended over a day, Lo
 changed shape twice on the way: once when a planned second pack turned out to break a rule, and once when the guide's
 last step grew into three features of its own.
 
-- **Let the parts register themselves.** A site writes each page as a `MockPage` inside its mock, and each tells the
-  mock it's there (Microsoft's TabSet pattern). The menu, the page an address is on and what a live agent reads all
-  come from that one list, so a site writes its pages once and never lists them a second time.
-- **One path, two players.** The live chat hands each `ShowPage` call to the demo exactly as the recording does, so
-  the website moves the same way for both. A recording is the live runner's events played back, and the live chat is
-  the runner itself: nothing is written twice.
-- **When a plan breaks a rule, the rule wins.** The plan named a second leads pack for the demos. The catalogue
-  refused it: two tools called `SendLead`, and tool names are unique so packs stay convertible to MCP. Of the three
-  ways round, Louis picked the one that says what's true: the identity says it's a demonstration, the turn carries
-  who it runs as (an ambient value, like the user's place), and the one pack marks the lead.
-- **Ask the plumbing what it already does.** The guide's step began as a tool the browser would carry out. Louis
-  asked how Puls talks to its cook, and the answer was that it already calls another agent through the API. The
-  design moved onto that path, then grew: one address for every agent call (`identity`, `identity.specialist`), its
-  own ADR (0117) and children (F127.3 to F127.5). Asking "what do we already do?" saved building a second way.
-- **A brand is data the framework can serve.** A brand's faces are a class of three roles, its header one of three
-  treatments, its colours five; the faces are the framework's own files, fetched only by a page that wears them.
-  Sass dropped the quotes from the font lists, which would have broken a family named "Bodoni 72": a test now reads
-  the build, not the source.
-- **The browser finds what the tests can't.** In Chrome, a cue clicked while live crashed the page (the demo still held
-  the recorded chat the swap had disposed), and a usage line showed a customer tokens. Both became tests, and Louis
-  picked the fixes. A test that failed only sometimes was the test's own fault: a late redraw swallowed its click.
-- **What I'd do differently.** I wrote the faces map before its tests had run, so four of them passed at once. Chrome
-  froze twice more after a container rebuild with a tab open: close the tab first, and open a fresh one after.
+Let the parts register themselves. A site writes each page as a `MockPage` inside its mock, and each tells the mock
+it's there (Microsoft's TabSet pattern). The menu, the page an address is on and what a live agent reads all come from
+that one list, so a site writes its pages once and never lists them a second time.
+
+One path, two players. The live chat hands each `ShowPage` call to the demo exactly as the recording does, so the
+website moves the same way for both. A recording is the live runner's events played back, and the live chat is the
+runner itself: nothing is written twice.
+
+When a plan breaks a rule, the rule wins. The plan named a second leads pack for the demos. The catalogue refused it:
+two tools called `SendLead`, and tool names are unique so packs stay convertible to MCP. Of the three ways round,
+Louis picked the one that says what's true: the identity says it's a demonstration, the turn carries who it runs as
+(an ambient value, like the user's place), and the one pack marks the lead.
+
+Ask the plumbing what it already does. The guide's step began as a tool the browser would carry out. Louis asked how
+Puls talks to its cook, and the answer was that it already calls another agent through the API. The design moved onto
+that path, then grew: one address for every agent call (`identity`, `identity.specialist`), its own ADR (0117) and
+children (F127.3 to F127.5). Asking "what do we already do?" saved building a second way.
+
+A brand is data the framework can serve. A brand's faces are a class of three roles, its header one of three
+treatments, its colours five; the faces are the framework's own files, fetched only by a page that wears them. Sass
+dropped the quotes from the font lists, which would have broken a family named "Bodoni 72": a test now reads the
+build, not the source.
+
+The browser finds what the tests can't. In Chrome, a cue clicked while live crashed the page (the demo still held the
+recorded chat the swap had disposed), and a usage line showed a customer tokens. Both became tests, and Louis picked
+the fixes. A test that failed only sometimes was the test's own fault: a late redraw swallowed its click.
+
+What I'd do differently. I wrote the faces map before its tests had run, so four of them passed at once. Chrome froze
+twice more after a container rebuild with a tab open: close the tab first, and open a fresh one after.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): parts that register with their whole, one player for the
 recorded and the live, and a brand as data the framework serves. It also touches *4 Tool design* (a tool the browser
@@ -590,22 +628,25 @@ Every site's `Program.cs` built the framework's parts itself, near line for line
 handoff, the eval studio, the accounts, the chat's five services, and a router listing the libraries' pages. A new site
 copied the list. Two sites registered the eval pages and never linked them, and only Puls drew their links, by hand.
 
-- **A builder, open from outside.** `AddSiteAreas(areas => areas.Chat().Admin(layout, views).Evals())`: the
-  framework's web names the areas it owns, and a library above it adds its own through an extension (`Evals()` lives in
-  the eval studio's library, which the web can't reference). A new part is a new area, added once, and every site that
-  names it gets it. The admin's sidebar now draws each area's links, so the eval links reached every admin.
-- **Plumbing isn't an area.** The guide in louis-agent.dev's corner needs the chat's services with no chat portal, so
-  those come with every site; the chat area adds only what the portal needs. Finding that out was why the plan was
-  rewritten after its first step.
-- **One Composition Root a test can share.** Each site keeps one `Name` method that its program and its tests both
-  hand the builder. The tests used to copy the program's list, so they could pass on a setup the site didn't use.
-- **A rule, and its limit.** ADR 0120, at Louis's word: nothing is wired by hand from the framework into an
-  implementation, louis-agent.dev included, though it lives in `src/`. His question, "is it a good idea though?", found
-  its two limits: a site's own services stay its own, and "register your words before the builder" is still wiring by
-  order (CL62).
-- **What I'd do differently.** The Puls layout tests timed out after the switch: the evals area registered its own
-  review queue over the test's. Registering the areas first, then the test's own pieces, fixed it, and that order is
-  the same lesson as CL62.
+A builder, open from outside. `AddSiteAreas(areas => areas.Chat().Admin(layout, views).Evals())`: the framework's web
+names the areas it owns, and a library above it adds its own through an extension (`Evals()` lives in the eval
+studio's library, which the web can't reference). A new part is a new area, added once, and every site that names it
+gets it. The admin's sidebar now draws each area's links, so the eval links reached every admin.
+
+Plumbing isn't an area. The guide in louis-agent.dev's corner needs the chat's services with no chat portal, so those
+come with every site; the chat area adds only what the portal needs. Finding that out was why the plan was rewritten
+after its first step.
+
+One Composition Root a test can share. Each site keeps one `Name` method that its program and its tests both hand the
+builder. The tests used to copy the program's list, so they could pass on a setup the site didn't use.
+
+A rule, and its limit. ADR 0120, at Louis's word: nothing is wired by hand from the framework into an implementation,
+louis-agent.dev included, though it lives in `src/`. His question, "is it a good idea though?", found its two limits:
+a site's own services stay its own, and "register your words before the builder" is still wiring by order (CL62).
+
+What I'd do differently. The Puls layout tests timed out after the switch: the evals area registered its own review
+queue over the test's. Registering the areas first, then the test's own pieces, fixed it, and that order is the same
+lesson as CL62.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a Builder a library extends without the framework knowing it,
 and a Composition Root per implementation.
@@ -616,23 +657,28 @@ Louis opened louis-agent.dev's `/admin` and found "not found": the root belonged
 one. `.Admin(layout, views, counts)` mixed three things, the frame, the packs' views and the overview's counts. His
 words set the shape: "admin must be the main admin layout for admin areas to plugin into".
 
-- **One slot, three areas.** An area already brought its pages and its sidebar links; now it can bring a card for the
-  home too (`SiteArea.AdminCard`). The overview, the packs and the evals each became an area of that one shape, and the
-  home at `/admin` draws whatever cards the site named, in its order. The frame knows none of them, so a fourth area is
-  a new card, not a change to the home.
-- **Refuse a wrong setup at start-up.** An area that plugs into the admin with no frame stops the site with the fix in
-  the message, rather than drawing frameless pages later. It is the web's first message enum, with its holes record.
-- **Read once, share the answer.** Three things listed what the packs offer (the menu, the new packs page, the card),
-  and two showed the review count (the badge, the card). Each pair now reads through one place (`PackOffer`,
-  `ReviewQueueState.ReadOnceAsync`), so the numbers can't disagree.
-- **Template Method and Observer, for a refused key.** Every card loads the key, reads, and goes quiet when refused:
-  that is `AdminCardBase`, and a card writes only its read. Louis picked "cards report it": a refused card tells
-  `AdminAccess`, and the home asks for the key once, instead of once per card or with a request of its own.
-- **Moving one part moves the sites with it.** The plan kept the sites for step 7, but each step that changed
-  `.Admin(…)` broke them, so each step carried them along. Step 7 was left with tests that hold the result.
-- **What I'd do differently.** I gave Home an icon only the chat's shell draws; Louis's screenshot showed the blank
-  square. A check of every icon the web uses against the styles that draw them found a second gap (the packs' page
-  icon lived only in Puls). Run that check before using an icon, not after a screenshot.
+One slot, three areas. An area already brought its pages and its sidebar links; now it can bring a card for the home
+too (`SiteArea.AdminCard`). The overview, the packs and the evals each became an area of that one shape, and the home
+at `/admin` draws whatever cards the site named, in its order. The frame knows none of them, so a fourth area is a new
+card, not a change to the home.
+
+Refuse a wrong setup at start-up. An area that plugs into the admin with no frame stops the site with the fix in the
+message, rather than drawing frameless pages later. It is the web's first message enum, with its holes record.
+
+Read once, share the answer. Three things listed what the packs offer (the menu, the new packs page, the card), and
+two showed the review count (the badge, the card). Each pair now reads through one place (`PackOffer`,
+`ReviewQueueState.ReadOnceAsync`), so the numbers can't disagree.
+
+Template Method and Observer, for a refused key. Every card loads the key, reads, and goes quiet when refused: that is
+`AdminCardBase`, and a card writes only its read. Louis picked "cards report it": a refused card tells `AdminAccess`,
+and the home asks for the key once, instead of once per card or with a request of its own.
+
+Moving one part moves the sites with it. The plan kept the sites for step 7, but each step that changed `.Admin(…)`
+broke them, so each step carried them along. Step 7 was left with tests that hold the result.
+
+What I'd do differently. I gave Home an icon only the chat's shell draws; Louis's screenshot showed the blank square.
+A check of every icon the web uses against the styles that draw them found a second gap (the packs' page icon lived
+only in Puls). Run that check before using an icon, not after a screenshot.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a frame that names none of its parts, each part bringing its own
 slot-fillers, Template Method for the parts' shared steps and Observer for what they report.

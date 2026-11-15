@@ -17,19 +17,33 @@ voice is the mode, the three are `specialists/triage-*.md`, and the packs are na
 
 ## How it works
 
-- `TriageIdentity`: the name `triage`, the voice `triage/voice` as the default, the packs `triage`, `files`, `git`
-  and `dotnet` by its own enum, and the addresses the manager may ask (`Calls`, from `TriageCall`: `triage.sorter`,
-  `triage.investigator`, `triage.reviewer`; F127.3.1, [ADR 0117](../../../../src/docs/adr/0117-one-address-for-every-agent-call.md)).
-- `prompts/agent/triage/voice.md`: the manager as the hub, how it decides (the runbooks come with the case as its
-  brief; expected, a person, a fix or a hand-off; a report is a claim until the code checked it), how it ends
-  (`DecideCase`, `RaiseToPerson`), and its routing (`triage`, `agents`: each role asked by its address with
-  `AskAgent`).
-- The roles, each ending with its typed tool: the **sorter** (`triage`) with `SortCase` and the department; the
-  **investigator** (`triage`, `files`, `git`, `dotnet`, read-only by its prompt) with `ReportInvestigation`, where,
-  the cause, whose area and how sure; the **reviewer** (`triage`, `files`, `git`) with `ReportReview`, happy or not
-  and its reasons, one per line.
-- The triage pack's tools refuse a run id they don't know, so a mistyped id makes no stray run; in an eval's trial
-  an unknown run starts with its first step instead, since a trial's fresh session has none behind it (Louis's pick).
+### 1. The identity
+
+`TriageIdentity` says who the team is. Its name is `triage`, and its default voice is `triage/voice`. It loads the
+packs `triage`, `files`, `git` and `dotnet`, named by its own enum. And it lists the addresses the manager may ask,
+its `Calls`, from `TriageCall`: `triage.sorter`, `triage.investigator` and `triage.reviewer`.
+
+*Decided in:* F127.3.1, [ADR 0117](../../../../src/docs/adr/0117-one-address-for-every-agent-call.md).
+
+### 2. The manager
+
+The manager's voice is `prompts/agent/triage/voice.md`, and it makes the manager the hub. It says how the manager
+decides: the runbooks come with the case as its brief, the case is expected, for a person, for a fix or for a
+hand-off, and a report is only a claim until the code has checked it. It says how the manager ends a case, with
+`DecideCase` or `RaiseToPerson`. And it gives the routing, the toolsets `triage` and `agents`, so the manager asks
+each role by its address with `AskAgent`.
+
+### 3. The roles
+
+Each role ends its work with its own typed tool. The sorter has the `triage` toolset and ends with `SortCase`, naming
+the department. The investigator has `triage`, `files`, `git` and `dotnet`, is read-only by its prompt, and ends with
+`ReportInvestigation`: where the error is, the cause, whose area it is and how sure it is. The reviewer has `triage`,
+`files` and `git`, and ends with `ReportReview`: happy or not, and its reasons, one per line.
+
+### 4. A run id it doesn't know
+
+The triage pack's tools refuse a run id they don't know, so a mistyped id makes no stray run. In an eval's trial it's
+different: an unknown run starts with its first step instead, since a trial's fresh session has no run behind it.
 
 ![How it works: the manager asks each role by its address, every role ends with its typed tool, and the manager ends the case](diagrams/louis-agent.identity.triage-flow.svg)
 

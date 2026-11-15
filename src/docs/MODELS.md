@@ -94,13 +94,15 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama-amd up -d ollama-amd
 ```
 
-- **NVIDIA** reserves the GPU in compose (needs an NVIDIA driver; Docker Desktop's WSL 2 backend passes it through).
-- **AMD** uses the `ollama/ollama:rocm` image with `/dev/kfd` and `/dev/dri`: Linux hosts with ROCm only, since Docker
-  Desktop on Windows doesn't pass AMD GPUs to containers.
-- **Both are sized for a 4 GB card, split between VRAM and RAM:** a 32k-token context (`OLLAMA_CONTEXT_LENGTH=32768`,
-  above the agent's ~26k-token prompt), flash attention and an 8-bit KV cache (`OLLAMA_FLASH_ATTENTION=1`,
-  `OLLAMA_KV_CACHE_TYPE=q8_0`), which halve the context's memory. llama3.1 (8B, ~4.9 GB) and its context don't fit in
-  4 GB, so Ollama runs part of the model on the CPU from system RAM: slower than all-GPU, but the prompt isn't cut.
+The NVIDIA one reserves the GPU in compose. It needs an NVIDIA driver, and Docker Desktop's WSL 2 backend passes the
+card through. The AMD one uses the `ollama/ollama:rocm` image with `/dev/kfd` and `/dev/dri`, and works on Linux hosts
+with ROCm only, because Docker Desktop on Windows doesn't pass AMD GPUs to containers.
+
+Both are sized for a 4 GB card, with the work split between VRAM and RAM. They use a 32k-token context
+(`OLLAMA_CONTEXT_LENGTH=32768`), which is above the agent's prompt of about 26k tokens, plus flash attention and an
+8-bit KV cache (`OLLAMA_FLASH_ATTENTION=1`, `OLLAMA_KV_CACHE_TYPE=q8_0`), which halve the memory the context takes.
+llama3.1 (8B, about 4.9 GB) and its context still don't fit in 4 GB, so Ollama runs part of the model on the CPU from
+system RAM. That's slower than running it all on the GPU, but the prompt isn't cut.
   `docker exec louis_ollama_nvidia ollama ps` shows the split in its PROCESSOR column.
 
 ### Native Ollama on Windows (AMD)

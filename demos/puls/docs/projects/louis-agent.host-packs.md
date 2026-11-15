@@ -19,18 +19,29 @@ Start-up, step by step.
 
 ![Start-up: the names read and parsed, each identity and its packs created, the catalogue checked before any engine](diagrams/louis-agent.host-packs-flow.svg)
 
-- **One call at start-up.** `louis-agent.puls-api` starts with `AgentHost.Build(Plugins.FromEnvironment())`. `FromEnvironment` loads `config/.env` first, since the hosts load it only inside `Build`, which runs
-  after this, then reads `IDENTITIES` and `PACKS`.
-- **Names become enums once.** `IDENTITIES=puls` and `PACKS=where-to-buy` are comma separated, case ignored, each name once,
-  and parsed with `SettingChoice` into `IdentityKind` and `PackKind` ([ADR 0024](../../../../src/docs/adr/0024-choices-are-enums.md)).
-  An unknown name stops start-up with `HostPacksErrorMessage`, naming the supported ones. Unset loads nothing.
-- **Identities bring their packs.** Each chosen identity is created, and every pack it names in `Packs` is added to the
-  packs named on their own; one instance per pack, however often it is named. A pack is created with its own settings
-  (`new ShopPricesPack(ShopPricesOptions.FromEnvironment())`).
-- **The catalogue checks the rest.** The result is an `AgentCatalog` (core), which refuses, before any engine is built,
-  a name used twice, a pack an identity names but nobody registered, a `Requires` cycle, a prompt path two of them
-  share, and a tool name two toolsets share or that is the engine's own. The host hands it to `AgentHost`, which
-  registers the prompts with `SkillFileSource` and builds every engine from it.
+### 1. One call at start-up
+
+`louis-agent.puls-api` starts with `AgentHost.Build(Plugins.FromEnvironment())`. `FromEnvironment` loads `config/.env`
+first, since the hosts load it only inside `Build`, which runs after this, then reads `IDENTITIES` and `PACKS`.
+
+### 2. Names become enums once
+
+`IDENTITIES=puls` and `PACKS=where-to-buy` are comma separated, case ignored, each name once, and parsed with
+`SettingChoice` into `IdentityKind` and `PackKind` ([ADR 0024](../../../../src/docs/adr/0024-choices-are-enums.md)).
+An unknown name stops start-up with `HostPacksErrorMessage`, naming the supported ones. Unset loads nothing.
+
+### 3. Identities bring their packs
+
+Each chosen identity is created, and every pack it names in `Packs` is added to the packs named on their own; one
+instance per pack, however often it is named. A pack is created with its own settings
+(`new ShopPricesPack(ShopPricesOptions.FromEnvironment())`).
+
+### 4. The catalogue checks the rest
+
+The result is an `AgentCatalog` (core), which refuses, before any engine is built, a name used twice, a pack an
+identity names but nobody registered, a `Requires` cycle, a prompt path two of them share, and a tool name two
+toolsets share or that is the engine's own. The host hands it to `AgentHost`, which registers the prompts with
+`SkillFileSource` and builds every engine from it.
 
 ![Host packs: the program's plugins, the identity and the packs, into the catalogue](diagrams/louis-agent.host-packs-diagrams.svg)
 
@@ -77,8 +88,8 @@ copies a pack and an eval each keep equal.
 
 ## Limits and plans
 
-- Synchronous: nothing to await yet. F36's MCP servers as packs connect here, at start-up, so this becomes async, with
-  `MCP_PACKS` as a second source beside `PackKind` ([platform plan](../../../../ROADMAP.md)).
+Synchronous: nothing to await yet. F36's MCP servers as packs connect here, at start-up, so this becomes async, with
+`MCP_PACKS` as a second source beside `PackKind` ([platform plan](../../../../ROADMAP.md)).
 
 ## Related docs
 

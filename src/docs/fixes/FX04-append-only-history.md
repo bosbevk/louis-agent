@@ -33,29 +33,32 @@ The first and last rows were found by reading the code (the first from a PR revi
 
 **Freeze each conversation's system prompt and tool list when it starts, and only ever append.**
 
-- **Tools:** a conversation keeps a copy of the tool list from its first request; `BeginTurn` sends that copy, never the
-  engine's live `_tools`. Tools created, approved or rejected later apply to **new** conversations. `CreateTool`'s reply
-  changes accordingly ("available in your next chat"), so the model doesn't promise what it can't call.
-- **FX1's final-request middleware** must restore the **conversation's** tool list, not the engine's: today
-  `KeepToolsOnFinalRequest` sets `final.Tools = _tools`, the live list, so after freezing, a message that hits the round
-  limit after a tool changed elsewhere would send a different list on its final request and fail with FX1's 400 again.
-  `BeginTurn` puts the frozen list in `ChatOptions.AdditionalProperties` as well; `FunctionInvokingChatClient` clears
-  `Tools` on the final request but keeps the rest of the cloned options, so the middleware reads the list from there
-  (confirmed in the Microsoft.Extensions.AI 10.10.0 source by the PR #9 review). An adapter may forward
-  `AdditionalProperties` into the request body, where the API would reject an unknown field: captured locally, the
-  Anthropic adapter (12.53.0) does **not** (the body had only `max_tokens`, `messages`, `model`, `tools`), but the Ollama
-  and OpenAI-compatible adapters aren't checked, and a later version could change. So the middleware **removes the key**
-  before passing the request on (or the frozen list lives in an `AsyncLocal`, as `UsageScope` does), and a test asserts
-  the key never reaches the inner client. It removes it from a **copy** of the options on every request:
-  `FunctionInvokingChatClient` reuses one options object for all the rounds and copies it only for the final one, so
-  removing the key from the shared object on round 1 would leave the final request without the frozen list.
-- **System prompt:** keep `history[0]` as it was; after a skill reload, append a short system message saying what
-  changed. An appended message doesn't invalidate the thinking written before it; it becomes part of the checked
-  prefix for thinking written after it, which is what append-only means. Anthropic's
-  [page](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages) lists Haiku 5.5 for
-  mid-conversation `system` messages, with no beta header (checked 2026-10-19); the plan's first step still proves it
-  with one real request before building on it.
-- **F9 (compaction)** must be designed the same way: summarise by appending, never by editing earlier turns.
+**Tools.** A conversation keeps a copy of the tool list from its first request; `BeginTurn` sends that copy, never the
+engine's live `_tools`. Tools created, approved or rejected later apply to **new** conversations. `CreateTool`'s reply
+changes accordingly ("available in your next chat"), so the model doesn't promise what it can't call.
+
+FX1's final-request middleware must restore the **conversation's** tool list, not the engine's: today
+`KeepToolsOnFinalRequest` sets `final.Tools = _tools`, the live list, so after freezing, a message that hits the round
+limit after a tool changed elsewhere would send a different list on its final request and fail with FX1's 400 again.
+`BeginTurn` puts the frozen list in `ChatOptions.AdditionalProperties` as well; `FunctionInvokingChatClient` clears
+`Tools` on the final request but keeps the rest of the cloned options, so the middleware reads the list from there
+(confirmed in the Microsoft.Extensions.AI 10.10.0 source by the PR #9 review). An adapter may forward
+`AdditionalProperties` into the request body, where the API would reject an unknown field: captured locally, the
+Anthropic adapter (12.53.0) does **not** (the body had only `max_tokens`, `messages`, `model`, `tools`), but the
+Ollama and OpenAI-compatible adapters aren't checked, and a later version could change. So the middleware **removes
+the key** before passing the request on (or the frozen list lives in an `AsyncLocal`, as `UsageScope` does), and a
+test asserts the key never reaches the inner client. It removes it from a **copy** of the options on every request:
+`FunctionInvokingChatClient` reuses one options object for all the rounds and copies it only for the final one, so
+removing the key from the shared object on round 1 would leave the final request without the frozen list.
+
+**System prompt.** Keep `history[0]` as it was; after a skill reload, append a short system message saying what changed.
+An appended message doesn't invalidate the thinking written before it; it becomes part of the checked prefix for
+thinking written after it, which is what append-only means. Anthropic's
+[page](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages) lists Haiku 5.5 for
+mid-conversation `system` messages, with no beta header (checked 2026-10-19); the plan's first step still proves it
+with one real request before building on it.
+
+F9 (compaction) must be designed the same way: summarise by appending, never by editing earlier turns.
 
 **Alternatives considered:**
 
@@ -67,15 +70,14 @@ The first and last rows were found by reading the code (the first from a PR revi
 
 ## Tests (to do)
 
-- `CreateTool` mid-message: the requests after it in the same message send the same tool list as before it.
-- `/approve` or `/reject` between two messages leaves the open conversation's tool list (names and descriptions) unchanged.
-- A tool created in one session doesn't change the tool list another open session sends.
-- A message that hits the round limit after a tool changed elsewhere: its final request carries the conversation's frozen
-  tool list (same as its earlier requests) with `tool_choice: none`, not the engine's current one
-  (`AgentEngineRoundLimitTests`, extended).
-- The frozen-list key never reaches the provider on any round, and the options object the tool loop reuses still has it
-  when the final request is made.
-- A skill reload between two messages leaves `history[0]` unchanged and appends a system message.
+`CreateTool` mid-message: the requests after it in the same message send the same tool list as before it. `/approve`
+or `/reject` between two messages leaves the open conversation's tool list (names and descriptions) unchanged. A tool
+created in one session doesn't change the tool list another open session sends. A message that hits the round limit
+after a tool changed elsewhere: its final request carries the conversation's frozen tool list (same as its earlier
+requests) with `tool_choice: none`, not the engine's current one (`AgentEngineRoundLimitTests`, extended). The
+frozen-list key never reaches the provider on any round, and the options object the tool loop reuses still has it when
+the final request is made. A skill reload between two messages leaves `history[0]` unchanged and appends a system
+message.
 
 ## Confirm
 

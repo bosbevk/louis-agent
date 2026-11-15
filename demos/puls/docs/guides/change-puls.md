@@ -22,11 +22,14 @@ chat to see the change.
 
 ## Change what Puls says or does
 
-- **How it talks** is the voice file of each language. Change the same section in every language: the languages must
-  keep the same sections (`PulsPromptsTests` checks).
-- **Where a request goes** is `voice.md`'s routing table. Puls routes only what Puls does
-  ([ADR 0019](../../../../src/docs/adr/0019-modes-one-file-per-product.md)): anything else gets "not available yet" in one line.
-- **What a specialist does** is its file in `specialists/`.
+How it talks is the voice file of each language. Change the same section in every language: the languages must keep
+the same sections (`PulsPromptsTests` checks).
+
+Where a request goes is `voice.md`'s routing table. Puls routes only what Puls does
+([ADR 0019](../../../../src/docs/adr/0019-modes-one-file-per-product.md)): anything else gets "not available yet" in
+one line.
+
+What a specialist does is its file in `specialists/`.
 
 ## Add a language
 
@@ -76,12 +79,11 @@ dotnet test demos/puls/tests/louis-agent.identity.puls.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.identity.puls.tests    # after a deliberate prompt change: then read the diff
 ```
 
-- `PulsIdentityTests`: its name and packs, one prompt found per folder, the catalogue refusing Puls without its pack.
-- `PulsPromptsTests`: the modes and roles listed, a language loading its voice then the routing, the languages'
-  sections, the cook's header, a minion's prompt order.
-- `PulsSessionSnapshotTests` pins exactly what the model is sent in Puls's chat and in its cook
-  (`PulsSessionSnapshot.json`). Any word you change in a prompt changes it on purpose, so regenerate it and read the
-  diff: it is the review of the prompt change.
+`PulsIdentityTests`: its name and packs, one prompt found per folder, the catalogue refusing Puls without its pack.
+`PulsPromptsTests`: the modes and roles listed, a language loading its voice then the routing, the languages'
+sections, the cook's header, a minion's prompt order. `PulsSessionSnapshotTests` pins exactly what the model is sent
+in Puls's chat and in its cook (`PulsSessionSnapshot.json`). Any word you change in a prompt changes it on purpose, so
+regenerate it and read the diff: it is the review of the prompt change.
 
 Then try it in the Puls app ([Change the Puls web app](change-the-puls-app.md#run-it)) with a new chat. A change that
 should make Puls better is measured by its evals before it is merged; running them against the real model costs money,

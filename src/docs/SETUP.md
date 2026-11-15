@@ -156,10 +156,10 @@ A changed file under a demo's `skills/` needs only a restart: the containers mou
 
 ## Adding a setting
 
-- **Non-secret:** add it to `config/.env.example` (documented) and `config/.env`.
-- **Secret:** add a placeholder to `config/.env.secrets.example` and the real value to your `config/.env.secrets`.
-- **In code:** read it in `AgentOptions.FromEnvironment` or `LlmOptions.FromEnvironment`, not with ad-hoc
-  `Environment.GetEnvironmentVariable` calls inside the tools.
+A setting that isn't secret goes in `config/.env.example`, with a line saying what it does, and in `config/.env`. A
+secret gets a placeholder in `config/.env.secrets.example`, and its real value goes in your own `config/.env.secrets`.
+In the code, read it once in `AgentOptions.FromEnvironment` or `LlmOptions.FromEnvironment` (or a pack's own options
+class), never with a stray `Environment.GetEnvironmentVariable` call inside a tool.
 
 ## CI
 
@@ -174,8 +174,8 @@ The unit tests need no secrets, network or Docker.
 
 ## Security
 
-- Never commit `config/.env.secrets`, and don't paste keys into commits, PRs or chat.
-- Secret files are also off limits to the agent: it can't read or write `.env*` (except templates such as `.env.example`), key or credential files.
+Never commit `config/.env.secrets`, and don't paste keys into commits, PRs or chat. Secret files are off limits to the
+agent too: it can't read or write `.env*` (except templates such as `.env.example`), or key and credential files.
 
 ## Troubleshooting
 

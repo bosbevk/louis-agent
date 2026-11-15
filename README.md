@@ -67,21 +67,26 @@ demos/starter/       the smallest site, and what `dotnet new louis-site` makes
 
 A few rules hold everywhere:
 
-- **Every request is measured.** The usage ledger records each model call with its tokens and its cost. Every host
-  shows what a turn cost (`turn: 3 requests · 28k tokens (26k cached) · $0.006`), and an unknown price stays unknown
-  instead of turning into 0 ([ADR 0007](src/docs/adr/0007-measure-every-request.md)).
-- **Guards live in code, not in the prompt.** Model text never reaches a shell, file tools stay inside the workspace,
-  calls that got cut off never run, and anything the agent writes waits for your `/approve`
-  ([ADR 0004](src/docs/adr/0004-arguments-as-data.md), [ADR 0005](src/docs/adr/0005-guard-the-context.md)).
-- **Everything streams, and is traced.** You see the thinking and every tool call as they happen, in every host; with
-  an OpenTelemetry collector set, each turn and tool call is also a span on a dashboard
-  ([ADR 0064](src/docs/adr/0064-observability-through-opentelemetry.md)).
-- **A site's no is obeyed.** Every page the agent fetches checks the site's `robots.txt` and its no-AI signals first,
-  in code ([ADR 0068](src/docs/adr/0068-every-fetch-obeys-robots-txt.md)).
-- **A session keeps its tools.** It names its toolsets when it opens, so its prompt prefix stays cacheable. Prompt
-  caching took the old benchmark from $0.66 to $0.13 a run ([ADR 0006](src/docs/adr/0006-toolsets-per-session.md)).
-- **Packs stay convertible to MCP.** A pack could be served as an MCP server, and an MCP server could stand in for a
-  pack ([ADR 0028](src/docs/adr/0028-packs-stay-convertible-to-mcp.md)).
+Every request is measured. The usage ledger records each model call with its tokens and its cost. Every host shows
+what a turn cost (`turn: 3 requests · 28k tokens (26k cached) · $0.006`), and an unknown price stays unknown instead
+of turning into 0 ([ADR 0007](src/docs/adr/0007-measure-every-request.md)).
+
+Guards live in code, not in the prompt. Model text never reaches a shell, file tools stay inside the workspace, calls
+that got cut off never run, and anything the agent writes waits for your `/approve`
+([ADR 0004](src/docs/adr/0004-arguments-as-data.md), [ADR 0005](src/docs/adr/0005-guard-the-context.md)).
+
+Everything streams, and is traced. You see the thinking and every tool call as they happen, in every host; with an
+OpenTelemetry collector set, each turn and tool call is also a span on a dashboard
+([ADR 0064](src/docs/adr/0064-observability-through-opentelemetry.md)).
+
+A site's no is obeyed. Every page the agent fetches checks the site's `robots.txt` and its no-AI signals first, in
+code ([ADR 0068](src/docs/adr/0068-every-fetch-obeys-robots-txt.md)).
+
+A session keeps its tools. It names its toolsets when it opens, so its prompt prefix stays cacheable. Prompt caching
+took the old benchmark from $0.66 to $0.13 a run ([ADR 0006](src/docs/adr/0006-toolsets-per-session.md)).
+
+Packs stay convertible to MCP. A pack could be served as an MCP server, and an MCP server could stand in for a pack
+([ADR 0028](src/docs/adr/0028-packs-stay-convertible-to-mcp.md)).
 
 More detail is in [the architecture](src/docs/architecture/README.md) and in [the docs for each project](src/docs/projects/README.md).
 
@@ -92,11 +97,13 @@ More detail is in [the architecture](src/docs/architecture/README.md) and in [th
 that has only the tools that task needs, and a role that says how to work and report back. Then Puls writes the answer
 in its own voice.
 
-- **You see the work.** The Werk panel shows each hand-over live: the specialist, its task, each step, the sources it
-  read and what it cost.
-- **It's local.** Costs show in rand, it knows your time zone, and it uses your location (to about 1 km) only if you
-  share it.
-- **It's checked.** The cook and the routing are evals, so a prompt change shows up as a score.
+You see the work. The Werk panel shows each hand-over live: the specialist, its task, each step, the sources it read
+and what it cost.
+
+It's local. Costs show in rand, it knows your time zone, and it uses your location (to about 1 km) only if you share
+it.
+
+It's checked. The cook and the routing are evals, so a prompt change shows up as a score.
 
 ```bash
 docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
@@ -129,17 +136,19 @@ with you.
 An eval runs a real task and scores the outcome. Every eval runs on one C# harness (`src/evals/`), and each one sits with
 the project it proves, apart from what ships ([ADR 0029](src/docs/adr/0029-simulations-in-csharp.md)).
 
-- **An eval is files, a check is code.** A new eval is a folder: `eval.json`, its samples and its rubric, no C#. The
-  checks it names come from a catalogue of C# graders, and a pack can bring its own. The portal's studio writes those
-  files for you: samples taken from real chats and human review, then compose, try and publish.
-- **Code graders first.** Fixed rules are free and give the same score every time. A model judge comes in only where
-  code can't decide, and only after it agrees with human labels.
-- **pass@k and pass^k.** Run a task k times: did it pass at least once, and did it pass every time? An agent you sell
-  needs the second.
-- **Re-runs for $0.** A run records the web pages it read, so it can be replayed and re-scored for nothing. Cost always
-  comes from the ledger, never from a grader.
-- **Everything shows in the admin portal**: each run opens on its answer, and a review queue hands a person the
-  answers still waiting for their grade.
+An eval is files, and a check is code. A new eval is a folder: `eval.json`, its samples and its rubric, with no C#.
+The checks it names come from a catalogue of C# graders, and a pack can bring its own. The portal's studio writes
+those files for you: it takes samples from real chats and human review, and then you compose, try and publish.
+
+Code graders come first. Fixed rules are free and give the same score every time. A model judge comes in only where
+code can't decide, and only after it agrees with human labels.
+
+Two numbers say how reliable an agent is, pass@k and pass^k. Run a task k times: did it pass at least once, and did it
+pass every time? An agent you sell needs the second.
+
+Re-runs cost $0. A run records the web pages it read, so it can be replayed and re-scored for nothing. Cost always
+comes from the ledger, never from a grader. And everything shows in the admin portal: each run opens on its answer,
+and a review queue hands a person the answers still waiting for their grade.
 
 The first baseline: Puls's cook passed 23 of 24, its routing 72 of 72, for $0.37 together. How to:
 [run the evals](src/docs/guides/run-the-evals.md) · [add an eval](src/docs/guides/add-an-eval.md); design:
@@ -160,9 +169,10 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 
 Open **http://127.0.0.1:5080**. Everything listens on `127.0.0.1` only.
 
-- **Rider:** add an agent server in the AI Assistant settings, from
-  [config/rider/rider-acp.example.json](demos/louis-agent/config/rider/rider-acp.example.json). Each chat gets its own container.
-- **CLI:** `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli` (interactive), or add `-- "your prompt"` for one shot.
+To use it from Rider, add an agent server in the AI Assistant settings, from
+[config/rider/rider-acp.example.json](demos/louis-agent/config/rider/rider-acp.example.json); each chat gets its own
+container. To use it in a terminal, run `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli` for an
+interactive chat, or add `-- "your prompt"` for one shot.
 
 Every setting is in [src/docs/SETUP.md](src/docs/SETUP.md), and choosing a model is in [src/docs/MODELS.md](src/docs/MODELS.md). For
 prompts to try, see the [quick start](demos/louis-agent/docs/QUICK_START_AGENT.md).

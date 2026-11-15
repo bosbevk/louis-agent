@@ -35,10 +35,9 @@ are 4.5 wide.
 The mark, then the name `louis-agent` in **Geist Mono 500**, always lowercase and always with its hyphen. The name is a
 little taller than the mark is wide, and the gap between them is about a third of the mark.
 
-- **Clear space:** half the mark's height on every side.
-- **Smallest:** the mark alone at 16 px; the lockup at 120 px wide.
-- Use the lockup wherever there's room, and the mark alone for the favicon, avatars and the NuGet icon.
-- **Don't:** colour it, tilt or stretch it, add a glow or shadow, or set the name in another font ("Louis Agent").
+Give it clear space of half the mark's height on every side. The smallest the mark goes on its own is 16 px, and the
+lockup 120 px wide. Use the lockup wherever there's room, and the mark alone for the favicon, avatars and the NuGet
+icon. Don't colour it, tilt or stretch it, add a glow or a shadow, or set the name in another font ("Louis Agent").
 
 ## Colour
 
@@ -64,16 +63,15 @@ The site's `--faint` (`#5c6168`) is too faint for small text on the Floor: it's 
 
 ## Type
 
-- **Geist** (400 and 600) is for words people read: headings at 600 with tight tracking, body at 400.
-- **Geist Mono** (400 and 500) is for the name, numbers, code and the small uppercase labels above headings
-  ("MEASURED, NOT ASSUMED", tracked at 0.14 em). Never for body copy.
+Geist, at 400 and 600, is for the words people read: headings at 600 with tight tracking, and body text at 400.
+Geist Mono, at 400 and 500, is for the name, numbers, code and the small uppercase labels above headings ("MEASURED,
+NOT ASSUMED", tracked at 0.14 em). It's never used for body text.
 
 ## Voice
 
-- **Say:** "Every number here comes from the ledger or an eval run." "Build agents, not infrastructure." Plain words,
-  a term explained the first time, and only what works today.
-- **Avoid:** "revolutionary", "magical", "next-gen"; a number nobody measured; robots, brains, sparkles and glowing
-  gradients.
+Say things like "Every number here comes from the ledger or an eval run" and "Build agents, not infrastructure."
+Use plain words, explain a term the first time, and only talk about what works today. Stay away from "revolutionary",
+"magical" and "next-gen", from any number nobody measured, and from robots, brains, sparkles and glowing gradients.
 
 ---
 [Docs index](../README.md) · Related: [the site's design doc](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

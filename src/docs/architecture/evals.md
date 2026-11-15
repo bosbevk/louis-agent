@@ -1,8 +1,7 @@
 # The evals: architecture and communication
 
-> **Explanation.** How the evals work as built at the end of F49 (2026-11-03): which parts there are, how they
-> talk, what one run looks like in memory, the lines the runner writes, how the studio makes an eval, and where F49
-> came from. **Elsewhere:** running them in
+> **Explanation.** How the evals work: which parts there are, how they talk, what one run looks like in memory, the
+> lines the runner writes, how the studio makes an eval, and why an eval is files. **Elsewhere:** running them in
 > [Run the evals](../guides/run-the-evals.md); adding one in [Add an eval](../guides/add-an-eval.md); each
 > project's files and settings in [projects/](../projects/README.md); why it's built this way in
 > [ADR 0029](../adr/0029-simulations-in-csharp.md), [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md),
@@ -30,14 +29,14 @@ is the only thing they share.
 | The check contract | `src/evals/louis-agent.evals.checks` | What a check reads and returns (`Trial`, `ICheck`, `Grade`), and the catalogue a file names a check from (`ICheckType`, `CheckCatalog`). What a pack can reference to ship a check ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). |
 | The harness | `src/evals/louis-agent.evals` | How an eval runs: `IEval`, `FileEval` (an eval read from its folder), the datasets, the general checks and their entries, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
 | An identity's evals | `demos/puls/evals/louis-agent.identity.puls.evals` (`Evals/`) | What proves Puls: `puls-cook`, `puls-routing` and `puls-recipes` as folders of files, with Puls's readers and expectations (`Evals/Readers/`, `Evals/Checks/`). A project under `evals/` that only the runner references ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md), [ADR 0073](../adr/0073-packs-reference-no-evals.md)). |
-| A pack's checks | `evals/packs/tools/louis-agent.pack.{name}.checks` | The rules no general check can say, apart from the pack; only the runner references them ([ADR 0073](../adr/0073-packs-reference-no-evals.md)). |
+| A pack's checks | `packs/evals/louis-agent.pack.{name}.checks` | The rules no general check can say, apart from the pack; only the runner references them ([ADR 0073](../adr/0073-packs-reference-no-evals.md)). |
 | An identity's judges | `demos/puls/evals/louis-agent.identity.puls.judges` | Puls's model judge, `meal-for-people`, apart from the identity because it needs the harness; only the runner references it. |
 | The runner | `src/evals/louis-agent.evals.runner` | The command: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge; for the studio, lists the catalogue (`--checks`), judges a folder (`--check`), runs a folder's samples (`--folder`, `--samples`) and converts promptfoo files. |
 | The protocol | `src/evals/louis-agent.evals.protocol` | The eight line records both sides share, and their reader and writer. Records only. |
-| The API | `src/hosts/louis-agent.api` (`Evals/`, `Endpoints/Admin/`) | Starts the runner, records its lines, prices them from the ledger, serves the portal; also runs the sessions the runner opens. |
-| The portal | `demos/puls/web/louis-agent.puls` (`Components/Admin/`) | Start a run, watch it live, read runs and trends, grade the answers that wait (one at a time on the Review page, F53.3), calibrate a judge, write notes; make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
-| The drafts | `src/hosts/louis-agent.api` (`Evals/Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
-| The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`, `Web/Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
+| The API | `src/hosts/louis-agent.api.evals`, on `src/hosts/louis-agent.api` | Starts the runner, records its lines, prices them from the ledger, serves the portal; the API itself runs the sessions the runner opens. |
+| The portal | `src/web/louis-agent.web.evals`, in a site that adds it | Start a run, watch it live, read runs and trends, grade the answers that wait (one at a time on the Review page, F53.3), calibrate a judge, write notes; make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
+| The drafts | `src/hosts/louis-agent.api.evals` (`Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
+| The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`) and `louis-agent.core.web` (`Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
 
 ## The types
 
@@ -85,25 +84,34 @@ turns, tokens, seconds, cost) are measured beside the grades and never decide a 
 
 ![How a run talks: the API starts the runner, the runner asks agent sessions and the judge, and every line is stored as it arrives, the cost read from the ledger at the end](diagrams/evals-how-a-run-talks.svg)
 
-The other three conversations use the same pieces:
+The other three conversations use the same pieces.
 
-- **A re-score** (`--rescore {runId}`): the API exports the stored run as protocol lines on the runner's stdin;
-  `Rescorer` reads the transcripts back (`ProtocolTranscripts`) and grades them again, with no session and no model
-  cost unless a judge runs. The new run says `rescore_of`.
-- **A replay** (`--replay {runId}`): the runner asks for `replay` on each session; `ReplayResolution` in the API turns
-  that into recorded web answers, a recorded clock and recorded model answers (`ModelReplayChatClient`), so the agent
-  gives the same answers for nothing. An ask the recording doesn't have is a replay miss: the engine throws
-  `ModelReplayMissException`, the API streams it as an error of kind `replay_miss_error` (`StreamErrorKind` in
-  `louis-agent.session-stream`), and the runner marks the turn `TurnFailure.ReplayMiss`, so it counts as
-  infrastructure, never as the agent's failed answer (FX26). A replay only matches when every request reads the same
-  as when it was recorded, so nothing that changes between runs may enter a tool result: a specialist's or minion's
-  footer names the child, never what it cost (FX27). The cook recording `dc272b95eaeb` replays as `c0362ff73151` with
-  no miss at any of its 20 turns. The portal marks a replay on both pages, leaves it out of the estimate and the
-  trend, and starts one from a recorded run's row (`StoredRunRow.ReplayOf` and `Recorded`, read from the run's
-  settings by `EvalSettings`; CL26, FX28).
-- **A calibration**: `--label-sheet` writes the answers a person labels; `--calibrate` asks the judge about each label
-  and reports how often it agrees (the bar is 90% of each class, ADR 0029). From the portal, `POST
-  .../runs/{id}/calibrations/{grader}` runs the same command and stores the report.
+A re-score (`--rescore {runId}`) grades a stored run again. The API exports the run as protocol lines on the runner's
+stdin, and `Rescorer` reads the transcripts back (`ProtocolTranscripts`) and grades them once more. No session opens,
+and nothing costs money unless a judge runs. The new run says what it re-scored, in `rescore_of`.
+
+A replay (`--replay {runId}`) runs a recorded run again for free. The runner asks for `replay` on each session, and
+`ReplayResolution` in the API turns that into the recorded web answers, the recorded clock and the recorded model
+answers (`ModelReplayChatClient`), so the agent gives the same answers without paying for them.
+
+When the agent asks for something the recording doesn't have, that's a replay miss. The engine throws
+`ModelReplayMissException`, the API streams it as an error of kind `replay_miss_error` (`StreamErrorKind` in
+`louis-agent.session-stream`), and the runner marks the turn `TurnFailure.ReplayMiss`. So it counts as a failure of
+the infrastructure, never as the agent getting an answer wrong.
+
+A replay only matches when every request reads exactly as it did when it was recorded. That's why nothing that changes
+between runs may get into a tool result: a specialist's or a minion's footer names who answered, never what it cost.
+The cook recording `dc272b95eaeb` replays as `c0362ff73151` with no miss at any of its 20 turns. The portal marks a
+replay on both pages and leaves it out of the estimate and the trend, and you start one from a recorded run's row
+(`StoredRunRow.ReplayOf` and `Recorded`, read from the run's settings by `EvalSettings`).
+
+*Decided in:* FX26, FX27, FX28, CL26.
+
+A calibration checks the judge against a person. `--label-sheet` writes out the answers a person labels, and
+`--calibrate` asks the judge about each label and reports how often it agrees. The bar is 90% of each class. From the
+portal, `POST .../runs/{id}/calibrations/{grader}` runs the same command and stores the report.
+
+*Decided in:* [ADR 0029](../adr/0029-simulations-in-csharp.md).
 
 ## The lines the runner writes
 
@@ -142,86 +150,83 @@ check, the try, the publish and the promptfoo export all read that folder.
 | `POST` | `/v1/admin/evals/drafts/promptfoo` | A promptfoo file to a new eval draft, with what was left out |
 | `GET` | `/v1/admin/evals/drafts/{id}/promptfoo` | The draft as a promptfoo file |
 
-## Where F49 came from
+## Why an eval is files
 
-F49 *Evals as content* (2026-10-28 to 2026-11-03) turned the evals from C# into files. Louis's goal: *"it should be
-simple to make evals, edit them and from the admin panel, living in identity."* Before it, one eval was about twenty C#
-files. Every eval tool we studied keeps three things apart, and F49 did the same:
+Louis put the aim simply: *"it should be simple to make evals, edit them and from the admin panel, living in
+identity."* Every eval tool we studied keeps three things apart, and ours does the same.
 
-- **the eval is a data file** (`eval.json`, its dataset, its manual, its transcripts), beside the identity or pack
-  it proves: identity is who, pack is what it can do, eval is how we prove it;
-- **the checks are a catalogue of compiled C# classes**, picked by a kebab-case type, from core's harness and from
-  the packs that ship them;
-- **the judge's rubric is the one bit of free text** a person writes, kept as a markdown file.
+The eval itself is data: `eval.json`, its dataset, its manual and its transcripts, in a folder beside the identity or
+pack it proves. An identity is who, a pack is what it can do, and an eval is how we prove it. The checks are a
+catalogue of compiled C# classes, each picked by a kebab-case type, from the harness and from the projects that prove
+the packs. And the judge's rubric is the one bit of free text a person writes, kept as a markdown file.
 
-**No script engine.** .NET has no sandbox for running untrusted code in the hosted service, so the way out of the
-catalogue is a new reviewed C# class (ADR 0056), never a script in a file. A promptfoo file's JavaScript asserts are
-left out on import, by name.
+There's no script engine. .NET has no sandbox for running untrusted code inside the hosted service, so the way past
+the catalogue is a new, reviewed C# class, never a script in a file. When a promptfoo file is imported, its
+JavaScript asserts are left out, by name.
 
-| Child | What it built | ADR |
-|---|---|---|
-| F49.1 The checks catalogue | The check contract in `src/evals/louis-agent.evals.checks` (Separated Interface), every check an entry with a typed settings record, found through a registry each owner fills | [0056](../adr/0056-a-check-is-a-catalogue-entry.md) |
-| F49.2 The cook's eval as files | `eval.json` read by `FileEval`, the cook and routing evals as folders in the Puls identity, the template folder, the general checks of every family (F49.2b) with readers an identity ships | [0058](../adr/0058-an-eval-is-a-folder-of-files.md), [0059](../adr/0059-an-identity-ships-readers-not-checks.md) |
-| F49.3 Checks in packs | The shops pack ships the checks that prove its tools, gathered by the composition | [0060](../adr/0060-a-pack-ships-its-checks.md) |
-| F49.4 Studio: samples | Sample and transcript drafts made from stored runs and human review | [0061](../adr/0061-evals-grow-from-use.md) |
-| F49.5 Studio: compose, try, publish | The Studio page, the runner's studio commands, publish to a branch, promptfoo in and out | [0062](../adr/0062-the-studio-writes-what-git-keeps.md) |
+A few things we looked at shaped the format. Microsoft.Extensions.AI.Evaluation keeps its scenarios in C# only, so
+there was no file format to reuse, but its judge evaluators can still be reached through the catalogue. Anthropic's
+*Develop test cases* says to prefer volume over polish, to grow cases from real use, and to grade by code first, a
+model second and a person last; a rubric asks for a constrained output and lets the grader think first.
 
-**What the research of 2026-10-29 added** (the report of 2026-10-28 stood):
+promptfoo's assertion has `type`, `value`, `threshold`, `weight` and `metric`, and our check entry keeps the same
+fields, so importing and exporting is renaming types from a table, not translating one shape into another. Inspect's
+`Sample` (`input`, `target`, `id`, `metadata`) is the shape our scenarios keep. And `JsonSchemaExporter` (.NET 9 and
+up) makes a JSON schema from a settings record, which is how the runner's `--checks` hands the studio a form for every
+check.
 
-- **Microsoft.Extensions.AI.Evaluation** keeps its scenarios in C# only, so there was no file format to reuse; its
-  judge evaluators stay reachable through the catalogue.
-- **Anthropic's *Develop test cases*:** volume over polish, grow cases from real use (F49.4), grade by code first, a
-  model second and a person last; a rubric asks for a constrained output and lets the grader think first.
-- **promptfoo's assertion** is `type`, `value`, `threshold`, `weight`, `metric`; our check entry keeps the same
-  fields, so import and export are a rename of types by a table, not a translation of shape.
-- **Inspect's `Sample`** (`input`, `target`, `id`, `metadata`) is the shape our scenarios keep.
-- **`JsonSchemaExporter`** (.NET 9 and up) makes a JSON schema from a settings record, which is how the runner's
-  `--checks` hands the studio a form for every check.
+*Decided in:* F49.1 to F49.5, [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md),
+[ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md), [ADR 0059](../adr/0059-an-identity-ships-readers-not-checks.md),
+[ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md),
+[ADR 0073](../adr/0073-packs-reference-no-evals.md).
 
 ## Where the files are
 
 ```
-evals/
+src/evals/
 ├── louis-agent.evals/              # the harness
 │   ├── Api/                        # ISessionClient, HttpSessionClient, CannedSessionClient, the session request
 │   ├── Conformance/                # references must pass, known-bads must fail
 │   ├── Datasets/                   # dataset.json + scenarios/{dev,held-out}/ (Inspect's Sample shape), the loader
+│   ├── Files/                      # FileEval: an eval read from its folder
 │   ├── Grading/                    # Common/ (the general checks, GeneralChecks; Answers/, Tools/), Models/ (the judge), Human/, Outcomes/
 │   ├── Labels/                     # the label sheet and the calibration
 │   ├── Protocol/                   # ProtocolWriter, ProtocolTranscripts
 │   ├── Reports/                    # RunSummary
 │   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialChecking, Rescoring/
 │   └── Trials/                     # ConversationMetrics
-├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/ (ICheckType, CheckType, CheckCatalog); Datasets/Scenarios/; Trials/; Grading/ (ICheck, Grade, Verdict); Messages/
+├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/; Datasets/; Trials/; Grading/ (ICheck, Grade, Verdict); Markdown/; Readers/; Messages/
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
-├── louis-agent.evals.runner/       # EvalRunnerHost, Arguments/, Catalog/ (EvalFolders, RunnerCatalogs, ChecksListing), Calibration/, Evals/Stub/,
-│                                   # Studio/ (CheckCommand, ManifestSeal, RunTarget, SampleSubset), Promptfoo/ (the table, import, export)
+├── louis-agent.evals.runner/       # EvalRunnerHost, Arguments/, Catalog/, Calibration/, Evals/, Manuals/, Refusal/,
+│                                   # Studio/, Promptfoo/ (the table, import, export)
 └── template/Example/               # the folder a new eval starts as a copy of (never listed)
-demos/puls/evals/louis-agent.identity.puls.evals/Evals/  # Cook/, Recipes/ and Routing/ (eval.json, manual.md, Dataset/, Transcripts/), Checks/, Readers/ (Puls's readers)
+demos/puls/evals/louis-agent.identity.puls.evals/Evals/  # Cook/, Recipes/, RecipesLong/ and Routing/, Checks/, Readers/ (Puls's readers)
 demos/puls/evals/louis-agent.identity.puls.judges/       # meal-for-people, PulsJudges
-packs/evals/louis-agent.pack.where-to-buy.checks/Checks/ # the shop rules (F49.3; the shops pack's until F50.2)
-packs/evals/louis-agent.pack.recipes.checks/Checks/      # recipe-from-source
-src/hosts/louis-agent.api/Evals/          # List/ (RunnerProcess), Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/,
-│                                   # Drafts/ (Samples/, Transcripts/, Composed/, Store/), Studio/ (DraftFolder, the runner's parts, Publish/)
-src/hosts/louis-agent.api/Endpoints/Admin/Studio/   # the studio's routes, Promptfoo/
-src/web/louis-agent.web/Pages/Admin/Building/EvalStudio.razor  # the Studio page
-src/web/louis-agent.web/Components/Admin/Evals/  # the portal's pages; Studio/ (the drafts, Compose/, Promptfoo/)
-src/web/louis-agent.web/Admin/Studio/  # the studio's plain classes: Compose/ (the form), Schema/ (a check's fields from its schema)
+packs/evals/louis-agent.pack.where-to-buy.checks/        # the where-to-buy rules
+packs/evals/louis-agent.pack.recipes.checks/             # recipe-from-source
+src/hosts/louis-agent.api.evals/    # List/, Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/, Replies/,
+│                                   # Drafts/ (Samples/, Transcripts/, Composed/, Store/), Studio/ (DraftFolder, the runner's parts, Publish/),
+│                                   # Endpoints/ (Evals/, Runs/, Reviews/, Drafts/, Studio/ with Promptfoo/)
+src/web/louis-agent.web.evals/      # Pages/ (Building/EvalStudio.razor, Running/, Reviewing/), Components/ (the portal's pages; Studio/),
+                                    # Admin/ (the plain classes; Studio/ with Compose/ and Schema/)
 ```
 
 ## What to keep in mind
 
-- **The API decides, the runner asks.** The runner only says it wants a replay; the API's settings decide what a
-  session may do (ADR 0029).
-- **Cost comes from the ledger, never from a check.** The runner can't see prices; the API joins them after the run
-  (ADR 0007).
-- **CI grades recorded transcripts only.** Every eval's references and known-bads run in the tests for free; a live
-  run waits for Louis's go.
-- **An eval is content, a check is code.** A new eval that uses existing checks is a folder of files with no C#; a
-  check is a reviewed class with an entry (ADR 0056, ADR 0058).
-- **The runner reads eval files; git keeps them.** The API and the portal never read an eval's folder themselves,
-  and the studio's publish is a commit the person pushes (ADR 0062). F49 is done (2026-11-03); the next change to
-  this picture is the specialists' evals (F50) and the `similar` check on the TODO.
+The API decides and the runner asks. The runner only says it wants a replay, and the API's settings decide what a
+session may do. Cost comes from the ledger, never from a check: the runner can't see prices, and the API joins them on
+after the run.
+
+CI grades recorded transcripts only. Every eval's references and known-bads run in the tests, for free, and a live run
+waits for Louis's go.
+
+An eval is content, and a check is code. A new eval that uses the checks we have is a folder of files with no C#, and
+a new check is a reviewed class with its entry. The runner reads the eval files, and git keeps them. The API and the
+portal never read an eval's folder themselves, and the studio's publish is a commit that a person pushes.
+
+*Decided in:* [ADR 0007](../adr/0007-measure-every-request.md), [ADR 0029](../adr/0029-simulations-in-csharp.md),
+[ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md), [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md),
+[ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md).
 
 ---
 [Architecture](README.md) · Related: [Building block view](05-building-block-view.md) ·

@@ -24,18 +24,23 @@ The chat page is the framework's chat shell, given the app's own parts in its sl
 
 ![The code-review app: its pages, the framework's shells and the API](diagrams/louis-agent.code-review-how-it-works.svg)
 
-- **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs'
-  screens, at the root and at `/chat`. A coding agent has no use for credits, a language menu, a place or projects, so
-  `ChatPage` turns those off, along with what only says it's coming.
-- **A session** gets every toolset the API can load.
-- **Files, Changes and Branches aren't this app's.** They're the files and git packs' views, under `packs/web/`, and
-  open as admin screens at `/admin/screens/{name}`. `Program.cs` registers them with `FilesWebViews.AddTo` and
-  `GitWebViews.AddTo`.
-- **A Review or Ask button opens this chat with the prompt as a draft,** and nothing is sent until the person sends it
-  (`ChatHandoff`).
-- **Themes** are `console`, the default, the framework's colours as they are, and `retro` to switch to: Sass that sets
-  the framework's colour names, built to `wwwroot/css/themes/`, loaded after `app.css` and swapped while the page runs.
-  `wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
+The chat is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs' screens, at
+the root and at `/chat`. A coding agent has no use for credits, a language menu, a place or projects, so `ChatPage`
+turns those off, along with what only says it's coming.
+
+A session gets every toolset the API can load.
+
+### 1. Files, Changes and Branches aren't this app's
+
+They're the files and git packs' views, under `packs/web/`, and open as admin screens at `/admin/screens/{name}`.
+`Program.cs` registers them with `FilesWebViews.AddTo` and `GitWebViews.AddTo`.
+
+A Review or Ask button opens this chat with the prompt as a draft, and nothing is sent until the person sends it
+(`ChatHandoff`).
+
+Themes are `console`, the default, the framework's colours as they are, and `retro` to switch to: Sass that sets the
+framework's colour names, built to `wwwroot/css/themes/`, loaded after `app.css` and swapped while the page runs.
+`wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
 
 Reviewing a change, the job the app is for:
 
@@ -76,8 +81,8 @@ root and stays; `Pages/SiteRoutesTests` opens a screen's address through this ap
 
 ## Limits and plans
 
-- Screens with real data haven't been seen in a browser yet, only their tests.
-- The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
+Screens with real data haven't been seen in a browser yet, only their tests. The chat keeps nothing on the server
+between restarts beyond what the API's session holds; a chat that ended says so.
 
 ## Related docs
 

@@ -45,32 +45,41 @@ A skill can be added, dropped or reworded at any time; that is a change to this 
 
 ## A skill counts as learned when
 
-1. **It's built.** Its *Missing* column is empty: the work that covers it is shipped and meets its *Done when* in the
-   feature doc or TODO.
-2. **It's measured.** Before and after numbers on an eval ([Run the evals](guides/run-the-evals.md), skill 12), with
-   quality held: the targets themselves are set in the feature's plan or doc. The first numbers, from the demo-run
-   benchmark the evals replaced, are in [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
-3. **It's written up.** A short write-up per skill in [src/docs/learning/](learning/): what was measured before and after, what
-   changed, the trade-offs, and what didn't work. Together the write-ups form a portfolio of AI-engineering practice.
-4. **I can explain it.** The write-up answers *why this design and not the alternatives*, without needing the code open.
+A skill counts as learned when four things are true.
+
+First, it's built. Its *Missing* column is empty, because the work that covers it has shipped and meets its *Done
+when* in the feature doc or the TODO.
+
+Second, it's measured. There are before and after numbers on an eval ([Run the evals](guides/run-the-evals.md), skill
+12), with quality held. The targets themselves are set in the feature's plan or doc. The first numbers, from the
+demo-run benchmark the evals replaced, are in
+[BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
+
+Third, it's written up. Each skill gets a short write-up in [src/docs/learning/](learning/): what was measured before
+and after, what changed, the trade-offs, and what didn't work. Together the write-ups make a portfolio of
+AI-engineering practice.
+
+And last, I can explain it. The write-up answers *why this design and not the alternatives*, without needing the code
+open.
 
 ## How to work
 
-- **Source of truth:** [TODO.md](../../TODO.md) (what's next), [src/docs/features](features/README.md) (how),
-  [src/docs/specs](specs/) (why). Don't duplicate them here; update them.
-- **Learning over finishing:** when a choice is between done faster and understood better, prefer understood better,
-  and say what was learned in the write-up.
-- **One feature at a time**, in the TODO's order; one implementation step per commit, each with its test. Keep the
-  existing suites green.
-- **Measure, don't assume:** rerun the benchmark for every change that affects cost or quality, keep a change only if
-  quality holds, and record the numbers.
-- **Keep everything in step** when a feature finishes: follow
-  [Finishing a feature](features/README.md#finishing-a-feature).
-- **Ask first** before anything that spends real money (benchmark or demo runs against the API), before pushing, and
-  on open design decisions listed in the TODO.
-- **Provider-neutral core:** keep provider-specific code in `LlmClientFactory`, as a strategy per concern where providers
-  differ ([Architecture: Provider strategies](architecture/05-building-block-view.md#provider-strategies)).
-- **Stop and report** rather than guess when a result can't be verified.
+The sources of truth are [TODO.md](../../TODO.md) for what's next, [src/docs/features](features/README.md) for how,
+and [src/docs/specs](specs/) for why. Don't copy them here; update them.
+
+Learning comes before finishing. When a choice is between done faster and understood better, pick understood better,
+and say what was learned in the write-up. Work on one feature at a time, in the TODO's order, with one step per commit,
+each with its test, and keep the existing suites green.
+
+Measure, don't assume. Rerun the benchmark for every change that affects cost or quality, keep a change only if
+quality holds, and write the numbers down. When a feature finishes, bring everything along with it by following
+[Finishing a feature](features/README.md#finishing-a-feature).
+
+Ask first before anything that spends real money (benchmark or demo runs against the API), before pushing, and on the
+open design decisions the TODO lists. Keep core neutral about providers: provider-specific code stays behind
+`LlmClientFactory`, as a strategy per concern where providers differ
+([Architecture: Provider strategies](architecture/05-building-block-view.md#provider-strategies)). And when a result
+can't be checked, stop and report rather than guess.
 
 ---
 [Docs index](README.md) · [TODO](../../TODO.md) · [Features](features/README.md)

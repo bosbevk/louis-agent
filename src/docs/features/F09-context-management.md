@@ -18,51 +18,59 @@ turns — at token thresholds, so the work is rare and caching keeps working in 
 
 **F9-S1 — Clear stale tool results.** As an *operator*, I want old tool results replaced with short stubs once a
 conversation is large, so that later rounds don't keep paying for files the model has finished with.
-- *Given* the last request's input tokens (F1) passed `CONTEXT_CLEAR_AT` (default 60,000) *when* the next turn (or the
-  next "continue" message) starts *then* tool results older than the last `CONTEXT_KEEP_ROUNDS` rounds (default 4) are
-  replaced with `[cleared: ReadWorkspaceFile src/…/OrderTotal.cs — 3,120 chars; read it again if needed]`.
-- *And* tool calls and results stay paired (same call ids), so the history stays valid for every provider.
+
+*Given* the last request's input tokens (F1) passed `CONTEXT_CLEAR_AT` (default 60,000) *when* the next turn (or the
+next "continue" message) starts *then* tool results older than the last `CONTEXT_KEEP_ROUNDS` rounds (default 4) are
+replaced with `[cleared: ReadWorkspaceFile src/…/OrderTotal.cs — 3,120 chars; read it again if needed]`. *And* tool
+calls and results stay paired (same call ids), so the history stays valid for every provider.
 
 **F9-S2 — Compact old turns.** As a *user* in a long chat, I want older turns summarised once the chat is very large, so
 that it keeps working and stays affordable.
-- *Given* the conversation still passes `CONTEXT_COMPACT_AT` (default: the model's compaction point from F15, below
-  the smaller of a share of its window and its price step; on Haiku 5.5 under 100,000, where every token starts to
-  cost 5×; a fixed 120,000 would be past that step) *when* a turn starts *then* everything
-  before the last `CONTEXT_KEEP_TURNS` user turns (default 3) is replaced by one summary message written by a separate
-  call (`purpose: "compaction"`), and the kept part starts at a user message.
+
+*Given* the conversation still passes `CONTEXT_COMPACT_AT` (default: the model's compaction point from F15, below the
+smaller of a share of its window and its price step; on Haiku 5.5 under 100,000, where every token starts to cost 5×;
+a fixed 120,000 would be past that step) *when* a turn starts *then* everything before the last `CONTEXT_KEEP_TURNS`
+user turns (default 3) is replaced by one summary message written by a separate call (`purpose: "compaction"`), and
+the kept part starts at a user message.
 
 **F9-S3 — Nothing is lost for good.** As a *developer*, I want the original messages saved before they are cleared or
 compacted, so that I can always see what the model saw.
-- *Then* the replaced messages are appended to `logs/sessions/<session id>.jsonl` before replacement.
+
+*Then* the replaced messages are appended to `logs/sessions/<session id>.jsonl` before replacement.
 
 **F9-S4 — Still remembers.** As a *user*, I want a compacted chat to still answer questions about its early turns, so
 that compaction doesn't make it forget.
-- *Given* the scripted 30-turn chat (the benchmark) *then* it stays under `CONTEXT_COMPACT_AT` and answers the recall
-  questions about turns 1–3 correctly.
+
+*Given* the scripted 30-turn chat (the benchmark) *then* it stays under `CONTEXT_COMPACT_AT` and answers the recall
+questions about turns 1–3 correctly.
 
 **F9-S5 — Doesn't hurt fixes.** As an *operator*, I want the demo's results unchanged, so that bounding history isn't a
 quality trade.
-- *Then* 10/10 fixes confirmed and cost per fix not higher than the M2 run.
+
+*Then* 10/10 fixes confirmed and cost per fix not higher than the M2 run.
 
 ## Design
 
-- **When:** only at **turn boundaries and before "continue" messages** — never inside the tool loop of one message.
-  Within one message the loop is bounded (≤ `MaximumIterationsPerRequest` rounds), and rewriting history mid-loop would
-  break the cache every round. Rewrites invalidate the message cache from the first changed message, so thresholds
-  (not every turn) keep that rare; the tools-and-system cache (F4 marker 1) is never affected.
-- **Measuring size:** the last request's `input + cache_read + cache_write` tokens for this session from F1 — real
-  counts, no tokenizer needed.
-- **`ContextManager`** (`louis-agent.core/tools/` or `context/`), called from `AgentEngine.BeginTurn` with the stored
-  history:
-  1. `ClearStaleToolResults(history, keepRounds)` — rebuilds old `FunctionResultContent` items with stub results
-     (tool name and argument summary from the matching `FunctionCallContent`, original size).
-  2. `CompactAsync(history, keepTurns)` — summarises the older part with F16's `Summariser` (job `compaction`, its
-     own prompt section, model and no caching) into one user-role message labelled as a summary of earlier
-     conversation; thinking blocks in the replaced part go with it.
-- **Archive** as a record (like `ToolCallRecords`, a JSON-lines file under `LOG_DIRECTORY`) before each rewrite (S3).
-- **Benchmark chat:** a script (`samples/benchmarks/long-chat.ps1` or a test harness) that drives 30 turns against
-  louis-agent.api on the demo repository; its recall questions with known answers are an F18 suite (`recall`), so
-  they are scored, priced and compared with a baseline like any other eval.
+Context is managed only at the boundaries of a turn and before "continue" messages, never inside the tool loop of one
+message. Within one message the loop is bounded (at most `MaximumIterationsPerRequest` rounds), and rewriting the
+history mid-loop would break the cache every round. A rewrite invalidates the message cache from the first changed
+message onwards, so thresholds, rather than every turn, keep that rare. The tools-and-system cache (F4's first marker)
+is never affected.
+
+The size is measured from the last request's `input + cache_read + cache_write` tokens for this session, from F1.
+Those are real counts, so no tokenizer is needed.
+
+A `ContextManager` (in `louis-agent.core/tools/` or `context/`) is called from `AgentEngine.BeginTurn` with the stored
+history, and does two things in turn. First, `ClearStaleToolResults(history, keepRounds)` rebuilds old
+`FunctionResultContent` items as stub results: the tool's name and a summary of its arguments from the matching
+`FunctionCallContent`, and the original size. Then `CompactAsync(history, keepTurns)` summarises the older part with
+F16's `Summariser` (job `compaction`, with its own prompt section and model, and no caching) into one user-role message
+labelled as a summary of the earlier conversation. Thinking blocks in the replaced part go with it.
+
+Before each rewrite, the old history is archived as a record, like `ToolCallRecords`: a JSON-lines file under
+`LOG_DIRECTORY` (S3). And a benchmark chat (`samples/benchmarks/long-chat.ps1`, or a test harness) drives 30 turns
+against louis-agent.api on the demo repository. Its recall questions, with known answers, are an F18 suite (`recall`),
+so they're scored, priced and compared with a baseline like any other eval.
 - **Provider-native alternatives** (Anthropic context editing / compaction) stay out: they need the beta client and work
   only on Anthropic (server-side compaction supports Haiku 5.5, not Haiku 4.5).
 
@@ -81,10 +89,11 @@ quality trade.
 
 ## Done when
 
-- Stories' criteria pass; tests added; suites pass.
-- Benchmark chat passes recall under the threshold; demo 10/10 with cost per fix ≤ M2.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F9** to the work log,
-  set *Status* to done here and in the features table, and note it in the spec's implementation map.
+Stories' criteria pass; tests added; suites pass. Benchmark chat passes recall under the threshold; demo 10/10 with
+cost per fix ≤ M2.
+
+Then finish up (see [Finishing a feature](README.md#finishing-a-feature)): move **F9** to the work log, set *Status*
+to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F8 Reliability](F08-reliability.md) · Next: [F10 Route settings](F10-route-settings.md)

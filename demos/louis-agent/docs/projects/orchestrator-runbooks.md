@@ -130,19 +130,25 @@ rule, written down by a person; *how* the code does it is louis-agent's job.
 
 ## Writing a good runbook
 
-- **State correct behaviour as a rule with examples**, not as a code change. "An unknown code gives no discount" lets
-  louis-agent find the right fix; "use `TryGetValue`" assumes you already know the cause.
-- **Say what must not change.** "Totals for orders with `WELCOME10`, `VIP20` or no code must not change" keeps a fix
-  from quietly altering correct results.
-- **Use an example to rule out the wrong reading.** The first `customer-initials` runbook said only that a single name
-  gives one initial; louis-agent's fix then took the first letter of *every* word. Adding "`Mary Ann Smith` → `MS`
-  (not `MAS`)" fixed it on the next run — no code change, just a clearer runbook.
-- **Name exceptions precisely** under Expected: the type, and the message when the type alone is too broad
-  (`InvalidOperationException` covers far more than duplicate refunds).
-- **Keep risky methods out of Auto-fixable.** Anything that moves money, deletes data or talks to another company
-  should escalate. Say so in plain words, as `refund.md` does.
-- **Put shared facts in `service.md`** (owning teams, deploy policy) and method-specific facts in the method's runbook.
-- **Don't put secrets in a runbook.** It is part of a model prompt and is logged in the agent communications log.
+State correct behaviour as a rule with examples, not as a code change. "An unknown code gives no discount" lets
+louis-agent find the right fix; "use `TryGetValue`" assumes you already know the cause.
+
+Say what must not change. "Totals for orders with `WELCOME10`, `VIP20` or no code must not change" keeps a fix from
+quietly altering correct results.
+
+Use an example to rule out the wrong reading. The first `customer-initials` runbook said only that a single name gives
+one initial; louis-agent's fix then took the first letter of *every* word. Adding "`Mary Ann Smith` → `MS` (not
+`MAS`)" fixed it on the next run — no code change, just a clearer runbook.
+
+Name exceptions precisely under Expected: the type, and the message when the type alone is too broad
+(`InvalidOperationException` covers far more than duplicate refunds).
+
+Keep risky methods out of Auto-fixable. Anything that moves money, deletes data or talks to another company should
+escalate. Say so in plain words, as `refund.md` does.
+
+Put shared facts in `service.md` (owning teams, deploy policy) and method-specific facts in the method's runbook.
+
+Don't put secrets in a runbook. It is part of a model prompt and is logged in the agent communications log.
 
 ## Template
 
@@ -165,13 +171,15 @@ rule, written down by a person; *how* the code does it is louis-agent's job.
 
 ## Adding and changing runbooks
 
-- **A new method:** add `Skills/<service>/<method>.md` from the template. Its file name must be the method name the
-  error events carry.
-- **A new service:** add `Skills/<service>/service.md` and the method runbooks, and run an orchestrator with
-  `ORCHESTRATOR_SERVICE=<service>`, pointed at that service's own louis-agent.api.
-- **After a change:** runbooks are copied into the orchestrator's build, so rebuild it (its image too, if you
-  run it in Docker). The next triage uses the new text. `agent-comms.md` shows what the
-  orchestrator decided and what it sent louis-agent, which is the quickest way to check a runbook says what you meant.
+A new method: add `Skills/<service>/<method>.md` from the template. Its file name must be the method name the error
+events carry.
+
+A new service: add `Skills/<service>/service.md` and the method runbooks, and run an orchestrator with
+`ORCHESTRATOR_SERVICE=<service>`, pointed at that service's own louis-agent.api.
+
+After a change: runbooks are copied into the orchestrator's build, so rebuild it (its image too, if you run it in
+Docker). The next triage uses the new text. `agent-comms.md` shows what the orchestrator decided and what it sent
+louis-agent, which is the quickest way to check a runbook says what you meant.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Previous: [Development guide](../../../../src/docs/CLAUDE.md) · Next: [Puls's web app](../../../puls/docs/projects/louis-agent.puls.md)
