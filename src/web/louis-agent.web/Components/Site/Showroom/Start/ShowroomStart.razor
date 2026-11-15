@@ -1,7 +1,7 @@
 @* The showroom's start (F134.1): a stage. The page's one h1 and its line stand over a deck of the site's demos, each
    a framed window, one forward in the light. Under the deck are the forward demo's name, its line and its way in,
-   and a dock with a button per demo. The stage wears the forward demo's colour, and each window its own. A site
-   with no demos gets the heading alone. *@
+   and a dock with a button per demo, which says which window it brings forward. The stage wears the forward demo's
+   colour, and each window its own. A site with no demos gets the heading alone. *@
 <LitStage Accent="StageAccent">
     <section id="top" class="start-stage">
         <div class="start-heading">
@@ -16,7 +16,7 @@
             <Deck TItem="ShowroomDemo" Items="_shown" Forward="ForwardAt" ForwardChanged="Bring"
                   Label="@Text.Demos" BeforeLabel="@Text.TheDemoBefore" NextLabel="@Text.TheNextDemo">
                 <Item Context="demo">
-                    <div class="@WindowClasses(demo)">
+                    <div class="@WindowClasses(demo)" id="@WindowIdOf(demo)">
                         <FramedWindow Address="@AddressWordOf(demo)" Lit="@(demo == forward)">
                             @if (demo.Window is null)
                             {

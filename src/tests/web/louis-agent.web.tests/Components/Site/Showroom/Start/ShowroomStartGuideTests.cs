@@ -50,4 +50,33 @@ public class ShowroomStartGuideTests
             Assert.That(start.Find(".deck-item.is-forward .window-address").TextContent, Does.Contain("florist"));
         });
     }
+
+    /// <summary>
+    /// The light falls on the window that came forward, as the design drew it, and not on the dock's small button:
+    /// each button says which window it controls, and the widget's script lights what a card controls.
+    /// </summary>
+    [Test]
+    public void TheLight_FallsOnTheDemosWindow_NotOnItsButton()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(Demos);
+        ctx.Services.AddSingleton(Site);
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("/demos");
+        var start = ctx.Render<ShowroomStart>(parameters => parameters
+            .Add(shown => shown.Featured, "/bakery-demo")
+            .Add(shown => shown.Title, "Watch the agents at work."));
+        string script = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Widget/ChatWidget.razor.js"));
+
+        string? controls = start.Find("button#florist-demo").GetAttribute("aria-controls");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(controls, Is.EqualTo("florist-demo-window"));
+            Assert.That(start.Find($"#{controls}").ClassList, Does.Contain("start-window"));
+            Assert.That(start.Find($"#{controls} .window-address").TextContent, Does.Contain("florist"));
+            Assert.That(script, Does.Contain("getAttribute(\"aria-controls\")"));
+        });
+    }
 }

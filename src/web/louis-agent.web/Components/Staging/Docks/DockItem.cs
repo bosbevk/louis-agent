@@ -10,7 +10,7 @@ namespace LouisAgent.Web.Components.Staging.Docks;
 /// <remarks>
 /// A presentation model (Fowler): the dock draws plain data and stays free of what the page's things are (Louis's
 /// pick of three: a record per button, over a generic dock with a function per fact, or one with a template). So any
-/// project fills a dock with five facts per button.
+/// project fills a dock with a few facts per button.
 /// </remarks>
 /// <param name="Id">
 /// Its id on the page, which is also the last part of its address, such as <c>restaurant-demo</c>.
@@ -21,10 +21,15 @@ namespace LouisAgent.Web.Components.Staging.Docks;
 /// <param name="Group">
 /// The group it belongs to. A divider is drawn where the group changes. With none, there are no groups.
 /// </param>
+/// <param name="Shows">
+/// The id of what on the page a press brings up, such as a window on a deck. The button says it controls that, so a
+/// site's guide lights the thing shown and not the small button. With none, the button says nothing.
+/// </param>
 /// <seealso href="https://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model (Fowler)</seealso>
 public sealed record DockItem(
     string Id,
     string Name,
     DiagramIcon Icon,
     TileAccent Accent = TileAccent.None,
-    string? Group = null);
+    string? Group = null,
+    string? Shows = null);
