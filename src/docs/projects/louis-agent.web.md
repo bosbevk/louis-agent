@@ -182,7 +182,37 @@ and the chips end with "or type your own", since a chip is a shortcut and never 
 chips are one row that scrolls sideways. A frame that holds the bar keeps its height free at the stage's foot, so
 no page ends under it.
 
-*Decided in:* F109.3 (the widget), F134.3 (the bar and the orb), F115 and ADR 0104 (it knows the page), F127.4.1 (cards), F127.4.2 and ADR 0117
+When the agent's answer showed a place on the page, its words don't stay folded in the talk. They stand as a
+caption (`Widget/Bar/Caption/AgentCaption`), with the agent's name on it, the choices it offered drawn as the
+talk's own cards, the suggested one marked, and a way into the box under them. That way in is a label for the box,
+so a press puts the visitor there with no script at all. Whether an answer is a caption, and what it holds, is
+asked of a small record beside it, `Captioned.Of(turn)`: an answer is one when it showed a place and said or
+offered something. While a caption stands, and while the whole talk is open, the chips give way, since the
+caption already holds the agent's own choices and the way in.
+
+On a wide screen the caption stands beside the place the agent lit. The agent lights a place partway through its
+answer, and the caption only appears when the answer ends, so the widget's script leaves a mark (`data-lit`) on
+the place it lit, which stays after the spotlight fades. Once drawn, the caption asks its own module to stand it
+there: to the right of the place where the screen has room, else under it, and back over the bar when neither has
+room or the place has scrolled off the screen. It follows the page as the visitor scrolls. The bar is fixed, so
+it holds the caption's position, and the module says the spot from the bar's own corner. On a phone, up to 900
+wide, the caption stays over the bar and nothing is moved.
+
+The whole talk opens from the caption or the folded talk. On a wide screen it is a drawer fixed to the screen's
+right side, from under the header to the bar's foot, 420 wide, so the page stays in view beside it. On a phone it
+is a sheet over the bar, 70% of the screen tall. The bar is centred by its margins rather than moved by a
+transform, because a transform would hold anything fixed inside it to the bar's own box, and the drawer could not
+reach the screen's edge.
+
+The page also learns when the agent is talking. `GuideActivity` is one small shared object, kept as an Observer
+the way `GuideDoor` and `AgentWindows` are: the bar tells it whether an answer is streaming, and anything on the
+page can listen. The runner says it has moved on from its stream and from its redraw timer, so the bar tells the
+activity on its own dispatcher and reads the runner as it is then. That way a late timer call can't leave the
+agent talking after its answer ended. A site's showroom registers it with its other shared parts, and a recorded
+demo holds its play while the agent talks, as part 4 tells.
+
+*Decided in:* F109.3 (the widget), F134.3 (the bar and the orb), F134.4 (the caption, its place, the drawer and the
+agent's activity), F115 and ADR 0104 (it knows the page), F127.4.1 (cards), F127.4.2 and ADR 0117
 (one agent asking another), FX22 (a tool's own images),
 [F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) (currency).
 
@@ -316,6 +346,11 @@ brings another forward, by the dock, an arrow or a key, the start's own small mo
 in the bar. It replaces the entry, so the back button still leaves the page. On a site whose places have no
 addresses, nothing is read and nothing is written.
 
+The guide can bring a demo forward too. When it shows a demo's address on the start, the widget's script opens
+that place as a visitor's press would, and the place is the dock's button for that demo, which is a card of the
+page. So the demo comes forward exactly as if the visitor had pressed it, and the guide needs no tool of its own
+for it.
+
 On a phone the start is the same page with less on it. The title stands alone, without the lede. The deck is a
 row of upright windows, swiped one at a time, and a swipe brings a demo forward as an arrow does, so the name,
 the dock and the address follow it. The dock shows its icons only.
@@ -358,6 +393,10 @@ reading speed, a beat per tool. It folds the events with the same loop the eval 
 keeps one height: the list gives up room for the ending. The window's look is a Sass mixin of the framework's,
 which a site's own animated panels use too. A site can make the ending's guide button plain.
 
+**The play can wait.** A recorded chat takes a `Hold`. While it is on, the play waits before its next step and
+its next turn, and once it is let go it goes on from where it stood. A business's demo holds its play while the
+site's guide is talking, so the visitor follows one voice at a time.
+
 **The play moves the mock.** A recorded chat tells its page each tool call as it plays. So a mock goes to the
 place its agent showed: a section under the guide's spotlight, or a card pressed.
 
@@ -366,7 +405,7 @@ page's words, every page's places by address and the menu as links with each new
 the hint is a question to tap, the cues wait, and no usage line shows. The mock's chat and the guide's minimise
 and maximise with the same buttons.
 
-*Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`.
+*Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`, F134.4's `AHeldPlay` tests.
 
 *Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons),
 [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md),
