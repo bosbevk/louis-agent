@@ -26,6 +26,9 @@ public static class FrameworkScripts
     /// <summary>The section index: the entries in the page's order, the one in view lit (F118).</summary>
     public const string SectionIndex = Content + "Components/Site/Index/SectionIndex.razor.js";
 
+    /// <summary>The look switch: the theme and style written on the page, remembered, and followed (F151.3).</summary>
+    public const string LookSwitch = Content + "Components/Site/Looks/LookSwitch.razor.js";
+
     /// <summary>
     /// The message box's keys: Enter sends, Shift+Enter breaks the line, wherever the box is drawn (FX70).
     /// </summary>

@@ -2,6 +2,7 @@ using AngleSharp.Dom;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Components.Site.Looks;
+using LouisAgent.Web.Scripts;
 
 namespace LouisAgent.Web.Tests.Components.Site.Looks;
 
@@ -81,6 +82,68 @@ public class LookSwitchTests
             Assert.That(groups[1].GetAttribute("aria-label"), Is.EqualTo("Style"));
             Assert.That(Buttons(groups[1]).Pressed, Is.EqualTo(new[] { "Light" }));
         });
+    }
+
+    /// <summary>The switch with glass and flat, and its module, which says what it is asked.</summary>
+    private static (IRenderedComponent<LookSwitch> Switch, BunitJSModuleInterop Module) WithModule(BunitContext ctx,
+        PageLook? onThePage = null)
+    {
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.LookSwitch);
+        module.Mode = JSRuntimeMode.Loose;
+        module.Setup<PageLook?>("current").SetResult(onThePage);
+        var cut = Render(ctx, areas => areas
+            .Add(ThemeArea(new SiteTheme("glass", "Glass")))
+            .Add(ThemeArea(new SiteTheme("flat", "Flat"))));
+        return (cut, module);
+    }
+
+    /// <summary>The words of the pressed buttons, the theme's and then the style's.</summary>
+    private static string[] PressedWords(IRenderedComponent<LookSwitch> cut) =>
+        [.. cut.FindAll("button[aria-pressed=true]").Select(button => button.TextContent.Trim())];
+
+    /// <summary>A press on Dark asks the module to pick the dark style, and Dark is the pressed one.</summary>
+    [Test]
+    public void APressOnAStyle_PicksIt_AndPressesIt()
+    {
+        using var ctx = new BunitContext();
+        var (cut, module) = WithModule(ctx);
+
+        cut.FindAll("button").Single(button => button.TextContent.Trim() == "Dark").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(module.Invocations["pickStyle"].Single().Arguments, Is.EqualTo(new object?[] { "dark" }));
+            Assert.That(PressedWords(cut), Is.EqualTo(new[] { "Glass", "Dark" }));
+        });
+    }
+
+    /// <summary>A press on Flat asks the module to pick the flat theme, and Flat is the pressed one.</summary>
+    [Test]
+    public void APressOnATheme_PicksIt_AndPressesIt()
+    {
+        using var ctx = new BunitContext();
+        var (cut, module) = WithModule(ctx);
+
+        cut.FindAll("button").Single(button => button.TextContent.Trim() == "Flat").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(module.Invocations["pickTheme"].Single().Arguments, Is.EqualTo(new object?[] { "flat" }));
+            Assert.That(PressedWords(cut), Is.EqualTo(new[] { "Flat", "Light" }));
+        });
+    }
+
+    /// <summary>
+    /// Drawn on a page the first paint already put in flat and dark, the switch shows flat and dark pressed.
+    /// </summary>
+    [Test]
+    public void WhenFirstDrawn_ItShowsTheLookThePageIsIn()
+    {
+        using var ctx = new BunitContext();
+
+        var (cut, _) = WithModule(ctx, new PageLook("flat", "dark"));
+
+        cut.WaitForAssertion(() => Assert.That(PressedWords(cut), Is.EqualTo(new[] { "Flat", "Dark" })));
     }
 
     /// <summary>The switch with two themes, its markup pinned, as every component's is.</summary>
