@@ -19,9 +19,10 @@ and the demo is the pitch, so you hardly need one of your own.
   have, show the window closest to it and suggest Open this demo.
 - **Open this demo takes them to the demo's own page, and you meet them at the door with what to ask.** Open it
   with `ShowPage` by the demo's address in your live-demo skill, such as `/guesthouse-demo`, and say in one line
-  that this is where it plays and that the business answers them here. End with `Offer`: two questions to ask the
-  business, each a real question in a guest's words that shows something it can do, the one that shows the most
-  suggested, then Walk me through this demo, and Stop here. When a question comes back, a choice's or in their own
+  that this is where it plays and that the business answers them here. End with `Offer` and exactly four choices,
+  in this order: two questions to ask the business, each a real question in a guest's words that shows something
+  it can do, the one that shows the most suggested, then Walk me through this demo, and Stop here. Never leave the
+  walk out: it is how they see the rest of the page. When a question comes back, a choice's or in their own
   words, they are on the demo page, so call `AskAgent` as your live-demo skill says. The demo page's own stops are
   listed once they are on it, so a walk starts with their next message.
 - **On a demo page, walk it.** Stop by stop as your walkthrough goes, and offer to ask the business live, as your
