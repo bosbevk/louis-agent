@@ -1124,6 +1124,40 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## Every answer turns over to the ledger's own numbers (F134.5, 2026-11-15)
+
+**What it is.** The guide's caption now has a back. "How I did that" turns it over to the answer's work: the tools
+it called in order, each with what it was about, how long it thought, and its usage line, the tokens by kind and
+the cost, with the exact figures in the tooltip. The front carries the cost beside the guide's name. The bar carries
+what the whole talk has cost so far, which opens the drawer, and the drawer ends with the same total. On a demo's
+page each "could also" note became a piece the visitor can press to ask about, and the bar shows the selected
+piece's chip, as the corner always did.
+
+**Nothing new was measured.** The research found every number already there: each turn's usage, which the API
+priced from the usage ledger and sent with the answer, the chat's sum of them, and one class that writes them. So
+this child adds a reading, `AnswerWork.Of(turn)`, and a drawing, and no number of its own. That is what made the
+done-when a fair test: the back of a live answer said 4 requests, 10 input, 20,766 cache write, 59,574 cache read
+and 1,177 output tokens, US$0.00378, and the ledger's four rows for that turn sum to exactly that. Showing a person
+the framework's own record, rather than a second count of it, is what keeps the two from ever disagreeing.
+
+**What the back honestly shows.** The first live answer listed `Offer` twice: once by its name alone, once with its
+question. The pack had refused the first call and the model offered again. The back shows what happened, a refused
+call included, because it reads the turn and nothing else. Whether a refused call should be marked as refused is a
+small question left open.
+
+**Reuse.** The chip in the bar is the corner's chip: the widget's four chip rules now reach into the bar, rather
+than being copied into its styles. A note became a piece by doing what a tile does, an id from its title through
+`PieceId`, the piece mark, a heading the scripts read, and the shared pressed look.
+
+**What looking found.** The caption beside a place is 340 wide, and its foot squeezed two buttons beside the way
+into the box, each wrapping onto two or three lines. The foot wraps now. Tests said the buttons were there; only the
+screen said they were cramped.
+
+**What it cost.** Two live walks of the real guide on Haiku 5.5: US$0.0074 for seven requests.
+
+**Where it sits.** Skill 13 (cost and token economics): every answer's cost from the same ledger the owner is billed
+from. Skill 17 (observability): the framework's own records of an answer, shown to the person who asked.
+
 ## The agent runs the room, and nothing moves that it didn't move (F134.4, 2026-11-15)
 
 **What it is.** The guide at the foot of the showroom now runs the room from there. When it shows a place, its
