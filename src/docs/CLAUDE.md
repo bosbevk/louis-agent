@@ -22,6 +22,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 7. **Measure, don't assume.** Ask before anything that spends real money (a run against the API) and before pushing.
 8. **Write it up, and bring the docs along.** Every feature, fix and cleanup ends with its write-up for Louis to read
    ([learning/](learning/)) and with the docs and diagrams of every project it touched matching the code again.
+   A doc talks like a friend, in paragraphs, never a list of dense points; a doc touched that doesn't is rewritten in
+   the same change ([the docs rules](../../.claude/rules/docs.md#what-every-doc-is)).
 9. **Source of truth:** [TODO.md](../../TODO.md) (what's next), [plans/](plans/README.md) (how we're building it now),
    [fixes/](fixes/README.md) (what broke and why), [projects/](projects/README.md) (how each project works) and
    [adr/](adr/README.md) (why). Update them rather than duplicating them.
