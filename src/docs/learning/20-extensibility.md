@@ -727,3 +727,42 @@ remembered `dark` and `glass` came back on `<html>` after a reload, and `dim` an
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a plug-in point added as one optional slot, a contract
 written down as a list of names, and each test placed where it can reach what it checks.
+
+## F151.2: two themes on the contract (2026-11-15)
+
+F151.1 built the place a theme plugs into. This child plugged two in: glass and flat, each in a dark and a light
+style, and one site, the starter, wearing both. louis-agent.dev's look did not move, since its parts read the new
+names only from F151.4.
+
+One project, a folder per theme. The plan had a project for each theme. When the glass project was built, Louis
+looked at it and said "we should only have one project called themes and add them there not seperately". So the
+glass project was renamed into `louis-agent.web.themes`, with a `Glass/` folder, and flat joined it in `Flat/`. A
+third theme is a new folder, not a new project. The ADR's rule changed with it, on his yes to the wording. The
+lesson is about where a plug-in's boundary sits: a theme is still its own unit, its class and its sheets, but the
+unit is a folder, and the package is the family.
+
+A sheet of values is tested as compiled. A theme's colours are written through the framework's `colours.both`,
+which makes two names from one line, so the names only exist once Sass has run. No test in the repo compiled Sass,
+so Louis picked having the themes project compile its own test sheet with the compiler the sites already use: the
+framework's names first, then every theme's blocks. Each theme's test asks `ThemeSheet` which names it leaves unset,
+in each style, and the answer is none, all 85 of them. The real compiler taught two things a hand-written test sheet
+would not: Dart Sass writes `[data-theme=glass]` without its quotes, so `ThemeSheet` learnt both spellings, and a
+compiled file is counted by the size rule unless it is named as a site's `app.css` is.
+
+One name doing two jobs. The framework writes the words on a button and on your own message with one name. In its
+own grey theme that was fine. Glass and flat press in violet with white words, so your message had to become a
+dark grey in the dark and black in the light, or white words would have sat on light grey. I made exactly that
+mistake in glass's dark sheet, and the light sheet showed it, because the light swaps which surfaces are dark.
+
+The payoff. The starter wears both themes with one line of C#, one reference, one path and four lines of Sass, and
+the check written in F151.1 asked its page for `data-theme="glass"` the moment its default changed. In the browser
+the four looks render, and the two dark ones look alike for now, since what sets them apart is in the surface names
+no component reads yet.
+
+What I'd do differently. I did not run the site's own tests when the themes project was added, so its rule that
+every shipping project is named on louis-agent.dev only showed at step 7. When a step adds a project, run every
+test project that reads the solution, not only the ones beside it. And look at the compiled output early: both of
+this child's surprises were in what the compiler wrote, not in what I wrote. Nothing spent money.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): two plug-ins on one contract, a family of them in one
+package, and a contract checked against what the build really makes.

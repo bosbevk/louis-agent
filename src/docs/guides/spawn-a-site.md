@@ -19,6 +19,8 @@ dotnet build demos/acme/web/acme/acme.csproj
 ```
 
 `-n` is the site's name. It becomes the project's namespace and the words on the page, and in lowercase the project's file name.
+The site it makes offers the two themes, glass and flat, and opens in glass, light. A theme and style the browser remembers
+are applied before the page is first drawn.
 
 Then add the project to `louis-agent-solution.sln` under `demos/acme/web`, and to the list in `SolutionLayoutTests`, which holds that the solution's tree is the disk.
 
