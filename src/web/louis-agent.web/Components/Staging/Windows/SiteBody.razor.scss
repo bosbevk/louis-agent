@@ -112,8 +112,9 @@
 }
 
 /* In a narrow window, such as one on a phone, the website stands over its chat. There is room for the talk alone:
-   the website keeps its name and its line, and the chat its question and its answer. */
-@container (max-width: 520px) {
+   the website keeps its name and its line, and the chat its question and its answer. Narrow is a phone's upright
+   window. A small window on a wide screen is low as well, so it keeps the two side by side. */
+@container (max-width: 400px) {
     .site-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: 36% minmax(0, 1fr); }
     .body-menu, .body-note, .body-ask, .body-shown, .body-hint { display: none; }
     .body-top { padding: 12px 14px; }

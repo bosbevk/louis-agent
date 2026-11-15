@@ -52,7 +52,7 @@ public class AgentBarTests
             Assert.That(cut.Find(".agent-bar .orb").ClassList, Does.Contain("is-idle"));
             Assert.That(cut.Find(".agent-bar .orb").TextContent.Trim(), Is.EqualTo("L"), "the guide's initial");
             Assert.That(cut.Find(".agent-doing").TextContent, Is.EqualTo("Louis · AI"));
-            Assert.That(cut.Find("label.agent-doing").GetAttribute("for"), Is.EqualTo("composer-input"));
+            Assert.That(cut.FindAll("label.agent-doing"), Is.Empty, "a label by id would reach another box");
             Assert.That(cut.FindAll(".agent-box #composer-input"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll(".agent-box .composer-tools button.send"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll(".agent-talk"), Is.Empty);

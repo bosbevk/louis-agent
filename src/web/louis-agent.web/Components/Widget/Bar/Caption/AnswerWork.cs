@@ -24,8 +24,14 @@ public sealed record AnswerWork(IReadOnlyList<AnswerTool> Tools, double Thought,
         return new AnswerWork(tools, thought, turn.Usage);
     }
 
+    /// <summary>The least time worth showing: what is written to a tenth of a second as more than nothing.</summary>
+    private const double LeastShown = 0.05;
+
     /// <summary>How long it thought, in seconds to a tenth, as the caption writes it: <c>1.3</c>.</summary>
     public string ThoughtSeconds => Thought.ToString("0.#", CultureInfo.InvariantCulture);
+
+    /// <summary>Whether the time it thought is worth showing: less would be written as nothing.</summary>
+    public bool ThoughtShows => Thought >= LeastShown;
 
     /// <summary>
     /// What it read from the cache, as the caption writes it beside the tokens it wrote: <c>37k</c>. None when it

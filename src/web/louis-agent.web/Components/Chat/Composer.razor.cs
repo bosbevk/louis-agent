@@ -12,28 +12,54 @@ namespace LouisAgent.Web.Components.Chat;
 /// </summary>
 public partial class Composer : IAsyncDisposable
 {
+    /// <summary>The text box on the page.</summary>
     private ElementReference _input;
+
+    /// <summary>The box's module, once it is loaded.</summary>
     private JsModule? _keys;
 
-    [Inject] private IJSRuntime JS { get; set; } = default!;
+    /// <summary>The browser, for the box's module.</summary>
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
 
     /// <summary>The box's own module, loaded on first use (CL31).</summary>
     private JsModule Keys => _keys ??= new JsModule(JS, FrameworkScripts.Composer);
 
-    [Parameter] public string Draft { get; set; } = "";
-    [Parameter] public EventCallback<string> DraftChanged { get; set; }
-    [Parameter, EditorRequired] public List<Attachment> Attachments { get; set; } = default!;
-    [Parameter] public bool Streaming { get; set; }
-    [Parameter] public bool CanSend { get; set; }
+    /// <summary>What is typed so far.</summary>
+    [Parameter]
+    public string Draft { get; set; } = "";
+
+    /// <summary>Says what is typed, as it changes.</summary>
+    [Parameter]
+    public EventCallback<string> DraftChanged { get; set; }
+
+    /// <summary>The files attached to the message, shown as chips over the box.</summary>
+    [Parameter, EditorRequired]
+    public List<Attachment> Attachments { get; set; } = default!;
+
+    /// <summary>Whether an answer is coming in: the box then shows Stop in place of Send.</summary>
+    [Parameter]
+    public bool Streaming { get; set; }
+
+    /// <summary>Whether there is something to send.</summary>
+    [Parameter]
+    public bool CanSend { get; set; }
 
     /// <summary>True once the chat ended (its session is gone): the box takes no more text.</summary>
     [Parameter]
     public bool Disabled { get; set; }
 
-    [Parameter] public string? Placeholder { get; set; }
+    /// <summary>What the empty box says.</summary>
+    [Parameter]
+    public string? Placeholder { get; set; }
 
-    [Parameter] public EventCallback OnSend { get; set; }
-    [Parameter] public EventCallback OnStop { get; set; }
+    /// <summary>Asks the page to send what is typed.</summary>
+    [Parameter]
+    public EventCallback OnSend { get; set; }
+
+    /// <summary>Asks the page to stop the answer coming in.</summary>
+    [Parameter]
+    public EventCallback OnStop { get; set; }
 
     /// <summary>The class of the box around the text, which each site styles.</summary>
     [Parameter]
@@ -47,10 +73,27 @@ public partial class Composer : IAsyncDisposable
     [Parameter]
     public RenderFragment? Tools { get; set; }
 
-    [Parameter] public string SendLabel { get; set; } = "Send";
-    [Parameter] public string StopLabel { get; set; } = "Stop";
-    [Parameter] public string? SendTitle { get; set; }
-    [Parameter] public string? StopTitle { get; set; }
+    /// <summary>The words on Send.</summary>
+    [Parameter]
+    public string SendLabel { get; set; } = "Send";
+
+    /// <summary>The words on Stop.</summary>
+    [Parameter]
+    public string StopLabel { get; set; } = "Stop";
+
+    /// <summary>Send's tip.</summary>
+    [Parameter]
+    public string? SendTitle { get; set; }
+
+    /// <summary>Stop's tip.</summary>
+    [Parameter]
+    public string? StopTitle { get; set; }
+
+    /// <summary>
+    /// Puts the visitor in this box. A page with more than one box can't reach the right one by its id, which every
+    /// box shares, so whoever holds this box asks it.
+    /// </summary>
+    public ValueTask FocusAsync() => _input.FocusAsync();
 
     /// <summary>Hangs the key rule on the box once it exists in the page.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -62,5 +105,6 @@ public partial class Composer : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         if (_keys is not null) await _keys.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 }

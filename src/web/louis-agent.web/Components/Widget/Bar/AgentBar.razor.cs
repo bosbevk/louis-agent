@@ -1,4 +1,5 @@
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Chat;
 using LouisAgent.Web.Components.Widget.Bar.Caption;
 using LouisAgent.Web.Components.Widget.Orb;
 using LouisAgent.Web.Scripts;
@@ -81,6 +82,9 @@ public partial class AgentBar : IAsyncDisposable
 
     /// <summary>The bar on the page.</summary>
     private ElementReference _bar;
+
+    /// <summary>The bar's own box, to put the visitor in it.</summary>
+    private Composer? _box;
 
     /// <summary>The bar's module, loaded once it is drawn.</summary>
     private JsModule? _module;
@@ -210,6 +214,15 @@ public partial class AgentBar : IAsyncDisposable
 
     /// <summary>Puts the last answer away: its caption goes, and the next answer stands again.</summary>
     private void PutTheAnswerAway() => _putAway = Last;
+
+    /// <summary>
+    /// Puts the visitor in the bar's own box. The bar holds its box and asks it, since a page may hold another chat's
+    /// box with the same id, and a label that names the id would reach that one.
+    /// </summary>
+    private async Task FocusTheBox()
+    {
+        if (_box is not null) await _box.FocusAsync();
+    }
 
     /// <summary>The bar is going: it stops hearing its runner, and the page gets its room back.</summary>
     public async ValueTask DisposeAsync()

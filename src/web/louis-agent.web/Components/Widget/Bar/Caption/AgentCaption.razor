@@ -1,6 +1,6 @@
 @* The agent's caption (F134.4): its last answer as a card with two sides, as the J and K mockups have it. The front
    holds the agent's orb and name with what the answer cost, its words, the choices it offered as pills, and a way
-   into the box under them: a label for the box, so a press puts the visitor there with no script. The card turns
+   into the box under them, which asks whoever holds the box to put the visitor in it. The card turns
    over (F134.5) to how the answer was made: the tools it called, then how long it thought, what it wrote and what
    it cost, as the framework measured them. The side turned away is out of reach. *@
 @using LouisAgent.Web.Usage
@@ -36,8 +36,8 @@
                         @* A choice that is the visitor's own words puts them in the box, where they write it. *@
                         @if (choice.Writes is not null)
                         {
-                            <label class="@ChoiceClasses(choice)" for="composer-input"
-                                   title="@choice.Why">@choice.Label</label>
+                            <button class="@ChoiceClasses(choice)" type="button" title="@choice.Why"
+                                    @onclick="OnWrite">@choice.Label</button>
                         }
                         else
                         {
@@ -48,7 +48,7 @@
                     }
                 </div>
             }
-            <label class="caption-ask" for="composer-input">@Text.OrAskAnything</label>
+            <button class="caption-ask" type="button" @onclick="OnWrite">@Text.OrAskAnything</button>
             <div class="caption-foot">
                 <button class="caption-turn" type="button" @onclick="Turn">@Text.HowIDidThat</button>
                 <button class="caption-talk" type="button" @onclick="OnTalk">@Text.TalkOpen</button>
@@ -67,7 +67,7 @@
                 }
             </ul>
             <div class="caption-sum" title="@Detail">
-                @if (Work.Thought > 0)
+                @if (Work.ThoughtShows)
                 {
                     <span class="caption-figure">
                         <b>@string.Format(Text.Seconds, Work.ThoughtSeconds)</b><span>@Text.WorkThinking</span>

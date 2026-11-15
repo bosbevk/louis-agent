@@ -92,6 +92,8 @@ public class AgentBarRoomTests
         {
             Assert.That(shorter, Does.Contain(".start-lede { display: none; }").And.Contain("--start-rest:"));
             Assert.That(start, Does.Contain("@media (min-width: 901px) and (max-height: 820px) {"));
+            Assert.That(start, Does.Contain("--deck-least: 290px;").And.Not.Contain("--deck-least: 200px;"),
+                "never so low that a window can't keep its website and chat side by side");
         });
     }
 }

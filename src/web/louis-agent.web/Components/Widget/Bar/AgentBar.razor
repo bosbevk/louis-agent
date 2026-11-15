@@ -29,7 +29,8 @@
         <AgentCaption @key="Last" Title="@Title" Words="@caption.Words" Question="@caption.Question"
                       Offer="caption.Offer" Work="caption.Work"
                       Beside="caption.Beside" Currency="Currency" Streaming="Runner.Streaming"
-                      OnChoose="OnChoose" OnTalk="ToggleTalk" OnClose="PutTheAnswerAway"/>
+                      OnChoose="OnChoose" OnTalk="ToggleTalk" OnClose="PutTheAnswerAway"
+                      OnWrite="FocusTheBox"/>
     }
     else if (TalkShows)
     {
@@ -47,12 +48,12 @@
     }
     <div class="agent-row">
         <Orb State="State" Label="@Title" Mark="@Initial"/>
-        @* The box: the line of what the guide is doing, a label for the box so a press on it lands in the box, over
-           the box itself. At its end, before the send button, what the talk has cost so far over how many answers
-           (F134.5): a press opens the whole talk. *@
+        @* The box: the line of what the guide is doing over the box itself, and a press on the line lands in the
+           box. At its end, before the send button, what the talk has cost so far over how many answers (F134.5): a
+           press opens the whole talk. *@
         <div class="agent-box">
-            <label class="agent-doing" for="composer-input">@Doing</label>
-            <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
+            <span class="agent-doing" @onclick="FocusTheBox">@Doing</span>
+            <Composer @ref="_box" Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
                       Attachments="Runner.Attachments" BoxClass="agent-input"
                       Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
                       OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"

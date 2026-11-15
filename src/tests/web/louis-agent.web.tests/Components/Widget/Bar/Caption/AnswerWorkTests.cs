@@ -92,6 +92,21 @@ public class AnswerWorkTests
             Is.EqualTo(("37k", (string?)null, (string?)null)));
     }
 
+    /// <summary>
+    /// The time it thought is shown only when it comes to a tenth of a second or more. A few hundredths would be
+    /// written as "0s", which says nothing.
+    /// </summary>
+    [TestCase(1.25, true)]
+    [TestCase(0.05, true)]
+    [TestCase(0.04, false)]
+    [TestCase(0, false)]
+    public void TheTimeItThought_ShowsFromATenthOfASecond(double thought, bool shows)
+    {
+        var work = new AnswerWork([], thought, null);
+
+        Assert.That(work.ThoughtShows, Is.EqualTo(shows));
+    }
+
     /// <summary>An answer that called nothing and thought nothing says so: no tools, no time.</summary>
     [Test]
     public void AnAnswerOfWordsAlone_CalledNothing()

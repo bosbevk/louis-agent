@@ -101,8 +101,11 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    padding: 0;
+    border: 0;
+    font: 13px/1.4 inherit;
     color: var(--bs-secondary-color);
+    background: none;
     cursor: text;
 }
 .caption-ask::before {

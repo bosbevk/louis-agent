@@ -54,6 +54,13 @@ public partial class AgentCaption : IAsyncDisposable
     public EventCallback OnTalk { get; set; }
 
     /// <summary>
+    /// Asks to be put in the agent's box, to write an answer in the visitor's own words. The caption can't name the
+    /// box by its id: a page may hold another chat's box with the same one.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnWrite { get; set; }
+
+    /// <summary>
     /// Whether the answer showed a place on the page. Only then does the caption stand beside the place that is lit,
     /// since the mark of an earlier answer's place stays on the page.
     /// </summary>

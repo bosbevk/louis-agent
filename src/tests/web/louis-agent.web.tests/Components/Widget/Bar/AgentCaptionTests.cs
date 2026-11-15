@@ -2,6 +2,7 @@ using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Widget.Bar;
@@ -76,9 +77,26 @@ public class AgentCaptionTests
             Assert.That(cut.FindAll(".caption-front .caption-who .caption-orb"), Has.Count.EqualTo(1));
             Assert.That(cut.Find(".agent-caption .caption-says").TextContent.Trim(),
                 Is.EqualTo("These are the levels."));
-            Assert.That(cut.Find(".agent-caption label.caption-ask").GetAttribute("for"), Is.EqualTo("composer-input"));
+            Assert.That(cut.FindAll(".agent-caption button.caption-ask"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll(".agent-talk"), Is.Empty);
         });
+    }
+
+    /// <summary>
+    /// The caption's way into the box puts the visitor in the bar's own box. It can't be a label that names the box
+    /// by its id: a demo's page has the business's own chat too, with a box of the same id earlier on the page, and
+    /// the press landed there (Louis: "this does nothing").
+    /// </summary>
+    [Test]
+    public void TheCaptionsWayIntoTheBox_PutsTheVisitorInTheBarsOwnBox()
+    {
+        using var ctx = new BunitContext();
+        var cut = Bar(ctx, ShowedAndSaid());
+
+        cut.Find(".agent-caption .caption-ask").Click();
+
+        ctx.JSInterop.VerifyFocusAsyncInvoke().Arguments[0]
+            .ShouldBeElementReferenceTo(cut.Find(".agent-box textarea"));
     }
 
     /// <summary>
@@ -187,8 +205,8 @@ public class AgentCaptionTests
     }
 
     /// <summary>
-    /// A choice that is the visitor's own words is a pill that puts them in the guide's box, where they write it: a
-    /// label for the box, so no script is needed.
+    /// A choice that is the visitor's own words is a pill that puts them in the guide's own box, where they write
+    /// it.
     /// </summary>
     [Test]
     public void AChoiceToWrite_PutsTheVisitorInTheBox()
@@ -209,9 +227,13 @@ public class AgentCaptionTests
 
         var cut = Bar(ctx, turn);
 
-        var writes = cut.Find(".agent-caption label.caption-choice");
-        Assert.That((writes.TextContent.Trim(), writes.GetAttribute("for")),
-            Is.EqualTo(("Something else", "composer-input")));
+        var writes = cut.Find(".agent-caption button.caption-choice.is-written");
+        string words = writes.TextContent.Trim();
+        string? box = cut.Find(".agent-box textarea").GetAttribute("blazor:elementreference");
+        writes.Click();
+
+        var focused = ctx.JSInterop.VerifyFocusAsyncInvoke().Arguments[0];
+        Assert.That((words, ((ElementReference)focused!).Id), Is.EqualTo(("Something else", box)));
     }
 
     /// <summary>
