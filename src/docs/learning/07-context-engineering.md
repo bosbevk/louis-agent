@@ -30,85 +30,103 @@ are most of the gain, and the cook's rules (no store, no prices; deals first) ar
 
 ## What the numbers say
 
-- **The data was there all along.** Checkers' search page fetched its products from its own catalogue
-  (`/api/catalogue/get-products-filter`) as JSON with exact prices. The model never saw that JSON: it saw what a page
-  became as text, or nothing. On Pick n Pay's search page `FetchUrl` read 0 characters; the Chrome renderer read 4,345
-  with 37 rand prices, and the model still had to guess which price was which product's.
-- **A small, exact context beats a large, fuzzy one.** A table of ten products is a few hundred tokens and every
-  number in it is right. A rendered page is thousands of tokens of menus, banners and prices that belong to other
-  products. The model is good at choosing from a table and bad at pulling the one right number out of a page.
-- **Better context cost more, and that was the right trade.** F34's run cost about twice F32's ($0.118 against $0.057)
-  because the cook did more: it looked up the town's store, searched deals first, and priced every row. $0.057 for no
-  usable answer is the expensive run.
-- **The prompt can be the bottleneck.** F32's zero wasn't the renderer's fault. The cook's prompt forbade the shops'
-  search pages, a rule written when Tavily Extract couldn't read them. A rule about one tool's failure outlived the
-  tool. Context is the prompt as well as the data, and a stale rule in it costs as much as missing data.
+The data was there all along. Checkers' search page fetched its products from its own catalogue
+(`/api/catalogue/get-products-filter`) as JSON with exact prices. The model never saw that JSON: it saw what a page
+became as text, or nothing. On Pick n Pay's search page `FetchUrl` read 0 characters; the Chrome renderer read 4,345
+with 37 rand prices, and the model still had to guess which price was which product's.
+
+A small, exact context beats a large, fuzzy one. A table of ten products is a few hundred tokens and every number in
+it is right. A rendered page is thousands of tokens of menus, banners and prices that belong to other products. The
+model is good at choosing from a table and bad at pulling the one right number out of a page.
+
+Better context cost more, and that was the right trade. F34's run cost about twice F32's ($0.118 against $0.057)
+because the cook did more: it looked up the town's store, searched deals first, and priced every row. $0.057 for no
+usable answer is the expensive run.
+
+The prompt can be the bottleneck. F32's zero wasn't the renderer's fault. The cook's prompt forbade the shops' search
+pages, a rule written when Tavily Extract couldn't read them. A rule about one tool's failure outlived the tool.
+Context is the prompt as well as the data, and a stale rule in it costs as much as missing data.
 
 ## What changed, and why this way
 
-- **F32: search and pages without a key.** SearXNG behind `IWebSearchProvider` and a headless Chrome behind
-  `IPageRenderer`, each one more implementation of a seam we had, so the model's tools didn't change. The browser
-  checks every request a page makes with the same address rule as `FetchUrl`, not only the first URL. This made the
-  run possible; it didn't make it good. Its value is the baseline: 0 of 32, with the reasons found.
-- **F33: read the shop's data in code.** `CheckersCatalogue` visits the search page through the guarded browser, like
-  any shopper, and keeps the catalogue answer the page itself fetched. Code turns it into rows: in stock only, the price
-  now (a special's when lower), the pack's weight, a link to the product. The model gets a table framed as untrusted
-  shop data. **Why not call the catalogue's API directly:** it isn't published, so visiting the page as a shopper is
-  the honest line (F33's design notes); F34 kept that line when it chose not to use the site's own `dealsOnly` filter.
-- **F33: give the model the right number, not a number it must convert.** The table first showed a weighed pack at its
-  price per kg, and the cook added R99.99/kg to its totals as if it were a pack's price. Now `ShopProduct` carries
-  `Price` and `PriceTo` (the lightest and heaviest pack, computed in code) and the column is *Pack price*. Arithmetic
-  the model would get wrong is done before the text reaches it.
-- **F34: the context depends on where the user is.** Checkers keeps a town's store in cookies. `CheckersStore` finds
-  the stores serving the town (Nominatim gives its centre), keeps their cookies in a browser context of their own, and
-  every search runs in them. Each table's header names the store that answered, so the model, the user and the scorer
-  all see which store a price came from.
-- **F34: fewer, better tools in the cook's hands.** The cook lost `WebSearch` for prices and the two shops picked at
-  random; it prices a shop only through a shop tool, and says *No shop near you has a catalogue here yet* when there is
-  none. Taking a tool away was the change that stopped the guessing.
-- **The tool comes with its role** (F33 step 4, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)). The cook's
-  file declares `toolsets: shops?`, so its shop tools load wherever the instance has them, without Puls having to
-  remember to pass them.
+F32: search and pages without a key. SearXNG behind `IWebSearchProvider` and a headless Chrome behind `IPageRenderer`,
+each one more implementation of a seam we had, so the model's tools didn't change. The browser checks every request a
+page makes with the same address rule as `FetchUrl`, not only the first URL. This made the run possible; it didn't
+make it good. Its value is the baseline: 0 of 32, with the reasons found.
+
+F33: read the shop's data in code. `CheckersCatalogue` visits the search page through the guarded browser, like any
+shopper, and keeps the catalogue answer the page itself fetched. Code turns it into rows: in stock only, the price now
+(a special's when lower), the pack's weight, a link to the product. The model gets a table framed as untrusted shop
+data. **Why not call the catalogue's API directly:** it isn't published, so visiting the page as a shopper is the
+honest line (F33's design notes); F34 kept that line when it chose not to use the site's own `dealsOnly` filter.
+
+F33: give the model the right number, not a number it must convert. The table first showed a weighed pack at its price
+per kg, and the cook added R99.99/kg to its totals as if it were a pack's price. Now `ShopProduct` carries `Price` and
+`PriceTo` (the lightest and heaviest pack, computed in code) and the column is *Pack price*. Arithmetic the model
+would get wrong is done before the text reaches it.
+
+F34: the context depends on where the user is. Checkers keeps a town's store in cookies. `CheckersStore` finds the
+stores serving the town (Nominatim gives its centre), keeps their cookies in a browser context of their own, and every
+search runs in them. Each table's header names the store that answered, so the model, the user and the scorer all see
+which store a price came from.
+
+F34: fewer, better tools in the cook's hands. The cook lost `WebSearch` for prices and the two shops picked at random;
+it prices a shop only through a shop tool, and says *No shop near you has a catalogue here yet* when there is none.
+Taking a tool away was the change that stopped the guessing.
+
+The tool comes with its role (F33 step 4, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)). The cook's file
+declares `toolsets: shops?`, so its shop tools load wherever the instance has them, without Puls having to remember to
+pass them.
 
 ## The measuring (skill 12)
 
-- **A score is only as good as what it counts.** F33's first score was 22 of 23. PR #58's review read the answers and
-  found two of those were prices per kg, not pack prices. The scorer gained a `per_kg` count, the stored answers were
-  re-scored for free, and the honest number was 19 of 23. A check that counts "a price with a link" rewards a wrong
-  price with a link.
-- **Compare like with like.** Until F34 the control (Puls alone) had only `web`, so the check compared tools, not the
-  cook. With `puls-tools` both arms have the same tools, and the difference left is the cook's rules.
-- **A right answer can be "no price".** In Prince Albert, where no shop has a catalogue, the right answer is the rows
-  unpriced with the no-catalogue line. The accuracy ring first counted those as unknown; once it knew there's no shop
-  there, the run scored 31 of 31. A grader has to know what right looks like in every case, including the empty one.
-- **Cost comes from the ledger,** never from a grader: every run above is priced from its own records.
+A score is only as good as what it counts. F33's first score was 22 of 23. PR #58's review read the answers and found
+two of those were prices per kg, not pack prices. The scorer gained a `per_kg` count, the stored answers were
+re-scored for free, and the honest number was 19 of 23. A check that counts "a price with a link" rewards a wrong
+price with a link.
+
+Compare like with like. Until F34 the control (Puls alone) had only `web`, so the check compared tools, not the cook.
+With `puls-tools` both arms have the same tools, and the difference left is the cook's rules.
+
+A right answer can be "no price". In Prince Albert, where no shop has a catalogue, the right answer is the rows
+unpriced with the no-catalogue line. The accuracy ring first counted those as unknown; once it knew there's no shop
+there, the run scored 31 of 31. A grader has to know what right looks like in every case, including the empty one.
+
+Cost comes from the ledger, never from a grader: every run above is priced from its own records.
 
 ## Trade-offs accepted
 
-- **One shop.** Only Checkers has a provider. Pick n Pay, Shoprite and Woolworths wait for *Sources as data* (Puls's
-  track). A user in a town without Checkers gets a recipe and no prices, and a polite line saying why.
-- **A site's terms.** Reading a shop's site by automation is governed by its terms
-  ([ADR 0023](../adr/0023-copyleft-service-beside-us.md) for SearXNG; F33's design notes for the shops). The shops
-  toolset is off unless `SHOP_CATALOGUES` lists a shop, so the sold endpoint doesn't read shops until that's checked.
-- **Coupled to a page we don't own.** If Checkers changes its catalogue's JSON, the provider breaks. The tests run
-  against a recorded answer, and the error says what is missing, but the fix is ours to make each time.
-- **Slower answers.** The cook took 80 to 155 s a meal in the last run. Parallel tool calls for read-only toolsets
-  ([ADR 0026](../adr/0026-parallel-tool-calls-for-read-only-toolsets.md)) and a day's cache of the town's store
-  brought it down from up to 350 s.
+One shop. Only Checkers has a provider. Pick n Pay, Shoprite and Woolworths wait for *Sources as data* (Puls's track).
+A user in a town without Checkers gets a recipe and no prices, and a polite line saying why.
+
+A site's terms. Reading a shop's site by automation is governed by its terms
+([ADR 0023](../adr/0023-copyleft-service-beside-us.md) for SearXNG; F33's design notes for the shops). The shops
+toolset is off unless `SHOP_CATALOGUES` lists a shop, so the sold endpoint doesn't read shops until that's checked.
+
+Coupled to a page we don't own. If Checkers changes its catalogue's JSON, the provider breaks. The tests run against a
+recorded answer, and the error says what is missing, but the fix is ours to make each time.
+
+Slower answers. The cook took 80 to 155 s a meal in the last run. Parallel tool calls for read-only toolsets
+([ADR 0026](../adr/0026-parallel-tool-calls-for-read-only-toolsets.md)) and a day's cache of the town's store brought
+it down from up to 350 s.
 
 ## What didn't work (and what it taught)
 
-- **More text didn't help.** Rendering pages fully (F32) gave the model more characters and no more sourced prices.
-- **Search engines that aren't ours.** Through SearXNG only Bing answered from Louis's IP; Google and Qwant denied,
-  Brave limited, DuckDuckGo asked for a CAPTCHA. Bing ignores `site:`, and a freshness filter left no engine at all.
-  Search is a dependency, so a run says which engine it used.
-- **The shop's own limit.** About 50 searches in seven minutes and Checkers refused every search for four minutes, which
-  sank one run's cook-af to 1 of 8. Two searches at once per shop and a 20 s pause after a refusal fixed it; the next
-  run saw 8 refusals and no block. Parallel calls made the cook faster and the shop angrier until it was throttled.
-- **OpenStreetMap's town boundary.** Malmesbury's Checkers is mapped just outside the town, so "supermarkets in
-  Malmesbury" never listed it and the cook never priced there. The cook now looks a covered shop up by name.
-- **Deals came last.** In Louis's own chats the cook searched specials once, after the list was priced, so a deal could
-  never change the meal. Order matters in a prompt as in code: deals are searched first now.
+More text didn't help. Rendering pages fully (F32) gave the model more characters and no more sourced prices.
+
+Search engines that aren't ours. Through SearXNG only Bing answered from Louis's IP; Google and Qwant denied, Brave
+limited, DuckDuckGo asked for a CAPTCHA. Bing ignores `site:`, and a freshness filter left no engine at all. Search is
+a dependency, so a run says which engine it used.
+
+The shop's own limit. About 50 searches in seven minutes and Checkers refused every search for four minutes, which
+sank one run's cook-af to 1 of 8. Two searches at once per shop and a 20 s pause after a refusal fixed it; the next
+run saw 8 refusals and no block. Parallel calls made the cook faster and the shop angrier until it was throttled.
+
+OpenStreetMap's town boundary. Malmesbury's Checkers is mapped just outside the town, so "supermarkets in Malmesbury"
+never listed it and the cook never priced there. The cook now looks a covered shop up by name.
+
+Deals came last. In Louis's own chats the cook searched specials once, after the list was priced, so a deal could
+never change the meal. Order matters in a prompt as in code: deals are searched first now.
 
 ## Our own context: what every session pays for (CL25)
 
@@ -182,16 +200,19 @@ now. **No run has tested them yet.**
 | Median time | 48 s | 43 s | 44 s |
 | Cost per answer | $.00640 | $.00576 | $.00585 |
 
-- **A better score isn't always better work.** Half the questions and the rubric changed for the last two columns, and a
-  plain question has no scaling to get wrong. It takes a median of 38 to 40 s against 46 s with a number, so some of the
-  speed is the mix. 49 against 47 is within the judge's noise, and none of those fails was about language.
-- **Fix the data on the way out.** Taste keeps a whole method in one step, and five of nine fails in the long run were a
-  clause dropped from a method. Tidying a recipe when it's printed and scaled needed no migration and also covered what the
-  library already held. Neither of the last two runs failed on a dropped clause, though those are fewer dishes than the long
-  run asked for, so that's a good sign rather than a proof.
-- **Read the tool's whole path before blaming a part.** A Cooksister answer failed because its text was cut before the
-  recipe. I said the reader had refused the page. It hadn't: it read and kept the recipe, and the tool still showed the cook
-  the page's text, by design. The cut now starts at the recipe; whether the cook should get our clean print instead is open.
+A better score isn't always better work. Half the questions and the rubric changed for the last two columns, and a
+plain question has no scaling to get wrong. It takes a median of 38 to 40 s against 46 s with a number, so some of the
+speed is the mix. 49 against 47 is within the judge's noise, and none of those fails was about language.
+
+Fix the data on the way out. Taste keeps a whole method in one step, and five of nine fails in the long run were a
+clause dropped from a method. Tidying a recipe when it's printed and scaled needed no migration and also covered what
+the library already held. Neither of the last two runs failed on a dropped clause, though those are fewer dishes than
+the long run asked for, so that's a good sign rather than a proof.
+
+Read the tool's whole path before blaming a part. A Cooksister answer failed because its text was cut before the
+recipe. I said the reader had refused the page. It hadn't: it read and kept the recipe, and the tool still showed the
+cook the page's text, by design. The cut now starts at the recipe; whether the cook should get our clean print instead
+is open.
 
 **What I got wrong along the way.** At 3 of 10 I called the hand-off "better", and at 7 of 15 had to take it back: a small
 count at the start of a run says little. I also compared an unfinished run's repeats with a finished run's, and chained a
@@ -253,15 +274,13 @@ that retrieves, ranks and budgets (F9).
 
 ## What I can now explain
 
-- Why handing a model the data, shaped by code, beats handing it the page and asking it to find the data.
-- Why a number the model must convert (per kg to per pack) is a bug in the context, not in the model.
-- Why a stale rule in a prompt can zero a run, and how a free experiment found it.
-- Why taking a tool away can raise accuracy.
-- Why a check needs a control with the same tools, a count for each way of being wrong, and a right answer for the
-  empty case, and why re-scoring stored answers is free.
-- Why an example in a prompt is copied, why a tone rule needs its opposite beside it, and why the time is a tool.
-- What progressive disclosure is, why an on-demand skill needs a description that says when, and why the model must
-  still see an index of what exists to think of reading it.
+Why handing a model the data, shaped by code, beats handing it the page and asking it to find the data. Why a number
+the model must convert (per kg to per pack) is a bug in the context, not in the model. Why a stale rule in a prompt
+can zero a run, and how a free experiment found it. Why taking a tool away can raise accuracy. Why a check needs a
+control with the same tools, a count for each way of being wrong, and a right answer for the empty case, and why
+re-scoring stored answers is free. Why an example in a prompt is copied, why a tone rule needs its opposite beside it,
+and why the time is a tool. What progressive disclosure is, why an on-demand skill needs a description that says when,
+and why the model must still see an index of what exists to think of reading it.
 
 ## One guide, the right rules for where you are (F127.7)
 
@@ -270,14 +289,13 @@ showroom it should guide through the demos, and on the framework's pages it shou
 F127.7 one long voice held all three, so it sold on a framework page and went deep into code on a selling page.
 
 **What changed.**
-- The site names the part each page is, and every message says it in one line: *[The part of the site: framework.]*
-  The guide reads that part's skill the first time it sees it and whenever it changes. Only the part in use costs
-  tokens, and the history stays append-only: nothing is swapped out of the prompt, a skill is read into the chat.
-- The page tells the guide where the visitor is looking. A tile or a card is a **piece** with its own address. A
-  click on one asks the guide about it, and a card opened or a piece the guide shows is selected quietly. A chip
-  names it, and every message carries it until the chip is closed.
-- To find something on another page, the guide calls `FindPlace`. The host builds the index from its own rendered
-  pages, so nobody keeps a list of tiles in the prompt.
+The site names the part each page is, and every message says it in one line: *[The part of the site: framework.]* The
+guide reads that part's skill the first time it sees it and whenever it changes. Only the part in use costs tokens,
+and the history stays append-only: nothing is swapped out of the prompt, a skill is read into the chat. The page tells
+the guide where the visitor is looking. A tile or a card is a **piece** with its own address. A click on one asks the
+guide about it, and a card opened or a piece the guide shows is selected quietly. A chip names it, and every message
+carries it until the chip is closed. To find something on another page, the guide calls `FindPlace`. The host builds
+the index from its own rendered pages, so nobody keeps a list of tiles in the prompt.
 
 **Why this way.** The first try was a hand-written list of every tile's address in the site map. Louis asked whether
 there was a better way, and the research said yes. Site assistants (Algolia's DocSearch, Mintlify, Kapa) search an
@@ -286,14 +304,12 @@ index built from the real pages, and copilots (CopilotKit) have the page say wha
 page or a tool, and the prompt keeps only what holds everywhere.
 
 **What to look at.**
-- The page block in the API's `Sessions/Prompts/PageBlock`.
-- The three `focus-*.md` skills beside the guide's voice.
-- `SitePlaces` in the API's `Site/Places/`.
-- The site pack's `FindPlace`.
+The page block in the API's `Sessions/Prompts/PageBlock`. The three `focus-*.md` skills beside the guide's voice.
+`SitePlaces` in the API's `Site/Places/`. The site pack's `FindPlace`.
 
 **Concepts.**
-- Context engineering (skill 7): rules split by where the person is, loaded on change.
-- Retrieval (skill 8): an index from the source, searched by a tool, instead of a list in the prompt.
+Context engineering (skill 7): rules split by where the person is, loaded on change. Retrieval (skill 8): an index
+from the source, searched by a tool, instead of a list in the prompt.
 
 ## Our own instructions, by when they are needed (CL63)
 
@@ -306,16 +322,19 @@ functions by skill files", then "whole redesign".
 
 **What was built.**
 
-- **Always loaded:** `CLAUDE.md`, with how to work with Louis and the hard stops in one list, and two rules files
-  with no `paths`, the design rules and the map of the repo.
-- **By kind of file:** eight rules files with `paths`. The test rules and the rules for hosts and web apps were
-  folder files before. A folder file loads only for its own folder, so the test rules reached 26 of the 68 test
-  projects, and the hosts' file loaded for every doc under `src/` and for no demo. As rules files they follow their
-  kind of file wherever it lives. Eight `CLAUDE.md` files became three.
-- **By job:** nine skills, one per procedure, each with its must-dos first, since only the start of a skill is
-  kept when a long session is compacted.
-- **Out of Claude's private notes:** 22 standing instructions, each from something Louis said, moved into the
-  repo in his words with their date, where he can read them and change them.
+Always loaded: `CLAUDE.md`, with how to work with Louis and the hard stops in one list, and two rules files with no
+`paths`, the design rules and the map of the repo.
+
+By kind of file: eight rules files with `paths`. The test rules and the rules for hosts and web apps were folder files
+before. A folder file loads only for its own folder, so the test rules reached 26 of the 68 test projects, and the
+hosts' file loaded for every doc under `src/` and for no demo. As rules files they follow their kind of file wherever
+it lives. Eight `CLAUDE.md` files became three.
+
+By job: nine skills, one per procedure, each with its must-dos first, since only the start of a skill is kept when a
+long session is compacted.
+
+Out of Claude's private notes: 22 standing instructions, each from something Louis said, moved into the repo in his
+words with their date, where he can read them and change them.
 
 ![One step of a feature: the always-loaded files are there from the start, a rules file arrives with the first file touched, and a skill with each job](../diagrams/claude-instructions-one-step.svg)
 
@@ -338,39 +357,40 @@ the repo, and held by a test.
 
 **What it taught.**
 
-- **A wait is never loaded on judgement.** A skill's body loads when the model decides the job matches. So
-  "never push without Louis's word" stays in the file that is always there, and the skill holds only the how.
-- **A rule follows a kind of file, not a folder.** The folder files looked right and reached a third of what
-  they were written for.
-- **Saying a thing twice makes one of them wrong.** The tests' folder file and the tests' guide said the same
-  things and had drifted: they disagreed on where the golden files are and on when CI runs. Now one holds the
-  rules and names the part of the other that has the how.
-- **An instruction file drifts like any doc.** Rewriting each one meant checking each name in it against the
-  code. Core's guide had five stale facts, one of them an example of a form a later ADR forbade.
-- **Run the command before you write it down.** The skill for checking a page was written from commands run that
-  day. Three would have been wrong from memory: a site left running across builds still answered 200 and printed
-  one page where there are four, a headless browser asked for 390 pixels laid the page out at 500, and a cold
-  browser profile caught the loading screen in three runs of twelve.
+A wait is never loaded on judgement. A skill's body loads when the model decides the job matches. So "never push
+without Louis's word" stays in the file that is always there, and the skill holds only the how.
+
+A rule follows a kind of file, not a folder. The folder files looked right and reached a third of what they were
+written for.
+
+Saying a thing twice makes one of them wrong. The tests' folder file and the tests' guide said the same things and had
+drifted: they disagreed on where the golden files are and on when CI runs. Now one holds the rules and names the part
+of the other that has the how.
+
+An instruction file drifts like any doc. Rewriting each one meant checking each name in it against the code. Core's
+guide had five stale facts, one of them an example of a form a later ADR forbade.
+
+Run the command before you write it down. The skill for checking a page was written from commands run that day. Three
+would have been wrong from memory: a site left running across builds still answered 200 and printed one page where
+there are four, a headless browser asked for 390 pixels laid the page out at 500, and a cold browser profile caught
+the loading screen in three runs of twelve.
 
 **Trade-offs accepted.**
 
-- About 5% more words are always in view than before, as the table says.
-- A skill loads on the model's judgement. A whole step of real work in a fresh session, to see each skill load
-  when its job comes up, is still to be done.
-- The C# rules are two files, since one would not fit the 200 lines a rules file may hold. Core's guide is four
-  lines under that limit.
+About 5% more words are always in view than before, as the table says. A skill loads on the model's judgement. A whole
+step of real work in a fresh session, to see each skill load when its job comes up, is still to be done. The C# rules
+are two files, since one would not fit the 200 lines a rules file may hold. Core's guide is four lines under that
+limit.
 
 **What didn't work.**
 
-- The plan said a new skill is not known to a session that is already open. It is: each new skill and each new
-  rules file was picked up by the session that wrote it.
-- The plan kept the three folder files. Two of them had the wrong reach and became rules files.
-- Two steps were too big to review in ten minutes, and were cut into four and three commits.
+The plan said a new skill is not known to a session that is already open. It is: each new skill and each new rules
+file was picked up by the session that wrote it. The plan kept the three folder files. Two of them had the wrong reach
+and became rules files. Two steps were too big to review in ten minutes, and were cut into four and three commits.
 
 **Concepts.**
-- Context engineering (skill 7): an instruction is loaded by when it is needed, and what must never be missed is
-  loaded always.
-- Prompt design (skill 3): an instruction is written where and when it will be read, the rule first.
+Context engineering (skill 7): an instruction is loaded by when it is needed, and what must never be missed is loaded
+always. Prompt design (skill 3): an instruction is written where and when it will be read, the rule first.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

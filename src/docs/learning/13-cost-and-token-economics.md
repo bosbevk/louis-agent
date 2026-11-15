@@ -34,23 +34,27 @@ the ledger **exactly**, $0.252605, 57 requests, the same token counts.
 
 ## What the numbers say
 
-- **Input is the bill.** 6.37M input tokens against 42K output: 150:1. Output costs 5× input per token on Haiku 5.5
-  ($0.50 against $0.10 a million), yet input is about 97% of the cost: $0.637 of $0.659.
-- **Most of that input is the same text, again.** Each request re-sends the ~48,000-token system prompt and tool list,
-  with a 0% cache-hit rate. A fix is ~11 requests, so the same 48K is paid for ~11 times per fix. This is M2's target:
-  prompt caching (F4) reads it at a tenth of the price, and toolset profiles (F5) send less of it. The optimisation
-  spec estimates caching at **about −80%** of that prefix's cost per fix (11.4 requests × 48K: ~547K full-price
-  tokens down to ~110K, one cache write and then reads); that is the number F4's measurement has to meet.
-- **The tool loop multiplies everything.** A turn isn't one request: each tool round is one, so a fix that uses its 10
-  rounds and continues in a second message costs about 1.5× a one-message fix on average ($0.077 against $0.053;
-  1.44× in the full run, 1.49× in the short one), and up to twice at the extremes ($0.044 to $0.088). The whole run
-  varies far less (0.3% between two runs), so M2 is measured on the run total, not on one fix.
-- **Triage is cheap; fixes are not.** In the short demo, triage was $0.013 of $0.25. Saving on the orchestrator's
-  model would barely show; saving on louis-agent's prompt would.
-- **The tokenizer changes the bill, not just the price.** The same prompt was 10,266 tokens on Haiku 4.5 and 15,649 on
-  Haiku 5.5 (+52%, measured in the optimisation spec,
-  [§A](../specs/RESPONSE_OPTIMISATION.md#a-measure-usage-prerequisite-for-everything-else)). Comparing models on price
-  per million tokens alone misses this; comparing them on a run's cost doesn't.
+Input is the bill. 6.37M input tokens against 42K output: 150:1. Output costs 5× input per token on Haiku 5.5 ($0.50
+against $0.10 a million), yet input is about 97% of the cost: $0.637 of $0.659.
+
+Most of that input is the same text, again. Each request re-sends the ~48,000-token system prompt and tool list, with
+a 0% cache-hit rate. A fix is ~11 requests, so the same 48K is paid for ~11 times per fix. This is M2's target: prompt
+caching (F4) reads it at a tenth of the price, and toolset profiles (F5) send less of it. The optimisation spec
+estimates caching at **about −80%** of that prefix's cost per fix (11.4 requests × 48K: ~547K full-price tokens down
+to ~110K, one cache write and then reads); that is the number F4's measurement has to meet.
+
+The tool loop multiplies everything. A turn isn't one request: each tool round is one, so a fix that uses its 10
+rounds and continues in a second message costs about 1.5× a one-message fix on average ($0.077 against $0.053; 1.44×
+in the full run, 1.49× in the short one), and up to twice at the extremes ($0.044 to $0.088). The whole run varies far
+less (0.3% between two runs), so M2 is measured on the run total, not on one fix.
+
+Triage is cheap; fixes are not. In the short demo, triage was $0.013 of $0.25. Saving on the orchestrator's model
+would barely show; saving on louis-agent's prompt would.
+
+The tokenizer changes the bill, not just the price. The same prompt was 10,266 tokens on Haiku 4.5 and 15,649 on Haiku
+5.5 (+52%, measured in the optimisation spec,
+[§A](../specs/RESPONSE_OPTIMISATION.md#a-measure-usage-prerequisite-for-everything-else)). Comparing models on price
+per million tokens alone misses this; comparing them on a run's cost doesn't.
 
 ## What was built, and why this way
 
@@ -132,41 +136,53 @@ factory, as `IUsageMapper` is. The client that applies it doesn't know which pro
 
 **What the measurements showed that the design didn't predict:**
 
-- **The prefix is shared across sessions.** It was written once per run (47,424 tokens), then *read* by each of the
-  nine later fixes, each in its own session. The cache key is the bytes, not the conversation.
-- **The split of writes by lifetime is only in the raw response.** Microsoft.Extensions.AI's `UsageDetails` has the
-  total; the 5-minute and 1-hour parts are on the SDK's own message, and on a stream only in the first event
-  (`message_start`). Pricing 1-hour writes correctly needed the mapper to see that event.
-- **The tool order had to be fixed first.** Tools were registered in reflection order; any difference in order between
-  processes would have been a different prefix and a silent miss. They are now sorted by name.
-- **A miss raises no error.** Caching that silently stops looks like a normal, more expensive run, so the smoke check is
-  kept as a sample to compare `cache_read` against.
+The prefix is shared across sessions. It was written once per run (47,424 tokens), then *read* by each of the nine
+later fixes, each in its own session. The cache key is the bytes, not the conversation.
+
+The split of writes by lifetime is only in the raw response. Microsoft.Extensions.AI's `UsageDetails` has the total;
+the 5-minute and 1-hour parts are on the SDK's own message, and on a stream only in the first event (`message_start`).
+Pricing 1-hour writes correctly needed the mapper to see that event.
+
+The tool order had to be fixed first. Tools were registered in reflection order; any difference in order between
+processes would have been a different prefix and a silent miss. They are now sorted by name.
+
+A miss raises no error. Caching that silently stops looks like a normal, more expensive run, so the smoke check is
+kept as a sample to compare `cache_read` against.
 
 ## Trade-offs accepted
 
-- **A ledger file per month, not a database.** JSON lines are append-only, readable and easy to total with one tool
-  (`usage-probe -- --ledger`); querying across months or by user is F11's job.
-- **Two copies of the number rules** (core's `UsageText`, the web app's `UsageFormat`), to keep the agent's code out of
-  the browser download. F14 has to change both.
-- **The web line splits cache writes from "in"**, against F3's own story: they are priced differently, so hiding them
-  would hide why one answer cost more than another.
-- **Rider's chat line is opt-in** (`USAGE_IN_CHAT`): in Rider it becomes part of the transcript.
-- **Triage is not cached yet** (F17): about a quarter of the cached run's cost is now the orchestrator's triage,
-  because louis-agent's share fell so far.
-- **`--cache-gaps` estimates the prefix** as a host's smallest prompt: an upper bound, about 1,000 tokens high on the
-  demo, close enough to choose a lifetime.
+A ledger file per month, not a database. JSON lines are append-only, readable and easy to total with one tool
+(`usage-probe -- --ledger`); querying across months or by user is F11's job.
+
+Two copies of the number rules (core's `UsageText`, the web app's `UsageFormat`), to keep the agent's code out of the
+browser download. F14 has to change both.
+
+The web line splits cache writes from "in" , against F3's own story: they are priced differently, so hiding them would
+hide why one answer cost more than another.
+
+Rider's chat line is opt-in (`USAGE_IN_CHAT`): in Rider it becomes part of the transcript.
+
+Triage is not cached yet (F17): about a quarter of the cached run's cost is now the orchestrator's triage, because
+louis-agent's share fell so far.
+
+`--cache-gaps` estimates the prefix as a host's smallest prompt: an upper bound, about 1,000 tokens high on the demo,
+close enough to choose a lifetime.
 
 ## What didn't work (and what it taught)
 
-- **Haiku 5.5 rejected the request after the tool-round limit** (FX1): the loop's last request dropped the tools,
-  which a model that binds thinking to the tool list refuses. Measuring the short demo (2 of 4 fixes lost) found it.
-- **The ledger lost requests outside a scope** (FX5): `scope?.Add(sink.Record(record))` skips the `Record` call too
-  when `scope` is null. F1's tests caught it. Lesson: keep side effects out of a null-conditional call.
-- **Failed turns weren't counted in the views** (FX6): their usage only travelled on the success event. A total is only
-  as good as its worst path.
-- **One timeout ended the orchestrator's whole run** (FX7), because .NET reports a timeout as a cancellation.
-- **Local models don't fit yet:** Ollama silently truncates to 2,048 tokens (the ledger showed `input: 2050`), and a
-  CPU request can pass the 100-second timeout. The ledger is what made the truncation visible (F13).
+Haiku 5.5 rejected the request after the tool-round limit (FX1): the loop's last request dropped the tools, which a
+model that binds thinking to the tool list refuses. Measuring the short demo (2 of 4 fixes lost) found it.
+
+The ledger lost requests outside a scope (FX5): `scope?.Add(sink.Record(record))` skips the `Record` call too when
+`scope` is null. F1's tests caught it. Lesson: keep side effects out of a null-conditional call.
+
+Failed turns weren't counted in the views (FX6): their usage only travelled on the success event. A total is only as
+good as its worst path.
+
+One timeout ended the orchestrator's whole run (FX7), because .NET reports a timeout as a cancellation.
+
+Local models don't fit yet: Ollama silently truncates to 2,048 tokens (the ledger showed `input: 2050`), and a CPU
+request can pass the 100-second timeout. The ledger is what made the truncation visible (F13).
 
 ## F18: the replay cache, measured (2026-10-29)
 
@@ -189,29 +205,26 @@ can't reproduce its grades from a replay. That's the next fix: make the sub-sess
 
 ## Where skill 13 stands
 
-Against the goal's four criteria for a learned skill:
-
-1. **Built:** seeing the cost (ledger, prices, showing it, M1) and cutting it (prompt caching, F4); toolsets, estimates,
-   budgets and reconciliation are still planned (F5, F6, F7, F11).
-2. **Measured:** yes. F4 against the M1 baseline: −80% on the run, −87% on louis-agent's input, with 10/10 fixes held.
-3. **Written up:** this page, for M1 and F4; extended at the rest of M2 and at M3.
-4. **Explained:** the list below.
+Here's how it does against the goal's four tests for a learned skill. It's built: seeing the cost (the ledger, the
+prices, showing it, M1) and cutting it (prompt caching, F4). Toolsets, estimates, budgets and reconciliation are still
+planned (F5, F6, F7, F11). It's measured: F4 against the M1 baseline is −80% on the run and −87% on louis-agent's
+input, with 10 of 10 fixes held. It's written up, on this page for M1 and F4, to be extended at the rest of M2 and at
+M3. And it's explained, in the section below.
 
 So skill 13 is **learned at its first measured change**, by this page's own test. The later stages (spend less of the
 prompt, estimate before spending, stop at a budget, reconcile with the bill) extend it.
 
 ## What I can now explain
 
-- Why input tokens, not output, set the bill for an agent, and why caching is the first lever.
-- Why a ledger needs non-overlapping token kinds, and how a provider adapter can quietly break that.
-- Why a cost is stored with the prices it was charged at, and why "unknown" must never read as "free".
-- How to attribute cost across two agents (a fix, its triage, a run) so the totals agree at every level.
-- Why the run, not a single fix, is the unit to compare when measuring a change.
-- How prompt caching prices a request: what a marker covers, why the order tools → system → messages matters, and why
-  a write costs more than a read.
-- Why a cache lifetime is chosen from the gaps between requests, not from how long a run takes, and how to measure it.
-- Why a cache key is bytes, so a stable tool order and an untouched history are what make the cache hit.
-- Why a replayed answer is a known $0 and not a blank, and why a replay miss must fail rather than call the model.
+Why input tokens, not output, set the bill for an agent, and why caching is the first lever. Why a ledger needs
+non-overlapping token kinds, and how a provider adapter can quietly break that. Why a cost is stored with the prices
+it was charged at, and why "unknown" must never read as "free". How to attribute cost across two agents (a fix, its
+triage, a run) so the totals agree at every level. Why the run, not a single fix, is the unit to compare when
+measuring a change. How prompt caching prices a request: what a marker covers, why the order tools → system → messages
+matters, and why a write costs more than a read. Why a cache lifetime is chosen from the gaps between requests, not
+from how long a run takes, and how to measure it. Why a cache key is bytes, so a stable tool order and an untouched
+history are what make the cache hit. Why a replayed answer is a known $0 and not a blank, and why a replay miss must
+fail rather than call the model.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)
