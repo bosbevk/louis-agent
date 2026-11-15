@@ -1,10 +1,11 @@
 // Where the agent's caption stands (F134.4, a module beside its component, ADR 0093). The widget's script marks the
 // place the agent last lit (data-lit) and says when it lights another. On a wide screen a caption whose answer showed
 // a place (data-beside) stands beside that place: to its right where the screen has room, else to its left, else
-// under it. While it stands there, the place keeps a quiet ring, so the two read as one. A caption with no place to
-// stand beside (its answer showed none, the place is as wide as the screen, or it is scrolled off) stands beside the
-// bar where the screen has room, and over the bar where it has none. It follows the page while the visitor scrolls.
-// On a phone it stays over the bar and nothing is moved.
+// under it. An answer that lit no place stands the same way beside the piece of the page the visitor chose to ask
+// about, when one is chosen. While it stands there, the place keeps a quiet ring, so the two read as one. A caption
+// with no place to stand beside (none was lit or chosen, the place is as wide as the screen, or it is scrolled off)
+// stands beside the bar where the screen has room, and over the bar where it has none. It follows the page while
+// the visitor scrolls. On a phone it stays over the bar and nothing is moved.
 //
 // The module's mark on a caption it has stood is an attribute of its own (data-stands), never a class: the page
 // writes the caption's classes again whenever they change, and would wipe a class added here.
@@ -100,8 +101,11 @@ const glide = (caption, move) => {
 // Where the caption stands now, and the ring with it: beside the place, else beside the bar, else over the bar as it
 // is drawn. The caption takes its standing look before it is measured, and gives it up again when neither has room.
 const place = (caption, ring) => {
+    // The place the answer lit, when it lit one. Else the piece of the page the visitor chose to ask about, when
+    // one is chosen: the answer is about that piece, whether or not the agent lit it again.
     const lit = caption.hasAttribute("data-beside") ? document.querySelector("[data-lit]") : null;
-    const box = lit ? boxOf(lit) : null;
+    const about = lit ?? document.querySelector("[data-piece][data-selected]");
+    const box = about ? boxOf(about) : null;
     const bar = caption.closest(".agent-bar");
     const row = bar?.querySelector(".agent-row");
     // Marked first, the caption is out of the bar's flow, so the bar's top is the top of what else it holds: its

@@ -68,6 +68,23 @@ public class CaptionBesideTests
     }
 
     /// <summary>
+    /// A visitor who pressed a piece of the page is asking about that piece. When the answer lights no place of its
+    /// own, the caption stands beside the piece they chose, where the answer belongs, and not beside the bar.
+    /// </summary>
+    [Test]
+    public void WithNoPlaceLit_TheCaptionStandsBesideThePieceTheVisitorChose()
+    {
+        string pieces = Read("Pieces/PieceWatch.razor.js");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Module, Does.Contain("?? document.querySelector(\"[data-piece][data-selected]\")"));
+            Assert.That(pieces, Does.Contain("setAttribute(\"data-selected\""),
+                "the piece watch marks the chosen piece by that name");
+        });
+    }
+
+    /// <summary>
     /// The module's mark on the caption is an attribute of its own and never a class. The page writes the caption's
     /// classes again whenever they change, as when it turns over, and that would wipe a class the module had added
     /// and drop the caption back over the bar.
