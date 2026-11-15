@@ -1,9 +1,9 @@
 using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Frames;
-using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Pages;
@@ -133,5 +133,56 @@ public class SiteAreasTests
 
         Assert.That(One<AgentSuggestions>(services).Questions,
             Is.EqualTo(new[] { "Walk me through this page", "What does it cost?" }));
+    }
+
+    /// <summary>An area that carries a theme, as a theme's package adds one (F151.1).</summary>
+    private static SiteArea ThemeArea(string name, SiteTheme theme) => new(name, _ => { }, [], Theme: theme);
+
+    /// <summary>
+    /// F151.1: the areas give back the themes in the order the site named them, leaving out the areas that carry
+    /// none, and the first one named is the site's default.
+    /// </summary>
+    [Test]
+    public void TheThemes_ComeInTheOrderNamed_AndTheFirstIsTheDefault()
+    {
+        var glass = new SiteTheme("glass", "Glass");
+        var flat = new SiteTheme("flat", "Flat");
+        var services = Named(areas => areas
+            .Add(ThemeArea("theme-glass", glass))
+            .Chat()
+            .Add(ThemeArea("theme-flat", flat)));
+
+        var named = One<SiteAreas>(services);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(named.Themes, Is.EqualTo(new[] { glass, flat }));
+            Assert.That(named.DefaultTheme, Is.EqualTo(glass));
+        });
+    }
+
+    /// <summary>F151.1: a site that names no theme has none, and no default.</summary>
+    [Test]
+    public void WithNoThemeNamed_ThereAreNoThemes_AndNoDefault()
+    {
+        var named = One<SiteAreas>(Named(areas => areas.Chat()));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(named.Themes, Is.Empty);
+            Assert.That(named.DefaultTheme, Is.Null);
+        });
+    }
+
+    /// <summary>F151.1: a theme's area named twice still counts once, so its theme is listed once.</summary>
+    [Test]
+    public void AThemesAreaNamedTwice_ListsItsThemeOnce()
+    {
+        var glass = new SiteTheme("glass", "Glass");
+        var services = Named(areas => areas
+            .Add(ThemeArea("theme-glass", glass))
+            .Add(ThemeArea("theme-glass", new SiteTheme("glass", "Glass again"))));
+
+        Assert.That(One<SiteAreas>(services).Themes, Is.EqualTo(new[] { glass }));
     }
 }

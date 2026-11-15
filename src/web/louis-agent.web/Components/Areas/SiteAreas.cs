@@ -1,10 +1,11 @@
 using System.Reflection;
+using LouisAgent.Web.Components.Areas.Themes;
 
 namespace LouisAgent.Web.Components.Areas;
 
 /// <summary>
-/// The areas a site named (F127.6), registered once: the site's router takes its page assemblies from here, and the
-/// admin frame the links each area adds to its sidebar.
+/// The areas a site named (F127.6), registered once: the site's router takes its page assemblies from here, the
+/// admin frame the links each area adds to its sidebar, and the site its themes, the first named its default.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
 public sealed class SiteAreas(IReadOnlyList<SiteArea> areas)
@@ -20,4 +21,10 @@ public sealed class SiteAreas(IReadOnlyList<SiteArea> areas)
 
     /// <summary>The cards the admin's home draws (F144), one per area that has one, in the order named.</summary>
     public IReadOnlyList<Type> AdminCards { get; } = [.. areas.Select(area => area.AdminCard).OfType<Type>()];
+
+    /// <summary>The themes a visitor can pick between (F151.1), one per area that brings one, as named.</summary>
+    public IReadOnlyList<SiteTheme> Themes { get; } = [.. areas.Select(area => area.Theme).OfType<SiteTheme>()];
+
+    /// <summary>The theme a first visit gets: the first one the site named, or none when it names none.</summary>
+    public SiteTheme? DefaultTheme => Themes.Count > 0 ? Themes[0] : null;
 }
