@@ -1,0 +1,63 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F134.5 see how it did that: an answer in memory",
+  "caption": "What the bar holds once an answer is done: the turn, its blocks and its usage, the work read from them, and the chat's total.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "chat",
+        "label": "Chat\nthree turns",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "turn",
+        "label": "The last Turn\nShowPage, words, Offer",
+        "icon": "message",
+        "tone": "teal"
+      },
+      {
+        "id": "usage",
+        "label": "TurnUsage\n4 requests, US$0.0042",
+        "icon": "settings",
+        "tone": "teal"
+      },
+      {
+        "id": "work",
+        "label": "AnswerWork\n2 tools, 1.2 s thought",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "total",
+        "label": "The talk's total\nChat.Usage()",
+        "icon": "settings",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "chat",
+        "to": "turn",
+        "word": "holds"
+      },
+      {
+        "from": "turn",
+        "to": "usage",
+        "word": "holds"
+      },
+      {
+        "from": "turn",
+        "to": "work",
+        "word": "read into"
+      },
+      {
+        "from": "chat",
+        "to": "total",
+        "word": "summed into"
+      }
+    ]
+  }
+}

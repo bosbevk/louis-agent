@@ -1,0 +1,73 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F134.5 see how it did that: what changes",
+  "caption": "The API prices each request from the ledger and sends a turn's usage; the framework's bar and caption show it; the site's demo pages offer their notes as pieces. Each box names its step.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "api",
+        "label": "The site's API\nprices every request",
+        "icon": "server",
+        "tone": "violet"
+      },
+      {
+        "id": "ledger",
+        "label": "The usage ledger\nusage-yyyy-mm.jsonl",
+        "icon": "database",
+        "tone": "violet"
+      },
+      {
+        "id": "caption",
+        "label": "AgentCaption\nturned over (2, 3)",
+        "icon": "box",
+        "tone": "green",
+        "group": "web"
+      },
+      {
+        "id": "bar",
+        "label": "AgentBar\nthe total (4), the chip (5)",
+        "icon": "box",
+        "tone": "green",
+        "group": "web"
+      },
+      {
+        "id": "notes",
+        "label": "DemoNotes\nnotes as pieces (6)",
+        "icon": "browser",
+        "tone": "green",
+        "group": "web"
+      }
+    ],
+    "edges": [
+      {
+        "from": "api",
+        "to": "ledger",
+        "word": "writes"
+      },
+      {
+        "from": "api",
+        "to": "bar",
+        "word": "a turn's usage"
+      },
+      {
+        "from": "bar",
+        "to": "caption",
+        "word": "the last turn"
+      },
+      {
+        "from": "notes",
+        "to": "bar",
+        "word": "a piece picked",
+        "style": "dashed"
+      }
+    ],
+    "groups": [
+      {
+        "id": "web",
+        "label": "louis-agent.web"
+      }
+    ]
+  }
+}

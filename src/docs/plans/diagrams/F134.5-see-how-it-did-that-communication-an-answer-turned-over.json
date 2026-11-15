@@ -1,0 +1,79 @@
+{
+  "kind": "sequence",
+  "title": "F134.5 see how it did that: an answer turned over",
+  "caption": "The guide answers; the API writes each request to the ledger and sends the turn's usage; the visitor turns the caption over and reads the same numbers.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "visitor",
+        "label": "The visitor",
+        "icon": "user",
+        "tone": "blue"
+      },
+      {
+        "id": "bar",
+        "label": "AgentBar",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "api",
+        "label": "The site's API",
+        "icon": "server",
+        "tone": "violet"
+      },
+      {
+        "id": "ledger",
+        "label": "The ledger",
+        "icon": "database",
+        "tone": "violet"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "visitor",
+        "to": "bar",
+        "text": "asks"
+      },
+      {
+        "step": "message",
+        "from": "bar",
+        "to": "api",
+        "text": "the message"
+      },
+      {
+        "step": "message",
+        "from": "api",
+        "to": "ledger",
+        "text": "each request, priced"
+      },
+      {
+        "step": "message",
+        "from": "api",
+        "to": "bar",
+        "text": "the answer, then its usage"
+      },
+      {
+        "step": "note",
+        "over": [
+          "bar"
+        ],
+        "text": "the caption, the talk's total"
+      },
+      {
+        "step": "message",
+        "from": "visitor",
+        "to": "bar",
+        "text": "How I did that"
+      },
+      {
+        "step": "note",
+        "over": [
+          "bar"
+        ],
+        "text": "tools, time, tokens, cost"
+      }
+    ]
+  }
+}
