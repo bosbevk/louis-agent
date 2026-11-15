@@ -1,0 +1,80 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F134.2 a demo on the stage: what changes",
+  "caption": "The framework's showroom parts change; the site's two working agents' pages put their players in a window. Each box names the step that changes it.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "site",
+        "label": "louis-agent.site\nthe five demo pages",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "stage",
+        "label": "DemoStage\nlit, K's head (2)",
+        "icon": "box",
+        "tone": "green",
+        "group": "web"
+      },
+      {
+        "id": "cues",
+        "label": "DemoCues\nchapters (3)",
+        "icon": "box",
+        "tone": "green",
+        "group": "web"
+      },
+      {
+        "id": "rail",
+        "label": "DemoRail and Dock\na slim upright dock (4)",
+        "icon": "box",
+        "tone": "green",
+        "group": "web"
+      },
+      {
+        "id": "windows",
+        "label": "Two working agents' pages\nin a FramedWindow (5)",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "phone",
+        "label": "On a phone\nchapters stacked (6)",
+        "icon": "phone",
+        "tone": "green",
+        "group": "web"
+      }
+    ],
+    "edges": [
+      {
+        "from": "site",
+        "to": "stage",
+        "word": "every demo page"
+      },
+      {
+        "from": "stage",
+        "to": "cues",
+        "word": "holds"
+      },
+      {
+        "from": "site",
+        "to": "windows",
+        "word": "two of them"
+      },
+      {
+        "from": "stage",
+        "to": "phone",
+        "word": "narrow",
+        "style": "dashed"
+      }
+    ],
+    "groups": [
+      {
+        "id": "web",
+        "label": "louis-agent.web: the showroom"
+      }
+    ]
+  }
+}

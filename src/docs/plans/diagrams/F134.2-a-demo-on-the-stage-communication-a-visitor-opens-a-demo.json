@@ -1,0 +1,98 @@
+{
+  "kind": "sequence",
+  "title": "F134.2 a demo on the stage: a visitor opens a demo",
+  "caption": "The shell draws the upright dock with the demo marked, the stage lights in its colour, and the chapters light as the play reaches each cue.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "v",
+        "label": "A visitor",
+        "icon": "user",
+        "tone": "blue"
+      },
+      {
+        "id": "shell",
+        "label": "ShowroomShell",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "stage",
+        "label": "DemoStage",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "player",
+        "label": "The player",
+        "icon": "play",
+        "tone": "blue"
+      },
+      {
+        "id": "cues",
+        "label": "DemoCues",
+        "icon": "box",
+        "tone": "green"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "v",
+        "to": "shell",
+        "text": "opens /guesthouse-demo"
+      },
+      {
+        "step": "note",
+        "over": [
+          "shell"
+        ],
+        "text": "the dock upright, the guesthouse marked"
+      },
+      {
+        "step": "message",
+        "from": "shell",
+        "to": "stage",
+        "text": "draws the page"
+      },
+      {
+        "step": "note",
+        "over": [
+          "stage"
+        ],
+        "text": "lit in blue, the crumb, the h1, the lede"
+      },
+      {
+        "step": "message",
+        "from": "stage",
+        "to": "player",
+        "text": "plays the recording"
+      },
+      {
+        "step": "reply",
+        "from": "player",
+        "to": "cues",
+        "text": "a turn reached"
+      },
+      {
+        "step": "note",
+        "over": [
+          "cues"
+        ],
+        "text": "that chapter lit, the line filled"
+      },
+      {
+        "step": "message",
+        "from": "v",
+        "to": "cues",
+        "text": "presses chapter 2"
+      },
+      {
+        "step": "reply",
+        "from": "cues",
+        "to": "player",
+        "text": "plays from its turn"
+      }
+    ]
+  }
+}

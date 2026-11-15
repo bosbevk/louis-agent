@@ -1,0 +1,75 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F134.2 a demo on the stage: a demo's page in memory",
+  "caption": "What one demo's page holds: the shell with a dock item a demo, the stage with its accent and its places, and the player with its cues.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "shell",
+        "label": "ShowroomShell\nCurrent = the guesthouse",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "items",
+        "label": "Five DockItems\none a demo, by group",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "stage",
+        "label": "DemoStage\nAccent = blue",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "places",
+        "label": "Five places\ntop … ask",
+        "icon": "stack",
+        "tone": "teal"
+      },
+      {
+        "id": "player",
+        "label": "SiteMock and RecordedChat\nthe window and its talk",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "cues",
+        "label": "Four cues\ntwo reached",
+        "icon": "checks",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "shell",
+        "to": "items",
+        "word": "holds"
+      },
+      {
+        "from": "shell",
+        "to": "stage",
+        "word": "holds"
+      },
+      {
+        "from": "stage",
+        "to": "places",
+        "word": "holds"
+      },
+      {
+        "from": "stage",
+        "to": "player",
+        "word": "holds"
+      },
+      {
+        "from": "player",
+        "to": "cues",
+        "word": "reaches",
+        "style": "dashed"
+      }
+    ]
+  }
+}
