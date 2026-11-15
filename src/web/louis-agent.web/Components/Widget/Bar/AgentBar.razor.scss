@@ -1,13 +1,15 @@
 /* The agent bar (F134.3), as the J and K mockups drew it: fixed at the foot of the page, centred and at most 760 wide,
    a glass bar with the orb, a line of what the guide is doing over the box, and the talk standing over it. Folded,
    the talk shows its end, the last answer, cut at its top; opened, it is the whole talk, scrolled within. The page
-   keeps the bar's room free at its bottom (--bar-room), so nothing ends under it. */
+   keeps the bar's room free at its bottom (--bar-room), so nothing ends under it. It is centred by its margins, not
+   moved by a transform, since a transform would hold the open talk's drawer inside the bar. */
 .agent-bar {
     position: fixed;
     z-index: 80;
-    left: 50%;
+    left: 0;
+    right: 0;
     bottom: 18px;
-    transform: translateX(-50%);
+    margin-inline: auto;
     width: min(760px, calc(100vw - 28px));
     display: flex;
     flex-direction: column;
@@ -98,8 +100,9 @@
 .agent-chips-note { font-size: 12.5px; color: var(--bs-secondary-color); }
 
 /* On a phone the chips are one row that scrolls sideways, so they stand in the room the page keeps for the bar and
-   never cover the end of a page. */
+   never cover the end of a page; and the whole talk, opened, is a sheet over the bar, most of the screen tall. */
 @media (max-width: 900px) {
+    .agent-talk.is-open { max-height: 70vh; }
     .agent-chips {
         flex-wrap: nowrap;
         justify-content: flex-start;
@@ -107,4 +110,21 @@
         scrollbar-width: none;
     }
     .agent-chips button, .agent-chips-note { flex: none; }
+}
+
+/* The whole talk, opened (F134.4): on a wide screen a drawer at the screen's right side, from under the header to the
+   bar's foot, so the page stays in view beside it. */
+@media (min-width: 901px) {
+    .agent-talk.is-open {
+        position: fixed;
+        top: 84px;
+        right: 16px;
+        bottom: 18px;
+        width: min(420px, calc(100vw - 32px));
+        max-height: none;
+        padding: 18px 18px 12px;
+        box-shadow:
+            0 0 0 1px rgba(var(--web-overlay-rgb), .14),
+            0 30px 60px -20px rgba(var(--web-shadow-rgb), .9);
+    }
 }

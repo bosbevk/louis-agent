@@ -6,8 +6,9 @@
    stays the one engine and the bar is only its look. *@
 <div class="agent-bar">
     @* The site's suggestions while the guide waits: each chip asks its question, and the last word says the box is
-       there too, since a chip is a shortcut and never the only way in (F134's rule 3). *@
-    @if (Chips is { Count: > 0 } chips && State == OrbState.Idle)
+       there too, since a chip is a shortcut and never the only way in (F134's rule 3). They give way to a caption,
+       which holds the guide's own choices and the way into the box (F134.4). *@
+    @if (Chips is { Count: > 0 } chips && State == OrbState.Idle && Caption is null)
     {
         <div class="agent-chips">
             @foreach (string question in chips)
@@ -35,7 +36,8 @@
         <Orb State="State" Label="@Title"/>
         <div class="agent-box">
             <span class="agent-doing">@Doing</span>
-            <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
+            <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
+                      Attachments="Runner.Attachments"
                       Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
                       OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
                       SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>

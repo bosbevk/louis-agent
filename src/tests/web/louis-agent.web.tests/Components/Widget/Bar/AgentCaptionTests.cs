@@ -132,7 +132,9 @@ public class AgentCaptionTests
         });
     }
 
-    /// <summary>An answer that showed a place and only offered choices, with no words, still stands as a caption.</summary>
+    /// <summary>
+    /// An answer that showed a place and only offered choices, with no words, still stands as a caption.
+    /// </summary>
     [Test]
     public void AnAnswerOfOnlyChoices_StillStandsAsACaption()
     {
@@ -141,7 +143,23 @@ public class AgentCaptionTests
 
         var cut = Bar(ctx, turn);
 
-        Assert.That((cut.FindAll(".agent-caption .offer-card").Count, cut.FindAll(".agent-caption .caption-says").Count),
-            Is.EqualTo((2, 0)));
+        int choices = cut.FindAll(".agent-caption .offer-card").Count;
+        int words = cut.FindAll(".agent-caption .caption-says").Count;
+        Assert.That((choices, words), Is.EqualTo((2, 0)));
+    }
+
+    /// <summary>
+    /// While a caption stands, the site's suggestion chips give way to it: the caption holds the guide's own choices
+    /// and the way into the box, so a second row of shortcuts over the page would only crowd it.
+    /// </summary>
+    [Test]
+    public void WhileACaptionStands_TheChipsGiveWay()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new AgentSuggestions(["Walk me through the demos"]));
+
+        var cut = Bar(ctx, ShowedAndSaid());
+
+        Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-chips").Count), Is.EqualTo((1, 0)));
     }
 }

@@ -29,8 +29,8 @@ export function letGo(caption) {
     following.delete(caption);
 }
 
-// Where the caption stands now. The bar is fixed and moved by a transform, so it holds the caption's position: the
-// place's box is said from the bar's own corner. The caption takes its beside width before it is measured.
+// Where the caption stands now. The bar is fixed, so it holds the caption's position: the place's box is said from
+// the bar's own corner. The caption takes its beside width before it is measured.
 const place = (caption) => {
     const bar = caption.closest(".agent-bar");
     const lit = document.querySelector("[data-lit]");
