@@ -1,24 +1,28 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget.Bar.Caption;
 using LouisAgent.Web.Components.Widget.Orb;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Widget.Bar;
 
 /// <summary>
-/// The chat widget's bar (F134.3): the guide at the foot of the page. Over it the talk so far, folded to its end until
-/// the visitor opens it; in it the orb, a line of what the guide is doing, and the box, always there to type in.
+/// The chat widget's bar (F134.3): the guide at the foot of the page. In it the orb, a line of what the guide is doing,
+/// and the box, always there to type in. Over it the guide's last answer stands as a caption, and the whole talk
+/// once the visitor opens it.
 /// </summary>
 /// <remarks>
 /// A view of the widget's own runner, not a second chat: it reads the runner and hands a send or a choice back to the
 /// widget, so the session, the door, the page that travels with a message and the tool calls stay in one place (F134's
 /// rule 4, one engine with a layout). What it shows of the agent is read from the runner by
-/// <see cref="OrbStates"/>, never guessed. It hears a place being shown itself, since only the bar shows it.
+/// <see cref="OrbStates"/>, never guessed. It hears a place being shown itself, since only the bar shows it. It
+/// stands fixed over the page, so its module tells the page how much room it takes (F134's rule 5).
 /// </remarks>
-public partial class AgentBar : IDisposable
+public partial class AgentBar : IAsyncDisposable
 {
     /// <summary>How long the orb shows a place after the guide's call to show it, since the call has no end.</summary>
     private static readonly TimeSpan ShowingFor = TimeSpan.FromSeconds(2.5);
@@ -71,14 +75,27 @@ public partial class AgentBar : IDisposable
     [Inject]
     private IServiceProvider Services { get; set; } = null!;
 
+    /// <summary>The browser, for the module that tells the page the bar's room.</summary>
+    [Inject]
+    private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The bar on the page.</summary>
+    private ElementReference _bar;
+
+    /// <summary>The bar's module, loaded once it is drawn.</summary>
+    private JsModule? _module;
+
     /// <summary>Whether the guide is talking, told to the page when the site keeps it (F134.4).</summary>
     private GuideActivity? Activity => Services.GetService<GuideActivity>();
 
     /// <summary>The questions the site's guide offers as chips; none when the site names none.</summary>
-    private IReadOnlyList<string>? Chips => Services.GetService<AgentSuggestions>()?.Questions;
+    private AgentSuggestions? Suggestions => Services.GetService<AgentSuggestions>();
 
-    /// <summary>Whether the talk is open whole, or folded to its end.</summary>
+    /// <summary>Whether the visitor opened the whole talk.</summary>
     private bool _talkOpen;
+
+    /// <summary>The answer the visitor put away, so it stays away until the next one.</summary>
+    private Turn? _putAway;
 
     /// <summary>When the guide last showed a place, while the orb still shows it.</summary>
     private DateTimeOffset? _shownAt;
@@ -95,6 +112,14 @@ public partial class AgentBar : IDisposable
         _heard = Runner;
         _heard.ToolCalled += OnToolCalled;
         _heard.Changed += OnChanged;
+    }
+
+    /// <summary>Once on the page, the bar asks its module to keep the page told how much room it takes.</summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        _module = new JsModule(JS, FrameworkScripts.Bar);
+        await _module.InvokeVoidAsync("keepRoom", _bar);
     }
 
     /// <summary>
@@ -120,9 +145,14 @@ public partial class AgentBar : IDisposable
     /// <summary>Whether a place was shown a moment ago.</summary>
     private bool Showing => _shownAt is { } at && DateTimeOffset.UtcNow - at < ShowingFor;
 
+    /// <summary>The guide's last answer, done or still coming in; none before the first question.</summary>
+    private Turn? Last => Runner.Chat?.Turns.LastOrDefault();
+
     /// <summary>What the orb shows, read from the runner.</summary>
-    private OrbState State =>
-        OrbStates.Of(Runner.Streaming, Runner.Chat?.Turns.LastOrDefault()?.EndsInWords == true, Showing);
+    private OrbState State => OrbStates.Of(Runner.Streaming, Last?.EndsInWords == true, Showing);
+
+    /// <summary>The guide's mark on its orb: the first letter of its name, as the design drew it.</summary>
+    private string? Initial => Title.Length > 0 ? Title[..1] : null;
 
     /// <summary>The line over the box: what the guide is doing, or its name while it waits.</summary>
     private string Doing => State switch
@@ -133,17 +163,35 @@ public partial class AgentBar : IDisposable
         _ => Title
     };
 
-    /// <summary>
-    /// The last answer as a caption (F134.4), once it is done and while the visitor hasn't opened the whole talk.
-    /// </summary>
-    private Captioned? Caption =>
-        _talkOpen || Runner.Streaming ? null : Captioned.Of(Runner.Chat?.Turns.LastOrDefault());
+    /// <summary>Whether the last answer is the one the visitor put away.</summary>
+    private bool IsPutAway => Last is { } last && ReferenceEquals(last, _putAway);
 
     /// <summary>
-    /// The chips show while the guide waits, and give way to a caption, which holds the guide's own choices and the way
-    /// into the box, and to the whole talk, open (F134.4).
+    /// The last answer as a caption (F134.4), from its first words on, until the visitor puts it away or opens the
+    /// whole talk in its place.
     /// </summary>
-    private bool ChipsShow => State == OrbState.Idle && Caption is null && !_talkOpen;
+    private Captioned? Caption => _talkOpen || IsPutAway ? null : Captioned.Of(Last);
+
+    /// <summary>
+    /// The whole talk shows once the visitor opens it. It opens by itself for an answer a caption can't hold, such as
+    /// a form to fill in, so the visitor never has to look for what the guide asked.
+    /// </summary>
+    private bool TalkShows => _talkOpen || (!IsPutAway && Captioned.NeedsTheTalk(Last));
+
+    /// <summary>
+    /// The chips show while the guide waits with nothing over the bar. They give way to a caption, which holds the
+    /// guide's own choices and the way into the box, and to the whole talk (F134.4).
+    /// </summary>
+    private bool ChipsShow => State == OrbState.Idle && Caption is null && !TalkShows;
+
+    /// <summary>
+    /// The chips to draw: the site's own questions before any talk, and after it a next step from where the talk
+    /// was, the choices the guide last offered.
+    /// </summary>
+    private AgentChips Chips => AgentChips.Of(Suggestions, Captioned.Of(Last)?.Offer);
+
+    /// <summary>The chips' classes: showing, or stepped away.</summary>
+    private string ChipsClasses => ChipsShow ? "agent-chips" : "agent-chips is-away";
 
     /// <summary>What the talk has cost so far (F134.5), the chat's own sum; none while nothing is measured.</summary>
     private TurnUsage? Total => Runner.Chat?.Usage();
@@ -151,19 +199,35 @@ public partial class AgentBar : IDisposable
     /// <summary>How many answers the talk holds.</summary>
     private int Answers => Runner.Chat?.Turns.Count ?? 0;
 
-    /// <summary>The talk's classes: open whole, or folded to its end.</summary>
-    private string TalkClasses => _talkOpen ? "agent-talk is-open" : "agent-talk";
+    /// <summary>Opens the whole talk, or folds it away again.</summary>
+    private void ToggleTalk()
+    {
+        bool shows = TalkShows;
+        // A talk that opened by itself, for a form, would open again at once: folding it puts that answer away.
+        if (shows && Captioned.NeedsTheTalk(Last)) _putAway = Last;
+        _talkOpen = !shows;
+    }
 
-    /// <summary>The talk's button: what a press does.</summary>
-    private string TalkLabel => _talkOpen ? Text.TalkClose : Text.TalkOpen;
+    /// <summary>Puts the last answer away: its caption goes, and the next answer stands again.</summary>
+    private void PutTheAnswerAway() => _putAway = Last;
 
-    /// <summary>Opens the talk whole, or folds it to its end.</summary>
-    private void ToggleTalk() => _talkOpen = !_talkOpen;
-
-    /// <inheritdoc />
-    public void Dispose()
+    /// <summary>The bar is going: it stops hearing its runner, and the page gets its room back.</summary>
+    public async ValueTask DisposeAsync()
     {
         if (_heard is not null) _heard.ToolCalled -= OnToolCalled;
         if (_heard is not null) _heard.Changed -= OnChanged;
+        GC.SuppressFinalize(this);
+        if (_module is null) return;
+
+        // The browser may be gone already, with the page.
+        try
+        {
+            await _module.InvokeVoidAsync("letGo", _bar);
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        await _module.DisposeAsync();
     }
 }

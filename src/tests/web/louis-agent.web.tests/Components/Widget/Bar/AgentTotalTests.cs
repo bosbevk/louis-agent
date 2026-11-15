@@ -37,19 +37,22 @@ public class AgentTotalTests
     }
 
     /// <summary>
-    /// The bar's total is the talk's cost so far and its count of answers, the exact line in its title.
+    /// The bar's total is the talk's cost so far over its count of answers, the exact line in its title. It stands
+    /// in the box's end, before the send button, as the design drew it.
     /// </summary>
     [Test]
-    public void TheTotal_IsTheTalksCost_AndItsAnswers()
+    public void TheTotal_IsTheTalksCost_OverItsAnswers()
     {
         using var ctx = new BunitContext();
 
-        var total = Bar(ctx, First, Second).Find(".agent-total");
+        var total = Bar(ctx, First, Second).Find(".agent-box .composer-tools .agent-total");
 
         Assert.Multiple(() =>
         {
-            Assert.That(total.TextContent.Trim(), Is.EqualTo("$0.006 · 2 answers"));
+            Assert.That((total.QuerySelector("b")!.TextContent, total.QuerySelector("span")!.TextContent),
+                Is.EqualTo(("$0.006", "2 answers")));
             Assert.That(total.GetAttribute("title"), Is.EqualTo(UsageFormat.Total(First + Second)));
+            Assert.That(total.NextElementSibling?.ClassList, Does.Contain("send"));
         });
     }
 
@@ -64,7 +67,7 @@ public class AgentTotalTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".agent-talk.is-open"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".agent-talk"), Has.Count.EqualTo(1));
             Assert.That(cut.Find(".agent-talk-total").TextContent, Is.EqualTo(UsageFormat.Total(First + Second)));
         });
     }

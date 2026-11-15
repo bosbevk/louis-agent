@@ -207,11 +207,14 @@ public sealed record ChatText
     /// <summary>The caption's close button, read aloud and as its tip: the answer is put away (F134.4).</summary>
     public string CloseCaption { get; init; } = "Put this answer away";
 
-    /// <summary>The agent bar's button that opens the whole talk, and folds it again (F134.3).</summary>
+    /// <summary>The caption's button that opens the whole talk (F134.3).</summary>
     public string TalkOpen { get; init; } = "Show the whole talk";
 
-    /// <summary>The same button while the talk is open (F134.3).</summary>
+    /// <summary>The whole talk's close, read aloud and as its tip (F134.3).</summary>
     public string TalkClose { get; init; } = "Fold the talk";
+
+    /// <summary>The heading over the whole talk (F134.4).</summary>
+    public string TalkTitle { get; init; } = "The talk so far";
 
     /// <summary>A chat window folds to its head (F127.2).</summary>
     public string Minimise { get; init; } = "Minimise";

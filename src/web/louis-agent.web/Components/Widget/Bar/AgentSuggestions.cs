@@ -7,5 +7,9 @@ namespace LouisAgent.Web.Components.Widget.Bar;
 /// A site registers it once, as it registers its places and its words, so the framework names no site. A chip is a
 /// shortcut and never the only way in: the box is always there, and the chips say so (F134's rule 3).
 /// </remarks>
-/// <param name="Questions">Each chip's words, which are the question it asks.</param>
-public sealed record AgentSuggestions(IReadOnlyList<string> Questions);
+/// <param name="Questions">Each chip's words, which are the question it asks. The first is the one suggested.</param>
+public sealed record AgentSuggestions(IReadOnlyList<string> Questions)
+{
+    /// <summary>The question the site suggests, drawn bright among the chips: the one it named first.</summary>
+    public string? Suggested => Questions.FirstOrDefault();
+}

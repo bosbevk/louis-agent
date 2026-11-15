@@ -1,26 +1,34 @@
-/* The agent's orb (F134.3), as the J and K mockups drew it: a silver disc with a soft light. Idle it breathes,
-   thinking an arc goes round it, showing rings go out from it, speaking it pulses. Under less motion it holds still,
-   and its state is still in its class and its label. */
+/* The agent's orb (F134.3), as the J and K mockups drew it: a silver disc with a soft light and the agent's mark on
+   it. Idle it breathes, thinking an arc goes round it, showing rings go out from it, speaking it pulses. Its rings
+   keep close to it in every state, so they stay inside whatever holds the orb. Under less motion it holds still, and
+   its state is still in its class and its label. */
 .orb {
     position: relative;
     flex: none;
-    display: block;
+    display: grid;
+    place-items: center;
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));
+    font: 700 17px/1 inherit;
+    color: var(--web-on-primary);
+    background:
+        radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));
     box-shadow:
         inset 0 -3px 8px rgba(var(--web-shadow-rgb), .25),
-        0 0 26px -4px rgba(var(--web-overlay-rgb), .6);
+        0 0 18px -4px rgba(var(--web-overlay-rgb), .6);
 }
 .orb::before, .orb::after {
     content: "";
     position: absolute;
-    inset: -6px;
+    inset: -5px;
     border-radius: 50%;
     pointer-events: none;
 }
-.orb::before { box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .35); animation: orb-breathe 3.2s ease-in-out infinite; }
+.orb::before {
+    box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .35);
+    animation: orb-breathe 3.2s ease-in-out infinite;
+}
 .orb.is-thinking::before {
     box-shadow: none;
     background: conic-gradient(var(--web-bright) 0 70deg, transparent 70deg);
@@ -34,18 +42,18 @@
 .orb.is-showing::after { animation-delay: .45s; }
 .orb.is-speaking { animation: orb-speak .5s ease-in-out infinite alternate; }
 
-@keyframes orb-breathe { 50% { transform: scale(1.14); opacity: .35; } }
+@keyframes orb-breathe { 50% { transform: scale(1.08); opacity: .35; } }
 @keyframes orb-spin { to { transform: rotate(360deg); } }
 @keyframes orb-ping {
-    from { transform: scale(.9); opacity: 1; }
-    to { transform: scale(1.9); opacity: 0; }
+    from { transform: scale(.85); opacity: 1; }
+    to { transform: scale(1.15); opacity: 0; }
 }
 @keyframes orb-speak {
     to {
-        transform: scale(1.09);
+        transform: scale(1.06);
         box-shadow:
             inset 0 -3px 8px rgba(var(--web-shadow-rgb), .25),
-            0 0 40px 2px rgba(var(--web-overlay-rgb), .8);
+            0 0 22px 1px rgba(var(--web-overlay-rgb), .8);
     }
 }
 

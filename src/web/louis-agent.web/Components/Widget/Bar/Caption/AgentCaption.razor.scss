@@ -1,12 +1,13 @@
 /* The agent's caption (F134.4), as the J and K mockups drew it: a card of glass with two sides, 400 wide, standing
-   over the bar in its middle. On a wide screen its module moves it beside the place the agent lit (--caption-x,
-   --caption-y). The card turns on its upright axis (F134.5): both sides lie in one cell, so the card is as tall as
-   its taller side, and the side turned away is hidden by its back. */
+   over the bar in its middle. On a wide screen its module moves it beside the place the agent lit, or beside the
+   bar (--caption-x, --caption-y). The card turns on its upright axis (F134.5): both sides lie in one cell, so the
+   card is as tall as its taller side, and the side turned away is hidden by its back. */
 .agent-caption {
     align-self: center;
     width: min(400px, 100%);
     perspective: 1400px;
-    animation: rise .45s var(--web-spring, ease-out) both;
+    /* Its entry holds nothing once it has played, so the module's glide to another spot can move it after. */
+    animation: rise .45s var(--web-spring, ease-out) backwards;
 }
 .caption-flip {
     display: grid;
@@ -24,7 +25,9 @@
     padding: 18px 20px 14px;
     border-radius: 22px;
     backface-visibility: hidden;
-    background: rgba(var(--bs-body-bg-rgb), .9);
+    /* Nearly solid: a card that turns in depth gets no blur of what is behind it from some browsers, and the page's
+       words would show through a clearer glass. */
+    background: rgba(var(--bs-body-bg-rgb), .96);
     backdrop-filter: blur(24px);
     box-shadow:
         inset 0 1px 0 rgba(var(--web-overlay-rgb), .18),
@@ -151,11 +154,12 @@
 .caption-figure b { display: block; font: 600 15px/1.4 var(--bs-font-monospace); color: var(--bs-emphasis-color); }
 .caption-back .caption-foot { margin-top: auto; }
 
-/* On a wide screen the caption's module stands it beside the place the agent lit, by offsets from the bar's corner,
-   since the bar holds its position (--caption-x, --caption-y). On a phone it stays over the bar. */
+/* On a wide screen the caption's module stands it beside the place the agent lit, or beside the bar, fixed to the
+   screen where the module says (--caption-x, --caption-y), and wears the module's own mark while it does. On a
+   phone it stays over the bar. */
 @media (min-width: 901px) {
-    .agent-caption.is-beside {
-        position: absolute;
+    .agent-caption[data-stands] {
+        position: fixed;
         left: var(--caption-x);
         top: var(--caption-y);
         width: 400px;

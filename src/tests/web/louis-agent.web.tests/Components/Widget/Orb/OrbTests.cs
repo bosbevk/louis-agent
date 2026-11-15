@@ -30,6 +30,41 @@ public class OrbTests
     }
 
     /// <summary>
+    /// The orb carries the agent's mark on its disc, as the design drew the guide's initial, and nothing when it is
+    /// given none.
+    /// </summary>
+    [TestCase("L", "L")]
+    [TestCase(null, "")]
+    public void TheOrb_CarriesTheAgentsMark(string? mark, string shown)
+    {
+        using var ctx = new BunitContext();
+
+        var orb = ctx.Render<LouisAgent.Web.Components.Widget.Orb.Orb>(parameters => parameters
+            .Add(o => o.Label, "the guide")
+            .Add(o => o.Mark, mark)).Find(".orb");
+
+        Assert.That(orb.TextContent.Trim(), Is.EqualTo(shown));
+    }
+
+    /// <summary>
+    /// The orb's rings keep close to it in every state: breathing and the rings of showing grow only a little, so
+    /// they stay inside whatever holds the orb and never cross its edge.
+    /// </summary>
+    [Test]
+    public void TheOrbsRings_KeepClose()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Widget/Orb/Orb.razor.scss")).ReplaceLineEndings("\n");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(styles, Does.Contain("inset: -5px;"));
+            Assert.That(styles, Does.Contain("@keyframes orb-breathe { 50% { transform: scale(1.08);"));
+            Assert.That(styles, Does.Contain("to { transform: scale(1.15); opacity: 0; }"));
+        });
+    }
+
+    /// <summary>
     /// The rule: a place just shown is showing, whatever else; streaming with no words yet is thinking; words arriving
     /// is speaking; and the rest is idle.
     /// </summary>

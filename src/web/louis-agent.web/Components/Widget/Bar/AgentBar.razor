@@ -1,41 +1,40 @@
 @using LouisAgent.Web.Usage
 @using LouisAgent.Web.Components.Widget.Bar.Caption
+@using LouisAgent.Web.Components.Widget.Bar.Talk
 @using LouisAgent.Web.Components.Widget.Orb
-@* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it. Over it the talk so far,
-   folded to its end until the visitor opens it; in it the orb, a line of what the guide is doing, and the box, which
-   is always there to type in. It draws what the widget's runner holds and asks the widget to send, so the widget
-   stays the one engine and the bar is only its look. *@
-<div class="agent-bar">
-    @* The site's suggestions while the guide waits: each chip asks its question, and the last word says the box is
-       there too, since a chip is a shortcut and never the only way in (F134's rule 3). *@
-    @if (Chips is { Count: > 0 } chips && ChipsShow)
+@* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it. In it the orb, a line of
+   what the guide is doing, and the box, which is always there to type in. Over it the guide's last answer, or the
+   whole talk. It draws what the widget's runner holds and asks the widget to send, so the widget stays the one
+   engine and the bar is only its look. *@
+<div class="agent-bar" @ref="_bar">
+    @* The chips while the guide waits: the site's own questions at first, and once there is a talk, a next step
+       from where it was. Each chip asks its question, one of them drawn bright, and the last word says the box is
+       there too, since a chip is a shortcut and never the only way in (F134's rule 3). While they give way they
+       stay drawn, stepped away and out of reach, so they ease out and back in. *@
+    @if (Chips is { Questions.Count: > 0 } chips)
     {
-        <div class="agent-chips">
-            @foreach (string question in chips)
+        <div class="@ChipsClasses" inert="@(!ChipsShow)">
+            @foreach (string question in chips.Questions)
             {
-                <button type="button" @onclick="() => OnChoose.InvokeAsync(question)">@question</button>
+                <button class="@(question == chips.Suggested ? "is-suggested" : null)" type="button"
+                        @onclick="() => OnChoose.InvokeAsync(question)">@question</button>
             }
             <span class="agent-chips-note">@Text.OrTypeYourOwn</span>
         </div>
     }
-    @* The last answer showed a place: it stands as the caption (F134.4), and the folded talk gives way to it. *@
+    @* The guide's last answer stands as the caption (F134.4), a caption of its own for each answer. The whole talk
+       takes its place when the visitor opens it, or when the answer holds what only the talk draws. *@
     @if (Caption is { } caption)
     {
-        <AgentCaption Title="@Title" Words="@caption.Words" Offer="caption.Offer" Work="caption.Work"
-                      Currency="Currency" OnChoose="OnChoose" OnTalk="ToggleTalk"/>
+        <AgentCaption @key="Last" Title="@Title" Words="@caption.Words" Question="@caption.Question"
+                      Offer="caption.Offer" Work="caption.Work"
+                      Beside="caption.Beside" Currency="Currency" Streaming="Runner.Streaming"
+                      OnChoose="OnChoose" OnTalk="ToggleTalk" OnClose="PutTheAnswerAway"/>
     }
-    else if (Runner.Chat is { Turns.Count: > 0 })
+    else if (TalkShows)
     {
-        <div class="@TalkClasses">
-            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency" Class="agent-list"
-                         ShowWork="ShowWork" Chosen="OnChoose" ShowCardAnswers="ShowCardAnswers"/>
-            @* Opened whole, the talk ends with what it has cost (F134.5), as the chat's usage line says it. *@
-            @if (_talkOpen && Total is { } spent)
-            {
-                <div class="agent-talk-total">@UsageFormat.Total(spent, Currency)</div>
-            }
-            <button class="agent-talk-toggle" type="button" @onclick="ToggleTalk">@TalkLabel</button>
-        </div>
+        <AgentTalk Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency" ShowWork="ShowWork"
+                   ShowCardAnswers="ShowCardAnswers" Chosen="OnChoose" OnClose="ToggleTalk"/>
     }
     @* The piece the visitor selected on the page (F134.5), as the corner's panel shows it: every message carries it
        until its close lets it go. *@
@@ -47,22 +46,27 @@
         </div>
     }
     <div class="agent-row">
-        <Orb State="State" Label="@Title"/>
+        <Orb State="State" Label="@Title" Mark="@Initial"/>
+        @* The box: the line of what the guide is doing, a label for the box so a press on it lands in the box, over
+           the box itself. At its end, before the send button, what the talk has cost so far over how many answers
+           (F134.5): a press opens the whole talk. *@
         <div class="agent-box">
-            <span class="agent-doing">@Doing</span>
+            <label class="agent-doing" for="composer-input">@Doing</label>
             <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
-                      Attachments="Runner.Attachments"
+                      Attachments="Runner.Attachments" BoxClass="agent-input"
                       Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
                       OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
-                      SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
+                      SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle">
+                <Tools>
+                    @if (Total is { } total)
+                    {
+                        <button class="agent-total" type="button" title="@UsageFormat.Total(total, Currency)"
+                                @onclick="ToggleTalk">
+                            <b>@UsageFormat.Cost(total, Currency)</b><span>@Text.Answers(Answers)</span>
+                        </button>
+                    }
+                </Tools>
+            </Composer>
         </div>
-        @* What the talk has cost so far, and how many answers (F134.5): a press opens the whole talk. *@
-        @if (Total is { } total)
-        {
-            <button class="agent-total" type="button" title="@UsageFormat.Total(total, Currency)"
-                    @onclick="ToggleTalk">
-                @UsageFormat.Cost(total, Currency) · @Text.Answers(Answers)
-            </button>
-        }
     </div>
 </div>

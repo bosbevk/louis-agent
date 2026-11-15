@@ -29,6 +29,10 @@ public partial class AgentCaption : IAsyncDisposable
     [Parameter, EditorRequired]
     public string Words { get; set; } = "";
 
+    /// <summary>What it asked over its choices, shown quietly; none when its words already are that question.</summary>
+    [Parameter]
+    public string? Question { get; set; }
+
     /// <summary>The choices it offered with them; none when it offered none.</summary>
     [Parameter]
     public Offered? Offer { get; set; }
@@ -48,6 +52,13 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>Asks to see the whole talk instead.</summary>
     [Parameter]
     public EventCallback OnTalk { get; set; }
+
+    /// <summary>
+    /// Whether the answer showed a place on the page. Only then does the caption stand beside the place that is lit,
+    /// since the mark of an earlier answer's place stays on the page.
+    /// </summary>
+    [Parameter]
+    public bool Beside { get; set; }
 
     /// <summary>Whether the answer is still coming in: its choices wait until it is whole.</summary>
     [Parameter]
@@ -74,13 +85,16 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>Whether the caption is turned over to how the answer was made.</summary>
     private bool _turned;
 
+    /// <summary>Whether the answer had shown a place when the module last stood the caption.</summary>
+    private bool _stoodBeside;
+
     /// <summary>Turns the caption over, or back to the answer.</summary>
     private void Turn() => _turned = !_turned;
 
     /// <summary>The caption's classes: turned over, or facing with the answer.</summary>
     private string Classes => _turned ? "agent-caption is-turned" : "agent-caption";
 
-    /// <summary>A choice's classes: a pill, marked when the agent suggests it or when it is written in the box.</summary>
+    /// <summary>A choice's classes: a pill, marked when the agent suggests it or it is written in the box.</summary>
     private static string ChoiceClasses(OfferChoice choice) => choice switch
     {
         { Writes: not null } => "caption-choice is-written",
@@ -91,12 +105,23 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>The exact figures of what was measured, as the tip over the back's three.</summary>
     private string? Detail => Work.Usage is { } usage ? UsageFormat.Detail(usage, Currency) : null;
 
-    /// <summary>Once on the page, the caption asks its module to stand it beside the place the agent lit.</summary>
+    /// <summary>
+    /// Once on the page, the caption asks its module to stand it beside the place the agent lit. An answer's words
+    /// can come before it shows its place, so when the place comes the caption is stood again.
+    /// </summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender) return;
-        _module = new JsModule(JS, FrameworkScripts.Caption);
-        await _module.InvokeVoidAsync("standBeside", _caption);
+        if (firstRender)
+        {
+            _stoodBeside = Beside;
+            _module = new JsModule(JS, FrameworkScripts.Caption);
+            await _module.InvokeVoidAsync("standBeside", _caption);
+            return;
+        }
+
+        if (_module is null || Beside == _stoodBeside) return;
+        _stoodBeside = Beside;
+        await _module.InvokeVoidAsync("standAgain", _caption);
     }
 
     /// <summary>The caption is going: its module stops following the page, and is let go.</summary>

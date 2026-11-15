@@ -81,29 +81,79 @@ public class AgentCaptionTests
         });
     }
 
-    /// <summary>An answer that showed no place stays in the folded talk, with no caption.</summary>
+    /// <summary>
+    /// An answer that showed no place stands as a caption too, as the design has every answer: over the bar, since
+    /// there is no place to stand beside.
+    /// </summary>
     [Test]
-    public void AnAnswerThatShowedNoPlace_StaysInTheTalk()
+    public void AnAnswerThatShowedNoPlace_StandsAsACaptionToo()
     {
         using var ctx = new BunitContext();
         var turn = new Turn { UserText = "Hi", Blocks = [new Block { Kind = BlockKind.Text, Text = "Hello." }] };
 
         var cut = Bar(ctx, turn);
 
-        Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk").Count), Is.EqualTo((0, 1)));
+        Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk").Count), Is.EqualTo((1, 0)));
     }
 
-    /// <summary>The caption's button opens the whole talk in its place.</summary>
+    /// <summary>
+    /// An answer that asks with a form is one a caption can't hold, so the whole talk opens with it, where the form
+    /// is drawn; folding the talk puts that answer away.
+    /// </summary>
     [Test]
-    public void TheCaptionsTalkButton_OpensTheWholeTalk()
+    public void AnAnswerWithAForm_OpensTheWholeTalk_AndFoldingPutsItAway()
+    {
+        using var ctx = new BunitContext();
+        var form = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "AskFor",
+            ToolUseId = "toolu_ask",
+            ToolInput = """{"question":"How can Louis reach you?","fields":[{"label":"Your email","kind":"email"}]}""",
+            ToolResult = "Asked."
+        };
+        var said = new Block { Kind = BlockKind.Text, Text = "Leave your details." };
+        var cut = Bar(ctx, new Turn { UserText = "Ask Louis for me", Blocks = [said, form] });
+        var opened = (cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk form").Count);
+
+        cut.Find(".agent-talk-toggle").Click();
+
+        var folded = (cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk").Count);
+        Assert.That((opened, folded), Is.EqualTo(((0, 1), (0, 0))));
+    }
+
+    /// <summary>The caption's button opens the whole talk in its place, and folding the talk brings it back.</summary>
+    [Test]
+    public void TheCaptionsTalkButton_OpensTheWholeTalk_AndFoldingBringsTheCaptionBack()
     {
         using var ctx = new BunitContext();
         var cut = Bar(ctx, ShowedAndSaid());
 
         cut.Find(".agent-caption .caption-talk").Click();
+        var opened = (cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk").Count);
+        cut.Find(".agent-talk-toggle").Click();
 
-        Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk.is-open").Count),
-            Is.EqualTo((0, 1)));
+        var folded = (cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk").Count);
+        Assert.That((opened, folded), Is.EqualTo(((0, 1), (1, 0))));
+    }
+
+    /// <summary>
+    /// The caption's close puts the answer away: the caption goes, the site's chips come back, and the next answer
+    /// stands as a caption again.
+    /// </summary>
+    [Test]
+    public void PutAway_TheCaptionGoes_UntilTheNextAnswer()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new AgentSuggestions(["Walk me through the demos"]));
+        var cut = Bar(ctx, ShowedAndSaid());
+
+        cut.Find(".agent-caption .caption-close").Click();
+        var away = (cut.FindAll(".agent-caption").Count, cut.FindAll(ChipsShown).Count);
+        cut.Instance.Runner.Chat!.Turns.Add(ShowedAndSaid());
+        cut.Render();
+
+        Assert.That((away, cut.FindAll(".agent-caption").Count), Is.EqualTo(((0, 1), 1)));
     }
 
     /// <summary>
@@ -165,34 +215,69 @@ public class AgentCaptionTests
     }
 
     /// <summary>
-    /// An answer that showed a place and only offered choices, with no words, still stands as a caption.
+    /// An answer that showed a place and only offered choices, with no words of its own, still stands as a caption.
+    /// What it asked over its choices is then all it said, sometimes a whole explanation, so it is drawn as the
+    /// answer's words and not a second time as the quiet question.
     /// </summary>
     [Test]
-    public void AnAnswerOfOnlyChoices_StillStandsAsACaption()
+    public void AnAnswerOfOnlyChoices_SaysItsQuestionAsItsWords()
     {
         using var ctx = new BunitContext();
         var turn = new Turn { UserText = "Show me a demo", Blocks = [ShowLevels(), OfferDemos()] };
 
         var cut = Bar(ctx, turn);
 
-        int choices = cut.FindAll(".agent-caption .caption-choice").Count;
-        int words = cut.FindAll(".agent-caption .caption-says").Count;
-        Assert.That((choices, words), Is.EqualTo((2, 0)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".agent-caption .caption-choice"), Has.Count.EqualTo(2));
+            Assert.That(cut.Find(".agent-caption .caption-says").TextContent.Trim(), Is.EqualTo("Which one?"));
+            Assert.That(cut.FindAll(".agent-caption .caption-question"), Is.Empty);
+        });
     }
 
     /// <summary>
-    /// While a caption stands, the site's suggestion chips give way to it: the caption holds the guide's own choices
-    /// and the way into the box, so a second row of shortcuts over the page would only crowd it.
+    /// When the chips come back after an answer, they follow the talk: the site's first question, then the choices
+    /// the guide last offered, its suggested one bright.
     /// </summary>
     [Test]
-    public void WhileACaptionStands_TheChipsGiveWay()
+    public void AfterAnAnswerIsPutAway_TheChipsAreItsChoices()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new AgentSuggestions(["Walk me through this page", "What does it cost?"]));
+        var said = new Block { Kind = BlockKind.Text, Text = "Here they are." };
+        var cut = Bar(ctx, new Turn { UserText = "Show me a demo", Blocks = [ShowLevels(), said, OfferDemos()] });
+
+        cut.Find(".agent-caption .caption-close").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll($"{ChipsShown} button").Select(chip => chip.TextContent),
+                Is.EqualTo(new[] { "Walk me through this page", "The restaurant", "The law firm" }));
+            Assert.That(cut.Find($"{ChipsShown} button.is-suggested").TextContent, Is.EqualTo("The restaurant"));
+        });
+    }
+
+    /// <summary>The chips while they show: not stepped away.</summary>
+    private const string ChipsShown = ".agent-chips:not(.is-away)";
+
+    /// <summary>
+    /// While a caption stands, the site's suggestion chips give way to it: the caption holds the guide's own choices
+    /// and the way into the box, so a second row of shortcuts over the page would only crowd it. They stay drawn,
+    /// stepped away and out of reach, so they can ease out and in and never pop.
+    /// </summary>
+    [Test]
+    public void WhileACaptionStands_TheChipsStepAway()
     {
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new AgentSuggestions(["Walk me through the demos"]));
 
         var cut = Bar(ctx, ShowedAndSaid());
 
-        Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-chips").Count), Is.EqualTo((1, 0)));
+        Assert.Multiple(() =>
+        {
+            Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(ChipsShown).Count), Is.EqualTo((1, 0)));
+            Assert.That(cut.Find(".agent-chips.is-away").HasAttribute("inert"), "away, the chips take no press");
+        });
     }
 
     /// <summary>
@@ -208,7 +293,6 @@ public class AgentCaptionTests
 
         cut.Find(".agent-caption .caption-talk").Click();
 
-        Assert.That((cut.FindAll(".agent-talk.is-open").Count, cut.FindAll(".agent-chips").Count),
-            Is.EqualTo((1, 0)));
+        Assert.That((cut.FindAll(".agent-talk").Count, cut.FindAll(ChipsShown).Count), Is.EqualTo((1, 0)));
     }
 }

@@ -4,7 +4,7 @@
    over (F134.5) to how the answer was made: the tools it called, then how long it thought, what it wrote and what
    it cost, as the framework measured them. The side turned away is out of reach. *@
 @using LouisAgent.Web.Usage
-<aside class="@Classes" aria-live="polite" @ref="_caption">
+<aside class="@Classes" aria-live="polite" data-beside="@Beside" @ref="_caption">
     <div class="caption-flip">
         <div class="caption-face caption-front" inert="@_turned">
             <div class="caption-who">
@@ -26,7 +26,10 @@
             }
             @if (Offer is { } offer)
             {
-                <div class="caption-question">@offer.Question</div>
+                @if (Question is not null)
+                {
+                    <div class="caption-question">@Question</div>
+                }
                 <div class="caption-choices">
                     @foreach (var choice in offer.Choices)
                     {

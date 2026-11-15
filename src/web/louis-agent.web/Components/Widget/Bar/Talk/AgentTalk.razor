@@ -1,0 +1,18 @@
+@* The whole talk over the agent's bar (F134.4): its heading and its close at the top, every turn of the chat scrolled
+   under them, drawn as the chat's own list draws them, and at its foot what the talk has cost (F134.5), as the
+   chat's usage line says it. On a wide screen it is a drawer at the screen's side, and on a phone a sheet over the
+   bar. *@
+@using LouisAgent.Web.Usage
+<div class="agent-talk">
+    <div class="agent-talk-head">
+        <b>@Text.TalkTitle</b>
+        <button class="agent-talk-toggle" type="button" title="@Text.TalkClose" aria-label="@Text.TalkClose"
+                @onclick="OnClose">×</button>
+    </div>
+    <MessageList Chat="Chat" Streaming="Streaming" Currency="Currency" Class="agent-list" ShowWork="ShowWork"
+                 Chosen="Chosen" ShowCardAnswers="ShowCardAnswers"/>
+    @if (Chat?.Usage() is { } spent)
+    {
+        <div class="agent-talk-total">@UsageFormat.Total(spent, Currency)</div>
+    }
+</div>
