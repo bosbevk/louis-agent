@@ -1,5 +1,7 @@
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Components.Chat.Header;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Chat.Sidebar;
@@ -229,9 +231,37 @@ public class ChatShellTests
     {
         using var ctx = Context(out _);
 
-        var cut = Render(ctx, parameters => parameters.Add(shell => shell.Settings, "<label class=\"my-setting\">Mine</label>"));
+        var cut = Render(ctx,
+            parameters => parameters.Add(shell => shell.Settings, "<label class=\"my-setting\">Mine</label>"));
 
         Assert.That(cut.FindAll(".sidebar-settings .my-setting"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>F151.3: a site that offers themes gets the switch in the settings, before its own.</summary>
+    [Test]
+    public void WithThemes_TheSwitch_StandsInTheSettings_BeforeTheSitesOwn()
+    {
+        using var ctx = Context(out _);
+        ctx.Services.AddSiteAreas(areas => areas
+            .Add(new SiteArea("theme-glass", _ => { }, [], Theme: new SiteTheme("glass", "Glass")))
+            .Add(new SiteArea("theme-flat", _ => { }, [], Theme: new SiteTheme("flat", "Flat"))));
+
+        var cut = Render(ctx,
+            parameters => parameters.Add(shell => shell.Settings, "<label class=\"my-setting\">Mine</label>"));
+
+        var inside = cut.Find(".sidebar-settings").Children.Select(child => child.ClassName).ToList();
+        Assert.That(inside.IndexOf("look-switch"), Is.GreaterThan(0).And.LessThan(inside.IndexOf("my-setting")));
+    }
+
+    /// <summary>F151.3: a site that offers no theme gets no switch in its settings.</summary>
+    [Test]
+    public void WithNoTheme_NoSwitchStandsInTheSettings()
+    {
+        using var ctx = Context(out _);
+
+        var cut = Render(ctx);
+
+        Assert.That(cut.FindAll(".sidebar-settings .look-switch"), Is.Empty);
     }
 
     /// <summary>Sends the recorded question and waits for its turn to finish.</summary>

@@ -4,6 +4,7 @@ using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Site.Looks;
@@ -23,9 +24,7 @@ public partial class LookSwitch
     /// <summary>The two styles, in the order the mockups show them.</summary>
     private static readonly SiteStyle[] Styles = [SiteStyle.Dark, SiteStyle.Light];
 
-    /// <summary>What the site named, the themes among it.</summary>
-    [Inject]
-    private SiteAreas Areas { get; set; } = null!;
+    [Inject] private IServiceProvider Services { get; set; } = null!;
 
     /// <summary>The site's words.</summary>
     [Inject]
@@ -47,11 +46,14 @@ public partial class LookSwitch
     /// <summary>The switch's own module.</summary>
     private JsModule Module => _module ??= new JsModule(JS, FrameworkScripts.LookSwitch);
 
+    /// <summary>What the site named, the themes among it; a frame drawn with no areas named has none.</summary>
+    private SiteAreas? Areas => Services.GetService<SiteAreas>();
+
     /// <summary>The themes the site offers, in the order named.</summary>
-    private IReadOnlyList<SiteTheme> Themes => Areas.Themes;
+    private IReadOnlyList<SiteTheme> Themes => Areas?.Themes ?? [];
 
     /// <summary>Starts on the defaults: the first theme named, and light.</summary>
-    protected override void OnInitialized() => _theme = Areas.DefaultTheme?.Id;
+    protected override void OnInitialized() => _theme = Areas?.DefaultTheme?.Id;
 
     /// <summary>
     /// Once drawn, learns the look the first paint already put the page in, and starts following other tabs. A site
