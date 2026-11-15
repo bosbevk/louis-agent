@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 119 | 94 |
+| Features (`F`) | 120 | 94 |
 | Fixes (`FX`) | 144 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
@@ -153,10 +153,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (119 done)
+## Features (120 done)
 
 | Id | When | What |
 |---|---|---|
+| F151.1 | 2026-11-15 | The theme contract, the first of F151's eight children: what a theme and a style are (`SiteTheme`, `SiteStyle`, `SiteLook`), a theme as one more slot on an area with the first named the default, the 23 surface names a theme sets beside the colours with today's look as their values, `first-paint.js` applying the remembered pick, every site's page saying light, and `ThemeSheet` and `IndexLook` to hold a theme and a page to them; no site names a theme yet, so no page looks different (ADR 0124) |
 | F134 | 2026-11-15 | The showroom is a stage the agent runs, closed: its thirteen children built, a demo's own website sized by its window with its chat beside it (Louis: "each inner website, needs to be expanded, and made pretty and bigger", "everything must kinda fit 1080p"), and its rules kept in the web's design doc and ADR 0115 |
 | F134.6 | 2026-11-15 | Better photos (Louis's pick of the three candidates): a lounge onto the sea, a stoep in the late sun and a study as the three hero photos, from Pexels, two of them cut so that no real business's sign, flag or painted face shows; each listed with its page in the site's design doc |
 | F134.5 | 2026-11-15 | See how it did that (unattended): the caption turns over to the answer's tools, thinking time and usage line (`AnswerWork`), its cost on the front; the bar carries the talk's total and opens the drawer; a selected piece's chip in the bar; a demo's notes are pieces; a live answer's back matched its four ledger rows exactly; walks US$0.0074 |

@@ -61,12 +61,13 @@ sends it themselves.
 them.
 
 A library adds an area of its own through `Add`. The eval studio's `Evals()` and the accounts' `Accounts(layout)`
-do that.
+do that. An area may also bring a theme, a look the site can wear, in its `Theme` slot. Part 7 explains themes.
 
 An area named twice counts once.
 
 **Last, it keeps one record of what the site has.** `SiteAreas` is registered once. It gives the router its page
-assemblies, and it gives the admin's shell each area's admin links.
+assemblies, it gives the admin's shell each area's admin links, and it lists the themes the areas brought, in the
+order the site named them, the first one being the site's default.
 
 `Focuses(f => …)` names the part of the site each page is. A page's part is the longest address that matches it,
 compared by whole segments, and the default when none matches. The guide's widget sends that part with every
@@ -578,16 +579,42 @@ them in its own `app.scss`, so it gets one CSS file in the order it chose.
 a fixed colour. `web/settings/_colours.scss` is what a site with no colours of its own gets: the Console theme,
 black and white with metallic greys, plus a muted red and an amber. A site's colours come after it and win.
 
+**A look is a theme and a style.** A theme is a set of values a site can wear, and a style is light or dark. The
+framework holds only what the two sides agree on, and names no theme of its own. A theme is a `SiteTheme`: an id,
+which goes into the page and into the selector of its stylesheet's blocks, and the name a person reads on a switch.
+The id is checked when the theme is made, lower-case letters, digits and hyphens only, so nothing in it can break
+out of the attribute or the selector. An area brings a theme in its `Theme` slot, as part 1 says. No site names one
+yet, so every site keeps the look it has.
+
+The page says which look is on with two attributes on its `<html>`, `data-theme` and `data-style`. A theme's
+stylesheet writes one block of values for each style, under a selector such as
+`:root[data-theme="glass"][data-style="dark"]`, so the two attributes pick the block. Every site's `index.html`
+writes `data-style="light"`, since a first visit is light whatever the device prefers, and it writes the theme its
+areas give first, which today is none. `SiteLook` holds the words both sides use: the two attributes, the two keys
+the browser keeps a visitor's pick under, `site.theme` and `site.style`, and the default style.
+
+**What a theme sets.** A colour can't say "glass", so beside the colours `web/settings/_surfaces.scss` names the
+surfaces too. A pane, which is a card or a panel, has a fill, an edge, a rim drawn as its edge line, a light inside
+its corners, a shadow, a blur and a corner. A bar, which is the header, the footer or the agent's bar, has a fill, an
+edge and a blur. The main button has a fill and the ink on it, and the second one an outline. The mark has its disc,
+its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Each name is set
+to the look the framework draws today, so a site with no theme looks as it always has, and no component reads them
+yet. Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
+every colour name and every surface name, once for each style.
+
 **A script is a module beside its component**, or shared under `wwwroot/js/`. Each is imported the first time its
 component draws and let go when the component is disposed. The paths are named once, in `FrameworkScripts`. A
 script names a problem, and the site's `ChatText` says it. `FrameworkModulesTests` holds that rule.
 
 One script is listed by the site itself, `first-paint.js`. It applies what the browser remembers before the first
-paint, so nothing jumps: the sidebar's width, whether it or the work panel is hidden, and whether the page may
-move although the system asks for less.
+paint, so nothing jumps: the theme and the style a visitor picked, the sidebar's width, whether it or the work panel
+is hidden, and whether the page may move although the system asks for less. A remembered style is applied only
+when it is `light` or `dark`, and a remembered theme only when its id is made as a theme's is. With nothing
+remembered, the page keeps what its `index.html` wrote.
 
-*Decided in:* CL31, CL58, [ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md),
-[ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md).
+*Decided in:* CL31, CL58, F151.1, [ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md),
+[ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md),
+[ADR 0124](../adr/0124-a-sites-look-is-a-theme-and-a-style.md).
 
 ### 8. General parts for any page
 
@@ -673,6 +700,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1); `WatchedAsk`, an ask shown in its agent's window (F127.4.2) |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
 | `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
+| `Components/Areas/Themes/` | `SiteTheme`, a theme's id and name; `SiteStyle`, light or dark; `SiteLook`, the attributes, the remembered keys and the default style both sides share (F151.1) |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
@@ -684,7 +712,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `Location/`: `LocatedPlace`, `LocationProblem`), `ChatLanguages`, `ChatCosts`, `ModelNames` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
-| `Styles/web/` | The globals: `settings/_colours.scss`, `tools/` (`_colours.scss`, both forms of a colour from one value; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
+| `Styles/web/` | The globals: `settings/_colours.scss` and `settings/_surfaces.scss` (the names a theme sets, F151.1), `tools/` (`_colours.scss`, both forms of a colour from one value; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
 | `Components/Editing/` | Pieces for a page a person edits (F142). The framework decides nothing about how a site edits its pages. louis-agent.dev builds its CV's editor from them ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md), the site's own): `TextField` and `FieldGroup` (a labelled box, a few under a heading), `TagInput` (words as chips), `ListEdits` (add, take out, replace, move, each a new list) and `EditedItem` (an item with the way to hand back a changed copy). `Inline/` is for a page edited where it stands: `InlineEdit` (click the words, a box with a tick and a cross, Enter keeps, Escape drops, and plain words when nobody listens), `InlineForm` (the same for an item of several fields), `ItemTools` and `ItemAdd` (move, remove, open and add for a list on the page), and `PartChanges`, which gives a part a listener exactly when the whole has one |
 | `Components/Icons/` | `LineIconView`, a line icon from the framework's one set (part 8) |
 | `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `WorkBody`, `PlainBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |
@@ -721,8 +749,14 @@ The chat's logic has `ChatRunnerTests`, `TurnStreamTests`, `DelegationTests`, `W
 `MarkdownTests`, `ToolArgsTests` and `UsageFormatTests`, and `RazorHasNoCodeTests`, which fails on a `@code` block in
 a `.razor`.
 
+A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests` and
+`SurfaceNamesTests` in `Rules/Styles/Themes/`, and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
+`Rules/Sites/`. The first-paint test reads the script, taking its words from `SiteLook`, so the script and the C#
+can't drift apart.
+
 The eval studio's tests are in `louis-agent.web.evals.tests`. `src/tests/web/louis-agent.web.testing` holds the fakes
-the web test projects share.
+the web test projects share. It also holds `ThemeSheet`, which says which names a theme's block for one style leaves
+unset, and `IndexLook`, which each site's own tests use to hold its `index.html` to the look its areas give.
 
 *Decided in:* CL57.
 
