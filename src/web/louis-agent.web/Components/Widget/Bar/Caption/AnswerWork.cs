@@ -27,6 +27,13 @@ public sealed record AnswerWork(IReadOnlyList<AnswerTool> Tools, double Thought,
     /// <summary>How long it thought, in seconds to a tenth, as the caption writes it: <c>1.3</c>.</summary>
     public string ThoughtSeconds => Thought.ToString("0.#", CultureInfo.InvariantCulture);
 
+    /// <summary>
+    /// What it read from the cache, as the caption writes it beside the tokens it wrote: <c>37k</c>. None when it
+    /// read nothing from it, or nothing was measured.
+    /// </summary>
+    public string? Cached =>
+        Usage is { CacheReadInputTokens: > 0 } usage ? UsageFormat.Tokens(usage.CacheReadInputTokens) : null;
+
     /// <summary>A call by its name, and what it was about: a shown place's address, or an offer's question.</summary>
     private static AnswerTool ToolOf(Block call) =>
         new(call.ToolName ?? "", ShowPageCall.PathOf(call) ?? OfferCall.Of(call)?.Question);

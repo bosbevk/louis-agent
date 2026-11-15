@@ -72,7 +72,8 @@ public class AgentCaptionTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".agent-caption .caption-who").TextContent, Is.EqualTo("Louis · AI"));
+            Assert.That(cut.Find(".caption-front .caption-who b").TextContent, Is.EqualTo("Louis · AI"));
+            Assert.That(cut.FindAll(".caption-front .caption-who .caption-orb"), Has.Count.EqualTo(1));
             Assert.That(cut.Find(".agent-caption .caption-says").TextContent.Trim(),
                 Is.EqualTo("These are the levels."));
             Assert.That(cut.Find(".agent-caption label.caption-ask").GetAttribute("for"), Is.EqualTo("composer-input"));
@@ -106,11 +107,12 @@ public class AgentCaptionTests
     }
 
     /// <summary>
-    /// The choices the guide offered in that answer stand in the caption, the suggested one marked, and a press asks
-    /// with its label, as a card in the talk does.
+    /// The choices the guide offered in that answer stand in the caption as pills, as the design drew them: the
+    /// question over them, the suggested one marked, a choice's why as its tip, and a press asks with its label, as
+    /// a card in the talk does.
     /// </summary>
     [Test]
-    public void TheCaptionsChoices_AskWithTheirLabel()
+    public void TheCaptionsChoices_ArePills_ThatAskWithTheirLabel()
     {
         using var ctx = new BunitContext();
         string? asked = null;
@@ -121,15 +123,45 @@ public class AgentCaptionTests
         };
         var cut = Bar(ctx, turn, label => asked = label);
 
-        var suggested = cut.Find(".agent-caption .offer-card.is-suggested");
+        var suggested = cut.Find(".agent-caption button.caption-choice.is-suggested");
         suggested.Click();
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".agent-caption .offer-card").Count, Is.EqualTo(2));
-            Assert.That(suggested.QuerySelector(".offer-label")!.TextContent, Is.EqualTo("The restaurant"));
+            Assert.That(cut.Find(".agent-caption .caption-question").TextContent, Is.EqualTo("Which one?"));
+            Assert.That(cut.FindAll(".agent-caption .caption-choice").Select(choice => choice.TextContent.Trim()),
+                Is.EqualTo(new[] { "The restaurant", "The law firm" }));
+            Assert.That(suggested.GetAttribute("title"), Is.EqualTo("Bookings"));
             Assert.That(asked, Is.EqualTo("The restaurant"));
         });
+    }
+
+    /// <summary>
+    /// A choice that is the visitor's own words is a pill that puts them in the guide's box, where they write it: a
+    /// label for the box, so no script is needed.
+    /// </summary>
+    [Test]
+    public void AChoiceToWrite_PutsTheVisitorInTheBox()
+    {
+        using var ctx = new BunitContext();
+        var offer = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "Offer",
+            ToolUseId = "toolu_offer",
+            ToolInput = """
+                        {"question":"What is your business?","choices":[{"label":"A guesthouse"},
+                        {"label":"Something else","writes":"text"}]}
+                        """,
+            ToolResult = "Offered."
+        };
+        var turn = new Turn { UserText = "Which demo is like mine?", Blocks = [ShowLevels(), offer] };
+
+        var cut = Bar(ctx, turn);
+
+        var writes = cut.Find(".agent-caption label.caption-choice");
+        Assert.That((writes.TextContent.Trim(), writes.GetAttribute("for")),
+            Is.EqualTo(("Something else", "composer-input")));
     }
 
     /// <summary>
@@ -143,7 +175,7 @@ public class AgentCaptionTests
 
         var cut = Bar(ctx, turn);
 
-        int choices = cut.FindAll(".agent-caption .offer-card").Count;
+        int choices = cut.FindAll(".agent-caption .caption-choice").Count;
         int words = cut.FindAll(".agent-caption .caption-says").Count;
         Assert.That((choices, words), Is.EqualTo((2, 0)));
     }

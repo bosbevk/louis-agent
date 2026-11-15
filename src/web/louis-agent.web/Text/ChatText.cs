@@ -188,6 +188,25 @@ public sealed record ChatText
     /// <summary>The button on the caption's back that turns it to the answer again (F134.5).</summary>
     public string BackToTheAnswer { get; init; } = "Back to the answer";
 
+    /// <summary>Beside the back's title: whose numbers these are (F134.5).</summary>
+    public string MeasuredByTheFramework { get; init; } = "measured by the framework";
+
+    /// <summary>A time in seconds, as the caption's back writes it (F134.5); {0} the number.</summary>
+    public string Seconds { get; init; } = "{0}s";
+
+    /// <summary>Under the back's figures (F134.5): the time it thought, and what the answer cost.</summary>
+    public string WorkThinking { get; init; } = "thinking";
+
+    public string WorkThisAnswer { get; init; } = "this answer";
+
+    /// <summary>Under the tokens an answer wrote (F134.5), alone or with what it read from the cache, {0}.</summary>
+    public string WorkTokensOut { get; init; } = "tokens out";
+
+    public string WorkTokensOutCached { get; init; } = "tokens out, {0} cached";
+
+    /// <summary>The caption's close button, read aloud and as its tip: the answer is put away (F134.4).</summary>
+    public string CloseCaption { get; init; } = "Put this answer away";
+
     /// <summary>The agent bar's button that opens the whole talk, and folds it again (F134.3).</summary>
     public string TalkOpen { get; init; } = "Show the whole talk";
 
@@ -274,6 +293,10 @@ public sealed record ChatText
     public string AnswerOne { get; init; } = "answer";
 
     public string AnswerMany { get; init; } = "answers";
+
+    /// <summary>"tokens out, 37k cached" in this language, or "tokens out" when nothing came from the cache.</summary>
+    public string TokensOut(string? cached) =>
+        cached is null ? WorkTokensOut : string.Format(WorkTokensOutCached, cached);
 
     /// <summary>"2 answers" in this language.</summary>
     public string Answers(int count) => $"{count} {(count == 1 ? AnswerOne : AnswerMany)}";

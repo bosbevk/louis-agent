@@ -77,6 +77,21 @@ public class AnswerWorkTests
         Assert.That((work.Thought, work.Usage), Is.EqualTo((1.25, turn.Usage)));
     }
 
+    /// <summary>
+    /// What it read from the cache is written short, as the usage line writes a count, and is none when it read
+    /// nothing from it or nothing was measured.
+    /// </summary>
+    [Test]
+    public void WhatCameFromTheCache_IsWrittenShort_OrIsNone()
+    {
+        var read = AnswerWork.Of(Answered());
+        var nothingRead = read with { Usage = new TurnUsage(6, 1400, 0, 1200, 4, 0.0042m, "USD", 0) };
+        var unmeasured = read with { Usage = null };
+
+        Assert.That((read.Cached, nothingRead.Cached, unmeasured.Cached),
+            Is.EqualTo(("37k", (string?)null, (string?)null)));
+    }
+
     /// <summary>An answer that called nothing and thought nothing says so: no tools, no time.</summary>
     [Test]
     public void AnAnswerOfWordsAlone_CalledNothing()

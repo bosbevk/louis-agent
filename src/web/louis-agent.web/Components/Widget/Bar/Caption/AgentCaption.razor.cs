@@ -8,14 +8,16 @@ using Microsoft.JSInterop;
 namespace LouisAgent.Web.Components.Widget.Bar.Caption;
 
 /// <summary>
-/// The agent's caption (F134.4): its last answer, standing beside the place it showed, with its name, its words and a
-/// way into the box. The choices it offered, when it offered some, stand in it too.
+/// The agent's caption (F134.4): its last answer as a card with two sides. The front has its name, its words, the
+/// choices it offered and a way into the box. The back says how the answer was made (F134.5).
 /// </summary>
 /// <remarks>
 /// It draws what it is given and moves nothing but itself: the agent's own call to show a place is what lit the place
 /// (F134's rule 2), and the caption's module only stands the caption beside it, on a wide screen.
-/// <see cref="Captioned"/> decides when an answer stands as a caption. Its choices are the talk's own cards, so a
-/// choice looks and answers the same wherever it is drawn.
+/// <see cref="Captioned"/> decides when an answer stands as a caption. Its choices are pills, as the design drew
+/// them, and not the talk's cards: a caption is small and stands over the page, so a choice is its label, with its
+/// why as a tip. A press still asks with the label, as a card does. Both sides are always drawn, so the card can
+/// turn, and the one turned away is inert.
 /// </remarks>
 public partial class AgentCaption : IAsyncDisposable
 {
@@ -47,6 +49,14 @@ public partial class AgentCaption : IAsyncDisposable
     [Parameter]
     public EventCallback OnTalk { get; set; }
 
+    /// <summary>Whether the answer is still coming in: its choices wait until it is whole.</summary>
+    [Parameter]
+    public bool Streaming { get; set; }
+
+    /// <summary>Asks to put the answer away. With nobody to ask, the caption shows no close.</summary>
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
     /// <summary>The chat's words.</summary>
     [Inject]
     private ChatText Text { get; set; } = null!;
@@ -66,6 +76,20 @@ public partial class AgentCaption : IAsyncDisposable
 
     /// <summary>Turns the caption over, or back to the answer.</summary>
     private void Turn() => _turned = !_turned;
+
+    /// <summary>The caption's classes: turned over, or facing with the answer.</summary>
+    private string Classes => _turned ? "agent-caption is-turned" : "agent-caption";
+
+    /// <summary>A choice's classes: a pill, marked when the agent suggests it or when it is written in the box.</summary>
+    private static string ChoiceClasses(OfferChoice choice) => choice switch
+    {
+        { Writes: not null } => "caption-choice is-written",
+        { Suggested: true } => "caption-choice is-suggested",
+        _ => "caption-choice"
+    };
+
+    /// <summary>The exact figures of what was measured, as the tip over the back's three.</summary>
+    private string? Detail => Work.Usage is { } usage ? UsageFormat.Detail(usage, Currency) : null;
 
     /// <summary>Once on the page, the caption asks its module to stand it beside the place the agent lit.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)

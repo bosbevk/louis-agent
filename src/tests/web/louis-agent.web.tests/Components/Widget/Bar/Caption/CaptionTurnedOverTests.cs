@@ -57,39 +57,69 @@ public class CaptionTurnedOverTests
     }
 
     /// <summary>
-    /// Turned over, the caption shows the tools the answer called, how long it thought and its usage line, with the
-    /// exact figures in the line's tooltip; the answer's words wait on the front.
+    /// Turned over, the caption shows the tools the answer called, then three figures as the design drew them: how
+    /// long it thought, the tokens it wrote with what was read from the cache, and what the answer cost. The exact
+    /// figures are in their tooltip.
     /// </summary>
     [Test]
-    public void TurnedOver_TheCaptionShowsHowTheAnswerWasMade()
+    public void TheBack_ShowsHowTheAnswerWasMade()
     {
         using var ctx = new BunitContext();
-        var cut = Bar(ctx);
 
-        cut.Find(".agent-caption .caption-turn").Click();
+        var back = Bar(ctx).Find(".agent-caption .caption-back");
 
-        var usage = cut.Find(".agent-caption .caption-usage");
+        var figures = back.QuerySelectorAll(".caption-sum .caption-figure")
+            .Select(figure => (figure.QuerySelector("b")!.TextContent, figure.QuerySelector("span")!.TextContent));
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".caption-tools li").Select(tool => tool.TextContent.Trim()),
+            Assert.That(back.QuerySelector(".caption-who b")!.TextContent, Is.EqualTo("How I did that"));
+            Assert.That(back.QuerySelector(".caption-note")!.TextContent, Is.EqualTo("measured by the framework"));
+            Assert.That(back.QuerySelectorAll(".caption-tools li").Select(tool => tool.TextContent.Trim()),
                 Is.EqualTo(new[] { "ShowPage /identities/levels" }));
-            Assert.That(cut.Find(".caption-thought").TextContent, Is.EqualTo("Thought for 1.3s"));
-            Assert.That(usage.TextContent, Is.EqualTo(UsageFormat.Line(Measured)));
-            Assert.That(usage.GetAttribute("title"), Is.EqualTo(UsageFormat.Detail(Measured)));
-            Assert.That(cut.FindAll(".caption-says"), Is.Empty);
+            Assert.That(figures, Is.EqualTo(new[]
+            {
+                ("1.3s", "thinking"), ("1.2k", "tokens out, 37k cached"), ("$0.0042", "this answer")
+            }));
+            Assert.That(back.QuerySelector(".caption-sum")!.GetAttribute("title"),
+                Is.EqualTo(UsageFormat.Detail(Measured)));
         });
     }
 
-    /// <summary>Turned back, the answer's words are there again.</summary>
+    /// <summary>
+    /// The caption is one card with two sides, as the design drew it, so it can turn. The side turned away takes no
+    /// press and is not read aloud: the back at first, and the front once it is turned over.
+    /// </summary>
     [Test]
-    public void TurnedBack_TheAnswerIsThereAgain()
+    public void TurnedOver_TheBackFaces_AndTheFrontIsOutOfReach()
+    {
+        using var ctx = new BunitContext();
+        var cut = Bar(ctx);
+        var before = (Turned(cut), Inert(cut, ".caption-front"), Inert(cut, ".caption-back"));
+
+        cut.Find(".caption-front .caption-turn").Click();
+
+        var after = (Turned(cut), Inert(cut, ".caption-front"), Inert(cut, ".caption-back"));
+        Assert.That((before, after), Is.EqualTo(((false, false, true), (true, true, false))));
+    }
+
+    /// <summary>Turned back, the answer faces again.</summary>
+    [Test]
+    public void TurnedBack_TheAnswerFacesAgain()
     {
         using var ctx = new BunitContext();
         var cut = Bar(ctx);
 
-        cut.Find(".agent-caption .caption-turn").Click();
-        cut.Find(".agent-caption .caption-turn").Click();
+        cut.Find(".caption-front .caption-turn").Click();
+        cut.Find(".caption-back .caption-turn").Click();
 
-        Assert.That((cut.FindAll(".caption-says").Count, cut.FindAll(".caption-tools").Count), Is.EqualTo((1, 0)));
+        Assert.That((Turned(cut), Inert(cut, ".caption-front"), Inert(cut, ".caption-back")),
+            Is.EqualTo((false, false, true)));
     }
+
+    /// <summary>Whether the caption is turned over.</summary>
+    private static bool Turned(IRenderedComponent<AgentBar> cut) =>
+        cut.Find(".agent-caption").ClassList.Contains("is-turned");
+
+    /// <summary>Whether a side of the caption is out of reach.</summary>
+    private static bool Inert(IRenderedComponent<AgentBar> cut, string side) => cut.Find(side).HasAttribute("inert");
 }
