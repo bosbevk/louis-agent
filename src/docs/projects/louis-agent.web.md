@@ -603,6 +603,22 @@ to the look the framework draws today, so a site with no theme looks as it alway
 yet. Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
 every colour name and every surface name, once for each style.
 
+**The visitor picks the look with a switch.** `LookSwitch` is two small groups of buttons: the site's themes, by
+name and in the order named, when it offers two or more, and Dark and Light when it offers any. A site that offers
+none gets nothing. The three frames draw it themselves, so a site writes no line for it: `SiteShell` in its
+header's actions before the site's own, `ChatShell` in its settings before the site's own, and `AdminShell` at the
+foot of its sidebar, above the way back. Each frame asks `SiteAreas.OffersThemes` before it makes room. On a phone
+the header's actions take a row of their own between the brand and the menu, and the two groups may wrap.
+
+A press marks its button and asks the switch's module to pick. The module writes the theme or the style on the
+page's `<html>`, so the theme's block takes over at once, and keeps the word in the browser under the key
+`first-paint.js` reads, so the next page and the next visit open the same way. Nothing is sent to the host. A
+theme's id is checked before it touches the page, and a style must be light or dark. Once drawn, the switch asks
+the module which look the page is in, so the right buttons show pressed, and listens for the browser's storage
+event, so a pick made in another tab of the same site is put on this page too and the switch follows.
+
+![The look switch holds which theme and style are on, in two groups of buttons. Three frames draw it, it reads the site's themes and words, and its module writes a press on the page and calls back when another tab picks](diagrams/louis-agent.web-components-look-switch.svg)
+
 **A script is a module beside its component**, or shared under `wwwroot/js/`. Each is imported the first time its
 component draws and let go when the component is disposed. The paths are named once, in `FrameworkScripts`. A
 script names a problem, and the site's `ChatText` says it. `FrameworkModulesTests` holds that rule.
@@ -702,6 +718,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
 | `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
 | `Components/Areas/Themes/` | `SiteTheme`, a theme's id and name; `SiteStyle`, light or dark; `SiteLook`, the attributes, the remembered keys and the default style both sides share (F151.1) |
+| `Components/Site/Looks/` | `LookSwitch`, the switch a visitor picks the look with, and its module `LookSwitch.razor.js`; `PageLook`, the look the module reads off the page (F151.3) |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
@@ -753,7 +770,9 @@ a `.razor`.
 A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests` and
 `SurfaceNamesTests` in `Rules/Styles/Themes/`, and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
 `Rules/Sites/`. The first-paint test reads the script, taking its words from `SiteLook`, so the script and the C#
-can't drift apart.
+can't drift apart. The switch has `LookSwitchTests`, which draws it with no, one and two themes, presses it and pins
+its markup, and `LookSwitchScriptTests`, which holds its module to `SiteLook` the same way; `SiteShellTests`,
+`ChatShellTests` and `AdminShellTests` hold where each frame puts it.
 
 The eval studio's tests are in `louis-agent.web.evals.tests`. `src/tests/web/louis-agent.web.testing` holds the fakes
 the web test projects share. It also holds `ThemeSheet`, which says which names a theme's block for one style leaves

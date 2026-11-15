@@ -766,3 +766,33 @@ this child's surprises were in what the compiler wrote, not in what I wrote. Not
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): two plug-ins on one contract, a family of them in one
 package, and a contract checked against what the build really makes.
+
+## F151.3: a feature every frame draws (2026-11-15)
+
+After F151.2 a site had two themes and four looks, but only an attribute edited by hand could change them. This
+child gave the visitor the two switches the mockups show: the themes, and Dark or Light.
+
+The frame draws it, so no site writes a line. The switch is one component that asks the site's areas for its
+themes, and the framework's three frames place it themselves: the site's header, the chat's settings, and the foot
+of the admin's sidebar. The admin was not in the plan; looking at the starter showed an owner who went straight to
+the admin could not pick a look there, and Louis picked adding it. Each frame asks one question before it makes
+room, `SiteAreas.OffersThemes`, and the switch draws nothing where no theme is offered, which let the chat's frame
+place it with no code of its own.
+
+Two languages, one contract. A press runs in the browser: a module writes the look on the page and keeps the word
+where `first-paint.js` reads it, and follows another tab through the browser's storage event. A module can't read
+C#, so it spells the keys itself, and a test reads the module and takes its expected words from `SiteLook`, so the
+two can't drift. The behaviour was then tried in a real browser: a press changed the page at once, a reload opened
+the same way, and a pick in a second tab moved the first tab's switch.
+
+A design choice that kept a frame small. The chat's frame was five lines from its size limit. Moving "draw nothing
+without a theme" into the switch meant the frame only places it. A component that knows when it has nothing to show
+keeps every place that holds it simple.
+
+What I'd do differently. Twice a rule test caught my own comment naming a site inside the framework, as it had in
+F151.1, so I should write framework comments without naming a site in the first place. And a plan's check by eye
+should name the page it will look at: the header's switch has no page that shows it until louis-agent.dev names
+its themes in F151.6, and that only showed at the end. Nothing spent money.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a feature the frames draw for every site, a contract shared
+by two languages and held by one test, and a component that knows when it has nothing to show.
