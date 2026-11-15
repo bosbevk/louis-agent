@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: step 5, the chat has it too",
+  "caption": "A chat page has its own frame with a settings menu, so the switch stands there as well.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "ChatShellTests\nthe switch is in the settings",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "c",
+        "label": "ChatShell.razor",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "g",
+        "label": "code-review's ChatPage golden",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "g",
+        "word": "changes"
+      }
+    ]
+  }
+}

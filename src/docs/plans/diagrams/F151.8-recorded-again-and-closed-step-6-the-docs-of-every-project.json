@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 6, the docs of every project",
+  "caption": "Each project the eight children changed has its design doc and its pictures read against the code as it now is.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "l",
+        "label": "git diff --name-only: the projects\nF151 changed",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "d",
+        "label": "each one's design doc and how-to",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "p",
+        "label": "each picture that no longer\nshows the code: redrawn",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "l",
+        "to": "d"
+      },
+      {
+        "from": "d",
+        "to": "p"
+      }
+    ]
+  }
+}

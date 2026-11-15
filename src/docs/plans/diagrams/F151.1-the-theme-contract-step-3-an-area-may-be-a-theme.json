@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: step 3, an area may be a theme",
+  "caption": "The slot: an area carries a theme or none, and the areas give the themes back in the order named.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "test",
+        "label": "SiteAreasTests\nthe themes, in order;\nthe first is the default;\nnone named, none listed",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "area",
+        "label": "SiteArea\n+ SiteTheme? Theme = null",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "areas",
+        "label": "SiteAreas\n+ Themes, + DefaultTheme",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "b",
+        "label": "SiteAreasBuilder.Add\nunchanged",
+        "icon": "settings",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "test",
+        "to": "areas"
+      },
+      {
+        "from": "b",
+        "to": "area",
+        "word": "collects"
+      },
+      {
+        "from": "area",
+        "to": "areas",
+        "word": "listed by"
+      }
+    ]
+  }
+}

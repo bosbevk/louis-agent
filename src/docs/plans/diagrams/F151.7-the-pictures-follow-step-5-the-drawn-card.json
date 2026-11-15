@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: step 5, the card the agent draws",
+  "caption": "The card in the chat reads the theme's names through its own, so it is a glass card in glass and a solid one in flat.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "DrawnCardTests and its golden page",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "c",
+        "label": "Components/Blocks/DrawnCard",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "s",
+        "label": "Svg/Theme/TicketStyle.cs\nits --ticket-* names",
+        "icon": "chip",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "s",
+        "word": "sets the names for"
+      }
+    ]
+  }
+}

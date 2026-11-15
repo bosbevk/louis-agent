@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 3, the eval studio's overview",
+  "caption": "The page a person lands on: EvalsPage, Summary, Charts, Trends and Rates.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the overview's sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "EvalsPage 9, Summary 2, Charts 2,\nTrends 3, Rates 1",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "c",
+        "label": "/admin/evals, four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "f",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

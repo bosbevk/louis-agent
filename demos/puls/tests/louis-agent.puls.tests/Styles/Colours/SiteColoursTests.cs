@@ -23,14 +23,33 @@ public partial class SiteColoursTests
 
     private static SassStylesheet Css => SassStylesheet.Of("louis-agent.puls");
 
-    /// <summary>The two blocks of colours in the CSS: the framework's first, then the site's.</summary>
-    private static (string Framework, string Site) Blocks()
+    /// <summary>What opens a block of names in the CSS.</summary>
+    private const string Root = ":root {";
+
+    /// <summary>
+    /// The blocks of names in the CSS (F151.1, Louis's pick a of three): one for each of the framework's settings
+    /// sheets the list names before Puls's own, its colours first, then Puls's. They are counted from the list, so a
+    /// settings sheet the framework adds moves nothing.
+    /// </summary>
+    private static (IReadOnlyList<string> Framework, string Site) Blocks()
     {
+        int frameworks = Css.Listed()
+            .TakeWhile(name => name.StartsWith("web/", StringComparison.Ordinal))
+            .Count(name => name.StartsWith("web/settings/", StringComparison.Ordinal));
+
         string css = Css.Read();
-        int first = css.IndexOf(":root {", StringComparison.Ordinal);
-        int second = css.IndexOf(":root {", first + 1, StringComparison.Ordinal);
-        Assert.That(second, Is.GreaterThan(first), "the framework's colours and then the site's");
-        return (Block(css, first), Block(css, second));
+        var starts = Starts(css).Take(frameworks + 1).ToList();
+        Assert.That(starts, Has.Count.EqualTo(frameworks + 1), "the framework's blocks and then the site's");
+        return ([.. starts.Take(frameworks).Select(start => Block(css, start))], Block(css, starts[^1]));
+    }
+
+    /// <summary>Where each block of names opens, in the order the CSS has them.</summary>
+    private static IEnumerable<int> Starts(string css)
+    {
+        for (int at = css.IndexOf(Root, StringComparison.Ordinal);
+             at >= 0;
+             at = css.IndexOf(Root, at + 1, StringComparison.Ordinal))
+            yield return at;
     }
 
     /// <summary>One <c>:root</c> block, to its closing brace.</summary>
@@ -43,13 +62,16 @@ public partial class SiteColoursTests
     public void TheFrameworksColours_AreFirstOnTheList() =>
         Assert.That(Css.FrameworkForwards().First(), Is.EqualTo("web/settings/colours"));
 
-    /// <summary>Puls sets every name the framework does, so none of the framework's colours shows through.</summary>
+    /// <summary>
+    /// Puls sets every colour the framework does, so none of the framework's colours shows through. The surfaces
+    /// (F151.1) are not asked of it: each one's value is a colour name, so it follows Puls's colours.
+    /// </summary>
     [Test]
-    public void Puls_SetsEveryNameTheFrameworkDoes()
+    public void Puls_SetsEveryColourTheFrameworkDoes()
     {
         var (framework, site) = Blocks();
 
-        Assert.That(Names(framework).Except(Names(site)), Is.Empty);
+        Assert.That(Names(framework[0]).Except(Names(site)), Is.Empty);
     }
 
     /// <summary>Every colour the shared rules read has a framework value.</summary>
@@ -64,6 +86,6 @@ public partial class SiteColoursTests
         var read = own.Concat(frameworks)
             .SelectMany(text => Reads().Matches(text).Select(m => m.Groups[1].Value)).Distinct();
 
-        Assert.That(read.Except(Names(Blocks().Framework)).Except(BootstrapsOwn), Is.Empty);
+        Assert.That(read.Except(Blocks().Framework.SelectMany(Names)).Except(BootstrapsOwn), Is.Empty);
     }
 }

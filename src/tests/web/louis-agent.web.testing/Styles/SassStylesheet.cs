@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Testing;
+using LouisAgent.Web.Testing.Sites;
 
 namespace LouisAgent.Web.Testing.Styles;
 
@@ -15,11 +16,7 @@ public sealed partial record SassStylesheet(string Project)
     private const string Tools = "tools/";
 
     /// <summary>The stylesheet of one of our web apps, by its project's name: a demo's or the framework's.</summary>
-    public static SassStylesheet Of(string project) =>
-        new(new[] { "demos", "src/site" }
-            .SelectMany(folder => Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, folder), project,
-                SearchOption.AllDirectories))
-            .Single());
+    public static SassStylesheet Of(string project) => new(SiteProject.Folder(project));
 
     private string Styles => Path.Combine(Project, "Styles");
 
@@ -67,9 +64,9 @@ public sealed partial record SassStylesheet(string Project)
     /// <summary>The framework's partials on that list, in its order, such as <c>web/settings/colours</c>.</summary>
     public IReadOnlyList<string> FrameworkForwards() => [.. Listed().Where(IsFrameworks)];
 
-    /// <summary>Everything on the list, in its order.</summary>
-    private IEnumerable<string> Listed() =>
-        Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value);
+    /// <summary>Everything on the list, the framework's and the site's own, in its order.</summary>
+    public IReadOnlyList<string> Listed() =>
+        [.. Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value)];
 
     /// <summary>Where one of the framework's partials sits, by the name a site's list gives it.</summary>
     public string FrameworkPartial(string partial)

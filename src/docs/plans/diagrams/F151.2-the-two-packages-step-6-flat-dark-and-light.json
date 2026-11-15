@@ -1,0 +1,41 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.2 the two packages: step 6, flat, dark and light",
+  "caption": "Flat's two sheets: solid surfaces and hairlines, and in the light a white page with cards darker than it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "m",
+        "label": "plans/F151-mockups/flat.html\nDark and Light",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "FlatSheetTests\nMissing is empty in both styles",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "s",
+        "label": "Styles/theme-flat/_dark.scss\nStyles/theme-flat/_light.scss",
+        "icon": "book",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "m",
+        "to": "s",
+        "word": "the values"
+      },
+      {
+        "from": "x",
+        "to": "s",
+        "word": "holds"
+      }
+    ]
+  }
+}

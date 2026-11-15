@@ -1,0 +1,74 @@
+{
+  "kind": "sequence",
+  "title": "F151.7 the pictures follow: a drawn card turns dark",
+  "caption": "The card is drawn once. Its own style holds both sets of values, so pressing Dark turns it without drawing it again.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "A",
+        "label": "The agent",
+        "tone": "violet",
+        "icon": "chip"
+      },
+      {
+        "id": "C",
+        "label": "DrawnCard",
+        "tone": "violet",
+        "icon": "chip"
+      },
+      {
+        "id": "E",
+        "label": "The diagram engine",
+        "tone": "violet",
+        "icon": "chip"
+      },
+      {
+        "id": "V",
+        "label": "A visitor",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "H",
+        "label": "<html>",
+        "tone": "blue",
+        "icon": "world"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "A",
+        "to": "C",
+        "text": "a booking request, as data"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "E",
+        "text": "Render(source)"
+      },
+      {
+        "step": "reply",
+        "from": "E",
+        "to": "C",
+        "text": "one SVG, its style with light and dark values"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "H",
+        "text": "presses Dark"
+      },
+      {
+        "step": "note",
+        "over": [
+          "C",
+          "H"
+        ],
+        "text": "the rule keyed on data-style now gives the dark values"
+      }
+    ],
+    "numbered": true
+  }
+}

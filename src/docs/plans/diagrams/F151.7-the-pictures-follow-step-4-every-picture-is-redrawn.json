@@ -1,0 +1,41 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: step 4, every picture is redrawn",
+  "caption": "The tool draws every picture in the docs again. No picture is edited by hand.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "t",
+        "label": "dotnet run --project\nsrc/tools/louis-agent.doc-diagrams",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "d",
+        "label": "every diagrams/*.svg",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "the diagrams' tests:\neach SVG is what its JSON draws",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "t",
+        "to": "d",
+        "word": "writes"
+      },
+      {
+        "from": "x",
+        "to": "d",
+        "word": "holds"
+      }
+    ]
+  }
+}

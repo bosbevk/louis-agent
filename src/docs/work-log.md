@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 119 | 94 |
+| Features (`F`) | 120 | 94 |
 | Fixes (`FX`) | 144 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
@@ -22,7 +22,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F148 | One docs endpoint: a small header on every doc, one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, next |
+| F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
+| F148 | One docs endpoint: a small header on every doc, one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, after F151 |
 | F150 | Every doc follows its kind's pattern: one pattern per kind of doc, held by a test whose list can only shrink; the framework's and the packs' docs, the 34 project docs first; its own plan | Now, after F148 |
 | F149 | The docs' lists are generated: the project tables, the settings table, the indexes and a project doc's fact sections written from the code and its comments by the docs' tool and checked in CI; its own plan | Now, after F150 |
 | F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now |
@@ -58,7 +59,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
-| F151 | The rest of the site in the showroom's look, with the agent bar on it (Louis, 2026-11-15: "we need to update the rest of the website to a more modern design also with the new agent chat widget as a new feature", "give me 3 design for a new website theme, based on our new chat widget", "super fancy and modern, think out of the box"): three designs as pages he can open first, then his pick and its own plan | Now, next |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F48 | Recipe maths and a teaching cook | Next |
@@ -153,10 +153,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (119 done)
+## Features (120 done)
 
 | Id | When | What |
 |---|---|---|
+| F151.1 | 2026-11-15 | The theme contract, the first of F151's eight children: what a theme and a style are (`SiteTheme`, `SiteStyle`, `SiteLook`), a theme as one more slot on an area with the first named the default, the 23 surface names a theme sets beside the colours with today's look as their values, `first-paint.js` applying the remembered pick, every site's page saying light, and `ThemeSheet` and `IndexLook` to hold a theme and a page to them; no site names a theme yet, so no page looks different (ADR 0124) |
 | F134 | 2026-11-15 | The showroom is a stage the agent runs, closed: its thirteen children built, a demo's own website sized by its window with its chat beside it (Louis: "each inner website, needs to be expanded, and made pretty and bigger", "everything must kinda fit 1080p"), and its rules kept in the web's design doc and ADR 0115 |
 | F134.6 | 2026-11-15 | Better photos (Louis's pick of the three candidates): a lounge onto the sea, a stoep in the late sun and a study as the three hero photos, from Pexels, two of them cut so that no real business's sign, flag or painted face shows; each listed with its page in the site's design doc |
 | F134.5 | 2026-11-15 | See how it did that (unattended): the caption turns over to the answer's tools, thinking time and usage line (`AnswerWork`), its cost on the front; the bar carries the talk's total and opens the drawer; a selected piece's chip in the bar; a demo's notes are pieces; a live answer's back matched its four ledger rows exactly; walks US$0.0074 |

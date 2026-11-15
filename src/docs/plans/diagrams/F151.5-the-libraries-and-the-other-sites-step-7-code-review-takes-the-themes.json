@@ -1,0 +1,51 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 7, code-review takes the themes",
+  "caption": "Code-review names glass, flat and retro, and its own picker goes. What retro does about a light style is asked first.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "q",
+        "label": "Louis's pick first:\nretro has only a dark style",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "decision"
+      },
+      {
+        "id": "x",
+        "label": "ThemeTests, rewritten:\nthree themes, each held to the names",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "r",
+        "label": "RetroTheme and its sheet",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "g",
+        "label": "deleted: ThemeSwitcher, theme.js,\nthemes.json, console.scss",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "q",
+        "to": "r"
+      },
+      {
+        "from": "x",
+        "to": "r"
+      },
+      {
+        "from": "r",
+        "to": "g",
+        "word": "replaces"
+      }
+    ]
+  }
+}

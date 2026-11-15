@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: step 2, a picture follows the page",
+  "caption": "The style every picture writes gains the page's rule, after the device's, so a picture drawn into a page turns with the switch.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "PictureLookTests, MarqueeLookTests\nthe page's rule is there, after the device's",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "s",
+        "label": "Svg/Theme/SvgStyle.cs",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "k",
+        "label": "SiteLook.StyleAttribute\nthe attribute's name, shared",
+        "icon": "box",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "k",
+        "word": "names"
+      }
+    ]
+  }
+}

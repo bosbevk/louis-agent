@@ -1,0 +1,111 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "F151 two themes, each light and dark: the eight children, in order",
+  "caption": "Each child is its own plan, branch and pull request: the contract first, then the values, then the switches, then every component and page, then the pictures and the films.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "start",
+        "label": "Louis approves the plan",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "c1",
+        "label": "F151.1 the theme contract\nlouis-agent.web knows themes\nand styles",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "c2",
+        "label": "F151.2 the two packages\nglass and flat, dark and light,\nand the mark",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "c3",
+        "label": "F151.3 the two switches\nin every site's header",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "c4",
+        "label": "F151.4 the framework's\ncomponents read the names",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "c5",
+        "label": "F151.5 accounts, evals,\nthe packs' views and\nthe other sites",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "c6",
+        "label": "F151.6 louis-agent.dev's\n22 pages in the new design",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "c7",
+        "label": "F151.7 the diagrams and\ndrawn cards follow the style",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "c8",
+        "label": "F151.8 the demos recorded\nagain, checked live, written up",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "end",
+        "label": "louis-agent.dev in two themes,\neach light and dark",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "c1"
+      },
+      {
+        "from": "c1",
+        "to": "c2"
+      },
+      {
+        "from": "c2",
+        "to": "c3"
+      },
+      {
+        "from": "c3",
+        "to": "c4"
+      },
+      {
+        "from": "c4",
+        "to": "c5"
+      },
+      {
+        "from": "c5",
+        "to": "c6"
+      },
+      {
+        "from": "c6",
+        "to": "c7"
+      },
+      {
+        "from": "c7",
+        "to": "c8"
+      },
+      {
+        "from": "c8",
+        "to": "end"
+      }
+    ],
+    "direction": "down"
+  }
+}

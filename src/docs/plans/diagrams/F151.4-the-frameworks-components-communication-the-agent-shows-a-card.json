@@ -1,0 +1,114 @@
+{
+  "kind": "sequence",
+  "title": "F151.4 the framework's components: the agent shows a card, in the new look",
+  "caption": "The states a card can be in are the widget's to draw: a visitor's mark in their colour, the agent's in violet, and the agent's words in the place of the card beside.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "label": "A visitor",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "PW",
+        "label": "PieceWatch",
+        "tone": "violet",
+        "icon": "settings"
+      },
+      {
+        "id": "B",
+        "label": "AgentBar",
+        "tone": "violet",
+        "icon": "message"
+      },
+      {
+        "id": "O",
+        "label": "Orb",
+        "tone": "violet",
+        "icon": "chip"
+      },
+      {
+        "id": "C",
+        "label": "AgentCaption",
+        "tone": "violet",
+        "icon": "message"
+      },
+      {
+        "id": "P",
+        "label": "The piece on the page",
+        "tone": "blue",
+        "icon": "world"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "P",
+        "text": "points at a card"
+      },
+      {
+        "step": "reply",
+        "from": "PW",
+        "to": "P",
+        "text": "a dashed edge in --web-you"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "P",
+        "text": "picks it"
+      },
+      {
+        "step": "reply",
+        "from": "PW",
+        "to": "P",
+        "text": "a solid ring in --web-you"
+      },
+      {
+        "step": "message",
+        "from": "PW",
+        "to": "B",
+        "text": "a chip names the piece"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "O",
+        "text": "Listening"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "B",
+        "text": "asks about it"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "O",
+        "text": "Thinking"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "P",
+        "text": "a ring in --web-agent, the rest dimmed"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "C",
+        "text": "the words, where the card beside stands"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "O",
+        "text": "Speaking, then Idle"
+      }
+    ],
+    "numbered": true
+  }
+}

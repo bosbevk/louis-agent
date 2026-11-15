@@ -1,0 +1,174 @@
+{
+  "kind": "classes",
+  "title": "F151 two themes, each light and dark: the interface design",
+  "caption": "A theme is an area: each package names its theme on the area it adds, the site's areas list them in the order named, and the switch in the header reads that list.",
+  "classes": {
+    "types": [
+      {
+        "id": "area",
+        "name": "SiteArea",
+        "kind": "record, changed in F151.1",
+        "members": [
+          "string Name",
+          "Action<IServiceCollection> Services",
+          "IReadOnlyList<Assembly> Pages",
+          "Type? AdminLinks",
+          "Type? AccountLayout",
+          "Type? AdminCard",
+          "SiteTheme? Theme"
+        ]
+      },
+      {
+        "id": "areas",
+        "name": "SiteAreas",
+        "kind": "changed in F151.1",
+        "members": [
+          "IReadOnlyList<string> Names",
+          "Assembly[] PageAssemblies",
+          "IReadOnlyList<Type> AdminLinks",
+          "IReadOnlyList<Type> AdminCards",
+          "IReadOnlyList<SiteTheme> Themes",
+          "SiteTheme? DefaultTheme"
+        ]
+      },
+      {
+        "id": "builder",
+        "name": "SiteAreasBuilder",
+        "kind": "unchanged",
+        "members": [
+          "SiteAreasBuilder Add(SiteArea area)"
+        ]
+      },
+      {
+        "id": "theme",
+        "name": "SiteTheme",
+        "kind": "record, F151.1",
+        "members": [
+          "string Id",
+          "string Name"
+        ]
+      },
+      {
+        "id": "style",
+        "name": "SiteStyle",
+        "kind": "enum, F151.1",
+        "members": [
+          "Light",
+          "Dark"
+        ]
+      },
+      {
+        "id": "look",
+        "name": "SiteLook",
+        "kind": "static, F151.1",
+        "members": [
+          "const string ThemeKey = \"site.theme\"",
+          "const string StyleKey = \"site.style\"",
+          "const string ThemeAttribute = \"data-theme\"",
+          "const string StyleAttribute = \"data-style\"",
+          "SiteStyle DefaultStyle = SiteStyle.Light"
+        ]
+      },
+      {
+        "id": "glass",
+        "name": "GlassTheme",
+        "kind": "static, F151.2, louis-agent.web.theme.glass",
+        "members": [
+          "SiteAreasBuilder Glass(this SiteAreasBuilder areas)"
+        ],
+        "tone": "green"
+      },
+      {
+        "id": "flat",
+        "name": "FlatTheme",
+        "kind": "static, F151.2, louis-agent.web.theme.flat",
+        "members": [
+          "SiteAreasBuilder Flat(this SiteAreasBuilder areas)"
+        ],
+        "tone": "green"
+      },
+      {
+        "id": "switch",
+        "name": "LookSwitch",
+        "kind": "component, F151.3",
+        "members": [
+          "Task PickTheme(SiteTheme theme)",
+          "Task PickStyle(SiteStyle style)"
+        ]
+      },
+      {
+        "id": "shell",
+        "name": "SiteShell",
+        "kind": "component, changed in F151.3",
+        "members": [
+          "RenderFragment? Brand",
+          "RenderFragment? Links",
+          "RenderFragment? Actions",
+          "RenderFragment? Footer",
+          "RenderFragment? Corner",
+          "PageLayout Layout"
+        ]
+      },
+      {
+        "id": "orb",
+        "name": "Orb",
+        "kind": "component, changed in F151.4",
+        "members": [
+          "OrbState State",
+          "string Label",
+          "string? Mark"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "builder",
+        "to": "areas",
+        "kind": "creates"
+      },
+      {
+        "from": "areas",
+        "to": "area",
+        "kind": "holds"
+      },
+      {
+        "from": "area",
+        "to": "theme",
+        "kind": "holds",
+        "word": "its theme, if it is one"
+      },
+      {
+        "from": "glass",
+        "to": "area",
+        "kind": "creates"
+      },
+      {
+        "from": "flat",
+        "to": "area",
+        "kind": "creates"
+      },
+      {
+        "from": "shell",
+        "to": "switch",
+        "kind": "holds",
+        "word": "in its header"
+      },
+      {
+        "from": "switch",
+        "to": "areas",
+        "kind": "uses",
+        "word": "the themes to offer"
+      },
+      {
+        "from": "switch",
+        "to": "look",
+        "kind": "uses"
+      },
+      {
+        "from": "look",
+        "to": "style",
+        "kind": "uses"
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151.2 the two packages: objects in memory, on the starter",
+  "caption": "The starter's areas hold two theme areas beside its own, and the first theme named is the default.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "areas",
+        "label": "SiteAreas",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "a0",
+        "label": "the starter's own areas",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "a1",
+        "label": "SiteArea \"theme-glass\"",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "a2",
+        "label": "SiteArea \"theme-flat\"",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "t1",
+        "label": "SiteTheme(\"glass\", \"Glass\")",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "t2",
+        "label": "SiteTheme(\"flat\", \"Flat\")",
+        "icon": "box",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "areas",
+        "to": "a0"
+      },
+      {
+        "from": "areas",
+        "to": "a1"
+      },
+      {
+        "from": "areas",
+        "to": "a2"
+      },
+      {
+        "from": "a1",
+        "to": "t1"
+      },
+      {
+        "from": "a2",
+        "to": "t2"
+      },
+      {
+        "from": "areas",
+        "to": "t1",
+        "word": "DefaultTheme",
+        "style": "dashed"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 3, the recording, on Louis's go",
+  "caption": "The real recording: each booking mails Louis once, and the three files are replaced.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "q",
+        "label": "Louis's go first:\nit sends mail and spends money",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "decision"
+      },
+      {
+        "id": "s",
+        "label": "SEND_MAIL=1\nrecord-showroom.sh",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "f",
+        "label": "recordings/showroom/*.json",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "ShowroomPagesTests",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "q",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "f",
+        "word": "saves"
+      },
+      {
+        "from": "x",
+        "to": "f",
+        "word": "holds",
+        "style": "dashed"
+      }
+    ]
+  }
+}

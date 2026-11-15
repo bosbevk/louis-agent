@@ -1,0 +1,49 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 6, the widget and the mark",
+  "caption": "The agent's bar, its caption, the door and the mark: the mark drawn from its three names, a visitor's and the agent's colours, and the words taking a card's place.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "OrbTests, CaptionBesideTests,\nAgentBarMotionTests, and the list",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "orb",
+        "label": "Orb.razor.scss\nfrom --web-mark-fill, -gloss, -ink",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "bar",
+        "label": "AgentBar, AgentCaption,\nGuideButton, ChatWidget",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "q",
+        "label": "Louis's pick first:\na fifth state, Listening?",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "decision"
+      }
+    ],
+    "edges": [
+      {
+        "from": "q",
+        "to": "orb"
+      },
+      {
+        "from": "x",
+        "to": "orb"
+      },
+      {
+        "from": "x",
+        "to": "bar"
+      }
+    ]
+  }
+}

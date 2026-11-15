@@ -1,0 +1,59 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151.4 the framework's components: what one card reads, on the page",
+  "caption": "A card holds no look of its own: its stylesheet includes the pane tool, and the tool reads seven names from the block that is on.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "card",
+        "label": "a card's element",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "rule",
+        "label": "its own stylesheet\n@include surface.pane",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "tool",
+        "label": "tools/_surface.scss\n@mixin pane",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "v",
+        "label": "--web-pane-fill, -edge, -rim,\n-light, -shadow, -blur, -radius",
+        "icon": "book",
+        "tone": "teal"
+      },
+      {
+        "id": "block",
+        "label": ":root[data-theme][data-style]\nthe block that is on",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "card",
+        "to": "rule"
+      },
+      {
+        "from": "rule",
+        "to": "tool"
+      },
+      {
+        "from": "tool",
+        "to": "v"
+      },
+      {
+        "from": "v",
+        "to": "block"
+      }
+    ]
+  }
+}

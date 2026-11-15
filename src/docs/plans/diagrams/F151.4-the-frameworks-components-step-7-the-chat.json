@@ -1,0 +1,38 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 7, the chat",
+  "caption": "The chat's 18 sheets and the shared sheets every chat page reads: the conversation, the bars, the panels and the shell.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the Chat family\nand the shared chat sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Components/Chat/\n18 sheets",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "s",
+        "label": "Styles/web/chat/ and\nStyles/web/layout/",
+        "icon": "book",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "x",
+        "to": "s"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: step 4, the frame draws it",
+  "caption": "SiteShell draws the switch in its header for every site, so no site wires it by hand.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "SiteShellTests\nthe switch stands before the\nsite's own actions",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "s",
+        "label": "SiteShell.razor",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "g",
+        "label": "the sites' golden pages\nthat show the header",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "g",
+        "word": "changes"
+      }
+    ]
+  }
+}

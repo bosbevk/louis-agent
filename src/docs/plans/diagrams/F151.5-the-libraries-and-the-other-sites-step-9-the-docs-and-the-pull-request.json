@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 9, the docs and the pull request",
+  "caption": "The three libraries' design docs, the two demos', the full suite and the pull request.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "d",
+        "label": "the design docs of what changed",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "s",
+        "label": "merge main, the full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "d",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "pr"
+      }
+    ]
+  }
+}

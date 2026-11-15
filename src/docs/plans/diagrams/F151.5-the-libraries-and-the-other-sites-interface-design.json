@@ -1,0 +1,93 @@
+{
+  "kind": "classes",
+  "title": "F151.5 the libraries and the other sites: the interface design",
+  "caption": "The libraries add no type: their sheets move to the surface tool. The one new type is code-review's retro, which becomes a theme like any other.",
+  "classes": {
+    "types": [
+      {
+        "id": "surface",
+        "name": "tools/_surface.scss",
+        "kind": "static, from F151.4",
+        "members": [
+          "@mixin pane",
+          "@mixin bar",
+          "@mixin press",
+          "@mixin chip",
+          "@mixin tag",
+          "@mixin well"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "list",
+        "name": "SurfacesDrawnByHand",
+        "kind": "the list a rule test keeps, now over the libraries too",
+        "members": [
+          "accounts: 6 sheets",
+          "evals: 71 sheets",
+          "the packs' views: 3 sheets"
+        ],
+        "tone": "teal"
+      },
+      {
+        "id": "retro",
+        "name": "RetroTheme",
+        "kind": "static, step 7, in the code-review demo",
+        "members": [
+          "SiteAreasBuilder Retro(this SiteAreasBuilder areas)"
+        ]
+      },
+      {
+        "id": "gone",
+        "name": "ThemeSwitcher",
+        "kind": "component, deleted in step 7",
+        "members": [
+          "themes.json",
+          "wwwroot/js/theme.js",
+          "Styles/themes/console.scss"
+        ],
+        "tone": "red"
+      },
+      {
+        "id": "switch",
+        "name": "LookSwitch",
+        "kind": "component, from F151.3",
+        "tone": "violet"
+      },
+      {
+        "id": "theme",
+        "name": "SiteTheme",
+        "kind": "record, from F151.1",
+        "members": [
+          "string Id",
+          "string Name"
+        ],
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "list",
+        "to": "surface",
+        "kind": "uses"
+      },
+      {
+        "from": "retro",
+        "to": "theme",
+        "kind": "creates"
+      },
+      {
+        "from": "switch",
+        "to": "theme",
+        "kind": "uses",
+        "word": "offers each"
+      },
+      {
+        "from": "gone",
+        "to": "switch",
+        "kind": "uses",
+        "word": "replaced by"
+      }
+    ]
+  }
+}

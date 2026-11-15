@@ -1,0 +1,74 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151 two themes, each light and dark: how a value reaches a component",
+  "caption": "A theme never names a component: it sets a name, a shared tool reads the name, and a component includes the tool.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "gl",
+        "label": "theme.glass\n_light.scss\n--web-pane-fill: white glass",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "fl",
+        "label": "theme.flat\n_light.scss\n--web-pane-fill: a solid grey",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "name",
+        "label": "the name\n--web-pane-fill",
+        "icon": "book",
+        "tone": "teal"
+      },
+      {
+        "id": "tool",
+        "label": "tools/_surface.scss\n@mixin pane",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "comp",
+        "label": "a card's own stylesheet\n@include surface.pane",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "page",
+        "label": "the card, on the page",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "gl",
+        "to": "name",
+        "word": "sets"
+      },
+      {
+        "from": "fl",
+        "to": "name",
+        "word": "sets"
+      },
+      {
+        "from": "name",
+        "to": "tool",
+        "word": "read by"
+      },
+      {
+        "from": "tool",
+        "to": "comp",
+        "word": "included by"
+      },
+      {
+        "from": "comp",
+        "to": "page",
+        "word": "draws"
+      }
+    ]
+  }
+}

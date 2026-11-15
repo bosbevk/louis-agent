@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 4, the landing",
+  "caption": "The first page a visitor sees. Whether it keeps its sections and words or becomes the mockup's page is Louis's pick, asked first.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "q",
+        "label": "Louis's pick first:\nrestyle it, or rebuild it\nas the mockup's page",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "decision"
+      },
+      {
+        "id": "x",
+        "label": "the landing's own tests\nand its places' addresses",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "p",
+        "label": "Pages/HomePage.razor\nsite/landing/*.scss",
+        "icon": "world",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "q",
+        "to": "p"
+      },
+      {
+        "from": "x",
+        "to": "p"
+      }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151.7 the pictures follow: what one drawn picture holds",
+  "caption": "One style block in the picture carries three things: the light values, the device's rule for dark, and the page's rule for either.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "svg",
+        "label": "the SVG element",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "st",
+        "label": "its <style>",
+        "icon": "book",
+        "tone": "violet"
+      },
+      {
+        "id": "l",
+        "label": "the light values, on svg",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "m",
+        "label": "@media (prefers-color-scheme: dark)",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "a",
+        "label": "[data-style=dark] svg,\n[data-style=light] svg",
+        "icon": "box",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "svg",
+        "to": "st"
+      },
+      {
+        "from": "st",
+        "to": "l"
+      },
+      {
+        "from": "st",
+        "to": "m"
+      },
+      {
+        "from": "st",
+        "to": "a"
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 6, the showroom",
+  "caption": "The demos' start, the three businesses, the triage team and the coding agent. Each business gets a starter sheet: its own implementation of the theme.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "ShowroomPagesTests,\nBusinessDemoTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "p",
+        "label": "Pages/Agents/, BusinessDemo,\nsite/showroom/_demos.scss",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "s",
+        "label": "a starter sheet for each business,\nin the site's own files:\nits implementation of the theme",
+        "icon": "book",
+        "tone": "green"
+      },
+      {
+        "id": "f",
+        "label": "site/movie/*.scss, FilmFrame\nstay dark in the light style",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "p"
+      },
+      {
+        "from": "p",
+        "to": "s",
+        "word": "reads"
+      },
+      {
+        "from": "p",
+        "to": "f",
+        "word": "leaves dark",
+        "style": "dashed"
+      }
+    ]
+  }
+}

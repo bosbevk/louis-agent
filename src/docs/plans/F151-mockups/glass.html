@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>louis-agent · Glass</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* The shared look of the three routes: black is the base, white carries the words, purple is the light. Everything
+   that moves is here: the aurora, the chrome text, the product window with its spinning edge light, the glass cards
+   with a light under the pointer, the beams on the rails, and what rises in as the page scrolls. */
+@property --a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+:root { --black: #050506; --ink: #0b0b0e; --white: #ffffff; --v0: #e9defc; --v1: #a985ec; --v2: #8a55d6; --v3: #5b2fa0; --v4: #1c0f38;
+    --muted: #a3a3ad; --hair: rgba(255, 255, 255, .09); --display: 'Geist', sans-serif; --text: 'Geist', sans-serif; --mono: 'Geist Mono', monospace; --ease: cubic-bezier(.2, .8, .2, 1); }
+* { box-sizing: border-box; margin: 0; }
+html { scroll-behavior: smooth; }
+body { font: 400 17px/1.6 var(--text); color: #f4f4f6; background: var(--black); padding-bottom: 180px; overflow-x: hidden; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: -.04em; line-height: .98; }
+a { color: inherit; text-decoration: none; }
+.wrap { position: relative; max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+
+/* The aurora: three slow lights behind everything, and a floor of lines running towards you. */
+.aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+.aurora i { position: absolute; border-radius: 50%; filter: blur(90px); animation: drift 18s ease-in-out infinite alternate; }
+.aurora i:nth-child(1) { width: 760px; height: 760px; left: 6%; top: -300px; background: radial-gradient(circle, rgba(138, 85, 214, .75), transparent 65%); }
+.aurora i:nth-child(2) { width: 600px; height: 600px; right: 2%; top: 140px; background: radial-gradient(circle, rgba(91, 47, 160, .8), transparent 65%); animation-duration: 25s; animation-delay: -8s; }
+.aurora i:nth-child(3) { width: 980px; height: 520px; left: 28%; top: 62vh; background: radial-gradient(circle, rgba(169, 133, 236, .38), transparent 65%); animation-duration: 31s; }
+@keyframes drift { to { transform: translate3d(80px, 50px, 0) scale(1.18); } }
+.floor { position: absolute; z-index: -1; left: 50%; bottom: -40px; width: 220vw; height: 460px; transform: translateX(-50%) perspective(720px) rotateX(63deg); transform-origin: 50% 100%; pointer-events: none;
+    background-image: linear-gradient(rgba(169, 133, 236, .26) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 133, 236, .26) 1px, transparent 1px); background-size: 72px 72px;
+    -webkit-mask-image: linear-gradient(to top, #000 5%, transparent 88%); mask-image: linear-gradient(to top, #000 5%, transparent 88%); animation: floor 5s linear infinite; }
+@keyframes floor { to { background-position: 0 72px, 0 0; } }
+
+.nav { position: sticky; top: 14px; z-index: 40; display: flex; align-items: center; gap: 30px; margin-top: 14px; padding: 10px 12px 10px 20px; border-radius: 999px; border: 1px solid var(--hair); background: rgba(11, 11, 14, .6); backdrop-filter: blur(18px) saturate(1.4); }
+.nav .links { display: flex; gap: 26px; margin-left: auto; font-size: 15px; color: var(--muted); }
+.nav .links a:hover { color: #fff; }
+.note { font-size: 13px; color: #74747e; }
+.btn { position: relative; display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 999px; font-weight: 600; font-size: 15.5px; color: var(--black); background: #fff; overflow: hidden; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 14px 44px -10px rgba(169, 133, 236, .85); transition: transform .3s var(--ease), box-shadow .3s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px #fff, 0 20px 60px -8px rgba(169, 133, 236, 1); }
+.btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(169, 133, 236, .55) 50%, transparent 65%); transform: translateX(-120%); animation: sweep 4.5s ease-in-out infinite; }
+@keyframes sweep { 55%, 100% { transform: translateX(120%); } }
+.btn.glass { color: #fff; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px var(--hair); backdrop-filter: blur(10px); }
+.btn.small { padding: 10px 18px; font-size: 14.5px; }
+
+/* Chrome words: white running into violet, with a shine that crosses them, and each word rising out of a blur. */
+.chrome { background: linear-gradient(100deg, #fff 0%, #fff 34%, var(--v0) 46%, var(--v1) 56%, #fff 72%, #fff 100%); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 8s ease-in-out infinite; }
+@keyframes shine { 0%, 15% { background-position: 100% 0; } 65%, 100% { background-position: 0 0; } }
+.rise > span { display: inline-block; opacity: 0; filter: blur(14px); transform: translateY(.45em); animation: rise 1s var(--ease) forwards; animation-delay: calc(var(--i) * 110ms + 200ms); }
+@keyframes rise { to { opacity: 1; filter: none; transform: none; } }
+.hero h1 { font-size: clamp(54px, 7.4vw, 124px); padding-bottom: .08em; }
+.hero p { max-width: 620px; font-size: 20px; color: var(--muted); }
+.pill { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px 7px 8px; border-radius: 999px; border: 1px solid var(--hair); background: rgba(255, 255, 255, .04); font-size: 14px; color: #d6d6dc; backdrop-filter: blur(10px); }
+.pill b { padding: 3px 9px; border-radius: 999px; font-weight: 600; font-size: 12.5px; color: var(--black); background: linear-gradient(135deg, #fff, var(--v1)); }
+
+/* The product window: an edge of light that travels round it, a glow that follows the light, and a reflection. */
+.glow { position: relative; padding: 1.5px; border-radius: 22px; background: conic-gradient(from var(--a), rgba(255, 255, 255, .1) 0 58%, var(--v1) 76%, #fff 84%, var(--v1) 92%, rgba(255, 255, 255, .1) 100%); animation: spin 6s linear infinite; }
+.glow::after { content: ""; position: absolute; inset: -34px; z-index: -1; border-radius: 50px; background: conic-gradient(from var(--a), transparent 0 58%, rgba(138, 85, 214, .95) 82%, transparent 100%); filter: blur(46px); animation: spin 6s linear infinite; }
+@keyframes spin { to { --a: 360deg; } }
+.glow > .in { position: relative; border-radius: 20.5px; background: var(--ink); overflow: hidden; }
+.tilt { transform: perspective(1500px) rotateX(var(--rx, 5deg)) rotateY(var(--ry, 0deg)); transition: transform .6s var(--ease); -webkit-box-reflect: below 14px linear-gradient(transparent 72%, rgba(0, 0, 0, .22)); }
+.chromebar { display: flex; align-items: center; gap: 7px; padding: 12px 15px; border-bottom: 1px solid var(--hair); font: 12.5px var(--mono); color: #8a8a94; }
+.chromebar i { width: 10px; height: 10px; border-radius: 50%; background: #2a2a31; }
+.chromebar span { margin-left: 8px; padding: 3px 12px; border-radius: 7px; background: rgba(255, 255, 255, .05); }
+.winbody { display: grid; grid-template-columns: minmax(0, 1fr) 36%; }
+.site { position: relative; padding: 0 20px 22px; background: #fbf8f2; color: #14262d; overflow: hidden; }
+.site .head { display: flex; align-items: baseline; gap: 22px; margin: 0 -20px 18px; padding: 14px 20px; background: #0b3a4a; color: #e9dcc3; font-size: 11.5px; letter-spacing: .12em; }
+.site .head b { margin-right: auto; font: italic 500 22px Georgia, serif; letter-spacing: 0; }
+.rooms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.room { border-radius: 8px; overflow: hidden; background: #efe9dc; font-size: 12.5px; color: #4a5a60; transition: opacity .6s, transform .7s var(--ease), box-shadow .7s; }
+.room img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.room div { padding: 9px 11px 11px; } .room b { display: block; font-size: 14.5px; color: #14262d; }
+.s-show .room { opacity: .45; }
+.s-show .room.pick { opacity: 1; transform: translateY(-8px); box-shadow: 0 0 0 3px var(--v2), 0 22px 44px -16px var(--v2); }
+.slip { position: absolute; left: 50%; top: 54%; width: 330px; padding: 18px 20px; border-radius: 14px; background: #fff; box-shadow: 0 40px 80px -20px rgba(11, 58, 74, .6), 0 0 0 1px rgba(11, 58, 74, .1); font-size: 13.5px; opacity: 0; transform: translate(-50%, -30%) scale(.9); transition: opacity .5s, transform .7s var(--ease); }
+.s-card .slip { opacity: 1; transform: translate(-50%, -50%); }
+.slip small { font: 500 10.5px var(--mono); letter-spacing: .1em; color: var(--v3); }
+.slip b { display: block; margin: 3px 0 10px; font: 700 20px var(--display); letter-spacing: -.02em; }
+.slip div { display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid #ebe5d8; } .slip div span { color: #6b7a80; }
+.slip em { font-style: normal; font-weight: 600; color: #b3781a; } .s-sent .slip em { color: #1f8a4c; }
+.chat { display: flex; flex-direction: column; gap: 11px; min-height: 400px; padding: 18px; border-left: 1px solid var(--hair); font-size: 14.5px; line-height: 1.5; }
+.chat .q { align-self: flex-end; max-width: 90%; padding: 10px 14px; border-radius: 14px 14px 4px 14px; color: var(--black); background: linear-gradient(135deg, #fff, var(--v0)); }
+.chat .a { max-width: 94%; padding: 10px 14px; border-radius: 14px 14px 14px 4px; border: 1px solid var(--hair); background: rgba(255, 255, 255, .04); }
+.chat > * { animation: pop .5s var(--ease) both; }
+@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+.call { display: inline-flex; align-items: center; gap: 8px; width: fit-content; padding: 5px 11px; border-radius: 999px; border: 1px solid rgba(169, 133, 236, .4); background: rgba(169, 133, 236, .1); font: 12.5px var(--mono); color: var(--v0); }
+.call::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--v1); box-shadow: 0 0 10px var(--v1); }
+.offer { display: flex; gap: 7px; flex-wrap: wrap; } .offer span { padding: 7px 13px; border-radius: 999px; border: 1px solid var(--hair); font-size: 13.5px; transition: all .3s; }
+.offer span.yes { color: var(--black); background: #fff; border-color: #fff; } .offer span.pressed { transform: scale(.93); background: var(--v1); border-color: var(--v1); }
+.chat .foot { margin-top: auto; display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--hair); font: 12px var(--mono); color: #8a8a94; }
+
+section { padding: 130px 0 0; }
+.kick { display: inline-block; margin-bottom: 18px; font: 500 13.5px var(--mono); color: var(--v1); }
+section > h2 { font-size: clamp(38px, 4.8vw, 74px); max-width: 16ch; padding-bottom: .08em; }
+.lede { max-width: 580px; margin-top: 18px; font-size: 19px; color: var(--muted); }
+.reveal { opacity: 0; transform: translateY(46px) scale(.98); filter: blur(10px); transition: opacity 1s var(--ease), transform 1s var(--ease), filter 1s; transition-delay: calc(var(--d, 0) * 110ms); }
+.reveal.in { opacity: 1; transform: none; filter: none; }
+
+/* Glass cards: a hairline, a light on the top edge, and a violet light that follows the pointer. */
+.card { position: relative; padding: 26px; border-radius: 22px; border: 1px solid var(--hair); background: linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02)); backdrop-filter: blur(16px); overflow: hidden; }
+.card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(380px circle at var(--mx, 50%) var(--my, -30%), rgba(169, 133, 236, .32), transparent 60%); opacity: 0; transition: opacity .4s; pointer-events: none; }
+.card:hover::before { opacity: 1; }
+.card::after { content: ""; position: absolute; left: 12%; right: 12%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--v1), transparent); }
+.card h3 { margin-top: 20px; font-size: 24px; line-height: 1.1; } :where(.card) p { margin-top: 10px; font-size: 15.5px; color: var(--muted); } .card .call { margin-top: 16px; }
+.does { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 54px; }
+.rail { position: relative; height: 2px; margin-top: 54px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+.rail::after { content: ""; position: absolute; top: 0; left: -30%; width: 30%; height: 100%; background: linear-gradient(90deg, transparent, var(--v1), #fff); animation: beam 3.2s linear infinite; }
+@keyframes beam { to { left: 100%; } }
+.rail + .does { margin-top: 22px; }
+/* The four small films, one in each card. */
+.film { position: relative; height: 150px; border-radius: 14px; background: rgba(0, 0, 0, .35); border: 1px solid var(--hair); overflow: hidden; }
+.f-show { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; padding: 22px 16px; }
+.f-show i { border-radius: 8px; background: rgba(255, 255, 255, .08); animation: fshow 4.5s ease-in-out infinite; }
+.f-show i:nth-child(3) { animation-name: fpick; }
+@keyframes fshow { 30%, 85% { opacity: .35; } } @keyframes fpick { 30%, 85% { transform: translateY(-9px); background: rgba(169, 133, 236, .35); box-shadow: 0 0 0 2px var(--v1), 0 14px 30px -8px var(--v1); } }
+.f-draw { display: grid; align-content: center; gap: 11px; padding: 0 26px; }
+.f-draw i { height: 9px; border-radius: 9px; background: linear-gradient(90deg, #fff, var(--v1)); transform-origin: 0 50%; animation: fdraw 4.5s var(--ease) infinite; }
+.f-draw i:nth-child(1) { width: 55%; height: 14px; } .f-draw i:nth-child(2) { width: 90%; animation-delay: .25s; opacity: .6; } .f-draw i:nth-child(3) { width: 78%; animation-delay: .5s; opacity: .6; } .f-draw i:nth-child(4) { width: 62%; animation-delay: .75s; opacity: .6; }
+@keyframes fdraw { 0%, 8% { transform: scaleX(0); } 35%, 88% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
+.f-ask { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.f-ask i { padding: 9px 15px; border-radius: 999px; border: 1px solid var(--hair); font: normal 500 13px var(--text); color: #d6d6dc; }
+.f-ask i:first-child { color: var(--black); background: #fff; animation: fask 4.5s ease-in-out infinite; }
+@keyframes fask { 40% { transform: none; box-shadow: none; } 48% { transform: scale(.9); } 56%, 90% { transform: none; background: var(--v1); box-shadow: 0 0 30px var(--v1); } }
+.f-flip { display: grid; place-items: center; perspective: 700px; }
+.f-flip div { position: relative; width: 74%; height: 96px; transform-style: preserve-3d; animation: fflip 6s var(--ease) infinite; }
+.f-flip span { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px; border-radius: 12px; backface-visibility: hidden; font-size: 13px; text-align: center; border: 1px solid var(--hair); background: rgba(255, 255, 255, .07); }
+.f-flip span + span { transform: rotateY(180deg); font: 12px/1.7 var(--mono); color: var(--v0); background: rgba(169, 133, 236, .16); border-color: rgba(169, 133, 236, .4); }
+@keyframes fflip { 0%, 35% { transform: none; } 50%, 88% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
+
+.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 46px; }
+.three b { display: block; margin-top: 16px; font: 700 23px var(--display); letter-spacing: -.03em; } .three span { color: var(--muted); }
+.gem { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; color: #fff; background: linear-gradient(135deg, var(--v1), var(--v3)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 12px 30px -8px var(--v2); }
+.price { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 28px; margin-top: 26px; }
+.price b { font: 700 clamp(96px, 15vw, 230px)/.82 var(--display); letter-spacing: -.06em; }
+.price span { max-width: 360px; padding-bottom: 14px; color: var(--muted); font-size: 18px; }
+.tape { margin: 110px -40px 0; padding: 18px 0; border-block: 1px solid var(--hair); background: rgba(255, 255, 255, .02); font: 500 16px var(--mono); color: #d6d6dc; white-space: nowrap; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.tape div { display: inline-block; animation: tape 40s linear infinite; } .tape span { margin: 0 28px; } .tape i { font-style: normal; color: var(--v1); }
+@keyframes tape { to { transform: translateX(-50%); } }
+
+/* The brand board. */
+.board { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; margin-top: 54px; }
+.board h4 { margin-bottom: 18px; font: 500 13.5px var(--mono); color: #8a8a94; }
+.s12 { grid-column: span 12; } .s8 { grid-column: span 8; } .s7 { grid-column: span 7; } .s6 { grid-column: span 6; } .s5 { grid-column: span 5; } .s4 { grid-column: span 4; }
+.idea { font: 700 clamp(28px, 2.9vw, 44px)/1.08 var(--display); letter-spacing: -.035em; color: #fff !important; margin-top: 0 !important; }
+.stage { position: relative; display: grid; place-items: center; min-height: 380px; border-radius: 16px; overflow: hidden; background: radial-gradient(60% 70% at 50% 40%, rgba(138, 85, 214, .5), transparent 70%), var(--black); }
+.stage .logo { -webkit-box-reflect: below 6px linear-gradient(transparent 55%, rgba(0, 0, 0, .3)); }
+.lock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.lock > div { display: grid; place-items: center; height: 150px; border-radius: 16px; border: 1px solid var(--hair); }
+.on-black { background: var(--black); color: #fff; } .on-white { background: #fff; color: var(--black); } .on-violet { background: linear-gradient(135deg, var(--v1), var(--v3)); color: #fff; } .on-glass { background: linear-gradient(180deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .02)); }
+.states { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.states > div { display: grid; justify-items: center; gap: 14px; padding: 26px 10px 18px; border-radius: 16px; border: 1px solid var(--hair); background: rgba(0, 0, 0, .3); font-size: 14px; color: var(--muted); }
+.ratio { display: flex; height: 120px; border-radius: 16px; overflow: hidden; border: 1px solid var(--hair); font: 500 13px var(--mono); }
+.ratio div { display: flex; align-items: flex-end; padding: 14px; }
+.ratio .k { flex: 70; background: var(--black); color: #8a8a94; } .ratio .w { flex: 20; background: #fff; color: var(--black); } .ratio .p { flex: 10; background: linear-gradient(160deg, var(--v0), var(--v1) 40%, var(--v3)); color: #fff; }
+.ramp { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; font: 12px var(--mono); color: #8a8a94; } .ramp i { display: block; height: 46px; border-radius: 10px; margin-bottom: 6px; }
+.spec .d { font: 700 62px/1 var(--display); letter-spacing: -.045em; margin: 0; } .spec .m { margin-top: 12px; font: 13.5px var(--mono); color: #8a8a94; }
+.uses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.use { display: grid; align-content: space-between; gap: 16px; min-height: 170px; padding: 16px; border-radius: 16px; border: 1px solid var(--hair); background: rgba(0, 0, 0, .3); font-size: 13.5px; color: var(--muted); }
+.tab { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 10px 10px 0 0; background: #1b1b21; font-size: 13px; color: #fff; }
+.appicon { display: grid; place-items: center; width: 96px; height: 96px; border-radius: 25px; background: linear-gradient(160deg, #2a2140, var(--black)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 20px 40px -12px var(--v2); }
+.social { display: grid; align-content: space-between; aspect-ratio: 1200 / 630; padding: 14px; border-radius: 10px; background: radial-gradient(80% 90% at 80% 0%, rgba(138, 85, 214, .7), transparent 70%), var(--black); border: 1px solid var(--hair); }
+.cli { padding: 14px; border-radius: 10px; background: var(--black); color: #e6e8eb; font: 12.5px/1.7 var(--mono); border: 1px solid var(--hair); white-space: pre; overflow: hidden; }
+.voice { list-style: none; } .voice li { padding: 12px 0; border-top: 1px solid var(--hair); font: 600 19px var(--display); letter-spacing: -.02em; } .voice li:last-child { font: 400 15px var(--text); letter-spacing: 0; color: var(--muted); }
+
+/* The agent bar: glass, and a light under it. */
+.bar { position: fixed; z-index: 50; left: 50%; bottom: 22px; width: min(840px, calc(100% - 32px)); transform: translateX(-50%); }
+.chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 10px; }
+.chips a { padding: 9px 15px; border-radius: 999px; border: 1px solid var(--hair); font: 500 14px var(--text); color: #e6e6ea; background: rgba(11, 11, 14, .7); backdrop-filter: blur(12px); transition: all .3s; }
+.chips a:first-child { color: var(--black); background: #fff; }
+.chips a:hover { border-color: var(--v1); box-shadow: 0 0 24px -4px var(--v1); }
+.box { position: relative; display: flex; align-items: center; gap: 14px; padding: 10px 10px 10px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(14, 14, 18, .72); backdrop-filter: blur(22px) saturate(1.5); box-shadow: 0 30px 70px -20px #000, 0 0 90px -20px var(--v2); }
+.box input { flex: 1; min-width: 0; border: 0; outline: 0; font: 400 17px var(--text); color: #fff; background: none; }
+.box input::placeholder { color: #8a8a94; }
+.box button { width: 44px; height: 44px; border: 0; border-radius: 50%; font-size: 18px; color: var(--black); background: #fff; cursor: pointer; box-shadow: 0 0 24px -2px var(--v1); }
+@media (max-width: 980px) { .wrap { padding: 0 18px; } .nav .links, .note { display: none; } .winbody { grid-template-columns: 1fr; } .chat { border-left: 0; border-top: 1px solid var(--hair); } .does, .three, .lock, .uses, .states { grid-template-columns: 1fr 1fr; } .board > * { grid-column: span 12; } .tape { margin-inline: -18px; } .tilt { transform: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .rise > span, .reveal { opacity: 1; filter: none; transform: none; } html { scroll-behavior: auto; } }
+
+</style>
+<style>
+/* The page's layout, on top of the shared look: the two heroes, the talk in the product window, and the fan of
+   three demos. */
+.hero { position: relative; padding: 70px 0 170px; }
+.words h1 { margin-top: 24px; } .words p { margin-top: 24px; } .row { display: flex; gap: 12px; margin-top: 32px; }
+.hero.center { text-align: center; }
+.hero.center .words { display: grid; justify-items: center; }
+.hero.center .product { max-width: 1140px; margin: 70px auto 0; text-align: left; }
+.hero.split { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); gap: 56px; align-items: center; padding-top: 90px; }
+.hero.split h1 { font-size: clamp(46px, 5.3vw, 92px); }
+.hero.split .winbody { grid-template-columns: minmax(0, 1fr) 43%; }
+.hero.split .rooms { gap: 8px; } .hero.split .room div { padding: 7px 8px 9px; font-size: 11px; } .hero.split .room b { font-size: 12.5px; }
+.hero.split .slip { width: 270px; } .hero.split .site .head b { font-size: 18px; } .hero.split .site .head span { display: none; }
+.art { display: grid; place-items: center; height: 190px; }
+.talk { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 11px; overflow: hidden; }
+.chat { height: 440px; min-height: 0; }
+.talk > * { animation: pop .5s var(--ease) both; flex: none; }
+
+.fan { display: flex; justify-content: center; margin-top: 70px; perspective: 1700px; }
+.shot { position: relative; width: 36%; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 50px 90px -30px #000, 0 0 70px -20px var(--v2); transition: transform .7s var(--ease), box-shadow .7s; -webkit-box-reflect: below 12px linear-gradient(transparent 68%, rgba(0, 0, 0, .28)); }
+.shot.l { transform: rotateY(34deg) translateX(10%) scale(.9); } .shot.r { transform: rotateY(-34deg) translateX(-10%) scale(.9); } .shot.c { z-index: 2; transform: translateZ(70px); }
+.shot:hover { z-index: 3; transform: translateZ(140px) scale(1.04); box-shadow: 0 60px 110px -30px #000, 0 0 110px -10px var(--v1); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot span { position: absolute; inset: auto 0 0 0; padding: 70px 22px 20px; background: linear-gradient(transparent, rgba(5, 5, 6, .94)); font-size: 15px; color: var(--muted); }
+.shot b { display: block; font: 700 26px var(--display); letter-spacing: -.03em; color: #fff; }
+
+.wm { display: inline-flex; align-items: center; gap: .5em; font: 650 21px/1 var(--display); letter-spacing: -.035em; white-space: nowrap; }
+.wm.l { font-size: 30px; }
+.st { position: relative; display: grid; place-items: center; width: 84px; height: 84px; }
+@keyframes breathe { 50% { transform: scale(1.06); } }
+@keyframes ripple { from { transform: scale(1); opacity: .8; } to { transform: scale(1.9); opacity: 0; } }
+@media (max-width: 980px) { .hero.split { grid-template-columns: 1fr; } .fan { flex-direction: column; gap: 16px; perspective: none; } .shot { width: 100%; transform: none !important; } }
+
+</style>
+<style>
+/* How a visitor and the agent mark a piece of the page, and where the agent's words stand. One rule: white is the
+   visitor, violet is the agent. A visitor's mark is a plain white line. The agent's is a violet ring with a light
+   running round it, the rest of the page dimmed, and its words beside the piece. */
+[data-piece] { cursor: pointer; outline: 2px dashed transparent; outline-offset: 7px; transition: outline-color .25s; }
+[data-piece]:hover { outline-color: rgba(255, 255, 255, .45); }
+[data-piece].is-picked { outline: 2px solid #fff; }
+[data-piece].is-lit { position: relative; z-index: 31; outline-color: transparent; }
+.ptag { position: absolute; z-index: 4; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font: 500 11.5px var(--mono); color: #050506; background: #fff; opacity: 0; transform: translateY(-5px); transition: opacity .25s, transform .25s var(--ease); pointer-events: none; white-space: nowrap; }
+[data-piece]:hover .ptag, .is-picked .ptag, .is-lit .ptag { opacity: 1; transform: none; }
+.is-lit .ptag { color: #fff; background: linear-gradient(135deg, var(--v1), var(--v3)); }
+.is-lit .ptag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: blink 1s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+
+/* The agent's ring stands round the piece it is showing, and follows it. */
+.agent-ring { position: absolute; z-index: 32; padding: 2.5px; border-radius: 30px; pointer-events: none; opacity: 0; transform: scale(1.06); transition: opacity .35s, transform .5s var(--ease), left .6s var(--ease), top .6s var(--ease), width .6s var(--ease), height .6s var(--ease);
+    background: conic-gradient(from var(--a), var(--v3) 0%, var(--v1) 30%, #fff 45%, var(--v1) 60%, var(--v3) 100%); animation: spin 2.6s linear infinite;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+.agent-ring.is-on { opacity: 1; transform: none; }
+.agent-dim { position: fixed; inset: 0; z-index: 30; background: rgba(5, 5, 6, .62); opacity: 0; pointer-events: none; transition: opacity .5s; }
+.agent-dim.is-on { opacity: 1; pointer-events: auto; }
+
+/* The agent's words: a card beside the piece, which turns over to how it did that. */
+.agent-says { position: absolute; z-index: 33; width: 372px; perspective: 1400px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .35s, transform .45s var(--ease), left .6s var(--ease), top .6s var(--ease); }
+.agent-says.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.agent-says .side { padding: 18px 20px 16px; border-radius: 20px; background: linear-gradient(180deg, #25252d, #131317); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), inset 0 0 0 1px rgba(255, 255, 255, .08), 0 30px 60px -20px #000, 0 0 0 1px var(--v3); backface-visibility: hidden; transition: transform .7s var(--ease); }
+.agent-says .back { position: absolute; inset: 0; transform: rotateY(180deg); font: 13px/1.9 var(--mono); color: var(--v0); }
+.agent-says.is-turned .front { transform: rotateY(-180deg); } .agent-says.is-turned .back { transform: none; }
+.says-head { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; font: 500 12.5px var(--mono); color: var(--v0); }
+.says-head svg { width: 24px; height: 24px; }
+.says-head button { margin-left: auto; width: 26px; height: 26px; border: 0; border-radius: 50%; font-size: 15px; color: #c9c9d1; background: rgba(255, 255, 255, .07); cursor: pointer; }
+.says-words { font-size: 16px; line-height: 1.5; color: #f4f4f6; }
+.agent-says .call { margin-top: 12px; }
+.says-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.says-pills button { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); font: 500 14px var(--text); color: #f4f4f6; background: rgba(255, 255, 255, .05); cursor: pointer; }
+.says-pills button:first-child { color: #050506; background: #fff; border-color: #fff; }
+.says-pills button:hover { border-color: var(--v1); }
+.says-foot { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 11px; border-top: 1px solid rgba(255, 255, 255, .09); font: 12px var(--mono); color: #8a8a94; }
+.says-foot button { border: 0; padding: 0; font: inherit; color: var(--v1); background: none; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.agent-says .back b { display: block; font: 600 14px var(--text); color: #fff; }
+
+/* Over the bar: the piece the visitor picked, in white, since it is theirs. */
+.about { display: inline-flex; align-items: center; gap: 8px; padding: 9px 9px 9px 15px; border-radius: 999px; font: 500 14px var(--text); color: #050506; background: #fff; }
+.about button { width: 22px; height: 22px; border: 0; border-radius: 50%; font-size: 13px; color: #fff; background: #050506; cursor: pointer; }
+.chips button { padding: 9px 15px; border-radius: 999px; border: 1px solid var(--hair); font: 500 14px var(--text); color: #e6e6ea; background: rgba(11, 11, 14, .7); cursor: pointer; }
+.box .orbit.is-thinking { animation: think .7s ease-in-out infinite; }
+@keyframes think { 50% { transform: scale(.88); } }
+
+/* The key to the states, drawn with real cards held in each state. */
+.states-key { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 30px 26px; margin-top: 56px; }
+.states-key .card { cursor: default; min-height: 190px; }
+.states-key h3 { margin-top: 0; font-size: 21px; }
+.states-key .who { display: inline-block; margin-bottom: 14px; font: 500 12px var(--mono); color: #8a8a94; }
+.k-hover { outline: 2px dashed rgba(255, 255, 255, .45); outline-offset: 7px; } .k-hover .ptag, .k-picked .ptag, .k-lit .ptag { opacity: 1; transform: none; }
+.k-picked { outline: 2px solid #fff; outline-offset: 7px; }
+.k-lit { outline: 2.5px solid var(--v1); outline-offset: 7px; } .k-lit .ptag { color: #fff; background: linear-gradient(135deg, var(--v1), var(--v3)); }
+.does-what { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 34px; }
+.does-what div { padding-top: 16px; border-top: 1px solid var(--hair); font-size: 15px; color: var(--muted); }
+.does-what b { display: block; margin-bottom: 4px; font: 500 13.5px var(--mono); color: var(--v0); }
+@media (max-width: 980px) { .states-key, .does-what { grid-template-columns: 1fr 1fr; } .agent-says { width: calc(100vw - 32px); } }
+/* The way to let a picked piece go: a small round button on the chip, not one of the bar's own. */
+.chips .about button { flex: none; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; font-size: 13px; line-height: 1; color: #fff; background: #050506; }
+
+/* The purples to try. */
+.purples { position: fixed; z-index: 60; right: 18px; top: 50%; display: grid; justify-items: center; gap: 10px; padding: 14px 10px; border-radius: 999px; transform: translateY(-50%); background: var(--steel); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 20px 40px -16px #000; }
+.purples button { width: 30px; height: 30px; border: 0; border-radius: 50%; cursor: pointer; background: linear-gradient(155deg, var(--a0), var(--a1) 30%, var(--a3) 62%, var(--a2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), inset 0 -2px 3px rgba(0, 0, 0, .5); transition: transform .25s; }
+.purples button:hover { transform: scale(1.15); }
+.purples button[aria-pressed="true"] { outline: 2px solid #fff; outline-offset: 3px; }
+.purples span { writing-mode: vertical-rl; margin-top: 4px; font: 500 12.5px var(--mono); color: #c9c9d1; }
+@media (max-width: 980px) { .purples { top: auto; bottom: 150px; right: 10px; transform: none; } }
+
+</style>
+<style>
+/* The chosen design. The mark is a ball of violet glass with the l of louis cut into it. It is the agent, and it
+   shows what the agent is doing: it breathes at rest, a ring listens when you type, a light runs round it and a
+   sheen crosses it when it thinks, and it sends out rings when it answers. */
+.aurora i:nth-child(1) { background: radial-gradient(circle, color-mix(in srgb, var(--v2) 75%, transparent), transparent 65%); }
+.aurora i:nth-child(2) { background: radial-gradient(circle, color-mix(in srgb, var(--v3) 80%, transparent), transparent 65%); }
+.aurora i:nth-child(3) { background: radial-gradient(circle, color-mix(in srgb, var(--v1) 38%, transparent), transparent 65%); }
+.floor { background-image: linear-gradient(color-mix(in srgb, var(--v1) 26%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--v1) 26%, transparent) 1px, transparent 1px); }
+/* The name: the ball is its o. */
+.wm { gap: 0; } .wm .o { width: .76em; height: .76em; margin: 0 .035em 0 .03em; transform: translateY(.085em); filter: drop-shadow(0 0 7px color-mix(in srgb, var(--v2) 85%, transparent)); }
+.on-white .wm .o { filter: none; } .on-violet .wm .o { filter: brightness(0) invert(1); }
+/* The icon tiles: glass with a metal sheen, as Linear draws it. A smooth face running light to dark, one crisp
+   reflection across its top corner, a hairline of light on its top edge, and a clean white icon. No halo. */
+.gem { position: relative; overflow: hidden; border-radius: 14px; color: #fff;
+    background: linear-gradient(165deg, color-mix(in srgb, var(--v1) 62%, #fff) 0%, var(--v2) 40%, var(--v3) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), inset 0 0 0 1px rgba(255, 255, 255, .2), inset 0 -10px 14px -8px rgba(0, 0, 0, .45), 0 10px 18px -10px #000; }
+.gem::before { content: ""; position: absolute; inset: 0; background: linear-gradient(128deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .14) 44%, transparent 46%, transparent 78%, rgba(255, 255, 255, .1) 100%); }
+.gem::after { content: ""; position: absolute; left: 10%; right: 10%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, #fff, transparent); }
+.gem svg { position: relative; z-index: 1; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .35)); }
+.pill b { position: relative; overflow: hidden; color: #fff; background: linear-gradient(165deg, color-mix(in srgb, var(--v1) 62%, #fff) 0%, var(--v2) 45%, var(--v3) 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), inset 0 0 0 1px rgba(255, 255, 255, .18); }
+
+/* The orb and its states. */
+/* Resting, it breathes, and you can see it: the ball swells and settles, its light spreads and dims with it, and
+   the ring round it drifts out and fades on the same breath. */
+.orbit { position: relative; display: grid; place-items: center; flex: none; animation: rest 3.8s ease-in-out infinite; }
+@keyframes rest { 0%, 100% { transform: scale(.95); } 50% { transform: scale(1.08); } }
+@keyframes rest-light { 0%, 100% { filter: drop-shadow(0 0 calc(var(--halo, 30px) * .2) color-mix(in srgb, var(--v2) 40%, transparent)) brightness(.94); } 50% { filter: drop-shadow(0 0 calc(var(--halo, 30px) * .7) color-mix(in srgb, var(--v1) 70%, transparent)) brightness(1.04); } }
+@keyframes rest-ring { 0%, 100% { transform: scale(.94); opacity: .75; } 50% { transform: scale(1.2); opacity: .1; } }
+.orbit svg { display: block; width: 100%; height: 100%; animation: rest-light 3.8s ease-in-out infinite; }
+.orbit::before, .orbit::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: 0; }
+.orbit::before { inset: -9%; opacity: 1; border: 1.5px solid color-mix(in srgb, var(--v1) 70%, transparent); animation: rest-ring 3.8s ease-in-out infinite; }
+.orbit.is-listening::before { border-color: #fff; animation: listen 1.3s ease-in-out infinite; }
+@keyframes listen { 50% { transform: scale(1.12); opacity: .35; } }
+.orbit.is-thinking { animation: none; }
+.orbit.is-thinking::before { inset: -12%; border: 0; background: conic-gradient(from var(--a), transparent 0 50%, var(--v1) 80%, #fff 100%); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 2.5px)); mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 2.5px)); animation: spin .9s linear infinite; }
+.orbit.is-thinking::after { opacity: 1; background: linear-gradient(115deg, transparent 36%, rgba(255, 255, 255, .85) 50%, transparent 64%); background-size: 320% 100%; mix-blend-mode: overlay; animation: sheen 1.1s linear infinite; }
+@keyframes sheen { from { background-position: 130% 0; } to { background-position: -70% 0; } }
+.orbit.is-answering::before, .orbit.is-answering::after { inset: 0; opacity: 1; border: 1.5px solid var(--v1); animation: ripple 1.5s ease-out infinite; }
+.orbit.is-answering::after { animation-delay: .75s; }
+/* The mark at the top of the page plays its four states in turn, and says what each one means. */
+.art { height: auto; justify-items: center; gap: 0; padding: 26px 0 34px; } .art .orbit { width: 200px; height: 200px; --halo: 38px; }
+.state-say { display: grid; gap: 4px; min-height: 58px; margin: 34px 0 0 !important; max-width: none !important; }
+.state-say b { font: 650 21px/1.1 var(--display); letter-spacing: -.025em; color: #fff; }
+.state-say span { font-size: 16px; color: var(--muted); }
+.state-steps { display: flex; gap: 6px; margin-top: 18px; padding: 5px; border-radius: 999px; border: 1px solid var(--hair); background: rgba(255, 255, 255, .04); }
+.state-steps button { position: relative; padding: 7px 15px; border: 0; border-radius: 999px; font: 500 13.5px var(--text); color: #8f8f9b; background: none; cursor: pointer; overflow: hidden; transition: color .3s, background-color .3s; }
+.state-steps button[aria-current="true"] { color: #fff; background: rgba(255, 255, 255, .09); }
+.state-steps button[aria-current="true"]::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: linear-gradient(90deg, var(--v1), #fff); transform-origin: 0 50%; animation: step 3.6s linear both; }
+.state-steps.is-held button[aria-current="true"]::after { animation: none; }
+@keyframes step { from { transform: scaleX(0); } }
+.words h1 { margin-top: 6px; }
+/* In the bar the rings stay inside it. */
+.box { overflow: hidden; padding-left: 14px; } .box .orbit { width: 46px; height: 46px; --halo: 10px; }
+.box .orbit.is-answering::before, .box .orbit.is-answering::after { animation-name: ripple-in; }
+@keyframes ripple-in { from { transform: scale(1); opacity: .8; } to { transform: scale(1.22); opacity: 0; } }
+.says-head .orbit { width: 30px; height: 30px; --halo: 6px; } .says-head .orbit.is-answering::before, .says-head .orbit.is-answering::after { animation-name: ripple-in; }
+.st { width: 96px; height: 96px; } .st .orbit { width: 84px; height: 84px; --halo: 18px; }
+.states { grid-template-columns: repeat(4, 1fr); }
+
+/* A thought, and a call while it runs. */
+.shim { background: linear-gradient(90deg, #77778a 30%, #fff 50%, #77778a 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shim 1.3s linear infinite; }
+@keyframes shim { from { background-position: 120% 0; } to { background-position: -100% 0; } }
+.think, .says-think { display: flex; align-items: center; gap: 5px; font: 500 14px var(--text); }
+.think i, .says-think i { width: 5px; height: 5px; border-radius: 50%; background: var(--v1); animation: dots 1.1s ease-in-out infinite; }
+.think i:nth-of-type(2), .says-think i:nth-of-type(2) { animation-delay: .15s; } .think i:nth-of-type(3), .says-think i:nth-of-type(3) { animation-delay: .3s; }
+.think i:first-of-type, .says-think i:first-of-type { margin-left: 4px; }
+@keyframes dots { 0%, 60%, 100% { transform: none; opacity: .35; } 30% { transform: translateY(-5px); opacity: 1; } }
+.call.is-running::before { width: 9px; height: 9px; background: none; box-shadow: none; border: 2px solid var(--v1); border-top-color: transparent; animation: turn .6s linear infinite; }
+@keyframes turn { to { transform: rotate(360deg); } }
+.says-calls { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 2px; } .says-calls .call { margin-top: 0; }
+.says-think[hidden] { display: none; }
+.ways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; } .ways div { display: grid; justify-items: center; gap: 10px; padding: 16px 8px; border-radius: 14px; border: 1px solid var(--hair); background: rgba(0, 0, 0, .3); font-size: 13.5px; text-align: center; color: var(--muted); } .ways svg { width: 76px; height: 76px; }
+
+/* The small film of asking first: the agent's question, its three choices on one line, and what happens on a yes. */
+.f-ask { flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; padding: 0 16px; }
+.f-ask p { margin: 0; padding: 7px 12px; border-radius: 12px 12px 12px 4px; border: 1px solid var(--hair); font-size: 12.5px; line-height: 1.4; color: #e6e6ea; background: rgba(255, 255, 255, .07); }
+.f-ask div { display: flex; gap: 6px; }
+.f-ask i { padding: 6px 11px; font-size: 12px; white-space: nowrap; }
+.f-ask span { font: 500 11.5px var(--mono); color: var(--v0); opacity: 0; animation: fsent 4.5s ease-in-out infinite; }
+@keyframes fsent { 0%, 56% { opacity: 0; transform: translateY(4px); } 64%, 90% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+
+/* Less glow, more glass. Glow is soft and glass is sharp, so the haze comes down and every surface gets a glass
+   face: light to dark, one crisp reflection across its top corner, a white hairline on its top edge, a thin lit
+   border. */
+:root { --glass: linear-gradient(128deg, rgba(255, 255, 255, .1) 0%, rgba(255, 255, 255, .04) 26%, transparent 26.3%), linear-gradient(170deg, rgba(255, 255, 255, .1) 0%, rgba(255, 255, 255, .035) 45%, rgba(255, 255, 255, .015) 100%);
+    --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .32), inset 0 0 0 1px rgba(255, 255, 255, .09); }
+.aurora i { opacity: .26; }
+.floor { opacity: .55; }
+.nav { background: var(--glass), rgba(9, 9, 12, .72); border: 0; box-shadow: var(--glass-edge), 0 18px 40px -26px #000; }
+.card { border: 0; background: var(--glass); box-shadow: var(--glass-edge), 0 26px 50px -32px #000; backdrop-filter: blur(18px) saturate(1.25); }
+.card::before { background: radial-gradient(360px circle at var(--mx, 50%) var(--my, -30%), rgba(255, 255, 255, .1), transparent 60%); }
+.card::after { left: 8%; right: 8%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent); }
+.btn { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14), 0 12px 24px -16px #000; }
+.btn:hover { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14), 0 18px 30px -16px #000; }
+.btn::after { background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .9) 50%, transparent 62%); }
+.btn.glass { background: var(--glass), rgba(9, 9, 12, .5); box-shadow: var(--glass-edge); }
+.btn.glass::after { display: none; }
+.glow { background: conic-gradient(from var(--a), rgba(255, 255, 255, .13) 0 66%, var(--v1) 82%, #fff 88%, var(--v1) 94%, rgba(255, 255, 255, .13) 100%); }
+.glow::after { display: none; }
+.glow > .in { box-shadow: 0 40px 70px -40px #000; }
+.call { border-color: rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); } .call::before { box-shadow: none; }
+.shot { border: 0; box-shadow: var(--glass-edge), 0 50px 80px -40px #000; } .shot:hover { box-shadow: var(--glass-edge), 0 60px 90px -40px #000; }
+.chips button { background: var(--glass), rgba(9, 9, 12, .78); border: 0; box-shadow: var(--glass-edge); backdrop-filter: blur(14px); }
+.chips button:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 0 0 1px rgba(255, 255, 255, .28); }
+.box { border: 0; background: var(--glass), rgba(9, 9, 12, .74); box-shadow: var(--glass-edge), 0 30px 60px -30px #000; }
+.box button { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14); }
+.agent-says .side { background: var(--glass), #131318; box-shadow: var(--glass-edge), 0 30px 60px -24px #000; }
+.stage { background: var(--glass), #08080a; } .social { background: var(--glass), #08080a; }
+.appicon { background: var(--glass), #101014; box-shadow: var(--glass-edge), 0 16px 30px -18px #000; }
+.states > div, .use, .ways div, .film { background: rgba(0, 0, 0, .34); }
+.state-steps { background: var(--glass), rgba(9, 9, 12, .5); border: 0; box-shadow: var(--glass-edge); }
+/* The ball has no glow at all. On the in-breath it only gets a touch brighter. */
+.wm .o { filter: none; }
+@keyframes rest-light { 0%, 100% { filter: brightness(.96); } 50% { filter: brightness(1.04); } }
+
+/* In the bar the ring fits its container exactly. The orb is 46 across with 14 of room on every side, so the bar is
+   74 high and its rounded end has a radius of 37, with the orb dead centre of it. The ring starts on the orb and
+   grows to a radius of 34, counting the orb's own swell, so it opens fully and stops just inside the bar's edge. */
+.box { padding: 14px; gap: 18px; }
+.box .orbit::before { inset: 0; border-width: 1.5px; animation: bar-rest 3.8s ease-in-out infinite; }
+@keyframes bar-rest { 0%, 100% { transform: scale(1.04); opacity: .85; } 50% { transform: scale(1.37); opacity: .1; } }
+.box .orbit.is-listening::before { animation: bar-listen 1.3s ease-in-out infinite; }
+@keyframes bar-listen { 0%, 100% { transform: scale(1.08); opacity: 1; } 50% { transform: scale(1.35); opacity: .3; } }
+.box .orbit.is-thinking::before { inset: -22%; animation: spin .9s linear infinite; }
+.box .orbit.is-answering::before, .box .orbit.is-answering::after { inset: 0; animation: bar-out 1.5s ease-out infinite; }
+.box .orbit.is-answering::after { animation-delay: .75s; }
+@keyframes bar-out { from { transform: scale(1); opacity: .9; } to { transform: scale(1.37); opacity: 0; } }
+
+
+/* The three finishes, in the bar at the top. */
+.finish { display: flex; gap: 4px; padding: 4px; border-radius: 999px; font: 500 13.5px var(--text); white-space: nowrap; }
+.finish a, .finish button { padding: 6px 13px; border: 0; border-radius: 999px; font: inherit; color: #a3a3ad; background: none; cursor: pointer; } .finish a:hover, .finish button:hover { color: #fff; }
+/* The tag on a piece is its own small thing, whatever card it stands on. */
+.ptag { font-style: normal; }
+/* The word that names a visitor's colour is part of its sentence, wherever that sentence is laid out. */
+[data-you] { display: contents; }
+/* The icon in a violet tile is white, whatever the card says of its own text. */
+.three .gem { color: #fff; }
+/* The header and the footer run the whole width of the page, as on the site today: the name at the left edge and
+   the menu at the right, and the footer's two lines at its two ends. The footer is tall enough for the agent's bar
+   to stand over its foot without covering its words. */
+.nav { top: 0; margin: 0; padding: 12px 32px; border-radius: 0; }
+body { padding-bottom: 0; }
+.site-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 130px; padding: 24px 32px 176px; font: 13px var(--mono); color: #8a8a94; }
+.site-foot .wm { margin-right: 6px; font-size: 16px; color: #fff; vertical-align: -2px; }
+.site-foot a { text-decoration: underline; text-underline-offset: 3px; } .site-foot a:hover { color: #fff; }
+/* The agent's ring and its words wait at the top of the page until they are placed, so they add no room under the footer. */
+.agent-says, .agent-ring { left: 0; top: 0; }
+/* The agent's words take the place of the card beside the one it shows: its size and its corners. */
+.agent-says .side { display: flex; flex-direction: column; box-sizing: border-box; min-height: var(--h, 0); border-radius: var(--r, 20px); }
+.agent-says .says-foot { margin-top: auto; gap: 12px; } .agent-says .says-foot button { white-space: nowrap; } /* foot */ .agent-says .says-pills { margin-bottom: 14px; }
+/* Finish one: glass cards. Only a card is glass. The header, the footer, the buttons, the chips, the agent's bar
+   and the tags are plain solid pieces, so the glass is seen where the content is and nowhere else. Glass is white:
+   there is no violet in a pane. Violet is the mark's, and the colour of what is the brand's to press. */
+:root {
+    --n1: #101013; --n2: #19191e; --n3: #24242b; --line: rgba(255, 255, 255, .12);
+}
+.aurora i { opacity: .22; }
+
+/* The header and the footer, as the site has them today: the page shows through the header a little, blurred. */
+.nav { border: 0; border-bottom: 1px solid var(--line); background: rgba(5, 5, 6, .86); backdrop-filter: blur(12px); box-shadow: none; }
+.site-foot { border-top: 1px solid var(--line); background: #050506; }
+
+/* What you press. The main button is solid violet, the second an outline. Nothing sweeps across them. */
+.btn { color: #fff; background: var(--v2); box-shadow: none; transition: background-color .2s, transform .3s var(--ease); }
+.btn:hover { background: var(--v1); box-shadow: none; }
+.btn::after { display: none; }
+.btn.glass { color: #fff; background: none; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .34); backdrop-filter: none; }
+.btn.glass:hover { background: none; box-shadow: inset 0 0 0 1.5px #fff; }
+.box { border: 0; background: var(--n1); backdrop-filter: none; box-shadow: inset 0 0 0 1px var(--line), 0 24px 50px -24px #000; }
+.box button { color: #fff; background: var(--v2); box-shadow: none; }
+.box button:hover { background: var(--v1); }
+.chips button { border: 0; background: var(--n2); backdrop-filter: none; box-shadow: inset 0 0 0 1px var(--line); }
+.chips button:hover { box-shadow: inset 0 0 0 1px #fff; }
+.about { background: #fff; }
+.says-pills button { border: 1px solid var(--line); background: var(--n2); }
+.says-pills button:first-child { color: #fff; background: var(--v2); border-color: var(--v2); }
+.says-pills button:hover { border-color: #fff; }
+.offer span.yes { color: #fff; background: var(--v2); border-color: var(--v2); }
+.ptag { background: #fff; }
+.is-lit .ptag, .k-lit .ptag { color: #fff; background: var(--v2); }
+
+/* The small plain pieces. */
+.gem { border-radius: 14px; background: var(--v2); box-shadow: none; }
+.gem::before, .gem::after { display: none; }
+.gem svg { filter: none; }
+.call { border: 0; color: var(--v0); background: var(--v4); }
+.call::before { background: var(--v1); box-shadow: none; }
+.chat .q { background: #fff; }
+.chat .a, .f-ask p, .f-flip span { border: 0; background: var(--n3); }
+.f-flip span + span { background: var(--v4); }
+.states > div, .use, .ways div, .film { border: 1px solid var(--line); background: rgba(0, 0, 0, .4); box-shadow: none; }
+.state-steps { border: 0; background: var(--n1); box-shadow: inset 0 0 0 1px var(--line); }
+.state-steps button[aria-current="true"] { color: #fff; background: var(--n3); }
+.stage { background: rgba(0, 0, 0, .3); }
+.appicon { background: var(--n2); box-shadow: inset 0 0 0 1px var(--line); }
+.on-violet, .ratio .p { background: var(--v2); }
+.purples { background: var(--n1); box-shadow: inset 0 0 0 1px var(--line), 0 20px 40px -16px #000; }
+.purples button { background: var(--a2); box-shadow: none; }
+.finish { background: var(--n1); box-shadow: inset 0 0 0 1px var(--line); }
+.finish a[aria-current="page"], .finish button[aria-pressed="true"] { color: #fff; background: var(--v2); }
+.orbit.is-thinking::after { display: none; }
+
+/* The cards are glass, after the glossy panes with lit edges that Louis pointed to. A pane is thin and almost clear.
+   One fine bright line runs round its edge, and it is not the same all the way: it is brightest at the bottom left
+   and at the top right, and quieter between. On those two corners the edge flares to white along both sides, a
+   soft light spills from it into the pane, and none of it outside the pane, and two smaller flares sit opposite them. A soft
+   light lies across the face from the top left, with no edge to it. Under the pointer the flares grow a little
+   and the pane leans a little towards it; no light follows the pointer. The agent's words are a card too,
+   since they take a card's place. */
+:root {
+    --flare: radial-gradient(84px 8px at 17% 100%, #fff 0%, rgba(255, 255, 255, 0) 70%), radial-gradient(8px 64px at 0% 78%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(92px 8px at 80% 0%, #fff 0%, rgba(255, 255, 255, 0) 70%), radial-gradient(8px 56px at 100% 23%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(44px 6px at 10% 0%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 70%), radial-gradient(6px 40px at 100% 85%, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, 0) 70%);
+    --glass: var(--flare), linear-gradient(125deg, rgba(255, 255, 255, .12) 0%, rgba(255, 255, 255, .035) 36%, rgba(255, 255, 255, .012) 60%, rgba(255, 255, 255, .07) 100%);
+    --lit: inset 16px -16px 26px -18px rgba(255, 255, 255, .55), inset -16px 16px 26px -18px rgba(255, 255, 255, .45), inset 0 0 28px rgba(255, 255, 255, .055),
+        0 40px 60px -34px #000;
+    --lit-more: inset 20px -20px 30px -18px rgba(255, 255, 255, .7), inset -20px 20px 30px -18px rgba(255, 255, 255, .6), inset 0 0 28px rgba(255, 255, 255, .08),
+        0 40px 60px -34px #000;
+}
+.card, .agent-says .side { border: 0; backdrop-filter: blur(14px) brightness(1.12); box-shadow: var(--lit); transition: box-shadow .3s; }
+.card { background: var(--glass), rgba(255, 255, 255, .012); }
+.card:hover { box-shadow: var(--lit-more); }
+.agent-says .side { background: var(--glass), rgba(14, 14, 19, .62); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .8), var(--lit); }
+.card::after { left: 0; right: 0; top: 0; bottom: 0; height: auto; padding: 1.5px; border-radius: inherit; pointer-events: none;
+    background: conic-gradient(from 218deg, #fff 0deg, rgba(255, 255, 255, .42) 46deg, rgba(255, 255, 255, .8) 96deg, rgba(255, 255, 255, .32) 148deg, #fff 180deg, rgba(255, 255, 255, .42) 232deg, rgba(255, 255, 255, .8) 280deg, rgba(255, 255, 255, .34) 330deg, #fff 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+/* No light follows the pointer over a card: it washed out the words under it. */
+.card::before { display: none; }
+.card.in:hover, .states-key .card:hover { transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .18s ease-out, box-shadow .3s; }
+.card.is-lit:hover { transform: none; }
+.card h3, .card h4, .card p, .card b, .three span { text-shadow: 0 1px 3px rgba(0, 0, 0, .45); }
+:where(.card) p, .three span, .board h4 { color: #dcdce6; }
+.on-glass { background: var(--glass); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .7), var(--lit); border: 0 !important; }
+
+/* The light mode, the part both finishes share. White is the base here, then black, then purple, so the order is the
+   dark one turned over: the words are black, and a visitor's mark is black where it was white ("Black is you.
+   Violet is the agent."). What is a picture of a screen stays dark in both modes: the product window, the small
+   films in the cards, the stage the mark stands on, the terminal and the share card. */
+:root[data-theme="light"] {
+    --muted: #5b5b69; --hair: rgba(12, 12, 28, .12); color-scheme: light;
+    --one-ink: #0b0b0e; --one-ink-cut: #fff;
+    body { color: #0b0b0e; background: var(--page, #fff); }
+    .glow > .in, .film, .stage, .cli, .social, .tab, .on-black, .on-violet, .shot { color: #f4f4f6; --muted: #a3a3ad; --hair: rgba(255, 255, 255, .09); }
+    .chrome { background-image: linear-gradient(100deg, #0b0b0e 0%, #0b0b0e 34%, var(--v3) 46%, var(--v2) 56%, #0b0b0e 72%, #0b0b0e 100%); }
+    .shim { background-image: linear-gradient(90deg, #8a8a98 30%, #0b0b0e 50%, #8a8a98 70%); }
+    .kick { color: var(--v2); }
+    .nav .links a:hover, .state-say b { color: #0b0b0e; }
+    .idea { color: #0b0b0e !important; }
+    .tape { color: #33333d; } .tape i { color: var(--v2); }
+    .rail { background: rgba(12, 12, 28, .1); } .rail::after { background: linear-gradient(90deg, transparent, var(--v1), var(--v3)); }
+    .board h4, .states-key .who, .spec .m, .site-foot { color: #6c6c7a; }
+    .board svg g[stroke] { stroke: rgba(12, 12, 28, .24); } .board svg g[fill] { fill: #5b5b69; }
+    .does-what b { color: var(--v3); }
+    .states > div, .use, .ways div { background: rgba(12, 12, 28, .045); border-color: var(--hair); }
+    .lock > div, .ratio { border-color: var(--hair); }
+    .three .gem { color: #fff; }
+    .call { color: var(--v3); background: color-mix(in srgb, var(--v2) 13%, #fff); } .call::before { background: var(--v2); }
+
+    /* What you press and pick. */
+    .chips button, .says-pills button, .box input { color: #0b0b0e; } .says-pills button:first-child { color: #fff; }
+    .box input::placeholder { color: #7a7a88; }
+    .state-steps button { color: #6c6c7a; } .state-steps button[aria-current="true"] { color: #0b0b0e; }
+    .finish a, .finish button { color: #6c6c7a; } .finish a:hover, .finish button:hover { color: #0b0b0e; }
+    .finish a[aria-current="page"], .finish button[aria-pressed="true"] { color: #fff; }
+    .purples span { color: #44444f; }
+    .site-foot .wm, .site-foot a:hover { color: #0b0b0e; }
+    [data-piece]:hover { outline-color: rgba(12, 12, 28, .5); } [data-piece].is-picked { outline-color: #0b0b0e; }
+    [data-piece].is-lit, [data-piece].is-lit:hover { outline-color: transparent; }
+    .k-hover { outline-color: rgba(12, 12, 28, .5); } .k-picked { outline-color: #0b0b0e; }
+    .ptag, .about { color: #fff; background: #0b0b0e; } .chips .about button { color: #0b0b0e; background: #fff; }
+    .is-lit .ptag, .k-lit .ptag { color: #fff; background: var(--v2); }
+    .orbit.is-listening::before { border-color: #0b0b0e; }
+
+    /* The agent's words, and the wash over the rest of the page while it shows a card. */
+    .agent-dim { background: rgba(238, 238, 245, .76); }
+    .agent-says .says-words, .agent-says .back b { color: #0b0b0e; } .says-head, .agent-says .back { color: var(--v3); }
+    .says-head button { color: #44444f; background: rgba(12, 12, 28, .07); }
+    .says-foot { color: #6c6c7a; border-top-color: var(--hair); } .says-foot button { color: var(--v2); }
+}
+
+/* Glass cards, in the light. The page is purple here, not white: a pale wash of the brand's violet with its soft
+   violet lights behind, which Louis liked. Glass can only be seen against something, and against this it is: a
+   card is white glass, brighter than the page, that lets the page's purple through, blurred. Its edge is a white
+   line all the way round, brightest at the bottom left and the top right as in the dark, with a fine violet-dark
+   line outside it so the pane ends somewhere. It throws a firm soft shadow under it, and no light outside it. The
+   glass itself stays white: the purple is the page's. */
+:root[data-theme="light"] {
+    --page: color-mix(in srgb, var(--v1) 34%, #fff); --n1: #fff; --n2: #fff; --n3: color-mix(in srgb, var(--v1) 16%, #fff); --line: rgba(30, 16, 90, .2);
+    --glass: var(--flare), linear-gradient(125deg, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, .42) 40%, rgba(255, 255, 255, .32) 62%, rgba(255, 255, 255, .6) 100%);
+    --lit: inset 16px -16px 26px -18px #fff, inset -16px 16px 26px -18px #fff, 0 0 0 1px rgba(30, 16, 90, .14), 0 2px 5px rgba(30, 16, 90, .12), 0 36px 54px -30px rgba(30, 16, 100, .6);
+    --lit-more: inset 20px -20px 30px -18px #fff, inset -20px 20px 30px -18px #fff, 0 0 0 1px rgba(30, 16, 90, .22), 0 2px 5px rgba(30, 16, 90, .12), 0 44px 60px -28px rgba(30, 16, 100, .7);
+    .glow > .in, .film, .stage { --n1: #101013; --n2: #19191e; --n3: #24242b; --line: rgba(255, 255, 255, .12); }
+    .aurora i { opacity: .72; }
+    .nav { background: rgba(255, 255, 255, .78); border-bottom-color: rgba(30, 16, 90, .16); }
+    .site-foot { background: color-mix(in srgb, var(--v1) 18%, #fff); border-top-color: rgba(30, 16, 90, .16); }
+    .btn.glass { color: #0b0b0e; box-shadow: inset 0 0 0 1.5px rgba(12, 12, 28, .55); } .btn.glass:hover { box-shadow: inset 0 0 0 1.5px #0b0b0e; }
+    .chips button:hover { box-shadow: inset 0 0 0 1px #0b0b0e; } .says-pills button:hover { border-color: #0b0b0e; }
+    .box { box-shadow: inset 0 0 0 1px var(--line), 0 24px 50px -22px rgba(30, 16, 100, .55); }
+    .purples { box-shadow: inset 0 0 0 1px var(--line), 0 20px 40px -16px rgba(30, 16, 100, .45); }
+    .states > div, .use, .ways div { background: rgba(255, 255, 255, .5); border-color: rgba(30, 16, 90, .14); }
+    .film, .stage { background: #0b0b0e; border-color: transparent; }
+    .state-steps button[aria-current="true"] { background: var(--n3); }
+    .orbit.is-thinking::before { background: conic-gradient(from var(--a), transparent 0 50%, var(--v1) 80%, var(--v3) 100%); }
+    .card, .agent-says .side { backdrop-filter: blur(18px) saturate(1.35); }
+    .card { background: var(--glass); }
+    .agent-says .side { background: var(--glass), rgba(255, 255, 255, .62); box-shadow: inset 0 0 0 1.5px #fff, var(--lit); }
+    .card::after { padding: 2px; background: conic-gradient(from 218deg, #fff 0deg, rgba(255, 255, 255, .6) 50deg, #fff 96deg, rgba(255, 255, 255, .55) 148deg, #fff 180deg, rgba(255, 255, 255, .6) 232deg, #fff 280deg, rgba(255, 255, 255, .55) 330deg, #fff 360deg); }
+    .card h3, .card h4, .card p, .card b, .three span { text-shadow: none; }
+    :where(.card) p, .three span { color: #3a3650; } .board h4, .states-key .who { color: #4b4666; }
+    .hero p, .lede { color: #45405c; }
+    .on-glass { box-shadow: inset 0 0 0 1.5px #fff, var(--lit); }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<radialGradient id="glass" cx="50%" cy="40%" r="64%"><stop offset="0" style="stop-color:var(--v1)"/><stop offset=".5" style="stop-color:var(--v2)"/><stop offset=".86" style="stop-color:var(--v3)"/><stop offset="1" style="stop-color:var(--v4)"/></radialGradient>
+<radialGradient id="caustic" cx="50%" cy="100%" r="58%"><stop offset="0" style="stop-color:var(--v0)" stop-opacity=".85"/><stop offset=".45" style="stop-color:var(--v1)" stop-opacity=".3"/><stop offset="1" style="stop-color:var(--v1)" stop-opacity="0"/></radialGradient>
+<linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".82"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>
+<linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset=".68" style="stop-color:var(--v0)" stop-opacity="0"/><stop offset="1" style="stop-color:var(--v0)" stop-opacity=".38"/></linearGradient>
+<radialGradient id="well"><stop offset="0" style="stop-color:var(--v4)" stop-opacity=".34"/><stop offset="1" style="stop-color:var(--v4)" stop-opacity="0"/></radialGradient>
+<radialGradient id="rim"><stop offset=".84" style="stop-color:var(--v0)" stop-opacity="0"/><stop offset="1" style="stop-color:var(--v0)" stop-opacity=".95"/></radialGradient>
+<linearGradient id="groove" gradientUnits="userSpaceOnUse" x1="50" y1="34" x2="72" y2="86"><stop offset="0" style="stop-color:var(--v4)"/><stop offset="1" style="stop-color:var(--v3)"/></linearGradient>
+<symbol id="orb" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="url(#glass)"/><ellipse cx="60" cy="34" rx="38" ry="24" fill="url(#gloss)"/><ellipse cx="39" cy="26" rx="9" ry="4.2" fill="#fff" opacity=".92" transform="rotate(-30 39 26)"/><circle cx="60" cy="60" r="53.1" fill="none" stroke="url(#edge)" stroke-width="1.8"/><circle cx="60" cy="60" r="54" fill="none" style="stroke:var(--v4)" stroke-opacity=".6" stroke-width="1"/><circle cx="60" cy="60" r="34" fill="url(#well)"/><text x="60" y="83" text-anchor="middle" font-family="Geist, sans-serif" font-weight="650" font-size="66" fill="none" style="stroke:var(--v3)" stroke-width="5.5" stroke-linejoin="round" stroke-opacity=".92">l</text><text x="60" y="83" text-anchor="middle" font-family="Geist, sans-serif" font-weight="650" font-size="66" fill="#fff" fill-opacity="1" >l</text></symbol>
+<symbol id="orb-dark" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="url(#glass)"/><ellipse cx="60" cy="34" rx="38" ry="24" fill="url(#gloss)"/><ellipse cx="39" cy="26" rx="9" ry="4.2" fill="#fff" opacity=".92" transform="rotate(-30 39 26)"/><circle cx="60" cy="60" r="53.1" fill="none" stroke="url(#edge)" stroke-width="1.8"/><circle cx="60" cy="60" r="54" fill="none" style="stroke:var(--v4)" stroke-opacity=".6" stroke-width="1"/><text x="60" y="83" text-anchor="middle" font-family="Geist, sans-serif" font-weight="650" font-size="66" fill="#fff" fill-opacity=".7" transform="translate(1.1 1.3)">l</text><text x="60" y="83" text-anchor="middle" font-family="Geist, sans-serif" font-weight="650" font-size="66" style="fill:var(--v4)" fill-opacity="1" >l</text></symbol>
+<symbol id="orb-raised" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="url(#glass)"/><ellipse cx="60" cy="34" rx="38" ry="24" fill="url(#gloss)"/><ellipse cx="39" cy="26" rx="9" ry="4.2" fill="#fff" opacity=".92" transform="rotate(-30 39 26)"/><circle cx="60" cy="60" r="53.1" fill="none" stroke="url(#edge)" stroke-width="1.8"/><circle cx="60" cy="60" r="54" fill="none" style="stroke:var(--v4)" stroke-opacity=".6" stroke-width="1"/><text x="60" y="83" text-anchor="middle" font-family="Geist, sans-serif" font-weight="650" font-size="66" fill="#000" fill-opacity=".45" transform="translate(1.6 2.2)">l</text><text x="60" y="83" text-anchor="middle" font-family="Geist, sans-serif" font-weight="650" font-size="66" fill="#fff" fill-opacity="1" >l</text></symbol>
+<symbol id="orb-o" viewBox="0 0 120 120"><g transform="translate(60 60) scale(1.055) translate(-60 -60)"><circle cx="60" cy="60" r="54" fill="url(#glass)"/><ellipse cx="60" cy="34" rx="38" ry="24" fill="url(#gloss)"/><ellipse cx="39" cy="26" rx="9" ry="4.2" fill="#fff" opacity=".92" transform="rotate(-30 39 26)"/><circle cx="60" cy="60" r="53.1" fill="none" stroke="url(#edge)" stroke-width="1.8"/><circle cx="60" cy="60" r="54" fill="none" style="stroke:var(--v4)" stroke-opacity=".6" stroke-width="1"/></g></symbol>
+</defs></svg>
+<div class="aurora"><i></i><i></i><i></i></div>
+<header class="nav">
+        <a href="#top"><span class="wm">l<svg class="o"><use href="#orb-o"/></svg>uis-agent</span></a>
+        <nav class="links"><a href="#does">What it does</a><a href="#work">See one work</a><a href="#where">Where it runs</a><a href="#price">Price</a><a href="#brand">The brand</a></nav>
+        <span class="finish" role="group" aria-label="Finish"><a href="glass.html" aria-current="page">Glass</a><a href="flat.html">Flat</a></span><span class="finish" role="group" aria-label="Mode"><button data-mode="dark">Dark</button><button data-mode="light">Light</button></span>
+        <a class="btn small" href="#price">Ask for yours</a>
+    </header>
+<div class="wrap">
+
+
+    <div class="hero center" id="top">
+        <div class="words">
+            <div class="art"><span class="orbit" data-demo-orb><svg width="200" height="200"><use href="#orb"/></svg></span><p class="state-say"><b data-demo-name>Resting</b><span data-demo-line>It breathes, and waits for you.</span></p><div class="state-steps"><button data-step="0">Resting</button><button data-step="1">Listening</button><button data-step="2">Thinking</button><button data-step="3">Answering</button></div></div>
+            <h1 class="rise">Ask the website.</h1>
+            <p>We build websites that answer for your business. An agent on the page shows the room, takes the booking and sends it to you, while you're busy with the guests you already have.</p>
+            <div class="row"><a class="btn" href="#price">Ask for yours</a><a class="btn glass" href="#does">See what it does</a></div>
+        </div>
+        <div class="product"><div class="glow tilt" data-ry="0"><div class="in" data-win data-base="in">
+            <div class="chromebar"><i></i><i></i><i></i><span data-address>seemeeu.example</span></div>
+            <div class="winbody">
+                <div class="site"><div class="head"><b>Seemeeu Guesthouse</b><span>HOME</span><span>ROOMS</span><span>STAY</span></div>
+                    <div class="rooms">
+                        <div class="room"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-sea-view.webp" alt=""><div><b>The sea-view doubles</b>R1,450 a night</div></div>
+                        <div class="room"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-family.webp" alt=""><div><b>The family room</b>R1,850 a night</div></div>
+                        <div class="room pick"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-garden.webp" alt=""><div><b>The garden room</b>R1,250 a night. Dogs welcome.</div></div>
+                    </div>
+                    <div class="slip"><small>BOOKING REQUEST</small><b>The garden room</b><div><span>Nights</span>Friday and Saturday</div><div><span>Guests</span>Two, and a dog</div><div><span>Reach you at</span>marike@example.com</div><div><span>Status</span><em data-status>Not sent yet</em></div></div>
+                </div>
+                <div class="chat"><div class="talk" data-talk></div><div class="foot"><span data-foot>0 calls</span><span>Seemeeu · ask us</span></div></div>
+            </div>
+        </div></div></div>
+        <div class="floor"></div>
+    </div>
+
+    <div class="tape" aria-hidden="true"><div><span>ShowPage <i>/rooms/garden</i></span><span>Took a table for five</span><span>Refused to give <i>legal advice</i></span><span>SendLead <i>once</i>, on a yes</span><span>Answered at <i>22:04</i></span><span>Read the booking back</span><span>ShowCard <i>Booking request</i></span><span>Cost <i>US$0.005</i></span><span>ShowPage <i>/rooms/garden</i></span><span>Took a table for five</span><span>Refused to give <i>legal advice</i></span><span>SendLead <i>once</i>, on a yes</span><span>Answered at <i>22:04</i></span><span>Read the booking back</span><span>ShowCard <i>Booking request</i></span><span>Cost <i>US$0.005</i></span></div></div>
+
+    <section id="does">
+        <span class="kick reveal">what it does</span>
+        <h2 class="chrome reveal">What it does, not what it says.</h2>
+        <p class="lede reveal">Four things, and each one is something the agent calls, not something we promise.</p>
+        <div class="rail reveal"></div>
+        <div class="does">
+            <article class="card reveal" style="--d:0"><div class="film f-show"><i></i><i></i><i></i></div><h3>It opens the right page.</h3><p>A guest asks for a sea view and a dog. Dogs stay in the garden room, so that is the room it shows.</p><span class="call">ShowPage</span></article>
+            <article class="card reveal" style="--d:1"><div class="film f-draw"><i></i><i></i><i></i><i></i></div><h3>It draws what you asked for.</h3><p>No wall of text. The booking comes back as a card you can read at a glance.</p><span class="call">ShowCard</span></article>
+            <article class="card reveal" style="--d:2"><div class="film f-ask"><p>May I send it to the owner now?</p><div><i>Book it</i><i>Change</i><i>Not now</i></div><span>SendLead · sent, once</span></div><h3>It asks before it sends.</h3><p>Nothing leaves the page until the guest says yes. Then you get the request, once.</p><span class="call">Offer, then SendLead</span></article>
+            <article class="card reveal" style="--d:3"><div class="film f-flip"><div><span>Your request has been sent.</span><span>ShowPage · ShowCard<br>SendLead · 2.1 s<br>US$0.005</span></div></div><h3>It shows its work.</h3><p>Turn any answer over. You see what it called, how long it took and what it cost.</p><span class="call">the usage ledger</span></article>
+        </div>
+    </section>
+
+    <section id="work">
+        <span class="kick reveal">see one work</span>
+        <h2 class="chrome reveal">Three businesses, three agents.</h2>
+        <p class="lede reveal">Made-up businesses, real agents. Each one is a recorded run you can watch, then try yourself.</p>
+        <div class="fan reveal">
+            <a class="shot l" href="#work"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/koringland-desk.webp" alt=""><span><b>A law practice</b>It knows what it must not answer.</span></a>
+            <a class="shot c" href="#work"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-lounge.webp" alt=""><span><b>A guesthouse</b>It opens the room that fits, not the one that was asked for.</span></a>
+            <a class="shot r" href="#work"><img src="../../../site/louis-agent.site/wwwroot/images/showroom/wheatfield-stoep.webp" alt=""><span><b>A restaurant</b>It answers at ten at night.</span></a>
+        </div>
+    </section>
+
+    <section id="where">
+        <span class="kick reveal">where it runs</span>
+        <h2 class="chrome reveal">It runs where you say.</h2>
+        <p class="lede reveal">louis-agent is our own framework, in C#. It runs on your own hardware or in your own cloud account, with the model you pick.</p>
+        <div class="three">
+            <div class="card reveal" style="--d:0"><span class="gem"><svg width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></span><b>Your server</b><span>A container you host.</span></div>
+            <div class="card reveal" style="--d:1"><span class="gem"><svg width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span><b>Your model</b><span>Hosted, or local.</span></div>
+            <div class="card reveal" style="--d:2"><span class="gem"><svg width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span><b>Your data</b><span>It stays with you.</span></div>
+        </div>
+    </section>
+
+    <section id="price">
+        <span class="kick reveal">price</span>
+        <h2 class="chrome reveal">One price you can say out loud.</h2>
+        <div class="price reveal"><b class="chrome">R500</b><span>to R1,000 a month, for a website with an agent on it, hosted. A custom agent for your own systems is quoted after we talk.</span></div>
+    </section>
+
+
+    <section id="how">
+        <span class="kick reveal">how the agent uses the page</span>
+        <h2 class="chrome reveal"><span data-you="W">White</span> is you. Violet is the agent.</h2>
+        <p class="lede reveal">Every card on the site can be picked by a visitor and shown by the agent, and the two never look alike. Try it: press a card anywhere on this page, or a button over the bar.</p>
+        <div class="states-key">
+            <div class="reveal" style="--d:0"><span class="who">at rest</span><div class="card"><h3>A card</h3><p>Nothing marks it. It is a pane of frosted glass: what stands behind it shows through, blurred.</p></div></div>
+            <div class="reveal" style="--d:1"><span class="who">you, hovering</span><div class="card k-hover"><span class="ptag">Ask about this</span><h3>A card</h3><p>A dashed <span data-you="w">white</span> edge, and the offer to ask about it.</p></div></div>
+            <div class="reveal" style="--d:2"><span class="who">you, having picked it</span><div class="card k-picked"><span class="ptag">You picked this</span><h3>A card</h3><p>A solid <span data-you="w">white</span> ring. A <span data-you="w">white</span> chip over the bar names it, and your next question is about it.</p></div></div>
+            <div class="reveal" style="--d:3"><span class="who">the agent, showing it</span><div class="card k-lit"><span class="ptag">The agent is showing this</span><h3>A card</h3><p>A violet ring with a light running round it. The page dims, and the agent's words stand beside it.</p></div></div>
+        </div>
+        <div class="does-what reveal">
+            <div><b>ShowPage</b>Scrolls to a place, lights it, and dims the rest.</div>
+            <div><b>Offer</b>Draws its choices as pills under its words. The first is the one it suggests.</div>
+            <div><b>ShowCard, AskFor</b>Draws a card or a form in the talk, in the site's own look.</div>
+            <div><b>the usage ledger</b>Turns the answer over: what it called, how long it took, what it cost.</div>
+        </div>
+    </section>
+
+    <section id="brand">
+        <span class="kick reveal">the brand</span>
+        <h2 class="chrome reveal">The Orb.</h2>
+        <p class="lede reveal">A ball of violet glass with the l of louis cut into it. It is the agent, and everything on the page is glass like it.</p>
+        <div class="board">
+            <div class="card s5 reveal"><h4>the idea</h4><p class="idea">You don't remember a company. You remember the thing you talked to.</p><p style="margin-top:20px">So the mark is the agent itself. It sits in the bar at the foot of every page, it stands beside the agent's words, it is the o in our name, and it is the same ball on a tab, an icon and a terminal. The l is the very letter from our name, with its small curl at the foot, set into the glass in white with a fine violet rim, so it belongs to the ball and never fades into its light.</p></div>
+            <div class="card s7 reveal" style="--d:1;padding:0"><div class="stage"><div class="logo"><span class="orbit is-answering" style="width:230px;height:230px"><svg width="230" height="230"><use href="#orb"/></svg></span></div></div></div>
+            <div class="card s12 reveal"><h4>lockups · on black, on white, on violet, on glass</h4><div class="lock"><div class="on-black"><span class="wm l">l<svg class="o"><use href="#orb-o"/></svg>uis-agent</span></div><div class="on-white"><span class="wm l">l<svg class="o"><use href="#orb-o"/></svg>uis-agent</span></div><div class="on-violet"><span class="wm l">l<svg class="o"><use href="#orb-o"/></svg>uis-agent</span></div><div class="on-glass"><svg width="92" height="92"><use href="#orb"/></svg></div></div></div>
+            <div class="card s7 reveal"><h4>it moves · resting, listening, thinking, answering</h4><div class="states"><div><span class="st"><span class="orbit "><svg width="84" height="84"><use href="#orb"/></svg></span></span>Resting. It breathes: it swells, its light spreads, and its ring drifts out.</div><div><span class="st"><span class="orbit is-listening"><svg width="84" height="84"><use href="#orb"/></svg></span></span>Listening. A <span data-you="w">white</span> ring, while you type or have picked something.</div><div><span class="st"><span class="orbit is-thinking"><svg width="84" height="84"><use href="#orb"/></svg></span></span>Thinking. A light runs round it and a sheen crosses it.</div><div><span class="st"><span class="orbit is-answering"><svg width="84" height="84"><use href="#orb"/></svg></span></span>Answering. It sends out rings.</div></div></div>
+            <div class="card s5 reveal" style="--d:1"><h4>how it is built</h4><svg viewBox="0 0 240 150" style="width:100%"><g stroke="rgba(255,255,255,.2)" stroke-width=".7" fill="none"><path d="M20 75h200M120 5v140M20 15h200M20 135h200M60 5v140M180 5v140M112 47h24M112 106h24"/></g><svg x="60" y="15" width="120" height="120" viewBox="0 0 120 120"><use href="#orb"/></svg><g fill="#a3a3ad" font-family="Geist Mono, monospace" font-size="8"><text x="186" y="71">one ball</text><text x="24" y="71">the l, etched</text><text x="24" y="83">from the name</text></g></svg><p style="margin-top:14px">One ball, lit from the top left. The l is the letter from the name's own face, set in the middle, a little under half the ball's height. It is white, with a thin rim of the ball's deepest violet round it and a slightly deeper well of glass behind it, so it stays white wherever the ball is bright. The gloss ends in a hard edge across the upper half, and the glint sits up and left, off the letter.</p><h4 style="margin-top:26px">the l, three ways on the same ball</h4><div class="ways"><div><svg><use href="#orb"/></svg>White, with a violet rim. The one in use.</div><div><svg><use href="#orb-dark"/></svg>Cut in dark.</div><div><svg><use href="#orb-raised"/></svg>Raised in white.</div></div></div>
+            <div class="card s7 reveal"><h4>colour · black is the base, then white, then purple</h4><div class="ratio"><div class="k">Black #050506 · the page</div><div class="w">White · the words</div><div class="p">Purple</div></div>
+                <div class="ramp"><div><i style="background:var(--v0)"></i><span data-hex="0"></span></div><div><i style="background:var(--v1)"></i><span data-hex="1"></span></div><div><i style="background:var(--v2)"></i><span data-hex="2"></span></div><div><i style="background:var(--v3)"></i><span data-hex="3"></span></div><div><i style="background:var(--v4)"></i><span data-hex="4"></span></div></div>
+                <p style="margin-top:16px">Purple is never a flat fill. It is always a light: it runs from white through violet into the dark, the way it does in our diagrams. Press the dots at the right edge to try the five purples on the whole page.</p></div>
+            <div class="card s5 spec reveal" style="--d:1"><h4>type</h4><p class="d chrome">Ask the website.</p><p style="margin-top:16px">Geist, heavy and tight for headings, plain for reading. Geist Mono for what the agent called, and nowhere else.</p><p class="m">ShowPage /rooms/garden · 2.1 s</p></div>
+            <div class="card s8 reveal"><h4>out in the world · a tab, an app icon, a share card, a terminal</h4><div class="uses"><div class="use"><div class="tab"><svg width="18" height="18"><use href="#orb"/></svg>louis-agent</div>A tab.</div><div class="use"><div class="appicon"><svg width="62" height="62"><use href="#orb"/></svg></div>An app icon.</div><div class="use"><div class="social"><span class="wm" style="font-size:12px">l<svg class="o"><use href="#orb-o"/></svg>uis-agent</span><b style="font:700 17px Geist;letter-spacing:-.04em">Ask the website.</b></div>A share card.</div><div class="use"><div class="cli">$ louis-agent run
+<span style="color:var(--v1)">●</span> louis-agent ready
+  model  local</div>A terminal.</div></div></div>
+            <div class="card s4 reveal" style="--d:1"><h4>voice</h4><ul class="voice"><li>Ask the website.</li><li>It asks before it sends.</li><li>It runs where you say.</li><li>Short and plain. It never says "AI-powered".</li></ul></div>
+        </div>
+    </section>
+</div>
+
+<footer class="site-foot"><span><span class="wm">l<svg class="o"><use href="#orb-o"/></svg>uis-agent</span> · all rights reserved · <a href="#top">LinkedIn</a></span><span>100% C#, because you can</span></footer>
+<div class="bar">
+    <div class="chips"><button data-run="does">Show me what it does</button><button data-run="work">See one work</button><button data-run="price">What does it cost?</button><button data-run="brand">Show me the brand</button></div>
+    <div class="box"><span class="orbit"><svg width="46" height="46"><use href="#orb"/></svg></span><input placeholder="Ask the website anything…" aria-label="Ask the agent"><button aria-label="Send">↑</button></div>
+</div>
+<div class="purples" role="group" aria-label="Purples to try"></div>
+<script>
+// What moves by script on the three routes. The agent in the product window is simulated: it plays one booking,
+// call by call, the way the real one does it, and starts again.
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait = ms => new Promise(done => setTimeout(done, still ? 0 : ms));
+
+// Each word of a rising headline is its own piece, so it can come out of the blur on its own beat.
+document.querySelectorAll('.rise').forEach(h => {
+    h.innerHTML = h.textContent.trim().split(/\s+/).map((w, i) => `<span class="chrome" style="--i:${i}">${w}</span>`).join(' ');
+});
+
+// What scrolls into view rises in, once.
+const seen = new IntersectionObserver(all => all.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); seen.unobserve(e.target); } }), { threshold: .14 });
+document.querySelectorAll('.reveal').forEach(el => seen.observe(el));
+
+// A glass card's light stands under the pointer.
+document.querySelectorAll('.card').forEach(card => card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', e.clientX - r.left + 'px'); card.style.setProperty('--my', e.clientY - r.top + 'px');
+}));
+
+// The product window leans a little towards the pointer.
+const tilt = document.querySelector('.tilt');
+if (tilt && !still) addEventListener('pointermove', e => {
+    const base = +tilt.dataset.ry || 0;
+    tilt.style.setProperty('--ry', base + (e.clientX / innerWidth - .5) * 7 + 'deg');
+    tilt.style.setProperty('--rx', 5 - (e.clientY / innerHeight - .5) * 5 + 'deg');
+});
+
+// The booking, played in the window.
+const win = document.querySelector('[data-win]'), talk = document.querySelector('[data-talk]');
+const address = document.querySelector('[data-address]'), foot = document.querySelector('[data-foot]');
+function add(cls, html) { const el = document.createElement('div'); el.className = cls; el.innerHTML = html; talk.append(el); return el; }
+async function type(el, text) {
+    if (still) { el.textContent = text; return; }
+    for (let i = 2; i <= text.length; i += 2) { el.textContent = text.slice(0, i); await wait(18); }
+    el.textContent = text;
+}
+// A thought, shown while the agent works: it goes when the answer starts.
+async function think(ms) { const t = add('think', '<span class="shim">Thinking</span><i></i><i></i><i></i>'); await wait(ms); t.remove(); }
+// A call: it spins while it runs, then stands as done.
+async function call(name) { const c = add('call is-running', name); await wait(650); c.classList.remove('is-running'); }
+async function play() {
+    for (;;) {
+        talk.innerHTML = ''; win.className = win.dataset.base; address.textContent = 'seemeeu.example'; foot.textContent = '0 calls';
+        await wait(900);
+        await type(add('q', ''), 'Do you have a sea-view room for Friday and Saturday? We would like to bring our dog.');
+        await think(1200);
+        await call('ShowPage /rooms/garden'); win.classList.add('s-show'); address.textContent = 'seemeeu.example/rooms/garden'; foot.textContent = '1 call';
+        await type(add('a', ''), 'Dogs are welcome in the garden room, R1,250 a night plus R150 for your dog. I have opened it for you.');
+        await wait(1500);
+        await type(add('q', ''), 'Then the garden room, please. Marike, marike@example.com');
+        await think(1000);
+        await call('ShowCard Booking request'); win.classList.add('s-card'); foot.textContent = '2 calls';
+        await type(add('a', ''), 'May I send it to the owner now?');
+        const offer = add('offer', '<span class="yes">Book it</span><span>Change something</span><span>Not now</span>');
+        await wait(1700);
+        offer.firstChild.classList.add('pressed');
+        await think(700);
+        await call('SendLead, once'); win.classList.add('s-sent'); win.querySelector('[data-status]').textContent = 'Sent to the owner';
+        foot.textContent = '3 calls · 2.1 s · US$0.005, an example';
+        await wait(still ? 60000 : 4600);
+        win.querySelector('[data-status]').textContent = 'Not sent yet';
+    }
+}
+if (win) play();
+
+</script>
+<script>
+// Five purples to try. Each is the same five stops, light to dark, so one press changes every surface.
+const purples = [
+    ['Ultraviolet', '#e2dfff', '#9282ff', '#6b4dff', '#3a22c4', '#110a40'],
+    ['Royal', '#efdcff', '#b56cff', '#8a2be2', '#55149e', '#1b0636'],
+    ['Plum', '#f7dcff', '#d57bff', '#ae3ee0', '#7318a0', '#290634'],
+    ['Iris steel', '#e6e3f4', '#a79fdc', '#7a6ec4', '#4a3f90', '#15112f'],
+    ['Amethyst, as before', '#e9defc', '#a985ec', '#8a55d6', '#5b2fa0', '#1c0f38'],
+];
+const panel = document.querySelector('.purples'), label = document.createElement('span');
+function wear(i) {
+    const [name, ...stops] = purples[i];
+    stops.forEach((hex, n) => document.documentElement.style.setProperty('--v' + n, hex));
+    document.querySelectorAll('[data-hex]').forEach(el => el.textContent = stops[+el.dataset.hex]);
+    panel.querySelectorAll('button').forEach((b, n) => b.setAttribute('aria-pressed', n === i));
+    label.textContent = name;
+}
+purples.forEach(([name, ...stops], i) => {
+    const b = document.createElement('button'); b.title = name; b.setAttribute('aria-label', name);
+    stops.forEach((hex, n) => b.style.setProperty('--a' + n, hex));
+    b.addEventListener('click', () => wear(i)); panel.append(b);
+});
+panel.append(label); wear(+(location.hash.match(/purple=(\d)/) || [0, 0])[1]);
+</script>
+<script>
+// The agent, working the page. It is simulated, but it does what the real one does, in the same order: it thinks,
+// it calls a tool, the page answers the call (it scrolls there, the piece lights), and its words stand beside the
+// piece with its choices. A visitor's own pick is a different mark: white is the visitor, violet is the agent.
+(() => {
+    const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wait = ms => new Promise(done => setTimeout(done, still ? 0 : ms));
+    const make = (cls, html = '') => { const el = document.createElement('div'); el.className = cls; el.innerHTML = html; document.body.append(el); return el; };
+
+    // Every card is a piece: it can be asked about, and it can be shown.
+    const pieces = $$('.does .card, .three .card, .fan .shot, .price');
+    pieces.forEach(piece => {
+        piece.dataset.piece = piece.matches('.price') ? 'The price' : (piece.querySelector('h3, b').textContent || '').trim().replace(/\.$/, '');
+        if (getComputedStyle(piece).position === 'static') piece.style.position = 'relative';
+        const tag = document.createElement('i'); tag.className = 'ptag'; tag.textContent = 'Ask about this'; piece.append(tag);
+    });
+
+    const ring = make('agent-ring'), dim = make('agent-dim');
+    const says = make('agent-says', `
+        <div class="side front">
+            <div class="says-head"><span class="orbit" data-says-orb><svg><use href="#orb"/></svg></span><span data-state>thinking</span><button data-close aria-label="Close">×</button></div>
+            <div class="says-think" data-think><span class="shim">Thinking</span><i></i><i></i><i></i></div>
+            <div class="says-calls" data-calls></div>
+            <p class="says-words" data-words></p>
+            <div class="says-pills" data-pills></div>
+            <div class="says-foot"><span data-cost></span><button data-turn>How it did that</button></div>
+        </div>
+        <div class="side back"><b>How it did that</b><div data-back></div><div class="says-foot"><span>from the usage ledger</span><button data-turn>Back</button></div></div>`);
+    const input = $('.box input'), chips = $('.chips');
+    let lit = null, picked = null, run = 0;
+
+    // The orb says what the agent is doing, in the bar, beside its words, and at the top of the page.
+    function orb(state) {
+        $$('.box .orbit, [data-says-orb], [data-hero-orb]').forEach(o => { o.classList.remove('is-thinking', 'is-answering', 'is-listening'); if (state !== 'resting') o.classList.add('is-' + state); });
+        $$('[data-state], [data-hero-state]').forEach(el => el.textContent = state);
+    }
+
+    // The ring and the words stand where the piece is, and move with it.
+    // Where a card stands beside the one being shown, the words take that card's place exactly. Otherwise they
+    // stand beside the piece, or under it where there is no room.
+    function beside(piece) {
+        const flat = el => el && pieces.includes(el) && getComputedStyle(el).transform === 'none';
+        return [piece.nextElementSibling, piece.previousElementSibling].find(flat);
+    }
+    function place() {
+        if (!lit) return;
+        const r = lit.getBoundingClientRect(), pad = 9, next = beside(lit);
+        Object.assign(ring.style, { left: r.left + scrollX - pad + 'px', top: r.top + scrollY - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px', borderRadius: parseFloat(getComputedStyle(lit).borderRadius || 20) + pad + 'px' });
+        if (next) {
+            const n = next.getBoundingClientRect();
+            Object.assign(says.style, { left: n.left + scrollX + 'px', top: n.top + scrollY + 'px', width: n.width + 'px' });
+            says.style.setProperty('--h', n.height + 'px'); says.style.setProperty('--r', getComputedStyle(next).borderRadius);
+            return;
+        }
+        says.style.width = ''; says.style.removeProperty('--h'); says.style.removeProperty('--r');
+        const width = says.offsetWidth || 372;
+        let left = r.right + 28, top = r.top;
+        if (left + width > innerWidth - 20) left = r.left - width - 28;
+        if (left < 20) { left = Math.min(Math.max(r.left, 20), innerWidth - width - 20); top = r.bottom + 24; }
+        Object.assign(says.style, { left: left + scrollX + 'px', top: top + scrollY + 'px' });
+    }
+    addEventListener('scroll', place, { passive: true }); addEventListener('resize', place);
+
+    function clear() {
+        run++; if (lit) { lit.classList.remove('is-lit'); lit.querySelector('.ptag').textContent = lit === picked ? 'You picked this' : 'Ask about this'; }
+        lit = null; [ring, dim, says].forEach(el => el.classList.remove('is-on')); says.classList.remove('is-turned'); orb('resting');
+    }
+
+    // One answer: think, call, light the piece, say it, offer what comes next.
+    async function show(piece, answer) {
+        clear(); const mine = run; orb('thinking');
+        $('[data-words]', says).textContent = ''; $('[data-pills]', says).innerHTML = ''; $('[data-calls]', says).innerHTML = ''; $('[data-cost]', says).textContent = '';
+        $('[data-think]', says).hidden = false;
+        piece.scrollIntoView({ block: 'center', behavior: still ? 'auto' : 'smooth' });
+        await wait(700); if (mine !== run) return;
+        lit = piece; piece.classList.add('is-lit'); piece.querySelector('.ptag').textContent = 'The agent is showing this';
+        dim.classList.add('is-on'); place(); ring.classList.add('is-on'); says.classList.add('is-on');
+        for (const name of answer.calls) {
+            const call = document.createElement('span'); call.className = 'call is-running'; call.textContent = name; $('[data-calls]', says).append(call); place();
+            await wait(750); if (mine !== run) return; call.classList.remove('is-running');
+        }
+        $('[data-think]', says).hidden = true; orb('answering');
+        const words = $('[data-words]', says);
+        for (let i = 3; i <= answer.words.length && !still; i += 3) { words.textContent = answer.words.slice(0, i); await wait(16); if (mine !== run) return; }
+        words.textContent = answer.words;
+        answer.pills.forEach(([label, then]) => { const b = document.createElement('button'); b.textContent = label; b.addEventListener('click', then); $('[data-pills]', says).append(b); });
+        $('[data-cost]', says).textContent = answer.calls.length + (answer.calls.length === 1 ? ' call' : ' calls') + ' · 2.1 s · US$0.005';
+        $('[data-back]', says).innerHTML = answer.calls.map(c => c + '<br>').join('') + '2.1 s · US$0.005, an example';
+        place(); await wait(1400); if (mine === run) orb('resting');
+    }
+
+    const tiles = $$('.does .card');
+    const told = [
+        ['A guest asked for a sea view and a dog. Dogs stay in the garden room, so that is the page I opened, not the one that was asked for.', ['ShowPage /rooms/garden']],
+        ['I draw the booking as a card, so it can be read at a glance and checked before anything is sent.', ['ShowCard Booking request']],
+        ['I never send on my own. I offer the choices, and only a yes sends the request, once.', ['Offer', 'SendLead, once']],
+        ['Every answer keeps its own record: what I called, how long it took and what it cost. This is one. Turn it over.', ['the usage ledger']],
+    ];
+    const walk = i => show(tiles[i], { words: told[i][0], calls: told[i][1], pills: i < 3 ? [['Next', () => walk(i + 1)], ['Stop here', clear]] : [['See one work', () => go('work')], ['Stop here', clear]] });
+    function go(what) {
+        if (what === 'does') return walk(0);
+        if (what === 'work') return show($('.fan .shot.c'), { words: 'This is the guesthouse. A couple asks about a weekend with their dog, and I take the booking. Shall I open it?', calls: ['FindPlace guesthouse', 'ShowPage /demos/guesthouse'], pills: [['Open this demo', clear], ['Show me another', () => show($('.fan .shot.r'), { words: 'The restaurant. A family asks about Sunday lunch at ten at night, and I answer from what the owner told me.', calls: ['ShowPage /demos/restaurant'], pills: [['Open this demo', clear], ['Stop here', clear]] })], ['Stop here', clear]] });
+        if (what === 'price') return show($('.price'), { words: 'A website with an agent on it is R500 to R1,000 a month, hosted. That is the one public price. A custom agent is quoted after we talk.', calls: ['SearchDocs pricing', 'ShowPage /pricing'], pills: [['Ask for yours', clear], ['Stop here', clear]] });
+        clear(); $('#' + what).scrollIntoView({ block: 'start', behavior: still ? 'auto' : 'smooth' });
+    }
+
+    // A visitor's pick: a white ring, and a white chip over the bar, so the next question is about that piece.
+    function pick(piece) {
+        if (picked) { picked.classList.remove('is-picked'); picked.querySelector('.ptag').textContent = 'Ask about this'; }
+        $('.about', chips)?.remove(); picked = piece === picked ? null : piece;
+        input.placeholder = picked ? 'Ask about "' + picked.dataset.piece + '"…' : input.dataset.rest;
+        if (!picked) return orb('resting');
+        picked.classList.add('is-picked'); picked.querySelector('.ptag').textContent = 'You picked this';
+        const chip = document.createElement('span'); chip.className = 'about'; chip.innerHTML = 'About: ' + picked.dataset.piece + '<button aria-label="Let it go">×</button>';
+        chip.querySelector('button').addEventListener('click', e => { e.stopPropagation(); pick(picked); }); chips.prepend(chip); orb('listening'); input.focus();
+    }
+    pieces.forEach(piece => piece.addEventListener('click', e => { e.preventDefault(); if (piece !== lit) pick(piece); }));
+
+    function ask() {
+        if (!picked) return go('does');
+        const piece = picked, at = tiles.indexOf(piece); pick(piece);
+        show(piece, at >= 0 ? { words: told[at][0], calls: told[at][1], pills: [['Show me the next one', () => walk((at + 1) % 4)], ['Stop here', clear]] }
+            : { words: 'You picked "' + piece.dataset.piece + '". I have lit it so we are looking at the same thing. Ask me anything about it.', calls: ['ShowPage ' + piece.dataset.piece.toLowerCase().replace(/\s+/g, '-')], pills: [['What does it cost?', () => go('price')], ['Stop here', clear]] });
+    }
+    input.dataset.rest = input.placeholder;
+    input.addEventListener('focus', () => { if (!lit) orb('listening'); }); input.addEventListener('blur', () => { if (!lit && !picked) orb('resting'); });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') ask(); });
+    $('.box button').addEventListener('click', ask);
+    $$('[data-run]').forEach(b => b.addEventListener('click', () => go(b.dataset.run)));
+    $$('[data-turn]', says).forEach(b => b.addEventListener('click', () => says.classList.toggle('is-turned')));
+    $('[data-close]', says).addEventListener('click', clear); dim.addEventListener('click', clear);
+    addEventListener('keydown', e => { if (e.key === 'Escape') clear(); });
+})();
+
+</script>
+<script>
+// The mark at the top of the page plays its four states in turn. A press on a state holds it.
+(() => {
+    const orb = document.querySelector('[data-demo-orb]'), name = document.querySelector('[data-demo-name]'), line = document.querySelector('[data-demo-line]');
+    const steps = [...document.querySelectorAll('[data-step]')], row = document.querySelector('.state-steps');
+    const states = [
+        ['Resting', '', 'It breathes, and waits for you.'],
+        ['Listening', 'is-listening', 'A ring in your own colour, while you type or pick something on the page.'],
+        ['Thinking', 'is-thinking', 'A light runs round it while it works out what to call.'],
+        ['Answering', 'is-answering', 'It sends out rings while its words arrive.'],
+    ];
+    let at = 0, held = false;
+    function wear(n) {
+        at = n; orb.className = 'orbit ' + states[n][1]; name.textContent = states[n][0]; line.textContent = states[n][2];
+        steps.forEach((b, i) => b.setAttribute('aria-current', i === n));
+    }
+    steps.forEach((b, i) => b.addEventListener('click', () => { held = !(held && at === i); row.classList.toggle('is-held', held); wear(i); }));
+    wear(0); setInterval(() => { if (!held) wear((at + 1) % 4); }, 3600);
+})();
+</script>
+
+<script>
+// A card leans a little towards the pointer, where its finish gives it a lean. A wide card stays still.
+document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        if (r.width > 700) return;
+        card.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 7 + 'deg');
+        card.style.setProperty('--rx', (.5 - (e.clientY - r.top) / r.height) * 7 + 'deg');
+    });
+    card.addEventListener('pointerleave', () => { card.style.removeProperty('--rx'); card.style.removeProperty('--ry'); });
+});
+</script>
+<script>
+// Dark or light, and which purple: both are kept in the address, so the other finish opens the same way.
+(() => {
+    const links = [...document.querySelectorAll('.finish a')], modes = [...document.querySelectorAll('[data-mode]')];
+    const asked = new URLSearchParams(location.hash.slice(1));
+    let purple = +(asked.get('purple') || 0), mode = asked.get('mode') === 'light' ? 'light' : 'dark';
+    function keep() {
+        document.documentElement.dataset.theme = mode;
+        modes.forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === mode));
+        // A visitor's mark is white on the dark page and black on the light one, and the words say which.
+        document.querySelectorAll('[data-you]').forEach(s => s.textContent = mode === 'light' ? (s.dataset.you === 'W' ? 'Black' : 'black') : (s.dataset.you === 'W' ? 'White' : 'white'));
+        const tail = '#purple=' + purple + '&mode=' + mode;
+        links.forEach(a => a.href = a.getAttribute('href').split('#')[0] + tail);
+        history.replaceState(null, '', tail);
+    }
+    document.querySelectorAll('.purples button').forEach((b, i) => b.addEventListener('click', () => { purple = i; keep(); }));
+    modes.forEach(b => b.addEventListener('click', () => { mode = b.dataset.mode; keep(); }));
+    keep();
+})();
+</script>
+</body>
+</html>

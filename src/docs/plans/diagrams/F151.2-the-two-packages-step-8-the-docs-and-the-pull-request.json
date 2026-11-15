@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.2 the two packages: step 8, the docs and the pull request",
+  "caption": "The two design docs, the write-up, main merged in, the full unit suite, one pull request: louis-agent.dev looks as it did.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "d",
+        "label": "the two projects' design docs,\nthe starter's guide",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "s",
+        "label": "merge main, the full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "d",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "pr"
+      }
+    ]
+  }
+}

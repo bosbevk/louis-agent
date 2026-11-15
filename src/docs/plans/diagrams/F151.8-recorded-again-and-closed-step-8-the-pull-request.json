@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 8, the pull request",
+  "caption": "Main is merged in, the full unit suite passes, and the last pull request closes F151.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "s",
+        "label": "merge main, the full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "done",
+        "label": "louis-agent.dev in two themes,\neach light and dark",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "s",
+        "to": "pr"
+      },
+      {
+        "from": "pr",
+        "to": "done"
+      }
+    ]
+  }
+}

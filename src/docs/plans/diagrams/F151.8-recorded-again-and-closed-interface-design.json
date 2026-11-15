@@ -1,0 +1,70 @@
+{
+  "kind": "classes",
+  "title": "F151.8 recorded again, and closed: the interface design",
+  "caption": "No type is added: this child runs what is there. The recording script hears the three businesses' agents, and the film export keeps a hash of each film's files.",
+  "classes": {
+    "types": [
+      {
+        "id": "rec",
+        "name": "record-showroom.sh",
+        "kind": "static, the script, unchanged",
+        "members": [
+          "a dry run: no mail, nothing kept",
+          "SEND_MAIL=1: the recording",
+          "ONLY=one business"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "json",
+        "name": "recordings/showroom/*.json",
+        "kind": "record, replaced in step 3",
+        "members": [
+          "seemeeu-guesthouse",
+          "wheatfield-kitchen",
+          "koringland-attorneys"
+        ],
+        "tone": "teal"
+      },
+      {
+        "id": "film",
+        "name": "louis-agent.film-export",
+        "kind": "static, the tool, unchanged",
+        "members": [
+          "FilmHash",
+          "FilmSource",
+          "FilmName"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "tests",
+        "name": "ShowroomPagesTests",
+        "kind": "the tests that hold a page to its recording",
+        "members": [
+          "each page's questions, word for word",
+          "the website's places, as recorded"
+        ],
+        "tone": "teal"
+      }
+    ],
+    "relations": [
+      {
+        "from": "rec",
+        "to": "json",
+        "kind": "creates"
+      },
+      {
+        "from": "tests",
+        "to": "json",
+        "kind": "uses",
+        "word": "holds each page to"
+      },
+      {
+        "from": "film",
+        "to": "tests",
+        "kind": "uses"
+      }
+    ]
+  }
+}

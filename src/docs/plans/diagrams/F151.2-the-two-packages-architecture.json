@@ -1,0 +1,98 @@
+{
+  "kind": "flow",
+  "type": "package",
+  "title": "F151.2 the two packages: the architecture",
+  "caption": "Two projects above the framework's web and one site that names them: the starter, where every later child is looked at before louis-agent.dev turns over.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "web",
+        "label": "louis-agent.web\nthe contract, from F151.1",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "glass",
+        "label": "louis-agent.web.theme.glass\nGlassTheme.cs (2)\nStyles/theme-glass/_dark.scss (4)\nStyles/theme-glass/_light.scss (5)",
+        "icon": "box",
+        "tone": "green",
+        "group": "themes"
+      },
+      {
+        "id": "flat",
+        "label": "louis-agent.web.theme.flat\nFlatTheme.cs (3)\nStyles/theme-flat/_dark.scss, _light.scss (6)",
+        "icon": "box",
+        "tone": "green",
+        "group": "themes"
+      },
+      {
+        "id": "gt",
+        "label": "louis-agent.web.theme.glass.tests (2, 4, 5)",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "ft",
+        "label": "louis-agent.web.theme.flat.tests (3, 6)",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "starter",
+        "label": "the starter site\nnames Glass, then Flat (7)",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "live",
+        "label": "louis-agent.dev\nnames none yet: unchanged",
+        "icon": "world",
+        "tone": "blue"
+      }
+    ],
+    "edges": [
+      {
+        "from": "glass",
+        "to": "web",
+        "word": "sits on"
+      },
+      {
+        "from": "flat",
+        "to": "web",
+        "word": "sits on"
+      },
+      {
+        "from": "gt",
+        "to": "glass",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "ft",
+        "to": "flat",
+        "word": "holds",
+        "style": "dashed"
+      },
+      {
+        "from": "starter",
+        "to": "glass",
+        "word": "opts in"
+      },
+      {
+        "from": "starter",
+        "to": "flat",
+        "word": "opts in"
+      },
+      {
+        "from": "live",
+        "to": "web"
+      }
+    ],
+    "groups": [
+      {
+        "id": "themes",
+        "label": "the two theme packages"
+      }
+    ]
+  }
+}

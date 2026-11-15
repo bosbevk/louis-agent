@@ -682,3 +682,48 @@ only in Puls). Run that check before using an icon, not after a screenshot.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a frame that names none of its parts, each part bringing its own
 slot-fillers, Template Method for the parts' shared steps and Observer for what they report.
+
+## F151.1: a theme's contract, before any theme (2026-11-15)
+
+F151 lets a visitor pick between two themes, glass and flat, each light and dark. Louis wanted each theme in a
+package of its own, "which then gets wired into core.web". This child built only the wiring, the part a theme plugs
+into, and no theme at all. That was the point. When it merged, every page looked exactly as it did before, and the
+next child could add a theme without touching the framework.
+
+A contract is a few small types and a list of names. A theme is `SiteTheme`, an id and a name, with the id checked
+when the theme is made, because the page writes it into an attribute and a stylesheet's selector. A style is an
+enum, light or dark, read with `SettingChoice` like every other choice. `SiteLook` holds the handful of words the C#
+and the browser must agree on: two attributes, two remembered keys, and that a first visit is light. And
+`_surfaces.scss` names the 23 things a colour can't describe, such as a pane's rim or the mark's gloss. Each is set
+to today's look, so adding them changed nothing on any page.
+
+A plug-in point is one more optional slot. The admin's home card had already been added to `SiteArea` as an
+optional last parameter, so a theme went in the same way: `SiteTheme? Theme = null`. Every area written before still
+compiles, and a theme's package joins by adding an area, as the accounts and evals libraries do. The site's areas
+list the themes in the order named, and the first is the default. This is the step I'd study: open to a new theme,
+with nothing existing changed.
+
+A contract needs a test that pins it. `ThemeSheet` reads a stylesheet as text and says which of the framework's names
+a theme's block for one style leaves unset, so a theme can't quietly let the framework's value show through in one
+style. `SurfaceNamesTests` holds the surfaces sheet to the list name for name. `FirstPaintLookTests` reads the script
+and takes its words from `SiteLook`, so the two programs can't drift apart.
+
+Three findings stopped the build, and each one was a test that didn't fit where the plan put it. Puls's colour test
+took the first two `:root` blocks as the framework's and Puls's, and the surfaces made a new second block. Louis
+picked having it count the framework's blocks from the stylesheet's list instead, which also stops it breaking the
+next time the framework adds a settings sheet. The surfaces' test made its folder one file too full, so the two theme
+tests got a `Themes/` folder of their own. And the framework's tests can't call a site's areas, because the sites
+reference the framework, not the other way round. So the check that a page writes its default theme moved into each
+site's own tests, through one shared helper, `IndexLook`. The rule that every page writes light stayed in the
+framework's tests, where it can see every site.
+
+What I'd do differently. Each of those three could have been found while planning, by asking of every test: what
+does it read, and can it reach that from where it sits? Twice a rule test caught my own words, too. A summary of
+mine named the code-review app inside the framework, and `FrameworkNamesNoSite` refused it. A comment claimed the
+space before `data-theme` kept Puls's `data-bs-theme` out, but that name doesn't contain it at all. And one small
+JavaScript trap is worth remembering: a regular expression tests `null` as the word "null", so the theme check reads
+`theme ?? ""`. Nothing spent money, and there was nothing to measure. The look was checked in the browser, where a
+remembered `dark` and `glass` came back on `<html>` after a reload, and `dim` and `../Glass` were refused.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a plug-in point added as one optional slot, a contract
+written down as a list of names, and each test placed where it can reach what it checks.

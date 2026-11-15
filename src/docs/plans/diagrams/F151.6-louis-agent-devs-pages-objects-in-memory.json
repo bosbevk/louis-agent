@@ -1,0 +1,78 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F151.6 louis-agent.dev's pages: what a page of the site holds",
+  "caption": "A page is the framework's parts in the site's layout: the header's Wordmark holds the mark, and the frame holds the switch.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "layout",
+        "label": "SiteLayout",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "shell",
+        "label": "SiteShell",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "word",
+        "label": "Wordmark",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "orb",
+        "label": "Orb\nwith no letter: it is the o",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "sw",
+        "label": "LookSwitch",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "page",
+        "label": "the page's bands and cards",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "bar",
+        "label": "the agent's bar, in the corner",
+        "icon": "message",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "layout",
+        "to": "shell"
+      },
+      {
+        "from": "shell",
+        "to": "word"
+      },
+      {
+        "from": "word",
+        "to": "orb"
+      },
+      {
+        "from": "shell",
+        "to": "sw"
+      },
+      {
+        "from": "shell",
+        "to": "page"
+      },
+      {
+        "from": "shell",
+        "to": "bar"
+      }
+    ]
+  }
+}

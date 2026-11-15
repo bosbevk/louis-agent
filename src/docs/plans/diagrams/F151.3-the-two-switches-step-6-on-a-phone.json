@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: step 6, on a phone",
+  "caption": "Where the two groups go when the header has no room: read the frame's phone rules first, then place them.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "r",
+        "label": "SiteShell.razor.scss\nits rules under 720 pixels",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "a styles test for the phone rule",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "s",
+        "label": "LookSwitch.razor.scss",
+        "icon": "settings",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "r",
+        "to": "s",
+        "word": "what to fit"
+      },
+      {
+        "from": "x",
+        "to": "s"
+      }
+    ]
+  }
+}

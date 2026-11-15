@@ -80,6 +80,10 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Every site is built on the framework's web:** what would be the same on every site is in `louis-agent.web`, which names no
   site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses, and names its areas with `AddSiteAreas`, **nothing wired by hand from the framework**; every
   place on a page has its own address, `/proof/rand`, never a `#`. [ADR 0084](../../src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md), [0107](../../src/docs/adr/0107-every-section-has-an-address.md), [0120](../../src/docs/adr/0120-nothing-is-hand-wired-from-the-framework.md).
+- **A site's look is a theme and a style, and a theme is values:** the page's `<html>` says both; a theme is a
+  package that sets every name the framework lists, for light and dark, and holds no rule for a component; a
+  component reads names and never names a theme; the visitor picks and the browser remembers.
+  [ADR 0124](../../src/docs/adr/0124-a-sites-look-is-a-theme-and-a-style.md).
 - **One site's feature stays in that site, and a part any site could draw goes to the framework.** Louis,
   2026-11-13, of the CV's records placed in the framework's web: "this is not a framework feature", "this belongs
   to .site only". And the same day, of the showroom's parts: "things that can be shared, must go to framework",

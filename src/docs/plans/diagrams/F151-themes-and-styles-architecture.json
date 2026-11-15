@@ -1,0 +1,159 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151 two themes, each light and dark: the architecture",
+  "caption": "One page, two attributes: the html element says which theme and which style are on, and the stylesheet's block for that pair gives every name its value.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "visitor",
+        "label": "A visitor",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "switch",
+        "label": "LookSwitch in the header\nGlass / Flat · Dark / Light\n(F151.3)",
+        "icon": "settings",
+        "tone": "violet",
+        "group": "browser"
+      },
+      {
+        "id": "store",
+        "label": "localStorage\nsite.theme · site.style",
+        "icon": "box",
+        "tone": "amber",
+        "shape": "data",
+        "group": "browser"
+      },
+      {
+        "id": "paint",
+        "label": "first-paint.js\napplies what the browser\nremembers (F151.1)",
+        "icon": "settings",
+        "tone": "violet",
+        "group": "browser"
+      },
+      {
+        "id": "html",
+        "label": "index.html\n<html data-theme data-style>\nthe site's defaults (F151.1)",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data",
+        "group": "browser"
+      },
+      {
+        "id": "names",
+        "label": "the names every theme sets\nsettings/_colours.scss\nsettings/_surfaces.scss (F151.1)",
+        "icon": "book",
+        "tone": "teal",
+        "group": "web"
+      },
+      {
+        "id": "glass",
+        "label": "louis-agent.web.theme.glass\nits dark and its light values\n(F151.2)",
+        "icon": "box",
+        "tone": "green",
+        "group": "packages"
+      },
+      {
+        "id": "flat",
+        "label": "louis-agent.web.theme.flat\nits dark and its light values\n(F151.2)",
+        "icon": "box",
+        "tone": "green",
+        "group": "packages"
+      },
+      {
+        "id": "css",
+        "label": "the site's app.css\none block per theme and style",
+        "icon": "book",
+        "tone": "green",
+        "group": "site"
+      },
+      {
+        "id": "rules",
+        "label": "every component's own rules\nread the names\n(F151.4, F151.5, F151.6)",
+        "icon": "chip",
+        "tone": "violet",
+        "group": "web"
+      }
+    ],
+    "edges": [
+      {
+        "from": "visitor",
+        "to": "switch"
+      },
+      {
+        "from": "switch",
+        "to": "store",
+        "word": "remembers"
+      },
+      {
+        "from": "switch",
+        "to": "html",
+        "word": "sets both attributes"
+      },
+      {
+        "from": "paint",
+        "to": "store",
+        "word": "reads",
+        "style": "dashed"
+      },
+      {
+        "from": "paint",
+        "to": "html",
+        "word": "before first paint"
+      },
+      {
+        "from": "names",
+        "to": "glass",
+        "word": "must set each one",
+        "style": "dashed"
+      },
+      {
+        "from": "names",
+        "to": "flat",
+        "word": "must set each one",
+        "style": "dashed"
+      },
+      {
+        "from": "glass",
+        "to": "css",
+        "word": "forwarded into"
+      },
+      {
+        "from": "flat",
+        "to": "css",
+        "word": "forwarded into"
+      },
+      {
+        "from": "html",
+        "to": "css",
+        "word": "picks the block"
+      },
+      {
+        "from": "css",
+        "to": "rules",
+        "word": "the values"
+      }
+    ],
+    "groups": [
+      {
+        "id": "browser",
+        "label": "the visitor's browser"
+      },
+      {
+        "id": "web",
+        "label": "louis-agent.web"
+      },
+      {
+        "id": "packages",
+        "label": "the two theme packages"
+      },
+      {
+        "id": "site",
+        "label": "a site"
+      }
+    ]
+  }
+}

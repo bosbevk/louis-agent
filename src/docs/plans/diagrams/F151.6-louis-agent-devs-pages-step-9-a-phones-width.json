@@ -1,0 +1,39 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 9, at a phone's width",
+  "caption": "The mockups were drawn for a wide screen only, so the phone layouts are shown to Louis as pictures before they are built.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "q",
+        "label": "Louis's pick first:\nthe phone layouts, as pictures",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "decision"
+      },
+      {
+        "id": "x",
+        "label": "the phone rules' tests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "r",
+        "label": "site/layout/_responsive.scss\nand the pages' own rules",
+        "icon": "book",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "q",
+        "to": "r"
+      },
+      {
+        "from": "x",
+        "to": "r"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.3 the two switches: step 7, the docs and the pull request",
+  "caption": "Checked on the starter by pressing through all four looks, then the docs, the full suite and the pull request.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "c",
+        "label": "the starter, by eye:\nfour looks, a reload, a second tab",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "d",
+        "label": "projects/louis-agent.web.md",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "s",
+        "label": "merge main, the full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "c",
+        "to": "d"
+      },
+      {
+        "from": "d",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "pr"
+      }
+    ]
+  }
+}

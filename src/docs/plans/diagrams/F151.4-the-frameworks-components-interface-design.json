@@ -1,0 +1,130 @@
+{
+  "kind": "classes",
+  "title": "F151.4 the framework's components: the interface design",
+  "caption": "No new C# but the mark's fifth state: the design is in the shared Sass tools, which draw each kind of surface from the names so no component draws one by hand.",
+  "classes": {
+    "types": [
+      {
+        "id": "surface",
+        "name": "tools/_surface.scss",
+        "kind": "static, the new tool, step 2",
+        "members": [
+          "@mixin pane",
+          "@mixin bar",
+          "@mixin press",
+          "@mixin press-quiet",
+          "@mixin chip",
+          "@mixin tag",
+          "@mixin well"
+        ]
+      },
+      {
+        "id": "window",
+        "name": "tools/_window.scss",
+        "kind": "static, changed in step 3",
+        "members": [
+          "@mixin frame",
+          "@mixin bar",
+          "@mixin dot"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "card",
+        "name": "tools/_chat-card.scss",
+        "kind": "static, changed in step 3",
+        "members": [
+          "@mixin card($look)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "field",
+        "name": "tools/_field.scss",
+        "kind": "static, changed in step 3",
+        "members": [
+          "@mixin label($look)",
+          "@mixin box($look, $size)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "pressed",
+        "name": "tools/_pressed.scss",
+        "kind": "static, changed in step 3",
+        "members": [
+          "@mixin look"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "orb",
+        "name": "Orb",
+        "kind": "component, changed in step 6",
+        "members": [
+          "OrbState State",
+          "string Label",
+          "string? Mark"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "state",
+        "name": "OrbState",
+        "kind": "enum, changed in step 6 on Louis's pick",
+        "members": [
+          "Idle",
+          "Listening (new)",
+          "Thinking",
+          "Showing",
+          "Speaking"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "list",
+        "name": "SurfacesDrawnByHand",
+        "kind": "the list a rule test keeps, step 2",
+        "members": [
+          "the stylesheets still to move",
+          "it may only shrink",
+          "it is empty when this child is done"
+        ],
+        "tone": "teal"
+      }
+    ],
+    "relations": [
+      {
+        "from": "window",
+        "to": "surface",
+        "kind": "uses"
+      },
+      {
+        "from": "card",
+        "to": "surface",
+        "kind": "uses"
+      },
+      {
+        "from": "field",
+        "to": "surface",
+        "kind": "uses"
+      },
+      {
+        "from": "pressed",
+        "to": "surface",
+        "kind": "uses"
+      },
+      {
+        "from": "orb",
+        "to": "state",
+        "kind": "uses"
+      },
+      {
+        "from": "list",
+        "to": "surface",
+        "kind": "uses",
+        "word": "what counts as drawn by the tool"
+      }
+    ]
+  }
+}

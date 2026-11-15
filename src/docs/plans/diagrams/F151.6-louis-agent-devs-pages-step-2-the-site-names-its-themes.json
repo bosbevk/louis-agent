@@ -1,0 +1,38 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.6 louis-agent.dev's pages: step 2, the site names its themes",
+  "caption": "The site opts in, glass first, and its own tokens and elements read the theme's names, so the site's layer follows the switch.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "SitesSayTheirLookTests asks for glass;\na test that the site's tokens\nname no raw colour",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "a",
+        "label": "LouisAgentDevAreas, sasscompiler.json,\napp.scss, index.html",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "t",
+        "label": "site/settings/_tokens.scss\nsite/base/_elements.scss",
+        "icon": "book",
+        "tone": "green"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "a"
+      },
+      {
+        "from": "a",
+        "to": "t"
+      }
+    ]
+  }
+}

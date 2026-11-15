@@ -1,0 +1,97 @@
+{
+  "kind": "sequence",
+  "title": "F151.3 the two switches: a visitor presses Dark",
+  "caption": "One press, three writes and no request: the attribute, the remembered word, and the pressed state of the button.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "label": "A visitor",
+        "tone": "blue",
+        "actor": true
+      },
+      {
+        "id": "SW",
+        "label": "LookSwitch",
+        "tone": "violet",
+        "icon": "settings"
+      },
+      {
+        "id": "JS",
+        "label": "LookSwitch.razor.js",
+        "tone": "violet",
+        "icon": "settings"
+      },
+      {
+        "id": "H",
+        "label": "<html>",
+        "tone": "blue",
+        "icon": "world"
+      },
+      {
+        "id": "LS",
+        "label": "localStorage",
+        "tone": "amber",
+        "icon": "box"
+      },
+      {
+        "id": "O",
+        "label": "Another tab",
+        "tone": "blue",
+        "icon": "world"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "SW",
+        "text": "presses Dark"
+      },
+      {
+        "step": "message",
+        "from": "SW",
+        "to": "JS",
+        "text": "pickStyle(\"dark\")"
+      },
+      {
+        "step": "message",
+        "from": "JS",
+        "to": "H",
+        "text": "data-style = dark"
+      },
+      {
+        "step": "message",
+        "from": "JS",
+        "to": "LS",
+        "text": "site.style = dark"
+      },
+      {
+        "step": "reply",
+        "from": "JS",
+        "to": "SW",
+        "text": "done"
+      },
+      {
+        "step": "note",
+        "over": [
+          "SW"
+        ],
+        "text": "Dark is now the pressed button"
+      },
+      {
+        "step": "message",
+        "from": "LS",
+        "to": "O",
+        "text": "storage event: site.style"
+      },
+      {
+        "step": "message",
+        "from": "O",
+        "to": "O",
+        "text": "sets its own data-style"
+      }
+    ],
+    "numbered": true
+  }
+}

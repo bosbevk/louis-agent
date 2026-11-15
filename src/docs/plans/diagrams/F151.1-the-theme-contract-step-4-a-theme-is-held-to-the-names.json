@@ -1,0 +1,52 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: step 4, a theme is held to the names",
+  "caption": "A helper for tests that later holds each real theme: it reads a stylesheet and says which names a theme leaves unset.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "fw",
+        "label": "the framework's :root block\nthe names to set",
+        "icon": "book",
+        "tone": "violet",
+        "shape": "data"
+      },
+      {
+        "id": "fake",
+        "label": "a made-up theme in the test\nwith one name missing in dark",
+        "icon": "book",
+        "tone": "teal",
+        "shape": "data"
+      },
+      {
+        "id": "check",
+        "label": "ThemeSheet.Missing(…)\nlouis-agent.web.testing",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "ans",
+        "label": "the missing name, and its style",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "fw",
+        "to": "check",
+        "word": "NamesToSet"
+      },
+      {
+        "from": "fake",
+        "to": "check"
+      },
+      {
+        "from": "check",
+        "to": "ans"
+      }
+    ]
+  }
+}

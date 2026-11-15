@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.5 the libraries and the other sites: step 4, the runs",
+  "caption": "What a run looks like: Explorer, Runs, RunPage and LiveRun.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the runs' sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Explorer 14, Runs 5,\nRunPage 3, LiveRun 2",
+        "icon": "chip",
+        "tone": "green"
+      },
+      {
+        "id": "c",
+        "label": "/admin/runs/{RunId}, four looks",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "f",
+        "to": "c",
+        "word": "looked at"
+      }
+    ]
+  }
+}

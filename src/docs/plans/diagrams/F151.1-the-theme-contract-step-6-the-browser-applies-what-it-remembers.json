@@ -1,0 +1,53 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: step 6, the browser applies what it remembers",
+  "caption": "Before the first paint the script sets the two attributes from what the browser kept, and touches nothing when it kept nothing.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "ls",
+        "label": "localStorage\nsite.theme, site.style",
+        "icon": "box",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "fp",
+        "label": "first-paint.js\nan id of a-z, 0-9, - only;\na style of light or dark only",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "html",
+        "label": "<html data-theme data-style>",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "test",
+        "label": "FirstPaintLookTests\nreads the script, as\nAgentBarMotionTests reads the bar's",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ls",
+        "to": "fp",
+        "word": "read"
+      },
+      {
+        "from": "fp",
+        "to": "html",
+        "word": "sets"
+      },
+      {
+        "from": "fp",
+        "to": "test",
+        "word": "held by",
+        "style": "dashed"
+      }
+    ]
+  }
+}

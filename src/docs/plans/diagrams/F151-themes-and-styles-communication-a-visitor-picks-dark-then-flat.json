@@ -1,0 +1,165 @@
+{
+  "kind": "sequence",
+  "title": "F151 two themes, each light and dark: a visitor picks dark, then flat",
+  "caption": "Nothing reloads and nothing is sent: the switch writes two attributes and two words in the browser, and the stylesheet does the rest.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "label": "A visitor",
+        "actor": true,
+        "tone": "blue"
+      },
+      {
+        "id": "B",
+        "label": "The browser",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "FP",
+        "label": "first-paint.js",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "LS",
+        "label": "localStorage",
+        "icon": "box",
+        "tone": "amber"
+      },
+      {
+        "id": "SW",
+        "label": "LookSwitch",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "CSS",
+        "label": "The stylesheet",
+        "icon": "book",
+        "tone": "green"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "B",
+        "text": "opens a page for the first time"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "FP",
+        "text": "runs it in the head"
+      },
+      {
+        "step": "message",
+        "from": "FP",
+        "to": "LS",
+        "text": "site.theme? site.style?"
+      },
+      {
+        "step": "reply",
+        "from": "LS",
+        "to": "FP",
+        "text": "nothing kept"
+      },
+      {
+        "step": "note",
+        "over": [
+          "FP",
+          "B"
+        ],
+        "text": "<html> keeps the site's defaults: glass, light"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "CSS",
+        "text": "data-theme=glass, data-style=light"
+      },
+      {
+        "step": "reply",
+        "from": "CSS",
+        "to": "B",
+        "text": "that block's values"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "SW",
+        "text": "presses Dark"
+      },
+      {
+        "step": "message",
+        "from": "SW",
+        "to": "B",
+        "text": "data-style = dark"
+      },
+      {
+        "step": "message",
+        "from": "SW",
+        "to": "LS",
+        "text": "site.style = dark"
+      },
+      {
+        "step": "reply",
+        "from": "CSS",
+        "to": "B",
+        "text": "the dark values, with no reload"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "SW",
+        "text": "presses Flat"
+      },
+      {
+        "step": "message",
+        "from": "SW",
+        "to": "B",
+        "text": "data-theme = flat"
+      },
+      {
+        "step": "message",
+        "from": "SW",
+        "to": "LS",
+        "text": "site.theme = flat"
+      },
+      {
+        "step": "reply",
+        "from": "CSS",
+        "to": "B",
+        "text": "the flat theme's dark values"
+      },
+      {
+        "step": "block",
+        "block": "opt",
+        "label": "the next visit",
+        "steps": [
+          {
+            "step": "message",
+            "from": "B",
+            "to": "FP",
+            "text": "runs it in the head"
+          },
+          {
+            "step": "reply",
+            "from": "LS",
+            "to": "FP",
+            "text": "flat, dark"
+          },
+          {
+            "step": "message",
+            "from": "FP",
+            "to": "B",
+            "text": "sets both before first paint"
+          }
+        ]
+      }
+    ],
+    "numbered": true
+  }
+}

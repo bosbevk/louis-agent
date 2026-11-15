@@ -13,4 +13,10 @@ public enum WebErrorMessage
         "areas, with the site's admin layout.")]
     [Holes(typeof(AdminAreaWithoutFrameHoles))]
     AdminAreaWithoutFrame,
+
+    [Description(
+        "A theme's id is written into the page and its stylesheet, so it is lower-case letters, digits and hyphens " +
+        "only: '{Id}' is not.")]
+    [Holes(typeof(ThemeIdRefusedHoles))]
+    ThemeIdRefused
 }

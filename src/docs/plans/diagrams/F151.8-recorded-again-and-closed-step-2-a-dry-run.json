@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.8 recorded again, and closed: step 2, a dry run",
+  "caption": "The three conversations are run with no mail and nothing kept, to see that each page still asks what its recording was asked.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "s",
+        "label": "record-showroom.sh\nno SEND_MAIL",
+        "icon": "terminal",
+        "tone": "blue"
+      },
+      {
+        "id": "x",
+        "label": "ShowroomPagesTests",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "r",
+        "label": "what each agent answered,\nand what the run cost",
+        "icon": "message",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "s",
+        "word": "the questions"
+      },
+      {
+        "from": "s",
+        "to": "r"
+      }
+    ]
+  }
+}

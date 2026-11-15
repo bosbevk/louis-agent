@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: step 6, the docs and the pull request",
+  "caption": "The diagrams' two design docs and the guide to drawing a picture, the full suite, the pull request.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "d",
+        "label": "projects/louis-agent.diagrams.md,\nguides/draw-a-diagram.md",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "s",
+        "label": "merge main, the full unit suite",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "pr",
+        "label": "one pull request",
+        "icon": "world",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "d",
+        "to": "s"
+      },
+      {
+        "from": "s",
+        "to": "pr"
+      }
+    ]
+  }
+}

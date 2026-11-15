@@ -1,0 +1,47 @@
+/* The framework's surfaces (F151.1, ADR 0124): the names a theme sets beside the colours, since a colour can't say
+   "glass". A theme gives each one a value for its dark style and its light one; a component reads the names and
+   never names a theme. Each value here is today's look, so with no theme named nothing changes. A site lists this
+   straight after the colours, and its own values after both, so the same name set twice gives the site's.
+
+   A pane is a card or a panel: its fill, its edge (a border), its rim (an image drawn as its edge line), the light
+   inside its corners, the shadow it throws, how it blurs what is behind it, and its corner. Today it is the panel
+   colour in the shared frame's hairline and corner, with none of the rest.
+   A bar is the header, the footer and the agent's bar: its fill, its edge and its blur, as the site's header has
+   them today.
+   A press is the main button, its words, and the second button's outline.
+   The mark is the agent's orb: its disc, its gloss and its letter, as the orb draws them today.
+   You and the agent are each one's mark: the brightest words for you, the framework's purple for the agent.
+   The violet is the brand's purple in five steps, light to dark; until a theme sets them, all five are the
+   framework's one purple. */
+
+:root {
+    --web-pane-fill: var(--bs-secondary-bg);
+    --web-pane-edge: 1px solid var(--bs-border-color);
+    --web-pane-rim: none;
+    --web-pane-light: none;
+    --web-pane-shadow: none;
+    --web-pane-blur: none;
+    --web-pane-radius: 12px;
+
+    --web-bar-fill: rgba(var(--bs-body-bg-rgb), .86);
+    --web-bar-edge: 1px solid var(--bs-border-color);
+    --web-bar-blur: blur(12px);
+
+    --web-press-fill: var(--web-cta);
+    --web-press-ink: var(--web-on-primary);
+    --web-press-edge: 1px solid var(--web-border-hover);
+
+    --web-mark-fill:
+        radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));
+    --web-mark-gloss: inset 0 -3px 8px rgba(var(--web-shadow-rgb), .25), 0 0 18px -4px rgba(var(--web-overlay-rgb), .6);
+    --web-mark-ink: var(--web-on-primary);
+
+    --web-you: var(--web-bright);
+    --web-agent: var(--web-purple);
+
+    --web-violet-0: var(--web-purple);
+    --web-violet-1: var(--web-purple);
+    --web-violet-2: var(--web-purple);
+    --web-violet-3: var(--web-purple);
+    --web-violet-4: var(--web-purple);
+}

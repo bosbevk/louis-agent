@@ -1,0 +1,49 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.1 the theme contract: step 2, a theme and a style are types",
+  "caption": "Three small types and no behaviour yet: what a theme is, the two styles, and the names the browser side shares.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "test",
+        "label": "SiteThemeTests, SiteStyleTests\nwritten first, seen failing",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "theme",
+        "label": "SiteTheme\nrecord: Id, Name\nrefuses an id that is not a-z, 0-9, -",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "style",
+        "label": "SiteStyle\nenum: Light, Dark\nparsed once, written with Wire()",
+        "icon": "box",
+        "tone": "violet"
+      },
+      {
+        "id": "look",
+        "label": "SiteLook\nthe two keys, the two attributes,\nthe default style",
+        "icon": "box",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "test",
+        "to": "theme"
+      },
+      {
+        "from": "test",
+        "to": "style"
+      },
+      {
+        "from": "look",
+        "to": "style",
+        "word": "DefaultStyle"
+      }
+    ]
+  }
+}

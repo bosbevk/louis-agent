@@ -36,7 +36,7 @@ The chat page it makes is the framework's chat shell with your site's name in it
 
 | You want | Do this |
 |---|---|
-| Your own colours | Add a partial setting Bootstrap's colour names after `web/settings/colours` in `Styles/app.scss`; `web/settings/_colours.scss` lists them. A name you leave out keeps the framework's |
+| Your own colours | Add a partial setting Bootstrap's colour names after `web/settings/colours` and `web/settings/surfaces` in `Styles/app.scss`; `web/settings/_colours.scss` lists them. A name you leave out keeps the framework's |
 | Your own rules | For one of your components, an `X.razor.scss` beside its `X.razor`: the build scopes and bundles it. For a rule every page shares, a partial listed after the framework's in `Styles/app.scss`. Look for a variable or a partial to reuse first |
 | Your own landing page | Replace `Pages/LandingPage.razor` |
 | A part of the chat turned on or off | Change `Features` in `Pages/ChatPage.razor.cs`. Language needs your identity's voices, and credits and the place need a site that uses them |

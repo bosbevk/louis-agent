@@ -1,0 +1,38 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.4 the framework's components: step 5, the stage and its windows",
+  "caption": "The showroom's own parts and the staging, and the mock website's parts, which draw from the names too: a business's website runs on an implementation of the theme.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "x",
+        "label": "the list loses the Showroom's\nand the Staging's sheets",
+        "icon": "chart",
+        "tone": "teal"
+      },
+      {
+        "id": "f",
+        "label": "Site/Showroom/ and Staging/\n7 sheets in Staging, 59 lines",
+        "icon": "chip",
+        "tone": "violet"
+      },
+      {
+        "id": "m",
+        "label": "Site/Showroom/Mock/\nthe mock website's parts move too:\na business's values map onto the names",
+        "icon": "chip",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "x",
+        "to": "f"
+      },
+      {
+        "from": "x",
+        "to": "m"
+      }
+    ]
+  }
+}

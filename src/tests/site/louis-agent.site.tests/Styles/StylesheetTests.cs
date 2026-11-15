@@ -7,10 +7,16 @@ namespace LouisAgent.Site.Tests.Styles;
 /// then the site's look, so it keeps no copy (F124: it left the code-review app with the site). What's checked is
 /// what the build really made.
 /// </summary>
-public class StylesheetTests
+public partial class StylesheetTests
 {
     /// <summary>The site's stylesheet.</summary>
     private static readonly SassStylesheet Css = SassStylesheet.Of("louis-agent.site");
+
+    /// <summary>
+    /// One name being read: matches <c>var(--site-gutter</c> and gives its name, but not <c>--site-gutter:</c>.
+    /// </summary>
+    [GeneratedRegex(@"var\((--[a-z0-9-]+)", RegexOptions.NonBacktracking)]
+    private static partial Regex Reads();
 
     /// <summary>The site's three film partials, where every film keyframe lives.</summary>
     private static readonly string[] Films = ["site/movie/stage", "site/movie/short", "site/movie/detail"];
@@ -37,20 +43,17 @@ public class StylesheetTests
     }
 
     /// <summary>
-    /// The site's values come right after the framework's colours, and its plain elements right after the
-    /// framework's, so each builds on the one before and the site's win where they meet.
+    /// The site's values come right after the framework's colours and surfaces (F151.1), and its plain elements
+    /// right after the framework's, so each builds on the one before and the site's win where they meet.
     /// </summary>
     [Test]
     public void TheSitesValuesAndElements_ComeRightAfterTheFrameworks()
     {
-        string list = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/site/louis-agent.site/Styles/app.scss"));
-        var forwards = Regex.Matches(list, "@forward \"([^\"]+)\"").Select(match => match.Groups[1].Value);
-
-        Assert.That(forwards.Take(4),
+        Assert.That(Css.Listed().Take(5),
             Is.EqualTo(new[]
             {
-                "web/settings/colours", "site/settings/tokens", "web/base/elements", "site/base/elements"
+                "web/settings/colours", "web/settings/surfaces", "site/settings/tokens", "web/base/elements",
+                "site/base/elements"
             }));
     }
 
@@ -144,7 +147,7 @@ public class StylesheetTests
     public void EveryNameASiteRuleReads_IsSet()
     {
         string css = Css.Read();
-        var read = Site.Select(Css.Source).SelectMany(source => Regex.Matches(source, @"var\((--[a-z0-9-]+)"))
+        var read = Site.Select(Css.Source).SelectMany(source => Reads().Matches(source))
             .Select(m => m.Groups[1].Value).Distinct().ToList();
         var setByAFilm = new[] { "--loop", "--d" };
 
@@ -176,8 +179,8 @@ public class StylesheetTests
     public void ReducedMotion_StillsTheDecoration_AndLeavesTheFilmsPlaying()
     {
         string source = Css.Source("site/settings/tokens");
-        string block = source[source.IndexOf("@media (prefers-reduced-motion: reduce)")..];
-        block = block[..block.IndexOf("\n}")];
+        string block = source[source.IndexOf("@media (prefers-reduced-motion: reduce)", StringComparison.Ordinal)..];
+        block = block[..block.IndexOf("\n}", StringComparison.Ordinal)];
         var selectors = block.Split('{').Skip(1).Select(rule => rule[(rule.LastIndexOf('}') + 1)..].Trim())
             .Where(s => s.Length > 0).SelectMany(list => list.Split(',')).Select(s => s.Trim()).ToList();
 

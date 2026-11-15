@@ -1,0 +1,43 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F151.7 the pictures follow: step 1, the plan is kept",
+  "caption": "Docs only: this plan and its pictures, and its row in the plans' index.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "p",
+        "label": "plans/F151.7-the-pictures-follow.md",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "d",
+        "label": "its pictures, JSON and SVG",
+        "icon": "book",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "x",
+        "label": "the diagrams' tests",
+        "icon": "chart",
+        "tone": "teal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "p",
+        "to": "d",
+        "word": "shows"
+      },
+      {
+        "from": "d",
+        "to": "x",
+        "word": "held by",
+        "style": "dashed"
+      }
+    ]
+  }
+}
