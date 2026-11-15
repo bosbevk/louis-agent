@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1483 641" width="1483" height="641" role="img" aria-label="louis-agent.web.theme.glass: the interface design" xmlns="http://www.w3.org/2000/svg">
-  <title>louis-agent.web.theme.glass: the interface design</title>
+<svg viewBox="-24 -24 1483 783" width="1483" height="783" role="img" aria-label="louis-agent.web.themes: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.web.themes: the interface design</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -190,70 +190,83 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1483" height="641" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1483" height="783" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a741.5 190 0 1 0 1483 0a741.5 190 0 1 0 -1483 0Z" />
-    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.web.theme.glass: the interface design</text>
+    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.web.themes: the interface design</text>
     <text class="pic-group" x="1435" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M350 62L638 62" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M350 204L638 204L883 204L939 204Q963 204 963 180L963 92Q963 80 975 80L987 80" marker-end="url(#open)" />
-      <path class="cls-line holds" d="M350 62L494 62Q518 62 518 86L518 189Q518 213 542 213L638 213L883 213L987 213L1169 213L1265 213" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M350 62L494 62Q518 62 518 86L518 189Q518 213 542 213L638 213L883 213L987 213L1169 213L1265 213" />
-      <path class="cls-line holds" d="M883 62L987 62" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M883 62L987 62" />
-      <path class="cls-line holds" d="M1169 62L1217 62Q1241 62 1241 86L1241 183Q1241 195 1253 195L1265 195" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1169 62L1217 62Q1241 62 1241 86L1241 183Q1241 195 1253 195L1265 195" />
-      <rect class="pic-pill cls-chip uses" x="528.5" y="53" width="99" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="578" y="65" text-anchor="middle">adds its area</text>
-      <rect class="pic-pill cls-chip holds" x="542.5" y="204" width="71" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="578" y="216" text-anchor="middle">its theme</text>
-      <rect class="pic-pill cls-chip holds" x="901" y="53" width="64" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="933" y="65" text-anchor="middle">collects</text>
-      <rect class="pic-pill cls-chip holds" x="1187" y="53" width="57" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1215.5" y="65" text-anchor="middle">carries</text>
-      <rect class="pic-pill cls-chip uses" x="363.5" y="195" width="141" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="434" y="207" text-anchor="middle">lists the themes of</text>
+      <path class="cls-line uses" d="M350 62L494 62Q518 62 518 86L518 171Q518 195 542 195L638 195" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M350 346L494 346Q518 346 518 322L518 237Q518 213 542 213L638 213" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M350 488L638 488L883 488L939 488Q963 488 963 464L963 234Q963 222 975 222L987 222" marker-end="url(#open)" />
+      <path class="cls-line holds" d="M350 62L638 62L883 62L987 62L1169 62L1217 62Q1241 62 1241 86L1241 174Q1241 186 1253 186L1265 186" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M350 62L638 62L883 62L987 62L1169 62L1217 62Q1241 62 1241 86L1241 174Q1241 186 1253 186L1265 186" />
+      <path class="cls-line holds" d="M350 346L638 346L883 346L987 346L1169 346L1217 346Q1241 346 1241 322L1241 234Q1241 222 1253 222L1265 222" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M350 346L638 346L883 346L987 346L1169 346L1217 346Q1241 346 1241 322L1241 234Q1241 222 1253 222L1265 222" />
+      <path class="cls-line holds" d="M883 204L987 204" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M883 204L987 204" />
+      <path class="cls-line holds" d="M1169 204L1265 204" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1169 204L1265 204" />
+      <rect class="pic-pill cls-chip uses" x="528.5" y="186" width="99" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="578" y="198" text-anchor="middle">adds its area</text>
+      <rect class="pic-pill cls-chip holds" x="542.5" y="53" width="71" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="578" y="65" text-anchor="middle">its theme</text>
+      <rect class="pic-pill cls-chip holds" x="901" y="195" width="64" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="933" y="207" text-anchor="middle">collects</text>
+      <rect class="pic-pill cls-chip holds" x="1187" y="195" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1215.5" y="207" text-anchor="middle">carries</text>
+      <rect class="pic-pill cls-chip uses" x="363.5" y="479" width="141" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="434" y="491" text-anchor="middle">lists the themes of</text>
       <rect class="cls-cover" x="0" y="0" width="350" height="124" rx="14" />
       <rect class="mrq-glass" x="0" y="0" width="350" height="124" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="36.5" text-anchor="middle">S</text>
       <text class="pic-name" x="52" y="28" text-anchor="start">GlassTheme</text>
-      <text class="pic-note" x="52" y="44" text-anchor="start">static, this package</text>
+      <text class="pic-note" x="52" y="44" text-anchor="start">static, Glass/</text>
       <path class="cls-divide" d="M14 64H336" />
       <text class="cls-member" x="14" y="82" text-anchor="start">AreaName = "theme-glass"</text>
       <text class="cls-member" x="14" y="96" text-anchor="start">Theme SiteTheme</text>
       <text class="cls-member" x="14" y="110" text-anchor="start">Glass(this SiteAreasBuilder) SiteAreasBuilder</text>
-      <rect class="cls-cover" x="0" y="143" width="350" height="122" rx="14" />
-      <rect class="mrq-glass" x="0" y="143" width="350" height="122" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="167" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="185.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="171" text-anchor="start">SiteAreas</text>
-      <text class="pic-note" x="52" y="187" text-anchor="start">class, the framework's</text>
-      <text class="pic-note" x="52" y="199" text-anchor="start">web</text>
-      <path class="cls-divide" d="M14 219H336" />
-      <text class="cls-member" x="14" y="237" text-anchor="start">Themes</text>
-      <text class="cls-member" x="14" y="251" text-anchor="start">DefaultTheme</text>
-      <rect class="cls-cover" x="638" y="8" width="245" height="108" rx="14" />
-      <rect class="mrq-glass" x="638" y="8" width="245" height="108" rx="14" />
-      <rect class="cls-badge tone-green" x="652" y="32" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="666" y="50.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="690" y="36" text-anchor="start">SiteAreasBuilder</text>
-      <text class="pic-note" x="690" y="52" text-anchor="start">class, the framework's</text>
-      <text class="pic-note" x="690" y="64" text-anchor="start">web</text>
-      <path class="cls-divide" d="M652 84H869" />
-      <text class="cls-member" x="652" y="102" text-anchor="start">Add(SiteArea) SiteAreasBuilder</text>
-      <rect class="cls-cover" x="987" y="1" width="182" height="122" rx="14" />
-      <rect class="mrq-glass" x="987" y="1" width="182" height="122" rx="14" />
-      <rect class="mrq-edge" x="1011" y="0.5" width="134" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1001" y="25" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1015" y="43.5" text-anchor="middle">R</text>
-      <text class="pic-name" x="1039" y="29" text-anchor="start">SiteArea</text>
-      <text class="pic-note" x="1039" y="45" text-anchor="start">record, the framework's</text>
-      <text class="pic-note" x="1039" y="57" text-anchor="start">web</text>
-      <path class="cls-divide" d="M1001 77H1155" />
-      <text class="cls-member" x="1001" y="95" text-anchor="start">Name, Services, Pages</text>
-      <text class="cls-member" x="1001" y="109" text-anchor="start">SiteTheme? Theme</text>
+      <rect class="cls-cover" x="0" y="284" width="350" height="124" rx="14" />
+      <rect class="mrq-glass" x="0" y="284" width="350" height="124" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="302" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="320.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="52" y="312" text-anchor="start">FlatTheme</text>
+      <text class="pic-note" x="52" y="328" text-anchor="start">static, Flat/</text>
+      <path class="cls-divide" d="M14 348H336" />
+      <text class="cls-member" x="14" y="366" text-anchor="start">AreaName = "theme-flat"</text>
+      <text class="cls-member" x="14" y="380" text-anchor="start">Theme SiteTheme</text>
+      <text class="cls-member" x="14" y="394" text-anchor="start">Flat(this SiteAreasBuilder) SiteAreasBuilder</text>
+      <rect class="cls-cover" x="0" y="427" width="350" height="122" rx="14" />
+      <rect class="mrq-glass" x="0" y="427" width="350" height="122" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="451" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="469.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="455" text-anchor="start">SiteAreas</text>
+      <text class="pic-note" x="52" y="471" text-anchor="start">class, the framework's</text>
+      <text class="pic-note" x="52" y="483" text-anchor="start">web</text>
+      <path class="cls-divide" d="M14 503H336" />
+      <text class="cls-member" x="14" y="521" text-anchor="start">Themes</text>
+      <text class="cls-member" x="14" y="535" text-anchor="start">DefaultTheme</text>
+      <rect class="cls-cover" x="638" y="150" width="245" height="108" rx="14" />
+      <rect class="mrq-glass" x="638" y="150" width="245" height="108" rx="14" />
+      <rect class="cls-badge tone-green" x="652" y="174" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="666" y="192.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="690" y="178" text-anchor="start">SiteAreasBuilder</text>
+      <text class="pic-note" x="690" y="194" text-anchor="start">class, the framework's</text>
+      <text class="pic-note" x="690" y="206" text-anchor="start">web</text>
+      <path class="cls-divide" d="M652 226H869" />
+      <text class="cls-member" x="652" y="244" text-anchor="start">Add(SiteArea) SiteAreasBuilder</text>
+      <rect class="cls-cover" x="987" y="143" width="182" height="122" rx="14" />
+      <rect class="mrq-glass" x="987" y="143" width="182" height="122" rx="14" />
+      <rect class="mrq-edge" x="1011" y="142.5" width="134" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1001" y="167" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1015" y="185.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="1039" y="171" text-anchor="start">SiteArea</text>
+      <text class="pic-note" x="1039" y="187" text-anchor="start">record, the framework's</text>
+      <text class="pic-note" x="1039" y="199" text-anchor="start">web</text>
+      <path class="cls-divide" d="M1001 219H1155" />
+      <text class="cls-member" x="1001" y="237" text-anchor="start">Name, Services, Pages</text>
+      <text class="cls-member" x="1001" y="251" text-anchor="start">SiteTheme? Theme</text>
       <rect class="cls-cover" x="1265" y="150" width="170" height="108" rx="14" />
       <rect class="mrq-glass" x="1265" y="150" width="170" height="108" rx="14" />
       <rect class="mrq-edge" x="1289" y="149.5" width="122" height="1.6" rx="0" />
@@ -265,7 +278,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="cls-divide" d="M1279 226H1421" />
       <text class="cls-member" x="1279" y="244" text-anchor="start">Id, Name</text>
     </g>
-    <g class="cls-legend" transform="translate(0 478)">
+    <g class="cls-legend" transform="translate(0 620)">
       <rect class="mrq-rule" x="0" y="0" width="1435" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
@@ -287,14 +300,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="822.2" y="52.5" text-anchor="start">uses</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="556" width="1435" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 566) scale(0.6667)">
+  <rect class="notebar" x="0" y="698" width="1435" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 708) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="578">
-    <tspan class="note-head">One class:</tspan>
-    <tspan class="note-rest">the glass theme, and the area a site names to wear it, added through the framework's builder.</tspan>
+  <text class="notes" x="38" y="720">
+    <tspan class="note-head">A class per theme:</tspan>
+    <tspan class="note-rest">each holds its theme and adds the area a site names to wear it, through the framework's builder.</tspan>
   </text>
 </svg>

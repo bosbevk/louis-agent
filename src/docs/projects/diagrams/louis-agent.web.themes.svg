@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 944 440" width="944" height="440" role="img" aria-label="louis-agent.web.theme.glass at a glance" xmlns="http://www.w3.org/2000/svg">
-  <title>louis-agent.web.theme.glass at a glance</title>
+<svg viewBox="-24 -24 944 522" width="944" height="522" role="img" aria-label="louis-agent.web.themes at a glance" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.web.themes at a glance</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -169,10 +169,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="944" height="440" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="522" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.web.theme.glass at a glance</text>
+    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.web.themes at a glance</text>
     <text class="pic-group" x="896" y="14" text-anchor="end">Overview</text>
     <g class="crd-cards" transform="translate(0 38)">
       <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
@@ -195,11 +195,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="crd-headline" x="448" y="92" text-anchor="middle">The glass theme</text>
-      <rect class="mrq-pill" x="344.2" y="108" width="207.6" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.web.theme.glass</text>
-      <text class="crd-lede" x="448" y="160" text-anchor="middle">A look a site can wear: a theme is only values, and this is the package that holds them.</text>
-      <rect class="mrq-glass" x="0" y="222" width="284" height="132" rx="14" />
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">The themes</text>
+      <rect class="mrq-pill" x="361.2" y="108" width="173.6" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.web.themes</text>
+      <text class="crd-lede" x="448" y="160" text-anchor="middle">The looks a site can wear, one folder each: a theme is only values.</text>
+      <rect class="mrq-glass" x="0" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 248) scale(0.75)">
@@ -208,29 +208,37 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="crd-name" x="64" y="263" text-anchor="start">An area to name</text>
+      <text class="crd-name" x="64" y="263" text-anchor="start">Glass</text>
       <text class="pic-text" x="18" y="298" text-anchor="start">A site writes .Glass() among its areas,</text>
       <text class="pic-text" x="18" y="316" text-anchor="start">and its areas list the glass theme.</text>
-      <rect class="mrq-glass" x="306" y="222" width="284" height="132" rx="14" />
+      <rect class="mrq-glass" x="306" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(332 248) scale(0.75)">
-        <path d="M6.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-        <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
+        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+        <path d="M12 12l8 -4.5" />
+        <path d="M12 12l0 9" />
+        <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="crd-name" x="370" y="263" text-anchor="start">Its id and name</text>
-      <text class="pic-text" x="324" y="298" text-anchor="start">glass in the page and its stylesheet,</text>
-      <text class="pic-text" x="324" y="316" text-anchor="start">Glass on the switch, checked when it is</text>
-      <text class="pic-text" x="324" y="334" text-anchor="start">made.</text>
-      <rect class="mrq-glass" x="612" y="222" width="284" height="132" rx="14" />
+      <text class="crd-name" x="370" y="263" text-anchor="start">Flat</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">A site writes .Flat(), and its areas</text>
+      <text class="pic-text" x="324" y="316" text-anchor="start">list the flat theme.</text>
+      <rect class="mrq-glass" x="612" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(638 248) scale(0.75)">
+        <path d="M6.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+        <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
+      </g>
+      <text class="crd-name" x="676" y="263" text-anchor="start">The first is the default</text>
+      <text class="pic-text" x="630" y="298" text-anchor="start">Each theme's id goes into the page; the</text>
+      <text class="pic-text" x="630" y="316" text-anchor="start">first a site names is its default.</text>
+      <rect class="crd-quiet" x="0" y="362" width="896" height="74" rx="14" />
+      <g class="crd-icon quiet" transform="translate(20 382) scale(0.75)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
-      <text class="crd-name" x="676" y="263" text-anchor="start">Nothing else</text>
-      <text class="pic-text" x="630" y="298" text-anchor="start">It registers nothing, brings no pages</text>
-      <text class="pic-text" x="630" y="316" text-anchor="start">and names no component.</text>
+      <text class="crd-name quiet" x="50" y="396" text-anchor="start">Nothing else</text>
+      <text class="pic-text" x="20" y="422" text-anchor="start">No theme registers a service, brings a page or names a component.</text>
     </g>
   </g>
 </svg>

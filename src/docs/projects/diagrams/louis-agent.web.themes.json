@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.web.themes at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "themes", "icon": "browser", "title": "The themes", "code": "louis-agent.web.themes",
+          "look": "highlight",
+          "text": "The looks a site can wear, one folder each: a theme is only values." }
+      ] },
+      { "cards": [
+        { "id": "glass", "icon": "box", "title": "Glass",
+          "text": "A site writes .Glass() among its areas, and its areas list the glass theme." },
+        { "id": "flat", "icon": "box", "title": "Flat",
+          "text": "A site writes .Flat(), and its areas list the flat theme." },
+        { "id": "order", "icon": "tag", "title": "The first is the default",
+          "text": "Each theme's id goes into the page; the first a site names is its default." }
+      ] },
+      { "cards": [
+        { "id": "nothing", "icon": "shield", "title": "Nothing else",
+          "text": "No theme registers a service, brings a page or names a component." }
+      ] }
+    ],
+    "links": [
+      { "from": "themes", "to": "glass" },
+      { "from": "themes", "to": "flat" },
+      { "from": "themes", "to": "order" }
+    ]
+  }
+}

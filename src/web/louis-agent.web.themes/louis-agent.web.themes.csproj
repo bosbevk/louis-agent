@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- F151.2: the themes a site can opt into, glass and flat, each a package of values (ADR 0124). A folder per
+       theme, each with one class that adds an area carrying the theme, and its sheets of values for its dark and its
+       light style; nothing here names a component. It holds no component of its own, so it needs neither Razor nor
+       the Sass compiler: a site's own build compiles the sheets, as it does the framework's. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Themes</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: what a theme and an area are. -->
+    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.web.themes.md" Link="docs\louis-agent.web.themes.md" />
+  </ItemGroup>
+
+</Project>

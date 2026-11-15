@@ -1,8 +1,9 @@
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Themes;
+using LouisAgent.Web.Themes.Glass;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Theme.Glass.Tests;
+namespace LouisAgent.Web.Themes.Tests.Glass;
 
 /// <summary>
 /// F151.2: a site wears the glass theme by naming it among its areas, and its areas then list glass, once, however

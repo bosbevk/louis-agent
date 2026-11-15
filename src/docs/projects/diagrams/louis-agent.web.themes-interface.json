@@ -1,17 +1,27 @@
 {
   "kind": "classes",
-  "title": "louis-agent.web.theme.glass: the interface design",
-  "caption": "One class: the glass theme, and the area a site names to wear it, added through the framework's builder.",
+  "title": "louis-agent.web.themes: the interface design",
+  "caption": "A class per theme: each holds its theme and adds the area a site names to wear it, through the framework's builder.",
   "classes": {
     "types": [
       {
         "id": "glass",
         "name": "GlassTheme",
-        "kind": "static, this package",
+        "kind": "static, Glass/",
         "members": [
           "+AreaName = \"theme-glass\"",
           "+Theme SiteTheme",
           "+Glass(this SiteAreasBuilder) SiteAreasBuilder"
+        ]
+      },
+      {
+        "id": "flat",
+        "name": "FlatTheme",
+        "kind": "static, Flat/",
+        "members": [
+          "+AreaName = \"theme-flat\"",
+          "+Theme SiteTheme",
+          "+Flat(this SiteAreasBuilder) SiteAreasBuilder"
         ]
       },
       {
@@ -51,7 +61,9 @@
     ],
     "relations": [
       { "from": "glass", "to": "builder", "kind": "uses", "word": "adds its area" },
+      { "from": "flat", "to": "builder", "kind": "uses", "word": "adds its area" },
       { "from": "glass", "to": "theme", "kind": "holds", "word": "its theme" },
+      { "from": "flat", "to": "theme", "kind": "holds", "word": "its theme" },
       { "from": "builder", "to": "area", "kind": "holds", "word": "collects" },
       { "from": "area", "to": "theme", "kind": "holds", "word": "carries" },
       { "from": "areas", "to": "area", "kind": "uses", "word": "lists the themes of" }
