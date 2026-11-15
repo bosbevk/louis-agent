@@ -356,5 +356,35 @@ can be any size, so how a drawing is made to fit its piece is not known yet.
 It is built in [F151.4](F151.4-the-frameworks-components.md), the next child, and that plan says how under its
 own *Approved during the build*.
 
+**The main button is lit like the mark, and the landing page wears the glass** (Louis, 2026-11-15, looking at
+`glass.html` drawn again in crystal: "look at our mark make it like just shiny", "non see through", "all primary",
+"less glow", "the dark one look good but for the light one i would tone it down more", and of the last of several
+tries, "the previous version were spot on"). The entry above says the main button is violet glass. This says how it
+looks, for the glass theme only.
+
+It is solid, so nothing behind it shows through. Its colour is the brand's violet and nearly even, a shade lighter
+where the light lands at the top left and a shade deeper at the far end. It carries the mark's own glint, a small
+white oval with a dot beside it at the top left, and no soft light: no bright sky across the top, no light at the
+bottom, no haze round it. Its edge is about half as bright as a clear piece's, and its shadow is short and dark.
+In the light theme it is calmer still, with the white bloom inside it and the white of its cut edge turned well
+down, because those were what still glowed there. Only a main button wears this. A quiet button stays clear glass.
+What he turned down on the way: a hard reflection across the top, a straight line of light, shading that made it
+a round rod, and the plain violet with no glint.
+
+The chips that float over the bar are the exception among the quiet ones ("these must be more white or shiny").
+They stand over anything, a dark film too, so they have a milky white body under their glass edge, smoked grey in
+the dark theme, and their words stay readable.
+
+`glass.html` is now that landing page wearing the stretching drawings, so it is the page to build the site's look
+against. Every surface on it is handed its drawing by one block of styles at the end of its head, which is also
+the shortest example of how a piece wears one: the drawing is the piece's own background, laid at the full size of
+the piece. Its states row no longer shows a dashed edge or a ring, since a state is light. It has a new part, *the
+controls* ("update this main page to use all our controls"), with the switch, the slider, the field, the well, the
+tags, the status pill, a button that is off and the focus ring, each one working. The showroom film and the small
+screens inside its cards are pictures of another site and are not glass.
+
+The drawings in [glass-crystal-stretch/](F151-mockups/glass-crystal-stretch/) were saved again with this violet,
+so `press-rest.svg`, `press-hover.svg` and `toggle-on.svg` there are the ones to use.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [F151.1, the first child](F151.1-the-theme-contract.md)
