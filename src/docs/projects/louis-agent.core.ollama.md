@@ -8,24 +8,42 @@
 
 ## Purpose
 
-Ollama on core (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the provider strategy that
-talks to a local model through OllamaSharp. A program hands `OllamaProvider.Instance` to `AgentHost.Build` in its
-`HostServices`; core itself ships no SDK.
+This project lets the agent talk to a model running on your own machine, through Ollama. It's the provider strategy
+for Ollama: one class that turns the settings into a client, using the OllamaSharp library.
+
+Core ships no model SDK of its own. So a program that wants a local model hands `OllamaProvider.Instance` to
+`AgentHost.Build`, inside its `HostServices`.
+
+*Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
 ## How it works
 
-How a client is made, step by step.
+Here's how a client gets made.
 
 ![A client: at the endpoint given or Ollama's own port, over an HttpClient with a ten-minute timeout](diagrams/louis-agent.core.ollama-flow.svg)
 
-`OllamaProvider` is core's `ILlmProvider` seam made real, a singleton: named `ollama`; `Create(options)` is
-OllamaSharp's client over an `HttpClient` at `LLM_ENDPOINT`, or Ollama's own port on this machine, with a ten-minute
-timeout, since a small GPU writes about five tokens a second and HttpClient's default 100 seconds cancelled replies
-Ollama was still writing. It reports usage in the standard fields and marks no cache, so the seam's defaults hold.
+### 1. Making the client
+
+`OllamaProvider` is core's `ILlmProvider` seam made real, and there's only ever one of it. Its name is `ollama`.
+
+When core asks it for a client with `Create(options)`, it builds OllamaSharp's client over an `HttpClient`. The
+address is `LLM_ENDPOINT`, or Ollama's own port on this machine when that's not set.
+
+### 2. Why the long timeout
+
+The client waits up to ten minutes for a reply. That's on purpose. A small GPU writes about five tokens a second,
+and HttpClient's default of 100 seconds was cancelling replies Ollama was still busy writing.
 
 ![louis-agent.core.ollama: How it works](diagrams/louis-agent.core.ollama-how-it-works.svg)
 
+### 3. Usage and caching
+
+Ollama reports its token usage in the standard fields, and it has no prompt cache to mark. So this provider adds
+nothing there, and the seam's defaults just hold.
+
 ![One reply from a local model: the provider builds the client, then the engine talks to Ollama through OllamaSharp](diagrams/louis-agent.core.ollama-sequence.svg)
+
+These are the types involved:
 
 ![The types: OllamaProvider is core's provider seam over OllamaSharp's client](diagrams/louis-agent.core.ollama-interface.svg)
 
@@ -39,13 +57,15 @@ src/tests/engine/louis-agent.core.ollama.tests/   # the timeout, the address, th
 
 ## Configuration
 
-`LLM_PROVIDER=ollama`, `LLM_MODEL`, `LLM_ENDPOINT` (unset: `http://localhost:11434`); core's `LlmOptions` names this
-provider for a model that isn't `claude*`, and knows which local models take no tools.
+You pick it with `LLM_PROVIDER=ollama`, and name the model with `LLM_MODEL`. `LLM_ENDPOINT` says where Ollama is;
+when it's not set, that's `http://localhost:11434`. Core's `LlmOptions` already picks this provider for any model
+whose name doesn't start with `claude`, and it knows which local models can't take tools.
 
 ## Tests
 
-`src/tests/engine/louis-agent.core.ollama.tests`: the client waits longer than the default, talks to the endpoint or
-localhost, and the registry gives it the standard mapper and no cache.
+The tests are in `src/tests/engine/louis-agent.core.ollama.tests`. They check that the client waits longer than the
+default, that it talks to the endpoint you gave or to localhost, and that the registry gives it the standard usage
+mapper and no cache.
 
 ## Related docs
 

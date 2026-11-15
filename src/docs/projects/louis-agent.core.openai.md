@@ -9,25 +9,43 @@
 
 ## Purpose
 
-OpenAI-compatible servers on core (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the
-provider strategy for anything that speaks OpenAI's chat API at an endpoint you name (LM Studio, vLLM, OpenAI
-itself). A program hands `OpenAiCompatibleProvider.Instance` to `AgentHost.Build` in its `HostServices`; core itself
-ships no SDK.
+This project lets the agent talk to any server that speaks OpenAI's chat API, at an address you name. That could be
+LM Studio, vLLM, or OpenAI itself. It's the provider strategy for all of them, built on the OpenAI SDK.
+
+Core ships no model SDK of its own. So a program that wants one of these hands
+`OpenAiCompatibleProvider.Instance` to `AgentHost.Build`, inside its `HostServices`.
+
+*Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
 ## How it works
 
-How a client is made, step by step.
+Here's how a client gets made.
 
 ![A client: refused without an endpoint, built with the key given or a placeholder](diagrams/louis-agent.core.openai-flow.svg)
 
-`OpenAiCompatibleProvider` is core's `ILlmProvider` seam made real, a singleton: named `openai-compatible`;
-`Create(options)` refuses settings without `LLM_ENDPOINT`, and builds the OpenAI SDK's client with the key given or
-a placeholder, since a local server often wants none and the SDK wants something. It reports usage in the standard
-fields and marks no cache, so the seam's defaults hold.
+### 1. Making the client
+
+`OpenAiCompatibleProvider` is core's `ILlmProvider` seam made real, and there's only ever one of it. Its name is
+`openai-compatible`.
+
+When core asks it for a client with `Create(options)`, it first checks for `LLM_ENDPOINT`. Without an address
+there's nothing to talk to, so it refuses. With one, it builds the OpenAI SDK's client.
+
+### 2. The key, or a placeholder
+
+If you gave a key, the client uses it. If you didn't, it uses a placeholder. That's because a local server often
+wants no key at all, but the SDK insists on having something.
 
 ![louis-agent.core.openai: How it works](diagrams/louis-agent.core.openai-how-it-works.svg)
 
+### 3. Usage and caching
+
+These servers report token usage in the standard fields, and there's no prompt cache to mark. So this provider
+adds nothing there, and the seam's defaults just hold.
+
 ![One reply from your endpoint: no endpoint and the provider refuses, with one the engine talks to it through the OpenAI SDK](diagrams/louis-agent.core.openai-sequence.svg)
+
+These are the types involved:
 
 ![The types: OpenAiCompatibleProvider is core's provider seam over the OpenAI SDK](diagrams/louis-agent.core.openai-interface.svg)
 
@@ -42,12 +60,14 @@ src/tests/engine/louis-agent.core.openai.tests/   # the endpoint rule, a client 
 
 ## Configuration
 
-`LLM_PROVIDER=openai-compatible`, `LLM_MODEL`, `LLM_ENDPOINT` (required), `LLM_API_KEY` (optional).
+You pick it with `LLM_PROVIDER=openai-compatible` and name the model with `LLM_MODEL`. `LLM_ENDPOINT` is
+required, and `LLM_API_KEY` is optional.
 
 ## Tests
 
-`src/tests/engine/louis-agent.core.openai.tests`: no endpoint is refused by name, an endpoint and no key builds, and
-the registry gives it the standard mapper and no cache.
+The tests are in `src/tests/engine/louis-agent.core.openai.tests`. They check that a missing endpoint is refused,
+naming the setting, that an endpoint with no key still builds, and that the registry gives it the standard usage
+mapper and no cache.
 
 ## Related docs
 

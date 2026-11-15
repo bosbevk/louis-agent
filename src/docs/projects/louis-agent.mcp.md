@@ -8,36 +8,72 @@
 
 ## Purpose
 
-Hands louis-agent's tools, and the packs' data feeds, to any [Model Context Protocol](https://modelcontextprotocol.io) client — Claude Desktop, Rider,
-or an agent built on another SDK. It has **no model of its own**: the client's model decides which tool to call, one
-call at a time. (To have louis-agent do a whole task itself, use the API's sessions instead —
-[which interface to use](../AGENT_COMMUNICATION.md#which-interface-to-use).)
+This host hands louis-agent's tools, and the packs' data feeds, to any
+[Model Context Protocol](https://modelcontextprotocol.io) client: Claude Desktop, Rider, or an agent built on another
+SDK.
+
+The thing to know is that it has **no model of its own**. The client's model decides which tool to call, one call at
+a time. If you want louis-agent to do a whole task by itself, use the API's sessions instead
+([which interface to use](../AGENT_COMMUNICATION.md#which-interface-to-use)).
 
 ## How it works
 
 ![The MCP server: from a client's call to the engine's tools, and the notice back when they change](diagrams/louis-agent.mcp-how-it-works.svg)
 
-- **Start-up:** `AgentHost.BuildToolHost()` — the same engine, skills and agent-built tools as the other hosts, with a
-  stand-in chat client that refuses to be called.
-- **Transport** by `MCP_TRANSPORT`: `stdio` (default; the client starts the server as a subprocess) or `http` (Streamable
-  HTTP via `MapMcp()`, for remote clients, port 8080 in the container → `127.0.0.1:${MCP_PORT:-5090}`); read once
-  as the `McpTransport` enum (`McpTransportSetting`, in `Transport/`, this server's own since CL57), and any other value stops start-up.
-- **Tools:** `EngineToolSync` mirrors `AgentEngine.Tools` into the MCP tool collection and keeps it in sync: when the
-  agent builds or approves a tool, clients get `notifications/tools/list_changed`. `SkillsToolProvider` adds three
-  read-only skill tools; skills themselves run through the engine's `ExecuteSkill`.
-- **Resources (F56, [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)):** `FeedResources` makes one resource per feed
-  in the catalogue (`AgentCatalog.Feeds`, [ADR 0070](../adr/0070-packs-publish-data-feeds.md)): `feed://{name}`, the
-  feed's description, `application/json`, read whole when asked. Built once at start-up; the SDK answers
-  `resources/list` and `resources/read`. `McpPrimitives.Add` sets up the tools and the resources for both transports.
-- **Auth (HTTP only):** `MCP_API_KEY` (falls back to `AGENT_API_KEY`) as `x-api-key` or `Authorization: Bearer`,
-  compared in constant time by core's `HostAuth`, the API's rule too. Without a key it refuses to start (FX18), unless
-  `AGENT_AUTH=off` says a machine may run it open on purpose — then keep it on `127.0.0.1`. Over stdio no key: the
-  client's child process.
-- **Approval stays with the user:** approving agent-built tools is not exposed over MCP.
+### 1. Starting up without a model
 
-A client using it:
+It starts with `AgentHost.BuildToolHost()`. That gives it the same engine, skills and agent-built tools as every
+other host. The only difference is the chat client: it's a stand-in that refuses to be called, since the model is
+the client's.
+
+### 2. Stdio or HTTP
+
+`MCP_TRANSPORT` picks how clients reach it. `stdio` is the default: the client starts the server as a child process
+and talks to it over its input and output. `http` is Streamable HTTP, through `MapMcp()`, for clients on another
+machine. In the container that's port 8080, which shows up as `127.0.0.1:${MCP_PORT:-5090}` on your PC.
+
+The setting is read once, as the `McpTransport` enum (`McpTransportSetting`, in `Transport/`). Any other value stops
+the start-up.
+
+*Decided in:* CL57.
+
+### 3. The tools, kept in step
+
+`EngineToolSync` copies `AgentEngine.Tools` into the MCP tool collection, and keeps the two in step. So when the
+agent builds or approves a tool, clients get told with `notifications/tools/list_changed`.
+
+`SkillsToolProvider` adds three read-only skill tools. The skills themselves still run through the engine's
+`ExecuteSkill`.
+
+### 4. The feeds as resources
+
+`FeedResources` turns each feed in the catalogue (`AgentCatalog.Feeds`) into one resource: `feed://{name}`, with the
+feed's description, as `application/json`, read whole when a client asks. They're built once at start-up, and the
+SDK answers `resources/list` and `resources/read` itself. `McpPrimitives.Add` sets up the tools and the resources
+for both transports.
+
+*Decided in:* F56, [ADR 0072](../adr/0072-feeds-are-mcp-resources.md), [ADR 0070](../adr/0070-packs-publish-data-feeds.md).
+
+### 5. The key, over HTTP
+
+Over HTTP a client needs a key: `MCP_API_KEY`, or `AGENT_API_KEY` when that's not set. It's sent as `x-api-key` or
+`Authorization: Bearer`, and compared in constant time by core's `HostAuth`, the same rule the API uses.
+
+Without a key, the server refuses to start. The one exception is `AGENT_AUTH=off`, which says a machine may run it
+open on purpose; then keep it on `127.0.0.1`. Over stdio there's no key, because the client started the server
+itself as its own child process.
+
+*Decided in:* FX18.
+
+### 6. Approval stays with you
+
+Approving the agent's own tools is never offered over MCP. That stays with the user.
+
+Here's a client using it:
 
 ![A client using the tools: it lists and calls the engine's tools through the SDK's server, hears when they change, and reads a feed](diagrams/louis-agent.mcp-diagrams.svg)
+
+These are the types involved:
 
 ![The types: the host adds the engine's tools kept in step, the feeds as resources and the skills as tools](diagrams/louis-agent.mcp-interface.svg)
 
@@ -52,31 +88,35 @@ A client using it:
 
 ## Configuration
 
-Where it runs: in its program, in the `mcp-server` container, over stdio or on the PC's own address.
+It runs in its program, in the `mcp-server` container, over stdio or on the PC's own address.
 
 ![Where the MCP server runs: a client reaches its container over stdio or on 127.0.0.1:5090, and it reaches the collector and its folders](diagrams/louis-agent.mcp-deployment.svg)
 
-Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY`, `AGENT_AUTH`. Client entry for Rider:
-`config/rider/rider-mcp-servers.example.json`.
+It uses core's settings, without any `LLM_*`, plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY` and `AGENT_AUTH`. The
+entry for Rider as a client is `config/rider/rider-mcp-servers.example.json`.
 
-**In stdio mode stdout carries the protocol**: logging goes to stderr only.
+**In stdio mode, stdout carries the protocol**, so logging goes to stderr only.
 
 ## Extending it
 
-The steps are in [Change the MCP server](../guides/change-the-mcp-server.md). In short: engine tools appear by
-themselves; an MCP-only tool is an `[McpServerToolType]` class registered in both transports.
+The steps are in [Change the MCP server](../guides/change-the-mcp-server.md). In short: the engine's tools show up
+by themselves. A tool only for MCP is an `[McpServerToolType]` class, registered in both transports.
 
 ## Tests
 
-`src/tests/hosts/louis-agent.mcp.tests` (F56) runs the SDK's real client against the server's setup over two in-memory
-pipes: the feeds as resources and the tools beside them. Its auth rule is core's `HostAuth` (`HostAuthTests`), and the
-tools it publishes are tested where they live. Checked with an MCP client and, for HTTP, with curl (no key → 401, right key → 200).
+The tests are in `src/tests/hosts/louis-agent.mcp.tests`. They run the SDK's real client against the server's setup,
+over two in-memory pipes, and check the feeds as resources with the tools beside them. The key rule is core's
+`HostAuth`, tested in `HostAuthTests`, and the tools it publishes are tested where they live. It was also checked
+by hand with an MCP client, and over HTTP with curl: no key gives 401, the right key gives 200.
 
 ## Limits and plans
 
-- `AGENT_AUTH=off` runs the HTTP transport unauthenticated, for local use only (FX18 closed the accidental case).
-- It publishes every toolset the instance can load; choosing some, as API sessions do
-  ([F5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md)), would need a setting or a per-client profile.
+`AGENT_AUTH=off` runs the HTTP transport with no key at all, so it's for local use only. FX18 closed the case where
+that happened by accident.
+
+It publishes every toolset the instance can load. Choosing only some, the way API sessions do
+([F5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md)), would need a
+setting or a profile per client.
 
 ## Related docs
 
