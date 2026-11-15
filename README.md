@@ -40,9 +40,12 @@ own agents.
 | An admin that is a frame its areas plug into: an overview of the talks and what they cost, the packs' pages, the eval studio with its queue of answers waiting for a person's grade | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
 | **louis-agent.dev**, the framework's own website (`src/site`), on the framework's web: a guide in the corner that knows the page you are on, takes you to a section and draws cards and forms in the chat; a showroom of three made-up businesses whose agents you can try live; every page served as HTML so a search engine can read it | |
+| **A showroom the agent runs:** the guide sits in an agent bar under the page, lights the part it explains, and opens each made-up business's own website in a window with that business's chat beside it | |
+| Louis's CV as a page on the site (`/cv`), edited in place in the admin and printed to PDF from the same page | |
+| Every diagram in the docs drawn from JSON by our own renderer, from flows and sequences to component and composite structure pictures | |
 | Accounts as a library a site opts into: sign-in, social logins, passkeys, a tenant from the host name | |
 | A new site from a template (`dotnet new louis-site`): a chat and an admin on the framework's web | |
-| louis-agent.dev running in Azure Container Apps, deployed from GitHub on every merge with no stored password | |
+| louis-agent.dev running in Azure Container Apps, deployed from GitHub on every merge with no stored password | One docs endpoint every doc is served from, and the rest of the site in the showroom's look |
 | A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
 The full order is in the [TODO](TODO.md) and the [roadmap](ROADMAP.md); what's finished is in the
