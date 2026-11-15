@@ -55,6 +55,14 @@ public partial class AgentBar : IDisposable
     [Parameter]
     public EventCallback<string> OnChoose { get; set; }
 
+    /// <summary>The chip's words for the piece the visitor selected (F134.5); none while nothing is selected.</summary>
+    [Parameter]
+    public string? Piece { get; set; }
+
+    /// <summary>Asks the widget to let the selected piece go.</summary>
+    [Parameter]
+    public EventCallback OnClearPiece { get; set; }
+
     /// <summary>The chat's words.</summary>
     [Inject]
     private ChatText Text { get; set; } = null!;

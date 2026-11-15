@@ -37,6 +37,15 @@
             <button class="agent-talk-toggle" type="button" @onclick="ToggleTalk">@TalkLabel</button>
         </div>
     }
+    @* The piece the visitor selected on the page (F134.5), as the corner's panel shows it: every message carries it
+       until its close lets it go. *@
+    @if (Piece is not null)
+    {
+        <div class="piece-chip">
+            <span>@Piece</span>
+            <button type="button" aria-label="@Text.ClosePiece" @onclick="OnClearPiece">×</button>
+        </div>
+    }
     <div class="agent-row">
         <Orb State="State" Label="@Title"/>
         <div class="agent-box">

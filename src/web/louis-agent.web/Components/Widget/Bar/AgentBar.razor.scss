@@ -44,6 +44,9 @@
     color: var(--bs-secondary-color);
 }
 
+/* The selected piece's chip stands centred over the row; its look is the widget's, the same as in the corner. */
+.agent-bar > .piece-chip { align-self: center; margin: 0; }
+
 /* The talk over the bar: glass like it, its end showing while folded. */
 .agent-talk {
     position: relative;
