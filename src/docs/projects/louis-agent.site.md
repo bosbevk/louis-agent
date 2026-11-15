@@ -132,7 +132,8 @@ In the showroom the guide stands as the bar at the page's foot, with its chips "
 demo is like my business?" and "What does it cost?". On the rest of the site it keeps its corner. When the guide
 shows a demo, its window comes forward on the start, and on a wide screen its answer stands beside the place it
 lit. While the guide talks, a business's recorded demo holds its play, and goes on once the guide is done, so the
-visitor follows one voice at a time.
+visitor follows one voice at a time. Each answer turns over to show how it was made and what it cost, the bar
+carries the talk's total, and each of a demo's "could also" notes is a piece a visitor presses to ask about.
 
 *Decided in:* F120, F122, F127.1, F127.2, F128.2, F134,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md),

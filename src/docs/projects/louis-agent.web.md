@@ -211,9 +211,22 @@ activity on its own dispatcher and reads the runner as it is then. That way a la
 agent talking after its answer ended. A site's showroom registers it with its other shared parts, and a recorded
 demo holds its play while the agent talks, as part 4 tells.
 
+A caption also turns over, to show how its answer was made. "How I did that" puts the answer's work on the back:
+the tools it called in order, each with what it was about (a shown place's address, an offer's question), how long
+it thought, and its usage line, the tokens by kind and the cost, with the exact figures in the line's tooltip. The
+front carries the answer's cost beside the agent's name. Every number is the framework's own: the turn's usage,
+which the API priced from the usage ledger, written by the same `UsageFormat` the talk uses. So the back of an
+answer and the ledger's rows for its requests say the same thing. The caption asks a small record for what to show,
+`AnswerWork.Of(turn)`, so it only draws.
+
+The bar also carries what the talk has cost so far and how many answers it holds, as a quiet pill at the box's end
+with the chat's usage line in its tooltip. A press opens the whole talk, whose foot says the same total. A talk with
+nothing measured shows no total, rather than a cost of nothing. And a piece the visitor selected on the page shows
+its chip over the bar, as it does in the corner's panel, with its close; the chip's look stays the widget's.
+
 *Decided in:* F109.3 (the widget), F134.3 (the bar and the orb), F134.4 (the caption, its place, the drawer and the
-agent's activity), F115 and ADR 0104 (it knows the page), F127.4.1 (cards), F127.4.2 and ADR 0117
-(one agent asking another), FX22 (a tool's own images),
+agent's activity), F134.5 (the caption turned over, the talk's total, the piece in the bar), F115 and ADR 0104 (it knows
+the page), F127.4.1 (cards), F127.4.2 and ADR 0117 (one agent asking another), FX22 (a tool's own images),
 [F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) (currency).
 
 ### 3. Someone reads the site: public pages
@@ -288,9 +301,9 @@ place while it plays, so a page that is still settling, with an image loading or
 place. A card is opened as a visitor's click would open it, and the light falls on its whole deck, so the card and
 its story are lit together. If the place never appears, the widget gives up quietly after two seconds.
 
-**Every part is ready for an agent.** A tile with a title or a number, and a deck's card, are **pieces**. Each has
-an id, so `/home/100-adrs` opens it. Three things select a piece: a click on it, which asks the guide about it. A
-card the visitor opens. And a piece the guide shows. The last two select it with nothing sent. A selected piece is
+**Every part is ready for an agent.** A tile with a title or a number, a deck's card, and a demo's note are **pieces**.
+Each has an id, so `/home/100-adrs` opens it. Three things select a piece: a click on it, which asks the guide about it.
+A card the visitor opens. And a piece the guide shows. The last two select it with nothing sent. A selected piece is
 drawn pressed, a chip in the guide's box names it, and every message carries it until the chip is closed.
 
 **Found by search.** A site lists every page and place in its `sitemap.xml`, which a site test writes from the
@@ -369,7 +382,8 @@ player in a lit framed window with the word of where it runs.
 
 Under the player, what to watch is a glass panel of chapters side by side, a line of progress over them. Each is
 lit in step with the play, the newest pulsing, and each is a button that plays from its turn. Then come the notes,
-which say what a custom agent could add, and the offer. Each part is a section with its own address, so the guide's
+which say what a custom agent could add, each one a piece a visitor can press to ask the guide about it, and the
+offer. Each part is a section with its own address, so the guide's
 tour stops at the same places whatever the page looks like. On a phone the title and the lede stack, and so do the
 chapters.
 
