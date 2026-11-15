@@ -5,6 +5,7 @@
    is listed where its lines were. The build makes wwwroot/css/app.css from this, and that file isn't in git. */
 
 @forward "web/settings/colours";
+@forward "web/settings/surfaces";
 @forward "settings/tokens";
 @forward "web/base/elements";
 

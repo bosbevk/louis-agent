@@ -1,5 +1,3 @@
-using LouisAgent.Testing;
-
 namespace LouisAgent.Puls.Tests.Styles;
 
 /// <summary>
@@ -39,12 +37,16 @@ public class PulsStylesheetTests
         Assert.That(urls.Where(u => !File.Exists(u.Target)).Select(u => $"{u.File}: {u.Url}"), Is.Empty);
     }
 
-    /// <summary>The colours are first on the list, Puls's first of its own, and the plain elements next.</summary>
+    /// <summary>
+    /// The colours and the surfaces (F151.1) are first on the list, Puls's first of its own, and the plain elements
+    /// next.
+    /// </summary>
     [Test]
     public void TheColoursComeFirst_ThenThePlainElements()
     {
         Assert.That(Css.Forwards().First(), Is.EqualTo("settings/tokens"));
-        Assert.That(Css.FrameworkForwards().Take(2), Is.EqualTo(new[] { "web/settings/colours", "web/base/elements" }));
+        Assert.That(Css.FrameworkForwards().Take(3),
+            Is.EqualTo(new[] { "web/settings/colours", "web/settings/surfaces", "web/base/elements" }));
     }
 
     /// <summary>The CSS holds every partial's rules in the list's order, since that decides which rule wins.</summary>

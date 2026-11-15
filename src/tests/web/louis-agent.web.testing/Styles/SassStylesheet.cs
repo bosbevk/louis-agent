@@ -67,9 +67,9 @@ public sealed partial record SassStylesheet(string Project)
     /// <summary>The framework's partials on that list, in its order, such as <c>web/settings/colours</c>.</summary>
     public IReadOnlyList<string> FrameworkForwards() => [.. Listed().Where(IsFrameworks)];
 
-    /// <summary>Everything on the list, in its order.</summary>
-    private IEnumerable<string> Listed() =>
-        Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value);
+    /// <summary>Everything on the list, the framework's and the site's own, in its order.</summary>
+    public IReadOnlyList<string> Listed() =>
+        [.. Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value)];
 
     /// <summary>Where one of the framework's partials sits, by the name a site's list gives it.</summary>
     public string FrameworkPartial(string partial)

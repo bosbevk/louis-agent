@@ -1,7 +1,7 @@
 using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Testing.Styles;
 
-namespace LouisAgent.Web.Tests.Rules.Styles;
+namespace LouisAgent.Web.Tests.Rules.Styles.Themes;
 
 /// <summary>
 /// F151.1: the helper every theme's tests use to hold the theme to the framework's names. It reads the names the

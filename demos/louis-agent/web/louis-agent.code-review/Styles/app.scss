@@ -5,6 +5,7 @@
    framework's colours as they are). The build makes wwwroot/css/app.css from this. */
 
 @forward "web/settings/colours";
+@forward "web/settings/surfaces";
 @forward "web/base/elements";
 
 @forward "web/settings/brands";
