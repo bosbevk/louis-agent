@@ -683,8 +683,9 @@ dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
 - a doc holds a Mermaid block
 
 `ProjectDocsTests` fails when a project doc names no kind of the list, lacks its overview, or shows other than
-exactly what its kind and its `**Also shows:**` line ask for, and when the guide's table of kinds is not the one
-the test holds.
+exactly what its kind and its `**Also shows:**` line ask for; when the guide's table of kinds is not the one the
+test holds; and when a project that holds Razor components has no `nested` picture whose `subtitle` starts with its
+name.
 
 Then look at the picture yourself, in Rider's markdown preview or a browser, in a light look and a dark one,
 before you commit. A chart wider than about 1,600 px reads small in a doc's column, so try it the other way round.

@@ -95,7 +95,7 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
 
 - **2026-11-14: three children for the docs' pictures.** Louis, of the docs' pictures beside the new showroom:
   the component diagram first, then the flows, then the cards.
-  - **F134.7 Component diagrams** ([plan](F134.7-component-diagrams.md)): a new kind of picture drawn from JSON
+  - **F134.7 Component diagrams**, built 2026-11-15 (its plan as of commit 9230cb481): a new kind of picture drawn from JSON
     in a new look. Done when every project that has components shows one in its design doc.
   - **F134.8 Flows in the new look**, built 2026-11-14: every flow in the docs and the site's eight diagrams in
     the new look and on the new lines, a shape where it means something, no class chart changed. How it works

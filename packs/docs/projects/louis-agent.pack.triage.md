@@ -6,6 +6,7 @@
 > [samples](../../../demos/louis-agent/samples/README.md); the orchestrator that read the feed before, in
 > [its doc](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md).
 > **Kind:** library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.triage/`
+> **Also shows:** `composite-structure`
 
 ![The triage pack: the error feed, a run's steps, typed endings, a person and a run read back, and the departments](diagrams/louis-agent.pack.triage.svg)
 
@@ -53,6 +54,10 @@ department for the hand-off (F106.3.5).
   each under the size limit; the model sees one toolset.
 
 ## Its web views
+
+The player, and what it is made of:
+
+![The triage player holds the stage of lanes, with the agent at work lit, and the step picked on it explained](diagrams/louis-agent.pack.triage.web-components-player.svg)
 
 `packs/web/louis-agent.pack.triage.web` (F106.3.4, ADR 0086) is the demo a site plays: `TriagePlayer` fetches a run
 file, reads it with `TriageRunFile` (the recorder's own lines), and plays it a step at a time, a reading beat apart:

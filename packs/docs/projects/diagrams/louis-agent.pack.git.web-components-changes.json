@@ -1,0 +1,130 @@
+{
+  "kind": "nested",
+  "title": "The changes view: what it is made of",
+  "caption": "The view holds the list of what changed beside the diff that's open; a group's files are ticked and staged, unstaged, discarded or committed, and a review goes to the chat.",
+  "nested": {
+    "subtitle": "louis-agent.pack.git.web, Views / GitChangesView",
+    "root": {
+      "id": "view",
+      "name": "GitChangesView",
+      "kind": "a pack's view",
+      "tone": "green",
+      "aside": "admin/screens/git-changes",
+      "in": [
+        "Screen"
+      ],
+      "holds": [
+        {
+          "id": "panel",
+          "name": "ChangesPanel",
+          "kind": "a panel",
+          "tone": "green",
+          "note": "review each changed file, tick some, then act on them",
+          "in": [
+            "OpenKey"
+          ],
+          "out": [
+            "OnOpenDiff",
+            "OnReviewAll"
+          ],
+          "holds": [
+            {
+              "id": "staged",
+              "name": "ChangeGroup",
+              "kind": "a group",
+              "tone": "green",
+              "note": "Staged, with a select-all box",
+              "in": [
+                "Title",
+                "Staged",
+                "Files",
+                "Selected",
+                "OpenKey"
+              ],
+              "out": [
+                "OnToggle",
+                "OnToggleAll"
+              ]
+            },
+            {
+              "id": "changes",
+              "name": "ChangeGroup",
+              "kind": "a group",
+              "tone": "green",
+              "note": "Changes, the same for what isn't staged",
+              "in": [
+                "Title",
+                "Staged",
+                "Files",
+                "Selected",
+                "OpenKey"
+              ],
+              "out": [
+                "OnToggle",
+                "OnToggleAll"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "diff",
+          "name": "DiffViewer",
+          "kind": "a panel",
+          "tone": "green",
+          "note": "one file's diff, with old and new line numbers",
+          "in": [
+            "Diff",
+            "Busy"
+          ],
+          "out": [
+            "OnStage",
+            "OnUnstage",
+            "OnDiscard",
+            "OnReview",
+            "OnClose"
+          ]
+        }
+      ]
+    },
+    "around": [
+      {
+        "id": "screen",
+        "name": "an admin screen",
+        "side": "before",
+        "tone": "blue",
+        "kind": "screen",
+        "heading": "Who puts it on a page",
+        "note": "the framework's screens, which name the view",
+        "gives": [
+          "Screen"
+        ]
+      },
+      {
+        "id": "state",
+        "name": "GitState",
+        "side": "before",
+        "tone": "teal",
+        "note": "what git says, and whether it is busy",
+        "reads": true
+      },
+      {
+        "id": "api",
+        "name": "AgentApi",
+        "side": "after",
+        "tone": "teal",
+        "heading": "What it asks",
+        "note": "one file's diff",
+        "calls": "GitDiffAsync"
+      },
+      {
+        "id": "handoff",
+        "name": "ChatHandoff",
+        "side": "after",
+        "tone": "teal",
+        "heading": "What it hands on",
+        "note": "a prompt for the chat, waiting in its box",
+        "calls": "hands"
+      }
+    ]
+  }
+}

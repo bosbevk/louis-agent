@@ -1124,6 +1124,38 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## A new kind of picture, then one for every project that has parts (F134.7, 2026-11-15)
+
+**What it is.** You asked that "all projects which has components should have an component diagram in their
+documentation". So the diagrams gained a kind, a component and everything it holds, drawn as boxes inside a box
+with the pins that carry what is handed down and said back up. Since CL65 it is called `nested`, and its UML type
+is a composite structure. Every project that holds Razor components now shows one of them, and a test fails when
+one doesn't.
+
+**One picture is of one component.** The plan gave a project one picture. Of the guide's "its main component" you
+asked "of it's main components? plural". A test can't tell which components are main, so the rule asks for at least
+one, named by the picture's subtitle, which starts with the project's name. Which ones are main stays a person's
+judgement.
+
+**Every picture is read from the markup.** A box's pins are its real parameters and callbacks; a neighbour is a
+service the code-behind injects or an address it calls. Before each picture I read the page's `.razor` and its
+`.razor.cs`, and where the two disagreed with the plan, the code won: the dock takes a record a button, not a
+function per fact, so its picture shows the record.
+
+**A rule seen failing on exactly the right five.** The last pictures were set aside, and the rule ran: it named the
+four packs' web views and the starter, and nothing else. Back in place, it passes. That is the smallest proof a rule
+reads the right thing: it fails on the cases you expect, by name, and on no others.
+
+**What went wrong on the way.**
+
+- The starter has no design doc, so its picture had nowhere to stand. It stands in *Spawn a site*, beside the
+  part that tells you what to make your own, since that is where a reader meets the starter.
+- The first look had no key. Of the first drawing you asked "where is this?", and the key, the headings over the
+  neighbours and the pins' samples were added after step 5.
+
+**Where it sits.** Skill 18, testing and shipping: a rule whose first failure names exactly the cases it should.
+Skill 17, observability of a design: a component's picture drawn from its parameters, not from memory.
+
 ## Parts any site can use, proved alone, then one page built from them (F134.1, 2026-11-15)
 
 **What it is.** `/demos` was a feature card and a row of small flat covers, each with an emoji Windows drew black.

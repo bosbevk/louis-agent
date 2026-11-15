@@ -693,7 +693,8 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   trimmed (`Svg/PageSvgTests`), each sum a box and a point have, run over both families and our own in `float`
   against Microsoft's (`Geometry/`), a face's widths (`Words/`), a path's text (`Svg/Paths/`), that a picture is
   drawn with the geometry it is told (`Svg/DiagramRenderersTests`); every project doc states its kind and shows exactly what
-its kind and its own line ask for (`Projects/ProjectDocsTests` in the docs' tool's tests, the table in the guide); and the goldens `Svg/Renderers/Parts/Flows/flow-look.svg`,
+its kind and its own line ask for, and every project that holds components shows one as a nested picture
+(`Projects/ProjectDocsTests` in the docs' tool's tests, the table in the guide); and the goldens `Svg/Renderers/Parts/Flows/flow-look.svg`,
   `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each

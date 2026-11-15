@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 112 | 93 |
+| Features (`F`) | 113 | 93 |
 | Fixes (`FX`) | 144 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
@@ -152,10 +152,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (112 done)
+## Features (113 done)
 
 | Id | When | What |
 |---|---|---|
+| F134.7 | 2026-11-15 | Component diagrams (Louis: "all projects which has components should have an component diagram"): a kind for a component and what it holds, now `nested`, its type a composite structure; one for every project that holds components, the four packs' web views and the starter last, each read from its markup; a rule holds it |
 | F134.1 | 2026-11-15 | The start is a stage (Louis's pick F, centre stage; "things that can be shared, must go to framework"): five general parts in the framework's web, each tested alone (a line icon, a lit stage, a deck with `DeckPlace`, a framed window with three bodies, a dock), and `/demos` built from them; each window at its own address, swiped on a phone, its words held to its recording; ADR 0115 amended |
 | F134.13 | 2026-11-14 | A composite structure diagram, a new kind (Louis: "no do research", UML's picture of the inside of one class; his picks: a port a named pin on the class's edge, and the flow's layout through an adapter): `"kind": "composite"` read into a class, its parts, ports and connectors and refused with a reason; `CompositeFlow` turns it into a flow so the flow's layout places it; a drawing with the frame's edges through the pins, a plain line between parts that work together and a running line for what is passed on; the picture says what type of diagram it is ("the type of diagram must always display"); `AgentEngine` drawn in core's design doc |
 | F134.12 | 2026-11-14 | Flows and component diagrams in the other kinds' look (Louis: "make the theme of the flow and component diagrams resemble the others"): one small title over a soft light, a plain panel with a little body that needs no rule for its depth, a decision as a box with pointed ends, a group's frame as a panel, shapes with a thin outline and no glow, both keys with a tone as a small filled badge and the flow's under a rule, and on a light page glass with more body; on the way, a long line that runs straight and passes a box by the shortest way |

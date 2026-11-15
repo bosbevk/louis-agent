@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Sources.Types;
 
 namespace LouisAgent.DocDiagrams.Tests.Projects;
@@ -81,6 +82,41 @@ public class ProjectDocsTests
 
         Assert.That(apart, Is.Empty, "a project doc with its pictures in a section apart: put each beside its text");
     }
+
+    /// <summary>
+    /// Every project that holds components shows one of them as a nested picture (F134.7, Louis: "all projects which
+    /// has components should have an component diagram in their documentation"), named by the picture's subtitle,
+    /// which starts with the project's name. A test project is not shipped, so it is left out.
+    /// </summary>
+    [Test]
+    public void EveryProjectWithComponents_ShowsOne()
+    {
+        var drawn = DiagramSync.Find(DiagramSync.Roots(TestPaths.RepoRoot))
+            .Select(json => DiagramReader.Read(File.ReadAllText(json)).Nested?.Subtitle)
+            .OfType<string>().Select(subtitle => subtitle.Split(',')[0]).ToHashSet(StringComparer.Ordinal);
+
+        var undrawn = ProjectsWithComponents().Where(project => !drawn.Contains(project))
+            .Order(StringComparer.Ordinal);
+
+        Assert.That(undrawn, Is.Empty, "a project with components and no nested picture of one");
+    }
+
+    /// <summary>The folders that hold what ships: the framework, the packs and the demos.</summary>
+    private static readonly string[] Shipped = ["src", "packs", "demos"];
+
+    /// <summary>The build's own folder, whose copies of a project's files are not the project's.</summary>
+    private static readonly string BuildFolder =
+        $"{System.IO.Path.DirectorySeparatorChar}obj{System.IO.Path.DirectorySeparatorChar}";
+
+    /// <summary>The name of every shipped project whose folder holds a Razor component.</summary>
+    private static IEnumerable<string> ProjectsWithComponents() => Shipped
+        .SelectMany(top => Directory.EnumerateFiles(System.IO.Path.Combine(TestPaths.RepoRoot, top), "*.csproj",
+            SearchOption.AllDirectories))
+        .Select(System.IO.Path.GetDirectoryName).OfType<string>()
+        .Where(folder => !System.IO.Path.GetFileName(folder).Contains("tests", StringComparison.Ordinal))
+        .Where(folder => Directory.EnumerateFiles(folder, "*.razor", SearchOption.AllDirectories)
+            .Any(file => !file.Contains(BuildFolder, StringComparison.Ordinal)))
+        .Select(System.IO.Path.GetFileName).OfType<string>();
 
     /// <summary>
     /// The guide's table of what each kind of project shows is the floor the rule holds, row for row, so a person
