@@ -265,10 +265,14 @@ The showroom is the area a site shows its demos in. Its code is under `Component
 folders, and this part takes them in the order a visitor meets them.
 
 **The frame** (`Shell/`). `ShowroomShell` is a slim bar, a rail of the demos grouped by what a visitor comes for,
-and the corner beside the frame. On a phone the rail becomes a row of chips. The whole frame is in the colour of
-the demo on screen. An open guide takes the rail's place. Each demo names its icon, one of the framework's line
-icons, which the rail, the chips and the start draw. On a page that is no demo, such as the start, the frame
-draws no rail and no chips, and the stage takes the whole width: the start shows the demos itself.
+and the corner beside the frame. The rail is a slim glass column of icons: each demo is a link that shows its icon
+on a tile in its colour, with its name as its label for a screen reader and as its tip, and the one on screen is
+ringed with a lit dot beside it. A short line stands between the groups, whose names a screen reader still hears.
+The demos stay links, so each is a page of its own that an address or a search engine opens. On a phone the rail
+becomes a row of chips. The whole frame is in the colour of the demo on screen, and an open guide takes the rail's
+place. Each demo names its icon, one of the framework's line icons, which the rail, the chips and the start draw.
+On a page that is no demo, such as the start, the frame draws no rail and no chips, and the stage takes the whole
+width: the start shows the demos itself.
 
 **The start** (`Start/`). `ShowroomStart` is the showroom's front page, and it is a stage. Every demo it
 shows is a framed window on a deck, with one forward in the light. Under the deck are the forward demo's name,
@@ -304,9 +308,17 @@ lines from it show which pins carry it.
 
 ![The start holds which demo is forward. It hands that down to the lit stage, the deck, each framed window and the dock, and hears it back from the deck and the dock. A site's page, three things it reads and two scripts stand around it](diagrams/louis-agent.web-components-showroom-start.svg)
 
-**A demo's page** (`Stage/`). `DemoStage` lays one out: a kicker, the page's one h1, a lede, the player, the cues,
-the notes and the offer. The cues are lit in step with the play, and each is a button that plays from its turn.
-The notes say what a custom agent could add. Each part is a section with its own address.
+**A demo's page** (`Stage/`). A demo's page stands on the same lit stage as the start, in the demo's colour, so
+walking in from the start feels like the window coming forward and growing. `DemoStage` lays it out. The kicker
+and the page's one h1 stand on the left, with the lede beside them on a wide screen. Under them the player takes
+the stage's whole width: a business's mock website is a window already, and a page whose agent is at work puts its
+player in a lit framed window with the word of where it runs.
+
+Under the player, what to watch is a glass panel of chapters side by side, a line of progress over them. Each is
+lit in step with the play, the newest pulsing, and each is a button that plays from its turn. Then come the notes,
+which say what a custom agent could add, and the offer. Each part is a section with its own address, so the guide's
+tour stops at the same places whatever the page looks like. On a phone the title and the lede stack, and so do the
+chapters.
 
 **A business's website, as a mock** (`Mock/`). `SiteMock` is a browser bar, the business's sample brand, a page
 that scrolls inside the mock, and its agent's widget in the corner. The page comes in one of three looks, with a

@@ -1124,6 +1124,39 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## A page restyled without moving the guide (F134.2, 2026-11-15)
+
+**What it is.** After F134.1 the start was a stage and a demo's own page still wore the look before it, so walking
+in from the start dropped a visitor into an older page. Now a demo's page stands in the same light, in the K
+mockup's look: the title and the lede side by side, the player the stage's whole width, what to watch as a row of
+chapters under it, and the rail a slim column of icons. The coding agent and the triage team, whose players had no
+window, now stand in one.
+
+**The places held by their ids.** The guide's tour stops at a demo page's places: the story, the demo, what to
+watch, the notes and the offer. Each is a section with an id. A new look could easily move one, or wrap two in a
+new box, and the tour would stop somewhere else. So the tests hold the order of those ids, and a redesign is free
+to change everything else. When the cues moved from beside the player to under it, the change was one fewer box
+round them, and the test of the order failed first on exactly that.
+
+**When the plan's part was the wrong part.** The plan drew the rail with the start's dock. Looking closer, the dock
+draws buttons that tell the page what was pressed, and the rail's demos are links: each is a page of its own that
+an address, a search engine or the guide opens. Turning them into buttons would have cost every demo page its link.
+So the rail kept its links and took the dock's look. A general part is for what it does, not for how it looks.
+
+**What went wrong on the way.**
+
+- The phone's rules were written with the parts they stack, so the phone step's test held them rather than driving
+  them. It passed on its first run, and the commit says so.
+- The window was feared to cut a long recording, since a framed window cuts what doesn't fit. It doesn't here: the
+  frame fills the place it stands in, and a player's place has no fixed height. Measured on the triage page, the
+  player and the window's body are the same height.
+
+**Checked by eye.** Each demo page at full width on the local site, and the guesthouse, the coding agent and the
+triage team at 390 px in a frame of a phone's width, none scrolling sideways.
+
+**Where it sits.** Skill 18, testing and shipping: a page's places held by their ids, so a new look can't move the
+guide's stops. Skill 20, extensibility: a general part used for what it does, not for how it looks.
+
 ## A new kind of picture, then one for every project that has parts (F134.7, 2026-11-15)
 
 **What it is.** You asked that "all projects which has components should have an component diagram in their

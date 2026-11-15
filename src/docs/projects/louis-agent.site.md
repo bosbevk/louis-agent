@@ -72,7 +72,8 @@ with the business's agent in the same corner, the page naming its identity and a
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
-since F127.1 on the same stage, in their own players. On `/demos` the start shows the three businesses only,
+since F127.1 on the same stage, in their own players, each in a lit framed window whose bar says
+`louis-agent · the coding agent` or `louis-agent · the triage team`. On `/demos` the start shows the three businesses only,
 each as a window: a still look at its website with one moment of its recorded talk, which is the first question
 its demo plays, one whole sentence of the agent's recorded answer, and the place the agent showed. The windows are
 in `Components/Showroom/Windows/`, one small component a business, and `SiteWindowTalks` holds the three talks.
