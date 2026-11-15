@@ -322,18 +322,18 @@ functions by skill files", then "whole redesign".
 
 **What was built.**
 
-Always loaded: `CLAUDE.md`, with how to work with Louis and the hard stops in one list, and two rules files with no
+**Always loaded.** `CLAUDE.md`, with how to work with Louis and the hard stops in one list, and two rules files with no
 `paths`, the design rules and the map of the repo.
 
-By kind of file: eight rules files with `paths`. The test rules and the rules for hosts and web apps were folder files
+**By kind of file.** Eight rules files with `paths`. The test rules and the rules for hosts and web apps were folder files
 before. A folder file loads only for its own folder, so the test rules reached 26 of the 68 test projects, and the
 hosts' file loaded for every doc under `src/` and for no demo. As rules files they follow their kind of file wherever
 it lives. Eight `CLAUDE.md` files became three.
 
-By job: nine skills, one per procedure, each with its must-dos first, since only the start of a skill is kept when a
+**By job.** Nine skills, one per procedure, each with its must-dos first, since only the start of a skill is kept when a
 long session is compacted.
 
-Out of Claude's private notes: 22 standing instructions, each from something Louis said, moved into the repo in his
+**Out of Claude's private notes.** 22 standing instructions, each from something Louis said, moved into the repo in his
 words with their date, where he can read them and change them.
 
 ![One step of a feature: the always-loaded files are there from the start, a rules file arrives with the first file touched, and a skill with each job](../diagrams/claude-instructions-one-step.svg)

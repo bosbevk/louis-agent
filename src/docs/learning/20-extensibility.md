@@ -155,13 +155,14 @@ the pack's own (`ShopsChecks.All`), so a pack is complete on its own and the ide
 **Dependencies one way is the whole job.** A pack may not reference an identity, an identity may not reference a
 pack, and neither may reference the harness (every host loads them). So every move asked the same question: *who
 else needs this?*
-Shared by everyone, and plain: reading a markdown table, a link, a site's host. It moved *down* to the check contract
+
+**Shared by everyone, and plain.** Reading a markdown table, a link, a site's host. It moved *down* to the check contract
 (`Markdown/`), where all three can reach it (Fowler's Move Method).
 
-What only the identity knows: how Puls writes a rand price, or what counts as one given as fact. It came in
+**What only the identity knows.** How Puls writes a rand price, or what counts as one given as fact. It came in
 *sideways*, as a reader the eval file names (`IPriceReader`, Puls's `rand-prices`): the same seam as F49.2b's.
 
-What both sides need, and only seven rows long: the table of shops' names and sites. It lives twice, and a test in the
+**What both sides need, and only seven rows long.** The table of shops' names and sites. It lives twice, and a test in the
 one project that sees both (`ShopTableTests`) fails if the copies ever differ. That's cheaper than a third project,
 and honest about the cost.
 

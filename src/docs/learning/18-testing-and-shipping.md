@@ -29,14 +29,14 @@ step had a diff to review against the plan's prediction:
 Steps 1 and 2 left all three unchanged. The catalogue, the contracts, the composition root and Puls's identity project
 were built with no prompt moving yet. A diff of zero lines was the test.
 
-Step 3 changed them where the plan said: the Puls lines left the coding agent's prompt, `GetToday`'s description lost
+**Step 3 changed them where the plan said.** The Puls lines left the coding agent's prompt, `GetToday`'s description lost
 its country, four `ToolMessage` texts lost the Puls names, and the shared specialists guide lost Puls's protocol to
 Puls's own routing. Each diff was read line by line. The one paid cook run of the phase was not spent here but on the
 finished branch, after the layout reviews (`b4a6ea22b178`, in [write-up 07](07-context-engineering.md)), because a run
 proves the code that ships, not a step on the way. It found nothing the cut changed: the no-shop town's rows carrying
 the default store looked new until the stored events were read, and were Puls alone's, in every run on `main` too.
 
-Step 4 changed exactly four things: the coding agent lost the three shop tools and the routing row; core's
+**Step 4 changed exactly four things.** The coding agent lost the three shop tools and the routing row; core's
 `ToolMessage` golden lost 17 entries and the pack's new golden held the same 17, byte-equal; the Puls golden changed
 in three `area` texts and one routing sentence. The first regeneration showed the whole shops guide missing from the
 cook's prompt: the test fixture had not registered the pack's prompts. The golden caught a wrong test, not a wrong
@@ -164,7 +164,7 @@ Numbers in parallel branches collide. Two branches opened the same day both took
 colleague's note before the push, not by a test. Next free is read from `main` *and* the open PRs, and a test that
 refuses two ADR files with one number on merge is cheap.
 
-Measured: $0. The site calls no model; the only spend was the time to render frames.
+**Measured.** $0. The site calls no model; the only spend was the time to render frames.
 
 ## Everything in Azure, as one file (F61.4)
 

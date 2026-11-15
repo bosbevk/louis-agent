@@ -48,7 +48,7 @@ The base address is shared. The web apps' `HttpClient` also loads static files (
 One place on each side. The server writes it once (`ApiMap.Version`). Each client writes the whole route
 (`"v1/sessions"`), so `grep "v1/sessions"` finds the server and every caller.
 
-What is a setting is where the API is: the host (`AGENT_PEERS`, `BENCHMARK_API_URL`, the web app's address). A setting
+**What is a setting is where the API is.** The host (`AGENT_PEERS`, `BENCHMARK_API_URL`, the web app's address). A setting
 that holds a full URL to one route (`PRICES_URL`, `RATES_URL`) gains `/v1`, because it names a route.
 
 ### Nouns and status codes

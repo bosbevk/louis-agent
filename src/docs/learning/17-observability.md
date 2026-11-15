@@ -178,7 +178,7 @@ nothing.
 Measured runs need their own database. With `RECIPE_LIBRARY_IN_EVALS=true` on the real database, a run adds to the
 real totals.
 
-The size tests shaped the design twice: `Library/Usage` went over the folder limit, so the Mongo record sits beside
+**The size tests shaped the design twice.** `Library/Usage` went over the folder limit, so the Mongo record sits beside
 its store, and `Pages/Admin` did too, so the page got a `Data` folder.
 
 **What it can't tell you:** whether an answer used a recipe, since the pack never sees answers, or how often someone reads the

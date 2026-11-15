@@ -117,7 +117,7 @@ A plugin seam again. The API may not know a pack (ADR 0027), so core got a fourt
 An old price beats no price, if it says so. A product the newest month lacks is priced from the newest month that has
 it, and the line names that month. Nothing is copied forward, so a stored month stays what Stats SA published.
 
-Left out: the files travel twice (preview, then save), fine at a few megabytes; an upload isn't served over MCP, since
+**Left out.** The files travel twice (preview, then save), fine at a few megabytes; an upload isn't served over MCP, since
 it is a portal job.
 
 ## F127.4.1: the visitor's click is the yes (2026-11-12)
@@ -149,7 +149,7 @@ the drawing's own root. Only the live check showed it. The 390 px check showed t
 a walkthrough showed a stop asking in words where three cards belonged. Three findings that no test of ours could see,
 each now held by one.
 
-Left out: the guided live demo, where the guide runs a business's demo and the visitor carries on in its window, is
+**Left out.** The guided live demo, where the guide runs a business's demo and the visitor carries on in its window, is
 F127.4.2; letting the guide draw any docs diagram is F138.
 
 ## F127.4.3: what a person must write, they write in a form (2026-11-12)
@@ -175,7 +175,7 @@ decides when a turn is over). A refused form ended nothing, and then the choices
 The page makes it true again. The pack's guide says a form is the only card in its answer; the widget holds it,
 drawing no choices beside a form whatever the model sends, as it holds the cards under the words.
 
-Left out: the visitor's message repeats what the folded form shows, as a clicked card's label does today; whether
+**Left out.** The visitor's message repeats what the folded form shows, as a clicked card's label does today; whether
 either should hide is Louis's call. The 390 px look wasn't checked: the browser window wouldn't resize.
 
 ---

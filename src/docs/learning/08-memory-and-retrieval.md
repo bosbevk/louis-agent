@@ -44,7 +44,7 @@ mostly measures the filling.
 
 ## What changed
 
-Each new read from a site in our table is kept for good, as a proper recipe: field by field, from the page's data or
+**Each new read from a site in our table is kept for good, as a proper recipe.** Field by field, from the page's data or
 its plain headings. Its link stays the site's, so the credit does too.
 
 The library is a source, not a cache. A search hands the cook our API's address, and it reads the recipe over HTTP as
@@ -53,7 +53,7 @@ anyone could. The open feed's first customer is ourselves.
 Sites are still asked every time, and 3 of a search's 10 places stay for pages from outside the library, so new
 recipes keep arriving: 10, 5, 8, 7 and 6 new pages across the five repeats.
 
-A page with no recipe is excluded, in Mongo: opened once, refused, and never offered or opened again.
+**A page with no recipe is excluded, in Mongo.** Opened once, refused, and never offered or opened again.
 
 Pap en sous taught that a dish can go by names a site's search can't guess, so a search for it now says what else to
 try.

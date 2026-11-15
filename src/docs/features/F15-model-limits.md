@@ -27,58 +27,65 @@ targets (F4's saving and M2's proof are F4's, estimates are F6's).
 
 **F15-S1 — Each model's limits, in one place.** As an *operator*, I want each model's context window and cache minimum
 recorded beside its prices, so that every feature uses the right limit for the model it runs on.
-- *Given* the limits table *when* a host starts on `claude-haiku-5-5` *then* it logs that model's limits:
-  `Model claude-haiku-5-5: window 1M tokens, caches from 512 tokens, 5× above 100k prompt tokens (limits as of …)`.
-- *Given* a model id the table doesn't list *then* its limits are unknown: one `[WARN]`, and every feature behaves as it
-  does today (no budget), never a guessed limit.
-- *Given* the table *then* it is matched by longest prefix and dated by `as_of`, like the price table, and copied from
-  the provider's documentation (or, where a model isn't documented, from the provider's Models API).
+
+*Given* the limits table *when* a host starts on `claude-haiku-5-5` *then* it logs that model's limits:
+`Model claude-haiku-5-5: window 1M tokens, caches from 512 tokens, 5× above 100k prompt tokens (limits as of …)`.
+*Given* a model id the table doesn't list *then* its limits are unknown: one `[WARN]`, and every feature behaves as it
+does today (no budget), never a guessed limit. *Given* the table *then* it is matched by longest prefix and dated by
+`as_of`, like the price table, and copied from the provider's documentation (or, where a model isn't documented, from
+the provider's Models API).
 
 **F15-S2 — A local model's window is the one the agent sets.** As a *user* of a local model, I want the agent to tell
 Ollama the window, so that the agent's limit and the server's agree whatever the server's own default is.
-- *Given* `LLM_CONTEXT_TOKENS` (the Ollama profile sets 2,048, to fit a small machine) *then* every request to Ollama
-  carries it as `num_ctx`, and it is the model's window for every other feature.
-- Ollama's own default no longer matters: it was 2,048 on the version that truncated our prompt (the ledger showed
-  `input: 2050`); current Ollama picks 4k, 32k or 256k by available memory. Sending `num_ctx` makes it the same
-  everywhere.
+
+*Given* `LLM_CONTEXT_TOKENS` (the Ollama profile sets 2,048, to fit a small machine) *then* every request to Ollama
+carries it as `num_ctx`, and it is the model's window for every other feature. Ollama's own default no longer matters:
+it was 2,048 on the version that truncated our prompt (the ledger showed `input: 2050`); current Ollama picks 4k, 32k
+or 256k by available memory. Sending `num_ctx` makes it the same everywhere.
 
 **F15-S3 — See how full the window is, and warn before it overflows.** As a *user*, I want to see how much of the window
 a turn used, so that I notice a chat getting long or expensive before it breaks.
-- *Given* a session *then* `/usage` shows its largest prompt against the window and the price step
-  (`largest prompt: 58k tokens · 6% of the window · under the 100k price step`).
-- *Given* a request whose prompt reaches 90% of the window *then* the host logs a `[WARN]` naming the model and the
-  share. On a local model that's the request Ollama is about to truncate, which replaces F13's truncation warning.
+
+*Given* a session *then* `/usage` shows its largest prompt against the window and the price step
+(`largest prompt: 58k tokens · 6% of the window · under the 100k price step`). *Given* a request whose prompt reaches
+90% of the window *then* the host logs a `[WARN]` naming the model and the share. On a local model that's the request
+Ollama is about to truncate, which replaces F13's truncation warning.
 
 **F15-S4 — Each limit worked out per model.** As a *developer*, I want each feature's limit worked out from the model's
 window and price step, so that F9 and F13 use the right number for each model.
-- *Given* `usage-probe -- --limits` *then* it prints, per model in the tables:
-  - **F9:** the compaction point: below the **smaller** of a share of the window (`CONTEXT_COMPACT_SHARE`, e.g. 60%) and
-    the model's price step, with a margin. On Haiku 5.5 that's under 100,000 (60% of 1M would be 600,000, every token
-    of it at 5×); a model without a price step uses the share alone.
-  - **F13:** the request budget: the window minus the output reserve.
-  - **F4:** whether the measured prefix (~48,000 tokens in M1) clears the model's cache minimum (on Haiku 5.5, 512:
-    easily). No saving figure: that's F4's own measurement against the M1 baseline.
+
+*Given* `usage-probe -- --limits` *then* it prints three things for each model in the tables. For F9, the compaction
+point: below the smaller of a share of the window (`CONTEXT_COMPACT_SHARE`, say 60%) and the model's price step, with
+a margin. On Haiku 5.5 that's under 100,000 (60% of 1M would be 600,000, every token of it at 5×), and a model without
+a price step uses the share alone. For F13, the request budget: the window minus the output reserve. And for F4,
+whether the measured prefix (about 48,000 tokens in M1) clears the model's cache minimum (on Haiku 5.5, 512, so
+easily). It gives no saving figure, because that's F4's own measurement against the M1 baseline.
 
 ## Design
 
-- **`ModelLimits`** (core, `usage/` beside `PriceTable`): `ContextWindow` and `CacheMinimum` (optional: unknown is null,
-  never 0), with the table's `as_of`; the price step comes from the model's price entry (`long_prompt.above_tokens`).
-  Looked up by longest model-id prefix, like prices. No output limit until something reads it.
-- **Where the table lives** (decide when planning F15):
+`ModelLimits` lives in core, in `usage/` beside `PriceTable`. It holds `ContextWindow` and `CacheMinimum`, both
+optional (unknown is null, never 0), with the table's `as_of`. The price step comes from the model's price entry
+(`long_prompt.above_tokens`). A model is looked up by the longest matching start of its id, as prices are. There's no
+output limit until something reads one.
 
-  | Option | For | Against |
-  |---|---|---|
-  | **A. A `limits` block per model in `config/prices.json`** | One table per model id, as gateways keep it; the price step is already there; `PRICES_URL` / `GET /prices` already carry it to other hosts | The file is no longer only prices; the name says less than it holds |
-  | **B. A separate `config/models.json`** (`MODELS_FILE` / `MODELS_URL`, `GET /models`) | Each file does one thing; limits can change without touching prices | A second table matched by the same ids, kept in step by hand; another URL and endpoint |
+Where the table lives is decided when F15 is planned:
 
-  Either way: our own format, the only one read, a tracked fallback file, and served on the API, as for prices
-  ([F2](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F02-prices-and-cost.md)) and exchange rates ([F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)).
-- **Local models** (taken over from F13): `LLM_CONTEXT_TOKENS` in `LlmOptions` (unset = the table's window, or none);
-  `LlmClientFactory` sends it to Ollama as `num_ctx` on every request. Provider differences stay in the factory.
-- **Limits** (`ModelTargets`, core): pure functions of a model's limits, its price step and the measured prefix, so
-  they're unit-tested and the same in the probe and in the features that use them.
-- **The consumers change in their own features:** F9's threshold becomes the per-model compaction point; F13's budget
-  comes from the window. F15 provides the limits, sends `num_ctx` and warns at 90%.
+| Option | For | Against |
+|---|---|---|
+| **A. A `limits` block per model in `config/prices.json`** | One table per model id, as gateways keep it; the price step is already there; `PRICES_URL` / `GET /prices` already carry it to other hosts | The file is no longer only prices; the name says less than it holds |
+| **B. A separate `config/models.json`** (`MODELS_FILE` / `MODELS_URL`, `GET /models`) | Each file does one thing; limits can change without touching prices | A second table matched by the same ids, kept in step by hand; another URL and endpoint |
+
+Either way: our own format, the only one read, a tracked fallback file, and served on the API, as for prices
+([F2](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F02-prices-and-cost.md)) and exchange rates ([F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)).
+
+Local models (taken over from F13): `LLM_CONTEXT_TOKENS` in `LlmOptions` (unset = the table's window, or none);
+`LlmClientFactory` sends it to Ollama as `num_ctx` on every request. Provider differences stay in the factory.
+
+Limits (`ModelTargets`, core): pure functions of a model's limits, its price step and the measured prefix, so they're
+unit-tested and the same in the probe and in the features that use them.
+
+**The consumers change in their own features.** F9's threshold becomes the per-model compaction point; F13's budget comes
+from the window. F15 provides the limits, sends `num_ctx` and warns at 90%.
 
 ## Implementation steps
 
@@ -100,17 +107,19 @@ window and price step, so that F9 and F13 use the right number for each model.
 
 ## Done when
 
-- Every model in the price table has its limits (or is marked unknown), every host logs its model's limits, requests to
-  Ollama carry `num_ctx`, `/usage` shows how full the window got, and `usage-probe -- --limits` prints each feature's
-  limit per model.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)).
+Every model in the price table has its limits (or is marked unknown), every host logs its model's limits, requests to
+Ollama carry `num_ctx`, `/usage` shows how full the window got, and `usage-probe -- --limits` prints each feature's
+limit per model.
+
+Then finish up (see [Finishing a feature](README.md#finishing-a-feature)).
 
 ## To settle when planning F15
 
-- **Look the limits up by each request's model**, not once per host: a fallback model (F8) or a cheaper summary model
-  (F10) must get its own window and price step, not the main model's.
-- **Define F13's output reserve.** The budget is the window minus what the reply may use, and that can't be the
-  engine's 16,000-token output limit on a 2,048-token window; it has to be set per model (or as a share of the window).
+Look the limits up by each request's model, not once per host: a fallback model (F8) or a cheaper summary model (F10)
+must get its own window and price step, not the main model's.
+
+Define F13's output reserve. The budget is the window minus what the reply may use, and that can't be the engine's
+16,000-token output limit on a 2,048-token window; it has to be set per model (or as a share of the window).
 
 ## Not in this feature
 

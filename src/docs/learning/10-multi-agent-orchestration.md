@@ -81,23 +81,23 @@ its header are motion carrying that same information, not decoration.
 
 ## Trade-offs and what didn't work
 
-The roll-up isn't done: the chat's usage still excludes its sub-sessions; the app adds them up client-side and says
+**The roll-up isn't done.** The chat's usage still excludes its sub-sessions; the app adds them up client-side and says
 so, until the F5 roll-up lands.
 
-A role in the prompt wasn't enough: Puls passed one in 1 delegation of 4. The peer now derives a role from the
+**A role in the prompt wasn't enough.** Puls passed one in 1 delegation of 4. The peer now derives a role from the
 toolsets when none is passed (`roles.json`), so code, not the prompt, guarantees every specialist has one.
 
 Routing is still a prompt, and a wrong route can be expensive (the $0.278 reader). Each role now says what is not its
 job (the reader hands counting back), and a prompt budget limits what a wrong route can cost.
 
-Contracts between agents need the same care as tools: a parameter the description said to leave out, but the schema
+**Contracts between agents need the same care as tools.** A parameter the description said to leave out, but the schema
 required, was refused before the tool ran (FX10); an empty answer needs a follow-up in the same session, not a new
 specialist (FX11).
 
-Two models' worth of latency: every task costs Puls's turn plus the specialist's; worth it for tool-heavy work, not
+**Two models' worth of latency.** Every task costs Puls's turn plus the specialist's; worth it for tool-heavy work, not
 for chit-chat (Puls answers those itself).
 
-Mistakes found by looking: `AGENT_FUNCTION=louis` loaded every skill file into Puls's prompt (fixed: skill files come
+**Mistakes found by looking.** `AGENT_FUNCTION=louis` loaded every skill file into Puls's prompt (fixed: skill files come
 with the `skills` toolset); the model guessed a peer name from an example (fixed: an empty name means the only peer).
 
 ## A triage team, recorded by hand before the workflow exists (F106.3.4, 2026-11-09)

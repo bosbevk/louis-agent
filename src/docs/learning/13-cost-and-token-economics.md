@@ -181,7 +181,7 @@ good as its worst path.
 
 One timeout ended the orchestrator's whole run (FX7), because .NET reports a timeout as a cancellation.
 
-Local models don't fit yet: Ollama silently truncates to 2,048 tokens (the ledger showed `input: 2050`), and a CPU
+**Local models don't fit yet.** Ollama silently truncates to 2,048 tokens (the ledger showed `input: 2050`), and a CPU
 request can pass the 100-second timeout. The ledger is what made the truncation visible (F13).
 
 ## F18: the replay cache, measured (2026-10-29)
