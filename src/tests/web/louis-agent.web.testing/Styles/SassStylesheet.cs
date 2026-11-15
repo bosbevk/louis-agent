@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Testing;
+using LouisAgent.Web.Testing.Sites;
 
 namespace LouisAgent.Web.Testing.Styles;
 
@@ -15,11 +16,7 @@ public sealed partial record SassStylesheet(string Project)
     private const string Tools = "tools/";
 
     /// <summary>The stylesheet of one of our web apps, by its project's name: a demo's or the framework's.</summary>
-    public static SassStylesheet Of(string project) =>
-        new(new[] { "demos", "src/site" }
-            .SelectMany(folder => Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, folder), project,
-                SearchOption.AllDirectories))
-            .Single());
+    public static SassStylesheet Of(string project) => new(SiteProject.Folder(project));
 
     private string Styles => Path.Combine(Project, "Styles");
 
