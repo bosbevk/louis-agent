@@ -112,6 +112,13 @@ public partial class AgentBar : IDisposable
         _ => Title
     };
 
+    /// <summary>
+    /// The turn whose answer stands as the caption (F134.4): the last one, when it is done, showed a place and said
+    /// something, and the visitor hasn't opened the whole talk.
+    /// </summary>
+    private Turn? Caption => !_talkOpen && !Runner.Streaming
+        && Runner.Chat?.Turns.LastOrDefault() is { ShowedAPlace: true, Words.Length: > 0 } turn ? turn : null;
+
     /// <summary>The talk's classes: open whole, or folded to its end.</summary>
     private string TalkClasses => _talkOpen ? "agent-talk is-open" : "agent-talk";
 

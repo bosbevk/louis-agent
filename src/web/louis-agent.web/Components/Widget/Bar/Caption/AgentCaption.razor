@@ -1,0 +1,12 @@
+@* The agent's caption (F134.4): its last answer, standing beside the place it showed, as the J and K mockups have it.
+   The agent's name on it, its words, and a way into the box under them: a label for the box, so a press puts the
+   visitor there with no script. *@
+<aside class="agent-caption" aria-live="polite">
+    <div class="caption-who">@Title</div>
+    <div class="caption-says">@Markdown.ToHtml(Words)</div>
+    @ChildContent
+    <div class="caption-foot">
+        <label class="caption-ask" for="composer-input">@Text.OrAskAnything</label>
+        <button class="caption-talk" type="button" @onclick="OnTalk">@Text.TalkOpen</button>
+    </div>
+</aside>

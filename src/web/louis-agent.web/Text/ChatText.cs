@@ -177,6 +177,9 @@ public sealed record ChatText
     /// <summary>The last word among the agent bar's chips: the box is there too (F134.3).</summary>
     public string OrTypeYourOwn { get; init; } = "or type your own";
 
+    /// <summary>Under the agent's caption, the way into the box (F134.4).</summary>
+    public string OrAskAnything { get; init; } = "Or ask me anything, in your own words";
+
     /// <summary>The agent bar's button that opens the whole talk, and folds it again (F134.3).</summary>
     public string TalkOpen { get; init; } = "Show the whole talk";
 

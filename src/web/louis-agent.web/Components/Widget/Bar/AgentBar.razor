@@ -1,3 +1,4 @@
+@using LouisAgent.Web.Components.Widget.Bar.Caption
 @using LouisAgent.Web.Components.Widget.Orb
 @* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it. Over it the talk so far,
    folded to its end until the visitor opens it; in it the orb, a line of what the guide is doing, and the box, which
@@ -16,7 +17,12 @@
             <span class="agent-chips-note">@Text.OrTypeYourOwn</span>
         </div>
     }
-    @if (Runner.Chat is { Turns.Count: > 0 })
+    @* The last answer showed a place: it stands as the caption (F134.4), and the folded talk gives way to it. *@
+    @if (Caption is { } turn)
+    {
+        <AgentCaption Title="@Title" Words="@turn.Words" OnTalk="ToggleTalk"/>
+    }
+    else if (Runner.Chat is { Turns.Count: > 0 })
     {
         <div class="@TalkClasses">
             <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency" Class="agent-list"
