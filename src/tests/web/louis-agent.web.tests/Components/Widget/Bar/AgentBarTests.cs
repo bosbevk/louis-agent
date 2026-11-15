@@ -126,4 +126,19 @@ public class AgentBarTests
 
         Assert.That(Bar(ctx).FindAll(".agent-chips"), Is.Empty);
     }
+
+    /// <summary>
+    /// On a phone the chips are one row that scrolls sideways (F134.3, looked at at 390 px): wrapped, three rows of
+    /// them stood over the end of a page and the start's dock.
+    /// </summary>
+    [Test]
+    public void OnAPhone_TheChipsAreOneRow()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Widget/Bar/AgentBar.razor.scss")).ReplaceLineEndings();
+        int phone = styles.IndexOf("@media (max-width: 900px) {", StringComparison.Ordinal);
+
+        Assert.That(phone >= 0 ? styles[phone..] : "",
+            Does.Contain("flex-wrap: nowrap;").And.Contain("overflow-x: auto;"));
+    }
 }

@@ -96,3 +96,15 @@
 }
 .agent-chips button:hover { transform: translateY(-2px); background: rgba(var(--web-overlay-rgb), .16); }
 .agent-chips-note { font-size: 12.5px; color: var(--bs-secondary-color); }
+
+/* On a phone the chips are one row that scrolls sideways, so they stand in the room the page keeps for the bar and
+   never cover the end of a page. */
+@media (max-width: 900px) {
+    .agent-chips {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .agent-chips button, .agent-chips-note { flex: none; }
+}
