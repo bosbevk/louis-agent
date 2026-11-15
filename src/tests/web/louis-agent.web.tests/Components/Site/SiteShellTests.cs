@@ -1,3 +1,5 @@
+using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Components.Site;
 using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Scripts;
@@ -51,7 +53,9 @@ public class SiteShellTests
         Assert.That(brand.QuerySelectorAll(".logo"), Has.Length.EqualTo(1));
     }
 
-    /// <summary>A site's slogan sits under the brand's name, inside the brand's link (FX79); none given, no line.</summary>
+    /// <summary>
+    /// A site's slogan sits under the brand's name, inside the brand's link (FX79); none given, no line.
+    /// </summary>
     [Test]
     public void TheTagline_SitsUnderTheBrand()
     {
@@ -101,7 +105,8 @@ public class SiteShellTests
         Assert.That(cut.FindAll(".site-main .page"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-footer .note"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-corner .widget"), Has.Count.EqualTo(1));
-        Assert.That(inside, Is.EqualTo(new[] { "site-progress", "site-header", "site-main", "site-up", "site-footer", "site-corner" }));
+        Assert.That(inside,
+            Is.EqualTo(new[] { "site-progress", "site-header", "site-main", "site-up", "site-footer", "site-corner" }));
     }
 
     /// <summary>
@@ -239,5 +244,54 @@ public class SiteShellTests
         Assert.That(cut.FindAll(".site-actions"), Is.Empty);
         Assert.That(cut.FindAll(".site-footer"), Is.Empty);
         Assert.That(cut.FindAll(".site-corner"), Is.Empty);
+    }
+
+    /// <summary>A context whose site offers glass and flat (F151.3).</summary>
+    private static BunitContext WithThemes()
+    {
+        var ctx = Context();
+        ctx.Services.AddSiteAreas(areas => areas
+            .Add(new SiteArea("theme-glass", _ => { }, [], Theme: new SiteTheme("glass", "Glass")))
+            .Add(new SiteArea("theme-flat", _ => { }, [], Theme: new SiteTheme("flat", "Flat"))));
+        return ctx;
+    }
+
+    /// <summary>
+    /// F151.3: a site that offers themes gets the switch in its header's actions, before whatever the site put
+    /// there, with no line of its own.
+    /// </summary>
+    [Test]
+    public void WithThemes_TheSwitch_StandsInTheActions_BeforeTheSitesOwn()
+    {
+        using var ctx = WithThemes();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Actions, "<a class=\"my-action\" href=\"y\">Y</a>"));
+
+        var inside = cut.Find(".site-header .site-actions").Children.Select(child => child.ClassName);
+        Assert.That(inside, Is.EqualTo(new[] { "look-switch", "my-action" }));
+    }
+
+    /// <summary>F151.3: a site that offers themes and gives no actions still gets the switch.</summary>
+    [Test]
+    public void WithThemes_AndNoActions_TheSwitchStillStands()
+    {
+        using var ctx = WithThemes();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
+
+        Assert.That(cut.FindAll(".site-header .site-actions .look-switch"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>F151.3: a site that names its areas but offers no theme gets no switch, and no empty actions.</summary>
+    [Test]
+    public void WithAreasButNoTheme_NoActionsAreDrawn()
+    {
+        using var ctx = Context();
+        ctx.Services.AddSiteAreas(areas => areas.Chat());
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
+
+        Assert.That(cut.FindAll(".site-actions"), Is.Empty);
     }
 }
