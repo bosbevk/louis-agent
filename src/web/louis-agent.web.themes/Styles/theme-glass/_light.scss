@@ -1,0 +1,126 @@
+/* Glass, in the light (F151.2, ADR 0124): the glass mockup's light values, under "The light mode" and "Glass cards,
+   in the light". White and black swap places and the purple stays: the words are black, a visitor's mark is black,
+   and the page is a pale wash of the violet, mixed from its second step so it follows the purple. A pane is white
+   glass, brighter than the page, that lets the page through blurred: its rim is white all the way round, brightest
+   at the bottom left and the top right, a fine violet-dark line runs outside it, and it throws a soft shadow. A bar
+   is near-white with a hairline, and a press is solid violet with white words. The red, amber, blue and green, the
+   caption on a photo's mat and the hover grey are the framework's own, since the mockup does not show them, and the
+   error words a darker red to read on white. The faces and the easing are the framework's. */
+
+@use "sass:color";
+@use "web/tools/colours";
+
+// The page: the second violet step, a third of the way into white.
+$page: color.mix(#9282ff, #ffffff, 34%);
+
+:root[data-theme="glass"][data-style="light"] {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
+    @include colours.both(bs-danger, #d9675f);
+    @include colours.both(bs-warning, #d4a72c);
+    @include colours.both(bs-info, #7fa8e8);
+    @include colours.both(web-ok, #6cbf94);
+    @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
+    @include colours.both(bs-body-bg, $page);            // the page
+    @include colours.both(bs-secondary-bg, #ffffff);     // a panel
+    @include colours.both(bs-tertiary-bg, #ffffff);      // the menu
+    @include colours.both(bs-success-text-emphasis, #3a3650, web-success-text);
+    @include colours.both(web-menu-bg, #ffffff);
+
+    // Only ever see-through: in the light, what lifts a surface is dark, and so is a shadow.
+    @include colours.numbers(web-overlay, #1e105a);
+    @include colours.numbers(web-shadow, #1e1064);
+    @include colours.numbers(web-failed, #d9675f);
+    @include colours.numbers(web-backdrop, #eeeef5);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #3a22c4;
+    --bs-primary-bg-subtle: #{color.mix(#6b4dff, #ffffff, 13%)};
+    --bs-primary-text-emphasis: #3a22c4;
+    --bs-success: #0b0b0e;                                // your messages: a visitor is black in the light
+    --web-success-deep: #000000;
+    --bs-success-bg-subtle: #{color.mix(#9282ff, #ffffff, 16%)};
+    --web-sidebar-foot: #ffffff;
+    --web-sidebar-foot-deep: #{$page};
+    --bs-link-color: #0b0b0e;
+
+    --web-on-primary: #ffffff;
+    --web-bright: #0b0b0e;                                // the strongest words, black on the light
+    --web-soft-text: #3a3650;
+    --web-settings-text: #3a3650;
+    --web-error-text: #b3413a;
+    --web-photo-text: #333333;
+    --web-border-hover: #a9a2d6;
+    --web-scrollbar: #c3bde6;
+    --web-dialog-bg: #ffffff;
+    --web-code-number: #3a3650;
+    --web-code-comment: #6c6c7a;
+    --web-live-dot: #6b4dff;
+
+    --bs-emphasis-color: #0b0b0e;
+    --bs-body-color: #0b0b0e;
+    --bs-secondary-color: #5b5b69;
+    --bs-tertiary-color: #6c6c7a;
+    --bs-border-color: rgba(30, 16, 90, .2);
+    --web-code-bg: #{color.mix(#9282ff, #ffffff, 16%)};
+    --web-cta: #6b4dff;
+    --bs-box-shadow-sm: 0 2px 5px rgba(30, 16, 90, .12);
+    --bs-box-shadow: 0 24px 50px -22px rgba(30, 16, 100, .55);
+    --web-glow: 0 0 0 4px rgba(107, 77, 255, .18), 0 10px 30px -10px rgba(107, 77, 255, .3);
+    --bs-font-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    // A pane: white glass over the page, a white rim, the lights inside two corners, a soft shadow.
+    --web-pane-fill:
+        linear-gradient(125deg, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, .42) 40%,
+            rgba(255, 255, 255, .32) 62%, rgba(255, 255, 255, .6) 100%);
+    --web-pane-edge: none;
+    --web-pane-rim:
+        conic-gradient(from 218deg, #fff 0deg, rgba(255, 255, 255, .6) 50deg, #fff 96deg,
+            rgba(255, 255, 255, .55) 148deg, #fff 180deg, rgba(255, 255, 255, .6) 232deg, #fff 280deg,
+            rgba(255, 255, 255, .55) 330deg, #fff 360deg);
+    --web-pane-light:
+        radial-gradient(84px 8px at 17% 100%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(8px 64px at 0% 78%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(92px 8px at 80% 0%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(8px 56px at 100% 23%, #fff 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(44px 6px at 10% 0%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(6px 40px at 100% 85%, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, 0) 70%);
+    --web-pane-shadow:
+        0 0 0 1px rgba(30, 16, 90, .14), 0 2px 5px rgba(30, 16, 90, .12), 0 36px 54px -30px rgba(30, 16, 100, .6);
+    --web-pane-blur: blur(18px) saturate(1.35);
+    --web-pane-radius: 22px;
+
+    // A bar: near-white over the page, a violet-dark hairline.
+    --web-bar-fill: rgba(255, 255, 255, .78);
+    --web-bar-edge: 1px solid rgba(30, 16, 90, .16);
+    --web-bar-blur: blur(12px);
+
+    // A press: solid violet, white words; the second a dark outline.
+    --web-press-fill: #6b4dff;
+    --web-press-ink: #ffffff;
+    --web-press-edge: 1.5px solid rgba(12, 12, 28, .55);
+
+    // The mark: the same ball of violet glass as in the dark.
+    --web-mark-fill:
+        radial-gradient(58% 58% at 50% 100%, rgba(226, 223, 255, .85) 0%, rgba(146, 130, 255, .3) 45%,
+            rgba(146, 130, 255, 0) 100%),
+        radial-gradient(64% 64% at 50% 40%, #9282ff 0%, #6b4dff 50%, #3a22c4 86%, #110a40 100%);
+    --web-mark-gloss: inset 0 0 0 1.5px rgba(226, 223, 255, .55), inset 0 -3px 8px rgba(17, 10, 64, .35);
+    --web-mark-ink: #ffffff;
+
+    // You, and the agent.
+    --web-you: #0b0b0e;
+    --web-agent: #6b4dff;
+
+    // Ultraviolet, light to dark.
+    --web-violet-0: #e2dfff;
+    --web-violet-1: #9282ff;
+    --web-violet-2: #6b4dff;
+    --web-violet-3: #3a22c4;
+    --web-violet-4: #110a40;
+
+    color-scheme: light;
+}

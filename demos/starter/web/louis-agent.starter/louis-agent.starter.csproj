@@ -25,6 +25,8 @@
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj" />
     <!-- CL57: the eval studio's pages and their client; a site that has the studio opts in here. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.evals\louis-agent.web.evals.csproj" />
+    <!-- F151.2: the themes, glass and flat; a site that offers a theme names it among its areas and lists its sheets. -->
+    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.themes\louis-agent.web.themes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

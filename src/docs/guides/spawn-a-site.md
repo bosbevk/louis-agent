@@ -19,6 +19,8 @@ dotnet build demos/acme/web/acme/acme.csproj
 ```
 
 `-n` is the site's name. It becomes the project's namespace and the words on the page, and in lowercase the project's file name.
+The site it makes offers the two themes, glass and flat, and opens in glass, light. A theme and style the browser remembers
+are applied before the page is first drawn.
 
 Then add the project to `louis-agent-solution.sln` under `demos/acme/web`, and to the list in `SolutionLayoutTests`, which holds that the solution's tree is the disk.
 
@@ -36,7 +38,8 @@ The chat page it makes is the framework's chat shell with your site's name in it
 
 | You want | Do this |
 |---|---|
-| Your own colours | Add a partial setting Bootstrap's colour names after `web/settings/colours` and `web/settings/surfaces` in `Styles/app.scss`; `web/settings/_colours.scss` lists them. A name you leave out keeps the framework's |
+| Your own colours | Add a partial setting Bootstrap's colour names after `web/settings/colours`, `web/settings/surfaces` and the themes' sheets in `Styles/app.scss`; `web/settings/_colours.scss` lists them. A name you leave out keeps the framework's |
+| Your themes | The site offers glass, then flat, each light and dark: `.Glass().Flat()` in your `WebsiteAreas.Name`, the `louis-agent.web.themes` reference, its `Styles` in `sasscompiler.json`, and the four `theme-…` lines in `Styles/app.scss`. The first theme named is the default, and `wwwroot/index.html` writes it as `data-theme`, which `IndexLookTests` holds. To offer one, drop the other's call and its two lines; to offer none, drop all of it and the `data-theme` |
 | Your own rules | For one of your components, an `X.razor.scss` beside its `X.razor`: the build scopes and bundles it. For a rule every page shares, a partial listed after the framework's in `Styles/app.scss`. Look for a variable or a partial to reuse first |
 | Your own landing page | Replace `Pages/LandingPage.razor` |
 | A part of the chat turned on or off | Change `Features` in `Pages/ChatPage.razor.cs`. Language needs your identity's voices, and credits and the place need a site that uses them |

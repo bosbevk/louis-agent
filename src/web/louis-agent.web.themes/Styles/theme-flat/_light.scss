@@ -1,0 +1,105 @@
+/* Flat, in the light (F151.2, ADR 0124): the flat mockup's light values, under "Flat, in the light". Louis: "if the
+   background goes white the cards must go darker". So the page is white and a pane a solid grey, clearly darker than
+   it, with a firmer grey line round it. Black words, a black visitor, and the same solid violet for what you press;
+   the second button a black outline. Still no shading anywhere. The red, amber, blue and green, the caption on a
+   photo's mat and the hover grey are the framework's own, the error words a darker red to read on white, and the
+   faces and the easing the framework's. */
+
+@use "web/tools/colours";
+
+:root[data-theme="flat"][data-style="light"] {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
+    @include colours.both(bs-danger, #d9675f);
+    @include colours.both(bs-warning, #d4a72c);
+    @include colours.both(bs-info, #7fa8e8);
+    @include colours.both(web-ok, #6cbf94);
+    @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
+    @include colours.both(bs-body-bg, #ffffff);          // the page
+    @include colours.both(bs-secondary-bg, #dcdee8);     // a panel, darker than the page
+    @include colours.both(bs-tertiary-bg, #cdd0dc);      // the menu
+    @include colours.both(bs-success-text-emphasis, #3c3c50, web-success-text);
+    @include colours.both(web-menu-bg, #cdd0dc);
+
+    // Only ever see-through: in the light, what lifts a surface is dark, and so is a shadow.
+    @include colours.numbers(web-overlay, #0b0b0e);
+    @include colours.numbers(web-shadow, #0b0b0e);
+    @include colours.numbers(web-failed, #d9675f);
+    @include colours.numbers(web-backdrop, #ffffff);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #3a22c4;
+    --bs-primary-bg-subtle: #e2dfff;
+    --bs-primary-text-emphasis: #3a22c4;
+    --bs-success: #0b0b0e;                                // your messages: a visitor is black in the light
+    --web-success-deep: #000000;
+    --bs-success-bg-subtle: #dcdee8;
+    --web-sidebar-foot: #dcdee8;
+    --web-sidebar-foot-deep: #cdd0dc;
+    --bs-link-color: #0b0b0e;
+
+    --web-on-primary: #ffffff;
+    --web-bright: #0b0b0e;                                // the strongest words, black on the light
+    --web-soft-text: #3c3c50;
+    --web-settings-text: #3c3c50;
+    --web-error-text: #b3413a;
+    --web-photo-text: #333333;
+    --web-border-hover: #5d6072;
+    --web-scrollbar: #a7aaba;
+    --web-dialog-bg: #ffffff;
+    --web-code-number: #3c3c50;
+    --web-code-comment: #6c6c7a;
+    --web-live-dot: #6b4dff;
+
+    --bs-emphasis-color: #0b0b0e;
+    --bs-body-color: #0b0b0e;
+    --bs-secondary-color: #44444f;
+    --bs-tertiary-color: #6c6c7a;
+    --bs-border-color: #a7aaba;
+    --web-code-bg: #dcdee8;
+    --web-cta: #6b4dff;
+    --bs-box-shadow-sm: none;
+    --bs-box-shadow: none;
+    --web-glow: 0 0 0 2px #6b4dff;
+    --bs-font-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    // A pane: a solid grey darker than the page, a firmer grey line, nothing else.
+    --web-pane-fill: #dcdee8;
+    --web-pane-edge: 1px solid #a7aaba;
+    --web-pane-rim: none;
+    --web-pane-light: none;
+    --web-pane-shadow: none;
+    --web-pane-blur: none;
+    --web-pane-radius: 22px;
+
+    // A bar: as white as the page, one hairline towards it.
+    --web-bar-fill: #ffffff;
+    --web-bar-edge: 1px solid #a7aaba;
+    --web-bar-blur: none;
+
+    // A press: solid violet, white words; the second a black outline.
+    --web-press-fill: #6b4dff;
+    --web-press-ink: #ffffff;
+    --web-press-edge: 1.5px solid #0b0b0e;
+
+    // The mark: the same flat violet disc and white l.
+    --web-mark-fill: #6b4dff;
+    --web-mark-gloss: none;
+    --web-mark-ink: #ffffff;
+
+    // You, and the agent.
+    --web-you: #0b0b0e;
+    --web-agent: #6b4dff;
+
+    // Ultraviolet, light to dark.
+    --web-violet-0: #e2dfff;
+    --web-violet-1: #9282ff;
+    --web-violet-2: #6b4dff;
+    --web-violet-3: #3a22c4;
+    --web-violet-4: #110a40;
+
+    color-scheme: light;
+}

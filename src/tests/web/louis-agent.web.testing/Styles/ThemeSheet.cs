@@ -30,16 +30,22 @@ public static class ThemeSheet
     public static IReadOnlyList<string> Missing(
         string css, SiteTheme theme, SiteStyle style, IReadOnlyList<string> names)
     {
-        var set = Bodies(css, Selector(theme, style)).SelectMany(Sets).ToHashSet();
+        var set = Selectors(theme, style).SelectMany(selector => Bodies(css, selector)).SelectMany(Sets).ToHashSet();
         return [.. names.Where(name => !set.Contains(name))];
     }
 
     /// <summary>
-    /// The selector a theme's block for one style is written under, such as
-    /// <c>:root[data-theme="glass"][data-style="dark"]</c>, with the attributes <see cref="SiteLook"/> names.
+    /// The selector a theme's block for one style is written under, with the attributes <see cref="SiteLook"/>
+    /// names, in both its spellings: <c>:root[data-theme="glass"][data-style="dark"]</c> as a person writes it, and
+    /// <c>:root[data-theme=glass][data-style=dark]</c> as Sass writes it (F151.2), since a theme's id and a style's
+    /// word need no quotes.
     /// </summary>
-    public static string Selector(SiteTheme theme, SiteStyle style) =>
-        $"{Root}[{SiteLook.ThemeAttribute}=\"{theme.Id}\"][{SiteLook.StyleAttribute}=\"{style.Wire()}\"]";
+    private static IEnumerable<string> Selectors(SiteTheme theme, SiteStyle style)
+    {
+        string word = style.Wire();
+        yield return $"{Root}[{SiteLook.ThemeAttribute}=\"{theme.Id}\"][{SiteLook.StyleAttribute}=\"{word}\"]";
+        yield return $"{Root}[{SiteLook.ThemeAttribute}={theme.Id}][{SiteLook.StyleAttribute}={word}]";
+    }
 
     /// <summary>What every block whose selector is exactly this one holds between its braces.</summary>
     private static IEnumerable<string> Bodies(string css, string selector)

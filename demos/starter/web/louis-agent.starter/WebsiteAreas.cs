@@ -2,12 +2,15 @@ using LouisAgent.Starter.Layout;
 using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Evals;
+using LouisAgent.Web.Themes.Flat;
+using LouisAgent.Web.Themes.Glass;
 
 namespace LouisAgent.Starter;
 
 /// <summary>
-/// What the smallest site is made of (F127.6): the chat portal, the admin portal, the accounts' pages and the eval
-/// studio, each named once through the framework's builder. A new site made from this starts here, and adds its packs'
+/// What the smallest site is made of (F127.6): the chat portal, the admin portal, the accounts' pages, the eval
+/// studio and the two themes, glass first so it is the default (F151.2), each named once through the framework's
+/// builder. A new site made from this starts here, and adds its packs'
 /// views to the admin.
 /// </summary>
 /// <remarks>
@@ -27,5 +30,7 @@ public static class WebsiteAreas
             .Overview()
             .Packs()
             .Accounts(typeof(AccountLayout))
-            .Evals();
+            .Evals()
+            .Glass()
+            .Flat();
 }

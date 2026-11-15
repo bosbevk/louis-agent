@@ -583,14 +583,15 @@ black and white with metallic greys, plus a muted red and an amber. A site's col
 framework holds only what the two sides agree on, and names no theme of its own. A theme is a `SiteTheme`: an id,
 which goes into the page and into the selector of its stylesheet's blocks, and the name a person reads on a switch.
 The id is checked when the theme is made, lower-case letters, digits and hyphens only, so nothing in it can break
-out of the attribute or the selector. An area brings a theme in its `Theme` slot, as part 1 says. No site names one
-yet, so every site keeps the look it has.
+out of the attribute or the selector. An area brings a theme in its `Theme` slot, as part 1 says. The themes
+themselves, glass and flat, live above this library in [louis-agent.web.themes](louis-agent.web.themes.md), and
+the starter is the site that offers them today.
 
 The page says which look is on with two attributes on its `<html>`, `data-theme` and `data-style`. A theme's
 stylesheet writes one block of values for each style, under a selector such as
 `:root[data-theme="glass"][data-style="dark"]`, so the two attributes pick the block. Every site's `index.html`
 writes `data-style="light"`, since a first visit is light whatever the device prefers, and it writes the theme its
-areas give first, which today is none. `SiteLook` holds the words both sides use: the two attributes, the two keys
+areas give first: `data-theme="glass"` on the starter, and none on a site that offers no theme. `SiteLook` holds the words both sides use: the two attributes, the two keys
 the browser keeps a visitor's pick under, `site.theme` and `site.style`, and the default style.
 
 **What a theme sets.** A colour can't say "glass", so beside the colours `web/settings/_surfaces.scss` names the

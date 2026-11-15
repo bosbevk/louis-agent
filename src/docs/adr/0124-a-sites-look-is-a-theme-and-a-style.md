@@ -2,7 +2,8 @@
 
 **Status:** Accepted · **Date:** 2026-11-15 (Louis: "then i will keep both, you will be able to choose your
 theme, it defaults to glass, light", "2 themes, 2 styles light and dark. each theme in it's own package which then
-gets wired into core.web", "we should just have the user pick", "the user picks and the browser rememebrs") ·
+gets wired into core.web", "we should just have the user pick", "the user picks and the browser rememebrs"; and the same day, of where the
+themes live: "we should only have one project called themes and add them there not seperately") ·
 **Recorded:** 2026-11-15
 
 **It binds** the framework's web, the libraries above it, and every site built on it.
@@ -36,15 +37,16 @@ look of its own: `tools/_themed.scss` reads a look "by setting values, never by 
    those names to nothing.
 4. **A value no name says gets a name first.** The name is added in the framework with today's look as its
    value, and every theme then sets it. A theme is held to the full list by a test.
-5. **A theme is an area a site opts into.** Each theme is its own project above the framework's web, and a site
-   names the themes it offers where it names its other areas. The first one named is its default.
+5. **A theme is an area a site opts into.** The themes live together in one project above the framework's web,
+   `louis-agent.web.themes`. Each is its own class and its own sheets, in a folder of its own, and a site names
+   the themes it offers where it names its other areas. The first one named is its default.
 6. **The visitor picks, and the browser remembers.** The theme and the style are chosen with a switch on the
    page and kept in the visitor's own browser. Nothing about the choice is sent to the host. A first visit gets
    the site's default theme in the light style, whatever the device's own setting is.
 
 ## Consequences
 
-A third theme is one small package and no change to any component. In return, a look that cannot be said in the
+A third theme is one class and two sheets in the themes project, and no change to any component. In return, a look that cannot be said in the
 names waits for a name, so the list of names is something to keep short and to guard.
 
 Every site built on the framework gets the same switch and the same themes it names. A site keeps a brand of its

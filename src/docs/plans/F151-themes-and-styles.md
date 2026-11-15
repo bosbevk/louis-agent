@@ -306,7 +306,10 @@ may grow in F151.4, where a name is always added in the framework first.
 
 ## Approved during the build
 
-Nothing yet.
+**The themes share one project** (Louis, 2026-11-15, during F151.2: "we should only have one project called themes
+and add them there not seperately"). In place of `louis-agent.web.theme.glass` and `louis-agent.web.theme.flat`,
+both themes live in `src/web/louis-agent.web.themes`, a folder each, with one test project beside the others in
+`src/tests/web`. F151.2's plan has the layout, and rule 5 of ADR 0124 says so.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [F151.1, the first child](F151.1-the-theme-contract.md)
