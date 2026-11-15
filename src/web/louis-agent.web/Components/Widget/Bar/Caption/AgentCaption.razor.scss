@@ -18,7 +18,8 @@
 .caption-who { font: 500 11.5px/1 var(--bs-font-monospace); letter-spacing: .08em; color: var(--bs-secondary-color); }
 .caption-says { font-size: 15px; line-height: 1.55; color: var(--bs-emphasis-color); }
 .caption-says ::deep p { margin: 0 0 8px; }
-.caption-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+/* The foot wraps, so on a narrow caption the buttons drop under the way into the box, each on one line. */
+.caption-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
 .caption-ask {
     display: inline-flex;
     align-items: center;
@@ -38,6 +39,7 @@
 .caption-buttons { display: inline-flex; gap: 6px; }
 .caption-talk, .caption-turn {
     padding: 3px 12px;
+    white-space: nowrap;
     border: 0;
     border-radius: 999px;
     font: 500 12px/1.4 inherit;
