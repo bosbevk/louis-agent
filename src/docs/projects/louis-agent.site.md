@@ -73,7 +73,9 @@ with the business's agent in the same corner, the page naming its identity and a
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
 since F127.1 on the same stage, in their own players, each in a lit framed window whose bar says
-`louis-agent · the coding agent` or `louis-agent · the triage team`. On `/demos` the start shows the three businesses only,
+`louis-agent · the coding agent` or `louis-agent · the triage team`. In the showroom the guide stands as the bar
+at the page's foot, its chips "Walk me through the demos", "Which demo is like my business?" and "What does it
+cost?"; on the rest of the site it keeps its corner. On `/demos` the start shows the three businesses only,
 each as a window: a still look at its website with one moment of its recorded talk, which is the first question
 its demo plays, one whole sentence of the agent's recorded answer, and the place the agent showed. The windows are
 in `Components/Showroom/Windows/`, one small component a business, and `SiteWindowTalks` holds the three talks.

@@ -164,7 +164,25 @@ The widget knows the page. A script module beside it reads the page's address, t
 is sent, and the runner sends them with the first message written from a page. So the guide answers about what
 the visitor sees.
 
-*Decided in:* F109.3 (the widget), F115 and ADR 0104 (it knows the page), F127.4.1 (cards), F127.4.2 and ADR 0117
+The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
+`Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
+message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
+centred at the page's foot, at most 760 wide, in glass. In it sit the agent's orb, a line of what the agent is
+doing, and the box, which is there from the start, so a visitor can type at any moment. Over it stands the talk so
+far, folded to its end, the last answer, until the visitor opens it whole.
+
+The orb (`Widget/Orb`) is a general part of its own: a silver disc with four states. Idle it breathes, thinking an
+arc goes round it, showing rings go out from it, and speaking it pulses. Which state it shows is a rule,
+`OrbStates.Of`, that reads only what the chat says of itself: a place the agent just showed, then whether it is
+streaming, then whether the answer's words have come. So the orb never shows a state the agent isn't in.
+
+While the agent waits, the questions a site offers stand over the bar as chips. A site names them once through
+its areas builder, `.Suggestions(...)`, as it names its other parts. A chip asks its question through the widget,
+and the chips end with "or type your own", since a chip is a shortcut and never the only way in. On a phone the
+chips are one row that scrolls sideways. A frame that holds the bar keeps its height free at the stage's foot, so
+no page ends under it.
+
+*Decided in:* F109.3 (the widget), F134.3 (the bar and the orb), F115 and ADR 0104 (it knows the page), F127.4.1 (cards), F127.4.2 and ADR 0117
 (one agent asking another), FX22 (a tool's own images),
 [F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) (currency).
 
