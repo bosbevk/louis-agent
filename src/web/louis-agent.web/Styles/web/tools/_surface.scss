@@ -1,0 +1,92 @@
+/* The surface tool (F151.4): one mixin for each kind of surface the mockups have, each drawing its piece from the
+   names a theme sets and from nothing else, so a theme reaches every piece and a component never names a theme
+   (ADR 0124). A pane is a card or a panel. A bar is the header, the footer or the agent's bar. A press is the main
+   button, a quiet press the second one, and a chip a small thing to press that is not a button in a form. A tag is a
+   label that sits on a piece, and a well is what is set into a pane.
+
+   A surface is a drawing laid over its fill (Louis's pick A of three: a drawing is a value). The drawing is the
+   theme's --web-art-{part}-{state}, stretched to the piece, since a drawing has no size of its own; a theme with no
+   drawings sets them to none and the fill alone shows. A state is the same piece with its state's drawing: hover,
+   pressed, off and picked. A pressed piece is also made a little smaller here, in every theme. Written where it's
+   included: a tool writes no CSS of its own. */
+
+/* The drawing of one part and state, stretched over the piece, and what shows under it. */
+@mixin -drawn($art, $under) {
+    background: var(--web-art-#{$art}) center / 100% 100% no-repeat, #{$under};
+}
+
+/* How much smaller a piece is while it is pressed. */
+$-pressed: scale(.97);
+
+/* A card or a panel: its fill and its drawing, its edge and corner, the shadow it throws and the blur behind it. */
+@mixin pane() {
+    border: var(--web-pane-edge);
+    border-radius: var(--web-pane-radius);
+    box-shadow: var(--web-pane-shadow);
+    -webkit-backdrop-filter: var(--web-pane-blur);
+    backdrop-filter: var(--web-pane-blur);
+    @include -drawn(pane-rest, var(--web-pane-fill));
+
+    &:hover { @include -drawn(pane-hover, var(--web-pane-fill)); }
+}
+
+/* A pane the visitor picked: written where the component says a piece is picked. */
+@mixin pane-picked() { @include -drawn(pane-picked, var(--web-pane-fill)); }
+
+/* A pane the agent is showing: written where the component says the agent lit it. */
+@mixin pane-showing() { @include -drawn(pane-showing, var(--web-pane-fill)); }
+
+/* The header, the footer or the agent's bar: its fill and drawing, a hairline towards the page, and its blur. */
+@mixin bar() {
+    border-bottom: var(--web-bar-edge);
+    -webkit-backdrop-filter: var(--web-bar-blur);
+    backdrop-filter: var(--web-bar-blur);
+    @include -drawn(bar, var(--web-bar-fill));
+}
+
+/* The main button: what the brand gives you to press, with its words, hover, pressed and off. */
+@mixin press() {
+    border: 0;
+    color: var(--web-press-ink);
+    @include -drawn(press-rest, var(--web-press-fill));
+
+    &:hover:not(:disabled) { @include -drawn(press-hover, var(--web-press-fill)); }
+    &:active:not(:disabled) {
+        transform: $-pressed;
+        @include -drawn(press-pressed, var(--web-press-fill));
+    }
+    &:disabled { cursor: default; @include -drawn(press-disabled, var(--web-press-fill)); }
+}
+
+/* The second button: an outline in the words' colour, with its hover, pressed and off. */
+@mixin quiet-press() {
+    border: var(--web-press-edge);
+    color: var(--bs-body-color);
+    @include -drawn(quiet-press-rest, transparent);
+
+    &:hover:not(:disabled) { @include -drawn(quiet-press-hover, transparent); }
+    &:active:not(:disabled) {
+        transform: $-pressed;
+        @include -drawn(quiet-press-pressed, transparent);
+    }
+    &:disabled { cursor: default; @include -drawn(quiet-press-disabled, transparent); }
+}
+
+/* A chip: drawn as the second button, and picked when it says it is pressed. */
+@mixin chip() {
+    @include quiet-press();
+
+    &[aria-pressed="true"] { @include -drawn(quiet-press-picked, transparent); }
+}
+
+/* A label that sits on a piece. */
+@mixin tag() {
+    border-radius: 999px;
+    @include -drawn(tag, var(--bs-tertiary-bg));
+}
+
+/* What is set into a pane, such as a small film or a tile. */
+@mixin well() {
+    border-radius: calc(var(--web-pane-radius) - 6px);
+    @include -drawn(well, var(--bs-tertiary-bg));
+}
