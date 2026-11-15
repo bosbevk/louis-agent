@@ -44,10 +44,18 @@ records, links, and how big a file that Claude loads may be.
   - **Ids and ADR links close a section** (*Decided in:* F127.6, ADR 0120). They are not wedged into a sentence.
   - **A project doc keeps its shared sections**, the ones *Each doc covers* lists in the projects' index:
     *Purpose*, *How it works*, *Structure* and the rest, by those names, so every project doc is found the same
-    way. The story is told inside *How it works*, in numbered parts, each picture beside the part it explains and
-    none in a section apart. *Structure* is the lookup.
+    way. The story is told inside *How it works*, one part after another under its own numbered heading
+    (`### 1. Starting up`), each picture beside the part it explains and none in a section apart. *Structure* is
+    the lookup.
   - **A robot index fails**: a bold label followed by type names in brackets with ids between them. A doc that
     reads that way is rewritten when it is next touched, the explaining part first.
+- **It talks, it doesn't list** (Louis, 2026-11-14: "I do not like these bulleted lsists, it should speak like a
+  friend talks"). Every part that explains (a doc's *Purpose*, its *How it works*, a guide, an architecture page,
+  a write-up) is written as paragraphs of short, warm sentences, the way you'd tell a friend over coffee. Never a
+  numbered or bulleted list of dense points, and never a bold label followed by a run of type names and ids. A list
+  is fine only where the reader really scans: steps to type in a how-to, a table of parts, settings or rows.
+- **Fixed as touched** (Louis, 2026-11-14: "any touched file not doing it like this must be updated"). A change
+  that touches a doc that doesn't talk this way rewrites it in the same change, keeping every fact.
 - **In plain words** (Louis, 2026-10-26): the way a friend would explain it, casual but straight to the point, in
   short everyday sentences. Lead with what it means, then the detail. Say what a technical term means the first
   time. Name code, a class or a file, only where the reader needs to find it.

@@ -8,106 +8,242 @@
 
 ## Purpose
 
-Everything that makes louis-agent an agent, independent of how you talk to it: the tools, the skills, the tool-call
-loop, the model providers, configuration, logging and bootstrap. The hosts (CLI, Rider, API, MCP) only translate their
-protocol to and from `AgentEngine`; behaviour changes belong here.
+Core is the engine. It's everything that makes louis-agent an agent, no matter how you talk to it: the tools, the
+skills, the loop that runs the model's tool calls, the model providers, the settings, the logging and the start-up.
+
+The hosts are the doors in. The terminal (CLI), Rider, the HTTP API and the MCP server each speak their own
+protocol, and all they do is translate it to and from `AgentEngine`. So when you want the agent to behave
+differently, the change belongs here, not in a host.
+
+This doc first walks you through one turn, from a message coming in to the answer going out. Then it tells the
+parts that make a turn work, one at a time. At the end there's a table of every folder and type, for when you need
+to find something.
 
 ## How it works
 
-One turn, step by step, before the parts that make it are told one by one below.
+Here's one turn from start to finish, before we look at each part on its own.
 
 ![One turn: the message is appended, the model asked, each tool call run behind the guards round after round, and the whole turn appended at the end](diagrams/louis-agent.core-flow.svg)
 
 ![louis-agent.core: How it works](diagrams/louis-agent.core-how-it-works.svg)
 
-1. **Bootstrap** (`AgentHost.Build()`): load `config/.env.secrets` then `config/.env` (searching upward from the working
-   directory; variables already set win), bind `LlmOptions` and `AgentOptions`, start file logging, load skills, create
-   the chat client, create `AgentEngine`, load approved agent-built tools, start the tool discovery the program gave (Rider's, from the ACP server, CL57).
-   `BuildToolHost()` does the same without a model, for the MCP server.
-2. **A turn** (`StreamPromptAsync` / `ProcessPromptAsync`): append the user message to the history, send history + tools
-   + reasoning settings to the model, let `FunctionInvokingChatClient` run tool calls (up to 10 rounds), stream thinking,
-   text, calls and results to the host, then append the whole turn to the history.
-3. **Guards** around every tool call: results over 50,000 characters are summarised by a separate tool-less call; a call
-   cut off by the output limit is never run (and when streaming, the model is asked to continue, up to 3 times);
-   exceptions go back to the model with their message.
-4. **Usage** (F1): `UsageRecordingChatClient` sits inside the tool loop, so every model request (each tool round, each
-   summary) writes one line to the usage ledger: token counts mapped by the provider's `IUsageMapper`, model, duration,
-   stop reason, and the `UsageScope` the host opened for the turn (host, session, turn, purpose, task/run/service tags).
-   Counts and ids only, never prompt text. A request cancelled before it ends is still written, with unknown tokens
-   rather than 0 (FX9).
-5. **Prices** (F2): `PricingUsageSink` wraps the ledger and prices each record as it is written, from the price table
-   `AgentHost` loads once: `PRICES_URL` if it answers (the API serves its own at `GET /v1/prices`), else `PRICES_FILE`,
-   else the tracked `config/prices.json`. `PriceTable.Find` matches the model by its longest prefix; `CostCalculator`
-   picks the tier from the whole prompt (input, cache reads and writes; a model with a `long_prompt` tier, such as
-   Haiku 5.5 above 100,000 tokens, costs more for the whole request), prices cache writes at their lifetime, and rounds
-   to 6 decimals. A record's `cost` names the table's `as_of`, so a later price change never rewrites it; no price is
-   `null`, never 0 ([ADR 0007](../adr/0007-measure-every-request.md)). Thinking is inside `output`, so it isn't added.
-6. **Showing usage** (F3): the turn's `UsageScope` collects its priced records (a summary request counts toward its
-   turn, a sub-session's toward the parent's as one `sub_session` record per reply), and every host shows the same
-   totals (`UsageReport.Total`): the API on `message_delta` and on the `error` event of a failed turn (FX6), the web
-   apps per answer and per chat, the CLI after each answer, Rider when `USAGE_IN_CHAT` is on, `/usage` per session. A
-   turn's line keeps the four kinds apart (in, cache write, cached, out), since each is priced differently, and says
-   how many requests went unpriced.
-7. **Display currency** (F14): the ledger stays in the bill's currency (USD); a host shows its totals in
-   `DISPLAY_CURRENCY`, or the currency of `HOST_CULTURE` (written once on the PC by `usage-probe --host-culture`,
-   since a container can't see the region and running it in that culture would change every tool's number format).
-   `ExchangeRates` come from `RATES_URL` (Frankfurter by default, mapped by an `IRatesMapper` into our own
-   `rates.json` shape), falling back to the tracked `config/rates.json`; a missing rate shows the charged figure,
-   never a guess. Amounts always use `.` (`R35.00`); a symbol that would clash with `$` is written as the code.
-8. **Prompt caching** (F4): `PromptCachingChatClient`, innermost around every provider's client, asks the provider's
-   `IPromptCachingStrategy` to mark the request (`AnthropicPromptCaching`; `NoPromptCaching` elsewhere). Two markers:
-   one on a copy of the system prompt's last block, which caches the tools and the system prompt with
-   `LLM_CACHE_TTL` (5 minutes by default, or an hour), and Anthropic's automatic marker for the conversation, always 5
-   minutes. The stored history is never marked. The prefix stays the same bytes because tools are sorted by name (a
-   duplicate name stops start-up), the system prompt holds nothing per request, and thinking is fixed per engine.
-   `LLM_CACHE=off` turns it off. `usage-probe --cache-gaps` reads a ledger's gaps between requests to pick the lifetime.
-9. **Toolsets per session** (F5, [ADR 0006](../adr/0006-toolsets-per-session.md)): nothing loads at start-up; a session
-   names its toolsets when it opens and keeps them, and `AgentEngineFactory` builds one engine per sorted toolset list
-   (up to 16 cached), sharing the chat client, the ledger and the settings; the system prompt carries only those
-   toolsets' guides (`ToolsetCatalog`). A session with no list gets `skills`. Another agent is asked by its address
-   (`AskAgent` in the `agents` toolset, F127.3.1, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md)): only
-   an address the asker's identity lists in `Calls`, on a peer from `AGENT_PEERS`, one level deep, at most 3 a turn,
-   5 minutes each, and it stops using tools when its prompt nears 80,000 tokens (FX14); the chat keeps one
-   conversation per address, so asking it again carries on (F26), and the asked agent's own file declares its
-   toolsets (F33, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
-10. **Minions** (F30, built, not in use): a specialist can hand one task and one of its own tools to a minion on a cheap
-    model (`MINION_LLMS`, a session naming its LLM profile); no session is given `minions` until the cook is measured
-    with and without them (the TODO's *F30's minions tested*). A minion's engine is the principles, its product's
-    base, its role and the one tool, refused before any HTTP for a tool its specialist doesn't hold. An LLM profile
-    takes nothing from the instance but its API key, so a local model never inherits Claude's `LLM_THINKING`; the
-    profile goes to the peer as data and the peer refuses one it doesn't offer (`GET /v1/llm-profiles` lists them).
-    `VerifyQuote(url, quote, product)` checks a quoted price against the page in code, through the same guarded reader
-    as `FetchUrl` (FX16 made a price-only quote name its product).
-11. **The web** (F32 to F34): `WebSearch` behind `IWebSearchProvider` (SearXNG in Docker, or a licensed API), and pages
-    drawn with JavaScript read through one headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP, in `louis-agent.core.web` since CL33), every
-    request it makes held to the address rule (`SsrfGuard`), no WebSockets, on a network apart from the database. The
-    browser says what it is (`BROWSER_USER_AGENT`, [ADR 0038](../adr/0038-the-browser-says-what-it-is.md)). `WEB_REPLAY`
-    records the pages a session reads and replays them, so an eval reads the same web twice. What F32 to F34 learned:
-    the browser checks every request a page makes, not only the first address, since it follows redirects and loads
-    subresources by itself; request interception doesn't see WebSockets, so before a page's own scripts `WebSocket`
-    refuses to be made, in every frame; a failed name lookup is a refusal, and the request handler catches everything
-    (an exception escaping its `async void` would end the process and every chat); the turn's cancellation reaches the
-    browser, which closes the page; one guarded browser (`IWebBrowser`, in `louis-agent.core.web` since CL33) serves the renderer and
-    every shop, with a visit that can carry its own cookies and one script of ours. SearXNG is AGPL-3.0, run unchanged
-    beside us over HTTP, and the sold endpoint uses a licensed search API instead, since the engines it queries don't
-    license their results for that ([ADR 0023](../adr/0023-copyleft-service-beside-us.md)); on the day it was measured,
-    only Bing answered from Louis's address.
+### 1. Starting up
 
-The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
+Every host starts the engine the same way, by calling `AgentHost.Build()`. First it reads the settings files. It
+looks for `config/.env.secrets` and then `config/.env`, searching upward from the folder you started in. If a
+variable is already set in the environment, that one wins, so you can always override a file from the outside.
 
-What happens when a host hands the engine a message:
+With the settings read, it fills in `LlmOptions` and `AgentOptions`, starts logging to file and loads the skills.
+Then it creates the chat client (the thing that talks to the model) and the `AgentEngine` itself. After that it
+loads the tools the agent built for itself that you've already approved. Last, it starts whatever tool discovery
+the program handed it. Today that's Rider's, which comes from the ACP server.
+
+The MCP server doesn't need a model, because the client on the other side brings its own. So it calls
+`BuildToolHost()` instead, which does the same work without the model.
+
+*Decided in:* CL57.
+
+### 2. A turn
+
+A turn starts when a host hands the engine your message, through `StreamPromptAsync` (streamed) or
+`ProcessPromptAsync` (all at once). The engine adds your message to the conversation's history. Then it sends the
+model three things: the history, the tools it may call, and the reasoning settings.
+
+The model usually answers by asking for a tool. `FunctionInvokingChatClient`, from Microsoft.Extensions.AI, runs
+that tool, gives the model the result, and asks again. It keeps going like that for up to 10 rounds. While it
+works, everything streams back to the host as it happens: the model's thinking, its text, each tool call and each
+result.
+
+When the turn is done, the whole turn is added to the history in one piece.
+
+### 3. The guards around every tool call
+
+A tool call can go wrong in a few ways, and each one has a guard.
+
+A tool can hand back far too much. If a result is over 50,000 characters, a separate model call, with no tools,
+summarises it first, so the model's context doesn't fill up with one page.
+
+The model can also get cut off by its output limit halfway through writing a call. A half-written call is never
+run. When the turn is streaming, the model is asked to carry on instead, up to 3 times.
+
+And if a tool throws an exception, the engine doesn't crash. The exception's message goes back to the model as the
+tool's answer, so the model can see what went wrong and try something else.
+
+### 4. Measuring what every request uses
+
+Every request to the model is measured. `UsageRecordingChatClient` sits inside the tool loop, so each tool round
+and each summary is its own request with its own line in the usage ledger (the file where every request is
+written down).
+
+A line holds the token counts, the model, how long it took, why the model stopped, and the `UsageScope` the host
+opened for the turn. The scope says which host, session and turn it was, why the request was made, and any task,
+run or service tags. The token counts come from the provider's `IUsageMapper`, since every provider reports them a
+bit differently.
+
+A line holds counts and ids only. The prompt's text is never written. And if a request is cancelled before it
+finishes, it's still written down, with its tokens as unknown rather than 0, because 0 would be a lie.
+
+*Decided in:* F1, FX9.
+
+### 5. Putting a price on it
+
+`PricingUsageSink` wraps the ledger, so each record gets its price at the moment it's written. The price table is
+loaded once, by `AgentHost`. It comes from `PRICES_URL` if that answers (the API serves its own at
+`GET /v1/prices`), or else from `PRICES_FILE`, or else from the tracked `config/prices.json`.
+
+`PriceTable.Find` finds a model's price by the longest matching start of its name. `CostCalculator` then works out
+the cost. It picks the price tier from the whole prompt: the input, the cache reads and the cache writes together.
+Some models have a `long_prompt` tier. Haiku 5.5 is one: above 100,000 tokens, the whole request costs more, not
+just the part past the line. Cache writes are priced by how long they're kept, and the result is rounded to 6
+decimals. Thinking is already counted inside `output`, so it isn't added on top.
+
+A record's `cost` names the table's `as_of` date. That way a later price change never rewrites an old record. And
+when there's no price for a model, the cost is `null`, never 0.
+
+*Decided in:* F2, [ADR 0007](../adr/0007-measure-every-request.md).
+
+### 6. Showing you what it cost
+
+The turn's `UsageScope` collects its priced records as they come in. A summary request counts toward its own
+turn. When the agent asks another agent, that whole conversation counts toward the parent's turn as one
+`sub_session` record per reply.
+
+Every host shows the same totals, from `UsageReport.Total`, each in its own place. The API sends them on
+`message_delta`, and on the `error` event when a turn fails. The web apps show them per answer and per chat. The
+CLI shows them after each answer. Rider shows them when `USAGE_IN_CHAT` is on. And `/usage` gives you a session's
+total.
+
+A turn's line keeps the four kinds of token apart (in, cache write, cached, out), because each one has its own
+price. It also tells you how many requests it couldn't put a price on.
+
+*Decided in:* F3, FX6.
+
+### 7. Showing it in your currency
+
+The ledger always stays in the currency the bill comes in, which is US dollars. A host only converts when it
+shows you a total. It uses `DISPLAY_CURRENCY` if you set it, or else the currency of `HOST_CULTURE`.
+
+`HOST_CULTURE` is written once on your PC by `usage-probe --host-culture`. That's because a container can't see
+which region you're in, and running the whole container in your culture would change the number format of every
+tool.
+
+The exchange rates come from `RATES_URL`, which is Frankfurter by default. An `IRatesMapper` turns that reply into
+our own `rates.json` shape. If it can't be reached, the tracked `config/rates.json` is used. If a rate is
+missing, you see the figure as charged, never a guess.
+
+Amounts always use `.` for the decimal point (`R35.00`). And a currency symbol that would be confused with `$` is
+written as its code instead.
+
+*Decided in:* F14.
+
+### 8. Prompt caching
+
+The model's provider can keep the start of a prompt it has seen recently, so the next request that starts the same
+way is cheaper and faster. That's prompt caching. `PromptCachingChatClient` sits innermost, right around every
+provider's client. It asks the provider's `IPromptCachingStrategy` how to mark the request: `AnthropicPromptCaching`
+for Claude, `NoPromptCaching` everywhere else.
+
+There are two markers. The first goes on a copy of the system prompt's last block. It caches the tools and the
+system prompt, for as long as `LLM_CACHE_TTL` says: 5 minutes by default, or an hour. The second is Anthropic's
+automatic marker for the conversation, which is always 5 minutes. The history we store is never marked itself.
+
+A cache only works if the start of the prompt is the same, byte for byte, every time. Three things keep it that
+way. The tools are sorted by name (and two tools with the same name stop the start-up). The system prompt holds
+nothing that changes per request. And thinking is fixed for each engine.
+
+You can turn it all off with `LLM_CACHE=off`. And `usage-probe --cache-gaps` reads the gaps between requests in a
+ledger, to help you pick the lifetime.
+
+*Decided in:* F4.
+
+### 9. Toolsets per session, and asking another agent
+
+Nothing loads at start-up. Instead, a session names its toolsets when it opens, and keeps them for its whole life.
+`AgentEngineFactory` builds one engine per sorted list of toolsets and keeps up to 16 of them, all sharing the chat
+client, the ledger and the settings. The system prompt only carries the guides of that session's toolsets
+(`ToolsetCatalog`). A session that names no toolsets gets `skills`.
+
+An agent can also ask another agent, by its address, with `AskAgent` from the `agents` toolset. There are fences
+around that. The address has to be one the asking identity lists in its `Calls`, on a peer named in
+`AGENT_PEERS`. It goes one level deep only, at most 3 asks a turn, 5 minutes each. And the asked agent stops using
+tools once its prompt nears 80,000 tokens.
+
+The chat keeps one conversation per address. So when you ask the same agent again, it carries on where it left
+off. The asked agent's own file says which toolsets it loads.
+
+*Decided in:* F5, [ADR 0006](../adr/0006-toolsets-per-session.md), F127.3.1,
+[ADR 0117](../adr/0117-one-address-for-every-agent-call.md), FX14, F26, F33,
+[ADR 0025](../adr/0025-a-role-declares-its-toolsets.md).
+
+### 10. Minions
+
+A minion is a small helper on a cheap model. A specialist can hand a minion one task and one of its own tools. The
+cheap model is the one `MINION_LLMS` names, through a session that names its LLM profile.
+
+This is built but not in use yet. No session is given `minions` until the cook is measured with them and without
+them (the TODO's *F30's minions tested*).
+
+A minion's engine is small on purpose: the principles, its product's base, its role, and that one tool. If the
+specialist asks for a tool it doesn't hold itself, the request is refused before any HTTP call is made.
+
+An LLM profile takes nothing from the instance except its API key. So a local model never picks up Claude's
+`LLM_THINKING` by accident. The profile goes to the peer as data, and the peer refuses one it doesn't offer
+(`GET /v1/llm-profiles` lists the ones it does).
+
+`VerifyQuote(url, quote, product)` checks a quoted price against the page itself, in code, through the same
+guarded reader as `FetchUrl`. A quote that's only a price has to name its product too.
+
+*Decided in:* F30, FX16.
+
+### 11. The web
+
+The agent searches with `WebSearch`, behind `IWebSearchProvider`: SearXNG running in Docker, or a licensed API.
+Some pages are drawn by JavaScript, so a plain fetch would come back empty. Those are read through one headless
+Chrome behind `IPageRenderer`, driven by PuppeteerSharp over CDP (Chrome's remote-control protocol). That browser
+lives in `louis-agent.core.web`.
+
+The browser is locked down. Every request it makes is held to the address rule (`SsrfGuard`), it can't open
+WebSockets, and it runs on a network apart from the database. It also says honestly what it is
+(`BROWSER_USER_AGENT`).
+
+`WEB_REPLAY` records the pages a session reads and can play them back. That way an eval reads exactly the same web
+twice.
+
+Building it taught a few things worth knowing. The browser has to check every request a page makes, not just the
+first address, because it follows redirects and loads images and scripts by itself. Request interception doesn't
+see WebSockets, so `WebSocket` is made to refuse before the page's own scripts run, in every frame. A failed name
+lookup counts as a refusal. The request handler catches everything, because an exception escaping its
+`async void` would end the process and every chat with it. The turn's cancellation reaches the browser, which then
+closes the page. And there's one guarded browser (`IWebBrowser`, also in `louis-agent.core.web`) that serves the
+renderer and every shop, with a visit that can carry its own cookies and one script of ours.
+
+SearXNG is AGPL-3.0. We run it unchanged, beside us, over HTTP. The endpoint we sell uses a licensed search API
+instead, because the search engines SearXNG asks don't license their results for that. On the day it was
+measured, only Bing answered from Louis's address.
+
+*Decided in:* F32 to F34, CL33, [ADR 0038](../adr/0038-the-browser-says-what-it-is.md),
+[ADR 0023](../adr/0023-copyleft-service-beside-us.md).
+
+### 12. The engine from the inside
+
+The full step by step of a turn is in [How a turn works](../architecture/06-runtime-view.md). Here's what happens
+when a host hands the engine a message:
 
 ![One turn: the engine runs the tool loop, each model request measured and each tool call guarded, and the turn joins the history at the end](diagrams/louis-agent.core-diagrams.svg)
 
+And these are the types a host meets on its way in:
+
 ![The types a host meets: AgentHost builds the context from a catalogue of identities and packs, an engine per toolset list, and the model from a provider](diagrams/louis-agent.core-interface.svg)
 
-The engine from the inside. It builds six parts once, in its constructor. On the left is what a host asks of it,
-each passed on to the part that does it. On the right is what it is handed from outside. A plain line joins two
-parts where one is built with the other.
+Inside, the engine builds six parts once, in its constructor. In the picture below, the left side is what a host
+asks of it, each passed on to the part that does the work. The right side is what it's handed from outside. A
+plain line joins two parts where one is built with the other.
 
 ![AgentEngine from the inside: what is asked of it on the left, its six parts and which is built with which, and what it is handed on the right](diagrams/louis-agent.core-agent-engine.svg)
 
 ## Structure
+
+This part is for looking things up: every folder and file of core, and what's in it.
 
 | Path | What's in it |
 |---|---|
@@ -216,28 +352,40 @@ for one agent is a pack, not core. Another agent on core is
 
 ## Security
 
-Paths stay inside the workspace (no `..`, no following symbolic links); secret files (`.env*` except templates such as `.env.example`, keys, certificates,
-`credentials.json`, …) can't be read, written, searched or diffed; processes get argument lists or environment
-variables, never model text spliced into a command line; `FetchUrl` blocks private, loopback and metadata addresses.
+The file tools keep every path inside the workspace. A path can't climb out with `..`, and a symbolic link is
+never followed. Secret files can't be read, written, searched or diffed at all: that's `.env*` (except templates
+such as `.env.example`), keys, certificates, `credentials.json` and the like.
+
+When a tool starts a process, it hands over a list of arguments or environment variables. The model's text is
+never spliced into a command line, so the model can't sneak in a second command. And `FetchUrl` refuses private,
+loopback and cloud-metadata addresses, so the agent can't be talked into reading something inside our own network.
 
 ## Tests
 
-`src/tests/engine/louis-agent.core.tests` — see [tests](tests.md). No network, model or Docker needed.
+The tests are in `src/tests/engine/louis-agent.core.tests`, and [tests](tests.md) says how they're laid out. They
+need no network, no model and no Docker.
 
 ## Limits and plans
 
-- 10 tool rounds per message → [F10](../features/F10-route-settings.md); history grows unbounded →
-  [F9](../features/F09-context-management.md); estimates and budgets → [F7](../features/F07-budgets.md); each model's
-  window and cache minimum → [F15](../features/F15-model-limits.md).
-- The browser's address check can be beaten by DNS rebinding (the check resolves a name, then Chrome resolves it again),
-  and a Web Worker's socket isn't blocked; one egress proxy that resolves once would close both → F42.
-- Totals convert at the one rate a host loaded at start-up; a report over months (F7) must convert each record at its
-  own date's rate.
-- `tool_choice: none` on the round after the limit (FX1) didn't break the conversation's cache when measured, though
-  Anthropic's docs say a change of `tool_choice` should; if the API starts enforcing it, each such request rewrites the
-  conversation's cache (about $0.006 more per round-limited message on Haiku 5.5).
-- Rider MCP discovery only logs; Ollama tool support is a name heuristic; Paymo task lookup takes the first match
-  ([known limitations](../../../TODO.md#known-limitations)).
+A message gets at most 10 tool rounds; choosing that per route is [F10](../features/F10-route-settings.md). The
+history grows without limit for now; trimming it is [F9](../features/F09-context-management.md). Estimates and
+budgets are [F7](../features/F07-budgets.md), and knowing each model's window and cache minimum is
+[F15](../features/F15-model-limits.md).
+
+The browser's address check can be beaten by DNS rebinding. The check looks a name up, and then Chrome looks it up
+again, so the second answer can differ from the one we checked. A Web Worker's socket isn't blocked either. One
+egress proxy that looks a name up only once would close both holes; that's F42.
+
+Totals convert at the one rate a host loaded when it started. That's fine for a single session, but a report over
+months (F7) will have to convert each record at the rate of its own date.
+
+On the round after the limit, the engine sends `tool_choice: none` (FX1). When we measured it, that didn't break
+the conversation's cache, even though Anthropic's docs say a change of `tool_choice` should. If the API starts
+enforcing it, each such request rewrites the conversation's cache, which is about $0.006 more per round-limited
+message on Haiku 5.5.
+
+A few smaller limits are on the TODO's [known limitations](../../../TODO.md#known-limitations): Rider MCP discovery
+only logs, Ollama's tool support is guessed from the model's name, and a Paymo task lookup takes the first match.
 
 ## Related docs
 
