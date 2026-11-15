@@ -69,25 +69,37 @@ public sealed partial record SassStylesheet(string Project)
         [.. Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value)];
 
     /// <summary>Where one of the framework's partials sits, by the name a site's list gives it.</summary>
+    /// <remarks>Guard clauses, one per library whose Sass a site lists; the framework's web is the rest.</remarks>
     public string FrameworkPartial(string partial)
     {
         string folder = Path.GetDirectoryName(partial) ?? "";
-        string library = partial.StartsWith(EvalsPrefix, StringComparison.Ordinal)
-            ? "src/web/louis-agent.web.evals/Styles"
-            : "src/web/louis-agent.web/Styles";
-        return Path.Combine(TestPaths.RepoRoot, library, folder, $"_{Path.GetFileName(partial)}.scss");
+        string file = $"_{Path.GetFileName(partial)}.scss";
+        return Path.Combine(TestPaths.RepoRoot, LibraryStyles(partial), folder, file);
+    }
+
+    /// <summary>The <c>Styles</c> folder of the library a partial's name says it is from.</summary>
+    private static string LibraryStyles(string partial)
+    {
+        if (partial.StartsWith(EvalsPrefix, StringComparison.Ordinal)) return "src/web/louis-agent.web.evals/Styles";
+        if (partial.StartsWith(ThemesPrefix, StringComparison.Ordinal)) return "src/web/louis-agent.web.themes/Styles";
+        return "src/web/louis-agent.web/Styles";
     }
 
     /// <summary>The studio's shared Sass is under <c>evals/</c> (CL57).</summary>
     private const string EvalsPrefix = "evals/";
 
+    /// <summary>A theme's sheets are under <c>theme-{id}/</c> in the themes library (F151.2).</summary>
+    private const string ThemesPrefix = "theme-";
+
     /// <summary>
-    /// The framework's Sass is all under <c>web/</c> and the studio's shared Sass under <c>evals/</c>, so a name
-    /// says whose it is; the account library has no partial since CL58, its components carry their own styles.
+    /// The framework's Sass is all under <c>web/</c>, the studio's shared Sass under <c>evals/</c> and a theme's
+    /// sheets under <c>theme-</c>, so a name says whose it is; the account library has no partial since CL58, its
+    /// components carry their own styles.
     /// </summary>
     private static bool IsFrameworks(string name) =>
         name.StartsWith("web/", StringComparison.Ordinal) ||
-        name.StartsWith(EvalsPrefix, StringComparison.Ordinal);
+        name.StartsWith(EvalsPrefix, StringComparison.Ordinal) ||
+        name.StartsWith(ThemesPrefix, StringComparison.Ordinal);
 
     /// <summary>The partials on disk that write CSS, named the way <c>app.scss</c> names them.</summary>
     public IReadOnlyList<string> AreaFiles() =>

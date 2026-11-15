@@ -1,10 +1,15 @@
 /* This site's styles: the framework's rules, in their order, so nothing is copied. With no colours of its own a site comes
    out in the framework's black and white. To have your own, add a partial that sets Bootstrap's colour names after
    web/settings/colours, as the framework's _colours.scss lists them. A rule of your own goes after the framework's. The
-   build makes wwwroot/css/app.css from this. */
+   two themes' sheets come straight after the framework's names, one block per theme and style, picked by the page's
+   data-theme and data-style. The build makes wwwroot/css/app.css from this. */
 
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
+@forward "theme-glass/dark";
+@forward "theme-glass/light";
+@forward "theme-flat/dark";
+@forward "theme-flat/light";
 @forward "web/base/elements";
 
 @forward "web/settings/brands";

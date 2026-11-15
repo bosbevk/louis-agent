@@ -118,6 +118,16 @@ public class StarterSiteTests
         });
     }
 
+    /// <summary>F151.2: the starter offers both themes, glass first, so glass is what a first visit gets.</summary>
+    [Test]
+    public void TheSite_OffersGlassThenFlat()
+    {
+        var areas = new ServiceCollection().AddSiteAreas(WebsiteAreas.Name).BuildServiceProvider()
+            .GetRequiredService<SiteAreas>();
+
+        Assert.That(areas.Themes.Select(theme => theme.Id), Is.EqualTo(new[] { "glass", "flat" }));
+    }
+
     /// <summary>No address is claimed twice, by the site and the framework together.</summary>
     [Test]
     public void NoAddress_IsClaimedTwice()

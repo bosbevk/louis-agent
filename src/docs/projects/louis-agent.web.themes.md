@@ -1,7 +1,7 @@
 # louis-agent.web.themes — design
 
 > **Kind:** contracts library (`net10.0`) · **Path:** `src/web/louis-agent.web.themes/` · **References:**
-> louis-agent.web only · **Used by:** a site that offers a theme; none yet
+> louis-agent.web only · **Used by:** louis-agent.starter, and so what `dotnet new louis-site` makes
 
 ![The themes: one project a site names its looks from, glass and flat, each a folder holding its theme's id and name, and nothing else](diagrams/louis-agent.web.themes.svg)
 
@@ -105,8 +105,9 @@ framework's names their theme leaves unset, in each style; the answer must be no
 ## Limits and plans
 
 A picture of a screen, such as the product window, stays dark in a light style only once the part that draws it
-says so; a sheet of values can't. No site names a theme yet, and no site lists a theme's sheets, so no site looks different.
-Today's components read the colours, not yet the surface names, so a pane is not glass anywhere yet.
+says so; a sheet of values can't. The starter is the one site that names the themes and lists their sheets.
+Today's components read the colours and not yet the surface names, so a pane is not glass anywhere yet, and glass
+and flat in the dark look much alike until they do.
 
 ## Related docs
 
