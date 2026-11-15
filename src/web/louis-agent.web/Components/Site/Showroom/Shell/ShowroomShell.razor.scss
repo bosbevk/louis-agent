@@ -79,6 +79,9 @@
 /* The rail beside the stage; the stage takes what's left, and keeps room at its bottom for the corner (--corner-room),
    so a demo's offer never ends under the guide's button. */
 .showroom { --corner-room: 104px; }
+/* With the guide as a bar (F134.3), the room grows to the bar's height, chips and all, so no page ends under it
+   (F134's rule 5). The talk the bar folds over itself stands over the page, and the visitor folds it. */
+.showroom:has(~ .showroom-corner .chat-widget.is-bar) { --corner-room: 150px; }
 /* The rail is a slim column of icons since F134.2, so its column is as wide as a tile and its margins. */
 .showroom-body { display: grid; grid-template-columns: 84px minmax(0, 1fr); }
 /* With no rail, on a page that is no demo, the stage stands alone and takes the whole width (F134.1). */

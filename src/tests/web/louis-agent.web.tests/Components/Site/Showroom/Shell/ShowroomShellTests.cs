@@ -230,4 +230,19 @@ public class ShowroomShellTests
         Assert.That((cut.Find(".showroom-pill").TextContent, cut.Find(".rail-group").TextContent),
             Is.EqualTo(("Demos!", "Vir jou besigheid")));
     }
+
+    /// <summary>
+    /// A frame whose corner holds the guide as a bar keeps the bar's room free at the stage's foot (F134.3, F134's
+    /// rule 5), so no page ends under the bar: the room the corner kept grows to the bar's height.
+    /// </summary>
+    [Test]
+    public void WithTheGuideAsABar_TheStageKeepsItsRoom()
+    {
+        string path = Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Shell/ShowroomShell.razor.scss");
+        string styles = File.ReadAllText(path).ReplaceLineEndings("\n");
+
+        Assert.That(styles,
+            Does.Contain(".showroom:has(~ .showroom-corner .chat-widget.is-bar) { --corner-room: 150px; }"));
+    }
 }
