@@ -1124,6 +1124,52 @@ story they explain, its few sentences that pointed from one section to the other
 ratchet that lets a rule land before its work is done, and a doc's own lines used as data. Skill 17, observability
 of a design: every picture is drawn from what the code and its compose files say.
 
+## The look held against the design, and the flow walked three times (F134, 2026-11-15)
+
+**What it is.** F134.2 to F134.5 were built without a stop after each step, and every one of them passed its tests
+and its own live check. Then you looked at the local site and it was not the design. This is the pass that held
+the site against the J and K mockups, side by side in a browser, and then walked the whole flow with the real
+guide until it went right three times in a row.
+
+**What the tests had not seen.** Every fault here had green tests over it. The guide's answer stood in a folded
+box with "PROCESSING" in it, the site's chips stood on top of that, and both stood on the start's dock. Each part
+was tested alone, and nothing tested the three together on one screen. The caption was as wide as the bar, with
+the talk's big cards stacked in half of it. Its test asked that the choices were there, which they were.
+
+Turning the caption over threw it back over the bar. The module marked the caption with a class, and the page
+writes the caption's classes again when they change. A test of the module's names can't see that. Only the press
+did. A choice to write in your own words did nothing on a demo's page. It was a label for the box by its id, and
+that page has the business's own chat with a box of the same id. The test page had one box.
+
+And on the start the guide offered "Ask it live", asked a business that has no window there, and told you to
+answer in a window you could not see. Its instructions were written when the start was a page of covers, and no
+test walks the guide.
+
+**What that teaches.** A markup test proves a part exists, and a style test proves a rule is written. Neither
+proves the page looks right or that a walk makes sense. The mockup is the test for the look, and it has to be
+opened beside the built page, at more than one window size, before a child is called done. The walk is the test
+for the flow, and it has to be made by pressing what a visitor presses, more than once, since the guide does not
+answer the same way twice: in one round it met you at a demo's door with three questions and no walk, and its rule
+had to say "exactly four choices, in this order" before it held.
+
+**How the rounds were run.** A small script in the browser read the page's state after each answer as data: the
+address, the orb, the chips, the caption's words and choices, where it stood, what was lit, whether the live
+window was on screen. A screenshot showed what data can't. Three rounds each took one business from the start's
+tour, through "Open this demo", a question at the door answered live in the business's window, the walk of the
+demo's page, the caption turned over, the whole talk, an answer put away, a pressed note and "Stop here". The
+parts that changed after a round were run three more times on their own.
+
+**Sharing one browser.** You were pressing in one tab while I drove another, and twice I drove yours. A tab that
+is not in front has no size, so every measure from it read nothing. A fresh tab of my own fixed that. A frame on a
+scratch page stood in for a phone and for a short laptop screen, since a maximised window takes no new size.
+
+**What it cost.** About US$0.28 for 545 requests on Haiku 5.5, by the usage ledger, from 05:23 to 08:08 UTC. That
+is everything asked of the local site in that time, your own presses included.
+
+**Where it sits.** Skill 18, testing and shipping: what a test can prove and what only looking can, and a walk by
+the real agent as the last check before a thing is called working. Skill 4, tool design: the guide's rule for the
+start is a prompt rule, and a tool that refuses to ask a business with no window on the page would hold it harder.
+
 ## Every answer turns over to the ledger's own numbers (F134.5, 2026-11-15)
 
 **What it is.** The guide's caption now has a back. "How I did that" turns it over to the answer's work: the tools

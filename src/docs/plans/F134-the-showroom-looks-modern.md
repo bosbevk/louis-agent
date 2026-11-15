@@ -157,6 +157,30 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     moves. And the same day, more exactly: ".diagrams must be split into a diagrams --> and what builds the
     diagrams." So what a picture is, its records, its kinds and its reader, stands apart from what builds it,
     the layouts, the routing, the drawings and the looks, with the dependency one way.
+- **2026-11-15: the look held against the mockups, before the merge.** Louis, having looked at the local site:
+  "relook at the design and look local and fix". The bar, the caption and the start were held against J and K
+  and brought back to them, with what he saw on the way: "leave space at the bottom for this", "make sure all
+  transitions is smooth", "must the pulse glow out of bounds? and missing icon", "button goes invis behind
+  background", "this does nothing" (of a choice to write), "these 2 button should be generated based on where the
+  last convo was", "ask it live must be asked inside the demo", and "should guide me in the door with options to
+  what to ask". What was built is in the web's and the site's design docs. These picks were made on the way,
+  unattended, and are open for him to overrule:
+  - *Every answer is a caption.* The folded talk is gone. An answer a caption can't hold (a form, a drawn card, an
+    error) opens the whole talk by itself. This replaces F134.3's pick that the talk folds to its last answer.
+  - *The caption's choices are pills*, as the mockups drew them, a choice's why as its tip. This replaces
+    F134.4's pick that the caption reuses the talk's choice cards.
+  - *Where a caption with no place stands.* The mockup's rule gives a caption a spot beside the place, and inside
+    the place's corner when the place is too big. Too big, it now stands at the bar's left beside the orb, and over
+    the bar only on a narrower screen. The corner would have covered a demo's live window.
+  - *The light.* The mockup keeps the page dimmed while a caption stands. The site keeps the spotlight's four
+    seconds and leaves a quiet ring on the place, with no dim, so the page stays usable.
+  - *A close on the caption*, which the mockups don't have: without it an answer stood over the page until the
+    next one.
+  - *The chips after the first answer*: the site's first question, then two of the guide's last choices.
+  - *The stage on a shorter screen*: it gives up its lede under 1,000 tall, and under 820 the forward demo's name
+    and button share a row.
+  - *The guide's words*: "Walk me through this page" as the first chip, and "Open this demo" as the choice at a
+    window on the start.
 
 ## Verification
 
