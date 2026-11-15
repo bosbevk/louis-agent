@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 28"><defs>
 <linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".09"/><stop offset=".36" stop-color="#fff" stop-opacity=".03"/><stop offset=".62" stop-color="#fff" stop-opacity=".01"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
-<linearGradient id="press" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a72ff" stop-opacity=".80"/><stop offset="1" stop-color="#4a2fe0" stop-opacity=".62"/></linearGradient>
+<radialGradient id="press" cx=".3" cy=".1" r="1"><stop offset="0" stop-color="#7459ff"/><stop offset=".38" stop-color="#6b4dff"/><stop offset="1" stop-color="#3a22c4"/></radialGradient>
 <linearGradient id="pressd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2fe0" stop-opacity=".9"/><stop offset="1" stop-color="#3a22c4" stop-opacity=".85"/></linearGradient>
 <linearGradient id="pressx" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8a98" stop-opacity=".45"/><stop offset="1" stop-color="#8a8a98" stop-opacity=".3"/></linearGradient>
 <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9282ff"/><stop offset="1" stop-color="#5aa2ff"/></linearGradient>
