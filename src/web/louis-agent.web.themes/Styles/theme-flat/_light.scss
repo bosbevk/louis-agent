@@ -75,6 +75,13 @@
     --web-pane-shadow: none;
     --web-pane-blur: none;
     --web-pane-radius: 22px;
+    // Under the pointer it stays where it is and wears a ring of the violet: flat has no shading, so no shadow.
+    --web-pane-hover-lift: 0px;
+    --web-pane-hover-edge: 0 0 0 2px #6b4dff;
+    --web-pane-hover-shadow: 0 0 transparent;
+
+    // What floats over the page throws no shadow either: its line sets it apart.
+    --web-float-shadow: none;
 
     // An inset, set into the page: the page's white and a firmer grey line.
     --web-inset-fill: #ffffff;

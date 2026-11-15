@@ -5,7 +5,9 @@
 
    A pane is a card or a panel: its fill, its edge (a border), its rim (an image drawn as its edge line), the light
    inside its corners, the shadow it throws, how it blurs what is behind it, and its corner. Today it is the panel
-   colour in the shared frame's hairline and corner, with none of the rest.
+   colour in the shared frame's hairline and corner, with none of the rest. A pane that answers the pointer has a
+   hover of its own (F151.4): how far it lifts, an edge and a shadow, both written as shadows, the card deck's today.
+   A float is a pane over the page, such as a menu's list: the shadow it throws, the menu's today.
    An inset is a piece set into the page, such as the chat's card and a field (F151.4): its fill and its edge, the
    page's colour and the hairline today.
    A bar is the header, the footer and the agent's bar: its fill, its edge and its blur, as the site's header has
@@ -28,6 +30,11 @@
     --web-pane-shadow: none;
     --web-pane-blur: none;
     --web-pane-radius: 12px;
+    --web-pane-hover-lift: -3px;
+    --web-pane-hover-edge: 0 0 0 1px rgba(var(--bs-primary-rgb), .45);
+    --web-pane-hover-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45);
+
+    --web-float-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8);
 
     --web-inset-fill: var(--bs-body-bg);
     --web-inset-edge: 1px solid var(--bs-border-color);

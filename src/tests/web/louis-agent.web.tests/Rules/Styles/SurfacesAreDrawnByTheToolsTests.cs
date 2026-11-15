@@ -51,11 +51,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Recorded/RecordedChat.razor.scss",
         "Components/Screens/Forms/ScreenForm.razor.scss",
         "Components/Screens/Table/ScreenTable.razor.scss",
-        "Components/Site/Bands/Band.razor.scss",
-        "Components/Site/Cards/CardDeck.razor.scss",
-        "Components/Site/Index/SectionIndex.razor.scss",
-        "Components/Site/Looks/LookSwitch.razor.scss",
-        "Components/Site/Menu/SiteMenu.razor.scss",
         "Components/Site/Showroom/Mock/Foot/MockFoot.razor.scss",
         "Components/Site/Showroom/Mock/Head/MockHead.razor.scss",
         "Components/Site/Showroom/Mock/Hero/MockHero.razor.scss",
@@ -73,9 +68,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Site/Showroom/Stage/DemoNotes.razor.scss",
         "Components/Site/Showroom/Stage/DemoStage.razor.scss",
         "Components/Site/Showroom/Start/ShowroomStart.razor.scss",
-        "Components/Site/SiteShell.razor.scss",
-        "Components/Site/Strip/SiteStrip.razor.scss",
-        "Components/Site/Tiles/Tile.razor.scss",
         "Components/Staging/Decks/Deck.razor.scss",
         "Components/Staging/Docks/Dock.razor.scss",
         "Components/Staging/LitStage.razor.scss",
@@ -173,6 +165,14 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("inset")]
     [TestCase("field")]
     [TestCase("picked")]
+    [TestCase("lifts")]
+    [TestCase("opened")]
+    [TestCase("float")]
+    [TestCase("slab")]
+    [TestCase("tint")]
+    [TestCase("accent-line")]
+    [TestCase("marker")]
+    [TestCase("progress")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

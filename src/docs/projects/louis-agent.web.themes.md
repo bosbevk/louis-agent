@@ -51,6 +51,11 @@ card or a field, is as see-through as a pane, its edge drawn by its drawing. A b
 press is solid violet with white words. The mark is a ball of violet glass with a white letter. Flat sets an inset
 to its page's colour with its hairline.
 
+A pane that answers the pointer differs between the two as well. In glass it lifts three pixels and wears no edge
+and no new shadow, since its light is in the hover drawing. In flat it stays where it is and wears a two pixel ring
+of the violet. What floats over the page throws a deep shadow in glass and none in flat, where its line sets it
+apart.
+
 Glass in the light turns white and black over and keeps the purple. The page is a pale wash of the violet, mixed
 from its second step a third of the way into white, so it follows the purple. The words are black, and a
 visitor's mark is black. A pane is white glass, brighter than the page, with a white rim, a fine violet-dark line
