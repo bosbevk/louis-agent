@@ -1,6 +1,7 @@
 /* The look switch (F151.3), as the mockups draw it: each group a small pill, its buttons quiet words, and the one
    that is on filled like a press. Drawn from the names a theme sets, so the switch wears the look it switches. */
-.look-switch { display: inline-flex; gap: 8px; }
+/* On the narrowest phones the two groups sit one above the other rather than overflow. */
+.look-switch { display: inline-flex; flex-wrap: wrap; gap: 8px; }
 
 .look-group {
     display: flex;

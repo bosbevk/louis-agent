@@ -146,6 +146,13 @@ public class LookSwitchTests
         cut.WaitForAssertion(() => Assert.That(PressedWords(cut), Is.EqualTo(new[] { "Flat", "Dark" })));
     }
 
+    /// <summary>On the narrowest phones the switch's two groups may sit one above the other, not overflow.</summary>
+    [Test]
+    public void OnANarrowPhone_TheGroupsMayWrap() =>
+        Assert.That(File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+                "src/web/louis-agent.web/Components/Site/Looks/LookSwitch.razor.scss")),
+            Does.Contain(".look-switch { display: inline-flex; flex-wrap: wrap; gap: 8px; }"));
+
     /// <summary>The switch with two themes, its markup pinned, as every component's is.</summary>
     [Test]
     public void ItsMarkup_WithTwoThemes_IsPinned()

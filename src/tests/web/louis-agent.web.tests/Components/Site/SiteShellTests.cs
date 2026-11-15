@@ -283,6 +283,24 @@ public class SiteShellTests
         Assert.That(cut.FindAll(".site-header .site-actions .look-switch"), Has.Count.EqualTo(1));
     }
 
+    /// <summary>
+    /// F151.3: on a phone the header's actions, the look switch among them, take a row of their own between the brand
+    /// and the menu, so both of the switch's groups stay in reach and the menu keeps its own row.
+    /// </summary>
+    [Test]
+    public void OnAPhone_TheActions_TakeARowOfTheirOwn_BetweenTheBrandAndTheMenu()
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+        string phone = rules[rules.IndexOf("@media (max-width: 720px)", StringComparison.Ordinal)..];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(phone, Does.Contain(".site-actions { width: 100%; order: 2; }"));
+            Assert.That(phone, Does.Contain(".site-nav { gap: 16px; width: 100%; order: 3; }"));
+        });
+    }
+
     /// <summary>F151.3: a site that names its areas but offers no theme gets no switch, and no empty actions.</summary>
     [Test]
     public void WithAreasButNoTheme_NoActionsAreDrawn()
