@@ -61,12 +61,12 @@ dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests     # after a deliberate markup change: then read the diff
 ```
 
-- The packs' views and their plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `CodeLanguage`, `FileSize`) are
-  tested under `packs/tests/`.
-- `Pages/ChatPageTests` renders the whole page with bUnit against `FixtureApi`, a stub of the API from
-  `src/tests/web/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a recorded Puls
-  turn. The empty page and the page with the turn are pinned to `ChatPage.empty.html` and `ChatPage.turn.html`.
-- The tests run in the invariant culture (`TestCulture`), so the golden files never depend on the machine.
+The packs' views and their plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `CodeLanguage`, `FileSize`) are
+tested under `packs/tests/`. `Pages/ChatPageTests` renders the whole page with bUnit against `FixtureApi`, a stub of
+the API from `src/tests/web/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a
+recorded Puls turn. The empty page and the page with the turn are pinned to `ChatPage.empty.html` and
+`ChatPage.turn.html`. The tests run in the invariant culture (`TestCulture`), so the golden files never depend on the
+machine.
 
 Then check it in a browser: send a message, open a file, stage and commit a change, merge a branch. Nothing pushes:
 the API's git endpoints never push.

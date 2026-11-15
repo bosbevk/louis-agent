@@ -13,11 +13,13 @@ Puls is a South African AI assistant that knows your town. Ask it for tonight's 
 local recipe, which nearby shops stock the ingredients and what they cost in rand. It runs on louis-agent, our own
 agent engine in C# on .NET, built so Louis learns AI engineering: a learning choice, not the moat.
 
-- **The problem.** General assistants know the world, not your town; a local, priced, buyable answer takes many
-  follow-ups, and the prices they give are guessed.
-- **Our edge.** Local data read in code rather than guessed by the model, a South African voice (English and
-  Afrikaans), and the control layer around the agent.
-- **Learning first, selling second** (Louis, 2026-10-19). When a sale and the learning pull apart, the learning wins.
+The problem. General assistants know the world, not your town; a local, priced, buyable answer takes many follow-ups,
+and the prices they give are guessed.
+
+Our edge. Local data read in code rather than guessed by the model, a South African voice (English and Afrikaans), and
+the control layer around the agent.
+
+Learning first, selling second (Louis, 2026-10-19). When a sale and the learning pull apart, the learning wins.
 
 ## What we sell
 

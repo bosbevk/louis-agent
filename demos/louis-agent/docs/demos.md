@@ -65,9 +65,9 @@ decide what it needs, find the cause and propose a fix with a test, with a perso
 
 ## What the demos have in common
 
-- They are recordings of real runs, not mock-ups. The words on screen are what the agents said.
-- They cost a few cents to a few rand to make, once, and nothing to watch.
-- They end at the offer: an agent like these, built on the framework for a business's own work.
+They are recordings of real runs, not mock-ups. The words on screen are what the agents said. They cost a few cents to
+a few rand to make, once, and nothing to watch. They end at the offer: an agent like these, built on the framework for
+a business's own work.
 
 ---
 [Docs index](README.md) · Related: [the site's project doc](projects/louis-agent.code-review.md),

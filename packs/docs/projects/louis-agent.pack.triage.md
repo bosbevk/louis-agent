@@ -42,15 +42,21 @@ department for the hand-off (F106.3.5).
 
 ## Why this way
 
-- **A tool, not a prompt rule** (ADR 0080): asking a role to end with a typed tool call is what makes its answer a
-  record the code can check; prose read by a pattern was the orchestrator's way, and a line the pattern couldn't
-  read became "unknown" and was never tried again.
-- **Refusal as text, never a throw** (the pack contract, ADR 0028): a bad value comes back with the choices named, so
-  the model corrects itself and a call served over MCP behaves the same.
-- **The run id is a parameter**: a tool reads nothing from the session, so the same tools serve a role's session, a
-  person at the terminal and the guide in the site's corner.
-- **Two tool classes, one toolset** (ADR 0034): the decision tools and the run tools are apart by responsibility and
-  each under the size limit; the model sees one toolset.
+A role ends its work with a typed tool call, not a rule in its prompt, because that's what makes its answer a record
+the code can check. Prose read by a pattern was the orchestrator's way, and a line the pattern couldn't read became
+"unknown" and was never tried again.
+
+A bad value is refused as text, never as an exception. It comes back with the choices named, so the model corrects
+itself, and a call served over MCP behaves the same way.
+
+The run id is a parameter. A tool reads nothing from the session, so the same tools serve a role's session, a person
+at the terminal and the guide in the site's corner. And there are two tool classes in one toolset: the decision tools
+and the run tools are kept apart by what they're responsible for, each under the size limit, while the model sees one
+toolset.
+
+*Decided in:* [ADR 0028](../../../src/docs/adr/0028-packs-stay-convertible-to-mcp.md),
+[ADR 0034](../../../src/docs/adr/0034-code-a-person-can-maintain.md),
+[ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md).
 
 ## Its web views
 
