@@ -1,0 +1,80 @@
+/* The agent bar (F134.3), as the J and K mockups drew it: fixed at the foot of the page, centred and at most 760 wide,
+   a glass bar with the orb, a line of what the guide is doing over the box, and the talk standing over it. Folded,
+   the talk shows its end, the last answer, cut at its top; opened, it is the whole talk, scrolled within. The page
+   keeps the bar's room free at its bottom (--bar-room), so nothing ends under it. */
+.agent-bar {
+    position: fixed;
+    z-index: 80;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    width: min(760px, calc(100vw - 28px));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.agent-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px 8px 8px;
+    border-radius: 26px;
+    background: rgba(var(--bs-body-bg-rgb), .82);
+    backdrop-filter: blur(16px);
+    box-shadow:
+        0 0 0 1px rgba(var(--web-overlay-rgb), .12),
+        0 30px 60px -20px rgba(var(--web-shadow-rgb), .9);
+}
+.agent-box {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.agent-doing {
+    height: 15px;
+    overflow: hidden;
+    padding: 0 12px;
+    font: 500 11.5px/15px var(--bs-font-monospace);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--bs-secondary-color);
+}
+
+/* The talk over the bar: glass like it, its end showing while folded. */
+.agent-talk {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    max-height: 150px;
+    overflow: hidden;
+    padding: 12px 16px 36px;
+    border-radius: 20px;
+    background: rgba(var(--bs-body-bg-rgb), .82);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .1);
+    mask: linear-gradient(transparent, var(--web-bright) 40px);
+}
+.agent-talk.is-open {
+    justify-content: flex-start;
+    max-height: min(60vh, 520px);
+    overflow-y: auto;
+    mask: none;
+}
+.agent-talk ::deep .turn { font-size: 14px; gap: 10px; margin-bottom: 14px; }
+.agent-talk-toggle {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    padding: 3px 12px;
+    border: 0;
+    border-radius: 999px;
+    font: 500 12px/1.4 inherit;
+    color: var(--bs-secondary-color);
+    background: rgba(var(--web-overlay-rgb), .08);
+    cursor: pointer;
+}
+.agent-talk-toggle:hover { color: var(--bs-emphasis-color); background: rgba(var(--web-overlay-rgb), .14); }
+.agent-talk.is-open .agent-talk-toggle { position: sticky; align-self: flex-end; bottom: 0; }

@@ -1,11 +1,25 @@
-@* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it, with the box always
-   there to type in. It draws what the widget's runner holds and asks the widget to send, so the widget stays the one
-   engine and the bar is only its look. *@
+@using LouisAgent.Web.Components.Widget.Orb
+@* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it. Over it the talk so far,
+   folded to its end until the visitor opens it; in it the orb, a line of what the guide is doing, and the box, which
+   is always there to type in. It draws what the widget's runner holds and asks the widget to send, so the widget
+   stays the one engine and the bar is only its look. *@
 <div class="agent-bar">
-    <div class="agent-box">
-        <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
-                  Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
-                  OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
-                  SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
+    @if (Runner.Chat is { Turns.Count: > 0 })
+    {
+        <div class="@TalkClasses">
+            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency" Class="agent-list"
+                         ShowWork="ShowWork" Chosen="OnChoose" ShowCardAnswers="ShowCardAnswers"/>
+            <button class="agent-talk-toggle" type="button" @onclick="ToggleTalk">@TalkLabel</button>
+        </div>
+    }
+    <div class="agent-row">
+        <Orb State="State" Label="@Title"/>
+        <div class="agent-box">
+            <span class="agent-doing">@Doing</span>
+            <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
+                      Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
+                      OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
+                      SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
+        </div>
     </div>
 </div>

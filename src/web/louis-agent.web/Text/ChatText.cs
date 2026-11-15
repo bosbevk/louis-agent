@@ -28,7 +28,9 @@ public sealed record ChatText
     /// <summary>The tag on the choice the agent suggests, among the cards it offers (F127.4.1).</summary>
     public string Suggested { get; init; } = "Suggested";
 
-    /// <summary>The chip over the guide's box while a piece of the page is selected (F127.7); {0} its heading.</summary>
+    /// <summary>
+    /// The chip over the guide's box while a piece of the page is selected (F127.7); {0} its heading.
+    /// </summary>
     public string AboutPiece { get; init; } = "About: {0}";
 
     /// <summary>What a picked piece asks the guide (F127.7); {0} its heading.</summary>
@@ -165,6 +167,18 @@ public sealed record ChatText
     public string AskAnything { get; init; } = "Ask anything…";
     public string SendTitle { get; init; } = "Send (Enter)";
     public string StopTitle { get; init; } = "Stop";
+
+    /// <summary>What the agent bar says while the agent's words arrive (F134.3).</summary>
+    public string AgentSpeaking { get; init; } = "Answering…";
+
+    /// <summary>What the agent bar says while the agent shows a place on the page (F134.3).</summary>
+    public string AgentShowing { get; init; } = "Showing you the place…";
+
+    /// <summary>The agent bar's button that opens the whole talk, and folds it again (F134.3).</summary>
+    public string TalkOpen { get; init; } = "Show the whole talk";
+
+    /// <summary>The same button while the talk is open (F134.3).</summary>
+    public string TalkClose { get; init; } = "Fold the talk";
 
     /// <summary>A chat window folds to its head (F127.2).</summary>
     public string Minimise { get; init; } = "Minimise";
