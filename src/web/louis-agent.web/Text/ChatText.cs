@@ -39,6 +39,18 @@ public sealed record ChatText
     /// <summary>The chip's close button, read aloud: the piece is let go.</summary>
     public string ClosePiece { get; init; } = "Stop asking about this";
 
+    /// <summary>The look switch's group of themes, read aloud (F151.3).</summary>
+    public string LookTheme { get; init; } = "Theme";
+
+    /// <summary>The look switch's group of styles, read aloud (F151.3).</summary>
+    public string LookStyle { get; init; } = "Style";
+
+    /// <summary>The dark style, on its button.</summary>
+    public string StyleDark { get; init; } = "Dark";
+
+    /// <summary>The light style, on its button.</summary>
+    public string StyleLight { get; init; } = "Light";
+
     /// <summary>The button under a form the agent asks with (F127.4.3).</summary>
     public string Send { get; init; } = "Send";
 

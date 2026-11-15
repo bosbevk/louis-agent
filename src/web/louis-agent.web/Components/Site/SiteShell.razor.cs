@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Components.Site.Slides;
@@ -66,7 +67,9 @@ public partial class SiteShell
     /// <summary>The page's choice, else the site's.</summary>
     private PageLayout Laid => _options.Layout ?? Layout;
 
-    /// <summary>The frame's root classes: the frame, and the layout the page is drawn in, which its styles read.</summary>
+    /// <summary>
+    /// The frame's root classes: the frame, and the layout the page is drawn in, which its styles read.
+    /// </summary>
     private string SiteClasses => Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow";
 
     /// <summary>Redraws when the page makes or takes back its choice.</summary>
@@ -82,6 +85,12 @@ public partial class SiteShell
 
     /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
     private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
+
+    /// <summary>Whether the site offers a theme a visitor can pick (F151.3), for which the switch stands.</summary>
+    private bool OffersThemes => SiteAreas.OffersThemes(Services);
+
+    /// <summary>The header's actions are drawn when the site gives some, or when the switch stands there.</summary>
+    private bool HasActions => Actions is not null || OffersThemes;
 
     /// <summary>Where the address points: the page, and the place on it when it names one (F118, ADR 0107).</summary>
     private SiteAddress Here =>
@@ -113,7 +122,9 @@ public partial class SiteShell
         await Motion.InvokeVoidAsync("attach", Addresses?.Base(here.Page), arrive);
     }
 
-    /// <summary>Takes the listeners down and lets the module go; a closed browser tab has no JS runtime to tell.</summary>
+    /// <summary>
+    /// Takes the listeners down and lets the module go; a closed browser tab has no JS runtime to tell.
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         _options.Changed -= Redraw;

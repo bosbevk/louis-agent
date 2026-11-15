@@ -1,5 +1,6 @@
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Components.Areas.Themes;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -144,5 +145,41 @@ public class AdminShellTests
         Assert.That(cut.FindAll(".topbar .brand"), Is.Empty);
         Assert.That(cut.FindAll(".topbar a.icon"), Is.Empty);
         Assert.That(cut.FindAll(".side-footer"), Is.Empty);
+    }
+
+    /// <summary>A context whose site offers glass and flat (F151.3).</summary>
+    private static BunitContext WithThemes()
+    {
+        var ctx = NewContext();
+        ctx.Services.AddSiteAreas(areas => areas
+            .Add(new SiteArea("theme-glass", _ => { }, [], Theme: new SiteTheme("glass", "Glass")))
+            .Add(new SiteArea("theme-flat", _ => { }, [], Theme: new SiteTheme("flat", "Flat"))));
+        return ctx;
+    }
+
+    /// <summary>
+    /// F151.3, Louis's pick A of three: a site that offers themes gets the switch at the foot of the admin's sidebar,
+    /// above the way back.
+    /// </summary>
+    [Test]
+    public void WithThemes_TheSwitch_StandsAtTheSidebarsFoot_AboveTheWayBack()
+    {
+        using var ctx = WithThemes();
+
+        var cut = ctx.Render<AdminShell>(parameters => parameters.Add(shell => shell.BackHref, "chat"));
+
+        var inside = cut.Find(".side-footer").Children.Select(child => child.ClassName).ToList();
+        Assert.That(inside, Is.EqualTo(new[] { "look-switch", "side-nav admin-side-back" }));
+    }
+
+    /// <summary>F151.3: with themes and no way back, the foot still holds the switch.</summary>
+    [Test]
+    public void WithThemes_AndNoWayBack_TheFootHoldsTheSwitch()
+    {
+        using var ctx = WithThemes();
+
+        var cut = ctx.Render<AdminShell>();
+
+        Assert.That(cut.FindAll(".side-footer .look-switch"), Has.Count.EqualTo(1));
     }
 }

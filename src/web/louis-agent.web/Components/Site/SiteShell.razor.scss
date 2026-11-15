@@ -135,6 +135,9 @@
 @media (max-width: 720px) {
     .site { --site-bar: 60px; padding-bottom: var(--site-bar); }
     .site-header { gap: 12px; }
+    /* The actions, the look switch among them (F151.3), take a row of their own under the brand, so the switch's two
+       groups stay in reach and the menu keeps its row below. */
+    .site-actions { width: 100%; order: 2; }
     .site-nav { gap: 16px; width: 100%; order: 3; }
     .site-corner {
         left: 0;

@@ -1,0 +1,25 @@
+@implements IAsyncDisposable
+@* F151.3: the switch a visitor picks the look with: the site's themes when it has two or more, the two styles when
+   it has any, nothing when it has none. The button that is on says so with aria-pressed. *@
+@if (Themes.Count > 0)
+{
+    <div class="look-switch">
+        @if (Themes.Count > 1)
+        {
+            <div class="look-group" role="group" aria-label="@Text.LookTheme">
+                @foreach (var theme in Themes)
+                {
+                    <button type="button" aria-pressed="@ThemePressed(theme)"
+                            @onclick="() => PickTheme(theme)">@theme.Name</button>
+                }
+            </div>
+        }
+        <div class="look-group" role="group" aria-label="@Text.LookStyle">
+            @foreach (var style in Styles)
+            {
+                <button type="button" aria-pressed="@StylePressed(style)"
+                        @onclick="() => PickStyle(style)">@StyleWord(style)</button>
+            }
+        </div>
+    </div>
+}

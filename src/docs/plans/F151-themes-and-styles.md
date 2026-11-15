@@ -311,5 +311,50 @@ and add them there not seperately"). In place of `louis-agent.web.theme.glass` a
 both themes live in `src/web/louis-agent.web.themes`, a folder each, with one test project beside the others in
 `src/tests/web`. F151.2's plan has the layout, and rule 5 of ADR 0124 says so.
 
+**Glass becomes crystal, and every state is light** (Louis, 2026-11-15, of the glass theme drawn again as SVG:
+"lets focus on this style", "we need to try harder to make it look even more like glass", "everything must stay
+just be made to look like glass", "redesign all states to fit with our glass, and make the glass like crystal
+more", "that red is too much", and of the header, "this bar always stretches"). He saw the same parts in CSS
+alone and said "does not look as good", "svg is just too power full so we have to go that route". Of three ways
+for a drawn part to show the page behind it he picked the see-through one: "I want see through but can you add
+more depth to the glass and make it more crystally, and then i want not a bright hover but maybe a slide image
+light going around glass". Then "thinner edges", and "a bit more thinner".
+
+The look he settled on is one page beside the mockups, [glass-crystal.html](F151-mockups/glass-crystal.html). It
+holds real elements wearing the glass, every part in every state, and both marks, in the dark and in the light.
+Each drawing on it is also saved on its own in [glass-crystal/](F151-mockups/glass-crystal/), a folder for dark
+and one for light, named for its part and its state: `pane-hover.svg`, `press-pressed.svg`, `toggle-on.svg`,
+`mark-c-thinking.svg`. Where that page and `glass.html` differ on how glass, a state or the mark looks, that page
+wins. Flat is as it was.
+
+A part is two layers. On top is the drawing, an SVG that holds the edge, the cut, the lights and the state. Under
+it is a plain see-through layer the size of the glass, which blurs what stands behind it, so the real page shows
+through. An SVG cannot see the page behind it, which is why the layer under it is needed.
+
+It changes these rules of section 5, for the glass theme only.
+
+| The rule in section 5 | What it is now |
+|---|---|
+| Glass: only cards are glass | Every surface is glass: the bar, both buttons, the chip, the field, the tag, the switch and the controls as well as the card. The main button is violet glass, since it is the brand's to press. |
+| A glass card | Crystal, and see-through. It has a thin cut edge that catches light and a face set a little deeper than its edge, and the fine edge line is still brightest at the bottom left and the top right. The colour split at the edge is slight and violet, never red. |
+| You and the agent | A state is light, never ink. Hover is not bright: a small light slides round the edge and the piece lifts a little. A pick fills the cut edge with light and sets a small cut stone with a tick on the corner. The agent's is a violet edge with a light running round it. No dashed edge and no black ring. |
+| The mark follows the theme | In glass there are two marks. C is a clear bubble with the l inside, and it is the mark in the dark. B is the violet ball held inside a clear glass ball, and it is the mark in the light (Louis: "C for dark and B for white"). In both the ball turns slowly and the l stands still ("instead of the L moving can we make the bubble turn?", "Do the same with B"). Flat keeps its disc. |
+| Not in section 5 | A press sinks when pressed, focus is a ring of split light round the piece, and a piece that is off is frosted and holds no lights. A field in focus has a violet edge. |
+
+The mockup page has a switch between B and C, which he asked for "just as an experiment to see on the last
+result how it will look". It is there to compare the two, and is not a switch a site gets.
+
+The diagram engine does not draw this. He first asked for "a glass library in diagrams", and then, with the
+drawings made, said "no diagrams needed", "save each svg accordingly since you built it already". So the saved
+drawings are what the glass theme is built from.
+
+Four things are his to settle before a step builds them. The cut edge stands beside "never a thick side". The
+round knobs of the toggle, the slider and the dial stand beside "the mark is the only ball". The pressed, focus
+and off states were in no mockup. And the saved drawings each have one size, while a card or a button on a page
+can be any size, so how a drawing is made to fit its piece is not known yet.
+
+It is built in [F151.4](F151.4-the-frameworks-components.md), the next child, and that plan says how under its
+own *Approved during the build*.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [F151.1, the first child](F151.1-the-theme-contract.md)

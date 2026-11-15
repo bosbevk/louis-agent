@@ -8,25 +8,40 @@
 
 @{
     // The pieces the message list and the empty chat take as fragments: markup only, named here once.
-    RenderFragment MessageBox = @<MessageBox Runner="Runner" Model="@_model" OnDraft="SetDraftAsync" OnComingSoon="ComingSoonAsync" Unfinished="Features.Unfinished" />;
-    RenderFragment<Turn> UserActionsOf = turn => @<UserActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoonAsync" Unfinished="Features.Unfinished" />;
-    RenderFragment<Turn> AnswerActionsOf = turn => @<AnswerActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoonAsync" Unfinished="Features.Unfinished" />;
+    RenderFragment MessageBox = @<MessageBox Runner="Runner" Model="@_model" OnDraft="SetDraftAsync"
+                                             OnComingSoon="ComingSoonAsync" Unfinished="Features.Unfinished"/>;
+    RenderFragment<Turn> UserActionsOf = turn => @<UserActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoonAsync"
+                                                               Unfinished="Features.Unfinished"/>;
+    RenderFragment<Turn> AnswerActionsOf = turn => @<AnswerActions Turn="turn" OnCopy="Copy"
+                                                                   OnComingSoon="ComingSoonAsync"
+                                                                   Unfinished="Features.Unfinished"/>;
 }
 
 <div class="app">
     @* Below Bootstrap's lg breakpoint (992px) the sidebar is an offcanvas, opened from this bar. *@
     <header class="topbar d-lg-none">
-        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="@Text.OpenMenu">☰</button>
+        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+                aria-controls="sidebar" aria-label="@Text.OpenMenu">☰
+        </button>
         <div class="brand">@Logo</div>
         <button class="icon" type="button" @onclick="NewChat" aria-label="@Text.NewChat">＋</button>
     </header>
 
-    <ChatSidebar Chats="Store.Chats" SessionId="@SessionId" OnNewChat="NewChat" OnSearch="() => _searchOpen = true" OnComingSoon="ComingSoonAsync"
-                 Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft" OnRenameKey="RenameKey" OnRenameBlur="FinishRename"
+    <ChatSidebar Chats="Store.Chats" SessionId="@SessionId" OnNewChat="NewChat" OnSearch="() => _searchOpen = true"
+                 OnComingSoon="ComingSoonAsync"
+                 Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft"
+                 OnRenameKey="RenameKey" OnRenameBlur="FinishRename"
                  OnFavourite="ToggleFavourite" OnRename="StartRename" OnArchive="ToggleArchive" OnDelete="DeleteChat"
-                 Location="@_preferences.Location" Locating="_preferences.Locating" OnSaveLocation="SaveLocation" OnLocate="UseMyLocation"
+                 Location="@_preferences.Location" Locating="_preferences.Locating" OnSaveLocation="SaveLocation"
+                 OnLocate="UseMyLocation"
                  Motion="_preferences.Motion" ReducedMotion="_preferences.ReducedMotion" OnSaveMotion="SaveMotion"
-                 ApiKeyDraft="@Store.ApiKeyDraft" OnSaveApiKey="SaveApiKey" ChatPath="@ChatPath" BrandTitle="@BrandTitle" Views="Views" Profile="Profile" Settings="Settings" Features="Features">
+                 ApiKeyDraft="@Store.ApiKeyDraft" OnSaveApiKey="SaveApiKey" ChatPath="@ChatPath"
+                 BrandTitle="@BrandTitle" Views="Views" Profile="Profile" Features="Features">
+        @* The look switch first (F151.3), which draws nothing where the site offers no theme, then the site's own. *@
+        <Settings>
+            <LookSwitch/>
+            @Settings
+        </Settings>
         <Brand>
             @Logo
             @if (Tagline is not null)
@@ -37,15 +52,21 @@
     </ChatSidebar>
 
     @* Drag to resize the sidebar; double-click to reset (the shell's module, ChatShell.razor.js). *@
-    <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical" title="@Text.ResizeSidebar"></div>
+    <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical"
+         title="@Text.ResizeSidebar"></div>
 
     <main class="conversation">
-        <ChatHeader ViewTitle="@ViewTitle" Chat="Runner.Chat" Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft"
-                    OnRenameKey="RenameKey" OnRenameBlur="FinishRename" OnFavourite="ToggleFavourite" OnRename="StartRename" OnArchive="ToggleArchive"
-                    OnDelete="DeleteChat" OnComingSoon="ComingSoonAsync" ChatCost="@ChatCost" MonthCost="@MonthCost" MonthChats="MonthChats.Count"
-                    Language="@_languages.Current" Languages="_languages.Available" OnChooseLanguage="ChooseLanguage" Features="Features" />
+        <ChatHeader ViewTitle="@ViewTitle" Chat="Runner.Chat" Renaming="@_renaming.SessionId"
+                    RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft"
+                    OnRenameKey="RenameKey" OnRenameBlur="FinishRename" OnFavourite="ToggleFavourite"
+                    OnRename="StartRename" OnArchive="ToggleArchive"
+                    OnDelete="DeleteChat" OnComingSoon="ComingSoonAsync" ChatCost="@ChatCost" MonthCost="@MonthCost"
+                    MonthChats="MonthChats.Count"
+                    Language="@_languages.Current" Languages="_languages.Available" OnChooseLanguage="ChooseLanguage"
+                    Features="Features"/>
         @* Below lg the work panel slides in from this tab (the phone's top bar has the menu and New chat). *@
-        <button class="work-tab work-tab-open d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="@Text.ShowWork">@Text.Work</button>
+        <button class="work-tab work-tab-open d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work"
+                aria-controls="work" title="@Text.ShowWork">@Text.Work</button>
         @if (ViewContent is null && ChatIsEmpty)
         {
             @Background
@@ -55,7 +76,9 @@
             <Empty>
                 @if (Empty is null)
                 {
-                    <div class="empty"><div class="composer composer-centred">@MessageBox</div></div>
+                    <div class="empty">
+                        <div class="composer composer-centred">@MessageBox</div>
+                    </div>
                 }
                 else
                 {
@@ -64,10 +87,10 @@
             </Empty>
         </MessageList>
 
-        <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
+        <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null"/>
 
         @* The whole cost, specialists included (pay as you go: what's shown is what's paid). *@
-        <ChatUsageBar Usage="@ChatUsage" Currency="Currency.Current" ChildContent="UsageLine" />
+        <ChatUsageBar Usage="@ChatUsage" Currency="Currency.Current" ChildContent="UsageLine"/>
 
         @if (ViewContent is null && !ChatIsEmpty)
         {
@@ -75,11 +98,12 @@
         }
     </main>
 
-    <ChatSearch @bind-Open="_searchOpen" Chats="Store.Chats" ChatPath="@ChatPath" />
+    <ChatSearch @bind-Open="_searchOpen" Chats="Store.Chats" ChatPath="@ChatPath"/>
 
-    <Toast Text="@_toast" />
+    <Toast Text="@_toast"/>
 
     <aside class="work offcanvas-xl offcanvas-end" id="work" tabindex="-1" aria-label="@Text.Work">
-        <WorkPanel Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" EmptyImage="@EmptyWorkImage" Avatar="@WorkAvatar" />
+        <WorkPanel Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current"
+                   EmptyImage="@EmptyWorkImage" Avatar="@WorkAvatar"/>
     </aside>
 </div>
