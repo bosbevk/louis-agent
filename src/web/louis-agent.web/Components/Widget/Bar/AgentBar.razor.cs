@@ -137,6 +137,12 @@ public partial class AgentBar : IDisposable
     /// </summary>
     private bool ChipsShow => State == OrbState.Idle && Caption is null && !_talkOpen;
 
+    /// <summary>What the talk has cost so far (F134.5), the chat's own sum; none while nothing is measured.</summary>
+    private TurnUsage? Total => Runner.Chat?.Usage();
+
+    /// <summary>How many answers the talk holds.</summary>
+    private int Answers => Runner.Chat?.Turns.Count ?? 0;
+
     /// <summary>The talk's classes: open whole, or folded to its end.</summary>
     private string TalkClasses => _talkOpen ? "agent-talk is-open" : "agent-talk";
 

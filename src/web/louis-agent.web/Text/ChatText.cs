@@ -270,6 +270,14 @@ public sealed record ChatText
     /// <summary>{0} the base currency, {1} the rate, {2} the shown currency, {3} the rates' date.</summary>
     public string ConvertedAt { get; init; } = "1 {0} = {1} {2} on {3}; the ledger keeps what was charged";
 
+    /// <summary>One answer, or several, as the agent bar's total counts them (F134.5).</summary>
+    public string AnswerOne { get; init; } = "answer";
+
+    public string AnswerMany { get; init; } = "answers";
+
+    /// <summary>"2 answers" in this language.</summary>
+    public string Answers(int count) => $"{count} {(count == 1 ? AnswerOne : AnswerMany)}";
+
     /// <summary>"3 tool calls, 1 thought" in this language.</summary>
     public string Steps(int tools, int thoughts) =>
         $"{tools} {(tools == 1 ? ToolCallOne : ToolCallMany)}, {thoughts} {(thoughts == 1 ? ThoughtOne : ThoughtMany)}";

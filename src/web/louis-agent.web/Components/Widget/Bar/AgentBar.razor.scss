@@ -81,6 +81,27 @@
 .agent-talk-toggle:hover { color: var(--bs-emphasis-color); background: rgba(var(--web-overlay-rgb), .14); }
 .agent-talk.is-open .agent-talk-toggle { position: sticky; align-self: flex-end; bottom: 0; }
 
+/* What the talk has cost so far (F134.5): a quiet pill at the box's end that opens the whole talk; and the same total
+   at the open talk's foot, under its last answer. */
+.agent-total {
+    flex: none;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 999px;
+    font: 500 12px/1.2 var(--bs-font-monospace);
+    white-space: nowrap;
+    color: var(--bs-secondary-color);
+    background: rgba(var(--web-overlay-rgb), .08);
+    cursor: pointer;
+}
+.agent-total:hover { color: var(--bs-emphasis-color); background: rgba(var(--web-overlay-rgb), .14); }
+.agent-talk-total {
+    padding: 10px 0 6px;
+    border-top: 1px solid rgba(var(--web-overlay-rgb), .1);
+    font: 12px/1.4 var(--bs-font-monospace);
+    color: var(--bs-secondary-color);
+}
+
 /* The chips over the bar while the guide waits (F134.3, the mockups'): pills of glass, centred, the box's note after
    them in quiet words. */
 .agent-chips { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }

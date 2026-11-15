@@ -1,3 +1,4 @@
+@using LouisAgent.Web.Usage
 @using LouisAgent.Web.Components.Widget.Bar.Caption
 @using LouisAgent.Web.Components.Widget.Orb
 @* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it. Over it the talk so far,
@@ -28,6 +29,11 @@
         <div class="@TalkClasses">
             <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency" Class="agent-list"
                          ShowWork="ShowWork" Chosen="OnChoose" ShowCardAnswers="ShowCardAnswers"/>
+            @* Opened whole, the talk ends with what it has cost (F134.5), as the chat's usage line says it. *@
+            @if (_talkOpen && Total is { } spent)
+            {
+                <div class="agent-talk-total">@UsageFormat.Total(spent, Currency)</div>
+            }
             <button class="agent-talk-toggle" type="button" @onclick="ToggleTalk">@TalkLabel</button>
         </div>
     }
@@ -41,5 +47,13 @@
                       OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
                       SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
         </div>
+        @* What the talk has cost so far, and how many answers (F134.5): a press opens the whole talk. *@
+        @if (Total is { } total)
+        {
+            <button class="agent-total" type="button" title="@UsageFormat.Total(total, Currency)"
+                    @onclick="ToggleTalk">
+                @UsageFormat.Cost(total, Currency) · @Text.Answers(Answers)
+            </button>
+        }
     </div>
 </div>
