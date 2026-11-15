@@ -141,4 +141,26 @@ public class AgentBarTests
         Assert.That(phone >= 0 ? styles[phone..] : "",
             Does.Contain("flex-wrap: nowrap;").And.Contain("overflow-x: auto;"));
     }
+
+    /// <summary>
+    /// While the guide answers, the page is told it is talking, and once the answer is done that it has stopped
+    /// (F134.4): a showroom's demo holds its play meanwhile.
+    /// </summary>
+    [Test]
+    public void WhileTheGuideAnswers_ThePageIsToldItTalks_AndThenThatItStopped()
+    {
+        using var ctx = Context();
+        var activity = new GuideActivity();
+        ctx.Services.AddSingleton(activity);
+        var told = new List<bool>();
+        activity.Changed += () => told.Add(activity.Talking);
+        var cut = Bar(ctx);
+
+        cut.Find("#composer-input").Input("What is this site?");
+        cut.Find("button.send").Click();
+        cut.WaitForState(() => cut.FindAll(".agent-talk").Count == 1 && cut.FindAll(".orb.is-idle").Count == 1,
+            TimeSpan.FromSeconds(10));
+
+        cut.WaitForAssertion(() => Assert.That(told, Is.EqualTo(new[] { true, false })), TimeSpan.FromSeconds(2));
+    }
 }

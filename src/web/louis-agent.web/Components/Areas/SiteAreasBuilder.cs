@@ -89,6 +89,7 @@ public sealed class SiteAreasBuilder
             services.TryAddSingleton<GuideDoor>();
             services.TryAddSingleton<AgentWindows>();
             services.TryAddSingleton<GuideKeeper>();
+            services.TryAddSingleton<GuideActivity>();
         }, []));
 
     /// <summary>

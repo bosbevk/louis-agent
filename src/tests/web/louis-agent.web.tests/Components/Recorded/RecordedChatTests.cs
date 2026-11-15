@@ -232,4 +232,26 @@ public class RecordedChatTests
 
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
     }
+
+    /// <summary>
+    /// Held (F134.4), the play doesn't move on: the answer waits, and once let go it plays to its ending.
+    /// </summary>
+    [Test]
+    public void AHeldPlay_WaitsUntilLetGo()
+    {
+        using var ctx = Context();
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, OneTurn)
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.Hold, true)
+            .Add(chat => chat.Ending, Offer));
+
+        Thread.Sleep(400);
+        int whileHeld = cut.FindAll(".offer").Count;
+        cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
+
+        // The whole recording plays once let go, which takes longer than the usual wait.
+        cut.WaitForAssertion(() => Assert.That((whileHeld, cut.FindAll(".offer").Count), Is.EqualTo((0, 1))),
+            TimeSpan.FromSeconds(5));
+    }
 }

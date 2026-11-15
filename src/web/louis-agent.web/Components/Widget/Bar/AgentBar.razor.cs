@@ -63,6 +63,9 @@ public partial class AgentBar : IDisposable
     [Inject]
     private IServiceProvider Services { get; set; } = null!;
 
+    /// <summary>Whether the guide is talking, told to the page when the site keeps it (F134.4).</summary>
+    private GuideActivity? Activity => Services.GetService<GuideActivity>();
+
     /// <summary>The questions the site's guide offers as chips; none when the site names none.</summary>
     private IReadOnlyList<string>? Chips => Services.GetService<AgentSuggestions>()?.Questions;
 
@@ -80,9 +83,18 @@ public partial class AgentBar : IDisposable
     {
         if (ReferenceEquals(_heard, Runner)) return;
         if (_heard is not null) _heard.ToolCalled -= OnToolCalled;
+        if (_heard is not null) _heard.Changed -= OnChanged;
         _heard = Runner;
         _heard.ToolCalled += OnToolCalled;
+        _heard.Changed += OnChanged;
     }
+
+    /// <summary>
+    /// The runner moved on: the page is told whether the guide is answering. The runner tells from its stream and from
+    /// its redraw timer, so the telling waits its turn on the bar's own dispatcher and reads the runner as it is then;
+    /// a late timer's call can't leave the guide talking after the answer ended.
+    /// </summary>
+    private void OnChanged() => _ = InvokeAsync(() => Activity?.Set(Runner.Streaming));
 
     /// <summary>The guide called a tool: a call to show a place lights the orb's showing for a moment.</summary>
     private void OnToolCalled(Block block)
@@ -132,5 +144,6 @@ public partial class AgentBar : IDisposable
     public void Dispose()
     {
         if (_heard is not null) _heard.ToolCalled -= OnToolCalled;
+        if (_heard is not null) _heard.Changed -= OnChanged;
     }
 }

@@ -9,7 +9,8 @@
             and played back. Nothing runs while you watch.</span>
     </Lede>
     <Player>
-        <SiteMock @ref="_mock" Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark" Tagline="@Tagline"
+        <SiteMock @ref="_mock" Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark"
+                  Tagline="@Tagline"
                   HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel" Look="Look"
                   HeroPhoto="@HeroPhoto" HeroPhotoAlt="@HeroPhotoAlt" HeroAction="@HeroAction" Facts="Facts"
                   Pages="Pages" Shown="@_shown" Went="Go" Live="_trying" Header="Header">
@@ -23,10 +24,11 @@
                 else
                 {
                     @* At a person's pace (Louis: "slow it down like realtime"): the agent writes at an easy reading
-                       speed, and the visitor's next question comes after a breath, as they read and type. Once it has
-                       played, the visitor can try it themselves. *@
+                       speed, and the visitor's next question comes after a breath, as they read and type. It waits
+                       while the site's guide talks (F134.4). Once it has played, the visitor can try it themselves. *@
                     <RecordedChat @ref="_chat" Turns="Turns" Title="@Address" PlayAgain="Play it again"
-                                  ShowWork="false" Pace="2.5" TurnGap="2200" TurnStarted="Reach" ToolCalled="Show">
+                                  ShowWork="false" Pace="2.5" TurnGap="2200" TurnStarted="Reach" ToolCalled="Show"
+                                  Hold="GuideTalking">
                         <Ending>
                             <button class="demo-try" type="button" @onclick="Try">@Words.TryItYourself</button>
                         </Ending>
