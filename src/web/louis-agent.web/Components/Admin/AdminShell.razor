@@ -4,7 +4,9 @@
    reach here. *@
 <div class="admin-shell">
     <header class="topbar d-lg-none">
-        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#admin-sidebar" aria-controls="admin-sidebar" aria-label="Open the menu">☰</button>
+        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#admin-sidebar"
+                aria-controls="admin-sidebar" aria-label="Open the menu">☰
+        </button>
         @if (Brand is not null)
         {
             <div class="brand">@Brand</div>
@@ -17,13 +19,18 @@
 
     <aside class="sidebar offcanvas-lg offcanvas-start" id="admin-sidebar" tabindex="-1" aria-label="Admin">
         <div class="sidebar-top">
-            <a class="brand brand-stack" href="./" title="@BrandTitle"><span class="brand-line">@Brand</span><span class="tagline">Admin</span></a>
-            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar" aria-label="Close the menu">×</button>
+            <a class="brand brand-stack" href="./" title="@BrandTitle"><span class="brand-line">@Brand</span><span
+                    class="tagline">Admin</span></a>
+            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar"
+                    aria-label="Close the menu">×
+            </button>
         </div>
 
         @* The admin's home first (F144): every area's card, at a glance. *@
         <nav class="side-nav">
-            <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-home" aria-hidden="true"></span>Home</NavLink>
+            <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-home"
+                                                                                   aria-hidden="true"></span>Home
+            </NavLink>
         </nav>
 
         @Links
@@ -32,15 +39,24 @@
            the eval studio's. *@
         @foreach (var links in AreaLinks)
         {
-            <DynamicComponent Type="links" />
+            <DynamicComponent Type="links"/>
         }
 
-        @if (BackHref is not null)
+        @* The look switch (F151.3) above the way back; the foot draws for either. *@
+        @if (BackHref is not null || OffersThemes)
         {
             <div class="side-footer">
-                <nav class="side-nav admin-side-back">
-                    <a class="side-link" href="@BackHref"><span class="ic i-chat" aria-hidden="true"></span>@BackLabel</a>
-                </nav>
+                @if (OffersThemes)
+                {
+                    <LookSwitch/>
+                }
+                @if (BackHref is not null)
+                {
+                    <nav class="side-nav admin-side-back">
+                        <a class="side-link" href="@BackHref"><span class="ic i-chat"
+                                                                    aria-hidden="true"></span>@BackLabel</a>
+                    </nav>
+                }
             </div>
         }
     </aside>

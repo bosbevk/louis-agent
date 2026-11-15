@@ -1,5 +1,6 @@
 using System.Reflection;
 using LouisAgent.Web.Components.Areas.Themes;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Areas;
 
@@ -27,4 +28,10 @@ public sealed class SiteAreas(IReadOnlyList<SiteArea> areas)
 
     /// <summary>The theme a first visit gets: the first one the site named, or none when it names none.</summary>
     public SiteTheme? DefaultTheme => Themes.Count > 0 ? Themes[0] : null;
+
+    /// <summary>
+    /// Whether the site offers a theme a visitor can pick (F151.3), which the frames ask before they make room for the
+    /// look switch. A frame drawn with no areas named offers none.
+    /// </summary>
+    public static bool OffersThemes(IServiceProvider services) => services.GetService<SiteAreas>()?.Themes.Count > 0;
 }

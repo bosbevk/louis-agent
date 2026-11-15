@@ -45,6 +45,11 @@ public partial class AdminShell
     [Inject] private IServiceProvider Services { get; set; } = default!;
 
     /// <summary>
+    /// Whether the site offers a theme a visitor can pick (F151.3), for which the sidebar's foot holds the switch.
+    /// </summary>
+    private bool OffersThemes => SiteAreas.OffersThemes(Services);
+
+    /// <summary>
     /// The links each area the site named adds to the sidebar (F127.6), the eval studio's among them; none on a site
     /// that names its areas by hand.
     /// </summary>

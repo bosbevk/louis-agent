@@ -86,11 +86,8 @@ public partial class SiteShell
     /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
     private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
 
-    /// <summary>
-    /// Whether the site offers a theme a visitor can pick (F151.3), which the frame's switch then stands for. A site
-    /// that names no areas offers none.
-    /// </summary>
-    private bool OffersThemes => Services.GetService<SiteAreas>()?.Themes.Count > 0;
+    /// <summary>Whether the site offers a theme a visitor can pick (F151.3), for which the switch stands.</summary>
+    private bool OffersThemes => SiteAreas.OffersThemes(Services);
 
     /// <summary>The header's actions are drawn when the site gives some, or when the switch stands there.</summary>
     private bool HasActions => Actions is not null || OffersThemes;
