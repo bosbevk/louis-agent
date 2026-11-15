@@ -16,29 +16,34 @@ single fix, and (later) each method of a build-mode service, and checks itself a
 
 **F6-S1 — Estimate a run before it starts.** As an *operator*, I want the demo script to tell me what a run is likely to
 cost, so that I can decide before spending.
-- *Given* new errors in the log *when* `run-demo.ps1` reaches the orchestrator step *then* it prints e.g.
-  `13 errors · ~10 likely fixes · estimated $0.40–0.90 (median of the last 20 fixes)` before any model call.
-- *Given* a budget (F7) whose remainder is below the estimate's high end *then* it asks whether to continue.
+
+*Given* new errors in the log *when* `run-demo.ps1` reaches the orchestrator step *then* it prints e.g.
+`13 errors · ~10 likely fixes · estimated $0.40–0.90 (median of the last 20 fixes)` before any model call. *Given* a
+budget (F7) whose remainder is below the estimate's high end *then* it asks whether to continue.
 
 **F6-S2 — A range with its basis.** As an *operator*, I want every estimate to say how it was made, so that I know how
 far to trust it.
-- *Given* at least 5 similar past tasks (same kind, model and toolset) in the ledger *then* the range is their 25th–75th
-  percentile and the basis says "history (n tasks)".
-- *Given* fewer *then* the model-based estimate is used (S3) and the basis says "model (no history yet)".
+
+*Given* at least 5 similar past tasks (same kind, model and toolset) in the ledger *then* the range is their 25th–75th
+percentile and the basis says "history (n tasks)". *Given* fewer *then* the model-based estimate is used (S3) and the
+basis says "model (no history yet)".
 
 **F6-S3 — A sensible estimate with no history.** As an *operator* on a fresh install, I want a model-based estimate, so
 that the first run isn't a blind guess.
-- *Then* estimate = rounds × (prefix + average history) priced with caching applied (first round at write price, later
-  rounds at read price) + expected output; defaults (≈ 20 rounds per fix) come from the measured demo profile, and the
-  prefix from the last recorded request (or the startup estimate, F5).
+
+*Then* estimate = rounds × (prefix + average history) priced with caching applied (first round at write price, later
+rounds at read price) + expected output; defaults (≈ 20 rounds per fix) come from the measured demo profile, and the
+prefix from the last recorded request (or the startup estimate, F5).
 
 **F6-S4 — Estimate vs actual.** As an *operator*, I want each fix's estimate shown next to its actual cost, so that the
 estimates visibly improve.
-- *Then* `fixes.jsonl` stores `estimate`; the comms log shows *estimated / actual* per fix and the run's overall error.
+
+*Then* `fixes.jsonl` stores `estimate`; the comms log shows *estimated / actual* per fix and the run's overall error.
 
 **F6-S5 — Estimates for the orchestrator itself.** As the *orchestrator*, I need an estimate for the next fix, so that
 budgets (F7) can stop a fix before it starts rather than halfway.
-- *Then* `ServiceTools` gets the fix estimate before `CallLouisAgentFix` sends anything.
+
+*Then* `ServiceTools` gets the fix estimate before `CallLouisAgentFix` sends anything.
 
 ## Design
 
@@ -52,12 +57,14 @@ New, in `louis-agent.core/usage/`:
 
 Uses:
 
-- **Orchestrator `--estimate`** mode: reads the error log and, without any model call, counts the errors that look
-  auto-fixable — a heuristic over each runbook's sections: an exception type listed under *Expected* is not fixable,
-  *Auto-fixable: nothing* is not fixable, anything else is. The real triage (by the model) still decides; this only
-  sizes the estimate. Prints the run estimate and exits; `run-demo.ps1` calls it in a container before the real run.
-- **`ServiceTools`** asks for the per-fix estimate (S5) and records it.
-- **`POST /estimates`** (spec §7.1) is added in F11, reusing `Estimator`.
+Orchestrator `--estimate` mode: reads the error log and, without any model call, counts the errors that look
+auto-fixable — a heuristic over each runbook's sections: an exception type listed under *Expected* is not fixable,
+*Auto-fixable: nothing* is not fixable, anything else is. The real triage (by the model) still decides; this only
+sizes the estimate. Prints the run estimate and exits; `run-demo.ps1` calls it in a container before the real run.
+
+`ServiceTools` asks for the per-fix estimate (S5) and records it.
+
+`POST /estimates` (spec §7.1) is added in F11, reusing `Estimator`.
 
 ## Implementation steps
 
@@ -73,10 +80,11 @@ Uses:
 
 ## Done when
 
-- Stories' criteria pass; tests added; suites pass.
-- After two benchmark runs, the second run's estimate comes from history and the run's actual cost falls within its range.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F6** to the work log,
-  set *Status* to done here and in the features table, and note it in the spec's implementation map.
+Stories' criteria pass; tests added; suites pass. After two benchmark runs, the second run's estimate comes from
+history and the run's actual cost falls within its range.
+
+Then finish up (see [Finishing a feature](README.md#finishing-a-feature)): move **F6** to the work log, set *Status*
+to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F5 Toolset profiles](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md) · Next: [F7 Budgets](F07-budgets.md)

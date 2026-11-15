@@ -421,14 +421,12 @@ of its own, which demo is forward. That goes down to three pins and comes back u
 the root and hands it two things. A list stands before it too and is only read. A script stands after it, beside
 the deck it belongs to.
 
-**How to read the picture.**
+**How to read the picture.** A box inside a box is held by it, and the boxes one box holds are stacked in the order
+you name them. A pin on a box's top edge is what crosses into it. A filled pin with an arrow down is handed down to
+the box, a parameter. A hollow pin with an arrow up is said back up, a callback.
 
-- **A box inside a box is held by it.** The boxes one box holds are stacked in the order you name them.
-- **A pin on a box's top edge is what crosses it.** A filled pin with an arrow down is handed down to the box: a
-  parameter. A hollow pin with an arrow up is said back up: a callback.
-- **A pill under a box's name is the one thing it holds.** A line runs from it down to each pin it feeds, and back
-  up from each pin that changes it.
-- **A ghost is drawn dashed.** It is what stands in that place when the usual box does not.
+A pill under a box's name is the one thing that box holds. A line runs from it down to each pin it feeds, and back up
+from each pin that changes it. And a ghost is drawn dashed: it's what stands in that place when the usual box doesn't.
 
 The picture draws its own key, "how to read it", with a row for each of these it really uses.
 
@@ -647,16 +645,15 @@ what it adds in a line of its own, by the names a picture's `type` has:
 A doc shows exactly that and what its own line adds, no less and no more, so its first lines are a true list of
 its pictures (`ProjectDocsTests`).
 
-- *The overview* is a `cards` picture named for the doc, just above its *Purpose*, or after its opening quote when
-  it has none.
-- *The class diagram* is its interface design: the types someone using or extending it meets, about twelve at
-  most. Name it `{project}-interface`.
-- *An activity diagram* is the project's main path, step by step, with its decisions: a `flow` whose type is
-  `activity`. Name it `{project}-flow`.
-- *A sequence diagram* is its main case: who calls whom, in order. Name it `{project}-sequence`.
-- *A deployment diagram* is where it runs: the machine or container, the program that starts it, and what it
-  talks to across the network. A `flow` whose type is `deployment`. Name it `{project}-deployment`.
-- *A composite structure* of a web project is its main component, drawn as a `nested` picture (below).
+The overview is a `cards` picture named for the doc. It sits just above the doc's *Purpose*, or after its opening
+quote when it has none. The class diagram is the project's interface design: the types someone using or extending it
+meets, about twelve at most, named `{project}-interface`.
+
+An activity diagram is the project's main path, step by step, with its decisions. It's a `flow` whose type is
+`activity`, named `{project}-flow`. A sequence diagram is its main case, who calls whom and in what order, named
+`{project}-sequence`. A deployment diagram is where it runs: the machine or container, the program that starts it, and
+what it talks to across the network. That's a `flow` whose type is `deployment`, named `{project}-deployment`. And the
+composite structure of a web project is its main component, drawn as a `nested` picture (below).
 
 Each picture stands beside the text it explains, inside *How it works* or the part it belongs to.
 
@@ -673,14 +670,10 @@ of *How it works* that tells of that component.
 dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
 ```
 
-`DocsDiagramsTests` fails when any of these is true:
-
-- a picture isn't what its JSON draws
-- no doc shows a picture, or a doc shows a picture that isn't there
-- a flow's word sits on a box or a line, or a line crosses a box it doesn't join
-- a sequence's words, notes or frames leave its drawing
-- a `diagrams` folder sits where the tool never looks
-- a doc holds a Mermaid block
+`DocsDiagramsTests` fails when a picture isn't what its JSON draws, when no doc shows a picture, or when a doc shows
+one that isn't there. It fails when a flow's word sits on a box or a line, or a line crosses a box it doesn't join,
+and when a sequence's words, notes or frames spill out of its drawing. It also fails when a `diagrams` folder sits
+where the tool never looks, and when a doc holds a Mermaid block.
 
 `ProjectDocsTests` fails when a project doc names no kind of the list, lacks its overview, or shows other than
 exactly what its kind and its `**Also shows:**` line ask for; when the guide's table of kinds is not the one the

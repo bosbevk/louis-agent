@@ -32,43 +32,54 @@ calculator, whole eggs, servings as people, no shop question, the shop lookup fi
 
 ## What changed
 
-- **Data first, text second** ([ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)). Many recipe pages hide a
-  schema.org `Recipe` in their HTML for search engines. `SchemaOrgRecipe` is a Data Mapper: sites write the same recipe in
-  many shapes, and this is the one class that knows them, so the rest of the pack only sees a `Recipe` record.
-- **Whole or not at all.** A `Recipe` with no ingredients or no steps isn't returned. The page is read as text instead,
-  and the print says so, so the model never takes a page's prose for a recipe the page marked up.
-- **A numbered print, not JSON.** A model quotes a line by its number and reads a list better than braces.
-- **The check can read the same thing.** Because the print is exact, a judge can be shown the page and the answer, and a
-  fixed rule can test the link. Structure is what made this measurable at all.
+Data first, text second ([ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)). Many recipe pages hide a
+schema.org `Recipe` in their HTML for search engines. `SchemaOrgRecipe` is a Data Mapper: sites write the same recipe
+in many shapes, and this is the one class that knows them, so the rest of the pack only sees a `Recipe` record.
+
+Whole or not at all. A `Recipe` with no ingredients or no steps isn't returned. The page is read as text instead, and
+the print says so, so the model never takes a page's prose for a recipe the page marked up.
+
+A numbered print, not JSON. A model quotes a line by its number and reads a list better than braces.
+
+The check can read the same thing. Because the print is exact, a judge can be shown the page and the answer, and a
+fixed rule can test the link. Structure is what made this measurable at all.
 
 ## What didn't work
 
-- **Structured data can be wrong.** Taste's data says `1 serving` on a bobotie whose page says *Serves 6 to 8*. The judge
-  believed it, and wanted 4 kg of mince for four people. Reading data first is a default, not a promise, so a yield of
-  exactly one now gives way to the page's own words. The Food Fox's data names a photo on a server that no longer answers.
-- **Broken data stays broken.** We tried reading Boerekos's JSON with a stray comma allowed. The real problem was a double
-  comma, and the data had no steps anyway, so we took the change back out. The fix would have helped no real page.
-- **A minion that saves nothing.** A free local model doing the search sounded like an easy saving. The search was only
-  about 7% of an answer, and the whole answer came out 7% dearer and 8 s slower, at the same accuracy
-  ([ADR 0081](../../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)). Measure the whole answer, not the part
-  you changed.
-- **A check that passes broken things.** `recipe-image` asked where an image came from, never whether it loads, and passed
-  8 of 55 images that wouldn't load from this PC. Some of those may load in a browser, which is why it's only a sign.
-- **The photo check broke working photos** (FX46). The first version counted any failure as *gone*. Food & Home's photos
-  sit on a host whose `robots.txt` answers 500, so our rules forbid the fetch, and good photos vanished: 3 of 5 answers had
-  one, against 27 of 30 before. The unit tests passed, because their fake fetcher had no site rules, and Louis caught it by
-  looking at the answers. "We may not check" isn't "broken".
+Structured data can be wrong. Taste's data says `1 serving` on a bobotie whose page says *Serves 6 to 8*. The judge
+believed it, and wanted 4 kg of mince for four people. Reading data first is a default, not a promise, so a yield of
+exactly one now gives way to the page's own words. The Food Fox's data names a photo on a server that no longer
+answers.
+
+Broken data stays broken. We tried reading Boerekos's JSON with a stray comma allowed. The real problem was a double
+comma, and the data had no steps anyway, so we took the change back out. The fix would have helped no real page.
+
+A minion that saves nothing. A free local model doing the search sounded like an easy saving. The search was only
+about 7% of an answer, and the whole answer came out 7% dearer and 8 s slower, at the same accuracy
+([ADR 0081](../../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)). Measure the whole answer, not the
+part you changed.
+
+A check that passes broken things. `recipe-image` asked where an image came from, never whether it loads, and passed 8
+of 55 images that wouldn't load from this PC. Some of those may load in a browser, which is why it's only a sign.
+
+The photo check broke working photos (FX46). The first version counted any failure as *gone*. Food & Home's photos sit
+on a host whose `robots.txt` answers 500, so our rules forbid the fetch, and good photos vanished: 3 of 5 answers had
+one, against 27 of 30 before. The unit tests passed, because their fake fetcher had no site rules, and Louis caught it
+by looking at the answers. "We may not check" isn't "broken".
 
 ## What it taught, in one line each
 
-- **Put the rule where it can hold.** Arithmetic in the prompt kept slipping (1 teaspoon × ⅔ as 2⅔), and code doesn't
-  ([ADR 0080](../adr/0080-a-tool-when-it-improves-the-prompt.md)). A tool still needs using: the cook called the calculator
-  in 13 of 30 answers.
-- **Don't pay a model to copy.** Puls's answer was about 96% the cook's report, at the output rate. Showing the report as
-  it is removed a whole request ([ADR 0079](../adr/0079-show-a-specialists-report.md)).
-- **A judge has to be able to tell.** The local judge caught 5 of 12 answers we broke on purpose, and the paid one all 12.
-  Try a judge on known-bad answers before trusting its passes.
-- **Read a number with its noise.** The paid judge agrees with itself on about 25 of 30, so 27 against 28 is no difference.
+Put the rule where it can hold. Arithmetic in the prompt kept slipping (1 teaspoon × ⅔ as 2⅔), and code doesn't
+([ADR 0080](../adr/0080-a-tool-when-it-improves-the-prompt.md)). A tool still needs using: the cook called the
+calculator in 13 of 30 answers.
+
+Don't pay a model to copy. Puls's answer was about 96% the cook's report, at the output rate. Showing the report as it
+is removed a whole request ([ADR 0079](../adr/0079-show-a-specialists-report.md)).
+
+A judge has to be able to tell. The local judge caught 5 of 12 answers we broke on purpose, and the paid one all 12.
+Try a judge on known-bad answers before trusting its passes.
+
+Read a number with its noise. The paid judge agrees with itself on about 25 of 30, so 27 against 28 is no difference.
 
 ## What's left
 

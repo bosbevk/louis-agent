@@ -23,44 +23,52 @@ on them, what the rule is, and how a change to a public surface is proved.
 
 ### Why a version, and why in the path
 
-- **An API is a contract with code you don't deploy.** The evals' HTTP client (F18 step 5), the engine package's
-  `Hosts.Api` and the Puls gateway (Phase 9) will be built against this API. A shape changed after them breaks code
-  that someone else owns. A version lets a breaking change sit beside the old shape (`/v2`) instead of replacing it.
-- **The path, not a header.** A header (`Accept: application/vnd…+json; v=1`) is invisible in logs, in links and in
-  the browser's network tab, and a browser's `EventSource` can't set one. The path shows everywhere. It also separates
-  the API from the web app's pages, which share the host: `/admin/benchmarks` was both a page and an API route.
-- **No library yet.** `Asp.Versioning.Http` was considered and not taken. One route group (`app.MapGroup("/v1")`) is
-  the whole need while one version runs, and the library's URL-segment style is this same `/v1`, so adding it later
-  changes no URL.
+An API is a contract with code you don't deploy. The evals' HTTP client (F18 step 5), the engine package's `Hosts.Api`
+and the Puls gateway (Phase 9) will be built against this API. A shape changed after them breaks code that someone
+else owns. A version lets a breaking change sit beside the old shape (`/v2`) instead of replacing it.
+
+The path, not a header. A header (`Accept: application/vnd…+json; v=1`) is invisible in logs, in links and in the
+browser's network tab, and a browser's `EventSource` can't set one. The path shows everywhere. It also separates the
+API from the web app's pages, which share the host: `/admin/benchmarks` was both a page and an API route.
+
+No library yet. `Asp.Versioning.Http` was considered and not taken. One route group (`app.MapGroup("/v1")`) is the
+whole need while one version runs, and the library's URL-segment style is this same `/v1`, so adding it later changes
+no URL.
 
 ### Why `v1/` is in the code, not in a setting
 
 Louis asked whether the version should come from settings. It doesn't, on purpose:
 
-- **The version is part of the contract, not of the deployment.** A client written for `/v1`'s shapes can't talk to
-  `/v2` by changing a setting: its code has to change too. A setting would let the two drift apart without a test
-  noticing.
-- **The base address is shared.** The web apps' `HttpClient` also loads static files (`css/themes/themes.json`), and
-  `/health` has no version, so a base address ending in `/v1` would break both.
-- **One place on each side.** The server writes it once (`ApiMap.Version`). Each client writes the whole route
-  (`"v1/sessions"`), so `grep "v1/sessions"` finds the server and every caller.
-- **What is a setting is where the API is:** the host (`AGENT_PEERS`, `BENCHMARK_API_URL`, the web app's address). A
-  setting that holds a full URL to one route (`PRICES_URL`, `RATES_URL`) gains `/v1`, because it names a route.
+The version is part of the contract, not of the deployment. A client written for `/v1`'s shapes can't talk to `/v2` by
+changing a setting: its code has to change too. A setting would let the two drift apart without a test noticing.
+
+The base address is shared. The web apps' `HttpClient` also loads static files (`css/themes/themes.json`), and
+`/health` has no version, so a base address ending in `/v1` would break both.
+
+One place on each side. The server writes it once (`ApiMap.Version`). Each client writes the whole route
+(`"v1/sessions"`), so `grep "v1/sessions"` finds the server and every caller.
+
+**What is a setting is where the API is.** The host (`AGENT_PEERS`, `BENCHMARK_API_URL`, the web app's address). A setting
+that holds a full URL to one route (`PRICES_URL`, `RATES_URL`) gains `/v1`, because it names a route.
 
 ### Nouns and status codes
 
-- **The method is the verb.** `GET`, `POST` and `DELETE` already say read, create and remove. A path with `delete` in it
-  says it twice, and it makes a `GET …/delete` possible.
-- **One plural name for a collection and its items.** `/git/branches` lists the branches, `/git/branches/{name}` is one
-  of them. A branch name keeps its slashes (`feature/x`), so the route catches the rest of the path (`{**name}`) and the
-  client escapes each segment on its own.
-- **A create answers `201` and says where the new thing lives**, in `Location`, so a client never builds that URL
-  itself. A create whose work goes on after the answer answers `202` (an admin run, when F18 renames those routes).
-- **An action that no method names** (`cancel`, `stage`, `merge`) is a `POST` with the verb last:
-  `POST /v1/sessions/{id}/cancel`.
-- **404 versus 405.** A wrong method on a known route should be `405 Method Not Allowed`. Here it is a `404`, because
-  the `/v1` fallback that turns an unknown path into a JSON error matches every method. ADR 0039 records the trade: a
-  JSON error for every mistyped path, at the cost of a less precise code for a wrong method.
+The method is the verb. `GET`, `POST` and `DELETE` already say read, create and remove. A path with `delete` in it
+says it twice, and it makes a `GET …/delete` possible.
+
+One plural name for a collection and its items. `/git/branches` lists the branches, `/git/branches/{name}` is one of
+them. A branch name keeps its slashes (`feature/x`), so the route catches the rest of the path (`{**name}`) and the
+client escapes each segment on its own.
+
+A create answers `201` and says where the new thing lives, in `Location`, so a client never builds that URL itself. A
+create whose work goes on after the answer answers `202` (an admin run, when F18 renames those routes).
+
+An action that no method names (`cancel`, `stage`, `merge`) is a `POST` with the verb last:
+`POST /v1/sessions/{id}/cancel`.
+
+404 versus 405. A wrong method on a known route should be `405 Method Not Allowed`. Here it is a `404`, because the
+`/v1` fallback that turns an unknown path into a JSON error matches every method. ADR 0039 records the trade: a JSON
+error for every mistyped path, at the cost of a less precise code for a wrong method.
 
 ### Deny by default
 
@@ -73,14 +81,16 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
 
 ### A pinned surface
 
-- **The table as a golden file.** `ApiRoutesSnapshot.json` lists every route as `METHOD /pattern (Access)`, sorted.
-  The tests build the table with the same `ApiMap.MapApi` that `Program.cs` calls, and one test fails if `Program.cs`
-  maps a route of its own, so the golden is the table that runs.
-- **The rule as tests on the real table.** `ApiRouteRuleTests` checks ADR 0039 on it: every route under `/v1` but
-  `/health`, the open and the admin routes, no verb as a segment, an action word only last in a `POST`, and no
-  resource under both its singular and its plural.
-- **The gate tried on every route.** `AgentKeyGateTests` walks the same table and calls every `Key` route without the
-  key, so a new route is checked without anyone writing a test for it.
+The table as a golden file. `ApiRoutesSnapshot.json` lists every route as `METHOD /pattern (Access)`, sorted. The
+tests build the table with the same `ApiMap.MapApi` that `Program.cs` calls, and one test fails if `Program.cs` maps a
+route of its own, so the golden is the table that runs.
+
+The rule as tests on the real table. `ApiRouteRuleTests` checks ADR 0039 on it: every route under `/v1` but `/health`,
+the open and the admin routes, no verb as a segment, an action word only last in a `POST`, and no resource under both
+its singular and its plural.
+
+The gate tried on every route. `AgentKeyGateTests` walks the same table and calls every `Key` route without the key,
+so a new route is checked without anyone writing a test for it.
 
 ### What was measured, and what proved it
 
@@ -95,22 +105,25 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
 
 ## Trade-offs accepted
 
-- **Every client changed at once, and the hosts deploy together.** No unversioned alias was kept. An old client's
-  `GET` outside `/v1` isn't a 404: the web app's fallback (`MapFallbackToFile`, which keeps its links working on a
-  reload) answers it with its page and a `200`, as the by-hand check of `GET /sessions/nope` showed. A `PRICES_URL`
-  without `/v1` gets that page, and the host stops at start-up on a price table that isn't one, which is loud. An
-  alias is a second table to keep: CL14's aliases are still not all gone, a deploy later.
-- **A wrong method answers 404, not 405** (above).
-- **The docs of the past keep their routes.** Plans, ADRs, fix and feature docs and the work log record what was true
-  when they were written; only the living docs moved to `/v1`.
+Every client changed at once, and the hosts deploy together. No unversioned alias was kept. An old client's `GET`
+outside `/v1` isn't a 404: the web app's fallback (`MapFallbackToFile`, which keeps its links working on a reload)
+answers it with its page and a `200`, as the by-hand check of `GET /sessions/nope` showed. A `PRICES_URL` without
+`/v1` gets that page, and the host stops at start-up on a price table that isn't one, which is loud. An alias is a
+second table to keep: CL14's aliases are still not all gone, a deploy later.
+
+A wrong method answers 404, not 405 (above).
+
+The docs of the past keep their routes. Plans, ADRs, fix and feature docs and the work log record what was true when
+they were written; only the living docs moved to `/v1`.
 
 ## What didn't work (and what it taught)
 
-- **A list a person has to remember is a hole in waiting.** The prefix list was right when it was written, and wrong
-  by F30. Marks on the routes, closed when missing, can't be forgotten that way.
-- **A page and an API route under one path.** `/admin/benchmarks` was both, so which one a request reached depended on
-  how it was made. The version prefix separated them. The trap that stays: a page's `href="admin/benchmarks"` is a page,
-  not a call, and step 3 had to leave it alone.
+A list a person has to remember is a hole in waiting. The prefix list was right when it was written, and wrong by F30.
+Marks on the routes, closed when missing, can't be forgotten that way.
+
+A page and an API route under one path. `/admin/benchmarks` was both, so which one a request reached depended on how
+it was made. The version prefix separated them. The trap that stays: a page's `href="admin/benchmarks"` is a page, not
+a call, and step 3 had to leave it alone.
 
 
 ## MCP resources: data beside the tools (F56)
@@ -119,10 +132,10 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
 
 MCP gives a server three ways to offer something, and they differ in **who chooses**:
 
-- A **tool** is chosen by the *model*, in the middle of its reasoning, and it may act (write a file, run git).
-- A **resource** is chosen by the *application* or the *user*: data, read by a URI, that the app decides to put in
-  front of the model (attach it, show it in a picker, keep it in the context). Reading one changes nothing.
-- A **prompt** is chosen by the *user*: a template, like a slash command.
+A **tool** is chosen by the *model*, in the middle of its reasoning, and it may act (write a file, run git). A
+**resource** is chosen by the *application* or the *user*: data, read by a URI, that the app decides to put in front
+of the model (attach it, show it in a picker, keep it in the context). Reading one changes nothing. A **prompt** is
+chosen by the *user*: a template, like a slash command.
 
 Our server published only tools. The packs' feeds (the shop-prices tables, ADR 0070) are plainly resources: read-only
 data with a name, a description and a text. Now `resources/list` shows `feed://shop-prices` and `resources/read`
@@ -154,30 +167,37 @@ lines into the built server) then read the real 167 KB of tables.
 
 ### Trade-offs and what's next
 
-- **Behind the key over HTTP, open on the API.** One gate for the whole MCP endpoint, rather than a rule that reads
-  each JSON-RPC body to let `resources/*` through. The data is still free to anyone on the API.
-- **Read whole, no updates.** A feed doesn't send `notifications/resources/updated` when Stats SA's new month is
-  uploaded; a client re-reads. A large feed would become a resource template (`feed://shop-prices/{province}`).
-- **Set up once.** Both transports used to register the tools on their own; `McpPrimitives.Add` is now the one place,
-  so the next primitive (a prompt, say) can't be forgotten in one of them.
+Behind the key over HTTP, open on the API. One gate for the whole MCP endpoint, rather than a rule that reads each
+JSON-RPC body to let `resources/*` through. The data is still free to anyone on the API.
+
+Read whole, no updates. A feed doesn't send `notifications/resources/updated` when Stats SA's new month is uploaded; a
+client re-reads. A large feed would become a resource template (`feed://shop-prices/{province}`).
+
+Set up once. Both transports used to register the tools on their own; `McpPrimitives.Add` is now the one place, so the
+next primitive (a prompt, say) can't be forgotten in one of them.
 
 ## An agent on another server (F127.3.2, 2026-11-12)
 
 One agent API asking another is a protocol in miniature: an address, a key, and a directory read first.
 
-- **The address carries the server.** `partner:shop` names who answers and where, read once into a value. Everything
-  after the parse (the allow-list, the key, the directory) works from that value, never from the text again.
-- **A key per server, kept apart from its address.** Addresses are settings anyone may read; keys are secrets. One
-  leaked key opens one server. The key is chosen by where the request goes, so no caller can send the wrong one.
-- **Read the directory before you trust a name.** The other side's `GET /v1/identities` says who it has. Kept ten
-  minutes (Cache-Aside), so a busy chat doesn't ask every time, and a failure is never kept, so a server back up is
-  asked again at once.
-- **Every failure is a sentence.** An unknown server, a refused key, a server that doesn't answer and a name it
-  doesn't list each come back as a reason the model can tell the person, never a crash of the turn.
-- **Prove it with both sides real.** Two API hosts in one test, the partner's key gate and directory and sessions all
-  its own, the asker exactly as an engine builds it: the shape of the directory's reply is checked by the real thing,
-  not by a copy of it. And no model costs anything.
-- **Tell the person first.** Their words leave this hosting; the agent says so before it asks.
+The address carries the server. `partner:shop` names who answers and where, read once into a value. Everything after
+the parse (the allow-list, the key, the directory) works from that value, never from the text again.
+
+A key per server, kept apart from its address. Addresses are settings anyone may read; keys are secrets. One leaked
+key opens one server. The key is chosen by where the request goes, so no caller can send the wrong one.
+
+Read the directory before you trust a name. The other side's `GET /v1/identities` says who it has. Kept ten minutes
+(Cache-Aside), so a busy chat doesn't ask every time, and a failure is never kept, so a server back up is asked again
+at once.
+
+Every failure is a sentence. An unknown server, a refused key, a server that doesn't answer and a name it doesn't list
+each come back as a reason the model can tell the person, never a crash of the turn.
+
+Prove it with both sides real. Two API hosts in one test, the partner's key gate and directory and sessions all its
+own, the asker exactly as an engine builds it: the shape of the directory's reply is checked by the real thing, not by
+a copy of it. And no model costs anything.
+
+Tell the person first. Their words leave this hosting; the agent says so before it asks.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md) ·

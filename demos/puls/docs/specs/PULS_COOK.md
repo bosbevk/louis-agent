@@ -9,26 +9,31 @@
 
 ## The short answer
 
-- **The competition is tied to one shop.** Woolworths' *My Woolies Chef* suggests meals from its own *Taste* archive
-  and fills a Woolies Dash basket (a beta from September 2026, wider launch early 2027). Pick n Pay's *Penny* builds
-  baskets from voice notes and photos. Checkers' *Pixie* recommends products from your past orders and does no
-  recipes. None of them teaches, and none works across shops. That's Puls's gap, and the window is until early 2027.
-- **The best cooking apps win in the kitchen, not in the chat.** Their standout feature is a guided *cook mode*: one
-  step at a time, timers, hands free, and a helper that knows which step you're on. A reviewer's main complaint about
-  general assistants like ChatGPT is that they "don't track your recipe or step". Puls's sessions already keep the
-  recipe, so we can do this.
-- **SA households are squeezed.** A low-income household's food basket was R5,328 in March 2026, 17% under what
-  basic nutrition needs, and food is bought only after transport and electricity are paid. About a third of SA's food
-  is wasted. A cook that plans the week for a budget, uses up leftovers and says which pack size is cheaper per kg is
-  doing real good.
-- **Safety has to be in code.** SA's 2018 listeriosis outbreak (from polony) made over 1,000 people sick and killed
-  over 200. Studies find users don't notice flaws in AI recipes. So the cook gets a **food-safety guard in C#**, not
-  only a line in the prompt: poultry to 74 °C, mince to 71 °C, leftovers reheated to 74 °C.
-- **"Best teacher" can be measured.** A published, free questionnaire (Lavelle et al., 14 cooking skills rated 1 to 7,
-  CC BY) measures cooking confidence. Three of its questions set the user's level, and the same three asked later
-  show whether Puls taught them anything.
-- **18 ideas, in three waves.** Six are cheap and belong with F48. Six come next as one feature. Six wait for
-  retrieval, vision, voice or the WhatsApp front door.
+The competition is tied to one shop. Woolworths' *My Woolies Chef* suggests meals from its own *Taste* archive and
+fills a Woolies Dash basket (a beta from September 2026, wider launch early 2027). Pick n Pay's *Penny* builds baskets
+from voice notes and photos. Checkers' *Pixie* recommends products from your past orders and does no recipes. None of
+them teaches, and none works across shops. That's Puls's gap, and the window is until early 2027.
+
+The best cooking apps win in the kitchen, not in the chat. Their standout feature is a guided *cook mode*: one step at
+a time, timers, hands free, and a helper that knows which step you're on. A reviewer's main complaint about general
+assistants like ChatGPT is that they "don't track your recipe or step". Puls's sessions already keep the recipe, so we
+can do this.
+
+SA households are squeezed. A low-income household's food basket was R5,328 in March 2026, 17% under what basic
+nutrition needs, and food is bought only after transport and electricity are paid. About a third of SA's food is
+wasted. A cook that plans the week for a budget, uses up leftovers and says which pack size is cheaper per kg is doing
+real good.
+
+Safety has to be in code. SA's 2018 listeriosis outbreak (from polony) made over 1,000 people sick and killed
+over 200. Studies find users don't notice flaws in AI recipes. So the cook gets a **food-safety guard in C#**, not only a
+line in the prompt: poultry to 74 °C, mince to 71 °C, leftovers reheated to 74 °C.
+
+"Best teacher" can be measured. A published, free questionnaire (Lavelle et al., 14 cooking skills rated 1 to 7, CC
+BY) measures cooking confidence. Three of its questions set the user's level, and the same three asked later show
+whether Puls taught them anything.
+
+18 ideas, in three waves. Six are cheap and belong with F48. Six come next as one feature. Six wait for retrieval,
+vision, voice or the WhatsApp front door.
 
 ## What the competition does
 
@@ -48,62 +53,73 @@ feature list, not a verdict).
 
 ## What SA home cooks need
 
-- **Money first.** The PMBEJD Household Affordability Index: the food basket low-income households actually buy cost
-  R5,328.53 in March 2026, against R6,410.74 for basic nutrition, a gap of 17%. "Food is bought after monies for
-  transport and electricity have been paid for." A worker's family has about R595 a person a month for food.
-  ([TimesLIVE](https://www.timeslive.co.za/news/south-africa/2026-04-08-households-forced-to-cut-back-on-nutrition-as-costs-outpace-income/))
-- **Waste.** About 10 million tonnes of food a year, roughly a third of what's available, is wasted in SA.
-  ([Daily Maverick](https://www.dailymaverick.co.za/article/2024-04-12-how-to-reduce-food-waste-and-boost-nutrition-security))
-- **Safety.** The 2018 listeriosis outbreak, traced to polony, made over 1,000 people sick and killed over 200.
-  ([Food Safety News](https://www.foodsafetynews.com/publishers-platform-it-has-nearly-been-six-years-since-over-1000-people-were-sickened-and-over-200-died-from-listeria-tainted-polony-in-south-africa/))
-  Ready-to-eat meats are a real risk for pregnant women and small children.
-- **Power is less of a worry now.** No load shedding for 408 days by June 2026, though Gauteng still has local "load
-  reduction" cuts. So "cook without power" is an option on request, not a default (this corrects the F48 page).
-  ([EnergyBee](https://energybee.co.za/news/eskom-408-days-no-load-shedding-june-2026))
-- **Healthy, in SA words.** The national food-based dietary guidelines are 11 plain messages, for example "Make starchy
-  foods part of most meals", "Eat dry beans, split peas, lentils and soya regularly", "Have milk, maas or yoghurt every
-  day", "Use salt and food high in salt sparingly".
-  ([FAO](https://www.fao.org/nutrition/education/food-dietary-guidelines/regions/south-africa/zh/))
-  They're official and free to quote, and they let the cook nudge without stating a single nutrition number.
-- **Channel.** WhatsApp is SA's most-used messaging app, and most people are on prepaid data they buy weekly. The data
-  I found is old (a 2020 web survey), so treat it as direction, not a number.
-  ([GeoPoll](https://www.geopoll.com/resources/south-africa-smartphone-internet-usage/)) Keep answers light: the photo is
-  optional, and the list is text you can copy.
+Money first. The PMBEJD Household Affordability Index: the food basket low-income households actually buy cost
+R5,328.53 in March 2026, against R6,410.74 for basic nutrition, a gap of 17%. "Food is bought after monies for
+transport and electricity have been paid for." A worker's family has about R595 a person a month for food.
+([TimesLIVE](https://www.timeslive.co.za/news/south-africa/2026-04-08-households-forced-to-cut-back-on-nutrition-as-costs-outpace-income/))
+
+Waste. About 10 million tonnes of food a year, roughly a third of what's available, is wasted in SA.
+([Daily Maverick](https://www.dailymaverick.co.za/article/2024-04-12-how-to-reduce-food-waste-and-boost-nutrition-security))
+
+Safety. The 2018 listeriosis outbreak, traced to polony, made over 1,000 people sick and killed over 200.
+([Food Safety News](https://www.foodsafetynews.com/publishers-platform-it-has-nearly-been-six-years-since-over-1000-people-were-sickened-and-over-200-died-from-listeria-tainted-polony-in-south-africa/))
+Ready-to-eat meats are a real risk for pregnant women and small children.
+
+Power is less of a worry now. No load shedding for 408 days by June 2026, though Gauteng still has local "load
+reduction" cuts. So "cook without power" is an option on request, not a default (this corrects the F48 page).
+([EnergyBee](https://energybee.co.za/news/eskom-408-days-no-load-shedding-june-2026))
+
+Healthy, in SA words. The national food-based dietary guidelines are 11 plain messages, for example "Make starchy
+foods part of most meals", "Eat dry beans, split peas, lentils and soya regularly", "Have milk, maas or yoghurt every
+day", "Use salt and food high in salt sparingly".
+([FAO](https://www.fao.org/nutrition/education/food-dietary-guidelines/regions/south-africa/zh/)) They're official and
+free to quote, and they let the cook nudge without stating a single nutrition number.
+
+Channel. WhatsApp is SA's most-used messaging app, and most people are on prepaid data they buy weekly. The data I
+found is old (a 2020 web survey), so treat it as direction, not a number.
+([GeoPoll](https://www.geopoll.com/resources/south-africa-smartphone-internet-usage/)) Keep answers light: the photo
+is optional, and the list is text you can copy.
 
 ## What the teaching research adds
 
 The F48 page already has the core (process over recipe, cues not just timers, one why per pitfall, levels, mistake to
 cause, one lesson to keep). Three more things:
 
-1. **Confidence is measurable.** Lavelle et al. (2017) built and validated two short questionnaires: 14 cooking
-   skills (boiling, steaming, frying, chopping vegetables, making a sauce from scratch...) and 19 food skills
-   (planning, shopping, budgeting, using leftovers, reading labels), each rated 1 ("very poor") to 7 ("very good").
-   Published CC BY 4.0. ([IJBNPA](https://ijbnpa.biomedcentral.com/articles/10.1186/s12966-017-0575-y)) We'd use three
-   of the questions, in our own words, to set the level, and ask again after a few dishes.
-2. **Confidence grows from small wins.** Self-efficacy (believing you can do it) grows most from doing it and
-   succeeding. So the first dishes for a beginner are ones that can't easily fail, and the cook says what went right.
-   (Bandura's theory, the basis of most cooking-skills programmes.)
-3. **Feedback closes the loop.** Courses that only show and never ask how it went teach less. "How did it go?" after a
-   dish gives the cook something to teach from, and gives us real failures for the evals.
+Confidence is measurable. Lavelle et al. (2017) built and validated two short questionnaires: 14 cooking skills
+(boiling, steaming, frying, chopping vegetables, making a sauce from scratch...) and 19 food skills (planning,
+shopping, budgeting, using leftovers, reading labels), each rated 1 ("very poor") to 7 ("very good"). Published CC BY
+4.0. ([IJBNPA](https://ijbnpa.biomedcentral.com/articles/10.1186/s12966-017-0575-y)) We'd use three of the questions,
+in our own words, to set the level, and ask again after a few dishes.
+
+Confidence grows from small wins. Self-efficacy (believing you can do it) grows most from doing it and succeeding. So
+the first dishes for a beginner are ones that can't easily fail, and the cook says what went right. (Bandura's theory,
+the basis of most cooking-skills programmes.)
+
+Feedback closes the loop. Courses that only show and never ask how it went teach less. "How did it go?" after a dish
+gives the cook something to teach from, and gives us real failures for the evals.
 
 ## AI techniques that help
 
-- **Grounding in our own recipes (retrieval, skill 8).** F35 records every recipe page it reads. Those pages become
-  our own vetted SA recipe library: search it first, the web second. It's faster, cheaper and gives the same answer
-  every run. Embeddings come later, once keyword search falls short.
-- **Swaps the right way (hybrid).** The research survey on ingredient substitution says: hard rules in code for what
-  must never be wrong (allergens, halaal, vegetarian), a curated table of good swaps, and the model only ranking them
-  and saying why. The ingredient's job in the dish decides the swap (an egg that binds is not an egg that glazes), and
-  there's no standard benchmark, so we build our own labelled set.
-  ([survey](https://arxiv.org/html/2501.01958v1))
-- **Guards in code.** The safety guard and the allergy rules are the "guards in code enforce" principle from ADR
-  0020, applied to food.
-- **Vision (skill 19)** for a till slip (fills the pantry with dates and real prices) and "does this look right?". Never
-  for safety: a photo can't tell you chicken is at 74 °C.
-- **Voice.** The browser's own speech recognition can do "next step" and short questions in cook mode; Afrikaans
-  support differs by browser, so English first. Voice notes in are what Penny does.
-- **Evals from real use (skill 12, 16).** Every "how did it go: not well" becomes a candidate scenario, the 6b pattern
-  ("drawn from real failures").
+Grounding in our own recipes (retrieval, skill 8). F35 records every recipe page it reads. Those pages become our own
+vetted SA recipe library: search it first, the web second. It's faster, cheaper and gives the same answer every run.
+Embeddings come later, once keyword search falls short.
+
+Swaps the right way (hybrid). The research survey on ingredient substitution says: hard rules in code for what must
+never be wrong (allergens, halaal, vegetarian), a curated table of good swaps, and the model only ranking them and
+saying why. The ingredient's job in the dish decides the swap (an egg that binds is not an egg that glazes), and
+there's no standard benchmark, so we build our own labelled set. ([survey](https://arxiv.org/html/2501.01958v1))
+
+Guards in code. The safety guard and the allergy rules are the "guards in code enforce" principle from ADR 0020,
+applied to food.
+
+Vision (skill 19) for a till slip (fills the pantry with dates and real prices) and "does this look right?". Never for
+safety: a photo can't tell you chicken is at 74 °C.
+
+Voice. The browser's own speech recognition can do "next step" and short questions in cook mode; Afrikaans support
+differs by browser, so English first. Voice notes in are what Penny does.
+
+Evals from real use (skill 12, 16). Every "how did it go: not well" becomes a candidate scenario, the 6b pattern
+("drawn from real failures").
 
 ## The 18 ideas
 
@@ -148,13 +164,16 @@ Decided (Louis, 2026-10-30): built in F48, as F48.6 ([its steps](../plans/F48-co
 
 ## What it costs to run
 
-- **Wave 1 adds almost nothing per answer.** The guard, pack size and nudges are code and small tables. The
-  nudge line is about 20 output tokens. Cook mode reads the answer we already have. On Haiku 5.5 ($0.50 per million
-  output tokens, `config/prices.json` as of 2026-10-10) that's well under a hundredth of a cent.
-- **"How did it go?"** is a tap, stored; a "not good" that opens troubleshooting is one normal cook turn, about a cent.
-- **The week planner** is one longer answer (five dishes): a few cents a plan, measured before it ships.
-- **Evals:** each wave adds scenarios (safety should-nots, a budget week, allergy refusals). Their paid runs wait for
-  Louis's go, as always.
+Wave 1 adds almost nothing per answer. The guard, pack size and nudges are code and small tables. The nudge line is
+about 20 output tokens. Cook mode reads the answer we already have. On Haiku 5.5 ($0.50 per million output tokens,
+`config/prices.json` as of 2026-10-10) that's well under a hundredth of a cent.
+
+"How did it go?" is a tap, stored; a "not good" that opens troubleshooting is one normal cook turn, about a cent.
+
+The week planner is one longer answer (five dishes): a few cents a plan, measured before it ships.
+
+Evals: each wave adds scenarios (safety should-nots, a budget week, allergy refusals). Their paid runs wait for
+Louis's go, as always.
 
 ## Where it sits in the skill map
 

@@ -8,42 +8,78 @@
 
 ## Purpose
 
-Puts louis-agent inside JetBrains Rider's AI chat, using the [Agent Client Protocol](https://agentclientprotocol.com):
-Rider sends prompts (with attached files), and the server streams back thinking, text and tool cards.
+This host puts louis-agent inside JetBrains Rider's AI chat, using the
+[Agent Client Protocol](https://agentclientprotocol.com). Rider sends your prompts, with any files you attached, and
+the server streams back the model's thinking, its text, and a card for each tool call.
 
 ## How it works
 
 ![One prompt from Rider: the server starts a session, streams the engine's updates back, and ends with the prompt's result](diagrams/louis-agent.acp-how-it-works.svg)
 
-- **One line = one JSON-RPC message** on stdin/stdout. Requests run concurrently; `session/cancel` is handled
-  immediately and cancels that session's turn.
-- **Sessions** (`AcpSession`: working directory + history) live in memory for the container's lifetime; Rider starts a
-  new container for each new chat (`docker compose run --rm -T acp-server`).
-- **Prompt building:** `text` blocks are used as-is; embedded `resource` blocks are inlined; a `resource_link` is read
-  from disk **only when the user attached it** (the file merely open in the editor is not sent). Attachments are capped
-  at 100,000 characters.
-- **Rider's tools** (CL57, out of core): `RiderToolDiscovery` asks Rider's MCP server for its tools in the background
-  when the host starts and registers each on the engine as `rider_{name}`; `RiderOptions` reads `RIDER_MCP_*`. The
-  coding-acp program hands it in through `HostServices.Discovery`; no other host asks Rider for anything.
-- **Windows paths** from Rider are mapped to the container's mounts with `ACP_MOUNT_MAPPINGS`
-  (`C:\Users\you\RiderProjects=/repositories`), falling back to a search under `/repositories`; a file that still isn't
-  found is passed to the model as "could not be read — not inside a mounted folder", never guessed.
-- **Tool cards:** each tool call becomes a `tool_call` (in progress) and a `tool_call_update` (completed or failed, with
-  an output preview); the card's kind (read, edit, execute, search, fetch…) is guessed from the tool's name so Rider shows
-  a fitting icon.
-- `/tools`, `/approve`, `/reject` and `/usage` are answered by the engine without the model.
-- **Usage** (F3): every turn's usage line goes to stderr (`[ACP] Usage: …`, in Rider's `idea.log`); with
-  `USAGE_IN_CHAT=true` it is also added to the chat after the answer, in italics, as its own message chunk. Off by
-  default, since in Rider it becomes part of the conversation. A cancelled or failed turn counts toward the session
-  but adds nothing to the chat.
-- **What the log shows of a prompt** (F18 step 4f): the raw parameters and the prompt's first 300 characters are logged as a keyed hash
-  and a length (`Prompt: 412 chars: #3f9c0a1b2d4e (412)`), since what a developer types is personal data once the host runs for anyone
-  else; `LOG_CONTENT=full` shows the text, on your own machine. The protocol on stdout is unchanged. Paths to a developer's own files
-  stay in the log: they are out of scope.
+### 1. Messages, one per line
 
-The pieces:
+Rider and the server talk over stdin and stdout, one JSON-RPC message per line. Requests run side by side. A
+`session/cancel` is handled straight away, and cancels that session's turn.
+
+### 2. Sessions
+
+A session (`AcpSession`) is a working directory plus a history. Sessions live in memory for as long as the container
+does. Rider starts a new container for each new chat (`docker compose run --rm -T acp-server`), so a chat and its
+container begin and end together.
+
+### 3. Building the prompt
+
+The model's prompt is built from the blocks Rider sends. A `text` block is used as it is. An embedded `resource`
+block is put inline. A `resource_link` is read from disk, but **only when you attached it**. The file that just
+happens to be open in the editor isn't sent. Attachments are capped at 100,000 characters.
+
+### 4. Finding your files
+
+Rider sends Windows paths, and the server lives in a Linux container. `ACP_MOUNT_MAPPINGS` maps one to the other,
+like `C:\Users\you\RiderProjects=/repositories`. If that doesn't find it, the server searches under
+`/repositories`. A file that still can't be found is passed to the model as "could not be read — not inside a
+mounted folder". It's never guessed.
+
+### 5. Rider's own tools
+
+Rider runs an MCP server with tools of its own. When the host starts, `RiderToolDiscovery` asks it for those tools in
+the background, and registers each one on the engine as `rider_{name}`. `RiderOptions` reads the `RIDER_MCP_*`
+settings. The coding-acp program hands this in through `HostServices.Discovery`, and no other host asks Rider for
+anything.
+
+*Decided in:* CL57.
+
+### 6. Tool cards
+
+Each tool call shows up in Rider as a card. It starts as a `tool_call`, in progress, and ends with a
+`tool_call_update`, completed or failed, with a preview of the output. The card's kind (read, edit, execute,
+search, fetch and so on) is guessed from the tool's name, so Rider can show a fitting icon.
+
+### 7. Commands, and usage
+
+`/tools`, `/approve`, `/reject` and `/usage` are answered by the engine without the model.
+
+Every turn's usage line goes to stderr, as `[ACP] Usage: …`, which lands in Rider's `idea.log`. With
+`USAGE_IN_CHAT=true`, it's also added to the chat after the answer, in italics, as its own message chunk. That's off
+by default, because in Rider it becomes part of the conversation. A cancelled or failed turn still counts toward the
+session, but adds nothing to the chat.
+
+*Decided in:* F3.
+
+### 8. What the log shows of a prompt
+
+What a developer types is personal data once the host runs for anyone else. So the log doesn't show it. The raw
+parameters and the prompt's first 300 characters are logged as a keyed hash and a length, like
+`Prompt: 412 chars: #3f9c0a1b2d4e (412)`. On your own machine, `LOG_CONTENT=full` shows the text. The protocol on
+stdout doesn't change either way. Paths to a developer's own files do stay in the log; those are out of scope.
+
+*Decided in:* F18 step 4f.
+
+Here are the pieces:
 
 ![Rider's chat: from AcpHost through the prompt handler to Rider, and back](diagrams/louis-agent.acp-diagrams.svg)
+
+These are the types involved:
 
 ![The types: the server holds a session per chat, a handler builds each prompt and relays the engine's turn, and Rider's tools are found over MCP](diagrams/louis-agent.acp-interface.svg)
 
@@ -60,29 +96,32 @@ The pieces:
 
 ## Tests
 
-`src/tests/hosts/louis-agent.acp.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
-`AcpTranscript.json`, with the prompt the model received; the pure parts have their own tests (`ToolCards`, `PromptBuilder`,
-`ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agentacptests)).
+The tests are in `src/tests/hosts/louis-agent.acp.tests`. `AcpTranscriptTests` plays a recorded conversation and
+pins everything the server writes to `AcpTranscript.json`, along with the prompt the model received. The pure parts
+have tests of their own: `ToolCards`, `PromptBuilder`, `ContainerPaths`, `GitRoots` and `JsonRpcWriter`
+([tests](tests.md#louis-agentacptests)).
 
 ## Configuration
 
-Where it runs: Rider starts a fresh `acp-server` container for each chat.
+Rider starts a fresh `acp-server` container for each chat.
 
 ![Where the ACP server runs: Rider starts a container a chat and speaks JSON-RPC to it, and the server asks Rider's MCP server for its tools](diagrams/louis-agent.acp-deployment.svg)
 
-Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider/rider-acp.example.json`.
+It uses core's settings, plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry is
+`config/rider/rider-acp.example.json`.
 
-**stdout carries the protocol:** anything written to `Console.Out` corrupts it — all logging goes to stderr.
+**stdout carries the protocol.** Anything written to `Console.Out` corrupts it, so all logging goes to stderr.
 
 ## Extending it
 
-The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In short: a method is a `case` in
-`AcpServer.HandleRequestAsync` with its handler in its concern's folder; an update kind a case in `TurnRelay`; the
-server only translates.
+The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In short: a new method is a `case` in
+`AcpServer.HandleRequestAsync`, with its handler in its concern's folder. A new kind of update is a case in
+`TurnRelay`. The server only ever translates.
 
 ## Limits and plans
 
-- Sessions end with the container → [session architecture](../specs/SESSION_ARCHITECTURE.md) (backlog).
+Sessions end when the container does. Keeping them is the
+[session architecture](../specs/SESSION_ARCHITECTURE.md), on the backlog.
 
 ## Related docs
 

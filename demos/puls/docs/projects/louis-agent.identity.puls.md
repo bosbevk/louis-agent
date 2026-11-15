@@ -18,37 +18,56 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 
 ## How it works
 
-- **One class, the rest is content.** `PulsIdentity` answers three questions: its name (`puls`), its prompts (a
-  `ManifestEmbeddedFileProvider` over `prompts/`, so the files keep their folder paths) and its packs
-  (`where-to-buy`, `shop-prices`, `recipes`, `web` and `calculator`).
-- **Start-up.** With `IDENTITIES=puls`, the composition root builds it and the packs it names; the
-  catalogue checks that each pack is registered and that no prompt path is also core's or a pack's. From then on Puls's prompts
-  are read through the same reader as core's (`SkillFileSource`).
-- **A chat.** The web app opens a session with `role: "puls/voice-af"` (or `puls/voice-en`) and the toolsets
-  `agents` and `web`. The session reads core's principles, then the language's voice (`voice-af.md`), then Puls's
-  shared routing (`voice.md`). Puls answers the world itself with `web`, and asks the cook every cooking question
-  with `AskAgent("puls.cook", …)`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`). The addresses it may
-  ask are its `Calls` (`PulsCall`: the cook, the researcher, the analyst, the historian and the reader, and the two
-  minions its specialists may start by address, `puls.find-recipe` and `puls.web-price-lookup`, F127.5), and it sets
-  `RelaysAnswersWhole`, so the cook's answer is shown as it is and Puls's turn ends there
-  ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)).
-- **The cook.** `specialists/puls-cook.md` opens with the header every prompt has
-  ([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolsets, `web`,
-  `recipes`, `where-to-buy`, `shop-prices` and `calculator`, required (no `?`): a cook that can't read the web or recipes, find a shop, estimate a list or do its sums is refused,
-  not left without them. Its own file names `web` since F127.3.1, since an ask sends no toolsets. A role that needs a toolset always lists it under
-  `metadata.toolsets` ([ADR 0025](../../../../src/docs/adr/0025-a-role-declares-its-toolsets.md)).
-- **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
-  `puls/voice-en`, `puls-cook`, `puls-minion-web-price-lookup` and `puls-minion-find-recipe`, the ones that passed
-  their check (F29). The other specialists are written but off.
-- **Its evals and their checks.** Puls's four evals, `puls-routing`, `puls-cook`, `puls-recipes-long` and `puls-recipes` (F35.2: the
-  cook reads a recipe with `ReadRecipe`; thirteen dishes, a judge told what `ReadRecipe` gave back, not yet recorded),
-  are folders of files under `Evals/` (F49.2). Puls ships **readers, not checks** (F49.2b): the cook's file names the general checks
-  (`no-error`, `amount-under`, `image-shown`, `number-named`) under the names its grades carry, over Puls's readers
-  in `Evals/Readers/` (`rand-total`, `rand-prices`, `servings`, `recipe-photos`: Adapters over the cook's scoring
-  code; `recipe-link` reads the `Skakel:` / `Link:` line for the recipes pack's `recipe-from-source`), listed in `PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop
-  rules are the where-to-buy pack's checks project's (F49.3), with the reading of the scenario's shop: Puls has no check of its own left.
-  Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
-  [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
+### 1. One class, the rest is content
+
+`PulsIdentity` answers three questions: its name (`puls`), its prompts (a `ManifestEmbeddedFileProvider` over
+`prompts/`, so the files keep their folder paths) and its packs (`where-to-buy`, `shop-prices`, `recipes`, `web` and
+`calculator`).
+
+### 2. Start-up
+
+With `IDENTITIES=puls`, the composition root builds it and the packs it names; the catalogue checks that each pack is
+registered and that no prompt path is also core's or a pack's. From then on Puls's prompts are read through the same
+reader as core's (`SkillFileSource`).
+
+### 3. A chat
+
+The web app opens a session with `role: "puls/voice-af"` (or `puls/voice-en`) and the toolsets `agents` and `web`. The
+session reads core's principles, then the language's voice (`voice-af.md`), then Puls's shared routing (`voice.md`).
+Puls answers the world itself with `web`, and asks the cook every cooking question with `AskAgent("puls.cook", …)`, on
+the same instance (`AGENT_PEERS: puls=http://puls:8080`). The addresses it may ask are its `Calls` (`PulsCall`: the
+cook, the researcher, the analyst, the historian and the reader, and the two minions its specialists may start by
+address, `puls.find-recipe` and `puls.web-price-lookup`, F127.5), and it sets `RelaysAnswersWhole`, so the cook's
+answer is shown as it is and Puls's turn ends there
+([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)).
+
+### 4. The cook
+
+`specialists/puls-cook.md` opens with the header every prompt has
+([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its
+toolsets, `web`, `recipes`, `where-to-buy`, `shop-prices` and `calculator`, required (no `?`): a cook that can't read
+the web or recipes, find a shop, estimate a list or do its sums is refused, not left without them. Its own file names
+`web` since F127.3.1, since an ask sends no toolsets. A role that needs a toolset always lists it under
+`metadata.toolsets` ([ADR 0025](../../../../src/docs/adr/0025-a-role-declares-its-toolsets.md)).
+
+### 5. Only checked roles are on
+
+`ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`, `puls/voice-en`, `puls-cook`,
+`puls-minion-web-price-lookup` and `puls-minion-find-recipe`, the ones that passed their check (F29). The other
+specialists are written but off.
+
+### 6. Its evals and their checks
+
+Puls's four evals, `puls-routing`, `puls-cook`, `puls-recipes-long` and `puls-recipes` (F35.2: the cook reads a recipe
+with `ReadRecipe`; thirteen dishes, a judge told what `ReadRecipe` gave back, not yet recorded), are folders of files
+under `Evals/` (F49.2). Puls ships **readers, not checks** (F49.2b): the cook's file names the general checks
+(`no-error`, `amount-under`, `image-shown`, `number-named`) under the names its grades carry, over Puls's readers in
+`Evals/Readers/` (`rand-total`, `rand-prices`, `servings`, `recipe-photos`: Adapters over the cook's scoring code;
+`recipe-link` reads the `Skakel:` / `Link:` line for the recipes pack's `recipe-from-source`), listed in
+`PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop rules are the
+where-to-buy pack's checks project's (F49.3), with the reading of the scenario's shop: Puls has no check of its own
+left. Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
+[louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
 
 ![The Puls identity: its prompts and packs, its evals and judges](diagrams/louis-agent.identity.puls-diagrams.svg)
 
@@ -61,33 +80,43 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the measured story is
 [write-up 10](../../../../src/docs/learning/10-multi-agent-orchestration.md):
 
-- **A specialist is a role, one per kind of work,** and a sub-session gets no router: only its role and its toolsets'
-  guides, about 1,900 tokens of prefix against Puls's 2,200. A role Puls names is refused before an engine is built
-  when it is unknown or off (`ROLES_ENABLED`), with the same answer either way, so a role that's off comes back to
-  Puls as a tool error it must report. Turning a role on is one line in `config/.env` and `up -d`, once its eval passes.
-- **The prompts and the gate say the same:** the routing keeps the cook, makes the web Puls's own work, and marks the
-  rest *not yet*; the specialists guide lists those under *Waiting for validation*, with what each needs (a report
-  shape, a relay rule, an eval).
-- **Puls shows the cook's report; it doesn't retype it** ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)): the turn ends on the report, and Puls's one line of its own comes before the call.
-- **Cooking is never answered from memory** (Louis, 2026-10-15, after Puls answered "ek wil bobotie maak" itself):
-  every cooking question goes to the cook, which takes the dish through the whole report and adds *Where to buy*, the
-  shops' branches in the user's town. Branches come from OpenStreetMap (Nominatim's search, as JSON), since the shops'
-  own store finders draw their content with JavaScript.
-- **The user's place travels with the session,** not through the model: Ligging in the web app (typed, or the
-  browser's position sent to Nominatim at two decimals, about a town), the time zone with every new chat, and the
-  specialists get it in their task. Attachments go by name: the model names the file, the session hands it over and
-  remembers it across turns.
-- **A follow-up goes to the same specialist** (F26): re-delegating cold would refetch every page, could drift to
-  another dish and rewrite the cached prefix. The chat's session keeps its open sub-sessions (core's
-  `SubSessionRegistry`, short handles per chat, `sub-1`); at most 3 stay open (the oldest closes); a continue that
-  fails or times out closes the sub-session; starts and continues count against the same per-turn limit.
-- **The local model reads English, not Afrikaans:** a role written for a small local model is in English, Puls briefs it
-  in English and writes the Afrikaans answer itself.
-- **No minion is used** (F30, F35.2 step 2b, [ADR 0081](../adr/0081-the-cook-searches-for-itself.md)): a specialist can hand
-  one task and one of its own tools to a minion on the model `MINION_LLMS` names, and the web app draws its card inside
-  the specialist's. The cook searches with `FindRecipes` itself, because the find-recipe minion cost 7% more and took 8 s
-  longer at the same accuracy. The price-lookup minion is built and unused too: four hand checks found a small local
-  model unreliable at pricing (wrong products, invented dates), and Haiku minions no better than the cook's own searches.
+A specialist is a role, one per kind of work, and a sub-session gets no router: only its role and its toolsets'
+guides, about 1,900 tokens of prefix against Puls's 2,200. A role Puls names is refused before an engine is built when
+it is unknown or off (`ROLES_ENABLED`), with the same answer either way, so a role that's off comes back to Puls as a
+tool error it must report. Turning a role on is one line in `config/.env` and `up -d`, once its eval passes.
+
+The prompts and the gate say the same: the routing keeps the cook, makes the web Puls's own work, and marks the rest
+*not yet*; the specialists guide lists those under *Waiting for validation*, with what each needs (a report shape, a
+relay rule, an eval).
+
+Puls shows the cook's report; it doesn't retype it
+([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)): the turn ends on the report, and Puls's one
+line of its own comes before the call.
+
+Cooking is never answered from memory (Louis, 2026-10-15, after Puls answered "ek wil bobotie maak" itself): every
+cooking question goes to the cook, which takes the dish through the whole report and adds *Where to buy*, the shops'
+branches in the user's town. Branches come from OpenStreetMap (Nominatim's search, as JSON), since the shops' own
+store finders draw their content with JavaScript.
+
+The user's place travels with the session, not through the model: Ligging in the web app (typed, or the browser's
+position sent to Nominatim at two decimals, about a town), the time zone with every new chat, and the specialists get
+it in their task. Attachments go by name: the model names the file, the session hands it over and remembers it across
+turns.
+
+A follow-up goes to the same specialist (F26): re-delegating cold would refetch every page, could drift to another
+dish and rewrite the cached prefix. The chat's session keeps its open sub-sessions (core's `SubSessionRegistry`, short
+handles per chat, `sub-1`); at most 3 stay open (the oldest closes); a continue that fails or times out closes the
+sub-session; starts and continues count against the same per-turn limit.
+
+The local model reads English, not Afrikaans: a role written for a small local model is in English, Puls briefs it in
+English and writes the Afrikaans answer itself.
+
+No minion is used (F30, F35.2 step 2b, [ADR 0081](../adr/0081-the-cook-searches-for-itself.md)): a specialist can hand
+one task and one of its own tools to a minion on the model `MINION_LLMS` names, and the web app draws its card inside
+the specialist's. The cook searches with `FindRecipes` itself, because the find-recipe minion cost 7% more and took 8
+s longer at the same accuracy. The price-lookup minion is built and unused too: four hand checks found a small local
+model unreliable at pricing (wrong products, invented dates), and Haiku minions no better than the cook's own
+searches.
 
 ## Structure
 
@@ -144,17 +173,16 @@ identity doesn't.
 
 ## Limits and plans
 
-- Only the cook has passed its check; each other specialist is turned on after its own eval.
-- The first v2 baseline (2026-10-29): `puls-cook` 23 of 24 in its cook mode, 6 of 24 when Puls answers itself;
-  `puls-routing` 72 of 72; the local judge agrees 31 of 36 with a blind labeller, below the 90% bar
-  ([louis-agent.evals](../../../../src/docs/projects/louis-agent.evals.md#design-notes)). The held-out scenarios still have their older, hand-cut
-  references.
-- The cook reads its recipes with the `recipes` pack, and goes to the web only for a dish no site has (F35,
-  [write-up](../../../../src/docs/learning/05-structured-outputs.md)). The last full recipes run, `79ea99b3ec08`, had 30 of
-  30 from a page it read and 27 of 30 by the judge, in 52 s at $0.0059 an answer. The fixes after it are unmeasured: the
-  next paid run is the first on them. CL16 moves the cook into a `cooking` pack; the area guide moves here with the
-  Places pack ([TODO](../../../../TODO.md), *Puls*).
-- Louis's corrections to the Afrikaans, and the eleven official languages, measured → [TODO](../../../../TODO.md).
+Only the cook has passed its check; each other specialist is turned on after its own eval. The first v2 baseline
+(2026-10-29): `puls-cook` 23 of 24 in its cook mode, 6 of 24 when Puls answers itself; `puls-routing` 72 of 72; the
+local judge agrees 31 of 36 with a blind labeller, below the 90% bar
+([louis-agent.evals](../../../../src/docs/projects/louis-agent.evals.md#design-notes)). The held-out scenarios still
+have their older, hand-cut references. The cook reads its recipes with the `recipes` pack, and goes to the web only
+for a dish no site has (F35, [write-up](../../../../src/docs/learning/05-structured-outputs.md)). The last full
+recipes run, `79ea99b3ec08`, had 30 of 30 from a page it read and 27 of 30 by the judge, in 52 s at $0.0059 an answer.
+The fixes after it are unmeasured: the next paid run is the first on them. CL16 moves the cook into a `cooking` pack;
+the area guide moves here with the Places pack ([TODO](../../../../TODO.md), *Puls*). Louis's corrections to the
+Afrikaans, and the eleven official languages, measured → [TODO](../../../../TODO.md).
 
 ## Related docs
 

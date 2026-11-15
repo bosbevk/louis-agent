@@ -21,25 +21,39 @@ The landing page lists its sections in order, each a component of its own.
 
 ![The landing page holds the water and the sections in order, and starts its script after it is drawn](diagrams/louis-agent.puls-components-landing.svg)
 
-- **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one small page, `ChatPage.razor`, at `/gesels`,
-  `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`. It fills the framework's `ChatShell` with what's Puls's own
-  (see [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)), and redraws on every address change, since Blazor wouldn't for
-  the same page with the same parameters.
-- **A chat** opens `POST /v1/sessions` with `toolsets: ["specialists", "web"]` where the instance has them (F29), `role: "puls/voice-{language}"` (`puls/voice-af` by default; F21, CL9, CL14) and, when the user shared it,
-  `location` and `time_zone` (F22). Messages stream over SSE; `TurnStream` (shared) folds them, sub-session events
-  included, into the turn the page shows.
-- **Three panels:** the sidebar (search, Verken, Studio, favourites, projects, recent, archive, profile and settings),
-  the chat (top bar, messages with actions, the message box), and the Werk panel (`WorkPanel.razor`: each delegation's
-  specialist, toolsets, task, steps and cost, the chat's sources, Puls's and the specialists' cost). Below 1200px the
-  Werk panel slides in; below 992px the sidebar does.
-- **The admin portal** (English, the builders' screen): *Admin* in the profile menu opens `/admin`. The pages are the framework's
-  ([The eval pages](../../../../src/docs/projects/louis-agent.web.evals.md)); Puls fills their frame in `AdminLayout` with its logo, the live strip and the eval
-  links, and says in `PulsSites` which websites matter to it: South African shops, other South African sites and the map.
-- **Placeholders** (share, edit, regenerate, feedback, voice, screenshots, image, deep research, other models, language,
-  theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
-- **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, whether
-  the sidebar and the Werk panel are hidden, and whether the animations are on although the system asks for less
-  (`chat.motion`, F24).
+### 1. Pages
+
+`/` is the landing page (`LandingPage.razor`). The app is one small page, `ChatPage.razor`, at `/gesels`,
+`/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`. It fills the framework's `ChatShell` with
+what's Puls's own (see [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)), and redraws on every
+address change, since Blazor wouldn't for the same page with the same parameters.
+
+A chat opens `POST /v1/sessions` with `toolsets: ["specialists", "web"]` where the instance has them (F29),
+`role: "puls/voice-{language}"` (`puls/voice-af` by default; F21, CL9, CL14) and, when the user shared it, `location`
+and `time_zone` (F22). Messages stream over SSE; `TurnStream` (shared) folds them, sub-session events included, into
+the turn the page shows.
+
+### 2. Three panels
+
+The sidebar (search, Verken, Studio, favourites, projects, recent, archive, profile and settings), the chat (top bar,
+messages with actions, the message box), and the Werk panel (`WorkPanel.razor`: each delegation's specialist,
+toolsets, task, steps and cost, the chat's sources, Puls's and the specialists' cost). Below 1200px the Werk panel
+slides in; below 992px the sidebar does.
+
+### 3. The admin portal (English, the builders' screen)
+
+*Admin* in the profile menu opens `/admin`. The pages are the framework's
+([The eval pages](../../../../src/docs/projects/louis-agent.web.evals.md)); Puls fills their frame in `AdminLayout`
+with its logo, the live strip and the eval links, and says in `PulsSites` which websites matter to it: South African
+shops, other South African sites and the map.
+
+Placeholders (share, edit, regenerate, feedback, voice, screenshots, image, deep research, other models, language,
+theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
+
+### 4. Stored in the browser
+
+Chats (with favourite and archived), the API key, the currency, the location, whether the sidebar and the Werk panel
+are hidden, and whether the animations are on although the system asks for less (`chat.motion`, F24).
 
 ![The Puls app: its pages, the framework's shells and the API](diagrams/louis-agent.puls-diagrams.svg)
 
@@ -70,36 +84,44 @@ The landing page lists its sections in order, each a component of its own.
 
 What the look (F20) and the motion (F24) settled, so a change keeps it:
 
-- **The landing page's demo is the app's own markup.** `LandingDemo` builds its turns from the app's classes
-  (`user-message`, `delegation`, `work-item`, `work-step`, `work-cost`), so a change to the app's look changes the demo
-  with it; only the frame's layout is its own (`demo-*`). Its turns are example data in C#, serialised into
-  `data-turns`, and `landing.js` only plays them. The same goes for the page's copy: tiles, chips, chart heights and
-  marquee tags are C# arrays rendered by Razor, so no script builds markup from literals.
-- **Numbers on the page are measured ones,** each a line of data with what it is and how it was measured, so a new
-  measurement changes one line.
-- **The loading count is Blazor's own** (`--blazor-load-percentage-text` on `<html>`, shown in a `::after`); no script
-  counts files.
-- **One motion switch:** `data-motion="on"` on `<html>`, set by `index.html` before the first paint and changed by
-  the framework's `preferences.js` `setMotion` (the sidebar's checkbox and the landing's pill both call it; the landing imports it, CL31); the stylesheets guard their reduced-motion
-  blocks with `:root:not([data-motion="on"])`. Text arriving in order is content, not motion, so a reader who asked
-  for less motion still sees the demo play at a reading pace; only the loop stops. Moving content that lasts over five
-  seconds has a *Stop* or *Pouse* button (WCAG 2.2.2), and a closed FAQ answer is `inert`.
-- **Costs count up without touching Blazor's node:** every `[data-count]` runs from the last number shown to the new
-  one after a render, writing the text node's value (not `textContent`, which would replace the node Blazor holds),
-  keeping the C# formatting the one source of the money text.
-- **Traps found by looking:** Bootstrap paints an offcanvas transparent at its breakpoint (the sidebar and Werk panel
-  use a gradient); one page on three addresses with the same parameters doesn't redraw (listen to `LocationChanged`);
-  a landing class must not collide with a Bootstrap grid class (`cost-row`, not `row`); a finished animation with
-  `fill-mode: both` keeps overriding `transform` (reveals rise on `translate`, so the tilt applies); a `filter` on
-  `background-clip: text` makes Chrome drop the text (the gradient line rises without the blur); an element that
-  rises in with a filled `transform` animation becomes the frame of its fixed children, so a modal inside it is
-  clipped (the card that holds the explorer doesn't rise in, `.card-p.holds-modal`).
-- **The admin portal is in English** (Louis, 2026-10-17: "afrikaans is just the language puls can be configured for"):
-  it's the builders' screen; recorded questions and answers stay in the language they were recorded in. Its charts
-  are our own SVG and CSS on Puls's variables, no chart package, and each explains on hover what good and bad look like
-  (`ChartInfo`). A way into a row is a button named for where it goes, never a bare chevron or a bar.
-- **The Werk panel shows Puls's own cost and the specialists' side by side,** and the turn's usage line includes the
-  specialists through the sub-session roll-up (core, *Showing usage*).
+The landing page's demo is the app's own markup. `LandingDemo` builds its turns from the app's classes
+(`user-message`, `delegation`, `work-item`, `work-step`, `work-cost`), so a change to the app's look changes the demo
+with it; only the frame's layout is its own (`demo-*`). Its turns are example data in C#, serialised into
+`data-turns`, and `landing.js` only plays them. The same goes for the page's copy: tiles, chips, chart heights and
+marquee tags are C# arrays rendered by Razor, so no script builds markup from literals.
+
+Numbers on the page are measured ones, each a line of data with what it is and how it was measured, so a new
+measurement changes one line.
+
+The loading count is Blazor's own (`--blazor-load-percentage-text` on `<html>`, shown in a `::after`); no script
+counts files.
+
+One motion switch: `data-motion="on"` on `<html>`, set by `index.html` before the first paint and changed by the
+framework's `preferences.js` `setMotion` (the sidebar's checkbox and the landing's pill both call it; the landing
+imports it, CL31); the stylesheets guard their reduced-motion blocks with `:root:not([data-motion="on"])`. Text
+arriving in order is content, not motion, so a reader who asked for less motion still sees the demo play at a reading
+pace; only the loop stops. Moving content that lasts over five seconds has a *Stop* or *Pouse* button (WCAG 2.2.2),
+and a closed FAQ answer is `inert`.
+
+Costs count up without touching Blazor's node: every `[data-count]` runs from the last number shown to the new one
+after a render, writing the text node's value (not `textContent`, which would replace the node Blazor holds), keeping
+the C# formatting the one source of the money text.
+
+Traps found by looking: Bootstrap paints an offcanvas transparent at its breakpoint (the sidebar and Werk panel use a
+gradient); one page on three addresses with the same parameters doesn't redraw (listen to `LocationChanged`); a
+landing class must not collide with a Bootstrap grid class (`cost-row`, not `row`); a finished animation with
+`fill-mode: both` keeps overriding `transform` (reveals rise on `translate`, so the tilt applies); a `filter` on
+`background-clip: text` makes Chrome drop the text (the gradient line rises without the blur); an element that rises
+in with a filled `transform` animation becomes the frame of its fixed children, so a modal inside it is clipped (the
+card that holds the explorer doesn't rise in, `.card-p.holds-modal`).
+
+The admin portal is in English (Louis, 2026-10-17: "afrikaans is just the language puls can be configured for"): it's
+the builders' screen; recorded questions and answers stay in the language they were recorded in. Its charts are our
+own SVG and CSS on Puls's variables, no chart package, and each explains on hover what good and bad look like
+(`ChartInfo`). A way into a row is a button named for where it goes, never a bare chevron or a bar.
+
+The Werk panel shows Puls's own cost and the specialists' side by side, and the turn's usage line includes the
+specialists through the sub-session roll-up (core, *Showing usage*).
 
 ## Configuration
 
@@ -126,8 +148,8 @@ and 420 px wide is still checked by hand.
 
 ## Limits and plans
 
-- Usage figures are per browser (the chats saved here); a user's monthly total belongs to the server-side ledger (F23).
-- Buying credits (F23 Credits), a light theme, accounts, and the placeholders above are to come.
+Usage figures are per browser (the chats saved here); a user's monthly total belongs to the server-side ledger (F23).
+Buying credits (F23 Credits), a light theme, accounts, and the placeholders above are to come.
 
 ## Related docs
 

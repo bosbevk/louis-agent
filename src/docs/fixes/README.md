@@ -160,15 +160,15 @@ The symptom is as it was seen (the error, where there was one), so a search for 
 
 ## Conventions
 
-- **IDs** are `FXn`, in the order the problem was found; a doc is `FXnn-short-name.md`.
-- **Each doc** has: *Symptom* (what was seen, with the exact error), *Cause* (proved, not guessed: how it was found),
-  *Fix* (what changed and why this way), *Tests*, *Confirmed* (the real run that shows it works), and *Lesson* (the
-  concept behind it and its skill in the goal's map).
-- **Status** is *open* or *done*, the same here and at the top of the fix's doc.
-- **Plans:** a fix that takes more than one step gets its approved plan in [plans/](../plans/README.md)
-  (`FXnn-name.md`), committed before its first step.
-- **An open fix** also has one line in the [TODO](../../../TODO.md), in its phase's section, that links here; a fix that
-  removes a known limitation names it.
+A fix's id is `FXn`, numbered in the order the problems were found, and its doc is `FXnn-short-name.md`. Each doc
+has the same parts. *Symptom* is what was seen, with the exact error. *Cause* is proved, not guessed, and says how it
+was found. *Fix* is what changed and why it was done this way. Then come *Tests*, *Confirmed* (the real run that shows
+it works) and *Lesson* (the idea behind it, and its skill in the goal's map).
+
+A fix's status is *open* or *done*, the same here and at the top of its doc. A fix that takes more than one step gets
+its approved plan in [plans/](../plans/README.md) (`FXnn-name.md`), committed before its first step. An open fix also
+has one line in the [TODO](../../../TODO.md), in its phase's section, linking here, and a fix that removes a known
+limitation names it.
 
 ## Finishing a fix
 

@@ -9,121 +9,237 @@
 
 ## Purpose
 
-The agent over HTTP: sessions whose answers stream as Server-Sent Events shaped like Claude's, plus read-only workspace
-browsing and a git interface, the packs' screens and uploads, and the admin key. It also serves the web app. The eval
-studio is [louis-agent.api.evals](louis-agent.api.evals.md), a library on it a program opts into (CL57). Other programs and agents (the orchestrator) use it to hand
-louis-agent a whole task.
+This is the agent over HTTP. You open a session, send it a message, and the answer streams back as Server-Sent
+Events, shaped like Claude's. Beside that, it lets you browse the workspace read-only, has a git interface, serves the
+packs' screens and uploads, and holds the admin key. It also serves the web app.
+
+Other programs and agents, such as the orchestrator, use it to hand louis-agent a whole task. The eval studio is a
+library on top of it that a program opts into: [louis-agent.api.evals](louis-agent.api.evals.md).
+
+*Decided in:* CL57.
 
 ## How it works
 
 ![louis-agent.api: How it works](diagrams/louis-agent.api-how-it-works.svg)
 
-- **Start-up** (`ApiStartup.cs`, called by a demo's program): `AgentHost.Build()`, the services with `ApiMap.AddApi` (the engine, `AgentSessions` and
-  a `WorkspaceBoundary` for path checks); decide the auth with core's `HostAuth` (FX18: no `AGENT_API_KEY` stops
-  start-up unless `AGENT_AUTH=off`; a key adds `AgentKeyGate`, whose check is `HostAuth.HasKey`); map static assets,
-  then the API with `ApiMap.MapApi`, and the admin portal on the `/v1` group it returns. Nothing else: the routes and
-  the turn's stream live in `Endpoints/` and `Sessions/`.
-- **Routes** (CL20, [ADR 0039](../adr/0039-api-routes-under-v1.md)): every route is under `/v1` but `/health`, mapped
-  in one place (`Endpoints/Routing/ApiMap`). Resources are nouns; a create answers `201` with `Location`, a delete is
-  `DELETE`, an action is `POST /v1/{resource}/{verb}`. A route needs the key unless the code marks it
-  (`RouteAccess.Open` for the prices, the rates and the feeds, `AdminKey` for `/v1/admin`); a `/v1` path no route matches is a
-  JSON `404`. `ApiRoutesSnapshot.json` pins the table, and `ApiRouteRuleTests` checks the rule on it.
-- **The site's pages as HTML** (F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md)): a program calls
-  `MapLouisAgentSite` with its web app's assembly and the services its pages inject, in place of an `index.html`
-  fallback. A page's address (or a section's under it) answers the site's `index.html` with the page's own title,
-  description, link card, canonical link and body, rendered by `HtmlRenderer` the first time and kept until the
-  process restarts; a page that declares no `PageHead`, or fails to render (logged once), answers the plain
-  shell; an address that names no page, the shell with a 404. The public address is the request's own. The page's
-  JSON-LD scripts go into the served head as they are, and every page under the landing gets a `BreadcrumbList` of
-  the site's name (`og:site_name`) and the page's title at its route (`PageBreadcrumb`, F123,
-  [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md)).
-- **Prices** (`GET /v1/prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
-  hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
-- **Rates** (`GET /v1/rates`, public, F14): the exchange rates `AgentHost.Build` loaded, in our `rates.json` format, for
-  other hosts' `RATES_URL` (`RATES_FORMAT=rates-json`); `GET /v1/rates/display` gives the web app the server's display
-  currency and a symbol per currency. Usage objects add `display_cost`, `display_currency`, `display_symbol`,
-  `rate_as_of` beside the charged `cost`.
-- **Feeds** (`GET /v1/feeds`, `GET /v1/feeds/{name}`, `GET /v1/feeds/{name}/{id}`, public,
-  [ADR 0070](../adr/0070-packs-publish-data-feeds.md)): the data the packs publish (`AgentCatalog.Feeds`), listed with
-  each one's path and read as the JSON its pack wrote; the API knows no pack and no feed's shape. A name no pack
-  publishes, or an item a feed doesn't have, is a `404`. The first is `shop-prices`; `recipes` gives each item an address
-  ([ADR 0082](../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md)).
-- **Screens** (`GET /v1/admin/screens`, `GET /v1/admin/screens/{name}/rows?search=&page=`, behind the admin key,
-  [ADR 0086](../adr/0086-a-packs-screens-are-described.md)): what each screen the packs list says about itself
-  (`AgentCatalog.Screens`), and one page of its rows with the total. A page before the first is the first, and a screen no pack
-  offers is a `404`. `GET` and `PUT .../rows/{id}` read a row as a form and save it, and `POST .../actions/{action}` does what the
-  description names; anything else is a `404`, and each save and action is logged with its row.
-- **Uploads** (`GET /v1/admin/imports`, `POST /v1/admin/imports/{name}/preview` and `/save`, behind the admin key,
-  [ADR 0071](../adr/0071-packs-take-data-uploads.md)): the data uploads the packs declare (`AgentCatalog.Imports`),
-  the files as base64 in the body (20 MB at most, else `413`); the pack's report comes back as it wrote it. An
-  unknown upload is a `404`, no files a `400`. The first is `shop-prices`, Stats SA's two spreadsheets.
-- **Sessions** (`AgentSessions`): in memory, one turn at a time per session (a second message gets `409`), cancelled by
-  `POST /v1/sessions/{id}/cancel` or by the client disconnecting; idle sessions are dropped after 4 hours.
-- **Toolsets per session** (F5): `POST /v1/sessions` takes `toolsets` (none: `skills` only) and gets that profile's engine
-  from core's `AgentEngineFactory`, kept for the session's life; unknown or unavailable names, a `depth` other than 0
-  or 1, or `specialists` at depth 1 are a `400`. `parent` tags a sub-session's usage records with the turn that opened it.
-  `GET /v1/toolsets` lists names, descriptions and availability, never tool definitions. The code-review web app opens
-  chats with every available toolset; Puls opens them with `agents` and `web` and asks its cook on its peer by address.
-  Engines are shared by every session with the same toolsets, role and level, and the least recently used of
-  16 is dropped (a session keeps its own).
-- **Roles** (F21, CL14): `POST /v1/sessions` takes `role`, a built-in one at the session's level (a mode such as
-  `puls/voice-af` at depth 0, a specialist's role such as `puls-cook` at depth 1); none gives the default mode,
-  `louis-agent/voice`; an invalid or unknown name is a `400` before an engine is built. `GET /v1/roles` lists them by
-  level, with the default. A sub-session (depth 1) gets no routing, and the role its parent names; with none it gets
-  the default mode's voice (CL10: a role is never derived from the toolsets).
-- **The user's place** (F22): `location` (only when the user shared it) and `time_zone` (IANA; an unknown one is a
-  `400`) are kept with the session, so `GetToday` and "near me" are the user's. A location is said once, in front of
-  the session's first message (`ApiModelText.UserPlace`: `[The user is in {Location}; their time zone is {TimeZone}.]`),
-  not in the system prompt, which engines share; without a `time_zone` the note and `GetToday` use
-  `Africa/Johannesburg`. Files attached to a message are
-  remembered by name, so `AskAgent` can forward them to the agent it asks without the model copying them.
-- **Web input recorded and replayed** (F18 step 4a): `POST /v1/sessions` takes `replay` (`{ web, of, model }`) only on a session with
-  a run tag, and **sending it, even an empty `{}`, is what marks a session as an eval**: a run tag alone marks nothing (the orchestrator
-  sends one on every fix session), so with no `replay` the session is left alone whatever `WEB_REPLAY` says. `ReplayResolution` decides,
-  before any engine is built (each refusal a 400): a `replay` with no run tag; an unknown `web` (the supported names are listed);
-  `model: true` with any web but `replay` (step 4e: the model's answers come from a recording, with its web); `record` or `replay` on an instance with no replay folder; `replay` without `of`. The
-  instance's `WEB_REPLAY` (parsed once at start-up, so a bad value stops the API) only fills in a `web` the eval didn't send. A
-  recording without `of` writes `{run tag}/{task}`; a sub-session is sent its parent's `of` and keeps it, so it never works out a key of
-  its own, and a child of a parent that said `off` is sent nothing and stays live. The session keeps the result, and `TurnStream` sets it for each turn as it sets
-  the user's place.
-- **Streaming** (`Sessions/Streaming/`, F18 step 1f): the writer is `ITurnStreamFormat`, and the turn and the session
-  view call only it. Its one format is `Claude/ClaudeStreamFormat`; `"stream"` on `POST /v1/sessions` picks the format
-  (`StreamFormat`, Claude by default) and the session keeps it. Engine updates become `message_start`,
-  `content_block_start/delta/stop` (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the
-  turn's `usage`, F3) and `message_stop`;
-  failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
-  The error's `type` is the failure's kind (`StreamErrorKind` in `louis-agent.session-stream`, FX26): `api_error`
-  for any failure, `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`,
-  mapped by `Sessions/Streaming/StreamErrorKinds`), so a client can tell a replay miss from the agent's own failure.
-  `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
-- **Usage** (F3): each session keeps its finished turns' records (`UsageSession`) for `/usage` and the `usage` of
-  `GET /v1/sessions/{id}`; the turn is added in the stream's `finally`, so a disconnected or failed turn still counts.
-- **Workspace and git:** every path goes through core's `WorkspaceBoundary` and `SensitiveFiles` (`Guardrails/`), so the API applies
-  the same boundary and secret-file rules as the agent; git runs without a shell with a 30-second timeout.
-- **History and merging** (`GitCommitsEndpoints`, `GitBranchesEndpoints`): branches with ahead/behind counts, the log
-  across branches, commit and branch diffs (secret files' content removed), `--no-ff` merges that abort cleanly on
-  conflict, deletion of merged branches. Branch names are only accepted if they exist, and keep their slashes in the
-  route (`/v1/git/branches/feature/x`).
+### 1. Starting up
 
-The full endpoint and event reference: [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi).
+A demo's program calls `ApiStartup.cs`. It builds the engine with `AgentHost.Build()`, and adds the services with
+`ApiMap.AddApi`: the engine, `AgentSessions`, and a `WorkspaceBoundary` for checking paths.
 
-**A session names its identity, and a door lets a visitor in (F109.3).** A host runs the identities its catalogue
-holds; a session's request may carry `identity`, and the session opens in that identity's default voice unless it
-names a role, the replies say who, and `GET /v1/identities` lists them (the first is the default). A host may name
-open identities and a cap (`OPEN_IDENTITIES`, by commas, and `OPEN_SESSIONS_PER_DAY`, since F127.2 a list): the key
-gate asks `OpenDoor` first, a visitor with no key and no sign-in may open one of those identities' sessions a few
-times a day from one address across them all, the request is narrowed in code to the identity the door admitted and
-its own toolsets and tagged `open-door` on the ledger, the calls on that session pass, and past the
-cap the answer is a 429. A session an admitted session's turn asks for (its `parent` tag) counts as that visitor's
-and is admitted for them, so the visitor's window may carry on in it (F127.4.2, ADR 0117); each admitted session
-remembers the visitor it counts for ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
-[ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)). A session knows who it runs as
-(`AgentSession.Who`), and each turn sets it ambient (`TurnIdentity`, with the user's place and the rest, in
-`Sessions/Streaming/TurnAmbience`), so a pack can tell a demonstration's turn from a real one.
+Then it decides on the key, with core's `HostAuth`. Without `AGENT_API_KEY`, the start-up stops, unless
+`AGENT_AUTH=off`. With a key, it adds `AgentKeyGate`, whose check is `HostAuth.HasKey`.
 
-The main route, opening a session and asking it something:
+Last, it maps the static files, then the API with `ApiMap.MapApi`, and the admin portal on the `/v1` group that
+returns. That's all it does; the routes and the turn's stream live in `Endpoints/` and `Sessions/`.
+
+*Decided in:* FX18.
+
+### 2. The routes
+
+Every route is under `/v1`, except `/health`, and they're all mapped in one place, `Endpoints/Routing/ApiMap`.
+Resources are nouns. A create answers `201` with a `Location`. A delete is `DELETE`. An action is
+`POST /v1/{resource}/{verb}`.
+
+A route needs the key unless the code marks it otherwise: `RouteAccess.Open` for the prices, the rates and the feeds,
+and `AdminKey` for `/v1/admin`. A `/v1` path that no route matches gets a JSON `404`. `ApiRoutesSnapshot.json` pins the
+whole table, and `ApiRouteRuleTests` checks the rule on it.
+
+*Decided in:* CL20, [ADR 0039](../adr/0039-api-routes-under-v1.md).
+
+### 3. Serving a site's pages as HTML
+
+A program calls `MapLouisAgentSite` with its web app's assembly and the services its pages inject, instead of falling
+back to a plain `index.html`. Then a page's address, or a section's under it, answers the site's `index.html` filled in
+with the page's own title, description, link card, canonical link and body.
+
+`HtmlRenderer` draws each page the first time it's asked for, and the result is kept until the process restarts. A
+page that declares no `PageHead`, or fails to draw (logged once), answers the plain shell. An address that names no
+page answers the shell with a 404. The public address is the request's own.
+
+The page's JSON-LD scripts go into the served head just as they are. And every page under the landing gets a
+`BreadcrumbList` with the site's name (`og:site_name`) and the page's title at its route (`PageBreadcrumb`).
+
+*Decided in:* F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md), F123,
+[ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
+
+### 4. Prices and rates, open to anyone
+
+`GET /v1/prices` is public. It gives the price table `AgentHost.Build` loaded for this API's usage ledger, so other
+hosts can point `PRICES_URL` at it and price with the same table. The demo's orchestrator does. Without a table, it's a
+`404`.
+
+`GET /v1/rates` is public too. It gives the exchange rates `AgentHost.Build` loaded, in our `rates.json` format, for
+other hosts' `RATES_URL` (with `RATES_FORMAT=rates-json`). `GET /v1/rates/display` gives the web app the server's
+display currency and a symbol per currency. Usage objects carry `display_cost`, `display_currency`, `display_symbol`
+and `rate_as_of`, beside the charged `cost`.
+
+*Decided in:* F14.
+
+### 5. Feeds
+
+`GET /v1/feeds`, `GET /v1/feeds/{name}` and `GET /v1/feeds/{name}/{id}` are public. They're the data the packs publish
+(`AgentCatalog.Feeds`), listed with each one's path, and read as the JSON its pack wrote. The API knows no pack and no
+feed's shape. A name no pack publishes, or an item a feed doesn't have, is a `404`. The first feed is `shop-prices`,
+and `recipes` gives each item an address.
+
+*Decided in:* [ADR 0070](../adr/0070-packs-publish-data-feeds.md),
+[ADR 0082](../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md).
+
+### 6. Screens
+
+`GET /v1/admin/screens` and `GET /v1/admin/screens/{name}/rows?search=&page=` sit behind the admin key. They give
+what each screen the packs list says about itself (`AgentCatalog.Screens`), and one page of its rows with the total.
+A page before the first is the first, and a screen no pack offers is a `404`.
+
+`GET` and `PUT .../rows/{id}` read a row as a form and save it. `POST .../actions/{action}` does what the
+description names. Anything else is a `404`, and each save and action is logged with its row.
+
+*Decided in:* [ADR 0086](../adr/0086-a-packs-screens-are-described.md).
+
+### 7. Uploads
+
+`GET /v1/admin/imports`, `POST /v1/admin/imports/{name}/preview` and `/save` sit behind the admin key. They're the
+data uploads the packs declare (`AgentCatalog.Imports`). The files come as base64 in the body, 20 MB at most, or it's
+a `413`. The pack's report comes back just as the pack wrote it. An unknown upload is a `404`, and no files is a `400`.
+The first is `shop-prices`, which takes Stats SA's two spreadsheets.
+
+*Decided in:* [ADR 0071](../adr/0071-packs-take-data-uploads.md).
+
+### 8. Sessions
+
+Sessions (`AgentSessions`) live in memory. A session runs one turn at a time, so a second message while one is running
+gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client disconnecting. Idle sessions
+are dropped after 4 hours.
+
+### 9. Toolsets per session
+
+`POST /v1/sessions` takes `toolsets`; with none, the session gets `skills` only. It gets that profile's engine from
+core's `AgentEngineFactory`, and keeps it for the session's whole life. An unknown or unavailable name, a `depth`
+other than 0 or 1, or `specialists` at depth 1, is a `400`. `parent` tags a sub-session's usage records with the turn
+that opened it.
+
+`GET /v1/toolsets` lists the names, descriptions and whether each is available, but never the tool definitions. The
+code-review web app opens chats with every available toolset. Puls opens them with `agents` and `web`, and asks its
+cook on its peer by address.
+
+Engines are shared by every session with the same toolsets, role and level. The least recently used of 16 is dropped,
+though a session keeps its own.
+
+*Decided in:* F5.
+
+### 10. Roles
+
+`POST /v1/sessions` takes a `role`: a built-in one at the session's level. That's a mode such as `puls/voice-af` at
+depth 0, or a specialist's role such as `puls-cook` at depth 1. With none, you get the default mode,
+`louis-agent/voice`. An invalid or unknown name is a `400`, before any engine is built. `GET /v1/roles` lists them by
+level, with the default.
+
+A sub-session (depth 1) gets no routing, and takes the role its parent names. With none, it gets the default mode's
+voice. A role is never worked out from the toolsets.
+
+*Decided in:* F21, CL14, CL10.
+
+### 11. The user's place
+
+A session can carry `location` (only when the user shared it) and `time_zone` (IANA; an unknown one is a `400`). They're
+kept with the session, so `GetToday` and "near me" mean the user's day and place.
+
+The location is said once, in front of the session's first message, as `ApiModelText.UserPlace`:
+`[The user is in {Location}; their time zone is {TimeZone}.]`. It's not in the system prompt, because engines share
+that. Without a `time_zone`, the note and `GetToday` use `Africa/Johannesburg`.
+
+Files attached to a message are remembered by name. That way `AskAgent` can forward them to the agent it asks, without
+the model having to copy them.
+
+*Decided in:* F22.
+
+### 12. Recording and replaying the web for evals
+
+`POST /v1/sessions` takes `replay` (`{ web, of, model }`), but only on a session with a run tag. **Sending it, even as
+an empty `{}`, is what marks a session as an eval.** A run tag alone marks nothing, since the orchestrator sends one
+on every fix session. So with no `replay`, the session is left alone, whatever `WEB_REPLAY` says.
+
+`ReplayResolution` decides before any engine is built, and each refusal is a 400. It refuses a `replay` with no run
+tag, an unknown `web` (listing the supported names), `model: true` with any web but `replay` (the model's answers
+come from a recording, with its web), `record` or `replay` on an instance with no replay folder, and `replay`
+without `of`.
+
+The instance's `WEB_REPLAY` is parsed once at start-up, so a bad value stops the API. It only fills in a `web` the
+eval didn't send. A recording without `of` is written to `{run tag}/{task}`. A sub-session is sent its parent's `of`
+and keeps it, so it never works out a key of its own. A child of a parent that said `off` is sent nothing, and stays
+live. The session keeps the result, and `TurnStream` sets it for each turn, the same way it sets the user's place.
+
+*Decided in:* F18 step 4a, F18 step 4e.
+
+### 13. Streaming the answer
+
+The writer is `ITurnStreamFormat`, in `Sessions/Streaming/`. The turn and the session view only ever call that. Its one
+format is `Claude/ClaudeStreamFormat`. `"stream"` on `POST /v1/sessions` picks the format (`StreamFormat`, Claude by
+default), and the session keeps it.
+
+The engine's updates become `message_start`, then `content_block_start`, `delta` and `stop` (for thinking, text,
+tool_use and tool_result), then `message_delta` (the stop reason and the turn's `usage`), and `message_stop`.
+
+A failure becomes an `error` event in Claude's shape, with the turn's `usage` if a request had come back. The error's
+`type` says what kind of failure it was (`StreamErrorKind`, in `louis-agent.session-stream`). It's `api_error` for any
+failure, and `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`, mapped
+by `Sessions/Streaming/StreamErrorKinds`). So a client can tell a replay miss from the agent's own failure.
+
+`/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
+
+*Decided in:* F18 step 1f, F3, FX6, FX26.
+
+### 14. Usage
+
+Each session keeps its finished turns' records (`UsageSession`), for `/usage` and for the `usage` of
+`GET /v1/sessions/{id}`. The turn is added in the stream's `finally`, so a turn that disconnected or failed still
+counts.
+
+*Decided in:* F3.
+
+### 15. Workspace and git
+
+Every path goes through core's `WorkspaceBoundary` and `SensitiveFiles` (`Guardrails/`). So the API keeps to the same
+boundary and secret-file rules as the agent itself. Git runs without a shell, with a 30-second timeout.
+
+For history and merging (`GitCommitsEndpoints`, `GitBranchesEndpoints`), you get branches with their ahead and behind
+counts, the log across branches, and commit and branch diffs, with secret files' content removed. Merges are
+`--no-ff` and abort cleanly on a conflict, and merged branches can be deleted. A branch name is only accepted if the
+branch exists, and it keeps its slashes in the route (`/v1/git/branches/feature/x`).
+
+The full reference for every endpoint and event is in
+[How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi).
+
+### 16. Identities, and the open door
+
+A host runs the identities its catalogue holds. A session's request may carry `identity`, and the session opens in
+that identity's default voice, unless it names a role. The replies say who answered, and `GET /v1/identities` lists
+them, the default first.
+
+A host may name some identities as open, with a cap: `OPEN_IDENTITIES` (by commas) and `OPEN_SESSIONS_PER_DAY` (a
+list). The key gate asks `OpenDoor` first. A visitor with no key and no sign-in may then open a session with one of
+those identities, a few times a day from one address, counted across them all. The request is narrowed in code to the
+identity the door let in and its own toolsets, and it's tagged `open-door` on the ledger. The calls on that session
+pass, and past the cap the answer is a 429.
+
+When an admitted session's turn asks for another session (its `parent` tag), that one counts as the same visitor's and
+is let in for them, so the visitor's window can carry on in it. Each admitted session remembers which visitor it counts
+for.
+
+A session knows who it runs as (`AgentSession.Who`), and each turn sets that in the background (`TurnIdentity`, with
+the user's place and the rest, in `Sessions/Streaming/TurnAmbience`). That way a pack can tell a demonstration's turn
+from a real one.
+
+*Decided in:* F109.3, F127.2, F127.4.2, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md),
+[ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
+[ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
+
+Here's the main route: opening a session, and asking it something.
 
 ![A session and a message to it: the key gate, the session with its shared engine, and the turn streamed back as Server-Sent Events](diagrams/louis-agent.api-diagrams.svg)
+
+These are the types involved:
 
 ![The types: a program adds the API, the handlers open a session per conversation, the turn streams in the format it picks, and the open door counts the public's](diagrams/louis-agent.api-interface.svg)
 
@@ -157,55 +273,69 @@ The main route, opening a session and asking it something:
 
 ## Configuration
 
-Where it runs: inside the program that adds it, one container a demo, reached on the PC's own address.
+The API runs inside the program that adds it, one container per demo, reached on the PC's own address.
 
 ![Where the API runs: in the demo's program in its container, reached by a browser on 127.0.0.1, reaching a model, the collector and its mounted folders](diagrams/louis-agent.api-deployment.svg)
 
-Core settings (`WEB_REPLAY` and `REPLAY_DIRECTORY` among them: F18 step 4a, read through `ReplayResolution` and `AgentOptions.KeepsRecordings`), plus: `AGENT_API_KEY` (required on every `/v1` route but the prices, the rates and the feeds; without it the API
-refuses to start unless `AGENT_AUTH=off`, FX18), `API_PORT` (host port in
-Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for commits and merges from the web app),
-`ASPNETCORE_URLS` / `ASPNETCORE_ENVIRONMENT` outside Docker (an unpublished `dotnet run` only serves the web app in
-`Development`). The admin portal: `ADMIN_API_KEY` (falls back to `AGENT_API_KEY`), `BENCHMARKS_MONGO_URL` and
-`BENCHMARKS_MONGO_DATABASE` (the store; without it no run starts), and `EVAL_RUNNER` (the eval runner's dll: the API lists and starts the C# evals with it; default `/app/evals/louis-agent.evals.runner.dll`), [SETUP](../SETUP.md).
+It uses core's settings, including `WEB_REPLAY` and `REPLAY_DIRECTORY`, which it reads through `ReplayResolution` and
+`AgentOptions.KeepsRecordings`. On top of those:
 
-The images carry the eval runner: both Dockerfiles (`demos/louis-agent/docker/images/Dockerfile.api`, `Dockerfile.puls`) publish it in the
-build stage and copy it to `/app/evals`, its own folder beside the API's (F18 step 4.3b). Compose sets no `EVAL_RUNNER`.
+`AGENT_API_KEY` is required on every `/v1` route except the prices, the rates and the feeds. Without it, the API
+refuses to start, unless `AGENT_AUTH=off`. `API_PORT` is the host port in Docker, bound to `127.0.0.1`.
+`GIT_AUTHOR_*` and `GIT_COMMITTER_*` are who commits and merges from the web app are made as. Outside Docker,
+`ASPNETCORE_URLS` and `ASPNETCORE_ENVIRONMENT` matter too: an unpublished `dotnet run` only serves the web app in
+`Development`.
+
+The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. The eval studio's settings are in
+[louis-agent.api.evals](louis-agent.api.evals.md). [SETUP](../SETUP.md) has the full list.
+
+The images carry the eval runner. Both Dockerfiles (`demos/louis-agent/docker/images/Dockerfile.api` and
+`Dockerfile.puls`) publish it in the build stage and copy it to `/app/evals`, its own folder beside the API's. Compose
+sets no `EVAL_RUNNER`.
+
+*Decided in:* FX18, F18 step 4.3b.
 
 ## Extending it
 
-- New endpoints in their concern's `*Endpoints.cs` with a `Map…` extension, mapped from `ApiMap.MapApi`; reuse
-  `GitProcess.RunAsync` for git and `ApiErrors.Result` for errors (Claude's error shape).
-- New stream content goes through `ITurnStreamFormat` (its Claude format, `Sessions/Streaming/Claude`), so every client sees the same event shapes.
-- Anything that changes agent behaviour belongs in core, not here.
+The steps are in [Change the API](../guides/change-the-api.md). In short: a new endpoint goes in its concern's
+`*Endpoints.cs`, with a `Map…` extension, mapped from `ApiMap.MapApi` under `/v1`. It needs the key unless it's marked
+open on purpose, and the route golden is written again. Use `GitProcess.RunAsync` for git, and `ApiErrors.Result` for
+errors, in Claude's error shape.
 
-The steps are in [Change the API](../guides/change-the-api.md). In short: an endpoint in its concern's `*Endpoints.cs`,
-mapped from `ApiMap.MapApi` under `/v1`, needing the key unless it is marked open on purpose, and the route golden
-regenerated; a session option in `CreateSessionRequest`; new stream events added, never changed.
+A new session option goes in `CreateSessionRequest`. New stream content goes through `ITurnStreamFormat` (its Claude
+format is in `Sessions/Streaming/Claude`), so every client sees the same event shapes; new events are added, never
+changed. And anything that changes how the agent behaves belongs in core, not here.
 
 ## Tests
 
-`demos/puls/tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `specialists` rule, shared
-engines and separate histories, roles, a role opening only at its own level, and a sub-session with no role getting none (a model client that is
-never called). The benchmarks (F31): the protocol, the recorder, the ledger join, the runner, the catalogue, the
-manuals, the trends, the tool failures, and one store contract run against the in-memory store and, when
-`BENCHMARKS_MONGO_URL` is set, MongoDB (CI sets it); since CL57 those are the studio's tests, in `louis-agent.api.evals.tests`. The routes (CL20): `ApiRoutesSnapshot.json` pins every route, its
-method and who may call it, `ApiRouteRuleTests` checks ADR 0039's rule on that table, and the in-memory host
-(`ApiTestHost`) runs the key gate (`AgentKeyGateTests`), a session's `201` (`SessionCreatedTests`) and the git
-resources in a temporary repository (`GitResourceTests`). The site's pages (F121): `PagePrerendererTests` render a
-sample page, `PageShellTests` fill the code-review site's real `index.html`, and `SitePagesTests` ask the test server
-for a page, a section, a page with no description, one that throws and an address with no page, and the canonical
-link from the request's own address. A streamed turn is still
-checked by hand, in the browser.
+The tests are in `demos/puls/tests/louis-agent.api.tests`. They cover the sessions' toolsets, the default, unknown
+names, depth and the `specialists` rule, shared engines with separate histories, roles, a role opening only at its own
+level, and a sub-session with no role getting none. The model client in these tests is never called. The eval
+studio's tests are in `louis-agent.api.evals.tests`.
+
+For the routes, `ApiRoutesSnapshot.json` pins every route, its method and who may call it, and `ApiRouteRuleTests`
+checks ADR 0039's rule on that table. The in-memory host, `ApiTestHost`, runs the key gate (`AgentKeyGateTests`), a
+session's `201` (`SessionCreatedTests`), and the git resources in a temporary repository (`GitResourceTests`).
+
+For the site's pages, `PagePrerendererTests` draw a sample page, and `PageShellTests` fill the code-review site's real
+`index.html`. `SitePagesTests` ask the test server for a page, a section, a page with no description, one that throws,
+and an address with no page, and check the canonical link comes from the request's own address.
+
+A streamed turn is still checked by hand, in the browser.
+
+*Decided in:* CL20, F121.
 
 ## Limits and plans
 
-- Sessions are in memory → [session architecture](../specs/SESSION_ARCHITECTURE.md).
-- A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) and budget errors →
-  [F7](../features/F07-budgets.md) (taking in [F11](../features/F11-usage-tab-and-reconciliation.md)); account-limit
-  errors → [F8](../features/F08-reliability.md); settings per role and per session →
-  [F10](../features/F10-route-settings.md).
-- The eval routes still answer under their old `/v1/admin/benchmarks/…` names too, until a deploy has passed (TODO,
-  *Small cleanups*).
+Sessions are kept in memory; keeping them is the [session architecture](../specs/SESSION_ARCHITECTURE.md).
+
+A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) and budget errors are
+[F7](../features/F07-budgets.md), which takes in [F11](../features/F11-usage-tab-and-reconciliation.md).
+Account-limit errors are [F8](../features/F08-reliability.md), and settings per role and per session are
+[F10](../features/F10-route-settings.md).
+
+The eval routes still answer under their old `/v1/admin/benchmarks/…` names too, until a deploy has passed (TODO,
+*Small cleanups*).
 
 ## Related docs
 

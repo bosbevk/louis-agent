@@ -43,20 +43,24 @@ feature is measured with an eval ([Run the evals](../guides/run-the-evals.md)).
 
 ## Conventions
 
-- **Stories** are `Fn-Sm`: "As a *role*, I want *something*, so that *benefit*", each with acceptance criteria written
-  as *Given / When / Then*.
-- **Roles:** *user* (chats in the web app, Rider or CLI), *operator* (runs the agent, sets budgets and prices),
-  *developer* (works on this repo), *orchestrator* (the agent itself, where it is the one acting).
-- **Tasks** are small enough for one commit each and name their test, which is written and seen failing first
-  ([test first](../guides/write-tests.md#write-the-test-first)).
-- **Plans:** before step 1, the plan approved for building the feature now is saved in [plans/](../plans/README.md)
-  (`Fnn-name.md`) and committed on the feature's branch. A feature doc stays the *what and why*; the plan is the
-  *how, now*.
-- **Definition of done** for every feature: its *Done when* is met; its tests are added and the suites pass; its eval
-  is rerun where the feature touches cost or quality (on Louis's go); and the steps in *Finishing a feature* below.
-- **Status** of a feature with a doc is kept in two places that must agree: the top of its doc and the table above
-  (*planned → in progress*, or *merged into Fn* when a plan folds it into another feature). A done feature leaves the
-  table.
+Stories are `Fn-Sm`: "As a *role*, I want *something*, so that *benefit*", each with acceptance criteria written as
+*Given / When / Then*.
+
+**Roles.** *user* (chats in the web app, Rider or CLI), *operator* (runs the agent, sets budgets and prices), *developer*
+(works on this repo), *orchestrator* (the agent itself, where it is the one acting).
+
+Tasks are small enough for one commit each and name their test, which is written and seen failing first
+([test first](../guides/write-tests.md#write-the-test-first)).
+
+**Plans.** Before step 1, the plan approved for building the feature now is saved in [plans/](../plans/README.md)
+(`Fnn-name.md`) and committed on the feature's branch. A feature doc stays the *what and why*; the plan is the *how,
+now*.
+
+Definition of done for every feature: its *Done when* is met; its tests are added and the suites pass; its eval is
+rerun where the feature touches cost or quality (on Louis's go); and the steps in *Finishing a feature* below.
+
+Status of a feature with a doc is kept in two places that must agree: the top of its doc and the table above (*planned
+→ in progress*, or *merged into Fn* when a plan folds it into another feature). A done feature leaves the table.
 
 ## Finishing a feature
 

@@ -51,14 +51,17 @@ English `ChatText`. Each is registered only where the site set none of its own.
 
 **Then it registers each area the site named.**
 
-- `Chat()` adds the chat portal's handoff. That is how a Review or Ask button on an admin screen reaches the chat:
-  it opens the site's chat with the words as a draft. It can't send them, so the person always reads the prompt and
-  sends it themselves.
-- `Admin(layout)` adds the admin's frame, its home and its pages. Part 5 explains them.
-- `Showroom(demos)` adds the demos, the guide's way in, the demos' windows and the kept guide. Part 4 explains
-  them.
-- A library adds an area of its own through `Add`. The eval studio's `Evals()` and the accounts' `Accounts(layout)`
-  do that.
+`Chat()` adds the chat portal's handoff. That is how a Review or Ask button on an admin screen reaches the chat:
+it opens the site's chat with the words as a draft. It can't send them, so the person always reads the prompt and
+sends it themselves.
+
+`Admin(layout)` adds the admin's frame, its home and its pages. Part 5 explains them.
+
+`Showroom(demos)` adds the demos, the guide's way in, the demos' windows and the kept guide. Part 4 explains
+them.
+
+A library adds an area of its own through `Add`. The eval studio's `Evals()` and the accounts' `Accounts(layout)`
+do that.
 
 An area named twice counts once.
 
@@ -98,25 +101,28 @@ browser's settings, choosing a language, a chat's costs. `ChatShell` holds these
 
 Follow one message through four steps.
 
-1. **One runner holds the turn's life.** `ChatRunner` holds what every chat page does with a message. It keeps the
-   draft and its attachments, and the page the visitor is reading when one is set, which is sent once and then
-   forgotten. It opens the session on the first message, streams the answer, can stop it, saves the chat, and puts
-   errors in the app's own words.
+**One runner holds the turn's life.** `ChatRunner` holds what every chat page does with a message. It keeps the
+draft and its attachments, and the page the visitor is reading when one is set, which is sent once and then
+forgotten. It opens the session on the first message, streams the answer, can stop it, saves the chat, and puts
+errors in the app's own words.
 
-   While the answer streams, it raises a redraw at most every 50 ms and always draws the last update. The last
-   update matters. Without it, an update that comes just after a redraw would wait for the next event, which can
-   be half a minute away while a tool runs. The page would sit behind and then seem to print everything at once.
-2. **One client calls the API.** `AgentApi` is the only code that calls it. It opens a session with its toolsets,
-   role, place and time zone. It streams a message's events over SSE. It stops and deletes sessions, and it reads
-   the toolsets, the rates and the other GETs. Components never touch `HttpClient`.
-3. **The stream becomes a turn.** `TurnStream` folds the API's events (thinking, text, tool calls, usage) into the
-   `Turn` and its `Block`s, which is what the page shows. A sub-session's events go to its `Delegation`, so a
-   specialist's work appears inside the turn that called it. `WorkStatus` and `RolePhases` say what the specialist
-   is doing, and `SpecialistAnswer` splits its turn into its work and its answer.
-4. **The views draw the turn.** `TurnView` and `BlocksView` show one turn: the message, thinking that folds away,
-   text and tool cards. `DelegationCard` shows a specialist's work, live, with its cost. `MessageList`, `Composer`,
-   `ComposerButtons`, `ChatUsageBar` and `Notice` are the chat pieces both apps lay out, with slots for an app's
-   own parts.
+While the answer streams, it raises a redraw at most every 50 ms and always draws the last update. The last
+update matters. Without it, an update that comes just after a redraw would wait for the next event, which can
+be half a minute away while a tool runs. The page would sit behind and then seem to print everything at once.
+
+**One client calls the API.** `AgentApi` is the only code that calls it. It opens a session with its toolsets,
+role, place and time zone. It streams a message's events over SSE. It stops and deletes sessions, and it reads
+the toolsets, the rates and the other GETs. Components never touch `HttpClient`.
+
+**The stream becomes a turn.** `TurnStream` folds the API's events (thinking, text, tool calls, usage) into the
+`Turn` and its `Block`s, which is what the page shows. A sub-session's events go to its `Delegation`, so a
+specialist's work appears inside the turn that called it. `WorkStatus` and `RolePhases` say what the specialist
+is doing, and `SpecialistAnswer` splits its turn into its work and its answer.
+
+**The views draw the turn.** `TurnView` and `BlocksView` show one turn: the message, thinking that folds away,
+text and tool cards. `DelegationCard` shows a specialist's work, live, with its cost. `MessageList`, `Composer`,
+`ComposerButtons`, `ChatUsageBar` and `Notice` are the chat pieces both apps lay out, with slots for an app's
+own parts.
 
 #### An answer can hold more than words
 
@@ -492,13 +498,15 @@ the home. The home draws each area's card in the order the site named them, in t
 
 Three areas come with the framework.
 
-- **The overview**, `Overview(count => count.Tool("SendLead", "leads"))`, names the tools it counts. The API
-  counts every tool and names no pack. Its page at `/admin/overview` draws the API's overview in the reader's
-  currency: today's and the month's talks, their cost and the counted tools, the month's talks by part of the
-  site and by who answered, in one colour, and the latest talks, in a table that scrolls sideways on a phone.
-- **The packs**, `Packs(views => …)`, are the packs' screens and uploads, with their menu and the packs page at
-  `/admin/packs`.
-- **The eval studio**, `Evals()`, is at `/admin/evals`.
+**The overview**, `Overview(count => count.Tool("SendLead", "leads"))`, names the tools it counts. The API
+counts every tool and names no pack. Its page at `/admin/overview` draws the API's overview in the reader's
+currency: today's and the month's talks, their cost and the counted tools, the month's talks by part of the
+site and by who answered, in one colour, and the latest talks, in a table that scrolls sideways on a phone.
+
+**The packs**, `Packs(views => …)`, are the packs' screens and uploads, with their menu and the packs page at
+`/admin/packs`.
+
+**The eval studio**, `Evals()`, is at `/admin/evals`.
 
 An admin area named without the frame is refused at start-up.
 
@@ -659,35 +667,49 @@ This section is for looking a file up, not for reading through. Each row is a fo
 
 ## Configuration
 
-None. It calls the API on the same origin as the app; the API key, when the API asks for one, is typed into the app
-and kept in that browser.
+There's nothing to set. It calls the API on the same origin as the app. When the API asks for a key, it's typed into
+the app and kept in that browser.
 
 ## Extending it
 
-The steps are in [Change the framework's web](../guides/change-the-web.md). In short: a piece belongs here
-when it would be the same on every site; a new API call goes in `AgentApi`; a component's words go in `ChatText` (English
-default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain class with tests
-([ADR 0034](../adr/0034-code-a-person-can-maintain.md)). Then rebuild the image of each app that uses it.
+The steps are in [Change the framework's web](../guides/change-the-web.md). In short: a piece belongs here when it
+would be the same on every site. A new API call goes in `AgentApi`. A component's words go in `ChatText`, with English
+as the default, and in Puls's `PulsText`. A `.razor` holds markup only, and the logic goes in a plain class with tests.
+Then rebuild the image of each app that uses it.
+
+*Decided in:* [ADR 0034](../adr/0034-code-a-person-can-maintain.md).
 
 ## Tests
 
-`src/tests/web/louis-agent.web.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
-`TurnStreamTests`, `DelegationTests`, `WorkStatusTests`, `SpecialistAnswerTests`; `TurnViewTests`, `BlocksViewTests`,
-`DelegationCardTests`, `CurrencySwitcherTests`; `DrawnCardTests` and `OfferCardsTests` in `Components/Blocks/`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame; the studio's in `louis-agent.web.evals.tests` (CL57); `Pages/Admin/`;
-`MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
-`RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `src/tests/web/louis-agent.web.testing` holds the fakes the
-web test projects share.
+The tests are in `src/tests/web/louis-agent.web.tests`, on NUnit, with bUnit for the components, in folders that
+mirror the library's.
+
+The chat's logic has `ChatRunnerTests`, `TurnStreamTests`, `DelegationTests`, `WorkStatusTests` and
+`SpecialistAnswerTests`. Its views have `TurnViewTests`, `BlocksViewTests`, `DelegationCardTests` and
+`CurrencySwitcherTests`, and `DrawnCardTests` and `OfferCardsTests` in `Components/Blocks/`. The frames have
+`AdminShellTests`, `ChatShellTests`, a test for each part of the chat's frame, and `Pages/Admin/`. Then there are
+`MarkdownTests`, `ToolArgsTests` and `UsageFormatTests`, and `RazorHasNoCodeTests`, which fails on a `@code` block in
+a `.razor`.
+
+The eval studio's tests are in `louis-agent.web.evals.tests`. `src/tests/web/louis-agent.web.testing` holds the fakes
+the web test projects share.
+
+*Decided in:* CL57.
 
 ## Limits and plans
 
-- **Left out on purpose:** a landing page, as it's what makes a site itself; a NuGet package for the framework or the template, as the template works
-  inside this repo until packages exist; a screen served as an MCP App, as no plan names it; bulk selection, and field kinds such as dropdowns or dates,
-  until a second screen needs them; swapping a view without a rebuild, since a custom component is built in, though a description isn't.
-- `Chats/` holds eleven files and `Components/Chat/` ten, over the "about six" of
-  [ADR 0034](../adr/0034-code-a-person-can-maintain.md): split them by concern (the records apart from the stream's
-  folding) the next time they change.
-- `UsageFormat` repeats core's `UsageText` number rules, so a change to one must be made in both (see
-  [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)).
+Some things are left out on purpose. There's no landing page, because that's what makes a site itself. There's no
+NuGet package for the framework or the template, since the template works inside this repo until packages exist.
+There's no screen served as an MCP App, because no plan names one. Bulk selection, and field kinds such as dropdowns
+or dates, wait until a second screen needs them. And a view can't be swapped without a rebuild, since a custom
+component is built in, though a description isn't.
+
+`Chats/` holds eleven files and `Components/Chat/` ten, over the "about six" of
+[ADR 0034](../adr/0034-code-a-person-can-maintain.md). The next time they change, split them by concern, with the
+records apart from the stream's folding.
+
+`UsageFormat` repeats core's `UsageText` number rules, so a change to one must be made in both (see
+[louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)).
 
 ## Related docs
 

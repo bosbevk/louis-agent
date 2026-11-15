@@ -272,16 +272,20 @@ dotnet sln louis-agent-solution.sln add packs/tests/louis-agent.pack.units.tests
 ```
 
 Give the test project the packs' tests' references (the pack, and `src/tests/shared/louis-agent.testing` for the shared fakes), mirror
-the pack's folders, and write:
+the pack's folders, and write four kinds of test.
 
-- **A prompts fixture** that registers the pack's prompts before any test reads one, as a host does at start-up
-  (`packs/tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
-  `[SetUpFixture] … SkillFileSource.Use([new UnitsPack().Prompts]);`
-- **A pack test** (`WhereToBuyPackTests` is the model): its name, its toolsets, that `toolsets/units.md` is in its prompts,
-  and that the guide routes here and holds no `## Skill:`.
-- **Tool tests**, one file per tool class: each result and each failure text, test first.
-- **A golden of its texts**, so a changed word the model reads is a reviewed change
-  (`Messages/WhereToBuyToolMessageSnapshotTests.cs` and its JSON; regenerate with `LOUIS_UPDATE_GOLDEN=1`, review the diff).
+The first is a prompts fixture. It registers the pack's prompts before any test reads one, the way a host does at
+start-up (`packs/tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
+`[SetUpFixture] … SkillFileSource.Use([new UnitsPack().Prompts]);`
+
+The second is a pack test, and `WhereToBuyPackTests` is the one to copy. It checks the pack's name and its toolsets,
+that `toolsets/units.md` is in its prompts, and that the guide routes here and holds no `## Skill:`.
+
+Then come the tool tests, one file per tool class, written test first. They check each result and each failure's text.
+
+Last is a golden of the pack's texts, so a changed word the model reads is a change someone reviews
+(`Messages/WhereToBuyToolMessageSnapshotTests.cs` and its JSON). Regenerate it with `LOUIS_UPDATE_GOLDEN=1`, and
+review the diff.
 
 Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`demos/puls/tests/louis-agent.host-packs.tests`)
 builds every pack and checks the shapes in step 2 against the MCP SDK, and `ArchitectureTests` checks its references.

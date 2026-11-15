@@ -41,12 +41,13 @@ own.
 
 Two of those fixes are worth remembering because they weren't prompt tricks.
 
-- **Show the judge what the answer relies on.** A follow-up like "make it for six" only makes sense with the recipe from the
-  turn before. Judging it alone was judging the wrong thing. The labels had to carry every turn too, or the check would
-  measure a different question from the one the judge faced in a real run.
-- **A model can't misuse what it isn't told.** The prompt said "never judge the price" in bold. The small judge judged the
-  price anyway. Taking the budget out of what it is sent worked where the instruction didn't. Another grader checks cost, so
-  nothing was lost.
+Show the judge what the answer relies on. A follow-up like "make it for six" only makes sense with the recipe from the
+turn before. Judging it alone was judging the wrong thing. The labels had to carry every turn too, or the check would
+measure a different question from the one the judge faced in a real run.
+
+A model can't misuse what it isn't told. The prompt said "never judge the price" in bold. The small judge judged the
+price anyway. Taking the budget out of what it is sent worked where the instruction didn't. Another grader checks
+cost, so nothing was lost.
 
 ## What the wobble means
 
@@ -71,12 +72,15 @@ process start, and it buys a clean wall between the two halves.
 
 ## What didn't work, or nearly didn't
 
-- **A test that passed for the wrong reason.** The first version of "the card stops asking when you leave the page" would
-  have passed even with the stopping code deleted, because freeing the cancellation token made the loop crash, which also
-  ended it. A crash that happens to stop a loop isn't a stop. The fix was to not free the token, since it has no timer.
-- **A first allowlist that dropped the proxy settings.** See the next section.
-- **Test helpers hold the screen.** The test library's wait-for-assertion helper blocks the very renderer the polling loop
-  needs, so the polling test waits plainly instead.
+A test that passed for the wrong reason. The first version of "the card stops asking when you leave the page" would
+have passed even with the stopping code deleted, because freeing the cancellation token made the loop crash, which
+also ended it. A crash that happens to stop a loop isn't a stop. The fix was to not free the token, since it has no
+timer.
+
+A first allowlist that dropped the proxy settings. See the next section.
+
+Test helpers hold the screen. The test library's wait-for-assertion helper blocks the very renderer the polling loop
+needs, so the polling test waits plainly instead.
 
 ## A side lesson, from skill 15: what a child process can see
 
@@ -93,17 +97,20 @@ now stops a setting going missing quietly.
 
 The field has settled on a few words, and F18 uses them as they are, so a paper or a library reads the same way.
 
-- **A task** is one thing you want the agent to do, a scenario in a dataset. **A trial** is one go at it: one
-  conversation. **A transcript** is everything that happened in that trial. **A grader** looks at a transcript and
-  says pass, fail or unknown, with a reason. An **eval** is a task set plus its graders.
-- **Code graders first.** Most of what matters has a rule: did it route to the cook, is the total under the budget,
-  did a turn fail. Code is free, fast and says the same thing twice. Only what has no rule ("is this a meal?") goes to
-  a model, and every eval must have at least one code grader that's required, so no eval rests on a judge alone.
-- **A judge is checked, then a person stays in the loop.** The judge is calibrated against your labels (above), and
-  the human review sits beside it in the portal, blind: you grade before you see what the judge said.
-- **Grades and metrics are different things.** A grade decides a pass. A metric (calls, hosts, tokens, seconds, cost)
-  is measured and never fails a run. Mixing them was the old "scores" bag; splitting them is what made the v2 results
-  readable.
+A task is one thing you want the agent to do, a scenario in a dataset. **A trial** is one go at it: one conversation.
+**A transcript** is everything that happened in that trial. **A grader** looks at a transcript and says pass, fail or
+unknown, with a reason. An **eval** is a task set plus its graders.
+
+Code graders first. Most of what matters has a rule: did it route to the cook, is the total under the budget, did a
+turn fail. Code is free, fast and says the same thing twice. Only what has no rule ("is this a meal?") goes to a
+model, and every eval must have at least one code grader that's required, so no eval rests on a judge alone.
+
+A judge is checked, then a person stays in the loop. The judge is calibrated against your labels (above), and the
+human review sits beside it in the portal, blind: you grade before you see what the judge said.
+
+Grades and metrics are different things. A grade decides a pass. A metric (calls, hosts, tokens, seconds, cost) is
+measured and never fails a run. Mixing them was the old "scores" bag; splitting them is what made the v2 results
+readable.
 
 ## pass@k against pass^k
 
@@ -144,17 +151,19 @@ agent is still missing (GOAL, skill 12).
 
 ## Side lessons from F18
 
-- **Traces, and logs that don't leak (skill 17).** Every turn and tool call is traced, so a slow or failing step can be
-  found. And the logs no longer hold what you typed: the arguments, results and a failure's quoted reason show as keyed
-  hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so a log says what ran and how it ended. The same text always gets
-  the same hash, so you can still match two lines. `LOG_CONTENT=full` shows the values, on your own machine only.
-- **The stream format is a seam (skill 4).** The agent's stream is read by one small library (`louis-agent.session-
-  stream`) that turns each server-sent event into a record. Every host, the harness and the portal read those records,
-  never the raw text. When the format changes, one reader changes. Protocol v2 is the same idea for evals: one
-  contract the runner writes and the API reads (ADR 0047).
-- **The prompt's hash (skill 3).** Each run keeps the hash of every prompt each agent used, and the trend chart puts a
-  marker where a hash changed. So when a pass rate jumps, you can see whether the prompt changed that night. Comparing
-  two prompt versions side by side, as a habit before a merge, is the next step and still missing.
+Traces, and logs that don't leak (skill 17). Every turn and tool call is traced, so a slow or failing step can be
+found. And the logs no longer hold what you typed: the arguments, results and a failure's quoted reason show as keyed
+hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so a log says what ran and how it ended. The same text always gets the
+same hash, so you can still match two lines. `LOG_CONTENT=full` shows the values, on your own machine only.
+
+The stream format is a seam (skill 4). The agent's stream is read by one small library (`louis-agent.session- stream`)
+that turns each server-sent event into a record. Every host, the harness and the portal read those records, never the
+raw text. When the format changes, one reader changes. Protocol v2 is the same idea for evals: one contract the runner
+writes and the API reads (ADR 0047).
+
+The prompt's hash (skill 3). Each run keeps the hash of every prompt each agent used, and the trend chart puts a
+marker where a hash changed. So when a pass rate jumps, you can see whether the prompt changed that night. Comparing
+two prompt versions side by side, as a habit before a merge, is the next step and still missing.
 
 ## Generic checks, and readers instead of Puls's own (F49.2b)
 
@@ -173,12 +182,10 @@ and `image-shown` with Puls's `recipe-photos`. Puls now ships readers, not check
 (`"name": "within-budget"`), so a person reading a run sees what they always saw.
 
 **How we knew the swap changed nothing.** A grader swap is a refactor of a measuring instrument, so it gets the
-refactor's test: pin the outputs first, then change the code, and the pins must hold.
-1. Before touching anything, `CookGradesTests` wrote every grade's outcome and score on all 26 reference and
-   known-bad transcripts to a golden file: 230 grades from the old checks.
-2. After the swap the test passed without rewriting the file.
-3. Then a replay of the baseline run (the recorded model answers, $0) graded the same as the run it replayed: 140 of
-   140 grades equal.
+refactor's test: pin the outputs first, then change the code, and the pins must hold. Before anything was touched,
+`CookGradesTests` wrote every grade's outcome and score on all 26 reference and known-bad transcripts to a golden file:
+230 grades from the old checks. After the swap, the test passed without the file being rewritten. Then a replay of the
+baseline run (the recorded model answers, for $0) graded the same as the run it replayed: 140 of 140 grades equal.
 
 The reasons changed wording, and the version numbers moved, so the eval went to version 11 and its trend starts a
 new line; the outcomes didn't move. That's the difference between "it looks the same" and "it measures the same".
@@ -197,15 +204,16 @@ bad conversation in the portal, then wrote its scenario file or its transcript b
 
 Now the portal does it. Two moves, both from a stored run:
 
-- **A conversation becomes a sample.** Press *Sample* on its card. The dialog starts from the scenario the
-  conversation ran (its place, time zone, expected values and categories), you give the new sample an id and change
-  what you want (cook for six instead of four, a smaller budget), and it's kept as a draft. Its first question becomes
-  the sample's input and the later ones its follow-ups. It's a *variant* of a scenario that already works, so the
-  checks know its keys; a key the scenario doesn't have is refused, because nothing would read it.
-- **A reviewed conversation becomes a transcript.** After you grade it, a pass offers *Keep as reference* and a fail
-  *Keep as known-bad*, with a reason in kebab-case (`no-shop`) that becomes part of its file name. These are the
-  transcripts the pinned-grades test reads (`CookGradesTests`): a known-bad is a regression test for a grader, an
-  answer it must keep failing.
+A conversation becomes a sample. Press *Sample* on its card. The dialog starts from the scenario the conversation ran
+(its place, time zone, expected values and categories), you give the new sample an id and change what you want (cook
+for six instead of four, a smaller budget), and it's kept as a draft. Its first question becomes the sample's input
+and the later ones its follow-ups. It's a *variant* of a scenario that already works, so the checks know its keys; a
+key the scenario doesn't have is refused, because nothing would read it.
+
+A reviewed conversation becomes a transcript. After you grade it, a pass offers *Keep as reference* and a fail *Keep
+as known-bad*, with a reason in kebab-case (`no-shop`) that becomes part of its file name. These are the transcripts
+the pinned-grades test reads (`CookGradesTests`): a known-bad is a regression test for a grader, an answer it must
+keep failing.
 
 **Why drafts, not files.** A draft waits in a store until F49.5 publishes it as files in a pull request. Writing the
 file straight into the checkout would be simpler on this PC, but the hosted Puls has no checkout, and a half-made
@@ -257,15 +265,19 @@ gate CI runs, and *interoperability* with a common format instead of a format of
 
 ## The limits, said plainly
 
-- **36 labels, one judge, one person.** Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is
-  weaker than it sounds.
-- **The prompt was tuned on the same 36 answers it is scored on.** That was your pick, and it is how the four rounds worked,
-  but it means 35 or 36 of 36 shows the prompt fits *those* answers. It does not prove it works on new ones. Check it on
-  fresh labels: the next grading round, or the new scenarios F48 brings.
-- **The labels are yours alone.** A second reviewer's grades would be a stronger check and the store already allows them.
-- **A prompt change means a rebuild.** The judge's prompt is baked into the image, so the loop is edit, rebuild, press.
-- **The button hasn't been pressed in anger on a new prompt yet.** Its first real use (35 of 36, 2026-10-27) was on the
-  prompt we had already tuned.
+36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker
+than it sounds.
+
+The prompt was tuned on the same 36 answers it is scored on. That was your pick, and it is how the four rounds worked,
+but it means 35 or 36 of 36 shows the prompt fits *those* answers. It does not prove it works on new ones. Check it on
+fresh labels: the next grading round, or the new scenarios F48 brings.
+
+The labels are yours alone. A second reviewer's grades would be a stronger check and the store already allows them.
+
+A prompt change means a rebuild. The judge's prompt is baked into the image, so the loop is edit, rebuild, press.
+
+The button hasn't been pressed in anger on a new prompt yet. Its first real use (35 of 36, 2026-10-27) was on the
+prompt we had already tuned.
 
 ---
 [Learning](README.md) · [Docs index](../README.md) · Related: [the evals design](../projects/louis-agent.evals.md#design-notes) · [FX25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md)

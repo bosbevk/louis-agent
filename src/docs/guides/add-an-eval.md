@@ -57,15 +57,18 @@ every `eval.json` copied beside the runner is an eval.
 }
 ```
 
-- **`name`** is how the runner, the store and the portal know it: lowercase, letters, digits and `-`, unique.
-- **`identity`** is who it proves; `EVALS=acme` runs only acme's evals.
-- **`version`** is a whole number you bump when a scenario, a mode or a check changes, so the trend never compares two
-  different evals. Nothing bumps it for you.
-- **`modes`** are the ways the same conversations run: a role and its toolsets each. Two modes compare, for example,
-  the agent alone with the agent handing work to a specialist.
-- **`checks`** grade each conversation, in this order on the portal. `parameters` holds the check's settings, in snake
-  case; leave it out when the defaults do. `name` keeps an old name a stored run already carries when a check's type
-  changes under it (none of Puls's today); a new eval leaves it out.
+`name` is how the runner, the store and the portal know the eval. It's lowercase, made of letters, digits and `-`,
+and no other eval may have it. `identity` is who it proves, so `EVALS=acme` runs only acme's evals.
+
+`version` is a whole number you bump whenever a scenario, a mode or a check changes, so the trend never compares two
+different evals. Nothing bumps it for you.
+
+`modes` are the ways the same conversations are run, each one a role and its toolsets. Two modes can compare, say, the
+agent on its own with the agent handing the work to a specialist.
+
+`checks` grade each conversation, in the order the portal shows them. A check's `parameters` hold its settings, in
+snake case, and you leave them out when the defaults do. A check's `name` keeps the old name a stored run already
+carries when the check's type changes under it (none of Puls's do today), and a new eval leaves it out.
 
 The file is read strictly: a field it doesn't know, one missing, a null, a mode or a check twice, or a check type the
 catalogue doesn't have is refused, naming the file and the field.
@@ -190,8 +193,9 @@ cook's (`Evals/Cook/manual.md`) is the full example.
 prints them: the `mode` line, then the conversation's `question`, `sse` and `turn` lines (the template's are the
 shortest example).
 
-- `{scenario}.reference.txt`: one per scenario, a conversation that passes every required check;
-- `{scenario}.bad.{label}.txt`: a conversation wrong in one way, one per way (`error`, `wrong-area`).
+There are two kinds. `{scenario}.reference.txt` is one per scenario: a conversation that passes every required check.
+`{scenario}.bad.{label}.txt` is a conversation that's wrong in one way, with one file for each way (`error`,
+`wrong-area`).
 
 Every required check must fail at least one known-bad (a `Fail`; an `Unknown` doesn't count), no known-bad may pass
 every required check, and any other file is stray and refused. Cut them from a stored run where one passed

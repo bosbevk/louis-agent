@@ -53,21 +53,25 @@ rule a test can hold is held by a test, and what it can't hold is written where 
 
 ## What was learned
 
-- **A tool's text is part of its interface.** The one thing the cut changed in what the model reads was an argument's
-  description that named Puls. A pack's description is read by whatever agent loads it; naming one identity there
-  would have made the shops Puls's forever. The test now refuses it as a whole word, case ignored, so "demonstrate"
-  isn't "Demo".
-- **Settings belong to the thing they configure.** `SHOP_CATALOGUES` in `AgentOptions` meant every host knew about
-  shops. In `ShopsOptions`, read where the pack is built, the coding agent's host has no shop setting unless it loads
-  the pack. The same move waits for `PAYMO_API_KEY` and the DevOps keys when CL17 makes those packs.
-- **A pack can't route itself.** The shops' routing row left the coding agent's mode for the pack's guide, which loads
-  only where the toolset does, so the coding agent never learns the shops exist. Nothing is lost today, and it is on
-  the TODO: when F36 brings MCP packs, the routing rows come from each toolset's description.
-- **Shared state is the pack's, one per host.** The store cache that remembered each town's store sat on the toolset
-  context; it is now a field of `ShopsPack`, one instance however many engines a host builds, which is what F34 wanted
-  and what an MCP server would have to do for itself.
-- **Reuse before building held.** The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
-  hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
+A tool's text is part of its interface. The one thing the cut changed in what the model reads was an argument's
+description that named Puls. A pack's description is read by whatever agent loads it; naming one identity there would
+have made the shops Puls's forever. The test now refuses it as a whole word, case ignored, so "demonstrate" isn't
+"Demo".
+
+Settings belong to the thing they configure. `SHOP_CATALOGUES` in `AgentOptions` meant every host knew about shops. In
+`ShopsOptions`, read where the pack is built, the coding agent's host has no shop setting unless it loads the pack.
+The same move waits for `PAYMO_API_KEY` and the DevOps keys when CL17 makes those packs.
+
+A pack can't route itself. The shops' routing row left the coding agent's mode for the pack's guide, which loads only
+where the toolset does, so the coding agent never learns the shops exist. Nothing is lost today, and it is on the
+TODO: when F36 brings MCP packs, the routing rows come from each toolset's description.
+
+Shared state is the pack's, one per host. The store cache that remembered each town's store sat on the toolset
+context; it is now a field of `ShopsPack`, one instance however many engines a host builds, which is what F34 wanted
+and what an MCP server would have to do for itself.
+
+Reuse before building held. The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
+hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
 ## F128.2: a pack names no owner, and a session names its tools (2026-11-10)
 
@@ -103,30 +107,36 @@ branches on OpenStreetMap) and `shop-prices` (`EstimatePrices`, a list from Stat
 | The branch | The model reading the map's search page | `FindBranches`: three branches, each "in the town's municipality" or not |
 | Kept where | Code and a browser | MongoDB, one document per source and month, seeded from the shipped files |
 
-- **One job per pack.** Prices without branches (a rent estimate) and branches without prices (a pharmacy) are both
-  real asks, so the two never share a toolset. The pattern is Single Responsibility at the level of a toolset: a
-  specialist loads what it needs and its prompt only reads about that.
-- **Give the model numbers, not arithmetic.** A model adding twelve rand amounts gets one wrong now and then, and
-  differently each run. `EstimatePrices` returns each row, the total and the price per person already done; the
-  prompt says "copy them exactly". This is the same move as F33's table (*a page's own data before its text*,
-  [ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)), one step further: the tool does the work, the model
-  writes the sentence.
-- **Unknown stays unknown.** A line the table can't match is `?` and is left out of the total, listed under it, so the
-  total never looks complete when it isn't.
-- **A licence is part of the tool's text.** Stats SA asks for credit, and OpenStreetMap's ODbL too, so both tools hand
-  the model the exact credit line to copy, and the cook's prompt puts it under the table.
-- **A store with a fallback.** The tool reads MongoDB at most once an hour (Cache-Aside) and falls back to the shipped
-  tables when the store is down, so a price is always there; the store is the record and the files only seed it.
-- **Not yet measured live.** The cook eval moved to version 14 (new toolsets); its first run waits for Louis's go
-  (it costs money). The golden shows what the model now reads: the three Checkers tools gone, `FindBranches` and
-  `EstimatePrices` in.
-- **Data a pack publishes is not a tool.** Louis wanted the prices served by the API, open, "free to use". The API
-  may not know a pack (ADR 0027), so core got a third thing a pack can give besides toolsets and prompts: a read-only
-  feed (`IDataFeed`: a name, a description, its JSON). The API serves every feed at `/v1/feeds/{name}` without knowing
-  whose it is, and the pack writes its own JSON. This is the Plugin pattern (Fowler), the same seam the toolsets use,
-  and it mirrors MCP, which also splits a server into *tools* the model calls and *resources* anyone reads
-  ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)). The feed reads through the tool's cache, so the tool and the
-  feed always show the same month.
+One job per pack. Prices without branches (a rent estimate) and branches without prices (a pharmacy) are both real
+asks, so the two never share a toolset. The pattern is Single Responsibility at the level of a toolset: a specialist
+loads what it needs and its prompt only reads about that.
+
+Give the model numbers, not arithmetic. A model adding twelve rand amounts gets one wrong now and then, and
+differently each run. `EstimatePrices` returns each row, the total and the price per person already done; the prompt
+says "copy them exactly". This is the same move as F33's table (*a page's own data before its text*,
+[ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)), one step further: the tool does the work, the model
+writes the sentence.
+
+Unknown stays unknown. A line the table can't match is `?` and is left out of the total, listed under it, so the total
+never looks complete when it isn't.
+
+A licence is part of the tool's text. Stats SA asks for credit, and OpenStreetMap's ODbL too, so both tools hand the
+model the exact credit line to copy, and the cook's prompt puts it under the table.
+
+A store with a fallback. The tool reads MongoDB at most once an hour (Cache-Aside) and falls back to the shipped
+tables when the store is down, so a price is always there; the store is the record and the files only seed it.
+
+Not yet measured live. The cook eval moved to version 14 (new toolsets); its first run waits for Louis's go (it costs
+money). The golden shows what the model now reads: the three Checkers tools gone, `FindBranches` and `EstimatePrices`
+in.
+
+Data a pack publishes is not a tool. Louis wanted the prices served by the API, open, "free to use". The API may not
+know a pack (ADR 0027), so core got a third thing a pack can give besides toolsets and prompts: a read-only feed
+(`IDataFeed`: a name, a description, its JSON). The API serves every feed at `/v1/feeds/{name}` without knowing whose
+it is, and the pack writes its own JSON. This is the Plugin pattern (Fowler), the same seam the toolsets use, and it
+mirrors MCP, which also splits a server into *tools* the model calls and *resources* anyone reads
+([ADR 0070](../adr/0070-packs-publish-data-feeds.md)). The feed reads through the tool's cache, so the tool and the
+feed always show the same month.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md) ·

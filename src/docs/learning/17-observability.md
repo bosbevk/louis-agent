@@ -37,39 +37,50 @@ nothing of ours naming either.
 Six were in the plan, five came up during the build; each went to Louis on a card with three options and a
 pattern. The names in brackets are the cards'.
 
-- **One exporter per signal (A1).** Logs through Serilog's OTLP sink, beside the console and the file, so the
-  templates, the hashing and the tags stay in one pipeline; traces through the OpenTelemetry SDK, the reference
-  every instrumentation plugs into. Weighed against it: Serilog for both (a bridge between two standards) and the
-  SDK's logger beside Serilog (two logging stacks in one process).
-- **.NET's own sources beside ours (B2).** `Microsoft.AspNetCore` and `System.Net.Http` are already in the
-  runtime: a span per request, a span per outgoing call, and the `traceparent` header on it. That one header is
-  what makes a sub-session nest under its parent's tool call with nothing of ours (W3C Trace Context). The
-  instrumentation packages give richer attributes, but the ASP.NET one can't live in core.
-- **The turn's span opens in `TurnRunner` (C1).** The one place a turn runs, whole or streamed, so every host and
-  every sub-session gets it (Template Method's hook). Not in `UsageScope` (one class, two concerns) and not per host
-  (seven copies, and one forgets).
-- **Switched on in the shared bootstrap (D1).** `AgentHost` after the `.env` files load, so five hosts get it with
-  one line; the orchestrator and the eval runner call it themselves (Composition Root).
-- **The dashboard is its own stack (E2).** Started once, both compose stacks send to it, so Puls's trace and the
-  code-review API's sit side by side (a backing service, twelve-factor). A copy per stack would give two dashboards
-  on clashing ports.
-- **Levels fixed as touched (F1).** The table is written where a reviewer checks it; no 30-file sweep (the Boy
-  Scout Rule, as ADR 0057 does it).
-- **The runner gets the address, not the key (B).** The API hands the eval runner an allowlist of settings (FX25);
-  the endpoint and the protocol pass, `OTEL_EXPORTER_OTLP_HEADERS` doesn't, because a collector's key may be in it.
-- **The factory names the engine (G1).** `gen_ai.agent.name` is the profile's role, else the default mode, so a
-  trace tells the cook's turn from the chat's.
-- **Our own traffic is no span (H1).** The log sink sends its batches on a plain `HttpClient`, which the tracer
-  listens to, so every batch became a `POST` span to the collector. A small processor before the exporter drops
-  them (the SDK already hides the trace exporter's own).
-- **Critical for a crash, Error for a lost task (I1).** The level says whether the process lived on: an exception
-  nothing caught ends it, so Critical and a flush; a faulted task nobody awaited hasn't ended a process since
-  .NET 4.5, so Error, marked observed, no flush.
-- **A host is named by its project (J1).** `api`, `acp-server`, `cli`, `evals.runner`; only `puls`, which is the
-  API's project in another coat, sets `OTEL_SERVICE_NAME`.
-- **Application Insights on the environment's workspace (K1).** The script creates `puls-insights` on the Log
-  Analytics workspace the container environment already logs to, so traces sit beside the container logs, and turns
-  on the environment's managed OpenTelemetry agent, which injects the endpoint into the app.
+One exporter per signal (A1). Logs through Serilog's OTLP sink, beside the console and the file, so the templates, the
+hashing and the tags stay in one pipeline; traces through the OpenTelemetry SDK, the reference every instrumentation
+plugs into. Weighed against it: Serilog for both (a bridge between two standards) and the SDK's logger beside Serilog
+(two logging stacks in one process).
+
+.NET's own sources beside ours (B2). `Microsoft.AspNetCore` and `System.Net.Http` are already in the runtime: a span
+per request, a span per outgoing call, and the `traceparent` header on it. That one header is what makes a sub-session
+nest under its parent's tool call with nothing of ours (W3C Trace Context). The instrumentation packages give richer
+attributes, but the ASP.NET one can't live in core.
+
+The turn's span opens in `TurnRunner` (C1). The one place a turn runs, whole or streamed, so every host and every
+sub-session gets it (Template Method's hook). Not in `UsageScope` (one class, two concerns) and not per host (seven
+copies, and one forgets).
+
+Switched on in the shared bootstrap (D1). `AgentHost` after the `.env` files load, so five hosts get it with one line;
+the orchestrator and the eval runner call it themselves (Composition Root).
+
+The dashboard is its own stack (E2). Started once, both compose stacks send to it, so Puls's trace and the code-review
+API's sit side by side (a backing service, twelve-factor). A copy per stack would give two dashboards on clashing
+ports.
+
+Levels fixed as touched (F1). The table is written where a reviewer checks it; no 30-file sweep (the Boy Scout Rule,
+as ADR 0057 does it).
+
+The runner gets the address, not the key (B). The API hands the eval runner an allowlist of settings (FX25); the
+endpoint and the protocol pass, `OTEL_EXPORTER_OTLP_HEADERS` doesn't, because a collector's key may be in it.
+
+The factory names the engine (G1). `gen_ai.agent.name` is the profile's role, else the default mode, so a trace tells
+the cook's turn from the chat's.
+
+Our own traffic is no span (H1). The log sink sends its batches on a plain `HttpClient`, which the tracer listens to,
+so every batch became a `POST` span to the collector. A small processor before the exporter drops them (the SDK
+already hides the trace exporter's own).
+
+Critical for a crash, Error for a lost task (I1). The level says whether the process lived on: an exception nothing
+caught ends it, so Critical and a flush; a faulted task nobody awaited hasn't ended a process since .NET 4.5, so
+Error, marked observed, no flush.
+
+A host is named by its project (J1). `api`, `acp-server`, `cli`, `evals.runner`; only `puls`, which is the API's
+project in another coat, sets `OTEL_SERVICE_NAME`.
+
+Application Insights on the environment's workspace (K1). The script creates `puls-insights` on the Log Analytics
+workspace the container environment already logs to, so traces sit beside the container logs, and turns on the
+environment's managed OpenTelemetry agent, which injects the endpoint into the app.
 
 **Left out on purpose** (ADR 0055): metrics (the ledger is the cost, F44.1 takes speed), alert rules (by hand in
 App Insights first), the browser apps (Blazor sends nothing), and the errors inbox Louis first asked for
@@ -94,33 +105,41 @@ by grep in the run files against a click in the dashboard, is the two blanks in 
 
 ## What was learned
 
-- **Look before you build: the spans were already there.** The plan's first check found F18 had wired
-  Microsoft.Extensions.AI's spans into the tool loop months ago, with a test proving their shape. Nobody listened.
-  F52 was mostly an exporter and a parent span, not an instrumentation job.
-- **Nothing of ours names a backend.** The exporters read `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_SERVICE_NAME`
-  themselves and they win over our defaults; with no endpoint nothing listens. The same build goes to the PC's
-  dashboard, to Azure's agent, or nowhere, by a setting. That is what "vendor-neutral" buys.
-- **A fake handler hides the real behaviour.** The plan had the parent's `traceparent` test on a recording
-  handler, which would have seen no header: .NET writes it in the handler a real client sends through, which a
-  fake bypasses. The test runs a real `HttpClient` to a loopback listener. A test proves the path it actually takes.
-- **Listening to everything includes yourself.** The log sink's own sends to the collector became spans the moment
-  the tracer listened to `HttpClient`. The fix is a filter at the one seam before the exporter, not a special case
-  in the sink.
-- **A wire-name test catches a wire name anywhere.** A test set `OTEL_SERVICE_NAME` to `"puls"` and core's
-  `RepeatedNameTests` refused it (`puls` is an enum's wire name, ADR 0043). Rider had run the API's tests only, so
-  every prompt since asks for the whole solution before it stops.
-- **A command's fields come from its source, not its docs.** The script's first `show` query named fields the
-  `az` command never returns; the extension's own code on GitHub had the real shape
-  (`properties.openTelemetryConfiguration`). The command is preview, so the docs lag.
-- **Flush is a second Configure.** Serilog sends a batching sink's last lines when the logger is disposed, so
-  flushing at exit is replacing the logger once more with the same arguments. Not pretty, but one line and honest.
-- **A cancelled turn is not an error.** Its span ends with no status: a user's stop is not a failure, and a
-  dashboard that counted it as one would lie about the error rate.
-- **The one text that leaves unhashed.** An exception's message travels as it is on a crash line and a span's
-  exception event; `LogContent`'s hashing doesn't reach it. Worth knowing before a tool puts a user's words in an
-  exception.
-- **Measure with the model out of the picture.** A replay made the cost of the exporters visible at all: live, the
-  model's own seconds and their spread would have buried a 0.7 s difference in the turns.
+Look before you build: the spans were already there. The plan's first check found F18 had wired
+Microsoft.Extensions.AI's spans into the tool loop months ago, with a test proving their shape. Nobody listened. F52
+was mostly an exporter and a parent span, not an instrumentation job.
+
+Nothing of ours names a backend. The exporters read `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_SERVICE_NAME` themselves
+and they win over our defaults; with no endpoint nothing listens. The same build goes to the PC's dashboard, to
+Azure's agent, or nowhere, by a setting. That is what "vendor-neutral" buys.
+
+A fake handler hides the real behaviour. The plan had the parent's `traceparent` test on a recording handler, which
+would have seen no header: .NET writes it in the handler a real client sends through, which a fake bypasses. The test
+runs a real `HttpClient` to a loopback listener. A test proves the path it actually takes.
+
+Listening to everything includes yourself. The log sink's own sends to the collector became spans the moment the
+tracer listened to `HttpClient`. The fix is a filter at the one seam before the exporter, not a special case in the
+sink.
+
+A wire-name test catches a wire name anywhere. A test set `OTEL_SERVICE_NAME` to `"puls"` and core's
+`RepeatedNameTests` refused it (`puls` is an enum's wire name, ADR 0043). Rider had run the API's tests only, so every
+prompt since asks for the whole solution before it stops.
+
+A command's fields come from its source, not its docs. The script's first `show` query named fields the `az` command
+never returns; the extension's own code on GitHub had the real shape (`properties.openTelemetryConfiguration`). The
+command is preview, so the docs lag.
+
+Flush is a second Configure. Serilog sends a batching sink's last lines when the logger is disposed, so flushing at
+exit is replacing the logger once more with the same arguments. Not pretty, but one line and honest.
+
+A cancelled turn is not an error. Its span ends with no status: a user's stop is not a failure, and a dashboard that
+counted it as one would lie about the error rate.
+
+The one text that leaves unhashed. An exception's message travels as it is on a crash line and a span's exception
+event; `LogContent`'s hashing doesn't reach it. Worth knowing before a tool puts a user's words in an exception.
+
+Measure with the model out of the picture. A replay made the cost of the exporters visible at all: live, the model's
+own seconds and their spread would have buried a 0.7 s difference in the turns.
 
 ## The library's counter (F35.7, 2026-11-06)
 
@@ -145,17 +164,22 @@ A counter that's down costing a chat nothing is proved by a test, not on the run
 
 **What was learned**
 
-- **Try removing what you were sure of.** I expected two adds starting a new day to clash, and wrote a retry. With the retry
-  switched off, 50 adds at once still all counted, six runs out of six, on MongoDB 8. So it went, since it was code nothing
-  needed. A test that passes with and without your code isn't proving that code.
-- **Four of nine tests passed on a stub** in the counting step: the ones saying something is *not* counted. That's fine as
-  long as you notice; they only mean something once the counting exists.
-- **Decide what a number means before counting it.** *Offered* counts what a search showed, not what it held. *Served* leaves
-  out `ScaleRecipe`, or one answer would serve a recipe twice. A failed keep isn't *Failed*, since the cook loses nothing.
-- **Measured runs need their own database.** With `RECIPE_LIBRARY_IN_EVALS=true` on the real database, a run adds to the
-  real totals.
-- **The size tests shaped the design twice:** `Library/Usage` went over the folder limit, so the Mongo record sits beside its
-  store, and `Pages/Admin` did too, so the page got a `Data` folder.
+Try removing what you were sure of. I expected two adds starting a new day to clash, and wrote a retry. With the retry
+switched off, 50 adds at once still all counted, six runs out of six, on MongoDB 8. So it went, since it was code
+nothing needed. A test that passes with and without your code isn't proving that code.
+
+Four of nine tests passed on a stub in the counting step: the ones saying something is *not* counted. That's fine as
+long as you notice; they only mean something once the counting exists.
+
+Decide what a number means before counting it. *Offered* counts what a search showed, not what it held. *Served*
+leaves out `ScaleRecipe`, or one answer would serve a recipe twice. A failed keep isn't *Failed*, since the cook loses
+nothing.
+
+Measured runs need their own database. With `RECIPE_LIBRARY_IN_EVALS=true` on the real database, a run adds to the
+real totals.
+
+**The size tests shaped the design twice.** `Library/Usage` went over the folder limit, so the Mongo record sits beside
+its store, and `Pages/Admin` did too, so the page got a `Data` folder.
 
 **What it can't tell you:** whether an answer used a recipe, since the pack never sees answers, or how often someone reads the
 open feed directly. Those stay with the eval's saved events and aren't counted.

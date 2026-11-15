@@ -17,23 +17,45 @@ itself before calling anything fixed. It never edits code.
 
 ![The orchestrator: one error, from the feed to a decision](diagrams/louis-agent.orchestrator-how-it-works.svg)
 
-1. **Poll** (`Program.cs`): read new events from the service's error log (the triage pack's `JsonLinesErrorFeed`,
-   since F106.3.1, remembers handled ids in `processed.txt`, so each is triaged once; a failed triage stays unhandled
-   for the next run). `--once` runs one pass.
-2. **Triage** each event with a fresh history: the runbooks are the system prompt, the event is fenced as untrusted data,
-   and the model's only tools are `ServiceTools` and `FixChecks` (via `AgentEngine`'s `toolsets:`).
-3. **Fix** (`CallLouisAgentFix`): check `main` out (stashing leftovers), open a session on louis-agent.api, send the fix
-   request, stream the reply, send "continue" up to three times if it ends without a `FIX-RESULT`, then delete the
-   session.
-4. **Verify** — a claim is not proof: the commit exists on the fix branch, which starts from `main` and is not on `main`;
-   the failing request now returns 200; the whole test suite passes.
-5. **Record**: the `DECISION` line, `fixes.jsonl` / `escalations.jsonl` / `acknowledged.jsonl`, and every message both
-   ways in the Markdown `agent-comms.md`.
-6. **Cost** (F3): louis-agent's usage per reply (from `message_delta`), the triage's from its own `UsageScope`; the comms
-   log shows both per error and a run total split by agent, and `fixes.jsonl` / `decisions.jsonl` carry them. A
-   timed-out request fails that error, not the run (FX7): only Ctrl+C ends a run early. Costs are shown in the display
-   currency (F14: rates from demo-api's `/v1/rates`, one rate for both agents), with the rate and the USD charged under the
-   run total; the jsonl files keep USD.
+### 1. Poll
+
+It starts in `Program.cs` by reading new events from the service's error log. The triage pack's `JsonLinesErrorFeed`
+remembers the ids it has handled in `processed.txt`, so each event is triaged once, and a failed triage stays
+unhandled for the next run. `--once` runs a single pass.
+
+*Decided in:* F106.3.1.
+
+### 2. Triage
+
+Each event is triaged with a fresh history. The runbooks are the system prompt, the event is fenced off as untrusted
+data, and the model's only tools are `ServiceTools` and `FixChecks`, handed to the engine through `AgentEngine`'s
+`toolsets:`.
+
+### 3. Fix
+
+When the decision is to fix, `CallLouisAgentFix` checks `main` out (stashing anything left over), opens a session on
+louis-agent.api and sends the fix request. It streams the reply, sends "continue" up to three times if the reply ends
+without a `FIX-RESULT`, and then deletes the session.
+
+### 4. Verify
+
+A claim is not proof, so the orchestrator checks for itself. The commit must exist on the fix branch, which starts
+from `main` and isn't on `main`. The request that failed must now return 200. And the whole test suite must pass.
+
+### 5. Record
+
+It writes the `DECISION` line, the records in `fixes.jsonl`, `escalations.jsonl` and `acknowledged.jsonl`, and every
+message both ways in the Markdown `agent-comms.md`.
+
+### 6. Cost
+
+louis-agent's usage comes with each reply (from `message_delta`), and the triage's from its own `UsageScope`. The comms
+log shows both for each error, and a run total split by agent, and `fixes.jsonl` and `decisions.jsonl` carry them. A
+request that times out fails that error, not the run: only Ctrl+C ends a run early. Costs are shown in the display
+currency, with rates from demo-api's `/v1/rates` and one rate for both agents, and the rate and the USD charged sit
+under the run total. The jsonl files keep USD.
+
+*Decided in:* F3, FX7, F14.
 
 The pieces:
 
@@ -82,11 +104,10 @@ ran in the demo, removed in CL10; it returns with the evals.
 
 ## Limits and plans
 
-- POC choices: a JSON-lines error log instead of an error tracker, a local branch instead of a pull request, polling
-  only → [orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) and the TODO backlog.
-- Estimates, budgets, stopping at account limits, results as tool calls →
-  [F6](../../../../src/docs/features/F06-estimates.md), [F7](../../../../src/docs/features/F07-budgets.md),
-  [F8](../../../../src/docs/features/F08-reliability.md).
+POC choices: a JSON-lines error log instead of an error tracker, a local branch instead of a pull request, polling
+only → [orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) and the TODO backlog. Estimates, budgets, stopping at
+account limits, results as tool calls → [F6](../../../../src/docs/features/F06-estimates.md),
+[F7](../../../../src/docs/features/F07-budgets.md), [F8](../../../../src/docs/features/F08-reliability.md).
 
 ## Related docs
 

@@ -10,11 +10,12 @@ and what is still open; the open items are tracked in the [TODO](../../../../TOD
 
 ## Two kinds of agent
 
-- **louis-agent** stays a coding agent: given a problem, it locates the code, fixes it, tests it and hands back a
-  branch (later a pull request). It never deploys.
-- **An orchestrator** owns business state and decisions: it watches errors, uptime and performance, decides between a
-  code fix, an operational action and escalating to a person, and decides *when* to ship. It calls louis-agent as a
-  sub-agent for code changes.
+louis-agent stays a coding agent: given a problem, it locates the code, fixes it, tests it and hands back a branch
+(later a pull request). It never deploys.
+
+An orchestrator owns business state and decisions: it watches errors, uptime and performance, decides between a code
+fix, an operational action and escalating to a person, and decides *when* to ship. It calls louis-agent as a sub-agent
+for code changes.
 
 The call goes to **louis-agent.api's session endpoint, not the MCP server**. The MCP server has no model of its own — it
 hands out raw tools for the caller's model to drive — so through MCP the orchestrator's model would do the fix reasoning
@@ -61,11 +62,9 @@ Beyond code fixes, a store-operations orchestrator would also act on business st
 pricing — without routing those through louis-agent, and own the deploy gate: it decides *when* to ship; louis-agent
 only produces the fix. All open:
 
-- Design it: watch store health (errors, uptime, performance) and choose between code fix, operational action and
-  escalation.
-- Catalogue, inventory and pricing tools for it.
-- The approval and deploy-gate boundary between the two agents, so agent-written code and business-critical deploy or
-  rollback decisions stay separate.
+Design it: watch store health (errors, uptime, performance) and choose between code fix, operational action and
+escalation. Catalogue, inventory and pricing tools for it. The approval and deploy-gate boundary between the two
+agents, so agent-written code and business-critical deploy or rollback decisions stay separate.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [Orchestrator demo](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md) · [Runbooks](../projects/orchestrator-runbooks.md) ·

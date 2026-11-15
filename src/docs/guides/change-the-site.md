@@ -49,16 +49,18 @@ corners and gutter, is in `Styles/site/settings/_tokens.scss`; the chrome headli
 
 ## Change a film
 
-A film is markup (`Components/Movies/*.razor`) and three stylesheets under `Styles/site/movie/`:
+A film is markup (`Components/Movies/*.razor`) and three stylesheets under `Styles/site/movie/`. `_stage.scss` holds
+what both films share: the stage, a part, the light, the card and the strip. A change there changes both films.
 
-- `_stage.scss`: what both films share (the stage, a part, the light, the card, the strip). A change here changes both.
-- `_short.scss` and `_detail.scss`: one film each. Where a part stands (`.p-host { left; top; width; height }` on a
-  1280×720 floor whose centre is 640×380), the camera (`@keyframes camera-s` / `camera-d`: wide at the start and the
-  end; to fly in on a part, `translate(640 − its centre x, 380 − its centre y)` and a `scale`), when a part lights up
-  (`lit-*`), the light's path (`travel-*`), and when each card and caption shows (`show-*`, `step-*`). A scene's
-  window is its share of the loop; keep a transition at 2 to 3% of the loop so the camera doesn't snap.
-- A keyframe name ends in the film's letter (`-s`, `-d`, or `-s3`, `-d10`); `StylesheetTests` refuses a name the two
-  could share.
+`_short.scss` and `_detail.scss` hold one film each. They say where each part stands (`.p-host { left; top; width;
+height }`, on a 1280×720 floor whose centre is 640×380). They hold the camera too (`@keyframes camera-s` and
+`camera-d`), which is wide at the start and at the end. To fly in on a part, it moves by `translate(640 − its centre
+x, 380 − its centre y)` and a `scale`. They also say when a part lights up (`lit-*`), the light's path (`travel-*`),
+and when each card and caption shows (`show-*`, `step-*`). A scene's window is its share of the loop. Keep a
+transition at 2 to 3% of the loop, so the camera doesn't snap.
+
+Every keyframe name ends in its film's letter (`-s`, `-d`, or `-s3`, `-d10`), and `StylesheetTests` refuses a name the
+two films could share.
 
 To add a scene: its card and caption in the markup (`c7`, `7 / 7`), a step mark (`k7`), the windows re-cut in the
 film's stylesheet, the counts in `ShortMovieTests` or `DetailedMovieTests`, and the golden rewritten with
@@ -86,14 +88,15 @@ The CV at `/cv` is data, and its page is its own editor
 ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md)), so there are
 two ways to change it, and neither is the page's markup.
 
-- **In the admin, without a deploy.** Open `/admin/resume` (the admin's key is asked for once). The page there is
-  the CV itself: click any words to change them, use the small buttons beside a link, a fact, a job or a point to
-  move it or take it out, and the pencil where the page draws a composed line (a job's dates and company, a school,
-  a link's address). The panel on the right holds what the page never draws. Nothing reaches the site until
-  **Save**, and **Discard** puts the saved CV back. A save is refused, with the reason, when it holds an ID number,
-  a salary, a birth date or a street address.
-- **In the repository.** `Content/cv.json` is the copy the site is built with, and what shows when nothing was
-  saved. Edit it and deploy. It is read strictly, so a misspelt field fails `CvContentTests`, not the page.
+The first is in the admin, with no deploy. Open `/admin/resume`; the admin's key is asked for once. The page there is
+the CV itself. Click any words to change them. Use the small buttons beside a link, a fact, a job or a point to move it
+or take it out, and the pencil where the page draws a line put together from parts (a job's dates and company, a
+school, a link's address). The panel on the right holds what the page never draws. Nothing reaches the site until you
+press **Save**, and **Discard** puts the saved CV back. A save is refused, with the reason, when it holds an ID number,
+a salary, a birth date or a street address.
+
+The second is in the repository. `Content/cv.json` is the copy the site is built with, and what shows when nothing has
+been saved. Edit it and deploy. It's read strictly, so a misspelt field fails `CvContentTests` rather than the page.
 
 A copy saved in the admin wins over the built-in one. To go back to the built-in CV, delete `cv.json` from the
 folder `SITE_DATA_DIRECTORY` names. To give the CV a new kind of thing, add it to its record under `Resumes/`, to

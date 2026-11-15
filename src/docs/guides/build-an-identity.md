@@ -104,36 +104,42 @@ You are **Acme**, the assistant of a hardware shop. People ask you about tools, 
 |---|---|---|
 | Converting a measurement | `units` | you, with `units` |
 | How much of a material a job needs (paint, tiles, timber) | `units` | `acme-estimator` |
-| Handing a task to a specialist agent | `specialists` | — |
+| Handing a task to a specialist agent | `agents` | — |
 
 Anything else (orders, stock, prices) isn't available here yet: say so in one line, and answer what you can.
 ```
 
-What to know when you write one:
+A few things are worth knowing when you write one.
 
-- **Open with the header.** Every prompt starts with the same front matter, between two `---` lines
-  ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): `name` is the file's name without `.md`, `description` says
-  in a sentence or two what it is and when it is loaded (at most 1024 characters, and no `: ` inside it, which YAML
-  reads as a new key), and under `metadata` the `level` (`agent` for a mode, `specialist`, `minion`) and, for a role,
-  the `toolsets` it always loads. The loader reads it once and strips it, so the model never sees it; the admin
-  portal's *Prompts* page lists it. A key it doesn't know, a name that isn't the file's or a wrong level stops the host
-  at its start, naming the file. `EveryPromptHasAHeaderTests` holds every prompt to it.
-- **Don't repeat the principles.** Core's `shared/principles.md` opens every prompt at every level before your mode
-  ([ADR 0020](../adr/0020-principles-for-every-agent.md)).
-- **Route only what this identity does.** Each pack's guide opens with its own routing line and explains its tools, so
-  the mode says when to use a toolset or a specialist, not how the tools work.
-- **Say what is missing.** A request the agent can't serve yet gets one honest line, never an invented answer.
-- **More than one language?** Split the file: `voice-en.md` and `voice-af.md` hold only the voice, each in its language,
-  and `voice.md` holds only the shared routing. A session then names `acme/voice-en`, which loads its voice and then
-  `voice.md`; `acme/voice` on its own is no longer a mode. Puls is laid out this way.
-- **Grown too long? Split off skills.** What the agent doesn't need on every turn goes in a skill beside the voice,
-  `prompts/agent/acme/skills/{name}.md` ([ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md)):
-  the same header, plus `metadata.load`. `always` puts it in the prompt right after the voice; `on-demand` lists it by
-  its name (`acme/{name}`) and description, and the agent reads it with `ReadSkill`, a tool a session gets only when
-  its identity has such a skill. The description is all the model sees until it reads one, so say when to read it.
-  If the model must know a thing exists to think of reading about it (a page to open), keep a short index of those
-  always, and the detail on demand. The guide is laid out this way: its voice, an always index of the site's pages,
-  and the docs map and what each page says on demand.
+Open with the header. Every prompt starts with the same front matter, between two `---` lines. `name` is the file's
+name without `.md`. `description` says in a sentence or two what the file is and when it's loaded; it can be at most
+1024 characters, and mustn't hold a `: `, which YAML would read as a new key. Under `metadata` goes the `level`
+(`agent` for a mode, `specialist` or `minion`) and, for a role, the `toolsets` it always loads. The loader reads the
+header once and strips it, so the model never sees it, and the admin portal's *Prompts* page lists it. A key the
+loader doesn't know, a name that isn't the file's, or a wrong level stops the host at its start, naming the file.
+`EveryPromptHasAHeaderTests` holds every prompt to this.
+
+Don't repeat the principles. Core's `shared/principles.md` opens every prompt at every level, before your mode.
+
+Route only what this identity does. Each pack's guide opens with its own routing line and explains its own tools, so
+your mode only says when to use a toolset or a specialist, not how the tools work. And when a request is something the
+agent can't do yet, it says so in one honest line. It never invents an answer.
+
+If the agent speaks more than one language, split the file. `voice-en.md` and `voice-af.md` hold only the voice, each
+in its own language, and `voice.md` holds only the routing they share. A session then names `acme/voice-en`, which
+loads that voice and then `voice.md`, and `acme/voice` on its own is no longer a mode. Puls is laid out this way.
+
+If the file grows too long, split off skills. Whatever the agent doesn't need on every turn goes in a skill beside the
+voice, `prompts/agent/acme/skills/{name}.md`, with the same header plus `metadata.load`. A skill marked `always` goes
+in the prompt right after the voice. One marked `on-demand` is only listed, by its name (`acme/{name}`) and its
+description, and the agent reads it with `ReadSkill`, a tool a session gets only when its identity has such a skill.
+The description is all the model sees until it reads the skill, so make it say when to read it. If the model has to
+know a thing exists before it would think of reading about it (a page it could open, say), keep a short index of
+those always, and the detail on demand. The guide is laid out this way: its voice, an index of the site's pages it
+always has, and the docs map and what each page says on demand.
+
+*Decided in:* [ADR 0020](../adr/0020-principles-for-every-agent.md), [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md),
+[ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md).
 
 ## 4. Add a specialist (when the work needs one)
 
@@ -162,17 +168,19 @@ You turn a job ("paint a 4 by 3 metre room") into the amount of material to buy,
 One line with the amount and the unit to buy, then the sums, then anything you assumed under *Unsure*.
 ```
 
-- **The header's `metadata.toolsets`** names the toolsets this role always loads, added to what the parent passed;
-  the loader strips the header before the model sees the file
-  ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md), [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)).
-  Write `units?` for a toolset that needs settings an instance may lack: it then loads only where it can. A role that
-  needs none leaves the key out.
-- **Prefix every role with the identity's name** (`acme-estimator`). The catalogue refuses a prompt path two
-  identities or packs share, so a plain `specialists/estimator.md` would clash with the next identity's.
-- **The mode needs a way to hand work over:** the `agents` toolset in its session, the role's address in the
-  identity's `Calls` (`acme.estimator`, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md)), and
-  `AGENT_PEERS` naming an instance that has the role. Usually that is the instance itself, as Puls's compose does
-  (`AGENT_PEERS: puls=http://puls:8080`).
+The header's `metadata.toolsets` names the toolsets this role always loads, on top of what the parent passed, and
+the loader strips the header before the model sees the file. Write `units?` for a toolset that needs settings an
+instance might not have: it then loads only where it can. A role that needs none leaves the key out.
+
+Prefix every role with the identity's name, as in `acme-estimator`. The catalogue refuses a prompt path that two
+identities or packs share, so a plain `specialists/estimator.md` would clash with the next identity's.
+
+The mode also needs a way to hand the work over. Its session needs the `agents` toolset, the identity's `Calls` must
+list the role's address (`acme.estimator`), and `AGENT_PEERS` must name an instance that has the role. Usually that's
+the instance itself, as Puls's compose file does (`AGENT_PEERS: puls=http://puls:8080`).
+
+*Decided in:* [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md), [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md),
+[ADR 0117](../adr/0117-one-address-for-every-agent-call.md).
 
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
 `prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
@@ -220,19 +228,24 @@ dotnet sln louis-agent-solution.sln add demos/acme/tests/louis-agent.identity.ac
 ```
 
 The test project references the identity, every pack it names (so its sessions build as the host builds them), and
-`src/tests/shared/louis-agent.testing` for the shared fakes; `demos/puls/tests/louis-agent.identity.puls.tests` is the model. Write:
+`src/tests/shared/louis-agent.testing` for the shared fakes; `demos/puls/tests/louis-agent.identity.puls.tests` is
+the model to copy. You write four kinds of test.
 
-- **A prompts fixture** that registers the identity's prompts and its packs' before any test reads one, as a host does
-  at start-up (`PulsPrompts.cs`):
-  `[SetUpFixture] … SkillFileSource.Use([new AcmeIdentity().Prompts, new UnitsPack().Prompts]);`
-- **An identity test** (`PulsIdentityTests`): its name and packs, one prompt per folder found through `Prompts` (that
-  proves the csproj's embedding lines work), and the catalogue refusing it without its pack and taking it with.
-- **Prompt tests** (`PulsPromptsTests`): `RoleCatalog.Available(RoleLevel.Agent)` lists `acme/voice`,
-  `SkillLoader.Load(new AgentOptions(), [], "acme/voice")` holds the voice, and
-  `RoleCatalog.ToolsetsOf("acme-estimator", RoleLevel.Specialist)` is `["units"]`.
-- **A session golden** (`PulsSessionSnapshotTests` and its JSON): it builds the sessions the identity runs (the chat
-  and each specialist) with a fake model and pins exactly what the model would be sent. A changed word in a prompt is
-  then a diff you review: regenerate with `LOUIS_UPDATE_GOLDEN=1`, read the diff, commit it.
+The first is a prompts fixture. It registers the identity's prompts and its packs' before any test reads one, the way
+a host does at start-up (`PulsPrompts.cs`):
+`[SetUpFixture] … SkillFileSource.Use([new AcmeIdentity().Prompts, new UnitsPack().Prompts]);`
+
+The second is an identity test (`PulsIdentityTests`). It checks the identity's name and packs, finds one prompt per
+folder through `Prompts` (which proves the csproj's embedding lines work), and checks that the catalogue refuses the
+identity without its pack and takes it with it.
+
+The third is the prompt tests (`PulsPromptsTests`). They check that `RoleCatalog.Available(RoleLevel.Agent)` lists
+`acme/voice`, that `SkillLoader.Load(new AgentOptions(), [], "acme/voice")` holds the voice, and that
+`RoleCatalog.ToolsetsOf("acme-estimator", RoleLevel.Specialist)` is `["units"]`.
+
+The last is a session golden (`PulsSessionSnapshotTests` and its JSON). It builds the sessions the identity runs, the
+chat and each specialist, with a fake model, and pins exactly what the model would be sent. A changed word in a prompt
+then shows up as a diff you review: regenerate with `LOUIS_UPDATE_GOLDEN=1`, read the diff, and commit it.
 
 Two checks come for free once it is in `IdentityKind`: `PackConvertibilityTests` checks that no pack's tool
 description names your identity, and `ArchitectureTests` checks that no pack references it. Run everything:
@@ -260,7 +273,7 @@ Then check it is there, and open a chat in its mode:
 ```bash
 curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/roles
 curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
-     -d '{"role": "acme/voice", "toolsets": ["specialists", "units"]}' http://127.0.0.1:5080/v1/sessions
+     -d '{"role": "acme/voice", "toolsets": ["agents", "units"]}' http://127.0.0.1:5080/v1/sessions
 ```
 
 `GET /v1/roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session must name
@@ -269,44 +282,54 @@ Puls has in `demos/puls/web/louis-agent.puls`) is a separate project and optiona
 
 ## Modes, roles and minions: the rules
 
-A session names its role when it opens (`POST /v1/sessions` with `"role": "{name}"`; a sub-session through the
-address `AskAgent` was given, `acme.estimator` for `acme-estimator`), and keeps it, as it keeps its toolsets (F21). In the code a role is
-`Skills/Roles/RoleCatalog` and its level `RoleLevel` (CL13); CL14 made "role" the public word. Without one a session
-gets the default mode, `louis-agent/voice`. Prompts are embedded and read only from the assembly, so a wording change
-is a rebuild of the images that use the identity.
+A session names its role when it opens, with `"role": "{name}"` on `POST /v1/sessions`, and keeps it, just as it
+keeps its toolsets. A sub-session gets its role from the address `AskAgent` was given: `acme.estimator` for
+`acme-estimator`. In the code a role is `Skills/Roles/RoleCatalog`, and its level is `RoleLevel`. A session that names
+none gets the default mode, `louis-agent/voice`. Prompts are embedded and read only from the assembly, so changing a
+word means rebuilding the images that use the identity.
 
-1. **A mode** (level 0) is one file in a product's folder: its voice (the first `# ` section), then its routing (from
-   the second `# ` heading on), named `{product}/{mode}` (`louis-agent/voice`). A **language** is
-   `{product}/voice-{xx}.md` with only the voice; it loads the product's shared `voice.md` (the routing) after it, and
-   Puls's *Taal* menu offers it as soon as `GET /v1/roles` does. Each product routes only what it does
-   ([ADR 0019](../adr/0019-modes-one-file-per-product.md)).
-2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
-   it. A parent asks it by its address (`AskAgent("acme.estimator", …)`), which the identity's `Calls` must list; the
-   agents guide (`toolsets/agents.md`) says how. A role that always needs a toolset declares it under `metadata` in the header every prompt opens
-   with, which the loader strips before the model sees it (F33, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md),
-   CL27, [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)):
+*Decided in:* F21, CL13, CL14.
 
-   ```markdown
-   ---
-   name: acme-cook
-   description: Acme's cook. A meal for the people asked for, priced at the shops.
-   metadata:
-     level: specialist
-     toolsets: recipes?
-   ---
-   ```
+A mode (level 0) is one file in a product's folder. It holds the voice (the first `# ` section) and then the routing
+(from the second `# ` heading on), and it's named `{product}/{mode}`, as in `louis-agent/voice`. A language is
+`{product}/voice-{xx}.md` with only the voice in it. It loads the product's shared `voice.md`, the routing, after
+itself, and Puls's *Taal* menu offers it as soon as `GET /v1/roles` does. Each product routes only what it does.
 
-   Those toolsets are added to what the parent passed; `?` loads one only where this instance has it (`recipes` needs
-   `RECIPE_SOURCES` and `BROWSER_URL`), and skips it with a log line elsewhere.
+*Decided in:* [ADR 0019](../adr/0019-modes-one-file-per-product.md).
 
-   **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its product's base
-   (`minions/{product}-minion.md`: what every minion is, which is no role itself); the specialist hands the minion one
-   tool of its own, so no file lists tools per role.
-3. **Names** are lowercase letters, digits and dashes (a mode adds one `/`), used at one level only; a name from
-   another level is refused as unknown ([ADR 0017](../adr/0017-skills-by-level.md)). `ROLES_ENABLED` turns on only
-   the listed ones, so a test can run Puls and the one role under test.
-4. `GET /v1/roles` lists them by level, with the default; an unknown or invalid name is a 400 before any engine is
-   built.
+A role (level 1) is `specialists/{name}.md`: a specialist's function, and how it reports to the agent that called it.
+A parent asks it by its address (`AskAgent("acme.estimator", …)`), which the identity's `Calls` must list, and the
+agents guide (`toolsets/agents.md`) says how. A role that always needs a toolset says so under `metadata` in the header
+every prompt opens with, and the loader strips that header before the model sees it:
+
+```markdown
+---
+name: acme-cook
+description: Acme's cook. A meal for the people asked for, priced at the shops.
+metadata:
+  level: specialist
+  toolsets: recipes?
+---
+```
+
+Those toolsets are added to what the parent passed. The `?` loads one only where this instance has it (`recipes`
+needs `RECIPE_SOURCES` and `BROWSER_URL`), and skips it elsewhere with a line in the log.
+
+*Decided in:* F33, CL27, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md),
+[ADR 0063](../adr/0063-a-prompt-says-what-it-is.md).
+
+A minion's function (level 2) is `minions/{product}-minion-{function}.md`. It's loaded after its product's base,
+`minions/{product}-minion.md`, which says what every minion is and isn't a role itself. The specialist hands the minion
+one tool of its own, so no file lists tools per role.
+
+*Decided in:* F30.
+
+Names are lowercase letters, digits and dashes (a mode adds one `/`), and each is used at one level only: a name from
+another level is refused as unknown. `ROLES_ENABLED` turns on only the roles it lists, so a test can run Puls with just
+the one role it's testing. `GET /v1/roles` lists them all by level, with the default, and an unknown or invalid name
+is a 400 before any engine is built.
+
+*Decided in:* [ADR 0017](../adr/0017-skills-by-level.md).
 
 ## Before you ask for a review
 

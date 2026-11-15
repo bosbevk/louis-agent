@@ -21,50 +21,60 @@ that failed on the old code.
 
 ## What the three have in common
 
-- **The model is an input, not a user.** Every door was a place where text the model produced, possibly steered by a
-  page it read, became something the system trusted: a git option, a config key, a script for every later session. The
-  guard belongs where that text crosses into something that acts.
-- **Fail closed, and loudly.** A warning that a door is open is not a guard; the operator who never reads the log never
-  closes it. FX18's host throws before it listens, the way it already stopped on a bad price table.
-- **Allow-lists beat deny-lists.** `SetConfig` doesn't refuse the four keys we know run commands; it allows the two it
-  needs. A deny-list is as good as the attacker's imagination is poor.
-- **The fix already existed nearby.** The admin gate already failed closed; `RunGitList` already passed a list;
-  agent-built tools already waited in `pending/`. Each fix brought the odd one out in line with what the code already
-  did well, which is why each was one step.
-- **Intent in the prompt, enforcement in code.** The principles file says never to cheat or steal; it stops nothing.
-  The three guards are code, tested without a model.
+The model is an input, not a user. Every door was a place where text the model produced, possibly steered by a page it
+read, became something the system trusted: a git option, a config key, a script for every later session. The guard
+belongs where that text crosses into something that acts.
+
+Fail closed, and loudly. A warning that a door is open is not a guard; the operator who never reads the log never
+closes it. FX18's host throws before it listens, the way it already stopped on a bad price table.
+
+Allow-lists beat deny-lists. `SetConfig` doesn't refuse the four keys we know run commands; it allows the two it
+needs. A deny-list is as good as the attacker's imagination is poor.
+
+The fix already existed nearby. The admin gate already failed closed; `RunGitList` already passed a list; agent-built
+tools already waited in `pending/`. Each fix brought the odd one out in line with what the code already did well,
+which is why each was one step.
+
+Intent in the prompt, enforcement in code. The principles file says never to cheat or steal; it stops nothing. The
+three guards are code, tested without a model.
 
 ## What the tests taught
 
-- **A test for a guard has to fail for the hole, not for a side effect.** A branch named `x --upload-pack=…` is refused
-  by git whatever we do, because it isn't a valid name, so a test with it passes with the hole open. The test that
-  proved FX19 was the file `git show --output` wrote outside the repository.
-- **Unset and empty are different values.** FX18's review found that a bare `MCP_API_KEY=` in an env file is `""`,
-  which `??` never falls back from: the MCP server refused to start with `AGENT_API_KEY` set, or under `off` started
-  open with a key there. Every place a key is read now goes through `HostAuth.Key`, which treats blank as missing.
-- **A value can be more than a name without being an option.** FX19's review found `+main` (a forced push) and `:main`
-  (deletes the remote branch) slipping past both guards; `Push` and `Pull` now refuse a refspec.
-- **The platform hides some bugs.** `/approve Greeting` found `greeting.md` on Windows, whose file system ignores case,
-  and failed on Linux. The review caught it, and the test now pins it on both.
+A test for a guard has to fail for the hole, not for a side effect. A branch named `x --upload-pack=…` is refused by
+git whatever we do, because it isn't a valid name, so a test with it passes with the hole open. The test that proved
+FX19 was the file `git show --output` wrote outside the repository.
+
+Unset and empty are different values. FX18's review found that a bare `MCP_API_KEY=` in an env file is `""`, which
+`??` never falls back from: the MCP server refused to start with `AGENT_API_KEY` set, or under `off` started open with
+a key there. Every place a key is read now goes through `HostAuth.Key`, which treats blank as missing.
+
+A value can be more than a name without being an option. FX19's review found `+main` (a forced push) and `:main`
+(deletes the remote branch) slipping past both guards; `Push` and `Pull` now refuse a refspec.
+
+The platform hides some bugs. `/approve Greeting` found `greeting.md` on Windows, whose file system ignores case, and
+failed on Linux. The review caught it, and the test now pins it on both.
 
 ## Trade-offs accepted
 
-- **A local stack now needs a key** (or `AGENT_AUTH=off` in `config/.env`), one more setting for Louis's machine, so
-  that no hosted one is ever open by accident.
-- **`SetConfig` lost most of its reach.** The model can't set a remote's URL or an alias any more; a person does that.
-- **Approval adds a step,** and a pending skill file is active in every chat on the engine that wrote it, since chats
-  with the same toolsets share one engine (F5). Until FX4 (Phase 7), approving or rejecting changes that engine's
-  prompt, so start a new chat afterwards (known limitation 9).
+A local stack now needs a key (or `AGENT_AUTH=off` in `config/.env`), one more setting for Louis's machine, so that no
+hosted one is ever open by accident.
+
+`SetConfig` lost most of its reach. The model can't set a remote's URL or an alias any more; a person does that.
+
+Approval adds a step, and a pending skill file is active in every chat on the engine that wrote it, since chats with
+the same toolsets share one engine (F5). Until FX4 (Phase 7), approving or rejecting changes that engine's prompt, so
+start a new chat afterwards (known limitation 9).
 
 ## What didn't work (and what it taught)
 
-- **Puls chats with the skills toolset.** A commit on FX20's branch gave Puls's chats `skills`, and Louis reverted it.
-  The API takes `/approve` from any chat message, and Puls's chats share one engine, so any user could approve a script
-  every other user's chat would run. Who may approve is part of the guard: in a hosted product `/approve` belongs to an
-  operator (the admin portal), never to a chat user. [ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md) sets
-  the scopes (session, agent, shared); who approves each is still to be written into it.
-- **Chrome's URL blocking didn't stop WebSockets** (F32, before this phase, the same lesson): a guard is proved by a
-  live test of the attack, not by the setting's name.
+Puls chats with the skills toolset. A commit on FX20's branch gave Puls's chats `skills`, and Louis reverted it. The
+API takes `/approve` from any chat message, and Puls's chats share one engine, so any user could approve a script
+every other user's chat would run. Who may approve is part of the guard: in a hosted product `/approve` belongs to an
+operator (the admin portal), never to a chat user. [ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md) sets
+the scopes (session, agent, shared); who approves each is still to be written into it.
+
+Chrome's URL blocking didn't stop WebSockets (F32, before this phase, the same lesson): a guard is proved by a live
+test of the attack, not by the setting's name.
 
 ## Where skill 15 stands
 
@@ -75,12 +85,10 @@ Phase 7); tenants, a sandbox per tenant and POPIA (F43, Phase 9).
 
 ## What I can now explain
 
-- Why a host should refuse to start rather than warn, and why `off` is a setting no compose file sets.
-- Why an argument list stops splitting but not options, and what `--end-of-options` adds.
-- Why an allow-list of two config keys is safer than a deny-list of four.
-- Why what an agent writes for later sessions is untrusted until a person approves it, and why that person must be an
-  operator in a hosted product.
-- Why a security test has to fail for the hole itself.
+Why a host should refuse to start rather than warn, and why `off` is a setting no compose file sets. Why an argument
+list stops splitting but not options, and what `--end-of-options` adds. Why an allow-list of two config keys is safer
+than a deny-list of four. Why what an agent writes for later sessions is untrusted until a person approves it, and why
+that person must be an operator in a hosted product. Why a security test has to fail for the hole itself.
 
 ## A door beside the gate (F109.3)
 
@@ -90,13 +98,14 @@ door admits exactly one kind of call, a session for the one identity the host na
 address, and the calls on a session it admitted; for everything else it says "not mine" and the gate goes on as
 before. Three things made it safe to add:
 
-- **Narrowing in code, not trusting the body.** The visitor's request may ask for any toolsets; the handler replaces
-  it with the open identity and that identity's own packs' toolsets. A route is closed until the code opens it, and so
-  is a toolset.
-- **Failing shut.** No identity, a cap of 0 or a cap that isn't a number all mean no door. The default is the
-  old behaviour.
-- **A cap with a cheap memory.** Counts per address per day, in memory, on one replica; a restart forgives the day.
-  The model key's spend cap stays the real ceiling. The address is the first forwarded one, which the platform sets.
+Narrowing in code, not trusting the body. The visitor's request may ask for any toolsets; the handler replaces it with
+the open identity and that identity's own packs' toolsets. A route is closed until the code opens it, and so is a
+toolset.
+
+Failing shut. No identity, a cap of 0 or a cap that isn't a number all mean no door. The default is the old behaviour.
+
+A cap with a cheap memory. Counts per address per day, in memory, on one replica; a restart forgives the day. The
+model key's spend cap stays the real ceiling. The address is the first forwarded one, which the platform sets.
 
 The lesson: when a public door is needed, add a guard that admits one narrow thing and leaves the gate alone, rather
 than a flag that loosens the gate for everyone.

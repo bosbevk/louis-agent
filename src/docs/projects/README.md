@@ -78,11 +78,12 @@ adapter between its protocol and `AgentEngine`.
 
 ![How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API](diagrams/README-how-they-depend-on-each-other-2.svg)
 
-**What the diagrams leave out,** to stay readable:
-
-- The test projects, and the small shared projects: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts` and `louis-agent.evals.protocol`.
-- That the orchestrator and the usage probe are programs of their own, which no demo's program starts, and the orchestrator's reference to the coding identity.
-- The calls at run time on the engine's side: the API opens sub-sessions on a peer, and the orchestrator and the eval runner open sessions on the API, all over HTTP and SSE.
+**The diagrams leave a few things out,** to stay readable. They leave out the test projects, and the small shared
+projects: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts` and
+`louis-agent.evals.protocol`. They don't show that the orchestrator and the usage probe are programs of their own,
+which no demo's program starts, or the orchestrator's reference to the coding identity. And they don't show the calls
+at run time on the engine's side: the API opens sub-sessions on a peer, and the orchestrator and the eval runner open
+sessions on the API, all over HTTP and SSE.
 
 ## Where each one runs
 
@@ -100,6 +101,9 @@ adapter between its protocol and `AgentEngine`.
 **Purpose** · **How it works** · **Structure** (files and what's in them) · **Key types** · **Configuration** ·
 **Extending it** · **Tests** · **Limits and plans** (with links to [features](../features/README.md) and the
 [TODO](../../../TODO.md)) · **Related docs**.
+
+*Purpose* and *How it works* talk the way a friend would explain it: short paragraphs, with each part of the story
+under its own numbered heading. The sections after them are for looking things up.
 
 ---
 [Docs index](../README.md) · Next: [louis-agent.core](louis-agent.core.md)

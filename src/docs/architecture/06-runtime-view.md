@@ -21,7 +21,7 @@ site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demo
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in `src/engine/louis-agent.core/prompts/` |
+| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in the `prompts/` of core, an identity or a pack |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md`, `agent/functions/code-review.md` |
@@ -32,12 +32,13 @@ before any later session loads it (FX20 for skill files).
 
 ### How tools are registered
 
-A session names its toolsets when it opens and keeps them (F5). Each toolset is an entry in `Agent/Toolsets/ToolsetCatalog.cs`
-that builds its tool objects, and the engine registers only those:
+A session names its toolsets when it opens, and keeps them. Each toolset is an entry that builds its tool objects:
+core's two in `Agent/Toolsets/ToolsetCatalog.cs`, and every other in its pack. The host's `AgentCatalog` resolves the
+names, and the engine registers only those tools:
 
 ```csharp
 // AgentEngineFactory: the session's toolset names → their tool objects
-var resolved = ToolsetCatalog.Resolve(toolsets, Context);                  // e.g. "files", "git"
+var resolved = Catalog.Resolve(toolsets, Context);                         // e.g. "files", "git"
 var engine = new AgentEngine(skills, chatClient, options, supportsTools,
     toolsets: ToolsetCatalog.BuildTools(resolved, Context), ...);
 
@@ -56,16 +57,21 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 
 ### How skills are loaded
 
-`AgentHost.LoadSkills` combines, in this order:
-1. **the principles** (`shared/principles.md`), the same for every agent (ADR 0020);
-2. **the role**: at level 0 the session's mode, its voice then its routing (ADR 0019: the default
-   `louis-agent/voice`, or Puls's language file then `puls/voice.md`); at level 1 a specialist's role from
-   `specialists/`, with no routing, since its toolsets were chosen for it;
-3. **the guide of each toolset the session loaded** (`toolsets/{toolset}.md`) and no other (F5);
-4. **with the `skills` toolset only**, every function skill the agent wrote.
+The system prompt is put together from skill files, in a fixed order, by the engine factory's `SkillLoader`.
 
-The combined text is the system prompt. The built-in files are in `src/engine/louis-agent.core/prompts/` and read only from the
-assembly (ADR 0018), so a wording change is a rebuild.
+It opens with the principles (`shared/principles.md`), which are the same for every agent. Then comes the role. At
+level 0 that's the session's mode, its voice and then its routing: the default `louis-agent/voice`, or Puls's language
+file followed by `puls/voice.md`. At level 1 it's a specialist's role from `specialists/`, with no routing, because its
+toolsets were chosen for it. At level 0 the identity's own skills follow the voice.
+
+Next comes the guide of each toolset the session loaded (`toolsets/{toolset}.md`), and no other. Last, and only with
+the `skills` toolset, comes every function skill the agent wrote.
+
+The combined text is the system prompt. Core's own files are in `src/engine/louis-agent.core/prompts/`, and each
+identity and pack embeds its own. All of them are read only from their assemblies, so changing a word means a rebuild.
+
+*Decided in:* F5, [ADR 0018](../adr/0018-built-in-prompts-embedded.md), [ADR 0019](../adr/0019-modes-one-file-per-product.md),
+[ADR 0020](../adr/0020-principles-for-every-agent.md).
 
 ## A chat turn
 
@@ -81,15 +87,23 @@ User message
 ```
 
 ### Guards around tool calls
-- **Oversized results:** a result over 50,000 characters is summarised by a separate, tool-less model call (its input
-  capped at 200,000 characters), falling back to truncation, so one tool can't flood the context.
-- **Cut-off calls:** if a reply hits the output limit, any tool call in it has incomplete arguments. It is not run; the
-  model is told to write large content in chunks. When streaming, a cut-off call is dropped by the provider, so the
-  engine asks the model to continue (up to 3 times).
-- **Failures:** exceptions reach the model with their message (e.g. a missing parameter) and are logged as failures.
-- **A sub-session's prompt budget** (FX14): in a sub-session, once the next request is expected to pass
-  `SUB_SESSION_PROMPT_BUDGET` (default 80,000 tokens, under Haiku 5.5's long-prompt price step), it keeps its tools with
-  tool mode None, so the specialist answers from what it has instead of growing its context further.
+
+A few guards stand around every tool call. If a result is over 50,000 characters, a separate model call with no
+tools summarises it (its input capped at 200,000 characters), and if that fails it's cut short instead. That way one
+tool can't flood the context.
+
+If a reply hits the output limit, any tool call in it has incomplete arguments. It isn't run, and the model is told to
+write large content in chunks. When the turn is streaming, the provider drops a cut-off call, so the engine asks the
+model to carry on, up to 3 times.
+
+When a tool throws, the exception's message reaches the model (a missing parameter, say), and the call is logged as a
+failure.
+
+A sub-session has a prompt budget too. Once its next request is expected to pass `SUB_SESSION_PROMPT_BUDGET`
+(80,000 tokens by default, under Haiku 5.5's long-prompt price step), it keeps its tools but with tool mode None. The
+specialist then answers from what it has, instead of growing its context further.
+
+*Decided in:* FX14, [ADR 0005](../adr/0005-guard-the-context.md).
 
 ## A turn, step by step
 
@@ -113,10 +127,9 @@ await foreach (var update in engine.StreamPromptAsync(history, message, cancella
 one or more tools.
 
 **4. Tools run.** `FunctionInvokingChatClient` runs each call through `ToolCallGuards.InvokeAsync`, which logs it,
-runs it, and guards the result:
-- a result over 50,000 characters is summarised by a separate model call instead of filling the context;
-- a call cut off by the output limit is not run, and the model is told to write large content in chunks;
-- an exception goes back to the model with its message, so it can correct itself.
+runs it, and guards the result. A result over 50,000 characters is summarised by a separate model call instead of
+filling the context. A call cut off by the output limit isn't run, and the model is told to write large content in
+chunks. And an exception goes back to the model with its message, so it can correct itself.
 
 The result is added to the conversation and the model continues — up to 10 tool rounds per message.
 

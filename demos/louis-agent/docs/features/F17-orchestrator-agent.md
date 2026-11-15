@@ -15,13 +15,16 @@ sub-agent, the error fenced as untrusted data, verification from ground truth (g
 louis-agent's claim, a condensed result back, a small tool set, and a person merges. F17 rebuilds it on the rest of that
 guidance ([building effective agents](https://www.anthropic.com/engineering/building-effective-agents)):
 
-- **Simplest thing that works:** a workflow where the steps are known, an agent only where the next step depends on
-  what was found. F17 uses both, each where it fits, and measures the result against today's all-agent orchestrator.
-- **Consolidate tools that are always used together**
-  ([writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)).
-- **Route by difficulty:** classification is cheap work for a cheap model at low effort.
-- **Evaluate early with a small real sample** ([multi-agent research
-  system](https://www.anthropic.com/engineering/multi-agent-research-system)).
+Simplest thing that works: a workflow where the steps are known, an agent only where the next step depends on what was
+found. F17 uses both, each where it fits, and measures the result against today's all-agent orchestrator.
+
+Consolidate tools that are always used together
+([writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)).
+
+Route by difficulty: classification is cheap work for a cheap model at low effort.
+
+Evaluate early with a small real sample
+([multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)).
 
 ## Workflow or agent
 
@@ -38,53 +41,59 @@ guidance ([building effective agents](https://www.anthropic.com/engineering/buil
 
 **F17-S1 — Classify, then route.** As an *operator*, I want each error classified by a model and the known paths run as
 code, so that routine errors cost less and are handled the same way every time.
-- *Given* an error event *then* one classification request (no tools except `RecordDecision` from F8-S4) returns
-  `expected`, `fixable`, `escalate` or `unclear`, with the runbook rule it matched.
-- *And* `expected` → acknowledge, `escalate` → escalate with the runbook's team, `fixable` → fix then confirm, all in
-  code; the comms log shows which path ran.
+
+*Given* an error event *then* one classification request (no tools except `RecordDecision` from F8-S4) returns
+`expected`, `fixable`, `escalate` or `unclear`, with the runbook rule it matched. *And* `expected` → acknowledge,
+`escalate` → escalate with the runbook's team, `fixable` → fix then confirm, all in code; the comms log shows which
+path ran.
 
 **F17-S2 — The agent takes over the exceptions.** As an *operator*, I want the agent to handle what the workflow can't,
 so that judgement is spent only where it's needed.
-- *Given* `unclear`, or a fix that fails confirmation *then* the triage agent (today's engine, with its tools) gets the
-  event and what the workflow found, and decides; its decision is recorded with `RecordDecision`.
-- *And* related errors in one batch (same method, same exception, one run) are offered to the agent together, which may
-  ask for one fix for all of them.
+
+*Given* `unclear`, or a fix that fails confirmation *then* the triage agent (today's engine, with its tools) gets the
+event and what the workflow found, and decides; its decision is recorded with `RecordDecision`. *And* related errors
+in one batch (same method, same exception, one run) are offered to the agent together, which may ask for one fix for
+all of them.
 
 **F17-S3 — One confirm tool.** As a *developer*, I want commit check, replay and tests in one call, so that confirming a
 fix is one step for the workflow and one tool call for the agent.
-- *Given* `ConfirmFix(errorId, commit, branch)` *then* it runs all three and returns each result and `CONFIRMED` or
-  `NOT CONFIRMED`; the three separate tools are removed.
+
+*Given* `ConfirmFix(errorId, commit, branch)` *then* it runs all three and returns each result and `CONFIRMED` or
+`NOT CONFIRMED`; the three separate tools are removed.
 
 **F17-S4 — Its own settings.** As an *operator*, I want the orchestrator's model, thinking, rounds and cache policy set
 apart from louis-agent's, so that each agent is tuned to its own work.
-- *Given* the orchestrator's route settings (F10) *then* classification and the agent each use their own model and
-  thinking (default: Haiku 5.5, low).
-- *And* its prompt prefix (`orchestrator.md` + runbooks) is cached with the provider's caching strategy (F4); the
-  lifetime (5 minutes or 1 hour) is chosen from the measured gaps between triages, and the demo drops F4's
-  `LLM_CACHE=off` override.
-- *And* that lifetime is the orchestrator's own, per marker as in F4 ([diagrams 4 and 5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F04-prompt-caching.md#how-caching-works)):
-  its prefix's lifetime comes from `usage-probe -- --cache-gaps` for the `orchestrator` host (its gaps are the waits
-  for louis-agent's fixes: about a minute in the demo, so 5 minutes; 10–30 minutes in production, so 1 hour), and its
-  tail stays 5 minutes. louis-agent's lifetime is set separately, from its own gaps.
+
+*Given* the orchestrator's route settings (F10) *then* classification and the agent each use their own model and
+thinking (default: Haiku 5.5, low). *And* its prompt prefix (`orchestrator.md` + runbooks) is cached with the
+provider's caching strategy (F4); the lifetime (5 minutes or 1 hour) is chosen from the measured gaps between triages,
+and the demo drops F4's `LLM_CACHE=off` override. *And* that lifetime is the orchestrator's own, per marker as in F4
+([diagrams 4 and 5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F04-prompt-caching.md#how-caching-works)):
+its prefix's lifetime comes from `usage-probe -- --cache-gaps` for the `orchestrator` host (its gaps are the waits for
+louis-agent's fixes: about a minute in the demo, so 5 minutes; 10–30 minutes in production, so 1 hour), and its tail
+stays 5 minutes. louis-agent's lifetime is set separately, from its own gaps.
 
 **F17-S5 — Measured against today.** As a *developer*, I want the new orchestrator compared with today's on the same
 cases, so that the change is kept only when decisions hold and cost falls.
-- *Given* F18's `triage` suite (the demo's 13 events plus cases for every row of the table above: a failing fix, no
-  matching rule, three errors with one cause; louis-agent and the checks replayed from recordings, so no fix runs)
-  *then* today's orchestrator is the baseline.
-- *Then* the new one decides at least as many cases right, at a lower cost per error; and the full demo (**needs
-  Louis's go-ahead**) still confirms 10/10 fixes.
+
+*Given* F18's `triage` suite (the demo's 13 events plus cases for every row of the table above: a failing fix, no
+matching rule, three errors with one cause; louis-agent and the checks replayed from recordings, so no fix runs)
+*then* today's orchestrator is the baseline. *Then* the new one decides at least as many cases right, at a lower cost
+per error; and the full demo (**needs Louis's go-ahead**) still confirms 10/10 fixes.
 
 ## Design
 
-- **Classification** is a single request with the runbooks as the system prompt and `RecordDecision` as its only tool;
-  thinking low. Its result drives a `switch` in code (`TriageWorkflow`), not more model turns.
-- **The agent** is today's `AgentEngine` with `ServiceTools` (now with `ConfirmFix`), entered only for `unclear` or a
-  failed confirmation, with the workflow's findings in its first message.
-- **Sequential fixes, on purpose:** Anthropic finds parallel sub-agents suit wide, independent work and fit poorly on
-  tightly coupled work such as most coding. Fixes to one repository stay one at a time; build mode inherits this.
-- **Out of scope** (stay in the orchestrator design and the backlog): pull requests instead of branches, a webhook
-  trigger, a real error tracker, production topology, and the implementation-tier question (core vs Tool Runner).
+Classification is a single request with the runbooks as the system prompt and `RecordDecision` as its only tool;
+thinking low. Its result drives a `switch` in code (`TriageWorkflow`), not more model turns.
+
+The agent is today's `AgentEngine` with `ServiceTools` (now with `ConfirmFix`), entered only for `unclear` or a failed
+confirmation, with the workflow's findings in its first message.
+
+Sequential fixes, on purpose: Anthropic finds parallel sub-agents suit wide, independent work and fit poorly on
+tightly coupled work such as most coding. Fixes to one repository stay one at a time; build mode inherits this.
+
+Out of scope (stay in the orchestrator design and the backlog): pull requests instead of branches, a webhook trigger,
+a real error tracker, production topology, and the implementation-tier question (core vs Tool Runner).
 
 ## Implementation steps
 
@@ -105,10 +114,12 @@ cases, so that the change is kept only when decisions hold and cost falls.
 
 ## Done when
 
-- Stories' criteria pass; tests added; suites pass.
-- Triage suite: decisions right ≥ baseline, cost per error lower; demo 10/10 confirmed; numbers recorded here.
-- **Then finish up** (see [Finishing a feature](../../../../src/docs/features/README.md#finishing-a-feature)): move **F17** to the work log, set
-  *Status* to done here and in the features table, update skill 10 in the goal map and its write-up.
+Stories' criteria pass; tests added; suites pass. Triage suite: decisions right ≥ baseline, cost per error lower; demo
+10/10 confirmed; numbers recorded here.
+
+Then finish up (see [Finishing a feature](../../../../src/docs/features/README.md#finishing-a-feature)): move **F17**
+to the work log, set *Status* to done here and in the features table, update skill 10 in the goal map and its
+write-up.
 
 ---
 [Features](../../../../src/docs/features/README.md) · Previous: [F16 Summariser](../../../../src/docs/features/F16-summariser.md) · Next: [F18 Evaluation](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md)

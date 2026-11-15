@@ -21,10 +21,12 @@ so it loads wherever it's named.
 1*2/3 = 0.6667
 ```
 
-- **Many sums, one call:** every call is one more request to the model, so the guide asks for all the sums at once. A call
-  holds at most 60.
-- **A bad sum doesn't cost the others:** it says why it can't be worked out, and the rest still answer.
-- **Four decimals,** finer than anyone cooks or shops by, in plain digits with a point.
+Many sums, one call: every call is one more request to the model, so the guide asks for all the sums at once. A call
+holds at most 60.
+
+A bad sum doesn't cost the others: it says why it can't be worked out, and the rest still answer.
+
+Four decimals, finer than anyone cooks or shops by, in plain digits with a point.
 
 ## How it works
 
@@ -35,11 +37,16 @@ One sum, step by step.
 `Sums/Arithmetic.cs` uses .NET's own expression evaluator (`DataTable.Compute`), so there's no package and no parser of our
 own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep that safe and correct:
 
-- **Only arithmetic gets in.** The evaluator also does strings, comparisons and functions, so a sum may hold only digits, a
-  point, `+ - * / ( )` and spaces, at most 200 characters. Anything else is refused before the evaluator sees it. It runs no
-  code and no shell ([ADR 0004](../../../src/docs/adr/0004-arguments-as-data.md)).
-- **Every number is a decimal.** The evaluator reads a whole number as an int, and `100000*100000` outgrows one, so each whole
-  number gets a point first.
+### 1. Only arithmetic gets in
+
+The evaluator also does strings, comparisons and functions, so a sum may hold only digits, a point, `+ - * / ( )` and
+spaces, at most 200 characters. Anything else is refused before the evaluator sees it. It runs no code and no shell
+([ADR 0004](../../../src/docs/adr/0004-arguments-as-data.md)).
+
+### 2. Every number is a decimal
+
+The evaluator reads a whole number as an int, and `100000*100000` outgrows one, so each whole number gets a point
+first.
 
 ![The calculator pack: one tool over plain arithmetic](diagrams/louis-agent.pack.calculator-diagrams.svg)
 

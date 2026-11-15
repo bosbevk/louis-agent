@@ -21,15 +21,14 @@ person's name, address or anything else about them.
 
 ## What it reads, and how much
 
-- One page at a time, for one person's question: a recipe page, a map service's answer (where a shop's branch is). It
-  is told to use the fewest requests that answer the question and not to walk a site's categories. It reads no
-  shop's search, category or product pages: until a retailer gives permission or a feed, Puls shows estimated prices
-  and names the shop's branch (asked of PnP, Woolworths and Checkers on 2026-10-25).
-- Pages a site serves to everyone. It does not log in, does not accept terms on a person's behalf, and does not make
-  WebSocket connections.
-- Images are shown to the person from your own image host, as your page serves them.
-- It does not read `robots.txt` yet (that comes with *Sources as data* in the TODO). If your site disallows automated
-  readers there, tell us (below): your domain goes on our list of sites the browser won't read.
+One page at a time, for one person's question: a recipe page, a map service's answer (where a shop's branch is). It is
+told to use the fewest requests that answer the question and not to walk a site's categories. It reads no shop's
+search, category or product pages: until a retailer gives permission or a feed, Puls shows estimated prices and names
+the shop's branch (asked of PnP, Woolworths and Checkers on 2026-10-25). Pages a site serves to everyone. It does not
+log in, does not accept terms on a person's behalf, and does not make WebSocket connections. Images are shown to the
+person from your own image host, as your page serves them. It does not read `robots.txt` yet (that comes with *Sources
+as data* in the TODO). If your site disallows automated readers there, tell us (below): your domain goes on our list
+of sites the browser won't read.
 
 ## What it keeps and publishes
 

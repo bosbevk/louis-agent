@@ -9,37 +9,63 @@
 
 ## Purpose
 
-The eval studio on the API (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the runner
-process, the stores for runs, grades, drafts and judge checks (MongoDB), the recorders, the reports and every admin
-route for them. It was over half of `louis-agent.api`, and brought MongoDB, the checks and the protocol into every
-site's API; now a program opts in with `app.MapLouisAgentEvals(host)` after `MapLouisAgentApi`, and one that doesn't
-ships none of it.
+This is the eval studio, on the API. It holds everything a site needs to run evals and look at their results: the
+runner process, the MongoDB stores for runs, grades, drafts and judge checks, the recorders, the reports, and every
+admin route for them.
+
+It's its own project because it's big, and because it brings MongoDB, the checks and the protocol along with it. A
+program that wants the studio opts in with `app.MapLouisAgentEvals(host)`, after `MapLouisAgentApi`. A program that
+doesn't ships none of it.
+
+*Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
 ## How it works
 
-`EvalsStartup.MapLouisAgentEvals(app, host)` does what `ApiStartup` did for the studio:
+Everything starts from one call, `EvalsStartup.MapLouisAgentEvals(app, host)`. It does three things.
 
-- reads `EvalOptions` (the runner, the store, the callback address), lists the runner's evals off the start-up path,
-  opens the Mongo stores when `EVALS_MONGO_URL` is set (none without: no run starts, the pages say so), tidies what
-  an older build stored and closes the runs a restart cut off, in the background;
-- maps the studio's routes on a gated `/admin` group the API hands out (`AdminGroup.MapAdminGroup`, behind
-  `ADMIN_API_KEY`), through `EvalAdminEndpoints.MapEvalAdmin`: the evals and benchmarks lists, a check's manual, the
-  stored runs, reviews, notes, rescoring, calibrations, drafts, the studio, a run's start, events and requests, the
-  trends, under `/evals` and the old `/benchmarks` name. Two of them in detail: `GET runs/{id}/requests` (FX34) gives
-  the ledger's rows of a run the recorder keeps, each on its turn, so the live table prices a turn as it ends (`404`
-  for a run not recorded here, `503` for a ledger read mid-write); `POST runs/{id}/rescore` starts the runner on the
-  stored run's export (`201` with the new run's `Location`, `404` for an unknown run, `400` for a run that is not an
-  eval's, `409` while a run runs, `503` without a store);
-- records with each run what it ran with (`EvalSettings`), the web named by core's `WebSetup` seam, never by the web
-  library.
+### 1. Getting ready
 
-The API keeps the admin gate, the key, its own admin routes (prompts, imports, screens) and the contracts; the
-studio's replies are built here (`Replies/`, the `Of` factories), its texts in `Messages/` (`EvalApiLogMessage`,
-`EvalApiUserText`, the draft, listing, note and review texts).
+It reads `EvalOptions`: where the runner is, where the store is, and the address the runner calls back on. It lists
+the runner's evals, but off the start-up path, so the API doesn't wait for it.
+
+When `EVALS_MONGO_URL` is set, it opens the Mongo stores. Without it there are no stores, so no run can start, and
+the pages say so. In the background it tidies what an older build stored, and closes any runs a restart cut off.
+
+### 2. The routes
+
+It maps the studio's routes on the gated `/admin` group the API hands out (`AdminGroup.MapAdminGroup`, behind
+`ADMIN_API_KEY`), through `EvalAdminEndpoints.MapEvalAdmin`. They live under `/evals`, and under the old name
+`/benchmarks` too.
+
+There's a route for nearly everything: the evals and benchmarks lists, a check's manual, the stored runs, reviews,
+notes, rescoring, calibrations, drafts, the studio, starting a run, a run's events and requests, and the trends.
+
+Two of them are worth a closer look. `GET runs/{id}/requests` gives the ledger's rows for a run this recorder kept,
+each on its turn, so the live table can price a turn the moment it ends. It answers `404` for a run that wasn't
+recorded here, and `503` if the ledger is being written mid-read.
+
+`POST runs/{id}/rescore` starts the runner again on a stored run's export. It answers `201` with the new run's
+`Location`. It answers `404` for an unknown run, `400` for a run that isn't an eval's, `409` while another run is
+running, and `503` when there's no store.
+
+*Decided in:* FX34.
+
+### 3. Remembering what a run ran with
+
+Each run is stored with what it ran with (`EvalSettings`). The web it used is named by core's `WebSetup` seam,
+never by the web library itself.
+
+### What stays in the API
+
+The API keeps the admin gate, the key, its own admin routes (prompts, imports, screens) and the contracts. The
+studio's replies are built here, in `Replies/`, with the `Of` factories. Its texts are in `Messages/`:
+`EvalApiLogMessage`, `EvalApiUserText`, and the draft, listing, note and review texts.
 
 ![The eval studio on the API: what a program maps, and what the studio holds](diagrams/louis-agent.api.evals-diagrams.svg)
 
 ![Starting a run: the gate lets the browser in, the studio stores a run row and answers 202, and the page reads the runner's events](diagrams/louis-agent.api.evals-diagrams-2.svg)
+
+These are the types involved:
 
 ![The types: one call maps the studio, the runner runs as its own process, and runs, drafts, reviews and calibrations each sit behind a store](diagrams/louis-agent.api.evals-interface.svg)
 
@@ -52,23 +78,25 @@ src/hosts/louis-agent.api.evals/
 ├── Endpoints/             # Runs/ (EvalAdminEndpoints, AdminHandlers, stored runs, rescore), Drafts/, Evals/, Reviews/, Studio/
 ├── Replies/               # the contracts' Of factories
 ├── Messages/              # EvalApiLogMessage, EvalApiUserText, DraftMessage, EvalListingMessage, NoteUserText, ReviewUserText
-├── Calibrations/ Drafts/ Export/ List/ Reports/ Reviews/ Runs/ Store/ Studio/   # as they were under the API's Evals/
+├── Calibrations/ Drafts/ Export/ List/ Reports/ Reviews/ Runs/ Store/ Studio/   # the studio's own parts
 demos/puls/tests/louis-agent.api.evals.tests/   # the studio's tests, beside the API's; EvalRoutesSnapshot.json pins the routes
 ```
 
 ## Configuration
 
-Where it runs: inside a demo's API program, with the eval runner a child process in the same container.
+The studio runs inside a demo's API program. The eval runner is a child process in the same container.
 
 ![Where the eval studio runs: in the API's container, starting the runner as a child process and keeping runs in MongoDB](diagrams/louis-agent.api.evals-deployment.svg)
 
-`EVALS_MONGO_URL`, `EVALS_MONGO_DATABASE`, `EVAL_RUNNER`, `BENCHMARK_API_URL`; the key is the API's `ADMIN_API_KEY`.
+Its settings are `EVALS_MONGO_URL`, `EVALS_MONGO_DATABASE`, `EVAL_RUNNER` and `BENCHMARK_API_URL`. The key it's
+behind is the API's own `ADMIN_API_KEY`.
 
 ## Tests
 
-`demos/puls/tests/louis-agent.api.evals.tests`: the stores, the recorder, the reports and trends, the drafts and
-the studio, the reviews and calibrations, each handler through the in-memory test host (`ApiTestHost`, which maps
-the studio for them and leaves it out for the API's own route snapshot), and `EvalRoutesSnapshotTests`.
+The tests are in `demos/puls/tests/louis-agent.api.evals.tests`. They cover the stores, the recorder, the reports
+and trends, the drafts and the studio, and the reviews and calibrations. Each handler runs through the in-memory test
+host, `ApiTestHost`, which maps the studio for these tests and leaves it out for the API's own route snapshot.
+`EvalRoutesSnapshotTests` pins the studio's routes.
 
 ## Related docs
 
