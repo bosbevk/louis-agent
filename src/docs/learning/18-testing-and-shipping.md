@@ -152,7 +152,7 @@ camera flies in, when a caption shows) is CSS. `SiteStylesheetTests` reads `app.
 on disk, holds tokens first, and refuses a keyframe name the two films could share (every name ends in `-s` or `-d`).
 A rule a file could break silently is a test, whatever language the file is in.
 
-A golden per film , as for the prompts: bUnit renders the markup and `Snapshots.Match` pins it, so a change to a film
+A golden per film, as for the prompts: bUnit renders the markup and `Snapshots.Match` pins it, so a change to a film
 is read in a diff. The detailed film's six slabs inside core are checked against the chat pipeline's order as a plain
 array in the test, which is the one honest way to couple a project that must not reference core.
 

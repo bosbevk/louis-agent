@@ -60,7 +60,7 @@ One plural name for a collection and its items. `/git/branches` lists the branch
 them. A branch name keeps its slashes (`feature/x`), so the route catches the rest of the path (`{**name}`) and the
 client escapes each segment on its own.
 
-A create answers `201` and says where the new thing lives , in `Location`, so a client never builds that URL itself. A
+A create answers `201` and says where the new thing lives, in `Location`, so a client never builds that URL itself. A
 create whose work goes on after the answer answers `202` (an admin run, when F18 renames those routes).
 
 An action that no method names (`cancel`, `stage`, `merge`) is a `POST` with the verb last:
