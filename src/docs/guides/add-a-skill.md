@@ -5,20 +5,26 @@
 > person in [ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md); a toolset's guide in
 > [Change the engine](change-the-engine.md).
 
-A function skill is `demos/louis-agent/skills/agent/functions/{name}.md`, on disk: the agent writes one with `CreateSkillFile`, or you
-drop one in. What the agent writes waits in `demos/louis-agent/skills/agent/functions/pending/` (git-ignored), active only in the engine
-that wrote it, until you type `/approve {name}` in the chat, which moves it up; `/reject {name}` deletes it and `/tools`
-lists what is pending (FX20, as agent-built tools do). Every approved one loads with the **skills** toolset, no setting
-needed (CL9 retired `AGENT_FUNCTION`); a session without it (Puls's chats: `agents` and `web`) gets its mode and
-its toolsets' guides, no skill file. A name that is a built-in prompt (a toolset's guide) is refused: what is embedded
-is built in (`SkillFiles.IsBuiltIn`).
+A function skill is a markdown file on disk, `demos/louis-agent/skills/agent/functions/{name}.md`. The agent writes
+one with `CreateSkillFile`, or you drop one in yourself.
 
-A function skill on disk needs no header: unlike the built-in prompts, which open with their front matter
-([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)), it is read whole until Phase 7 turns these files into
-`SKILL.md` folders with the same header.
+What the agent writes doesn't go live for everyone straight away. It waits in
+`demos/louis-agent/skills/agent/functions/pending/`, which git ignores, and works only in the engine that wrote it.
+When you type `/approve {name}` in the chat, it moves up a folder and every session gets it. `/reject {name}` deletes
+it, and `/tools` lists what's still waiting. Agent-built tools work the same way.
 
-Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments arrive as
-`SKILL_ARG_*` environment variables, so quote them and never build commands from them
+Every approved skill loads with the `skills` toolset, and no setting picks which. A session without that toolset, such
+as a Puls chat with only `agents` and `web`, gets its mode and its toolsets' guides, and no skill file. A name that
+belongs to a built-in prompt, such as a toolset's guide, is refused, because what's embedded is built in
+(`SkillFiles.IsBuiltIn`).
+
+A function skill on disk needs no header. The built-in prompts open with their front matter, but a function skill is
+read whole. Phase 7 plans to turn these files into `SKILL.md` folders with the same header.
+
+*Decided in:* FX20, CL9, [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md).
+
+A procedure is a `## Skill: Name` section with an `Execution:` fence in bash, powershell or python. Its arguments
+arrive as `SKILL_ARG_*` environment variables, so quote them, and never build a command from them
 ([ADR 0004](../adr/0004-arguments-as-data.md)):
 
 ````markdown
@@ -34,8 +40,8 @@ echo "Hello, ${SKILL_ARG_name}"
 ```
 ````
 
-On Claude Haiku 5.5, `/approve`, `/reject` and a skill reload change the tool list under a running chat and break it
-with a 400 ([FX4](../fixes/FX04-append-only-history.md)): start a new chat afterwards.
+One thing to watch: on Claude Haiku 5.5, `/approve`, `/reject` and a skill reload change the tool list under a running
+chat, and that breaks it with a 400 ([FX4](../fixes/FX04-append-only-history.md)). Start a new chat afterwards.
 
 ---
 [Guides](README.md) · [Docs index](../README.md)

@@ -7,22 +7,28 @@
 
 ## Logs
 
-- Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`). By default
-  the arguments, the result and a failure's quoted reason show as hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so
-  a log shows what ran and how it ended, never what the user typed; `LOG_CONTENT=full` shows the values, on your own
-  machine only (F18 step 4f).
-- In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- With `LOG_DIRECTORY` set, each process's run file is there; the orchestrator's lines are tagged `[orchestrator]`,
-  louis-agent's progress under it `[louis-agent]`.
-- With `OTEL_EXPORTER_OTLP_ENDPOINT` set (the standard OpenTelemetry setting), every log line also goes to that
-  collector, each template's holes as fields and the host named by `OTEL_SERVICE_NAME` (else its project's name);
-  `OTEL_EXPORTER_OTLP_PROTOCOL` picks gRPC (the default) or `http/protobuf`. The JSON-lines records stay out. The
-  traces go to the same collector: every turn is a span, `invoke_agent {agent}` named for the agent (its role, or
-  the default mode) and tagged with its session, host, turn, run and task, holding a span per model request and tool
-  call, with no prompt or answer on any of them. A crash is one `[FATAL]` line with its stack, and the last lines
-  and spans still leave; a failed task nothing awaited is one `[ERROR]`.
-- stdout is a protocol for the ACP and MCP servers, so every log goes through `ILogger` to stderr
-  ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
+Every tool call is logged to stderr, as `[TOOL] -> Name(args)` when it starts and `[TOOL] <- Name: result` (or
+`failed: …`) when it ends. By default the arguments, the result and a failure's quoted reason show only as hashes and
+lengths (`area=#3f9c0a1b2d4e (10)`). So a log tells you what ran and how it ended, but never what the user typed.
+`LOG_CONTENT=full` shows the values, and is for your own machine only.
+
+In Docker the logs are kept in `logs/`, and `docker logs louis_agent_api` shows the API's. With `LOG_DIRECTORY` set,
+each process writes its run file there. The orchestrator's lines are tagged `[orchestrator]`, and louis-agent's
+progress under it `[louis-agent]`.
+
+Set `OTEL_EXPORTER_OTLP_ENDPOINT`, the standard OpenTelemetry setting, and every log line also goes to that collector.
+Each template's holes arrive as fields, and the host is named by `OTEL_SERVICE_NAME`, or else its project's name.
+`OTEL_EXPORTER_OTLP_PROTOCOL` picks gRPC (the default) or `http/protobuf`. The JSON-lines records stay out of it.
+
+The traces go to the same collector. Every turn is a span, `invoke_agent {agent}`, named for the agent (its role, or
+the default mode) and tagged with its session, host, turn, run and task. Inside it is a span for each model request
+and each tool call, and no span carries a prompt or an answer. A crash is one `[FATAL]` line with its stack, and the
+last lines and spans still get out. A failed task that nothing awaited is one `[ERROR]`.
+
+stdout is a protocol for the ACP and MCP servers, so every log goes through `ILogger` to stderr.
+
+*Decided in:* F18 step 4f, [ADR 0009](../adr/0009-message-text-as-enum-templates.md),
+[ADR 0064](../adr/0064-observability-through-opentelemetry.md).
 
 ## Traces and the dashboard
 
@@ -47,9 +53,11 @@ The why is [ADR 0064](../adr/0064-observability-through-opentelemetry.md).
 | **Debug** | A decision, for the developer | which toolset, a cache hit, which provider strategy |
 | **Trace** | Everything, never on in production | the raw request |
 
-- Log an exception once, where it is handled, with the exception object, never `ex.Message` alone.
-- Structured: a template with named holes, which the message enums are already.
-- Levels are fixed as a file is touched, no sweep (F52's pick F1, the Boy Scout Rule, as ADR 0057 does it).
+Log an exception once, where it's handled, with the exception object itself, never `ex.Message` alone. Every line is
+structured: a template with named holes, which the message enums already are. A file's levels are put right when the
+file is touched, with no sweep across the code, the Boy Scout Rule, the way ADR 0057 does it.
+
+*Decided in:* F52.
 
 ## The usage ledger
 
@@ -62,14 +70,16 @@ dotnet run --project src/tools/louis-agent.usage-probe -- --ledger logs/usage-YY
 
 ## Docker
 
-- After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
-  chats keep their container until you start a **New Chat**.
-- After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
-  environment, so the new key never arrives. A changed prompt (`src/engine/louis-agent.core/prompts/`) is a change to core:
-  rebuild the images that use it.
-- Every image rebuild leaves build cache behind; a day of rebuilds filled Docker Desktop's disk (120 GB of cache) and
-  stopped its engine (2026-10-15). `docker system df` shows it; `docker builder prune -af` clears it, safely, and
-  the next build re-caches. If the daemon stops answering, restart Docker Desktop first.
+After changing the web app or the API, rebuild the `api` image. After changing core, rebuild every image you use. A
+Rider chat keeps its container until you start a **New Chat**.
+
+After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`. A `restart` keeps the old
+environment, so the new key never arrives. A changed prompt is a change to whatever project embeds it, so rebuild the
+images that use it.
+
+Every image rebuild leaves build cache behind. One day of rebuilds filled Docker Desktop's disk with 120 GB of cache
+and stopped its engine. `docker system df` shows how much there is, and `docker builder prune -af` clears it safely;
+the next build simply caches again. If the daemon stops answering, restart Docker Desktop first.
 
 ---
 [Guides](README.md) · [Docs index](../README.md)

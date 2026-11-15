@@ -11,12 +11,17 @@ whole, knows what each one is about, and can find them all.
 
 ## What the framework already does
 
-- **Every page is served as HTML** with its own title, description and canonical link, so a crawler that runs no
-  script reads it (`MapLouisAgentSite`, ADR 0109).
-- **Structured data:** the facts a page passes to its `PageHead` go into the served head as JSON-LD, and every page
-  under the landing gets a breadcrumb of the site and the page (ADR 0110).
-- **Every place has an address** listed in the site's `sitemap.xml`, which a site test writes from the pages, and
-  `robots.txt` points at it (ADR 0107).
+Every page is served as HTML, with its own title, description and canonical link, so a crawler that runs no script
+still reads it whole. That's `MapLouisAgentSite`'s job.
+
+The facts a page hands its `PageHead` go into the served head as structured data (JSON-LD), so a search engine knows
+what the page is about. Every page under the landing also gets a breadcrumb of the site and the page.
+
+And every place on the site has its own address. They're all listed in the site's `sitemap.xml`, which a site test
+writes from the pages, and `robots.txt` points at it.
+
+*Decided in:* [ADR 0107](../adr/0107-every-section-has-an-address.md), [ADR 0109](../adr/0109-a-page-is-served-as-html.md),
+[ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
 
 ## What a site does
 
@@ -46,14 +51,16 @@ whole, knows what each one is about, and can find them all.
 
 ## What helps after that
 
-- **Links from other sites.** A LinkedIn profile and posts that link the site, an article about building agents in C#
-  that links the comparison page, a helpful answer where someone asks which C# agent framework to use. Never pay for
-  links or post the same link everywhere: search engines count that against a site.
-- **The packages, when they ship.** A NuGet package's project link points at the site, and its page is one more link
-  people find (F74).
-- **No link to the repository** while it is private: a link people follow to a page they can't open helps nobody.
-- **Measure.** After a few weeks Search Console's *Performance* report shows which searches showed the site, where it
-  ranked and how often people clicked. Look up "c# agent framework" there before deciding what to write next.
+What helps most is links from other sites: a LinkedIn profile and posts that link the site, an article about
+building agents in C# that links the comparison page, a helpful answer where someone asks which C# agent framework to
+use. Never pay for links or post the same link everywhere, because search engines count that against a site.
+
+When the packages ship, they help too. A NuGet package's project link points at the site, and its page is one more
+link people find (F74). But don't link the repository while it's private: a link to a page people can't open helps
+nobody.
+
+Then measure. After a few weeks, Search Console's *Performance* report shows which searches showed the site, where it
+ranked and how often people clicked. Look up "c# agent framework" there before you decide what to write next.
 
 ---
 [Docs index](../README.md) · Related: [Guides](README.md) · [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md) ·

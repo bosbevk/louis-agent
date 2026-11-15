@@ -354,21 +354,25 @@ An agent asks another agent by its address ([ADR 0117](adr/0117-one-address-for-
 (`puls.cook`), and either on another server with that server's name before a colon (`partner:shop`, F127.3.2). An
 identity lists the addresses it may ask in code (`IAgentIdentity.Calls`), and its prompt lists
 them too, so what the model reads is what the code checks. Its chats load core's `agents` toolset, and the model
-calls `AskAgent(address, message, attachments)`, which:
+calls `AskAgent(address, message, attachments)`. Here's what that call does, in order.
 
-1. reads the address and refuses one the asker doesn't list, naming the ones it may ask;
-2. for an address on another server, finds that server in `AGENT_PEERS` and reads its `GET /v1/identities` with its
-   own key from `AGENT_PEER_KEYS` (kept ten minutes), refusing a server it doesn't know, a key the server refuses,
-   a server that doesn't answer, or an identity it doesn't list, each with the reason;
-3. opens `POST /v1/sessions` on that server, or on `self` for this same API, with the identity, the role,
-   `depth: 1`, the parent turn (`{session}#{turn}`) and the user's place; the asked agent's own files decide its
-   toolsets, never the asker;
-4. sends the message with the named attachments, which come from the session, never through the model's output;
-5. reads the asked agent's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
-   tool rounds used), asks once more in the same session (FX11);
-6. returns the answer with a line under it, built in code from the agent's own tool calls, each with the first line
-   of what it gave back: `[Answered by acme, did: ShowPlace: Shown; SendLead: Sent]` (`no tools` when it only
-   answered, `failed:` after one that failed).
+It reads the address first, and refuses one the asker doesn't list, naming the ones it may ask. For an address on
+another server, it finds that server in `AGENT_PEERS` and reads its `GET /v1/identities` with that server's own key
+from `AGENT_PEER_KEYS`, keeping the answer for ten minutes. It refuses a server it doesn't know, a key the server
+refuses, a server that doesn't answer, or an identity the server doesn't list, each with its reason.
+
+Then it opens `POST /v1/sessions` on that server, or on `self` for this same API. It sends the identity, the role,
+`depth: 1`, the parent turn (`{session}#{turn}`) and the user's place. The asked agent's own files decide its toolsets,
+never the asker. It sends the message with the attachments the model named, and those come from the session, never
+through the model's output.
+
+It reads the asked agent's stream to the end, passing each event on as `sub_session`. If the answer comes back empty,
+because the agent used all its tool rounds, it asks once more in the same session. Last, it returns the answer with a
+line under it, built in code from the agent's own tool calls, each with the first line of what that tool gave back:
+`[Answered by acme, did: ShowPlace: Shown; SendLead: Sent]`. It says `no tools` when the agent only answered, and
+`failed:` after a call that failed.
+
+*Decided in:* FX11.
 
 Every request to a server carries that server's own key, or this instance's `AGENT_API_KEY` when it has none. Before
 an address on another server is asked, the agents guide has the model tell the person their question goes there.
