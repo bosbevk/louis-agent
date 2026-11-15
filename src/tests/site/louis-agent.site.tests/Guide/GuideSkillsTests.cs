@@ -152,6 +152,57 @@ public class GuideSkillsTests
             "Whenever they write to you again after you asked a business live, call `ReadAgentWork` with its address " +
             "first"));
 
+    /// <summary>
+    /// F134: on the showroom's start each demo is a window that is a picture of it, and no business answers there.
+    /// Offered Ask it live there, the guide asked a business that had no window on the page, and told the visitor to
+    /// answer in a window they could not see. So a walk of the start offers to open a demo in its place, and the
+    /// guide takes the visitor to the demo's own page before it asks a business anything.
+    /// </summary>
+    [Test]
+    public void OnTheStart_TheGuideOpensADemo_AndAsksABusinessOnlyOnItsOwnPage()
+    {
+        string voice = Flat(Read("voice.md").Body);
+        string live = Flat(Read("skills/live-demo.md").Body);
+        string showroom = Flat(Read("skills/focus-demos.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain(
+                "On the showroom's start, a window's stop offers Open this demo in its place"));
+            Assert.That(live, Does.Contain("Never call `AskAgent` on any page but that business's own demo page"));
+            Assert.That(live, Does.Contain("take them to its demo page with `ShowPage` first"));
+            Assert.That(showroom, Does.Contain("a picture of its demo").And.Contain("Open this demo"));
+        });
+    }
+
+    /// <summary>
+    /// Louis, of arriving in a demo with only "Walk me through this demo" and a bare "Ask it live": the guide "should
+    /// guide me in the door with options to what to ask". So on arrival the guide's choices are questions to put to
+    /// the business, ready to press, with the walk and the stop after them.
+    /// </summary>
+    [Test]
+    public void ArrivingInADemo_TheGuideOffersQuestionsToAskTheBusiness()
+    {
+        string showroom = Flat(Read("skills/focus-demos.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(showroom, Does.Contain("two questions to ask the business"));
+            Assert.That(showroom, Does.Contain("then Walk me through this demo, and Stop here"));
+            Assert.That(showroom, Does.Contain("call `AskAgent` as your live-demo skill says"));
+        });
+    }
+
+    /// <summary>
+    /// A live ask is watched in the business's window. The guide once lit another part of the page in the same
+    /// answer, which scrolled that window off the screen as the business answered. So with a live ask it shows the
+    /// demo itself, where the window is, and nothing else.
+    /// </summary>
+    [Test]
+    public void AskingLive_TheGuideKeepsTheBusinesssWindowOnScreen() =>
+        Assert.That(Flat(Read("skills/live-demo.md").Body), Does.Contain(
+            "In an answer where you call `AskAgent`, the only place you may show is the demo itself"));
+
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
     private static string Flat(string text) =>
         string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));

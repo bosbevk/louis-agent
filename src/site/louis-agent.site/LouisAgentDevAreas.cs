@@ -26,8 +26,17 @@ public static class LouisAgentDevAreas
     /// each page is, which tells the guide how to lead (F127.7).
     /// </summary>
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
-        .Suggestions("Walk me through the demos", "Which demo is like my business?", "What does it cost?")
+        .Suggestions(GuideSuggestions)
         .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area);
+
+    /// <summary>
+    /// What the guide's bar offers to be asked, as chips, the first the one suggested. The same three stand on the
+    /// showroom's start and on every demo's page, so the walk is of "this page", which is true on each of them.
+    /// </summary>
+    private static readonly string[] GuideSuggestions =
+    [
+        "Walk me through this page", "Which demo is like my business?", "What does it cost?"
+    ];
 
     /// <summary>The tool the guide sends a lead with, which the admin's overview counts as leads (F127.8).</summary>
     private const string LeadTool = "SendLead";

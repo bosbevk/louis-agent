@@ -9,7 +9,10 @@ namespace LouisAgent.Site.Tests.Layout;
 /// </summary>
 public class ShowroomLayoutTests
 {
-    /// <summary>The showroom's guide is a bar, offering the site's suggestions while it waits.</summary>
+    /// <summary>
+    /// The showroom's guide is a bar, offering the site's suggestions while it waits. The same chips stand on the
+    /// start and on every demo's page, so the first asks for a walk through "this page", which is true on each.
+    /// </summary>
     [Test]
     public void TheShowroomsGuide_IsTheBar_WithTheSitesSuggestions()
     {
@@ -23,7 +26,7 @@ public class ShowroomLayoutTests
             Assert.That(cut.FindAll(".agent-chips button").Select(chip => chip.TextContent),
                 Is.EqualTo(new[]
                 {
-                    "Walk me through the demos", "Which demo is like my business?", "What does it cost?"
+                    "Walk me through this page", "Which demo is like my business?", "What does it cost?"
                 }));
         });
     }
