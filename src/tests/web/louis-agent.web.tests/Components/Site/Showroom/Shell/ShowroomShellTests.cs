@@ -60,6 +60,27 @@ public class ShowroomShellTests
     }
 
     /// <summary>
+    /// The rail is a slim column of icons, as the K mockup has it (F134.2): each demo a link that shows only its icon,
+    /// with its name as its label for a screen reader and as its tip, and no words beside it, since the start shows
+    /// them. The links stay links, so each demo is still a page an address opens.
+    /// </summary>
+    [Test]
+    public void TheRail_IsASlimColumnOfIcons_EachNamed()
+    {
+        using var ctx = new BunitContext();
+
+        var rail = Shell(ctx, "/florist-demo").Find("nav.demo-rail");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rail.QuerySelectorAll(".cover-words"), Is.Empty, "no words beside an icon");
+            Assert.That(rail.QuerySelectorAll("a.demo-cover")
+                    .Select(a => (a.GetAttribute("aria-label"), a.GetAttribute("title"))),
+                Is.EqualTo(new[] { ("A bakery", "A bakery"), ("A florist", "A florist"), ("A coder", "A coder") }));
+        });
+    }
+
+    /// <summary>
     /// The demo on screen is lit and marked as the current page, for a screen reader too; no other is.
     /// </summary>
     [Test]

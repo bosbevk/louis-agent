@@ -79,7 +79,8 @@
 /* The rail beside the stage; the stage takes what's left, and keeps room at its bottom for the corner (--corner-room),
    so a demo's offer never ends under the guide's button. */
 .showroom { --corner-room: 104px; }
-.showroom-body { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+/* The rail is a slim column of icons since F134.2, so its column is as wide as a tile and its margins. */
+.showroom-body { display: grid; grid-template-columns: 84px minmax(0, 1fr); }
 /* With no rail, on a page that is no demo, the stage stands alone and takes the whole width (F134.1). */
 .showroom-body.is-alone { grid-template-columns: minmax(0, 1fr); }
 .showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }
