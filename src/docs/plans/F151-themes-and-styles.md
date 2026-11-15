@@ -356,5 +356,25 @@ can be any size, so how a drawing is made to fit its piece is not known yet.
 It is built in [F151.4](F151.4-the-frameworks-components.md), the next child, and that plan says how under its
 own *Approved during the build*.
 
+**A thin cut edge is glass, a thick side is not** (Louis, 2026-11-15, his pick "A" of three, the first of those
+four). Section 5's "what a glass card never has" keeps "a thick side", and a glass piece may have a thin cut edge
+that catches light, as the crystal drawings draw it: a bevel of a few pixels, 4 at most today, with the face set a
+little deeper. Chosen over drawing every piece again without the edge, which loses the crystal he asked for, and
+over the edge on panes only.
+
+**A control's knob may be a ball** (Louis, 2026-11-15, his pick "B" of three, the second of those four). Section
+5's "the mark is the only ball" now reads: nothing else on a page is ball-shaped, except a control's knob. The
+switch, the slider and the dial keep their round, lit knobs as the crystal drawings have them, and nothing is drawn
+again. Chosen over a knob drawn as a flat disc, and over a knob as a rounded square.
+
+**Pressed, focus and off, in both themes** (Louis, 2026-11-15, his pick "A" of three, the third of those four).
+Glass has them as he drew them: a pressed piece sinks and the tool makes it a little smaller, focus is its own
+drawing of split light laid 7 pixels outside the piece so it goes with any state, and a piece that is off is
+frosted and holds no lights. Flat answers the same three in its own plain way: a pressed piece is a step darker and
+as much smaller, focus is a solid 2 pixel violet ring 3 pixels outside the piece, and a piece that is off is
+dimmed and does not answer a pointer. F151.4 builds both, flat's as values in its two sheets. Chosen over one state
+look the tool gives both themes, which drops glass's state drawings, and over leaving flat's to its family's step.
+The last of the four, how a drawing of one size fits a piece of any size, F151.4 settled: a drawing stretches.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [F151.1, the first child](F151.1-the-theme-contract.md)
