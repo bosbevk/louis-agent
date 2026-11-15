@@ -1,4 +1,5 @@
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Widget.Bar.Caption;
 using LouisAgent.Web.Components.Widget.Orb;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -113,11 +114,10 @@ public partial class AgentBar : IDisposable
     };
 
     /// <summary>
-    /// The turn whose answer stands as the caption (F134.4): the last one, when it is done, showed a place and said
-    /// something, and the visitor hasn't opened the whole talk.
+    /// The last answer as a caption (F134.4), once it is done and while the visitor hasn't opened the whole talk.
     /// </summary>
-    private Turn? Caption => !_talkOpen && !Runner.Streaming
-        && Runner.Chat?.Turns.LastOrDefault() is { ShowedAPlace: true, Words.Length: > 0 } turn ? turn : null;
+    private Captioned? Caption =>
+        _talkOpen || Runner.Streaming ? null : Captioned.Of(Runner.Chat?.Turns.LastOrDefault());
 
     /// <summary>The talk's classes: open whole, or folded to its end.</summary>
     private string TalkClasses => _talkOpen ? "agent-talk is-open" : "agent-talk";

@@ -18,9 +18,10 @@
         </div>
     }
     @* The last answer showed a place: it stands as the caption (F134.4), and the folded talk gives way to it. *@
-    @if (Caption is { } turn)
+    @if (Caption is { } caption)
     {
-        <AgentCaption Title="@Title" Words="@turn.Words" OnTalk="ToggleTalk"/>
+        <AgentCaption Title="@Title" Words="@caption.Words" Offer="caption.Offer" OnChoose="OnChoose"
+                      OnTalk="ToggleTalk"/>
     }
     else if (Runner.Chat is { Turns.Count: > 0 })
     {

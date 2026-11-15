@@ -22,8 +22,21 @@ public class AgentCaptionTests
         ToolResult = "Shown."
     };
 
+    /// <summary>A call offering two demos, the restaurant suggested, as the guide makes it.</summary>
+    private static Block OfferDemos() => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = "Offer",
+        ToolUseId = "toolu_offer",
+        ToolInput = """
+                    {"question":"Which one?","choices":[{"label":"The restaurant","why":"Bookings","suggested":true},
+                    {"label":"The law firm"}]}
+                    """,
+        ToolResult = "Offered."
+    };
+
     /// <summary>The bar over a runner whose chat holds this one turn, done.</summary>
-    private static IRenderedComponent<AgentBar> Bar(BunitContext ctx, Turn turn)
+    private static IRenderedComponent<AgentBar> Bar(BunitContext ctx, Turn turn, Action<string>? chosen = null)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
@@ -35,7 +48,8 @@ public class AgentCaptionTests
         { Chat = chat };
         return ctx.Render<AgentBar>(parameters => parameters
             .Add(bar => bar.Runner, runner)
-            .Add(bar => bar.Title, "Louis · AI"));
+            .Add(bar => bar.Title, "Louis · AI")
+            .Add(bar => bar.OnChoose, label => chosen?.Invoke(label)));
     }
 
     /// <summary>A turn that showed the levels and said a line about them.</summary>
@@ -89,5 +103,45 @@ public class AgentCaptionTests
 
         Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-talk.is-open").Count),
             Is.EqualTo((0, 1)));
+    }
+
+    /// <summary>
+    /// The choices the guide offered in that answer stand in the caption, the suggested one marked, and a press asks
+    /// with its label, as a card in the talk does.
+    /// </summary>
+    [Test]
+    public void TheCaptionsChoices_AskWithTheirLabel()
+    {
+        using var ctx = new BunitContext();
+        string? asked = null;
+        var turn = new Turn
+        {
+            UserText = "Show me a demo",
+            Blocks = [ShowLevels(), new Block { Kind = BlockKind.Text, Text = "Here they are." }, OfferDemos()]
+        };
+        var cut = Bar(ctx, turn, label => asked = label);
+
+        var suggested = cut.Find(".agent-caption .offer-card.is-suggested");
+        suggested.Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".agent-caption .offer-card").Count, Is.EqualTo(2));
+            Assert.That(suggested.QuerySelector(".offer-label")!.TextContent, Is.EqualTo("The restaurant"));
+            Assert.That(asked, Is.EqualTo("The restaurant"));
+        });
+    }
+
+    /// <summary>An answer that showed a place and only offered choices, with no words, still stands as a caption.</summary>
+    [Test]
+    public void AnAnswerOfOnlyChoices_StillStandsAsACaption()
+    {
+        using var ctx = new BunitContext();
+        var turn = new Turn { UserText = "Show me a demo", Blocks = [ShowLevels(), OfferDemos()] };
+
+        var cut = Bar(ctx, turn);
+
+        Assert.That((cut.FindAll(".agent-caption .offer-card").Count, cut.FindAll(".agent-caption .caption-says").Count),
+            Is.EqualTo((2, 0)));
     }
 }
