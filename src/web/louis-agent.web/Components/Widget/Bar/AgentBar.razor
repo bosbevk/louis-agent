@@ -1,0 +1,11 @@
+@* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it, with the box always
+   there to type in. It draws what the widget's runner holds and asks the widget to send, so the widget stays the one
+   engine and the bar is only its look. *@
+<div class="agent-bar">
+    <div class="agent-box">
+        <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
+                  Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
+                  OnSend="OnSend" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
+                  SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
+    </div>
+</div>

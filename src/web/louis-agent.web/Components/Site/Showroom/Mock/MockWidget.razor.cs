@@ -40,10 +40,5 @@ public partial class MockWidget
     private ChatWindowSize Size { get; set; } = ChatWindowSize.Normal;
 
     /// <summary>The widget's classes: its size, as the styles read it.</summary>
-    private string Classes => Size switch
-    {
-        ChatWindowSize.Minimised => "mock-widget is-min",
-        ChatWindowSize.Maximised => "mock-widget is-max",
-        _ => "mock-widget",
-    };
+    private string Classes => Size.ClassesOf("mock-widget");
 }

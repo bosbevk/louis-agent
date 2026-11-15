@@ -125,6 +125,15 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public bool ShowWork { get; set; } = true;
 
+    /// <summary>How the widget stands: a corner, as every site has had, or a bar at the page's foot (F134.3).</summary>
+    [Parameter]
+    public WidgetLayout Layout { get; set; } = WidgetLayout.Corner;
+
+    /// <summary>The widget's classes: the bar wears its own; the corner is open or not, as it always was.</summary>
+    private string WidgetClasses => Layout == WidgetLayout.Bar
+        ? "chat-widget is-bar"
+        : $"chat-widget {(Open ? "is-open" : "")}";
+
     /// <summary>A conversation has started and the site offers to pick it up again.</summary>
     private bool CanResume => ResumeLabel is not null && Runner.Chat is { Turns.Count: > 0 };
 
@@ -356,12 +365,7 @@ public partial class ChatWidget : IAsyncDisposable
     }
 
     /// <summary>The panel's classes: its size, as the styles read it (F127.2).</summary>
-    private string PanelClasses => Size switch
-    {
-        ChatWindowSize.Minimised => "widget-panel is-min",
-        ChatWindowSize.Maximised => "widget-panel is-max",
-        _ => "widget-panel",
-    };
+    private string PanelClasses => Size.ClassesOf("widget-panel");
 
     private void Redraw() => InvokeAsync(StateHasChanged);
 }

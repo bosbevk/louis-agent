@@ -2,70 +2,79 @@
 @* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
    opened as the identity the page names. The words come in as parameters, so the framework names no site. With a
    tour label, the folded corner also offers a tour of the page in view (F118), which asks the guide to walk it. *@
-<div class="chat-widget @(Open ? "is-open" : "")">
-    @if (Open)
+<div class="@WidgetClasses">
+    @* In the bar layout (F134.3) the guide stands at the foot of the page, the box always there; in the corner, as
+       every site has had it, a button opens a panel. *@
+    @if (Layout == WidgetLayout.Bar)
     {
-        <section class="@PanelClasses" role="dialog" aria-label="@Title">
-            <header class="widget-head">
-                <span class="widget-title">@Title</span>
-                @* A chat window's own buttons (F127.2): fold it to its head, or spread it wide; then close. *@
-                <span class="widget-head-tools">
-                    <WindowButtons @bind-Size="Size"/>
-                    <button class="icon widget-close" type="button" @onclick="Toggle"
-                            aria-label="@CloseLabel">×</button>
-                </span>
-            </header>
-            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current"
-                         Class="widget-list" ShowWork="ShowWork" Chosen="ChooseAsync"
-                         ShowCardAnswers="Settings.ShowCardAnswers">
-                <Empty><p class="widget-greeting">@Greeting</p></Empty>
-            </MessageList>
-            <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null"/>
-            <div class="widget-composer">
-                @if (_piece is not null)
+        <AgentBar Runner="Runner" Placeholder="@Placeholder" OnSend="SendAsync"/>
+    }
+    else
+    {
+        @if (Open)
+        {
+            <section class="@PanelClasses" role="dialog" aria-label="@Title">
+                <header class="widget-head">
+                    <span class="widget-title">@Title</span>
+                    @* A chat window's own buttons (F127.2): fold it to its head, or spread it wide; then close. *@
+                    <span class="widget-head-tools">
+                        <WindowButtons @bind-Size="Size"/>
+                        <button class="icon widget-close" type="button" @onclick="Toggle"
+                                aria-label="@CloseLabel">×</button>
+                    </span>
+                </header>
+                <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current"
+                             Class="widget-list" ShowWork="ShowWork" Chosen="ChooseAsync"
+                             ShowCardAnswers="Settings.ShowCardAnswers">
+                    <Empty><p class="widget-greeting">@Greeting</p></Empty>
+                </MessageList>
+                <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null"/>
+                <div class="widget-composer">
+                    @if (_piece is not null)
+                    {
+                        <div class="piece-chip">
+                            <span>@PieceLabel</span>
+                            <button type="button" aria-label="@Text.ClosePiece" @onclick="ClearPieceAsync">×</button>
+                        </div>
+                    }
+                    <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
+                              Attachments="Runner.Attachments"
+                              Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
+                              OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
+                              SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
+                </div>
+            </section>
+        }
+        @* Closed mid-tour, the same button picks the conversation up (FX117): it tells the guide to carry on, and the
+           message carries the page the visitor is on now, so the guide goes on where it stopped or walks the new page. *@
+        @if (!Open && TourLabel is not null && CanResume)
+        {
+            <GuideButton Question="@ResumeQuestion" Class="widget-tour">@ResumeLabel</GuideButton>
+        }
+        else if (!Open && TourLabel is not null)
+        {
+            <GuideButton Question="@TourQuestion" Class="widget-tour">@TourLabel</GuideButton>
+        }
+        @* With a tour, the folded corner is the tour alone (FX114): it opens the guide, and this button is its close. *@
+        @if (Open || TourLabel is null)
+        {
+            <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(Open ? "true" : "false")"
+                    aria-label="@(Open ? CloseLabel : OpenLabel)" title="@(Open ? CloseLabel : OpenLabel)">
+                @if (Open)
                 {
-                    <div class="piece-chip">
-                        <span>@PieceLabel</span>
-                        <button type="button" aria-label="@Text.ClosePiece" @onclick="ClearPieceAsync">×</button>
-                    </div>
+                    <span aria-hidden="true">×</span>
                 }
-                <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
-                          Attachments="Runner.Attachments"
-                          Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
-                          OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
-                          SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
-            </div>
-        </section>
-    }
-    @* Closed mid-tour, the same button picks the conversation up (FX117): it tells the guide to carry on, and the
-       message carries the page the visitor is on now, so the guide goes on where it stopped or walks the new page. *@
-    @if (!Open && TourLabel is not null && CanResume)
-    {
-        <GuideButton Question="@ResumeQuestion" Class="widget-tour">@ResumeLabel</GuideButton>
-    }
-    else if (!Open && TourLabel is not null)
-    {
-        <GuideButton Question="@TourQuestion" Class="widget-tour">@TourLabel</GuideButton>
-    }
-    @* With a tour, the folded corner is the tour alone (FX114): it opens the guide, and this button is its close. *@
-    @if (Open || TourLabel is null)
-    {
-        <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(Open ? "true" : "false")"
-                aria-label="@(Open ? CloseLabel : OpenLabel)" title="@(Open ? CloseLabel : OpenLabel)">
-            @if (Open)
-            {
-                <span aria-hidden="true">×</span>
-            }
-            else
-            {
-                <span class="widget-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 5h16v11H9l-5 4z" fill="none"
-                                                                          stroke="currentColor" stroke-width="2"
-                                                                          stroke-linejoin="round"/></svg>
-                </span>
-                <span aria-hidden="true">@ButtonText</span>
-            }
-        </button>
+                else
+                {
+                    <span class="widget-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 5h16v11H9l-5 4z" fill="none"
+                                                                              stroke="currentColor" stroke-width="2"
+                                                                              stroke-linejoin="round"/></svg>
+                    </span>
+                    <span aria-hidden="true">@ButtonText</span>
+                }
+            </button>
+        }
     }
     <PieceWatch @ref="_watch" Picked="PickPieceAsync" Shown="MarkPiece"/>
 </div>
