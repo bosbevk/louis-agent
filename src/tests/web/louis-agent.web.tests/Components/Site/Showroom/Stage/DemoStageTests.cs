@@ -4,8 +4,8 @@ using LouisAgent.Web.Components.Site.Tiles;
 namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
-/// F127.1: a demo page is a stage in its demo's colour: a strip, the kicker, the title as the page's one h1, the lede,
-/// then the player with the cues beside it, and the offer under them.
+/// F127.1: a demo page is a stage in its demo's colour, standing on the lit stage since F134.2: the kicker, the title
+/// as the page's one h1, the lede, then the player with what to watch, and the offer under them.
 /// </summary>
 public class DemoStageTests
 {
@@ -37,6 +37,25 @@ public class DemoStageTests
             Assert.That(cut.Find(".stage-head .stage-kicker").TextContent, Is.EqualTo("A bakery"));
             Assert.That(cut.FindAll("h1").Select(h => h.TextContent), Is.EqualTo(new[] { "Bread at dawn." }));
             Assert.That(cut.Find(".stage-head .stage-lede").TextContent, Does.StartWith("A baker's agent"));
+        });
+    }
+
+    /// <summary>
+    /// A demo's page stands on the start's stage (F134.2): the lit stage in the demo's colour holds the whole page, and
+    /// the strip of the older look is gone.
+    /// </summary>
+    [Test]
+    public void TheStage_StandsInTheLight_OfItsColour()
+    {
+        using var ctx = new BunitContext();
+        var cut = Stage(ctx);
+
+        var lit = cut.Find(".lit-stage");
+        Assert.Multiple(() =>
+        {
+            Assert.That(lit.ClassList, Does.Contain("accent-green"));
+            Assert.That(lit.QuerySelector(".demo-stage"), Is.Not.Null, "the page stands on it");
+            Assert.That(cut.FindAll(".stage-strip"), Is.Empty);
         });
     }
 
@@ -95,7 +114,7 @@ public class DemoStageTests
 
         Assert.That(cut.FindAll(".demo-stage > *")
                 .Select(part => string.IsNullOrEmpty(part.Id) ? part.ClassName : part.Id),
-            Is.EqualTo(new[] { "stage-strip", "top", "stage-body is-alone", "make-it-yours", "ask" }));
+            Is.EqualTo(new[] { "top", "stage-body is-alone", "make-it-yours", "ask" }));
     }
 
     /// <summary>A demo without cues (its player shows its own steps) gives the player the whole width.</summary>
