@@ -1,0 +1,129 @@
+{
+  "kind": "classes",
+  "title": "F134.3 the agent bar: the interface design",
+  "caption": "The widget keeps its runner and gains a layout. In Bar it draws AgentBar, which holds the orb, the chips and the composer; the orb's state is a rule read from the runner.",
+  "classes": {
+    "types": [
+      {
+        "id": "widget",
+        "name": "ChatWidget",
+        "kind": "class, changed in step 2",
+        "members": [
+          "+Identity, Title, Greeting …",
+          "+Layout (step 2)",
+          "+Suggestions (step 5)"
+        ]
+      },
+      {
+        "id": "layout",
+        "name": "WidgetLayout",
+        "kind": "enum, new in step 2",
+        "members": [
+          "Corner, Bar"
+        ]
+      },
+      {
+        "id": "runner",
+        "name": "ChatRunner",
+        "kind": "class",
+        "members": [
+          "+Chat, Streaming, Draft",
+          "+Changed, ToolCalled"
+        ]
+      },
+      {
+        "id": "bar",
+        "name": "AgentBar",
+        "kind": "class, new in step 4",
+        "members": [
+          "+Runner, Suggestions",
+          "+OnSend, OnChip"
+        ]
+      },
+      {
+        "id": "orb",
+        "name": "Orb",
+        "kind": "class, new in step 3",
+        "members": [
+          "+State"
+        ]
+      },
+      {
+        "id": "state",
+        "name": "OrbState",
+        "kind": "enum, new in step 3",
+        "members": [
+          "Idle, Thinking, Showing, Speaking"
+        ]
+      },
+      {
+        "id": "rule",
+        "name": "OrbStates",
+        "kind": "static, new in step 3",
+        "members": [
+          "+Of(streaming, hasWords, showing) OrbState"
+        ]
+      },
+      {
+        "id": "composer",
+        "name": "Composer",
+        "kind": "class",
+        "members": [
+          "+Draft, OnSend, OnStop"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "widget",
+        "to": "layout",
+        "kind": "holds"
+      },
+      {
+        "from": "widget",
+        "to": "runner",
+        "kind": "holds",
+        "word": "one engine"
+      },
+      {
+        "from": "widget",
+        "to": "bar",
+        "kind": "creates",
+        "word": "in Bar"
+      },
+      {
+        "from": "bar",
+        "to": "orb",
+        "kind": "holds"
+      },
+      {
+        "from": "bar",
+        "to": "composer",
+        "kind": "holds",
+        "word": "always there"
+      },
+      {
+        "from": "bar",
+        "to": "rule",
+        "kind": "uses",
+        "word": "the orb's state"
+      },
+      {
+        "from": "rule",
+        "to": "state",
+        "kind": "creates"
+      },
+      {
+        "from": "orb",
+        "to": "state",
+        "kind": "uses"
+      },
+      {
+        "from": "bar",
+        "to": "runner",
+        "kind": "uses",
+        "word": "reads"
+      }
+    ]
+  }
+}

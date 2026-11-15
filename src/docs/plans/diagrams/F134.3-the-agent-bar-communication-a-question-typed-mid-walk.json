@@ -1,0 +1,91 @@
+{
+  "kind": "sequence",
+  "title": "F134.3 the agent bar: a question typed mid-walk",
+  "caption": "The bar sends through the widget's own runner; the orb reads the runner's state as it thinks, speaks and shows a place.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "v",
+        "label": "A visitor",
+        "icon": "user",
+        "tone": "blue"
+      },
+      {
+        "id": "bar",
+        "label": "AgentBar",
+        "icon": "box",
+        "tone": "green"
+      },
+      {
+        "id": "widget",
+        "label": "ChatWidget",
+        "icon": "message",
+        "tone": "green"
+      },
+      {
+        "id": "runner",
+        "label": "ChatRunner",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "guide",
+        "label": "The guide",
+        "icon": "server",
+        "tone": "violet"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "v",
+        "to": "bar",
+        "text": "types, and sends"
+      },
+      {
+        "step": "message",
+        "from": "bar",
+        "to": "widget",
+        "text": "OnSend"
+      },
+      {
+        "step": "message",
+        "from": "widget",
+        "to": "runner",
+        "text": "SendAsync, with the page in view"
+      },
+      {
+        "step": "message",
+        "from": "runner",
+        "to": "guide",
+        "text": "the question"
+      },
+      {
+        "step": "note",
+        "over": [
+          "bar"
+        ],
+        "text": "the orb thinks"
+      },
+      {
+        "step": "reply",
+        "from": "guide",
+        "to": "runner",
+        "text": "words, then ShowPage"
+      },
+      {
+        "step": "note",
+        "over": [
+          "bar"
+        ],
+        "text": "the orb speaks, then shows"
+      },
+      {
+        "step": "reply",
+        "from": "runner",
+        "to": "bar",
+        "text": "the turn, the box still there"
+      }
+    ]
+  }
+}
