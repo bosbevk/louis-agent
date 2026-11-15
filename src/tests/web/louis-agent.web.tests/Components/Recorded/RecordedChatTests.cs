@@ -250,9 +250,11 @@ public class RecordedChatTests
         bool askedWhileHeld = cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal);
         cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
 
-        // Its question shows as soon as the play goes on; the whole recording after it can take a while under load.
-        cut.WaitForAssertion(() => Assert.That(
-            (askedWhileHeld, cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal)),
-            Is.EqualTo((false, true))), TimeSpan.FromSeconds(5));
+        // Its question shows as soon as the play goes on. A wait for a state, not an assertion: NUnit counts each
+        // failed try inside a retried assertion against the test, even when a later try passes.
+        cut.WaitForState(() => cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal),
+            TimeSpan.FromSeconds(5));
+
+        Assert.That(askedWhileHeld, Is.False, "the question waited while the play was held");
     }
 }

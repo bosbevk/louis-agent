@@ -246,10 +246,13 @@ public class BusinessDemoTests
         ctx.Services.AddSingleton(activity);
         var cut = Demo(ctx);
 
+        // Waits for each state rather than retrying an assertion, which NUnit would count against the test.
         activity.Set(true);
-        cut.WaitForAssertion(() => Assert.That(cut.FindComponent<RecordedChat>().Instance.Hold, Is.True));
+        cut.WaitForState(() => cut.FindComponent<RecordedChat>().Instance.Hold);
         activity.Set(false);
+        cut.WaitForState(() => !cut.FindComponent<RecordedChat>().Instance.Hold);
 
-        cut.WaitForAssertion(() => Assert.That(cut.FindComponent<RecordedChat>().Instance.Hold, Is.False));
+        Assert.That(cut.FindComponent<RecordedChat>().Instance.Hold, Is.False,
+            "the play goes on once the guide is done");
     }
 }

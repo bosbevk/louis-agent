@@ -161,6 +161,9 @@ public class AgentBarTests
         cut.WaitForState(() => cut.FindAll(".agent-talk").Count == 1 && cut.FindAll(".orb.is-idle").Count == 1,
             TimeSpan.FromSeconds(10));
 
-        cut.WaitForAssertion(() => Assert.That(told, Is.EqualTo(new[] { true, false })), TimeSpan.FromSeconds(2));
+        // Waits for the last telling, then asserts once: NUnit counts a retried assertion's failed tries.
+        cut.WaitForState(() => told.Count >= 2, TimeSpan.FromSeconds(2));
+
+        Assert.That(told, Is.EqualTo(new[] { true, false }));
     }
 }
