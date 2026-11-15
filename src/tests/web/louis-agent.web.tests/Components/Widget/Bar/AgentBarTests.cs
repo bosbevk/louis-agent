@@ -1,5 +1,6 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget;
+using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -90,5 +91,39 @@ public class AgentBarTests
 
         Assert.That((thinking.EndsInWords, answered.EndsInWords, calling.EndsInWords),
             Is.EqualTo((false, true, false)));
+    }
+
+    /// <summary>
+    /// The site's suggestions stand over the bar as chips while the guide waits, each asking its question, and end
+    /// with the word that the box is there too (F134's rule 3). They step aside while the guide works.
+    /// </summary>
+    [Test]
+    public void TheSuggestions_AreChipsWhileItWaits_AndAChipAsks()
+    {
+        using var ctx = Context();
+        ctx.Services.AddSingleton(new AgentSuggestions(["Walk me through this page", "What does it cost?"]));
+        var cut = Bar(ctx);
+
+        var chips = cut.FindAll(".agent-chips button").Select(b => b.TextContent).ToList();
+        var note = cut.Find(".agent-chips .agent-chips-note").TextContent;
+        cut.Find(".agent-chips button").Click();
+        cut.WaitForState(() => cut.FindAll(".agent-talk .user-text").Count == 1, TimeSpan.FromSeconds(10));
+        var asked = cut.Find(".agent-talk .user-text").TextContent;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(chips, Is.EqualTo(new[] { "Walk me through this page", "What does it cost?" }));
+            Assert.That(note, Is.EqualTo("or type your own"));
+            Assert.That(asked, Is.EqualTo("Walk me through this page"));
+        });
+    }
+
+    /// <summary>A site that names no suggestions has no chips.</summary>
+    [Test]
+    public void WithNoSuggestions_ThereAreNoChips()
+    {
+        using var ctx = Context();
+
+        Assert.That(Bar(ctx).FindAll(".agent-chips"), Is.Empty);
     }
 }

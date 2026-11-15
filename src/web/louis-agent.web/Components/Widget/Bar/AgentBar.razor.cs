@@ -3,6 +3,7 @@ using LouisAgent.Web.Components.Widget.Orb;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Widget.Bar;
 
@@ -56,6 +57,13 @@ public partial class AgentBar : IDisposable
     /// <summary>The chat's words.</summary>
     [Inject]
     private ChatText Text { get; set; } = null!;
+
+    /// <summary>The site's services, where its guide's suggestions are when it names any.</summary>
+    [Inject]
+    private IServiceProvider Services { get; set; } = null!;
+
+    /// <summary>The questions the site's guide offers as chips; none when the site names none.</summary>
+    private IReadOnlyList<string>? Chips => Services.GetService<AgentSuggestions>()?.Questions;
 
     /// <summary>Whether the talk is open whole, or folded to its end.</summary>
     private bool _talkOpen;

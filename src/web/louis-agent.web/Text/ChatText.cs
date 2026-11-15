@@ -174,6 +174,9 @@ public sealed record ChatText
     /// <summary>What the agent bar says while the agent shows a place on the page (F134.3).</summary>
     public string AgentShowing { get; init; } = "Showing you the place…";
 
+    /// <summary>The last word among the agent bar's chips: the box is there too (F134.3).</summary>
+    public string OrTypeYourOwn { get; init; } = "or type your own";
+
     /// <summary>The agent bar's button that opens the whole talk, and folds it again (F134.3).</summary>
     public string TalkOpen { get; init; } = "Show the whole talk";
 

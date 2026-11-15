@@ -78,3 +78,21 @@
 }
 .agent-talk-toggle:hover { color: var(--bs-emphasis-color); background: rgba(var(--web-overlay-rgb), .14); }
 .agent-talk.is-open .agent-talk-toggle { position: sticky; align-self: flex-end; bottom: 0; }
+
+/* The chips over the bar while the guide waits (F134.3, the mockups'): pills of glass, centred, the box's note after
+   them in quiet words. */
+.agent-chips { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.agent-chips button {
+    padding: 9px 15px;
+    border: 0;
+    border-radius: 999px;
+    font: 500 13.5px/1.2 inherit;
+    color: var(--bs-emphasis-color);
+    background: rgba(var(--bs-body-bg-rgb), .82);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .14);
+    cursor: pointer;
+    transition: transform .2s var(--web-ease, ease-out), background .2s;
+}
+.agent-chips button:hover { transform: translateY(-2px); background: rgba(var(--web-overlay-rgb), .16); }
+.agent-chips-note { font-size: 12.5px; color: var(--bs-secondary-color); }
