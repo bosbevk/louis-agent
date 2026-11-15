@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Chat.Shell;
@@ -119,5 +120,18 @@ public class SiteAreasTests
             Assert.That(One<SiteFrames>(services).Admin, Is.EqualTo(typeof(AdminLayout)));
             Assert.That(services.Count(d => d.ServiceType == typeof(ChatHandoff)), Is.EqualTo(1));
         });
+    }
+
+    /// <summary>
+    /// A site names what its guide offers to be asked (F134.3) through the builder, as it names its other parts, and
+    /// the guide's bar reads it.
+    /// </summary>
+    [Test]
+    public void TheGuidesSuggestions_AreNamedThroughTheBuilder()
+    {
+        var services = Named(areas => areas.Suggestions("Walk me through this page", "What does it cost?"));
+
+        Assert.That(One<AgentSuggestions>(services).Questions,
+            Is.EqualTo(new[] { "Walk me through this page", "What does it cost?" }));
     }
 }

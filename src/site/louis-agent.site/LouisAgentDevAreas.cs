@@ -9,10 +9,10 @@ using LouisAgent.Web.Components.Areas.Focuses;
 namespace LouisAgent.Site;
 
 /// <summary>
-/// What louis-agent.dev is made of (F127.6): its showroom, with the site's own demos, and the part of the site each
-/// page is (F127.7), and its admin with the overview counting the guide's leads (F127.8) and the site's own Resume
-/// area, where Louis edits his CV (F142), named through the framework's builder; the guide in its corner runs on the
-/// chat's plumbing, which every site gets.
+/// What louis-agent.dev is made of (F127.6): its showroom, with the site's own demos, the part of the site each
+/// page is (F127.7), what its guide offers to be asked as the showroom's bar (F134.3), and its admin with the
+/// overview counting the guide's leads (F127.8) and the site's own Resume area, where Louis edits his CV (F142),
+/// named through the framework's builder; the guide in its corner runs on the chat's plumbing, which every site gets.
 /// </summary>
 /// <remarks>
 /// Composition Root (Seemann): the one place the site says which parts it uses. The program hands it to
@@ -26,6 +26,7 @@ public static class LouisAgentDevAreas
     /// each page is, which tells the guide how to lead (F127.7).
     /// </summary>
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
+        .Suggestions("Walk me through the demos", "Which demo is like my business?", "What does it cost?")
         .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area);
 
     /// <summary>The tool the guide sends a lead with, which the admin's overview counts as leads (F127.8).</summary>
