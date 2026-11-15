@@ -5,9 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 
 /// <summary>
-/// The agent's widget in the corner of a mocked business's website (F127.1): where its customers would meet it, under
-/// a head in the business's own brand. A visitor can fold it to its head to see the whole website, or spread it over
-/// the website to read the conversation (F127.2), as a chat window does.
+/// The agent's widget on a mocked business's website (F127.1): where its customers would meet it, under a head in
+/// the business's own brand. On a wide window it stands beside the website (F134.2), and on a narrow one across its
+/// foot. A visitor can fold it to its head to see the whole website, or spread it over the website to read the
+/// conversation (F127.2), as a chat window does.
 /// </summary>
 /// <remarks>
 /// It keeps its size and draws itself from it; the buttons are the chat window's own (<see cref="WindowButtons"/>),

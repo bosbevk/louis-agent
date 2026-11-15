@@ -1,16 +1,20 @@
-@* Wheatfield Kitchen's website (F127.1; three pages since F127.2): home, the menu with its favourites each a card with
-   a photo, the children's menu and its wine beside a photo, and a visit page with its hours, where to find it and how
-   a table is booked. Every dish, price and fact is one its agent knows. *@
+@* Wheatfield Kitchen's website (F127.1; three pages since F127.2): home, with its two ways in each a card with a
+   photo, the menu with its favourites each a card with a photo, the children's menu and its wine beside a photo, and
+   a visit page with its hours, where to find it and how a table is booked. Every dish, price and fact is one its
+   agent knows. Its words and its places are the ones its recording was sent, so changing either means recording
+   it again. *@
 <MockPage Path="/" Label="Home">
     <MockSection Path="/welcome" Heading="A country kitchen in Malmesbury">
         <ChildContent>
             <p>Lunch from Tuesday to Sunday, dinner from Thursday to Saturday, sixty seats inside and on the stoep.</p>
         </ChildContent>
         <Cards>
-            <MockCard Path="/welcome/menu" Title="The menu" Opens="/menu">
+            <MockCard Path="/welcome/menu" Title="The menu" Opens="/menu"
+                      Photo="images/showroom/wheatfield-lamb.webp">
                 Country cooking from the Swartland's own farms.
             </MockCard>
-            <MockCard Path="/welcome/visit" Title="Book a table" Opens="/visit">
+            <MockCard Path="/welcome/visit" Title="Book a table" Opens="/visit"
+                      Photo="images/showroom/wheatfield-wine.webp">
                 When we're open, and how a booking works.
             </MockCard>
         </Cards>

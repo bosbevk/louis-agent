@@ -71,7 +71,7 @@ public partial class MockStylesTests
         Assert.Multiple(() =>
         {
             Assert.That(Narrow(Styles("MockWidget.razor.scss")), Does.Contain("--recorded-height: 180px;"));
-            Assert.That(Narrow(Styles("SiteMock.razor.scss")), Does.Contain(".mock-page { padding: 0 16px 280px; }"));
+            Assert.That(Narrow(Styles("SiteMock.razor.scss")), Does.Contain("padding: 0 16px 280px;"));
         });
     }
 
@@ -128,7 +128,7 @@ public partial class MockStylesTests
         {
             Assert.That(Rule(styles, ".mock-widget.is-min .mock-widget-body"), Does.Contain("display: none;"));
             Assert.That(Rule(styles, ".mock-widget.is-max"),
-                Does.Contain("inset: 12px;").And.Contain("width: auto;").And.Contain("--recorded-height: 540px;"));
+                Does.Contain("inset: 12px;").And.Contain("width: auto;").And.Contain("@include fills;"));
         });
     }
 
@@ -152,6 +152,81 @@ public partial class MockStylesTests
                                              "    .mock-live { animation: none; }"));
             Assert.That(Rule(styles, ".mock-widget-body ::deep .assistant-message .markdown"),
                 Does.Contain("border-radius: 14px 14px 14px 4px;"));
+        });
+    }
+
+    /// <summary>
+    /// A website is as big as its window (Louis: "each inner website, needs to be expanded, and made pretty and
+    /// bigger", and "everything must kinda fit 1080p so if we must make fontsizes in the demo sites smaller then do
+    /// it"). The mock names one size that follows its own width or its height, whichever asks for less, its header and
+    /// its page take it, and what they hold is sized in em. So the website grows with its window and never sits small
+    /// in it, and on a 1080p screen its hero and its facts still fit the window.
+    /// </summary>
+    [Test]
+    public void TheWebsite_GrowsWithItsWindow()
+    {
+        string mock = Styles("SiteMock.razor.scss");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule(mock, ".site-mock"), Does.Contain("--mock-size: clamp(12px, min(.8cqi, 2.6cqb), 17px);"));
+            Assert.That(Rule(mock, ".mock-page"), Does.Contain("font-size: var(--mock-size);"));
+            Assert.That(Rule(Styles("Head/MockHead.razor.scss"), ".mock-header"),
+                Does.Contain("font-size: var(--mock-size);"));
+            Assert.That(Rule(Styles("Hero/MockHero.razor.scss"), ".mock-hero-line"), Does.Contain("font-size: 3.2em;"));
+            Assert.That(Rule(Styles("Places/MockSection.razor.scss"), ".mock-section-heading"),
+                Does.Contain("2em/1.15 var(--mock-face)"));
+        });
+    }
+
+    /// <summary>
+    /// A photo on the website is a photo's shape, three by two, and as wide as its half of the page. It was capped at
+    /// 200 px high, which on a wide window made a thin strip of it.
+    /// </summary>
+    [Test]
+    public void APhoto_KeepsItsShape_AndIsNeverAStrip()
+    {
+        string photo = Rule(Styles("Places/MockSection.razor.scss"), ".mock-section-photo img");
+
+        Assert.That(photo, Does.Contain("aspect-ratio: 3 / 2;").And.Not.Contain("max-height"));
+    }
+
+    /// <summary>
+    /// The window fills the place it is given: on a stage that gives it the screen's height it grows to it, and it
+    /// never gets shorter than a website can be read in. On a phone it stays tall, since the chat takes its foot,
+    /// and its words stay a phone's size.
+    /// </summary>
+    [Test]
+    public void TheWindow_FillsThePlaceItIsGiven()
+    {
+        string styles = Styles("SiteMock.razor.scss");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule(styles, ".site-mock"), Does.Contain("flex: 1 1 0;").And.Contain("min-height: 460px;"));
+            Assert.That(styles, Does.Contain("@media (max-width: 900px) {\n" +
+                                             "    .site-mock { --mock-size: 14px; min-height: 660px; }"));
+        });
+    }
+
+    /// <summary>
+    /// On a wide window the chat stands beside the website, a column of its own under the browser's bar, as the K
+    /// mockup drew it, so it covers none of the website. Folded to its head it floats in the corner again.
+    /// </summary>
+    [Test]
+    public void OnAWideWindow_TheChatStandsBesideTheWebsite()
+    {
+        string widget = Styles("MockWidget.razor.scss");
+        int wide = widget.IndexOf("@container (min-width: 761px) {", StringComparison.Ordinal);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule(Styles("SiteMock.razor.scss"), ".site-mock"),
+                Does.Contain("grid-template-columns: minmax(0, 1fr) auto;"));
+            Assert.That(wide, Is.GreaterThanOrEqualTo(0), "no wide window's rules");
+            Assert.That(Rule(widget[Math.Max(wide, 0)..], ".mock-widget:not(.is-min):not(.is-max)"),
+                Does.Contain("position: static;").And.Contain("grid-column: 2;").And.Contain("grid-row: 2 / 4;"));
+            Assert.That(Rule(widget, ".mock-widget"), Does.Contain("position: absolute;"), "folded, it floats");
         });
     }
 }

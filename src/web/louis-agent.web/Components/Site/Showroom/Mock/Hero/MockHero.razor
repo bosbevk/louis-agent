@@ -1,0 +1,42 @@
+@* A mocked business's hero (F127.1, a part of its own since F134.2): its line set large in its display face, a note and
+   a call to action under it, beside its photo or over it, as its look says (the look's class is on its mock), then a
+   band of the facts its agent knows. A business with no photo shows the scene drawn for it. *@
+<div class="mock-hero">
+    <div class="mock-hero-words">
+        <p class="mock-hero-line">@Line</p>
+        @if (Note is not null)
+        {
+            <p class="mock-hero-note">@Note</p>
+        }
+        @if (Action is not null)
+        {
+            <span class="mock-action">@Action</span>
+        }
+    </div>
+    @if (Photo is not null)
+    {
+        <div class="mock-scene is-photo">
+            <img class="mock-photo" src="@Photo" alt="@PhotoAlt" />
+            <span class="mock-photo-badge">
+                @if (Mark is not null)
+                {
+                    <span class="mock-mark" aria-hidden="true">@Mark</span>
+                }
+                <b>@Business</b>
+            </span>
+        </div>
+    }
+    else if (Scene is not null)
+    {
+        <div class="mock-scene" aria-hidden="true">@Scene</div>
+    }
+</div>
+@if (Facts.Count > 0)
+{
+    <ul class="mock-facts">
+        @foreach (var fact in Facts)
+        {
+            <li>@fact</li>
+        }
+    </ul>
+}

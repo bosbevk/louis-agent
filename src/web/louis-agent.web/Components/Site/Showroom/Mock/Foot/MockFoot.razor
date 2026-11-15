@@ -1,0 +1,34 @@
+@* A mocked business's foot (F134.2): where its website ends, as a real one does. A band of its brand colour with its
+   mark, its name and its tagline, its menu again, each word a button that goes to its page, and the facts its hero
+   gave, so nothing here is new to its agent. *@
+<div class="mock-foot">
+    <div class="mock-foot-brand">
+        @if (Mark is not null)
+        {
+            <span class="mock-mark" aria-hidden="true">@Mark</span>
+        }
+        <span class="mock-foot-names">
+            <b class="mock-foot-name">@Business</b>
+            @if (Tagline is not null)
+            {
+                <span class="mock-foot-tagline">@Tagline</span>
+            }
+        </span>
+    </div>
+    <div class="mock-foot-nav">
+        @foreach (var entry in Menu)
+        {
+            <button class="mock-foot-link" type="button"
+                    @onclick="() => Went.InvokeAsync(entry.Path)">@entry.Label</button>
+        }
+    </div>
+    @if (Facts.Count > 0)
+    {
+        <ul class="mock-foot-facts">
+            @foreach (var fact in Facts)
+            {
+                <li class="mock-foot-fact">@fact</li>
+            }
+        </ul>
+    }
+</div>

@@ -38,8 +38,17 @@
 }
 .stage-lede { margin: 8px 0 0; font-size: 15px; line-height: 1.55; color: var(--web-soft-text); max-width: 560px; }
 
+/* The first screen, as the K mockup drew it: the story, the player and what to watch stand in one frame as tall as
+   the screen between the showroom's bar (--stage-top) and the guide's (--stage-foot), and the player takes what the
+   other two leave. Only a stage whose player fills is held to that height: a player with a height of its own keeps
+   it, and its offer follows it with no gap. */
+.demo-stage { --stage-top: 72px; --stage-foot: 146px; }
+.stage-screen { display: flex; flex-direction: column; }
+.demo-stage.is-filling .stage-screen {
+    min-height: calc(100dvh - var(--stage-top) - var(--stage-foot));
+}
 /* The player the whole width of the stage, and what to watch under it as a row of chapters (F134.2, the K mockup). */
-.stage-player { min-width: 0; padding: 16px 32px 0; }
+.stage-player { display: flex; flex: 1 0 auto; flex-direction: column; min-width: 0; padding: 16px 32px 0; }
 .stage-cues { padding: 16px 32px 0; }
 /* A place's heading only a screen reader and the guide's tour read: the player and the offer show what they are. */
 .stage-place {
@@ -93,6 +102,13 @@
     white-space: nowrap;
 }
 .stage-offer ::deep a:hover { box-shadow: 0 0 0 2px var(--web-bright); }
+
+/* On a screen that is wide but not tall, a laptop's, the story takes less of the height, so the player keeps it. */
+@media (min-width: 901px) and (max-height: 1100px) {
+    .stage-head { padding-top: 16px; }
+    .stage-title { font-size: clamp(30px, 2.8vw, 44px); }
+    .stage-player, .stage-cues { padding-top: 12px; }
+}
 
 @media (max-width: 900px) {
     .stage-head { display: block; padding: 16px 16px 4px; }

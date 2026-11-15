@@ -1,81 +1,81 @@
 @use "web/tools/accents";
-@use "web/tools/glow";
 
-/* The rail (F127.1), since F134.2 the K mockup's slim glass column of icons: it stays beside the stage as the page
-   scrolls. Each demo is its icon on a glowing tile in its colour that lifts a little on hover; the one on screen is
-   ringed and has a lit dot beside it. A group's name is read, not shown: a short line stands between groups. Hidden
-   on a phone, where the chips take its place. */
+/* The rail (F127.1), since F134.2 the K mockup's slim glass column of icons: it stays beside the stage, about the
+   middle of the screen, as the page scrolls. Each demo is its line icon in its colour on a tile that grows a little
+   on hover, when its name slides out beside it; the one on screen stands on a tint of its colour, ringed and lit. A
+   group's name is read, not shown: a short line stands between groups. The rail never scrolls, so it draws no
+   scrollbar and a name can reach past its edge. Hidden on a phone, where the chips take its place. */
 @include accents.classes;
 
 .demo-rail {
     position: sticky;
-    top: 58px;
+    top: max(74px, calc(50dvh - 190px));
+    z-index: 5;
     align-self: start;
+    justify-self: start;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    max-height: calc(100dvh - 58px);
-    overflow-y: auto;
     margin: 14px 0 14px 14px;
-    padding: 10px 8px;
+    padding: 8px;
     border: 1px solid rgba(var(--web-overlay-rgb), .1);
-    border-radius: 18px;
+    border-radius: 22px;
     background: rgba(var(--bs-body-bg-rgb), .55);
     backdrop-filter: blur(10px);
 }
 /* A group's name, for a screen reader: on screen a short line between groups, and none before the first. */
 .rail-group {
     position: relative;
-    width: 22px;
+    width: 26px;
     height: 1px;
-    margin: 6px 0;
+    margin: 4px 0;
     overflow: hidden;
     color: transparent;
-    background: var(--bs-border-color);
+    background: rgba(var(--web-overlay-rgb), .14);
 }
 .rail-group:first-child { height: 0; margin: 0; }
 .demo-cover {
     position: relative;
-    display: flex;
-    padding: 4px;
-    border: 1px solid transparent;
-    border-radius: 14px;
-    color: inherit;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+    font-size: 21px;
+    color: var(--accent);
     text-decoration: none;
-    transition: transform .2s var(--web-ease, ease-out), border-color .2s;
+    transition: background-color .3s, transform .3s var(--web-spring);
 }
-.demo-cover:hover { transform: translateY(-2px); }
-.cover-sign {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 22px;
-    color: var(--web-on-primary);
-    background: glow.shade(var(--accent));
-    box-shadow: 0 8px 22px -8px var(--accent), inset 0 1px 0 rgba(var(--web-overlay-rgb), .5);
-}
+.demo-cover:hover, .demo-cover:focus-visible { background: rgba(var(--web-overlay-rgb), .07); transform: scale(1.08); }
+.cover-sign { display: grid; place-items: center; }
 .demo-cover.is-current {
-    border-color: glow.tint(var(--accent), 55%);
-    box-shadow: 0 0 30px -12px var(--accent);
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent), 0 0 26px -6px var(--accent);
 }
-.demo-cover.is-current::after {
-    content: "";
+/* A demo's name, beside its icon while the pointer or the keyboard is on it. A screen reader reads the link's label. */
+.cover-tip {
     position: absolute;
-    right: -9px;
-    top: 50%;
-    margin-top: -3px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
+    left: 58px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--bs-emphasis-color);
+    background: var(--bs-tertiary-bg);
+    box-shadow: inset 0 0 0 1px rgba(var(--web-overlay-rgb), .1), 0 14px 30px -14px rgba(var(--web-shadow-rgb), .9);
+    opacity: 0;
+    transform: translateX(-6px);
+    pointer-events: none;
+    transition: opacity .25s, transform .25s var(--web-ease);
 }
+.demo-cover:hover .cover-tip, .demo-cover:focus-visible .cover-tip { opacity: 1; transform: none; }
 
 @media (max-width: 900px) {
     .demo-rail { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .demo-cover, .cover-tip { transition: none; }
+    .demo-cover:hover, .demo-cover:focus-visible { transform: none; }
 }

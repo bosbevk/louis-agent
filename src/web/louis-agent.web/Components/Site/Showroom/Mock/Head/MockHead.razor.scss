@@ -1,31 +1,34 @@
 /* A mocked business's header (F127.1, apart from its mock since F127.2): its mark, its wordmark in its display face
    (--mock-face) with its tagline under it, and its menu, both in its small capitals (--mock-caps) and its label colour
-   (--mock-label), all set on its mock from its brand. A band of its brand colour unless its mock says another. */
+   (--mock-label), all set on its mock from its brand. A band of its brand colour unless its mock says another. It
+   stands over the website's page, in the mock's first column, and takes the mock's size (--mock-size), so its sizes,
+   in em, grow with the window. */
 .mock-header {
+    grid-column: 1;
     display: flex;
-    flex: none;
     align-items: center;
-    gap: 22px;
-    padding: 14px 22px;
+    gap: 1.4em;
+    padding: 1.1em 2.6em;
     font-family: var(--mock-face);
+    font-size: var(--mock-size);
     color: var(--mock-on-brand);
     background: var(--mock-brand);
 }
-.mock-mark { display: inline-flex; flex: none; width: 38px; height: 38px; }
+.mock-mark { display: inline-flex; flex: none; width: 3em; height: 3em; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
-.mock-names { display: flex; flex-direction: column; gap: 6px; line-height: 1.1; }
-.mock-name { font-size: 17px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.mock-names { display: flex; flex-direction: column; gap: .45em; line-height: 1.1; }
+.mock-name { font-size: 1.3em; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 .mock-tagline {
-    font: 500 9.5px/1 var(--mock-caps);
+    font: 500 .68em/1 var(--mock-caps);
     letter-spacing: .3em;
     text-transform: uppercase;
     color: var(--mock-label);
 }
-.mock-nav { display: flex; gap: 20px; margin-left: auto; font: 500 11px/1 var(--mock-caps); }
+.mock-nav { display: flex; gap: 2.2em; margin-left: auto; font: 500 .78em/1 var(--mock-caps); }
 /* Its menu's words are its pages (F127.2), buttons a visitor clicks, in spaced capitals; the page it's on is
    underlined. */
 .mock-nav-item {
-    padding: 5px 0;
+    padding: .6em 0;
     border: 0;
     font: inherit;
     letter-spacing: .18em;
@@ -38,16 +41,16 @@
 .mock-nav-item:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 
 /* Each brand's wordmark (mockup 0): an italic Cormorant, a plain Gloock, a Bodoni in spaced capitals. */
-.font-cormorant .mock-name { font-size: 27px; font-style: italic; letter-spacing: .005em; text-transform: none; }
-.font-gloock .mock-name { font-size: 27px; font-weight: 400; letter-spacing: 0; text-transform: none; }
-.font-bodoni .mock-name { font-size: 20px; font-weight: 500; letter-spacing: .18em; }
+.font-cormorant .mock-name { font-size: 2em; font-style: italic; letter-spacing: .005em; text-transform: none; }
+.font-gloock .mock-name { font-size: 2em; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.font-bodoni .mock-name { font-size: 1.5em; font-weight: 500; letter-spacing: .18em; }
 
 /* A band (a coastal boutique): a hairline of its text colour under it. */
 .head-band .mock-header { box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--mock-on-brand) 35%, transparent); }
 
 /* Ruled (an established firm): the page's colour under a rule of its label colour, the words in its brand colour. */
 .head-ruled .mock-header {
-    padding-top: 18px;
+    padding-top: 1.35em;
     color: var(--mock-brand);
     background: var(--mock-page);
     box-shadow: inset 0 3px 0 var(--mock-label), inset 0 -1px 0 color-mix(in srgb, var(--mock-brand) 14%, transparent);
@@ -55,7 +58,7 @@
 
 /* Lined (a farm bistro): the page's colour over a double line of its brand colour. */
 .head-lined .mock-header {
-    padding-bottom: 18px;
+    padding-bottom: 1.35em;
     color: var(--mock-brand);
     background: var(--mock-page);
     box-shadow: inset 0 -1px 0 var(--mock-brand), inset 0 -4px 0 var(--mock-page), inset 0 -5px 0 var(--mock-brand);
@@ -69,6 +72,6 @@
 @container (max-width: 760px) {
     .mock-header { flex-wrap: wrap; gap: 8px 14px; padding: 12px 16px; }
     .mock-nav { flex-basis: 100%; gap: 16px; margin-left: 0; overflow-x: auto; white-space: nowrap; }
-    .font-cormorant .mock-name, .font-gloock .mock-name { font-size: 22px; }
-    .font-bodoni .mock-name { font-size: 16px; }
+    .font-cormorant .mock-name, .font-gloock .mock-name { font-size: 1.6em; }
+    .font-bodoni .mock-name { font-size: 1.15em; }
 }

@@ -375,10 +375,19 @@ a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 010
 The showroom is the area a site shows its demos in. Its code is under `Components/Site/Showroom/`, in four
 folders, and this part takes them in the order a visitor meets them.
 
+Two things hold on every showroom page. Nothing moves by a script: what moves, moves because the visitor pressed
+something or because a tool call of the guide said so. The light on a place is the guide's `ShowPage`, the choices
+are its `Offer`, and a window comes forward because the guide showed its address. There is no scripted tour and no
+Back or Next. And the guide's box is always there: its choices are shortcuts, and a visitor can type anything at
+any time.
+
 **The frame** (`Shell/`). `ShowroomShell` is a slim bar, a rail of the demos grouped by what a visitor comes for,
-and the corner beside the frame. The rail is a slim glass column of icons: each demo is a link that shows its icon
-on a tile in its colour, with its name as its label for a screen reader and as its tip, and the one on screen is
-ringed with a lit dot beside it. A short line stands between the groups, whose names a screen reader still hears.
+and the corner beside the frame. The rail is a slim glass column of icons that stays beside the stage, about the
+middle of the screen. Each demo is a link that shows its line icon in its colour. Its name is its label for a screen
+reader, and a tip that slides out beside it when the pointer or the keyboard is on it. The one on screen stands on a
+tint of its colour, ringed and lit. The rail never scrolls, so it draws no scrollbar: a tile and the rail's own
+frame are narrower than the 84 px column the frame keeps for it. A short line stands between the groups, whose
+names a screen reader still hears.
 The demos stay links, so each is a page of its own that an address or a search engine opens. On a phone the rail
 becomes a row of chips. The whole frame is in the colour of the demo on screen, and an open guide takes the rail's
 place. Each demo names its icon, one of the framework's line icons, which the rail, the chips and the start draw.
@@ -444,6 +453,12 @@ and the page's one h1 stand on the left, with the lede beside them on a wide scr
 the stage's whole width: a business's mock website is a window already, and a page whose agent is at work puts its
 player in a lit framed window with the word of where it runs.
 
+The story, the player and what to watch share the first screen. A page whose player can grow says so (`Fills`),
+and then they stand in one frame that is as tall as the screen between the showroom's bar and the guide's, and the
+player takes what the other two leave. So a business's window is as high as the screen allows. A player with a
+height of its own, an agent's work window, keeps it, and its offer follows it with no gap. On a screen that is wide
+but not tall, a laptop's, the story takes less of the height, so the window keeps it.
+
 Under the player, what to watch is a glass panel of chapters side by side, a line of progress over them. Each is
 lit in step with the play, the newest pulsing, and each is a button that plays from its turn. Then come the notes,
 which say what a custom agent could add, each one a piece a visitor can press to ask the guide about it, and the
@@ -452,10 +467,25 @@ tour stops at the same places whatever the page looks like. On a phone the title
 chapters.
 
 **A business's website, as a mock** (`Mock/`). `SiteMock` is a browser bar, the business's sample brand, a page
-that scrolls inside the mock, and its agent's widget in the corner. The page comes in one of three looks, with a
-hero photo worn with the brand, facts and its places. A site writes each page of the mock, and each registers with
-it. The page an address is on is the longest page path it starts with. A visitor clicks through the menu, and a
-page change loads like a browser. A card with a page of its own opens it.
+that scrolls inside the mock, and its agent's chat.
+
+The mock is as big as its window. It names one size, between 12 and 17 px, that follows its own width or its
+height, whichever asks for less. Its header and its page take that size, and everything they hold is sized in em.
+So a wide window shows a big website and not a small one stretched, and on a 1920×1080 screen the hero and the
+facts still fit the window. The mock fills the height the stage gives it, and is never lower than 460 px. On a
+phone it is 660 px high with 14 px words, since a window that narrow gives no size to follow.
+
+On a wide window the chat stands beside the website, in a column of its own under the browser's bar, about three
+tenths of the window wide, so it covers none of the website. Folded to its head it floats over the mock's corner.
+Spread out it covers the mock. On a narrow mock it sits across the bottom.
+
+The home page opens with its hero (`MockHero`) in one of three looks: words beside a photo that fills its half, a
+big heading with a framed photo beside it, or a photo across the whole page with the words set on a wash of the
+brand colour. A band of facts runs under it. Then come the page's places, and every page ends with the foot
+(`MockFoot`): the brand again, the menu, and the hero's facts once more, so the foot says nothing the agent
+doesn't know. A site writes each page of the mock, and each registers with it. The page an address is on is the
+longest page path it starts with. A visitor clicks through the menu, and a page change loads like a browser. A
+card with a page of its own opens it.
 
 The mock's header wears its brand. Its font (`MockFont`) sets three faces, `--mock-face`, `--mock-text` and
 `--mock-caps`. Its header (`MockHeader`) is one of three treatments, and `MockColours.Label` is the colour of its

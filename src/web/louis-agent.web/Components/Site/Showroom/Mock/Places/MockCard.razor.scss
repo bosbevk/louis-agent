@@ -1,21 +1,22 @@
 /* A card on a mocked business's website (F127.1): a soft panel of the business's page with a band of its brand colour
    on top, its title in the business's typeface, its note (a price) under it in the brand colour, and its words. The
-   note goes under the title, since a card in a row of three has no room beside it. */
+   note goes under the title, since a card in a row of three has no room beside it. Its sizes are in em, so it
+   grows with the window as its page does. */
 .mock-card {
     position: relative;
     overflow: hidden;
-    padding: 12px 14px;
+    padding: 1.1em 1.25em 1.25em;
     border-top: 3px solid var(--mock-brand);
-    border-radius: 10px;
+    border-radius: .8em;
     background: color-mix(in srgb, var(--mock-page) 90%, var(--mock-ink));
 }
 
 /* A card with a page of its own opens it (F127.2): a quiet link in the brand colour under its words. */
 .mock-card-open {
-    margin-top: 8px;
+    margin-top: .9em;
     padding: 0;
     border: 0;
-    font: 600 12px/1 var(--mock-face);
+    font: 600 .88em/1 var(--mock-face);
     letter-spacing: .04em;
     color: var(--mock-brand);
     background: none;
@@ -57,12 +58,15 @@
 /* A card's real photo runs to its edges under the brand's band, cut to fit, never stretched. */
 .mock-card-photo {
     display: block;
-    width: calc(100% + 28px);
-    margin: -12px -14px 10px;
+    width: calc(100% + 2.5em);
+    margin: -1.1em -1.25em 1em;
     aspect-ratio: 4 / 3;
     object-fit: cover;
 }
-.mock-card-head { display: flex; flex-direction: column; gap: 3px; }
-.mock-card-title { font: 600 16px/1.2 var(--mock-face); }
-.mock-card-note { font-size: 13px; font-weight: 600; color: var(--mock-brand); }
-.mock-card-words { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; opacity: .85; }
+.mock-card-head { display: flex; flex-direction: column; gap: .25em; }
+.mock-card-title { font: 600 1.45em/1.2 var(--mock-face); }
+.mock-card-note { font-size: 1em; font-weight: 600; color: var(--mock-brand); }
+.mock-card-words { margin: .5em 0 0; font-size: .95em; line-height: 1.55; opacity: .85; }
+
+/* A face with one weight (the Gloock) wears it: a browser's made-up bold runs its letters together. */
+.font-gloock .mock-card-title { font-weight: 400; }

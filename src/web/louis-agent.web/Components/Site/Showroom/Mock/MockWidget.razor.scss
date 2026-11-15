@@ -1,7 +1,8 @@
-/* The agent's widget in the corner of a mocked business's website (F127.1): a panel over the mock's bottom right,
-   under a head in the business's brand colour (--mock-*, from the mock) with its mark and a live dot. The chat keeps
-   the framework's own look, as the real widget does; only its window bar goes, since the widget has its own head. On
-   a narrow mock it sits across the bottom. It pops (F127.2, Louis: "looks a bit too flat"): a glow in the business's
+/* The agent's widget on a mocked business's website (F127.1): under a head in the business's brand colour (--mock-*,
+   from the mock) with its mark and a live dot. On a wide window it stands beside the website, a column of its own
+   under the browser's bar (F134.2, the K mockup), so it covers none of the website; folded to its head it floats over
+   the mock's bottom right, and on a narrow mock it sits across the bottom. The chat keeps the framework's own look,
+   as the real widget does; only its window bar goes, since the widget has its own head. It pops (F127.2, Louis: "looks a bit too flat"): a glow in the business's
    colour, a head in a gradient of that one colour, a breathing live dot and the agent's answers in bubbles; and it
    sits above everything the mock draws, so no badge or banner word ever covers it. */
 .mock-widget {
@@ -66,11 +67,35 @@
 /* Minimised and maximised (F127.2, Louis: "we should have an minimize and maximize"; the buttons are the chat window's
    own, WindowButtons, in the head's brand-light colour): minimised, only the head shows, so the whole website does;
    maximised, the chat covers the mock, its conversation as tall as the mock allows. */
+/* A chat that fills its widget, whatever height the widget has: the conversation takes what the head leaves. */
+@mixin fills {
+    display: flex;
+    flex-direction: column;
+    .mock-widget-body { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+    .mock-widget-body ::deep .recorded-chat, .mock-widget-body ::deep .live-chat {
+        flex: 1 1 0;
+        height: auto;
+        min-height: 0;
+    }
+}
 .mock-widget.is-min .mock-widget-body { display: none; }
-.mock-widget.is-max {
-    inset: 12px;
-    width: auto;
-    --recorded-height: 540px;
+.mock-widget.is-max { inset: 12px; width: auto; @include fills; }
+
+/* On a wide window (F134.2) the chat stands beside the website: the mock's second column, from under the browser's
+   bar to the window's foot, as wide as about three tenths of the window. Its glow falls on the website's edge. Folded
+   or covering the mock, it is the floating panel again. */
+@container (min-width: 761px) {
+    .mock-widget:not(.is-min):not(.is-max) {
+        position: static;
+        grid-column: 2;
+        grid-row: 2 / 4;
+        width: clamp(320px, 29cqi, 520px);
+        min-height: 0;
+        border-radius: 0;
+        box-shadow: -1px 0 0 rgba(var(--web-overlay-rgb), .1),
+            0 0 44px -8px color-mix(in srgb, var(--mock-brand) 75%, transparent);
+        @include fills;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
