@@ -9,6 +9,7 @@
 
 @use "sass:color";
 @use "web/tools/colours";
+@use "theme-art";
 
 // The page: the second violet step, a third of the way into white.
 $page: color.mix(#9282ff, #ffffff, 34%);
@@ -121,6 +122,9 @@ $page: color.mix(#9282ff, #ffffff, 34%);
     --web-violet-2: #6b4dff;
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
+
+    // Each part's drawing, and each of its states, served by this project (F151.4).
+    @include theme-art.drawn(glass, light);
 
     color-scheme: light;
 }

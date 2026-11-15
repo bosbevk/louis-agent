@@ -12,7 +12,11 @@
    The mark is the agent's orb: its disc, its gloss and its letter, as the orb draws them today.
    You and the agent are each one's mark: the brightest words for you, the framework's purple for the agent.
    The violet is the brand's purple in five steps, light to dark; until a theme sets them, all five are the
-   framework's one purple. */
+   framework's one purple.
+   The art is a drawing a theme may lay on a piece (F151.4), one name for each part and state, named for the
+   drawing: a pane, the main button and the second, a field, a switch, the focus ring, a slider, a well, a tag, the
+   live label, a switch's group, the header and the cut stone on a picked piece. A theme sets each to the address of
+   a drawing or to none; the framework draws no glass, so each is none here. */
 
 :root {
     --web-pane-fill: var(--bs-secondary-bg);
@@ -44,4 +48,37 @@
     --web-violet-2: var(--web-purple);
     --web-violet-3: var(--web-purple);
     --web-violet-4: var(--web-purple);
+
+    --web-art-bar: none;
+    --web-art-field-focus: none;
+    --web-art-field-rest: none;
+    --web-art-focus-pane: none;
+    --web-art-focus-pill: none;
+    --web-art-gem: none;
+    --web-art-group: none;
+    --web-art-knob: none;
+    --web-art-pane-hover: none;
+    --web-art-pane-picked: none;
+    --web-art-pane-rest: none;
+    --web-art-pane-showing: none;
+    --web-art-press-disabled: none;
+    --web-art-press-hover: none;
+    --web-art-press-pressed: none;
+    --web-art-press-rest: none;
+    --web-art-quiet-press-disabled: none;
+    --web-art-quiet-press-hover: none;
+    --web-art-quiet-press-picked: none;
+    --web-art-quiet-press-pressed: none;
+    --web-art-quiet-press-rest: none;
+    --web-art-slider-fill: none;
+    --web-art-slider-track: none;
+    --web-art-status: none;
+    --web-art-tag-agent: none;
+    --web-art-tag-you: none;
+    --web-art-tag: none;
+    --web-art-toggle-off-disabled: none;
+    --web-art-toggle-off: none;
+    --web-art-toggle-on-disabled: none;
+    --web-art-toggle-on: none;
+    --web-art-well: none;
 }

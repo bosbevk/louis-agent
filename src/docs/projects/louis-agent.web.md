@@ -598,9 +598,11 @@ the browser keeps a visitor's pick under, `site.theme` and `site.style`, and the
 surfaces too. A pane, which is a card or a panel, has a fill, an edge, a rim drawn as its edge line, a light inside
 its corners, a shadow, a blur and a corner. A bar, which is the header, the footer or the agent's bar, has a fill, an
 edge and a blur. The main button has a fill and the ink on it, and the second one an outline. The mark has its disc,
-its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Each name is set
-to the look the framework draws today, so a site with no theme looks as it always has, and no component reads them
-yet. Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
+its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Last come the
+drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
+`--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.
+Each name is set to the look the framework draws today, so a site with no theme looks as it always has, and no
+component reads them yet. Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
 every colour name and every surface name, once for each style.
 
 **The visitor picks the look with a switch.** `LookSwitch` is two small groups of buttons: the site's themes, by

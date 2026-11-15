@@ -1,6 +1,6 @@
 # louis-agent.web.themes — design
 
-> **Kind:** contracts library (`net10.0`) · **Path:** `src/web/louis-agent.web.themes/` · **References:**
+> **Kind:** contracts library (`net10.0`, built as a Razor class library so it serves files) · **Path:** `src/web/louis-agent.web.themes/` · **References:**
 > louis-agent.web only · **Used by:** louis-agent.starter, and so what `dotnet new louis-site` makes
 
 ![The themes: one project a site names its looks from, glass and flat, each a folder holding its theme's id and name, and nothing else](diagrams/louis-agent.web.themes.svg)
@@ -63,10 +63,24 @@ an outline in the words' colour, and the mark a flat violet disc with a white le
 In both themes your own message sits under the same ink as a press, since the framework writes both with one name,
 `--web-on-primary`. Their ink is white, so your message is a dark grey in the dark and black in the light.
 
-### 4. Held to the framework's names
+### 4. Drawings, handed over as values
 
-The project's own build compiles `Styles/app.scss` to `wwwroot/css/app.css`, through the same Sass compiler
-the sites use. That sheet forwards the framework's colours and surfaces, then every theme's sheets, so the
+A glass piece is a drawing laid over a see-through blur. The framework names one drawing for each part and state,
+32 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
+own value, since the framework draws no glass. Glass sets each to the address of its drawing, and flat to `none`.
+So a theme still hands over only values, and no component names a theme.
+
+The drawings are SVGs with no size of their own: their shapes are written against their own edges, so the browser
+draws one fresh at whatever size the piece is. They are in `wwwroot/glass/dark/` and `wwwroot/glass/light/`, one
+file each, named for the part and the state. The project is built as a Razor class library, though it holds no
+component, so a site that references it serves them at `_content/louis-agent.web.themes/`. The list of drawings
+is written once, in `Styles/_theme-art.scss`, and each theme's sheet sets every one of them from it. A site's
+compiled sheet sits in its `css/` folder, so a drawing's address in it starts `../_content/`.
+
+### 5. Held to the framework's names
+
+The project's own build compiles `Styles/app.scss` to `obj/css/app.css`, through the same Sass compiler the sites
+use, outside what the project serves. That sheet forwards the framework's colours and surfaces, then every theme's sheets, so the
 compiled file holds the framework's names and each theme's blocks. No site loads it. It is there so the tests can
 ask the framework's `ThemeSheet` which names a theme's block for one style leaves unset, against the names the
 framework really sets.
@@ -79,7 +93,9 @@ framework really sets.
 | `Flat/FlatTheme.cs` | The flat theme, its area's name, and `Flat()` |
 | `Styles/theme-glass/_dark.scss`, `_light.scss` | Glass's values in the dark style and in the light |
 | `Styles/theme-flat/_dark.scss`, `_light.scss` | Flat's values in the dark style and in the light |
-| `Styles/app.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`wwwroot/css/`, not in git) |
+| `Styles/_theme-art.scss` | The list of drawings, written once, and the two ways a theme names them: each to its drawing, or each to none |
+| `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, served at `_content/louis-agent.web.themes/` |
+| `Styles/app.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`obj/css/`, not served) |
 
 ## Configuration
 
@@ -100,14 +116,17 @@ The tests are in `src/tests/web/louis-agent.web.themes.tests`, on NUnit, a folde
 `GlassThemeTests` and `FlatThemeTests` name each theme on a site's areas and check that they list it by its id and
 its name, once, even when it is named twice, and that glass named before flat comes first. `GlassSheetTests` and
 `FlatSheetTests` read the compiled `app.css`, through `CompiledThemes`, and ask `ThemeSheet` which of the
-framework's names their theme leaves unset, in each style; the answer must be none.
+framework's names their theme leaves unset, in each style; the answer must be none. `ThemesArtTests` reads the
+values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none.
 
 ## Limits and plans
 
 A picture of a screen, such as the product window, stays dark in a light style only once the part that draws it
 says so; a sheet of values can't. The starter is the one site that names the themes and lists their sheets.
-Today's components read the colours and not yet the surface names, so a pane is not glass anywhere yet, and glass
-and flat in the dark look much alike until they do.
+Today's components read the colours and not yet the surface names or the drawings, so a pane is not glass anywhere
+yet, and glass and flat in the dark look much alike until they do. The marks, the gauge and the dial have no
+drawing here: a mark is round and is drawn as it is, and a gauge and a dial show a number, which a drawing held as
+a value can't be given.
 
 ## Related docs
 

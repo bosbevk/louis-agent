@@ -1,5 +1,5 @@
 /* What the tests hold the themes to (F151.2, Louis's pick A of three): the framework's names, then every theme's
-   sheets, compiled to wwwroot/css/app.css, the name a web app's compiled sheet has. No site loads this file; a
+   sheets, compiled to obj/css/app.css, outside what the project serves. No site loads this file; a
    site lists the sheets it wants in its own app.scss. */
 
 @forward "web/settings/colours";

@@ -35,6 +35,17 @@ public static class ThemeSheet
     }
 
     /// <summary>
+    /// The values a theme's block for one style sets, by name, as the block writes them (F151.4): what a test reads
+    /// when the value matters, such as which drawing a theme names.
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> Values(string css, SiteTheme theme, SiteStyle style) =>
+        Selectors(theme, style)
+            .SelectMany(selector => Bodies(css, selector))
+            .SelectMany(Declarations)
+            .GroupBy(declaration => declaration.Name)
+            .ToDictionary(set => set.Key, set => set.Last().Value);
+
+    /// <summary>
     /// The selector a theme's block for one style is written under, with the attributes <see cref="SiteLook"/>
     /// names, in both its spellings: <c>:root[data-theme="glass"][data-style="dark"]</c> as a person writes it, and
     /// <c>:root[data-theme=glass][data-style=dark]</c> as Sass writes it (F151.2), since a theme's id and a style's
@@ -78,10 +89,17 @@ public static class ThemeSheet
     private static bool StartsARule(char before) => char.IsWhiteSpace(before) || before is '}' or ';';
 
     /// <summary>The names one block sets, such as <c>--web-ink</c> from <c>--web-ink: #111;</c>.</summary>
-    private static IEnumerable<string> Sets(string body) =>
+    private static IEnumerable<string> Sets(string body) => Declarations(body).Select(declaration => declaration.Name);
+
+    /// <summary>
+    /// What one block sets, each name with its value, such as <c>--web-ink</c> and <c>#111</c> from
+    /// <c>--web-ink: #111;</c>. A value's own colons, as in a web address, stay with the value.
+    /// </summary>
+    private static IEnumerable<(string Name, string Value)> Declarations(string body) =>
         body.Split(';')
             .Select(declaration => declaration.Trim())
             .Where(declaration => declaration.StartsWith(NameStart, StringComparison.Ordinal))
             .Where(declaration => declaration.Contains(':'))
-            .Select(declaration => declaration[..declaration.IndexOf(':')].Trim());
+            .Select(declaration => (declaration[..declaration.IndexOf(':')].Trim(),
+                declaration[(declaration.IndexOf(':') + 1)..].Trim()));
 }

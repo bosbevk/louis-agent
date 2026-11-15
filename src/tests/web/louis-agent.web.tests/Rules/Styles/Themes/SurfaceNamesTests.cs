@@ -10,6 +10,21 @@ namespace LouisAgent.Web.Tests.Rules.Styles.Themes;
 /// </summary>
 public class SurfaceNamesTests
 {
+    /// <summary>
+    /// F151.4: a drawing a theme may lay on a piece, one for each part and state (Louis's pick A of three: a drawing
+    /// is a value), named for its file in the glass theme's drawings. Before the list that reads it, since static
+    /// fields are filled in order.
+    /// </summary>
+    private static readonly string[] Art =
+    [
+        "bar", "field-focus", "field-rest", "focus-pane", "focus-pill", "gem", "group", "knob",
+        "pane-hover", "pane-picked", "pane-rest", "pane-showing",
+        "press-disabled", "press-hover", "press-pressed", "press-rest",
+        "quiet-press-disabled", "quiet-press-hover", "quiet-press-picked", "quiet-press-pressed", "quiet-press-rest",
+        "slider-fill", "slider-track", "status", "tag-agent", "tag-you", "tag",
+        "toggle-off-disabled", "toggle-off", "toggle-on-disabled", "toggle-on", "well"
+    ];
+
     /// <summary>The names a theme sets beside the colours, as the F151 plan lists them.</summary>
     private static readonly string[] Surfaces =
     [
@@ -19,7 +34,8 @@ public class SurfaceNamesTests
         "--web-press-fill", "--web-press-ink", "--web-press-edge",
         "--web-mark-fill", "--web-mark-gloss", "--web-mark-ink",
         "--web-you", "--web-agent",
-        "--web-violet-0", "--web-violet-1", "--web-violet-2", "--web-violet-3", "--web-violet-4"
+        "--web-violet-0", "--web-violet-1", "--web-violet-2", "--web-violet-3", "--web-violet-4",
+        .. Art.Select(drawing => $"--web-art-{drawing}")
     ];
 
     private const string Colours = "web/settings/colours";

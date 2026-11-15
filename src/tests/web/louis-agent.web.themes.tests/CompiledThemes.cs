@@ -9,7 +9,7 @@ internal static class CompiledThemes
     /// <summary>The compiled CSS, refused with a reason when the build made none.</summary>
     public static string Css()
     {
-        string compiled = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot/css/app.css");
+        string compiled = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/obj/css/app.css");
         Assert.That(File.Exists(compiled), Is.True, "the themes project's build compiled its sheets");
         return File.ReadAllText(compiled);
     }

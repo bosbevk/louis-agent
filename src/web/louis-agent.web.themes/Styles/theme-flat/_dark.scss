@@ -5,6 +5,7 @@
    photo's mat and the hover grey are the framework's own, and the faces and the easing the framework's. */
 
 @use "web/tools/colours";
+@use "theme-art";
 
 :root[data-theme="flat"][data-style="dark"] {
     // Written once each: the build makes the number form from the same value.
@@ -99,6 +100,9 @@
     --web-violet-2: #6b4dff;
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
+
+    // Flat lays no drawing on any piece (F151.4).
+    @include theme-art.none();
 
     color-scheme: dark;
 }

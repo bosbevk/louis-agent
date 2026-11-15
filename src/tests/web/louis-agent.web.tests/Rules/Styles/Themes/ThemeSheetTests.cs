@@ -58,6 +58,26 @@ public class ThemeSheetTests
         });
     }
 
+    /// <summary>F151.4: the values a theme's block for one style sets, by name, as the block writes them.</summary>
+    [Test]
+    public void TheValues_AreWhatTheBlockSets_ByName()
+    {
+        const string theme = """
+                             :root[data-theme=glass][data-style=dark] {
+                               --web-ink: #f5f5f5;
+                               --web-art-pane-rest: url("../_content/x/pane-rest.svg");
+                             }
+                             """;
+
+        var values = ThemeSheet.Values(theme, Glass, SiteStyle.Dark);
+
+        Assert.That(values, Is.EqualTo(new Dictionary<string, string>
+        {
+            ["--web-ink"] = "#f5f5f5",
+            ["--web-art-pane-rest"] = "url(\"../_content/x/pane-rest.svg\")"
+        }));
+    }
+
     /// <summary>A name left out of the dark block is missing in dark, and only there.</summary>
     [Test]
     public void ANameLeftOutOfOneStyle_IsMissingInThatStyleOnly()
