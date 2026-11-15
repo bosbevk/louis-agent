@@ -6,13 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Components.Site.Showroom.Stage;
 
 /// <summary>
-/// A demo page's stage in the showroom (F127.1): a strip in the demo's colour, what the demo is, its title as the
-/// page's one h1, a line of what happens, then the player (a mock of the business's website, or an agent's work
-/// window) with the cues beside it, and the site's offer under them.
+/// A demo page's stage in the showroom (F127.1), standing on the start's lit stage in its colour (F134.2): what the
+/// demo is, its title as the page's one h1, a line of what happens beside it, then the player (a mock of the
+/// business's website, or an agent's work window) the whole width, what to watch as chapters under it, and the
+/// site's offer under them.
 /// </summary>
 /// <remarks>
 /// A page fills slots in a fixed order, so every demo reads the same way and a new one only writes its words. The
-/// stage wears its colour as an accent class, so the strip, the title's fade, the cues and the offer all draw with
+/// stage wears its colour as an accent class, so the light, the title's fade, the cues and the offer all draw with
 /// <c>--accent</c> and change together. Each part is a section with an id and a heading, the shape the guide's tour
 /// walks on every page, so a demo needs nothing of its own to be toured; the player and the offer have a heading only
 /// a screen reader and the guide read.
@@ -45,7 +46,7 @@ public partial class DemoStage
     [Parameter, EditorRequired]
     public RenderFragment Player { get; set; } = null!;
 
-    /// <summary>What to watch for, beside the player; none when the player shows its own steps.</summary>
+    /// <summary>What to watch for, as chapters under the player; none when the player shows its own steps.</summary>
     [Parameter]
     public RenderFragment? Cues { get; set; }
 
@@ -62,7 +63,4 @@ public partial class DemoStage
 
     /// <summary>The stage's classes: a stage, in its demo's colour.</summary>
     private string Classes => $"demo-stage accent-{Accent.Wire()}";
-
-    /// <summary>The body's classes: with no cues the player takes the whole width.</summary>
-    private string BodyClasses => Cues is null ? "stage-body is-alone" : "stage-body";
 }

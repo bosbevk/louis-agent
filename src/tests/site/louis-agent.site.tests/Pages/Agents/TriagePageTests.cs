@@ -50,7 +50,7 @@ public class TriagePageTests
                 .Cast<LayoutAttribute>().Single().LayoutType, Is.EqualTo(typeof(ShowroomLayout)));
             Assert.That(cut.Find(".demo-stage").ClassList, Does.Contain("accent-purple"));
             Assert.That(cut.Find("#the-demo .triage-player"), Is.Not.Null);
-            Assert.That(cut.Find(".stage-body").ClassList, Does.Contain("is-alone"));
+            Assert.That(cut.FindAll("#what-to-watch"), Is.Empty, "no chapters: the player shows its own steps");
             Assert.That(cut.Find("#ask a").GetAttribute("href"), Is.EqualTo("/contact"));
         });
     }
