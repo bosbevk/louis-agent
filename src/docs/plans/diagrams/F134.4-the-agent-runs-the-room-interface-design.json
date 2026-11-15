@@ -1,0 +1,116 @@
+{
+  "kind": "classes",
+  "title": "F134.4 the agent runs the room: the interface design",
+  "caption": "The bar draws the caption from the last turn and its Offer; the guide's activity is a small state the bar keeps and a demo's player reads.",
+  "classes": {
+    "types": [
+      {
+        "id": "bar",
+        "name": "AgentBar",
+        "kind": "class, changed in steps 2, 4, 7",
+        "members": [
+          "+Runner, OnChoose",
+          "caption, drawer"
+        ]
+      },
+      {
+        "id": "caption",
+        "name": "AgentCaption",
+        "kind": "class, new in step 2",
+        "members": [
+          "+Words, Offered",
+          "+OnChoose, OnAsk"
+        ]
+      },
+      {
+        "id": "offered",
+        "name": "Offered",
+        "kind": "record",
+        "members": [
+          "Question, Choices"
+        ]
+      },
+      {
+        "id": "choice",
+        "name": "OfferChoice",
+        "kind": "record",
+        "members": [
+          "Label, Why, Suggested"
+        ]
+      },
+      {
+        "id": "activity",
+        "name": "GuideActivity",
+        "kind": "class, new in step 6",
+        "members": [
+          "+Talking",
+          "+Changed"
+        ]
+      },
+      {
+        "id": "player",
+        "name": "RecordedChat",
+        "kind": "class, changed in step 6",
+        "members": [
+          "+Turns, Pace",
+          "+Hold (step 6)"
+        ]
+      },
+      {
+        "id": "demo",
+        "name": "BusinessDemo",
+        "kind": "the site's, changed in step 6"
+      },
+      {
+        "id": "script",
+        "name": "ChatWidget.razor.js",
+        "kind": "module, changed in step 4",
+        "members": [
+          "showArea",
+          "placeCaption (step 4)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "bar",
+        "to": "caption",
+        "kind": "holds"
+      },
+      {
+        "from": "caption",
+        "to": "offered",
+        "kind": "uses"
+      },
+      {
+        "from": "offered",
+        "to": "choice",
+        "kind": "holds"
+      },
+      {
+        "from": "bar",
+        "to": "activity",
+        "kind": "uses",
+        "word": "sets"
+      },
+      {
+        "from": "demo",
+        "to": "activity",
+        "kind": "uses",
+        "word": "reads"
+      },
+      {
+        "from": "demo",
+        "to": "player",
+        "kind": "holds",
+        "word": "Hold"
+      },
+      {
+        "from": "bar",
+        "to": "script",
+        "kind": "uses",
+        "word": "places"
+      }
+    ]
+  }
+}
