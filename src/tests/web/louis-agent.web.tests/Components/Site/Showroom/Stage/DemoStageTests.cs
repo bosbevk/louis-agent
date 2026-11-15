@@ -72,10 +72,10 @@ public class DemoStageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".demo-stage > *").Select(part => part.Id),
+            Assert.That(cut.FindAll(".demo-stage section[id]").Select(part => part.Id),
                 Is.EqualTo(new[] { "top", "the-demo", "what-to-watch", "ask" }));
             Assert.That(cut.Find("#the-demo .player").TextContent, Is.EqualTo("The chat"));
-            Assert.That(cut.Find("#what-to-watch + .stage-offer a").GetAttribute("href"), Is.EqualTo("/contact"));
+            Assert.That(cut.Find(".stage-screen + .stage-offer a").GetAttribute("href"), Is.EqualTo("/contact"));
         });
     }
 
@@ -115,8 +115,8 @@ public class DemoStageTests
             .Add(stage => stage.Notes, "<div class=\"notes\">Make it yours</div>")
             .Add(stage => stage.Offer, "<a href=\"/contact\">Ask for yours</a>"));
 
-        Assert.That(cut.FindAll(".demo-stage > *")
-                .Select(part => string.IsNullOrEmpty(part.Id) ? part.ClassName : part.Id),
+        Assert.That(cut.FindAll(".demo-stage section[id]")
+                .Select(part => part.Id),
             Is.EqualTo(new[] { "top", "the-demo", "make-it-yours", "ask" }));
     }
 
@@ -128,7 +128,56 @@ public class DemoStageTests
 
         var cut = Stage(ctx, cues: false);
 
-        Assert.That(cut.FindAll(".demo-stage > *").Select(part => part.Id),
+        Assert.That(cut.FindAll(".demo-stage section[id]").Select(part => part.Id),
             Is.EqualTo(new[] { "top", "the-demo", "ask" }));
+    }
+
+    /// <summary>
+    /// The story, the demo and what to watch share the first screen, as the K mockup drew it: they stand in one frame
+    /// that is as tall as the screen under the showroom's bar and over the guide's, and the player takes what the
+    /// other two leave. The notes and the offer come under it.
+    /// </summary>
+    [Test]
+    public void TheFirstScreen_HoldsTheStoryTheDemoAndWhatToWatch()
+    {
+        using var ctx = new BunitContext();
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Stage/DemoStage.razor.scss"));
+
+        var screen = Stage(ctx).Find(".demo-stage > .stage-screen");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(screen.Children.Select(part => part.Id),
+                Is.EqualTo(new[] { "top", "the-demo", "what-to-watch" }));
+            Assert.That(screen.NextElementSibling!.Id, Is.EqualTo("ask"), "the offer comes under the first screen");
+            Assert.That(styles, Does.Contain("min-height: calc(100dvh - var(--stage-top) - var(--stage-foot));"));
+            Assert.That(styles, Does.Contain(".stage-player { display: flex; flex: 1 0 auto; flex-direction: column;"));
+        });
+    }
+
+    /// <summary>
+    /// Only a player that can grow is given the screen's height. A business's window fills what it is given, so its
+    /// stage says it fills. An agent's work window has a height of its own, and held to the screen's height its
+    /// stage would leave a gap under it, so that stage says nothing and its offer follows its window.
+    /// </summary>
+    [Test]
+    public void OnlyAStageWhosePlayerFills_IsHeldToTheScreensHeight()
+    {
+        using var ctx = new BunitContext();
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Stage/DemoStage.razor.scss"));
+
+        var filling = ctx.Render<DemoStage>(parameters => parameters
+            .Add(stage => stage.Title, "Bread at dawn.")
+            .Add(stage => stage.Player, "<div class=\"player\">The website</div>")
+            .Add(stage => stage.Fills, true));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(filling.Find(".demo-stage").ClassList, Does.Contain("is-filling"));
+            Assert.That(Stage(ctx).Find(".demo-stage").ClassList, Does.Not.Contain("is-filling"));
+            Assert.That(styles, Does.Contain(".demo-stage.is-filling .stage-screen {"));
+        });
     }
 }

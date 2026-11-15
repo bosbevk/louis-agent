@@ -1,43 +1,52 @@
 /* A section of a mocked business's website (F127.1): its heading in the business's typeface and brand colour, a thin
-   rule in its ink above it, its words, and its cards in a row that wraps. */
+   rule in its ink above it, its words, and its cards in a row that wraps. Its sizes are in em, so it grows with the
+   window as its page does. */
 .mock-section {
-    padding: 22px 0 6px;
+    padding: 2.8em 0 1.2em;
     border-top: 1px solid color-mix(in srgb, var(--mock-ink) 14%, transparent);
-    font-size: 13.5px;
-    line-height: 1.55;
+    font-size: 1.05em;
+    line-height: 1.65;
 }
-.mock-section-heading {
-    margin: 0 0 6px;
-    font: 600 19px/1.2 var(--mock-face);
-    color: var(--mock-brand);
-}
-.mock-section ::deep p { margin: 0 0 8px; }
+.mock-section-heading { margin: 0 0 .35em; font: 600 2em/1.15 var(--mock-face); color: var(--mock-brand); }
+.mock-section ::deep p { max-width: 68ch; margin: 0 0 .7em; }
 /* A list in a section (F127.2: what a will covers, an estate's steps), set close as the words around it. */
-.mock-section ::deep ul, .mock-section ::deep ol { margin: 0 0 8px; padding-left: 20px; }
-.mock-section ::deep li { margin: 0 0 3px; }
-/* A section with a real photo (Louis: "more detail and images"): the photo beside its words, in a frame casting the
-   business's colour, the side swapping from one such section to the next; its cards run under both. */
+.mock-section ::deep ul, .mock-section ::deep ol { max-width: 68ch; margin: 0 0 .7em; padding-left: 1.4em; }
+.mock-section ::deep li { margin: 0 0 .3em; }
+/* A section with a real photo (Louis: "more detail and images"): the photo beside its words, as wide as its half of
+   the page and a photo's shape, never a strip, in a frame casting the business's colour, the side swapping from one
+   such section to the next; its cards run under both. */
 .mock-section.has-photo {
     display: grid;
-    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
-    gap: 6px 22px;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: 1em 3.2em;
     align-items: center;
 }
-.mock-section.has-photo:nth-of-type(even) { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); }
-.mock-section.has-photo:nth-of-type(even) .mock-section-photo { order: 2; }
+.mock-section.has-photo:nth-of-type(even) { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
+.mock-section.has-photo:nth-of-type(even) .mock-section-photo { order: 2; justify-self: end; }
+.mock-section-photo { width: 100%; max-width: 31em; }
 .mock-section-photo img {
     display: block;
     width: 100%;
-    max-height: 200px;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 16px 34px -18px var(--mock-brand);
+    border-radius: .9em;
+    box-shadow: 0 1.8em 3.4em -2em var(--mock-brand);
 }
 .mock-section.has-photo .mock-cards { grid-column: 1 / -1; }
 .mock-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+    gap: 1.3em;
+    margin-top: 1.4em;
 }
+
+/* A narrow mock (a phone): the photo over its words. */
+@container (max-width: 760px) {
+    .mock-section { padding: 1.6em 0 .6em; }
+    .mock-section.has-photo, .mock-section.has-photo:nth-of-type(even) { grid-template-columns: minmax(0, 1fr); }
+    .mock-section.has-photo:nth-of-type(even) .mock-section-photo { order: 0; }
+    .mock-section-photo { max-width: none; }
+}
+
+/* A face with one weight (the Gloock) wears it: a browser's made-up bold runs its letters together. */
+.font-gloock .mock-section-heading { font-weight: 400; }

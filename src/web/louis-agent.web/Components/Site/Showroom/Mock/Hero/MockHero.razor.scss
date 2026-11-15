@@ -1,0 +1,135 @@
+/* The hero's photo badge wears the business's mark. */
+.mock-mark { display: inline-flex; flex: none; }
+.mock-mark ::deep svg { width: 100%; height: 100%; }
+
+/* The hero, in the business's display face: its words on the page's colour, set large, beside a photo that fills its
+   side of the hero to the window's edge. */
+.mock-hero {
+    flex: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    min-height: 25em;
+    font-family: var(--mock-face);
+}
+.mock-hero-words {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-width: 0;
+    padding: 2.6em var(--mock-gutter);
+}
+.mock-hero-line { margin: 0; font-size: 3.2em; font-weight: 400; line-height: 1.06; color: var(--mock-brand); }
+.mock-hero-note {
+    max-width: 32em;
+    margin: 1em 0 0;
+    font: 400 1.1em/1.55 var(--mock-text);
+    color: color-mix(in srgb, var(--mock-ink) 75%, transparent);
+}
+.mock-action {
+    display: inline-block;
+    margin-top: 1.7em;
+    padding: .9em 1.8em;
+    border-radius: 999px;
+    font: 600 .92em/1 var(--mock-text);
+    letter-spacing: .03em;
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+    box-shadow: 0 1em 2em -1.1em var(--mock-brand);
+}
+.mock-scene { position: relative; min-width: 0; }
+.mock-scene ::deep svg { display: block; width: 100%; height: auto; }
+/* A real photo for the hero, worn with the business's brand (Louis: "real images with real branding, but also not
+   real"): cut to fit its side, washed from the bottom in its brand colour, with a badge of its mark and name. */
+.mock-scene.is-photo { overflow: hidden; }
+.mock-scene.is-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 60%, transparent), transparent 55%);
+}
+.mock-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.mock-photo-badge {
+    position: absolute;
+    left: 1.4em;
+    bottom: 1.4em;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: .7em;
+    padding: .4em 1em .4em .4em;
+    border-radius: 999px;
+    font: 600 .8em/1 var(--mock-face);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+    box-shadow: 0 8px 20px -8px rgba(var(--web-shadow-rgb), .6);
+}
+.mock-photo-badge .mock-mark { width: 2em; height: 2em; }
+/* The facts, a band the whole width under the hero, each in the brand's small capitals between hairlines. */
+.mock-facts {
+    flex: none;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin: 0;
+    padding: 0 var(--mock-gutter);
+    list-style: none;
+    border-block: 1px solid color-mix(in srgb, var(--mock-brand) 16%, transparent);
+    background: color-mix(in srgb, var(--mock-brand) 7%, var(--mock-page));
+}
+.mock-facts li {
+    padding: 1.5em 1em;
+    font: 600 .74em/1.4 var(--mock-caps);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--mock-brand);
+}
+.mock-facts li + li { border-left: 1px solid color-mix(in srgb, var(--mock-brand) 16%, transparent); }
+
+/* Editorial: a big heading in the business's ink, the photo framed and smaller at its side, a double rule under the
+   hero, and a squarer button. */
+.look-editorial .mock-hero {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr);
+    border-bottom: 3px double color-mix(in srgb, var(--mock-ink) 35%, transparent);
+}
+.look-editorial .mock-hero-line { font-size: 3.6em; font-weight: 600; letter-spacing: -.01em; color: var(--mock-ink); }
+.look-editorial .mock-scene { margin: 2.4em var(--mock-gutter) 2.4em 0; }
+.look-editorial .mock-scene.is-photo { border-radius: .3em; box-shadow: 0 1.6em 3em -1.8em var(--mock-brand); }
+.look-editorial .mock-action { border-radius: .25em; }
+
+/* Banner: the photo a tall band across the whole page, washed deep in the brand colour from its foot, with the words
+   set on that wash in the colour that reads on the brand, and the button turned round to match. */
+.look-banner .mock-hero { position: relative; display: block; min-height: 0; }
+.look-banner .mock-scene { height: 27em; }
+.look-banner .mock-scene ::deep svg { height: 100%; }
+.look-banner .mock-scene.is-photo::after {
+    background: linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 88%, transparent) 8%, transparent 70%);
+}
+.look-banner .mock-photo-badge { top: 1.6em; bottom: auto; left: var(--mock-gutter); }
+.look-banner .mock-hero-words {
+    position: absolute;
+    z-index: 2;
+    inset: auto 0 0;
+    max-width: 48em;
+    padding: 0 var(--mock-gutter) 2.6em;
+}
+.look-banner .mock-hero-line { font-size: 3.7em; color: var(--mock-on-brand); }
+.look-banner .mock-hero-note { color: color-mix(in srgb, var(--mock-on-brand) 88%, transparent); }
+.look-banner .mock-action { color: var(--mock-brand); background: var(--mock-on-brand); box-shadow: none; }
+
+/* A narrow mock (a phone, or a small stage): the hero stacks, its words over its photo, and reaches the window's
+   edges past the page's thin gutter there. */
+@container (max-width: 760px) {
+    .mock-hero, .look-editorial .mock-hero { display: block; min-height: 0; margin: 0 -16px; }
+    .mock-hero-words { padding: 1.3em 16px; }
+    .mock-hero-line, .look-editorial .mock-hero-line, .look-banner .mock-hero-line { font-size: 1.65em; }
+    .mock-scene, .look-banner .mock-scene { height: 12em; }
+    .look-editorial .mock-scene { margin: 0; }
+    .look-banner .mock-hero-words { position: static; max-width: none; background: var(--mock-brand); }
+    .mock-facts { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 -16px; }
+    .mock-facts li:nth-child(odd) { border-left: 0; }
+}

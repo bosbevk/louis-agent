@@ -120,8 +120,12 @@ its own, written in `Components/Showroom/Websites/` as its scene and its places.
 
 Each website has three pages a visitor can click through; Wills and estates is a fourth, opened from its card. Each
 business wears a brand of its own, with marks, faces and headers from mockup 0. Once the recording ends, *Try it
-yourself* puts the visitor in a live chat with the business's agent, in the same corner. The page names its identity
+yourself* puts the visitor in a live chat with the business's agent, in the same place. The page names its identity
 and a first question.
+
+A website's places are the ones its recording was sent with its first question, kept in
+`src/site/recordings/pages/`, and a test holds the two lists equal. So a website can gain a photo or words on a
+place it has without anything else changing, and a new section or card means recording the conversation again.
 
 *Decided in:* F128.2, F127.1, F127.2,
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).

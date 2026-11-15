@@ -152,7 +152,7 @@ public class SiteMockTests
         {
             Assert.That(cut.Find(".site-mock").ClassList, Does.Contain("look-banner"));
             Assert.That(page.Children.Select(child => child.ClassName),
-                Is.EqualTo(new[] { "mock-hero", "mock-facts", "mock-view" }));
+                Is.EqualTo(new[] { "mock-hero", "mock-facts", "mock-view", "mock-foot" }));
             Assert.That(page.QuerySelector(".mock-view .bread"), Is.Not.Null);
             Assert.That(page.QuerySelector(".mock-hero .mock-action")!.TextContent, Is.EqualTo("Order bread"));
             Assert.That(page.QuerySelector(".mock-hero .mock-scene svg.oven"), Is.Not.Null);
@@ -287,4 +287,39 @@ public class SiteMockTests
     [TestCase("")]
     public void AColourThatIsntOne_IsRefused(string brand) =>
         Assert.Throws<ArgumentException>(() => _ = new MockColours(brand, "#ffffff", "#ffffff", "#000000"));
+
+    /// <summary>
+    /// A website ends as a real one does, with its foot: its name and its tagline again, its menu, a click on which
+    /// goes to that page, and the facts its hero gave.
+    /// </summary>
+    [Test]
+    public void TheWebsite_EndsWithItsFoot()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var cut = ctx.Render<SiteMock>(parameters => parameters
+            .Add(mock => mock.Address, "bakery.example")
+            .Add(mock => mock.Business, "The Bakery")
+            .Add(mock => mock.Tagline, "Baked at dawn")
+            .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
+            .Add(mock => mock.Pages, ThreePages)
+            .Add(mock => mock.Facts, ["Open from six", "Bread until it's gone"])
+            .Add(mock => mock.HeroLine, "Fresh before seven.")
+            .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
+
+        var foot = cut.Find(".mock-page > .mock-foot");
+        Assert.Multiple(() =>
+        {
+            Assert.That(foot.QuerySelector(".mock-foot-name")!.TextContent, Is.EqualTo("The Bakery"));
+            Assert.That(foot.QuerySelector(".mock-foot-tagline")!.TextContent, Is.EqualTo("Baked at dawn"));
+            Assert.That(foot.QuerySelectorAll(".mock-foot-link").Select(link => link.TextContent),
+                Is.EqualTo(new[] { "Home", "Bread", "Cakes" }));
+            Assert.That(foot.QuerySelectorAll(".mock-foot-fact").Select(fact => fact.TextContent),
+                Is.EqualTo(new[] { "Open from six", "Bread until it's gone" }));
+        });
+
+        cut.FindAll(".mock-foot-link")[1].Click();
+
+        Assert.That(cut.Find(".mock-address").TextContent, Is.EqualTo("bakery.example/bread"));
+    }
 }

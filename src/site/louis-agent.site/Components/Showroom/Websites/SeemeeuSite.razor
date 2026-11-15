@@ -1,16 +1,21 @@
-@* Seemeeu Guesthouse's website (F127.1; three pages since F127.2): home, its rooms with a card and a photo a kind,
-   and the stay, with breakfast on the stoep and the beach each beside a photo and how a stay works. Every fact is one
-   its agent knows. *@
+@* Seemeeu Guesthouse's website (F127.1; three pages since F127.2): home, with its two ways in each a card with a
+   photo, its rooms with a card and a photo a kind, and the stay, with breakfast on the stoep and the beach each beside
+   a photo and how a stay works. Every fact is one its agent knows. Its places are the ones its recording was sent,
+   so a new one means recording it again. *@
 <MockPage Path="/" Label="Home">
     <MockSection Path="/welcome" Heading="Welcome to Seemeeu">
         <ChildContent>
             <p>A guesthouse five minutes from the beach in Yzerfontein, with breakfast on the stoep every morning.</p>
+            <p>Dogs are welcome in the garden room, which has its own gate to the fenced garden. Sixteen Mile Beach
+                and the harbour are a short drive, and the West Coast National Park about twenty minutes away.</p>
         </ChildContent>
         <Cards>
-            <MockCard Path="/welcome/rooms" Title="Four rooms" Opens="/rooms">
+            <MockCard Path="/welcome/rooms" Title="Four rooms" Opens="/rooms"
+                      Photo="images/showroom/seemeeu-sea-view.webp">
                 Each with its own bathroom, one for a family, one for a dog.
             </MockCard>
-            <MockCard Path="/welcome/stay" Title="Breakfast and the beach" Opens="/stay">
+            <MockCard Path="/welcome/stay" Title="Breakfast and the beach" Opens="/stay"
+                      Photo="images/showroom/seemeeu-breakfast.webp">
                 Breakfast on the stoep, and the beach a five-minute walk.
             </MockCard>
         </Cards>
@@ -19,7 +24,7 @@
 <MockPage Path="/rooms" Label="Rooms">
     <MockSection Path="/rooms/choose" Heading="Each with its own bathroom">
         <ChildContent>
-            <p>Four rooms, breakfast included.</p>
+            <p>Four rooms, breakfast included. Each has its own bathroom and wifi, and parking is in the yard.</p>
         </ChildContent>
         <Cards>
             <MockCard Path="/rooms/sea-view" Title="The sea-view doubles" Note="R1,450 a night"

@@ -1177,6 +1177,25 @@ scratch page stood in for a phone and for a short laptop screen, since a maximis
 **What it cost.** About US$0.28 for 545 requests on Haiku 5.5, by the usage ledger, from 05:23 to 08:08 UTC. That
 is everything asked of the local site in that time, your own presses included.
 
+**The same lesson once more, on the demo itself.** After that pass you looked at a demo's page and said the demos
+themselves were never redesigned. They weren't. "Redesign each demo to fit the new fancy style" had been read as
+the page round the window, and the website inside it stayed as it was: every size in fixed pixels, drawn for a small
+window, and 660 high whatever the screen. On a 2560 screen that was a postcard in a 2,400-wide
+frame, with 13 px words and photos capped at 200 px high. No test saw it, since each rule was written as it was
+meant.
+
+What fixed it was one size the mock names from its own width and height, with everything inside it in em. The
+window takes the height the first screen leaves, and the chat stands beside the website as K drew it. Then you
+said it must fit 1080p, so that was the size it was held to: a headless browser driven over its debugging port
+gives an exact 1920×1080 where a maximised window gives whatever it is. The same script took 2220×1025, 1366×768
+and 390×844, and the phone picture caught a fault of this very change, a window that had dropped to 460 high with
+12 px words.
+
+One thing stopped short. The websites were to gain sections, and a test refused: it holds each website's places
+equal to the list its recording was sent, since the agent could only show what it was told was there. A new
+section means recording the conversation again, and that is a run to ask for, not to slip in. So the websites
+gained photos and words on the places they already had.
+
 **Where it sits.** Skill 18, testing and shipping: what a test can prove and what only looking can, and a walk by
 the real agent as the last check before a thing is called working. Skill 4, tool design: the guide's rule for the
 start is a prompt rule, and a tool that refuses to ask a business with no window on the page would hold it harder.

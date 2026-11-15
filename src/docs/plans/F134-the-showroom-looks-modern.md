@@ -181,6 +181,23 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     and button share a row.
   - *The guide's words*: "Walk me through this page" as the first chip, and "Open this demo" as the choice at a
     window on the start.
+- **2026-11-15: the demos themselves, bigger.** Louis, of a demo's page after the look pass: "this is not all done,
+  we planned more for the detailed pages", "we were suppose to redesign the demos itself and make it more detailed",
+  "this is not even fitting" (of the rail), "each inner website, needs to be expanded, and made pretty and bigger",
+  "then it is done", and "everything must kinda fit 1080p so if we must make fontsizes in the demo sites smaller
+  then do it". F134.2 had restyled the page round the window and left the website inside it as it was. What was
+  built is in the web's and the site's design docs. These picks were made on the way and are open for him to
+  overrule:
+  - *The website's size follows its window*, its width or its height, whichever asks for less, between 12 and
+    17 px, so the first screen fits at 1920×1080.
+  - *The chat stands beside the website*, as K drew it, and floats only when folded or on a narrow window.
+  - *A website ends with a foot*, built from its brand, its menu and its hero's facts, so it says nothing new.
+  - *The rail is K's*: line icons in their colour, the name sliding out beside one, and no dot beside the current.
+  - *No new place on a website.* A test holds a website's places equal to the list its recording was sent. So the
+    websites gained photos and words on the places they have, and no new section.
+- **Still his to pick, 2026-11-15.** Recording the three conversations again, so the websites can gain sections.
+  The chat drawing a card for the place its agent opened, as the start's window shows it (Louis: "like the inner
+  agent do not do this?"). The photos of F134.6: three candidates were shown on 2026-11-13 and none was picked.
 
 ## Verification
 

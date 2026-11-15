@@ -9,17 +9,18 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 
 /// <summary>
 /// A mock of a business's own website (F127.1, Louis's pick 3a, made fuller): a browser bar with its address, its name
-/// and menu in its brand colour, then a page that scrolls inside the mock (on home a hero in its look and a strip of
-/// facts, then its pages, F127.2, only the one it's on showing), and its agent chatting in a widget in the corner. A
-/// visitor sees the agent where its customers would meet it, on a website like their own, and can click through it.
+/// and menu in its brand colour, then a page that scrolls inside the mock (on home a hero in its look and a band of
+/// facts, then its pages, F127.2, only the one it's on showing, and its foot), and its agent chatting beside the
+/// website. A visitor sees the agent where its customers would meet it, on a website like their own, and can click
+/// through it. It is as big as its window (F134.2): a big window shows a big website, never a small one stretched.
 /// </summary>
 /// <remarks>
 /// Device mock-up, as product pages show an app in a phone or a browser (the research: Copilot Studio's demo website,
 /// Gardenia's "how their environment would look"). The business's sample brand is the page's data (its colours as
 /// <see cref="MockColours"/>, set on the mock as variables its styles read, its mark, tagline, <see cref="MockFont"/>
-/// and <see cref="MockLook"/>), so its look is its own and never the site's theme. The page keeps clear of the widget
-/// and lays itself out by the mock's own width, not the screen's, since the stage beside the rail is narrower than
-/// the screen. The place its agent shows is handed down to the places as a cascading value, so a site writes its
+/// and <see cref="MockLook"/>), so its look is its own and never the site's theme. The chat stands in a column
+/// beside the website, and the website lays itself out by the mock's own size, not the screen's, since the stage
+/// beside the rail is narrower than the screen. The place its agent shows is handed down to the places as a cascading value, so a site writes its
 /// places once and never says which is lit; the mock scrolls its own page there through a module beside it. Its pages
 /// register with it as Microsoft's TabSet example has its tabs do (<see cref="MockPage"/>), and the page it's on is
 /// handed down the same way. Where it is has two sources, its agent and a visitor's click; the agent's next place

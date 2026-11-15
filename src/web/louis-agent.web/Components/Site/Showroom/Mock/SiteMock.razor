@@ -1,9 +1,11 @@
+@using LouisAgent.Web.Components.Site.Showroom.Mock.Foot
 @using LouisAgent.Web.Components.Site.Showroom.Mock.Head
+@using LouisAgent.Web.Components.Site.Showroom.Mock.Hero
 @* A business's website, mocked (F127.1, Louis's pick 3a, made fuller: "a bit bland, we need to sell it"): a browser bar
    with its address, its header with its sample brand (its mark, its name and tagline, its typeface) and its menu, then
-   its page, which scrolls inside the mock: on home the hero in the business's look with its scene and a call to
-   action and a strip of facts, then its pages (F127.2), only the one it's on showing. Its agent sits in a widget in
-   the corner, where its customers would meet it, and the place it shows is in the bar, lit, and scrolled to. *@
+   its page, which scrolls inside the mock: on home the hero in the business's look and a band of facts, then its
+   pages (F127.2), only the one it's on showing, and its foot. Its agent's chat stands in a column beside the
+   website, where its customers would meet it, and the place it shows is in the bar, lit, and scrolled to. *@
 <div class="@Classes" style="@ColourStyle">
     @* A page change loads like a browser (F127.2): its address glows and a loading line runs under the bar, both drawn
        afresh on each change, so they play again. *@
@@ -20,45 +22,8 @@
     <div class="mock-page" @ref="_page">
         @if (ShowsHome)
         {
-            <div class="mock-hero">
-                <div class="mock-hero-words">
-                    <p class="mock-hero-line">@HeroLine</p>
-                    @if (HeroNote is not null)
-                    {
-                        <p class="mock-hero-note">@HeroNote</p>
-                    }
-                    @if (HeroAction is not null)
-                    {
-                        <span class="mock-action">@HeroAction</span>
-                    }
-                </div>
-                @if (HeroPhoto is not null)
-                {
-                    <div class="mock-scene is-photo">
-                        <img class="mock-photo" src="@HeroPhoto" alt="@HeroPhotoAlt" />
-                        <span class="mock-photo-badge">
-                            @if (Mark is not null)
-                            {
-                                <span class="mock-mark" aria-hidden="true">@Mark</span>
-                            }
-                            <b>@Business</b>
-                        </span>
-                    </div>
-                }
-                else if (Scene is not null)
-                {
-                    <div class="mock-scene" aria-hidden="true">@Scene</div>
-                }
-            </div>
-            @if (Facts.Count > 0)
-            {
-                <ul class="mock-facts">
-                    @foreach (var fact in Facts)
-                    {
-                        <li>@fact</li>
-                    }
-                </ul>
-            }
+            <MockHero Line="@HeroLine" Note="@HeroNote" Action="@HeroAction" Photo="@HeroPhoto"
+                      PhotoAlt="@HeroPhotoAlt" Scene="Scene" Mark="Mark" Business="@Business" Facts="Facts" />
         }
         @* Its pages learn their mock and the page it's on; their places, the place its agent showed. *@
         <CascadingValue Name="@ShownPlace" Value="Shown">
@@ -66,6 +31,8 @@
                 <CascadingValue Name="@CurrentPageName" Value="CurrentPage">@Pages</CascadingValue>
             </CascadingValue>
         </CascadingValue>
+        <MockFoot Mark="Mark" Business="@Business" Tagline="@Tagline" Menu="MenuPages" Facts="Facts"
+                  Went="GoAsync" />
     </div>
     @* Its agent learns its mock too, so a live one can read the website (F127.2). *@
     <CascadingValue Value="this" IsFixed="true">

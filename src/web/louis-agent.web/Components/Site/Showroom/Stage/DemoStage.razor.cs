@@ -9,7 +9,8 @@ namespace LouisAgent.Web.Components.Site.Showroom.Stage;
 /// A demo page's stage in the showroom (F127.1), standing on the start's lit stage in its colour (F134.2): what the
 /// demo is, its title as the page's one h1, a line of what happens beside it, then the player (a mock of the
 /// business's website, or an agent's work window) the whole width, what to watch as chapters under it, and the
-/// site's offer under them.
+/// site's offer under them. The story, the player and the chapters share the first screen, and the player takes the
+/// height the other two leave.
 /// </summary>
 /// <remarks>
 /// A page fills slots in a fixed order, so every demo reads the same way and a new one only writes its words. The
@@ -58,9 +59,18 @@ public partial class DemoStage
     [Parameter]
     public RenderFragment? Offer { get; set; }
 
+    /// <summary>
+    /// Whether the player takes the height the first screen leaves, as a business's window does. A player with a
+    /// height of its own, such as an agent's work window, keeps it, and the page follows it.
+    /// </summary>
+    [Parameter]
+    public bool Fills { get; set; }
+
     /// <summary>The site's words for the stage's places, English when it registered none.</summary>
     private ShowroomText Text => Services.GetService<ShowroomText>() ?? new ShowroomText();
 
-    /// <summary>The stage's classes: a stage, in its demo's colour.</summary>
-    private string Classes => $"demo-stage accent-{Accent.Wire()}";
+    /// <summary>The stage's classes: a stage, in its demo's colour, and filling when its player does.</summary>
+    private string Classes => Fills
+        ? $"demo-stage is-filling accent-{Accent.Wire()}"
+        : $"demo-stage accent-{Accent.Wire()}";
 }

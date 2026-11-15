@@ -1,26 +1,30 @@
 @* A demo page's stage (F127.1), standing on the start's lit stage in its colour since F134.2: the kicker, the title
    as the page's one h1 with the lede beside it, then the player the whole width, what to watch as chapters
-   under it, and the offer under them. Each
+   under it, and the offer under them. The story, the player and what to watch share the first screen, as the K
+   mockup has it: they stand in one frame, as tall as the screen when the player fills, and the player takes what
+   the other two leave. Each
    part is a place of its own, a section with an id and a heading, so the guide's tour stops at the story, the demo,
    what to watch and the offer, one at a time. *@
 <LitStage Accent="Accent">
     <div class="@Classes">
-        <section id="top" class="stage-head">
-            <span class="stage-kicker">@Kicker</span>
-            <h1 class="stage-title">@Title</h1>
-            @if (Lede is not null)
+        <div class="stage-screen">
+            <section id="top" class="stage-head">
+                <span class="stage-kicker">@Kicker</span>
+                <h1 class="stage-title">@Title</h1>
+                @if (Lede is not null)
+                {
+                    <p class="stage-lede">@Lede</p>
+                }
+            </section>
+            <section id="the-demo" class="stage-player">
+                <h2 class="stage-place">@Text.TheDemo</h2>
+                @Player
+            </section>
+            @if (Cues is not null)
             {
-                <p class="stage-lede">@Lede</p>
+                <section id="what-to-watch" class="stage-cues">@Cues</section>
             }
-        </section>
-        <section id="the-demo" class="stage-player">
-            <h2 class="stage-place">@Text.TheDemo</h2>
-            @Player
-        </section>
-        @if (Cues is not null)
-        {
-            <section id="what-to-watch" class="stage-cues">@Cues</section>
-        }
+        </div>
         @if (Notes is not null)
         {
             <section id="make-it-yours" class="stage-notes">@Notes</section>

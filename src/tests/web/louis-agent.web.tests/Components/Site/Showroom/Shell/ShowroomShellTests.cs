@@ -61,8 +61,8 @@ public class ShowroomShellTests
 
     /// <summary>
     /// The rail is a slim column of icons, as the K mockup has it (F134.2): each demo a link that shows only its icon,
-    /// with its name as its label for a screen reader and as its tip, and no words beside it, since the start shows
-    /// them. The links stay links, so each demo is still a page an address opens.
+    /// with its name as its label for a screen reader and as a tip that slides out beside it, and no words beside it
+    /// otherwise, since the start shows them. The links stay links, so each demo is still a page an address opens.
     /// </summary>
     [Test]
     public void TheRail_IsASlimColumnOfIcons_EachNamed()
@@ -74,9 +74,30 @@ public class ShowroomShellTests
         Assert.Multiple(() =>
         {
             Assert.That(rail.QuerySelectorAll(".cover-words"), Is.Empty, "no words beside an icon");
-            Assert.That(rail.QuerySelectorAll("a.demo-cover")
-                    .Select(a => (a.GetAttribute("aria-label"), a.GetAttribute("title"))),
-                Is.EqualTo(new[] { ("A bakery", "A bakery"), ("A florist", "A florist"), ("A coder", "A coder") }));
+            Assert.That(rail.QuerySelectorAll("a.demo-cover").Select(a => a.GetAttribute("aria-label")),
+                Is.EqualTo(new[] { "A bakery", "A florist", "A coder" }));
+            Assert.That(rail.QuerySelectorAll("a.demo-cover .cover-tip[aria-hidden='true']").Select(t => t.TextContent),
+                Is.EqualTo(new[] { "A bakery", "A florist", "A coder" }), "the tip is drawn, the label is read");
+        });
+    }
+
+    /// <summary>
+    /// The rail fits (Louis: "this is not even fitting"). Its tiles and its own frame are narrower than the column the
+    /// frame keeps for it, and it never scrolls, so no scrollbar is drawn on it and a tip can slide out past its edge.
+    /// </summary>
+    [Test]
+    public void TheRail_FitsItsColumn_AndNeverScrolls()
+    {
+        string folder = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Components/Site/Showroom/Shell");
+        string rail = File.ReadAllText(Path.Combine(folder, "DemoRail.razor.scss"));
+        string shell = File.ReadAllText(Path.Combine(folder, "ShowroomShell.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rail, Does.Not.Contain("overflow-y").And.Not.Contain("max-height"));
+            Assert.That(rail, Does.Contain("width: 46px;").And.Contain("padding: 8px;"),
+                "a tile's 46, its frame's 16 and 2, and the 14 beside it are 78");
+            Assert.That(shell, Does.Contain(".showroom-body { display: grid; grid-template-columns: 84px"));
         });
     }
 
