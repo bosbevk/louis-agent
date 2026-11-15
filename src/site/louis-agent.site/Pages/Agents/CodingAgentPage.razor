@@ -16,12 +16,15 @@
             so it runs only for its owner, behind a key.</span>
     </Lede>
     <Player>
-        <RecordedChat Turns="Session" Title="the coding agent · toolsets: files, git, dotnet" PlayAgain="Play it again"
-                      Currency="Rand">
-            <Ending>
-                <GuideButton Class="is-plain" Question="I watched the coding agent fix the invoice matcher. Could I get an agent like that for my team?">Ask the guide about one</GuideButton>
-            </Ending>
-        </RecordedChat>
+        @* An agent at work, in a window in the light as a business's website is (F134.2). *@
+        <FramedWindow Address="louis-agent · the coding agent" Lit="true">
+            <RecordedChat Turns="Session" Title="the coding agent · toolsets: files, git, dotnet" PlayAgain="Play it again"
+                          Currency="Rand">
+                <Ending>
+                    <GuideButton Class="is-plain" Question="I watched the coding agent fix the invoice matcher. Could I get an agent like that for my team?">Ask the guide about one</GuideButton>
+                </Ending>
+            </RecordedChat>
+        </FramedWindow>
     </Player>
     <Cues>
         <div class="work-notes">

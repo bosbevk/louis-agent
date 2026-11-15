@@ -86,4 +86,25 @@ public class CodingAgentPageTests
             Assert.That(asked, Is.EqualTo(CodingAgentPage.Question), "the page shows the question the script asked");
         });
     }
+
+    /// <summary>
+    /// An agent at work stands in a window in the light, as the businesses' websites do (F134.2): the recording plays
+    /// in a framed window with the word of where it runs in its bar.
+    /// </summary>
+    [Test]
+    public void TheRecording_PlaysInAWindowInTheLight()
+    {
+        using var ctx = SitePageContext.Create();
+
+        var cut = ctx.Render<CodingAgentPage>();
+
+        var window = cut.Find("#the-demo .framed-window");
+        Assert.Multiple(() =>
+        {
+            Assert.That(window.ClassList, Does.Contain("is-lit"));
+            Assert.That(window.QuerySelector(".window-address")!.TextContent,
+                Is.EqualTo("louis-agent · the coding agent"));
+            Assert.That(window.QuerySelector(".window-body .recorded-chat"), Is.Not.Null);
+        });
+    }
 }
