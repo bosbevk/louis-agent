@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Louis's pick A of three: the build compiles Styles/themes.scss, the framework's names and every theme's
-         sheets, to wwwroot/css/themes.css, so the tests hold each theme to the names. No site loads that file. -->
+    <!-- Louis's pick A of three: the build compiles Styles/app.scss, the framework's names and every theme's
+         sheets, to wwwroot/css/app.css, so the tests hold each theme to the names. No site loads that file. -->
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
   </ItemGroup>
 
