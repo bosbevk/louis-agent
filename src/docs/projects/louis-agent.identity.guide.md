@@ -16,64 +16,129 @@
 
 ## Purpose
 
-The framework's website has a chat in its lower-right corner (F109.3). Whoever answers there has to know the framework
-the way its docs tell it, and nothing else: no files, no git, no shell. That is this identity, `louis-agent-guide`:
-one voice, three packs. Since F124 it is the framework's own, beside its site in `src/site/`, renamed from the expert
-(Louis's pick: the name says what it is), and the site's host runs it alone, so a visitor reaches nothing else.
+The framework's website has a chat in its lower-right corner. Whoever answers there has to know the framework the
+way its docs tell it, and nothing else: no files, no git, no shell. That's this identity, `louis-agent-guide`. It's
+one voice with three packs.
+
+It belongs to the framework, so it lives beside its site in `src/site/`. Its name says what it is. The site's host
+runs it alone, so a visitor can't reach anything else.
+
+*Decided in:* F109.3, F124.
 
 ## How it works
 
-- `GuideIdentity`: the name, the voice `louis-agent-guide/voice` as the default, and three packs: the docs pack it
-  answers from, since F112 the leads pack, whose one tool mails Louis a lead when a visitor is interested and has said
-  yes ([ADR 0101](../adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md)), and since F117 the site pack, whose
-  one tool takes the visitor to a page or an area of it (the widget hears it and moves the browser).
-- `prompts/agent/louis-agent-guide/voice.md`: who it is (since F128.1, Louis, the AI version of the man who made
-  louis-agent, with his own story told as "I": Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four
-  kids, the outdoors, a stoic who reads Kierkegaard; it talks like him, plain, dry and at home, with an idiom where it
-  helps; the widget's title reads "Louis · AI", it says it is the AI the moment that matters, never adds to his story,
-  and leaves the man's work, the call, the lead and a meeting in Cape Town and surrounds, to the real one. It
-  teaches one thing with every answer and sells by showing, with one nudge at the end,
-  honest always; since FX72 a salesperson that reads the person: plain words for someone who has never written code,
-  no code or file names, and the full technical answer once it knows it talks to a software developer), what we
-  sell today (web hosting with an AI agent for small businesses, R500 to R1,000 a month: the one public price, and
-  what an agent does for a business in the owner's words), how it answers (reads before it speaks, names the doc for a
-  developer only, since FX77, says what the docs don't say, numbers only from a doc, plain words, only what works
-  today), what stays Louis's (the roadmap's money, numbers and risks and the TODO's notes are never quoted; any other
-  price question goes to the contact page).
-- Its skills beside the voice, in `skills/` (since F129,
-  [ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md)): `site-pages.md`, always in the prompt, the
-  index of every page, one line each, so it knows which page to open; and two it reads with `ReadSkill` when a
-  question needs them: `docs-map.md`, where things are in the docs root, so a search goes to the right folder, and
-  `site-map.md` (since F109.4), what each page says and the docs it was written from, so a question about a page's
-  claim goes to its source. Splitting them off made its fixed prefix about 14% smaller, measured live.
-- **One guide, a focus per part of the site** (F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md)):
-  louis-agent.dev names each page's part (`LouisAgentDevAreas`: selling by default, demos for `/demos` and every demo,
-  framework under `/framework` and for `/csharp-ai-agent-framework`), each message's page block says it, and the voice
-  reads that part's on-demand skill (`focus-selling`, `focus-demos`, `focus-framework`) the first time a part shows
-  and whenever it changes. The parts are `GuideFocus`. Selling sells honestly by showing (gives first, small yeses, the
-  visitor's own business in the live demo, never a false hurry) and guides to the demos; the demos part guides through
-  the showroom; the framework part answers technically, names its docs and says a chat-drawn diagram is planned.
-- **A selected piece** (F127.7): when a message says the visitor selected a piece (a tile or a card they clicked, or
-  one the guide showed), "this" is that piece, and the site toolset's guide has it explain the piece and offer what
-  goes deeper. For anything on another page it calls `FindPlace` first, then `ShowPage` the address it gave.
-- Its knowledge is the `docs` toolset over `DOCS_ROOT` (the site's image carries the docs; the PC mounts the repo's),
-  so an answer can name the doc it read. Louis's picks: an identity, not a role (A2); a tool, not an index or a digest
-  (B1).
-- It may ask the three showroom businesses (F127.3.1, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md)):
-  its `Calls` are `GuideCall`'s (`seemeeu-guesthouse`, `wheatfield-kitchen`, `koringland-attorneys`), the door gives
-  its session core's `agents` toolset for that, and its prompt lists them after the agents guide. It asks with
-  `AskAgent` on this same container (`AGENT_PEERS: self=http://localhost:8080`), passes the answer on as the
-  business's, says what the business did from the line under it, and reads its steps with `ReadAgentWork` when a
-  visitor asks. It keeps the last word: it doesn't relay answers whole (`RelaysAnswersWhole` stays off).
-- It runs a demo live (F127.4.2, its skill `live-demo`, always loaded): on a demo page it offers *Ask it live* with
-  `Offer`, asks the business in the visitor's own words, and the page shows that talk in the business's own window,
-  where the visitor carries on in the same session; its own chat says so in one line, and on a phone it folds so the
-  window shows. Asked what happened, it retells it from the line under the answer or from `ReadAgentWork`, which reads
-  the business's whole session, the window's turns included.
+### 1. One voice, three packs
+
+`GuideIdentity` holds the guide's name, its default voice (`louis-agent-guide/voice`) and its three packs. The docs
+pack is what it answers from. The leads pack has one tool, which mails Louis a lead when a visitor is interested and
+has said yes. The site pack has one tool too, which takes the visitor to a page or a part of one; the widget hears
+it and moves the browser.
+
+*Decided in:* F112, [ADR 0101](../adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md), F117.
+
+### 2. Who it is
+
+The voice lives in `prompts/agent/louis-agent-guide/voice.md`. The guide is Louis: the AI version of the man who made
+louis-agent. It tells his story as "I": Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four kids, the
+outdoors, a stoic who reads Kierkegaard. It talks like him, plain, dry and at home, with an idiom where it helps.
+
+The widget's title reads "Louis · AI". The guide says it's the AI the moment that matters, and never adds to his
+story. It leaves the man's own work to the real one: the call, the lead, and a meeting in Cape Town and surrounds.
+
+*Decided in:* F128.1.
+
+### 3. How it teaches and sells
+
+It teaches one thing with every answer. It sells by showing, with one nudge at the end, and it's honest always.
+
+It's a salesperson that reads the person. Someone who has never written code gets plain words, with no code or file
+names. Once it knows it's talking to a software developer, it gives the full technical answer.
+
+It knows what we sell today: web hosting with an AI agent for small businesses, at R500 to R1,000 a month. That's the
+one public price. And it can say what an agent does for a business, in the owner's own words.
+
+*Decided in:* FX72.
+
+### 4. How it answers
+
+It reads before it speaks. It names the doc it used, but only for a developer. It says so when the docs don't cover
+something. It only gives numbers that come from a doc, uses plain words, and only talks about what works today.
+
+Some things stay Louis's. It never quotes the roadmap's money, numbers or risks, or the TODO's notes. Any other
+price question goes to the contact page.
+
+*Decided in:* FX77.
+
+### 5. Its skills
+
+Its skills sit beside the voice, in `skills/`. One is always in the prompt: `site-pages.md`, an index of every page,
+one line each, so it knows which page to open.
+
+Two more it only reads with `ReadSkill` when a question needs them. `docs-map.md` says where things are in the docs
+root, so a search goes to the right folder. `site-map.md` says what each page claims and which docs it was written
+from, so a question about a page's claim goes to its source. Splitting those two off made its fixed prefix about 14%
+smaller, measured live.
+
+*Decided in:* F129, [ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md), F109.4.
+
+### 6. One guide, a focus for each part of the site
+
+louis-agent.dev names which part of the site each page belongs to (`LouisAgentDevAreas`). Selling is the default.
+`/demos` and every demo are the demos part. Everything under `/framework`, and `/csharp-ai-agent-framework`, is the
+framework part. These parts are `GuideFocus`.
+
+Each message's page block says which part the visitor is in. The voice reads that part's on-demand skill
+(`focus-selling`, `focus-demos` or `focus-framework`) the first time a part shows up, and again whenever it changes.
+
+In the selling part, it sells honestly by showing. It gives first, asks for small yeses, puts the visitor's own
+business in the live demo, never fakes a hurry, and guides them to the demos. In the demos part, it guides them
+through the showroom. In the framework part, it answers technically, names its docs, and says a diagram drawn in
+the chat is planned.
+
+*Decided in:* F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md).
+
+### 7. A piece the visitor picked
+
+Sometimes a message says the visitor selected a piece: a tile or a card they clicked, or one the guide showed. Then
+"this" means that piece. The site toolset's guide has it explain the piece and offer what goes deeper. For anything
+on another page, it calls `FindPlace` first, then `ShowPage` with the address it got back.
+
+*Decided in:* F127.7.
+
+### 8. Where its knowledge comes from
+
+Everything it knows comes from the `docs` toolset, over `DOCS_ROOT`. The site's image carries the docs, and on the PC
+the repo's docs are mounted. So an answer can always name the doc it read. The guide is an identity, not a role, and
+it reads the docs with a tool, not from an index or a digest.
+
+### 9. Asking the showroom's businesses
+
+It may ask the three showroom businesses. Its `Calls` are `GuideCall`'s: `seemeeu-guesthouse`,
+`wheatfield-kitchen` and `koringland-attorneys`. The door gives its session core's `agents` toolset for this, and its
+prompt lists them after the agents guide.
+
+It asks with `AskAgent`, on this same container (`AGENT_PEERS: self=http://localhost:8080`). It passes the answer on
+as the business's, says what the business did from the line under it, and reads its steps with `ReadAgentWork` when a
+visitor asks. It keeps the last word, so it doesn't relay answers whole (`RelaysAnswersWhole` stays off).
+
+*Decided in:* F127.3.1, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md).
+
+### 10. Running a demo live
+
+Its `live-demo` skill is always loaded. On a demo page, it offers *Ask it live* with `Offer`, and asks the business
+in the visitor's own words. The page shows that talk in the business's own window, where the visitor carries on in
+the same session. The guide's own chat says so in one line, and on a phone it folds away so the window shows.
+
+If the visitor asks what happened, it retells it from the line under the answer, or from `ReadAgentWork`. That reads
+the business's whole session, including the turns in the window.
+
+*Decided in:* F127.4.2.
 
 ![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
 
 ![One question answered: it searches the docs, reads the best section, opens the page and answers](diagrams/louis-agent.identity.guide-sequence.svg)
+
+These are the types involved:
 
 ![The types: GuideIdentity and three enums, its name, its packs and the businesses it may ask](diagrams/louis-agent.identity.guide-interface.svg)
 
@@ -92,10 +157,11 @@ notes. A cap limits what a visitor can spend (ADR 0099).
 
 ## Tests
 
-`GuideIdentityTests` and `SiteCatalogTests` in `src/tests/site/louis-agent.site.tests` hold its name, its voice's
-path, its three packs and the site's catalogue to the guide alone; `GuideKnowsTheSiteTests` holds the voice and its
-skills to every page of the site; `GuideSkillsTests` holds the split (every page in the always index, the two maps on
-demand); `CodingCatalogTests` holds it beside the coding identity in the coding agent's catalogue.
+The tests are in `src/tests/site/louis-agent.site.tests`. `GuideIdentityTests` and `SiteCatalogTests` hold its
+name, its voice's path, its three packs, and the site's catalogue to the guide alone. `GuideKnowsTheSiteTests` holds
+the voice and its skills to every page of the site. `GuideSkillsTests` holds the split: every page in the index
+that's always loaded, and the two maps read on demand. And `CodingCatalogTests` holds it beside the coding identity,
+in the coding agent's catalogue.
 
 ---
 [Docs index](../README.md) · Related: [louis-agent.site](louis-agent.site.md)

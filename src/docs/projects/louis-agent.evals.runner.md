@@ -12,48 +12,94 @@
 
 ## Purpose
 
-The command that runs an eval: `dotnet louis-agent.evals.runner.dll run {eval}`. It lists the evals it knows, runs
-one, re-scores a stored run, writes a label sheet and checks a judge. The API never references an eval project: it
-starts this runner and reads its stdout, so a new eval is a folder of files and nothing in the API
-([ADR 0022](../adr/0022-benchmarks-recorded-from-the-protocol.md)).
+This is the command that runs an eval: `dotnet louis-agent.evals.runner.dll run {eval}`. It lists the evals it
+knows, runs one, re-scores a stored run, writes a label sheet, and checks a judge.
+
+The API never references an eval project itself. It starts this runner and reads what it writes on stdout. That's
+why a new eval is just a folder of files, with nothing to change in the API.
+
+*Decided in:* [ADR 0022](../adr/0022-benchmarks-recorded-from-the-protocol.md).
 
 ## How it works
 
-- **The catalogue.** Every eval is a folder of files (F49.2). `Catalog/EvalFolders` finds them: every `eval.json`
-  under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the repository. The runner
-  builds their checks from the check catalogue it gathers (`Catalog/RunnerCatalogs`, from the program that started it: the general checks, then each pack's
-  checks project, then Puls's judges `PulsJudges.All`), and a check's reader from the reader catalogue
-  (the same record: the general readers, then the program's, such as `PulsReaders.All`). `EVALS=` then keeps the evals of the identities it names (all when unset); a name no eval proves
-  is refused, naming the ones that do, so a typo runs nothing. `Catalog/EvalCatalog` lists the chosen evals, then the
-  stub, and refuses a name twice and an eval with no fixed-rule check. `--list` prints one JSON line per eval (whose
-  it is, what it proves, its categories and graders), which the API's eval list reads.
-- **The arguments.** `Arguments/CommandLine` parses `run {eval}` with `--repeat N` (1 to 5), `--split`, `--web`,
-  `--replay {runId}` and `--rescore {runId}`, and the two judge commands, `--label-sheet` and `--calibrate`. A bad
-  argument is refused before anything starts (`Refusal/`).
-- **The studio's commands** (F49.5, [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)): the API asks the
-  runner, never the harness, about an eval being composed. `--checks` prints the catalogue as JSON lines
-  (`Catalog/ChecksListing`: each check type with its kind and its settings' JSON schema, then each reader with the
-  kind it reads). `--check {folder}` (`Studio/CheckCommand`) seals a manifest left without its hash
-  (`ManifestSeal`), loads the folder as strictly as a run would and holds it to the conformance gate, then prints one
-  `{"problem": …}` line each and `{"ok": …}` last, exiting 0 whenever it could look. `run {eval} --folder {path}`
-  runs the eval in that folder (`RunTarget`, its name checked against the run's), and `--samples a,b` narrows it to
-  those scenarios (`SampleSubset`, a Decorator over `IEval`); the studio's try adds `--replay`.
-- **promptfoo in and out** (`Promptfoo/`, YamlDotNet): `--import-promptfoo {file} {folder}` writes an eval folder
-  from a promptfoo file (`PromptfooImport`: the tests as dev scenarios, the asserts as checks by the mapping table
-  `PromptfooAssertion`, each `llm-rubric` a rubric file a `judge` reads) and prints a `{"left_out": …}` line for
-  each part with no counterpart; `--export-promptfoo {folder}` prints the folder as a promptfoo file
-  (`PromptfooExport`, the table backwards, a check with no counterpart named in a comment at the top).
-- **A run.** The harness's `EvalRunner` runs the modes and repeats and writes protocol v2 on stdout; logs go to
-  stderr. The run's id is `BENCHMARK_RUN`, else `local-` and its start time.
-- **A re-score** reads the stored run's own export on stdin and grades it again, for $0 (`rescore_of`).
-- **The judge.** `Calibration/LabelSheetCommand` writes the files a person labels from a stored run;
-  `CalibrateCommand` asks the model judge about every label and prints the agreement, then an `@` report line.
-- **The stub eval** (`Evals/Stub/`) answers from canned events through a `CannedSessionClient`: no session, no model.
-  It proves the runner end to end in the tests and in the portal for free.
+### 1. Finding the evals
+
+Every eval is a folder of files. `Catalog/EvalFolders` finds them: every `eval.json` under `EvalFiles/`, beside the
+runner. A folder's path in there is where it sits in the repository.
+
+The runner builds each eval's checks from the check catalogue it gathers, in `Catalog/RunnerCatalogs`, from the
+program that started it. That's the general checks first, then each pack's checks project, then Puls's judges
+(`PulsJudges.All`). A check's reader comes from the reader catalogue, held in the same record: the general readers
+first, then the program's own, such as `PulsReaders.All`.
+
+`EVALS=` keeps only the evals of the identities it names, or all of them when it's not set. If you name something no
+eval proves, it's refused, and the refusal names the ones that do. So a typo runs nothing.
+
+`Catalog/EvalCatalog` lists the chosen evals, then the stub. It refuses a name that shows up twice, and an eval with
+no fixed-rule check. `--list` prints one JSON line per eval (whose it is, what it proves, its categories and its
+graders), and that's what the API's eval list reads.
+
+*Decided in:* F49.2.
+
+### 2. Reading the command line
+
+`Arguments/CommandLine` parses `run {eval}`, with `--repeat N` (1 to 5), `--split`, `--web`, `--replay {runId}` and
+`--rescore {runId}`. It also parses the two judge commands, `--label-sheet` and `--calibrate`. A bad argument is
+refused before anything starts (`Refusal/`).
+
+### 3. The studio's commands
+
+When someone composes an eval in the studio, the API asks the runner about it, never the harness.
+
+`--checks` prints the catalogue as JSON lines (`Catalog/ChecksListing`): each check type with its kind and its
+settings' JSON schema, then each reader with the kind it reads.
+
+`--check {folder}` (`Studio/CheckCommand`) first seals a manifest that's missing its hash (`ManifestSeal`). Then it
+loads the folder as strictly as a run would, and holds it to the conformance gate. It prints one
+`{"problem": …}` line per problem and `{"ok": …}` last, and exits 0 whenever it was able to look.
+
+`run {eval} --folder {path}` runs the eval in that folder (`RunTarget`), after checking its name matches the run's.
+`--samples a,b` narrows it to those scenarios (`SampleSubset`, a Decorator over `IEval`). The studio's *try* adds
+`--replay`.
+
+*Decided in:* F49.5, [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md).
+
+### 4. promptfoo, in and out
+
+The runner can read and write promptfoo files, in `Promptfoo/`, using YamlDotNet.
+
+`--import-promptfoo {file} {folder}` writes an eval folder from a promptfoo file (`PromptfooImport`). The tests
+become dev scenarios. The asserts become checks, through the mapping table `PromptfooAssertion`. Each `llm-rubric`
+becomes a rubric file a `judge` reads. Anything with no counterpart gets a `{"left_out": …}` line.
+
+`--export-promptfoo {folder}` goes the other way (`PromptfooExport`), using the same table backwards, and prints the
+folder as a promptfoo file. A check with no counterpart is named in a comment at the top.
+
+### 5. A run
+
+A run is the harness's `EvalRunner`. It runs the modes and the repeats, and writes protocol v2 on stdout, while the
+logs go to stderr. The run's id is `BENCHMARK_RUN`, or else `local-` plus its start time.
+
+### 6. A re-score
+
+A re-score reads a stored run's own export on stdin and grades it again. That costs $0, and the new run is marked
+`rescore_of` the old one.
+
+### 7. Checking the judge
+
+`Calibration/LabelSheetCommand` writes the files a person labels, from a stored run. `CalibrateCommand` then asks the
+model judge about every label, prints how often it agrees, and ends with an `@` report line.
+
+### 8. The stub eval
+
+The stub eval, in `Evals/Stub/`, answers from canned events through a `CannedSessionClient`. There's no session and
+no model. It proves the runner works end to end, in the tests and in the portal, for free.
 
 ![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
 ![A run from the Evals page: the API starts the runner as a child process, reads its lines on stdout for the live view, and stores the run](diagrams/louis-agent.evals.runner-diagrams-2.svg)
+
+These are the types involved:
 
 ![The types: a program names its checks and readers, the host reads one command, finds the eval and runs it](diagrams/louis-agent.evals.runner-interface.svg)
 
@@ -70,11 +116,11 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 | `Promptfoo/` | `PromptfooAssertion` (the mapping table, promptfoo's names as an enum), `PromptfooImport`, `PromptfooExport` |
 | `Studio/` | `CheckCommand` (`--check`), `ManifestSeal`, `RunTarget` (`--folder`), `SampleSubset` (`--samples`) |
 
-The one package of its own is **YamlDotNet** (MIT, 18.1.0), for promptfoo's YAML; no host carries it.
+Its one package of its own is **YamlDotNet** (MIT, 18.1.0), for promptfoo's YAML. No host carries it.
 
 ## Configuration
 
-Where it runs: started by the API inside its container, or by hand from a terminal.
+The API starts it inside its container, or you start it by hand from a terminal.
 
 ![Where the eval runner runs: the API starts it as a child process, or you start it from a terminal, and it reaches a model and the collector](diagrams/louis-agent.evals.runner-deployment.svg)
 
@@ -87,19 +133,23 @@ Where it runs: started by the API inside its container, or by hand from a termin
 
 ## Extending it
 
-A new eval is a folder of files beside its identity or pack, which reaches the runner through
-`louis-agent.composition`; nothing here changes. The steps are [Add an eval](../guides/add-an-eval.md).
+A new eval is a folder of files beside its identity or pack. It reaches the runner through
+`louis-agent.composition`, so nothing here changes. The steps are in [Add an eval](../guides/add-an-eval.md).
 
 ## Tests
 
-`src/tests/evals/louis-agent.evals.runner.tests`: the arguments (clamped repeats, an unknown name refused), the catalogue (no
-grader refused, each eval once), the folders found and chosen by `EVALS=` (`EvalFoldersTests`), the stub's run
-against its golden, the conformance of every eval folder, the data files copied beside the assembly, the studio's
-commands (`--checks`, `--check`, `--folder`, `--samples`) and a promptfoo file's round trip (`PromptfooRoundTripTests`). `StubCheckTests` (api integration) runs the real runner through the API.
+The tests are in `src/tests/evals/louis-agent.evals.runner.tests`. They cover the arguments (repeats are clamped,
+an unknown name is refused) and the catalogue (an eval with no grader is refused, each eval shows up once).
+`EvalFoldersTests` checks the folders are found and chosen by `EVALS=`. The stub's run is held to its golden file,
+every eval folder is checked for conformance, and the data files are checked to be copied beside the assembly.
+
+The studio's commands (`--checks`, `--check`, `--folder`, `--samples`) have tests too, and
+`PromptfooRoundTripTests` takes a promptfoo file all the way round. `StubCheckTests`, in the API's integration tests,
+runs the real runner through the API.
 
 ## Limits and plans
 
-- A paid run waits for Louis's go; CI runs only the graders on recorded transcripts.
+A run that costs money waits for Louis's go. CI only runs the graders, on recorded transcripts.
 
 ## Related docs
 
