@@ -162,4 +162,21 @@ public class AgentCaptionTests
 
         Assert.That((cut.FindAll(".agent-caption").Count, cut.FindAll(".agent-chips").Count), Is.EqualTo((1, 0)));
     }
+
+    /// <summary>
+    /// The chips give way to the whole talk too, once it is open: on a phone it is a sheet most of the screen tall, and
+    /// the chips over it would stand on the page's header.
+    /// </summary>
+    [Test]
+    public void WhileTheWholeTalkIsOpen_TheChipsGiveWay()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new AgentSuggestions(["Walk me through the demos"]));
+        var cut = Bar(ctx, ShowedAndSaid());
+
+        cut.Find(".agent-caption .caption-talk").Click();
+
+        Assert.That((cut.FindAll(".agent-talk.is-open").Count, cut.FindAll(".agent-chips").Count),
+            Is.EqualTo((1, 0)));
+    }
 }

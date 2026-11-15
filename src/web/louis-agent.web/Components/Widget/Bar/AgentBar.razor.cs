@@ -131,6 +131,12 @@ public partial class AgentBar : IDisposable
     private Captioned? Caption =>
         _talkOpen || Runner.Streaming ? null : Captioned.Of(Runner.Chat?.Turns.LastOrDefault());
 
+    /// <summary>
+    /// The chips show while the guide waits, and give way to a caption, which holds the guide's own choices and the way
+    /// into the box, and to the whole talk, open (F134.4).
+    /// </summary>
+    private bool ChipsShow => State == OrbState.Idle && Caption is null && !_talkOpen;
+
     /// <summary>The talk's classes: open whole, or folded to its end.</summary>
     private string TalkClasses => _talkOpen ? "agent-talk is-open" : "agent-talk";
 
