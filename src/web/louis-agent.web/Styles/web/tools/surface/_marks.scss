@@ -104,10 +104,12 @@
     @include drawing(pane-showing);
 }
 
-/* A place the agent is showing while its words stand beside it (FX162, the design page's "the agent, showing it"): the
-   theme's showing drawing over it, a violet edge with a light running round, and no dimming. No ring of its own. */
+/* A place the agent is showing while its words stand beside it (FX162, FX163, the design page's "the agent, showing
+   it"): the theme's showing drawing over it, a violet edge with a light running round, and the page dimmed round it,
+   as the design's. No ring of its own. */
 @mixin kept-ring() {
     border-radius: var(--web-pane-radius);
+    box-shadow: 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
     @include drawing(pane-showing);
 }
 

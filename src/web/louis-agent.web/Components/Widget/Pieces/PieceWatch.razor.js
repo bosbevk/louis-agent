@@ -6,6 +6,22 @@
 // comes off when the chip is closed.
 let listener = null;
 let shown = null;
+let near = null;
+let lit = null;
+let words = null;
+
+// The design's tag on a piece (FX163): one small label in its corner holding the three words, the piece's state
+// choosing which one shows, "ask" under the pointer, "picked" once selected, "shown" while the agent shows it.
+const tagged = (piece) => {
+    if (!words || !piece || piece.querySelector(":scope > .piece-tag")) return;
+    const tag = document.createElement("i");
+    tag.className = "piece-tag";
+    tag.setAttribute("aria-hidden", "true");
+    tag.dataset.ask = words.ask;
+    tag.dataset.picked = words.picked;
+    tag.dataset.shown = words.shown;
+    piece.append(tag);
+};
 
 const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
 const clearMarks = () => document.querySelectorAll("[data-piece][data-selected]")
@@ -14,12 +30,19 @@ const headingOf = (piece) =>
     fold(piece.querySelector("h1, h2, h3, h4, .card-title, .stat-value")?.textContent) || piece.id;
 const press = (piece) => {
     clearMarks();
+    tagged(piece);
     piece.setAttribute("data-selected", "");
     return headingOf(piece);
 };
 
-export function watch(widget) {
+export function watch(widget, tags) {
     unwatch();
+    words = tags;
+    // A piece is tagged as the pointer first comes near it, and the place the agent lights is tagged as it is lit.
+    near = (event) => tagged(event.target instanceof Element ? event.target.closest("[data-piece][id]") : null);
+    lit = () => tagged(document.querySelector("[data-piece][data-lit]"));
+    document.addEventListener("pointerover", near, { passive: true });
+    document.addEventListener("place-lit", lit);
     listener = (event) => {
         // A card is a button that opens: opened, it is where the visitor looks (F127.7, Louis: "when a human opens a
         // card, the agent must know where the user is looking on the page"); closed again, it stays selected, as the
@@ -49,6 +72,10 @@ export function clear() {
 export function unwatch() {
     if (listener) document.removeEventListener("click", listener, true);
     if (shown) document.removeEventListener("piece-shown", shown);
+    if (near) document.removeEventListener("pointerover", near);
+    if (lit) document.removeEventListener("place-lit", lit);
     listener = null;
     shown = null;
+    near = null;
+    lit = null;
 }

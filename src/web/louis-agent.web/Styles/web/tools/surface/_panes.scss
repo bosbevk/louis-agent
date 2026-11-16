@@ -134,7 +134,14 @@
 
 /* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. It wears
    the lens while it stays picked, lit white from inside; a piece the agent is showing wears it lit violet. */
-@mixin picked() { --web-lens-piece: 2; @include drawing(pane-picked); }
+@mixin picked() {
+    --web-lens-piece: 2;
+    @include drawing(pane-picked);
+    // The cut stone with its tick on the corner (FX163, the design's "you, having picked it"), none with no theme.
+    background-image: var(--web-art-gem), var(--web-art-pane-picked);
+    background-position: 8px 8px, 0 0;
+    background-size: 22px 24px, 100% 100%;
+}
 
 /* A piece the agent is showing: its showing drawing laid on it, written where the component says the agent lit it. */
 @mixin showing() { --web-lens-piece: 3; @include drawing(pane-showing); }

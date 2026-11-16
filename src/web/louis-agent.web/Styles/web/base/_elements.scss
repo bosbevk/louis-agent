@@ -99,6 +99,46 @@ a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-
    are not panes of their own. */
 @property --web-lens-piece { syntax: "<integer>"; inherits: false; initial-value: 0; }
 
+/* The tag a piece wears while the guide is on the page (FX163, the design's states), laid by the widget's piece
+   watcher with the site's three words: under the pointer it offers to ask, once picked it says so, and while the
+   agent shows the piece it turns the agent's colour with a dot that blinks. The state picks the words. */
+:where([data-piece]:has(> .piece-tag)) { position: relative; }
+.piece-tag {
+    position: absolute;
+    z-index: 4;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    font: 500 11.5px var(--bs-font-monospace);
+    white-space: nowrap;
+    color: var(--bs-emphasis-color);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity .25s, transform .25s var(--web-ease);
+    @include surface.tag-you();
+    border-radius: 8px;
+}
+.piece-tag::before { content: attr(data-ask); }
+:is([data-piece]:hover, [data-selected], [data-lit]) > .piece-tag { opacity: 1; transform: none; }
+[data-selected] > .piece-tag::before { content: attr(data-picked); }
+[data-lit] > .piece-tag { @include surface.tag-agent(); border-radius: 8px; }
+[data-lit] > .piece-tag::before { content: attr(data-shown); }
+[data-lit] > .piece-tag::after {
+    content: "";
+    order: -1;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: web-blink 1s ease-in-out infinite;
+}
+@keyframes web-blink { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { [data-lit] > .piece-tag::after { animation: none; } }
+
 /* A quieter line of text, anywhere: a hint, a count, a date. */
 .muted { color: var(--bs-secondary-color); }
 
