@@ -82,19 +82,18 @@
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
     .btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
 
+    /* A panel is the theme's pane (F151.6): its fill, edge, shadow and blur, and its drawing where a theme has one. */
     .panel {
-        border: 1px solid var(--bs-border-color);
-        border-radius: var(--radius);
-        background: var(--bs-secondary-bg);
         padding: 26px;
         display: flex;
         flex-direction: column;
         gap: 10px;
         transition: transform .25s var(--web-ease), border-color .3s, box-shadow .3s;
+        @include surface.pane($radius: var(--radius));
     }
-    /* A panel answers the pointer the way Puls's cards do (FX72): a small lift, the accent on its edge and a glow under
-       it. The reveal moves on translate, so this transform is the panel's own. */
-    .panel:hover { transform: translateY(-3px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45); }
+    /* A panel answers the pointer the way Puls's cards do (FX72): a small lift, and the edge and the glow a theme
+       gives a pane under the pointer. The reveal moves on translate, so this transform is the panel's own. */
+    .panel:hover { transform: translateY(-3px); box-shadow: var(--web-pane-hover-edge), var(--web-pane-hover-shadow); }
     .panel p { font-size: 15px; line-height: 1.6; color: var(--bs-secondary-color); }
     .panel.small { padding: 20px; }
     .panel.small p { font-size: 14px; }
