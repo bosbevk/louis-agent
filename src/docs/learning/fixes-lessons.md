@@ -484,5 +484,14 @@ The test reads the class the list opens under from the stylesheet itself and cou
 list carry it. It found two before the fix and finds one after. A scope protects what a rule lands on, never what
 the rule looks up to. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX159 · A rule about one piece outlives the reason for it
+
+F151.6 kept the header out of glass, so its switch and its CV were drawn by hand in plain colours, and the notes
+said "a bar is never glass". When Louis asked for a glass header, the change was not new drawing work at all. The
+surface tool already had the group, the main button and the quiet one, each glass where the theme draws it and
+plain where it doesn't. The hand-drawn pieces only had to ask for them. Drawing a piece through the theme's own
+kinds, even when today's look is plain, is what lets the look change later in one place. Skill 18 (testing and
+shipping: what a visitor sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

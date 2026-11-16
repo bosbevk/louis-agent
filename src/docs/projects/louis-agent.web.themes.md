@@ -59,8 +59,9 @@ the chips included. The agent's answer that floats over the page, and the talk i
 no blur too, but over a soft body nearly as thick as paint, a pale grey violet in the light and a deep violet black
 in the dark, so the page's words under them never read through. A piece set into the page, an inset such as the
 chat's card or a field, is as see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
-dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
-with no blur. Flat sets an inset to its page's colour with its hairline.
+dark shadow under it. A bar is a plain band of deep violet over a hairline in the dark, and white glass in the
+light: white the page shows through, brightest at its top, over a white edge. Neither has a blur. Flat sets an
+inset to its page's colour with its hairline.
 
 The agent's bar at the page's foot is glass in its own way. It wears a field's drawing, the resting one and the
 focus one while it is typed in, over a dark body that is half see-through, so words that scroll under it stay out

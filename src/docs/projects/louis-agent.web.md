@@ -695,7 +695,9 @@ name and in the order named, when it offers two or more, and Dark and Light when
 none gets nothing. The three frames draw it themselves, so a site writes no line for it: `SiteShell` in its
 header's actions before the site's own, `ChatShell` in its settings before the site's own, and `AdminShell` at the
 foot of its sidebar, above the way back. Each frame asks `SiteAreas.OffersThemes` before it makes room. On a phone
-the header's actions take a row of their own between the brand and the menu, and the two groups may wrap.
+the header's actions take a row of their own between the brand and the menu, and the two groups may wrap. Each
+group is the theme's group and the choice that is on is its main button, so in glass the switch wears the glass
+drawings and in flat it keeps flat's plain pill and violet.
 
 A press marks its button and asks the switch's module to pick. The module writes the theme or the style on the
 page's `<html>`, so the theme's block takes over at once, and keeps the word in the browser under the key

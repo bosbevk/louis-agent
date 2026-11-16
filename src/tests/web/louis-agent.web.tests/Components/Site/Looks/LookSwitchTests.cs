@@ -153,6 +153,23 @@ public class LookSwitchTests
                 "src/web/louis-agent.web/Components/Site/Looks/LookSwitch.razor.scss")),
             Does.Contain(".look-switch { display: inline-flex; flex-wrap: wrap; gap: 8px; }"));
 
+    /// <summary>
+    /// The switch is glass in the header (FX159, Louis: "make this top part white glass with all glas buttons"): each
+    /// group is the theme's group and the choice that is on its main button, so a theme with drawings draws them.
+    /// </summary>
+    [Test]
+    public void ItsGroups_AreDrawnAsTheThemesGroupAndPress()
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Looks/LookSwitch.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules, Does.Contain("@include surface.group();"));
+            Assert.That(rules, Does.Contain(".look-group button[aria-pressed=\"true\"] { @include surface.press(); }"));
+        });
+    }
+
     /// <summary>The switch with two themes, its markup pinned, as every component's is.</summary>
     [Test]
     public void ItsMarkup_WithTwoThemes_IsPinned()

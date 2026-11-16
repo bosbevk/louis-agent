@@ -152,6 +152,24 @@ public class SiteLayoutTests
         });
     }
 
+    /// <summary>
+    /// The header's two buttons are glass (FX159, Louis: "all glas buttons"): the way to ask is the theme's main button
+    /// and the CV its quiet one, so they wear the drawings where a theme has them.
+    /// </summary>
+    [Test]
+    public void TheHeadersButtons_AreTheThemesPresses()
+    {
+        string site = Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site");
+        string elements = File.ReadAllText(Path.Combine(site, "Styles/site/base/_elements.scss"));
+        string cv = File.ReadAllText(Path.Combine(site, "Components/Cv/CvLink.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(elements, Does.Contain(".btn-solid { height: 42px; @include surface.press(); }"));
+            Assert.That(cv, Does.Contain("@include surface.quiet-press();"));
+        });
+    }
+
     /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
     [Test]
     public void TheSlogan_SitsUnderTheBrand()
