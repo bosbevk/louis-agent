@@ -1,0 +1,28 @@
+/* A site's name with the mark as one of its letters (F151.6): the display weight set tight, a little larger than the
+   text it stands in, and the mark the size of a letter, sitting on the line. The mark is the orb, here still and
+   with no ring, since it is a letter and not an agent at work. */
+.wordmark {
+    position: relative;
+    display: inline-flex;
+    font: 650 1.3em/1 var(--bs-font-sans-serif);
+    letter-spacing: -.035em;
+    white-space: nowrap;
+    color: var(--bs-emphasis-color);
+}
+.wordmark-seen { display: inline-flex; align-items: center; }
+/* The whole name, for a screen reader only. */
+.wordmark-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+.wordmark-seen ::deep .orb {
+    width: .76em;
+    height: .76em;
+    margin: 0 .035em 0 .03em;
+    translate: 0 .085em;
+}
+.wordmark-seen ::deep .orb::before, .wordmark-seen ::deep .orb::after { display: none; }

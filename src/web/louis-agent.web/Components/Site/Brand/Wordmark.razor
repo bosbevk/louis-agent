@@ -1,0 +1,4 @@
+@using LouisAgent.Web.Components.Widget.Orb
+@* A site's name with the mark standing in for one of its letters (F151.6): the letters before, the bare mark, the
+   letters after. A screen reader hears the whole name once and none of the drawing. *@
+<span class="wordmark"><span class="wordmark-name">@Name</span><span class="wordmark-seen" aria-hidden="true">@Before<Orb Label="@Name" />@After</span></span>

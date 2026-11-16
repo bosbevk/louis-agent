@@ -158,24 +158,46 @@ public class SiteLayoutTests
         Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because you can"));
     }
 
-    /// <summary>The brand is the lockup (F110): the mark, its copy, then the name, as the brand guide says.</summary>
+    /// <summary>
+    /// The brand is the name with the mark as its o (F151.6), and a screen reader hears "louis-agent". The old
+    /// mark's picture is gone from the name.
+    /// </summary>
     [Test]
-    public void TheBrand_IsTheLockup()
+    public void TheBrand_IsTheNameWithTheMarkAsItsO()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
-        var brand = cut.Find(".site-brand");
 
         Assert.Multiple(() =>
         {
-            Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("src"), Is.EqualTo("brand/mark.svg"));
-            Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("alt"), Is.EqualTo(""));
-            Assert.That(brand.QuerySelector(".site-brand-name")!.TextContent.Trim(), Is.EqualTo("louis-agent"));
-            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot,
-                    "src/site/louis-agent.site/wwwroot/brand/mark.svg")),
-                "the mark is the app's own copy");
+            Assert.That(cut.Find(".site-brand .wordmark .wordmark-name").TextContent, Is.EqualTo("louis-agent"));
+            Assert.That(cut.Find(".site-brand .wordmark .wordmark-seen").TextContent, Is.EqualTo("luis-agent"));
+            Assert.That(cut.FindAll(".site-brand img"), Is.Empty);
         });
+    }
+
+    /// <summary>Each of the site's three frames draws the name that way, the showroom's and the admin's too.</summary>
+    [TestCase("SiteLayout")]
+    [TestCase("ShowroomLayout")]
+    [TestCase("AdminLayout")]
+    public void EachFrame_DrawsTheNameWithTheMark(string layout)
+    {
+        string markup = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/site/louis-agent.site/Layout", $"{layout}.razor"));
+
+        Assert.That(markup, Does.Contain("<Brand><Wordmark Before=\"l\" After=\"uis-agent\" /></Brand>"));
+    }
+
+    /// <summary>The footer's name is drawn the same way.</summary>
+    [Test]
+    public void TheFootersName_IsDrawnWithTheMark()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.Find(".site-footer .wordmark .wordmark-name").TextContent, Is.EqualTo("louis-agent"));
     }
 
     /// <summary>
