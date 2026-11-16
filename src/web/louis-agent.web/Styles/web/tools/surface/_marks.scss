@@ -60,15 +60,13 @@
 
 /* A small mark beside a label, such as the dot before a section's name, and the same mark lit for the one in view. */
 /* Words lifted off the page behind them with no panel (FX163, Louis: "can we somehow elevate these fonts without a
-   panel"): a soft halo in the page's own colour round the letters, so the lines behind fade where they cross them. A
-   drop shadow, not a text shadow, so it stands behind words whose colour is clipped into them. */
+   panel"): an angled shadow the letters cast on the page. A drop shadow, not a text shadow, so it stands behind
+   words whose colour is clipped into them. */
 @mixin lifted-words() {
-    // The halo in fine, close layers, dense near the letters and spreading little (Louis: "make the smoke less but
-    // thicker, almost finer layered"), then a shadow just under the letters and a softer one a little further down,
-    // so they stand raised off the page with depth (Louis: "we need to kind of give the font more depth").
-    filter: drop-shadow(0 0 2px rgba(var(--bs-body-bg-rgb), .95)) drop-shadow(0 0 4px rgba(var(--bs-body-bg-rgb), .85))
-        drop-shadow(0 0 8px rgba(var(--bs-body-bg-rgb), .6)) drop-shadow(0 2px 1px rgba(var(--web-shadow-rgb), .34))
-        drop-shadow(0 8px 12px rgba(var(--web-shadow-rgb), .26));
+    // No glow: the letters cast an angled shadow down and to the right, as if lit from the top left, a crisp one close
+    // in and a soft one further out, so they stand raised off the page with depth (Louis: "we need to kind of give
+    // the font more depth", "make the glow not a glow but an angled shadow for the font").
+    filter: drop-shadow(2px 3px 0 rgba(var(--web-shadow-rgb), .16)) drop-shadow(6px 10px 12px rgba(var(--web-shadow-rgb), .24));
 }
 
 @mixin marker($lit: false) {
