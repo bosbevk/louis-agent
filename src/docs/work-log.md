@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 124 | 94 |
-| Fixes (`FX`) | 156 | 6 |
+| Fixes (`FX`) | 157 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -282,10 +282,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (156 done)
+## Fixes (157 done)
 
 | Id | When | What |
 |---|---|---|
+| FX171 | 2026-11-17 | The "What we build" page is gone, with its menu link, its sitemap addresses and the guide's lines about it |
 | FX168 | 2026-11-16 | The site's name stands left of the agent bar, and its tagline over Louis's LinkedIn right of it |
 | FX167 | 2026-11-16 | The landing's demos stand in glass windows with the business's address, and the one picked comes to the front |
 | FX166 | 2026-11-16 | The site no longer lags: the words cast no stack of shadows, and a heading's colour stands still |

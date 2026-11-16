@@ -111,8 +111,8 @@ agent to take the visitor's details, or leads to the contact page. The framework
 the menu's "The framework" leads to its own pages.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
-`/framework/architecture`. `/what-we-build` is the selling page, and no page names a price: every quote is made on
-request, so `/pricing` is moved to `/contact`. Then there are the demos.
+`/framework/architecture`. No page names a price: every quote is made on request, so `/pricing` is moved to
+`/contact`. Then there are the demos.
 
 *Decided in:* [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), F110.

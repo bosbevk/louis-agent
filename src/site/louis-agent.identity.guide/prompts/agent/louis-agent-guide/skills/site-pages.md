@@ -12,7 +12,6 @@ docs it was written from, is in your `louis-agent-guide/site-map` skill: read it
 someone through one.
 
 - `/`: the landing, a website with an agent, what it does, the demos and custom agents.
-- `/what-we-build`: what we build, in a buyer's words, and how it starts.
 - `/contact`: how to reach the real Louis.
 - `/cv`: the real Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.

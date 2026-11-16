@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX171 · A page is more than its file
+
+Louis asked for the "What we build" page to go, with everything of it. Deleting the page's file was the smallest
+part. The menu linked to it, the sitemap listed it and two of its sections for search engines, a title test and a
+page test held it, and the guide's own skills told it to send people there. Left behind, any of those would have
+pointed a visitor or a crawler at a page that answers "not found". The tests found two of them, the sitemap and the
+menu's count, and a search for the address found the guide's lines, which no test reads. The lesson is to remove a
+page by its address, not by its file, and to search for that address everywhere the site speaks. Skill 18 (testing
+and shipping: a test now holds that no page answers there).
+
 ## FX168 · A cascade carries what only the far end needs, past what lies between
 
 Louis wanted the brand in the empty room on each side of the agent bar. The bar sits inside the chat widget, and
