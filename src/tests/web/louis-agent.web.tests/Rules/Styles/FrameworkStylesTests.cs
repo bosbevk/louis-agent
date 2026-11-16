@@ -257,6 +257,28 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
     /// <summary>
+    /// With the guide as a bar in the frame's corner (F151.6), the frame keeps the room the bar says it stands, on a
+    /// wide screen and a phone alike: the page, a slide and the way up end above the bar, and the corner is no
+    /// floating box of its own, since the bar places itself.
+    /// </summary>
+    [TestCase(".site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }")]
+    [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }")]
+    [TestCase(".site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }")]
+    public void WithTheGuideAsABar_TheFrameKeepsItsRoom(string rule)
+    {
+        string shell = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shell, Does.Contain(rule));
+            Assert.That(shell.IndexOf(rule, StringComparison.Ordinal),
+                Is.GreaterThan(shell.IndexOf("@media (max-width: 720px)", StringComparison.Ordinal)),
+                "after the phone's rules, so it wins there too");
+        });
+    }
+
+    /// <summary>
     /// On a phone the guide opens full screen (FX115): the panel is fixed to the screen from the width the bottom bar
     /// starts at, and the bar has no backdrop filter, which would make it the box a fixed panel is placed in and
     /// squeeze the guide into the bar.

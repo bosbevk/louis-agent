@@ -148,3 +148,14 @@
     }
     .site-up { left: 16px; bottom: calc(var(--site-bar) + 12px); }
 }
+
+/* With the guide as a bar in the corner (F151.6), the bar places itself at the page's foot, so the corner is no box
+   of its own, and the frame keeps the room the bar says it stands (--bar-room, from the bar's own module; until it
+   has said, the bar's usual height with its chips). That room is --site-bar, the name a slide, a paged section and
+   the way up already end above, on a wide screen and a phone alike. These come after the phone's rules, so they win
+   there too. On a screen only: paper has no bar, so a printed page keeps no room for one. */
+@media screen {
+    .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }
+    .site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }
+    .site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }
+}

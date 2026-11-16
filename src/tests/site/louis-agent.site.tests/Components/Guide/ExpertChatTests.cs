@@ -11,8 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Site.Tests.Components.Guide;
 
 /// <summary>
-/// The guide in the corner (F109.3): the framework's widget wrapped once with the expert identity and the site's
-/// words, so a page places one tag and a question opens a session as the expert.
+/// The site's guide (F109.3): the framework's widget wrapped once with the expert identity and the site's words,
+/// as the bar at the page's foot since F151.6, so a layout places one tag and a question opens a session as the
+/// expert.
 /// </summary>
 public class ExpertChatTests
 {
@@ -31,11 +32,11 @@ public class ExpertChatTests
     }
 
     /// <summary>
-    /// Folded, the corner offers the page's tour alone, in words (FX114, Louis: "just have tour this page"); the tour
-    /// is what opens the guide.
+    /// The guide is the bar at the page's foot (F151.6, Louis: "these button must go we will use the same guide as
+    /// in design chat widget everywhere"): its box is always there, and no tour button stands in a corner.
     /// </summary>
     [Test]
-    public void Folded_TheCornerOffersTheTour()
+    public void TheGuide_IsTheBar_WithNoTourButton()
     {
         using var ctx = Context(out _);
         ctx.Services.AddSingleton(new GuideDoor());
@@ -43,28 +44,29 @@ public class ExpertChatTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find("button.widget-tour").TextContent, Does.Contain("Tour this page"));
+            Assert.That(cut.Find(".chat-widget").ClassList, Does.Contain("is-bar"));
+            Assert.That(cut.Find(".agent-doing").TextContent, Is.EqualTo("Louis · AI"));
+            Assert.That(cut.FindAll("button.widget-tour"), Is.Empty);
             Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
         });
     }
 
-    /// <summary>Opened by the tour, it carries the site's words and opens a session as the expert.</summary>
+    /// <summary>A question typed in the bar's box opens a session as the expert.</summary>
     [Test]
-    public void TheGuide_SpeaksTheSitesWords_AndOpensAsTheExpert()
+    public void AQuestionInTheBar_OpensAsTheExpert()
     {
         using var ctx = Context(out var handler);
         ctx.Services.AddSingleton(new GuideDoor());
         var cut = ctx.Render<ExpertChat>();
 
-        cut.Find("button.widget-tour").Click();
-        cut.WaitForState(() => cut.FindAll(".turn").Count > 0, TimeSpan.FromSeconds(10));
+        cut.Find("#composer-input").Input("What is this site?");
+        cut.Find("button.send").Click();
+        cut.WaitForState(
+            () => handler.Requests.Any(r => r.Method == HttpMethod.Post && r.Url.EndsWith("/v1/sessions")),
+            TimeSpan.FromSeconds(10));
         var opened = handler.Requests.Single(r => r.Method == HttpMethod.Post && r.Url.EndsWith("/v1/sessions"));
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(cut.Find(".widget-title").TextContent, Is.EqualTo("Louis · AI"));
-            Assert.That(opened.Body, Does.Contain($"\"identity\":\"{GuideIdentityName.LouisAgentGuide.Wire()}\""));
-        });
+        Assert.That(opened.Body, Does.Contain($"\"identity\":\"{GuideIdentityName.LouisAgentGuide.Wire()}\""));
     }
 
     /// <summary>
@@ -85,7 +87,6 @@ public class ExpertChatTests
             Assert.That(widget.Greeting, Does.StartWith("Hi, I'm Louis.").And.Contain("AI"));
             Assert.That(widget.Greeting, Does.Contain("What brings you here?"));
             Assert.That(widget.Greeting, Does.Not.Contain(";"));
-            Assert.That(widget.ButtonText, Is.EqualTo("Ask Louis"));
             Assert.That(widget.ShowWork, Is.False, "a visitor sees his words, not his tool calls or thinking");
         });
     }

@@ -135,7 +135,11 @@
 }
 .agent-chips button {
     padding: 9px 15px;
-    font: 500 13.5px/1.2 inherit;
+    /* The family is the page's; the shorthand can't take inherit for it alone, so each part is said. */
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.2;
     color: var(--bs-emphasis-color);
     cursor: pointer;
     transition: transform .3s var(--web-spring, ease-out), background-color .3s;

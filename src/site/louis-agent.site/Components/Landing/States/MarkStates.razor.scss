@@ -7,7 +7,7 @@
 .mark-states ::deep .orb { width: clamp(120px, 15vw, 176px); height: clamp(120px, 15vw, 176px); }
 .mark-states ::deep .orb::before, .mark-states ::deep .orb::after { inset: -12px; }
 
-.mark-say { display: grid; gap: 4px; min-height: 58px; margin: 34px 0 0; }
+.mark-say { display: grid; gap: 4px; min-height: 58px; margin: 22px 0 0; }
 .mark-say b { font: 650 21px/1.1 var(--bs-font-sans-serif); letter-spacing: -.025em; color: var(--bs-emphasis-color); }
 .mark-say span { color: var(--bs-secondary-color); }
 

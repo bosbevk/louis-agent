@@ -10,7 +10,7 @@
 ## Purpose
 
 This is the framework's own website, louis-agent.dev. It says what louis-agent is, how it works, what's built on it,
-and what Louis sells. The guide sits in the corner and answers questions from the docs.
+and what Louis sells. The guide stands as a bar at the foot of every page and answers questions from the docs.
 
 It's the visitor area of a business, built on the framework's web just the way a customer's site would be. A portal
 comes later. It lives beside the framework, in `src/`, and it's the one place in `src/` that uses packs and an
@@ -222,8 +222,11 @@ The pages are written from the docs the guide reads. Every number comes from the
 is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
 search engines (`Content/SiteFacts.cs`).
 
-Louis in the corner is the guide's identity. The widget is titled "Louis · AI", and hides its work
-(`ShowWork="false"`).
+Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
+framework's widget as its bar: the mark, a box that is always there to type in, and the site's three questions as
+chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
+button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
+"Louis · AI", and hides its work (`ShowWork="false"`).
 
 *Decided in:* F123, [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
 

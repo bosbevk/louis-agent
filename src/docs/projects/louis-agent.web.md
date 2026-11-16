@@ -295,7 +295,10 @@ The engine and an agent run without any of this: the command line, Rider, the AP
 is what turns an agent into a website.
 
 **The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. It adds a scroll progress
-line, a way back up, and a section index on the left. The index is built from the page's bands: each band puts
+line, a way back up, and a section index on the left. When a site puts the guide in the corner as its bar, the
+corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a
+screen: the room is `--site-bar`, the name a slide, a paged section and the way up already end above, so each ends
+above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
 itself on the frame's list as it draws.
 
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that

@@ -23,6 +23,10 @@
 
     /* The hero's headline is the page's biggest words, as large as the window lets it be (F151.6). */
     .hero.is-centred h1 { font-size: clamp(54px, 7.4vw, 124px); letter-spacing: -.04em; line-height: .98; }
+    /* The centred hero stands close under the header with its parts close together, so its two buttons show above
+       the guide's bar on a 1080 screen. */
+    .hero.is-centred { padding-top: 40px; }
+    .hero.is-centred .hero-text { gap: 16px; }
 
     /* The big words in chrome: the strongest ink running into the brand's colour at the end of the line, clipped to
        the letters, and held still, so a heading costs nothing to keep on screen. The gradient only paints the box, and

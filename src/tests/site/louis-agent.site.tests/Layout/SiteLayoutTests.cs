@@ -229,18 +229,19 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The guide sits in the frame's corner, folded, on every page, offered as the page's tour alone (FX114).
+    /// The guide stands on every page as the bar at its foot, the one the showroom has (F151.6, Louis: "we will use
+    /// the same guide as in design chat widget everywhere"): no tour button floats in the corner.
     /// </summary>
     [Test]
-    public void TheCorner_HoldsTheGuide_Folded()
+    public void TheCorner_HoldsTheGuide_AsTheBar()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.FindAll(".site-corner .chat-widget button.widget-tour"), Has.Count.EqualTo(1));
-        Assert.That(cut.FindAll(".site-corner button.widget-button"), Is.Empty);
-        Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
+        Assert.That(cut.FindAll(".site-corner .chat-widget.is-bar .agent-bar"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll("button.widget-tour"), Is.Empty);
+        Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
     }
 
     /// <summary>
