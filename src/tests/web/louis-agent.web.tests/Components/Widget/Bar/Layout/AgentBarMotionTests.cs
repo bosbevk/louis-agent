@@ -95,8 +95,10 @@ public class AgentBarMotionTests
                 Does.Contain(".agent-bar.is-closed { bottom: calc(22px + var(--agent-chip) + var(--agent-chip-gap)); }"));
             // A little room between the orb and the chips round it (Louis: "increase spacing a tad").
             Assert.That(BarStyles, Does.Contain("--agent-chip-gap: 8px;"));
-            // With no brand beside the orb, the chips stand close round it (Louis: "then we can space better").
-            Assert.That(ChipsStyles, Does.Contain("grid-template-columns: 1fr calc(var(--agent-ball) + 2 * var(--agent-air) + 2 * 16px) 1fr;"));
+            // With no brand beside the orb, the chips stand close round it, the same gap on every side (Louis: "then
+            // we can space better", "you know what i mean these gaps").
+            Assert.That(ChipsStyles, Does.Contain(
+                "grid-template-columns: 1fr calc(var(--agent-ball) + 2 * var(--agent-air) + 2 * var(--agent-chip-gap)) 1fr;"));
         });
     }
 

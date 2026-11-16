@@ -41,7 +41,8 @@
 .agent-chips button.is-suggested { font-weight: 600; @include surface.press(); }
 /* While the bar is closed, its chips take six places round the orb (FX173, Louis: "space for 6", "straight not at
    an angle", "only when it is closed", "like this"). Three columns: the left and the right close beside the orb, the
-   middle the orb with 16 of room on each side ("then we can space better"). Four rows: one over the orb, the orb's
+   middle the orb with the chips' gap on each side, the same gap as over and under it ("you know what i mean these
+   gaps"). Four rows: one over the orb, the orb's
    own height in two halves, one under it. The first chip stands over the orb, the next two beside it high on the
    left and the right, the next two beside it low, and the note that the box is there under the orb;
    the bar stands higher by a chip to hold the lowest (its own rule). Each chip keeps to one line. Open, they stand in
@@ -53,7 +54,7 @@
         bottom: calc(-1 * (var(--agent-chip) + var(--agent-chip-gap)));
         width: min(1200px, calc(100vw - 28px));
         display: grid;
-        grid-template-columns: 1fr calc(var(--agent-ball) + 2 * var(--agent-air) + 2 * 16px) 1fr;
+        grid-template-columns: 1fr calc(var(--agent-ball) + 2 * var(--agent-air) + 2 * var(--agent-chip-gap)) 1fr;
         grid-template-rows: var(--agent-chip) repeat(2, calc((var(--agent-ball) + 2 * var(--agent-air)) / 2)) var(--agent-chip);
         gap: var(--agent-chip-gap) 0;
         max-height: none;

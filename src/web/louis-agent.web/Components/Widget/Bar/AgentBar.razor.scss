@@ -14,7 +14,7 @@
     margin-inline: auto;
     // The ball's size and the room round it in the row, named once (FX173, Louis: "can we increase the size"): the
     // row, the closed dock and a phone's smaller bar all read them.
-    --agent-ball: 72px;
+    --agent-ball: 80px;
     --agent-air: 14px;
     width: min(960px, calc(100vw - 28px));
     display: flex;
@@ -53,7 +53,7 @@
 @media (min-width: 1440px) {
     .agent-side { display: flex; }
 }
-/* The row is the bar that floats (F151.4, F151.6): 100 high round a ball of 72 with 14 of room on every side (FX173),
+/* The row is the bar that floats (F151.4, F151.6): 108 high round a ball of 80 with 14 of room on every side (FX173),
    the ball setting the height, and everything round it, the closed dock and the chips' rows, read from the two,
    its ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
    reach past its edge. The ball is the mark as the bar shows it. */
