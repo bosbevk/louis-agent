@@ -100,7 +100,6 @@ public class SiteLayoutTests
     [TestCase("/framework/whats-coming")]
     [TestCase("/contact")]
     [TestCase("/what-we-build")]
-    [TestCase("/pricing")]
     public void TheMenu_LeadsToThePage(string address)
     {
         using var ctx = Context();
@@ -111,8 +110,8 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): What we build, Pricing, Demos, Contact, and
-    /// the framework last of its pages, with the CV mark closing the bar (F142).
+    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): What we build, Demos, Contact, and the
+    /// framework last of its pages, with the CV mark closing the bar (F142); no Pricing (Louis: "remove pricing").
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -124,7 +123,7 @@ public class SiteLayoutTests
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
         Assert.That(items,
-            Is.EqualTo(new[] { "What we build", "Pricing", "Demos", "Contact", "The framework", "CV" }));
+            Is.EqualTo(new[] { "What we build", "Demos", "Contact", "The framework", "CV" }));
     }
 
     /// <summary>

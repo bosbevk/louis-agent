@@ -5,13 +5,15 @@
 
 @* One page the visitor scrolls (F110): the frame draws the progress line and the section index from the bands below
    (F118), so a band's id and topic are all a section needs to be listed. Since F128.1 it tells the story offer first:
-   what it does, where it runs, custom agents and the demos; the framework's rule and numbers live on its own
+   what it does, where it runs, the demos and custom agents; the framework's rule and numbers live on its own
    pages. *@
 <Hero />
 
 <WhatItDoes />
 
 <HowItWorksForYou />
+
+<LandingDemos />
 
 <Band Id="custom" Topic="Custom agents" Title="Want an agent for your business?" Summary="An agent of your own is three things. Who it is, the tools it uses on your own systems, and a closed place to run where every request is measured. The agent in the corner can pass your details on.">
     <TileRow>
@@ -20,7 +22,5 @@
         <Tile Icon="DiagramIcon.Shield" Title="Hosted, closed and measured" Delay="2">It runs in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here. Every request is priced and the bill is shown in rand.</Tile>
     </TileRow>
     <LiveTurn Title="session 7f3a · toolsets: files, git, dotnet" Label="An animated chat turn, with the prompt, the thinking, two tool calls with their guards, the answer and the cost line" Lines="CustomTurn" Cost="turn 4 requests · 31k tokens (27k cached) · **$0.008**" CostAt="10.2" Reflect="true" /></Band>
-
-<LandingDemos />
 
 <ContactStrip />

@@ -23,7 +23,7 @@ public class LandingStoryTests
         var cut = ctx.Render<HomePage>();
 
         Assert.That(cut.FindAll("section").Select(section => section.Id),
-            Is.EqualTo(new[] { "top", "does", "for-you", "custom", "demos", "contact" }));
+            Is.EqualTo(new[] { "top", "does", "for-you", "demos", "custom", "contact" }));
     }
 
     /// <summary>What left the landing has a home on the framework's pages.</summary>
