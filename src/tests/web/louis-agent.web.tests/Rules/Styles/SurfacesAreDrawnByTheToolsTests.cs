@@ -26,21 +26,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Blocks/OfferBox.razor.scss",
         "Components/Blocks/OfferCards.razor.scss",
         "Components/BlocksView.razor.scss",
-        "Components/Chat/Composer.razor.scss",
-        "Components/Chat/Composing/ComposerTools.razor.scss",
-        "Components/Chat/Header/ChatHeader.razor.scss",
-        "Components/Chat/Header/CreditsMenu.razor.scss",
-        "Components/Chat/Header/ProfileMenu.razor.scss",
-        "Components/Chat/Panels/WorkItem.razor.scss",
-        "Components/Chat/Panels/WorkPanel.razor.scss",
-        "Components/Chat/Panels/WorkStep.razor.scss",
-        "Components/Chat/Search/ChatSearch.razor.scss",
-        "Components/Chat/Shell/ChatShell.razor.scss",
-        "Components/Chat/Sidebar/ChatSidebar.razor.scss",
-        "Components/Chat/Sidebar/LocationPicker.razor.scss",
-        "Components/Chat/Toast.razor.scss",
-        "Components/Chat/Turns/AnswerActions.razor.scss",
-        "Components/DelegationCard.razor.scss",
         "Components/Editing/Inline/InlineEdit.razor.scss",
         "Components/Editing/Inline/InlineForm.razor.scss",
         "Components/Editing/Inline/ItemAdd.razor.scss",
@@ -48,7 +33,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Editing/TagInput.razor.scss",
         "Components/Editing/TextField.razor.scss",
         "Components/Imports/ImportCard.razor.scss",
-        "Components/Recorded/RecordedChat.razor.scss",
         "Components/Screens/Forms/ScreenForm.razor.scss",
         "Components/Screens/Table/ScreenTable.razor.scss",
         "Components/Site/Showroom/Mock/Foot/MockFoot.razor.scss",
@@ -130,8 +114,10 @@ public class SurfacesAreDrawnByTheToolsTests
             "Draw these through the surface tool, tools/_surface.scss:\n  " + string.Join("\n  ", unlisted));
     }
 
-    /// <summary>The surface tool's source.</summary>
-    private static string Tool => File.ReadAllText(Path.Combine(Web, "Styles/web/tools/_surface.scss"));
+    /// <summary>The surface tool's source: the file a sheet names, and the files of kinds it hands on.</summary>
+    private static string Tool => string.Join("\n", Directory
+        .EnumerateFiles(Path.Combine(Web, "Styles/web/tools/surface"), "*.scss").Order(StringComparer.Ordinal)
+        .Prepend(Path.Combine(Web, "Styles/web/tools/_surface.scss")).Select(File.ReadAllText));
 
     /// <summary>The tool has a mixin for each kind of surface the mockups have.</summary>
     [TestCase("pane")]
@@ -171,6 +157,12 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("beacon")]
     [TestCase("sweep")]
     [TestCase("tag-you")]
+    [TestCase("lined")]
+    [TestCase("edged")]
+    [TestCase("ring")]
+    [TestCase("badge")]
+    [TestCase("brand-line")]
+    [TestCase("lit")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 
@@ -181,7 +173,7 @@ public class SurfacesAreDrawnByTheToolsTests
     public void EveryDrawingTheToolReads_IsNamedByTheFramework()
     {
         string names = File.ReadAllText(Path.Combine(Web, "Styles/web/settings/_surfaces.scss"));
-        var read = Tool.Split("@include -drawn(").Skip(1).Select(call => call[..call.IndexOf(',')].Trim()).Distinct()
+        var read = Tool.Split("@include drawn(").Skip(1).Select(call => call[..call.IndexOf(',')].Trim()).Distinct()
             .ToList();
         Assert.That(read, Has.Count.GreaterThan(10), "the tool's drawings were read");
 

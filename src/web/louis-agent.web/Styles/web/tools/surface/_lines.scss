@@ -1,0 +1,53 @@
+/* The surface tool's lines and washes (F151.4): the hairlines between parts, a piece's own line and ring, and
+   the faint washes of a colour over a row or a small button. */
+
+/* A hairline between two parts, on the side given: the edge a theme gives a bar. */
+@mixin rule($side: bottom) {
+    border-#{$side}: var(--web-bar-edge);
+}
+
+/* A hairline drawn as a block of its own, such as the line between two groups, as strong as given. */
+@mixin hairline($strength: .14) {
+    background: rgba(var(--web-overlay-rgb), $strength);
+}
+
+/* A piece that is only its outline, such as a number in a ring: the second button's edge. */
+@mixin outlined() {
+    border: var(--web-press-edge);
+}
+
+/* The groove a line fills as something plays. */
+@mixin track() {
+    background: var(--bs-border-color);
+}
+
+/* A piece's own line: the hairline of what is set into the page, or a line in the colour given. */
+@mixin lined($colour: null) {
+    @if $colour == null {
+        border: var(--web-inset-edge);
+    } @else {
+        border: 1px solid $colour;
+    }
+}
+
+/* The line of a piece taking a colour, as it does under the pointer or while it is switched on. */
+@mixin edged($colour: var(--bs-border-color)) {
+    border-color: $colour;
+}
+
+/* A ring round a piece, in a colour: round a disc so it stands off what is under it, or round a field in use. */
+@mixin ring($colour, $width: 3px) {
+    box-shadow: 0 0 0 $width $colour;
+}
+
+/* A row or a tile under the pointer, such as a link in a menu: a wash of the brand's colour, or of the colour and
+   strength given. */
+@mixin tint($rgb: var(--bs-primary-rgb), $strength: .08) {
+    background: rgba($rgb, $strength);
+}
+
+/* A wash of a piece's own ink over whatever it sits on, such as a small button in a window's head, which may be
+   plain or in a business's colour. */
+@mixin wash($strength: 14%) {
+    background: color-mix(in srgb, currentColor $strength, transparent);
+}

@@ -75,7 +75,7 @@ public class OrbTests
     public void TheDisc_IsDrawnFromTheMarksThreeNames()
     {
         string tool = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/web/louis-agent.web/Styles/web/tools/_surface.scss")).ReplaceLineEndings("\n");
+            "src/web/louis-agent.web/Styles/web/tools/surface/_marks.scss")).ReplaceLineEndings("\n");
         int start = tool.IndexOf("@mixin mark()", StringComparison.Ordinal);
         string mark = start < 0 ? "" : tool[start..tool.IndexOf("\n}", start, StringComparison.Ordinal)];
 

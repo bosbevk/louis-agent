@@ -1,7 +1,9 @@
+@use "web/tools/surface";
+
 /* CreditsMenu's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
 /* ---- Pay as you go (F20): the top bar's usage meter, and the landing's about. ---- */
-.usage-meter { display: inline-flex; align-items: baseline; gap: 6px; height: 36px; padding: 0 14px; border-radius: 11px; font-size: 13px; font-weight: 800; color: var(--bs-emphasis-color); background: rgba(var(--bs-primary-rgb), .1); border: 1px solid rgba(var(--bs-primary-rgb), .35); align-items: center; font-variant-numeric: tabular-nums; transition: background .2s, border-color .2s; }
-.usage-meter:hover, .usage-meter[aria-expanded="true"] { background: rgba(var(--bs-primary-rgb), .18); border-color: var(--bs-primary); }
+.usage-meter { display: inline-flex; align-items: baseline; gap: 6px; height: 36px; padding: 0 14px; border-radius: 11px; font-size: 13px; font-weight: 800; color: var(--bs-emphasis-color); @include surface.tint($strength: .1); @include surface.lined(rgba(var(--bs-primary-rgb), .35)); align-items: center; font-variant-numeric: tabular-nums; transition: background .2s, border-color .2s; }
+.usage-meter:hover, .usage-meter[aria-expanded="true"] { @include surface.tint($strength: .18); @include surface.edged(var(--bs-primary)); }
 .usage-meter small { font-size: 11px; font-weight: 600; color: var(--bs-secondary-color); }
 .usage-menu { min-width: 280px; padding: 8px; }
 .usage-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 10px; font-size: 13.5px; color: var(--bs-body-color); font-variant-numeric: tabular-nums; }

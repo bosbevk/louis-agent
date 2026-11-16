@@ -1,0 +1,63 @@
+/* The surface tool's marks (F151.4): the agent's mark with its rings, and the small marks a piece wears, a
+   marker, a badge, a line of progress or of the brand. */
+
+/* The agent's mark: its disc, its gloss and the letter on it, each the theme's. */
+@mixin mark() {
+    color: var(--web-mark-ink);
+    background: var(--web-mark-fill);
+    box-shadow: var(--web-mark-gloss);
+}
+
+/* A ring round the mark, in a colour: the quiet one it breathes with, the visitor's while it listens. */
+@mixin mark-ring($colour: rgba(var(--web-overlay-rgb), .35), $width: 1.5px) {
+    box-shadow: 0 0 0 $width $colour;
+}
+
+/* The arc that goes round the mark while the agent thinks: a slice of a ring, cut out of a disc. */
+@mixin mark-arc() {
+    box-shadow: none;
+    background: conic-gradient(var(--web-bright) 0 70deg, transparent 70deg);
+    mask: radial-gradient(closest-side, transparent calc(100% - 3px), var(--web-bright) calc(100% - 2.5px));
+}
+
+/* The mark at the top of its pulse while the agent speaks: its gloss with a light round it. */
+@mixin mark-lit() {
+    box-shadow: var(--web-mark-gloss), 0 0 22px 1px rgba(var(--web-overlay-rgb), .8);
+}
+
+/* The mark made small, such as the dot beside the agent's name on its answer: its disc alone, with no gloss. */
+@mixin mark-dot() {
+    background: var(--web-mark-fill);
+}
+
+/* A small mark beside a label, such as the dot before a section's name, and the same mark lit for the one in view. */
+@mixin marker($lit: false) {
+    @if $lit {
+        background: var(--bs-primary);
+        box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .9);
+    } @else {
+        background: var(--bs-border-color);
+    }
+}
+
+/* A line that grows as something moves on, such as the one along the top as the page scrolls. */
+@mixin progress() {
+    background: var(--web-cta);
+    box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
+}
+
+/* A small disc that stands for someone or something, such as a profile's or a source's: the brand's colour run
+   into its second one. */
+@mixin badge() {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-success-text-emphasis));
+}
+
+/* A thin line of a piece's own colour along its top, as an accented tile has. */
+@mixin accent-line() {
+    border-top: 2px solid var(--accent);
+}
+
+/* A line in the brand's two colours, such as the one down the side of a specialist's work. */
+@mixin brand-line($angle: 180deg) {
+    background: linear-gradient($angle, var(--bs-primary), var(--bs-success));
+}
