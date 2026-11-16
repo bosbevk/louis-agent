@@ -146,9 +146,21 @@ same bytes on every machine.
 
 **The picture carries both looks** (`Svg/Theme/`). The site's palette and its light twin are CSS variables in the
 picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
-too. That style (`SvgStyle`) holds only what every picture needs whatever look it wears: the ground, an
-arrowhead in each tone and a caption. A rule test holds that each of its rules, and each of the docs' frame's, is
-for a class some drawing writes (`DiagramsProjectTests`).
+too. The violet tone is the brand's Ultraviolet: on a light screen a pale `#e2dfff` tint, a `#6b4dff` line and
+`#3a22c4` words, and on a dark one a deep `#110a40` tint, a `#9282ff` line and `#e2dfff` words. That style
+(`SvgStyle`) holds only what every picture needs whatever look it wears: the ground, an arrowhead in each tone and
+a caption. A rule test holds that each of its rules, and each of the docs' frame's, is for a class some drawing
+writes (`DiagramsProjectTests`).
+
+**Where the picture is seen decides which look it wears.** A picture is seen in two places with different rules.
+Read as a file in the docs, on GitHub or in Rider's preview, nothing around it says light or dark, so it follows
+the device's setting. Drawn into one of our pages, as the card in the chat is, it follows the page's own Dark and
+Light switch, even on a phone set the other way. So after the device's rule, every style that sets colours (the
+theme's, `PictureLook`'s and `MarqueeLook`'s) has a rule for a page whose `data-style` says dark and one for a
+page that says light, and those win where both apply. In a file nothing carries that attribute, so the two rules
+match nothing and the device decides. `PageScheme` writes the three rules once for all three styles. It names the
+attribute and its two words itself, because the docs' tool uses this library and it must not depend on the
+framework's web for them, and a test in the web's tests that sees both holds them equal to the page's.
 
 **The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A nested
 picture and a flow are drawn in the new look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
@@ -589,7 +601,9 @@ accent along its top. A soft light falls from the accent down the head and is go
 row's icon stands in a small chip, and the note stands in a well, a panel a step deeper inside the card. The
 status pill is tinted and edged in its tone, with its words in the tone's ink. Under the glass the card has solid
 paper, so its words read on whatever page it lies. It has no title and no ground of its own, since it is a card in
-a chat.
+a chat. Every colour it wears is a `--ticket-` name first and the look's own after, so the page that shows it can
+hand it its colours: the web's `DrawnCard` sets the paper, the line, the words and the accent from the theme, so a
+card in the chat is drawn on the theme's surface and turns with the page.
 
 `TicketLayout` places every word. The kicker wraps beside the pill. A long value wraps, and the card grows. The
 note wraps inside its well. It is 320 wide, so a phone's chat shrinks it little.
@@ -722,7 +736,7 @@ src/web/louis-agent.diagrams.engine/
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Nested/     # KeyLayout, NeighbourLayout, NestedLayout, NestedSizes; Placed/ (PlacedBox, PlacedNeighbour, PlacedNested, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames

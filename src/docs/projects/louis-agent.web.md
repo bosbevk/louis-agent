@@ -129,7 +129,9 @@ own parts.
 
 **A card, or a set of choices.** The site pack has two tools for this, `ShowCard` and `Offer`. They draw nothing
 themselves. The chat reads each call and draws it, also when the agent's work is hidden. A card is drawn as the
-diagrams library's ticket, held inline with its styles kept to itself. An offer's choices are drawn as buttons. An
+diagrams library's ticket, held inline with its styles kept to itself. The card hands the ticket the theme's
+colours, the pane's fill for its paper, the hairline, the words' colour and the agent's violet, so it is drawn on
+the theme's surface, and its own style follows the page's Dark and Light switch. An offer's choices are drawn as buttons. An
 answer's cards go under its words, whatever order they were called in.
 
 A click on a choice goes up to the chat that owns the runner, which sends the choice's label as the visitor's
