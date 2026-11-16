@@ -313,6 +313,13 @@ screen: the room is `--site-bar`, the name a slide, a paged section and the way 
 above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
 itself on the frame's list as it draws.
 
+On a phone, 720 pixels wide or less, the header is one slim row: the site's name, and a menu button at the right.
+The button opens a sheet that hangs just under the header, over the page, holding the links one under the other,
+then the look switch and the site's actions. The sheet wears the theme's look for what floats over the page's
+words. It stays open while the visitor opens a list in it, such as the demos, and shuts when a link takes them to
+a page. On a wider screen the sheet is no box of its own, so the links and the actions stand in the header's row
+as before, and the button is not drawn.
+
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
 menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
 the bar opens its list right-aligned, so it stays on the screen.

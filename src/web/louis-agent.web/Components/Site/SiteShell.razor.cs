@@ -4,6 +4,7 @@ using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
@@ -72,8 +73,12 @@ public partial class SiteShell
     /// </summary>
     private string SiteClasses => Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow";
 
-    /// <summary>Redraws when the page makes or takes back its choice.</summary>
-    protected override void OnInitialized() => _options.Changed += Redraw;
+    /// <summary>Redraws when the page makes or takes back its choice, and shuts the menu when a page opens.</summary>
+    protected override void OnInitialized()
+    {
+        _options.Changed += Redraw;
+        Nav.LocationChanged += ShutMenu;
+    }
 
     private void Redraw() => InvokeAsync(StateHasChanged);
 
@@ -91,6 +96,26 @@ public partial class SiteShell
 
     /// <summary>The header's actions are drawn when the site gives some, or when the switch stands there.</summary>
     private bool HasActions => Actions is not null || OffersThemes;
+
+    /// <summary>The menu holds the links and the actions, so it stands when the site has either.</summary>
+    private bool HasMenu => Links is not null || HasActions;
+
+    /// <summary>Whether the sheet a phone opens from the menu button is open (F151.6); it starts shut.</summary>
+    private bool _menuOpen;
+
+    /// <summary>The menu button opens the sheet, and shuts it again.</summary>
+    private void ToggleMenu() => _menuOpen = !_menuOpen;
+
+    /// <summary>
+    /// A link taken from the sheet opens its page with the sheet shut. A press in the sheet that goes nowhere, such as
+    /// opening the demos' list, keeps it open.
+    /// </summary>
+    private void ShutMenu(object? sender, LocationChangedEventArgs e)
+    {
+        if (!_menuOpen) return;
+        _menuOpen = false;
+        Redraw();
+    }
 
     /// <summary>Where the address points: the page, and the place on it when it names one (F118, ADR 0107).</summary>
     private SiteAddress Here =>
@@ -128,6 +153,7 @@ public partial class SiteShell
     public async ValueTask DisposeAsync()
     {
         _options.Changed -= Redraw;
+        Nav.LocationChanged -= ShutMenu;
         if (_motion is null) return;
         try
         {

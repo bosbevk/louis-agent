@@ -75,7 +75,10 @@ public class SiteShellTests
         });
     }
 
-    /// <summary>The links go in the header's menu, and the actions come after them.</summary>
+    /// <summary>
+    /// The links go in the header's menu, and the actions come after them, both in the sheet a phone opens from the
+    /// menu button (F151.6); on a wider screen the sheet is no box of its own, so they stand in the header's row.
+    /// </summary>
     [Test]
     public void TheLinks_GoInTheMenu_AndTheActionsAfter()
     {
@@ -85,7 +88,7 @@ public class SiteShellTests
             .Add(shell => shell.Links, "<a class=\"my-link\" href=\"x\">X</a>")
             .Add(shell => shell.Actions, "<a class=\"my-action\" href=\"y\">Y</a>"));
 
-        var inside = cut.Find(".site-header").Children.Select(child => child.ClassName).ToList();
+        var inside = cut.Find(".site-menu").Children.Select(child => child.ClassName).ToList();
         Assert.That(cut.FindAll(".site-nav .my-link"), Has.Count.EqualTo(1));
         Assert.That(inside, Is.EqualTo(new[] { "site-nav", "site-actions" }));
     }
@@ -284,11 +287,11 @@ public class SiteShellTests
     }
 
     /// <summary>
-    /// F151.3: on a phone the header's actions, the look switch among them, take a row of their own between the brand
-    /// and the menu, so both of the switch's groups stay in reach and the menu keeps its own row.
+    /// F151.6 (Louis's pick A of three): on a phone the header is one slim row, the name and the menu button, and the
+    /// links, the look switch and the actions wait in a sheet the button opens under the header.
     /// </summary>
     [Test]
-    public void OnAPhone_TheActions_TakeARowOfTheirOwn_BetweenTheBrandAndTheMenu()
+    public void OnAPhone_TheHeaderIsOneRow_AndTheMenuASheet()
     {
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
@@ -296,8 +299,9 @@ public class SiteShellTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(phone, Does.Contain(".site-actions { width: 100%; order: 2; }"));
-            Assert.That(phone, Does.Contain(".site-nav { gap: 16px; width: 100%; order: 3; }"));
+            Assert.That(phone, Does.Contain(".site-header { gap: 12px; flex-wrap: nowrap; padding: 12px 16px; }"));
+            Assert.That(phone, Does.Contain(".site-menu { display: none; }"));
+            Assert.That(phone, Does.Contain(".site-menu[data-open] {"));
         });
     }
 
