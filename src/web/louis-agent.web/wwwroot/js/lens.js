@@ -1,6 +1,6 @@
-// The lens (F151.6, the design's real glass, Louis's way 2 of three): in a theme that has one, the pane under the
-// pointer, and the one picked or shown, bends what is behind it as a piece of glass does, and its edge catches the
-// light. Every other pane stays clear glass, so the page pays for one or two lenses, never for all of them.
+// The lens (F151.6, the design's real glass, Louis's way 2 of three): in a theme that has one, every pane near the
+// screen bends what is behind it as a piece of glass does, and its edge catches the light (FX163, Louis: "the bend
+// must be on all glass panels, not only when hovered"). Under the pointer the pointer is its lamp; held down it gives.
 //
 // A pane says what it is in its own styles (--web-lens-piece, from the surface tool): 1 for a piece the pointer may
 // light, 2 for one picked, 3 for one the agent shows. The theme says how thick the glass is (--web-lens-wall at its
@@ -129,6 +129,7 @@ const wear = el => {
     const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight); if (!w || !h || !glass.wall) return;
     // A piece held down gives: its wall a little thinner and its middle much lower, so it bends less.
     const down = state(el).down, wall = glass.wall * (down ? .9 : 1), rise = glass.rise * (down ? PRESSED : 1);
+    state(el).kind = kind(el);
     const id = worn.get(el) ?? `lens-${n++}`; worn.set(el, id); sized?.observe(el);
     let f = document.getElementById(id);
     if (!f) { f = document.createElementNS(NS, "filter"); f.id = id; host.append(f); }
@@ -154,7 +155,6 @@ const unwear = el => {
     worn.delete(el); now.delete(el); sized?.unobserve(el); document.getElementById(id)?.remove();
     el.style.removeProperty("-webkit-backdrop-filter"); el.style.removeProperty("backdrop-filter");
 };
-const held = el => el.isConnected && kind(el) >= 2;
 
 // The pointer: the nearest piece round what it is over wears the lens, and the one it left takes it off, unless
 // that one is picked or shown.
@@ -163,10 +163,12 @@ const over = e => {
     let el = e.target instanceof Element ? e.target : null;
     while (el && el !== document.body && !kind(el)) el = el.parentElement;
     const piece = el && el !== document.body ? el : null; if (piece === hovered) return;
-    if (hovered && !held(hovered)) unwear(hovered);
-    hovered = piece; if (piece) wear(piece);
+    if (hovered) putTheLampOut(hovered);
+    hovered = piece; if (piece && !worn.has(piece)) wear(piece);
 };
-const left = e => { if (e.relatedTarget || !hovered) return; if (!held(hovered)) unwear(hovered); hovered = null; };
+// The pointer leaves a piece: it keeps its lens, lit by the far lamp again.
+const putTheLampOut = el => { const m = now.get(el); if (!m?.lamp) return; m.lamp = null; relight(el); };
+const left = e => { if (e.relatedTarget || !hovered) return; putTheLampOut(hovered); hovered = null; };
 
 // Only the light changes while the pointer moves, so only the light's picture is swapped, at most once a frame.
 const relight = el => {
@@ -193,9 +195,12 @@ const released = () => {
 // it is near the screen, and one no longer picked gives it back.
 let looking = 0;
 const look = () => { if (looking) return; looking = setTimeout(() => { looking = 0;
-    [...worn.keys()].forEach(el => { if (el !== hovered && !held(el)) { unwear(el); near.unobserve(el); } });
+    [...worn.keys()].forEach(el => { if (!el.isConnected) { unwear(el); near.unobserve(el); } });
     if (!glass.wall) return;
-    document.querySelectorAll(".site *").forEach(el => { if (kind(el) >= 2) near.observe(el); });
+    // Every piece of glass wears the lens while it is near the screen (Louis: "the bend must be on all glass
+    // panels, not only when hovered"); one picked or shown since the last look is lit again from inside.
+    document.querySelectorAll(".site *").forEach(el => { if (kind(el) >= 1) near.observe(el); });
+    [...worn.keys()].forEach(el => { if (worn.get(el) && state(el).kind !== kind(el)) wear(el); });
 }, 200); };
 
 // Hangs the listeners once and looks for what the latest render picked; safe to call after every render.
@@ -211,8 +216,8 @@ export const lens = {
             document.addEventListener("pointermove", moved, { passive: true });
             document.addEventListener("pointerdown", pressed, { passive: true });
             document.addEventListener("pointerup", released, { passive: true });
-            near = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && held(e.target) ? wear(e.target)
-                : e.target !== hovered && unwear(e.target)), { rootMargin: `${NEAR} 0px` });
+            near = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && kind(e.target) >= 1
+                ? wear(e.target) : e.target !== hovered && unwear(e.target)), { rootMargin: `${NEAR} 0px` });
             sized = new ResizeObserver(es => es.forEach(e => worn.has(e.target) && wear(e.target)));
             // A new theme or style: read the glass again and draw every lens anew, or take them off.
             looks = new MutationObserver(() => {

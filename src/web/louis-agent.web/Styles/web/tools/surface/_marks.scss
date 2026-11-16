@@ -96,12 +96,12 @@
     box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
 }
 
-/* The spotlight the guide puts on a place: a ring of the brand's colour, a soft light behind it, and the rest of
-   the page dimmed by a shadow as large as the screen. */
+/* The spotlight the guide puts on a place: the rest of the page dimmed by a shadow as large as the screen, and no
+   frame of its own (FX163, Louis: "the svg handles the state, now we have two"): the piece shown wears the theme's
+   showing drawing itself. */
 @mixin spotlit() {
     border-radius: var(--web-pane-radius);
-    box-shadow: 0 0 56px rgba(var(--bs-primary-rgb), .35), 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
-    @include drawing(pane-showing);
+    box-shadow: 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
 }
 
 /* A place the agent is showing while its words stand beside it (FX162, FX163, the design page's "the agent, showing
