@@ -1,9 +1,11 @@
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Api.Config;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Messages;
+using LouisAgent.Api.Messages.Holes.Door;
 
 namespace LouisAgent.Api.Endpoints.Routing;
 
@@ -14,7 +16,8 @@ internal enum OpenDoorAnswer
     NotMine,
 
     /// <summary>
-    /// A visitor opening one of the open identities, under the day's cap, or a call on a session the door admitted.
+    /// A visitor opening one of the open identities, under the day's cap, a call on a session the door admitted, or a
+    /// call on a session the host doesn't have, which its handler answers as gone.
     /// </summary>
     Pass,
 
@@ -33,17 +36,26 @@ internal enum OpenDoorAnswer
 /// the identity it admitted, and the session handler narrows that request to that identity's own toolsets, which
 /// keeps the choice of what a visitor may run in code (ADR 0039, rule 6: a route is closed until the code opens it).
 /// Counts and admitted sessions live in memory: one replica runs, and a restart forgives the day, which is the cheap
-/// side to err on.
+/// side to err on. A restart also forgets the sessions themselves, so a call on a session the host doesn't have goes
+/// on to its handler, which says it is gone, and not to the key's check, which would tell a visitor to enter a key
+/// (FX157, Louis's pick A of three: chain of responsibility, the request handed on to the part that can answer it;
+/// chosen over the gate answering every unknown session on every host, and over the page guessing from a 401).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md">ADR 0099: the guide answers without a sign-in, within a cap</seealso>
-public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null)
+public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null, Func<string, bool>? holds = null)
 {
+    /// <summary>Asks the host whether it has a session; with none to ask, every session counts as there.</summary>
+    private readonly Func<string, bool> _holds = holds ?? (_ => true);
+
     /// <summary>
     /// The mark on a request the door admitted, holding the identity it admitted, which the session handler reads.
     /// </summary>
     internal const string Mark = "louis-agent.open-door";
 
     private static readonly TimeSpan Remembered = TimeSpan.FromHours(24);
+
+    /// <summary>The day a visitor's count is for, as it ends their key: a new day starts a new count.</summary>
+    private const string DayFormat = "yyyy-MM-dd";
 
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
     private readonly ConcurrentDictionary<string, int> _opened = new(StringComparer.Ordinal);
@@ -65,7 +77,8 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
 
     /// <summary>What the door says about this call.</summary>
     /// <remarks>
-    /// Guard clauses: a shut door, a call on an admitted session, then a session opened in one of the open identities.
+    /// Guard clauses: a shut door, a call on an admitted session or on one the host doesn't have, then a session opened
+    /// in one of the open identities.
     /// A session an admitted session's turn asks for (its <c>parent</c>, F127.4.2) counts as that visitor's, not the
     /// address that opened it, which is the server's own: the visitor's window may carry on in it, under their cap.
     /// </remarks>
@@ -73,14 +86,17 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
     {
         if (!Options.IsOpen) return OpenDoorAnswer.NotMine;
         if (SessionIdOf(context.Request.Path) is { } id && _admitted.ContainsKey(id)) return OpenDoorAnswer.Pass;
+        // A session the host doesn't have, as after a restart: its handler says it is gone, which needs no key.
+        if (SessionIdOf(context.Request.Path) is { } unknown && !_holds(unknown)) return OpenDoorAnswer.Pass;
         if (!IsOpeningASession(context.Request)) return OpenDoorAnswer.NotMine;
         if (await OpeningAsync(context.Request) is not { Identity: { } identity } opening)
             return OpenDoorAnswer.NotMine;
 
         // One more for this visitor today, unless the day's cap is reached; other days' counts go as they're met.
         string visitor = VisitorOf(opening.ParentSession) ?? AddressOf(context);
-        string key = $"{visitor}|{_clock.GetUtcNow():yyyy-MM-dd}";
-        foreach (string old in _opened.Keys.Where(k => !k.EndsWith(key[^10..], StringComparison.Ordinal)))
+        string today = _clock.GetUtcNow().ToString(DayFormat, CultureInfo.InvariantCulture);
+        string key = $"{visitor}|{today}";
+        foreach (string old in _opened.Keys.Where(k => !k.EndsWith(today, StringComparison.Ordinal)))
             _opened.TryRemove(old, out _);
         int count = _opened.AddOrUpdate(key, 1, (_, n) => n + 1);
         if (count > Options.SessionsPerDay)
@@ -113,8 +129,11 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
         sessionId is not null && _admitted.TryGetValue(sessionId, out var admitted) ? admitted.Visitor : null;
 
     /// <summary>The text of the 429 a capped visitor gets.</summary>
-    internal string CapReachedText() =>
-        MessageText.Format(ApiUserText.OpenDoorCapReached, new { Cap = Options.SessionsPerDay });
+    internal string CapReachedText()
+    {
+        var cap = new OpenDoorCapReachedHoles(Options.SessionsPerDay);
+        return MessageText.Format(ApiUserText.OpenDoorCapReached, cap);
+    }
 
     private static bool IsOpeningASession(HttpRequest request) =>
         HttpMethods.IsPost(request.Method) && request.Path.Equals($"{ApiMap.Version}/sessions");

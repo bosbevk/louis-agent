@@ -6,6 +6,8 @@ using LouisAgent.Api.Endpoints;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Identities.Puls;
+using LouisAgent.SessionStream.Wire.Replies;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.TestHost;
 
 namespace LouisAgent.Api.Tests.Endpoints.Routing;
@@ -34,8 +36,11 @@ public class OpenDoorTests
         ApiTestHost.Build(Key, moreIdentities: [Guide, Shop], openDoor: door);
 
     /// <summary>Asks the API to open a session with this body, with no key.</summary>
-    private static async Task<HttpResponseMessage> OpenAsync(HttpClient client, object body) =>
-        await client.PostAsJsonAsync("/v1/sessions", body);
+    private static async Task<HttpResponseMessage> OpenAsync(HttpClient client, CreateSessionRequest body) =>
+        await client.PostAsJsonAsync("/v1/sessions", body, SessionJson.SnakeCase);
+
+    /// <summary>A session in this identity, or in none, and nothing else asked for.</summary>
+    private static CreateSessionRequest As(string? identity) => new(null, null, null, Identity: identity);
 
     /// <summary>
     /// Each open identity's session opens with no key, in that identity and no other, and its own calls pass.
@@ -48,7 +53,7 @@ public class OpenDoorTests
         await app.StartAsync();
         var client = app.GetTestClient();
 
-        using var opened = await OpenAsync(client, new { identity });
+        using var opened = await OpenAsync(client, As(identity));
         using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
         string id = body.RootElement.GetProperty("session_id").GetString()!;
         using var read = await client.GetAsync($"/v1/sessions/{id}");
@@ -73,11 +78,9 @@ public class OpenDoorTests
         await app.StartAsync();
         var client = app.GetTestClient();
 
-        using var opened = await OpenAsync(client, new
-        {
-            identity = "shop",
-            toolsets = new[] { TestToolset.Files.Wire(), TestToolset.Web.Wire() }
-        });
+        var asking = new CreateSessionRequest(null, null, null, [TestToolset.Files.Wire(), TestToolset.Web.Wire()],
+            Identity: "shop");
+        using var opened = await OpenAsync(client, asking);
         using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
 
         Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Created));
@@ -97,7 +100,7 @@ public class OpenDoorTests
             agentPeers: new Dictionary<string, Uri> { ["self"] = new("http://localhost:8080/") });
         await app.StartAsync();
 
-        using var opened = await OpenAsync(app.GetTestClient(), new { identity = "caller" });
+        using var opened = await OpenAsync(app.GetTestClient(), As("caller"));
         using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
 
         Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Created));
@@ -115,7 +118,7 @@ public class OpenDoorTests
 
         foreach (string? identity in new[] { PulsIdentityName.Puls.Wire(), null })
         {
-            using var opened = await OpenAsync(client, new { identity });
+            using var opened = await OpenAsync(client, As(identity));
             Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), identity ?? "(none)");
         }
     }
@@ -131,15 +134,15 @@ public class OpenDoorTests
         await app.StartAsync();
         var client = app.GetTestClient();
         using var keyed = new HttpRequestMessage(HttpMethod.Post, "/v1/sessions");
-        keyed.Content = JsonContent.Create(new { });
+        keyed.Content = JsonContent.Create(As(null), options: SessionJson.SnakeCase);
         keyed.Headers.Add("x-api-key", Key);
         using var theirs = await client.SendAsync(keyed);
         string theirId = JsonDocument.Parse(await theirs.Content.ReadAsStringAsync()).RootElement
             .GetProperty("session_id").GetString()!;
 
-        using var first = await OpenAsync(client, new { identity = "guide" });
-        using var second = await OpenAsync(client, new { identity = "shop" });
-        using var third = await OpenAsync(client, new { identity = "guide" });
+        using var first = await OpenAsync(client, As("guide"));
+        using var second = await OpenAsync(client, As("shop"));
+        using var third = await OpenAsync(client, As("guide"));
         string text = await third.Content.ReadAsStringAsync();
         using var peek = await client.GetAsync($"/v1/sessions/{theirId}");
 
@@ -150,6 +153,33 @@ public class OpenDoorTests
             Assert.That(third.StatusCode, Is.EqualTo(HttpStatusCode.TooManyRequests));
             Assert.That(text, Does.Contain(ApiErrorKind.RateLimit.Wire()));
             Assert.That(peek.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "a keyed session is not the door's");
+        });
+    }
+
+    /// <summary>
+    /// A session the host doesn't have, as a visitor's is after the host restarts (FX157, Louis's pick A of three): the
+    /// door lets the message through, so the visitor hears it is gone (404) and not that a key is missing (401), and
+    /// the page ends the chat with its own words for a restart. A shut door changes nothing: the key's rules stand.
+    /// </summary>
+    [Test]
+    public async Task AMessageToASessionTheHostDoesNotHave_IsGone_NotLocked()
+    {
+        await using var open = Host(Door);
+        await using var shut = Host(OpenDoorOptions.Shut);
+        await open.StartAsync();
+        await shut.StartAsync();
+        const string Path = "/v1/sessions/sess_from_before_the_restart/messages";
+        var message = new SendMessageRequest("Which demo is like my business?", null);
+
+        using var gone = await open.GetTestClient().PostAsJsonAsync(Path, message, SessionJson.SnakeCase);
+        string text = await gone.Content.ReadAsStringAsync();
+        using var locked = await shut.GetTestClient().PostAsJsonAsync(Path, message, SessionJson.SnakeCase);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(gone.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(text, Does.Contain(ApiErrorKind.NotFound.Wire()));
+            Assert.That(locked.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "a shut door changes nothing");
         });
     }
 
@@ -167,24 +197,21 @@ public class OpenDoorTests
         var client = app.GetTestClient();
 
         // The visitor opens the guide: one of their two today.
-        using var guide = await OpenFromAsync(client, "203.0.113.5", new { identity = "guide" });
+        using var guide = await OpenFromAsync(client, "203.0.113.5", As("guide"));
         string guideId = IdOf(await guide.Content.ReadAsStringAsync());
 
         // The guide's turn asks the shop: the server's own call, with the key, the guide's turn as its parent.
         using var asked = new HttpRequestMessage(HttpMethod.Post, "/v1/sessions");
-        asked.Content = JsonContent.Create(new
-        {
-            identity = "shop",
-            parent = $"{guideId}#1"
-        });
+        var forTheGuide = new CreateSessionRequest(null, null, null, Parent: $"{guideId}#1", Identity: "shop");
+        asked.Content = JsonContent.Create(forTheGuide, options: SessionJson.SnakeCase);
         asked.Headers.Add("x-api-key", Key);
         asked.Headers.Add("X-Forwarded-For", "127.0.0.1");
         using var child = await client.SendAsync(asked);
         string childId = IdOf(await child.Content.ReadAsStringAsync());
 
         using var childsCall = await client.GetAsync($"/v1/sessions/{childId}");
-        using var third = await OpenFromAsync(client, "203.0.113.5", new { identity = "guide" });
-        using var someoneElse = await OpenFromAsync(client, "127.0.0.1", new { identity = "guide" });
+        using var third = await OpenFromAsync(client, "203.0.113.5", As("guide"));
+        using var someoneElse = await OpenFromAsync(client, "127.0.0.1", As("guide"));
 
         Assert.Multiple(() =>
         {
@@ -196,10 +223,11 @@ public class OpenDoorTests
     }
 
     /// <summary>Asks the API to open a session with this body, with no key, from this address.</summary>
-    private static async Task<HttpResponseMessage> OpenFromAsync(HttpClient client, string address, object body)
+    private static async Task<HttpResponseMessage> OpenFromAsync(HttpClient client, string address,
+        CreateSessionRequest body)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "/v1/sessions");
-        request.Content = JsonContent.Create(body);
+        request.Content = JsonContent.Create(body, options: SessionJson.SnakeCase);
         request.Headers.Add("X-Forwarded-For", address);
         return await client.SendAsync(request);
     }
@@ -219,7 +247,7 @@ public class OpenDoorTests
         await app.StartAsync();
         var client = app.GetTestClient();
 
-        using var opened = await OpenAsync(client, new { identity = "guide" });
+        using var opened = await OpenAsync(client, As("guide"));
 
         Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }

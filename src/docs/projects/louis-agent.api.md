@@ -227,11 +227,17 @@ When an admitted session's turn asks for another session (its `parent` tag), tha
 is let in for them, so the visitor's window can carry on in it. Each admitted session remembers which visitor it counts
 for.
 
+The sessions and the door's list of the ones it let in live in memory, so a restart forgets both. A visitor whose
+page still holds a conversation from before it would otherwise be sent to the key's check and told to enter a key.
+So the door asks the host whether it has the session, and lets a call on one it doesn't have go on to its handler.
+The handler answers that the session is gone (a 404), and the page ends the chat with its own words for a restart.
+A session the host does have, and the door didn't let in, still needs the key.
+
 A session knows who it runs as (`AgentSession.Who`), and each turn sets that in the background (`TurnIdentity`, with
 the user's place and the rest, in `Sessions/Streaming/TurnAmbience`). That way a pack can tell a demonstration's turn
 from a real one.
 
-*Decided in:* F109.3, F127.2, F127.4.2, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md),
+*Decided in:* F109.3, F127.2, F127.4.2, FX157, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md),
 [ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
