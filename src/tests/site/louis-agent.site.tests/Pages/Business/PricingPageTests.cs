@@ -58,13 +58,19 @@ public class PricingPageTests
         Assert.That(ctx.Render<PricingPage>().Markup, Does.Contain(words));
     }
 
-    /// <summary>The contact page sends a buyer to the plans.</summary>
+    /// <summary>The contact page names no plan: every quote is made on request (Louis: "remove pricing").</summary>
     [Test]
-    public void TheContactPage_LeadsToThePlans()
+    public void TheContactPage_QuotesOnRequest()
     {
         using var ctx = new BunitContext();
 
-        Assert.That(ctx.Render<ContactPage>().FindAll("a[href='/pricing']"), Is.Not.Empty);
+        var page = ctx.Render<ContactPage>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page.FindAll("a[href='/pricing']"), Is.Empty);
+            Assert.That(page.Markup, Does.Contain("on request"));
+        });
     }
 
     /// <summary>Louis in the corner quotes the same two plans, and knows where they are.</summary>

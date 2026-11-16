@@ -1,3 +1,7 @@
 @* A link drawn as one of the theme's buttons (ADR 0125): a site gives its address, its words, its kind, and for a
    third party's button its mark and a new tab. *@
-<a class="@Classes" href="@Href" data-section="@Section" target="@Target" rel="@Rel">@Mark @Text</a>
+<a class="@Classes" href="@Href" data-section="@Section" target="@Target" rel="@Rel">@if (Mark is not null)
+    {
+        @Mark
+        @(" ")
+    }@Text</a>
