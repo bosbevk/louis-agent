@@ -1,0 +1,26 @@
+@use "web/tools/surface";
+
+/* A site's mark shown large (FX169): the orb in the middle, drawn by the theme as the agent's bar draws it, and under
+   it the name on four grounds in a row, each a small rounded card. */
+.mark-showcase { display: grid; justify-items: center; gap: 22px; }
+.mark-large ::deep .orb {
+    width: 132px;
+    height: 132px;
+    font-size: 64px;
+    @include surface.mark-ball();
+}
+.mark-grounds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.mark-ground {
+    display: grid;
+    place-items: center;
+    min-height: 64px;
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 17px;
+}
+.mark-ground.on-black { @include surface.panel(var(--bs-black)); }
+.mark-ground.on-white { @include surface.panel(var(--bs-white)); }
+.mark-ground.on-violet { @include surface.panel(var(--bs-primary)); }
+.mark-ground.on-glass { @include surface.pane(); }
+.mark-ground.on-black ::deep .wordmark, .mark-ground.on-violet ::deep .wordmark { color: var(--bs-white); }
+.mark-ground.on-white ::deep .wordmark { color: var(--bs-black); }

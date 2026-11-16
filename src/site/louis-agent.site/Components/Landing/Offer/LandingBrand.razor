@@ -1,0 +1,14 @@
+@* The brand, in the landing's middle (FX169, Louis: "a slide dedicated to branding mixed with one random topic",
+   "brand section must be in the middle", and of the topic, "theme"): the idea, the mark large with the name on four
+   grounds, and the theme, which leads to its page. No panel here can be picked to ask the guide about ("thise panels
+   must not be clickable to the ai to explain"). Configured on the framework's band, tiles and mark (ADR 0125). *@
+<Band Id="brand" Topic="the brand" Title="The Orb." Summary="A ball of violet glass with the l of its name cut into it. It is the agent, and everything on the page is glass like it.">
+    <TileRow>
+        <Tile Pick="false" Icon="DiagramIcon.Message" Title="The idea">You don't remember a company. You remember the thing you talked to. So the mark is the agent itself. It waits in the bar at the foot of every page and answers for the site.</Tile>
+        <Tile Pick="false" Delay="1"><MarkShowcase Name="louis-agent" Letter="l" Before="l" After="uis-agent" Lockups="true" /></Tile>
+        <Tile Pick="false" Delay="2" Icon="DiagramIcon.Browser" Title="Your brand, your look">
+            <ChildContent>A site wears glass or flat, light or dark, or a business's own colours, as the demos do. A theme is only values, so your look is one sheet of them.</ChildContent>
+            <Actions><LinkButton Href="/framework/theme" Text="See the theme" Kind="ButtonKind.Quiet" /></Actions>
+        </Tile>
+    </TileRow>
+</Band>

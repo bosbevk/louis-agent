@@ -1,0 +1,15 @@
+@using LouisAgent.Web.Components.Widget.Orb
+@* A site's mark shown large (FX169): the agent's orb with its letter, at rest, and, when the site asks, its name with
+   the mark as its letter on four grounds, black, white, violet and glass, as the brand's lockups. *@
+<div class="mark-showcase">
+    <div class="mark-large"><Orb State="OrbState.Idle" Label="@Name" Mark="@Letter"/></div>
+    @if (Lockups)
+    {
+        <div class="mark-grounds">
+            @foreach (string ground in Grounds)
+            {
+                <span class="mark-ground @ground"><Wordmark Before="@Before" After="@After"/></span>
+            }
+        </div>
+    }
+</div>
