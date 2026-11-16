@@ -614,9 +614,24 @@ edge and a blur. The main button has a fill and the ink on it, and the second on
 its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Last come the
 drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
 `--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.
-Each name is set to the look the framework draws today, so a site with no theme looks as it always has, and no
-component reads them yet. Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
+Each name is set to the look the framework draws with no theme, so a site that names none looks as it always has.
+Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
 every colour name and every surface name, once for each style.
+
+**A sheet says what a piece is, and a tool draws it.** Take the chat's box you type in. Its sheet doesn't write a
+background, a border or a shadow. It says the box is a pane that floats, and that it is lit while you type, and
+the surface tool writes the lines from the names above. So glass makes the box a sheet of glass and flat makes it
+a plain card, and the box's own sheet never changes. The tool is `web/tools/_surface.scss`, a mixin for each kind
+of surface, kept in files by what they are: the panes, the presses, the marks, the lines and washes, and what
+only a conversation draws. Some kinds read a theme's own names, such as a pane, a field, a bar and a small piece's
+hairline. Others are plain, such as a wash of a colour or a shadow thrown in it, and take the colour from the
+sheet, so they follow a theme through its colours. A kind writes its lines where it is included, so the tool adds
+nothing to a stylesheet by itself.
+
+A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of the library a line at a
+time, and a line that sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
+gradient counts as drawn by hand. Such a sheet must be on the test's list, and a sheet that draws by hand
+and is not on it fails the test. Today the list holds only the ten sheets of the showroom's mock website.
 
 **The visitor picks the look with a switch.** `LookSwitch` is two small groups of buttons: the site's themes, by
 name and in the order named, when it offers two or more, and Dark and Light when it offers any. A site that offers
