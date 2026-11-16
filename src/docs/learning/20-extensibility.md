@@ -796,3 +796,52 @@ its themes in F151.6, and that only showed at the end. Nothing spent money.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a feature the frames draw for every site, a contract shared
 by two languages and held by one test, and a component that knows when it has nothing to show.
+
+## F151.4: one tool draws every surface (2026-11-16)
+
+After F151.3 a visitor could pick a look, but most of the framework's web did not follow the pick. A component's
+sheet wrote its own background, border and shadow, so a theme could change the names and the component would not
+notice. This child made every sheet say what a piece is, a pane, a bar, a press, a field, and left the drawing to
+one shared tool that reads the names a theme sets.
+
+The tool is the seam. A sheet includes a kind, and the kind writes the lines from the theme's names. Glass makes a
+pane a sheet of glass and flat makes it a plain card, and the component's sheet is the same in both. The tool
+started as one file and outgrew the 200-line limit as the chat came in, so it became a folder of kinds by what
+they are, the panes, the presses, the marks, the lines and washes, and what only a conversation draws, behind the
+one name every sheet already used. No sheet had to change for the split.
+
+A list that may only shrink carried the work. The rule test reads every sheet a line at a time and calls a line
+hand-drawn when it sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
+gradient. At the start every sheet that did so was on a list in the test, and a sheet could leave the list but
+never join it. Each step emptied one family: the site's parts, the stage and its windows, the widget and the
+mark, the chat, the admin and the rest. So a change this wide landed in small commits, and at no point was it
+half done in secret. When the last ten sheets left, the list was deleted and the test became the plain rule: no
+sheet draws by hand.
+
+Those last ten were the showroom's mock website, and they were a real question, because a mock wears a made-up
+business's colours and not the site's theme. Louis picked the middle of three ways. What every website has, a
+header, a foot, a card and a main button, goes through the same surface tool, with the names it reads set to the
+business's colours on the mock's header and page. What only a mock has, a ruled header, a washed photo, the
+browser's window, is a small second tool. Setting the names low in the page, and not on the whole mock, is what
+lets the agent's chat beside the website keep the site's own look.
+
+The agent's mark got a fifth state, Listening, on Louis's pick, because the mockups show it and the code had only
+idle, thinking, showing and speaking.
+
+What was measured. Every step compared the built stylesheet before and after with the comments stripped, and
+looked at the starter in all four looks and at louis-agent.dev on this PC, desk and phone. The admin's home, its
+overview, its packs, its imports and the page for an address nothing answers were looked at in the four looks. A
+pack's screen and a row of it were not, since the starter has no pack that offers a screen. The full unit suite passed before the pull request, 9196 tests in 56 projects.
+Nothing spent money.
+
+What didn't work, and what I'd do differently. A small piece's hairline first read the name glass sets to nothing,
+so a header button and the search box lost their line in glass; it now reads the bar's edge. Sass copies a tool's
+comments into every sheet that includes it, which made the before and after comparison noisy until the comments
+were stripped. Three older tests pinned a sheet's hand-written lines, so they broke when the lines moved into the
+tool, and each had to be said again in the tool's words: a test that pins text breaks on a move that changes
+nothing a visitor sees. And the plan asked for the starter's real flow to be walked with a question to the agent,
+which was not done, since a local run here has no real key. That check is still Louis's, as are Firefox and
+Safari.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a tool as the seam between a theme and a component. And
+*18 Testing and shipping*: a rule test with a list that may only shrink, which ends as the rule itself.
