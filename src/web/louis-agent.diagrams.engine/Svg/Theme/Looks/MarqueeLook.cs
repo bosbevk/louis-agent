@@ -50,13 +50,11 @@ internal static class MarqueeLook
     /// <summary>
     /// The style. It is the same for every theme, since its colours are the theme's own variables.
     /// </summary>
-    public const string Rules =
+    public static readonly string Rules =
         $$"""
 
           svg { {{Light}} }
-          @media (prefers-color-scheme: dark) {
-            svg { {{Dark}} }
-          }
+          {{PageScheme.Rules(Light, Dark)}}
           .mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
           .mrq-light { fill: url(#{{LightPaint}}); }
           .{{LightPaint}}-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }

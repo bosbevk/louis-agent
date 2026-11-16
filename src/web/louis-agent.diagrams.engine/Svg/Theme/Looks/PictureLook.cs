@@ -37,9 +37,7 @@ internal static class PictureLook
             {{Light}}
             --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
           }
-          @media (prefers-color-scheme: dark) {
-            svg { {{Dark}} }
-          }
+          {{PageScheme.Rules(Light, Dark)}}
           .pic-edge { stroke: var(--quiet); }
           .pic-tint { fill: var(--chip); }
           .pic-fill { fill: var(--quiet); }
