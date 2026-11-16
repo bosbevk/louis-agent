@@ -283,7 +283,7 @@ public partial class StylesheetTests
             Assert.That(print, Does.Contain("@top-left { content: \"\"; }"), "and nothing of the browser's on top");
             Assert.That(print, Does.Contain("animation: none;").And.Contain("opacity: 1;"));
             Assert.That(print, Does.Contain("--bs-tertiary-color: #2a2e33;"), "the lightest ink is still dark");
-            Assert.That(print, Does.Contain(":root:has(.resume) {"), "white to the sheet's edges, margins too");
+            Assert.That(print, Does.Contain(":root:has(.resume),\n    :root[data-theme][data-style]:has(.resume) {"), "white to the sheet's edges, margins too");
             Assert.That(onPaper, Does.Contain(".cv-hero { grid-template-columns: minmax(0, 1fr) 38mm;"));
             Assert.That(onPaper, Does.Contain(".cv-photo { max-width: none; order: 0;"), "the photo back on the right");
             Assert.That(onPaper, Does.Contain(".cv-reach { display: none; }"), "paper can't press a button");

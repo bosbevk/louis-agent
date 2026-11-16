@@ -27,8 +27,11 @@
 @media print {
     /* The page's colours, set for paper where the screen's are set for the dark: black and near black, since a
        light grey doesn't survive a printer. They are set on the page's root, whose background is what a sheet's
-       margins are painted with: set lower down, the margins printed black around a white page. */
-    :root:has(.resume) {
+       margins are painted with: set lower down, the margins printed black around a white page. A theme sets its
+       colours under the page's theme and style, which weighs more than the root alone, so the second selector weighs
+       as much again and these still win on paper whatever look the page is in. */
+    :root:has(.resume),
+    :root[data-theme][data-style]:has(.resume) {
         --bs-body-bg: #fff;
         --bs-body-color: #111;
         --bs-emphasis-color: #000;
@@ -110,9 +113,11 @@
     body:has(.resume) .resume .panel {
         gap: 1mm;
         padding: 3.5mm;
+        border: 1px solid var(--bs-border-color);
         border-radius: 2.5mm;
         background: none;
         box-shadow: none;
+        backdrop-filter: none;
         transition: none;
         break-inside: avoid;
     }
