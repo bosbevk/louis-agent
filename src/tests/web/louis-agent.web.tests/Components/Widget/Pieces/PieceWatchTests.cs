@@ -30,4 +30,23 @@ public class PieceWatchTests
         Assert.That(new[] { text.PieceAsk, text.PiecePicked, text.PieceShown },
             Is.EqualTo(new[] { "Ask about this", "You picked this", "Agent shows this" }));
     }
+
+    /// <summary>
+    /// A click away from the pieces lets the pick go (Louis: "I clicked away and the fucker is still ticked"): the
+    /// module says so, and the widget hears it.
+    /// </summary>
+    [Test]
+    public async Task AClickAway_LetsThePickGo()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new ChatText());
+        ctx.JSInterop.SetupModule(FrameworkScripts.PieceWatch);
+        bool letGo = false;
+        var cut = ctx.Render<PieceWatch>(p => p.Add(w => w.LetGo, () => letGo = true));
+
+        await cut.InvokeAsync(() => cut.Instance.LetGoAsync());
+
+        Assert.That(letGo, Is.True);
+    }
 }

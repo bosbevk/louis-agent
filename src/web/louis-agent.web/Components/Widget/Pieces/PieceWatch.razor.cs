@@ -66,6 +66,14 @@ public partial class PieceWatch : IAsyncDisposable
         return Shown.InvokeAsync(piece);
     }
 
+    /// <summary>What letting the pick go does: the widget drops the piece and its chip.</summary>
+    [Parameter]
+    public EventCallback LetGo { get; set; }
+
+    /// <summary>The module's call: the visitor clicked away from the pieces, or on the picked one again.</summary>
+    [JSInvokable("LetGo")]
+    public Task LetGoAsync() => LetGo.InvokeAsync();
+
     /// <summary>Takes the ring off the piece, when the chip is closed.</summary>
     public async Task ClearAsync()
     {

@@ -52,8 +52,17 @@ export function watch(widget, tags) {
             if (card.getAttribute("aria-expanded") !== "true") widget.invokeMethodAsync("Shown", card.id, press(card));
             return;
         }
-        if (event.target.closest("a, button, input, textarea, select, label, summary")) return;
+        // A click in the guide's own bar keeps the pick: that is where the visitor asks about it.
+        if (event.target.closest(".chat-widget")) return;
         const piece = event.target.closest("[data-piece][id]");
+        const picked = document.querySelector("[data-piece][data-selected]");
+        // A click away from the pieces, or on the picked one again, lets the pick go and the page is as it was.
+        if (picked && (!piece || piece === picked)) {
+            clearMarks();
+            widget.invokeMethodAsync("LetGo");
+            return;
+        }
+        if (event.target.closest("a, button, input, textarea, select, label, summary")) return;
         if (piece) widget.invokeMethodAsync("Pick", piece.id, press(piece));
     };
     shown = (event) => {
