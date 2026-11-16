@@ -6,9 +6,9 @@ namespace LouisAgent.Web.Tests.Rules.Styles;
 /// on any side, <c>box-shadow</c>, <c>backdrop-filter</c> or <c>outline</c> paints something: a colour, a name, a
 /// gradient, a shadow or a blur (Louis's pick A of three, and outline with it). <c>none</c>, <c>0</c>,
 /// <c>transparent</c> and <c>inherit</c> clear rather than paint, and <c>border-radius</c> is shape, so none of them
-/// counts. The tools and the settings are where the drawing lives, so they are not read. No sheet of the framework's
-/// web draws by hand, and one that starts to fails here. The libraries on it are read too (F151.5): the account pages,
-/// the eval studio and the packs' views. Their sheets that still draw by hand are on a list that may only shrink.
+/// counts. The tools and the settings are where the drawing lives, so they are not read. The libraries on the
+/// framework's web are read too (F151.5): the account pages, the eval studio and the packs' views. No sheet of any of
+/// them draws by hand, and one that starts to fails here.
 /// </summary>
 public class SurfacesAreDrawnByTheToolsTests
 {
@@ -19,16 +19,6 @@ public class SurfacesAreDrawnByTheToolsTests
     private static readonly string[] Read =
     [
         "src/web/louis-agent.web", "src/web/louis-agent.web.accounts", "src/web/louis-agent.web.evals", "packs/web"
-    ];
-
-    /// <summary>
-    /// The libraries' sheets that still draw a surface by hand. A sheet leaves it, and none joins it.
-    /// </summary>
-    private static readonly string[] StillByHand =
-    [
-        "packs/web/louis-agent.pack.files.web/Styles/pack-files/_files.scss",
-        "packs/web/louis-agent.pack.git.web/Styles/pack-git/_changes.scss",
-        "packs/web/louis-agent.pack.triage.web/Styles/pack-triage/_demo.scss",
     ];
 
     /// <summary>The properties that draw a surface.</summary>
@@ -81,29 +71,14 @@ public class SurfacesAreDrawnByTheToolsTests
         return Drawing.Contains(property) && Paints.Any(mark => value.Contains(mark, StringComparison.Ordinal));
     }
 
-    /// <summary>
-    /// No sheet draws a surface by hand unless it is still on the list, so a theme reaches every piece and a new sheet
-    /// can't slip one in.
-    /// </summary>
+    /// <summary>No sheet draws a surface by hand, so a theme reaches every piece and a new sheet can't slip one in.</summary>
     [Test]
     public void NoSheet_DrawsASurfaceByHand()
     {
-        var byHand = Sheets().Where(DrawsByHand).Except(StillByHand).ToList();
+        var byHand = Sheets().Where(DrawsByHand).ToList();
 
         Assert.That(byHand, Is.Empty,
             "Draw these through the surface tool, tools/_surface.scss:\n  " + string.Join("\n  ", byHand));
-    }
-
-    /// <summary>
-    /// A sheet that no longer draws by hand, or is gone, is taken off the list, so the list only shrinks.
-    /// </summary>
-    [Test]
-    public void TheList_NamesNoCleanSheet()
-    {
-        var clean = StillByHand.Where(sheet => !File.Exists(Path.Combine(TestPaths.RepoRoot, sheet)) ||
-                                               !DrawsByHand(sheet));
-
-        Assert.That(clean, Is.Empty, "take it off the list");
     }
 
     /// <summary>The surface tool's source: the file a sheet names, and the files of kinds it hands on.</summary>
@@ -180,6 +155,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("outline-colour")]
     [TestCase("spotlit")]
     [TestCase("kept-ring")]
+    [TestCase("side-line")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 
