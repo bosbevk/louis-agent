@@ -165,8 +165,10 @@ const givers = (at, count) => ROW_GIVES[count]?.[at] ?? (at + 1 < count ? [at + 
 // card turned or lifted is on its way somewhere) and showing between the header and the bar. None otherwise.
 const cardsBeside = (about, floor) => {
     const row = [...(about.parentElement?.children ?? [])].filter(card => card.matches("[data-piece]"));
-    const at = row.indexOf(about), top = about.getBoundingClientRect().top;
-    if (row.length < 2 || row.length > 4 || row.some(card => Math.abs(card.getBoundingClientRect().top - top) > 2)) return [];
+    // One row is the cards laid at one height: read from the layout, which a picked card's press or a tilt doesn't
+    // move (the picked card's drawn top was a few pixels off, and the row was missed).
+    const at = row.indexOf(about), top = about.offsetTop;
+    if (row.length < 2 || row.length > 4 || row.some(card => Math.abs(card.offsetTop - top) > 2)) return [];
     const cards = givers(at, row.length).map(i => row[i]).filter(Boolean);
     // A card lies flat and shows, at least partly, between the header and the bar (Louis: "chat should have opened next
     // to it", of a card whose top had passed under the header).
