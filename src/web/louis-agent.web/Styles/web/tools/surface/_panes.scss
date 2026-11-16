@@ -14,7 +14,9 @@
     backdrop-filter: var(--web-pane-blur);
     // A piece the frame's lens may bend while the pointer is on it, in a theme that has one.
     --web-lens-piece: 1;
-    @include drawn(pane-rest, $fill);
+    // At rest the theme's light lies under the drawing, where glass paints the bend its lens would give; under the
+    // pointer the lens itself takes over, so the light goes.
+    @include drawn(pane-rest, #{var(--web-pane-light), $fill});
 
     &:hover { @include drawn(pane-hover, $fill); }
 }

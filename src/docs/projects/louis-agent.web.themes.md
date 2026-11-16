@@ -52,10 +52,13 @@ and blur. When the page's `<html>` says that theme and that style, the block's v
 Glass in the dark is black with white words and Ultraviolet for the purple. A pane is its drawing and nothing
 else: no colour is painted under it and it has no border of its own, since the drawing holds its rim and its
 lights. The page shows through it sharp, with no blur, only a little brightened and deepened in colour, and it
-throws the shadow of something that stands off the page. Nothing in glass blurs what is behind it, the bar and the
-chips included, with one exception: the agent's answer that floats over the page, and the talk it opens into, are
-frosted, a milky body with a strong blur behind it, so the page's words under them never read through. A piece set into the page, an inset such as the chat's card or a field, is as
-see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
+throws the shadow of something that stands off the page. At rest it carries a painted still bend at its edge: the
+light a lens would gather at its thick rim, white from the top left and a little violet at the far corner, drawn
+once as the pane's light and a few shadows inside its edge. Nothing in glass blurs what is behind it, the bar and
+the chips included. The agent's answer that floats over the page, and the talk it opens into, are clear glass with
+no blur too, but over a soft body nearly as thick as paint, a pale grey violet in the light and a deep violet black
+in the dark, so the page's words under them never read through. A piece set into the page, an inset such as the
+chat's card or a field, is as see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
 dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
 with no blur. Flat sets an inset to its page's colour with its hairline.
 

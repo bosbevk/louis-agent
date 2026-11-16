@@ -111,18 +111,34 @@ public class GlassValuesTests
         Assert.That(Value(style, "--web-chip-fill"), Is.EqualTo(fill));
 
     /// <summary>
-    /// The agent's answer that floats over the page is frosted, the one exception to glass's clear panes (Louis,
-    /// 2026-11-16, of the answer over a card: "just the overlay one need more frosting"): a milky body, and a blur
-    /// where the browser can draw one.
+    /// The agent's answer that floats over the page is set apart from it (Louis, 2026-11-16, of the answer over a
+    /// card: "just the overlay one need more frosting", then of the final glass page, "just give the overlay this
+    /// white", "with glass", "clear"): clear glass with no blur, over the soft body a quiet press has, thick enough
+    /// that the page's words under it don't read through.
     /// </summary>
-    [TestCase(SiteStyle.Dark, "rgba(18, 14, 38, .84)")]
-    [TestCase(SiteStyle.Light, "rgba(248, 246, 255, .86)")]
-    public void TheAnswerOverThePage_IsFrosted(SiteStyle style, string fill)
+    [TestCase(SiteStyle.Dark, "rgba(22, 20, 32, .9)")]
+    [TestCase(SiteStyle.Light, "rgba(204, 203, 218, .9)")]
+    public void TheAnswerOverThePage_IsClearGlassOnASoftBody(SiteStyle style, string body)
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Value(style, "--web-frost-fill"), Is.EqualTo(fill));
-            Assert.That(Value(style, "--web-frost-blur"), Is.EqualTo("blur(18px) saturate(1.4)"));
+            Assert.That(Value(style, "--web-frost-fill"), Is.EqualTo(body));
+            Assert.That(Value(style, "--web-frost-blur"), Is.EqualTo("none"));
+        });
+    }
+
+    /// <summary>
+    /// A card at rest carries a painted still bend at its edge (Louis's final glass page): the light the lens gathers
+    /// at the thick rim, drawn once as the pane's light, so a card looks like glass before the pointer reaches it.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void ACardAtRest_CarriesAStillBend(SiteStyle style)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(style, "--web-pane-light"), Does.StartWith("radial-gradient(120% 70% at 0% 0%"));
+            Assert.That(Value(style, "--web-pane-shadow"), Does.Contain("inset 14px 16px 18px -14px"));
         });
     }
 }

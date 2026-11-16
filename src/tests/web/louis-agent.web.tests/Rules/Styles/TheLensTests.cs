@@ -33,6 +33,22 @@ public class TheLensTests
     public void APane_SaysHowItWearsTheLens(string mixin, string mark) =>
         Assert.That(Mixin(mixin), Does.Contain(mark));
 
+    /// <summary>
+    /// A pane at rest lays the theme's light under its drawing, where glass paints the bend its lens would give, and
+    /// lays none under the pointer, where the lens itself takes over.
+    /// </summary>
+    [Test]
+    public void APaneAtRest_LaysTheThemesLight()
+    {
+        var pane = Mixin("pane");
+        int hover = pane.IndexOf("&:hover", StringComparison.Ordinal);
+        Assert.Multiple(() =>
+        {
+            Assert.That(pane[..hover], Does.Contain("var(--web-pane-light)"));
+            Assert.That(pane[hover..], Does.Not.Contain("var(--web-pane-light)"));
+        });
+    }
+
     /// <summary>The mark belongs to the piece that sets it, never to what the piece holds.</summary>
     [Test]
     public void TheMark_IsNotHandedDown() =>
