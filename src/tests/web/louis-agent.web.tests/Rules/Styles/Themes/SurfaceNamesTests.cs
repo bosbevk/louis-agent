@@ -32,7 +32,7 @@ public class SurfaceNamesTests
         "--web-pane-fill", "--web-pane-edge", "--web-pane-rim", "--web-pane-light", "--web-pane-shadow",
         "--web-pane-blur", "--web-pane-radius",
         "--web-pane-hover-lift", "--web-pane-hover-edge", "--web-pane-hover-shadow",
-        "--web-lens-wall", "--web-lens-rise", "--web-lens-frost", "--web-tilt",
+        "--web-lens-wall", "--web-lens-rise", "--web-lens-frost", "--web-lens-water", "--web-tilt",
         "--web-float-shadow", "--web-frost-fill", "--web-frost-blur",
         "--web-veil-fill", "--web-veil-edge", "--web-veil-blur",
         "--web-inset-fill", "--web-inset-edge",

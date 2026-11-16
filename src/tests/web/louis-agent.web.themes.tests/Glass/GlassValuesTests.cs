@@ -73,7 +73,16 @@ public class GlassValuesTests
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
     public void TheFrost_BlursOnlyWhatIsBehind(SiteStyle style) =>
-        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("3"));
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("2"));
+
+    /// <summary>
+    /// A panel switched to water ripples what is behind it instead (Louis: "can we replace the frost with a water",
+    /// "make it an option"): eight pixels of ripple in glass.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheWater_RipplesWhatIsBehind(SiteStyle style) =>
+        Assert.That(Value(style, "--web-lens-water"), Is.EqualTo("8"));
 
     /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole

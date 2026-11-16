@@ -93,7 +93,9 @@
     --web-lens-wall: 52;
     --web-lens-rise: 70;
     // See-through, with only what is behind its flat middle blurred, its edge clear and bending sharply.
-    --web-lens-frost: 3;
+    --web-lens-frost: 2;
+    // A pane switched to water ripples what is behind it instead, eight pixels.
+    --web-lens-water: 8;
     // And it leans towards the pointer, seven degrees across, as the design's cards.
     --web-tilt: 7;
 

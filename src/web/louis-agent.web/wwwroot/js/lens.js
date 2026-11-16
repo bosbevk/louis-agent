@@ -121,7 +121,7 @@ let near = null, sized = null, looks = null;
 const worn = new Map();   // each piece wearing a lens, and its filter's id
 const read = () => { const s = getComputedStyle(document.documentElement);
     glass = { wall: +s.getPropertyValue("--web-lens-wall") || 0, rise: +s.getPropertyValue("--web-lens-rise") || 0,
-        frost: +s.getPropertyValue("--web-lens-frost") || 0 }; };
+        frost: +s.getPropertyValue("--web-lens-frost") || 0, water: +s.getPropertyValue("--web-lens-water") || 0 }; };
 // A panel a site switched the lens off on (data-lens="off") is no piece of glass to it.
 const kind = el => el.dataset?.lens === "off" ? 0 : +getComputedStyle(el).getPropertyValue("--web-lens-piece") || 0;
 
@@ -150,10 +150,15 @@ const wear = el => {
     const [bend, far] = memo(`b${w}x${h}:${wall}:${rise}`, () => bendMap(w, h, wall, rise));
     const lit = litFor(el, w, h, rise);
     const box = `x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"`;
-    // What is behind its flat middle is frosted, its edge left clear so it bends sharply (the design's frost).
-    const frost = glass.frost ? `<feGaussianBlur in="bent" stdDeviation="${glass.frost}" result="fog"/>` +
-        `<feImage ${box} result="where" href="${memo(`f${w}x${h}:${rise}`, () => frostMap(w, h, rise))}"/>` +
-        `<feComposite in="fog" in2="where" operator="in" result="frosted"/>` +
+    // What is behind its middle is frosted, or on a pane switched to water rippled as through water (Louis: "make it
+    // an option"); its rim is left clear so it bends sharply.
+    const where = `<feImage ${box} result="where" href="${memo(`f${w}x${h}:${rise}`, () => frostMap(w, h, rise))}"/>`;
+    const wet = glass.water && el.hasAttribute("data-water");
+    const middle = wet ? `<feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="2" seed="7"` +
+        ` result="waves"/><feDisplacementMap in="bent" in2="waves" scale="${glass.water * 2}" xChannelSelector="R"` +
+        ` yChannelSelector="G" result="fog"/>`
+        : glass.frost ? `<feGaussianBlur in="bent" stdDeviation="${glass.frost}" result="fog"/>` : "";
+    const frost = middle ? middle + where + `<feComposite in="fog" in2="where" operator="in" result="frosted"/>` +
         `<feBlend in="frosted" in2="bent" mode="normal" result="seen"/>` : `<feOffset in="bent" result="seen"/>`;
     f.innerHTML = `<feImage ${box} result="m" href="${bend}"/>` +
         `<feDisplacementMap in="SourceGraphic" in2="m" scale="${far * 2}" xChannelSelector="R" yChannelSelector="G"` +
