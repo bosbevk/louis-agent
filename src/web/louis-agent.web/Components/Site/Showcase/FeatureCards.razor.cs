@@ -26,6 +26,9 @@ public partial class FeatureCards
     /// <summary>Whether a visitor or the guide can pick a card, the theme drawing it picked; on by default.</summary>
     [Parameter] public bool Pick { get; set; } = true;
 
+    /// <summary>Whether a card's glass ripples what is behind it like water, under its frost; on by default.</summary>
+    [Parameter] public bool Water { get; set; } = true;
+
     /// <summary>Whether each card shows its reflection under it; off by default.</summary>
     [Parameter] public bool Reflect { get; set; }
 

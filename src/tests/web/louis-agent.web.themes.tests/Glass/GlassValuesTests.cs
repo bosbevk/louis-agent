@@ -73,7 +73,7 @@ public class GlassValuesTests
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
     public void TheFrost_BlursOnlyWhatIsBehind(SiteStyle style) =>
-        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("2"));
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("1"));
 
     /// <summary>
     /// A panel switched to water ripples what is behind it instead (Louis: "can we replace the frost with a water",

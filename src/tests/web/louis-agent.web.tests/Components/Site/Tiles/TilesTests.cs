@@ -160,20 +160,21 @@ public class TilesTests
     }
 
     /// <summary>
-    /// A tile's glass is frosted until a site switches it to water (Louis: "make it an option"), which the lens reads.
+    /// A tile's glass ripples like water until a site switches that off (Louis: "make it an option", "all with water
+    /// and 1 frost"), which the lens reads.
     /// </summary>
     [Test]
-    public void ATile_IsFrosted_UntilSwitchedToWater()
+    public void ATile_IsWater_UntilSwitchedOff()
     {
         using var ctx = new BunitContext();
 
-        var frosted = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server")).Find("article");
-        var water = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data").Add(t => t.Water, true)).Find("article");
+        var water = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data")).Find("article");
+        var still = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server").Add(t => t.Water, false)).Find("article");
 
         Assert.Multiple(() =>
         {
-            Assert.That(frosted.HasAttribute("data-water"), Is.False);
             Assert.That(water.HasAttribute("data-water"), Is.True);
+            Assert.That(still.HasAttribute("data-water"), Is.False);
         });
     }
 

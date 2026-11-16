@@ -55,9 +55,9 @@ public partial class Tile
     [Parameter]
     public bool Reflect { get; set; }
 
-    /// <summary>Whether the glass ripples what is behind it like water, instead of frosting it; off by default.</summary>
+    /// <summary>Whether the glass ripples what is behind it like water, under its frost; on by default.</summary>
     [Parameter]
-    public bool Water { get; set; }
+    public bool Water { get; set; } = true;
 
     /// <summary>Whether the tile leans towards the pointer, as far as the theme says; on by default.</summary>
     [Parameter]

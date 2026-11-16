@@ -37,6 +37,9 @@ public partial class LiveTurn
     /// <summary>Whether the window leans towards the pointer, as far as the theme says; on by default.</summary>
     [Parameter] public bool Tilt { get; set; } = true;
 
+    /// <summary>Whether the window's glass ripples what is behind it like water, under its frost; on by default.</summary>
+    [Parameter] public bool Water { get; set; } = true;
+
     /// <summary>Whether the window shows its reflection under it; off by default.</summary>
     [Parameter] public bool Reflect { get; set; }
 
