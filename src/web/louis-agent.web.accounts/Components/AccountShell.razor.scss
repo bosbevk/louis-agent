@@ -1,7 +1,9 @@
+@use "web/tools/surface";
+
 /* ---- The account pages' frame (F61.2, beside AccountShell since CL58): one centred card on the chat's colours, the
    site's brand above it. Scoped: the first rules reach only what this component draws. ---- */
-.account-shell { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; background: var(--bs-body-bg); }
-.account-card { width: 100%; max-width: 440px; background: var(--bs-secondary-bg); border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius-xl); padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 16px; animation: rise .4s var(--web-ease) both; }
+.account-shell { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; @include surface.ground(var(--bs-body-bg)); }
+.account-card { width: 100%; max-width: 440px; padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 16px; animation: rise .4s var(--web-ease) both; @include surface.pane($radius: var(--bs-border-radius-xl)); }
 .account-brand { display: flex; justify-content: center; margin-bottom: 4px; }
 @media (max-width: 480px) { .account-card { padding: 22px 18px 20px; } }
 
@@ -14,22 +16,22 @@
 /* The forms: a label over each field, the fields in a column, the buttons under them. */
 ::deep .account-form { display: flex; flex-direction: column; gap: 12px; }
 ::deep .account-field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: var(--bs-secondary-color); }
-::deep .account-field input { font: inherit; font-weight: 400; padding: 10px 12px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: var(--bs-body-bg); color: var(--bs-body-color); }
-::deep .account-field input:focus { outline: 2px solid rgba(var(--bs-primary-rgb), .35); border-color: var(--bs-primary); }
+::deep .account-field input { font: inherit; font-weight: 400; padding: 10px 12px; color: var(--bs-body-color); @include surface.field($edge: var(--web-bar-edge)); }
+::deep .account-field input:focus { @include surface.focus-ring(rgba(var(--bs-primary-rgb), .35), 0); @include surface.edged(var(--bs-primary)); }
 ::deep .account-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
 /* The action is the site's: its gradient, and the text colour every theme sets for what goes on it (FX64: the page's
    background colour made dark text on a bright action). */
-::deep .account-button { font: inherit; font-weight: 700; padding: 11px 14px; border: 1px solid transparent; border-radius: var(--bs-border-radius); background: var(--web-cta); color: var(--web-on-primary); cursor: pointer; transition: filter .15s; }
+::deep .account-button { font: inherit; font-weight: 700; padding: 12px 15px; border-radius: var(--bs-border-radius); cursor: pointer; transition: filter .15s; @include surface.press(); }
 ::deep .account-button:hover { filter: brightness(1.08); }
 ::deep .account-button:disabled { opacity: .6; cursor: default; }
-::deep .account-button.is-plain { background: transparent; color: var(--bs-body-color); border-color: var(--bs-border-color); }
-::deep .account-button.is-danger { background: var(--bs-danger); border-color: var(--bs-danger); }
+::deep .account-button.is-plain { padding: 11px 14px; @include surface.quiet-press(); }
+::deep .account-button.is-danger { @include surface.slab(var(--bs-danger)); }
 ::deep .account-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 13.5px; }
 ::deep .account-links a { color: var(--bs-primary); }
 /* The other ways to sign in or to link: one button per provider, in a column. */
 ::deep .account-providers { display: flex; flex-direction: column; gap: 8px; }
 /* The profile: a section per thing, a line of facts above its form. */
-::deep .account-section { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--bs-border-color); }
+::deep .account-section { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; @include surface.rule(top); }
 ::deep .account-section h2 { font-size: 15px; font-weight: 700; margin: 0; color: var(--bs-emphasis-color); }
 ::deep .account-section h3 { font-size: 13.5px; font-weight: 700; margin: 0; color: var(--bs-emphasis-color); }
 /* The ways in, listed: a provider or a passkey a line with its button; the recovery codes the same list (F61.5). */

@@ -21,15 +21,20 @@ public class AccountPageStyleTests
         return match.Groups[1].Value;
     }
 
-    /// <summary>The button is the site's action: its gradient, and the text colour meant for it, never the page's.</summary>
+    /// <summary>
+    /// The button is the site's action: a press, whose fill is the site's gradient and whose words are the text colour
+    /// meant for it, never the page's.
+    /// </summary>
     [Test]
     public void TheAccountButton_IsTheSitesAction_WithItsOwnTextColour()
     {
         string rule = RuleOf(".account-button");
 
-        Assert.That(rule, Does.Contain("background: var(--web-cta)"));
-        Assert.That(rule, Does.Contain("color: var(--web-on-primary)"),
+        Assert.That(rule, Does.Contain("var(--web-press-fill)"));
+        Assert.That(Css, Does.Contain("--web-press-fill: var(--web-cta);"));
+        Assert.That(rule, Does.Contain("color: var(--web-press-ink)"),
             "the text that goes on an action; the page's background colour made it black on orange");
+        Assert.That(Css, Does.Contain("--web-press-ink: var(--web-on-primary);"));
     }
 
     /// <summary>Puls's card is glass over the water, with a ring in its colours.</summary>
