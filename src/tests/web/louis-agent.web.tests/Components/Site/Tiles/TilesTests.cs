@@ -176,4 +176,17 @@ public class TilesTests
             Assert.That(water.HasAttribute("data-water"), Is.True);
         });
     }
+
+    /// <summary>A tile shows its reflection when a site switches it on (Louis: "all glass panels must have the
+    /// reflection option").</summary>
+    [Test]
+    public void ATile_ShowsItsReflection_WhenSwitchedOn()
+    {
+        using var ctx = new BunitContext();
+
+        var plain = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server")).Find("article");
+        var shown = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data").Add(t => t.Reflect, true)).Find("article");
+
+        Assert.That((plain.HasAttribute("data-reflect"), shown.HasAttribute("data-reflect")), Is.EqualTo((false, true)));
+    }
 }

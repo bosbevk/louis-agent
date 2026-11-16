@@ -26,6 +26,9 @@ public partial class FeatureCards
     /// <summary>Whether a visitor or the guide can pick a card, the theme drawing it picked; on by default.</summary>
     [Parameter] public bool Pick { get; set; } = true;
 
+    /// <summary>Whether each card shows its reflection under it; off by default.</summary>
+    [Parameter] public bool Reflect { get; set; }
+
     /// <summary>A card's id from its title, for one that can be picked, so its address reads like a tile's.</summary>
     private string? AddressOf(Feature feature) => Pick ? PieceId.Of(feature.Title) : null;
 

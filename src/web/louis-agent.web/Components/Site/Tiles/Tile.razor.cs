@@ -51,6 +51,10 @@ public partial class Tile
     [Parameter]
     public bool Lens { get; set; } = true;
 
+    /// <summary>Whether the tile shows its reflection under it; off by default.</summary>
+    [Parameter]
+    public bool Reflect { get; set; }
+
     /// <summary>Whether the glass ripples what is behind it like water, instead of frosting it; off by default.</summary>
     [Parameter]
     public bool Water { get; set; }

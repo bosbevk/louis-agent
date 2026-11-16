@@ -45,4 +45,15 @@ public class FeatureCardsTests
             Assert.That(card.HasAttribute("data-piece"), Is.False);
         });
     }
+
+    /// <summary>The cards show their reflection when a site switches it on.</summary>
+    [Test]
+    public void ACard_ShowsItsReflection_WhenSwitchedOn()
+    {
+        using var ctx = new BunitContext();
+
+        var card = ctx.Render<FeatureCards>(p => p.Add(c => c.Items, One).Add(c => c.Reflect, true)).Find("article");
+
+        Assert.That(card.HasAttribute("data-reflect"), Is.True);
+    }
 }
