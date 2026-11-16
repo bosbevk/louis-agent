@@ -511,6 +511,13 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX175 · Off is not gone: a switch keeps a part for later
+
+Louis wanted the section index out of sight on his site, but not deleted. The frame drew it on every site, with no
+way to say no. A switch on the frame, on by default, lets a site turn it off while every other site keeps it, and the
+part itself stays tested and ready. Deleting it would have meant writing it again the day it was wanted back. Skill
+20 (extensibility: a framework part a site can switch off without losing it).
+
 ## FX173 · A measure written in three places drifts; name it once
 
 Louis wanted the agent bar larger, its chips round the closed orb, and the agent's own suggestions first. The size

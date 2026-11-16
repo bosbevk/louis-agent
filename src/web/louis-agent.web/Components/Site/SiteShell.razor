@@ -7,7 +7,10 @@
     <CascadingValue Value="_options" IsFixed="true">
         <div class="@SiteClasses">
             <div class="site-progress" id="site-progress" aria-hidden="true"></div>
-            <SectionIndex/>
+            @if (ShowIndex)
+            {
+                <SectionIndex/>
+            }
             <header class="site-header">
                 @if (Brand is not null)
                 {

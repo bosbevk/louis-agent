@@ -73,4 +73,18 @@ public class ShowroomLayoutTests
             Assert.That(cut.FindAll(".agent-side"), Is.Empty);
         });
     }
+
+    /// <summary>
+    /// FX175: the site's pages show no section index for now, switched off and kept (Louis: "we must just hide this
+    /// disabled, not use it, not delete it").
+    /// </summary>
+    [Test]
+    public void TheSite_ShowsNoSectionIndex()
+    {
+        using var ctx = SitePageContext.Create();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.FindComponent<LouisAgent.Web.Components.Site.SiteShell>().Instance.ShowIndex, Is.False);
+    }
 }

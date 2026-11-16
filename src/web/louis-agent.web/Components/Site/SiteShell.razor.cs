@@ -79,6 +79,13 @@ public partial class SiteShell
     [Parameter]
     public bool AnswerUnder { get; set; }
 
+    /// <summary>
+    /// Whether the frame draws the page's section index; on by default. A site may switch it off and keep it for later
+    /// (FX175, Louis: "hide this disabled, not use it, not delete it").
+    /// </summary>
+    [Parameter]
+    public bool ShowIndex { get; set; } = true;
+
     /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
     private readonly PageOptions _options = new();
 

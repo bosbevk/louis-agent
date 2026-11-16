@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 124 | 94 |
-| Fixes (`FX`) | 159 | 6 |
+| Fixes (`FX`) | 160 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -282,10 +282,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (159 done)
+## Fixes (160 done)
 
 | Id | When | What |
 |---|---|---|
+| FX175 | 2026-11-17 | The section index is switched off on louis-agent.dev, kept in the framework for later |
 | FX173 | 2026-11-17 | The agent bar is larger, its chips take six places round the closed orb, the agent's ideas first |
 | FX172 | 2026-11-17 | The agent bar starts closed as the orb, and its box opens out only while one side needs the other |
 | FX171 | 2026-11-17 | The "What we build" page is gone, with its menu link, its sitemap addresses and the guide's lines about it |
