@@ -13,6 +13,6 @@ public static class LandingTape
     [
         new("ShowPage", "/rooms/garden"), new("Took a table for five"), new("Refused to give", "legal advice"),
         new("SendLead once, on a yes"), new("Answered at", "22:04"), new("Read the booking back"),
-        new("ShowCard", "Booking request"), new("Cost", "US$0.005")
+        new("ShowCard", "Booking request"), new("Cost", "R0.09")
     ];
 }

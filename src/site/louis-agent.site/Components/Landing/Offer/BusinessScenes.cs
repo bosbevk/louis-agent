@@ -115,7 +115,7 @@ public static class BusinessScenes
         var sent = new SceneStep(SceneStepKind.Call, "SendLead, once")
         {
             Stage = SceneStage.Sent,
-            Foot = "3 calls · 2.1 s · US$0.005, an example",
+            Foot = "3 calls · 2.1 s · R0.09, an example",
             Status = $"Sent to the {to}"
         };
         return
