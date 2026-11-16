@@ -78,11 +78,11 @@
     font-weight: 700;
     color: var(--web-on-primary);
     text-decoration: none;
-    background: glow.shade(var(--accent), 100deg);
-    box-shadow: 0 12px 30px -12px var(--accent);
     transition: transform .2s var(--web-ease, ease-out), box-shadow .2s;
+    @include glow.fill(var(--accent), 100deg);
+    @include glow.stands(var(--accent));
 }
-.start-play:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -12px var(--accent); }
+.start-play:hover { transform: translateY(-2px); @include glow.stands(var(--accent), $risen: true); }
 
 .start-stage ::deep .dock { margin: 18px 0 22px; }
 

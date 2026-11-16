@@ -8,6 +8,8 @@
    colour in the shared frame's hairline and corner, with none of the rest. A pane that answers the pointer has a
    hover of its own (F151.4): how far it lifts, an edge and a shadow, both written as shadows, the card deck's today.
    A float is a pane over the page, such as a menu's list: the shadow it throws, the menu's today.
+   A veil is a panel the stage shows through, such as the showroom's rail: its fill, its edge and its blur, the
+   rail's today.
    An inset is a piece set into the page, such as the chat's card and a field (F151.4): its fill and its edge, the
    page's colour and the hairline today.
    A bar is the header, the footer and the agent's bar: its fill, its edge and its blur, as the site's header has
@@ -35,6 +37,10 @@
     --web-pane-hover-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45);
 
     --web-float-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8);
+
+    --web-veil-fill: rgba(var(--bs-body-bg-rgb), .55);
+    --web-veil-edge: 1px solid rgba(var(--web-overlay-rgb), .1);
+    --web-veil-blur: blur(10px);
 
     --web-inset-fill: var(--bs-body-bg);
     --web-inset-edge: 1px solid var(--bs-border-color);

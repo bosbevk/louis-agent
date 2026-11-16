@@ -75,7 +75,7 @@
     border-radius: 14px;
     font-weight: 600;
     color: var(--web-on-primary);
-    background: glow.shade(var(--accent), 100deg);
+    @include glow.fill(var(--accent), 100deg);
     @include glow.glow(var(--accent), 40px, -16px);
 }
 .stage-offer::after {
@@ -83,7 +83,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(100deg, transparent 30%, rgba(var(--web-overlay-rgb), .45) 50%, transparent 70%);
+    @include glow.shine();
     transform: translateX(-100%);
     animation: stage-shine 3.5s ease-in-out infinite;
 }
@@ -97,11 +97,10 @@
     border-radius: 9px;
     font-size: 13.5px;
     color: var(--web-bright);
-    background: var(--web-on-primary);
     text-decoration: none;
     white-space: nowrap;
+    @include glow.counter();
 }
-.stage-offer ::deep a:hover { box-shadow: 0 0 0 2px var(--web-bright); }
 
 /* On a screen that is wide but not tall, a laptop's, the story takes less of the height, so the player keeps it. */
 @media (min-width: 901px) and (max-height: 1100px) {

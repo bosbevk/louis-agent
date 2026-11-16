@@ -1,4 +1,6 @@
 @use "web/tools/accents";
+@use "web/tools/glow";
+@use "web/tools/surface";
 
 /* The rail (F127.1), since F134.2 the K mockup's slim glass column of icons: it stays beside the stage, about the
    middle of the screen, as the page scrolls. Each demo is its line icon in its colour on a tile that grows a little
@@ -19,10 +21,7 @@
     gap: 6px;
     margin: 14px 0 14px 14px;
     padding: 8px;
-    border: 1px solid rgba(var(--web-overlay-rgb), .1);
-    border-radius: 22px;
-    background: rgba(var(--bs-body-bg-rgb), .55);
-    backdrop-filter: blur(10px);
+    @include surface.veil($radius: 22px);
 }
 /* A group's name, for a screen reader: on screen a short line between groups, and none before the first. */
 .rail-group {
@@ -32,7 +31,7 @@
     margin: 4px 0;
     overflow: hidden;
     color: transparent;
-    background: rgba(var(--web-overlay-rgb), .14);
+    @include surface.hairline();
 }
 .rail-group:first-child { height: 0; margin: 0; }
 .demo-cover {
@@ -47,28 +46,23 @@
     text-decoration: none;
     transition: background-color .3s, transform .3s var(--web-spring);
 }
-.demo-cover:hover, .demo-cover:focus-visible { background: rgba(var(--web-overlay-rgb), .07); transform: scale(1.08); }
+.demo-cover:hover, .demo-cover:focus-visible { transform: scale(1.08); @include surface.tint(var(--web-overlay-rgb), .07); }
 .cover-sign { display: grid; place-items: center; }
-.demo-cover.is-current {
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent), 0 0 26px -6px var(--accent);
-}
+.demo-cover.is-current { @include glow.current(var(--accent), $halo: true); }
 /* A demo's name, beside its icon while the pointer or the keyboard is on it. A screen reader reads the link's label. */
 .cover-tip {
     position: absolute;
     left: 58px;
     padding: 7px 12px;
-    border-radius: 10px;
     font-size: 13.5px;
     font-weight: 500;
     white-space: nowrap;
     color: var(--bs-emphasis-color);
-    background: var(--bs-tertiary-bg);
-    box-shadow: inset 0 0 0 1px rgba(var(--web-overlay-rgb), .1), 0 14px 30px -14px rgba(var(--web-shadow-rgb), .9);
     opacity: 0;
     transform: translateX(-6px);
     pointer-events: none;
     transition: opacity .25s, transform .25s var(--web-ease);
+    @include surface.float($radius: 10px);
 }
 .demo-cover:hover .cover-tip, .demo-cover:focus-visible .cover-tip { opacity: 1; transform: none; }
 

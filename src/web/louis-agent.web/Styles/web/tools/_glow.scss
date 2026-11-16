@@ -24,3 +24,101 @@
     background-clip: text;
     color: transparent;
 }
+
+// The marks below are the showroom's light laid on a piece (F151.4): each draws in the one colour it is given, the
+// demo's on screen, so a sheet says what a piece is and never paints it by hand. They read no theme's name: a demo's
+// colour is the demo's own, in every theme.
+
+// A piece filled with the colour, run into its lighter shade: the showroom's pill, the chip on screen, an offer.
+@mixin fill($colour, $angle: 135deg) {
+    background: shade($colour, $angle);
+}
+
+// A wash of the colour behind a piece.
+@mixin wash($colour, $strength) {
+    background: tint($colour, $strength);
+}
+
+// A piece's edge in the colour, see-through.
+@mixin edge($colour, $strength) {
+    border-color: tint($colour, $strength);
+}
+
+// A line drawn inside a piece's edge in the colour, see-through.
+@mixin inner-line($colour, $strength) {
+    box-shadow: inset 0 0 0 1px tint($colour, $strength);
+}
+
+// A small round mark of the colour that glows: a cue's number, a note's plus, a heading's dot.
+@mixin dot($colour, $blur: 12px) {
+    background: $colour;
+    box-shadow: 0 0 $blur $colour;
+}
+
+// The piece on screen among its like, such as the rail's demo or the dock's item: a wash of the colour and a line
+// of it inside the edge, and where it stands alone a glow round it.
+@mixin current($colour, $line: 50%, $halo: false) {
+    background: tint($colour, 16%);
+    @if $halo {
+        box-shadow: inset 0 0 0 1px tint($colour, $line), 0 0 26px -6px $colour;
+    } @else {
+        box-shadow: inset 0 0 0 1px tint($colour, $line);
+    }
+}
+
+// A line that fills from the colour into white as something plays.
+@mixin run($colour) {
+    background: linear-gradient(90deg, $colour, var(--web-bright));
+}
+
+// A card whose turn has come: its edge in the colour, the colour washing in from a corner, and a glow under it.
+@mixin lit($colour) {
+    border-color: tint($colour, 60%);
+    background: linear-gradient(135deg, tint($colour, 18%), rgba(var(--bs-secondary-bg-rgb), .8));
+    @include glow($colour, 30px, -14px);
+}
+
+// The ring and glow a lit card swells to, half way through its pulse.
+@mixin pulse($colour) {
+    box-shadow: 0 0 0 1px $colour, 0 10px 40px -8px $colour;
+}
+
+// The focus ring of a piece on the lit stage, in the colour.
+@mixin focus($colour, $width: 2px, $offset: 2px) {
+    outline: $width solid $colour;
+    outline-offset: $offset;
+}
+
+// A panel lit from its top left corner in the colour, its edge in the colour too.
+@mixin panel($colour) {
+    border: 1px solid tint($colour, 30%);
+    background:
+        radial-gradient(520px 220px at 0% 0%, tint($colour, 14%), transparent 70%),
+        rgba(var(--bs-secondary-bg-rgb), .7);
+}
+
+// The shine that crosses a bar of the colour.
+@mixin shine() {
+    background: linear-gradient(100deg, transparent 30%, rgba(var(--web-overlay-rgb), .45) 50%, transparent 70%);
+}
+
+// The button on a bar of the colour: the bar's own words' colour as its fill, and a ring under the pointer.
+@mixin counter() {
+    background: var(--web-on-primary);
+
+    &:hover { box-shadow: 0 0 0 2px var(--web-bright); }
+}
+
+// A light of the colour, such as the stage's cone and its pool: a block of it, shaped by its own mask or blur.
+@mixin light($colour) {
+    background-color: $colour;
+}
+
+// The shadow of the colour under a piece that stands up from the stage, and the deeper one as it rises.
+@mixin stands($colour, $risen: false) {
+    @if $risen {
+        box-shadow: 0 16px 36px -12px $colour;
+    } @else {
+        box-shadow: 0 12px 30px -12px $colour;
+    }
+}

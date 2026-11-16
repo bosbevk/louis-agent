@@ -83,6 +83,11 @@
     // What floats over the page throws no shadow either: its line sets it apart.
     --web-float-shadow: none;
 
+    // A veil, a panel on the stage: solid in flat, as a pane is.
+    --web-veil-fill: var(--web-pane-fill);
+    --web-veil-edge: var(--web-pane-edge);
+    --web-veil-blur: none;
+
     // An inset, set into the page: the page's white and a firmer grey line.
     --web-inset-fill: #ffffff;
     --web-inset-edge: 1px solid #a7aaba;

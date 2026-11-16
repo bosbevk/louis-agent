@@ -1,4 +1,5 @@
 @use "web/tools/glow";
+@use "web/tools/surface";
 
 /* The plain body (F134.1): in the middle of its window, the icon large in the accent with a glow of it, over the
    name and the line. In white where nothing around it wears an accent. */
@@ -13,7 +14,7 @@
     gap: 8px;
     padding: 24px;
     text-align: center;
-    background: var(--bs-secondary-bg);
+    @include surface.panel();
 }
 .plain-icon {
     display: grid;

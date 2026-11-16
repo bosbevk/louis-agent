@@ -96,6 +96,11 @@
     // What floats over the page throws a deep shadow on the black.
     --web-float-shadow: 0 24px 50px -24px #000;
 
+    // A veil, a panel the stage shows through: glass as a pane is.
+    --web-veil-fill: var(--web-pane-fill);
+    --web-veil-edge: none;
+    --web-veil-blur: var(--web-pane-blur);
+
     // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
     --web-inset-fill: rgba(255, 255, 255, .012);
     --web-inset-edge: none;

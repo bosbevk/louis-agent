@@ -61,20 +61,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Site/Showroom/Mock/Places/MockSection.razor.scss",
         "Components/Site/Showroom/Mock/SiteMock.razor.scss",
         "Components/Site/Showroom/Mock/Website/MockPage.razor.scss",
-        "Components/Site/Showroom/Shell/DemoChips.razor.scss",
-        "Components/Site/Showroom/Shell/DemoRail.razor.scss",
-        "Components/Site/Showroom/Shell/ShowroomShell.razor.scss",
-        "Components/Site/Showroom/Stage/DemoCues.razor.scss",
-        "Components/Site/Showroom/Stage/DemoNotes.razor.scss",
-        "Components/Site/Showroom/Stage/DemoStage.razor.scss",
-        "Components/Site/Showroom/Start/ShowroomStart.razor.scss",
-        "Components/Staging/Decks/Deck.razor.scss",
-        "Components/Staging/Docks/Dock.razor.scss",
-        "Components/Staging/LitStage.razor.scss",
-        "Components/Staging/Windows/FramedWindow.razor.scss",
-        "Components/Staging/Windows/PlainBody.razor.scss",
-        "Components/Staging/Windows/SiteBody.razor.scss",
-        "Components/Staging/Windows/WorkBody.razor.scss",
         "Components/Widget/Bar/AgentBar.razor.scss",
         "Components/Widget/Bar/Caption/AgentCaption.razor.scss",
         "Components/Widget/Bar/Talk/AgentTalk.razor.scss",
@@ -173,6 +159,13 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("accent-line")]
     [TestCase("marker")]
     [TestCase("progress")]
+    [TestCase("veil")]
+    [TestCase("rule")]
+    [TestCase("hairline")]
+    [TestCase("outlined")]
+    [TestCase("track")]
+    [TestCase("panel")]
+    [TestCase("bubble")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

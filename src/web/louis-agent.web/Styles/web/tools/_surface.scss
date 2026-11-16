@@ -83,15 +83,59 @@ $-pressed: scale(.97);
     @include pane($radius: $radius, $shadow: var(--web-float-shadow));
 }
 
+/* A panel the stage shows through, such as the showroom's rail, its cues and a dock: a kind of its own, with its own
+   fill, edge and blur, since on a site with no theme it is see-through where a pane is solid. A piece whose corner
+   is its shape, a column, a pill or a circle, passes it. */
+@mixin veil($radius: var(--web-pane-radius)) {
+    border: var(--web-veil-edge);
+    border-radius: $radius;
+    -webkit-backdrop-filter: var(--web-veil-blur);
+    backdrop-filter: var(--web-veil-blur);
+    @include -drawn(pane-rest, var(--web-veil-fill));
+}
+
+/* A flat part inside a piece, such as a window's title or one of its panes: one of the theme's colours, no edge and
+   no drawing, since the piece it is in is the surface. */
+@mixin panel($fill: var(--bs-secondary-bg)) {
+    background: $fill;
+}
+
+/* A quiet box inside a piece, such as a hint under a chat: a faint wash with a faint line inside it. */
+@mixin bubble() {
+    background: rgba(var(--web-overlay-rgb), .04);
+    box-shadow: inset 0 0 0 1px rgba(var(--web-overlay-rgb), .08);
+}
+
+/* A hairline between two parts, on the side given: the edge a theme gives a bar. */
+@mixin rule($side: bottom) {
+    border-#{$side}: var(--web-bar-edge);
+}
+
+/* A hairline drawn as a block of its own, such as the line between two groups, as strong as given. */
+@mixin hairline($strength: .14) {
+    background: rgba(var(--web-overlay-rgb), $strength);
+}
+
+/* A piece that is only its outline, such as a number in a ring: the second button's edge. */
+@mixin outlined() {
+    border: var(--web-press-edge);
+}
+
+/* The groove a line fills as something plays. */
+@mixin track() {
+    background: var(--bs-border-color);
+}
+
 /* A slab in a colour the site names for it, such as the closing strip: solid, with no drawing, since its words are
    written for that colour. */
 @mixin slab($fill) {
     background: $fill;
 }
 
-/* A row under the pointer, such as a link in a menu: a wash of the brand's colour. */
-@mixin tint() {
-    background: rgba(var(--bs-primary-rgb), .08);
+/* A row or a tile under the pointer, such as a link in a menu: a wash of the brand's colour, or of the colour and
+   strength given. */
+@mixin tint($rgb: var(--bs-primary-rgb), $strength: .08) {
+    background: rgba($rgb, $strength);
 }
 
 /* A thin line of a piece's own colour along its top, as an accented tile has. */

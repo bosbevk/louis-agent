@@ -56,6 +56,9 @@ and no new shadow, since its light is in the hover drawing. In flat it stays whe
 of the violet. What floats over the page throws a deep shadow in glass and none in flat, where its line sets it
 apart.
 
+A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: the pane's fill
+and blur, with no edge. In flat it is the pane's fill with the pane's edge and no blur.
+
 Glass in the light turns white and black over and keeps the purple. The page is a pale wash of the violet, mixed
 from its second step a third of the way into white, so it follows the purple. The words are black, and a
 visitor's mark is black. A pane is white glass, brighter than the page, with a white rim, a fine violet-dark line
