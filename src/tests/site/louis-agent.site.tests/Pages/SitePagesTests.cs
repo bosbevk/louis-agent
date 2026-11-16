@@ -98,10 +98,8 @@ public class SitePagesTests
     }
 
     /// <summary>What's new is on the page: a demo is built on the framework, a pack never needs the engine.</summary>
-    [TestCase(typeof(HomePage), "AI agent framework")]
     [TestCase(typeof(HomePage), "South Africa")]
     [TestCase(typeof(ArchitecturePage), "href=\"/framework/identities\"")]
-    [TestCase(typeof(HomePage), "href=\"/framework/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
     [TestCase(typeof(ProofPage), "id=\"rule\"")]
     [TestCase(typeof(ProofPage), "First principles.")]

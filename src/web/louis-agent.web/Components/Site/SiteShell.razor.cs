@@ -66,7 +66,9 @@ public partial class SiteShell
     [Parameter]
     public bool MovingPage { get; set; }
 
-    /// <summary>Whether the agent's answer rises from underneath, out of its bar, not beside its place; off by default.</summary>
+    /// <summary>
+    /// Whether the agent's answer rises from underneath, out of its bar, not beside its place; off by default.
+    /// </summary>
     [Parameter]
     public bool AnswerUnder { get; set; }
 

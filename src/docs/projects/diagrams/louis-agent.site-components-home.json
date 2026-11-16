@@ -1,7 +1,7 @@
 {
   "kind": "nested",
   "title": "The home page: what it is made of",
-  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then the demos and the framework as the proof. The frame lists each band in its section index.",
+  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then custom agents and the demos. The frame lists each band in its section index.",
   "nested": {
     "subtitle": "louis-agent.site, Pages / HomePage",
     "root": {
@@ -66,13 +66,6 @@
           "kind": "a band",
           "tone": "blue",
           "note": "the three businesses' agents"
-        },
-        {
-          "id": "proof",
-          "name": "ProofTiles",
-          "kind": "a band",
-          "tone": "blue",
-          "note": "the framework, as the proof"
         },
         {
           "id": "contact",
