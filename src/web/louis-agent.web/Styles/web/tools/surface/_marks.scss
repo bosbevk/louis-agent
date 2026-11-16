@@ -64,13 +64,17 @@
    words whose colour is clipped into them. */
 @mixin lifted-words() {
     // Layered as Tobias Ahlin's "smoother and sharper shadows" and Josh Comeau's "designing beautiful shadows" do:
-    // six layers, each twice the last one's offset, its blur equal to its offset, all along one angle so they share
+    // seven layers, each twice the last one's offset, its blur equal to its offset, all along one angle so they share
     // one light from the top left, and each fainter than the one before, so the shadow is dense where the letters
-    // touch the page and fades softly away (Louis: "can we layer the font better"). The colour is the theme's shadow,
-    // tinted towards the page as Comeau advises, never plain black.
-    filter: drop-shadow(.5px 1px 1px rgba(var(--web-shadow-rgb), .14)) drop-shadow(1px 2px 2px rgba(var(--web-shadow-rgb), .12))
-        drop-shadow(2px 4px 4px rgba(var(--web-shadow-rgb), .1)) drop-shadow(4px 8px 8px rgba(var(--web-shadow-rgb), .08))
-        drop-shadow(8px 16px 16px rgba(var(--web-shadow-rgb), .06)) drop-shadow(16px 32px 32px rgba(var(--web-shadow-rgb), .04));
+    // touch the page and fades softly away. The colour is the theme's shadow, tinted towards the page as Comeau
+    // advises, never plain black. A hairline of the page's light on the letters' top-left edge goes first, the bevel
+    // that same light catches, so they read as raised, not printed (Louis: "can we layer the font better", "increase
+    // and refine the depth by another level").
+    filter: drop-shadow(-.5px -.5px 0 rgba(var(--bs-body-bg-rgb), .7))
+        drop-shadow(.5px 1px 1px rgba(var(--web-shadow-rgb), .16)) drop-shadow(1px 2px 2px rgba(var(--web-shadow-rgb), .13))
+        drop-shadow(2px 4px 4px rgba(var(--web-shadow-rgb), .11)) drop-shadow(4px 8px 8px rgba(var(--web-shadow-rgb), .09))
+        drop-shadow(8px 16px 16px rgba(var(--web-shadow-rgb), .07)) drop-shadow(16px 32px 32px rgba(var(--web-shadow-rgb), .05))
+        drop-shadow(24px 48px 56px rgba(var(--web-shadow-rgb), .04));
 }
 
 @mixin marker($lit: false) {
