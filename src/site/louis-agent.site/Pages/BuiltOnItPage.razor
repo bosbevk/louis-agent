@@ -40,11 +40,10 @@
     </ul>
 </Band>
 
-<Band Id="hosts" Topic="Hosts">
-    <p class="summary">The framework's hosts are libraries. A demo's few lines start the ones it wants.</p>
-    <div class="grid-3">
-        <div class="panel small"><h4>Rider</h4><p>An Agent Client Protocol server over stdio for Rider's AI chat.</p></div>
-        <div class="panel small"><h4>Web app and HTTP API</h4><p>Sessions with answers streamed as server-sent events. The API serves the web app.</p></div>
-        <div class="panel small"><h4>CLI and MCP server</h4><p>Interactive or one-shot prompts in the terminal, and the tools handed to any MCP client, which brings its own model.</p></div>
-    </div>
+<Band Id="hosts" Topic="Hosts" Summary="The framework's hosts are libraries. A demo's few lines start the ones it wants.">
+    <TileRow Columns="3">
+        <Tile Title="Rider" Text="An Agent Client Protocol server over stdio for Rider's AI chat." />
+        <Tile Title="Web app and HTTP API" Delay="1" Text="Sessions with answers streamed as server-sent events. The API serves the web app." />
+        <Tile Title="CLI and MCP server" Delay="2" Text="Interactive or one-shot prompts in the terminal, and the tools handed to any MCP client, which brings its own model." />
+    </TileRow>
 </Band>

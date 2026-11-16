@@ -110,7 +110,7 @@ public class SitePagesTests
     [TestCase(typeof(ProofPage), "Competition")]
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
-    [TestCase(typeof(HomePage), "class=\"band band-strip reveal\"")]
+    [TestCase(typeof(HomePage), "That is the end of the tour.")]
     [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]

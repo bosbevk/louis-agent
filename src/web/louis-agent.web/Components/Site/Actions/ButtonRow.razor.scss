@@ -1,0 +1,2 @@
+/* A row of buttons (FX163): side by side, a little apart, wrapping on a narrow screen. */
+.button-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 8px; }
