@@ -53,8 +53,10 @@ public class BarFactsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(styles, Does.Contain("--agent-ball: 88px;"));
-            Assert.That(styles, Does.Contain("--agent-air: 16px;"));
+            // A tad smaller again, and all with it, the ball setting the bar's height (Louis: "make the ball a tad
+            // smaller and everything with it, the ball size must anyway determine the height").
+            Assert.That(styles, Does.Contain("--agent-ball: 72px;"));
+            Assert.That(styles, Does.Contain("--agent-air: 14px;"));
             Assert.That(styles, Does.Contain("width: min(960px, calc(100vw - 28px));"));
             Assert.That(styles, Does.Not.Contain("76px"));
         });
