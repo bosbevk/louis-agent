@@ -1,0 +1,17 @@
+@use "web/tools/surface";
+
+/* A list of named entries (ADR 0125): one entry a row between hairlines, its names in the code face and the words'
+   strongest colour, its sentence after them in the second. */
+.terms { display: flex; flex-direction: column; max-width: 80ch; margin: 0; padding: 0; list-style: none; }
+.terms li {
+    padding: 14px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--bs-secondary-color);
+    @include surface.rule(bottom, 1px solid var(--bs-border-color));
+}
+.terms li:first-child { @include surface.rule(top, 1px solid var(--bs-border-color)); }
+.term-names { margin-right: 8px; font-weight: 600; color: var(--bs-emphasis-color); }
+.term-names code, .term-text ::deep code { font-family: var(--bs-font-monospace); font-size: .92em; }
+.term-and { margin: 0 6px; color: var(--bs-tertiary-color); }
+.term-text ::deep code { color: var(--web-soft-text); }

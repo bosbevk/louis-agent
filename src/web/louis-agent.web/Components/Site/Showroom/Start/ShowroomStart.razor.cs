@@ -59,7 +59,7 @@ public partial class ShowroomStart : IAsyncDisposable
 
     /// <summary>A line under the title.</summary>
     [Parameter]
-    public RenderFragment? Lede { get; set; }
+    public RenderFragment? Summary { get; set; }
 
     /// <summary>
     /// Which group of the site's demos the start shows, such as the ones for a visitor's own business. With none,

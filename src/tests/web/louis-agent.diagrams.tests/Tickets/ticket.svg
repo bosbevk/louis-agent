@@ -114,7 +114,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .tkt-light-2 { stop-color: var(--ticket-accent, var(--blue-line)); stop-opacity: 0; }
 .mrq-edge-0, .mrq-edge-1, .mrq-edge-2 { stop-color: var(--ticket-accent, var(--violet-line)); }
 .ticket-rule { fill: var(--ticket-line, var(--mrq-hair)); }
-.ticket-kicker {
+.ticket-topic {
   fill: var(--ticket-accent, var(--violet-ink)); font: 600 10px var(--mono); letter-spacing: 1.4px;
 }
 .ticket-title {
@@ -192,7 +192,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <path d="M3 7l9 6l9 -6" />
   </g>
   <rect class="ticket-well" x="16" y="302" width="288" height="46" rx="10" />
-  <text class="ticket-kicker" x="16" y="24" text-anchor="start">BOOKING REQUEST</text>
+  <text class="ticket-topic" x="16" y="24" text-anchor="start">BOOKING REQUEST</text>
   <text class="ticket-title" x="16" y="54" text-anchor="start">The garden room</text>
   <text class="ticket-subtitle" x="16" y="74" text-anchor="start">Seemeeu Guesthouse · Yzerfontein</text>
   <text class="ticket-label" x="60" y="119" text-anchor="start">Dates</text>

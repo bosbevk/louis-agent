@@ -116,10 +116,6 @@ public class SitePagesTests
     [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
-    [TestCase(typeof(HomePage), "What we sell today")]
-    [TestCase(typeof(HomePage), "R500 to R1,000 a month")]
-    [TestCase(typeof(HomePage), "once-off fee to build the site")]
-    [TestCase(typeof(HomePage), "first Markdown files")]
     [TestCase(typeof(ContactPage), "once-off fee to build the site")]
     [TestCase(typeof(ContactPage), "first Markdown files")]
     [TestCase(typeof(ContactPage), "Custom agents")]
@@ -169,13 +165,13 @@ public class SitePagesTests
 
         var cut = ctx.Render<HomePage>();
 
-        var lede = cut.Find("#custom h2 + p.lede");
-        Assert.That(lede.TextContent, Does.Contain("your own"));
-        Assert.That(lede.TextContent, Does.Not.Contain(";"));
+        var summary = cut.Find("#custom h2 + p.summary");
+        Assert.That(summary.TextContent, Does.Contain("your own"));
+        Assert.That(summary.TextContent, Does.Not.Contain(";"));
     }
 
     /// <summary>The hero's words under its headline, as the design has them.</summary>
-    private const string Lede = "We build websites that answer for your business. An agent on the page shows the " +
+    private const string Summary = "We build websites that answer for your business. An agent on the page shows the " +
                                 "room, takes the booking and sends it to you, while you're busy with the guests you " +
                                 "already have.";
 
@@ -195,7 +191,7 @@ public class SitePagesTests
         var actions = cut.Find(".hero .actions").Children.ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".hero .kicker"), Is.Empty, "no line above the headline");
+            Assert.That(cut.FindAll(".hero .topic"), Is.Empty, "no line above the headline");
             Assert.That(cut.Find(".hero h1").TextContent, Is.EqualTo("Ask the website."));
             Assert.That(cut.Find(".hero").ClassList, Does.Contain("is-centred"));
             Assert.That(cut.FindAll(".hero .hero-art .mark-states .orb"), Has.Count.EqualTo(1),
@@ -207,7 +203,7 @@ public class SitePagesTests
             Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/home/does"));
             Assert.That(actions[1].GetAttribute("data-section"), Is.EqualTo("does"),
                 "a move within the page, which the frame makes, as the index's links do");
-            Assert.That(cut.Find(".hero .lede").TextContent, Is.EqualTo(Lede));
+            Assert.That(cut.Find(".hero .summary").TextContent, Is.EqualTo(Summary));
             Assert.That(cut.FindAll(".hero p.muted"), Is.Empty, "no note under the words");
             Assert.That(cut.FindAll(".hero .hero-aside"), Is.Empty, "nothing under the buttons");
             Assert.That(cut.FindAll(".hero .guide-button"), Is.Empty);
@@ -393,25 +389,5 @@ public class SitePagesTests
 
         Assert.That(cut.FindAll("h2.reveal"), Has.Count.GreaterThanOrEqualTo(3));
         Assert.That(cut.FindAll(".panel.reveal"), Has.Count.GreaterThanOrEqualTo(6));
-    }
-
-    /// <summary>
-    /// The architecture page shows the short film (since F128.1, when it left the landing); How it works the detailed
-    /// one; neither the other's.
-    /// </summary>
-    [TestCase(typeof(ArchitecturePage), "film-short", "film-detail")]
-    [TestCase(typeof(HowItWorksPage), "film-detail", "film-short")]
-    public void APage_ShowsItsFilm(Type page, string film, string notThisOne)
-    {
-        using var ctx = new BunitContext();
-
-        var cut = ctx.Render(builder =>
-        {
-            builder.OpenComponent(0, page);
-            builder.CloseComponent();
-        });
-
-        Assert.That(cut.FindAll($".stage.{film}"), Has.Count.EqualTo(1));
-        Assert.That(cut.Markup, Does.Not.Contain(notThisOne));
     }
 }

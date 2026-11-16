@@ -1,0 +1,19 @@
+@* A list of named entries (ADR 0125): each entry's names as code, then its sentence. A site gives them as records. *@
+<ul class="terms">
+    @foreach (var term in Terms)
+    {
+        <li>
+            <span class="term-names">
+                @for (var index = 0; index < term.Names.Count; index++)
+                {
+                    @if (index > 0)
+                    {
+                        <span class="term-and" aria-hidden="true">·</span>
+                    }
+                    <code>@term.Names[index]</code>
+                }
+            </span>
+            <span class="term-text">@Markdown.Inline(term.Text)</span>
+        </li>
+    }
+</ul>

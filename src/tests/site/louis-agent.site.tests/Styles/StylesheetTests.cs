@@ -1,39 +1,36 @@
-using System.Text.RegularExpressions;
-
 namespace LouisAgent.Site.Tests.Styles;
 
 /// <summary>
-/// The framework's site's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and the triage pack's demo,
-/// then the site's look, so it keeps no copy (F124: it left the code-review app with the site). What's checked is
-/// what the build really made.
+/// The framework's site's stylesheet is Sass: <c>app.scss</c> lists the framework's rules, the two themes and the
+/// triage pack's demo, so it keeps no copy (F124), and nothing of the site's own (FX162). What's checked is what the
+/// build really made.
 /// </summary>
-public partial class StylesheetTests
+public class StylesheetTests
 {
     /// <summary>The site's stylesheet.</summary>
     private static readonly SassStylesheet Css = SassStylesheet.Of("louis-agent.site");
 
     /// <summary>
-    /// One name being read: matches <c>var(--site-gutter</c> and gives its name, but not <c>--site-gutter:</c>.
+    /// The site decides no look of its own (FX162, Louis: "remove all custom css from .site we should just use the
+    /// theme", "I need all custom css out immediately"): it lists no partial of its own, and no component of it has
+    /// a sheet beside it.
     /// </summary>
-    [GeneratedRegex(@"var\((--[a-z0-9-]+)", RegexOptions.NonBacktracking)]
-    private static partial Regex Reads();
+    [Test]
+    public void TheSite_HasNoStylesOfItsOwn()
+    {
+        string site = Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site");
+        var sheets = Directory.EnumerateFiles(site, "*.scss", SearchOption.AllDirectories)
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}") &&
+                           !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+            .Select(path => Path.GetRelativePath(site, path).Replace('\\', '/'))
+            .ToList();
 
-    /// <summary>
-    /// A colour written as a value: matches <c>#f58220</c> and <c>rgba(245, 130, 32, .4)</c>, but not
-    /// <c>rgba(var(--bs-primary-rgb), .4)</c>.
-    /// </summary>
-    [GeneratedRegex(@"#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d", RegexOptions.NonBacktracking)]
-    private static partial Regex FixedColour();
-
-    /// <summary>The site's three film partials, where every film keyframe lives.</summary>
-    private static readonly string[] Films = ["site/movie/stage", "site/movie/short", "site/movie/detail"];
-
-    /// <summary>Every partial of the site's look.</summary>
-    private static readonly string[] Site =
-    [
-        "site/settings/tokens", "site/base/elements", "site/landing/live-turn", "site/landing/sections",
-        "site/landing/motion", "site/layout/responsive", "site/chat/guide-form", "site/cv/print", .. Films
-    ];
+        Assert.Multiple(() =>
+        {
+            Assert.That(Css.Listed().Where(partial => partial.StartsWith("site/")), Is.Empty);
+            Assert.That(sheets, Is.EqualTo(new[] { "Styles/app.scss" }));
+        });
+    }
 
     /// <summary>Every partial of its own is on the list, and everything on the list is there.</summary>
     [Test]
@@ -50,49 +47,6 @@ public partial class StylesheetTests
     }
 
     /// <summary>
-    /// The site's values come right after the framework's colours and surfaces (F151.1), and its plain elements
-    /// right after the framework's, so each builds on the one before and the site's win where they meet.
-    /// </summary>
-    [Test]
-    public void TheSitesValuesAndElements_ComeRightAfterTheFrameworks()
-    {
-        Assert.That(Css.Listed().Take(5),
-            Is.EqualTo(new[]
-            {
-                "web/settings/colours", "web/settings/surfaces", "site/settings/tokens", "web/base/elements",
-                "site/base/elements"
-            }));
-    }
-
-    /// <summary>
-    /// The site's own values and plain elements write no colour as a value (F151.6): each reads a name a theme sets,
-    /// so the site's own layer follows the theme and the style without knowing a theme exists.
-    /// </summary>
-    [TestCase("site/settings/tokens")]
-    [TestCase("site/base/elements")]
-    [TestCase("site/landing/sections")]
-    public void TheSitesValuesAndElements_NameNoRawColour(string partial) =>
-        Assert.That(FixedColour().Matches(Css.Source(partial)).Select(found => found.Value), Is.Empty);
-
-    /// <summary>
-    /// The site's buttons are the theme's presses (F151.6): the filled one is the main press and the outlined ones,
-    /// WhatsApp's and LinkedIn's among them, the second press, each drawn by the surface tool, so a button here
-    /// looks like a button anywhere on the framework's web.
-    /// </summary>
-    [Test]
-    public void TheSitesButtons_AreTheThemesPresses()
-    {
-        string elements = Css.Source("site/base/elements");
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(elements, Does.Contain(".btn-fill { @include surface.press(); }"));
-            Assert.That(elements,
-                Does.Contain(".btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }"));
-        });
-    }
-
-    /// <summary>
     /// The build holds each theme's values for each style, so the page's pick has something to turn on.
     /// </summary>
     [TestCase("glass", "dark")]
@@ -102,192 +56,8 @@ public partial class StylesheetTests
     public void TheBuild_HoldsEachThemesValues(string theme, string style) =>
         Assert.That(Css.Read(), Does.Contain($":root[data-theme={theme}][data-style={style}]"));
 
-    /// <summary>
-    /// The site's look stays inside the site's frame: its element rules hang off the frame's root class, so the chat
-    /// and the admin keep the framework's. Only the frame's values sit on the root.
-    /// </summary>
-    [Test]
-    public void TheSitesLook_StaysInsideTheFrame()
-    {
-        var topLevel = Css.Source("site/base/elements").Split('\n')
-            .Where(line => line.Length > 0 && !char.IsWhiteSpace(line[0]) && !line.StartsWith("/*") &&
-                           !line.StartsWith('*') && !line.StartsWith("//"))
-            .Where(line => !line.StartsWith('}'))
-            // Naming a tool writes no rule, so it may stand outside the frame.
-            .Where(line => !line.StartsWith("@use"))
-            .ToList();
-
-        Assert.That(topLevel, Is.Not.Empty, "the search found the partial's rules");
-        Assert.That(topLevel, Is.All.Matches<string>(line => line.StartsWith(".site")));
-        Assert.That(Css.Read(), Does.Contain(".site h1").And.Contain(".site .panel").And.Contain(".site .btn"));
-    }
-
-    /// <summary>
-    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer and
-    /// a band keeps its room above its content. The index's lit bar is the framework's since F118, tested beside it.
-    /// </summary>
-    [TestCase(".panel:hover { transform: translateY(-3px);")]
-    [TestCase("padding: 64px var(--site-gutter) 40px;")]
-    [TestCase(".band-strip { padding-bottom: 72px; }")]
-    [TestCase(".btn:hover { transform: translateY(-2px);")]
-    [TestCase(".btn-whatsapp, .btn-linkedin { display: inline-flex; align-items: center; gap: 10px; }")]
-    [TestCase(".btn-whatsapp .whatsapp-mark { flex: none; color: var(--whatsapp); }")]
-    [TestCase(".btn-whatsapp:hover { border-color: var(--whatsapp);")]
-    [TestCase(".btn-linkedin:hover { border-color: var(--linkedin);")]
-    [TestCase("to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; }")]
-    public void TheLook_AnswersTheVisitor(string rule) =>
-        Assert.That(
-            Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
-            Does.Contain(rule));
-
-    /// <summary>
-    /// No site partial styles a bare class the chat draws (FX71): the guide's chat sits on every page, and the hero's
-    /// turn once drew the chat's turns as its cards. The site prefixes its own names, or hangs them off .site.
-    /// </summary>
-    [TestCase(".turn")]
-    [TestCase(".messages")]
-    [TestCase(".user-message")]
-    [TestCase(".assistant-message")]
-    [TestCase(".composer")]
-    public void NoSitePartial_StylesTheChatsClasses(string chatClass)
-    {
-        var offenders = Site.Where(partial => Css.Source(partial).Split('\n')
-                .Any(line => line.StartsWith(chatClass + " ") || line.StartsWith(chatClass + "{") ||
-                             line.StartsWith(chatClass + ",") || line.StartsWith(chatClass + ".")))
-            .ToList();
-
-        Assert.That(offenders, Is.Empty);
-    }
-
-    /// <summary>
-    /// F127.4.3, Louis: "our lead form must be styled differently", "not like demos", "not only colors, I do not want
-    /// a ticket look", "modern and sleek". The framework's form reads its whole look from <c>--web-form-*</c>, and the
-    /// site sets it on its guide's widget only, so the demo businesses' windows keep the plain form.
-    /// </summary>
-    [Test]
-    public void TheGuidesForm_HasTheSitesOwnLook()
-    {
-        string css = Css.Read();
-        string guideForm = Css.Source("site/chat/guide-form");
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(css, Does.Contain("var(--web-form-radius").And.Contain("var(--web-form-send-bg")
-                .And.Contain("var(--web-form-label-transform"));
-            Assert.That(guideForm, Does.StartWith("/*").And.Contain(".chat-widget {"));
-            Assert.That(guideForm, Does.Contain("--web-form-radius:").And.Contain("--web-form-send-bg: var(--steel)")
-                .And.Contain("--web-form-label-transform: uppercase"));
-            Assert.That(guideForm, Does.Not.Contain(".site {").And.Not.Contain(".showroom"));
-        });
-    }
-
     /// <summary>The triage demo's rules come from the triage pack's web project, so the build found them.</summary>
     [Test]
     public void ThePacksRules_AreInTheBuild() =>
         Assert.That(Css.Read(), Does.Contain(".step-popup").And.Contain(".popup-kind"));
-
-    /// <summary>
-    /// Every name the site's rules read is set, by the framework or by the site, so none falls through. The site's
-    /// partials only: the framework's rules also read what Bootstrap and the scripts set.
-    /// </summary>
-    [Test]
-    public void EveryNameASiteRuleReads_IsSet()
-    {
-        string css = Css.Read();
-        var read = Site.Select(Css.Source).SelectMany(source => Reads().Matches(source))
-            .Select(m => m.Groups[1].Value).Distinct().ToList();
-        var setByAFilm = new[] { "--loop", "--d" };
-
-        Assert.That(read, Does.Contain("--site-gutter"), "the search found the site's names");
-        Assert.That(read.Except(setByAFilm).Where(name => !css.Contains($"{name}:")), Is.Empty);
-    }
-
-    /// <summary>
-    /// The two films sit in one stylesheet, so each keyframe name ends in its film's letter (<c>-s</c>, <c>-d</c>) and
-    /// no name is declared twice; a shared name would make one film play the other's timing.
-    /// </summary>
-    [Test]
-    public void EachFilm_HasItsOwnKeyframes_AndNoNameIsDeclaredTwice()
-    {
-        var names = Films.Select(Css.Source).SelectMany(source => source.Split("@keyframes ").Skip(1))
-            .Select(part => part[..part.IndexOf(' ')]).ToList();
-
-        Assert.That(names, Is.Not.Empty, "the search found the films' keyframes");
-        Assert.That(names, Is.Unique);
-        Assert.That(names.Where(n => n != "bar"), Is.All.Matches<string>(BelongsToOneFilm));
-    }
-
-    /// <summary>
-    /// A PC with its animations switched off asks for reduced motion; that stills the hero's typing but not the films,
-    /// which are the content and play as a video would (FX35). Every selector in the site's reduced-motion rule
-    /// leaves the stage out.
-    /// </summary>
-    [Test]
-    public void ReducedMotion_StillsTheDecoration_AndLeavesTheFilmsPlaying()
-    {
-        string source = Css.Source("site/settings/tokens");
-        string block = source[source.IndexOf("@media (prefers-reduced-motion: reduce)", StringComparison.Ordinal)..];
-        block = block[..block.IndexOf("\n}", StringComparison.Ordinal)];
-        var selectors = block.Split('{').Skip(1).Select(rule => rule[(rule.LastIndexOf('}') + 1)..].Trim())
-            .Where(s => s.Length > 0).SelectMany(list => list.Split(',')).Select(s => s.Trim()).ToList();
-
-        Assert.That(selectors, Is.Not.Empty, "the reduced-motion rule is there");
-        Assert.That(selectors, Is.All.Contains(":not(.stage *)"), "nothing in it reaches a film");
-    }
-
-    /// <summary>
-    /// A film's keyframe name ends in <c>-s</c> or <c>-d</c>, or in that letter and the scene's number.
-    /// </summary>
-    private static bool BelongsToOneFilm(string name)
-    {
-        string tail = name[(name.LastIndexOf('-') + 1)..];
-        return tail is ['s' or 'd', ..] && tail[1..].All(char.IsDigit);
-    }
-
-    /// <summary>
-    /// F142: the CV prints on A4, black on white, without the menu, the guide or its own button. The rules are for
-    /// paper only, and only for a page that holds the CV, so no other page and no screen is touched.
-    /// </summary>
-    [Test]
-    public void TheCv_PrintsOnA4_WithoutTheFrame()
-    {
-        string print = Css.Source("site/cv/print");
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(print, Does.Contain("@page").And.Contain("A4"));
-            Assert.That(print, Does.Contain("@media print"));
-            Assert.That(print, Does.Contain("body:has(.resume)"), "only the CV's page");
-            Assert.That(print, Does.Contain(".site-header").And.Contain(".chat-widget").And.Contain(".cv-print"));
-        });
-    }
-
-    /// <summary>
-    /// FX154, Louis, on the first PDF: the browser's date and address across the top, the phone's layout (the photo
-    /// over the name, the facts two by two) and text "too light". The CV's sheet is a page of its own with our footer
-    /// where the browser's would be, the frame's entrance is off so nothing prints half faded, and the hero keeps its
-    /// two columns on paper with the row of codes in the buttons' place.
-    /// </summary>
-    [Test]
-    public void OnPaper_TheCvIsItsDesktopLayout_WithItsOwnFooter()
-    {
-        string print = Css.Source("site/cv/print");
-        string hero = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/site/louis-agent.site/Components/Cv/ResumeHero.razor.scss")).ReplaceLineEndings("\n");
-        string onPaper = hero[hero.IndexOf("@media print", StringComparison.Ordinal)..];
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(print, Does.Contain("@page cv").And.Contain("page: cv;"), "a sheet of the CV's own");
-            Assert.That(print, Does.Contain("@bottom-right").And.Contain("counter(page)"), "our own footer");
-            Assert.That(print, Does.Contain("@top-left { content: \"\"; }"), "and nothing of the browser's on top");
-            Assert.That(print, Does.Contain("animation: none;").And.Contain("opacity: 1;"));
-            Assert.That(print, Does.Contain("--bs-tertiary-color: #2a2e33;"), "the lightest ink is still dark");
-            Assert.That(print, Does.Contain(":root:has(.resume),\n    :root[data-theme][data-style]:has(.resume) {"), "white to the sheet's edges, margins too");
-            Assert.That(onPaper, Does.Contain(".cv-hero { grid-template-columns: minmax(0, 1fr) 38mm;"));
-            Assert.That(onPaper, Does.Contain(".cv-photo { max-width: none; order: 0;"), "the photo back on the right");
-            Assert.That(onPaper, Does.Contain(".cv-reach { display: none; }"), "paper can't press a button");
-            Assert.That(hero, Does.Contain(".cv-codes { display: none; }"), "and the codes are for paper alone");
-        });
-    }
 }

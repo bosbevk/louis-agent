@@ -1,9 +1,9 @@
-@* What a custom agent could add for a business like the demo's (F127.1): a kicker, the heading the guide's tour reads,
+@* What a custom agent could add for a business like the demo's (F127.1): a topic, the heading the guide's tour reads,
    and a card a note, each with its title over its line. Each note is a piece of the page (F134.5), by its title, so a
    visitor can select it and ask the guide about it. *@
 @using LouisAgent.Web.Components.Site.Pieces
 <div class="demo-notes">
-    <span class="notes-kicker">@Kicker</span>
+    <span class="notes-topic">@Topic</span>
     <h2 class="notes-heading">@Heading</h2>
     <ul class="notes-list">
         @foreach (var note in Notes)

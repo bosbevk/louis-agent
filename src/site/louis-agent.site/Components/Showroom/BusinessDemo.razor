@@ -2,12 +2,12 @@
    on a mock of its own website with its sample brand, the cues of what to watch lit as the play reaches them, and the
    offer. The business is made up and says so; the conversation is real, recorded once, and once it has played the
    visitor can try the agent live (F127.2). *@
-<DemoStage Accent="Accent" Kicker="@KickerLine" Fills="true">
+<DemoStage Accent="Accent" Topic="@KickerLine" Fills="true">
     <Title>@Heading</Title>
-    <Lede>
-        @Lede <span class="stage-made-up">@Business is a made-up business. The conversation is real, recorded once
+    <Summary>
+        @Summary <span class="stage-made-up">@Business is a made-up business. The conversation is real, recorded once
             and played back. Nothing runs while you watch.</span>
-    </Lede>
+    </Summary>
     <Player>
         <SiteMock @ref="_mock" Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark"
                   Tagline="@Tagline"
@@ -42,7 +42,7 @@
                   Chosen="PlayFrom" Waiting="_trying" />
     </Cues>
     <Notes>
-        <DemoNotes Kicker="Make it yours" Heading="@($"A custom agent for your {KindOf} could also")"
+        <DemoNotes Topic="Make it yours" Heading="@($"A custom agent for your {KindOf} could also")"
                    Notes="CustomNotes" />
     </Notes>
     <Offer>

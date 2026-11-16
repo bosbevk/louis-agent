@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Engine.Geometry;
 namespace LouisAgent.Diagrams.Engine.Tickets.Placed;
 
 /// <summary>
-/// A ticket laid out: the card, its head with the kicker, title and subtitle, the status pill, each row with its
+/// A ticket laid out: the card, its head with the topic, title and subtitle, the status pill, each row with its
 /// icon's box, the well its note stands in, and every line of words where it stands, so the renderer draws and a
 /// test measures the same.
 /// </summary>

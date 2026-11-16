@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Site.Bands;
 
 /// <summary>
-/// One named area of a site's page (F117): a section with an id the framework insists on, a kicker and the content. A
+/// One named area of a site's page (F117): a section with an id the framework insists on, a topic and the content. A
 /// page made of bands has every area named, so the guide can send a visitor to one (the <c>site</c> pack's ShowPage)
 /// and the section index lists them: the band puts itself on the page's list as it draws and takes itself off as it
 /// goes (F118), so no site writes an index by hand.
@@ -26,18 +26,27 @@ public partial class Band : IDisposable
     /// <summary>
     /// The small mono label over the band's content; none for a band that is a strip or a closing call.
     /// </summary>
-    [Parameter] public string? Kicker { get; set; }
+    [Parameter] public string? Topic { get; set; }
 
     /// <summary>
-    /// The index's word for this band when the kicker is too long for the margin; else the kicker, else the id.
+    /// The index's word for this band when the topic is too long for the margin; else the topic, else the id.
     /// </summary>
     [Parameter] public string? Short { get; set; }
 
     /// <summary>The site's own classes for this band's look, after <c>band</c>; none for a plain band.</summary>
     [Parameter] public string? Class { get; set; }
 
-    /// <summary>The band's content, under the kicker.</summary>
+    /// <summary>The band's content, under the topic.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>The band's heading, its first words in the theme's colour; none for a band that writes its own.</summary>
+    [Parameter] public string? Title { get; set; }
+
+    /// <summary>The summary under the heading, in Markdown (ADR 0125); none for a band without one.</summary>
+    [Parameter] public string? Summary { get; set; }
+
+    /// <summary>A quiet line after the band's content, in Markdown, such as a link to more; none by default.</summary>
+    [Parameter] public string? Note { get; set; }
 
     /// <summary>
     /// Whether the frame may page the band sideways when it holds more than a screen (F118); a band whose content is
@@ -51,8 +60,8 @@ public partial class Band : IDisposable
     /// <summary>The section's classes: always a band, then the site's.</summary>
     private string Classes => string.IsNullOrWhiteSpace(Class) ? "band" : $"band {Class.Trim()}";
 
-    /// <summary>Puts the band on the page's list, by its short label, its kicker or its id.</summary>
-    protected override void OnParametersSet() => Areas?.Add(Id, Short ?? Kicker ?? Id);
+    /// <summary>Puts the band on the page's list, by its short label, its topic or its id.</summary>
+    protected override void OnParametersSet() => Areas?.Add(Id, Short ?? Topic ?? Id);
 
     /// <summary>Takes the band off the list when its page goes.</summary>
     public void Dispose() => Areas?.Remove(Id);

@@ -5,7 +5,7 @@ namespace LouisAgent.Composition.Sites;
 /// </summary>
 /// <param name="Address">Its own address (ADR 0107), such as <c>/framework/measured/72-72</c>.</param>
 /// <param name="Heading">
-/// What it's called on the page: a section's kicker, a card's title, a piece's title or number.
+/// What it's called on the page: a section's topic, a card's title, a piece's title or number.
 /// </param>
 /// <param name="Kind">A section, a card or a piece.</param>
 /// <param name="Text">Its first words, as the page shows them.</param>

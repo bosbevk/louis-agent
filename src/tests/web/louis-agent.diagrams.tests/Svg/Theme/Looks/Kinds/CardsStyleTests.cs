@@ -21,7 +21,7 @@ public class CardsStyleTests
     [TestCase(".crd-badge-icon")]
     [TestCase(".crd-headline")]
     [TestCase(".crd-heading")]
-    [TestCase(".crd-lede")]
+    [TestCase(".crd-summary")]
     [TestCase(".crd-tint")]
     [TestCase(".crd-icon")]
     [TestCase(".crd-name")]

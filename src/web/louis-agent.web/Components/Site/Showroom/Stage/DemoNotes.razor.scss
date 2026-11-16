@@ -3,7 +3,7 @@
 @use "web/tools/surface";
 
 /* What a custom agent could add (F127.1): a panel lit from the left in the demo's colour (--accent, from the stage),
-   its kicker in the colour, its heading, and the notes as cards in a row, each led by a plus in the colour. Every
+   its topic in the colour, its heading, and the notes as cards in a row, each led by a plus in the colour. Every
    gradient stays within the one colour. */
 .demo-notes {
     display: flex;
@@ -13,7 +13,7 @@
     border-radius: 16px;
     @include glow.panel(var(--accent));
 }
-.notes-kicker {
+.notes-topic {
     font: 500 11.5px/1 var(--bs-font-monospace);
     letter-spacing: .16em;
     text-transform: uppercase;

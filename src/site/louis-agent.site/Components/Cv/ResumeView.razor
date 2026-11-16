@@ -1,7 +1,7 @@
 @* Louis's CV, drawn from its record (F142), as the approved page lays it out: who he is and the facts, what he's
    building now, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
 <div class="resume">
-    <Band Id="top" Kicker="Curriculum vitae · louis-agent.dev/cv" Short="CV">
+    <Band Id="top" Topic="Curriculum vitae · louis-agent.dev/cv" Short="CV">
         <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"
                     BasicsChanged="BasicsChanged" LanguagesChanged="LanguagesChanged"/>
         <ResumeFacts Facts="Resume.Facts" FactsChanged="FactsChanged"/>
@@ -9,28 +9,28 @@
 
     @if (Resume.Now is { } now)
     {
-        <Band Id="now" Kicker="Now · proof of work">
+        <Band Id="now" Topic="Now · proof of work">
             <ResumeNow Project="now" ProjectChanged="NowChanged"/>
         </Band>
     }
 
-    <Band Id="experience" Kicker="Experience">
+    <Band Id="experience" Topic="Experience">
         <BandTitle Class="chrome">Where I've worked.</BandTitle>
         <ResumeJobs Work="Resume.Work" WorkChanged="WorkChanged"/>
     </Band>
 
-    <Band Id="skills" Kicker="Skills">
+    <Band Id="skills" Topic="Skills">
         <BandTitle Class="chrome">What I work with.</BandTitle>
         <ResumeSkills Skills="Resume.Skills" SkillsChanged="SkillsChanged"/>
     </Band>
 
-    <Band Id="education" Kicker="Education">
+    <Band Id="education" Topic="Education">
         <BandTitle Class="chrome">Courses and qualifications.</BandTitle>
         <ResumeEducation Education="Resume.Education" Certificates="Unchecked" EducationChanged="EducationChanged"
                          CertificatesChanged="UncheckedChanged"/>
     </Band>
 
-    <Band Id="also" Kicker="Also">
+    <Band Id="also" Topic="Also">
         <ResumeAlso Certificates="Checkable" Interests="Resume.Interests" CertificatesChanged="CheckableChanged"
                     InterestsChanged="InterestsChanged"/>
         @End

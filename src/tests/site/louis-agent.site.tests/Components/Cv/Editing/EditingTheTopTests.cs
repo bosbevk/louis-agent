@@ -59,7 +59,7 @@ public class EditingTheTopTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.RetypeLong(".cv-hero .lede", "Builds AI agents in C#.");
+        view.RetypeLong(".cv-hero .summary", "Builds AI agents in C#.");
 
         Assert.That(handed.Value!.Basics.Summary, Is.EqualTo("Builds AI agents in C#."));
     }

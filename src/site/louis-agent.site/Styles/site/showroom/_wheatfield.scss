@@ -1,5 +1,0 @@
-/* Wheatfield Kitchen's own values (F151.6): olive with cream on it, on a cream page with dark earth ink.
-   Its website keeps this one look whatever theme and style the page around it wears, its agent's corner too. */
-@use "../../tools/business";
-
-@include business.site("wheatfieldkitchen.example", #2c4a34, #f7f0e1, #f7f0e1, #2b2418);

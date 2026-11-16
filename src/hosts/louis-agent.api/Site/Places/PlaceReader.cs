@@ -38,7 +38,7 @@ internal static class PlaceReader
 
     /// <summary>
     /// The heading, as the widget picks it: the first of a card's title; a piece's heading or number; a section's
-    /// kicker or heading.
+    /// topic or heading.
     /// </summary>
     private static string? HeadingOf(string inner, SitePlaceKind kind)
     {
@@ -46,7 +46,7 @@ internal static class PlaceReader
         {
             SitePlaceKind.Card => tag.HasClass("card-title"),
             SitePlaceKind.Piece => tag.Name is "h3" or "h4" || tag.HasClass("stat-value"),
-            _ => tag.HasClass("kicker") || tag.Name is "h1" or "h2" or "h3",
+            _ => tag.HasClass("topic") || tag.Name is "h1" or "h2" or "h3",
         });
         return heading is null ? null : TextOf(inner[heading.End..heading.ContentEnd(inner)], MostText);
     }

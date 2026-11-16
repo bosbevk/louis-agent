@@ -1,14 +1,11 @@
-@* The landing's hero: the framework's SiteHero (F118) with this site's words. Since F128.1 it sells first: the
-   website with an agent, and the way to ask for one or to see what it does. The tour is the guide's bar at the
-   page's foot, so the hero has no button for it. Since F151.6 it stands centred and opens with the agent's mark
-   playing its states. Its words and its two buttons are the design's, with no line above the headline and nothing
-   under the buttons (FX160). *@
+@* The landing's hero (F118, F128.1, FX160): the framework's SiteHero with the agent's mark, the design's words and its
+   two buttons, configured (ADR 0125). *@
 <SiteHero Centred="true">
     <Art><MarkStates /></Art>
     <Headline>Ask the website.</Headline>
-    <Lede>We build websites that answer for your business. An agent on the page shows the room, takes the booking and sends it to you, while you're busy with the guests you already have.</Lede>
+    <Summary>We build websites that answer for your business. An agent on the page shows the room, takes the booking and sends it to you, while you're busy with the guests you already have.</Summary>
     <Actions>
-        <a class="btn btn-fill" href="/contact">Ask for yours</a>
-        <a class="btn btn-line" href="/home/does" data-section="does">See what it does</a>
+        <LinkButton Href="/contact" Text="Ask for yours" />
+        <LinkButton Href="/home/does" Text="See what it does" Kind="ButtonKind.Quiet" Section="does" />
     </Actions>
 </SiteHero>

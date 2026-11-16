@@ -1,0 +1,6 @@
+/* A heading and its summary (ADR 0125): the heading in the words' strongest colour, the summary in their second, at a
+   reading width. */
+.intro { display: grid; gap: 10px; margin-bottom: 22px; }
+.intro h3 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.2; color: var(--bs-emphasis-color); text-wrap: balance; }
+.summary { margin: 0; max-width: 64ch; font-size: 17px; line-height: 1.6; color: var(--bs-secondary-color); }
+.summary ::deep code { font-family: var(--bs-font-monospace); font-size: .92em; color: var(--web-soft-text); }

@@ -1,0 +1,7 @@
+@use "web/tools/surface";
+
+/* The design page's switch (FX162): its drawing on and off, and its focus ring drawn outside it. */
+.switch {
+    @include surface.toggle();
+    @include surface.focus-drawn();
+}

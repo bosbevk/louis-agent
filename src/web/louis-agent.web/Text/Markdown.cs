@@ -56,6 +56,21 @@ public static class Markdown
     }
 
     /// <summary>
+    /// One sentence of a site's words as a page shows it inside its own element (ADR 0125): its code and emphasis
+    /// drawn, raw HTML still text, and no paragraph of its own round it.
+    /// </summary>
+    public static MarkupString Inline(string markdown)
+    {
+        string html = ToHtml(markdown).Value.Trim();
+        bool oneParagraph = html.StartsWith(ParagraphOpen, StringComparison.Ordinal) &&
+                            html.EndsWith(ParagraphClose, StringComparison.Ordinal);
+        return new MarkupString(oneParagraph ? html[ParagraphOpen.Length..^ParagraphClose.Length] : html);
+    }
+
+    /// <summary>How a paragraph opens and closes in what Markdig writes.</summary>
+    private const string ParagraphOpen = "<p>", ParagraphClose = "</p>";
+
+    /// <summary>
     /// The hosts whose images are shown: the shops' own image hosts, from the catalogue the cook reads (Checkers' cards
     /// load from here) and the shops' pages it renders (F33). An entry starting with a dot is a domain: Pick n Pay
     /// numbers its CDN hosts (cdn-prd-01, cdn-prd-02, ...), so any host under its domain counts.
@@ -91,6 +106,8 @@ public static class Markdown
     private static bool IsSafeUrl(string? url) =>
         string.IsNullOrEmpty(url) ||
         url.StartsWith('#') ||
+        // A page of the same site (ADR 0125: a site's words link its own pages); never "//", which names another host.
+        (url.StartsWith('/') && !url.StartsWith("//", StringComparison.Ordinal)) ||
         url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
         url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
         url.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase);

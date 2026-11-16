@@ -52,6 +52,17 @@
     &:hover { @include drawn(quiet-press-hover, var(--web-chip-fill)); }
 }
 
+/* A word in a rail of choices, such as a site's menu (FX162, Louis's pick C): quiet at rest, and under the pointer the
+   quiet button's hover glass, over a light tint that is all a theme with no drawing shows. */
+@mixin rail-choice() {
+    border-radius: 999px;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    transition: color .2s;
+
+    &:hover { color: var(--bs-emphasis-color); @include drawn(quiet-press-hover, rgba(var(--web-overlay-rgb), .06)); }
+}
+
 /* The pill that holds a switch's choices: a fill with a hairline drawn inside it, under its drawing. */
 @mixin group() {
     border-radius: 999px;

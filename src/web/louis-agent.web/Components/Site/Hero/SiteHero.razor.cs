@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Site.Hero;
 
 /// <summary>
-/// The first thing on a site's landing (F118, ADR 0106): a kicker, the headline, a lede, a quiet note, the actions,
+/// The first thing on a site's landing (F118, ADR 0106): a topic, the headline, a summary, a quiet note, the actions,
 /// and something alive beside them when the site has it. A site may open the words with a piece of art, and may
 /// have it all stand centred, with what was beside the words below them (F151.6). Every site's landing opens this
 /// way and only the words differ, so the shape is the framework's and the site fills the slots. It marks itself as
@@ -24,15 +24,15 @@ public partial class SiteHero
     [Parameter] public string Label { get; set; } = "Top";
 
     /// <summary>The small mono line over the headline.</summary>
-    [Parameter] public string? Kicker { get; set; }
+    [Parameter] public string? Topic { get; set; }
 
     /// <summary>The headline, the site's biggest words.</summary>
     [Parameter, EditorRequired] public RenderFragment? Headline { get; set; }
 
     /// <summary>The paragraph under the headline that says what this is.</summary>
-    [Parameter] public RenderFragment? Lede { get; set; }
+    [Parameter] public RenderFragment? Summary { get; set; }
 
-    /// <summary>A quiet line after the lede, such as who made it.</summary>
+    /// <summary>A quiet line after the summary, such as who made it.</summary>
     [Parameter] public RenderFragment? Note { get; set; }
 
     /// <summary>The buttons and links under the words.</summary>
@@ -41,7 +41,7 @@ public partial class SiteHero
     /// <summary>What stands beside the words: a live turn, a picture, nothing.</summary>
     [Parameter] public RenderFragment? Aside { get; set; }
 
-    /// <summary>A piece of art that opens the words, above the kicker, such as the agent's mark drawn large.</summary>
+    /// <summary>A piece of art that opens the words, above the topic, such as the agent's mark drawn large.</summary>
     [Parameter] public RenderFragment? Art { get; set; }
 
     /// <summary>The words stand centred, and what would stand beside them goes below.</summary>

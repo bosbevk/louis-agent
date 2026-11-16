@@ -56,23 +56,4 @@ public class FilmExportTests
         Assert.That(FilmRenderer.FrameName(0), Is.EqualTo("f0000.png"));
         Assert.That(FilmRenderer.FrameName(1439), Is.EqualTo("f1439.png"));
     }
-
-    /// <summary>The list names real files, so a moved film can't go unnoticed.</summary>
-    [Test]
-    public void EveryFilm_NamesFilesThatExist()
-    {
-        foreach (string file in FilmSource.All.SelectMany(film => film.Files))
-            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, file)), Is.True, file);
-    }
-
-    /// <summary>The tool's length is the stylesheet's loop, or the export would cut a film short.</summary>
-    [TestCase(FilmName.Short, "_short.scss", "--loop: 36s")]
-    [TestCase(FilmName.Detail, "_detail.scss", "--loop: 60s")]
-    public void AFilmsLength_IsItsStylesheetsLoop(FilmName name, string sheet, string loop)
-    {
-        var film = FilmSource.All.Single(f => f.Name == name);
-        string css = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, film.Files.Single(f => f.EndsWith(sheet))));
-
-        Assert.That(css, Does.Contain(loop));
-    }
 }

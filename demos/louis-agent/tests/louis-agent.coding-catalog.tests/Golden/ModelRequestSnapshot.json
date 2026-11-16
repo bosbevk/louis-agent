@@ -1731,11 +1731,11 @@
     },
     {
       "Name": "ShowCard",
-      "Description": "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its parts: a small kicker, a title, rows of facts with an icon each, and an optional subtitle, status and note. The visitor can't change it; to ask them something, offer choices after it. Then say one line, not the card again.",
+      "Description": "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its parts: a small topic, a title, rows of facts with an icon each, and an optional subtitle, status and note. The visitor can't change it; to ask them something, offer choices after it. Then say one line, not the card again.",
       "Schema": {
         "type": "object",
         "properties": {
-          "kicker": {
+          "topic": {
             "description": "A few words in capitals over the title, such as BOOKING REQUEST.",
             "type": "string"
           },
@@ -1810,7 +1810,7 @@
           }
         },
         "required": [
-          "kicker",
+          "topic",
           "title",
           "rows"
         ]

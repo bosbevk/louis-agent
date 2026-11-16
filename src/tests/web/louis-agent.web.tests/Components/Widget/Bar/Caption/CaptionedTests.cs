@@ -63,7 +63,7 @@ public class CaptionedTests
         var card = Call(CardCall.Tool,
             """
             {
-              "kicker": "BOOKING REQUEST",
+              "topic": "BOOKING REQUEST",
               "title": "The garden room",
               "subtitle": "Seemeeu Guesthouse",
               "rows": [{ "icon": "calendar", "label": "Dates", "value": "Fri 14 to Sun 16 Nov" }],

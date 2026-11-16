@@ -26,12 +26,12 @@ public sealed class CardTools
     /// <summary>Shows the visitor a read-only card, a ticket, drawn from its parts.</summary>
     [Description(
         "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its " +
-        "parts: a small kicker, a title, rows of facts with an icon each, and an optional subtitle, status and " +
+        "parts: a small topic, a title, rows of facts with an icon each, and an optional subtitle, status and " +
         "note. The visitor can't change it; to ask them something, offer choices after it. Then say one line, " +
         "not the card again.")]
     public string ShowCard(
         [Description("A few words in capitals over the title, such as BOOKING REQUEST.")]
-        string kicker,
+        string topic,
         [Description("The card's headline, such as The garden room.")]
         string title,
         [Description(

@@ -54,6 +54,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 
 - **No message text inline in C#**, and stdout is a protocol: logs go through `ILogger` to stderr; **no anonymous
   types or `dynamic`**: a message's holes are a record, an object built for a call a named local first. [ADR 0009](../../src/docs/adr/0009-message-text-as-enum-templates.md), [0119](../../src/docs/adr/0119-declare-name-then-pass.md).
+- **A name says what the thing is, in plain words** (Louis, 2026-11-16, of `lede`: "what does that mean? names
+  must be meaningful"): a class, a parameter, a CSS class or a file is named so a reader knows it without looking
+  anything up; no trade jargon (`lede` is `summary`, `kicker` is `topic`).
 - **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
   name is an enum too. [ADR 0024](../../src/docs/adr/0024-choices-are-enums.md), [ADR 0043](../../src/docs/adr/0043-repeated-names-are-enums.md).
 - **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static
@@ -90,6 +93,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   "like cool components we could reuse later in other projects". So ask whose it is. A page, its content and
   its data are one site's, and go in that site's project with their tests. A part that knows nothing of the
   site, such as a deck of cards or a framed window, goes in `louis-agent.web`. Not clear which: ask Louis.
+- **A site is configured framework components**: its pages hold no HTML, only `louis-agent.web`'s controls given its
+  words and data; a shape any site repeats is one control built in the framework first; a site's one-off look is a
+  component of its own. [ADR 0125](../../src/docs/adr/0125-a-site-is-configured-framework-components.md).
 - **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.
   [ADR 0034](../../src/docs/adr/0034-code-a-person-can-maintain.md), [ADR 0042](../../src/docs/adr/0042-the-web-shows-the-live-results.md).
 - **A doc is true, and it teaches**: every statement is checked against the code and nothing is invented (unsure while

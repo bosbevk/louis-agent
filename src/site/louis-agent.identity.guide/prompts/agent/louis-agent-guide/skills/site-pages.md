@@ -29,4 +29,5 @@ someone through one.
 - `/framework/measured`: the numbers, and what drives the project.
 - `/framework/built-on-it`: the demos, what the framework stands on, and the hosts.
 - `/framework/whats-coming`: the planned features, all planned, none built.
+- `/framework/theme`: the theme's component guide, every control a site is built from, live in the picked look.
 - `/chat`: the coding agent's chat, behind a sign-in, not yours to run.

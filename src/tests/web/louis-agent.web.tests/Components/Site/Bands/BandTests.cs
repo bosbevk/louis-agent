@@ -3,13 +3,13 @@ using LouisAgent.Web.Components.Site.Bands;
 namespace LouisAgent.Web.Tests.Components.Site.Bands;
 
 /// <summary>
-/// A band is one named area of a site's page (F117, ADR 0106): a section that must have an id, with a kicker over its
+/// A band is one named area of a site's page (F117, ADR 0106): a section that must have an id, with a topic over its
 /// content, so every area on every site is named because the framework insists, and the guide can send a visitor to it.
 /// </summary>
 public class BandTests
 {
     /// <summary>
-    /// The id is on the section, the kicker opens its body, the content follows, and the classes a site adds come
+    /// The id is on the section, the topic opens its body, the content follows, and the classes a site adds come
     /// along.
     /// </summary>
     [Test]
@@ -19,7 +19,7 @@ public class BandTests
 
         var cut = ctx.Render<Band>(parameters => parameters
             .Add(band => band.Id, "levels")
-            .Add(band => band.Kicker, "The three that exist")
+            .Add(band => band.Topic, "The three that exist")
             .Add(band => band.Class, "stands-on reveal")
             .AddChildContent("<h2>Level 0, 1 and 2</h2>"));
 
@@ -29,7 +29,7 @@ public class BandTests
         {
             Assert.That(section.Id, Is.EqualTo("levels"));
             Assert.That(section.ClassList, Is.EquivalentTo(new[] { "band", "stands-on", "reveal" }));
-            Assert.That(body.FirstElementChild!.ClassName, Is.EqualTo("kicker"));
+            Assert.That(body.FirstElementChild!.ClassName, Is.EqualTo("topic"));
             Assert.That(body.FirstElementChild!.TextContent, Is.EqualTo("The three that exist"));
             Assert.That(body.QuerySelector("h2")!.TextContent, Is.EqualTo("Level 0, 1 and 2"));
         });
@@ -61,7 +61,7 @@ public class BandTests
     }
 
     /// <summary>
-    /// Without a class of its own, the section is a plain band; without a kicker, a strip, it has none.
+    /// Without a class of its own, the section is a plain band; without a topic, a strip, it has none.
     /// </summary>
     [Test]
     public void ABand_WithoutAClassOrAKicker_IsAPlainNamedSection()
@@ -74,7 +74,7 @@ public class BandTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find("section").GetAttribute("class"), Is.EqualTo("band"));
-            Assert.That(cut.FindAll(".kicker"), Is.Empty);
+            Assert.That(cut.FindAll(".topic"), Is.Empty);
             Assert.That(cut.Find("section").Id, Is.EqualTo("contact"));
         });
     }

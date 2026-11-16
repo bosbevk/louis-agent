@@ -7,6 +7,85 @@ body { @include surface.panel(var(--bs-body-bg)); color: var(--bs-body-color); f
 :focus-visible { @include surface.focus-ring(var(--bs-primary), 2px); border-radius: 6px; }
 button { font: inherit; cursor: pointer; }
 button:disabled { cursor: default; opacity: .4; }
+/* A button on any site is a pill drawn by the theme (FX162, Louis: "make this theme buttons, not our own css"): the
+   main one the theme's press, the second one its quiet press, so a site names a class and writes no button. It lifts
+   a little under the pointer (FX82). */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform .25s var(--web-ease), box-shadow .3s, background .3s;
+}
+.btn:hover { transform: translateY(-2px); }
+/* A button's focus is the theme's focus ring, drawn outside it (FX162, the design's "Focus"). */
+.btn { position: relative; @include surface.focus-drawn(); }
+.btn-fill, .btn-solid { @include surface.press(); }
+.btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }
+.btn-solid, .btn-small { height: 40px; padding: 0 16px; font-size: 14px; }
+/* A panel on any site is the theme's pane (FX162, Louis: "that should be in the theme"): its fill, edge and drawing,
+   and under the pointer the pane's hover drawing, where glass's light runs round the edge, with a small lift. */
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px;
+    transition: transform .25s var(--web-ease);
+    @include surface.pane();
+}
+.panel:hover { transform: translateY(-3px); }
+/* A band's head, as the design draws a section (FX162): a small mono topic in the theme's colour, a large heading
+   whose first words run in that colour, a summary at a reading width, and a quiet note after the content. */
+.site { font-size: 17px; line-height: 1.6; }
+.band { display: grid; gap: 20px; max-width: 1280px; margin: 0 auto; padding: 88px var(--site-gutter, 48px) 40px; }
+.topic { font: 500 13.5px/1 var(--bs-font-monospace); text-transform: lowercase; color: var(--bs-primary); }
+.band :is(h1, h2) {
+    max-width: 16ch;
+    margin: 0;
+    padding-bottom: .08em;
+    font-size: clamp(38px, 4.8vw, 74px);
+    font-weight: 700;
+    line-height: .98;
+    letter-spacing: -.04em;
+    text-wrap: balance;
+}
+.chrome { @include surface.chrome-words(); }
+/* The band of colour sweeping through a heading's words (the design page's shine). */
+@keyframes web-shine {
+    0%, 15% { background-position: 100% 0; }
+    65%, 100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) { .chrome { animation: none; } }
+.summary { margin: 0; max-width: 580px; font-size: 19px; line-height: 1.6; color: var(--bs-secondary-color); }
+/* A site's page moves (F110, from the site, FX162): visible at rest, each block rises once as it enters and a heading
+   unmasks; the frame's module adds .in. The rise is on translate, so a card's own hover transform still works. */
+.site .reveal.in { animation: site-rise .7s var(--web-ease) both; }
+.site .reveal.in[data-delay="1"] { animation-delay: .1s; }
+.site .reveal.in[data-delay="2"] { animation-delay: .2s; }
+.site .reveal.in[data-delay="3"] { animation-delay: .3s; }
+.site :is(h1, h2).reveal.in { animation: site-unmask .9s var(--web-ease) both; }
+/* A heading that unmasks keeps its sweep of colour too: both run, the unmask once and the shine for good. */
+.site :is(h1, h2).chrome.reveal.in { animation: site-unmask .9s var(--web-ease) both, web-shine 8s ease-in-out infinite; }
+@keyframes site-rise {
+    from { opacity: 0; translate: 0 12px; }
+    to { opacity: 1; translate: 0 0; }
+}
+/* The unmask ends a little outside the heading's box, so a g's or a y's tail under the tight line isn't cut off. */
+@keyframes site-unmask {
+    from { clip-path: inset(-.2em -.2em 100% -.2em); translate: 0 22px; }
+    to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .site .reveal.in, .site :is(h1, h2).reveal.in { animation: none; }
+}
+.band-note { margin: 8px 0 0; font-size: 14px; color: var(--bs-tertiary-color); }
+.band-note a { color: var(--bs-secondary-color); }
 a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 * { scrollbar-width: thin; scrollbar-color: var(--web-scrollbar) transparent; }
 

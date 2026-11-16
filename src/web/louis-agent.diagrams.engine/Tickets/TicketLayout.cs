@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Tickets.Spec;
 namespace LouisAgent.Diagrams.Engine.Tickets;
 
 /// <summary>
-/// Where each part of a ticket stands, at the width of a chat's card: the head with its kicker, title and subtitle
+/// Where each part of a ticket stands, at the width of a chat's card: the head with its topic, title and subtitle
 /// and the status pill at its top right, the rows under it, each an icon box beside its label and value, and the
 /// note in a well at the foot. Long words wrap, and the card grows to hold them.
 /// </summary>
@@ -28,7 +28,7 @@ public static class TicketLayout
     private const double PillTop = 14, PillHeight = 22, PillPad = 22, PillEnd = 10, PillGap = 10;
 
     /// <summary>
-    /// The head: the kicker's first line and a line of it, the room between it and the title's first line, a line
+    /// The head: the topic's first line and a line of it, the room between it and the title's first line, a line
     /// of the title, how far under the title's last line the subtitle starts, and a line of the subtitle.
     /// </summary>
     private const double KickerTop = 24, KickerLine = 14, TitleGap = 16, TitleLine = 28, SubtitleDrop = 20,
@@ -60,10 +60,10 @@ public static class TicketLayout
         var pill = spec.Status is { } status ? Pill(status, width, geometry) : null;
         double besidePill = inside - (pill is null ? 0 : pill.Box.Width + PillGap);
 
-        // The kicker shares its line with the pill; the title stands under both, across the whole head, and the
+        // The topic shares its line with the pill; the title stands under both, across the whole head, and the
         // subtitle under the title's last line.
-        var kicker = geometry.Point(Pad, KickerTop);
-        var title = geometry.Point(Pad, Stack(words, spec.Kicker, TicketWords.Kicker, kicker, besidePill, KickerLine)
+        var topic = geometry.Point(Pad, KickerTop);
+        var title = geometry.Point(Pad, Stack(words, spec.Topic, TicketWords.Topic, topic, besidePill, KickerLine)
                                         + TitleGap);
         double afterTitle = Stack(words, spec.Title, TicketWords.Title, title, inside, TitleLine);
         var subtitle = geometry.Point(Pad, afterTitle - TitleLine + SubtitleDrop);

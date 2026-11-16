@@ -113,7 +113,6 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
     --web-inset-fill: transparent;
     --web-inset-edge: none;
-
     // A bar is white glass (FX159, Louis: "make this top part white glass"): white the page shows through, brightest
     // at its top, over a white edge, with no blur, as nothing in glass blurs.
     --web-bar-fill: linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .56));

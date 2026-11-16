@@ -1,0 +1,8 @@
+@use "web/tools/surface";
+
+/* The design page's slider (FX162): a 12 px groove, the fill up to --at with its glow, and a 34 px knob on it; the
+   range input lies over them, unseen, and takes the pointer. */
+.slider { position: relative; flex: 1; min-width: 160px; height: 12px; @include surface.slider-track(); }
+.slider i { position: absolute; left: 0; top: 0; bottom: 0; width: var(--at); border-radius: 6px; pointer-events: none; @include surface.slider-fill(); }
+.slider b { position: absolute; left: var(--at); top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; pointer-events: none; @include surface.knob(); }
+.slider input { position: absolute; inset: -11px 0; width: 100%; margin: 0; opacity: 0; cursor: pointer; }

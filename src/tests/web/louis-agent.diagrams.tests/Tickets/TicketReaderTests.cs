@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Tests.Tickets;
 
 /// <summary>
-/// A ticket is data like every other kind (F127.4.1): a band with its kicker, title and status, rows with an icon
+/// A ticket is data like every other kind (F127.4.1): a band with its topic, title and status, rows with an icon
 /// each, and a note. The reader refuses a ticket it couldn't draw well, saying why, so an agent that wrote it can fix
 /// it.
 /// </summary>
@@ -18,7 +18,7 @@ public class TicketReaderTests
                                     "kind": "ticket",
                                     "title": "Booking request: the garden room",
                                     "ticket": {
-                                      "kicker": "BOOKING REQUEST",
+                                      "topic": "BOOKING REQUEST",
                                       "title": "The garden room",
                                       "subtitle": "Seemeeu Guesthouse · Yzerfontein",
                                       "status": { "label": "Not sent yet", "tone": "amber" },
@@ -39,7 +39,7 @@ public class TicketReaderTests
 
         Assert.Multiple(() =>
         {
-            Assert.That((ticket.Kicker, ticket.Title, ticket.Subtitle),
+            Assert.That((ticket.Topic, ticket.Title, ticket.Subtitle),
                 Is.EqualTo(("BOOKING REQUEST", "The garden room", (string?)"Seemeeu Guesthouse · Yzerfontein")));
             Assert.That(ticket.Status, Is.EqualTo(new TicketStatus("Not sent yet", DiagramTone.Amber)));
             Assert.That(ticket.Rows,

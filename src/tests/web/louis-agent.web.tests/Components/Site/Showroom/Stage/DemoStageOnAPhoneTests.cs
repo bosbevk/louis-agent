@@ -1,7 +1,7 @@
 namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
-/// F134.2: on a phone a demo's page keeps K's parts but stacks them. The head's title and lede, side by side on a
+/// F134.2: on a phone a demo's page keeps K's parts but stacks them. The head's title and summary, side by side on a
 /// wide screen, stand one over the other, and what to watch is one chapter under the next.
 /// </summary>
 public class DemoStageOnAPhoneTests
@@ -36,7 +36,7 @@ public class DemoStageOnAPhoneTests
         });
     }
 
-    /// <summary>The head's two columns are a wide screen's: on a phone the title and the lede stack.</summary>
+    /// <summary>The head's two columns are a wide screen's: on a phone the title and the summary stack.</summary>
     [Test]
     public void OnAPhone_TheHeadStacks() =>
         Assert.That(PhoneRules("DemoStage"), Does.Contain(".stage-head { display: block;"));

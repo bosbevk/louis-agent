@@ -33,7 +33,7 @@ public partial class DemoStage
 
     /// <summary>What the demo is, over the title: "A bakery · The Bakery".</summary>
     [Parameter]
-    public string Kicker { get; set; } = "";
+    public string Topic { get; set; } = "";
 
     /// <summary>The demo's title, the page's main heading.</summary>
     [Parameter, EditorRequired]
@@ -41,7 +41,7 @@ public partial class DemoStage
 
     /// <summary>A line of what happens in it; none for a demo that needs none.</summary>
     [Parameter]
-    public RenderFragment? Lede { get; set; }
+    public RenderFragment? Summary { get; set; }
 
     /// <summary>What plays: a business's mock website, or an agent's work window.</summary>
     [Parameter, EditorRequired]

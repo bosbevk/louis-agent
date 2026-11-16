@@ -3,6 +3,7 @@ using LouisAgent.Site.Content;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using LouisAgent.Site.Layout;
 
@@ -26,6 +27,24 @@ public class SiteLayoutTests
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
         return ctx;
+    }
+
+    /// <summary>
+    /// The menu marks the page the visitor is on (FX162, Louis: "must stay selected if I'm on that page"): its link,
+    /// and only its, is the active one, in the menu's row or in a group's list, so the rail can draw it pressed.
+    /// </summary>
+    [TestCase("/contact", "Contact")]
+    [TestCase("/framework/architecture", "Architecture")]
+    [TestCase("/demos", "All demos")]
+    public void TheMenu_MarksThePageYouAreOn(string page, string link)
+    {
+        using var ctx = Context();
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(page);
+
+        var cut = ctx.Render<SiteLayout>();
+        var active = cut.FindAll(".site-nav a.active").Select(a => a.TextContent.Trim()).ToList();
+
+        Assert.That(active, Is.EqualTo(new[] { link }));
     }
 
     /// <summary>
@@ -129,7 +148,8 @@ public class SiteLayoutTests
                 {
                     "/framework/how-it-works", "/framework/architecture", "/framework/identities",
                     "/framework/packs", "/framework/build-your-own", "/framework/measured",
-                    "/framework/built-on-it", "/framework/whats-coming", "/csharp-ai-agent-framework"
+                    "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
+                    "/csharp-ai-agent-framework"
                 }));
             Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4),
                 "the rest stand in the bar, the CV mark among them (F142)");
@@ -149,24 +169,6 @@ public class SiteLayoutTests
         {
             Assert.That(ask.TextContent, Is.EqualTo("Ask for yours"));
             Assert.That(ask.GetAttribute("href"), Is.EqualTo("/contact"));
-        });
-    }
-
-    /// <summary>
-    /// The header's two buttons are glass (FX159, Louis: "all glas buttons"): the way to ask is the theme's main button
-    /// and the CV its quiet one, so they wear the drawings where a theme has them.
-    /// </summary>
-    [Test]
-    public void TheHeadersButtons_AreTheThemesPresses()
-    {
-        string site = Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site");
-        string elements = File.ReadAllText(Path.Combine(site, "Styles/site/base/_elements.scss"));
-        string cv = File.ReadAllText(Path.Combine(site, "Components/Cv/CvLink.razor.scss"));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(elements, Does.Contain(".btn-solid { height: 42px; @include surface.press(); }"));
-            Assert.That(cv, Does.Contain("@include surface.quiet-press();"));
         });
     }
 
@@ -250,7 +252,6 @@ public class SiteLayoutTests
             .Single(menu => menu.QuerySelector(".site-drop-label")!.TextContent == "Demos");
         Assert.Multiple(() =>
         {
-            Assert.That(SiteDoors.CodingAgent, Is.False, "the live chat is closed today");
             Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
@@ -276,28 +277,5 @@ public class SiteLayoutTests
         Assert.That(cut.FindAll(".site-corner .chat-widget.is-bar .agent-bar"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll("button.widget-tour"), Is.Empty);
         Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
-    }
-
-    /// <summary>
-    /// While the chat is closed, a chat link leads to the recorded session with its own words, wherever it was told
-    /// to go, so no door on the site is a dead end.
-    /// </summary>
-    [Test]
-    public void AChatLink_LeadsToTheRecording_WhileTheChatIsClosed()
-    {
-        using var ctx = Context();
-
-        var cut = ctx.Render<ChatLink>(parameters => parameters
-            .Add(link => link.Address, "https://agent.example/chat")
-            .Add(link => link.Class, "btn btn-fill")
-            .Add(link => link.Watch, "Watch it work")
-            .AddChildContent("Try it"));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(cut.Find("a.btn.btn-fill").GetAttribute("href"), Is.EqualTo("/coding-agent"));
-            Assert.That(cut.Find("a").TextContent, Is.EqualTo("Watch it work"));
-            Assert.That(cut.Markup, Does.Not.Contain("Coming soon"));
-        });
     }
 }

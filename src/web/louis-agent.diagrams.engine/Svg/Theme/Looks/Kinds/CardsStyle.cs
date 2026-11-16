@@ -49,7 +49,7 @@ internal static class CardsStyle
           }
           .crd-headline { fill: var(--text); font: 700 30px var(--pic-sans); letter-spacing: -.4px; }
           .crd-heading { fill: var(--text); font: 700 22px var(--pic-sans); letter-spacing: -.3px; }
-          .crd-lede { fill: var(--quiet); font: 13px var(--pic-sans); }
+          .crd-summary { fill: var(--quiet); font: 13px var(--pic-sans); }
           .crd-tint { fill: var(--violet-line); fill-opacity: .16; }
           .crd-icon {
             fill: none; stroke: var(--violet-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;

@@ -1,0 +1,7 @@
+@use "web/tools/surface";
+
+/* The design page's tags (FX162): small words in the code face; a plain one is square-cornered, the visitor's and the
+   agent's are pills. */
+.tag { display: inline-block; padding: 4px 12px; font: 600 12px var(--bs-font-monospace); @include surface.tag(); border-radius: 8px; }
+.tag-you { color: var(--bs-emphasis-color); @include surface.tag-you(); }
+.tag-agent { @include surface.tag-agent(); }

@@ -43,7 +43,7 @@ public class IdentityGraphTests
             Is.Empty);
     }
 
-    /// <summary>The page shows the diagram once, under its lede.</summary>
+    /// <summary>The page shows the diagram once, under its summary.</summary>
     [Test]
     public void ThePage_ShowsIt()
     {

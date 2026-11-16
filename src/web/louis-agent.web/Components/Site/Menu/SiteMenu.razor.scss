@@ -5,15 +5,19 @@
    over the page (F151.4), so it wears a theme. Its names are its own (FX158): a scoped rule marks only its last part,
    so the class a list opens under must not be one the frame round it uses, or every list opens at once. */
 .site-drop { position: relative; }
+/* The label is a choice in the menu's rail, and the main button while its list is open (FX162, Louis's pick C). */
 .site-drop-label {
     all: unset;
+    display: inline-flex;
+    padding: 7px 13px;
     cursor: pointer;
-    color: var(--bs-secondary-color);
     font: inherit;
-    transition: color .2s;
+    @include surface.rail-choice();
 }
-.site-drop-label::after { content: " ▾"; font-size: 11px; }
-.site-drop:hover .site-drop-label, .site-drop:focus-within .site-drop-label { color: var(--bs-emphasis-color); }
+.site-drop-label::after { content: " ▾"; font-size: 11px; white-space: pre; }
+.site-drop:hover .site-drop-label, .site-drop:focus-within .site-drop-label { @include surface.press(); }
+/* A group that holds the page the visitor is on shows it, and so does that page's item. */
+.site-drop:has(a.active) .site-drop-label { @include surface.press(); }
 
 .site-drop-list {
     display: none;
@@ -22,7 +26,8 @@
     left: -14px;
     z-index: 20;
     min-width: 180px;
-    padding: 10px 0;
+    gap: 2px;
+    padding: 8px;
     margin-top: 10px;
     @include surface.float();
 }
@@ -31,8 +36,17 @@
 /* A gap between the label and the list would close it as the pointer crosses; the list's margin is covered here. */
 .site-drop-list::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
 .site-drop:hover .site-drop-list, .site-drop:focus-within .site-drop-list { display: flex; flex-direction: column; }
-.site-drop-list ::deep a { display: block; padding: 7px 18px; white-space: nowrap; }
-.site-drop-list ::deep a:hover { @include surface.tint(); }
+/* Each item a pill, the main button under the pointer, as the open label is. */
+.site-drop-list ::deep a {
+    display: block;
+    padding: 7px 14px;
+    border-radius: 999px;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.site-drop-list ::deep a:hover { @include surface.press(); }
+.site-drop-list ::deep a.active { @include surface.press(); }
 
 @media (max-width: 720px) {
     .site-drop-list {

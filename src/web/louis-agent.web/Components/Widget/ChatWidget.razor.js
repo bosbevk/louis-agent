@@ -4,7 +4,7 @@
 export function pageText() {
     const main = document.querySelector("main") ?? document.body;
     const text = (main?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 6000);
-    // The page's named areas (F117): every section with an id, with the heading it carries (its kicker, else its h2),
+    // The page's named areas (F117): every section with an id, with the heading it carries (its topic, else its h2),
     // and every card the guide can open (F118), by its title and marked as a card.
     // A paged section's first page is the section itself, so its heading carries "page 1 of 2: ..." and only the pages
     // after it are places of their own; listed apart, a walkthrough stopped twice on the same screen (F118).
@@ -20,13 +20,13 @@ export function pageText() {
 }
 
 // A place's heading as the guide reads it: a card by its title, marked as one that opens; a piece by its title or its
-// number, marked as one the guide selects; a section by its kicker, else its heading.
+// number, marked as one the guide selects; a section by its topic, else its heading.
 const headingOf = (area, fold) => {
     if (area.matches("[data-card]")) return `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`;
     if (area.matches("[data-piece]")) {
         return `${fold(area.querySelector("h3, h4, .stat-value")?.textContent) || area.id} (piece, selects)`;
     }
-    return fold(area.querySelector(".kicker, h1, h2, h3")?.textContent);
+    return fold(area.querySelector(".topic, h1, h2, h3")?.textContent);
 };
 
 // The page's links within the site (FX120), each once, by the address it opens and its words, so the guide can take
@@ -50,7 +50,7 @@ export function inView() {
     let at = sections[0];
     for (const section of sections) if (section.getBoundingClientRect().top <= 140) at = section;
     if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) at = sections[sections.length - 1];
-    return { id: at.id, heading: fold(at.querySelector(".kicker, h1, h2, h3")?.textContent) };
+    return { id: at.id, heading: fold(at.querySelector(".topic, h1, h2, h3")?.textContent) };
 }
 
 // A business's window took the guide's ask (F127.4.2): on a narrow screen, where the guide's panel covers the page,
@@ -180,7 +180,7 @@ const turnToPage = (band, page) => {
 };
 
 // The box around what a place holds (F118, Louis: "highlight only this section, the section right around the actual
-// parts"): a band is a screen tall on a page of slides, mostly room, so its box is its content's, the kicker to the
+// parts"): a band is a screen tall on a page of slides, mostly room, so its box is its content's, the topic to the
 // last line, and on a page paged sideways its body and pager. Any other section, such as a site's hero, is a screen
 // tall too, so its box is what it holds (FX121, Louis: "highlight too big"); a card or a smaller place is its own box.
 // The agent's caption asks for the same box (F134.4), so it stands beside what the spotlight lit.

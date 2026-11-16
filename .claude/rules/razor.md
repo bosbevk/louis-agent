@@ -55,10 +55,14 @@ A change travels through a scoped state's `Changed` event.
 
 - **Text comes from one place.** A host's own texts are its message enums and its `ChatText`. Where each host
   keeps them is in [hosts-and-web.md](hosts-and-web.md#each-hosts-own-texts).
-- **No semicolon in words a visitor reads** (Louis, 2026-11-08, of one in the site's text: "we should never do
-  this"): a page's words, a component's, a product's texts. Two clauses become two sentences, or a colon opens
-  a list. The site's page tests refuse one in a page's markup (`DemosPageTests`, `TriagePageTests`,
-  `CodingAgentPageTests`), and the guide's voice tells the model the same for its answers.
+- **No semicolon and no colon in the words a visitor reads** (Louis, 2026-11-08, of a semicolon in the site's
+  text: "we should never do this"; 2026-11-16: "never type paragraphs with :"): a page's words, a component's, a
+  product's texts. Two clauses become two sentences. The site's page tests refuse a semicolon in a page's markup
+  (`DemosPageTests`, `TriagePageTests`, `CodingAgentPageTests`), and the guide's voice tells the model the same for
+  its answers.
+- **A site's own words don't name Louis** (2026-11-16, of "Louis builds them on this framework": "rewrite that
+  without my name in it"): the agent and the business speak, not a person; the CV and the guide, who is Louis's
+  AI, are his own.
 
 ## Styles, scripts and themes
 

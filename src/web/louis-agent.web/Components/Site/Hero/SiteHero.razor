@@ -1,6 +1,6 @@
 @* A site's hero (F118, ADR 0106): the words on the left, in the slots a site fills, and what the site puts beside them
-   on the right. It marks its place in the section index. The kicker, chrome, lede and muted classes are the site's own
-   words' look, as a band's kicker is; the layout is this component's and sits beside it. *@
+   on the right. It marks its place in the section index. The topic, chrome, summary and muted classes are the site's own
+   words' look, as a band's topic is; the layout is this component's and sits beside it. *@
 <section id="@Id" class="@Classes">
     <AreaMark Id="@Id" Label="@Label" />
     <div class="hero-text">
@@ -8,14 +8,14 @@
         {
             <div class="hero-art">@Art</div>
         }
-        @if (Kicker is not null)
+        @if (Topic is not null)
         {
-            <span class="kicker">@Kicker</span>
+            <span class="topic">@Topic</span>
         }
         <h1 class="chrome">@Headline</h1>
-        @if (Lede is not null)
+        @if (Summary is not null)
         {
-            <p class="lede">@Lede</p>
+            <p class="summary">@Summary</p>
         }
         @if (Note is not null)
         {

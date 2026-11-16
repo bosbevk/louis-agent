@@ -3,13 +3,13 @@
 <PageTitle>Identities · louis-agent</PageTitle>
 <PageHead Description="Who an agent is, as files: its voice, its roles and the principles every agent reads first, and the identities that run today." />
 
-<Band Id="top" Kicker="Identities">
+<Band Id="top" Topic="Identities">
     <BandTitle Class="chrome">Who an agent is, as files.</BandTitle>
-    <p class="lede">An identity is who the agent is: its voice, its modes, its roles and the packs it names, all markdown in a project of its own. The engine runs any identity you hand it. Your program picks one, or several, the way this site's program runs the coding agent and the guide in its corner.</p>
+    <p class="summary">An identity is who the agent is: its voice, its modes, its roles and the packs it names, all markdown in a project of its own. The engine runs any identity you hand it. Your program picks one, or several, the way this site's program runs the coding agent and the guide in its corner.</p>
     <GraphView Spec="IdentityGraph.Spec" Title="An identity, what it holds, and the level each part speaks at" />
 </Band>
 
-<Band Id="parts" Kicker="What an identity holds">
+<Band Id="parts" Topic="What an identity holds">
     <ul class="rules">
         <li><strong>The principles, first.</strong> Every prompt the engine builds opens with the same principles file, built into the engine, before the voice or any role, so nothing later in the prompt can push it aside. <a href="/framework/identities/the-principles">Read them</a>.</li>
         <li><strong>A voice.</strong> Who it is and how it speaks: one file per product, and a product may have more than one mode (Puls speaks Afrikaans or English, and the coding agent has a voice for fixing a service's errors). A session that names no role gets the voice.</li>
@@ -20,12 +20,12 @@
     </ul>
 </Band>
 
-<Band Id="the-principles" Kicker="The principles, as every agent reads them">
-    <p class="lede">This is the engine's own file, shown as it is. It opens every prompt, for every agent on the framework, and a test holds this page to the file.</p>
+<Band Id="the-principles" Topic="The principles, as every agent reads them">
+    <p class="summary">This is the engine's own file, shown as it is. It opens every prompt, for every agent on the framework, and a test holds this page to the file.</p>
     <PrinciplesView />
 </Band>
 
-<Band Id="levels" Kicker="The four that exist">
+<Band Id="levels" Topic="The four that exist">
     <CardDeck>
         <Card Title="Puls" Summary="The South African assistant: two voices, five specialists, two minions." Tag="louis-agent.identity.puls">
             <p>A voice in Afrikaans and one in English, five specialists as roles, two minions, and the packs that find a shop, estimate prices and read recipes.</p>
@@ -45,7 +45,7 @@
     </CardDeck>
 </Band>
 
-<Band Id="yours" Kicker="Yours">
+<Band Id="yours" Topic="Yours">
     <div class="panel">
         <h3>A folder of markdown and one class.</h3>
         <p>The guide in the corner is the smallest identity there is: a class that names the docs pack, and a voice file that says who it is, how it answers and where the docs are. Your own is the same shape: write the voice, add a role for each kind of work, name the packs, and your program hands it to a host. <a href="/framework/build-your-own">How a program does that</a>.</p>

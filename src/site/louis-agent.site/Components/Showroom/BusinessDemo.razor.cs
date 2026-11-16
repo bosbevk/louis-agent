@@ -29,7 +29,7 @@ public partial class BusinessDemo : IDisposable
 
     /// <summary>The kind of business, over the heading: "A restaurant".</summary>
     [Parameter, EditorRequired]
-    public string Kicker { get; set; } = "";
+    public string Topic { get; set; } = "";
 
     /// <summary>The business's name, said to be made up.</summary>
     [Parameter, EditorRequired]
@@ -41,7 +41,7 @@ public partial class BusinessDemo : IDisposable
 
     /// <summary>The scene: who asks what.</summary>
     [Parameter, EditorRequired]
-    public string Lede { get; set; } = "";
+    public string Summary { get; set; } = "";
 
     /// <summary>The business's own address, made up: <c>wheatfieldkitchen.example</c>.</summary>
     [Parameter, EditorRequired]
@@ -135,7 +135,7 @@ public partial class BusinessDemo : IDisposable
     private int _reached;
 
     /// <summary>What the demo is, over its title: the kind and the business.</summary>
-    private string KickerLine => $"{Kicker} · {Business}";
+    private string KickerLine => $"{Topic} · {Business}";
 
     /// <summary>The widget's title on the business's website.</summary>
     private string AgentLabel => $"{Business} · ask us";

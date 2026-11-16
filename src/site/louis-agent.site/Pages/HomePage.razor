@@ -4,7 +4,7 @@
 <PageHead Description="A website for your business with an AI agent in its corner that answers your customers day and night. From R500 a month, built in South Africa." Schemas="SiteFacts.All" />
 
 @* One page the visitor scrolls (F110): the frame draws the progress line and the section index from the bands below
-   (F118), so a band's id and kicker are all a section needs to be listed. Since F128.1 it tells the story offer first:
+   (F118), so a band's id and topic are all a section needs to be listed. Since F128.1 it tells the story offer first:
    what it does, how it works for you, custom agents and the demos, then one band of the framework as the proof; its
    rule, film and concepts live on the framework's own pages. *@
 <Hero />
@@ -13,20 +13,13 @@
 
 <HowItWorksForYou />
 
-<Band Id="custom" Kicker="Custom agents">
-    <h2 class="chrome reveal">Want an agent for your business? Louis builds them on this framework.</h2>
-    <p class="lede reveal">An agent of your own is three things: who it is, the tools it uses on your own systems, and a closed place to run where every request is measured. Here is what each one holds, and Louis in the corner can pass your details on.</p>
-    <div class="custom-grid">
-        <TileRow Columns="1">
-            <Tile Title="Your identity">Who the agent is for your business: its voice, its roles and the rules it keeps, written as files you can read and change.</Tile>
-            <Tile Title="Your packs" Delay="1">Tools for your own systems, written once as a package: your data read in code, never guessed, with the engine's guards around every call.</Tile>
-            <Tile Title="Hosted, closed and measured" Delay="2">Run for you in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here, every request priced and the bill shown in rand. Checked by evals before anyone sees a change. <a href="/framework/how-it-works">The rules it keeps</a></Tile>
-        </TileRow>
-        <LiveTurn />
-    </div>
-    <p class="band-note"><strong>What we sell today:</strong> web hosting with an AI agent, for small businesses. Your website, hosted, with an agent in the corner like this one that knows your business and answers your customers. R500 to R1,000 a month, plus a once-off fee to build the site. <a href="/pricing">See the plans</a>.</p>
-    <p class="band-note"><strong>Your first files, written with you:</strong> an agent is a few Markdown files, its voice, its roles and what it knows about your business. Louis can write your first Markdown files with you, for a fee, so your agent starts out sounding like you. <a href="/contact">Ask about it</a>.</p>
-</Band>
+<Band Id="custom" Topic="Custom agents" Title="Want an agent for your business?" Summary="An agent of your own is three things. Who it is, the tools it uses on your own systems, and a closed place to run where every request is measured. The agent in the corner can pass your details on.">
+    <TileRow>
+        <Tile Icon="DiagramIcon.User" Title="Your identity">Who the agent is for your business, its voice, its roles and the rules it keeps, written as files you can read and change.</Tile>
+        <Tile Icon="DiagramIcon.Box" Title="Your packs" Delay="1">Tools for your own systems, written once as a package. Your data is read in code, never guessed, with the engine's guards around every call.</Tile>
+        <Tile Icon="DiagramIcon.Shield" Title="Hosted, closed and measured" Delay="2">It runs in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here. Every request is priced and the bill is shown in rand.</Tile>
+    </TileRow>
+    <LiveTurn Title="session 7f3a · toolsets: files, git, dotnet" Label="An animated chat turn, with the prompt, the thinking, two tool calls with their guards, the answer and the cost line" Lines="CustomTurn" Cost="turn 4 requests · 31k tokens (27k cached) · **$0.008**" CostAt="10.2" /></Band>
 
 <LandingDemos />
 

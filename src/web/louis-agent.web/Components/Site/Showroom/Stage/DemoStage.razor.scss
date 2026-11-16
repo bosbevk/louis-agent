@@ -2,13 +2,13 @@
 @use "web/tools/glow";
 
 /* A demo's stage (F127.1, Louis: "colourful and fancy"), standing on the lit stage in its colour since F134.2, as the
-   K mockup has it: the kicker over the title, the title fading from white into the colour with the lede beside it on
+   K mockup has it: the topic over the title, the title fading from white into the colour with the summary beside it on
    a wide screen, the player, what to watch, and the offer as a bar of the colour with a shine crossing it every few
    seconds (still when the visitor asks for less motion). Each gradient stays within the one colour. */
 @include accents.classes;
 
 .demo-stage { position: relative; display: flex; flex-direction: column; padding-bottom: 28px; }
-/* K's head: the kicker and the title on the left, the lede beside them, both on the line the title ends on. */
+/* K's head: the topic and the title on the left, the summary beside them, both on the line the title ends on. */
 .stage-head {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -16,10 +16,10 @@
     align-items: end;
     padding: 30px 32px 10px;
 }
-.stage-head > .stage-kicker { grid-column: 1; }
+.stage-head > .stage-topic { grid-column: 1; }
 .stage-head > .stage-title { grid-column: 1; }
-.stage-head > .stage-lede { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
-.stage-kicker {
+.stage-head > .stage-summary { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
+.stage-topic {
     font: 500 11.5px/1 var(--bs-font-monospace);
     letter-spacing: .16em;
     text-transform: uppercase;
@@ -36,7 +36,7 @@
     padding-bottom: .1em;
     @include glow.text-fade(var(--accent));
 }
-.stage-lede { margin: 8px 0 0; font-size: 15px; line-height: 1.55; color: var(--web-soft-text); max-width: 560px; }
+.stage-summary { margin: 8px 0 0; font-size: 15px; line-height: 1.55; color: var(--web-soft-text); max-width: 560px; }
 
 /* The first screen, as the K mockup drew it: the story, the player and what to watch stand in one frame as tall as
    the screen between the showroom's bar (--stage-top) and the guide's (--stage-foot), and the player takes what the
