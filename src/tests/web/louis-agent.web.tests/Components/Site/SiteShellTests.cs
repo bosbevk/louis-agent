@@ -54,6 +54,46 @@ public class SiteShellTests
     }
 
     /// <summary>
+    /// The page behind moves when a site switches it on (Louis: "can we make the background move?", "the lines can it
+    /// be a switch"), and holds still otherwise.
+    /// </summary>
+    [Test]
+    public void ThePageBehind_Moves_WhenSwitchedOn()
+    {
+        using var ctx = Context();
+
+        var still = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<p>Page</p>"));
+        var moving = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.MovingPage, true)
+            .AddChildContent("<p>Page</p>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(still.Find(".site").ClassList, Does.Not.Contain("page-moves"));
+            Assert.That(moving.Find(".site").ClassList, Does.Contain("page-moves"));
+        });
+    }
+
+    /// <summary>
+    /// The agent's answer rises from underneath, out of its bar, when a site switches it on (Louis: "always from
+    /// underneath in flow layout", "or just make it an option"), and stands beside its place otherwise.
+    /// </summary>
+    [Test]
+    public void TheAnswer_RisesFromUnderneath_WhenSwitchedOn()
+    {
+        using var ctx = Context();
+
+        var beside = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<p>Page</p>"));
+        var under = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.AnswerUnder, true)
+            .AddChildContent("<p>Page</p>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(beside.Find(".site").ClassList, Does.Not.Contain("answers-under"));
+            Assert.That(under.Find(".site").ClassList, Does.Contain("answers-under"));
+        });
+    }
+
+    /// <summary>
     /// A site's slogan sits under the brand's name, inside the brand's link (FX79); none given, no line.
     /// </summary>
     [Test]

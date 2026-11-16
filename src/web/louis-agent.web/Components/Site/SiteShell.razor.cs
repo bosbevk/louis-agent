@@ -62,6 +62,14 @@ public partial class SiteShell
     [Parameter]
     public PageLayout Layout { get; set; } = PageLayout.Flow;
 
+    /// <summary>Whether the theme's lines behind the page drift slowly; still by default.</summary>
+    [Parameter]
+    public bool MovingPage { get; set; }
+
+    /// <summary>Whether the agent's answer rises from underneath, out of its bar, not beside its place; off by default.</summary>
+    [Parameter]
+    public bool AnswerUnder { get; set; }
+
     /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
     private readonly PageOptions _options = new();
 
@@ -69,9 +77,12 @@ public partial class SiteShell
     private PageLayout Laid => _options.Layout ?? Layout;
 
     /// <summary>
-    /// The frame's root classes: the frame, and the layout the page is drawn in, which its styles read.
+    /// The frame's root classes: the frame, the layout the page is drawn in, which its styles read, whether the page
+    /// behind moves, and whether the agent's answer rises from underneath.
     /// </summary>
-    private string SiteClasses => Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow";
+    private string SiteClasses =>
+        (Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow") + (MovingPage ? " page-moves" : "")
+        + (AnswerUnder ? " answers-under" : "");
 
     /// <summary>Redraws when the page makes or takes back its choice, and shuts the menu when a page opens.</summary>
     protected override void OnInitialized()

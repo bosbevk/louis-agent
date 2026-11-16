@@ -117,6 +117,16 @@ const place = (caption, ring) => {
     // row, and the chip of a selected piece over it. The caption stands clear of both.
     caption.dataset.stands = "";
     const floor = (bar?.getBoundingClientRect().top ?? innerHeight) - gap;
+    // On a site whose answers rise from underneath, the caption stays over its bar and only the place keeps its ring
+    // (Louis: "always from underneath in flow layout", "or just make it an option").
+    if (document.querySelector(".site.answers-under")) {
+        delete caption.dataset.stands;
+        delete caption.dataset.inPlace;
+        const shown = box && box.width > 0 && box.top + box.height > headerRoom && box.top < floor;
+        ring.classList.toggle("is-on", !!shown);
+        if (shown) ringAround(ring, box);
+        return;
+    }
     // A card beside the place: the caption takes its place, and the place keeps its ring.
     const card = about ? cardBeside(about, floor) : null;
     if (card) return takeThePlaceOf(card, caption, ring, box);
