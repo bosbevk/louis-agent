@@ -406,5 +406,43 @@ screens inside its cards are pictures of another site and are not glass.
 The drawings in [glass-crystal-stretch/](F151-mockups/glass-crystal-stretch/) were saved again with this violet,
 so `press-rest.svg`, `press-hover.svg` and `toggle-on.svg` there are the ones to use.
 
+**The glass page holds still, bends only under the pointer, and lies on silk ribbons** (Louis, 2026-11-16, after
+the glass mockup felt slow: "it is still slow", "all animations is laggy and the website is laggy"; then of the fixes,
+"yes keep it 0 blur", "but keep our original SVG see through", his pick "2" of three ways to keep the lens, "C" of
+three backgrounds, "can we make C sharper", "yes sharper one is good", his pick of a painted bend at rest, and of the
+agent's words, "just give the overlay this white", "with glass clear"; and "yes make this part of the plan").
+
+The drawings were not what made the page slow. Measured in Chromium, most of the cost was the soft lights drifting
+behind the page: every see-through piece over them had to be painted again on every frame. The second cost was the
+lens, the script that works out how each piece bends what is behind it: it held the page still for about two seconds
+while it loaded, and its filter was drawn again on every frame even when nothing moved. With both fixed the top of the
+page takes about 17 ms a frame where it took 129, in a browser with no graphics card. The findings are in the
+project's files, in `reviews/F151-svg-slowness.md`.
+
+So nothing behind the page moves, and nothing on it blurs. The glass theme's background is silk light ribbons: a few
+crisp lines of light, two or three pixels wide with a narrow glow, sweeping across a pale violet wash in the light and
+across black in the dark. It is one still picture, 3840 by 2160, painted in code by a small shader and saved as WebP,
+about 220 KB for the light and 280 KB for the dark. It takes the place of the soft violet lights in section 5's
+"Glass, light" row. The ribbons are lines, not balls, so "the mark is the only ball" still holds. Every piece has no
+blur at all, which replaces the blurring layer under each drawing in *Glass becomes crystal* above: the layer stays,
+but it lets the page through sharp.
+
+A piece bends what is behind it only while the pointer is on it, while it is picked, or while the agent shows it. At
+rest every piece wears a painted bend instead: a still light gathered on the top-left rim, the bottom-right edge a
+deeper violet, and a faint sheen across the face, drawn once on a layer of its own so it is never painted again. When
+the real bend takes over, the painted one fades out. It costs about 4 ms a frame where the cards stand.
+
+The agent's words are the one piece that is read rather than looked through. Their card is clear glass, its own
+drawing with no blur, over the same soft white as the quiet buttons (`rgba(204, 203, 218, .9)`), and over a dark tint
+of the same strength in the dark (`rgba(22, 20, 32, .9)`). The lens does not reach it.
+
+The page that shows all of this is `glass-final.html`, with the shader `ribbons.frag`, the script that paints it and
+both pictures beside it, in the project's files under `reviews/F151-final-glass/`. Where it and `glass.html` differ on
+the background, the lens or the agent's words, it wins.
+
+Two things are still his to settle. The lens moves its light with the pointer while it bends, which stands beside
+section 5's "a light that follows the pointer" in what a glass card never has. And the ribbons run behind the page's
+words, where they could be calmed under the column of text.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [F151.1, the first child](F151.1-the-theme-contract.md)
