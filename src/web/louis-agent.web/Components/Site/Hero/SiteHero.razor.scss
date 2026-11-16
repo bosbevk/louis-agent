@@ -17,7 +17,8 @@
     letter-spacing: -.04em;
     text-wrap: balance;
 }
-.hero-text .summary { font-size: 20px; }
+/* A size bigger than the design's 20px (Louis: "make this font bigger"). */
+.hero-text .summary { font-size: 28px; }
 
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
