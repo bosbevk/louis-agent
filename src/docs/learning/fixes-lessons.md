@@ -493,5 +493,13 @@ plain where it doesn't. The hand-drawn pieces only had to ask for them. Drawing 
 kinds, even when today's look is plain, is what lets the look change later in one place. Skill 18 (testing and
 shipping: what a visitor sees is checked by seeing it).
 
+## FX160 · An address is only a way there if something takes you
+
+The hero's new button pointed at `/home/does`, the very address the section index uses, and it did nothing. The
+index's links work because each also names its section with `data-section`, and the frame's script moves the page
+for those. A bare link to the same address went to Blazor's router instead, which saw the same page and stayed
+put. The test passed on the address and missed the move. Clicking it in the browser found it, and the test now asks
+for the section's name too. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
