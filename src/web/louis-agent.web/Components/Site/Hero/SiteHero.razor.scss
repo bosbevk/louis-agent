@@ -9,6 +9,13 @@
 
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
+/* Centred (F151.6): one column, the words in the middle of it, and what would stand beside them below, no wider than
+   a window reads well. What is below keeps its own text's side. */
+.hero.is-centred { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+.hero.is-centred .hero-text { align-items: center; }
+.hero.is-centred .actions { justify-content: center; }
+.hero.is-centred .hero-aside { width: 100%; max-width: 980px; text-align: start; }
+
 @media (max-width: 900px) {
     .hero, .hero.with-aside { grid-template-columns: minmax(0, 1fr); padding-top: 48px; }
 }

@@ -62,4 +62,27 @@ public class SiteHeroTests
             Assert.That(cut.FindAll(".hero-aside"), Is.Empty);
         });
     }
+
+    /// <summary>
+    /// A hero may open with a piece of art above its words and stand centred (F151.6): the art is the first thing in
+    /// the words' column, and the section says it is centred, so what stands beside the words goes below them.
+    /// </summary>
+    [Test]
+    public void WithArt_AndCentred_TheArtOpensTheWords_AndTheSectionSaysSo()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<SiteHero>(parameters => parameters
+            .Add(hero => hero.Headline, "Ask the website.")
+            .Add(hero => hero.Art, "<span class=\"drawing\">o</span>")
+            .Add(hero => hero.Centred, true));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find("section").ClassList, Is.EquivalentTo(new[] { "hero", "is-centred" }));
+            Assert.That(cut.Find(".hero-text").Children.Select(child => child.ClassName),
+                Is.EqualTo(new[] { "hero-art", "chrome" }));
+            Assert.That(cut.Find(".hero-art .drawing").TextContent, Is.EqualTo("o"));
+        });
+    }
 }

@@ -20,11 +20,15 @@
 
     code { font-family: var(--bs-font-monospace); font-size: .92em; color: var(--web-soft-text); }
 
-    /* The big words in chrome: a white-to-steel gradient clipped to the letters. The gradient only paints the box, and
+    /* The hero's headline is the page's biggest words, as large as the window lets it be (F151.6). */
+    .hero.is-centred h1 { font-size: clamp(54px, 7.4vw, 124px); letter-spacing: -.04em; line-height: .98; }
+
+    /* The big words in chrome: the strongest ink running into the brand's colour at the end of the line, clipped to
+       the letters, and held still, so a heading costs nothing to keep on screen. The gradient only paints the box, and
        a heading's tight line height leaves the descenders (g, y, p) hanging out of it, so they came out cut off (FX89,
        Louis: "we have cut offs here"); the box reaches down for them and gives the room back below. */
     .chrome {
-        background: var(--web-cta);
+        background: linear-gradient(100deg, var(--web-bright) 0%, var(--web-bright) 45%, var(--bs-primary) 100%);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;

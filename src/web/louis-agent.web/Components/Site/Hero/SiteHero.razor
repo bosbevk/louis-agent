@@ -4,6 +4,10 @@
 <section id="@Id" class="@Classes">
     <AreaMark Id="@Id" Label="@Label" />
     <div class="hero-text">
+        @if (Art is not null)
+        {
+            <div class="hero-art">@Art</div>
+        }
         @if (Kicker is not null)
         {
             <span class="kicker">@Kicker</span>

@@ -15,5 +15,8 @@
    the box, and a clip that stays on the box cut it off for good (F118, Louis: "does not fit"). */
 @keyframes site-unmask { from { clip-path: inset(-.2em -.2em 100% -.2em); translate: 0 22px; } to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; } }
 
+/* The line under the state the hero's mark is showing fills while its turn lasts (F151.6). */
+@keyframes mark-turn { from { transform: scaleX(0); } }
+
 /* The header shrinks a little once the page scrolls. */
 .site-header.compact { padding-top: 10px; padding-bottom: 10px; box-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8); }

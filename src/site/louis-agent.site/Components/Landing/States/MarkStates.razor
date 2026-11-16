@@ -1,0 +1,13 @@
+@* The mark at the top of the landing (F151.6): the agent's mark drawn large, the state it is in with what that
+   means, and a button for each state. It plays them in turn, and holds the one a visitor presses. *@
+<div class="mark-states" style="@Pace">
+    <Orb State="@Now.State" Label="The agent's mark" />
+    <p class="mark-say"><b>@Now.Name</b><span>@Now.Line</span></p>
+    <div class="@StepsClasses" role="group" aria-label="The mark's states">
+        @for (var index = 0; index < MarkSteps.All.Count; index++)
+        {
+            var place = index;
+            <button type="button" aria-current="@Current(place)" @onclick="() => Hold(place)">@MarkSteps.All[place].Name</button>
+        }
+    </div>
+</div>

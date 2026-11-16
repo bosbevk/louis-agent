@@ -312,6 +312,11 @@ moves and holds the look (the keyframes, the index, the line) in its own partial
 `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words. A `GuideButton` anywhere asks the
 guide a question.
 
+A `SiteHero` is the first thing on a landing: a kicker, the headline, a lede, a quiet note and the actions, each a
+slot the site fills, with something alive beside the words when the site has it. A site may also open the words with
+a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside
+the words goes below them.
+
 A `Band` is one named area of a page: a section with a required id, an optional kicker and the site's classes. It
 draws no style of its own. The id is required so that every area on every site is named, and the guide can send a
 visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"`, and the frame

@@ -14,7 +14,7 @@ namespace LouisAgent.Site.Tests.Pages;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "A website that talks to your customers.")]
+    [TestCase(typeof(HomePage), "/", "Ask the website.")]
     [TestCase(typeof(HowItWorksPage), "/framework/how-it-works", "One turn, through every layer.")]
     [TestCase(typeof(ArchitecturePage), "/framework/architecture",
         "The whole framework, as the repository is laid out.")]
@@ -191,7 +191,10 @@ public class SitePagesTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find(".hero .kicker").TextContent, Does.Contain("from R500 a month"));
-            Assert.That(cut.Find(".hero h1").TextContent, Does.Contain("website"));
+            Assert.That(cut.Find(".hero h1").TextContent, Is.EqualTo("Ask the website."));
+            Assert.That(cut.Find(".hero").ClassList, Does.Contain("is-centred"));
+            Assert.That(cut.FindAll(".hero .hero-art .mark-states .orb"), Has.Count.EqualTo(1),
+                "the mark, above the words");
             Assert.That(actions, Has.Count.EqualTo(3));
             Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Ask for yours"));
             Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See one work"));

@@ -70,6 +70,7 @@ public partial class StylesheetTests
     /// </summary>
     [TestCase("site/settings/tokens")]
     [TestCase("site/base/elements")]
+    [TestCase("site/landing/sections")]
     public void TheSitesValuesAndElements_NameNoRawColour(string partial) =>
         Assert.That(FixedColour().Matches(Css.Source(partial)).Select(found => found.Value), Is.Empty);
 
