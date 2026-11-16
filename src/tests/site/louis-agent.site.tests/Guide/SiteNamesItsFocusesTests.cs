@@ -23,7 +23,7 @@ public class SiteNamesItsFocusesTests
 
     /// <summary>Each part where Louis put it: the demos and every demo, the framework, and selling elsewhere.</summary>
     [TestCase("/", GuideFocus.Selling)]
-    [TestCase("/pricing", GuideFocus.Selling)]
+    [TestCase("/contact", GuideFocus.Selling)]
     [TestCase("/home/what-it-does", GuideFocus.Selling)]
     [TestCase("/demos", GuideFocus.Demos)]
     [TestCase("/guesthouse-demo", GuideFocus.Demos)]

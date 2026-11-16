@@ -45,12 +45,12 @@ public class GuideKnowsTheSiteTests
     }
 
     /// <summary>
-    /// The guide sells what the site sells, in the same words (FX72): the hosted site with an agent, at the one price
-    /// the site publishes, so the corner and the page can't quote two different offers.
+    /// The guide sells what the site sells, in the same words (FX72): the hosted site with an agent, quoted on request
+    /// as the site says (FX164), so the corner and the page can't quote two different offers.
     /// </summary>
     [TestCase("What we sell today")]
-    [TestCase("R500 to R1,000 a month")]
-    [TestCase("once-off fee to build the site")]
+    [TestCase("Every quote is made on request.")]
+    [TestCase("you name no price")]
     [TestCase("first Markdown files")]
     [TestCase("closed Docker container")]
     [TestCase("When someone is interested, you can tell Louis yourself.")]
@@ -83,8 +83,8 @@ public class GuideKnowsTheSiteTests
     /// (Louis, 2026-11-08: "should be in the docs"), in the same words as the site.
     /// </summary>
     [TestCase("What the site sells, and how to reach Louis")]
-    [TestCase("R500 to R1,000 a month")]
-    [TestCase("once-off fee to build the site")]
+    [TestCase("Every quote is made on request.")]
+    [TestCase("no price is published")]
     [TestCase("first Markdown files")]
     [TestCase("louis.marais@live.com")]
     [TestCase("066 391 2470")]

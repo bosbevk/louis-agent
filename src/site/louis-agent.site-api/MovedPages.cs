@@ -21,7 +21,8 @@ public static class MovedPages
         ["/proof"] = "/framework/measured",
         ["/built-on-it"] = "/framework/built-on-it",
         ["/whats-coming"] = "/framework/whats-coming",
-        ["/doctors-practice-demo"] = "/guesthouse-demo"
+        ["/doctors-practice-demo"] = "/guesthouse-demo",
+        ["/pricing"] = "/contact"
     };
 
     /// <summary>Where an old address lives now, or null when it never moved.</summary>

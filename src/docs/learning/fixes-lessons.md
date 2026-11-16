@@ -511,6 +511,32 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX165 · A control takes its look from the design's drawing, not from the generic rule it inherits
+
+The bar's send button looked broken: a flat violet circle that turned to a pale ghost whenever the box was empty. It
+had never been given the design's look. It inherited the chat's generic send, and every disabled button on the site
+fades to 40%. The design draws its send with the same press art as its main buttons and never greys it, because a
+send that waits is still the way to ask. So the bar draws it with the framework's press, and a small tool keeps a
+waiting press at rest. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
+## FX164 · A page taken down is taken out of what the agent reads too
+
+The prices left the landing and the menu, yet the pricing page still answered at its address, and the guide still
+quoted R500 to R1,000 a month and sent people to it. A page lives in more places than its file: the sitemap, the
+guide's map of the site, its voice, the doc it answers from, and the tests that pin each. Taking it out meant every
+one of them, and moving the address to the contact page so an old link still lands somewhere useful. An agent that
+reads the site's own docs says what they say, so a stale line there is a wrong answer to a visitor. Skill 7 (context
+engineering: what the agent reads is part of the product).
+
+## FX161 · What a reload must keep belongs with what the reload brings back
+
+A visitor closed the guide's answer, pressed Ctrl+R, and the answer stood over the bar again. The chat itself was saved
+in the browser and came back on the reload, as it should. But that the answer was closed lived only in the bar's memory,
+and a reload starts the bar empty, so it saw a last answer it had never been told was closed. The fix keeps the fact on
+the turn it is about, saved with the chat, so every way the chat comes back agrees on it. A second note kept beside the
+chat would have been two saved things that can disagree. Skill 9 (sessions and state: one source of truth for what must
+survive).
+
 ## FX163 · An animation held after its end hides the page from the glass
 
 The glass bent nothing behind it, though its filter ran and its numbers were right. The page's column played a

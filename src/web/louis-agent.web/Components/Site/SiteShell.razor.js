@@ -94,7 +94,8 @@ const scrolled = () => {
 const standUnderTheIndex = () => {
     const up = $(".site-up"), index = $(".site-index");
     if (!up) return;
-    const box = index?.offsetParent ? index.getBoundingClientRect() : null;
+    // The index is fixed, and a fixed element never has an offset parent: whether it shows is whether it has a box.
+    const box = index?.getClientRects().length ? index.getBoundingClientRect() : null;
     up.style.top = box ? `${Math.round(box.bottom + 12)}px` : "";
     up.style.left = box ? `${Math.round(box.left)}px` : "";
     up.style.bottom = box ? "auto" : "";

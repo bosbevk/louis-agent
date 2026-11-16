@@ -210,6 +210,16 @@ public sealed class ChatRunner(
         Changed?.Invoke();
     }
 
+    /// <summary>
+    /// Marks an answer closed and saves the chat (FX161), so the answer stays closed after a reload, in another tab
+    /// and in the whole chat alike.
+    /// </summary>
+    public async Task PutAwayAsync(Turn turn)
+    {
+        turn.PutAway = true;
+        await store.SaveAsync();
+    }
+
     /// <summary>Deletes a chat here and on the server; true when it was the one shown, so the page leaves it.</summary>
     public async Task<bool> DeleteChatAsync(Chat chat)
     {

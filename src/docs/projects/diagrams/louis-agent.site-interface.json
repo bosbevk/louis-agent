@@ -14,7 +14,7 @@
         "name": "The pages",
         "kind": "Razor, a Band per section",
         "members": [
-          "/, /what-we-build, /pricing, /demos, /contact, /cv",
+          "/, /what-we-build, /demos, /contact, /cv",
           "/framework/... , /csharp-ai-agent-framework"
         ]
       },

@@ -12,9 +12,9 @@ what a page says goes to its source. Every page that explains a part shows an an
 identity's parts, a pack's shape, the repository's groups, one turn through the engine, your program, where a number
 comes from, what is built on the framework), so when words are not enough, point at the page's diagram:
 
-- `/`, the landing, offer first: a website with an agent from R500 a month, what the agent does for a business,
-  how it works for them (three steps, then why to trust it), custom agents and the demos. Then one band of proof: it is
-  built on a framework of its own, measured, with links into the framework's pages. Sources: `README.md`,
+- `/`, the landing, offer first: a website with an agent, what the agent does for a business, where it runs, three
+  businesses' agents at work, custom agents, and at the end of the tour a way to leave their details for a quote.
+  Sources: `README.md`,
   `src/docs/projects/louis-agent.site.md`.
 - `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets
   them; the rules every turn keeps. Sources: `src/docs/architecture/06-runtime-view.md`,
@@ -52,8 +52,6 @@ comes from, what is built on the framework), so when words are not enough, point
 - `/what-we-build`: what we build, in a buyer's words: the website with an agent in its corner, a custom agent for a
   bigger job, and how it starts (a short call, a working agent on made-up data, then theirs). Send someone who asks
   what you do here. The site's own words.
-- `/pricing`: the two plans, Starter and Business, what each includes, and what is quoted on the short call (the
-  building fee, the first files, a custom agent). Send anyone who asks what it costs here. The site's own words.
 - `/contact`: how to reach the project. The site's own words.
 - `/demos`: the three businesses' demos in one place, each a real run recorded once and played back. The coding
   agent and the triage team are not on this page: they have their own, below. Send someone who asks what the

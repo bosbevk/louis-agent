@@ -98,9 +98,6 @@ public partial class AgentBar : IAsyncDisposable
     /// <summary>Whether the visitor opened the whole talk.</summary>
     private bool _talkOpen;
 
-    /// <summary>The answer the visitor put away, so it stays away until the next one.</summary>
-    private Turn? _putAway;
-
     /// <summary>When the guide last showed a place, while the orb still shows it.</summary>
     private DateTimeOffset? _shownAt;
 
@@ -174,7 +171,7 @@ public partial class AgentBar : IAsyncDisposable
     };
 
     /// <summary>Whether the last answer is the one the visitor put away.</summary>
-    private bool IsPutAway => Last is { } last && ReferenceEquals(last, _putAway);
+    private bool IsPutAway => Last is { PutAway: true };
 
     /// <summary>
     /// The last answer as a caption (F134.4), from its first words on, until the visitor puts it away or opens the
@@ -210,21 +207,24 @@ public partial class AgentBar : IAsyncDisposable
     private int Answers => Runner.Chat?.Turns.Count ?? 0;
 
     /// <summary>Opens the whole talk, or folds it away again.</summary>
-    private void ToggleTalk()
+    private async Task ToggleTalk()
     {
         bool shows = TalkShows;
-        // A talk that opened by itself, for a form, would open again at once: folding it puts that answer away.
-        if (shows && Captioned.NeedsTheTalk(Last)) _putAway = Last;
         _talkOpen = !shows;
+        // A talk that opened by itself, for a form, would open again at once: folding it puts that answer away.
+        if (shows && Last is { } last && Captioned.NeedsTheTalk(last)) await Runner.PutAwayAsync(last);
     }
 
-    /// <summary>Puts the last answer away: its caption goes, and the next answer stands again.</summary>
-    private Task PutTheAnswerAway()
+    /// <summary>
+    /// Puts the last answer away: its caption goes, the turn says so in the saved chat so a reload keeps it away
+    /// (FX161), and the next answer stands again.
+    /// </summary>
+    private async Task PutTheAnswerAway()
     {
-        _putAway = Last;
+        if (Last is { } last) await Runner.PutAwayAsync(last);
         // The page goes back as it was: the piece picked is let go with the answer (Louis: "when I close the answer
         // it resets").
-        return OnClearPiece.InvokeAsync();
+        await OnClearPiece.InvokeAsync();
     }
 
     /// <summary>

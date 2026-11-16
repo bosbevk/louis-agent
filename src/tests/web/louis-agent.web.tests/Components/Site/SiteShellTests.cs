@@ -242,6 +242,10 @@ public class SiteShellTests
         {
             Assert.That(module, Does.Contain("standUnderTheIndex();"));
             Assert.That(module, Does.Contain("up.style.top = box ? `${Math.round(box.bottom + 12)}px` : \"\";"));
+            // The index is fixed, and a fixed element never has an offset parent, so asking for one always said the
+            // index was hidden and the way up stayed in its corner.
+            Assert.That(module, Does.Contain("index?.getClientRects().length"));
+            Assert.That(module, Does.Not.Contain("index?.offsetParent"));
         });
     }
 
