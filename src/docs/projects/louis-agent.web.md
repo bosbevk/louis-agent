@@ -228,8 +228,11 @@ On a wide screen, from 901 wide, the caption's module decides where it stands. A
 stands beside it: to the right of the place where the screen has room, else to its left, else under it. The
 widget's script leaves a mark (`data-lit`) on the place it lit, which stays after the spotlight fades, and says so
 when it lights another, so a caption that already stands moves there. An answer that lit no place stands the same
-way beside the piece of the page the visitor chose to ask about, when one is chosen. While a caption stands beside
-a place, the place keeps a quiet ring, the spotlight's own ring left on with no dim, so the two read as one. A
+way beside the piece of the page the visitor chose to ask about, when one is chosen. When that place has a card
+beside it, the caption takes the card's place instead: where the card stands, as wide and at least as tall as it,
+with its corners. The card is the piece of the page straight after the place, or else the one straight before it,
+and it counts only while it lies flat and shows between the header and the bar. While a caption stands beside
+a place or in the place of the card beside it, the place keeps a quiet ring, the spotlight's own ring left on with no dim, so the two read as one. A
 caption with no place to stand beside (none lit or chosen, a place as wide as the screen, or one scrolled off)
 stands at the bar's left, beside the orb, where the screen has room for it. Only where it has none does it stand
 over the bar, and then the page makes room for it as the paragraph above tells. On a phone, up to 900 wide, the

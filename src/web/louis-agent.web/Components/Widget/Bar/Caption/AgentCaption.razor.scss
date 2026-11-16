@@ -143,14 +143,21 @@
 .caption-back .caption-foot { margin-top: auto; }
 
 /* On a wide screen the caption's module stands it beside the place the agent lit, or beside the bar, fixed to the
-   screen where the module says (--caption-x, --caption-y), and wears the module's own mark while it does. On a
-   phone it stays over the bar. */
+   screen where the module says (--caption-x, --caption-y), and wears the module's own mark while it does. Where
+   the place has a card beside it, the caption takes that card's place (F151.4): the module says the card's width,
+   height and corners, and both sides of the caption are at least that tall, with those corners. On a phone it
+   stays over the bar. */
 @media (min-width: 901px) {
     .agent-caption[data-stands] {
         position: fixed;
         left: var(--caption-x);
         top: var(--caption-y);
         width: 400px;
+    }
+    .agent-caption[data-stands][data-in-place] { width: var(--caption-w); }
+    .agent-caption[data-in-place] .caption-face {
+        min-height: var(--caption-h);
+        border-radius: var(--caption-r);
     }
 }
 

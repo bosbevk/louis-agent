@@ -68,6 +68,27 @@ public class CaptionBesideTests
     }
 
     /// <summary>
+    /// F151.4: when the piece the answer is about has a card beside it, the next one or else the one before, the
+    /// agent's words take that card's place: where it stands, how wide and tall it is, and its corners. The module
+    /// finds the card and says so by a mark of its own with the card's measures, and the styles read them. With no
+    /// card beside it the words stand beside the piece as before, which the other tests here hold.
+    /// </summary>
+    [Test]
+    public void WithACardBeside_TheWordsTakeThatCardsPlace_ItsSizeAndItsCorners()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Module, Does.Contain("about.nextElementSibling, about.previousElementSibling"));
+            Assert.That(Module, Does.Contain("matches(\"[data-piece]\")"), "a card is a piece of the page");
+            Assert.That(Module, Does.Contain("dataset.inPlace"), "the module's mark, an attribute of its own");
+            Assert.That(Module, Does.Contain("--caption-w").And.Contain("--caption-h").And.Contain("--caption-r"));
+            Assert.That(WideBlock, Does.Contain(".agent-caption[data-stands][data-in-place] { width: var(--caption-w); }"));
+            Assert.That(WideBlock, Does.Contain("min-height: var(--caption-h);"));
+            Assert.That(WideBlock, Does.Contain("border-radius: var(--caption-r);"));
+        });
+    }
+
+    /// <summary>
     /// A visitor who pressed a piece of the page is asking about that piece. When the answer lights no place of its
     /// own, the caption stands beside the piece they chose, where the answer belongs, and not beside the bar.
     /// </summary>

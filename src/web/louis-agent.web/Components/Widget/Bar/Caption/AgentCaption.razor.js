@@ -2,13 +2,16 @@
 // place the agent last lit (data-lit) and says when it lights another. On a wide screen a caption whose answer showed
 // a place (data-beside) stands beside that place: to its right where the screen has room, else to its left, else
 // under it. An answer that lit no place stands the same way beside the piece of the page the visitor chose to ask
-// about, when one is chosen. While it stands there, the place keeps a quiet ring, so the two read as one. A caption
+// about, when one is chosen. When that place has a card beside it, the next piece of the page or else the one
+// before, the caption takes that card's place instead: where it stands, its size and its corners (F151.4). While it
+// stands there, the place keeps a quiet ring, so the two read as one. A caption
 // with no place to stand beside (none was lit or chosen, the place is as wide as the screen, or it is scrolled off)
 // stands beside the bar where the screen has room, and over the bar where it has none. It follows the page while
 // the visitor scrolls. On a phone it stays over the bar and nothing is moved.
 //
-// The module's mark on a caption it has stood is an attribute of its own (data-stands), never a class: the page
-// writes the caption's classes again whenever they change, and would wipe a class added here.
+// The module's marks on a caption it has stood are attributes of their own (data-stands, and data-in-place while it
+// has a card's place), never a class: the page writes the caption's classes again whenever they change, and would
+// wipe a class added here.
 import { boxOf } from "../../ChatWidget.razor.js";
 
 const wide = "(min-width: 901px)";
@@ -112,6 +115,10 @@ const place = (caption, ring) => {
     // row, and the chip of a selected piece over it. The caption stands clear of both.
     caption.dataset.stands = "";
     const floor = (bar?.getBoundingClientRect().top ?? innerHeight) - gap;
+    // A card beside the place: the caption takes its place, and the place keeps its ring.
+    const card = about ? cardBeside(about, floor) : null;
+    if (card) return takeThePlaceOf(card, caption, ring, box);
+    delete caption.dataset.inPlace;
     const width = caption.offsetWidth, height = caption.offsetHeight;
     const onScreen = box && box.width > 0 && box.top + box.height > headerRoom && box.top < floor;
     const beside = onScreen ? spotFor(box, width, height, floor) : null;
@@ -124,6 +131,27 @@ const place = (caption, ring) => {
     }
     caption.style.setProperty("--caption-x", `${Math.round(spot.x)}px`);
     caption.style.setProperty("--caption-y", `${Math.round(spot.y)}px`);
+};
+
+// The card beside a place: the piece of the page after it, else the one before it, when it lies flat (a card that
+// is turned or lifted is on its way somewhere) and shows between the header and the bar. None when there is none.
+const cardBeside = (about, floor) => [about.nextElementSibling, about.previousElementSibling].find(card => {
+    if (!card?.matches("[data-piece]") || getComputedStyle(card).transform !== "none") return false;
+    const box = card.getBoundingClientRect();
+    return box.width > 0 && box.top >= headerRoom && box.top < floor;
+}) ?? null;
+
+// Stands the caption where the card is, as wide and as tall as it and with its corners, and rings the place.
+const takeThePlaceOf = (card, caption, ring, placeBox) => {
+    const box = card.getBoundingClientRect();
+    caption.dataset.inPlace = "";
+    caption.style.setProperty("--caption-x", `${Math.round(box.left)}px`);
+    caption.style.setProperty("--caption-y", `${Math.round(box.top)}px`);
+    caption.style.setProperty("--caption-w", `${Math.round(box.width)}px`);
+    caption.style.setProperty("--caption-h", `${Math.round(box.height)}px`);
+    caption.style.setProperty("--caption-r", getComputedStyle(card).borderRadius);
+    ring.classList.add("is-on");
+    ringAround(ring, placeBox);
 };
 
 // To the right of the place where the screen has room, else to its left, else under it, kept between the header and
