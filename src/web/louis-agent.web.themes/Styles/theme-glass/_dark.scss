@@ -1,8 +1,8 @@
-/* Glass, in the dark (F151.2, ADR 0124): the glass mockup's dark values, under "Finish one: glass cards". Black is
-   the base, white carries the words, and the purple is Ultraviolet. Only a pane is glass: almost clear, with no
-   border of its own, a bright rim that is brightest at the bottom left and the top right, the lights inside those
-   corners, a blur of what is behind it, and no shadow. A bar is solid with a hairline, and a press is solid violet
-   with white words. The red, amber, blue and green of errors, warnings and the eval screens, the caption on a photo's
+/* Glass, in the dark (F151.2, ADR 0124): the design page's dark values. Black is the base, white carries the words,
+   and the purple is Ultraviolet. A pane is its drawing alone, which holds its rim and its lights: nothing is
+   painted under it, the page shows through it a little blurred, and it throws a shadow. The page behind is fine
+   slanted lines under three lights. A bar is a plain band with a hairline, and a press is its drawing with white
+   words. The red, amber, blue and green of errors, warnings and the eval screens, the caption on a photo's
    mat and the hover grey are the framework's own, since the mockup does not show them. The faces and the easing are
    the mockup's, which are the framework's. A theme sets every name the framework sets; ThemeSheet holds it. */
 
@@ -17,7 +17,7 @@
     @include colours.both(bs-info, #7fa8e8);
     @include colours.both(web-ok, #6cbf94);
     @include colours.both(web-purple, #9282ff);          // the purple accent, light enough to read on black
-    @include colours.both(bs-body-bg, #050506);          // the page
+    @include colours.both(bs-body-bg, #010103);          // the page
     @include colours.both(bs-secondary-bg, #101013);     // a panel
     @include colours.both(bs-tertiary-bg, #19191e);      // the menu
     @include colours.both(bs-success-text-emphasis, #dcdce6, web-success-text);
@@ -68,52 +68,55 @@
     --web-ease: cubic-bezier(.2, .8, .2, 1);
     --web-spring: cubic-bezier(.34, 1.56, .64, 1);
 
-    // A pane: almost clear, its edge drawn by the rim, the lights inside two corners, no shadow.
-    --web-pane-fill:
-        linear-gradient(125deg, rgba(255, 255, 255, .12) 0%, rgba(255, 255, 255, .035) 36%,
-            rgba(255, 255, 255, .012) 60%, rgba(255, 255, 255, .07) 100%),
-        rgba(255, 255, 255, .012);
+    // A pane is its drawing alone: nothing painted under it, the page seen through it a little blurred and
+    // brightened, and the shadow of something that stands off the page.
+    --web-pane-fill: transparent;
     --web-pane-edge: none;
-    --web-pane-rim:
-        conic-gradient(from 218deg, #fff 0deg, rgba(255, 255, 255, .42) 46deg, rgba(255, 255, 255, .8) 96deg,
-            rgba(255, 255, 255, .32) 148deg, #fff 180deg, rgba(255, 255, 255, .42) 232deg,
-            rgba(255, 255, 255, .8) 280deg, rgba(255, 255, 255, .34) 330deg, #fff 360deg);
-    --web-pane-light:
-        radial-gradient(84px 8px at 17% 100%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(8px 64px at 0% 78%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(92px 8px at 80% 0%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(8px 56px at 100% 23%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(44px 6px at 10% 0%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(6px 40px at 100% 85%, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, 0) 70%);
-    --web-pane-shadow: none;
-    --web-pane-blur: blur(14px) brightness(1.12);
+    --web-pane-rim: none;
+    --web-pane-light: none;
+    --web-pane-shadow: 0 3px 14px rgba(0, 0, 0, .5), 0 16px 30px -10px rgba(0, 0, 0, .75);
+    --web-pane-blur: blur(4px) brightness(1.18) saturate(1.4);
     --web-pane-radius: 22px;
-    // Under the pointer it lifts, and its light is in the hover drawing: no edge and no shadow, as shadows of nothing.
+    // Under the pointer it lifts, and its light is in the hover drawing: no edge, and the shadow it always throws.
     --web-pane-hover-lift: -3px;
     --web-pane-hover-edge: 0 0 transparent;
-    --web-pane-hover-shadow: 0 0 transparent;
+    --web-pane-hover-shadow: var(--web-pane-shadow);
 
-    // What floats over the page throws a deep shadow on the black.
-    --web-float-shadow: 0 24px 50px -24px #000;
+    // What floats over the page throws a pane's own shadow.
+    --web-float-shadow: var(--web-pane-shadow);
 
     // A veil, a panel the stage shows through: glass as a pane is.
-    --web-veil-fill: var(--web-pane-fill);
+    --web-veil-fill: transparent;
     --web-veil-edge: none;
     --web-veil-blur: var(--web-pane-blur);
 
     // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
-    --web-inset-fill: rgba(255, 255, 255, .012);
+    --web-inset-fill: transparent;
     --web-inset-edge: none;
 
-    // A bar: the page shows through it a little, blurred, over a hairline.
-    --web-bar-fill: rgba(5, 5, 6, .86);
+    // A bar is never glass: a plain band of deep violet over a hairline, since it is the one thing that stays put.
+    --web-bar-fill: #120e26;
     --web-bar-edge: 1px solid rgba(255, 255, 255, .12);
-    --web-bar-blur: blur(12px);
+    --web-bar-blur: none;
 
-    // A press: solid violet, white words; the second an outline.
-    --web-press-fill: #6b4dff;
+    // A press is its drawing alone, with white words, and it stands on a short dark shadow; the second has no line.
+    --web-press-fill: transparent;
     --web-press-ink: #ffffff;
-    --web-press-edge: 1.5px solid rgba(255, 255, 255, .34);
+    --web-press-edge: 0 solid transparent;
+    --web-press-shadow: 0 5px 9px -3px rgba(12, 6, 48, .45);
+
+    // The page behind the glass: fine lines slanting both ways, which stay still while the page scrolls, since a
+    // line seen to blur under a pane's rim is what says it is glass. And three lights, violet, magenta and blue.
+    --web-page-lines:
+        repeating-linear-gradient(45deg, rgba(146, 130, 255, .1) 0 1px, transparent 1px 30px) fixed,
+        repeating-linear-gradient(-45deg, rgba(146, 130, 255, .1) 0 1px, transparent 1px 30px) fixed;
+    --web-page-lights:
+        radial-gradient(circle at calc(6% + 380px) 80px, rgba(107, 77, 255, .3) 0, rgba(107, 77, 255, .12) 230px,
+            rgba(107, 77, 255, 0) 460px),
+        radial-gradient(circle at calc(98% - 300px) 560px, rgba(158, 62, 255, .3) 0, rgba(158, 62, 255, .12) 190px,
+            rgba(158, 62, 255, 0) 380px),
+        radial-gradient(540px 300px at calc(18% + 490px) calc(48% + 260px), rgba(68, 86, 255, .3) 0,
+            rgba(68, 86, 255, .1) 55%, rgba(68, 86, 255, 0) 100%);
 
     // The mark: a ball of violet glass, a light from below, a rim of the palest violet, a white letter.
     --web-mark-fill:

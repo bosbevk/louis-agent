@@ -49,25 +49,33 @@ that sets every name the framework sets: about sixty colours, each written throu
 or `colours.numbers` so its two forms agree, the faces and the easing, and the surfaces, such as a pane's fill, rim
 and blur. When the page's `<html>` says that theme and that style, the block's values win over the framework's.
 
-Glass in the dark is black with white words and Ultraviolet for the purple. A pane is almost clear, has no border
-of its own, takes its edge from a rim that is brightest at the bottom left and the top right, has two lights inside
-those corners, blurs what is behind it and throws no shadow. A piece set into the page, an inset such as the chat's
-card or a field, is as see-through as a pane, its edge drawn by its drawing. A bar is solid with a hairline, and a
-press is solid violet with white words. The mark is a ball of violet glass with a white letter. Flat sets an inset
-to its page's colour with its hairline.
+Glass in the dark is black with white words and Ultraviolet for the purple. A pane is its drawing and nothing
+else: no colour is painted under it and it has no border of its own, since the drawing holds its rim and its
+lights. The page shows through it blurred by four pixels and a little brightened, and it throws the shadow of
+something that stands off the page. A piece set into the page, an inset such as the chat's card or a field, is as
+see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
+dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
+with no blur. The mark is a ball of violet glass with a white letter. Flat sets an inset to its page's colour with
+its hairline.
 
-A pane that answers the pointer differs between the two as well. In glass it lifts three pixels and wears no edge
-and no new shadow, since its light is in the hover drawing. In flat it stays where it is and wears a two pixel ring
-of the violet. What floats over the page throws a deep shadow in glass and none in flat, where its line sets it
-apart.
+The page behind the glass is part of the theme. Glass draws fine lines on it that slant both ways, thirty pixels
+apart, and they stay still while the page scrolls. Behind the page's content it lays three lights, violet, magenta
+and blue, on a layer of their own that drifts slowly and holds still for a visitor who asked for less motion. Flat
+draws no lines and keeps the framework's own three soft lights.
 
-A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: the pane's fill
-and blur, with no edge. In flat it is the pane's fill with the pane's edge and no blur.
+A pane that answers the pointer differs between the two as well. In glass it lifts three pixels, wears no edge and
+keeps the shadow it always throws, since its light is in the hover drawing. In flat it stays where it is and wears
+a two pixel ring of the violet. What floats over the page throws a pane's shadow in glass and none in flat, where
+its line sets it apart.
 
-Glass in the light turns white and black over and keeps the purple. The page is a pale wash of the violet, mixed
-from its second step a third of the way into white, so it follows the purple. The words are black, and a
-visitor's mark is black. A pane is white glass, brighter than the page, with a white rim, a fine violet-dark line
-outside it and a soft shadow under it. A bar is near-white with a hairline.
+A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: see-through,
+with the pane's blur and no edge. In flat it is the pane's fill with the pane's edge and no blur.
+
+Glass in the light turns white and black over and keeps the purple. The page is a wash of the violet, mixed from
+its second step a little over half way into white, so it follows the purple and is deep enough for a white rim to
+stand against. The words are black, and a visitor's mark is black. A pane is its drawing here too, with the page
+blurred by five pixels behind it and a soft violet-dark shadow under it. A bar is a plain pale band with a
+hairline.
 
 Flat draws every surface as one solid colour with a hairline round it, with no gradient, shadow or blur anywhere,
 so a pane's rim, light, shadow and blur are all `none`. In the dark the page is black and a pane a near-black

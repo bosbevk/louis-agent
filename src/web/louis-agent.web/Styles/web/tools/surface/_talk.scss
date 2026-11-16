@@ -56,12 +56,18 @@
     background: linear-gradient(135deg, var(--bs-success), var(--bs-success-text-emphasis));
 }
 
-/* The light behind a chat: the brand's colour from the top right, its second colour from the bottom left and a
-   breath of the first in the middle, over the page's own colour. */
+/* The page behind everything: the theme's lines over the page's own colour. Its lights are a layer of their own. */
 @mixin page-light() {
-    background:
-        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
-        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
-        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%),
-        var(--bs-body-bg);
+    background: var(--web-page-lines), var(--bs-body-bg);
+}
+
+/* The lights behind the page's content (F151.6): the theme's, on a layer of their own that fills the screen and
+   drifts slowly. What includes it says its content and when it holds still. */
+@mixin page-lights() {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--web-page-lights);
+    animation: page-drift 25s ease-in-out infinite alternate;
 }

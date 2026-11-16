@@ -14,7 +14,11 @@
    page's colour and the hairline today.
    A bar is the header, the footer and the agent's bar: its fill, its edge and its blur, as the site's header has
    them today.
-   A press is the main button, its words, and the second button's outline.
+   A press is the main button, its words, the second button's outline, and the shadow a button stands on, none
+   today.
+   The page is what lies behind everything (F151.6): lines drawn on it that stay still while it scrolls, and lights
+   on a layer of their own behind the page's content. Today there are no lines, and the lights are the brand's
+   colour from the top right, its second colour from the bottom left and a breath of the first in the middle.
    The mark is the agent's orb: its disc, its gloss and its letter, as the orb draws them today.
    You and the agent are each one's mark: the brightest words for you, the framework's purple for the agent.
    The violet is the brand's purple in five steps, light to dark; until a theme sets them, all five are the
@@ -52,6 +56,13 @@
     --web-press-fill: var(--web-cta);
     --web-press-ink: var(--web-on-primary);
     --web-press-edge: 1px solid var(--web-border-hover);
+    --web-press-shadow: none;
+
+    --web-page-lines: none;
+    --web-page-lights:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
 
     --web-mark-fill:
         radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));

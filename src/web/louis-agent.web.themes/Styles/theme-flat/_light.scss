@@ -104,6 +104,15 @@
     --web-press-fill: #6b4dff;
     --web-press-ink: #ffffff;
     --web-press-edge: 1.5px solid #0b0b0e;
+    --web-press-shadow: none;
+
+    // The page: no lines, and the lights the framework has: the colour you press from the top right, the second
+    // colour from the bottom left, and a breath of the first in the middle.
+    --web-page-lines: none;
+    --web-page-lights:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
 
     // The mark: the same flat violet disc and white l.
     --web-mark-fill: #6b4dff;

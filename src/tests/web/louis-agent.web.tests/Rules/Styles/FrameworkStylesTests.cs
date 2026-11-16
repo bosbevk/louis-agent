@@ -332,7 +332,7 @@ public partial class FrameworkStylesTests
     [Test]
     public void OnPaper_ThereIsNoGrain_AndTheSheetIsLight() =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
-            Does.Contain("@media print {\n    body::before { display: none; }\n    :root { color-scheme: light; }\n}"));
+            Does.Contain("@media print {\n    body::before, body::after { display: none; }\n    :root { color-scheme: light; }\n}"));
 
     /// <summary>
     /// A link on paper takes the ink of the page it is printed on (FX154, Louis's pick of three: "The page's own
