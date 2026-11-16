@@ -233,9 +233,10 @@ Louis at the foot of the page is the guide's identity. Every layout places the s
 framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,
 and the site's three questions as chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
 button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
-"Louis · AI", and hides its work (`ShowWork="false"`). On a screen wide enough, the bar has the site's brand on
-either side of it. On the left stands the name, with the mark as its o. On the right stands the tagline, with Louis's
-LinkedIn under it as a small link. The address comes from `SiteFacts`, which also tells search engines about it.
+"Louis · AI", and hides its work (`ShowWork="false"`). Its bar opens under the pointer on its orb, and its fourth
+chip leads into the framework. On a screen wide enough, Louis's LinkedIn stands in the screen's bottom-right corner
+as a small link, the framework's `CornerLink`. The address comes from `SiteFacts`, which also tells search engines
+about it.
 
 *Decided in:* F123, [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
 

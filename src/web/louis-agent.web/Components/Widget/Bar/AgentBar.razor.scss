@@ -12,7 +12,11 @@
     right: 0;
     bottom: 22px;
     margin-inline: auto;
-    width: min(840px, calc(100vw - 28px));
+    // The ball's size and the room round it in the row, named once (FX173, Louis: "can we increase the size"): the
+    // row, the closed dock and a phone's smaller bar all read them.
+    --agent-ball: 88px;
+    --agent-air: 16px;
+    width: min(960px, calc(100vw - 28px));
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -27,7 +31,7 @@
     width: 100%;
     transition: max-width .4s var(--web-ease);
 }
-.agent-bar.is-closed .agent-dock { max-width: calc(76px + 2 * 14px); }
+.agent-bar.is-closed .agent-dock { max-width: calc(var(--agent-ball) + 2 * var(--agent-air)); }
 /* What the site stands on each side (FX168), attached to the dock's edges (Louis: "the must attach"): beside the
    ball when closed, beside the box's ends when open, and level with the row. Only a screen wide enough for both has
    them; on a narrower one they stand aside rather than crowd the bar. */
@@ -38,21 +42,25 @@
     display: none;
     align-items: center;
     white-space: nowrap;
+    // As high as the bar, it stands over the chips above and below it, so the pointer goes through it to them, and
+    // only a link in it takes the pointer (FX173, Louis: "hover not wroking here").
+    pointer-events: none;
 }
+.agent-side ::deep a { pointer-events: auto; }
 .agent-side.is-start { right: calc(100% + 28px); }
 .agent-side.is-end { left: calc(100% + 28px); }
 .agent-side.is-start ::deep .wordmark { font-size: 26px; }
 @media (min-width: 1440px) {
     .agent-side { display: flex; }
 }
-/* The row is the bar that floats (F151.4, F151.6): 104 high round a ball of 76 with 14 of room on every side, its
-   ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
+/* The row is the bar that floats (F151.4, F151.6): 120 high round a ball of 88 with 16 of room on every side (FX173),
+   its ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
    reach past its edge. The ball is the mark as the bar shows it. */
 .agent-row {
     display: flex;
     align-items: center;
-    gap: 18px;
-    padding: 14px 25px 14px 14px;
+    gap: 20px;
+    padding: var(--agent-air) 28px var(--agent-air) var(--agent-air);
     overflow: clip;
     @include surface.floating-bar();
     border-radius: 999px;
@@ -70,16 +78,16 @@
 /* Closed, the bar is the orb alone (FX172, Louis: "the agent must start closed"): the row fills the drawn-in dock,
    its room even on both sides of the ball, and the box it clips is out of reach. */
 .agent-row { transition: padding .4s var(--web-ease); }
-.agent-bar.is-closed .agent-row { padding-right: 14px; }
+.agent-bar.is-closed .agent-row { padding-right: var(--agent-air); }
 .agent-bar.is-closed .agent-box { visibility: hidden; }
 .agent-row ::deep .orb {
-    width: 76px;
-    height: 76px;
+    width: var(--agent-ball);
+    height: var(--agent-ball);
     @include surface.mark-ball();
 }
 
 /* The box, as the design drew it: the line of what the guide is doing over the words being typed, in one place
-   sunk into the bar, 62 high and rounded like it, and at its end the talk's total and the round send button. The composer
+   sunk into the bar, 70 high (FX173) and rounded like it, and at its end the talk's total and the round send button. The composer
    draws the field's text and its buttons in a box of its own, which is taken out of the layout here, so the line,
    the text and the buttons are laid on the box's one grid and the field is drawn under the first two. */
 .agent-box {
@@ -90,7 +98,7 @@
     column-gap: 10px;
     align-items: center;
     align-content: center;
-    min-height: 62px;
+    min-height: 70px;
 }
 .agent-box::before {
     content: "";
@@ -166,70 +174,19 @@
 .agent-total b { display: block; font-size: 13.5px; font-weight: 600; color: var(--bs-emphasis-color); }
 .agent-total:hover { color: var(--bs-emphasis-color); @include surface.tint(var(--web-overlay-rgb), .12); }
 
-/* The chips over the bar while the guide waits (F134.3, the mockups'): pills that float over the page, centred, the
-   one the site suggests the main button, and the box's note after them in quiet words. When they give way they ease down and out, and
-   fold to no height, so what stands over the bar next takes their place; and they ease back the same way. */
-.agent-chips {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    max-height: 140px;
-    transition: opacity .35s, transform .35s var(--web-ease, ease-out), max-height .35s var(--web-ease, ease-out),
-        margin .35s var(--web-ease, ease-out);
-}
-.agent-chips.is-away {
-    max-height: 0;
-    /* The bar's own gap under the chips, taken back while they have no height. */
-    margin-bottom: -10px;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(8px);
-    pointer-events: none;
-}
-.agent-chips button {
-    padding: 9px 15px;
-    /* The family is the page's; the shorthand can't take inherit for it alone, so each part is said. */
-    font: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.2;
-    border-radius: 999px;
-    color: var(--bs-emphasis-color);
-    cursor: pointer;
-    transition: transform .3s var(--web-spring, ease-out), background-color .3s;
-    @include surface.floating-chip();
-}
-/* The chips float over whatever the page shows, a light website included, so each has the body a theme gives a
-   chip and is never a see-through wash. */
-.agent-chips button:hover { transform: translateY(-2px); }
-.agent-chips button.is-suggested { font-weight: 600; @include surface.press(); }
-/* The note has a backing of its own, quieter, so its words read over a light page too. */
-.agent-chips-note {
-    padding: 5px 11px;
-    font-size: 12.5px;
-    color: var(--bs-secondary-color);
-    @include surface.tag();
-}
-
-/* On a phone the chips are one row that scrolls sideways, so they stand in the room the page keeps for the bar and
-   never cover the end of a page. */
-@media (max-width: 900px) {
-    .agent-chips {
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-    .agent-chips button, .agent-chips-note { flex: none; }
+/* The chips are their own part, BarChips, with their own styles. While the bar is closed they stand round the orb
+   (FX173), so the bar stands higher by a chip and its gap to hold the lower row. A phone keeps the chips' row. */
+@media (min-width: 721px) {
+    // A chip's height, and the gap between the chips' rows and the orb, small so the rows hug it.
+    .agent-bar { --agent-chip: 36px; --agent-chip-gap: 8px; transition: bottom .4s var(--web-ease); }
+    .agent-bar.is-closed { bottom: calc(22px + var(--agent-chip) + var(--agent-chip-gap)); }
 }
 
 /* On a phone the bar is smaller, so the page keeps most of the screen: a ball of 52 in 10 of room, and a send
    button of 44. */
 @media (max-width: 720px) {
-    .agent-row { gap: 10px; padding: 10px 14px 10px 10px; }
-    .agent-row ::deep .orb { width: 52px; height: 52px; }
+    .agent-bar { --agent-ball: 52px; --agent-air: 10px; }
+    .agent-row { gap: 10px; padding-right: 14px; }
     .agent-box { min-height: 52px; }
     .agent-doing { padding-inline: 18px; }
     .agent-box ::deep textarea { padding-inline: 18px; font-size: 16px; }
@@ -238,6 +195,6 @@
 
 /* For a visitor who asked for less motion, each thing is simply where it belongs. */
 @media (prefers-reduced-motion: reduce) {
-    .agent-chips, .agent-chips button, .agent-box::before { transition: none; }
+    .agent-bar, .agent-box::before { transition: none; }
     .agent-total, .agent-bar > .piece-chip { animation: none; }
 }

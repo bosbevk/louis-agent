@@ -187,7 +187,9 @@ is lost then is what the agent remembered of the old talk.
 The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
 `Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
 message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
-centred at the page's foot, at most 840 wide and a full pill, drawn as a bar that floats: the theme's dock under a
+centred at the page's foot, at most 960 wide and a full pill round a ball of 88 with 16 of room, drawn as a bar that
+floats (those two measures are named once on the bar, `--agent-ball` and `--agent-air`, and a phone sets them to 52
+and 10): the theme's dock under a
 field's drawing, with the shadow of what floats. Under it the page's content fades away into the bare page, a
 strip the frame lays at the screen's foot, so nothing passes sharp behind the bar. In it sit the agent's orb, a line of what the agent is
 doing, and the box. A press on that line lands in the box. Over the bar stands the agent's last answer, or the
@@ -199,6 +201,9 @@ have picked a piece of the page, while the guide is answering, and while an answ
 bar. Three seconds after the visitor leaves the box, with nothing else holding it, it closes again, and a second
 press on the orb closes it at once, putting away the answer that stood over it, unless the guide is still answering.
 The row sits in a dock that draws in to the ball in the middle of the bar and opens out from there, one short move.
+A site picks whether the bar opens on a press of the orb or under the pointer, through its areas builder,
+`.BarOpens(...)`. Under the pointer, only the orb itself opens it, so reaching past it for a chip leaves things as
+they are, and the pointer leaving the whole dock lets it go after the same three seconds.
 A closed box is out of reach of the keyboard too, so no one tabs into words they can't see. The rule is one small
 record, `BarFacts`, and its `Open`.
 
@@ -226,10 +231,16 @@ While the agent waits, questions stand over the bar as chips, one of them drawn 
 through its areas builder, `.Suggestions(...)`, as it names its other parts, and the first it names is the bright
 one. A chip asks its question through the widget, and the chips end with "or type your own", since a chip is a
 shortcut and never the only way in. Before anything is asked the chips are the site's. Once there is a talk they
-follow it: the site's first question stays, and the next two are choices the agent last offered, its suggested one
-first and bright. That rule is `AgentChips.Of`. The chips step aside while an answer or the whole talk stands over
-the bar. They stay drawn then, folded to no height and out of reach, so they ease away and back and never pop. On
-a phone they are one row that scrolls sideways.
+follow it: the agent's own ideas come first, up to three of the choices it last offered, its suggested one first and
+bright, and the site's questions fill the places left, up to five chips. That rule is `AgentChips.Of`. The chips
+step aside while an answer or the whole talk stands over the bar. They stay drawn then, folded to no height and out
+of reach, so they ease away and back and never pop. On a phone they are one row that scrolls sideways.
+
+While the bar is closed, the chips leave their row and take six places round the orb: the first over it, the next
+two over the site's name on the left and its note on the right, the next two under them, and "or type your own"
+under the orb, each on one line. The bar stands higher by a chip then, to hold that lowest one. The chips are their
+own part, `BarChips` (`Widget/Bar/Chips`), which draws them and holds their styles; the bar decides what they are
+and whether they show.
 
 The bar is fixed over the page, so the page can't see how tall it stands. The bar's own module tells it, as a
 variable on the page, `--bar-room`: the distance from the top of the bar, with whatever stands over its row, down

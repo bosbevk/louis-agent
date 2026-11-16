@@ -36,12 +36,14 @@ public static class LouisAgentDevAreas
         .Glass().Flat();
 
     /// <summary>
-    /// What the guide's bar offers to be asked, as chips, the first the one suggested. The same three stand on the
-    /// showroom's start and on every demo's page, so the walk is of "this page", which is true on each of them.
+    /// What the guide's bar offers to be asked, as chips, the first the one suggested, the last a way into the
+    /// framework (FX173, Louis: "add a framework chip"). The same four stand on the showroom's start and on every
+    /// demo's page, so the walk is of "this page", which is true on each of them.
     /// </summary>
     private static readonly string[] GuideSuggestions =
     [
-        "Walk me through this page", "Which demo is like my business?", "What does it cost?"
+        "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+        "Tell me about the framework"
     ];
 
     /// <summary>The tool the guide sends a lead with, which the admin's overview counts as leads (F127.8).</summary>

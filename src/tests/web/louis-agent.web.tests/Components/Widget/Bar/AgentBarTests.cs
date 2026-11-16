@@ -71,17 +71,26 @@ public class AgentBarTests
         });
     }
 
-    /// <summary>FX172: on a site that picked hover, the pointer over the bar opens the box (Louis: "site picks it").</summary>
+    /// <summary>
+    /// FX172: on a site that picked hover, the pointer on the orb opens the box (Louis: "site picks it"), and only on
+    /// the orb, so reaching past it for a chip leaves the chips where they are (Louis: "hover must only be on orb
+    /// itself I cannot even click the buttons").
+    /// </summary>
     [Test]
-    public void OnASiteThatPickedHover_ThePointerOpensTheBox()
+    public void OnASiteThatPickedHover_ThePointerOnTheOrbOpensTheBox()
     {
         using var ctx = Context();
         ctx.Services.AddSingleton(new BarOpening(BarOpens.Hover));
         var cut = Bar(ctx);
 
-        cut.Find(".agent-dock").MouseEnter();
+        bool dockListens = cut.Find(".agent-dock").HasAttribute("blazor:onmouseenter");
+        cut.Find("button.agent-open").MouseEnter();
 
-        Assert.That(cut.Find(".agent-bar").ClassList, Does.Not.Contain("is-closed"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(dockListens, Is.False, "the dock round the orb opens nothing");
+            Assert.That(cut.Find(".agent-bar").ClassList, Does.Not.Contain("is-closed"));
+        });
     }
 
     /// <summary>FX172: on a site that opens on a press, the default, the pointer alone leaves the bar closed.</summary>
@@ -91,7 +100,7 @@ public class AgentBarTests
         using var ctx = Context();
         var cut = Bar(ctx);
 
-        cut.Find(".agent-dock").MouseEnter();
+        cut.Find("button.agent-open").MouseEnter();
 
         Assert.That(cut.Find(".agent-bar").ClassList, Does.Contain("is-closed"));
     }
@@ -241,7 +250,7 @@ public class AgentBarTests
     public void OnAPhone_TheChipsAreOneRow()
     {
         string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/web/louis-agent.web/Components/Widget/Bar/AgentBar.razor.scss")).ReplaceLineEndings();
+            "src/web/louis-agent.web/Components/Widget/Bar/Chips/BarChips.razor.scss")).ReplaceLineEndings();
         int phone = styles.IndexOf("@media (max-width: 900px) {", StringComparison.Ordinal);
 
         Assert.That(phone >= 0 ? styles[phone..] : "",
@@ -258,7 +267,7 @@ public class AgentBarTests
     public void OverALightPage_AChipStaysReadable_HoveredToo()
     {
         string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/web/louis-agent.web/Components/Widget/Bar/AgentBar.razor.scss")).ReplaceLineEndings("\n");
+            "src/web/louis-agent.web/Components/Widget/Bar/Chips/BarChips.razor.scss")).ReplaceLineEndings("\n");
         string chip = RuleAt(styles, "\n.agent-chips button {");
         string hovered = RuleAt(styles, "\n.agent-chips button:hover {");
         string noted = RuleAt(styles, "\n.agent-chips-note {");

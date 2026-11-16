@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX173 · A measure written in three places drifts; name it once
+
+Louis wanted the agent bar larger, its chips round the closed orb, and the agent's own suggestions first. The size
+was the lesson. The ball's 76 and its room of 14 were written in the row, the orb and, since FX172, the closed dock.
+A phone's rules set a smaller ball, but the closed dock still used the desktop's numbers, so on a phone it would
+have closed to the wrong width. Named once on the bar, as `--agent-ball` and `--agent-air`, every rule reads the
+same pair, and a phone sets the pair instead of each rule. The same went for the gap round the chips. And when the
+bar's styles outgrew their file, the chips became a part of their own, since they were a concern of their own all
+along. Skill 18 (testing and shipping: a test holds that the old number is gone).
+
 ## FX172 · When a thing shows is a rule of its own, worth a type
 
 Louis wanted the agent bar to start closed and open only when the visitor or the guide needs the other. Every fact

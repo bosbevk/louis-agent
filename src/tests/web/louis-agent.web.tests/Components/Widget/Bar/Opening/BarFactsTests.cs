@@ -36,7 +36,27 @@ public class BarFactsTests
         {
             Assert.That(styles, Does.Contain(".agent-dock {\n    position: relative;\n    max-width: 100%;\n    margin-inline: auto;")
                 .Or.Contain(".agent-dock {\r\n    position: relative;\r\n    max-width: 100%;\r\n    margin-inline: auto;"));
-            Assert.That(styles, Does.Contain(".agent-bar.is-closed .agent-dock { max-width: calc(76px + 2 * 14px); }"));
+            Assert.That(styles,
+                Does.Contain(".agent-bar.is-closed .agent-dock { max-width: calc(var(--agent-ball) + 2 * var(--agent-air)); }"));
+        });
+    }
+
+    /// <summary>
+    /// FX173: the bar is about a sixth larger (Louis: "can we increase the size"), a ball of 88 in 16 of room and at
+    /// most 960 wide, its measures named once, so the closed dock, the row and a phone's smaller bar all read them.
+    /// </summary>
+    [Test]
+    public void TheBar_IsLarger_ItsMeasuresNamedOnce()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Widget/Bar/AgentBar.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(styles, Does.Contain("--agent-ball: 88px;"));
+            Assert.That(styles, Does.Contain("--agent-air: 16px;"));
+            Assert.That(styles, Does.Contain("width: min(960px, calc(100vw - 28px));"));
+            Assert.That(styles, Does.Not.Contain("76px"));
         });
     }
 }

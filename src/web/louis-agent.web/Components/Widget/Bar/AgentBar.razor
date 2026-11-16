@@ -1,5 +1,6 @@
 @using LouisAgent.Web.Usage
 @using LouisAgent.Web.Components.Widget.Bar.Caption
+@using LouisAgent.Web.Components.Widget.Bar.Chips
 @using LouisAgent.Web.Components.Widget.Bar.Talk
 @using LouisAgent.Web.Components.Widget.Orb
 @* The agent bar (F134.3): the guide at the foot of the page, as the J and K mockups have it. In it the orb, a line of
@@ -7,21 +8,8 @@
    whole talk. It draws what the widget's runner holds and asks the widget to send, so the widget stays the one
    engine and the bar is only its look. *@
 <div class="@BarClasses" @ref="_bar">
-    @* The chips while the guide waits: the site's own questions at first, and once there is a talk, a next step
-       from where it was. Each chip asks its question, one of them drawn bright, and the last word says the box is
-       there too, since a chip is a shortcut and never the only way in (F134's rule 3). While they give way they
-       stay drawn, stepped away and out of reach, so they ease out and back in. *@
-    @if (Chips is { Questions.Count: > 0 } chips)
-    {
-        <div class="@ChipsClasses" inert="@(!ChipsShow)">
-            @foreach (string question in chips.Questions)
-            {
-                <button class="@(question == chips.Suggested ? "is-suggested" : null)" type="button"
-                        @onclick="() => OnChoose.InvokeAsync(question)">@question</button>
-            }
-            <span class="agent-chips-note">@Text.OrTypeYourOwn</span>
-        </div>
-    }
+    @* The chips while the guide waits (F134.3), round the orb while the bar is closed (FX173). *@
+    <BarChips Chips="Chips" Show="ChipsShow" OnChoose="OnChoose"/>
     @* The guide's last answer stands as the caption (F134.4), a caption of its own for each answer. The whole talk
        takes its place when the visitor opens it, or when the answer holds what only the talk draws. *@
     @if (Caption is { } caption)
@@ -48,7 +36,7 @@
     }
     @* The dock (FX172) holds the row, draws it in to the orb in the middle when closed, and carries what the site
        stands on each side (FX168), attached to its edges, so the sides sit beside the orb and ride out with the box. *@
-    <div class="agent-dock" @onmouseenter="PointerCame" @onmouseleave="PointerLeftAsync">
+    <div class="agent-dock" @onmouseleave="PointerLeftAsync">
     @if (Sides?.Start is { } start)
     {
         <div class="agent-side is-start">@start</div>
@@ -60,8 +48,10 @@
     <div class="agent-row">
         @* The orb is the way in (FX172): closed, the bar is the orb alone, and a press opens the box and puts the
            visitor in it. *@
+        @* On a site that opens its bar under the pointer, only the orb itself opens it (Louis: "hover must only be on
+           orb itself"); the pointer leaving the whole dock lets it go, so moving from the orb into the box keeps it. *@
         <button class="agent-open" type="button" aria-label="@Text.OpenTheBar" aria-expanded="@Expanded"
-                @onclick="HoldOpenAsync">
+                @onclick="HoldOpenAsync" @onmouseenter="PointerCame">
             <Orb State="State" Label="@Title" Mark="@Initial"/>
         </button>
         @* The box: the line of what the guide is doing over the box itself, and a press on the line lands in the

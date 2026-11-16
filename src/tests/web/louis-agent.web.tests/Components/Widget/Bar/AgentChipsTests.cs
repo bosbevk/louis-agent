@@ -44,10 +44,27 @@ public class AgentChipsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(chips.Questions,
-                Is.EqualTo(new[] { "Walk me through this page", "Book the garden room", "Is the beach far?" }));
+            Assert.That(chips.Questions.Take(3),
+                Is.EqualTo(new[] { "Book the garden room", "Is the beach far?", "Stop here" }));
             Assert.That(chips.Suggested, Is.EqualTo("Book the garden room"));
         });
+    }
+
+    /// <summary>
+    /// FX173: the guide's own choices take the first places, its suggested one over the orb, and the site's questions
+    /// fill the places left, up to the five round the closed orb, none twice (Louis: "the agents own idea must take
+    /// priority").
+    /// </summary>
+    [Test]
+    public void TheGuidesOwnIdeas_ComeFirst_TheSitesFillTheRest()
+    {
+        var chips = AgentChips.Of(Site, Last);
+
+        Assert.That(chips.Questions, Is.EqualTo(new[]
+        {
+            "Book the garden room", "Is the beach far?", "Stop here", "Walk me through this page",
+            "Which demo is like my business?"
+        }));
     }
 
     /// <summary>A site that names no questions has no chips, whatever the guide offered.</summary>

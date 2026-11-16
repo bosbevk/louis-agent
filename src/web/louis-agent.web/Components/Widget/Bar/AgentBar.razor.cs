@@ -189,7 +189,7 @@ public partial class AgentBar : IAsyncDisposable
     /// <summary>Whether the site opens its bar under the pointer, as it named through its areas; a press if it named none.</summary>
     private bool OpensUnderThePointer => Services.GetService<BarOpening>()?.Opens == BarOpens.Hover;
 
-    /// <summary>The pointer came over the bar: on a site that opens under the pointer, that holds it open.</summary>
+    /// <summary>The pointer came onto the orb: on a site that opens under the pointer, that holds it open.</summary>
     private void PointerCame()
     {
         if (!OpensUnderThePointer) return;
@@ -303,9 +303,6 @@ public partial class AgentBar : IAsyncDisposable
     /// was, the choices the guide last offered.
     /// </summary>
     private AgentChips Chips => AgentChips.Of(Suggestions, Captioned.Of(Last)?.Offer);
-
-    /// <summary>The chips' classes: showing, or stepped away.</summary>
-    private string ChipsClasses => ChipsShow ? "agent-chips" : "agent-chips is-away";
 
     /// <summary>What the talk has cost so far (F134.5), the chat's own sum; none while nothing is measured.</summary>
     private TurnUsage? Total => Runner.Chat?.Usage();
