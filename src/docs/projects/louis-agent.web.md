@@ -187,7 +187,7 @@ is lost then is what the agent remembered of the old talk.
 The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
 `Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
 message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
-centred at the page's foot, at most 960 wide and a full pill round a ball of 80 with 14 of room, the ball setting its
+centred at the page's foot, at most 960 wide and a full pill round a ball of 68 with 14 of room, the ball setting its
 height, drawn as a bar that
 floats (those two measures are named once on the bar, `--agent-ball` and `--agent-air`, and a phone sets them to 52
 and 10): the theme's dock under a

@@ -55,8 +55,8 @@ public class BarFactsTests
         {
             // A tad smaller again, and all with it, the ball setting the bar's height (Louis: "make the ball a tad
             // smaller and everything with it, the ball size must anyway determine the height"), but not too small
-            // ("but the ball can't be too small"): between the first bar's 76 and the 88 that was too big.
-            Assert.That(styles, Does.Contain("--agent-ball: 80px;"));
+            // ("but the ball can't be too small"), and then Louis's own measure: "make it 68px".
+            Assert.That(styles, Does.Contain("--agent-ball: 68px;"));
             Assert.That(styles, Does.Contain("--agent-air: 14px;"));
             Assert.That(styles, Does.Contain("width: min(960px, calc(100vw - 28px));"));
             Assert.That(styles, Does.Not.Contain("76px"));

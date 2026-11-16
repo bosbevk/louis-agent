@@ -14,7 +14,7 @@
     margin-inline: auto;
     // The ball's size and the room round it in the row, named once (FX173, Louis: "can we increase the size"): the
     // row, the closed dock and a phone's smaller bar all read them.
-    --agent-ball: 80px;
+    --agent-ball: 68px;
     --agent-air: 14px;
     width: min(960px, calc(100vw - 28px));
     display: flex;
@@ -53,7 +53,7 @@
 @media (min-width: 1440px) {
     .agent-side { display: flex; }
 }
-/* The row is the bar that floats (F151.4, F151.6): 108 high round a ball of 80 with 14 of room on every side (FX173),
+/* The row is the bar that floats (F151.4, F151.6): 96 high round a ball of 68 with 14 of room on every side (FX173),
    the ball setting the height, and everything round it, the closed dock and the chips' rows, read from the two,
    its ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
    reach past its edge. The ball is the mark as the bar shows it. */
@@ -88,7 +88,7 @@
 }
 
 /* The box, as the design drew it: the line of what the guide is doing over the words being typed, in one place
-   sunk into the bar, 70 high (FX173) and rounded like it, and at its end the talk's total and the round send button. The composer
+   sunk into the bar, as high as the ball (FX173), so the ball sets the bar's height, and rounded like it, and at its end the talk's total and the round send button. The composer
    draws the field's text and its buttons in a box of its own, which is taken out of the layout here, so the line,
    the text and the buttons are laid on the box's one grid and the field is drawn under the first two. */
 .agent-box {
@@ -99,7 +99,7 @@
     column-gap: 10px;
     align-items: center;
     align-content: center;
-    min-height: 70px;
+    min-height: var(--agent-ball);
 }
 .agent-box::before {
     content: "";
@@ -188,7 +188,6 @@
 @media (max-width: 720px) {
     .agent-bar { --agent-ball: 52px; --agent-air: 10px; }
     .agent-row { gap: 10px; padding-right: 14px; }
-    .agent-box { min-height: 52px; }
     .agent-doing { padding-inline: 18px; }
     .agent-box ::deep textarea { padding-inline: 18px; font-size: 16px; }
     .agent-box ::deep .send, .agent-box ::deep .stop { width: 44px; height: 44px; font-size: 20px; }
