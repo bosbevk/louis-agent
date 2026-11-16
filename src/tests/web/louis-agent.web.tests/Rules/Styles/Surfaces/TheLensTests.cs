@@ -55,6 +55,17 @@ public class TheLensTests
         Assert.That(File.ReadAllText(Path.Combine(Web, "Styles/web/base/_elements.scss")),
             Does.Contain("@property --web-lens-piece").And.Contain("inherits: false;"));
 
+    /// <summary>
+    /// An entrance plays and lets go (FX163, Louis: "now we just need the bending of the background"): an animation
+    /// held after its end makes its element a layer of its own, and a lens inside it then sees nothing of the page
+    /// behind to bend. So the page's, a block's and a heading's entrances hold nothing once they end.
+    /// </summary>
+    [TestCase("Components/Site/SiteShell.razor.scss", "animation: site-page-in .5s var(--web-ease, ease-out) backwards;")]
+    [TestCase("Styles/web/base/_elements.scss", "animation: site-rise .7s var(--web-ease) backwards;")]
+    [TestCase("Styles/web/base/_elements.scss", "animation: site-unmask .9s var(--web-ease) backwards;")]
+    public void AnEntrance_HoldsNothingOnceItEnds(string sheet, string rule) =>
+        Assert.That(File.ReadAllText(Path.Combine(Web, sheet)), Does.Contain(rule));
+
     /// <summary>The frame's module brings the lens to every page of every site.</summary>
     [Test]
     public void TheFrame_BringsTheLens() =>

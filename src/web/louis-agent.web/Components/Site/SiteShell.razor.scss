@@ -77,7 +77,9 @@
     max-width: 1280px;
     width: 100%;
     margin: 0 auto;
-    animation: site-page-in .5s var(--web-ease, ease-out) both;
+    // Played and let go: held after its end, it would make the column a layer of its own that the glass's lens can't
+    // see through to the page behind (FX163).
+    animation: site-page-in .5s var(--web-ease, ease-out) backwards;
 }
 
 /* A page change plays an entrance (F118, Louis: "when changing from one page to another can we have an animation"):
