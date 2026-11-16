@@ -258,11 +258,12 @@ public partial class FrameworkStylesTests
 
     /// <summary>
     /// With the guide as a bar in the frame's corner (F151.6), the frame keeps the room the bar says it stands, on a
-    /// wide screen and a phone alike: the page, a slide and the way up end above the bar, and the corner is no
-    /// floating box of its own, since the bar places itself.
+    /// wide screen and a phone alike: the page's content, a slide and the way up end above the bar, the footer stands
+    /// at the very bottom (FX163, Louis: "the footer must always be at the bottom"), and the corner is no floating
+    /// box of its own, since the bar places itself.
     /// </summary>
-    [TestCase(
-        ".site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }")]
+    [TestCase(".site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: 0; }")]
+    [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-main { padding-bottom: var(--site-bar); }")]
     [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }")]
     [TestCase(
         ".site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }")]

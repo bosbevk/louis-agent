@@ -226,7 +226,10 @@
    the way up already end above, on a wide screen and a phone alike. These come after the phone's rules, so they win
    there too. On a screen only: paper has no bar, so a printed page keeps no room for one. */
 @media screen {
-    .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }
+    /* The room is kept under the page's content, not under the footer, so the footer stands at the very bottom with
+       the bar over its middle (FX163, Louis: "the footer must always be at the bottom"). */
+    .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: 0; }
+    .site:has(.site-corner .chat-widget.is-bar) .site-main { padding-bottom: var(--site-bar); }
     .site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }
     .site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }
     /* Under the bar the page's content fades away into the bare page, as the design has it, so nothing passes
