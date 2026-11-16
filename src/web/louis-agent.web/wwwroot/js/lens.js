@@ -17,6 +17,12 @@ const INDEX = 1.7;     // how much slower light is in this glass than in air; wi
 const STEEPEST = 8;    // a top is never taken as steeper than this, so the very edge stays a number
 const NEAR = "400px";  // a picked piece wears its lens only this close to the screen
 const KEY = [-.42, -.5, .76], BACK = [.42, .5, .76];   // half-way between the eye and the lamp, and its answer
+// Under the pointer the lamp is the pointer, a hand above the piece, so the shine and the shade walk round the edge as
+// it moves (FX163, the design's lens): how much stronger it is on the edge than the far lamp, how far the glass must
+// turn from flat before it shows in full, so the flat of a piece takes none, and how high it hangs, in pixels.
+const LIT = 1.35, EDGE = .12, HAND = 70;
+// A piece held down is this much of its height: the glass gives, so it bends less and its shine draws in.
+const PRESSED = .45;
 // Light let in from inside: white for a picked piece, violet for one the agent shows.
 const GLOW = { 2: [255, 255, 255, .8], 3: [150, 70, 255, .9] };
 const shape = t => Math.pow(1 - Math.pow(1 - t, 4), .25);
@@ -57,20 +63,36 @@ const bendMap = (w, h, wall, rise) => {
     return [href, far];
 };
 
+// The far lamp, high on the left, and its answer low on the right: the shine, its echo, and which way is away.
+const fromAfar = (nx, ny, nz) => [
+    Math.pow(Math.max(nx * KEY[0] + ny * KEY[1] + nz * KEY[2], 0), 60),
+    Math.pow(Math.max(nx * BACK[0] + ny * BACK[1] + nz * BACK[2], 0), 60),
+    nx * .64 + ny * .77];
+// The pointer's lamp: the way from this point to it, half way between that and straight up to the eye, so the edge
+// shines where it faces that way and is in shade where it turns from it. Only the edge takes it.
+const fromThePointer = (lamp, x, y, nx, ny, nz) => {
+    const lx = lamp.x - x, ly = lamp.y - y, ll = Math.hypot(lx, ly, HAND);
+    const hx = lx / ll, hy = ly / ll, hz = HAND / ll + 1, hl = Math.hypot(hx, hy, hz), flat = Math.hypot(lx, ly) || 1;
+    const edge = Math.min((1 - nz) / EDGE, 1);
+    return [
+        LIT * 1.3 * edge * Math.pow(Math.max((nx * hx + ny * hy + nz * hz) / hl, 0), 36),
+        LIT * edge * Math.pow(Math.max((-nx * hx - ny * hy + nz * hz) / hl, 0), 36),
+        -(nx * lx + ny * ly) / flat];
+};
+
 // The light on the piece, laid over the bent page: a shine where its top faces half way to the lamp, a weaker one
 // from the far side, the edge mirroring the room, shade on the steep side away from the lamp, and for a picked or a
 // shown piece its whole edge glowing from inside.
-const lightMap = (w, h, rise, dark, glow) => {
+const lightMap = (w, h, rise, dark, glow, lamp) => {
     const half = Math.min(w, h) / 2, [FX, DX, W] = side(w, 1, half, rise), [FY, DY, H] = side(h, 1, half, rise);
     const ink = dark ? [0, 0, 0] : [42, 24, 150], deep = dark ? .5 : .3;
     return picture(W, H, d => { for (let y = 0, j = 0; y < H; y++) for (let x = 0; x < W; x++, j += 4) {
         let gx = DX[x] * FY[y], gy = DY[y] * FX[x]; const steep = Math.hypot(gx, gy);
         if (steep > STEEPEST) { gx *= STEEPEST / steep; gy *= STEEPEST / steep; }
         const l = Math.hypot(gx, gy, 1), nx = -gx / l, ny = -gy / l, nz = 1 / l;
-        const key = Math.pow(Math.max(nx * KEY[0] + ny * KEY[1] + nz * KEY[2], 0), 60);
-        const back = Math.pow(Math.max(nx * BACK[0] + ny * BACK[1] + nz * BACK[2], 0), 60), away = nx * .64 + ny * .77;
+        const [key, back, away] = lamp ? fromThePointer(lamp, x, y, nx, ny, nz) : fromAfar(nx, ny, nz);
         const mirror = (.04 + .96 * Math.pow(1 - nz, 5)) * (.25 + .75 * Math.max(-away, 0));
-        const white = Math.min(key + .5 * back + .9 * mirror, 1);
+        const white = Math.min(key + .5 * back + (lamp ? LIT : 1) * .9 * mirror, 1);
         const shade = deep * Math.pow(1 - nz, 1.5) * Math.max(away, 0) * (1 - white);
         const inside = glow ? Math.min(glow[3] * Math.pow(1 - nz, .8), 1) * (1 - white) : 0, a = white + shade + inside;
         if (a < .004) continue;
@@ -93,9 +115,20 @@ const read = () => { const s = getComputedStyle(document.documentElement);
 const kind = el => el.dataset?.lens === "off" ? 0 : +getComputedStyle(el).getPropertyValue("--web-lens-piece") || 0;
 
 // Puts the lens on a piece, or draws it again at its new size or light.
+// What a piece is going through just now: where the pointer's lamp is over it, and whether it is held down.
+const now = new Map();
+const state = el => { if (!now.has(el)) now.set(el, {}); return now.get(el); };
+const dark = () => document.documentElement.dataset.style !== "light";
+// The light's picture for a piece as it is now: with the pointer's lamp it is drawn fresh, else it is kept by size.
+const litFor = (el, w, h, rise) => {
+    const m = state(el), k = kind(el);
+    return m.lamp ? lightMap(w, h, rise, dark(), GLOW[k], m.lamp)
+        : memo(`l${w}x${h}:${rise}:${dark()}:${k}`, () => lightMap(w, h, rise, dark(), GLOW[k]));
+};
 const wear = el => {
     const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight); if (!w || !h || !glass.wall) return;
-    const { wall, rise } = glass, dark = document.documentElement.dataset.style !== "light", k = kind(el);
+    // A piece held down gives: its wall a little thinner and its middle much lower, so it bends less.
+    const down = state(el).down, wall = glass.wall * (down ? .9 : 1), rise = glass.rise * (down ? PRESSED : 1);
     const id = worn.get(el) ?? `lens-${n++}`; worn.set(el, id); sized?.observe(el);
     let f = document.getElementById(id);
     if (!f) { f = document.createElementNS(NS, "filter"); f.id = id; host.append(f); }
@@ -103,20 +136,22 @@ const wear = el => {
         "x:0", "y:0", `width:${w}`, `height:${h}`]
         .forEach(pair => { const [name, value] = pair.split(":"); f.setAttribute(name, value); });
     const [bend, far] = memo(`b${w}x${h}:${wall}:${rise}`, () => bendMap(w, h, wall, rise));
-    const lit = memo(`l${w}x${h}:${rise}:${dark}:${k}`, () => lightMap(w, h, rise, dark, GLOW[k]));
+    const lit = litFor(el, w, h, rise);
     const box = `x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"`;
     f.innerHTML = `<feImage ${box} result="m" href="${bend}"/>` +
         `<feDisplacementMap in="SourceGraphic" in2="m" scale="${far * 2}" xChannelSelector="R" yChannelSelector="G"` +
         ` result="bent"/>` +
         `<feImage ${box} result="lit" href="${lit}"/><feBlend in="lit" in2="bent" mode="normal"/>`;
-    // The pane's own deepening of the page stays, after the bending.
+    // The pane's own deepening of the page stays, after the bending, but never a blur: bending only shows when what is
+    // behind stays sharp, as the design's.
     el.style.removeProperty("backdrop-filter");
-    const own = getComputedStyle(el).backdropFilter, value = `url(#${id})${own && own !== "none" ? " " + own : ""}`;
+    const own = getComputedStyle(el).backdropFilter.replace(/blur\([^)]*\)/g, "").trim();
+    const value = `url(#${id})${own && own !== "none" ? " " + own : ""}`;
     el.style.setProperty("-webkit-backdrop-filter", value); el.style.setProperty("backdrop-filter", value);
 };
 const unwear = el => {
     const id = worn.get(el); if (!id) return;
-    worn.delete(el); sized?.unobserve(el); document.getElementById(id)?.remove();
+    worn.delete(el); now.delete(el); sized?.unobserve(el); document.getElementById(id)?.remove();
     el.style.removeProperty("-webkit-backdrop-filter"); el.style.removeProperty("backdrop-filter");
 };
 const held = el => el.isConnected && kind(el) >= 2;
@@ -132,6 +167,27 @@ const over = e => {
     hovered = piece; if (piece) wear(piece);
 };
 const left = e => { if (e.relatedTarget || !hovered) return; if (!held(hovered)) unwear(hovered); hovered = null; };
+
+// Only the light changes while the pointer moves, so only the light's picture is swapped, at most once a frame.
+const relight = el => {
+    const lit = document.getElementById(worn.get(el) ?? "")?.querySelector('[result="lit"]'); if (!lit) return;
+    const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight), down = state(el).down;
+    lit.setAttribute("href", litFor(el, w, h, glass.rise * (down ? PRESSED : 1)));
+};
+let frame = 0;
+// The pointer over the piece is its lamp: where it is, in the piece's own pixels, even on a piece turned in 3D.
+const moved = e => {
+    if (!hovered || !worn.has(hovered)) return;
+    const r = hovered.getBoundingClientRect(); if (!r.width || !r.height) return;
+    state(hovered).lamp = { x: (e.clientX - r.left) * hovered.offsetWidth / r.width,
+        y: (e.clientY - r.top) * hovered.offsetHeight / r.height };
+    const el = hovered; if (!frame) frame = requestAnimationFrame(() => { frame = 0; relight(el); });
+};
+// Holding the piece down flattens it; letting go stands it up again.
+const pressed = () => { if (!hovered || !worn.has(hovered)) return; state(hovered).down = true; wear(hovered); };
+const released = () => {
+    [...now.entries()].filter(([, m]) => m.down).forEach(([el, m]) => { m.down = false; if (worn.has(el)) wear(el); });
+};
 
 // The picked and shown pieces, looked for after a render, at most a few times a second: each wears the lens while
 // it is near the screen, and one no longer picked gives it back.
@@ -152,6 +208,9 @@ export const lens = {
             host.setAttribute("aria-hidden", "true"); host.style.position = "absolute"; document.body.append(host);
             document.addEventListener("pointerover", over, { passive: true });
             document.addEventListener("pointerout", left, { passive: true });
+            document.addEventListener("pointermove", moved, { passive: true });
+            document.addEventListener("pointerdown", pressed, { passive: true });
+            document.addEventListener("pointerup", released, { passive: true });
             near = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && held(e.target) ? wear(e.target)
                 : e.target !== hovered && unwear(e.target)), { rootMargin: `${NEAR} 0px` });
             sized = new ResizeObserver(es => es.forEach(e => worn.has(e.target) && wear(e.target)));
@@ -170,6 +229,8 @@ export const lens = {
         if (!listening) return;
         listening = false;
         document.removeEventListener("pointerover", over); document.removeEventListener("pointerout", left);
+        document.removeEventListener("pointermove", moved); document.removeEventListener("pointerdown", pressed);
+        document.removeEventListener("pointerup", released);
         [near, sized, looks].forEach(o => o?.disconnect());
         [...worn.keys()].forEach(unwear); host?.remove(); host = null; hovered = null;
     }
