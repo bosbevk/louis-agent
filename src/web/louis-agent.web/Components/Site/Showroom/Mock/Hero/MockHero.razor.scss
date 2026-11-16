@@ -1,3 +1,6 @@
+@use "web/tools/mock";
+@use "web/tools/surface";
+
 /* The hero's photo badge wears the business's mark. */
 .mock-mark { display: inline-flex; flex: none; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
@@ -33,9 +36,8 @@
     border-radius: 999px;
     font: 600 .92em/1 var(--mock-text);
     letter-spacing: .03em;
-    color: var(--mock-on-brand);
-    background: var(--mock-brand);
-    box-shadow: 0 1em 2em -1.1em var(--mock-brand);
+    @include mock.cast(1em, 2em, -1.1em);
+    @include surface.press();
 }
 .mock-scene { position: relative; min-width: 0; }
 .mock-scene ::deep svg { display: block; width: 100%; height: auto; }
@@ -47,7 +49,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 60%, transparent), transparent 55%);
+    @include mock.photo-wash();
 }
 .mock-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
 .mock-photo-badge {
@@ -64,8 +66,8 @@
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--mock-on-brand);
-    background: var(--mock-brand);
-    box-shadow: 0 8px 20px -8px rgba(var(--web-shadow-rgb), .6);
+    @include mock.fill();
+    @include surface.cast(8px, 20px, -8px, .6, var(--web-shadow-rgb));
 }
 .mock-photo-badge .mock-mark { width: 2em; height: 2em; }
 /* The facts, a band the whole width under the hero, each in the brand's small capitals between hairlines. */
@@ -77,8 +79,8 @@
     margin: 0;
     padding: 0 var(--mock-gutter);
     list-style: none;
-    border-block: 1px solid color-mix(in srgb, var(--mock-brand) 16%, transparent);
-    background: color-mix(in srgb, var(--mock-brand) 7%, var(--mock-page));
+    @include mock.line(block, $share: 16%);
+    @include mock.wash(7%, var(--mock-page));
 }
 .mock-facts li {
     padding: 1.5em 1em;
@@ -88,17 +90,17 @@
     text-align: center;
     color: var(--mock-brand);
 }
-.mock-facts li + li { border-left: 1px solid color-mix(in srgb, var(--mock-brand) 16%, transparent); }
+.mock-facts li + li { @include mock.line(left, $share: 16%); }
 
 /* Editorial: a big heading in the business's ink, the photo framed and smaller at its side, a double rule under the
    hero, and a squarer button. */
 .look-editorial .mock-hero {
     grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr);
-    border-bottom: 3px double color-mix(in srgb, var(--mock-ink) 35%, transparent);
+    @include mock.line(bottom, ink, 35%, 3px, double);
 }
 .look-editorial .mock-hero-line { font-size: 3.6em; font-weight: 600; letter-spacing: -.01em; color: var(--mock-ink); }
 .look-editorial .mock-scene { margin: 2.4em var(--mock-gutter) 2.4em 0; }
-.look-editorial .mock-scene.is-photo { border-radius: .3em; box-shadow: 0 1.6em 3em -1.8em var(--mock-brand); }
+.look-editorial .mock-scene.is-photo { border-radius: .3em; @include mock.cast(1.6em, 3em, -1.8em); }
 .look-editorial .mock-action { border-radius: .25em; }
 
 /* Banner: the photo a tall band across the whole page, washed deep in the brand colour from its foot and from the
@@ -108,9 +110,7 @@
 .look-banner .mock-scene { height: 27em; }
 .look-banner .mock-scene ::deep svg { height: 100%; }
 .look-banner .mock-scene.is-photo::after {
-    background:
-        linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 88%, transparent) 8%, transparent 70%),
-        linear-gradient(to right, color-mix(in srgb, var(--mock-brand) 60%, transparent), transparent 55%);
+    @include mock.photo-wash($banner: true);
 }
 .look-banner .mock-photo-badge { top: 1.6em; bottom: auto; left: var(--mock-gutter); }
 .look-banner .mock-hero-words {
@@ -122,7 +122,7 @@
 }
 .look-banner .mock-hero-line { font-size: 3.7em; color: var(--mock-on-brand); }
 .look-banner .mock-hero-note { color: color-mix(in srgb, var(--mock-on-brand) 88%, transparent); }
-.look-banner .mock-action { color: var(--mock-brand); background: var(--mock-on-brand); box-shadow: none; }
+.look-banner .mock-action { box-shadow: none; @include mock.press-turned(); }
 
 /* A narrow mock (a phone, or a small stage): the hero stacks, its words over its photo, and reaches the window's
    edges past the page's thin gutter there. */
@@ -132,7 +132,7 @@
     .mock-hero-line, .look-editorial .mock-hero-line, .look-banner .mock-hero-line { font-size: 1.65em; }
     .mock-scene, .look-banner .mock-scene { height: 12em; }
     .look-editorial .mock-scene { margin: 0; }
-    .look-banner .mock-hero-words { position: static; max-width: none; background: var(--mock-brand); }
+    .look-banner .mock-hero-words { position: static; max-width: none; @include mock.fill(); }
     .mock-facts { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 -16px; }
     .mock-facts li:nth-child(odd) { border-left: 0; }
 }

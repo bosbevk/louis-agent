@@ -184,6 +184,8 @@ public partial class FrameworkStylesTests
     {
         string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss")).ReplaceLineEndings("\n");
+        string tool = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Styles/web/tools/_mock.scss"));
         int light = mock.IndexOf(".mock-page ::deep .mock-section.is-shown::after {", StringComparison.Ordinal);
 
         Assert.Multiple(() =>
@@ -191,7 +193,8 @@ public partial class FrameworkStylesTests
             Assert.That(light, Is.GreaterThan(0));
             Assert.That(mock[light..mock.IndexOf('}', light)],
                 Does.Contain("animation: area-spotlight 4s var(--web-ease) both;")
-                    .And.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
+                    .And.Contain("@include mock.spotlit();"));
+            Assert.That(tool, Does.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
             Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
                                            "    .mock-page ::deep .mock-section.is-shown::after { display: none; }"));
         });

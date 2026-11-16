@@ -1,0 +1,161 @@
+/* The mock tool (F151.4): how a mocked business's website is drawn in the business's own colours, the --mock-* its
+   mock sets from the page's data. What every website has, a card, a header, a foot and a main button, is drawn by
+   the surface tool, and here the names that tool reads are set to the brand (wears, card-as, press-turned). What
+   only a mock has, such as a ruled header or a menu's dotted leader, is a mixin here. Written where it's included:
+   a tool writes no CSS of its own. */
+
+/* One of the brand's colours by its name, see-through when a share of it is asked for. */
+@function tone($colour, $share: 100%) {
+    @if $share == 100% {
+        @return var(--mock-#{$colour});
+    }
+    @return color-mix(in srgb, var(--mock-#{$colour}) #{$share}, transparent);
+}
+
+/* The page's colour with a little of its ink in it: how much of it is page. */
+@function shade($page) {
+    @return color-mix(in srgb, var(--mock-page) #{$page}, var(--mock-ink));
+}
+
+/* The website wears its brand: the names the surface tool reads, set to the business's colours, for a card, a bar
+   and the main button, with no drawing of a theme's laid on them. */
+@mixin wears() {
+    --web-pane-fill: #{shade(90%)};
+    --web-pane-edge: 0 solid transparent;
+    --web-pane-radius: .8em;
+    --web-pane-shadow: none;
+    --web-pane-blur: none;
+    --web-art-pane-rest: none;
+    --web-art-pane-hover: none;
+    --web-bar-fill: var(--mock-brand);
+    --web-bar-edge: 0 solid transparent;
+    --web-art-bar: none;
+    --web-press-fill: var(--mock-brand);
+    --web-press-ink: var(--mock-on-brand);
+    --web-art-press-rest: none;
+    --web-art-press-hover: none;
+    --web-art-press-pressed: none;
+    --web-art-press-disabled: none;
+}
+
+/* A card of its own paper and line, such as a printed menu: the same names, for it alone. */
+@mixin card-as($page, $line, $radius) {
+    --web-pane-fill: #{shade($page)};
+    --web-pane-edge: 1px solid #{tone(brand, $line)};
+    --web-pane-radius: #{$radius};
+}
+
+/* The main button turned round, for where it stands on the brand's colour. */
+@mixin press-turned() {
+    --web-press-fill: var(--mock-on-brand);
+    --web-press-ink: var(--mock-brand);
+}
+
+/* A piece filled with one of the brand's colours, or washed with a share of it over what is under. */
+@mixin fill($colour: brand) { background: tone($colour); }
+@mixin wash($share, $over: transparent) { background: color-mix(in srgb, var(--mock-brand) #{$share}, #{$over}); }
+@mixin paper($page) { background: shade($page); }
+
+/* A line in one of the brand's colours: all round or on one side, a share of the colour, its width and its style. */
+@mixin line($side: null, $of: brand, $share: 100%, $width: 1px, $style: solid) {
+    @if $side == null {
+        border: $width $style tone($of, $share);
+    } @else {
+        border-#{$side}: $width $style tone($of, $share);
+    }
+}
+
+/* The shadow a piece throws in the brand's colour. */
+@mixin cast($down, $soft, $pull, $share: 100%) { box-shadow: 0 $down $soft $pull tone(brand, $share); }
+
+/* The ring round whatever the keyboard is on, in the brand's colour. */
+@mixin focus() {
+    outline: 2px solid var(--mock-brand);
+    outline-offset: 2px;
+}
+
+/* A box that is typed in: its line and a soft ring in the brand's colour. */
+@mixin typed-in() {
+    border-color: tone(brand, 60%);
+    box-shadow: 0 0 0 3px tone(brand, 18%);
+}
+
+/* The browser's window the website stands in: the page's colour, a fine edge and a shadow in the demo's colour. */
+@mixin window() {
+    background: var(--mock-page);
+    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08), 0 30px 60px -30px var(--accent);
+}
+
+/* The browser's bar over the website, in a shade of its page. */
+@mixin chrome() {
+    border-bottom: 1px solid shade(75%);
+    background: shade(88%);
+}
+
+/* A new address in the bar, ringed in the brand's colour, and the loading line that runs under the bar. */
+@mixin ringed() { box-shadow: 0 0 0 2px var(--mock-brand); }
+@mixin loading() {
+    background: var(--mock-brand);
+    box-shadow: 0 0 10px var(--mock-brand);
+}
+
+/* The spotlight on a section its agent shows: a ring and a light in the brand's colour, the rest of the page dimmed. */
+@mixin spotlit() {
+    box-shadow: 0 0 0 3px var(--mock-brand), 0 0 48px tone(brand, 45%), 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .45);
+}
+
+/* A header's own lines. A band has a hairline under it. A ruled one is the page's colour under a rule of the label
+   colour. A lined one is the page's colour over a double line of the brand. The page it is on is underlined. */
+@mixin head-band() { box-shadow: inset 0 -1px 0 tone(on-brand, 35%); }
+@mixin head-ruled() {
+    background: var(--mock-page);
+    box-shadow: inset 0 3px 0 var(--mock-label), inset 0 -1px 0 tone(brand, 14%);
+}
+@mixin head-lined() {
+    background: var(--mock-page);
+    box-shadow: inset 0 -1px 0 var(--mock-brand), inset 0 -4px 0 var(--mock-page), inset 0 -5px 0 var(--mock-brand);
+}
+@mixin head-current() { box-shadow: inset 0 -2px 0 var(--mock-label); }
+
+/* A hero's photo washed in the brand's colour from its foot, and a banner's washed deeper and from its side too. */
+@mixin photo-wash($banner: false) {
+    @if $banner {
+        background:
+            linear-gradient(to top, tone(brand, 88%) 8%, transparent 70%),
+            linear-gradient(to right, tone(brand, 60%), transparent 55%);
+    } @else {
+        background: linear-gradient(to top, tone(brand, 60%), transparent 55%);
+    }
+}
+
+/* The agent's widget on the website: the panel's colour, a ring and a glow in the brand's colour and a shadow under
+   it; or, standing beside the website, a fine line at its side and the glow. */
+@mixin widget($beside: false) {
+    @if $beside {
+        box-shadow: -1px 0 0 rgba(var(--web-overlay-rgb), .1), 0 0 44px -8px tone(brand, 75%);
+    } @else {
+        background: var(--bs-secondary-bg);
+        box-shadow:
+            0 0 0 1px rgba(var(--web-overlay-rgb), .08),
+            0 0 0 4px tone(brand, 22%),
+            0 22px 44px -10px rgba(var(--web-shadow-rgb), .55),
+            0 0 44px -8px tone(brand, 75%);
+    }
+}
+
+/* The widget's head: the brand's colour from a lighter shade of it into a darker, over a hairline. */
+@mixin widget-head() {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--mock-brand) 80%, var(--mock-on-brand)),
+        var(--mock-brand) 55%, color-mix(in srgb, var(--mock-brand) 70%, rgb(var(--web-shadow-rgb))));
+    box-shadow: inset 0 -1px 0 tone(on-brand, 15%);
+}
+
+/* The dot that says the agent is there, and the ring it swells to as it breathes. */
+@mixin live-dot($swollen: false) {
+    @if $swollen {
+        box-shadow: 0 0 0 6px color-mix(in srgb, var(--web-ok) 0%, transparent);
+    } @else {
+        background: var(--web-ok);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--web-ok) 25%, transparent);
+    }
+}

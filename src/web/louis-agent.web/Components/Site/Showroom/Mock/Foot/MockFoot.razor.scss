@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* A mocked business's foot (F134.2): a band of its brand colour at the end of its page, at the window's bottom when
    the page is short. Its mark and its name in its display face with its tagline under it, its menu in its small
    capitals, and its facts in a quiet list. It reads the page's gutter (--mock-gutter) and the brand (--mock-*). */
@@ -10,7 +12,7 @@
     margin-top: auto;
     padding: 2.8em var(--mock-gutter) 3em;
     color: var(--mock-on-brand);
-    background: var(--mock-brand);
+    @include surface.bar($blur: none);
 }
 .mock-foot-brand { display: flex; align-items: center; gap: 1em; font-family: var(--mock-face); }
 .mock-mark { display: inline-flex; flex: none; width: 3.2em; height: 3.2em; }

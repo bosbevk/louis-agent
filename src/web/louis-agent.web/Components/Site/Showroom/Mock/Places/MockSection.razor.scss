@@ -1,9 +1,11 @@
+@use "web/tools/mock";
+
 /* A section of a mocked business's website (F127.1): its heading in the business's typeface and brand colour, a thin
    rule in its ink above it, its words, and its cards in a row that wraps. Its sizes are in em, so it grows with the
    window as its page does. */
 .mock-section {
     padding: 2.8em 0 1.2em;
-    border-top: 1px solid color-mix(in srgb, var(--mock-ink) 14%, transparent);
+    @include mock.line(top, ink, 14%);
     font-size: 1.05em;
     line-height: 1.65;
 }
@@ -30,7 +32,7 @@
     aspect-ratio: 3 / 2;
     object-fit: cover;
     border-radius: .9em;
-    box-shadow: 0 1.8em 3.4em -2em var(--mock-brand);
+    @include mock.cast(1.8em, 3.4em, -2em);
 }
 .mock-section.has-photo .mock-cards { grid-column: 1 / -1; }
 .mock-cards {

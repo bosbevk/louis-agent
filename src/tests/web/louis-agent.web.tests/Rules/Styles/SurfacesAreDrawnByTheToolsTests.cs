@@ -6,29 +6,13 @@ namespace LouisAgent.Web.Tests.Rules.Styles;
 /// on any side, <c>box-shadow</c>, <c>backdrop-filter</c> or <c>outline</c> paints something: a colour, a name, a
 /// gradient, a shadow or a blur (Louis's pick A of three, and outline with it). <c>none</c>, <c>0</c>,
 /// <c>transparent</c> and <c>inherit</c> clear rather than paint, and <c>border-radius</c> is shape, so none of them
-/// counts. The tools and the settings are where the drawing lives, so they are not read. The sheets that still draw
-/// by hand are listed, and the list may only shrink: each family's step takes its sheets off, and the last leaves it
-/// empty.
+/// counts. The tools and the settings are where the drawing lives, so they are not read. No sheet draws by hand, and
+/// one that starts to fails here.
 /// </summary>
 public class SurfacesAreDrawnByTheToolsTests
 {
     /// <summary>The framework's web, whose component and global sheets are read.</summary>
     private static readonly string Web = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web");
-
-    /// <summary>The sheets that still draw a surface by hand, by their path in the framework's web.</summary>
-    private static readonly string[] StillByHand =
-    [
-        "Components/Site/Showroom/Mock/Foot/MockFoot.razor.scss",
-        "Components/Site/Showroom/Mock/Head/MockHead.razor.scss",
-        "Components/Site/Showroom/Mock/Hero/MockHero.razor.scss",
-        "Components/Site/Showroom/Mock/Live/MockLiveChat.razor.scss",
-        "Components/Site/Showroom/Mock/Menu/MockMenu.razor.scss",
-        "Components/Site/Showroom/Mock/MockWidget.razor.scss",
-        "Components/Site/Showroom/Mock/Places/MockCard.razor.scss",
-        "Components/Site/Showroom/Mock/Places/MockSection.razor.scss",
-        "Components/Site/Showroom/Mock/SiteMock.razor.scss",
-        "Components/Site/Showroom/Mock/Website/MockPage.razor.scss",
-    ];
 
     /// <summary>The properties that draw a surface.</summary>
     private static readonly string[] Drawing =
@@ -77,14 +61,14 @@ public class SurfacesAreDrawnByTheToolsTests
         return Drawing.Contains(property) && Paints.Any(mark => value.Contains(mark, StringComparison.Ordinal));
     }
 
-    /// <summary>Every sheet that draws a surface by hand is on the list, so a new one can't join in silence.</summary>
+    /// <summary>No sheet draws a surface by hand, so a theme reaches every piece and a new sheet can't slip one in.</summary>
     [Test]
-    public void EverySheetThatDrawsByHand_IsListed()
+    public void NoSheet_DrawsASurfaceByHand()
     {
-        var unlisted = Sheets().Where(DrawsByHand).Except(StillByHand).ToList();
+        var byHand = Sheets().Where(DrawsByHand).ToList();
 
-        Assert.That(unlisted, Is.Empty,
-            "Draw these through the surface tool, tools/_surface.scss:\n  " + string.Join("\n  ", unlisted));
+        Assert.That(byHand, Is.Empty,
+            "Draw these through the surface tool, tools/_surface.scss:\n  " + string.Join("\n  ", byHand));
     }
 
     /// <summary>The surface tool's source: the file a sheet names, and the files of kinds it hands on.</summary>
@@ -177,14 +161,5 @@ public class SurfacesAreDrawnByTheToolsTests
 
         Assert.That(read.Where(drawing => !names.Contains($"--web-art-{drawing}:", StringComparison.Ordinal)),
             Is.Empty);
-    }
-
-    /// <summary>The list names no sheet that is clean, so it only shrinks.</summary>
-    [Test]
-    public void TheList_NamesNoCleanSheet()
-    {
-        var clean = StillByHand.Where(sheet => !File.Exists(Path.Combine(Web, sheet)) || !DrawsByHand(sheet));
-
-        Assert.That(clean, Is.Empty, "take it off the list");
     }
 }
