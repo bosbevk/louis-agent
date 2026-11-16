@@ -70,6 +70,8 @@ button:disabled { cursor: default; opacity: .4; }
 .site .reveal.in[data-delay="2"] { animation-delay: .2s; }
 .site .reveal.in[data-delay="3"] { animation-delay: .3s; }
 .site :is(h1, h2).reveal.in { animation: site-unmask .9s var(--web-ease) both; }
+/* A heading that unmasks keeps its sweep of colour too: both run, the unmask once and the shine for good. */
+.site :is(h1, h2).chrome.reveal.in { animation: site-unmask .9s var(--web-ease) both, web-shine 8s ease-in-out infinite; }
 @keyframes site-rise {
     from { opacity: 0; translate: 0 12px; }
     to { opacity: 1; translate: 0 0; }
