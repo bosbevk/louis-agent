@@ -63,10 +63,14 @@
    panel"): an angled shadow the letters cast on the page. A drop shadow, not a text shadow, so it stands behind
    words whose colour is clipped into them. */
 @mixin lifted-words() {
-    // No glow: the letters cast an angled shadow down and to the right, as if lit from the top left, a crisp one close
-    // in and a soft one further out, so they stand raised off the page with depth (Louis: "we need to kind of give
-    // the font more depth", "make the glow not a glow but an angled shadow for the font").
-    filter: drop-shadow(2px 3px 0 rgba(var(--web-shadow-rgb), .16)) drop-shadow(6px 10px 12px rgba(var(--web-shadow-rgb), .24));
+    // No glow: the letters cast an angled shadow down and to the right, as if lit from the top left, in fine layers
+    // that each step a little further out, softer and fainter, so the depth builds smoothly instead of one block
+    // (Louis: "make the glow not a glow but an angled shadow for the font", "can we layer shadows so it looks more
+    // refined").
+    // Every layer is softly blurred, none crisp, so the shadow melts away gracefully (Louis: "give the font a soft
+    // blur, very soft and gracefully").
+    filter: drop-shadow(1px 2px 3px rgba(var(--web-shadow-rgb), .1)) drop-shadow(2px 4px 7px rgba(var(--web-shadow-rgb), .08))
+        drop-shadow(4px 8px 14px rgba(var(--web-shadow-rgb), .07)) drop-shadow(8px 16px 28px rgba(var(--web-shadow-rgb), .06));
 }
 
 @mixin marker($lit: false) {
