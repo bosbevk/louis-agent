@@ -1,5 +1,9 @@
-@* The strip at the landing's foot (F118): the framework's SiteStrip with this site's words, configured (ADR 0125). *@
-<SiteStrip Heading="Ready for a website that answers your customers?">
-    <Action><LinkButton Href="/contact" Text="Ask for yours" /></Action>
-    <ChildContent>Tell Louis about your business. A short call, then a working agent to look at, from R500 a month.</ChildContent>
+@* The strip at the landing's foot (F118): the framework's SiteStrip with this site's words, configured (ADR 0125). It
+   asks the agent to take the visitor's details, or leads to the contact page; a quote is on request (FX163). *@
+<SiteStrip Heading="Want one for your business?">
+    <Action>
+        <AskButton Text="Leave your details" Question="I would like a website with an agent for my business. Please take my details so I can get a quote." />
+        <LinkButton Href="/contact" Text="Contact us" Kind="ButtonKind.Quiet" />
+    </Action>
+    <ChildContent>Ask the agent in the corner to take your details, or write to us. Every quote is made for your business, on request.</ChildContent>
 </SiteStrip>

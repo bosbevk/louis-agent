@@ -74,9 +74,13 @@ public class LandingStoryTests
             Is.EqualTo(new[] { "/law-practice-demo", "/guesthouse-demo", "/restaurant-demo" }));
     }
 
-    /// <summary>The last strip speaks to a business and asks for theirs.</summary>
+    /// <summary>
+    /// The last strip speaks to a business with no price on it (Louis: "a request to the ai to take their details and
+    /// a link to our contact page, I do quotes on request"): a button that asks the agent to take the visitor's
+    /// details, and a link to the contact page.
+    /// </summary>
     [Test]
-    public void TheLastStrip_SpeaksToABusiness()
+    public void TheLastStrip_AsksTheAgent_OrLeadsToContact()
     {
         using var ctx = new BunitContext();
 
@@ -84,9 +88,11 @@ public class LandingStoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(strip.TextContent, Does.Contain("business"));
-            Assert.That(strip.TextContent, Does.Not.Contain("NuGet"));
-            Assert.That(strip.QuerySelector("a[href='/contact']")!.TextContent, Is.EqualTo("Ask for yours"));
+            Assert.That(strip.TextContent, Does.Contain("business").And.Contain("on request"));
+            Assert.That(strip.TextContent, Does.Not.Contain("R500").And.Not.Contain("Louis"));
+            Assert.That(strip.QuerySelector("button[data-ask]")!.GetAttribute("data-ask"),
+                Does.Contain("take my details"));
+            Assert.That(strip.QuerySelector("a[href='/contact']")!.TextContent, Is.EqualTo("Contact us"));
         });
     }
 }

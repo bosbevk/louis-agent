@@ -52,6 +52,13 @@ export function watch(widget, tags) {
             if (card.getAttribute("aria-expanded") !== "true") widget.invokeMethodAsync("Shown", card.id, press(card));
             return;
         }
+        // A button on the page that asks the agent (FX163): its question goes to the widget, which opens and asks it.
+        const asking = event.target.closest("[data-ask]");
+        if (asking) {
+            event.preventDefault();
+            widget.invokeMethodAsync("Ask", asking.dataset.ask);
+            return;
+        }
         // A click in the guide's own bar keeps the pick: that is where the visitor asks about it.
         if (event.target.closest(".chat-widget")) return;
         const piece = event.target.closest("[data-piece][id]");
