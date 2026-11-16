@@ -98,8 +98,8 @@ build · Pricing · Demos · Contact · The framework.
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
 large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
 that says what each one means, and a visitor who presses a state's button holds it there. Under the mark come the
-offer (a website with an agent, from R500 a month), the headline "Ask the website.", the buttons, and Louis taking a
-lead in a window below. Then comes what it does, then how it works for you (three steps, and the facts a buyer
+headline "Ask the website.", a few words on what we build, a website that answers for a business, and two buttons,
+"Ask for yours" and "See what it does", which goes to that section. Then comes what it does, then how it works for you (three steps, and the facts a buyer
 trusts). Then come custom agents, the demos, one band of proof (built on a framework of its own, measured, with links
 into it), and a strip that asks a business for theirs.
 

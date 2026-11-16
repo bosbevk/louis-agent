@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 124 | 94 |
-| Fixes (`FX`) | 147 | 6 |
+| Fixes (`FX`) | 148 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -282,10 +282,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (147 done)
+## Fixes (148 done)
 
 | Id | When | What |
 |---|---|---|
+| FX160 | 2026-11-16 | The hero is the design's: no line above the headline, the design's words, "Ask for yours" and "See what it does", and nothing under them; the window of a chat that stood there is gone, and the second button names its section so the frame moves to it |
 | FX159 | 2026-11-16 | The header is white glass, with glass buttons: in glass light the bar was a solid pale band and its switch and CV were drawn by hand; now the bar is white the page shows through over a white edge, the switch is the theme's group and main button, and the way to ask and the CV are its main and quiet buttons |
 | FX158 | 2026-11-16 | Each menu in the header opens alone: the dropdown and the frame's menu round it shared the class `site-menu`, and a scoped rule marks only its last part, so a pointer anywhere in the menu opened every list; the dropdown's classes are `site-drop` now |
 | FX157 | 2026-11-16 | A visitor whose session a restart forgot is told it is gone, not asked for a key: the door left a session it didn't know to the key's check, which answered 401; now it asks the host, and a session the host doesn't have goes on to its handler's 404, so the page ends the chat with its words for a restart |

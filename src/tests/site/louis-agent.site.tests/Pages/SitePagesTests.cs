@@ -99,9 +99,7 @@ public class SitePagesTests
 
     /// <summary>What's new is on the page: a demo is built on the framework, a pack never needs the engine.</summary>
     [TestCase(typeof(HomePage), "AI agent framework")]
-    [TestCase(typeof(HomePage), "100% C#")]
     [TestCase(typeof(HomePage), "South Africa")]
-    [TestCase(typeof(HomePage), "one person")]
     [TestCase(typeof(ArchitecturePage), "href=\"/framework/identities\"")]
     [TestCase(typeof(HomePage), "href=\"/framework/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
@@ -176,10 +174,16 @@ public class SitePagesTests
         Assert.That(lede.TextContent, Does.Not.Contain(";"));
     }
 
+    /// <summary>The hero's words under its headline, as the design has them.</summary>
+    private const string Lede = "We build websites that answer for your business. An agent on the page shows the " +
+                                "room, takes the booking and sends it to you, while you're busy with the guests you " +
+                                "already have.";
+
     /// <summary>
-    /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, from R500 a month, then "Ask for yours"
-    /// and "See one work", and Louis taking a lead in the aside. No tour button: the guide's bar is at the foot of
-    /// every page (F151.6, Louis: "these button must go").
+    /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, in the design's words (FX160, Louis:
+    /// "replace the red with the green", and of the line above the headline, "take this out"), then "Ask for yours"
+    /// and "See what it does", with nothing under them. No tour button: the guide's bar is at the foot of every page (F151.6, Louis: "these button must
+    /// go").
     /// </summary>
     [Test]
     public void TheHero_SellsTheWebsiteWithAnAgent()
@@ -191,19 +195,22 @@ public class SitePagesTests
         var actions = cut.Find(".hero .actions").Children.ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".hero .kicker").TextContent, Does.Contain("from R500 a month"));
+            Assert.That(cut.FindAll(".hero .kicker"), Is.Empty, "no line above the headline");
             Assert.That(cut.Find(".hero h1").TextContent, Is.EqualTo("Ask the website."));
             Assert.That(cut.Find(".hero").ClassList, Does.Contain("is-centred"));
             Assert.That(cut.FindAll(".hero .hero-art .mark-states .orb"), Has.Count.EqualTo(1),
                 "the mark, above the words");
             Assert.That(actions, Has.Count.EqualTo(2));
             Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Ask for yours"));
-            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See one work"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See what it does"));
             Assert.That(actions[0].GetAttribute("href"), Is.EqualTo("/contact"));
-            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/demos"));
+            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/home/does"));
+            Assert.That(actions[1].GetAttribute("data-section"), Is.EqualTo("does"),
+                "a move within the page, which the frame makes, as the index's links do");
+            Assert.That(cut.Find(".hero .lede").TextContent, Is.EqualTo(Lede));
+            Assert.That(cut.FindAll(".hero p.muted"), Is.Empty, "no note under the words");
+            Assert.That(cut.FindAll(".hero .hero-aside"), Is.Empty, "nothing under the buttons");
             Assert.That(cut.FindAll(".hero .guide-button"), Is.Empty);
-            Assert.That(cut.FindAll(".hero .live-lead"), Has.Count.EqualTo(1), "Louis taking a lead, beside it");
-            Assert.That(cut.Find(".hero .live-lead .turn-head").TextContent, Does.Contain("Louis · AI"));
         });
     }
 
