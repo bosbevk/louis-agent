@@ -20,6 +20,23 @@
 /* The row is the bar that floats (F151.4, F151.6): 104 high round a ball of 76 with 14 of room on every side, its
    ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
    reach past its edge. The ball is the mark as the bar shows it. */
+/* What the site stands on each side (FX168), in the room the bar leaves: as high as the row (its ball of 76 with 14
+   of room over and under it) and level with it, just outside the bar. Only a screen wide enough for both has them;
+   on a narrower one they stand aside rather than crowd the bar. */
+.agent-side {
+    position: absolute;
+    bottom: 0;
+    height: calc(76px + 2 * 14px);
+    display: none;
+    align-items: center;
+    white-space: nowrap;
+}
+.agent-side.is-start { right: calc(100% + 36px); }
+.agent-side.is-end { left: calc(100% + 36px); }
+.agent-side.is-start ::deep .wordmark { font-size: 26px; }
+@media (min-width: 1440px) {
+    .agent-side { display: flex; }
+}
 .agent-row {
     display: flex;
     align-items: center;

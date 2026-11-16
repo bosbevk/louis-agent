@@ -46,6 +46,15 @@
             <button type="button" aria-label="@Text.ClosePiece" @onclick="OnClearPiece">×</button>
         </div>
     }
+    @* What the site stands on each side (FX168), beside the row and lined up with it, in the room the bar leaves. *@
+    @if (Sides?.Start is { } start)
+    {
+        <div class="agent-side is-start">@start</div>
+    }
+    @if (Sides?.End is { } end)
+    {
+        <div class="agent-side is-end">@end</div>
+    }
     <div class="agent-row">
         <Orb State="State" Label="@Title" Mark="@Initial"/>
         @* The box: the line of what the guide is doing over the box itself, and a press on the line lands in the

@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX168 · A cascade carries what only the far end needs, past what lies between
+
+Louis wanted the brand in the empty room on each side of the agent bar. The bar sits inside the chat widget, and
+the site gives the widget its words. The plain way would pass two new slots through the widget, but the widget
+was already at its size limit and knows nothing of brands. A cascading value fits better. The site wraps its widget
+in a small component that holds the two sides, Blazor hands them down the tree, and the bar picks them up and draws
+them beside its own row. The widget in between never sees them. So the sides line up with the bar exactly, with no
+copy of its measures, and a site that gives none gets the bar as it always was. Skill 20 (extensibility: a framework
+part a site configures without the parts in between changing).
+
 ## FX167 · A state the page already marks is one a component's styles can answer
 
 Louis wanted the landing's three demos in glass windows, and the one picked brought to the front. Neither needed

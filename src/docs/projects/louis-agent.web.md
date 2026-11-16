@@ -193,6 +193,12 @@ strip the frame lays at the screen's foot, so nothing passes sharp behind the ba
 doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
 in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
 
+A site may stand something in the empty room on each side of the bar, such as its name and a note. It wraps its
+widget in `BarSides` (`Widget/Bar/Sides`), giving a start and an end. They reach the bar through Blazor's cascade,
+so the widget between them carries nothing for them. The bar draws them just outside its row, level with it, and
+only on a screen at least 1440 wide. On a narrower one they stand aside rather than crowd it. The note on the right
+can be the framework's `BrandNote` (`Site/Brand`): a line with a link under it, its mark before its words.
+
 The orb (`Widget/Orb`) is a general part of its own: a disc with five states, and the agent's mark on it, which
 the bar makes the first letter of the agent's name. The disc is the theme's mark, drawn from the mark's fill, its
 gloss and its ink, so it is a silver disc with no theme named, a ball of violet glass in the glass theme and a flat

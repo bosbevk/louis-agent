@@ -1,6 +1,7 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Chat;
 using LouisAgent.Web.Components.Widget.Bar.Caption;
+using LouisAgent.Web.Components.Widget.Bar.Sides;
 using LouisAgent.Web.Components.Widget.Orb;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
@@ -67,6 +68,10 @@ public partial class AgentBar : IAsyncDisposable
     /// <summary>Asks the widget to let the selected piece go.</summary>
     [Parameter]
     public EventCallback OnClearPiece { get; set; }
+
+    /// <summary>What the site stands on each side of the bar (FX168), when it wraps its widget in them.</summary>
+    [CascadingParameter]
+    private BarSides? Sides { get; set; }
 
     /// <summary>The chat's words.</summary>
     [Inject]

@@ -1,5 +1,11 @@
 @* The site's guide (F109.3): the framework's chat widget, configured once with the guide's identity and the site's
    words, as the bar at the foot of the page (F151.6), so every layout places the same tag and the visitor meets one
-   guide on every page. *@
-<ChatWidget Identity="@Identity" Title="Louis · AI" Greeting="Hi, I'm Louis. Well, the AI version of me, the real one is in Malmesbury. What brings you here? A website with an agent, an agent of your own, or a look under the bonnet of how it's built?"
-            Placeholder="Ask me anything…" ShowWork="false" Layout="WidgetLayout.Bar" />
+   guide on every page. Beside the bar stand the site's name and its tagline over Louis's LinkedIn (FX168). *@
+<BarSides>
+    <Start><Wordmark Before="l" After="uis-agent" /></Start>
+    <End><BrandNote Line="100% C#, because you can" Href="@SiteFacts.LinkedIn" LinkText="@SiteFacts.LinkedInShort"><Mark><LinkedInMark /></Mark></BrandNote></End>
+    <ChildContent>
+        <ChatWidget Identity="@Identity" Title="Louis · AI" Greeting="Hi, I'm Louis. Well, the AI version of me, the real one is in Malmesbury. What brings you here? A website with an agent, an agent of your own, or a look under the bonnet of how it's built?"
+                    Placeholder="Ask me anything…" ShowWork="false" Layout="WidgetLayout.Bar" />
+    </ChildContent>
+</BarSides>
