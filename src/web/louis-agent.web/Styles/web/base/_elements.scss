@@ -40,15 +40,15 @@ button:disabled { cursor: default; opacity: .4; }
 }
 /* A panel's glass colour (FX163, Louis: "we should be able to give glass colors, transparent white etc."): the theme's
    white or grey, as much of it as the panel says, the rest see-through. The pane fills itself with it. */
-[data-glass="white"] { --web-glass-tint: color-mix(in srgb, var(--web-glass-white) var(--web-glass-amount, 0%), transparent); }
-[data-glass="grey"] { --web-glass-tint: color-mix(in srgb, var(--web-glass-grey) var(--web-glass-amount, 0%), transparent); }
+[data-glass="white"] { --web-glass-tint: color-mix(in srgb, var(--web-glass-white) var(--glass-amount, 0%), transparent); }
+[data-glass="grey"] { --web-glass-tint: color-mix(in srgb, var(--web-glass-grey) var(--glass-amount, 0%), transparent); }
 /* A panel switched to show its reflection shows it under it, fading out, as the design's window and photos do (FX163,
    Louis: "all glass panels must have the reflection option"). */
 [data-reflect] { -webkit-box-reflect: below 12px linear-gradient(transparent 68%, rgba(var(--web-shadow-rgb), .28)); }
 /* A panel that tilts leans towards the pointer under it, as the design's cards (Louis: "yes a lens with a tilt"):
    the frame's tilt module sets the two angles from where the pointer is, as far as the theme's tilt allows. */
 [data-tilt]:hover {
-    transform: perspective(1100px) rotateX(var(--web-rx, 0deg)) rotateY(var(--web-ry, 0deg));
+    transform: perspective(1100px) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg));
     transition: transform .18s ease-out, box-shadow .3s;
 }
 @media (prefers-reduced-motion: reduce) { [data-tilt]:hover { transform: none; } }

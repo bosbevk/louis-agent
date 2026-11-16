@@ -15,9 +15,9 @@ public class GlassLookTests
             Is.EqualTo(((string?)null, "water", (string?)null)));
 
     /// <summary>A tinted glass writes its colour, its type and its amount, kept between none and all of it.</summary>
-    [TestCase(GlassColour.White, 25, GlassType.Frost, "white", "frost", "--web-glass-amount: 25%")]
-    [TestCase(GlassColour.Grey, 140, GlassType.Plain, "grey", "plain", "--web-glass-amount: 100%")]
-    [TestCase(GlassColour.Grey, -5, GlassType.Water, "grey", "water", "--web-glass-amount: 0%")]
+    [TestCase(GlassColour.White, 25, GlassType.Frost, "white", "frost", "--glass-amount: 25%")]
+    [TestCase(GlassColour.Grey, 140, GlassType.Plain, "grey", "plain", "--glass-amount: 100%")]
+    [TestCase(GlassColour.Grey, -5, GlassType.Water, "grey", "water", "--glass-amount: 0%")]
     public void ATintedGlass_WritesItsColourTypeAndAmount(GlassColour colour, int amount, GlassType type,
         string name, string typeName, string style)
     {

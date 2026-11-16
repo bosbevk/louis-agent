@@ -36,5 +36,5 @@ public sealed record GlassLook(GlassColour Colour, int Amount, GlassType Type)
     /// <summary>How much colour, as the panel's styles read it, kept from 0 to 100; none for clear glass.</summary>
     public string? Style => ColourName is null
         ? null
-        : $"--web-glass-amount: {Math.Clamp(Amount, 0, 100).ToString(CultureInfo.InvariantCulture)}%";
+        : $"--glass-amount: {Math.Clamp(Amount, 0, 100).ToString(CultureInfo.InvariantCulture)}%";
 }

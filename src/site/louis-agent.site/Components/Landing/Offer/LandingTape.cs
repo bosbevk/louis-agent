@@ -1,4 +1,4 @@
-using LouisAgent.Web.Components.Site.Showcase;
+using LouisAgent.Web.Components.Site.Ticker;
 
 namespace LouisAgent.Site.Components.Landing.Offer;
 

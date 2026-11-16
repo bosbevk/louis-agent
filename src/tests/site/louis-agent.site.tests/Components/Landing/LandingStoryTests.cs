@@ -90,8 +90,7 @@ public class LandingStoryTests
         {
             Assert.That(strip.TextContent, Does.Contain("business").And.Contain("on request"));
             Assert.That(strip.TextContent, Does.Not.Contain("R500").And.Not.Contain("Louis"));
-            Assert.That(strip.QuerySelector("button[data-ask]")!.GetAttribute("data-ask"),
-                Does.Contain("take my details"));
+            Assert.That(strip.QuerySelector("button.btn")!.TextContent, Is.EqualTo("Leave your details"));
             Assert.That(strip.QuerySelector("a[href='/contact']")!.TextContent, Is.EqualTo("Contact us"));
         });
     }

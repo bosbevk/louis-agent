@@ -13,14 +13,14 @@ const still = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const moved = e => {
     const el = e.target instanceof Element ? e.target.closest("[data-tilt]") : null; if (!el) return;
     const r = el.getBoundingClientRect(), deg = most() * Math.min(1, WIDE / (r.width || 1)); if (!deg || still()) return;
-    el.style.setProperty("--web-ry", `${((e.clientX - r.left) / r.width - .5) * deg}deg`);
-    el.style.setProperty("--web-rx", `${(.5 - (e.clientY - r.top) / r.height) * deg}deg`);
+    el.style.setProperty("--tilt-ry", `${((e.clientX - r.left) / r.width - .5) * deg}deg`);
+    el.style.setProperty("--tilt-rx", `${(.5 - (e.clientY - r.top) / r.height) * deg}deg`);
 };
 // The pointer leaves: the panel settles flat again.
 const left = e => {
     const el = e.target instanceof Element ? e.target.closest("[data-tilt]") : null; if (!el) return;
     if (e.relatedTarget instanceof Node && el.contains(e.relatedTarget)) return;
-    el.style.removeProperty("--web-rx"); el.style.removeProperty("--web-ry");
+    el.style.removeProperty("--tilt-rx"); el.style.removeProperty("--tilt-ry");
 };
 
 // Hangs the two listeners once; safe to call after every render.

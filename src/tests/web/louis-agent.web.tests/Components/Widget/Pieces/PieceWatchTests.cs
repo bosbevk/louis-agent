@@ -31,22 +31,6 @@ public class PieceWatchTests
             Is.EqualTo(new[] { "Ask about this", "You picked this", "Agent shows this" }));
     }
 
-    /// <summary>A button on the page that asks the agent hands its question to the widget, word for word.</summary>
-    [Test]
-    public async Task AnAskButton_HandsItsQuestionToTheWidget()
-    {
-        using var ctx = new BunitContext();
-        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSingleton(new ChatText());
-        ctx.JSInterop.SetupModule(FrameworkScripts.PieceWatch);
-        string? asked = null;
-        var cut = ctx.Render<PieceWatch>(p => p.Add(w => w.Asked, question => asked = question));
-
-        await cut.InvokeAsync(() => cut.Instance.AskAsync("Please take my details for a quote."));
-
-        Assert.That(asked, Is.EqualTo("Please take my details for a quote."));
-    }
-
     /// <summary>
     /// A click away from the pieces lets the pick go (Louis: "I clicked away and the fucker is still ticked"): the
     /// module says so, and the widget hears it.

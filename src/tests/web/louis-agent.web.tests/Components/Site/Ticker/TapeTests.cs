@@ -1,6 +1,6 @@
-using LouisAgent.Web.Components.Site.Showcase;
+using LouisAgent.Web.Components.Site.Ticker;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showcase;
+namespace LouisAgent.Web.Tests.Components.Site.Ticker;
 
 /// <summary>
 /// The design's running tape (Louis: "also want this scrolling feature animation as a framework control"): one line

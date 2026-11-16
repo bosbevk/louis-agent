@@ -269,22 +269,13 @@ public partial class ChatWidget : IAsyncDisposable
     /// A piece picked on the page (F127.7, Louis's pick: the guide explains it at once): the panel opens and the guide
     /// is asked about it, as the door asks.
     /// </summary>
-    private Task PickPieceAsync(PageArea piece)
+    private async Task PickPieceAsync(PageArea piece)
     {
         _piece = piece;
-        return AskAsync(string.Format(Text.ExplainPiece, piece.Heading));
-    }
-
-    /// <summary>
-    /// A question the page asks for the visitor, from a pick or a button that asks the agent (FX163): the panel opens
-    /// and the guide is asked, unless it is still answering.
-    /// </summary>
-    private async Task AskAsync(string question)
-    {
         if (Runner.Streaming) return;
         Open = true;
         if (Size == ChatWindowSize.Minimised) Size = ChatWindowSize.Normal;
-        Runner.Draft = question;
+        Runner.Draft = string.Format(Text.ExplainPiece, piece.Heading);
         StateHasChanged();
         await SendAsync();
     }

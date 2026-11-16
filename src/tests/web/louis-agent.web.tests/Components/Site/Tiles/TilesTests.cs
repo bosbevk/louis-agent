@@ -180,7 +180,7 @@ public class TilesTests
             Assert.That(clear.GetAttribute("data-glass-type"), Is.EqualTo("water"));
             Assert.That(tinted.GetAttribute("data-glass"), Is.EqualTo("grey"));
             Assert.That(tinted.GetAttribute("data-glass-type"), Is.EqualTo("plain"));
-            Assert.That(tinted.GetAttribute("style"), Is.EqualTo("--web-glass-amount: 40%"));
+            Assert.That(tinted.GetAttribute("style"), Is.EqualTo("--glass-amount: 40%"));
         });
     }
 

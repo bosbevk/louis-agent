@@ -66,14 +66,6 @@ public partial class PieceWatch : IAsyncDisposable
         return Shown.InvokeAsync(piece);
     }
 
-    /// <summary>What a button on the page that asks the agent does: the widget opens and asks its question.</summary>
-    [Parameter]
-    public EventCallback<string> Asked { get; set; }
-
-    /// <summary>The module's call: the visitor pressed a button that asks the agent this question.</summary>
-    [JSInvokable("Ask")]
-    public Task AskAsync(string question) => Asked.InvokeAsync(question);
-
     /// <summary>What letting the pick go does: the widget drops the piece and its chip.</summary>
     [Parameter]
     public EventCallback LetGo { get; set; }

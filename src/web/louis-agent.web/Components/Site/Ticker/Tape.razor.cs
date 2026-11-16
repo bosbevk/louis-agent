@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Components.Site.Showcase;
+namespace LouisAgent.Web.Components.Site.Ticker;
 
 /// <summary>
 /// Runs a line of short items across the page without end, each with a part in the accent, fading out at both ends:
