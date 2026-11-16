@@ -67,13 +67,13 @@ public class GlassValuesTests
         Assert.That(Value(style, "--web-tilt"), Is.EqualTo("7"));
 
     /// <summary>
-    /// Glass stays see-through, only what is behind its flat middle is blurred, its edge clear (Louis: "keep the glass
-    /// see through but only blur the background image parts of the glass").
+    /// Glass is water only, for every panel (Louis: "can we switch to just water?", "for all"): no frost blurs what is
+    /// behind it.
     /// </summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
-    public void TheFrost_BlursOnlyWhatIsBehind(SiteStyle style) =>
-        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("1"));
+    public void TheGlass_HasNoFrost(SiteStyle style) =>
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("0"));
 
     /// <summary>
     /// A panel switched to water ripples what is behind it instead (Louis: "can we replace the frost with a water",
