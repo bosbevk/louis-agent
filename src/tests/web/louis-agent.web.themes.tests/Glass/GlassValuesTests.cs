@@ -76,13 +76,13 @@ public class GlassValuesTests
         Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("0"));
 
     /// <summary>
-    /// A panel switched to water ripples what is behind it instead (Louis: "can we replace the frost with a water",
-    /// "make it an option"): eight pixels of ripple in glass.
+    /// Glass ripples what is behind it like water (Louis: "can we replace the frost with a water", "can we increase
+    /// the water effect?"): sixteen pixels of ripple.
     /// </summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
     public void TheWater_RipplesWhatIsBehind(SiteStyle style) =>
-        Assert.That(Value(style, "--web-lens-water"), Is.EqualTo("8"));
+        Assert.That(Value(style, "--web-lens-water"), Is.EqualTo("16"));
 
     /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
