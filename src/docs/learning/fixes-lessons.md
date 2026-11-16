@@ -460,5 +460,19 @@ It was also a look decided by looking. Three drawn options were put, and the pic
 on screen: glass, and nothing of a ticket. The words "our theme" would not have settled that. Skill 18 (testing
 and shipping: what a visitor sees is checked by seeing it).
 
+## FX157 · A refusal should say what is really wrong
+
+The site's container was rebuilt while Louis had the guide open. His next message was refused with "sign in, or
+enter AGENT_API_KEY", a builder's words, on a page where visitors never need a key. Nothing was locked. The
+conversation was simply gone, because the server keeps its sessions in memory and the restart forgot them. The key
+gate stands in front of every handler, and it only knew that it hadn't let this session in, so it said the one thing
+it knows how to say. The handler behind it would have told the truth, a 404, and the page already had kind words
+for that.
+
+The fix lets the door ask before it refuses: does the host have this session at all? If not, the call goes on to the
+part that can answer it. A gate that answers for something it can't see turns one problem into another. What stays
+closed is what exists and isn't yours, which is the same as before. Skill 15 (safety and security: closed by
+default, and a refusal that names its real cause).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

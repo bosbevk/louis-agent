@@ -35,8 +35,11 @@ internal static class ApiMap
     public static IServiceCollection AddApi(this IServiceCollection services, AgentHostContext host,
         OpenDoorOptions? openDoor = null)
     {
-        // The guide's door (F109.3): shut unless the settings name an identity and a cap.
-        services.AddSingleton(new OpenDoor(openDoor ?? OpenDoorOptions.FromEnvironment()));
+        // The guide's door (F109.3): shut unless the settings name an identity and a cap. It asks the sessions
+        // whether one is there, so a visitor's session lost to a restart is told it is gone (FX157).
+        var doorOptions = openDoor ?? OpenDoorOptions.FromEnvironment();
+        services.AddSingleton(provider => new OpenDoor(doorOptions,
+            holds: id => provider.GetRequiredService<AgentSessions>().Get(id) is not null));
         // host.Engine (every toolset this instance can load) serves /v1/workspace and /v1/git; sessions get their own
         // (F5).
         services.AddSingleton(host.Engine);
