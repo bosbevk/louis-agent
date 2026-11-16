@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* A site's name with the mark as one of its letters (F151.6): the display weight set tight, a little larger than the
    text it stands in, and the mark the size of a letter, sitting on the line. The mark is the orb, here still and
    with no ring, since it is a letter and not an agent at work. */
@@ -24,5 +26,6 @@
     height: .76em;
     margin: 0 .035em 0 .03em;
     translate: 0 .085em;
+    @include surface.mark-letter();
 }
 .wordmark-seen ::deep .orb::before, .wordmark-seen ::deep .orb::after { display: none; }

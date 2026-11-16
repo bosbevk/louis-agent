@@ -25,7 +25,8 @@
    framework's one purple.
    The art is a drawing a theme may lay on a piece (F151.4), one name for each part and state, named for the
    drawing: a pane, the main button and the second, a field, a switch, the focus ring, a slider, a well, a tag, the
-   live label, a switch's group, the header and the cut stone on a picked piece. A theme sets each to the address of
+   live label, a switch's group, the header, the cut stone on a picked piece, and the mark three ways: as it
+   stands alone, as the ball in the agent's bar, and as a letter of the site's name. A theme sets each to the address of
    a drawing or to none; the framework draws no glass, so each is none here. */
 
 :root {
@@ -86,6 +87,9 @@
     --web-art-gem: none;
     --web-art-group: none;
     --web-art-knob: none;
+    --web-art-mark: none;
+    --web-art-mark-ball: none;
+    --web-art-mark-o: none;
     --web-art-pane-hover: none;
     --web-art-pane-picked: none;
     --web-art-pane-rest: none;

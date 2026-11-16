@@ -55,8 +55,15 @@ lights. The page shows through it blurred by four pixels and a little brightened
 something that stands off the page. A piece set into the page, an inset such as the chat's card or a field, is as
 see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
 dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
-with no blur. The mark is a ball of violet glass with a white letter. Flat sets an inset to its page's colour with
-its hairline.
+with no blur. Flat sets an inset to its page's colour with its hairline.
+
+The mark is a drawing as well, and glass has three of it. Standing alone it is a clear bubble with a white l in
+it in the dark, and a violet ball inside clear glass in the light. In the agent's bar it is the violet ball in
+both styles. As a letter of the site's name it is the bubble with no l, drawn a little larger than its box. Each
+drawing moves a slow light across itself, and holds still under less motion. Since the drawing holds the l, glass
+gives the mark no disc, no gloss and no ink, so a letter a component writes on the mark does not show. A site
+whose agent is not louis-agent's sets the mark's drawings to none and the mark's own names, as each business in
+the showroom does.
 
 The page behind the glass is part of the theme. Glass draws fine lines on it that slant both ways, thirty pixels
 apart, and they stay still while the page scrolls. Behind the page's content it lays three lights, violet, magenta

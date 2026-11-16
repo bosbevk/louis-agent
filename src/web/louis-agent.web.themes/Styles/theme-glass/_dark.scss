@@ -118,13 +118,10 @@
         radial-gradient(540px 300px at calc(18% + 490px) calc(48% + 260px), rgba(68, 86, 255, .3) 0,
             rgba(68, 86, 255, .1) 55%, rgba(68, 86, 255, 0) 100%);
 
-    // The mark: a ball of violet glass, a light from below, a rim of the palest violet, a white letter.
-    --web-mark-fill:
-        radial-gradient(58% 58% at 50% 100%, rgba(226, 223, 255, .85) 0%, rgba(146, 130, 255, .3) 45%,
-            rgba(146, 130, 255, 0) 100%),
-        radial-gradient(64% 64% at 50% 40%, #9282ff 0%, #6b4dff 50%, #3a22c4 86%, #110a40 100%);
-    --web-mark-gloss: inset 0 0 0 1.5px rgba(226, 223, 255, .55), inset 0 -3px 8px rgba(17, 10, 64, .35);
-    --web-mark-ink: #ffffff;
+    // The mark is its drawing alone, which holds the l: no disc under it, no gloss, and no ink for a letter.
+    --web-mark-fill: transparent;
+    --web-mark-gloss: none;
+    --web-mark-ink: transparent;
 
     // You, and the agent.
     --web-you: #ffffff;

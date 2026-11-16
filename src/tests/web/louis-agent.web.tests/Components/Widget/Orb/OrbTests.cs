@@ -68,11 +68,12 @@ public class OrbTests
     }
 
     /// <summary>
-    /// The disc is the theme's mark (F151.4): the surface tool draws it from the mark's fill, gloss and ink, so it is
-    /// a ball of glass in one theme and a flat disc in another, and the orb's sheet names no colour of its own for it.
+    /// The disc is the theme's mark (F151.4, F151.6): the surface tool lays the theme's drawing of the mark over the
+    /// mark's fill, with its gloss and ink, so it is the design's ball of glass in one theme and a flat disc in
+    /// another, and the orb's sheet names no colour of its own for it.
     /// </summary>
     [Test]
-    public void TheDisc_IsDrawnFromTheMarksThreeNames()
+    public void TheDisc_IsTheThemesDrawing_OverTheMarksThreeNames()
     {
         string tool = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Styles/web/tools/surface/_marks.scss")).ReplaceLineEndings("\n");
@@ -81,8 +82,8 @@ public class OrbTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(mark, Does.Contain("var(--web-mark-fill)").And.Contain("var(--web-mark-gloss)")
-                .And.Contain("var(--web-mark-ink)"));
+            Assert.That(mark, Does.Contain("@include drawn(mark, var(--web-mark-fill));")
+                .And.Contain("var(--web-mark-gloss)").And.Contain("var(--web-mark-ink)"));
             Assert.That(Styles, Does.Contain("@include surface.mark();"));
         });
     }

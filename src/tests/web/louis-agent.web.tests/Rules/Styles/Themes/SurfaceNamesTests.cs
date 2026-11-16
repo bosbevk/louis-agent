@@ -18,6 +18,7 @@ public class SurfaceNamesTests
     private static readonly string[] Art =
     [
         "bar", "field-focus", "field-rest", "focus-pane", "focus-pill", "gem", "group", "knob",
+        "mark", "mark-ball", "mark-o",
         "pane-hover", "pane-picked", "pane-rest", "pane-showing",
         "press-disabled", "press-hover", "press-pressed", "press-rest",
         "quiet-press-disabled", "quiet-press-hover", "quiet-press-picked", "quiet-press-pressed", "quiet-press-rest",
