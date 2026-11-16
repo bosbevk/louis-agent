@@ -511,6 +511,18 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX166 · A slow page is measured before it is fixed, and a filter that repaints costs every frame
+
+The site lagged even in the flat theme, which has none of glass's bending, so the theme's effects were not the
+cause. Measured in the browser, the page drew about three frames a second while nothing happened. The browser's
+own timing of each slow frame showed no script, no style and no layout work in it, so the time went to painting.
+Two things were painting for good: every big heading swept a band of colour through its letters, and every
+heading and summary carried nine blurred drop shadows. A moving fill under a filter makes the browser work the
+whole filter out again on every frame, nine blurs over each heading. Taking the layers and the sweep out put the
+page back to rest. The lesson is the order: measure what a frame spends its time on, then take out what the
+measure points at, not what looks fanciest. Skill 18 (testing and shipping: a test now holds that no rule stacks
+shadows or sweeps a heading).
+
 ## FX165 · A control takes its look from the design's drawing, not from the generic rule it inherits
 
 The bar's send button looked broken: a flat violet circle that turned to a pale ghost whenever the box was empty. It
