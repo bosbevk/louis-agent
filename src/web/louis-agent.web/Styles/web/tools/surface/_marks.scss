@@ -81,3 +81,9 @@
 @mixin kept-ring() {
     box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .55), 0 0 44px -6px rgba(var(--web-overlay-rgb), .4);
 }
+
+/* The row you picked in a list, such as a file in a tree: a line of the brand's colour down its side, drawn inside
+   the row so nothing moves. */
+@mixin side-line($colour: var(--bs-primary), $width: 2px) {
+    box-shadow: inset $width 0 0 $colour;
+}

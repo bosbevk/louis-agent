@@ -26,8 +26,8 @@
       },
       {
         "id": "theme",
-        "name": "ThemeSwitcher",
-        "kind": "the themes in themes.json"
+        "name": "RetroTheme",
+        "kind": "the app's own theme, named among its areas"
       },
       {
         "id": "web",
@@ -60,7 +60,7 @@
       { "from": "program", "to": "views", "kind": "creates" },
       { "from": "packviews", "to": "views", "kind": "uses", "word": "add to" },
       { "from": "chatpage", "to": "empty", "kind": "holds" },
-      { "from": "chatpage", "to": "theme", "kind": "holds" }
+      { "from": "program", "to": "theme", "kind": "uses", "word": "names" }
     ]
   }
 }

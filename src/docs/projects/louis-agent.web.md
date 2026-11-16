@@ -628,8 +628,8 @@ hairline. Others are plain, such as a wash of a colour or a shadow thrown in it,
 sheet, so they follow a theme through its colours. A kind writes its lines where it is included, so the tool adds
 nothing to a stylesheet by itself.
 
-A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of the library a line at a
-time, and a line that sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
+A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of this library, and of the
+libraries built on it, the account pages, the eval studio and the packs' views, a line at a time, and a line that sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
 gradient counts as drawn by hand. No sheet may, and one that does fails the test. The tools themselves and the
 settings are not read, since that is where the drawing lives.
 

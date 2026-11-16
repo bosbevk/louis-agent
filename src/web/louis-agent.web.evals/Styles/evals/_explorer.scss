@@ -1,12 +1,14 @@
+@use "web/tools/surface";
+
 .lvl.in { animation: zoom-in .4s var(--web-ease) both; }
 @keyframes zoom-in { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: none; } }
 @keyframes zoom-out { from { opacity: 0; transform: translateY(-6px) scale(1.01); } to { opacity: 1; transform: none; } }
 .tiles.small { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-.tile { display: flex; flex-direction: column; gap: 4px; text-align: left; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 14px 16px; color: var(--bs-body-color); font: inherit; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 70ms); transition: transform .25s var(--web-spring), border-color .25s, box-shadow .25s; }
+.tile { display: flex; flex-direction: column; gap: 4px; text-align: left; @include surface.inset($radius: 14px); padding: 14px 16px; color: var(--bs-body-color); font: inherit; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 70ms); transition: transform .25s var(--web-spring), border-color .25s, box-shadow .25s; }
 button.tile { cursor: pointer; }
-button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: var(--web-glow); }
+button.tile:hover { transform: translateY(-2px); @include surface.edged(rgba(var(--bs-primary-rgb), .45)); @include surface.glowing(); }
 .tile-value.model { font-size: 15px; letter-spacing: 0; }
-.chart { display: flex; flex-direction: column; gap: 8px; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 12px 16px 14px; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
+.chart { display: flex; flex-direction: column; gap: 8px; @include surface.inset($radius: 14px); padding: 12px 16px 14px; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
 .chart-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .chart-head.lead strong { font-size: 16px; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -16,20 +18,20 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-pri
 /* F31: a row's ways on are its buttons only (Louis): Speel af opens the chats, the link goes into the costs. */
 .row-actions { display: inline-flex; align-items: center; gap: 8px; }
 .turn-head .row-actions { margin-left: 4px; }
-.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--bs-primary-text-emphasis); background: none; border: 1px solid rgba(var(--bs-primary-rgb), .45); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
-.turn-open:hover, .turn-open:focus-visible { background: rgba(var(--bs-primary-rgb), .14); }
-.turn-open.quiet { color: var(--bs-body-color); border-color: var(--bs-border-color); }
-.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); background: rgba(var(--bs-primary-rgb), .08); }
+.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--bs-primary-text-emphasis); background: none; @include surface.lined(rgba(var(--bs-primary-rgb), .45)); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
+.turn-open:hover, .turn-open:focus-visible { @include surface.tint(var(--bs-primary-rgb), .14); }
+.turn-open.quiet { color: var(--bs-body-color); @include surface.edged(var(--bs-border-color)); }
+.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--bs-primary-text-emphasis); @include surface.edged(rgba(var(--bs-primary-rgb), .45)); @include surface.tint(var(--bs-primary-rgb), .08); }
 .row-cost.small { font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
 .turn-head .turn-cost { margin-left: auto; }
-.explorer-q { padding: 8px 12px; border-radius: 12px; background: var(--bs-success-bg-subtle); color: var(--bs-emphasis-color); }
+.explorer-q { padding: 8px 12px; border-radius: 12px; @include surface.slab(var(--bs-success-bg-subtle)); color: var(--bs-emphasis-color); }
 .explorer-q .muted { margin-right: 8px; font-size: 12px; }
 .xreplay .turn { margin-bottom: 0; }
 .xreplay .user-message { max-width: 70%; }
 /* The modes side by side at every level (Louis), in the run's order; one under the other when the screen is narrow. */
 .compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 20px; align-items: start; }
 .compare-head .muted { font-weight: 400; font-size: 12.5px; margin-left: auto; }
-.explorer-think { white-space: pre-wrap; color: var(--bs-secondary-color); font-size: 13px; border-left: 2px solid var(--bs-border-color); margin: 6px 0; padding: 2px 10px; }
+.explorer-think { white-space: pre-wrap; color: var(--bs-secondary-color); font-size: 13px; @include surface.rule(left, 2px solid var(--bs-border-color)); margin: 6px 0; padding: 2px 10px; }
 .explorer-calls { font-size: 12.5px; padding-left: 20px; }
 /* Taller cards (Louis), all the same: the rings in the middle of the room under the card's head. */
 .chart-pair > .chart { min-height: 320px; padding: 16px 18px 20px; }
@@ -43,7 +45,7 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-pri
 .fold > .fold-head { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; user-select: none; font-weight: 700; font-size: 14.5px; color: var(--bs-emphasis-color); padding: 4px 2px; border-radius: 8px; }
 .fold > .fold-head::-webkit-details-marker { display: none; }
 .fold > .fold-head:hover { color: var(--bs-primary-text-emphasis); }
-.fold-chevron { width: 8px; height: 8px; border-right: 2px solid var(--bs-secondary-color); border-bottom: 2px solid var(--bs-secondary-color); transform: rotate(-45deg); transition: transform .2s var(--web-ease); }
+.fold-chevron { width: 8px; height: 8px; @include surface.rule(right, 2px solid var(--bs-secondary-color)); @include surface.rule(bottom, 2px solid var(--bs-secondary-color)); transform: rotate(-45deg); transition: transform .2s var(--web-ease); }
 .fold[open] > .fold-head .fold-chevron { transform: rotate(45deg); }
 .donut { width: 136px; height: 136px; transform: rotate(0deg); }
 @keyframes sweep { from { stroke-dasharray: 0 100; } }

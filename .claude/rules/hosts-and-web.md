@@ -64,5 +64,6 @@ is the library they are built on, and it follows the same rules.
 
 ## Themes
 
-A theme belongs to the code-review app. Adding one is in that app's guide, under
+The framework's themes are in `louis-agent.web.themes`. A site adds one of its own as the code-review app adds
+retro. Adding one there is in that app's guide, under
 [Add a theme](../../demos/louis-agent/docs/guides/change-the-web-app.md#add-a-theme).

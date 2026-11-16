@@ -1,6 +1,8 @@
+@use "web/tools/surface";
+
 /* The divider's word between the password form and the providers' buttons. */
 .account-divider { display: flex; align-items: center; gap: 10px; color: var(--bs-tertiary-color); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-.account-divider::before, .account-divider::after { content: ""; flex: 1; border-top: 1px solid var(--bs-border-color); }
+.account-divider::before, .account-divider::after { content: ""; flex: 1; @include surface.rule(top); }
 
 /* ---- A provider's own button (FX67): each in the look its brand guidelines give, which no site may restyle, so these
    rules don't read the site's colours. The same height and width for all three, so none is less prominent than another
@@ -15,14 +17,14 @@
 .provider-button ::deep .provider-logo { flex: none; }
 
 .provider-button.is-google {
-    background: var(--web-google-bg); border-color: var(--web-google-stroke); color: var(--web-google-text); border-radius: 4px;
+    @include surface.slab(var(--web-google-bg)); @include surface.edged(var(--web-google-stroke)); color: var(--web-google-text); border-radius: 4px;
     font: 500 14px/20px "Google Sans", Roboto, Arial, sans-serif; letter-spacing: .25px;
 }
 .provider-button.is-microsoft {
-    background: var(--web-microsoft-bg); color: var(--web-microsoft-text); border-radius: 0; gap: 12px;
+    @include surface.slab(var(--web-microsoft-bg)); color: var(--web-microsoft-text); border-radius: 0; gap: 12px;
     font: 600 15px "Segoe UI", "Segoe UI Web", -apple-system, sans-serif;
 }
 .provider-button.is-linkedin {
-    background: var(--web-linkedin-bg); color: var(--web-linkedin-text); border-radius: 4px;
+    @include surface.slab(var(--web-linkedin-bg)); color: var(--web-linkedin-text); border-radius: 4px;
     font: 600 15px -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }

@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 123 | 94 |
+| Features (`F`) | 124 | 94 |
 | Fixes (`FX`) | 144 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
@@ -153,10 +153,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (123 done)
+## Features (124 done)
 
 | Id | When | What |
 |---|---|---|
+| F151.5 | 2026-11-16 | The libraries and the other sites: the account pages, the eval studio and the packs' views drawn by the surface tool, so they wear the site's theme, held by the same rule test; code-review on glass, flat and its own retro, now with a light style, its picker gone; Puls keeps its brand; the pulsing buttons' glow on a layer of its own |
 | F151.4 | 2026-11-16 | The framework's components: one surface tool, `web/tools/_surface.scss`, draws every pane, bar, press and field of `louis-agent.web` from the names a theme sets, so the site's parts, the stage, the widget and the mark, the chat, the admin and the rest follow glass and flat, light and dark; a rule test refuses any sheet that draws a surface by hand; the showroom's mock website wears its business's colours through the same tool and a mock tool of its own; the mark has a fifth state, Listening (ADR 0124) |
 | F151.3 | 2026-11-15 | The two switches: `LookSwitch`, the site's themes and Dark and Light, drawn by the three frames themselves (the site's header, the chat's settings and, Louis's pick, the admin sidebar's foot) with no line in a site; a press writes the look on the page and the browser keeps it, a reload opens the same, another tab follows; on a phone the header's actions take their own row; tried in the browser on the starter (ADR 0124) |
 | F151.2 | 2026-11-15 | The two themes: glass and flat in one project, `louis-agent.web.themes`, a folder each (Louis: "we should only have one project called themes"), each light and dark from the mockups and held to all 85 of the framework's names by a sheet its own build compiles; the starter offers glass then flat and opens in glass, light; louis-agent.dev names the project on its Architecture page and otherwise looks as it did (ADR 0124) |

@@ -29,7 +29,9 @@ pages' services (through `AddLouisAgentEvals`, which calls `EvalPages.AddTo`), a
 
 The site's `app.scss` lists one name: `@forward "evals/pages";`. That forwards the six partials of shared rules, in
 their order. Whatever a single component draws on its own sits beside it, in its `X.razor.scss`, and travels in the
-site's styles bundle.
+site's styles bundle. None of these sheets draws a surface itself: a card, a box, a tip and a button are each a
+kind included from the framework's surface tool ([the framework's web](louis-agent.web.md)), so the studio wears
+the theme the site's page wears.
 
 If the site wants the thin strip that says a run is going, it puts `<LiveRunStrip />` in its frame's `Top` slot. Puls
 does.

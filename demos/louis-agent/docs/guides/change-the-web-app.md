@@ -44,8 +44,18 @@ web project, as `AgentApiGit` is. A call both apps make goes in `AgentApi` itsel
 
 ## Add a theme
 
-Copy `Styles/themes/retro.scss` to `{id}.scss`, set the framework's colour names (`web/settings/_colours.scss` lists
-them), and add `{ "id": "{id}", "name": "…" }` to `themes/themes.json`. Ids are lowercase letters, digits and dashes.
+A theme is values, in a dark and a light style, and retro is the one to copy. Copy the folder `Styles/retro/` to
+`Styles/{id}/`, and in its `_dark.scss` and `_light.scss` change the selector to your id and set each name to your
+value. Every name has to be set in both sheets, or another theme's value shows through. List the two sheets in
+`Styles/app.scss` beside retro's. The folder's name must not start with `theme-`, since that is how the framework's
+own themes are told apart.
+
+Then copy `RetroTheme.cs` to a class for your theme, with its id and the name the switch shows, and name it in
+`CodeReviewAreas`, after `.Retro()`. The first theme named is the default. Ids are lowercase letters, digits and
+dashes. The frame's switch offers the new theme with no other change.
+
+Rules that only your theme needs, as retro's terminal dressing is, go in a sheet of their own under
+`:root[data-theme="{id}"]`, listed last in `app.scss`. They are the app's rules, not the theme's.
 
 ## Words
 

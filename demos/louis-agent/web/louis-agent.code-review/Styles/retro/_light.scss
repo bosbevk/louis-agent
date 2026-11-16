@@ -1,0 +1,127 @@
+/* Retro, in the light (F151.5, ADR 0124): the same terminal printed on paper. Dark green ink on a pale mint page,
+   a panel a shade darker than the page, and a deep green for what you press, with the page's colour for its
+   words. The type, the corners and the lines are the dark style's. It sets every name the framework lists and lays
+   no drawing on any piece. */
+
+@use "web/tools/colours";
+@use "theme-art";
+
+:root[data-theme="retro"][data-style="light"] {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #1f7a45);
+    @include colours.both(bs-danger, #a8403c);
+    @include colours.both(bs-warning, #8a6410);
+    @include colours.both(bs-info, #1a6f78);
+    @include colours.both(web-ok, #1f7a45);
+    @include colours.both(web-purple, #1a6f78);
+    @include colours.both(bs-body-bg, #eef5ee);
+    @include colours.both(bs-secondary-bg, #e0ebe1);
+    @include colours.both(bs-tertiary-bg, #e7f0e8);
+    @include colours.both(bs-success-text-emphasis, #1a6f78, web-success-text);
+    @include colours.both(web-menu-bg, #e7f0e8);
+
+    // Only ever see-through.
+    @include colours.numbers(web-overlay, #1f3a2a);
+    @include colours.numbers(web-shadow, #1f3a2a);
+    @include colours.numbers(web-failed, #a8403c);
+    @include colours.numbers(web-backdrop, #eef5ee);
+    @include colours.numbers(web-hover, #6d8a78);
+
+    --web-primary-deep: #155a32;
+    --bs-primary-bg-subtle: #d3e6d7;
+    --bs-primary-text-emphasis: #155a32;
+    --bs-success: #1f7a45;
+    --web-success-deep: #155a32;
+    --bs-success-bg-subtle: #d3e6d7;
+    --web-sidebar-foot: #e7f0e8;
+    --web-sidebar-foot-deep: #e0ebe1;
+    --bs-link-color: #1a6f78;
+
+    --web-on-primary: #f3faf4;
+    --web-bright: #10261a;
+    --web-soft-text: #1f3a2a;
+    --web-settings-text: #456552;
+    --web-error-text: #a8403c;
+    --web-photo-text: #333333;
+    --web-border-hover: #6d8a78;
+    --web-scrollbar: #b9cdbd;
+    --web-dialog-bg: #eef5ee;
+    --web-code-number: #7a6a12;
+    --web-code-comment: #6d8a78;
+    --web-live-dot: #1f7a45;
+
+    --bs-emphasis-color: #10261a;
+    --bs-body-color: #1f3a2a;
+    --bs-secondary-color: #456552;
+    --bs-tertiary-color: #6d8a78;
+    --bs-border-color: #b9cdbd;
+    --web-code-bg: #dfeae0;
+    --web-cta: #1f7a45;
+    --bs-box-shadow-sm: none;
+    --bs-box-shadow: none;
+    --web-glow: 0 0 0 2px #1f7a45;
+    --bs-font-sans-serif: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --bs-font-monospace: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --web-font-display: "VT323", "IBM Plex Mono", ui-monospace, monospace;
+    --bs-border-radius: 4px;
+    --web-terminal-glow: none;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    // A pane: the panel's colour in a hairline, square as a terminal's window, with no shadow and no blur.
+    --web-pane-fill: #e0ebe1;
+    --web-pane-edge: 1px solid #b9cdbd;
+    --web-pane-rim: none;
+    --web-pane-light: none;
+    --web-pane-shadow: none;
+    --web-pane-blur: none;
+    --web-pane-radius: 4px;
+
+    // Under the pointer it stays where it is and its line turns to the colour you press.
+    --web-pane-hover-lift: 0px;
+    --web-pane-hover-edge: 0 0 0 1px #1f7a45;
+    --web-pane-hover-shadow: 0 0 transparent;
+
+    // What floats over the page throws no shadow: its line sets it apart.
+    --web-float-shadow: none;
+
+    // A veil, a panel on a stage: solid, as a pane is.
+    --web-veil-fill: var(--web-pane-fill);
+    --web-veil-edge: var(--web-pane-edge);
+    --web-veil-blur: none;
+
+    // An inset, set into the page: the page's colour and a hairline.
+    --web-inset-fill: #eef5ee;
+    --web-inset-edge: 1px solid #b9cdbd;
+
+    // A bar: the colour of the page, one hairline towards it.
+    --web-bar-fill: #eef5ee;
+    --web-bar-edge: 1px solid #b9cdbd;
+    --web-bar-blur: none;
+
+    // A press: the colour you press with the page's colour for its words; the second an outline.
+    --web-press-fill: #1f7a45;
+    --web-press-ink: #f3faf4;
+    --web-press-edge: 1px solid #6d8a78;
+
+    // The mark: a flat disc of the colour you press.
+    --web-mark-fill: #1f7a45;
+    --web-mark-gloss: none;
+    --web-mark-ink: #f3faf4;
+
+    // You, and the agent.
+    --web-you: #10261a;
+    --web-agent: #1a6f78;
+
+    // Where the framework has its violet in five steps, retro has its green, light to dark.
+    --web-violet-0: #d3e6d7;
+    --web-violet-1: #8fd6a4;
+    --web-violet-2: #1f7a45;
+    --web-violet-3: #155a32;
+    --web-violet-4: #10261a;
+
+    // Retro lays no drawing on any piece.
+    @include theme-art.none();
+
+    color-scheme: light;
+}

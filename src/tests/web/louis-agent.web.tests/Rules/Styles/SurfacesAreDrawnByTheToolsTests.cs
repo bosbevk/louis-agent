@@ -6,13 +6,20 @@ namespace LouisAgent.Web.Tests.Rules.Styles;
 /// on any side, <c>box-shadow</c>, <c>backdrop-filter</c> or <c>outline</c> paints something: a colour, a name, a
 /// gradient, a shadow or a blur (Louis's pick A of three, and outline with it). <c>none</c>, <c>0</c>,
 /// <c>transparent</c> and <c>inherit</c> clear rather than paint, and <c>border-radius</c> is shape, so none of them
-/// counts. The tools and the settings are where the drawing lives, so they are not read. No sheet draws by hand, and
-/// one that starts to fails here.
+/// counts. The tools and the settings are where the drawing lives, so they are not read. The libraries on the
+/// framework's web are read too (F151.5): the account pages, the eval studio and the packs' views. No sheet of any of
+/// them draws by hand, and one that starts to fails here.
 /// </summary>
 public class SurfacesAreDrawnByTheToolsTests
 {
-    /// <summary>The framework's web, whose component and global sheets are read.</summary>
+    /// <summary>The framework's web, which holds the tools.</summary>
     private static readonly string Web = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web");
+
+    /// <summary>The folders whose sheets are read: the framework's web, and the libraries built on it.</summary>
+    private static readonly string[] Read =
+    [
+        "src/web/louis-agent.web", "src/web/louis-agent.web.accounts", "src/web/louis-agent.web.evals", "packs/web"
+    ];
 
     /// <summary>The properties that draw a surface.</summary>
     private static readonly string[] Drawing =
@@ -26,19 +33,22 @@ public class SurfacesAreDrawnByTheToolsTests
     /// <summary>What in a value paints: a name, a colour written out, a gradient, a blur.</summary>
     private static readonly string[] Paints = ["var(--", "#", "rgb", "hsl", "gradient", "blur("];
 
-    /// <summary>Every component and global sheet of the framework's web, the tools and settings left out.</summary>
+    /// <summary>
+    /// Every component and global sheet that is read, from the repo's root, the tools and settings left out.
+    /// </summary>
     private static IEnumerable<string> Sheets() =>
-        Directory.EnumerateFiles(Web, "*.scss", SearchOption.AllDirectories)
-            .Select(file => Path.GetRelativePath(Web, file).Replace('\\', '/'))
-            .Where(file => !file.StartsWith("obj/", StringComparison.Ordinal) &&
-                           !file.StartsWith("bin/", StringComparison.Ordinal) &&
+        Read.SelectMany(folder => Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, folder), "*.scss",
+                SearchOption.AllDirectories))
+            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/'))
+            .Where(file => !file.Contains("/obj/", StringComparison.Ordinal) &&
+                           !file.Contains("/bin/", StringComparison.Ordinal) &&
                            !file.Contains("/tools/", StringComparison.Ordinal) &&
                            !file.Contains("/settings/", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal);
 
     /// <summary>Whether a sheet has a declaration that paints a surface.</summary>
     private static bool DrawsByHand(string sheet) =>
-        File.ReadLines(Path.Combine(Web, sheet))
+        File.ReadLines(Path.Combine(TestPaths.RepoRoot, sheet))
             .Select(line => line.Trim())
             .Where(line => !line.StartsWith("//", StringComparison.Ordinal) &&
                            !line.StartsWith("/*", StringComparison.Ordinal) &&
@@ -145,6 +155,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("outline-colour")]
     [TestCase("spotlit")]
     [TestCase("kept-ring")]
+    [TestCase("side-line")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

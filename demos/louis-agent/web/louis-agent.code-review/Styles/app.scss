@@ -1,11 +1,18 @@
 /* The code-review app's styles: the framework's rules and its packs', in the order the framework's always came, then its
    own few. A name under web/ is the framework's Sass and one under pack- a pack's, each found through sasscompiler.json,
-   so nothing is copied. The framework's own site and its look left for src/site in F124. The colours aren't here: the
-   framework's come first, and the theme the person picks loads after this file (themes/; console, the default, is the
-   framework's colours as they are). The build makes wwwroot/css/app.css from this. */
+   so nothing is copied. The framework's own site and its look left for src/site in F124. The three themes' sheets
+   come straight after the framework's names, one block per theme and style, picked by the page's data-theme and
+   data-style: the framework's glass and flat, then retro, which is this app's own (retro/). Retro's terminal dressing
+   is the last of the app's own rules. The build makes wwwroot/css/app.css from this. */
 
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
+@forward "theme-glass/dark";
+@forward "theme-glass/light";
+@forward "theme-flat/dark";
+@forward "theme-flat/light";
+@forward "retro/dark";
+@forward "retro/light";
 @forward "web/base/elements";
 
 @forward "web/settings/brands";
@@ -23,3 +30,4 @@
 @forward "pack-git/changes";
 
 @forward "chat/boot";
+@forward "retro/terminal";

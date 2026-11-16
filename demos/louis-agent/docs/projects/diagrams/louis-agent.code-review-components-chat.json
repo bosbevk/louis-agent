@@ -43,10 +43,10 @@
             },
             {
               "id": "settings",
-              "name": "ThemeSwitcher",
-              "kind": "the app's own",
-              "tone": "blue",
-              "note": "in the Settings slot"
+              "name": "LookSwitch",
+              "kind": "the frame's own",
+              "tone": "violet",
+              "note": "offers glass, flat and the app's retro"
             },
             {
               "id": "empty",

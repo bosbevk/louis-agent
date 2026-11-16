@@ -71,12 +71,13 @@ A rule has one of two homes: beside the component that draws its element, or a g
 ## Colours
 
 - **A colour is a variable, never a value, outside the tokens.** The tokens are `settings/_tokens.scss`, and a
-  theme in `Styles/themes/`. A rule reads Bootstrap's name, or a `--web-` name where Bootstrap has none.
+  theme's sheets of values. A rule reads Bootstrap's name, or a `--web-` name where Bootstrap has none.
   `FixedColourTests` holds the shared rules to it.
 - **A see-through colour reads the numbers**, as in `rgba(var(--bs-primary-rgb), .4)`. `web/tools/_colours.scss`
   writes both forms from one value, so a colour is written once.
 - **What a rule reads at run time stays a CSS variable**, since a Sass variable is fixed when the build runs.
-- **A theme stays a file of its own**, loaded by the page.
+- **A theme is values, a sheet for each style**, under the selector for its theme and style. It holds no rule for
+  a component ([ADR 0124](../../src/docs/adr/0124-a-sites-look-is-a-theme-and-a-style.md)).
 - **No rainbow** (Louis, 2026-11-10: "no rainbow color", then "glows and gradient works just not rainbow"): one
   accent to an element. A gradient stays within one colour, white into it or the colour into a lighter shade.
   Several items may each keep their own colour. Their colours are never blended into one gradient, or set in a
