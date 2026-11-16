@@ -229,6 +229,23 @@ public class SiteShellTests
     }
 
     /// <summary>
+    /// The way back up stands just under the section index when the index shows (FX163, Louis: "move that button just
+    /// below, they are part of a section, they belong together"); the frame's script places it there.
+    /// </summary>
+    [Test]
+    public void TheWayUp_StandsUnderTheIndex()
+    {
+        string module = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.js"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(module, Does.Contain("standUnderTheIndex();"));
+            Assert.That(module, Does.Contain("up.style.top = box ? `${Math.round(box.bottom + 12)}px` : \"\";"));
+        });
+    }
+
+    /// <summary>
     /// Every section of a page is at least a screen tall (F118, Louis: "a min height on all sections"), so a jump or a
     /// click in the index lands any section in place and lights the one clicked.
     /// </summary>
