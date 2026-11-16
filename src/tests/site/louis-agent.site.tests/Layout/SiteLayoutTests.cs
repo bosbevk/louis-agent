@@ -57,7 +57,7 @@ public class SiteLayoutTests
     {
         using var ctx = Context();
 
-        var last = ctx.Render<SiteLayout>().FindAll(".site-nav > a, .site-nav > .site-menu").Last();
+        var last = ctx.Render<SiteLayout>().FindAll(".site-nav > a, .site-nav > .site-drop").Last();
 
         Assert.Multiple(() =>
         {
@@ -103,7 +103,7 @@ public class SiteLayoutTests
         var cut = ctx.Render<SiteLayout>();
 
         var items = cut.Find(".site-nav").Children
-            .Select(item => (item.QuerySelector(".site-menu-label") ?? item).TextContent.Trim());
+            .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
         Assert.That(items,
             Is.EqualTo(new[] { "What we build", "Pricing", "Demos", "Contact", "The framework", "CV" }));
     }
@@ -122,8 +122,8 @@ public class SiteLayoutTests
 
         Assert.Multiple(() =>
         {
-            var menu = cut.FindAll(".site-nav .site-menu")
-                .Single(group => group.QuerySelector(".site-menu-label")!.TextContent == "The framework");
+            var menu = cut.FindAll(".site-nav .site-drop")
+                .Single(group => group.QuerySelector(".site-drop-label")!.TextContent == "The framework");
             Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
@@ -228,8 +228,8 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        var demos = cut.FindAll(".site-nav .site-menu")
-            .Single(menu => menu.QuerySelector(".site-menu-label")!.TextContent == "Demos");
+        var demos = cut.FindAll(".site-nav .site-drop")
+            .Single(menu => menu.QuerySelector(".site-drop-label")!.TextContent == "Demos");
         Assert.Multiple(() =>
         {
             Assert.That(SiteDoors.CodingAgent, Is.False, "the live chat is closed today");

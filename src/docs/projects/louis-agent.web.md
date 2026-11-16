@@ -322,7 +322,9 @@ as before, and the button is not drawn.
 
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
 menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
-the bar opens its list right-aligned, so it stays on the screen.
+the bar opens its list right-aligned, so it stays on the screen. Its class names, `site-drop` and the two under it,
+are its own and not the frame's. A scoped rule marks only the last part of its selector, so if the class a list
+opens under were also on the frame's menu round it, a pointer anywhere in the menu would open every list.
 
 The frame carries its own motion, as a script module beside it that is attached after every render. It moves five
 things: the progress line's width, the header going compact past the top, the section index's active link, an

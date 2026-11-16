@@ -261,9 +261,11 @@ public partial class FrameworkStylesTests
     /// wide screen and a phone alike: the page, a slide and the way up end above the bar, and the corner is no
     /// floating box of its own, since the bar places itself.
     /// </summary>
-    [TestCase(".site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }")]
+    [TestCase(
+        ".site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }")]
     [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }")]
-    [TestCase(".site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }")]
+    [TestCase(
+        ".site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }")]
     public void WithTheGuideAsABar_TheFrameKeepsItsRoom(string rule)
     {
         string shell = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
@@ -320,7 +322,7 @@ public partial class FrameworkStylesTests
     [Test]
     public void TheLastMenu_OpensItsListTowardsThePage() =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
-            Does.Contain(".site-menu:last-child .site-menu-list { left: auto; right: -14px; }"));
+            Does.Contain(".site-drop:last-child .site-drop-list { left: auto; right: -14px; }"));
 
     /// <summary>
     /// What is right for a screen and wrong for paper is switched off in print (FX154). The grain over every page is
@@ -332,7 +334,8 @@ public partial class FrameworkStylesTests
     [Test]
     public void OnPaper_ThereIsNoGrain_AndTheSheetIsLight() =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
-            Does.Contain("@media print {\n    body::before, body::after { display: none; }\n    :root { color-scheme: light; }\n}"));
+            Does.Contain(
+                "@media print {\n    body::before, body::after { display: none; }\n    :root { color-scheme: light; }\n}"));
 
     /// <summary>
     /// A link on paper takes the ink of the page it is printed on (FX154, Louis's pick of three: "The page's own
