@@ -41,6 +41,21 @@ public class SiteShellIndexTests
         builder.CloseComponent();
     };
 
+    /// <summary>
+    /// FX177: a site may switch the way back up off too, and the frame keeps it ready (Louis: "disable" of the up
+    /// button).
+    /// </summary>
+    [Test]
+    public void WithTheWayUpOff_TheFrameDrawsNone()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.ChildContent, TwoBands).Add(shell => shell.ShowWayUp, false));
+
+        Assert.That(cut.FindAll(".site-up"), Is.Empty);
+    }
+
     /// <summary>With the index switched off, the frame draws none, and still has its way back up.</summary>
     [Test]
     public void WithTheIndexOff_TheFrameDrawsNone()

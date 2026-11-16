@@ -341,8 +341,8 @@ outside its link, the header has a slot for the site's stage, `Stage`; `StageFla
 small tag that opens a note on a press, the browser's own popover, so a press elsewhere or Escape closes it with no
 script of ours. Beside it in `Site/Brand`, `MarkShowcase` shows a site's mark large, the orb with its letter, and,
 when asked, the name on black, white, violet and glass. The frame also adds a scroll progress
-line, a way back up, and a section index on the left, which a site may switch off with `ShowIndex="false"` and keep
-for later; louis-agent.dev has it off. When a site puts the guide in the corner as its bar, the
+line, a way back up, and a section index on the left. A site may switch the index off with `ShowIndex="false"` and
+the way up with `ShowWayUp="false"`, keeping both for later; louis-agent.dev has both off. When a site puts the guide in the corner as its bar, the
 corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a
 screen: the room is `--site-bar`, the name a slide, a paged section and the way up already end above, so each ends
 above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts

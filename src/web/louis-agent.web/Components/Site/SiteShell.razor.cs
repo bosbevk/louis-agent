@@ -90,6 +90,12 @@ public partial class SiteShell
     [Parameter]
     public bool ShowIndex { get; set; } = true;
 
+    /// <summary>
+    /// Whether the frame draws the way back up; on by default. A site may switch it off and keep it for later (FX177).
+    /// </summary>
+    [Parameter]
+    public bool ShowWayUp { get; set; } = true;
+
     /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
     private readonly PageOptions _options = new();
 

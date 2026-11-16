@@ -511,6 +511,13 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX177 · A second switch costs one line when the first was built to be switched
+
+Louis wanted the way back up out of sight too. Because FX175 had already made the frame's extras switches a site
+sets, this was one more switch beside the first, and the frame's script, which places the way up under the index,
+already did nothing when either was missing. Building the first removal as a switch, not a deletion, is what made
+the second one small. Skill 20 (extensibility).
+
 ## FX176 · Hidden is the browser's word for "not now"
 
 Louis wanted the Demos and The framework menus out of the way until their pages are fixed, but not deleted. The
