@@ -3,9 +3,9 @@
 /* The surface tool's marks (F151.4): the agent's mark with its rings, and the small marks a piece wears, a
    marker, a badge, a line of progress or of the brand. */
 
-/* A heading's words with a band of the theme's colour sweeping through them (FX162, the design page's .chrome and its
-   shine): the words' strongest colour, a violet band in its middle, painted into the letters only, the band moving
-   across every eight seconds. The animation is the base elements' web-shine. */
+/* A heading's words with a band of the theme's colour through them (FX162, the design page's .chrome): the words'
+   strongest colour, a violet band in its middle, painted into the letters only. The band stands still (FX166): moving,
+   it had every heading painted again on every frame. */
 @mixin chrome-words() {
     color: transparent;
     background: linear-gradient(100deg, var(--bs-emphasis-color) 0%, var(--bs-emphasis-color) 34%,
@@ -14,7 +14,6 @@
     background-size: 260% 100%;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: web-shine 8s ease-in-out infinite;
 }
 
 /* The agent's mark: the theme's drawing of it over its disc, with its gloss and the letter on it. A theme whose
@@ -59,24 +58,6 @@
 }
 
 /* A small mark beside a label, such as the dot before a section's name, and the same mark lit for the one in view. */
-/* Words lifted off the page behind them with no panel (FX163, Louis: "can we somehow elevate these fonts without a
-   panel"): an angled shadow the letters cast on the page. A drop shadow, not a text shadow, so it stands behind
-   words whose colour is clipped into them. */
-@mixin lifted-words() {
-    // Layered as Tobias Ahlin's "smoother and sharper shadows" and Josh Comeau's "designing beautiful shadows" do:
-    // eight layers, each twice the last one's offset, its blur equal to its offset, all along one angle so they share
-    // one light from the top left, and each fainter than the one before, so the shadow is dense where the letters
-    // touch the page and fades softly away. The colour is the theme's shadow, tinted towards the page as Comeau
-    // advises, never plain black. A hairline of the page's light on the letters' top-left edge goes first, the bevel
-    // that same light catches, so they read as raised, not printed (Louis: "can we layer the font better", "increase
-    // and refine the depth by another level", "bump it up again by one level of depth").
-    filter: drop-shadow(-.5px -.5px 0 rgba(var(--bs-body-bg-rgb), .75))
-        drop-shadow(.5px 1px 1px rgba(var(--web-shadow-rgb), .19)) drop-shadow(1px 2px 2px rgba(var(--web-shadow-rgb), .16))
-        drop-shadow(2px 4px 4px rgba(var(--web-shadow-rgb), .14)) drop-shadow(4px 8px 8px rgba(var(--web-shadow-rgb), .12))
-        drop-shadow(8px 16px 16px rgba(var(--web-shadow-rgb), .1)) drop-shadow(16px 32px 32px rgba(var(--web-shadow-rgb), .07))
-        drop-shadow(24px 48px 56px rgba(var(--web-shadow-rgb), .05)) drop-shadow(32px 64px 88px rgba(var(--web-shadow-rgb), .04));
-}
-
 @mixin marker($lit: false) {
     @if $lit {
         background: var(--bs-primary);
