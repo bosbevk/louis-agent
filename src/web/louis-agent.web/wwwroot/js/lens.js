@@ -63,6 +63,15 @@ const bendMap = (w, h, wall, rise) => {
     return [href, far];
 };
 
+// Where the glass is frosted: fully where its top lies flat, not at all where it turns down to the edge.
+const frostMap = (w, h, rise) => {
+    const half = Math.min(w, h) / 2, [FX, DX] = side(w, 1, half, rise), [FY, DY] = side(h, 1, half, rise);
+    return picture(w, h, d => { for (let y = 0, j = 0; y < h; y++) for (let x = 0; x < w; x++, j += 4) {
+        const flat = 1 / Math.hypot(DX[x] * FY[y], DY[y] * FX[x], 1), a = Math.min(Math.max((flat - .8) / .17, 0), 1);
+        d[j] = d[j + 1] = d[j + 2] = 255; d[j + 3] = 255 * a * a * (3 - 2 * a);
+    } });
+};
+
 // The far lamp, high on the left, and its answer low on the right: the shine, its echo, and which way is away.
 const fromAfar = (nx, ny, nz) => [
     Math.pow(Math.max(nx * KEY[0] + ny * KEY[1] + nz * KEY[2], 0), 60),
@@ -110,7 +119,8 @@ let glass = { wall: 0, rise: 0 }, host = null, n = 0, hovered = null, listening 
 let near = null, sized = null, looks = null;
 const worn = new Map();   // each piece wearing a lens, and its filter's id
 const read = () => { const s = getComputedStyle(document.documentElement);
-    glass = { wall: +s.getPropertyValue("--web-lens-wall") || 0, rise: +s.getPropertyValue("--web-lens-rise") || 0 }; };
+    glass = { wall: +s.getPropertyValue("--web-lens-wall") || 0, rise: +s.getPropertyValue("--web-lens-rise") || 0,
+        frost: +s.getPropertyValue("--web-lens-frost") || 0 }; };
 // A panel a site switched the lens off on (data-lens="off") is no piece of glass to it.
 const kind = el => el.dataset?.lens === "off" ? 0 : +getComputedStyle(el).getPropertyValue("--web-lens-piece") || 0;
 
@@ -139,10 +149,15 @@ const wear = el => {
     const [bend, far] = memo(`b${w}x${h}:${wall}:${rise}`, () => bendMap(w, h, wall, rise));
     const lit = litFor(el, w, h, rise);
     const box = `x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"`;
+    // What is behind its flat middle is frosted, its edge left clear so it bends sharply (the design's frost).
+    const frost = glass.frost ? `<feGaussianBlur in="bent" stdDeviation="${glass.frost}" result="fog"/>` +
+        `<feImage ${box} result="where" href="${memo(`f${w}x${h}:${rise}`, () => frostMap(w, h, rise))}"/>` +
+        `<feComposite in="fog" in2="where" operator="in" result="frosted"/>` +
+        `<feBlend in="frosted" in2="bent" mode="normal" result="seen"/>` : `<feOffset in="bent" result="seen"/>`;
     f.innerHTML = `<feImage ${box} result="m" href="${bend}"/>` +
         `<feDisplacementMap in="SourceGraphic" in2="m" scale="${far * 2}" xChannelSelector="R" yChannelSelector="G"` +
-        ` result="bent"/>` +
-        `<feImage ${box} result="lit" href="${lit}"/><feBlend in="lit" in2="bent" mode="normal"/>`;
+        ` result="bent"/>` + frost +
+        `<feImage ${box} result="lit" href="${lit}"/><feBlend in="lit" in2="seen" mode="normal"/>`;
     // The pane's own deepening of the page stays, after the bending, but never a blur: bending only shows when what is
     // behind stays sharp, as the design's.
     el.style.removeProperty("backdrop-filter");

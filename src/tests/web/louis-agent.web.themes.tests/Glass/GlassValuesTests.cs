@@ -67,6 +67,15 @@ public class GlassValuesTests
         Assert.That(Value(style, "--web-tilt"), Is.EqualTo("7"));
 
     /// <summary>
+    /// Glass stays see-through, only what is behind its flat middle is blurred, its edge clear (Louis: "keep the glass
+    /// see through but only blur the background image parts of the glass").
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheFrost_BlursOnlyWhatIsBehind(SiteStyle style) =>
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("6"));
+
+    /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
     /// screen (Louis's pick C of three), with no lines of its own.
     /// </summary>
