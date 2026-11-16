@@ -61,7 +61,7 @@ public class OrbTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Styles, Does.Contain("inset: -5px;"));
+            Assert.That(Styles, Does.Contain("inset: -3px;"));
             Assert.That(Styles, Does.Contain("@keyframes orb-breathe { 50% { transform: scale(1.08);"));
             Assert.That(Styles, Does.Contain("to { transform: scale(1.15); opacity: 0; }"));
         });
