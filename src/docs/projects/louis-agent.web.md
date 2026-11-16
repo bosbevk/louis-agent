@@ -324,7 +324,9 @@ as before, and the button is not drawn.
 
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
 menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
-the bar opens its list right-aligned, so it stays on the screen.
+the bar opens its list right-aligned, so it stays on the screen. Its class names, `site-drop` and the two under it,
+are its own and not the frame's. A scoped rule marks only the last part of its selector, so if the class a list
+opens under were also on the frame's menu round it, a pointer anywhere in the menu would open every list.
 
 The frame carries its own motion, as a script module beside it that is attached after every render. It moves five
 things: the progress line's width, the header going compact past the top, the section index's active link, an
@@ -695,7 +697,9 @@ name and in the order named, when it offers two or more, and Dark and Light when
 none gets nothing. The three frames draw it themselves, so a site writes no line for it: `SiteShell` in its
 header's actions before the site's own, `ChatShell` in its settings before the site's own, and `AdminShell` at the
 foot of its sidebar, above the way back. Each frame asks `SiteAreas.OffersThemes` before it makes room. On a phone
-the header's actions take a row of their own between the brand and the menu, and the two groups may wrap.
+the header's actions take a row of their own between the brand and the menu, and the two groups may wrap. Each
+group is the theme's group and the choice that is on is its main button, so in glass the switch wears the glass
+drawings and in flat it keeps flat's plain pill and violet.
 
 A press marks its button and asks the switch's module to pick. The module writes the theme or the style on the
 page's `<html>`, so the theme's block takes over at once, and keeps the word in the browser under the key

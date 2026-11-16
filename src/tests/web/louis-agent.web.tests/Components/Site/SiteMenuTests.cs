@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site;
 using LouisAgent.Web.Components.Site.Menu;
 using Microsoft.AspNetCore.Components;
 
@@ -20,13 +21,57 @@ public class SiteMenuTests
     {
         using var ctx = new BunitContext();
 
-        var cut = ctx.Render<SiteMenu>(parameters => parameters.Add(menu => menu.Label, "The framework").AddChildContent(Links()));
+        var cut = ctx.Render<SiteMenu>(parameters =>
+            parameters.Add(menu => menu.Label, "The framework").AddChildContent(Links()));
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find("button.site-menu-label").TextContent, Is.EqualTo("The framework"));
-            Assert.That(cut.FindAll(".site-menu-list a"), Has.Count.EqualTo(2));
+            Assert.That(cut.Find("button.site-drop-label").TextContent, Is.EqualTo("The framework"));
+            Assert.That(cut.FindAll(".site-drop-list a"), Has.Count.EqualTo(2));
         });
+    }
+
+    /// <summary>
+    /// Each group opens alone (FX158): a scoped rule marks only its last part, so the class its list opens under must
+    /// be the group's own and nothing round it in the frame, or a pointer anywhere in the menu opens every list.
+    /// </summary>
+    [Test]
+    public void EachList_OpensUnderItsOwnGroupOnly()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        string opener = OpenerOf(File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Menu/SiteMenu.razor.scss")));
+        RenderFragment twoGroups = builder =>
+        {
+            foreach (string label in new[] { "Demos", "The framework" })
+            {
+                builder.OpenComponent<SiteMenu>(0);
+                builder.AddComponentParameter(1, nameof(SiteMenu.Label), label);
+                builder.AddComponentParameter(2, nameof(SiteMenu.ChildContent), Links());
+                builder.CloseComponent();
+            }
+        };
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.Links, twoGroups));
+        var openers = cut.FindAll($".{opener}-list")
+            .Select(list => Ancestors(list).Count(element => element.ClassList.Contains(opener)))
+            .ToList();
+
+        Assert.That(openers, Is.EqualTo(new[] { 1, 1 }));
+    }
+
+    /// <summary>The class a list opens under: the one its open rule hovers on.</summary>
+    private static string OpenerOf(string rules)
+    {
+        string rule = rules.Split('\n').First(line => line.Contains(":hover .") && line.Contains("-list"));
+        return rule[(rule.IndexOf('.') + 1)..rule.IndexOf(":hover", StringComparison.Ordinal)];
+    }
+
+    /// <summary>Every element round this one, up to the page.</summary>
+    private static IEnumerable<AngleSharp.Dom.IElement> Ancestors(AngleSharp.Dom.IElement element)
+    {
+        for (var up = element.ParentElement; up is not null; up = up.ParentElement) yield return up;
     }
 
     /// <summary>The list opens on hover and on focus within, by the styles beside the component.</summary>
@@ -36,6 +81,7 @@ public class SiteMenuTests
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Menu/SiteMenu.razor.scss"));
 
-        Assert.That(rules, Does.Contain(".site-menu:hover .site-menu-list, .site-menu:focus-within .site-menu-list { display: flex;"));
+        Assert.That(rules,
+            Does.Contain(".site-drop:hover .site-drop-list, .site-drop:focus-within .site-drop-list { display: flex;"));
     }
 }

@@ -61,10 +61,9 @@
     .btn { transition: transform .25s var(--web-ease), box-shadow .3s, border-color .3s, background .3s; }
     .btn:hover { transform: translateY(-2px); }
     .btn-fill { @include surface.press(); }
-    /* The header's own button (F151.6): solid in the brand's colour with no drawing, since a bar is never glass, and
-       a step lighter under the pointer. */
-    .btn-solid { height: 42px; color: var(--web-on-primary); @include surface.slab(var(--bs-primary)); }
-    .btn-solid:hover { color: var(--web-on-primary); @include surface.slab(var(--web-violet-1)); }
+    /* The header's own button (FX159, Louis: "all glas buttons"): the theme's main button, glass where the theme
+       draws it, with its own hover and pressed. */
+    .btn-solid { height: 42px; @include surface.press(); }
     .btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }
     /* WhatsApp's and LinkedIn's buttons sit quietly beside the site's own (FX100, Louis: "the color is too bright
        here"): an outlined button with the owner's mark and name, the owner's colour on the edge under the pointer.

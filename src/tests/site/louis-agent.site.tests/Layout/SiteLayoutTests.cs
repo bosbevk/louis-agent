@@ -57,7 +57,7 @@ public class SiteLayoutTests
     {
         using var ctx = Context();
 
-        var last = ctx.Render<SiteLayout>().FindAll(".site-nav > a, .site-nav > .site-menu").Last();
+        var last = ctx.Render<SiteLayout>().FindAll(".site-nav > a, .site-nav > .site-drop").Last();
 
         Assert.Multiple(() =>
         {
@@ -103,7 +103,7 @@ public class SiteLayoutTests
         var cut = ctx.Render<SiteLayout>();
 
         var items = cut.Find(".site-nav").Children
-            .Select(item => (item.QuerySelector(".site-menu-label") ?? item).TextContent.Trim());
+            .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
         Assert.That(items,
             Is.EqualTo(new[] { "What we build", "Pricing", "Demos", "Contact", "The framework", "CV" }));
     }
@@ -122,8 +122,8 @@ public class SiteLayoutTests
 
         Assert.Multiple(() =>
         {
-            var menu = cut.FindAll(".site-nav .site-menu")
-                .Single(group => group.QuerySelector(".site-menu-label")!.TextContent == "The framework");
+            var menu = cut.FindAll(".site-nav .site-drop")
+                .Single(group => group.QuerySelector(".site-drop-label")!.TextContent == "The framework");
             Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
@@ -149,6 +149,24 @@ public class SiteLayoutTests
         {
             Assert.That(ask.TextContent, Is.EqualTo("Ask for yours"));
             Assert.That(ask.GetAttribute("href"), Is.EqualTo("/contact"));
+        });
+    }
+
+    /// <summary>
+    /// The header's two buttons are glass (FX159, Louis: "all glas buttons"): the way to ask is the theme's main button
+    /// and the CV its quiet one, so they wear the drawings where a theme has them.
+    /// </summary>
+    [Test]
+    public void TheHeadersButtons_AreTheThemesPresses()
+    {
+        string site = Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site");
+        string elements = File.ReadAllText(Path.Combine(site, "Styles/site/base/_elements.scss"));
+        string cv = File.ReadAllText(Path.Combine(site, "Components/Cv/CvLink.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(elements, Does.Contain(".btn-solid { height: 42px; @include surface.press(); }"));
+            Assert.That(cv, Does.Contain("@include surface.quiet-press();"));
         });
     }
 
@@ -228,8 +246,8 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        var demos = cut.FindAll(".site-nav .site-menu")
-            .Single(menu => menu.QuerySelector(".site-menu-label")!.TextContent == "Demos");
+        var demos = cut.FindAll(".site-nav .site-drop")
+            .Single(menu => menu.QuerySelector(".site-drop-label")!.TextContent == "Demos");
         Assert.Multiple(() =>
         {
             Assert.That(SiteDoors.CodingAgent, Is.False, "the live chat is closed today");

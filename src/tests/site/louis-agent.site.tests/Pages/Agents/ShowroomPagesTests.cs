@@ -93,8 +93,8 @@ public class ShowroomPagesTests
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
 
-        var demos = ctx.Render<SiteLayout>().FindAll(".site-nav .site-menu")
-            .Single(menu => menu.QuerySelector(".site-menu-label")!.TextContent == "Demos");
+        var demos = ctx.Render<SiteLayout>().FindAll(".site-nav .site-drop")
+            .Single(menu => menu.QuerySelector(".site-drop-label")!.TextContent == "Demos");
 
         Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
             Is.EqualTo(new[]

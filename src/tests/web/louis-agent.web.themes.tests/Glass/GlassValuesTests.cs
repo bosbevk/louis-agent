@@ -7,7 +7,7 @@ namespace LouisAgent.Web.Themes.Tests.Glass;
 /// <summary>
 /// F151.6: glass is the design page's glass. A pane and a button are their drawing alone, with nothing painted
 /// under it and nothing blurred behind it, the page behind is a picture of silk ribbons of light, and the header is
-/// a plain band.
+/// a plain band by night and white glass by day.
 /// </summary>
 public class GlassValuesTests
 {
@@ -15,7 +15,9 @@ public class GlassValuesTests
     private static string Value(SiteStyle style, string name) =>
         ThemeSheet.Values(CompiledThemes.Css(), GlassTheme.Theme, style).GetValueOrDefault(name, "");
 
-    /// <summary>Nothing is painted under a drawing: a pane, what is set in, a veil and a button are see-through.</summary>
+    /// <summary>
+    /// Nothing is painted under a drawing: a pane, what is set in, a veil and a button are see-through.
+    /// </summary>
     [TestCase(SiteStyle.Dark, "--web-pane-fill")]
     [TestCase(SiteStyle.Dark, "--web-inset-fill")]
     [TestCase(SiteStyle.Dark, "--web-veil-fill")]
@@ -66,15 +68,19 @@ public class GlassValuesTests
         Assert.Multiple(() =>
         {
             Assert.That(Value(style, "--web-page-lights"),
-                Is.EqualTo($"url(\"/_content/louis-agent.web.themes/glass/{folder}/silk.webp\") center / cover no-repeat"));
+                Is.EqualTo(
+                    $"url(\"/_content/louis-agent.web.themes/glass/{folder}/silk.webp\") center / cover no-repeat"));
             Assert.That(Value(style, "--web-page-lines"), Is.EqualTo("none"));
         });
     }
 
-    /// <summary>The header is a plain band with a hairline, never glass: no blur behind it.</summary>
+    /// <summary>
+    /// The header has no blur behind it: a plain band by night, and white glass by day that the page shows through
+    /// (FX159, Louis: "make this top part white glass").
+    /// </summary>
     [TestCase(SiteStyle.Dark, "#120e26")]
-    [TestCase(SiteStyle.Light, "#f3f0ff")]
-    public void TheHeader_IsAPlainBand(SiteStyle style, string fill)
+    [TestCase(SiteStyle.Light, "linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .56))")]
+    public void TheHeader_HasNoBlur(SiteStyle style, string fill)
     {
         Assert.Multiple(() =>
         {

@@ -2,8 +2,8 @@
    purple stays: the words are black, a visitor's mark is black, and the page is a wash of the violet, mixed from
    its second step so it follows the purple and deep enough for a white rim to stand on. A pane is its drawing
    alone, which holds its rim and its lights: nothing is painted under it, nothing blurs the page seen through
-   it, and it throws a soft shadow. The page behind is a picture of silk ribbons of light. A bar is a plain
-   pale band with a hairline, and a press is its drawing with white words. The red, amber, blue and green, the
+   it, and it throws a soft shadow. The page behind is a picture of silk ribbons of light. A bar is white glass
+   over a white edge, and a press is its drawing with white words. The red, amber, blue and green, the
    caption on a photo's mat and the hover grey are the framework's own, since the mockup does not show them, and the
    error words a darker red to read on white. The faces and the easing are the framework's. */
 
@@ -114,9 +114,10 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-inset-fill: transparent;
     --web-inset-edge: none;
 
-    // A bar is never glass: a plain band of pale violet over a hairline, since it is the one thing that stays put.
-    --web-bar-fill: #f3f0ff;
-    --web-bar-edge: 1px solid rgba(30, 16, 90, .16);
+    // A bar is white glass (FX159, Louis: "make this top part white glass"): white the page shows through, brightest
+    // at its top, over a white edge, with no blur, as nothing in glass blurs.
+    --web-bar-fill: linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .56));
+    --web-bar-edge: 1px solid rgba(255, 255, 255, .9);
     --web-bar-blur: none;
 
     // A press is its drawing alone, with white words, and it stands on a short dark shadow; the second has no line.

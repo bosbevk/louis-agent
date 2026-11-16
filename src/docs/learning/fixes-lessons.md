@@ -474,5 +474,24 @@ part that can answer it. A gate that answers for something it can't see turns on
 closed is what exists and isn't yours, which is the same as before. Skill 15 (safety and security: closed by
 default, and a refusal that names its real cause).
 
+## FX158 · A scoped style is scoped only at its last step
+
+Hovering over Contact, a plain link, opened both menus in the header. The menu group's styles sit beside it and are
+scoped, so it looked safe to call its root `site-menu`. But Blazor marks only the last part of a selector with the
+component's scope. `.site-menu:hover .site-menu-list` meant "a list of mine, under anything at all called
+site-menu", and the frame round the whole menu was called that too. The fix gives the group names no one else uses.
+The test reads the class the list opens under from the stylesheet itself and counts how many elements round each
+list carry it. It found two before the fix and finds one after. A scope protects what a rule lands on, never what
+the rule looks up to. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
+## FX159 · A rule about one piece outlives the reason for it
+
+F151.6 kept the header out of glass, so its switch and its CV were drawn by hand in plain colours, and the notes
+said "a bar is never glass". When Louis asked for a glass header, the change was not new drawing work at all. The
+surface tool already had the group, the main button and the quiet one, each glass where the theme draws it and
+plain where it doesn't. The hand-drawn pieces only had to ask for them. Drawing a piece through the theme's own
+kinds, even when today's look is plain, is what lets the look change later in one place. Skill 18 (testing and
+shipping: what a visitor sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

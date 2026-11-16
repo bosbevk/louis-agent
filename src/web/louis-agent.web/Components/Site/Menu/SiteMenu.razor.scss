@@ -2,19 +2,20 @@
 
 /* SiteMenu's own styles (FX73): the label reads like the menu's other links with a small mark after it; the list drops
    under it on hover or when a link inside has focus, so the keyboard opens it too. The list is a pane that floats
-   over the page (F151.4), so it wears a theme. */
-.site-menu { position: relative; }
-.site-menu-label {
+   over the page (F151.4), so it wears a theme. Its names are its own (FX158): a scoped rule marks only its last part,
+   so the class a list opens under must not be one the frame round it uses, or every list opens at once. */
+.site-drop { position: relative; }
+.site-drop-label {
     all: unset;
     cursor: pointer;
     color: var(--bs-secondary-color);
     font: inherit;
     transition: color .2s;
 }
-.site-menu-label::after { content: " ▾"; font-size: 11px; }
-.site-menu:hover .site-menu-label, .site-menu:focus-within .site-menu-label { color: var(--bs-emphasis-color); }
+.site-drop-label::after { content: " ▾"; font-size: 11px; }
+.site-drop:hover .site-drop-label, .site-drop:focus-within .site-drop-label { color: var(--bs-emphasis-color); }
 
-.site-menu-list {
+.site-drop-list {
     display: none;
     position: absolute;
     top: 100%;
@@ -26,15 +27,15 @@
     @include surface.float();
 }
 /* The menu at the end of the bar opens its list towards the page, so it never runs past the screen's edge (F122). */
-.site-menu:last-child .site-menu-list { left: auto; right: -14px; }
+.site-drop:last-child .site-drop-list { left: auto; right: -14px; }
 /* A gap between the label and the list would close it as the pointer crosses; the list's margin is covered here. */
-.site-menu-list::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
-.site-menu:hover .site-menu-list, .site-menu:focus-within .site-menu-list { display: flex; flex-direction: column; }
-.site-menu-list ::deep a { display: block; padding: 7px 18px; white-space: nowrap; }
-.site-menu-list ::deep a:hover { @include surface.tint(); }
+.site-drop-list::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+.site-drop:hover .site-drop-list, .site-drop:focus-within .site-drop-list { display: flex; flex-direction: column; }
+.site-drop-list ::deep a { display: block; padding: 7px 18px; white-space: nowrap; }
+.site-drop-list ::deep a:hover { @include surface.tint(); }
 
 @media (max-width: 720px) {
-    .site-menu-list {
+    .site-drop-list {
         position: static;
         margin: 6px 0 0;
         padding: 0 0 0 12px;
