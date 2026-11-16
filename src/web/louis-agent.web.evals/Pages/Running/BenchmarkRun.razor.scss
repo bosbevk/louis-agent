@@ -1,13 +1,15 @@
+@use "web/tools/surface";
+
 /* BenchmarkRun's own styles, moved beside it from the studio's partials (CL58, step 4). */
-::deep .legend .key-note { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--bs-body-color); }
-::deep .legend .key-prompt { display: inline-block; width: 0; height: 12px; border-left: 1.5px dashed var(--bs-secondary-color); }
+::deep .legend .key-note { display: inline-block; width: 8px; height: 8px; border-radius: 50%; @include surface.slab(var(--bs-body-color)); }
+::deep .legend .key-prompt { display: inline-block; width: 0; height: 12px; @include surface.rule(left, 1.5px dashed var(--bs-secondary-color)); }
 /* Pass rates per mode (2026-10-26): a row per mode, the two rates as bars with their numbers, the notes beside them. */
 ::deep .mode-rates-lead { margin: 0 0 10px; font-size: 13px; max-width: 100ch; }
 ::deep .mode-rates-lead strong { color: var(--bs-emphasis-color); }
 ::deep .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; }
-::deep .category-card { background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
-::deep .category-card:hover { border-color: rgba(var(--bs-primary-rgb), .35); }
-::deep .category-card.overall { border-color: rgba(var(--bs-primary-rgb), .4); }
+::deep .category-card { @include surface.inset($radius: 14px); padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+::deep .category-card:hover { @include surface.edged(rgba(var(--bs-primary-rgb), .35)); }
+::deep .category-card.overall { @include surface.edged(rgba(var(--bs-primary-rgb), .4)); }
 ::deep .category-card h4 { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: 15px; font-weight: 700; color: var(--bs-emphasis-color); }
 ::deep .category-card h4 code { background: none; padding: 0; color: var(--bs-emphasis-color); font-size: 14px; }
 ::deep .tree-chips { display: inline-flex; flex-wrap: wrap; gap: 5px; margin-left: auto; }

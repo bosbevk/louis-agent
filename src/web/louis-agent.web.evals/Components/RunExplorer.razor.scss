@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* RunExplorer's own styles, moved beside it from the studio's partials (CL58, step 4). */
 /* F31 step 11a: a check's trend; each line draws itself in (a path of length 1, its dash offset to 0), then its points. */
 ::deep .compare-head .mode-name { font-size: 12px; font-weight: 400; color: var(--bs-tertiary-color); }
@@ -27,10 +29,10 @@
 /* The replay has its own class: .replay is the landing page's pill button, which wrapped the transcript in a rounded border. */
 ::deep .xreplay { display: block; padding: 6px 0; }
 ::deep .compare-col { min-width: 0; display: flex; flex-direction: column; gap: 12px; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
-::deep .compare-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--bs-border-color); font-size: 15px; font-weight: 700; color: var(--bs-emphasis-color); }
+::deep .compare-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; padding-bottom: 8px; @include surface.rule(bottom); font-size: 15px; font-weight: 700; color: var(--bs-emphasis-color); }
 @media (max-width: 991.98px) { ::deep .xbar-row { grid-template-columns: 1fr; gap: 4px; } ::deep .xbar .xbar-value { position: static; } ::deep .lane { grid-template-columns: 70px 1fr; } }
-::deep .sample-field input, ::deep .sample-field textarea, ::deep .keep-reason { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
-::deep .sample-field input:focus, ::deep .sample-field textarea:focus, ::deep .keep-reason:focus { outline: none; border-color: rgba(var(--bs-primary-rgb), .55); }
+::deep .sample-field input, ::deep .sample-field textarea, ::deep .keep-reason { color: var(--bs-body-color); padding: 7px 10px; font: inherit; font-size: 13px; @include surface.field($edge: var(--web-bar-edge), $radius: 9px); }
+::deep .sample-field input:focus, ::deep .sample-field textarea:focus, ::deep .keep-reason:focus { outline: none; @include surface.edged(rgba(var(--bs-primary-rgb), .55)); }
 ::deep .sample-make, ::deep .keep-reference, ::deep .keep-bad { align-self: flex-start; }
 ::deep .sample-make:disabled, ::deep .keep-reference:disabled, ::deep .keep-bad:disabled { opacity: .45; cursor: not-allowed; }
 ::deep .sample-done, ::deep .keep-done { margin: 0; font-size: 13px; color: var(--bs-emphasis-color); }
