@@ -8,7 +8,10 @@
 @use "web/tools/colours";
 @use "theme-art";
 
-:root[data-theme="flat"][data-style="light"] {
+/* The values, as a set a piece can wear on its own: the page wears them under its theme and style, below, and a
+   piece that keeps one look whatever the page wears, such as a picture of someone's website, includes them and
+   sets its own colours over them. */
+@mixin values {
     // Written once each: the build makes the number form from the same value.
     @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
     @include colours.both(bs-danger, #d9675f);
@@ -123,3 +126,5 @@
 
     color-scheme: light;
 }
+
+:root[data-theme="flat"][data-style="light"] { @include values; }

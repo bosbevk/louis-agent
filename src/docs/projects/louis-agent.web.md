@@ -482,7 +482,8 @@ tour stops at the same places whatever the page looks like. On a phone the title
 chapters.
 
 **A business's website, as a mock** (`Mock/`). `SiteMock` is a browser bar, the business's sample brand, a page
-that scrolls inside the mock, and its agent's chat.
+that scrolls inside the mock, and its agent's chat. It says whose website it is in a `data-site` attribute, the
+business's address, so a site's sheet can set that business's own values for the theme's names under it.
 
 The mock is as big as its window. It names one size, between 12 and 17 px, that follows its own width or its
 height, whichever asks for less. Its header and its page take that size, and everything they hold is sized in em.

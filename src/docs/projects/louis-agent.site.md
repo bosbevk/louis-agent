@@ -122,7 +122,17 @@ its own, written in `Components/Showroom/Websites/` as its scene and its places.
 `ShowPage`, the mock goes to that place ([louis-agent.identity.showroom](louis-agent.identity.showroom.md)).
 
 Each website has three pages a visitor can click through; Wills and estates is a fourth, opened from its card. Each
-business wears a brand of its own, with marks, faces and headers from mockup 0. Once the recording ends, *Try it
+business wears a brand of its own, with marks, faces and headers from mockup 0.
+
+A business's website keeps that one look whatever theme and style the page around it wears, and its agent's corner
+is the business's too. Each business has a sheet of its own under `Styles/site/showroom/`, which names the website
+by its address and gives its four colours: its brand, the words on the brand, its page and its ink. The sheet
+includes the site's `business` tool, which sets the theme's names under that business's mock. It starts from the
+flat theme's light values, so every name is set and no drawing of a theme's is laid on the website, and then sets
+the business's own over them: the page and two shades of it, the ink and quieter mixes of it for the words and the
+lines, and the brand for what you press, the visitor's messages and the agent's mark.
+
+Once the recording ends, *Try it
 yourself* puts the visitor in a live chat with the business's agent, in the same place. The page names its identity
 and a first question.
 
