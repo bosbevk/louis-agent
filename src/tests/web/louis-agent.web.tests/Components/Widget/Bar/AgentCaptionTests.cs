@@ -175,6 +175,28 @@ public class AgentCaptionTests
     }
 
     /// <summary>
+    /// A closed answer stays closed after a reload (FX161, Louis's pick A of three): closing it marks its turn, which
+    /// is saved with the chat, and a bar drawn afresh over that chat, as after Ctrl+R, shows no caption for it.
+    /// </summary>
+    [Test]
+    public void AClosedAnswer_StaysClosed_WhenTheBarIsDrawnAfresh()
+    {
+        using var ctx = new BunitContext();
+        var answered = ShowedAndSaid();
+        var cut = Bar(ctx, answered);
+
+        cut.Find(".agent-caption .caption-close").Click();
+        using var again = new BunitContext();
+        var reloaded = Bar(again, answered);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(answered.PutAway, Is.True, "the turn carries it, so the saved chat does");
+            Assert.That(reloaded.FindAll(".agent-caption"), Is.Empty);
+        });
+    }
+
+    /// <summary>
     /// Closing the answer puts the page back as it was (Louis: "then when I close the fucking answer it resets"): the
     /// piece picked is let go too.
     /// </summary>

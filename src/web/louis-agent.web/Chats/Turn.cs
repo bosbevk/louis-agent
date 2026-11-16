@@ -24,6 +24,11 @@ public sealed class Turn
     public TurnUsage? Usage { get; set; }
 
     /// <summary>
+    /// Whether the visitor closed this answer's caption (FX161): saved with the chat, so a reload keeps it closed.
+    /// </summary>
+    public bool PutAway { get; set; }
+
+    /// <summary>
     /// The answer's words are what came last (F134.3): the turn ends in text, not in thinking or a tool call. The
     /// agent's orb speaks while they arrive.
     /// </summary>

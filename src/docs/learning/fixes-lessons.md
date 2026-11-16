@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX161 · What a reload must keep belongs with what the reload brings back
+
+A visitor closed the guide's answer, pressed Ctrl+R, and the answer stood over the bar again. The chat itself was saved
+in the browser and came back on the reload, as it should. But that the answer was closed lived only in the bar's memory,
+and a reload starts the bar empty, so it saw a last answer it had never been told was closed. The fix keeps the fact on
+the turn it is about, saved with the chat, so every way the chat comes back agrees on it. A second note kept beside the
+chat would have been two saved things that can disagree. Skill 9 (sessions and state: one source of truth for what must
+survive).
+
 ## FX163 · An animation held after its end hides the page from the glass
 
 The glass bent nothing behind it, though its filter ran and its numbers were right. The page's column played a
