@@ -81,7 +81,9 @@ public class RepeatedNameTests
             "the sub-session event is written into the recorded stream golden, which holds the peer's name: "
             + "recorded data stays as recorded"),
         ("src/site/louis-agent.site/Pages/HowItWorksPage.razor", "",
-            "the web band's id is that place's address on the page (/framework/how-it-works/web), not the toolset")
+            "the web band's id is that place's address on the page (/framework/how-it-works/web), not the toolset"),
+        ("src/site/louis-agent.site/Components/Architecture/Framework/WebFamily.razor", "Band Id=\"web\"",
+            "the web band's id is that place's address on the page (/framework/architecture/web), not the toolset")
     ];
 
     /// <summary>Every source file the scan looks at.</summary>

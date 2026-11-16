@@ -550,7 +550,7 @@ A ticket is a read-only card, such as a booking request. An agent draws one in t
   "kind": "ticket",
   "title": "BOOKING REQUEST: The garden room",
   "ticket": {
-    "kicker": "BOOKING REQUEST",
+    "topic": "BOOKING REQUEST",
     "title": "The garden room",
     "subtitle": "Seemeeu Guesthouse · Yzerfontein",
     "status": { "label": "Not sent yet", "tone": "amber" },
@@ -563,12 +563,12 @@ A ticket is a read-only card, such as a booking request. An agent draws one in t
 }
 ```
 
-**Reading the example.** It has a kicker and a title in its head, a subtitle, and a status that is drawn as a
+**Reading the example.** It has a topic and a title in its head, a subtitle, and a status that is drawn as a
 pill. Two rows follow, each an icon, a label and a value. The note is at the foot, in a well of its own.
 
 **The rows.** There are one to six. A long value wraps, and the card grows.
 
-**The head.** The `kicker` wraps beside the status pill. The `title` takes the head's full width. The status's
+**The head.** The `topic`, the small line over the title, wraps beside the status pill. The `title` takes the head's full width. The status's
 `tone` is one of the tones, and `plain` when left out.
 
 **Its size and colours.** A ticket is 320 wide, so a phone's chat shrinks it little. It is a glass card in the
