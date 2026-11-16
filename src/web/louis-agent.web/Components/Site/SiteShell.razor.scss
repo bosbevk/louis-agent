@@ -148,6 +148,8 @@
     pointer-events: none;
     transition: opacity .3s var(--web-ease), translate .3s var(--web-ease), color .2s;
     @include surface.float($radius: 50%);
+    // Plain see-through glass, no lens (Louis: "this glass ball does not need the water effect").
+    --web-lens-piece: 0;
 }
 .site-up[data-shown] { opacity: 1; translate: 0 0; pointer-events: auto; }
 .site-up:hover, .site-up:focus-visible { color: var(--bs-emphasis-color); }

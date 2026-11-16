@@ -124,6 +124,9 @@ a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-
    watcher with the site's three words: under the pointer it offers to ask, once picked it says so, and while the
    agent shows the piece it turns the agent's colour with a dot that blinks. The state picks the words. */
 :where([data-piece]:has(> .piece-tag)) { position: relative; }
+/* Every piece a visitor can ask about takes the hand under the pointer (Louis: "my mouse pointer must be a hand on these
+   panels also"). */
+[data-piece] { cursor: pointer; }
 .piece-tag {
     position: absolute;
     z-index: 4;
