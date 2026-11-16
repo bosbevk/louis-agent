@@ -43,6 +43,13 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? Actions { get; set; }
 
+    /// <summary>
+    /// A site's settings and lesser links, such as a CV, behind a three-line button at the header's end, in a panel
+    /// that stays down the right of the screen; with them go the look switches.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Settings { get; set; }
+
     /// <summary>The footer's content.</summary>
     [Parameter]
     public RenderFragment? Footer { get; set; }
@@ -62,6 +69,16 @@ public partial class SiteShell
     [Parameter]
     public PageLayout Layout { get; set; } = PageLayout.Flow;
 
+    /// <summary>Whether the theme's lines behind the page drift slowly; still by default.</summary>
+    [Parameter]
+    public bool MovingPage { get; set; }
+
+    /// <summary>
+    /// Whether the agent's answer rises from underneath, out of its bar, not beside its place; off by default.
+    /// </summary>
+    [Parameter]
+    public bool AnswerUnder { get; set; }
+
     /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
     private readonly PageOptions _options = new();
 
@@ -69,9 +86,12 @@ public partial class SiteShell
     private PageLayout Laid => _options.Layout ?? Layout;
 
     /// <summary>
-    /// The frame's root classes: the frame, and the layout the page is drawn in, which its styles read.
+    /// The frame's root classes: the frame, the layout the page is drawn in, which its styles read, whether the page
+    /// behind moves, and whether the agent's answer rises from underneath.
     /// </summary>
-    private string SiteClasses => Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow";
+    private string SiteClasses =>
+        (Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow") + (MovingPage ? " page-moves" : "")
+        + (AnswerUnder ? " answers-under" : "");
 
     /// <summary>Redraws when the page makes or takes back its choice, and shuts the menu when a page opens.</summary>
     protected override void OnInitialized()
@@ -94,8 +114,20 @@ public partial class SiteShell
     /// <summary>Whether the site offers a theme a visitor can pick (F151.3), for which the switch stands.</summary>
     private bool OffersThemes => SiteAreas.OffersThemes(Services);
 
+    /// <summary>Whether the site has settings, and so the panel behind the three-line button (FX163).</summary>
+    private bool HasSettings => Settings is not null;
+
+    /// <summary>The look switches stand in the settings' panel when there is one, else among the actions.</summary>
+    private bool LooksInActions => OffersThemes && !HasSettings;
+
     /// <summary>The header's actions are drawn when the site gives some, or when the switch stands there.</summary>
-    private bool HasActions => Actions is not null || OffersThemes;
+    private bool HasActions => Actions is not null || LooksInActions;
+
+    /// <summary>Whether the settings' panel is open; it starts shut and stays open as the page scrolls.</summary>
+    private bool _settingsOpen;
+
+    /// <summary>The three-line button opens the settings' panel, and shuts it again.</summary>
+    private void ToggleSettings() => _settingsOpen = !_settingsOpen;
 
     /// <summary>The menu holds the links and the actions, so it stands when the site has either.</summary>
     private bool HasMenu => Links is not null || HasActions;

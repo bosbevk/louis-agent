@@ -54,6 +54,71 @@ public class SiteShellTests
     }
 
     /// <summary>
+    /// A site's settings sit behind a three-line button at the header's end, in a panel that stays down the right of
+    /// the screen once opened (Louis: "we should have a 3 line menu there which will open a sticky menu then we put
+    /// those buttons there"), and the button opens and shuts it.
+    /// </summary>
+    [Test]
+    public void TheSettings_OpenFromAThreeLineButton()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Links, "<a href=\"/a\">A</a>")
+            .Add(shell => shell.Settings, "<a class=\"cv\" href=\"/cv\">CV</a>"));
+        var shut = cut.Find(".site-settings").GetAttribute("data-open");
+        cut.Find(".site-header .site-settings-button").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shut, Is.Null);
+            Assert.That(cut.Find(".site-settings").HasAttribute("data-open"), Is.True);
+            Assert.That(cut.Find(".site-settings-button").GetAttribute("aria-expanded"), Is.EqualTo("true"));
+            Assert.That(cut.FindAll(".site-settings a.cv"), Has.Count.EqualTo(1));
+        });
+    }
+
+    /// <summary>
+    /// The page behind moves when a site switches it on (Louis: "can we make the background move?", "the lines can it
+    /// be a switch"), and holds still otherwise.
+    /// </summary>
+    [Test]
+    public void ThePageBehind_Moves_WhenSwitchedOn()
+    {
+        using var ctx = Context();
+
+        var still = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<p>Page</p>"));
+        var moving = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.MovingPage, true)
+            .AddChildContent("<p>Page</p>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(still.Find(".site").ClassList, Does.Not.Contain("page-moves"));
+            Assert.That(moving.Find(".site").ClassList, Does.Contain("page-moves"));
+        });
+    }
+
+    /// <summary>
+    /// The agent's answer rises from underneath, out of its bar, when a site switches it on (Louis: "always from
+    /// underneath in flow layout", "or just make it an option"), and stands beside its place otherwise.
+    /// </summary>
+    [Test]
+    public void TheAnswer_RisesFromUnderneath_WhenSwitchedOn()
+    {
+        using var ctx = Context();
+
+        var beside = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<p>Page</p>"));
+        var under = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.AnswerUnder, true)
+            .AddChildContent("<p>Page</p>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(beside.Find(".site").ClassList, Does.Not.Contain("answers-under"));
+            Assert.That(under.Find(".site").ClassList, Does.Contain("answers-under"));
+        });
+    }
+
+    /// <summary>
     /// A site's slogan sits under the brand's name, inside the brand's link (FX79); none given, no line.
     /// </summary>
     [Test]
@@ -160,6 +225,23 @@ public class SiteShellTests
             Assert.That(up.GetAttribute("href"), Is.EqualTo("#top"));
             Assert.That(up.GetAttribute("aria-label"), Is.EqualTo("Back to the top"));
             Assert.That(up.QuerySelector("svg"), Is.Not.Null);
+        });
+    }
+
+    /// <summary>
+    /// The way back up stands just under the section index when the index shows (FX163, Louis: "move that button just
+    /// below, they are part of a section, they belong together"); the frame's script places it there.
+    /// </summary>
+    [Test]
+    public void TheWayUp_StandsUnderTheIndex()
+    {
+        string module = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.js"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(module, Does.Contain("standUnderTheIndex();"));
+            Assert.That(module, Does.Contain("up.style.top = box ? `${Math.round(box.bottom + 12)}px` : \"\";"));
         });
     }
 

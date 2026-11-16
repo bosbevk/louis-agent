@@ -6,6 +6,8 @@
 // system's "less motion" unless the viewer switched motion on.
 import { motion, reducedMotion } from "../../js/preferences.js";
 import { lens } from "../../js/lens.js";
+import { tilt } from "../../js/tilt.js";
+import { scenes } from "../../js/scenes.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -84,6 +86,18 @@ const scrolled = () => {
     if (progress) progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + "%";
     $(".site-header")?.classList.toggle("compact", scrollY > 40);
     $(".site-up")?.toggleAttribute("data-shown", scrollY > innerHeight * .8);
+    standUnderTheIndex();
+};
+
+// The way back up stands just under the section index when the index shows, the two belonging together (FX163, Louis:
+// "move that button just below, they are part of a section"); where the index is hidden it keeps its corner.
+const standUnderTheIndex = () => {
+    const up = $(".site-up"), index = $(".site-index");
+    if (!up) return;
+    const box = index?.offsetParent ? index.getBoundingClientRect() : null;
+    up.style.top = box ? `${Math.round(box.bottom + 12)}px` : "";
+    up.style.left = box ? `${Math.round(box.left)}px` : "";
+    up.style.bottom = box ? "auto" : "";
 };
 
 // A block plays its reveal once, when a quarter of it is in view; a page that asks for less motion shows it at rest.
@@ -191,6 +205,10 @@ export function attach(pageBase, place) {
     paginate();
     // The glass's lens, in a theme that has one, on the pane under the pointer and the ones picked or shown.
     lens.attach();
+    // And its tilt, on a panel that leans towards the pointer.
+    tilt.attach();
+    // And the product windows' scenes, each window found starting to play.
+    scenes.attach();
     if (pageBase !== base) {
         base = pageBase;
         if (place) arriveAt(place);
@@ -204,4 +222,6 @@ export function detach() {
     seen?.disconnect();
     seen = null;
     lens.detach();
+    tilt.detach();
+    scenes.detach();
 }

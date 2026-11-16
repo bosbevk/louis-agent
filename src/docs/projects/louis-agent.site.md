@@ -93,15 +93,21 @@ the folders under `demos/`.
 ### 3. Selling first, the framework as proof
 
 The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads: What we
-build · Pricing · Demos · Contact · The framework.
+build · Demos · Contact · The framework. At the header's end a three-line button opens the settings, a thin glass bar
+under the header with the look switches and the CV. No price stands anywhere a visitor first looks:
+every quote is made on request.
 
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
 large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
 that says what each one means, and a visitor who presses a state's button holds it there. Under the mark come the
 headline "Ask the website.", a few words on what we build, a website that answers for a business, and two buttons,
-"Ask for yours" and "See what it does", which goes to that section. Then comes what it does, then how it works for you (three steps, and the facts a buyer
-trusts). Then come custom agents, the demos, one band of proof (built on a framework of its own, measured, with links
-into it), and a strip that asks a business for theirs.
+"Ask for yours" and "See what it does", which goes to that section. Under the hero runs the tape, one line of what
+the agents did that never stops. Then comes what it does, as four glass cards, then where it runs, three cards for
+your server, your model and your data, then the demos, three photographs fanned out. Custom agents come next: a
+product window plays the guesthouse, the restaurant and the law practice in turn, each its own page with its agent
+answering a visitor from its recorded talk, drawing the request and sending it on a yes. The last strip asks the
+agent to take the visitor's details, or leads to the contact page. The framework itself has no band on the landing:
+the menu's "The framework" leads to its own pages.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
 `/framework/architecture`. `/what-we-build` and `/pricing` are the selling pages; pricing has two plans, each a tile
@@ -266,7 +272,7 @@ These are the types involved:
 | `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the demos (`RecordedChat` plays `wwwroot/recordings/coding-session.sse`; [how to record it again](../../../demos/louis-agent/recordings/README.md)) |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
-| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
+| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
 | `Content/`, `Graphs/` | `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |

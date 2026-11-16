@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site.Pieces;
 using LouisAgent.Web.Components.Site.Strip;
 using LouisAgent.Web.Components.Site.Tiles;
 using Microsoft.AspNetCore.Components;
@@ -133,5 +134,86 @@ public class TilesTests
             Assert.That(number.Find("article").HasAttribute("data-piece"), Is.True);
             Assert.That(number.Find("article").Id, Is.EqualTo("100-adrs"));
         });
+    }
+
+    /// <summary>
+    /// A tile wears the theme's finish until a site switches a part off (Louis: "this should be options to switch on
+    /// or off on a panel"): the lens that bends what is behind it, the tilt towards the pointer, and being picked.
+    /// </summary>
+    [Test]
+    public void ATile_BendsTiltsAndIsPicked_UntilSwitchedOff()
+    {
+        using var ctx = new BunitContext();
+
+        var finished = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your model")).Find("article");
+        var plain = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data")
+            .Add(t => t.Lens, false).Add(t => t.Tilt, false).Add(t => t.Pick, false)).Find("article");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(finished.HasAttribute("data-tilt"), Is.True);
+            Assert.That(finished.HasAttribute("data-lens"), Is.False);
+            Assert.That(finished.HasAttribute("data-piece"), Is.True);
+            Assert.That(plain.HasAttribute("data-tilt"), Is.False);
+            Assert.That(plain.GetAttribute("data-lens"), Is.EqualTo("off"));
+            Assert.That(plain.HasAttribute("data-piece"), Is.False);
+        });
+    }
+
+    /// <summary>
+    /// A tile is see-through glass that ripples like water until a site gives it other glass (Louis: "we should be
+    /// able to give glass colors", "transparent meaning see through glass and if it is transparent then the amount
+    /// and then type water, etc"): its colour, how much, and its type, which the theme and the lens read.
+    /// </summary>
+    [Test]
+    public void ATile_WearsTheGlassItIsGiven()
+    {
+        using var ctx = new BunitContext();
+        var grey = new GlassLook(GlassColour.Grey, 40, GlassType.Plain);
+
+        var clear = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data")).Find("article");
+        var tinted = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server").Add(t => t.Glass, grey)).Find("article");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(clear.HasAttribute("data-glass"), Is.False);
+            Assert.That(clear.GetAttribute("data-glass-type"), Is.EqualTo("water"));
+            Assert.That(tinted.GetAttribute("data-glass"), Is.EqualTo("grey"));
+            Assert.That(tinted.GetAttribute("data-glass-type"), Is.EqualTo("plain"));
+            Assert.That(tinted.GetAttribute("style"), Is.EqualTo("--glass-amount: 40%"));
+        });
+    }
+
+    /// <summary>
+    /// A tile may carry its own buttons, side by side under its words, at their own width (FX163, Louis: "these types
+    /// of things must be handled by the framework").
+    /// </summary>
+    [Test]
+    public void ATile_CarriesItsButtons_InARow()
+    {
+        using var ctx = new BunitContext();
+
+        var tile = ctx.Render<Tile>(p => p.Add(t => t.Title, "Write to us").Add(t => t.Text, "One mail.")
+            .Add(t => t.Actions, "<a class=\"btn\" href=\"/a\">Send</a><a class=\"btn\" href=\"/b\">Chat</a>")).Find("article");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(tile.LastElementChild!.ClassName, Does.Contain("button-row"));
+            Assert.That(tile.QuerySelectorAll(".button-row a"), Has.Length.EqualTo(2));
+        });
+    }
+
+    /// <summary>A tile shows its reflection when a site switches it on (Louis: "all glass panels must have the
+    /// reflection option").</summary>
+    [Test]
+    public void ATile_ShowsItsReflection_WhenSwitchedOn()
+    {
+        using var ctx = new BunitContext();
+
+        var plain = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server")).Find("article");
+        var shown = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data").Add(t => t.Reflect, true)).Find("article");
+
+        Assert.That((plain.HasAttribute("data-reflect"), shown.HasAttribute("data-reflect")),
+            Is.EqualTo((false, true)));
     }
 }

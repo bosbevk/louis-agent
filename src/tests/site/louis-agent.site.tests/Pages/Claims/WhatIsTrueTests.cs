@@ -38,19 +38,4 @@ public class WhatIsTrueTests
     [TestCase("releases both")]
     public void AStaleClaim_IsOnNoPage(string claim) =>
         Assert.That(TheWholeSite(), Does.Not.Contain(claim));
-
-    /// <summary>
-    /// The landing's count of design records is the folder's, rounded down to ten: "110+ ADRs" while there are
-    /// 110 to 119.
-    /// </summary>
-    [Test]
-    public void TheDesignRecords_AreCounted()
-    {
-        int records = Directory.GetFiles(Path.Combine(TestPaths.RepoRoot, "src/docs/adr"), "0*.md").Length;
-        using var ctx = SitePageContext.Create();
-
-        string landing = ctx.Render<HomePage>().Markup;
-
-        Assert.That(landing, Does.Contain($"{records / 10 * 10}+ ADRs"));
-    }
 }

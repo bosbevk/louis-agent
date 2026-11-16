@@ -71,13 +71,27 @@
    row, and its button is not drawn. On a phone the button opens it as a sheet under the header. */
 .site-menu { display: contents; }
 .site-menu-button { display: none; }
+/* The settings' three-line button at the header's end (FX163): a round glass button, the theme's second, round as
+   every button is (Louis: "this should be round", "the same way we do our buttons"). */
+.site-settings-button {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    color: var(--bs-emphasis-color);
+    border-radius: 999px;
+    @include surface.quiet-press();
+}
 
 .site-main {
     flex: 1;
     max-width: 1280px;
     width: 100%;
     margin: 0 auto;
-    animation: site-page-in .5s var(--web-ease, ease-out) both;
+    // Played and let go: held after its end, it would make the column a layer of its own that the glass's lens can't
+    // see through to the page behind (FX163).
+    animation: site-page-in .5s var(--web-ease, ease-out) backwards;
 }
 
 /* A page change plays an entrance (F118, Louis: "when changing from one page to another can we have an animation"):
@@ -134,6 +148,8 @@
     pointer-events: none;
     transition: opacity .3s var(--web-ease), translate .3s var(--web-ease), color .2s;
     @include surface.float($radius: 50%);
+    // Plain see-through glass, no lens (Louis: "this glass ball does not need the water effect").
+    --web-lens-piece: 0;
 }
 .site-up[data-shown] { opacity: 1; translate: 0 0; pointer-events: auto; }
 .site-up:hover, .site-up:focus-visible { color: var(--bs-emphasis-color); }
@@ -161,7 +177,7 @@
         height: 44px;
         margin-left: auto;
         color: var(--bs-emphasis-color);
-        border-radius: 14px;
+        border-radius: 999px;
         @include surface.quiet-press();
     }
     /* The sheet hangs under the header, over the page, and holds the links one under the other, then the switches
@@ -213,7 +229,10 @@
    the way up already end above, on a wide screen and a phone alike. These come after the phone's rules, so they win
    there too. On a screen only: paper has no bar, so a printed page keeps no room for one. */
 @media screen {
-    .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }
+    /* The room is kept under the page's content, not under the footer, so the footer stands at the very bottom with
+       the bar over its middle (FX163, Louis: "the footer must always be at the bottom"). */
+    .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: 0; }
+    .site:has(.site-corner .chat-widget.is-bar) .site-main { padding-bottom: var(--site-bar); }
     .site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }
     .site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }
     /* Under the bar the page's content fades away into the bare page, as the design has it, so nothing passes

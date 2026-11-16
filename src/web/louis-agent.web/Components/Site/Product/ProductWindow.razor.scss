@@ -1,0 +1,121 @@
+@use "web/tools/window";
+@use "web/tools/surface";
+
+/* The design page's product window (FX163): a glass pane in the glass the site gives it, holding a business's own page
+   beside the agent's chat. Only the scene the scenes script plays shows. The page keeps the theme's words and paper,
+   the chat is the dark screen of a film. */
+.product-window { position: relative; padding: 0 12px 12px; @include window.frame; }
+.product-scene { display: none; }
+.product-scene.is-on { display: block; }
+.product-bar { @include window.bar; }
+.product-dot { @include window.dot; }
+.product-address { margin-left: 8px; padding: 3px 12px; font: 12.5px var(--bs-font-monospace); @include surface.well(); }
+.product-body { display: grid; grid-template-columns: minmax(0, 1fr) 36%; border-radius: 12px; overflow: hidden; }
+
+/* The business's page: a bar with its name and menu, its cards, and the request the agent draws over them. */
+.product-page { position: relative; padding: 0 20px 22px; overflow: hidden; @include surface.panel(var(--bs-body-bg)); }
+.product-head {
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    margin: 0 -20px 18px;
+    padding: 14px 20px;
+    font-size: 11.5px;
+    letter-spacing: .12em;
+    color: var(--web-on-primary);
+    @include surface.panel(var(--web-primary-deep));
+}
+.product-head b { margin-right: auto; font: italic 500 22px Georgia, serif; letter-spacing: 0; }
+.product-rooms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.product-room {
+    overflow: hidden;
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--bs-secondary-color);
+    transition: opacity .6s, transform .7s var(--web-ease);
+    @include surface.panel(var(--bs-secondary-bg));
+}
+.product-room img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.product-room div { padding: 9px 11px 11px; }
+.product-room b { display: block; font-size: 14px; color: var(--bs-emphasis-color); }
+.is-shown .product-room { opacity: .45; }
+.is-shown .product-room.is-picked { opacity: 1; transform: translateY(-8px); @include surface.film-picked(); }
+.product-slip {
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    width: min(330px, 80%);
+    padding: 18px 20px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    opacity: 0;
+    transform: translate(-50%, -30%) scale(.9);
+    transition: opacity .5s, transform .7s var(--web-ease);
+    @include surface.panel(var(--bs-body-bg));
+    @include surface.cast(30px, 60px, -20px, .45, var(--web-shadow-rgb));
+}
+.is-card .product-slip { opacity: 1; transform: translate(-50%, -50%); }
+.product-slip small { font: 500 10.5px var(--bs-font-monospace); letter-spacing: .1em; color: var(--bs-primary); }
+.product-slip b { display: block; margin: 3px 0 10px; font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.product-slip div { display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid; @include surface.edged($side: top); }
+.product-slip span { color: var(--bs-secondary-color); }
+.product-slip em { font-style: normal; font-weight: 600; color: var(--bs-warning-text-emphasis); }
+.is-sent .product-slip em { color: var(--bs-success-text-emphasis); }
+
+/* The agent's chat: the visitor's words on the right, the agent's on the left, its calls as pills, its choices. */
+.product-chat {
+    display: flex;
+    flex-direction: column;
+    height: 440px;
+    padding: 18px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--web-on-primary);
+    @include surface.film();
+    border-radius: 0;
+}
+.product-talk { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 11px; overflow: hidden; }
+.product-talk ::deep > * { flex: none; animation: product-pop .5s var(--web-ease) both; }
+.product-talk ::deep .product-ask {
+    align-self: flex-end;
+    max-width: 90%;
+    padding: 10px 14px;
+    border-radius: 14px 14px 4px 14px;
+    color: var(--bs-emphasis-color);
+    @include surface.panel(var(--bs-body-bg));
+}
+.product-talk ::deep .product-answer { max-width: 94%; padding: 10px 14px; border-radius: 14px 14px 14px 4px; @include surface.film-tile(12%); }
+.product-talk ::deep .product-think { font-size: 13px; opacity: .65; }
+.product-talk ::deep .product-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font: 12.5px var(--bs-font-monospace);
+    @include surface.call();
+}
+.product-talk ::deep .product-call::before { content: ""; width: 7px; height: 7px; @include surface.call-dot(); }
+.product-talk ::deep .product-call.is-running::before { animation: product-blink .6s ease-in-out infinite; }
+.product-talk ::deep .product-offer { display: flex; flex-wrap: wrap; gap: 6px; }
+.product-talk ::deep .product-offer span { padding: 6px 12px; border-radius: 999px; font-size: 13px; @include surface.film-choice(); }
+.product-talk ::deep .product-offer span.is-pressed { @include surface.film-choice-lit(); }
+.product-foot {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid;
+    font: 12px var(--bs-font-monospace);
+    @include surface.edged($side: top);
+    opacity: .7;
+}
+
+@keyframes product-pop { from { opacity: 0; transform: translateY(8px); } }
+@keyframes product-blink { 50% { opacity: .25; } }
+@media (max-width: 900px) {
+    .product-body { grid-template-columns: minmax(0, 1fr); }
+    .product-chat { height: 360px; }
+}
+@media (prefers-reduced-motion: reduce) { .product-talk ::deep > *, .product-talk ::deep .product-call::before { animation: none; } }

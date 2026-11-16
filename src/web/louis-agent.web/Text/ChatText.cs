@@ -39,6 +39,15 @@ public sealed record ChatText
     /// <summary>The chip's close button, read aloud: the piece is let go.</summary>
     public string ClosePiece { get; init; } = "Stop asking about this";
 
+    /// <summary>A piece's tag under the pointer: it can be asked about (FX163, the design's states).</summary>
+    public string PieceAsk { get; init; } = "Ask about this";
+
+    /// <summary>A piece's tag once the visitor picked it.</summary>
+    public string PiecePicked { get; init; } = "You picked this";
+
+    /// <summary>A piece's tag while the agent shows it.</summary>
+    public string PieceShown { get; init; } = "Agent shows this";
+
     /// <summary>The look switch's group of themes, read aloud (F151.3).</summary>
     public string LookTheme { get; init; } = "Theme";
 

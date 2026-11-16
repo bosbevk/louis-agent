@@ -37,8 +37,7 @@ public class WhatWeBuildPageTests
         Assert.That(ctx.Render<WhatWeBuildPage>().Find("#top").TextContent, Does.Contain("never gives advice"));
     }
 
-    /// <summary>It leads on to the plans and to Louis.</summary>
-    [TestCase("/pricing")]
+    /// <summary>It leads on to Louis, and no longer to the plans (Louis: "remove pricing").</summary>
     [TestCase("/contact")]
     public void ThePage_LeadsOn(string address)
     {

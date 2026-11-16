@@ -59,6 +59,16 @@
 }
 
 /* A small mark beside a label, such as the dot before a section's name, and the same mark lit for the one in view. */
+/* Words lifted off the page behind them with no panel (FX163, Louis: "can we somehow elevate these fonts without a
+   panel"): an angled shadow the letters cast on the page. A drop shadow, not a text shadow, so it stands behind
+   words whose colour is clipped into them. */
+@mixin lifted-words() {
+    // No glow: the letters cast an angled shadow down and to the right, as if lit from the top left, a crisp one close
+    // in and a soft one further out, so they stand raised off the page with depth (Louis: "we need to kind of give
+    // the font more depth", "make the glow not a glow but an angled shadow for the font").
+    filter: drop-shadow(2px 3px 0 rgba(var(--web-shadow-rgb), .16)) drop-shadow(6px 10px 12px rgba(var(--web-shadow-rgb), .24));
+}
+
 @mixin marker($lit: false) {
     @if $lit {
         background: var(--bs-primary);
@@ -96,19 +106,20 @@
     box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
 }
 
-/* The spotlight the guide puts on a place: a ring of the brand's colour, a soft light behind it, and the rest of
-   the page dimmed by a shadow as large as the screen. */
+/* The spotlight the guide puts on a place: the rest of the page dimmed by a shadow as large as the screen, and no
+   frame of its own (FX163, Louis: "the svg handles the state, now we have two"): the piece shown wears the theme's
+   showing drawing itself. */
 @mixin spotlit() {
     border-radius: var(--web-pane-radius);
-    box-shadow: 0 0 56px rgba(var(--bs-primary-rgb), .35), 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
-    @include drawing(pane-showing);
+    box-shadow: 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
 }
 
-/* A place the agent is showing while its words stand beside it (FX162, the design page's "the agent, showing it"): the
-   theme's showing drawing over it, a violet edge with a light running round, and no dimming. No ring of its own. */
+/* A place the agent is showing while its words stand beside it (FX162, FX163, the design page's "the agent, showing
+   it"): only the page dimmed round it, as the design's. No ring and no drawing of its own (Louis: "take the purple
+   ring out"): a piece wears the showing drawing on its own edge. */
 @mixin kept-ring() {
     border-radius: var(--web-pane-radius);
-    @include drawing(pane-showing);
+    box-shadow: 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
 }
 
 /* The row you picked in a list, such as a file in a tree: a line of the brand's colour down its side, drawn inside

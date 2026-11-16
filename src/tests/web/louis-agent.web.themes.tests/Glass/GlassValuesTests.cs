@@ -58,6 +58,42 @@ public class GlassValuesTests
     }
 
     /// <summary>
+    /// A glass card leans towards the pointer as the design's cards do (Louis: "yes a lens with a tilt"): seven
+    /// degrees across its width and its height.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheTilt_IsTheDesignsCard(SiteStyle style) =>
+        Assert.That(Value(style, "--web-tilt"), Is.EqualTo("7"));
+
+    /// <summary>
+    /// A panel whose glass type is frost blurs what is behind it by two pixels (Louis: "this is perfect just make it
+    /// two", "and then type water, etc"); every other panel frosts nothing.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheFrost_IsTwoPixels(SiteStyle style) =>
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("2"));
+
+    /// <summary>
+    /// The colours a panel's glass may take (Louis: "we should be able to give glass colors, transparent white
+    /// etc."): white, and the grey of the second button, darker in the dark style.
+    /// </summary>
+    [TestCase(SiteStyle.Light, "#ffffff", "#8a8a98")]
+    [TestCase(SiteStyle.Dark, "#ffffff", "#24242b")]
+    public void TheGlassColours_AreWhiteAndTheButtonsGrey(SiteStyle style, string white, string grey) =>
+        Assert.That((Value(style, "--web-glass-white"), Value(style, "--web-glass-grey")), Is.EqualTo((white, grey)));
+
+    /// <summary>
+    /// Glass ripples what is behind it like water (Louis: "can we replace the frost with a water", "can we increase
+    /// the water effect?"): sixteen pixels of ripple.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheWater_RipplesWhatIsBehind(SiteStyle style) =>
+        Assert.That(Value(style, "--web-lens-water"), Is.EqualTo("16"));
+
+    /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
     /// screen (Louis's pick C of three), with no lines of its own.
     /// </summary>

@@ -1,5 +1,6 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Scripts;
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -22,6 +23,10 @@ public partial class PieceWatch : IAsyncDisposable
 
     [Inject] private IJSRuntime JS { get; set; } = null!;
 
+    /// <summary>The site's words, the pieces' tags among them.</summary>
+    [Inject]
+    private ChatText Text { get; set; } = null!;
+
     /// <summary>What a pick does: the widget asks the guide about the piece.</summary>
     [Parameter]
     public EventCallback<PageArea> Picked { get; set; }
@@ -32,7 +37,9 @@ public partial class PieceWatch : IAsyncDisposable
         if (!firstRender) return;
         _module = new JsModule(JS, FrameworkScripts.PieceWatch);
         _self = DotNetObjectReference.Create(this);
-        await _module.InvokeVoidAsync("watch", _self);
+        // The tag a piece wears in each state, in the site's words; the module lays it on the pieces it meets.
+        var tags = new PieceTags(Text.PieceAsk, Text.PiecePicked, Text.PieceShown);
+        await _module.InvokeVoidAsync("watch", _self, tags);
     }
 
     /// <summary>The module's call: the visitor picked this piece.</summary>
@@ -43,17 +50,29 @@ public partial class PieceWatch : IAsyncDisposable
         return Picked.InvokeAsync(piece);
     }
 
-    /// <summary>What a piece the guide showed, or a card opened, does: the widget marks it selected, nothing sent.</summary>
+    /// <summary>
+    /// What a piece the guide showed, or a card opened, does: the widget marks it selected, nothing sent.
+    /// </summary>
     [Parameter]
     public EventCallback<PageArea> Shown { get; set; }
 
-    /// <summary>The module's call: the guide showed this piece, or the visitor opened this card, so it is selected.</summary>
+    /// <summary>
+    /// The module's call: the guide showed this piece, or the visitor opened this card, so it is selected.
+    /// </summary>
     [JSInvokable("Shown")]
     public Task ShownAsync(string id, string heading)
     {
         var piece = new PageArea(id, heading);
         return Shown.InvokeAsync(piece);
     }
+
+    /// <summary>What letting the pick go does: the widget drops the piece and its chip.</summary>
+    [Parameter]
+    public EventCallback LetGo { get; set; }
+
+    /// <summary>The module's call: the visitor clicked away from the pieces, or on the picked one again.</summary>
+    [JSInvokable("LetGo")]
+    public Task LetGoAsync() => LetGo.InvokeAsync();
 
     /// <summary>Takes the ring off the piece, when the chip is closed.</summary>
     public async Task ClearAsync()

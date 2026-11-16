@@ -36,6 +36,23 @@ public class BandTests
     }
 
     /// <summary>
+    /// A band's head runs straight into its content, with no line under it (Louis: "remove all these header lines").
+    /// </summary>
+    [Test]
+    public void ABandsHead_HasNoLineUnderIt()
+    {
+        using var ctx = new BunitContext();
+
+        var headed = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "does")
+            .Add(band => band.Title, "What it does.")
+            .Add(band => band.Summary, "Four things.")
+            .AddChildContent("<div class=\"cards\"></div>"));
+
+        Assert.That(headed.Find(".summary").NextElementSibling!.ClassName, Is.EqualTo("cards"));
+    }
+
+    /// <summary>
     /// A band carries its own pager, hidden (F118, Louis's option 2): on a page of slides, a band with more than a
     /// screen of content is paged sideways by the frame's module, which shows the pager and fills in "1 / 3"; the
     /// buttons are named for a screen reader.

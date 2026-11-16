@@ -175,6 +175,23 @@ public class AgentCaptionTests
     }
 
     /// <summary>
+    /// Closing the answer puts the page back as it was (Louis: "then when I close the fucking answer it resets"): the
+    /// piece picked is let go too.
+    /// </summary>
+    [Test]
+    public void PutAway_LetsThePickGo()
+    {
+        using var ctx = new BunitContext();
+        var cut = Bar(ctx, ShowedAndSaid());
+        bool letGo = false;
+        cut.Render(parameters => parameters.Add(bar => bar.OnClearPiece, () => letGo = true));
+
+        cut.Find(".agent-caption .caption-close").Click();
+
+        Assert.That(letGo, Is.True);
+    }
+
+    /// <summary>
     /// The choices the guide offered in that answer stand in the caption as pills, as the design drew them: the
     /// question over them, the suggested one marked, a choice's why as its tip, and a press asks with its label, as
     /// a card in the talk does.

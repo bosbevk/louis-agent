@@ -1,5 +1,9 @@
-@* The strip at the landing's foot (F118): the framework's SiteStrip with this site's words, configured (ADR 0125). *@
-<SiteStrip Heading="Ready for a website that answers your customers?">
-    <Action><LinkButton Href="/contact" Text="Ask for yours" /></Action>
-    <ChildContent>Tell Louis about your business. A short call, then a working agent to look at, from R500 a month.</ChildContent>
-</SiteStrip>
+@* The landing's last band (F118, FX163): the end of the tour, with a heading like every other section's (Louis: "take
+   the black panel out, give it the same headings as the start and say this is the end of the tour"). It asks the
+   agent to take the visitor's details, or leads to the contact page; a quote is on request. *@
+<Band Id="contact" Topic="the end of the tour" Title="Shall we build yours?" Summary="That is the end of the tour. Leave your details with the agent in the corner, or write to us. Every quote is made for your business, on request.">
+    <ButtonRow>
+        <AskButton Text="Leave your details" Question="I would like a website with an agent for my business. Please take my details so I can get a quote." />
+        <LinkButton Href="/contact" Text="Contact us" Kind="ButtonKind.Quiet" />
+    </ButtonRow>
+</Band>

@@ -97,6 +97,15 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     // The lens: the card under the pointer, or picked or shown, bends what is behind it as the design's cards.
     --web-lens-wall: 52;
     --web-lens-rise: 70;
+    // What is behind a panel's middle, by the panel's glass type: frosted two pixels, or rippled like water sixteen,
+    // its edge clear and bending sharply.
+    --web-lens-frost: 2;
+    --web-lens-water: 16;
+    // The colours a panel's glass may take, white and the grey of the second button, as much as the panel says.
+    --web-glass-white: #ffffff;
+    --web-glass-grey: #8a8a98;
+    // And it leans towards the pointer, seven degrees across, as the design's cards.
+    --web-tilt: 7;
 
     // What floats over the page throws a pane's own shadow.
     --web-float-shadow: var(--web-pane-shadow);

@@ -33,7 +33,9 @@ public partial class Tile
     [Parameter]
     public int Delay { get; set; }
 
-    /// <summary>The tile's words in Markdown, so they may hold a link (ADR 0125); instead of words given as content.</summary>
+    /// <summary>
+    /// The tile's words in Markdown, so they may hold a link (ADR 0125); instead of words given as content.
+    /// </summary>
     [Parameter]
     public string? Text { get; set; }
 
@@ -41,9 +43,33 @@ public partial class Tile
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>The tile's own buttons, side by side under its words, at their own width; none by default.</summary>
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
     /// <summary>A colour to set the tile apart, the eval screens' four; none by default.</summary>
     [Parameter]
     public TileAccent Accent { get; set; }
+
+    /// <summary>Whether the theme's lens bends what is behind the tile under the pointer; on by default.</summary>
+    [Parameter]
+    public bool Lens { get; set; } = true;
+
+    /// <summary>Whether the tile shows its reflection under it; off by default.</summary>
+    [Parameter]
+    public bool Reflect { get; set; }
+
+    /// <summary>The tile's glass: its colour, how much, and what it does behind it; clear water by default.</summary>
+    [Parameter]
+    public GlassLook Glass { get; set; } = GlassLook.Default;
+
+    /// <summary>Whether the tile leans towards the pointer, as far as the theme says; on by default.</summary>
+    [Parameter]
+    public bool Tilt { get; set; } = true;
+
+    /// <summary>Whether a visitor or the guide can pick the tile, the theme drawing it picked; on by default.</summary>
+    [Parameter]
+    public bool Pick { get; set; } = true;
 
     /// <summary>
     /// A panel that rises; a number's tile also keeps its number and note close together, and an accented tile wears
@@ -55,10 +81,13 @@ public partial class Tile
     /// Every tile is a piece a visitor or the guide can select (F127.7), a tile of words by its title and one of a
     /// number by its number. Razor leaves the attribute out when this is false, and out the id with it.
     /// </summary>
-    private bool IsPiece => (Title ?? Value) is not null;
+    private bool IsPiece => Pick && (Title ?? Value) is not null;
 
-    /// <summary>The piece's id from its title or its number, or none for a tile with neither.</summary>
-    private string? PieceAddress => (Title ?? Value) is { } name ? PieceId.Of(name) : null;
+    /// <summary>The piece's id from its title or its number, or none for a tile that can't be picked.</summary>
+    private string? PieceAddress => IsPiece ? PieceId.Of((Title ?? Value)!) : null;
+
+    /// <summary>What the tile tells the lens: nothing while it is on, so only a switched-off lens is written.</summary>
+    private string? LensSwitch => PaneSwitch.Lens(Lens);
 
     /// <summary>The class an accent's colour hangs on, named for the colour; none for a plain tile.</summary>
     private string AccentClass => Accent == TileAccent.None ? "" : $" accent-{Accent.Wire()}";

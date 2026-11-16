@@ -28,6 +28,24 @@ public partial class LinkButton
     /// <summary>The section on this page it moves to, by its id; none for a link to another page.</summary>
     [Parameter] public string? Section { get; set; }
 
+    /// <summary>A mark before the words, such as a third party's logo; none by default.</summary>
+    [Parameter] public RenderFragment? Mark { get; set; }
+
+    /// <summary>Whether the link opens in a new tab, as a link to another site does; off by default.</summary>
+    [Parameter] public bool NewTab { get; set; }
+
     /// <summary>The theme's button classes for its kind and size.</summary>
-    private string Classes => (Kind == ButtonKind.Quiet ? "btn btn-line" : "btn btn-fill") + (Small ? " btn-small" : "");
+    private string Classes => Kind switch
+    {
+        ButtonKind.Quiet => "btn btn-line",
+        ButtonKind.WhatsApp => "btn btn-whatsapp",
+        ButtonKind.LinkedIn => "btn btn-linkedin",
+        _ => "btn btn-fill"
+    } + (Small ? " btn-small" : "");
+
+    /// <summary>Where the link opens: a new tab when asked, else none, the same tab.</summary>
+    private string? Target => NewTab ? "_blank" : null;
+
+    /// <summary>A link in a new tab doesn't hand the page it leaves to the site it opens.</summary>
+    private string? Rel => NewTab ? "noopener" : null;
 }

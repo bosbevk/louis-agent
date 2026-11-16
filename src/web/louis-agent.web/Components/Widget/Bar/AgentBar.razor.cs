@@ -219,7 +219,13 @@ public partial class AgentBar : IAsyncDisposable
     }
 
     /// <summary>Puts the last answer away: its caption goes, and the next answer stands again.</summary>
-    private void PutTheAnswerAway() => _putAway = Last;
+    private Task PutTheAnswerAway()
+    {
+        _putAway = Last;
+        // The page goes back as it was: the piece picked is let go with the answer (Louis: "when I close the answer
+        // it resets").
+        return OnClearPiece.InvokeAsync();
+    }
 
     /// <summary>
     /// Puts the visitor in the bar's own box. The bar holds its box and asks it, since a page may hold another chat's

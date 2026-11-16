@@ -1,0 +1,24 @@
+@use "web/tools/surface";
+
+/* The settings' bar (FX163, Louis: "can't we just load it in the red area like our top menu bar, thinner maybe?"): shut
+   until the header's three-line button opens it, then a thin glass rail like the menu's, its parts in a row, fixed
+   just under the header at its right end, so it stays as the page scrolls. */
+.site-settings { display: none; }
+.site-settings[data-open] {
+    position: fixed;
+    top: 84px;
+    right: max(var(--site-gutter, 24px), env(safe-area-inset-right, 0px));
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    max-width: calc(100vw - 32px);
+    padding: 4px;
+    font-size: 14px;
+    animation: settings-in .3s var(--web-ease) both;
+    @include surface.group();
+}
+@keyframes settings-in { from { opacity: 0; translate: 0 -8px; } }
+@media (prefers-reduced-motion: reduce) { .site-settings[data-open] { animation: none; } }

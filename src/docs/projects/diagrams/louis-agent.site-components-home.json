@@ -1,7 +1,7 @@
 {
   "kind": "nested",
   "title": "The home page: what it is made of",
-  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then the demos and the framework as the proof. The frame lists each band in its section index.",
+  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then the demos and custom agents. The frame lists each band in its section index.",
   "nested": {
     "subtitle": "louis-agent.site, Pages / HomePage",
     "root": {
@@ -19,6 +19,16 @@
           "note": "what it is, and the way to try it"
         },
         {
+          "id": "tape",
+          "name": "Tape",
+          "kind": "general part",
+          "tone": "green",
+          "note": "what the agents did, running",
+          "in": [
+            "Items"
+          ]
+        },
+        {
           "id": "does",
           "name": "WhatItDoes",
           "kind": "a band",
@@ -31,16 +41,34 @@
           "tone": "blue"
         },
         {
+          "id": "demos",
+          "name": "LandingDemos",
+          "kind": "a band",
+          "tone": "blue",
+          "note": "the three businesses' agents"
+        },
+        {
           "id": "custom",
           "name": "Band",
           "kind": "general part",
           "tone": "green",
-          "note": "custom agents: three tiles and a live turn",
+          "note": "custom agents: a product window and three tiles",
           "in": [
             "Id",
-            "Kicker"
+            "Topic"
           ],
           "holds": [
+            {
+              "id": "window",
+              "name": "ProductWindow",
+              "kind": "general part",
+              "tone": "green",
+              "note": "three businesses at work, in turn",
+              "in": [
+                "Scenes",
+                "Glass"
+              ]
+            },
             {
               "id": "tiles",
               "name": "TileRow",
@@ -50,29 +78,8 @@
               "in": [
                 "Columns"
               ]
-            },
-            {
-              "id": "turn",
-              "name": "LiveTurn",
-              "kind": "the site's own",
-              "tone": "blue",
-              "note": "a turn played as it happened"
             }
           ]
-        },
-        {
-          "id": "demos",
-          "name": "LandingDemos",
-          "kind": "a band",
-          "tone": "blue",
-          "note": "the three businesses' agents"
-        },
-        {
-          "id": "proof",
-          "name": "ProofTiles",
-          "kind": "a band",
-          "tone": "blue",
-          "note": "the framework, as the proof"
         },
         {
           "id": "contact",

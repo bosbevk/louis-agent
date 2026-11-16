@@ -2,12 +2,11 @@
 @* The framework's site frame, filled with what's this site's own: its name, its pages, the way to the chat and its
    footer lines. The router draws every page in it but the chat's, which keeps its own full-screen layout. *@
 
-<SiteShell Layout="PageLayout.Slides">
+<SiteShell Layout="PageLayout.Flow" MovingPage="true" AnswerUnder="true">
     <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
     <Tagline>100% C#, because you can</Tagline>
     <Links>
         <NavLink href="/what-we-build" Match="NavLinkMatch.All">What we build</NavLink>
-        <NavLink href="/pricing" Match="NavLinkMatch.All">Pricing</NavLink>
         <SiteMenu Label="Demos">
             <NavLink href="/demos" Match="NavLinkMatch.All">All demos</NavLink>
             <NavLink href="/guesthouse-demo" Match="NavLinkMatch.All">A guesthouse</NavLink>
@@ -29,9 +28,8 @@
             <NavLink href="/framework/theme" Match="NavLinkMatch.All">The theme</NavLink>
             <NavLink href="/csharp-ai-agent-framework" Match="NavLinkMatch.All">Compared</NavLink>
         </SiteMenu>
-        <CvLink />
     </Links>
-    <Actions><a class="btn btn-solid" href="/contact">Ask for yours</a></Actions>
+    <Settings><CvLink /></Settings>
     <Footer>
         <span><Wordmark Before="l" After="uis-agent" /> · all rights reserved · <a class="footer-link" href="https://www.linkedin.com/in/louismarais86" target="_blank" rel="noopener"><LinkedInMark /> LinkedIn</a></span>
         <span>100% C#, because you can</span>

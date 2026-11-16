@@ -1,6 +1,8 @@
 @* One tile in a row (F118): the theme's pane with a number and its note, or an icon in a glass chip, a title and a
    few words, rising as it enters (FX162, as the design's cards are). *@
-<article class="@Classes" data-delay="@DelayValue" id="@PieceAddress" data-piece="@IsPiece">
+<article class="@Classes" data-delay="@DelayValue" id="@PieceAddress" data-piece="@IsPiece" data-tilt="@Tilt"
+         data-lens="@LensSwitch" data-reflect="@Reflect" data-glass="@Glass.ColourName"
+         data-glass-type="@Glass.TypeName" style="@Glass.Style">
     @if (Icon is { } icon)
     {
         <span class="tile-icon"><LineIconView Icon="icon" /></span>
@@ -24,5 +26,9 @@
     @if (ChildContent is not null)
     {
         <p>@ChildContent</p>
+    }
+    @if (Actions is not null)
+    {
+        <ButtonRow>@Actions</ButtonRow>
     }
 </article>

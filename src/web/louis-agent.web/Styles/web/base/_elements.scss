@@ -29,21 +29,42 @@ button:disabled { cursor: default; opacity: .4; }
 .btn-fill, .btn-solid { @include surface.press(); }
 .btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }
 .btn-solid, .btn-small { height: 40px; padding: 0 16px; font-size: 14px; }
-/* A panel on any site is the theme's pane (FX162, Louis: "that should be in the theme"): its fill, edge and drawing,
-   and under the pointer the pane's hover drawing, where glass's light runs round the edge, with a small lift. */
+/* A panel on any site is the theme's pane (FX162, Louis: "that should be in the theme"): its fill, edge and drawing.
+   Under the pointer it is glass's lens that answers, bending what is behind it, never a lift of its own. */
 .panel {
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 26px;
-    transition: transform .25s var(--web-ease);
     @include surface.pane();
 }
-.panel:hover { transform: translateY(-3px); }
+/* A panel's glass colour (FX163, Louis: "we should be able to give glass colors, transparent white etc."): the theme's
+   white or grey, as much of it as the panel says, the rest see-through. The pane fills itself with it. */
+[data-glass="white"] { --web-glass-tint: color-mix(in srgb, var(--web-glass-white) var(--glass-amount, 0%), transparent); }
+[data-glass="grey"] { --web-glass-tint: color-mix(in srgb, var(--web-glass-grey) var(--glass-amount, 0%), transparent); }
+/* A panel switched to show its reflection shows it under it, fading out, as the design's window and photos do (FX163,
+   Louis: "all glass panels must have the reflection option"). */
+[data-reflect] { -webkit-box-reflect: below 12px linear-gradient(transparent 68%, rgba(var(--web-shadow-rgb), .28)); }
+/* A panel that tilts leans towards the pointer under it, as the design's cards (Louis: "yes a lens with a tilt"):
+   the frame's tilt module sets the two angles from where the pointer is, as far as the theme's tilt allows. */
+[data-tilt]:hover {
+    transform: perspective(1100px) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg));
+    transition: transform .18s ease-out, box-shadow .3s;
+}
+@media (prefers-reduced-motion: reduce) { [data-tilt]:hover { transform: none; } }
 /* A band's head, as the design draws a section (FX162): a small mono topic in the theme's colour, a large heading
    whose first words run in that colour, a summary at a reading width, and a quiet note after the content. */
 .site { font-size: 17px; line-height: 1.6; }
-.band { display: grid; gap: 20px; max-width: 1280px; margin: 0 auto; padding: 88px var(--site-gutter, 48px) 40px; }
+/* Its one column fills the band, so what it holds runs the width of the design's sections, not of its widest words
+   (FX163, Louis: "make them longer"). */
+.band {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 88px var(--site-gutter, 48px) 40px;
+}
 .topic { font: 500 13.5px/1 var(--bs-font-monospace); text-transform: lowercase; color: var(--bs-primary); }
 .band :is(h1, h2) {
     max-width: 16ch;
@@ -63,15 +84,20 @@ button:disabled { cursor: default; opacity: .4; }
 }
 @media (prefers-reduced-motion: reduce) { .chrome { animation: none; } }
 .summary { margin: 0; max-width: 580px; font-size: 19px; line-height: 1.6; color: var(--bs-secondary-color); }
+/* A band's heading and summary stand lifted off the lines behind them, with no panel (FX163). */
+.band :is(h1, h2), .site .summary, .hero-text h1 { @include surface.lifted-words(); }
 /* A site's page moves (F110, from the site, FX162): visible at rest, each block rises once as it enters and a heading
    unmasks; the frame's module adds .in. The rise is on translate, so a card's own hover transform still works. */
-.site .reveal.in { animation: site-rise .7s var(--web-ease) both; }
+/* Each entrance holds its start while it waits and nothing once it ends, so the glass's lens sees the page (FX163). */
+.site .reveal.in { animation: site-rise .7s var(--web-ease) backwards; }
 .site .reveal.in[data-delay="1"] { animation-delay: .1s; }
 .site .reveal.in[data-delay="2"] { animation-delay: .2s; }
 .site .reveal.in[data-delay="3"] { animation-delay: .3s; }
-.site :is(h1, h2).reveal.in { animation: site-unmask .9s var(--web-ease) both; }
+.site :is(h1, h2).reveal.in { animation: site-unmask .9s var(--web-ease) backwards; }
 /* A heading that unmasks keeps its sweep of colour too: both run, the unmask once and the shine for good. */
-.site :is(h1, h2).chrome.reveal.in { animation: site-unmask .9s var(--web-ease) both, web-shine 8s ease-in-out infinite; }
+.site :is(h1, h2).chrome.reveal.in {
+    animation: site-unmask .9s var(--web-ease) backwards, web-shine 8s ease-in-out infinite;
+}
 @keyframes site-rise {
     from { opacity: 0; translate: 0 12px; }
     to { opacity: 1; translate: 0 0; }
@@ -93,6 +119,51 @@ a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-
    for one the agent shows, 0 for anything else. Registered so it is never handed down: a pane's words and buttons
    are not panes of their own. */
 @property --web-lens-piece { syntax: "<integer>"; inherits: false; initial-value: 0; }
+
+/* The tag a piece wears while the guide is on the page (FX163, the design's states), laid by the widget's piece
+   watcher with the site's three words: under the pointer it offers to ask, once picked it says so, and while the
+   agent shows the piece it turns the agent's colour with a dot that blinks. The state picks the words. */
+:where([data-piece]:has(> .piece-tag)) { position: relative; }
+/* Every piece a visitor can ask about takes the hand under the pointer (Louis: "my mouse pointer must be a hand on these
+   panels also"). */
+[data-piece] { cursor: pointer; }
+.piece-tag {
+    position: absolute;
+    z-index: 4;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    font: 500 11.5px var(--bs-font-monospace);
+    white-space: nowrap;
+    color: var(--bs-emphasis-color);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity .25s, transform .25s var(--web-ease);
+    @include surface.tag-you();
+    border-radius: 8px;
+}
+.piece-tag::before { content: attr(data-ask); }
+:is([data-piece]:hover, [data-selected], [data-lit]) > .piece-tag { opacity: 1; transform: none; }
+[data-selected] > .piece-tag::before { content: attr(data-picked); }
+[data-lit] > .piece-tag { @include surface.tag-agent(); border-radius: 8px; }
+/* The piece the agent shows wears the theme's showing drawing on its own edge, over the dimmed page. */
+[data-piece][data-lit] { @include surface.showing(); }
+[data-lit] > .piece-tag::before { content: attr(data-shown); }
+[data-lit] > .piece-tag::after {
+    content: "";
+    order: -1;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: web-blink 1s ease-in-out infinite;
+}
+@keyframes web-blink { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { [data-lit] > .piece-tag::after { animation: none; } }
 
 /* A quieter line of text, anywhere: a hint, a count, a date. */
 .muted { color: var(--bs-secondary-color); }

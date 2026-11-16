@@ -1,0 +1,23 @@
+@use "web/tools/surface";
+
+/* The design page's tape (FX163): a line of mono words running left without end between two hairlines, fading out at
+   both ends, each item's marked part in the brand's colour. The run is written twice, so moving it half its length
+   brings it back to where it began. */
+.tape {
+    margin-top: 40px;
+    padding: 18px 0;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    overflow: hidden;
+    font: 500 16px var(--bs-font-monospace);
+    white-space: nowrap;
+    color: var(--bs-secondary-color);
+    -webkit-mask-image: linear-gradient(90deg, transparent, currentColor 12%, currentColor 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, currentColor 12%, currentColor 88%, transparent);
+    @include surface.edged();
+}
+.tape-run { display: inline-block; animation: tape-run 40s linear infinite; }
+.tape span { margin: 0 28px; }
+.tape i { font-style: normal; color: var(--bs-primary); }
+@keyframes tape-run { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .tape-run { animation: none; } }

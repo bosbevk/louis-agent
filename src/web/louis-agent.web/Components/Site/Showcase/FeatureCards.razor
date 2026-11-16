@@ -1,12 +1,12 @@
-@* What the agent does, as the design page shows it (FX162): a rail with a beam running along it, and a card for each
-   thing it does, its small film playing, its title, its words and the tool it called. A site gives them as records
-   (ADR 0125). *@
-<div class="feature-rail" aria-hidden="true"></div>
+@* What the agent does, as the design page shows it (FX162): a card for each thing it does, its small film playing,
+   its title, its words and the tool it called, under the band's rail. A site gives them as records (ADR 0125). *@
 <div class="features">
     @for (var index = 0; index < Items.Count; index++)
     {
         var feature = Items[index];
-        <article class="panel feature reveal" data-delay="@index">
+        <article class="panel feature reveal" data-delay="@index" id="@AddressOf(feature)" data-piece="@Pick"
+                 data-tilt="@Tilt" data-lens="@LensSwitch" data-reflect="@Reflect"
+                 data-glass="@Glass.ColourName" data-glass-type="@Glass.TypeName" style="@Glass.Style">
             @switch (feature.Film)
             {
                 case FeatureFilm.Show:

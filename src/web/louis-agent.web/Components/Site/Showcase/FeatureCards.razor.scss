@@ -1,9 +1,7 @@
 @use "web/tools/surface";
 
-/* The design page's "What it does" (FX162): a rail with its beam, then four cards, each a small dark film playing what
-   the agent does, its title, its words and the tool it called. */
-.feature-rail { position: relative; height: 2px; margin-top: 54px; overflow: hidden; @include surface.rail(); }
-.feature-rail::after { content: ""; position: absolute; top: 0; left: -30%; width: 30%; height: 100%; animation: feature-beam 3.2s linear infinite; @include surface.rail-beam(); }
+/* The design page's "What it does" (FX162): four cards under the band's rail, each a small dark film playing what the
+   agent does, its title, its words and the tool it called. */
 .features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
 .feature { gap: 12px; }
 .feature h3 { margin: 8px 0 0; font-size: 24px; font-weight: 700; line-height: 1.1; letter-spacing: -.04em; color: var(--bs-emphasis-color); }
@@ -30,10 +28,10 @@
 .film-flip span { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px; border-radius: 12px; backface-visibility: hidden; font-size: 13px; text-align: center; @include surface.film-choice(); @include surface.film-tile(7%); }
 .film-flip span + span { transform: rotateY(180deg); font: 12px/1.7 var(--bs-font-monospace); }
 
-.call { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: 4px; padding: 5px 11px; border-radius: 999px; font: 12.5px var(--bs-font-monospace); @include surface.call(); }
+/* The pill stands at the card's foot, so the four line up whatever their words. */
+.call { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: auto; padding: 5px 11px; border-radius: 999px; font: 12.5px var(--bs-font-monospace); @include surface.call(); }
 .call::before { content: ""; width: 7px; height: 7px; @include surface.call-dot(); }
 
-@keyframes feature-beam { to { left: 100%; } }
 @keyframes film-show { 30%, 85% { opacity: .35; } }
 @keyframes film-pick { 30%, 85% { transform: translateY(-9px); @include surface.film-picked(); } }
 @keyframes film-draw { 0%, 8% { transform: scaleX(0); } 35%, 88% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
@@ -42,4 +40,4 @@
 
 @media (max-width: 980px) { .features { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .features { grid-template-columns: minmax(0, 1fr); } }
-@media (prefers-reduced-motion: reduce) { .feature-rail::after, .film *, .film-flip div { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .film *, .film-flip div { animation: none; } }
