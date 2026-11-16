@@ -37,13 +37,13 @@ public partial class LiveTurn
     /// <summary>Whether the window leans towards the pointer, as far as the theme says; on by default.</summary>
     [Parameter] public bool Tilt { get; set; } = true;
 
-    /// <summary>Whether the window's glass ripples what is behind it like water, under its frost; on by default.</summary>
-    [Parameter] public bool Water { get; set; } = true;
+    /// <summary>The window's glass: its colour, how much, and what it does behind it; clear water by default.</summary>
+    [Parameter] public GlassLook Glass { get; set; } = GlassLook.Default;
 
     /// <summary>Whether the window shows its reflection under it; off by default.</summary>
     [Parameter] public bool Reflect { get; set; }
 
-    /// <summary>What the window tells the lens: nothing while it is on, so only a switched-off lens is written.</summary>
+    /// <summary>What the window tells the lens: only a lens switched off is written.</summary>
     private string? LensSwitch => PaneSwitch.Lens(Lens);
 
     /// <summary>A line's classes for what it is.</summary>

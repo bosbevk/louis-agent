@@ -6,7 +6,7 @@
         var feature = Items[index];
         <article class="panel feature reveal" data-delay="@index" id="@AddressOf(feature)" data-piece="@Pick"
                  data-tilt="@Tilt" data-lens="@LensSwitch" data-reflect="@Reflect"
-                 data-water="@Water">
+                 data-glass="@Glass.ColourName" data-glass-type="@Glass.TypeName" style="@Glass.Style">
             @switch (feature.Film)
             {
                 case FeatureFilm.Show:

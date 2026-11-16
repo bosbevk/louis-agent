@@ -69,8 +69,13 @@ export function watch(widget, tags) {
             widget.invokeMethodAsync("LetGo");
             return;
         }
-        if (event.target.closest("a, button, input, textarea, select, label, summary")) return;
-        if (piece) widget.invokeMethodAsync("Pick", piece.id, press(piece));
+        // A link or a field inside a piece keeps its own click; a piece that is itself a link, such as a photograph of a
+        // demo, is picked instead of followed (FX163, Louis: "each of these 3 also ask about this").
+        const control = event.target.closest("a, button, input, textarea, select, label, summary");
+        if (control && control !== piece) return;
+        if (!piece) return;
+        event.preventDefault();
+        widget.invokeMethodAsync("Pick", piece.id, press(piece));
     };
     shown = (event) => {
         const piece = document.getElementById(event.detail);

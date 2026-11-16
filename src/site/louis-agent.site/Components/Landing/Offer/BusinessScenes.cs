@@ -1,4 +1,5 @@
 using LouisAgent.Site.Components.Showroom.Windows;
+using LouisAgent.Web.Components.Site.Pieces;
 using LouisAgent.Web.Components.Site.Product;
 using LouisAgent.Web.Components.Site.Product.Page;
 using LouisAgent.Web.Components.Site.Product.Scene;
@@ -18,6 +19,12 @@ public static class BusinessScenes
 {
     /// <summary>The scenes, in the order the window plays them.</summary>
     public static IReadOnlyList<ProductScene> All { get; } = [Guesthouse(), Restaurant(), LawPractice()];
+
+    /// <summary>
+    /// The window's glass: the grey of the second button, two parts in five, plain, with no water (Louis: "make it
+    /// like this colour glass", "no water").
+    /// </summary>
+    public static GlassLook Glass { get; } = new(GlassColour.Grey, 40, GlassType.Plain);
 
     /// <summary>The guesthouse: a weekend with the dog, the garden room opened, the booking sent.</summary>
     private static ProductScene Guesthouse()

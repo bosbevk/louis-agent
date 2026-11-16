@@ -33,10 +33,22 @@ public partial class ProductWindow
     /// <summary>Whether the window shows its reflection under it; off by default.</summary>
     [Parameter] public bool Reflect { get; set; }
 
-    /// <summary>Whether the window's glass ripples what is behind it like water; on by default.</summary>
-    [Parameter] public bool Water { get; set; } = true;
+    /// <summary>The window's glass: its colour, how much, and what it does behind it; clear water by default.</summary>
+    [Parameter] public GlassLook Glass { get; set; } = GlassLook.Default;
 
-    /// <summary>What the window tells the lens: nothing while it is on, so only a switched-off lens is written.</summary>
+    /// <summary>A short name for the window, which a visitor who picks it asks the guide about.</summary>
+    [Parameter] public string? Title { get; set; }
+
+    /// <summary>Whether a visitor or the guide can pick the window, when it has a title; on by default.</summary>
+    [Parameter] public bool Pick { get; set; } = true;
+
+    /// <summary>Whether a visitor can ask about the window: it may be picked and has a title.</summary>
+    private bool IsPiece => Pick && Title is not null;
+
+    /// <summary>The piece's id from its title, or none for a window that can't be picked.</summary>
+    private string? PieceAddress => IsPiece ? PieceId.Of(Title!) : null;
+
+    /// <summary>What the window tells the lens: only a lens switched off is written.</summary>
     private string? LensSwitch => PaneSwitch.Lens(Lens);
 
     /// <summary>A scene, the first one showing until the module turns to the next.</summary>

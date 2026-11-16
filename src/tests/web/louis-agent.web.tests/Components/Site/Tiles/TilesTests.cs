@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site.Pieces;
 using LouisAgent.Web.Components.Site.Strip;
 using LouisAgent.Web.Components.Site.Tiles;
 using Microsoft.AspNetCore.Components;
@@ -160,21 +161,26 @@ public class TilesTests
     }
 
     /// <summary>
-    /// A tile's glass ripples like water until a site switches that off (Louis: "make it an option", "all with water
-    /// and 1 frost"), which the lens reads.
+    /// A tile is see-through glass that ripples like water until a site gives it other glass (Louis: "we should be
+    /// able to give glass colors", "transparent meaning see through glass and if it is transparent then the amount
+    /// and then type water, etc"): its colour, how much, and its type, which the theme and the lens read.
     /// </summary>
     [Test]
-    public void ATile_IsWater_UntilSwitchedOff()
+    public void ATile_WearsTheGlassItIsGiven()
     {
         using var ctx = new BunitContext();
+        var grey = new GlassLook(GlassColour.Grey, 40, GlassType.Plain);
 
-        var water = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data")).Find("article");
-        var still = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server").Add(t => t.Water, false)).Find("article");
+        var clear = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data")).Find("article");
+        var tinted = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server").Add(t => t.Glass, grey)).Find("article");
 
         Assert.Multiple(() =>
         {
-            Assert.That(water.HasAttribute("data-water"), Is.True);
-            Assert.That(still.HasAttribute("data-water"), Is.False);
+            Assert.That(clear.HasAttribute("data-glass"), Is.False);
+            Assert.That(clear.GetAttribute("data-glass-type"), Is.EqualTo("water"));
+            Assert.That(tinted.GetAttribute("data-glass"), Is.EqualTo("grey"));
+            Assert.That(tinted.GetAttribute("data-glass-type"), Is.EqualTo("plain"));
+            Assert.That(tinted.GetAttribute("style"), Is.EqualTo("--web-glass-amount: 40%"));
         });
     }
 
@@ -188,6 +194,7 @@ public class TilesTests
         var plain = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your server")).Find("article");
         var shown = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data").Add(t => t.Reflect, true)).Find("article");
 
-        Assert.That((plain.HasAttribute("data-reflect"), shown.HasAttribute("data-reflect")), Is.EqualTo((false, true)));
+        Assert.That((plain.HasAttribute("data-reflect"), shown.HasAttribute("data-reflect")),
+            Is.EqualTo((false, true)));
     }
 }

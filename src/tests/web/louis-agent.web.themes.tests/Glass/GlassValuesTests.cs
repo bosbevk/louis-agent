@@ -67,13 +67,22 @@ public class GlassValuesTests
         Assert.That(Value(style, "--web-tilt"), Is.EqualTo("7"));
 
     /// <summary>
-    /// Glass is water only, for every panel (Louis: "can we switch to just water?", "for all"): no frost blurs what is
-    /// behind it.
+    /// A panel whose glass type is frost blurs what is behind it by two pixels (Louis: "this is perfect just make it
+    /// two", "and then type water, etc"); every other panel frosts nothing.
     /// </summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
-    public void TheGlass_HasNoFrost(SiteStyle style) =>
-        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("0"));
+    public void TheFrost_IsTwoPixels(SiteStyle style) =>
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("2"));
+
+    /// <summary>
+    /// The colours a panel's glass may take (Louis: "we should be able to give glass colors, transparent white
+    /// etc."): white, and the grey of the second button, darker in the dark style.
+    /// </summary>
+    [TestCase(SiteStyle.Light, "#ffffff", "#8a8a98")]
+    [TestCase(SiteStyle.Dark, "#ffffff", "#24242b")]
+    public void TheGlassColours_AreWhiteAndTheButtonsGrey(SiteStyle style, string white, string grey) =>
+        Assert.That((Value(style, "--web-glass-white"), Value(style, "--web-glass-grey")), Is.EqualTo((white, grey)));
 
     /// <summary>
     /// Glass ripples what is behind it like water (Louis: "can we replace the frost with a water", "can we increase

@@ -55,9 +55,9 @@ public partial class Tile
     [Parameter]
     public bool Reflect { get; set; }
 
-    /// <summary>Whether the glass ripples what is behind it like water, under its frost; on by default.</summary>
+    /// <summary>The tile's glass: its colour, how much, and what it does behind it; clear water by default.</summary>
     [Parameter]
-    public bool Water { get; set; } = true;
+    public GlassLook Glass { get; set; } = GlassLook.Default;
 
     /// <summary>Whether the tile leans towards the pointer, as far as the theme says; on by default.</summary>
     [Parameter]

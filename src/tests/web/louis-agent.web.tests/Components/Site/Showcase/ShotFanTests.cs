@@ -31,4 +31,23 @@ public class ShotFanTests
             Assert.That(shown.All(shot => shot.HasAttribute("data-reflect")), Is.True);
         });
     }
+
+    /// <summary>
+    /// Each photograph is a piece the visitor can ask about (Louis: "each of these 3 also ask about this"), by an id
+    /// from its title.
+    /// </summary>
+    [Test]
+    public void EachShot_IsAPiece()
+    {
+        using var ctx = new BunitContext();
+
+        var shots = ctx.Render<ShotFan>(p => p.Add(f => f.Items, Three)).FindAll(".shot");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shots.All(shot => shot.HasAttribute("data-piece")), Is.True);
+            Assert.That(shots.Select(shot => shot.Id),
+                Is.EqualTo(new[] { "a-law-practice", "a-guesthouse", "a-restaurant" }));
+        });
+    }
 }

@@ -150,16 +150,14 @@ const wear = el => {
     const [bend, far] = memo(`b${w}x${h}:${wall}:${rise}`, () => bendMap(w, h, wall, rise));
     const lit = litFor(el, w, h, rise);
     const box = `x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"`;
-    // What is behind its middle is frosted, or on a pane switched to water rippled as through water (Louis: "make it
-    // an option"); its rim is left clear so it bends sharply.
+    // What is behind its middle ripples as through water or is frosted, its rim left clear so it bends sharply. The
+    // panel's glass type says which (Louis: "and then type water, etc"): water ripples, frost blurs, plain neither.
     const where = `<feImage ${box} result="where" href="${memo(`f${w}x${h}:${rise}`, () => frostMap(w, h, rise))}"/>`;
-    // Water ripples it first, then the frost softens what it rippled (Louis: "all with water and 1 frost").
-    const wet = glass.water && el.hasAttribute("data-water");
+    const type = el.dataset.glassType, wet = glass.water && type === "water", frosted = glass.frost && type === "frost";
     const ripple = wet ? `<feTurbulence type="fractalNoise" baseFrequency="0.011 0.026" numOctaves="2" seed="7"` +
         ` result="waves"/><feDisplacementMap in="bent" in2="waves" scale="${glass.water * 2}" xChannelSelector="R"` +
-        ` yChannelSelector="G" result="${glass.frost ? "wet" : "fog"}"/>` : "";
-    const blur = glass.frost
-        ? `<feGaussianBlur in="${wet ? "wet" : "bent"}" stdDeviation="${glass.frost}" result="fog"/>` : "";
+        ` yChannelSelector="G" result="fog"/>` : "";
+    const blur = frosted ? `<feGaussianBlur in="bent" stdDeviation="${glass.frost}" result="fog"/>` : "";
     const middle = ripple + blur;
     const frost = middle ? middle + where + `<feComposite in="fog" in2="where" operator="in" result="frosted"/>` +
         `<feBlend in="frosted" in2="bent" mode="normal" result="seen"/>` : `<feOffset in="bent" result="seen"/>`;

@@ -1,8 +1,9 @@
 @* The design's product window (FX163): one business after another, each its own page with its agent's chat beside
    it, a scene the site gives as records (ADR 0125) and the frame's scenes script plays in turn. The page's words and
    photos are the site's; the window and the way it plays are the framework's. *@
-<div class="product-window" role="img" aria-label="@Label" data-tilt="@Tilt" data-lens="@LensSwitch"
-     data-reflect="@Reflect" data-water="@Water">
+<div class="product-window" role="img" aria-label="@Label" id="@PieceAddress" data-piece="@IsPiece" data-tilt="@Tilt"
+     data-lens="@LensSwitch" data-reflect="@Reflect" data-glass="@Glass.ColourName" data-glass-type="@Glass.TypeName"
+     style="@Glass.Style">
     @for (var index = 0; index < Scenes.Count; index++)
     {
         var scene = Scenes[index];

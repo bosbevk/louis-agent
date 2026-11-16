@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site.Pieces;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Site.Showcase;
@@ -18,6 +19,12 @@ public partial class ShotFan
 
     /// <summary>Whether each photograph shows its reflection under it; off by default.</summary>
     [Parameter] public bool Reflect { get; set; }
+
+    /// <summary>Whether a visitor or the guide can pick a photograph and ask about it; on by default.</summary>
+    [Parameter] public bool Pick { get; set; } = true;
+
+    /// <summary>A photograph's id from its title, for one that can be picked.</summary>
+    private string? AddressOf(Shot shot) => Pick ? PieceId.Of(shot.Title) : null;
 
     /// <summary>
     /// Where a photograph stands: turned in on the left, forward in the middle, turned in on the right.

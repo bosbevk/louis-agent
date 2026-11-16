@@ -5,7 +5,7 @@
 
 /* A card or a panel: its fill and its drawing, its edge and corner, the shadow it throws and the blur behind it. A
    piece that has its own corner or look today passes it, and the theme's names stand in for the rest. */
-@mixin pane($fill: var(--web-pane-fill), $edge: var(--web-pane-edge), $radius: var(--web-pane-radius),
+@mixin pane($fill: var(--web-glass-tint, var(--web-pane-fill)), $edge: var(--web-pane-edge), $radius: var(--web-pane-radius),
     $shadow: var(--web-pane-shadow)) {
     border: $edge;
     border-radius: $radius;

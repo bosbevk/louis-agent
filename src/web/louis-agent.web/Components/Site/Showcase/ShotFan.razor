@@ -5,7 +5,7 @@
     @for (var index = 0; index < Items.Count; index++)
     {
         var shot = Items[index];
-        <a class="@PlaceOf(index)" href="@shot.Href" data-reflect="@Reflect">
+        <a class="@PlaceOf(index)" href="@shot.Href" data-reflect="@Reflect" id="@AddressOf(shot)" data-piece="@Pick">
             <img src="@shot.Image" alt="" loading="lazy" />
             <span><b>@shot.Title</b>@shot.Line</span>
         </a>
