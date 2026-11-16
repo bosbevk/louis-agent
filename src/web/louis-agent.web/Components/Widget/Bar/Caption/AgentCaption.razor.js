@@ -61,8 +61,10 @@ export function standAgain(caption) {
     standing.get(caption)?.settle();
 }
 
-// The caption is going: it stops following the page, and its ring goes with it.
+// The caption is going: it stops following the page, and its ring goes with it. The place it showed is shown no
+// more (FX163, Louis: "when I click close or focus away the screen must return to normal like in the design").
 export function letGo(caption) {
+    for (const marked of document.querySelectorAll("[data-lit]")) delete marked.dataset.lit;
     const stood = standing.get(caption);
     if (!stood) return;
     stood.until = 0;
