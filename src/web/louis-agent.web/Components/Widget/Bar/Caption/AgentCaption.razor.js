@@ -123,7 +123,8 @@ const place = (caption, ring) => {
     if (cards.length) return takeThePlaceOf(cards, caption, ring, box);
     // A wide piece standing alone, such as a product window, gives the caption its right third, from its top down
     // (Louis: "our agent must take some of the control space, so he must be shrunk like this").
-    if (about && box && box.width >= WIDE_PIECE && box.top >= headerRoom && box.top < floor) {
+    // Only a piece: a whole section the guide lit is no piece, and stays the page's (it flashed a strip down the right).
+    if (about?.matches("[data-piece]") && box && box.width >= WIDE_PIECE && box.top >= headerRoom && box.top < floor) {
         const width = box.width * WIDE_SHARE;
         return standIn(caption, ring, box, { left: box.right - width, top: box.top, width, height: box.height },
             getComputedStyle(about).borderRadius);

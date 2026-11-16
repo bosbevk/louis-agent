@@ -83,6 +83,8 @@ public class CaptionBesideTests
             Assert.That(Module, Does.Contain("(at + 1 < count ? [at + 1] : [at - 1])"),
                 "one beside, in a row of three");
             Assert.That(Module, Does.Contain("const WIDE_SHARE = 1 / 3;"), "a wide piece alone gives its right third");
+            Assert.That(Module, Does.Contain("if (about?.matches(\"[data-piece]\") && box && box.width >= WIDE_PIECE"),
+                "only a piece, never a whole section the guide lit");
             Assert.That(Module, Does.Contain("matches(\"[data-piece]\")"), "a card is a piece of the page");
             Assert.That(Module, Does.Contain("dataset.inPlace"), "the module's mark, an attribute of its own");
             Assert.That(Module, Does.Contain("--caption-w").And.Contain("--caption-h").And.Contain("--caption-r"));
