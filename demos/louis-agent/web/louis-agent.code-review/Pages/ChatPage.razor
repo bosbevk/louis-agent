@@ -3,7 +3,8 @@
 @page "/chat/{SessionId}"
 @layout ChatLayout
 
-@* The code-review app on the framework's chat frame: its name, its links to the packs' screens, and its theme picker. *@
+@* The code-review app on the framework's chat frame: its name and its links to the packs' screens. The frame draws
+   the switch for the app's themes itself. *@
 
 <ChatShell @ref="_shell" SessionId="@SessionId" ChatPath="chat" Title="Louis Agent" OpenSession="OpenSessionAsync" VoicePrefix="" DefaultLanguage="en"
            BrandTitle="Louis Agent" Features="Features">
@@ -15,6 +16,5 @@
             <a class="side-link" href="admin/screens/git-branches"><span class="ic i-folder" aria-hidden="true"></span>Branches</a>
         </nav>
     </Views>
-    <Settings><ThemeSwitcher /></Settings>
     <Empty Context="empty"><EmptyChat Composer="empty.MessageBox" /></Empty>
 </ChatShell>

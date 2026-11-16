@@ -5,6 +5,7 @@
   "GenerateScopedCss": true,
   "IncludePaths": [
     "../../../../src/web/louis-agent.web/Styles", "../../../../src/web/louis-agent.web.accounts/Styles", "../../../../src/web/louis-agent.web.evals/Styles",
+    "../../../../src/web/louis-agent.web.themes/Styles",
     "../../../../packs/web/louis-agent.pack.git.web/Styles",
     "../../../../packs/web/louis-agent.pack.files.web/Styles"
   ]

@@ -1,4 +1,5 @@
-using LouisAgent.CodeReview.Components;
+using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Components.Site.Looks;
 using LouisAgent.CodeReview.Pages;
 using LouisAgent.Web.Components.Chat.Header;
 using LouisAgent.Web.Components.Chat.Shell;
@@ -13,8 +14,9 @@ namespace LouisAgent.CodeReview.Tests.Pages;
 
 /// <summary>
 /// The code-review app's chat page on the framework's frame, against the stub API: its name and boot screen, its links
-/// to the packs' screens and its theme picker, without what doesn't suit a coding agent. A message opens a session and
-/// streams the recorded turn. The empty page and the page with the turn are pinned to golden files.
+/// to the packs' screens and the frame's switch for its themes, without what doesn't suit a coding agent. A message
+/// opens a session and streams the recorded turn. The empty page and the page with the turn are pinned to golden
+/// files.
 /// </summary>
 public class ChatPageTests
 {
@@ -31,9 +33,8 @@ public class ChatPageTests
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
         ctx.Services.AddSingleton(new ChatHandoff("chat"));
-        // The theme picker reads css/themes/themes.json on its own client.
-        ctx.Services.AddSingleton(
-            new HttpClient(new StubHandler(FixtureApi.Answer)) { BaseAddress = new Uri("http://localhost/") });
+        // The app's areas, which say which themes the frame's switch offers.
+        ctx.Services.AddSiteAreas(CodeReviewAreas.Name);
         return ctx;
     }
 
@@ -109,15 +110,16 @@ public class ChatPageTests
             }));
     }
 
-    /// <summary>The theme picker sits with the frame's settings.</summary>
+    /// <summary>The frame's own switch sits with the settings, and offers the app's three themes (F151.5).</summary>
     [Test]
-    public void TheThemePicker_SitsWithTheSettings()
+    public void TheLookSwitch_SitsWithTheSettings_WithTheAppsThemes()
     {
         using var ctx = Context();
 
         var cut = Render(ctx);
 
-        Assert.That(cut.FindComponents<ThemeSwitcher>(), Has.Count.EqualTo(1));
+        Assert.That(cut.FindComponents<LookSwitch>(), Has.Count.EqualTo(1));
+        Assert.That(cut.Markup, Does.Contain("Glass").And.Contain("Flat").And.Contain("Retro"));
     }
 
     /// <summary>A prompt from an admin screen waits in the box, and nothing goes until the person sends it.</summary>
