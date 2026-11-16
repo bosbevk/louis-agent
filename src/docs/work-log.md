@@ -286,6 +286,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX163 | 2026-11-16 | The glass works as the design's: every panel's glass a value (colour, amount, plain, water or frost) with lens, tilt, pick and reflection switches, the lens ported from the design and seeing the page again, the design's piece states and their reset; the product window, the tape, an ask button and the header's settings bar in the framework; the landing retold, flowing, with no proof band and no price |
 | FX162 | 2026-11-16 | The site is the theme's: every sheet of its own removed and its pages configured from the framework's controls in the design page's look (ADR 0125), with the design's controls, cards, films and fan built in the framework, a theme guide at `/framework/theme`, and `lede` and `kicker` renamed `summary` and `topic` |
 | FX160 | 2026-11-16 | The hero is the design's: no line above the headline, the design's words, "Ask for yours" and "See what it does", and nothing under them; the window of a chat that stood there is gone, and the second button names its section so the frame moves to it |
 | FX159 | 2026-11-16 | The header is white glass, with glass buttons: in glass light the bar was a solid pale band and its switch and CV were drawn by hand; now the bar is white the page shows through over a white edge, the switch is the theme's group and main button, and the way to ask and the CV are its main and quiet buttons |

@@ -511,5 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX163 · An animation held after its end hides the page from the glass
+
+The glass bent nothing behind it, though its filter ran and its numbers were right. The page's column played a
+short entrance and then held it, and a held animation makes its element a layer of its own. A backdrop filter sees
+only up to the nearest such layer, so a card's lens saw the column's empty inside, never the ribbons behind the
+page. Letting the entrance go once it ends gave the lens the page back. The rest of the fix came from reading the
+design's own code instead of guessing from pictures: the pointer as a lamp, a press that flattens the glass, a
+lens on every pane rather than the hovered one. And a panel's glass became one value, colour, amount and type, so a
+site says it in one place and the theme and the lens do the rest. Skill 18 (testing and shipping: what a visitor
+sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
