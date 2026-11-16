@@ -117,8 +117,19 @@ const place = (caption, ring) => {
     // row, and the chip of a selected piece over it. The caption stands clear of both.
     caption.dataset.stands = "";
     const floor = (bar?.getBoundingClientRect().top ?? innerHeight) - gap;
-    // On a site whose answers rise from underneath, the caption stays over its bar and only the place keeps its ring
-    // (Louis: "always from underneath in flow layout", "or just make it an option").
+    // A piece in a row of cards: the caption takes the place of the cards beside it, as the row's rule says, and the
+    // place keeps its ring (FX163, Louis: "can we configure the AI agent to attach like the following").
+    const cards = about ? cardsBeside(about, floor) : [];
+    if (cards.length) return takeThePlaceOf(cards, caption, ring, box);
+    // A wide piece standing alone, such as a product window, gives the caption its right third, from its top down
+    // (Louis: "our agent must take some of the control space, so he must be shrunk like this").
+    if (about && box && box.width >= WIDE_PIECE && box.top >= headerRoom && box.top < floor) {
+        const width = box.width * WIDE_SHARE;
+        return standIn(caption, ring, box, { left: box.right - width, top: box.top, width, height: box.height },
+            getComputedStyle(about).borderRadius);
+    }
+    // Anywhere else, on a site whose answers rise from underneath, the caption stays over its bar and only the place
+    // keeps its ring (Louis: "always from underneath in flow layout", "or just make it an option").
     if (document.querySelector(".site.answers-under")) {
         delete caption.dataset.stands;
         delete caption.dataset.inPlace;
@@ -127,9 +138,6 @@ const place = (caption, ring) => {
         if (shown) ringAround(ring, box);
         return;
     }
-    // A card beside the place: the caption takes its place, and the place keeps its ring.
-    const card = about ? cardBeside(about, floor) : null;
-    if (card) return takeThePlaceOf(card, caption, ring, box);
     delete caption.dataset.inPlace;
     const width = caption.offsetWidth, height = caption.offsetHeight;
     const onScreen = box && box.width > 0 && box.top + box.height > headerRoom && box.top < floor;
@@ -145,23 +153,49 @@ const place = (caption, ring) => {
     caption.style.setProperty("--caption-y", `${Math.round(spot.y)}px`);
 };
 
-// The card beside a place: the piece of the page after it, else the one before it, when it lies flat (a card that
-// is turned or lifted is on its way somewhere) and shows between the header and the bar. None when there is none.
-const cardBeside = (about, floor) => [about.nextElementSibling, about.previousElementSibling].find(card => {
-    if (!card?.matches("[data-piece]") || getComputedStyle(card).transform !== "none") return false;
-    const box = card.getBoundingClientRect();
-    return box.width > 0 && box.top >= headerRoom && box.top < floor;
-}) ?? null;
+// Which of a row's cards give way to the answer (FX163, Louis's two pictures): in a row of four, the two on the far
+// side, the second and third for the first, the third and fourth for the second, the first and second for the
+// third, the second and third for the fourth; in a row of three or fewer, one beside it, the next one, or the one
+// before for the last. The row is the piece's own pieces standing side by side.
+const ROW_GIVES = { 4: [[1, 2], [2, 3], [0, 1], [1, 2]] };
+const givers = (at, count) => ROW_GIVES[count]?.[at] ?? (at + 1 < count ? [at + 1] : [at - 1]);
 
-// Stands the caption where the card is, as wide and as tall as it and with its corners, and rings the place.
-const takeThePlaceOf = (card, caption, ring, placeBox) => {
-    const box = card.getBoundingClientRect();
+// The cards beside a place that the caption stands over, when the place is a card in a row of them lying flat (a
+// card turned or lifted is on its way somewhere) and showing between the header and the bar. None otherwise.
+const cardsBeside = (about, floor) => {
+    const row = [...(about.parentElement?.children ?? [])].filter(card => card.matches("[data-piece]"));
+    const at = row.indexOf(about), top = about.getBoundingClientRect().top;
+    if (row.length < 2 || row.length > 4 || row.some(card => Math.abs(card.getBoundingClientRect().top - top) > 2)) return [];
+    const cards = givers(at, row.length).map(i => row[i]).filter(Boolean);
+    const lies = card => { const box = card.getBoundingClientRect();
+        return getComputedStyle(card).transform === "none" && box.width > 0 && box.top >= headerRoom && box.top < floor; };
+    return cards.length && cards.every(lies) ? cards : [];
+};
+
+// A piece this wide, in pixels, standing alone, gives the caption a share of itself; that share is its right third.
+const WIDE_PIECE = 700;
+const WIDE_SHARE = 1 / 3;
+
+// Stands the caption where the cards are, as wide as all of them and as tall, with their corners, and rings the
+// place.
+const takeThePlaceOf = (cards, caption, ring, placeBox) => {
+    const boxes = cards.map(card => card.getBoundingClientRect());
+    const left = Math.min(...boxes.map(b => b.left)), right = Math.max(...boxes.map(b => b.right));
+    const top = Math.min(...boxes.map(b => b.top)), bottom = Math.max(...boxes.map(b => b.bottom));
+    standIn(caption, ring, placeBox, { left, top, width: right - left, height: bottom - top },
+        getComputedStyle(cards[0]).borderRadius);
+};
+
+// Stands the caption in a box on the page, its size at least the box's (it grows when its words need more), with the
+// corners given, and rings the place.
+const standIn = (caption, ring, placeBox, at, corners) => {
+    caption.dataset.stands = "";
     caption.dataset.inPlace = "";
-    caption.style.setProperty("--caption-x", `${Math.round(box.left)}px`);
-    caption.style.setProperty("--caption-y", `${Math.round(box.top)}px`);
-    caption.style.setProperty("--caption-w", `${Math.round(box.width)}px`);
-    caption.style.setProperty("--caption-h", `${Math.round(box.height)}px`);
-    caption.style.setProperty("--caption-r", getComputedStyle(card).borderRadius);
+    caption.style.setProperty("--caption-x", `${Math.round(at.left)}px`);
+    caption.style.setProperty("--caption-y", `${Math.round(at.top)}px`);
+    caption.style.setProperty("--caption-w", `${Math.round(at.width)}px`);
+    caption.style.setProperty("--caption-h", `${Math.round(at.height)}px`);
+    caption.style.setProperty("--caption-r", corners);
     ring.classList.add("is-on");
     ringAround(ring, placeBox);
 };

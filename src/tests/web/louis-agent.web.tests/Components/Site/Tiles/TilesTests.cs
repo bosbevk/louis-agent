@@ -184,6 +184,25 @@ public class TilesTests
         });
     }
 
+    /// <summary>
+    /// A tile may carry its own buttons, side by side under its words, at their own width (FX163, Louis: "these types
+    /// of things must be handled by the framework").
+    /// </summary>
+    [Test]
+    public void ATile_CarriesItsButtons_InARow()
+    {
+        using var ctx = new BunitContext();
+
+        var tile = ctx.Render<Tile>(p => p.Add(t => t.Title, "Write to us").Add(t => t.Text, "One mail.")
+            .Add(t => t.Actions, "<a class=\"btn\" href=\"/a\">Send</a><a class=\"btn\" href=\"/b\">Chat</a>")).Find("article");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(tile.LastElementChild!.ClassName, Does.Contain("button-row"));
+            Assert.That(tile.QuerySelectorAll(".button-row a"), Has.Length.EqualTo(2));
+        });
+    }
+
     /// <summary>A tile shows its reflection when a site switches it on (Louis: "all glass panels must have the
     /// reflection option").</summary>
     [Test]

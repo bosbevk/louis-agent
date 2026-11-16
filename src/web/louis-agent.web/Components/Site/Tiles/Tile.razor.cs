@@ -43,6 +43,10 @@ public partial class Tile
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>The tile's own buttons, side by side under its words, at their own width; none by default.</summary>
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
     /// <summary>A colour to set the tile apart, the eval screens' four; none by default.</summary>
     [Parameter]
     public TileAccent Accent { get; set; }

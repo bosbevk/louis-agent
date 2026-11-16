@@ -68,21 +68,26 @@ public class CaptionBesideTests
     }
 
     /// <summary>
-    /// F151.4: when the piece the answer is about has a card beside it, the next one or else the one before, the
-    /// agent's words take that card's place: where it stands, how wide and tall it is, and its corners. The module
-    /// finds the card and says so by a mark of its own with the card's measures, and the styles read them. With no
-    /// card beside it the words stand beside the piece as before, which the other tests here hold.
+    /// F151.4, FX163: when the piece the answer is about stands in a row of cards, the agent's words take the place of
+    /// the cards beside it, as the row's rule says (Louis's two pictures): in a row of four, the two on the far side;
+    /// in a row of three or fewer, the next one, or the one before for the last. Where they stand, how wide and tall
+    /// they are together, and their corners. The module says so by a mark of its own with those measures, and the
+    /// styles read them. With no row the words stand beside the piece as before, which the other tests here hold.
     /// </summary>
     [Test]
-    public void WithACardBeside_TheWordsTakeThatCardsPlace_ItsSizeAndItsCorners()
+    public void InARowOfCards_TheWordsTakeTheirNeighboursPlace_TheirSizeAndTheirCorners()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Module, Does.Contain("about.nextElementSibling, about.previousElementSibling"));
+            Assert.That(Module, Does.Contain("const ROW_GIVES = { 4: [[1, 2], [2, 3], [0, 1], [1, 2]] };"));
+            Assert.That(Module, Does.Contain("(at + 1 < count ? [at + 1] : [at - 1])"),
+                "one beside, in a row of three");
+            Assert.That(Module, Does.Contain("const WIDE_SHARE = 1 / 3;"), "a wide piece alone gives its right third");
             Assert.That(Module, Does.Contain("matches(\"[data-piece]\")"), "a card is a piece of the page");
             Assert.That(Module, Does.Contain("dataset.inPlace"), "the module's mark, an attribute of its own");
             Assert.That(Module, Does.Contain("--caption-w").And.Contain("--caption-h").And.Contain("--caption-r"));
-            Assert.That(WideBlock, Does.Contain(".agent-caption[data-stands][data-in-place] { width: var(--caption-w); }"));
+            Assert.That(WideBlock,
+                Does.Contain(".agent-caption[data-stands][data-in-place] { width: var(--caption-w); }"));
             Assert.That(WideBlock, Does.Contain("min-height: var(--caption-h);"));
             Assert.That(WideBlock, Does.Contain("border-radius: var(--caption-r);"));
         });

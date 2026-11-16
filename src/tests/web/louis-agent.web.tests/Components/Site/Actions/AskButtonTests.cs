@@ -10,7 +10,7 @@ namespace LouisAgent.Web.Tests.Components.Site.Actions;
 /// </summary>
 public class AskButtonTests
 {
-    /// <summary>It is the theme's main button by default, and a press asks the guide its question, word for word.</summary>
+    /// <summary>It is the theme's main button by default, and a press asks the guide its question.</summary>
     [Test]
     public void APress_AsksTheGuideItsQuestion()
     {
