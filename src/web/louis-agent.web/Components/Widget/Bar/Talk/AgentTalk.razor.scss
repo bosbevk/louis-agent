@@ -1,4 +1,6 @@
-/* The whole talk over the agent's bar (F134.4): glass like the bar, its heading and close at the top, the turns
+@use "web/tools/surface";
+
+/* The whole talk over the agent's bar (F134.4): a pane that floats, its heading and close at the top, the turns
    scrolled between them and the talk's total at its foot (F134.5). It can stand fixed at the screen's side only
    because nothing in the bar moves it by a transform, which would hold it inside the bar. */
 .agent-talk {
@@ -7,14 +9,8 @@
     gap: 10px;
     max-height: min(60vh, 520px);
     padding: 16px 18px 12px;
-    border-radius: 22px;
-    background: rgba(var(--bs-body-bg-rgb), .92);
-    backdrop-filter: blur(24px);
-    box-shadow:
-        inset 0 1px 0 rgba(var(--web-overlay-rgb), .14),
-        inset 0 0 0 1px rgba(var(--web-overlay-rgb), .12),
-        0 40px 90px -30px rgba(var(--web-shadow-rgb), 1);
     animation: rise .35s var(--web-ease, ease-out) both;
+    @include surface.float($radius: 22px);
 }
 .agent-talk-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .agent-talk-head b { font-size: 18px; letter-spacing: -.02em; color: var(--bs-emphasis-color); }
@@ -30,13 +26,13 @@
     font-size: 18px;
     line-height: 1;
     color: var(--bs-emphasis-color);
-    background: rgba(var(--web-overlay-rgb), .08);
     cursor: pointer;
+    @include surface.tint(var(--web-overlay-rgb), .08);
 }
-.agent-talk-toggle:hover { background: rgba(var(--web-overlay-rgb), .16); }
+.agent-talk-toggle:hover { @include surface.tint(var(--web-overlay-rgb), .16); }
 .agent-talk-total {
     padding: 10px 0 6px;
-    border-top: 1px solid rgba(var(--web-overlay-rgb), .1);
+    @include surface.rule($side: top);
     font: 12px/1.4 var(--bs-font-monospace);
     color: var(--bs-secondary-color);
 }

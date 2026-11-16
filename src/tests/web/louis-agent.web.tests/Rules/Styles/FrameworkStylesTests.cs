@@ -65,7 +65,7 @@ public partial class FrameworkStylesTests
     [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
     [TestCase("animation: widget-pulse")]
     [TestCase(".site-nav { margin-left: auto;")]
-    [TestCase("border-radius: 999px;\n    background: var(--web-cta);")]
+    [TestCase("@include surface.beacon();\n    @include surface.press();")]
     [TestCase("position: fixed;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
               "        width: 100vw;\n        height: 50dvh;")]
     [TestCase(".site-corner { position: fixed; right: 24px; bottom: 72px;")]

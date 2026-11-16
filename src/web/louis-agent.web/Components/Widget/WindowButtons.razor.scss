@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* A chat window's buttons to minimise and maximise it (F127.2): at its head's end, in the head's own colour, so they
    sit as well on the guide's plain head as on a business's brand-coloured one. */
 .window-tools { display: flex; gap: 4px; margin-left: auto; }
@@ -12,8 +14,8 @@
     font-size: 13px;
     line-height: 1;
     color: inherit;
-    background: color-mix(in srgb, currentColor 14%, transparent);
     cursor: pointer;
+    @include surface.wash();
 }
-.window-tool:hover { background: color-mix(in srgb, currentColor 26%, transparent); }
+.window-tool:hover { @include surface.wash(26%); }
 .window-tool:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
