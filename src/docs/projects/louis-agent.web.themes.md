@@ -89,8 +89,11 @@ The drawings are SVGs with no size of their own: their shapes are written agains
 draws one fresh at whatever size the piece is. They are in `wwwroot/glass/dark/` and `wwwroot/glass/light/`, one
 file each, named for the part and the state. The project is built as a Razor class library, though it holds no
 component, so a site that references it serves them at `_content/louis-agent.web.themes/`. The list of drawings
-is written once, in `Styles/_theme-art.scss`, and each theme's sheet sets every one of them from it. A site's
-compiled sheet sits in its `css/` folder, so a drawing's address in it starts `../_content/`.
+is written once, in `Styles/_theme-art.scss`, and each theme's sheet sets every one of them from it. A drawing's
+address is written from the site's root, so it starts `/_content/`. It can't be written from the site's `css/`
+folder: a drawing is a value, and Chrome reads a value's address from the sheet of the rule that uses it. A
+component's rules are in its library's own sheet, which is served under `_content/`, so from there an address
+that starts `../_content/` leads to `_content/_content/` and finds nothing.
 
 ### 5. Held to the framework's names
 

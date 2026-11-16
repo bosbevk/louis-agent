@@ -11,8 +11,10 @@ $drawings: (
     toggle-off-disabled, toggle-off, toggle-on-disabled, toggle-on, well
 );
 
-/* Where a site's page finds this project's files, from the stylesheet its build makes, wwwroot/css/app.css. */
-$served: "../_content/louis-agent.web.themes/";
+/* Where a page finds this project's files, written from the site's root. A drawing is a value, and a browser reads
+   its address from the sheet of the rule that uses the value: a component's rules are in its library's own sheet,
+   under _content, so an address written from the site's css folder led nowhere from there. */
+$served: "/_content/louis-agent.web.themes/";
 
 /* Every drawing named, each to the file of this theme and style. */
 @mixin drawn($theme, $style) {
