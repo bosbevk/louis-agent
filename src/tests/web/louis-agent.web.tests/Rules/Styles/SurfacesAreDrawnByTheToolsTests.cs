@@ -47,11 +47,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Site/Showroom/Mock/Website/MockPage.razor.scss",
         "Pages/Admin/Packs.razor.scss",
         "Styles/web/base/_elements.scss",
-        "Styles/web/chat/_bars.scss",
-        "Styles/web/chat/_conversation.scss",
-        "Styles/web/chat/_finish.scss",
-        "Styles/web/chat/_interaction.scss",
-        "Styles/web/chat/_pages.scss",
         "Styles/web/layout/_panels.scss",
         "Styles/web/layout/_responsive.scss",
         "Styles/web/layout/_shell.scss"
@@ -163,6 +158,22 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("badge")]
     [TestCase("brand-line")]
     [TestCase("lit")]
+    [TestCase("cast")]
+    [TestCase("raised")]
+    [TestCase("glowing")]
+    [TestCase("focus-ring")]
+    [TestCase("fades-up")]
+    [TestCase("image-fill")]
+    [TestCase("glint")]
+    [TestCase("frosted")]
+    [TestCase("spoken")]
+    [TestCase("spoken-deep")]
+    [TestCase("typed-in")]
+    [TestCase("working-rim")]
+    [TestCase("helper")]
+    [TestCase("shimmer")]
+    [TestCase("spotlight")]
+    [TestCase("underline")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

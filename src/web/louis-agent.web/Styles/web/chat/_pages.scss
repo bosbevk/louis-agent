@@ -1,4 +1,6 @@
-.side-link.active { background: rgba(var(--web-overlay-rgb), .07); color: var(--bs-emphasis-color); }
+@use "web/tools/surface";
+
+.side-link.active { @include surface.tint(var(--web-overlay-rgb), .07); color: var(--bs-emphasis-color); }
 .side-link.active .ic { color: var(--bs-primary); }
 .usage-meter .ic { color: var(--bs-primary); }
 .about { max-width: 640px; margin: 0 auto 22px !important; text-wrap: balance; }

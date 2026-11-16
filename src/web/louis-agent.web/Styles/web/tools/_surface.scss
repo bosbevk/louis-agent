@@ -10,10 +10,12 @@
    pressed, off and picked. A pressed piece is also made a little smaller here, in every theme. Written where it's
    included: a tool writes no CSS of its own.
 
-   The kinds are in files by what they are, in surface/: panes, presses, marks, and lines and washes. This file
+   The kinds are in files by what they are, in surface/: panes, presses, marks, lines and washes, and the
+   conversation. This file
    hands them on under one name, so a sheet says surface.pane() whichever file holds it. */
 
 @forward "surface/panes";
 @forward "surface/presses";
 @forward "surface/marks";
 @forward "surface/lines";
+@forward "surface/talk";
