@@ -68,15 +68,15 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The menu ends with the CV mark (F142, Louis: "little icon CV there"): a small document and "CV", to /cv, with
-    /// a name a screen reader says.
+    /// The CV mark (F142, Louis: "little icon CV there") stands in the settings' panel (FX163, "then we put those
+    /// buttons there"): a small document and "CV", to /cv, with a name a screen reader says.
     /// </summary>
     [Test]
-    public void TheMenu_EndsWithTheCvMark()
+    public void TheSettings_HoldTheCvMark()
     {
         using var ctx = Context();
 
-        var last = ctx.Render<SiteLayout>().FindAll(".site-nav > a, .site-nav > .site-drop").Last();
+        var last = ctx.Render<SiteLayout>().Find(".site-settings > a");
 
         Assert.Multiple(() =>
         {
@@ -111,7 +111,7 @@ public class SiteLayoutTests
 
     /// <summary>
     /// The menu leads with what the site sells (F128.1, Louis's pick 5A): What we build, Demos, Contact, and the
-    /// framework last of its pages, with the CV mark closing the bar (F142); no Pricing (Louis: "remove pricing").
+    /// framework last of its pages; no Pricing (Louis: "remove pricing"), and the CV mark in the settings (FX163).
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -123,7 +123,7 @@ public class SiteLayoutTests
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
         Assert.That(items,
-            Is.EqualTo(new[] { "What we build", "Demos", "Contact", "The framework", "CV" }));
+            Is.EqualTo(new[] { "What we build", "Demos", "Contact", "The framework" }));
     }
 
     /// <summary>
@@ -150,24 +150,26 @@ public class SiteLayoutTests
                     "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
                     "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(3),
-                "the rest stand in the bar, the CV mark among them (F142)");
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(2),
+                "the rest stand in the bar, the CV mark in the settings (FX163)");
         });
     }
 
-    /// <summary>From every page you can ask for a site of your own: the header ends with that button.</summary>
+    /// <summary>
+    /// The header ends with the settings' three-line button and no ask button (Louis: "we should have a 3 line menu
+    /// there which will open a sticky menu then we put those buttons there. ask button can go").
+    /// </summary>
     [Test]
-    public void TheHeader_EndsWithTheWayToAskForYours()
+    public void TheHeader_EndsWithTheSettingsButton()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
-        var ask = cut.Find(".site-header .site-actions > a.btn.btn-solid");
         Assert.Multiple(() =>
         {
-            Assert.That(ask.TextContent, Is.EqualTo("Ask for yours"));
-            Assert.That(ask.GetAttribute("href"), Is.EqualTo("/contact"));
+            Assert.That(cut.Find(".site-header").LastElementChild!.ClassList, Does.Contain("site-settings-button"));
+            Assert.That(cut.FindAll(".site-header a.btn"), Is.Empty);
         });
     }
 
@@ -257,7 +259,7 @@ public class SiteLayoutTests
                     "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
                     "/triage-demo"
                 }));
-            Assert.That(cut.Find(".site-actions").TextContent, Does.Not.Contain("Watch it work"));
+            Assert.That(cut.Find(".site-header").TextContent, Does.Not.Contain("Watch it work"));
             Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);
         });
     }

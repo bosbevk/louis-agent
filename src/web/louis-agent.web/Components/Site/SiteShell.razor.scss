@@ -71,6 +71,17 @@
    row, and its button is not drawn. On a phone the button opens it as a sheet under the header. */
 .site-menu { display: contents; }
 .site-menu-button { display: none; }
+/* The settings' three-line button at the header's end (FX163): a round glass button, the theme's second. */
+.site-settings-button {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    color: var(--bs-emphasis-color);
+    border-radius: 14px;
+    @include surface.quiet-press();
+}
 
 .site-main {
     flex: 1;

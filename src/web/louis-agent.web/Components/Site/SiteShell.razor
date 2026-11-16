@@ -36,7 +36,7 @@
                         @if (HasActions)
                         {
                             <div class="site-actions">
-                                @if (OffersThemes)
+                                @if (LooksInActions)
                                 {
                                     <LookSwitch/>
                                 }
@@ -45,7 +45,22 @@
                         }
                     </div>
                 }
+                @if (HasSettings)
+                {
+                    <button type="button" class="site-settings-button" aria-label="Settings"
+                            aria-controls="site-settings" aria-expanded="@(_settingsOpen ? "true" : "false")"
+                            @onclick="ToggleSettings">
+                        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                }
             </header>
+            @if (HasSettings)
+            {
+                <SiteSettings Open="_settingsOpen" Looks="OffersThemes">@Settings</SiteSettings>
+            }
 
             <main class="site-main" @key="PagePath">
                 @ChildContent

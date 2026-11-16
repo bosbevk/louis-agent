@@ -54,6 +54,31 @@ public class SiteShellTests
     }
 
     /// <summary>
+    /// A site's settings sit behind a three-line button at the header's end, in a panel that stays down the right of
+    /// the screen once opened (Louis: "we should have a 3 line menu there which will open a sticky menu then we put
+    /// those buttons there"), and the button opens and shuts it.
+    /// </summary>
+    [Test]
+    public void TheSettings_OpenFromAThreeLineButton()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Links, "<a href=\"/a\">A</a>")
+            .Add(shell => shell.Settings, "<a class=\"cv\" href=\"/cv\">CV</a>"));
+        var shut = cut.Find(".site-settings").GetAttribute("data-open");
+        cut.Find(".site-header .site-settings-button").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shut, Is.Null);
+            Assert.That(cut.Find(".site-settings").HasAttribute("data-open"), Is.True);
+            Assert.That(cut.Find(".site-settings-button").GetAttribute("aria-expanded"), Is.EqualTo("true"));
+            Assert.That(cut.FindAll(".site-settings a.cv"), Has.Count.EqualTo(1));
+        });
+    }
+
+    /// <summary>
     /// The page behind moves when a site switches it on (Louis: "can we make the background move?", "the lines can it
     /// be a switch"), and holds still otherwise.
     /// </summary>
