@@ -36,6 +36,30 @@ public class BandTests
     }
 
     /// <summary>
+    /// Under a band's head runs the rail with its beam, as under the design's "What it does" (Louis: "that line must
+    /// be under every header"): after the summary, before the content; a band with no heading has none.
+    /// </summary>
+    [Test]
+    public void ABandsHead_HasTheRailUnderIt()
+    {
+        using var ctx = new BunitContext();
+
+        var headed = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "does")
+            .Add(band => band.Title, "What it does.")
+            .Add(band => band.Summary, "Four things.")
+            .AddChildContent("<div class=\"cards\"></div>"));
+        var plain = ctx.Render<Band>(parameters => parameters.Add(band => band.Id, "plain"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(headed.Find(".summary").NextElementSibling!.ClassName, Is.EqualTo("band-rail"));
+            Assert.That(headed.Find(".band-rail").NextElementSibling!.ClassName, Is.EqualTo("cards"));
+            Assert.That(plain.FindAll(".band-rail"), Is.Empty);
+        });
+    }
+
+    /// <summary>
     /// A band carries its own pager, hidden (F118, Louis's option 2): on a page of slides, a band with more than a
     /// screen of content is paged sideways by the frame's module, which shows the pager and fills in "1 / 3"; the
     /// buttons are named for a screen reader.
