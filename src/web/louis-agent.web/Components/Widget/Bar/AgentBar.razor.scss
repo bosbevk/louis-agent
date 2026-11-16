@@ -88,14 +88,17 @@
 }
 .agent-box ::deep textarea::placeholder { color: var(--bs-secondary-color); }
 .agent-box ::deep .composer-tools { grid-area: 1 / 2 / 3 / 3; gap: 10px; }
+/* The send and the stop are the design's round press, drawn with the same art as the site's main buttons, at rest,
+   under the pointer and pressed (Louis: "it is not styled to design"), not the chat's flat send. */
 .agent-box ::deep .send, .agent-box ::deep .stop {
     flex: none;
     width: 54px;
     height: 54px;
     border-radius: 50%;
     font-size: 22px;
+    @include surface.press();
 }
-.agent-box ::deep .send:disabled { opacity: .45; }
+.agent-box ::deep .send { @include surface.press-at-rest(); }
 
 /* The selected piece's chip stands centred over the row; its look is the widget's, the same as in the corner. It
    and the talk's total rise into the bar when they come, as the caption does. */

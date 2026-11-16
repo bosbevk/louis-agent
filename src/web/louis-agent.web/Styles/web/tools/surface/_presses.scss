@@ -17,6 +17,12 @@
     &:disabled { cursor: default; @include drawn(press-disabled, var(--web-press-fill)); }
 }
 
+/* A press that waits, as the design's send does: with nothing to press yet it stands drawn at rest, at full strength,
+   never greyed, and only the pointer says it waits. */
+@mixin press-at-rest() {
+    &:disabled { opacity: 1; cursor: default; @include drawn(press-rest, var(--web-press-fill)); }
+}
+
 /* The second button: an outline in the words' colour, with its hover, pressed and off. */
 @mixin quiet-press() {
     border: var(--web-press-edge);

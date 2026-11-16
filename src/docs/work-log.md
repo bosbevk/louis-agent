@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 124 | 94 |
-| Fixes (`FX`) | 152 | 6 |
+| Fixes (`FX`) | 153 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -282,10 +282,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (152 done)
+## Fixes (153 done)
 
 | Id | When | What |
 |---|---|---|
+| FX165 | 2026-11-16 | The agent bar's send is the design's round press, never greyed while it waits |
 | FX164 | 2026-11-16 | The pricing page removed and moved to contact, and the guide quotes no price: every quote is made on request |
 | FX161 | 2026-11-16 | A closed answer stays closed after a reload: the turn carries that it was closed, saved with the chat |
 | FX163 | 2026-11-16 | The glass works as the design's: every panel's glass a value (colour, amount, plain, water or frost) with lens, tilt, pick and reflection switches, the lens ported from the design and seeing the page again, the design's piece states and their reset; the product window, the tape, an ask button and the header's settings bar in the framework; the landing retold, flowing, with no proof band and no price |

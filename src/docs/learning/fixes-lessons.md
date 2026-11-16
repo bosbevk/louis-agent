@@ -511,6 +511,14 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX165 · A control takes its look from the design's drawing, not from the generic rule it inherits
+
+The bar's send button looked broken: a flat violet circle that turned to a pale ghost whenever the box was empty. It
+had never been given the design's look. It inherited the chat's generic send, and every disabled button on the site
+fades to 40%. The design draws its send with the same press art as its main buttons and never greys it, because a
+send that waits is still the way to ask. So the bar draws it with the framework's press, and a small tool keeps a
+waiting press at rest. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
 ## FX164 · A page taken down is taken out of what the agent reads too
 
 The prices left the landing and the menu, yet the pricing page still answered at its address, and the guide still
