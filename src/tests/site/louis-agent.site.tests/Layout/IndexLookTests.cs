@@ -1,4 +1,6 @@
+using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Testing.Sites;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Site.Tests.Layout;
 
@@ -13,4 +15,16 @@ public class IndexLookTests
     public void ThePage_WritesTheLookTheAreasGive() =>
         Assert.That(IndexLook.Of(SiteProject.Folder("louis-agent.site")),
             Is.EqualTo(IndexLook.For(LouisAgentDevAreas.Name)));
+
+    /// <summary>
+    /// The site offers the framework's two themes, glass first, so glass is what a first visit gets (F151.6).
+    /// </summary>
+    [Test]
+    public void TheSite_OffersGlassThenFlat()
+    {
+        var areas = new ServiceCollection().AddSiteAreas(LouisAgentDevAreas.Name).BuildServiceProvider()
+            .GetRequiredService<SiteAreas>();
+
+        Assert.That(areas.Themes.Select(theme => theme.Id), Is.EqualTo(new[] { "glass", "flat" }));
+    }
 }

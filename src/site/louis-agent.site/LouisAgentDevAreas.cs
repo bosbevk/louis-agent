@@ -5,6 +5,8 @@ using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Focuses;
+using LouisAgent.Web.Themes.Flat;
+using LouisAgent.Web.Themes.Glass;
 
 namespace LouisAgent.Site;
 
@@ -13,6 +15,7 @@ namespace LouisAgent.Site;
 /// page is (F127.7), what its guide offers to be asked as the showroom's bar (F134.3), and its admin with the
 /// overview counting the guide's leads (F127.8) and the site's own Resume area, where Louis edits his CV (F142),
 /// named through the framework's builder; the guide in its corner runs on the chat's plumbing, which every site gets.
+/// It offers the framework's two themes, glass first, so glass is what a first visit gets (F151.6).
 /// </summary>
 /// <remarks>
 /// Composition Root (Seemann): the one place the site says which parts it uses. The program hands it to
@@ -27,7 +30,8 @@ public static class LouisAgentDevAreas
     /// </summary>
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
         .Suggestions(GuideSuggestions)
-        .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area);
+        .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area)
+        .Glass().Flat();
 
     /// <summary>
     /// What the guide's bar offers to be asked, as chips, the first the one suggested. The same three stand on the

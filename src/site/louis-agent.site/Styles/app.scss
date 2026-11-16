@@ -2,13 +2,19 @@
    always came, then the site's look. A name under web/ is the framework's Sass and one under pack- a pack's, each found
    through sasscompiler.json, so nothing is copied; a name under site/ is the site's own: its values right after the
    framework's colours and its elements right after the framework's, so the site's win where they meet, and the landing,
-   the films and its phone rules last. The build makes wwwroot/css/app.css from this. */
+   the films and its phone rules last. The two themes' sheets (F151.6) come after the site's elements, one block per
+   theme and style, picked by the page's <html>; a name under theme- is a theme's. The build makes wwwroot/css/app.css
+   from this. */
 
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
 @forward "site/settings/tokens";
 @forward "web/base/elements";
 @forward "site/base/elements";
+@forward "theme-glass/dark";
+@forward "theme-glass/light";
+@forward "theme-flat/dark";
+@forward "theme-flat/light";
 
 @forward "web/settings/brands";
 @forward "site/settings/brands";

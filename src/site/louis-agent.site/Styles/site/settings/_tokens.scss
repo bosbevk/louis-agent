@@ -1,12 +1,12 @@
-/* What only the site's pages need (F109.1, from the static site). Their colours are the framework's own Console look,
-   the one copy, listed before this file: black and white with metallic grays, and "chrome", a white-to-steel gradient,
-   on what matters. The gutter is the one the framework's site frame reads (SiteShell). */
+/* What only the site's pages need (F109.1, from the static site). Its colours are readings of the names a theme sets
+   (F151.6), so the site's own sheets follow the theme and the style a visitor picks and write no colour of their own.
+   The gutter is the one the framework's site frame reads (SiteShell). */
 
 :root {
-    --line: #1b1d21;            /* a hairline */
-    --faint: #5c6168;           /* a slab's small print */
-    --steel: linear-gradient(180deg, #e9ebee 0%, #c9ccd1 100%);
-    --glow: rgba(255, 255, 255, .12);
+    --line: var(--bs-border-color);        /* a hairline */
+    --faint: var(--bs-tertiary-color);     /* a slab's small print */
+    --steel: var(--web-cta);               /* the fill of what matters */
+    --glow: rgba(var(--web-overlay-rgb), .12);
 
     --radius: 10px;
     --radius-small: 8px;

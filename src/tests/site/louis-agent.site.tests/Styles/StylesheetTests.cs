@@ -18,6 +18,13 @@ public partial class StylesheetTests
     [GeneratedRegex(@"var\((--[a-z0-9-]+)", RegexOptions.NonBacktracking)]
     private static partial Regex Reads();
 
+    /// <summary>
+    /// A colour written as a value: matches <c>#f58220</c> and <c>rgba(245, 130, 32, .4)</c>, but not
+    /// <c>rgba(var(--bs-primary-rgb), .4)</c>.
+    /// </summary>
+    [GeneratedRegex(@"#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d", RegexOptions.NonBacktracking)]
+    private static partial Regex FixedColour();
+
     /// <summary>The site's three film partials, where every film keyframe lives.</summary>
     private static readonly string[] Films = ["site/movie/stage", "site/movie/short", "site/movie/detail"];
 
@@ -56,6 +63,25 @@ public partial class StylesheetTests
                 "site/base/elements"
             }));
     }
+
+    /// <summary>
+    /// The site's own values and plain elements write no colour as a value (F151.6): each reads a name a theme sets,
+    /// so the site's own layer follows the theme and the style without knowing a theme exists.
+    /// </summary>
+    [TestCase("site/settings/tokens")]
+    [TestCase("site/base/elements")]
+    public void TheSitesValuesAndElements_NameNoRawColour(string partial) =>
+        Assert.That(FixedColour().Matches(Css.Source(partial)).Select(found => found.Value), Is.Empty);
+
+    /// <summary>
+    /// The build holds each theme's values for each style, so the page's pick has something to turn on.
+    /// </summary>
+    [TestCase("glass", "dark")]
+    [TestCase("glass", "light")]
+    [TestCase("flat", "dark")]
+    [TestCase("flat", "light")]
+    public void TheBuild_HoldsEachThemesValues(string theme, string style) =>
+        Assert.That(Css.Read(), Does.Contain($":root[data-theme={theme}][data-style={style}]"));
 
     /// <summary>
     /// The site's look stays inside the site's frame: its element rules hang off the frame's root class, so the chat
