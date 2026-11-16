@@ -84,6 +84,11 @@ The styles sit beside their components. `AccountShell.razor.scss` holds the card
 draws inside it. The notice, the password field, the providers' divider, the facts and the key each have their own
 file. The build scopes and bundles them, so a site lists none of them, and colours only ever come from variables.
 
+No sheet here draws a surface itself. The card is a pane, a box you type in is a field, the main button is a press
+and the second one a quiet press, each included from the framework's surface tool
+([the framework's web](louis-agent.web.md)). So the account pages wear whatever theme the site's page wears, and on
+a site that names no theme they keep the site's own colours, as Puls's do.
+
 *Decided in:* CL58, [ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md).
 
 ![louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web](diagrams/louis-agent.web.accounts-diagrams.svg)

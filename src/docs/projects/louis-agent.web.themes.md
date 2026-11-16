@@ -28,6 +28,11 @@ glass and then flat opens in glass. A theme named twice still counts once, as an
 The extensions live here and not in the framework, because the framework's web can't name a theme. Dependencies
 point one way, from this project to the framework, as they do for the accounts library.
 
+A site can add a theme of its own by the same door. The code-review app's retro is one: a class in the app with its
+`SiteTheme` and an extension that adds its area, and two sheets of values in the app's own Sass
+([its design doc](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)). Nothing in this project
+or in the framework knows of it.
+
 ### 2. What a theme is
 
 Each theme holds a `SiteTheme`: its id, which goes into the page's `data-theme` and into the selector of its

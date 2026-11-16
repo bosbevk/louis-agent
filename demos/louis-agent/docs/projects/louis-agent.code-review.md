@@ -38,9 +38,19 @@ They're the files and git packs' views, under `packs/web/`, and open as admin sc
 A Review or Ask button opens this chat with the prompt as a draft, and nothing is sent until the person sends it
 (`ChatHandoff`).
 
-Themes are `console`, the default, the framework's colours as they are, and `retro` to switch to: Sass that sets the
-framework's colour names, built to `wwwroot/css/themes/`, loaded after `app.css` and swapped while the page runs.
-`wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
+The app offers three themes, each in a dark and a light style: the framework's glass and flat, and retro, which is
+its own. It names them among its areas, `.Glass().Flat().Retro()` in `CodeReviewAreas`, and glass comes first, so
+that is what a first visit gets. The frame's own switch, under Settings in the chat and at the foot of the admin's
+sidebar, offers them and remembers the pick in this browser. The app has no picker of its own.
+
+Retro shows how a site adds a theme the framework doesn't ship. `RetroTheme` adds one area that carries the theme,
+the way `GlassTheme` does. Its values are two sheets, `Styles/retro/_dark.scss` and `_light.scss`, each one block
+under the selector for its theme and style, and each sets every name the framework's themes set. Dark is mint on a
+near-black green, and light is dark green ink on pale mint paper. A theme is only values
+([ADR 0124](../../../../src/docs/adr/0124-a-sites-look-is-a-theme-and-a-style.md)), so retro's terminal dressing,
+the block letters, the boot lines, the scanlines and the prompts before a message, is not part of the theme. It is
+the app's own rules, in `Styles/retro/_terminal.scss`, written under `:root[data-theme="retro"]` so they apply only
+while the page wears retro.
 
 Reviewing a change, the job the app is for:
 
@@ -54,9 +64,10 @@ Reviewing a change, the job the app is for:
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/`, `/chat` and `/chat/{id}`; the page for an unknown address |
 | `Layout/ChatLayout.razor`, `Layout/AdminLayout.razor`, `Layout/AccountLayout.razor` | The chat's bare layout, the router's default; this app's admin frame, on `AdminShell`; its account frame |
-| `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
-| `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, this app's few rules, and the two themes ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
-| `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |
+| `Components/EmptyChat.razor` | The boot screen above the message box |
+| `CodeReviewAreas.cs`, `RetroTheme.cs` | What the app is made of, its three themes among it; retro's id and name, and the area that carries it |
+| `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/retro/` | The list of the framework's, the themes' and the packs' Sass, this app's few rules, and retro: its two sheets of values and its terminal dressing ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
+| `wwwroot/index.html` | The host page, which says the theme and style a first visit gets. The CSS is built, and isn't in git |
 | `packs/web/louis-agent.pack.files.web`, `packs/web/louis-agent.pack.git.web` | Not in this project: the views it registers, with their records, calls and Sass |
 
 ## Configuration

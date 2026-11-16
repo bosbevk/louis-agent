@@ -845,3 +845,55 @@ Safari.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a tool as the seam between a theme and a component. And
 *18 Testing and shipping*: a rule test with a list that may only shrink, which ends as the rule itself.
+
+## F151.5: the libraries and the other sites follow (2026-11-16)
+
+F151.4 made the framework's own components follow a theme. Three libraries sit on top of the framework and draw
+pages of their own: the account pages, the eval studio and the packs' views. They still wrote their own
+backgrounds and borders, so a visitor who picked flat got a flat chat and a sign-in page that had not noticed.
+This child took the same tool to them.
+
+Nothing new had to be invented for that, which is the point of the seam. The rule test that reads every sheet for
+a surface drawn by hand was given three more folders to read, and it failed for their sheets: the accounts' three,
+the studio's forty-one and the packs' three. Each was moved to the tool's kinds, a card to a pane or an inset, a
+box you type in to a field, a tip to a float, until the test passed again with no list of exceptions. One kind was
+added on the way, a line down the side of a piece, for the packs' views. The account library also needed to be
+told where the framework's Sass is, since until then it had used none of it.
+
+One thing went wrong and was caught by looking. In glass the theme draws no edge on a small inset piece, so the
+account pages' fields nearly vanished. They now ask for the bar's edge, which every theme sets.
+
+The code-review app was the test of the plug-in point. It had its own picker, its own script, a list of themes in a
+JSON file and two theme sheets built apart from the rest. All of that is gone. The app names glass, flat and retro
+among its areas and the frame's switch offers them. Retro is the app's own theme, added the way glass is: a small
+class with its id and name, and two sheets of values. It got a light style, dark green ink on pale mint paper,
+which Louis picked. His second pick settled a clash with ADR 0124, which says a theme is only values: retro's
+terminal dressing, the block letters and scanlines, stays, as the app's own rules written under the retro theme's
+selector, and not as part of the theme.
+
+Two findings came from holding retro to the same test as glass and flat. The test first failed for seven names,
+the sign-in providers' colours. Those are Google's, Microsoft's and LinkedIn's, no theme sets them, and the test
+now leaves them out by reading the framework's sheet that holds them. And on a phone retro's page scrolled 351 px
+sideways. Its switch-on animation kept hold of the app after it ended, and an element that is being animated
+becomes the frame for the fixed panels inside it, so the off-screen work panel widened the page. The animation now
+lets go when it ends. That was in the old retro too, and nobody had seen it.
+
+Puls names no theme and was not to change, since it is live. The surfaces' names fall back to the site's own
+colours when no theme is named, so Puls's test passed unchanged and its sign-in page still wears its orange.
+
+The last step was not in the plan. A check of the glass drawings found that a drawing laid on as a background is
+painted again whenever its piece is repainted, and that two buttons, the guide's and the chat widget's, pulsed for
+ever by changing their own shadow. Louis picked the fix that changes no look: the swollen glow is a layer over the
+button that only fades. A browser draws in stages, and fading a finished layer is done in the last one,
+compositing, without painting anything again. On a page with one guide button, four quiet seconds had 482 paints
+with a shadow pulse and none with the fading layer. The guide's button had clipped its inside for its sweeping
+light, which would have cut the new layer off, so the light got a small piece of its own to be clipped by.
+
+What was not checked: a turn in retro, the pack screens and account pages in retro, the studio's pages with data
+in them, the widget's round button, Firefox and Safari, and the paint count on a real graphics card or in the
+glass theme itself, since the framework's site names no theme yet. Whether the drawings' blurs should go is left
+until the transitions are measured after F151.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a plug-in point is proved when a third thing joins by the
+door the first two used and the old way is deleted. And *17 Observability* in spirit: a cost is counted before and
+after, not assumed.

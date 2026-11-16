@@ -107,8 +107,8 @@ MCP server shares.
 
 The web app is Blazor WebAssembly, served by the API with `MapStaticAssets` and `MapLouisAgentSite`. When you open a
 page's address, the server answers with that page already rendered as HTML inside `index.html`, until the app takes
-over. The app keeps chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/`, listed in
-`themes.json`.
+over. The app keeps chats in the browser's `localStorage`. Its themes are named among its areas, and the frame's switch
+offers them.
 
 *Decided in:* F121.
 
