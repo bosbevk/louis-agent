@@ -92,8 +92,9 @@ the folders under `demos/`.
 
 ### 3. Selling first, the framework as proof
 
-The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads: What we
-build · Demos · Contact · The framework. At the header's end a three-line button opens the settings, a thin glass bar
+The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads Contact
+alone for now. Its two groups, Demos and The framework, are kept in the page but hidden until those pages are fixed,
+and their pages still answer at their addresses. At the header's end a three-line button opens the settings, a thin glass bar
 under the header with the look switches and the CV. No price stands anywhere a visitor first looks:
 every quote is made on request.
 
@@ -110,7 +111,7 @@ business's made-up address in the bar. The one a visitor picks, or the guide sho
 product window plays the guesthouse, the restaurant and the law practice in turn, each its own page with its agent
 answering a visitor from its recorded talk, drawing the request and sending it on a yes. The last strip asks the
 agent to take the visitor's details, or leads to the contact page. The framework itself has no band on the landing:
-the menu's "The framework" leads to its own pages.
+its pages are its own, and the menu's group for them is hidden for now.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
 `/framework/architecture`. No page names a price: every quote is made on request, so `/pricing` is moved to

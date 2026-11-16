@@ -7,7 +7,8 @@
     <Tagline>100% C#, because you can</Tagline>
     <Stage><StageFlag Label="alpha-1" Note="This is version alpha-1. You may run into inconsistencies while it is built." LinkText="Tell us what you find" Href="/contact" /></Stage>
     <Links>
-        <SiteMenu Label="Demos">
+        @* Demos and the framework's pages are hidden from the menu for now, kept until they are fixed (FX176). *@
+        <SiteMenu Label="Demos" Hidden="true">
             <NavLink href="/demos" Match="NavLinkMatch.All">All demos</NavLink>
             <NavLink href="/guesthouse-demo" Match="NavLinkMatch.All">A guesthouse</NavLink>
             <NavLink href="/restaurant-demo" Match="NavLinkMatch.All">A restaurant</NavLink>
@@ -16,7 +17,7 @@
             <NavLink href="/triage-demo" Match="NavLinkMatch.All">The triage team</NavLink>
         </SiteMenu>
         <NavLink href="/contact" Match="NavLinkMatch.All">Contact</NavLink>
-        <SiteMenu Label="The framework">
+        <SiteMenu Label="The framework" Hidden="true">
             <NavLink href="/framework/how-it-works" Match="NavLinkMatch.All">How it works</NavLink>
             <NavLink href="/framework/architecture" Match="NavLinkMatch.All">Architecture</NavLink>
             <NavLink href="/framework/identities" Match="NavLinkMatch.All">Identities</NavLink>

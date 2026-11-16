@@ -511,6 +511,14 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX176 · Hidden is the browser's word for "not now"
+
+Louis wanted the Demos and The framework menus out of the way until their pages are fixed, but not deleted. The
+menu group gained a switch that sets the browser's own `hidden` attribute, which takes the group out of sight, out
+of the keyboard's reach and away from screen readers, while its links stay in the page as they were. Turning the
+switch off brings the group back exactly, and the tests that hold its links still read them. Skill 20
+(extensibility: a framework part a site can hide for now and keep).
+
 ## FX170 · The browser's own popover before a script of ours
 
 Louis wanted a flag in the header saying the site is at alpha-1, with a short note behind it. A note that opens on

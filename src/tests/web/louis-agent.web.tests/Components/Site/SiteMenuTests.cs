@@ -15,6 +15,25 @@ public class SiteMenuTests
         builder.AddMarkupContent(0, "<a href=\"/one\">One</a><a href=\"/two\">Two</a>");
     };
 
+    /// <summary>
+    /// FX176: a site may hide a group for now and keep it, its links still in the page but out of sight and out of
+    /// reach (Louis: "disable the demos menu items for now until it is fixed and framework").
+    /// </summary>
+    [Test]
+    public void AHiddenGroup_IsKept_OutOfSight()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<SiteMenu>(parameters =>
+            parameters.Add(menu => menu.Label, "Demos").Add(menu => menu.Hidden, true).AddChildContent(Links()));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-drop").HasAttribute("hidden"), Is.True);
+            Assert.That(cut.FindAll(".site-drop-list a"), Has.Count.EqualTo(2));
+        });
+    }
+
     /// <summary>The label is a button in the bar and the links sit in the list under it.</summary>
     [Test]
     public void TheGroup_HasItsLabelAndItsLinks()

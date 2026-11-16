@@ -19,4 +19,10 @@ public partial class SiteMenu
 
     /// <summary>The links the group holds.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Whether the group is hidden for now: kept in the page, its links with it, but out of sight and out of reach, so
+    /// a site can bring it back by turning this off (FX176, Louis: "disable the demos menu items for now").
+    /// </summary>
+    [Parameter] public bool Hidden { get; set; }
 }

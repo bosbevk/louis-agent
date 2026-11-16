@@ -356,7 +356,9 @@ a page. On a wider screen the sheet is no box of its own, so the links and the a
 as before, and the button is not drawn.
 
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
-menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
+menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. A site may hide a group
+for now with `Hidden`, which keeps it in the page with the browser's own `hidden` attribute, out of sight and out of
+reach, to bring back by turning it off. The group at the end of
 the bar opens its list right-aligned, so it stays on the screen. Its class names, `site-drop` and the two under it,
 are its own and not the frame's. A scoped rule marks only the last part of its selector, so if the class a list
 opens under were also on the frame's menu round it, a pointer anywhere in the menu would open every list.
