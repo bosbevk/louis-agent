@@ -57,8 +57,8 @@ public class AgentBarMotionTests
         Assert.That(BarStyles, Does.Contain(".agent-total, .agent-bar > .piece-chip { animation: rise"));
 
     /// <summary>
-    /// The orb's light stays inside the bar: the row has room around the orb for its rings, and cuts whatever glow
-    /// would still reach past its edge.
+    /// The orb's light stays inside the bar: the row has 14 pixels of room around the orb for its rings, which makes
+    /// the bar 74 high round a mark of 46, and it cuts whatever glow would still reach past its edge.
     /// </summary>
     [Test]
     public void TheOrbsLight_StaysInsideTheBar()
@@ -66,7 +66,7 @@ public class AgentBarMotionTests
         int start = BarStyles.IndexOf("\n.agent-row {", StringComparison.Ordinal);
         string row = start < 0 ? "" : BarStyles[start..BarStyles.IndexOf("\n}", start + 1, StringComparison.Ordinal)];
 
-        Assert.That(row, Does.Contain("overflow: clip;").And.Contain("padding: 10px 10px 10px 12px;"));
+        Assert.That(row, Does.Contain("overflow: clip;").And.Contain("padding: 14px;"));
     }
 
     /// <summary>A visitor who asked for less motion gets none of it: each thing is simply where it belongs.</summary>

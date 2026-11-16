@@ -159,6 +159,30 @@ $-pressed: scale(.97);
     box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
 }
 
+/* The agent's mark: its disc, its gloss and the letter on it, each the theme's. */
+@mixin mark() {
+    color: var(--web-mark-ink);
+    background: var(--web-mark-fill);
+    box-shadow: var(--web-mark-gloss);
+}
+
+/* A ring round the mark, in a colour: the quiet one it breathes with, the visitor's while it listens. */
+@mixin mark-ring($colour: rgba(var(--web-overlay-rgb), .35), $width: 1.5px) {
+    box-shadow: 0 0 0 $width $colour;
+}
+
+/* The arc that goes round the mark while the agent thinks: a slice of a ring, cut out of a disc. */
+@mixin mark-arc() {
+    box-shadow: none;
+    background: conic-gradient(var(--web-bright) 0 70deg, transparent 70deg);
+    mask: radial-gradient(closest-side, transparent calc(100% - 3px), var(--web-bright) calc(100% - 2.5px));
+}
+
+/* The mark at the top of its pulse while the agent speaks: its gloss with a light round it. */
+@mixin mark-lit() {
+    box-shadow: var(--web-mark-gloss), 0 0 22px 1px rgba(var(--web-overlay-rgb), .8);
+}
+
 /* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. */
 @mixin picked() { @include -drawing(pane-picked); }
 

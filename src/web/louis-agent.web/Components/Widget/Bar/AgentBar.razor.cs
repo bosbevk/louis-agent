@@ -153,7 +153,13 @@ public partial class AgentBar : IAsyncDisposable
     private Turn? Last => Runner.Chat?.Turns.LastOrDefault();
 
     /// <summary>What the orb shows, read from the runner.</summary>
-    private OrbState State => OrbStates.Of(Runner.Streaming, Last?.EndsInWords == true, Showing);
+    private OrbState State => OrbStates.Of(Facts);
+
+    /// <summary>What the chat says of itself just now, for the orb's rule.</summary>
+    private OrbFacts Facts => new(Runner.Streaming, Last?.EndsInWords == true, Showing, Heard);
+
+    /// <summary>Whether the visitor is being heard: they are writing, or hold a piece of the page they picked.</summary>
+    private bool Heard => !string.IsNullOrWhiteSpace(Runner.Draft) || Piece is not null;
 
     /// <summary>The guide's mark on its orb: the first letter of its name, as the design drew it.</summary>
     private string? Initial => Title.Length > 0 ? Title[..1] : null;
@@ -183,10 +189,10 @@ public partial class AgentBar : IAsyncDisposable
     private bool TalkShows => _talkOpen || (!IsPutAway && Captioned.NeedsTheTalk(Last));
 
     /// <summary>
-    /// The chips show while the guide waits with nothing over the bar. They give way to a caption, which holds the
+    /// The chips show while the guide waits with nothing over the bar, listening or not. They give way to a caption, which holds the
     /// guide's own choices and the way into the box, and to the whole talk (F134.4).
     /// </summary>
-    private bool ChipsShow => State == OrbState.Idle && Caption is null && !TalkShows;
+    private bool ChipsShow => State is OrbState.Idle or OrbState.Listening && Caption is null && !TalkShows;
 
     /// <summary>
     /// The chips to draw: the site's own questions before any talk, and after it a next step from where the talk

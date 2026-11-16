@@ -60,6 +60,31 @@ public class AgentBarTests
     }
 
     /// <summary>
+    /// While the visitor writes, the orb listens (F151.4), and the chips stay, since a chip is still a way in. With
+    /// the box empty again it is idle.
+    /// </summary>
+    [Test]
+    public void WhileTheVisitorWrites_TheOrbListens_AndTheChipsStay()
+    {
+        using var ctx = Context();
+        var asks = new AgentSuggestions(["What is this site?"]);
+        ctx.Services.AddSingleton(asks);
+        var cut = Bar(ctx);
+
+        cut.Find("#composer-input").Input("What is");
+        var writing = cut.Find(".agent-bar .orb").ClassList.ToList();
+        var chips = cut.Find(".agent-chips").ClassList.ToList();
+        cut.Find("#composer-input").Input("");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(writing, Does.Contain("is-listening"));
+            Assert.That(chips, Does.Not.Contain("is-away"));
+            Assert.That(cut.Find(".agent-bar .orb").ClassList, Does.Contain("is-idle"));
+        });
+    }
+
+    /// <summary>
     /// Once a question has an answer, the answer stands over the box as a caption, with no talk drawn, and the
     /// caption's button opens the whole talk in its place.
     /// </summary>

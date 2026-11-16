@@ -66,7 +66,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Widget/Bar/Talk/AgentTalk.razor.scss",
         "Components/Widget/ChatWidget.razor.scss",
         "Components/Widget/Door/GuideButton.razor.scss",
-        "Components/Widget/Orb/Orb.razor.scss",
         "Components/Widget/WindowButtons.razor.scss",
         "Pages/Admin/Packs.razor.scss",
         "Styles/web/base/_elements.scss",
@@ -166,6 +165,10 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("track")]
     [TestCase("panel")]
     [TestCase("bubble")]
+    [TestCase("mark")]
+    [TestCase("mark-ring")]
+    [TestCase("mark-arc")]
+    [TestCase("mark-lit")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

@@ -178,11 +178,16 @@ centred at the page's foot, at most 760 wide, in glass. In it sit the agent's or
 doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
 in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
 
-The orb (`Widget/Orb`) is a general part of its own: a silver disc with four states, and the agent's mark on it,
-which the bar makes the first letter of the agent's name. Idle it breathes, thinking an arc goes round it, showing
-rings go out from it, and speaking it pulses. Which state it shows is a rule, `OrbStates.Of`, that reads only what
-the chat says of itself: a place the agent just showed, then whether it is streaming, then whether the answer's
-words have come. So the orb never shows a state the agent isn't in. Its rings keep close to the disc in every
+The orb (`Widget/Orb`) is a general part of its own: a disc with five states, and the agent's mark on it, which
+the bar makes the first letter of the agent's name. The disc is the theme's mark, drawn from the mark's fill, its
+gloss and its ink, so it is a silver disc with no theme named, a ball of violet glass in the glass theme and a flat
+violet disc in the flat one. Idle it breathes. Listening, its ring is in the visitor's colour. Thinking an arc goes
+round it, showing rings go out from it, and speaking it pulses. Which state it shows is a rule, `OrbStates.Of`,
+that reads only what the chat says of itself: a place the agent just showed, then whether it is streaming, then
+whether the answer's words have come. Only when the agent is doing none of those does it listen, while the visitor
+has words in the box or holds a piece of the page they picked. So the orb never shows a state the agent isn't in.
+The disc is 46 pixels across with 14 of room round it, which makes the bar 74 high. Its rings keep close to the
+disc in every
 state, and the bar's row cuts whatever glow would still reach past its edge, so the orb's light stays inside the
 bar.
 
