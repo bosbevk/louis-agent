@@ -2,7 +2,9 @@
 
 /* A button you cannot miss (F118, Louis: "just a more flashy button", "one you cannot miss"): the site's chrome
    gradient, bold words and a spark, a light that sweeps across it every few seconds and a soft pulse of glow around it;
-   it lifts under the pointer. A visitor who asked for less motion gets it still, glow and all. */
+   it lifts under the pointer. A visitor who asked for less motion gets it still, glow and all. The pulse is a layer
+   of its own that fades in and out over the button, which the browser only composites: a pulse that changed the
+   button's own shadow had the button painted again on every frame, its drawing with it. */
 .guide-button {
     position: relative;
     display: inline-flex;
@@ -13,19 +15,35 @@
     border-radius: 999px;
     font: 700 15px/1 var(--bs-font-sans-serif);
     letter-spacing: .01em;
-    overflow: hidden;
     isolation: isolate;
     cursor: pointer;
-    animation: guide-glow 2.8s var(--web-ease, ease-in-out) infinite;
     transition: transform .25s var(--web-ease, ease-out);
     @include surface.beacon();
     @include surface.press();
 }
-.guide-button::after {
+.guide-button::before {
     content: "";
     position: absolute;
     inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    animation: guide-glow 2.8s var(--web-ease, ease-in-out) infinite;
+    @include surface.beacon($swollen: true);
+}
+/* The sweeping light is clipped to the button by a piece of its own, so the glow outside the button is not. */
+.guide-shine {
+    position: absolute;
+    inset: 0;
     z-index: -1;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+}
+.guide-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
     translate: -120% 0;
     @include surface.sweep();
     animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
@@ -39,16 +57,16 @@
     padding: 6px 14px;
     font: 500 13px/1.4 var(--bs-font-sans-serif);
     box-shadow: none;
-    animation: none;
     @include surface.quiet-press();
 }
-.guide-button.is-plain::after { display: none; }
+.guide-button.is-plain::before, .guide-button.is-plain .guide-shine { display: none; }
 .guide-button.is-plain .guide-spark { font-size: 12px; animation: none; }
 .guide-button.is-plain:hover, .guide-button.is-plain:focus-visible { transform: none; }
 /* In the corner, a page's tour (F118) is the same button as the landing's, and since FX114 the only one there while
    the guide is folded: it opens the guide. In the phone's bottom bar (FX113) it is slimmer, and still. */
 @media (max-width: 720px) {
-    .guide-button.widget-tour { height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
+    .guide-button.widget-tour { height: 40px; padding: 0 16px; font-size: 14px; }
+    .guide-button.widget-tour::before { animation: none; }
 }
 .guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
 .guide-words { white-space: nowrap; }
@@ -58,10 +76,10 @@
     85%, 100% { translate: 120% 0; }
 }
 /* A soft pulse, the same as the guide's own button in the corner (Louis: "too much glow", "make them the same as the
-   one on the landing page"); the sweep and the spark are what set the tour apart. */
+   one on the landing page"); the sweep and the spark are what set the tour apart. Only the layer's opacity moves. */
 @keyframes guide-glow {
-    0%, 100% { @include surface.beacon(); }
-    50% { @include surface.beacon($swollen: true); }
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
 }
 @keyframes guide-twinkle {
     0%, 100% { opacity: 1; scale: 1; }
@@ -69,5 +87,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .guide-button, .guide-button::after, .guide-spark { animation: none; }
+    .guide-button::before, .guide-shine::after, .guide-spark { animation: none; }
 }

@@ -21,17 +21,31 @@
     font: 700 15px/1 var(--bs-font-sans-serif);
     letter-spacing: .01em;
     cursor: pointer;
-    animation: widget-pulse 2.8s var(--web-ease) infinite;
+    position: relative;
     transition: transform .25s var(--web-spring), box-shadow .25s var(--web-ease);
     @include surface.beacon();
     @include surface.press();
 }
-.widget-button:hover { transform: translateY(-2px) scale(1.03); animation-play-state: paused; }
+/* The pulse is a layer of its own that fades in and out over the button, which the browser only composites: a pulse
+   that changed the button's own shadow had the button painted again on every frame, its drawing with it. */
+.widget-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    animation: widget-pulse 2.8s var(--web-ease) infinite;
+    @include surface.beacon($swollen: true);
+}
+.widget-button:hover { transform: translateY(-2px) scale(1.03); }
+.widget-button:hover::before { animation-play-state: paused; }
 .widget-icon { display: inline-flex; }
-.chat-widget.is-open .widget-button { padding: 0; animation: none; font-size: 20px; }
+.chat-widget.is-open .widget-button { padding: 0; font-size: 20px; }
+.chat-widget.is-open .widget-button::before { animation: none; }
 @keyframes widget-pulse {
-    0%, 100% { @include surface.beacon(); }
-    50% { @include surface.beacon($swollen: true); }
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
 }
 
 .widget-panel {
@@ -87,7 +101,8 @@
    slimmer, still. */
 @media (max-width: 720px) {
     .chat-widget:not(.is-open) { flex-direction: row; align-items: center; gap: 10px; }
-    .chat-widget:not(.is-open) .widget-button { height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
+    .chat-widget:not(.is-open) .widget-button { height: 40px; padding: 0 16px; font-size: 14px; }
+    .chat-widget:not(.is-open) .widget-button::before { animation: none; }
 }
 
 /* On a phone the panel is a sheet over the bottom half of the screen (FX116, Louis: "only half the screen must be

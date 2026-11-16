@@ -64,6 +64,8 @@ public partial class FrameworkStylesTests
     /// </summary>
     [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
     [TestCase("animation: widget-pulse")]
+    [TestCase(".widget-button::before {")]
+    [TestCase("@keyframes widget-pulse {\n    0%, 100% { opacity: 0; }\n    50% { opacity: 1; }\n}")]
     [TestCase(".site-nav { margin-left: auto;")]
     [TestCase("@include surface.beacon();\n    @include surface.press();")]
     [TestCase("position: fixed;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
