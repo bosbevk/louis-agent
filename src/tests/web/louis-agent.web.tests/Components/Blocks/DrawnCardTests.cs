@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Chats.Calls;
 using LouisAgent.Web.Components;
@@ -127,5 +128,21 @@ public class DrawnCardTests
         var cut = Render(ctx, Call(Booking), false);
 
         Snapshots.Match("Components/Blocks/DrawnCard.html", cut.Markup);
+    }
+
+    /// <summary>
+    /// The card wears the theme (F151.7): its own stylesheet hands the ticket the theme's names, so it is drawn on
+    /// the theme's surface, glass in glass and solid in flat, and turns with the Dark and Light switch.
+    /// </summary>
+    [TestCase("--ticket-paper: var(--web-pane-fill);")]
+    [TestCase("--ticket-line: var(--bs-border-color);")]
+    [TestCase("--ticket-ink: var(--bs-body-color);")]
+    [TestCase("--ticket-accent: var(--web-agent);")]
+    public void TheCard_WearsTheTheme(string name)
+    {
+        string sheet = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Blocks/DrawnCard.razor.scss"));
+
+        Assert.That(sheet, Does.Contain(name));
     }
 }
