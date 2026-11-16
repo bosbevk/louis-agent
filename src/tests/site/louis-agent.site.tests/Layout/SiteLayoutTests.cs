@@ -150,7 +150,7 @@ public class SiteLayoutTests
                     "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
                     "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4),
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(3),
                 "the rest stand in the bar, the CV mark among them (F142)");
         });
     }
