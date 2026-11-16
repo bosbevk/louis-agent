@@ -175,6 +175,72 @@ public class ChatRunnerTests
         Assert.That(h.Changed, Is.EqualTo(1), "the page redraws, so the notice shows");
     }
 
+    /// <summary>
+    /// A runner with no chat takes up the newest talk this browser saved (F151.6, Louis's pick: "A reload picks the
+    /// talk up"), reading the store when nothing has read it yet, and tells the page to draw it.
+    /// </summary>
+    [Test]
+    public async Task Resuming_TakesUpTheNewestSavedTalk()
+    {
+        var h = new Harness();
+        var older = new ChatModel { SessionId = "sess_older", UpdatedAt = h.Clock.GetUtcNow().AddHours(-3) };
+        var newest = new ChatModel { SessionId = "sess_newest", UpdatedAt = h.Clock.GetUtcNow().AddHours(-1) };
+        await h.Store.LoadAsync();
+        h.Store.Chats.AddRange([older, newest]);
+
+        await h.Runner.ResumeAsync();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(h.Runner.Chat, Is.SameAs(newest));
+            Assert.That(h.Changed, Is.EqualTo(1), "the page draws the talk");
+        });
+    }
+
+    /// <summary>A store nobody has read is read first, so the talk a reload left in the browser is found.</summary>
+    [Test]
+    public async Task Resuming_ReadsTheStore_WhenNothingHasReadIt()
+    {
+        var h = new Harness();
+
+        await h.Runner.ResumeAsync();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(h.Store.Loaded, Is.True);
+            Assert.That(h.Js.Calls, Does.Contain("localStorage.getItem"));
+            Assert.That(h.Runner.Chat, Is.Null, "nothing was saved, so there is nothing to take up");
+        });
+    }
+
+    /// <summary>
+    /// A talk the server has let go is not taken up, and nor is an older one behind it: the visitor starts afresh.
+    /// A runner that already holds a chat keeps it.
+    /// </summary>
+    [Test]
+    public async Task Resuming_LeavesAnEndedTalk_AndKeepsTheChatItHolds()
+    {
+        var ended = new Harness();
+        await ended.Store.LoadAsync();
+        ended.Store.Chats.AddRange([
+            new ChatModel { SessionId = "sess_older", UpdatedAt = ended.Clock.GetUtcNow().AddHours(-3) },
+            new ChatModel { SessionId = "sess_gone", UpdatedAt = ended.Clock.GetUtcNow().AddHours(-1), Ended = true }
+        ]);
+        var held = new ChatModel { SessionId = "sess_held" };
+        var holding = new Harness { Runner = { Chat = held } };
+        await holding.Store.LoadAsync();
+        holding.Store.Chats.Add(new ChatModel { SessionId = "sess_saved" });
+
+        await ended.Runner.ResumeAsync();
+        await holding.Runner.ResumeAsync();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ended.Runner.Chat, Is.Null);
+            Assert.That(holding.Runner.Chat, Is.SameAs(held));
+        });
+    }
+
     /// <summary>A session the API no longer knows ends the chat, in the app's words.</summary>
     [Test]
     public async Task AGoneSession_EndsTheChat_WithTheAppsWords()

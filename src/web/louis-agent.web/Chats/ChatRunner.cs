@@ -63,6 +63,24 @@ public sealed class ChatRunner(
 
     public bool CanSend => !Streaming && Chat?.Ended != true && (Draft.Trim().Length > 0 || Attachments.Count > 0);
 
+    /// <summary>
+    /// Takes up the newest talk this browser saved, when the runner holds none: after a reload the visitor carries
+    /// on where they were. A talk the server has let go is left, so they start afresh.
+    /// </summary>
+    public async Task ResumeAsync()
+    {
+        if (Chat is not null) return;
+        if (!store.Loaded) await store.LoadAsync();
+
+        // Only the newest talk counts: when that one has ended, an older one behind it is not brought back.
+        if (store.Chats.MaxBy(chat => chat.UpdatedAt) is not { Ended: false } newest) return;
+        // Something may have started a talk while the store was being read; that one stays.
+        if (Chat is not null) return;
+
+        Chat = newest;
+        Changed?.Invoke();
+    }
+
     /// <summary>Sends the draft with its attachments, and clears both.</summary>
     public async Task SendAsync()
     {

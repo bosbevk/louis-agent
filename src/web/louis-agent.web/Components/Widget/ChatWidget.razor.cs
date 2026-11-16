@@ -301,9 +301,14 @@ public partial class ChatWidget : IAsyncDisposable
 
     /// <summary>
     /// Asks the API for the rates and the display currency once, so a turn's cost shows in the site's currency, not as
-    /// charged (FX80, Louis: "cost in rand"); the chat page does the same through its currency switcher.
+    /// charged (FX80, Louis: "cost in rand"); the chat page does the same through its currency switcher. Then the
+    /// talk this browser saved is taken up (F151.6), so a reload carries on where the visitor was.
     /// </summary>
-    protected override Task OnInitializedAsync() => Currency.LoadAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        await Currency.LoadAsync();
+        await Runner.ResumeAsync();
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -328,14 +333,7 @@ public partial class ChatWidget : IAsyncDisposable
         Page? page = null;
         if (_kept.PageSentFor != here)
         {
-            page = await Module.InvokeAsync<Page?>("pageText");
-            page = page is null
-                ? null
-                : page with
-                {
-                    InView = inView,
-                    Open = open
-                };
+            page = (await Module.InvokeAsync<Page?>("pageText"))?.Seen(inView, open);
             _kept.PageSentFor = here;
         }
         else if (inView is not null || open is not null || _piece is not null)
@@ -353,6 +351,11 @@ public partial class ChatWidget : IAsyncDisposable
         // The pages of the agents' windows on screen, so an ask to one of them sends it its page (FX134).
         if (Windows is { } windows) Runner.Windows = await windows.PagesAsync();
         await Runner.SendAsync();
+        // The server let the talk's session go: the question is asked again in a new talk (F151.6).
+        if (_kept.QuestionToAskAgain() is not { } question) return;
+
+        Runner.Draft = question;
+        await SendAsync();
     }
 
     private Task<string> OpenSessionAsync() => Api.CreateSessionAsync(Toolsets, identity: Identity);

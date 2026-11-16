@@ -171,6 +171,17 @@ The widget knows the page. A script module beside it reads the page's address, t
 is sent, and the runner sends them with the first message written from a page. So the guide answers about what
 the visitor sees.
 
+The widget's talk outlives the widget. A site that has the showroom keeps one guide per identity
+(`Widget/Door/GuideKeeper`): its runner with the chat and the session, whether its panel is open, and the page its
+last message came from. A move to a page in another layout throws the widget away and builds another, and the new
+one takes that guide over, so the talk carries on, even in the middle of an answer. A reload of the page throws the
+whole app away, so there the widget reads the browser instead: when it starts, its runner takes up the newest talk
+saved under the widget's key, unless that talk has ended (`ChatRunner.ResumeAsync`). The talk shows again, and the
+next question goes to the same session. The API keeps a session only while it runs, and lets one go after four idle hours, so
+that session may be gone. Then the message comes back as not found, the widget drops the old talk and asks the
+same question again in a new session, with the page's words once more. The visitor gets an answer either way. What
+is lost then is what the agent remembered of the old talk.
+
 The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
 `Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
 message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
