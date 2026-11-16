@@ -59,6 +59,18 @@
 }
 
 /* A small mark beside a label, such as the dot before a section's name, and the same mark lit for the one in view. */
+/* A round bead of glass marking a place in a list, such as a section of the page (FX163, Louis: "round glass"): the
+   theme's knob at rest, the main button's violet glass lit. */
+@mixin bead($lit: false) {
+    border-radius: 50%;
+    @if $lit {
+        box-shadow: var(--web-press-shadow);
+        @include drawn(press-rest, var(--web-press-fill));
+    } @else {
+        @include drawn(knob, var(--bs-body-bg));
+    }
+}
+
 @mixin marker($lit: false) {
     @if $lit {
         background: var(--bs-primary);

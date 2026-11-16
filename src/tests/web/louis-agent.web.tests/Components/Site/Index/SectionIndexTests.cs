@@ -112,16 +112,22 @@ public class SectionIndexTests
     }
 
     /// <summary>
-    /// The section in view is unmistakable (FX72): its dot a lit bar in the accent. The rule sits beside the component
+    /// The index is a glass panel, each dot a round bead of glass, the section in view in the main button's violet
+    /// glass (FX72, FX163, Louis: "change this to a glass panel with round glass"). The rules sit beside the component
     /// (ADR 0094).
     /// </summary>
     [Test]
-    public void TheSectionInView_IsALitBar()
+    public void TheIndex_IsGlass_ItsSectionInViewTheVioletBead()
     {
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Index/SectionIndex.razor.scss"));
 
-        Assert.That(rules, Does.Contain(".site-index a.active::before { width: 10px; height: 3px;"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules, Does.Contain("@include surface.pane();"));
+            Assert.That(rules, Does.Contain("@include surface.bead();"));
+            Assert.That(rules, Does.Contain("@include surface.bead($lit: true);"));
+        });
     }
 
     /// <summary>
@@ -134,7 +140,7 @@ public class SectionIndexTests
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Index/SectionIndex.razor.scss"));
 
-        Assert.That(rules, Does.Contain("width: 150px;").And.Contain("top: .7em;"));
+        Assert.That(rules, Does.Contain("width: 172px;").And.Contain("top: .7em;"));
         Assert.That(rules, Does.Not.Contain("white-space: nowrap"));
     }
 
