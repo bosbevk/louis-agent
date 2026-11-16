@@ -103,7 +103,8 @@ that says what each one means, and a visitor who presses a state's button holds 
 headline "Ask the website.", a few words on what we build, a website that answers for a business, and two buttons,
 "Ask for yours" and "See what it does", which goes to that section. Under the hero runs the tape, one line of what
 the agents did that never stops. Then comes what it does, as four glass cards, then where it runs, three cards for
-your server, your model and your data, then the demos, three photographs fanned out. Custom agents come next: a
+your server, your model and your data, then the demos, three photographs fanned out, each in a glass window with its
+business's made-up address in the bar. The one a visitor picks, or the guide shows, comes to the front. Custom agents come next: a
 product window plays the guesthouse, the restaurant and the law practice in turn, each its own page with its agent
 answering a visitor from its recorded talk, drawing the request and sending it on a yes. The last strip asks the
 agent to take the visitor's details, or leads to the contact page. The framework itself has no band on the landing:

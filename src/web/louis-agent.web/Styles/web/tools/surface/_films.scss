@@ -38,10 +38,13 @@
 @mixin rail() { background: color-mix(in srgb, var(--bs-emphasis-color) 10%, transparent); }
 @mixin rail-beam() { background: linear-gradient(90deg, transparent, var(--bs-primary), var(--web-on-primary)); }
 
-/* A photograph in the fan: a fine edge, a deep shadow with the theme's glow, and its caption fading up from dark. */
-@mixin shot() {
-    border: 1px solid color-mix(in srgb, var(--web-on-primary) 14%, transparent);
-    box-shadow: 0 50px 90px -30px rgba(var(--web-shadow-rgb), .9), 0 0 70px -20px var(--bs-primary);
+/* A photograph's window in the fan, come out: it casts its shadow at one angle, down and to the right from a light at
+   the top left, in three layers, close and dark, then wider and fainter, and glows in no colour (FX167, Louis: "an
+   angled shadow not a glow"). The blurs stay modest, since a shadow is drawn once and moves with its window. Its
+   caption fades up from dark. The window's own glass is its frame's. */
+@mixin shot-lifted() {
+    box-shadow: 6px 12px 18px -6px rgba(var(--web-shadow-rgb), .35),
+        18px 36px 48px -18px rgba(var(--web-shadow-rgb), .32),
+        36px 70px 90px -40px rgba(var(--web-shadow-rgb), .28);
 }
-@mixin shot-lifted() { box-shadow: 0 60px 110px -30px rgba(var(--web-shadow-rgb), .9), 0 0 110px -10px var(--bs-primary); }
 @mixin shot-caption() { background: linear-gradient(transparent, rgba(var(--web-shadow-rgb), .94)); }

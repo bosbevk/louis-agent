@@ -1,28 +1,37 @@
 @use "web/tools/surface";
 
 /* The design page's fan (FX162): three photographs in perspective, the middle forward and the sides turned in, each
-   with a reflection under it; the one under the pointer comes forward and glows. */
+   in a glass window (FX167); the one under the pointer comes forward and glows. */
 .shot-fan { display: flex; justify-content: center; margin-top: 70px; perspective: 1700px; }
 .shot {
     position: relative;
+    display: block;
     width: 36%;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    border-radius: 20px;
+    aspect-ratio: 16 / 11;
+    border-radius: 18px;
+    color: inherit;
+    text-decoration: none;
     transition: transform .7s var(--web-ease), box-shadow .7s;
     // A shot is a piece of glass too, as the design's (FX163): under the pointer the theme's lens bends behind it.
     --web-lens-piece: 1;
-    @include surface.shot();
 }
 .shot-left { transform: rotateY(34deg) translateX(10%) scale(.9); }
 .shot-right { transform: rotateY(-34deg) translateX(-10%) scale(.9); }
 .shot-middle { z-index: 2; transform: translateZ(70px); }
 .shot:hover { z-index: 3; transform: translateZ(140px) scale(1.04); @include surface.shot-lifted(); }
+/* The window picked, or the one the agent shows, comes to the front facing the visitor, and the middle one steps
+   back for it (FX167, Louis: "when one is selected it must go to the front"). */
+.shot:is([data-selected], [data-lit]) { z-index: 4; transform: translateZ(160px) scale(1.06); @include surface.shot-lifted(); }
+.shot-fan:has(> :is([data-selected], [data-lit])) > .shot-middle:not([data-selected], [data-lit]) {
+    z-index: 1;
+    transform: translateZ(-40px) scale(.9);
+}
+.shot ::deep .window-body { position: relative; }
 .shot img { width: 100%; height: 100%; object-fit: cover; }
-.shot span { position: absolute; inset: auto 0 0 0; padding: 70px 22px 20px; font-size: 15px; color: color-mix(in srgb, var(--web-on-primary) 75%, transparent); @include surface.shot-caption(); }
-.shot b { display: block; font: 700 26px var(--bs-font-sans-serif); letter-spacing: -.03em; color: var(--web-on-primary); }
+.shot-caption { position: absolute; inset: auto 0 0 0; padding: 70px 22px 20px; font-size: 15px; color: color-mix(in srgb, var(--web-on-primary) 75%, transparent); @include surface.shot-caption(); }
+.shot-caption b { display: block; font: 700 26px var(--bs-font-sans-serif); letter-spacing: -.03em; color: var(--web-on-primary); }
 
 @media (max-width: 780px) {
     .shot-fan { flex-direction: column; gap: 16px; perspective: none; }
-    .shot { width: 100%; transform: none; }
+    .shot, .shot:is([data-selected], [data-lit]) { width: 100%; transform: none; }
 }

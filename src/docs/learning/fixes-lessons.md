@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX167 · A state the page already marks is one a component's styles can answer
+
+Louis wanted the landing's three demos in glass windows, and the one picked brought to the front. Neither needed
+anything new. The framework already had the window, the glass with three dots and an address word, which another
+section fills with a website and its chat. Here it holds only the photograph and its caption. And a piece the
+visitor picks already carries a mark the page's watcher sets, as does one the guide shows. The fan had simply never
+answered it. So bringing the picked one forward is one rule in the fan's own styles, which also sends the middle one
+back. The lesson is to look for what the page already says before adding script: a state that is marked can be
+drawn. Skill 20 (extensibility: a framework part reused with a new body, configured from the site's records).
+
 ## FX166 · A slow page is measured before it is fixed, and a filter that repaints costs every frame
 
 The site lagged even in the flat theme, which has none of glass's bending, so the theme's effects were not the
