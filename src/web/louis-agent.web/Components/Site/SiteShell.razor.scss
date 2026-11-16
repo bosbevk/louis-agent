@@ -173,8 +173,7 @@
         bottom: 0;
         height: 280px;
         pointer-events: none;
-        @include surface.page-light();
-        background-attachment: fixed;
+        @include surface.page-behind();
         -webkit-mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
         mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
     }

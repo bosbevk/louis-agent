@@ -51,15 +51,16 @@ and blur. When the page's `<html>` says that theme and that style, the block's v
 
 Glass in the dark is black with white words and Ultraviolet for the purple. A pane is its drawing and nothing
 else: no colour is painted under it and it has no border of its own, since the drawing holds its rim and its
-lights. The page shows through it blurred by four pixels and a little brightened, and it throws the shadow of
-something that stands off the page. A piece set into the page, an inset such as the chat's card or a field, is as
+lights. The page shows through it sharp, with no blur, only a little brightened and deepened in colour, and it
+throws the shadow of something that stands off the page. Nothing in glass blurs what is behind it, the bar and the
+chips included. A piece set into the page, an inset such as the chat's card or a field, is as
 see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
 dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
 with no blur. Flat sets an inset to its page's colour with its hairline.
 
 The agent's bar at the page's foot is glass in its own way. It wears a field's drawing, the resting one and the
-focus one while it is typed in, over a dark body that is half see-through and blurs the page behind it, so words
-that scroll under it stay out of the way. Where the words go is sunk into it with shadows only, and each chip over
+focus one while it is typed in, over a dark body that is half see-through, so words that scroll under it stay out
+of the way. Where the words go is sunk into it with shadows only, and each chip over
 it wears the second button's drawing over a nearly solid body, since a chip floats over anything and must stay
 readable. Flat gives the three the look of its bar, its inset and its pane.
 
@@ -71,10 +72,12 @@ gives the mark no disc, no gloss and no ink, so a letter a component writes on t
 whose agent is not louis-agent's sets the mark's drawings to none and the mark's own names, as each business in
 the showroom does.
 
-The page behind the glass is part of the theme. Glass draws fine lines on it that slant both ways, thirty pixels
-apart, and they stay still while the page scrolls. Behind the page's content it lays three lights, violet, magenta
-and blue, on a layer of their own that drifts slowly and holds still for a visitor who asked for less motion. Flat
-draws no lines and keeps the framework's own three soft lights.
+The page behind the glass is part of the theme. Glass lays a picture of silk ribbons of light behind the page's
+content, one for the dark and one for the light, each 3840 by 2160 pixels and stretched to cover the screen. It sits
+on a layer of its own that holds still while the page scrolls, so nothing behind the glass is painted again as the
+visitor reads; under the agent's bar the page's content fades into that same picture. The pictures are files this
+project serves beside the drawings, `glass/dark/silk.webp` and `glass/light/silk.webp`. Glass draws no lines of its
+own. Flat draws no lines either and keeps the framework's own three soft lights, which hold still as well.
 
 A pane that answers the pointer differs between the two as well. In glass it lifts three pixels, wears no edge and
 keeps the shadow it always throws, since its light is in the hover drawing. In flat it stays where it is and wears
@@ -82,12 +85,12 @@ a two pixel ring of the violet. What floats over the page throws a pane's shadow
 its line sets it apart.
 
 A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: see-through,
-with the pane's blur and no edge. In flat it is the pane's fill with the pane's edge and no blur.
+with the pane's colour change, no blur and no edge. In flat it is the pane's fill with the pane's edge and no blur.
 
 Glass in the light turns white and black over and keeps the purple. The page is a wash of the violet, mixed from
 its second step a little over half way into white, so it follows the purple and is deep enough for a white rim to
 stand against. The words are black, and a visitor's mark is black. A pane is its drawing here too, with the page
-blurred by five pixels behind it and a soft violet-dark shadow under it. A bar is a plain pale band with a
+sharp behind it, a little deepened in colour, and a soft violet-dark shadow under it. A bar is a plain pale band with a
 hairline.
 
 Flat draws every surface as one solid colour with a hairline round it, with no gradient, shadow or blur anywhere,
@@ -101,7 +104,7 @@ In both themes your own message sits under the same ink as a press, since the fr
 
 ### 4. Drawings, handed over as values
 
-A glass piece is a drawing laid over a see-through blur. The framework names one drawing for each part and state,
+A glass piece is a drawing laid over what is behind it, seen sharp. The framework names one drawing for each part and state,
 32 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
 own value, since the framework draws no glass. Glass sets each to the address of its drawing, and flat to `none`.
 So a theme still hands over only values, and no component names a theme.

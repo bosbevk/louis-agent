@@ -62,12 +62,19 @@
 }
 
 /* The lights behind the page's content (F151.6): the theme's, on a layer of their own that fills the screen and
-   drifts slowly. What includes it says its content and when it holds still. */
+   holds still (Louis, 2026-11-16: the drifting lights held still), so nothing behind the glass is painted again
+   while the page is open. What includes it says its content. */
 @mixin page-lights() {
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     background: var(--web-page-lights);
-    animation: page-drift 25s ease-in-out infinite alternate;
+}
+
+/* The page behind as one piece, where something must stand in for it, such as the fade under the agent's bar: the
+   lights over the page's own lines and colour, held to the screen as the page's are. */
+@mixin page-behind() {
+    background: var(--web-page-lights), var(--web-page-lines), var(--bs-body-bg);
+    background-attachment: fixed;
 }

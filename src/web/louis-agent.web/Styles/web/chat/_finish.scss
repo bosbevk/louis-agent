@@ -37,14 +37,12 @@ body::before {
 .tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--bs-secondary-color); text-wrap: balance; animation: rise .7s .9s var(--web-ease) both; }
 /* ---- The page behind everything (F20, F151.6): the theme's lines on the page, held still while it scrolls, and
    the theme's lights on a layer under all the page holds, so the sidebar, the chat and the composer's fade all sit
-   over the same light. The lights drift slowly, and hold still under less motion. ---- */
+   over the same light, which holds still. ---- */
 body {
     @include surface.page-light();
     background-attachment: fixed;
 }
 body::after { content: ""; @include surface.page-lights(); }
-@keyframes page-drift { to { transform: translate3d(80px, 50px, 0) scale(1.18); } }
-@media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
 .conversation { background: transparent; }
 .composer { @include surface.fades-up(.92, 55%); }
 .user-message { @include surface.spoken-deep(); }

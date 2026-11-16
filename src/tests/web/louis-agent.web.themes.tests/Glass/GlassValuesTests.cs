@@ -6,7 +6,8 @@ namespace LouisAgent.Web.Themes.Tests.Glass;
 
 /// <summary>
 /// F151.6: glass is the design page's glass. A pane and a button are their drawing alone, with nothing painted
-/// under it, the page behind is fine slanted lines with three lights, and the header is a plain band.
+/// under it and nothing blurred behind it, the page behind is a picture of silk ribbons of light, and the header is
+/// a plain band.
 /// </summary>
 public class GlassValuesTests
 {
@@ -26,25 +27,32 @@ public class GlassValuesTests
     public void NothingIsPaintedUnderADrawing(SiteStyle style, string name) =>
         Assert.That(Value(style, name), Is.EqualTo("transparent"));
 
-    /// <summary>A pane shows the page through it a little blurred, as the design's glass does.</summary>
-    [TestCase(SiteStyle.Dark, "blur(4px) brightness(1.18) saturate(1.4)")]
-    [TestCase(SiteStyle.Light, "blur(5px) saturate(1.5)")]
-    public void APane_ShowsThePageThroughIt(SiteStyle style, string blur) =>
-        Assert.That(Value(style, "--web-pane-blur"), Is.EqualTo(blur));
+    /// <summary>
+    /// Nothing blurs what is behind the glass (Louis, 2026-11-16: "yes keep it 0 blur"): a pane only brightens and
+    /// deepens the page under it, and the bar and a chip only deepen it.
+    /// </summary>
+    [TestCase(SiteStyle.Dark, "--web-pane-blur", "brightness(1.18) saturate(1.4)")]
+    [TestCase(SiteStyle.Light, "--web-pane-blur", "saturate(1.5)")]
+    [TestCase(SiteStyle.Dark, "--web-dock-blur", "saturate(1.4)")]
+    [TestCase(SiteStyle.Light, "--web-dock-blur", "saturate(1.4)")]
+    [TestCase(SiteStyle.Dark, "--web-chip-blur", "saturate(1.4)")]
+    [TestCase(SiteStyle.Light, "--web-chip-blur", "saturate(1.4)")]
+    public void NothingBlursWhatIsBehind(SiteStyle style, string name, string value) =>
+        Assert.That(Value(style, name), Is.EqualTo(value));
 
-    /// <summary>The page behind the glass is lines that slant both ways and stay still, under lights.</summary>
-    [TestCase(SiteStyle.Dark)]
-    [TestCase(SiteStyle.Light)]
-    public void ThePageBehind_IsSlantedLinesAndLights(SiteStyle style)
+    /// <summary>
+    /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
+    /// screen (Louis's pick C of three), with no lines of its own.
+    /// </summary>
+    [TestCase(SiteStyle.Dark, "dark")]
+    [TestCase(SiteStyle.Light, "light")]
+    public void ThePageBehind_IsTheSilkRibbons(SiteStyle style, string folder)
     {
-        string lines = Value(style, "--web-page-lines");
-
         Assert.Multiple(() =>
         {
-            Assert.That(lines, Does.Contain("repeating-linear-gradient(45deg"));
-            Assert.That(lines, Does.Contain("repeating-linear-gradient(-45deg"));
-            Assert.That(lines, Does.Contain("fixed"));
-            Assert.That(Value(style, "--web-page-lights"), Does.Contain("radial-gradient("));
+            Assert.That(Value(style, "--web-page-lights"),
+                Is.EqualTo($"url(\"/_content/louis-agent.web.themes/glass/{folder}/silk.webp\") center / cover no-repeat"));
+            Assert.That(Value(style, "--web-page-lines"), Is.EqualTo("none"));
         });
     }
 
@@ -62,7 +70,7 @@ public class GlassValuesTests
 
     /// <summary>
     /// The agent's bar is glass with a body: a see-through violet-dark under its drawing by night and a milky white
-    /// by day, a stronger blur than a pane since it floats over running words, and no line round it.
+    /// by day, and no line round it.
     /// </summary>
     [TestCase(SiteStyle.Dark, "rgba(16, 12, 34, .55)")]
     [TestCase(SiteStyle.Light, "rgba(246, 244, 255, .8)")]
@@ -71,7 +79,6 @@ public class GlassValuesTests
         Assert.Multiple(() =>
         {
             Assert.That(Value(style, "--web-dock-fill"), Is.EqualTo(fill));
-            Assert.That(Value(style, "--web-dock-blur"), Is.EqualTo("blur(14px) saturate(1.4)"));
             Assert.That(Value(style, "--web-dock-edge"), Is.EqualTo("none"));
         });
     }
@@ -82,15 +89,9 @@ public class GlassValuesTests
     public void TheBox_IsSunkIntoTheBar(SiteStyle style) =>
         Assert.That(Value(style, "--web-sunk-shadow"), Does.StartWith("inset 0 3px"));
 
-    /// <summary>A chip floats over anything, so it has a milky body under its drawing and blurs what is behind.</summary>
+    /// <summary>A chip floats over anything, so it has a milky body under its drawing.</summary>
     [TestCase(SiteStyle.Dark, "rgba(34, 34, 44, .82)")]
     [TestCase(SiteStyle.Light, "rgba(255, 255, 255, .82)")]
-    public void AChip_HasAMilkyBody(SiteStyle style, string fill)
-    {
-        Assert.Multiple(() =>
-        {
-            Assert.That(Value(style, "--web-chip-fill"), Is.EqualTo(fill));
-            Assert.That(Value(style, "--web-chip-blur"), Is.EqualTo("blur(14px) saturate(1.4)"));
-        });
-    }
+    public void AChip_HasAMilkyBody(SiteStyle style, string fill) =>
+        Assert.That(Value(style, "--web-chip-fill"), Is.EqualTo(fill));
 }
