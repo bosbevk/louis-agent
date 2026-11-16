@@ -24,12 +24,12 @@
 }
 
 /* A piece's own line: the hairline a theme draws between parts, so a small piece keeps a line in a theme whose
-   panes have none, or a line in the colour and width given. */
-@mixin lined($colour: null, $width: 1px) {
+   panes have none, or a line in the colour, width and style given. */
+@mixin lined($colour: null, $width: 1px, $style: solid) {
     @if $colour == null {
         border: var(--web-bar-edge);
     } @else {
-        border: $width solid $colour;
+        border: $width $style $colour;
     }
 }
 
@@ -79,10 +79,10 @@
     box-shadow: var(--web-glow);
 }
 
-/* The ring round whatever the keyboard is on, in the brand's colour, clear of the piece. */
-@mixin focus-ring() {
-    outline: 2px solid color-mix(in srgb, var(--bs-primary) 70%, transparent);
-    outline-offset: 3px;
+/* The ring round whatever the keyboard is on, in the brand's colour unless another is given, clear of the piece. */
+@mixin focus-ring($colour: color-mix(in srgb, var(--bs-primary) 70%, transparent), $clear: 3px) {
+    outline: 2px solid $colour;
+    outline-offset: $clear;
 }
 
 /* The page's colour fading out upward, behind what sits at the foot of a scrolling list. */
@@ -118,4 +118,9 @@
         $shadows: list.append($shadows, $closer, comma);
     }
     box-shadow: $shadows;
+}
+
+/* The colour of an outline a piece already has, such as the dashes round words that can be changed. */
+@mixin outline-colour($colour: var(--bs-primary)) {
+    outline-color: $colour;
 }

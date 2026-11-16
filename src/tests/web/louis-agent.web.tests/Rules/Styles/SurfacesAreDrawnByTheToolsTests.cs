@@ -18,23 +18,6 @@ public class SurfacesAreDrawnByTheToolsTests
     /// <summary>The sheets that still draw a surface by hand, by their path in the framework's web.</summary>
     private static readonly string[] StillByHand =
     [
-        "Components/Admin/AdminGate.razor.scss",
-        "Components/Admin/AdminShell.razor.scss",
-        "Components/Admin/Overview/LatestTalks.razor.scss",
-        "Components/Admin/Overview/OverviewBars.razor.scss",
-        "Components/Blocks/FormCard.razor.scss",
-        "Components/Blocks/OfferBox.razor.scss",
-        "Components/Blocks/OfferCards.razor.scss",
-        "Components/BlocksView.razor.scss",
-        "Components/Editing/Inline/InlineEdit.razor.scss",
-        "Components/Editing/Inline/InlineForm.razor.scss",
-        "Components/Editing/Inline/ItemAdd.razor.scss",
-        "Components/Editing/Inline/ItemTools.razor.scss",
-        "Components/Editing/TagInput.razor.scss",
-        "Components/Editing/TextField.razor.scss",
-        "Components/Imports/ImportCard.razor.scss",
-        "Components/Screens/Forms/ScreenForm.razor.scss",
-        "Components/Screens/Table/ScreenTable.razor.scss",
         "Components/Site/Showroom/Mock/Foot/MockFoot.razor.scss",
         "Components/Site/Showroom/Mock/Head/MockHead.razor.scss",
         "Components/Site/Showroom/Mock/Hero/MockHero.razor.scss",
@@ -45,8 +28,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Site/Showroom/Mock/Places/MockSection.razor.scss",
         "Components/Site/Showroom/Mock/SiteMock.razor.scss",
         "Components/Site/Showroom/Mock/Website/MockPage.razor.scss",
-        "Pages/Admin/Packs.razor.scss",
-        "Styles/web/base/_elements.scss",
     ];
 
     /// <summary>The properties that draw a surface.</summary>
@@ -177,6 +158,9 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("depth")]
     [TestCase("minion")]
     [TestCase("page-light")]
+    [TestCase("outline-colour")]
+    [TestCase("spotlit")]
+    [TestCase("kept-ring")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

@@ -67,3 +67,17 @@
     background: linear-gradient(var(--bs-primary), var(--web-primary-deep));
     box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
 }
+
+/* The spotlight the guide puts on a place: a ring of the brand's colour, a soft light behind it, and the rest of
+   the page dimmed by a shadow as large as the screen. */
+@mixin spotlit() {
+    box-shadow:
+        0 0 0 2px rgba(var(--bs-primary-rgb), .85),
+        0 0 56px rgba(var(--bs-primary-rgb), .35),
+        0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
+}
+
+/* The ring a place keeps while the guide's words stand beside it: quieter, and with no dimming. */
+@mixin kept-ring() {
+    box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .55), 0 0 44px -6px rgba(var(--web-overlay-rgb), .4);
+}

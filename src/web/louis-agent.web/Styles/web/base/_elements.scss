@@ -1,8 +1,10 @@
+@use "web/tools/surface";
+
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
-body { background: var(--bs-body-bg); color: var(--bs-body-color); font: 14.5px/1.7 var(--bs-font-sans-serif); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-::selection { background: rgba(var(--bs-primary-rgb), .25); color: var(--bs-emphasis-color); }
-:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; border-radius: 6px; }
+body { @include surface.panel(var(--bs-body-bg)); color: var(--bs-body-color); font: 14.5px/1.7 var(--bs-font-sans-serif); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+::selection { @include surface.tint(var(--bs-primary-rgb), .25); color: var(--bs-emphasis-color); }
+:focus-visible { @include surface.focus-ring(var(--bs-primary), 2px); border-radius: 6px; }
 button { font: inherit; cursor: pointer; }
 button:disabled { cursor: default; opacity: .4; }
 a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-offset: 2px; }
@@ -26,7 +28,7 @@ html:has(.layout-slides) { scroll-snap-type: y mandatory; }
     z-index: 9;
     pointer-events: none;
     border-radius: var(--bs-border-radius-xl);
-    box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb), .85), 0 0 56px rgba(var(--bs-primary-rgb), .35), 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
+    @include surface.spotlit();
     animation: area-spotlight 4s var(--web-ease) both;
 }
 @keyframes area-spotlight {
@@ -54,7 +56,7 @@ html:has(.layout-slides) { scroll-snap-type: y mandatory; }
     z-index: 9;
     pointer-events: none;
     border-radius: var(--bs-border-radius-xl);
-    box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .55), 0 0 44px -6px rgba(var(--web-overlay-rgb), .4);
+    @include surface.kept-ring();
     opacity: 0;
     transition: opacity .4s;
 }

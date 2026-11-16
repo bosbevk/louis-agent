@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* ---- Admin portal (F27, beside AdminShell since CL58): our own management layout on the chat's pieces. A fixed
    sidebar of sections (the chat's .sidebar and .side-link) and a content column of a page header over cards;
    reference, not copy, of the page anatomy admin kits share. Scoped: the first rules reach only what this component
@@ -25,9 +27,9 @@
 @media (max-width: 860px) { ::deep .pack-split { grid-template-columns: minmax(0, 1fr); } }
 
 /* A pack's own view keeps its text buttons on the frame's colours; the chat's round send button doesn't apply here. */
-::deep .pack-split .send, ::deep .pack-split .secondary, ::deep .pack-split .danger { width: auto; height: auto; padding: 6px 12px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: var(--bs-secondary-bg); box-shadow: none; animation: none; color: var(--bs-body-color); font-size: 13px; font-weight: 500; }
-::deep .pack-split .send { background: var(--bs-primary); border-color: var(--bs-primary); color: var(--web-on-primary); }
-::deep .pack-split .danger { background: var(--bs-danger); border-color: var(--bs-danger); color: var(--web-on-primary); }
-::deep .pack-split .secondary:not(:disabled):hover { background: rgba(var(--web-overlay-rgb), .05); border-color: var(--bs-tertiary-color); }
-::deep .pack-split .commit-box textarea { padding: 6px 8px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: var(--web-code-bg); color: var(--bs-body-color); font: inherit; font-size: 13px; }
+::deep .pack-split .send, ::deep .pack-split .secondary, ::deep .pack-split .danger { width: auto; height: auto; padding: 6px 12px; @include surface.lined(); border-radius: var(--bs-border-radius); @include surface.panel(); box-shadow: none; animation: none; color: var(--bs-body-color); font-size: 13px; font-weight: 500; }
+::deep .pack-split .send { @include surface.panel(var(--bs-primary)); @include surface.edged(var(--bs-primary)); color: var(--web-on-primary); }
+::deep .pack-split .danger { @include surface.panel(var(--bs-danger)); @include surface.edged(var(--bs-danger)); color: var(--web-on-primary); }
+::deep .pack-split .secondary:not(:disabled):hover { @include surface.tint(var(--web-overlay-rgb), .05); @include surface.edged(var(--bs-tertiary-color)); }
+::deep .pack-split .commit-box textarea { padding: 6px 8px; @include surface.lined(); border-radius: var(--bs-border-radius); @include surface.panel(var(--web-code-bg)); color: var(--bs-body-color); font: inherit; font-size: 13px; }
 ::deep .pack-split .icon { border: none; background: none; color: var(--bs-tertiary-color); padding: 2px 8px; font-size: 16px; line-height: 1; }

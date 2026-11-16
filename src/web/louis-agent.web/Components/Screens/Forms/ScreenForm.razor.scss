@@ -1,3 +1,4 @@
+@use "web/tools/surface";
 @use "web/tools/field";
 @use "web/tools/screen-answer";
 
@@ -7,7 +8,7 @@
 .screen-field-label { @include field.label; }
 /* The same box for a field's input and for each of the rows editor's, which the form holds. */
 .screen-field input, ::deep .screen-row input { @include field.box; }
-.screen-field input[readonly] { color: var(--bs-tertiary-color); background: var(--bs-secondary-bg); }
+.screen-field input[readonly] { color: var(--bs-tertiary-color); @include surface.panel(); }
 .screen-field-error { color: var(--bs-danger); font-size: 12.5px; }
 @include screen-answer.answer-states;
 .screen-form .screen-save { align-self: flex-start; }
