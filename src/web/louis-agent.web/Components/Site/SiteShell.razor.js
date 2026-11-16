@@ -2,8 +2,10 @@
 // the progress line, the compact header, in-page links that land their section centred, and the reveals a block
 // plays once when it enters; the section index has its own module beside it (F118). A site marks what moves:
 // .reveal; the frame attaches after every render, so a page that just drew is observed, and attaching twice is one
-// set of listeners. Everything honours the system's "less motion" unless the viewer switched motion on.
+// set of listeners. It brings the glass's lens too (F151.6), in a theme that has one. Everything honours the
+// system's "less motion" unless the viewer switched motion on.
 import { motion, reducedMotion } from "../../js/preferences.js";
+import { lens } from "../../js/lens.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -187,6 +189,8 @@ export function attach(pageBase, place) {
     observe();
     scrolled();
     paginate();
+    // The glass's lens, in a theme that has one, on the pane under the pointer and the ones picked or shown.
+    lens.attach();
     if (pageBase !== base) {
         base = pageBase;
         if (place) arriveAt(place);
@@ -199,4 +203,5 @@ export function detach() {
     listeners = [];
     seen?.disconnect();
     seen = null;
+    lens.detach();
 }

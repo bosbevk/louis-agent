@@ -81,6 +81,9 @@
     --web-pane-hover-lift: 0px;
     --web-pane-hover-edge: 0 0 0 1px #1f7a45;
     --web-pane-hover-shadow: 0 0 transparent;
+    // The lens: retro is solid, so nothing bends.
+    --web-lens-wall: 0;
+    --web-lens-rise: 0;
 
     // What floats over the page throws no shadow: its line sets it apart.
     --web-float-shadow: none;

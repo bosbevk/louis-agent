@@ -12,6 +12,8 @@
     box-shadow: $shadow;
     -webkit-backdrop-filter: var(--web-pane-blur);
     backdrop-filter: var(--web-pane-blur);
+    // A piece the frame's lens may bend while the pointer is on it, in a theme that has one.
+    --web-lens-piece: 1;
     @include drawn(pane-rest, $fill);
 
     &:hover { @include drawn(pane-hover, $fill); }
@@ -71,8 +73,10 @@
     }
 }
 
-/* A pane that is open, such as the card whose story shows: its edge in the brand's colour, and the picked drawing. */
+/* A pane that is open, such as the card whose story shows: its edge in the brand's colour, and the picked drawing,
+   and it wears the lens as a picked piece does. */
 @mixin opened() {
+    --web-lens-piece: 2;
     border-color: rgba(var(--bs-primary-rgb), .7);
     @include drawing(pane-picked);
 }
@@ -126,11 +130,12 @@
     @include drawn(well, var(--bs-tertiary-bg));
 }
 
-/* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. */
-@mixin picked() { @include drawing(pane-picked); }
+/* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. It wears
+   the lens while it stays picked, lit white from inside; a piece the agent is showing wears it lit violet. */
+@mixin picked() { --web-lens-piece: 2; @include drawing(pane-picked); }
 
 /* A piece the agent is showing: its showing drawing laid on it, written where the component says the agent lit it. */
-@mixin showing() { @include drawing(pane-showing); }
+@mixin showing() { --web-lens-piece: 3; @include drawing(pane-showing); }
 
 /* The header or the footer: its fill, a hairline towards the page, and its blur, with no drawing in any theme,
    since a bar is the one thing that stays put and the glass belongs to what scrolls under it. A bar at the foot of

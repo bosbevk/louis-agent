@@ -80,6 +80,10 @@ visitor reads; under the agent's bar the page's content fades into that same pic
 project serves beside the drawings, `glass/dark/silk.webp` and `glass/light/silk.webp`. Glass draws no lines of its
 own. Flat draws no lines either and keeps the framework's own three soft lights, which hold still as well.
 
+Glass bends what is behind a pane as real glass does, in the pane under the pointer and in the one picked or
+shown. Its glass is 52 pixels thick at the edge and its middle stands 70 higher, the cards of the design page.
+Flat has no lens, so its panes stay as they are. The bending itself is the framework's, in its frame.
+
 A pane that answers the pointer differs between the two as well. In glass it lifts three pixels, wears no edge and
 keeps the shadow it always throws, since its light is in the hover drawing. In flat it stays where it is and wears
 a two pixel ring of the violet. What floats over the page throws a pane's shadow in glass and none in flat, where

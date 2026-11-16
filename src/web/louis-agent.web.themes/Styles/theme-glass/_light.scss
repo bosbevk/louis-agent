@@ -86,6 +86,9 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-pane-hover-lift: -3px;
     --web-pane-hover-edge: 0 0 transparent;
     --web-pane-hover-shadow: var(--web-pane-shadow);
+    // The lens: the card under the pointer, or picked or shown, bends what is behind it as the design's cards.
+    --web-lens-wall: 52;
+    --web-lens-rise: 70;
 
     // What floats over the page throws a pane's own shadow.
     --web-float-shadow: var(--web-pane-shadow);

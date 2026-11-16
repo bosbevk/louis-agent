@@ -82,6 +82,9 @@
     --web-pane-hover-lift: 0px;
     --web-pane-hover-edge: 0 0 0 2px #6b4dff;
     --web-pane-hover-shadow: 0 0 transparent;
+    // The lens: flat is solid, so nothing bends.
+    --web-lens-wall: 0;
+    --web-lens-rise: 0;
 
     // What floats over the page throws no shadow either: its line sets it apart.
     --web-float-shadow: none;

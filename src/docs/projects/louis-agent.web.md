@@ -323,6 +323,19 @@ in-page link that lands its section centred, and a reveal that each marked block
 enters. All of it honours the system's less-motion setting, unless the viewer switched motion on. A site marks what
 moves and holds the look (the keyframes, the index, the line) in its own partials, so a site chooses its motion.
 
+The frame's module also brings the lens, the bend a piece of real glass gives what lies behind it, kept in a module
+of its own, `js/lens.js`. A theme that has one says how thick its glass is: how many pixels its wall is at the edge
+and how much higher its middle stands. A theme whose wall is 0 has no lens, and the module does nothing. A pane
+says in its own styles that it may wear the lens, through a value the surface tool sets on it and never hands down
+to what the pane holds: a pane under the pointer, a pane picked or opened, and a pane the agent shows. Only the pane
+under the pointer and the picked and shown ones wear it, so every other pane stays clear glass and the page pays for
+one or two lenses, never for all of them. A picked pane keeps it while it is within 400 pixels of the screen, lit
+white from inside along its edge; a shown one is lit violet. The lens itself is an SVG filter laid on what is behind
+the pane: a picture of how far each point is moved, worked out at half size from Snell's law over a rounded top,
+and a picture of the light on its edge. Both are worked out once for each size and kept, so putting the lens on a
+pane a second time costs about a millisecond. Only Chromium runs an SVG filter on what is behind a piece, so every
+other browser keeps the clear pane.
+
 **What a page is built of.** A page is built of `Band`s, each a named section, and the framework's `SiteHero`,
 `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words. A `GuideButton` anywhere asks the
 guide a question.

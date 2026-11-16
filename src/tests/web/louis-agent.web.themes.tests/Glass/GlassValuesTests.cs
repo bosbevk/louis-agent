@@ -41,6 +41,21 @@ public class GlassValuesTests
         Assert.That(Value(style, name), Is.EqualTo(value));
 
     /// <summary>
+    /// Glass bends what is behind the card under the pointer, or the one picked or shown (Louis's way 2 of three):
+    /// its wall at the edge is 52 pixels thick and its middle stands 70 higher, as the design's cards.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheLens_IsTheDesignsCard(SiteStyle style)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(style, "--web-lens-wall"), Is.EqualTo("52"));
+            Assert.That(Value(style, "--web-lens-rise"), Is.EqualTo("70"));
+        });
+    }
+
+    /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
     /// screen (Louis's pick C of three), with no lines of its own.
     /// </summary>
