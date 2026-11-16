@@ -76,7 +76,7 @@
         print-color-adjust: exact;
     }
 
-    /* The silver letters are a gradient clipped to them, which paper draws as nothing: plain black instead. */
+    /* The big words are plain black on paper. */
     body:has(.resume) .resume .chrome {
         margin-bottom: 0;
         padding-bottom: 0;

@@ -1,7 +1,8 @@
 @use "web/tools/surface";
 
-/* The look switch (F151.3), as the mockups draw it: each group a small pill, its buttons quiet words, and the one
-   that is on filled like a press. Drawn from the names a theme sets, so the switch wears the look it switches. */
+/* The look switch (F151.3), as the design draws it: each group a small plain pill inside a hairline, its buttons
+   quiet words, and the one that is on a solid pill of the brand's colour. It stands in the header, and a bar is the
+   one thing that is never glass, so it wears no drawing in any theme; its colours are still the theme's. */
 /* On the narrowest phones the two groups sit one above the other rather than overflow. */
 .look-switch { display: inline-flex; flex-wrap: wrap; gap: 8px; }
 
@@ -11,7 +12,9 @@
     padding: 4px;
     font: 500 13.5px var(--bs-font-sans-serif);
     white-space: nowrap;
-    @include surface.group();
+    border-radius: 999px;
+    @include surface.lined();
+    @include surface.panel(var(--bs-tertiary-bg));
 }
 
 .look-group button {
@@ -24,4 +27,4 @@
     cursor: pointer;
 }
 .look-group button:hover { color: var(--bs-emphasis-color); }
-.look-group button[aria-pressed="true"] { @include surface.press(); }
+.look-group button[aria-pressed="true"] { color: var(--web-on-primary); @include surface.slab(var(--bs-primary)); }

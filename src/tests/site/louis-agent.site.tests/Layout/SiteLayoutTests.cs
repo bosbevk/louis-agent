@@ -136,6 +136,22 @@ public class SiteLayoutTests
         });
     }
 
+    /// <summary>From every page you can ask for a site of your own: the header ends with that button.</summary>
+    [Test]
+    public void TheHeader_EndsWithTheWayToAskForYours()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var ask = cut.Find(".site-header .site-actions > a.btn.btn-solid");
+        Assert.Multiple(() =>
+        {
+            Assert.That(ask.TextContent, Is.EqualTo("Ask for yours"));
+            Assert.That(ask.GetAttribute("href"), Is.EqualTo("/contact"));
+        });
+    }
+
     /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
     [Test]
     public void TheSlogan_SitsUnderTheBrand()
@@ -223,7 +239,7 @@ public class SiteLayoutTests
                     "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
                     "/triage-demo"
                 }));
-            Assert.That(cut.FindAll(".site-actions"), Is.Empty, "no Watch it work");
+            Assert.That(cut.Find(".site-actions").TextContent, Does.Not.Contain("Watch it work"));
             Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);
         });
     }

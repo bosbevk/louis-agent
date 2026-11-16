@@ -28,18 +28,9 @@
     .hero.is-centred { padding-top: 40px; }
     .hero.is-centred .hero-text { gap: 16px; }
 
-    /* The big words in chrome: the strongest ink running into the brand's colour at the end of the line, clipped to
-       the letters, and held still, so a heading costs nothing to keep on screen. The gradient only paints the box, and
-       a heading's tight line height leaves the descenders (g, y, p) hanging out of it, so they came out cut off (FX89,
-       Louis: "we have cut offs here"); the box reaches down for them and gives the room back below. */
-    .chrome {
-        background: linear-gradient(100deg, var(--web-bright) 0%, var(--web-bright) 45%, var(--bs-primary) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        padding-bottom: .12em;
-        margin-bottom: -.12em;
-    }
+    /* The big words (the class keeps its name from when they ran into the brand's colour): plain, in the strongest
+       ink, as the design has every heading (F151.6). */
+    .chrome { color: var(--bs-emphasis-color); }
 
     /* A small mono label above a section. */
     .kicker {
@@ -70,6 +61,10 @@
     .btn { transition: transform .25s var(--web-ease), box-shadow .3s, border-color .3s, background .3s; }
     .btn:hover { transform: translateY(-2px); }
     .btn-fill { @include surface.press(); }
+    /* The header's own button (F151.6): solid in the brand's colour with no drawing, since a bar is never glass, and
+       a step lighter under the pointer. */
+    .btn-solid { height: 42px; color: var(--web-on-primary); @include surface.slab(var(--bs-primary)); }
+    .btn-solid:hover { color: var(--web-on-primary); @include surface.slab(var(--web-violet-1)); }
     .btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }
     /* WhatsApp's and LinkedIn's buttons sit quietly beside the site's own (FX100, Louis: "the color is too bright
        here"): an outlined button with the owner's mark and name, the owner's colour on the edge under the pointer.
