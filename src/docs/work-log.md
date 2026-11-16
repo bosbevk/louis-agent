@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 124 | 94 |
-| Fixes (`FX`) | 154 | 6 |
+| Fixes (`FX`) | 155 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -282,10 +282,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (154 done)
+## Fixes (155 done)
 
 | Id | When | What |
 |---|---|---|
+| FX167 | 2026-11-16 | The landing's demos stand in glass windows with the business's address, and the one picked comes to the front |
 | FX166 | 2026-11-16 | The site no longer lags: the words cast no stack of shadows, and a heading's colour stands still |
 | FX165 | 2026-11-16 | The agent bar's send is the design's round press, never greyed while it waits |
 | FX164 | 2026-11-16 | The pricing page removed and moved to contact, and the guide quotes no price: every quote is made on request |
