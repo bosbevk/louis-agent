@@ -5,8 +5,8 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme;
 
 /// <summary>
 /// The style inside every SVG: the theme's light colours as the picture's own variables, the dark ones when the
-/// reader's screen is dark, and the few rules every picture needs whatever look it wears: its ground, an
-/// arrowhead and a caption. A look's own rules come after these (<c>Looks/</c>).
+/// reader's screen is dark or the page it is drawn into says dark (<see cref="PageScheme"/>), and the few rules
+/// every picture needs whatever look it wears: its ground, an arrowhead and a caption. A look's own rules come after these (<c>Looks/</c>).
 /// </summary>
 internal static class SvgStyle
 {
@@ -16,9 +16,7 @@ internal static class SvgStyle
             {{Variables(theme.Light)}}
             --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
           }
-          @media (prefers-color-scheme: dark) {
-            svg { {{Variables(theme.Dark)}} }
-          }
+          {{PageScheme.Rules(Variables(theme.Light), Variables(theme.Dark))}}
           .ground { fill: var(--ground); }
           .arrow { fill: var(--quiet); }
           .caption {

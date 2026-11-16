@@ -681,7 +681,8 @@ test holds; and when a project that holds Razor components has no `nested` pictu
 name.
 
 Then look at the picture yourself, in Rider's markdown preview or a browser, in a light look and a dark one,
-before you commit. A chart wider than about 1,600 px reads small in a doc's column, so try it the other way round.
+before you commit. As a file it follows your device's setting; drawn into one of our pages it follows the page's
+Dark and Light switch instead, since the tool writes a rule for each. A chart wider than about 1,600 px reads small in a doc's column, so try it the other way round.
 
 Commit the JSON and the SVG together.
 
