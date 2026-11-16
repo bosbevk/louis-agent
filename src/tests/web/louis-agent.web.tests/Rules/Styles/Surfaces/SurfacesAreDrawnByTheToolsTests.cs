@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Tests.Rules.Styles;
+namespace LouisAgent.Web.Tests.Rules.Styles.Surfaces;
 
 /// <summary>
 /// F151.4: every surface in the framework's web is drawn by the shared tools, which read the names a theme sets, so a

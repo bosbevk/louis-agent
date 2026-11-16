@@ -1,6 +1,6 @@
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Tests.Rules.Styles;
+namespace LouisAgent.Web.Tests.Rules.Styles.Surfaces;
 
 /// <summary>
 /// The lens (F151.6, Louis's way 2): a theme that bends light through glass bends it only in the card under the
