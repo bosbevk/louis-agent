@@ -112,12 +112,12 @@ public class SectionIndexTests
     }
 
     /// <summary>
-    /// The index is a glass panel, each dot a round bead of glass, the section in view in the main button's violet
-    /// glass (FX72, FX163, Louis: "change this to a glass panel with round glass"). The rules sit beside the component
-    /// (ADR 0094).
+    /// The index is a glass panel, no lens, holding a list of tags, white and the one in view violet (FX72, FX163,
+    /// Louis: "change this to a glass panel", "does not need water, just a list of tags alternating violet white").
+    /// The rules sit beside the component (ADR 0094).
     /// </summary>
     [Test]
-    public void TheIndex_IsGlass_ItsSectionInViewTheVioletBead()
+    public void TheIndex_IsAGlassPanelOfTags_ItsSectionInViewViolet()
     {
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Index/SectionIndex.razor.scss"));
@@ -125,14 +125,14 @@ public class SectionIndexTests
         Assert.Multiple(() =>
         {
             Assert.That(rules, Does.Contain("@include surface.pane();"));
-            Assert.That(rules, Does.Contain("@include surface.bead();"));
-            Assert.That(rules, Does.Contain("@include surface.bead($lit: true);"));
+            Assert.That(rules, Does.Contain("--web-lens-piece: 0;"), "the panel is no lens");
+            Assert.That(rules, Does.Contain("@include surface.tag();"));
+            Assert.That(rules, Does.Contain(".site-index a.active { @include surface.tag-agent(); }"));
         });
     }
 
     /// <summary>
-    /// The index has one width on every page and a long label wraps inside it (Louis: "a fixed width and wrapped"), the
-    /// dot on the first line.
+    /// The index has one width on every page and a long label wraps inside it (Louis: "a fixed width and wrapped").
     /// </summary>
     [Test]
     public void TheIndex_HasOneWidth_AndALongLabelWraps()
@@ -140,7 +140,7 @@ public class SectionIndexTests
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Index/SectionIndex.razor.scss"));
 
-        Assert.That(rules, Does.Contain("width: 172px;").And.Contain("top: .7em;"));
+        Assert.That(rules, Does.Contain("width: 172px;"));
         Assert.That(rules, Does.Not.Contain("white-space: nowrap"));
     }
 

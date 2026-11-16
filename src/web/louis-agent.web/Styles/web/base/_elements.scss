@@ -84,6 +84,8 @@ button:disabled { cursor: default; opacity: .4; }
 }
 @media (prefers-reduced-motion: reduce) { .chrome { animation: none; } }
 .summary { margin: 0; max-width: 580px; font-size: 19px; line-height: 1.6; color: var(--bs-secondary-color); }
+/* A band's heading and summary stand lifted off the lines behind them, with no panel (FX163). */
+.band :is(h1, h2), .site .summary, .hero-text h1 { @include surface.lifted-words(); }
 /* A site's page moves (F110, from the site, FX162): visible at rest, each block rises once as it enters and a heading
    unmasks; the frame's module adds .in. The rise is on translate, so a card's own hover transform still works. */
 /* Each entrance holds its start while it waits and nothing once it ends, so the glass's lens sees the page (FX163). */
