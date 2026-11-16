@@ -15,12 +15,13 @@
 
 <LandingDemos />
 
-<Band Id="custom" Topic="Custom agents" Title="Want an agent for your business?" Summary="An agent of your own is three things. Who it is, the tools it uses on your own systems, and a closed place to run where every request is measured. The agent in the corner can pass your details on.">
+<Band Id="custom" Topic="Custom agents" Title="An agent that works your page." Summary="A guest asks, and it opens the right room. It draws the booking, asks before it sends, and sends it once. Yours can do the same for your business, in your words and on your own systems.">
+    <ProductWindow Label="A guesthouse, a restaurant and a law practice, each with its agent answering a visitor beside the page" Scenes="BusinessScenes.All" Lens="false" Water="false" />
     <TileRow>
-        <Tile Icon="DiagramIcon.User" Title="Your identity">Who the agent is for your business, its voice, its roles and the rules it keeps, written as files you can read and change.</Tile>
-        <Tile Icon="DiagramIcon.Box" Title="Your packs" Delay="1">Tools for your own systems, written once as a package. Your data is read in code, never guessed, with the engine's guards around every call.</Tile>
-        <Tile Icon="DiagramIcon.Shield" Title="Hosted, closed and measured" Delay="2">It runs in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here. Every request is priced and the bill is shown in rand.</Tile>
+        <Tile Icon="DiagramIcon.User" Title="Who it is">Its voice, its rules and what it knows about your business, in plain files you can read and change.</Tile>
+        <Tile Icon="DiagramIcon.Box" Title="What it reaches" Delay="1">Tools for your own systems, your bookings, your stock, your calendar. Your data is read in code, never guessed.</Tile>
+        <Tile Icon="DiagramIcon.Shield" Title="Closed and measured" Delay="2">It runs in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here. Every request is priced and the bill is shown in rand.</Tile>
     </TileRow>
-    <LiveTurn Title="session 7f3a · toolsets: files, git, dotnet" Label="An animated chat turn, with the prompt, the thinking, two tool calls with their guards, the answer and the cost line" Lines="CustomTurn" Cost="turn 4 requests · 31k tokens (27k cached) · **$0.008**" CostAt="10.2" Reflect="true" /></Band>
+</Band>
 
 <ContactStrip />

@@ -1,0 +1,59 @@
+@* The design's product window (FX163): one business after another, each its own page with its agent's chat beside
+   it, a scene the site gives as records (ADR 0125) and the frame's scenes script plays in turn. The page's words and
+   photos are the site's; the window and the way it plays are the framework's. *@
+<div class="product-window" role="img" aria-label="@Label" data-tilt="@Tilt" data-lens="@LensSwitch"
+     data-reflect="@Reflect" data-water="@Water">
+    @for (var index = 0; index < Scenes.Count; index++)
+    {
+        var scene = Scenes[index];
+        <div class="@SceneClass(index)">
+            <div class="product-bar">
+                <span class="product-dot"></span><span class="product-dot"></span><span class="product-dot"></span>
+                <span class="product-address" data-address>@scene.Address</span>
+            </div>
+            <div class="product-body">
+                <div class="product-page">
+                    <div class="product-head">
+                        <b>@scene.Name</b>
+                        @foreach (var item in scene.Menu)
+                        {
+                            <span>@item</span>
+                        }
+                    </div>
+                    <div class="product-rooms">
+                        @foreach (var room in scene.Rooms)
+                        {
+                            <div class="@RoomClass(room)">
+                                <img src="@room.Image" alt="" loading="lazy" />
+                                <div><b>@room.Title</b>@room.Line</div>
+                            </div>
+                        }
+                    </div>
+                    @if (scene.Slip is { } slip)
+                    {
+                        <div class="product-slip">
+                            <small>@slip.Topic</small>
+                            <b>@slip.Title</b>
+                            @foreach (var row in slip.Rows)
+                            {
+                                <div><span>@row.Label</span>@row.Value</div>
+                            }
+                            <div><span>@slip.StatusLabel</span><em data-status>@slip.Status</em></div>
+                        </div>
+                    }
+                </div>
+                <div class="product-chat">
+                    <div class="product-talk" data-talk></div>
+                    <div class="product-foot"><span data-foot>@scene.Foot</span><span>@scene.Sign</span></div>
+                </div>
+            </div>
+            <div class="product-script" hidden>
+                @foreach (var step in scene.Steps)
+                {
+                    <i data-kind="@KindOf(step)" data-ms="@step.Ms" data-stage="@StageOf(step)"
+                       data-address="@step.Address" data-foot="@step.Foot" data-status="@step.Status">@step.Text</i>
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -7,6 +7,7 @@
 import { motion, reducedMotion } from "../../js/preferences.js";
 import { lens } from "../../js/lens.js";
 import { tilt } from "../../js/tilt.js";
+import { scenes } from "../../js/scenes.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -194,6 +195,8 @@ export function attach(pageBase, place) {
     lens.attach();
     // And its tilt, on a panel that leans towards the pointer.
     tilt.attach();
+    // And the product windows' scenes, each window found starting to play.
+    scenes.attach();
     if (pageBase !== base) {
         base = pageBase;
         if (place) arriveAt(place);
@@ -208,4 +211,5 @@ export function detach() {
     seen = null;
     lens.detach();
     tilt.detach();
+    scenes.detach();
 }

@@ -10,7 +10,6 @@
     overflow: hidden;
     border-radius: 20px;
     transition: transform .7s var(--web-ease), box-shadow .7s;
-    -webkit-box-reflect: below 12px linear-gradient(transparent 68%, rgba(var(--web-shadow-rgb), .28));
     // A shot is a piece of glass too, as the design's (FX163): under the pointer the theme's lens bends behind it.
     --web-lens-piece: 1;
     @include surface.shot();
