@@ -54,7 +54,7 @@ public class LandingStoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("It runs where you say."));
+            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("Yours to run, wherever you like."));
             Assert.That(band.QuerySelectorAll(".tiles article h3").Select(title => title.TextContent),
                 Is.EqualTo(new[] { "Your server", "Your model", "Your data" }));
         });

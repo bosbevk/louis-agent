@@ -8,9 +8,9 @@ public partial class WhatItDoes
     /// <summary>The four things, as the design page names them (ADR 0125).</summary>
     private static readonly IReadOnlyList<Feature> Features =
     [
-        new(FeatureFilm.Show, "It opens the right page.", "A guest asks for a sea view and a dog. Dogs stay in the garden room, so that is the room it shows.", "ShowPage"),
-        new(FeatureFilm.Draw, "It draws what you asked for.", "No wall of text. The booking comes back as a card you can read at a glance.", "ShowCard"),
-        new(FeatureFilm.Ask, "It asks before it sends.", "Nothing leaves the page until the guest says yes. Then you get the request, once.", "Offer, then SendLead"),
-        new(FeatureFilm.Flip, "It shows its work.", "Turn any answer over. You see what it called, how long it took and what it cost.", "the usage ledger")
+        new(FeatureFilm.Show, "It takes them to the right place.", "A guest wants a sea view and is bringing a dog. Only the garden room takes dogs, so that is the room it opens.", "ShowPage"),
+        new(FeatureFilm.Draw, "It shows instead of tells.", "The booking comes back as a clear card, so nobody has to read through a wall of text.", "ShowCard"),
+        new(FeatureFilm.Ask, "It asks before it sends.", "Nothing leaves the page until the visitor says yes. Then the request reaches you, once.", "Offer, then SendLead"),
+        new(FeatureFilm.Flip, "It shows its work.", "Turn any answer over to see what it did, how long it took and what it cost.", "the usage ledger")
     ];
 }
