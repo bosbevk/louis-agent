@@ -253,7 +253,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="52" y="454" text-anchor="start">The pages</text>
       <text class="pic-note" x="52" y="470" text-anchor="start">Razor, a Band per section</text>
       <path class="cls-divide" d="M14 490H315" />
-      <text class="cls-member" x="14" y="508" text-anchor="start">/, /what-we-build, /demos, /contact, /cv</text>
+      <text class="cls-member" x="14" y="508" text-anchor="start">/, /demos, /contact, /cv</text>
       <text class="cls-member" x="14" y="522" text-anchor="start">/framework/... , /csharp-ai-agent-framework</text>
       <rect class="cls-cover" x="0" y="980" width="329" height="122" rx="14" />
       <rect class="mrq-glass" x="0" y="980" width="329" height="122" rx="14" />

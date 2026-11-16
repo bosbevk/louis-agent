@@ -1,0 +1,24 @@
+@use "web/tools/surface";
+
+/* A small link in the screen's bottom-right corner (FX173), quiet until the pointer is on it. It stands only on a
+   screen wide enough that the agent bar, at most 960 wide in the middle, never reaches it. */
+.corner-link {
+    position: fixed;
+    z-index: 81;
+    right: 24px;
+    bottom: 22px;
+    display: none;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font: 500 13px/1.2 var(--bs-font-sans-serif);
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    @include surface.tag();
+}
+.corner-link:hover { color: var(--bs-emphasis-color); }
+.corner-link ::deep .linkedin-mark { width: 15px; height: 15px; }
+@media (min-width: 1200px) {
+    .corner-link { display: inline-flex; }
+}

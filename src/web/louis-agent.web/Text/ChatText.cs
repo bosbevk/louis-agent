@@ -39,6 +39,9 @@ public sealed record ChatText
     /// <summary>The chip's close button, read aloud: the piece is let go.</summary>
     public string ClosePiece { get; init; } = "Stop asking about this";
 
+    /// <summary>The orb's press on the bar, for a screen reader: it opens the box to ask in (FX172).</summary>
+    public string OpenTheBar { get; init; } = "Ask the guide";
+
     /// <summary>A piece's tag under the pointer: it can be asked about (FX163, the design's states).</summary>
     public string PieceAsk { get; init; } = "Ask about this";
 

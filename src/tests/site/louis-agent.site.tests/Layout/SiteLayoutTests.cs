@@ -99,7 +99,6 @@ public class SiteLayoutTests
     [TestCase("/framework/built-on-it")]
     [TestCase("/framework/whats-coming")]
     [TestCase("/contact")]
-    [TestCase("/what-we-build")]
     public void TheMenu_LeadsToThePage(string address)
     {
         using var ctx = Context();
@@ -110,8 +109,9 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): What we build, Demos, Contact, and the
-    /// framework last of its pages; no Pricing (Louis: "remove pricing"), and the CV mark in the settings (FX163).
+    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, Contact, and the framework last of
+    /// its pages; no Pricing (Louis: "remove pricing"), no What we build (FX171, Louis: "remove this page and
+    /// everything of it"), and the CV mark in the settings (FX163).
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -122,8 +122,18 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(items,
-            Is.EqualTo(new[] { "What we build", "Demos", "Contact", "The framework" }));
+        Assert.That(items, Is.EqualTo(new[] { "Demos", "Contact", "The framework" }));
+    }
+
+    /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
+    [Test]
+    public void NoPage_AnswersAtWhatWeBuild()
+    {
+        var routes = typeof(SiteLayout).Assembly.GetTypes()
+            .SelectMany(type => type.GetCustomAttributes(typeof(RouteAttribute), false).Cast<RouteAttribute>())
+            .Select(route => route.Template);
+
+        Assert.That(routes, Does.Not.Contain("/what-we-build"));
     }
 
     /// <summary>
@@ -150,8 +160,8 @@ public class SiteLayoutTests
                     "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
                     "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(2),
-                "the rest stand in the bar, the CV mark in the settings (FX163)");
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(1),
+                "Contact stands in the bar alone since What we build went (FX171), the CV mark in the settings (FX163)");
         });
     }
 

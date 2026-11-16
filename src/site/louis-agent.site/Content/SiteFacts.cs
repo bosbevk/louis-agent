@@ -15,9 +15,12 @@ public static class SiteFacts
     private const string Name = "louis-agent";
     private const string Site = "https://louis-agent.dev/";
 
+    /// <summary>Louis's LinkedIn, which the corner's link opens and a search engine is told about.</summary>
+    public const string LinkedIn = "https://www.linkedin.com/in/louismarais86";
+
     /// <summary>Who runs the site: its name, its address, its icon and Louis's LinkedIn.</summary>
     public static SchemaOrganization Organization { get; } = new(Name, Site, $"{Site}apple-touch-icon.png",
-        ["https://www.linkedin.com/in/louismarais86"]);
+        [LinkedIn]);
 
     /// <summary>The site itself.</summary>
     public static SchemaWebSite WebSite { get; } = new(Name, Site);

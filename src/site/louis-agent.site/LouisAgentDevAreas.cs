@@ -5,6 +5,7 @@ using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Focuses;
+using LouisAgent.Web.Components.Widget.Bar.Opening;
 using LouisAgent.Web.Themes.Flat;
 using LouisAgent.Web.Themes.Glass;
 
@@ -12,7 +13,8 @@ namespace LouisAgent.Site;
 
 /// <summary>
 /// What louis-agent.dev is made of (F127.6): its showroom, with the site's own demos, the part of the site each
-/// page is (F127.7), what its guide offers to be asked as the showroom's bar (F134.3), and its admin with the
+/// page is (F127.7), what its guide offers to be asked as the showroom's bar (F134.3), that bar opening under the
+/// pointer (FX172), and its admin with the
 /// overview counting the guide's leads (F127.8) and the site's own Resume area, where Louis edits his CV (F142),
 /// named through the framework's builder; the guide in its corner runs on the chat's plumbing, which every site gets.
 /// It offers the framework's two themes, glass first, so glass is what a first visit gets (F151.6).
@@ -29,17 +31,19 @@ public static class LouisAgentDevAreas
     /// each page is, which tells the guide how to lead (F127.7).
     /// </summary>
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
-        .Suggestions(GuideSuggestions)
+        .Suggestions(GuideSuggestions).BarOpens(BarOpens.Hover)
         .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area)
         .Glass().Flat();
 
     /// <summary>
-    /// What the guide's bar offers to be asked, as chips, the first the one suggested. The same three stand on the
-    /// showroom's start and on every demo's page, so the walk is of "this page", which is true on each of them.
+    /// What the guide's bar offers to be asked, as chips, the first the one suggested, the last a way into the
+    /// framework (FX173, Louis: "add a framework chip"). The same four stand on the showroom's start and on every
+    /// demo's page, so the walk is of "this page", which is true on each of them.
     /// </summary>
     private static readonly string[] GuideSuggestions =
     [
-        "Walk me through this page", "Which demo is like my business?", "What does it cost?"
+        "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+        "Tell me about the framework"
     ];
 
     /// <summary>The tool the guide sends a lead with, which the admin's overview counts as leads (F127.8).</summary>

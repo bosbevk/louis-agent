@@ -111,8 +111,8 @@ agent to take the visitor's details, or leads to the contact page. The framework
 the menu's "The framework" leads to its own pages.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
-`/framework/architecture`. `/what-we-build` is the selling page, and no page names a price: every quote is made on
-request, so `/pricing` is moved to `/contact`. Then there are the demos.
+`/framework/architecture`. No page names a price: every quote is made on request, so `/pricing` is moved to
+`/contact`. Then there are the demos.
 
 *Decided in:* [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), F110.
@@ -230,10 +230,13 @@ is held to the repo by a test. No page links to the repository. The landing's `P
 search engines (`Content/SiteFacts.cs`).
 
 Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
-framework's widget as its bar: the mark, a box that is always there to type in, and the site's three questions as
-chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
+framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,
+and the site's three questions as chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
 button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
-"Louis · AI", and hides its work (`ShowWork="false"`).
+"Louis · AI", and hides its work (`ShowWork="false"`). Its bar opens under the pointer on its orb, and its fourth
+chip leads into the framework. On a screen wide enough, Louis's LinkedIn stands in the screen's bottom-right corner
+as a small link, the framework's `CornerLink`. The address comes from `SiteFacts`, which also tells search engines
+about it.
 
 *Decided in:* F123, [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
 

@@ -511,6 +511,46 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX173 · A measure written in three places drifts; name it once
+
+Louis wanted the agent bar larger, its chips round the closed orb, and the agent's own suggestions first. The size
+was the lesson. The ball's 76 and its room of 14 were written in the row, the orb and, since FX172, the closed dock.
+A phone's rules set a smaller ball, but the closed dock still used the desktop's numbers, so on a phone it would
+have closed to the wrong width. Named once on the bar, as `--agent-ball` and `--agent-air`, every rule reads the
+same pair, and a phone sets the pair instead of each rule. The same went for the gap round the chips. And when the
+bar's styles outgrew their file, the chips became a part of their own, since they were a concern of their own all
+along. Skill 18 (testing and shipping: a test holds that the old number is gone).
+
+## FX172 · When a thing shows is a rule of its own, worth a type
+
+Louis wanted the agent bar to start closed and open only when the visitor or the guide needs the other. Every fact
+that decides it was already in the bar: whether the guide is answering, whether the visitor is writing or picked a
+piece, whether an answer stands. What was missing was the rule that joins them, and one fact of the visitor's own,
+that they pressed the orb or are in the box. Put on a small record of its own, `BarFacts`, the rule reads as one
+line and is tested case by case without drawing anything, while the bar only asks it. The same holds for the
+orb's state, which the bar also asks of a type. Skill 18 (testing and shipping: a rule tested apart from its
+drawing).
+
+## FX171 · A page is more than its file
+
+Louis asked for the "What we build" page to go, with everything of it. Deleting the page's file was the smallest
+part. The menu linked to it, the sitemap listed it and two of its sections for search engines, a title test and a
+page test held it, and the guide's own skills told it to send people there. Left behind, any of those would have
+pointed a visitor or a crawler at a page that answers "not found". The tests found two of them, the sitemap and the
+menu's count, and a search for the address found the guide's lines, which no test reads. The lesson is to remove a
+page by its address, not by its file, and to search for that address everywhere the site speaks. Skill 18 (testing
+and shipping: a test now holds that no page answers there).
+
+## FX168 · A cascade carries what only the far end needs, past what lies between
+
+Louis wanted the brand in the empty room on each side of the agent bar. The bar sits inside the chat widget, and
+the site gives the widget its words. The plain way would pass two new slots through the widget, but the widget
+was already at its size limit and knows nothing of brands. A cascading value fits better. The site wraps its widget
+in a small component that holds the two sides, Blazor hands them down the tree, and the bar picks them up and draws
+them beside its own row. The widget in between never sees them. So the sides line up with the bar exactly, with no
+copy of its measures, and a site that gives none gets the bar as it always was. Skill 20 (extensibility: a framework
+part a site configures without the parts in between changing).
+
 ## FX167 · A state the page already marks is one a component's styles can answer
 
 Louis wanted the landing's three demos in glass windows, and the one picked brought to the front. Neither needed

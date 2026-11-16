@@ -297,8 +297,8 @@ public class AgentCaptionTests
     }
 
     /// <summary>
-    /// When the chips come back after an answer, they follow the talk: the site's first question, then the choices
-    /// the guide last offered, its suggested one bright.
+    /// When the chips come back after an answer, they follow the talk: the choices the guide last offered first, its
+    /// suggested one bright, then the site's own questions (FX173, Louis: "the agents own idea must take priority").
     /// </summary>
     [Test]
     public void AfterAnAnswerIsPutAway_TheChipsAreItsChoices()
@@ -313,7 +313,7 @@ public class AgentCaptionTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.FindAll($"{ChipsShown} button").Select(chip => chip.TextContent),
-                Is.EqualTo(new[] { "Walk me through this page", "The restaurant", "The law firm" }));
+                Is.EqualTo(new[] { "The restaurant", "The law firm", "Walk me through this page", "What does it cost?" }));
             Assert.That(cut.Find($"{ChipsShown} button.is-suggested").TextContent, Is.EqualTo("The restaurant"));
         });
     }

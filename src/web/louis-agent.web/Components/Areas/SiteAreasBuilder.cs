@@ -9,6 +9,7 @@ using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Screens;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Widget.Bar;
+using LouisAgent.Web.Components.Widget.Bar.Opening;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Messages;
 using LouisAgent.Web.Messages.Holes;
@@ -99,6 +100,15 @@ public sealed class SiteAreasBuilder
     {
         var suggestions = new AgentSuggestions(questions);
         return Add(new SiteArea("suggestions", services => services.TryAddSingleton(suggestions), []));
+    }
+
+    /// <summary>
+    /// How the site's guide's bar opens (FX172): on a press of its orb, or while the pointer is over it.
+    /// </summary>
+    public SiteAreasBuilder BarOpens(BarOpens opens)
+    {
+        var opening = new BarOpening(opens);
+        return Add(new SiteArea("bar-opening", services => services.TryAddSingleton(opening), []));
     }
 
     /// <summary>

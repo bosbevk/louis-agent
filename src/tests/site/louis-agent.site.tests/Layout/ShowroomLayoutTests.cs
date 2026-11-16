@@ -26,7 +26,8 @@ public class ShowroomLayoutTests
             Assert.That(cut.FindAll(".agent-chips button").Select(chip => chip.TextContent),
                 Is.EqualTo(new[]
                 {
-                    "Walk me through this page", "Which demo is like my business?", "What does it cost?"
+                    "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+                    "Tell me about the framework"
                 }));
         });
     }
@@ -48,8 +49,28 @@ public class ShowroomLayoutTests
             Assert.That(cut.FindAll(".agent-chips button").Select(chip => chip.TextContent),
                 Is.EqualTo(new[]
                 {
-                    "Walk me through this page", "Which demo is like my business?", "What does it cost?"
+                    "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+                    "Tell me about the framework"
                 }));
+        });
+    }
+
+    /// <summary>
+    /// FX173: Louis's LinkedIn stands in the screen's bottom-right corner, and the brand beside the bar is gone for now
+    /// (Louis: "put the linked in in the bottom right corner and remove the branding for now").
+    /// </summary>
+    [Test]
+    public void TheLinkedIn_IsInTheCorner_AndNoBrandStandsBesideTheBar()
+    {
+        using var ctx = SitePageContext.Create();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-corner a.corner-link").GetAttribute("href"),
+                Is.EqualTo(LouisAgent.Site.Content.SiteFacts.LinkedIn));
+            Assert.That(cut.FindAll(".agent-side"), Is.Empty);
         });
     }
 }

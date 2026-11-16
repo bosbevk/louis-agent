@@ -1,0 +1,15 @@
+@* The chips while the guide waits: the site's own questions at first, and once there is a talk, a next step from
+   where it was. Each chip asks its question, one of them drawn bright, and the last word says the box is there too,
+   since a chip is a shortcut and never the only way in (F134's rule 3). While they give way they stay drawn, stepped
+   away and out of reach, so they ease out and back in. While the bar is closed they stand round its orb (FX173). *@
+@if (Chips is { Questions.Count: > 0 } chips)
+{
+    <div class="@Classes" inert="@(!Show)">
+        @foreach (string question in chips.Questions)
+        {
+            <button class="@(question == chips.Suggested ? "is-suggested" : null)" type="button"
+                    @onclick="() => OnChoose.InvokeAsync(question)">@question</button>
+        }
+        <span class="agent-chips-note">@Text.OrTypeYourOwn</span>
+    </div>
+}
