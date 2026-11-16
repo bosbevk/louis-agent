@@ -1,3 +1,14 @@
-/* A card the agent drew (F127.4.1): the library's ticket, as wide as the chat lets it be, up to its own width. */
-.drawn-card { margin: 10px 0; animation: rise .35s var(--web-ease) both; }
-.drawn-card ::deep svg { display: block; width: 100%; max-width: 408px; height: auto; }
+/* A card the agent drew (F127.4.1): the library's ticket, as wide as the chat lets it be, up to its own width.
+   The ticket reads its --ticket- names before its own colours, so here it is handed the theme's (F151.7): the pane's
+   fill for its paper, the hairline, the words' colour and the agent's violet. A card is then drawn on the theme's
+   surface, glass in glass and solid in flat, and turns with the Dark and Light switch. */
+.drawn-card {
+  margin: 10px 0;
+  animation: rise .35s var(--web-ease) both;
+  --ticket-paper: var(--web-pane-fill);
+  --ticket-line: var(--bs-border-color);
+  --ticket-ink: var(--bs-body-color);
+  --ticket-accent: var(--web-agent);
+
+  ::deep svg { display: block; width: 100%; max-width: 408px; height: auto; }
+}
