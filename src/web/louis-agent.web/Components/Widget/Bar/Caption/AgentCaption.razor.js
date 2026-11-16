@@ -124,7 +124,7 @@ const place = (caption, ring) => {
     // A wide piece standing alone, such as a product window, gives the caption its right third, from its top down
     // (Louis: "our agent must take some of the control space, so he must be shrunk like this").
     // Only a piece: a whole section the guide lit is no piece, and stays the page's (it flashed a strip down the right).
-    if (about?.matches("[data-piece]") && box && box.width >= WIDE_PIECE && box.top >= headerRoom && box.top < floor) {
+    if (about?.matches("[data-piece]") && box && box.width >= WIDE_PIECE && box.bottom > headerRoom && box.top < floor) {
         const width = box.width * WIDE_SHARE;
         return standIn(caption, ring, box, { left: box.right - width, top: box.top, width, height: box.height },
             getComputedStyle(about).borderRadius);
@@ -168,8 +168,10 @@ const cardsBeside = (about, floor) => {
     const at = row.indexOf(about), top = about.getBoundingClientRect().top;
     if (row.length < 2 || row.length > 4 || row.some(card => Math.abs(card.getBoundingClientRect().top - top) > 2)) return [];
     const cards = givers(at, row.length).map(i => row[i]).filter(Boolean);
+    // A card lies flat and shows, at least partly, between the header and the bar (Louis: "chat should have opened next
+    // to it", of a card whose top had passed under the header).
     const lies = card => { const box = card.getBoundingClientRect();
-        return getComputedStyle(card).transform === "none" && box.width > 0 && box.top >= headerRoom && box.top < floor; };
+        return getComputedStyle(card).transform === "none" && box.width > 0 && box.bottom > headerRoom && box.top < floor; };
     return cards.length && cards.every(lies) ? cards : [];
 };
 
@@ -192,10 +194,12 @@ const takeThePlaceOf = (cards, caption, ring, placeBox) => {
 const standIn = (caption, ring, placeBox, at, corners) => {
     caption.dataset.stands = "";
     caption.dataset.inPlace = "";
+    // A box that starts under the header is cut to start below it, so the words never hide behind the header.
+    const top = Math.max(at.top, headerRoom), height = at.height - (top - at.top);
     caption.style.setProperty("--caption-x", `${Math.round(at.left)}px`);
-    caption.style.setProperty("--caption-y", `${Math.round(at.top)}px`);
+    caption.style.setProperty("--caption-y", `${Math.round(top)}px`);
     caption.style.setProperty("--caption-w", `${Math.round(at.width)}px`);
-    caption.style.setProperty("--caption-h", `${Math.round(at.height)}px`);
+    caption.style.setProperty("--caption-h", `${Math.round(Math.max(height, 0))}px`);
     caption.style.setProperty("--caption-r", corners);
     ring.classList.add("is-on");
     ringAround(ring, placeBox);
