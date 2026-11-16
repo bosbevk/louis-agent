@@ -36,11 +36,10 @@ public class BandTests
     }
 
     /// <summary>
-    /// Under a band's head runs the rail with its beam, as under the design's "What it does" (Louis: "that line must
-    /// be under every header"): after the summary, before the content; a band with no heading has none.
+    /// A band's head runs straight into its content, with no line under it (Louis: "remove all these header lines").
     /// </summary>
     [Test]
-    public void ABandsHead_HasTheRailUnderIt()
+    public void ABandsHead_HasNoLineUnderIt()
     {
         using var ctx = new BunitContext();
 
@@ -49,14 +48,8 @@ public class BandTests
             .Add(band => band.Title, "What it does.")
             .Add(band => band.Summary, "Four things.")
             .AddChildContent("<div class=\"cards\"></div>"));
-        var plain = ctx.Render<Band>(parameters => parameters.Add(band => band.Id, "plain"));
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(headed.Find(".summary").NextElementSibling!.ClassName, Is.EqualTo("band-rail"));
-            Assert.That(headed.Find(".band-rail").NextElementSibling!.ClassName, Is.EqualTo("cards"));
-            Assert.That(plain.FindAll(".band-rail"), Is.Empty);
-        });
+        Assert.That(headed.Find(".summary").NextElementSibling!.ClassName, Is.EqualTo("cards"));
     }
 
     /// <summary>

@@ -22,11 +22,6 @@
             {
                 <p class="summary reveal">@Markdown.Inline(Summary)</p>
             }
-            @* Under the head, the rail with a beam running along it, as under every heading of the design. *@
-            @if (Title is not null)
-            {
-                <div class="band-rail" aria-hidden="true"></div>
-            }
             @ChildContent
             @if (Note is not null)
             {

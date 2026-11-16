@@ -7,22 +7,6 @@
    A panel, a list item, a figure or a paragraph stays whole on one page. */
 .band-body { display: contents; }
 
-/* The rail under a band's head, with a beam of light running along it (FX163, the design's, Louis: "that line must be
-   under every header, but drop the padding top on the line by 15px"). */
-.band-rail { position: relative; height: 2px; margin-top: 29px; overflow: hidden; @include surface.rail(); }
-.band-rail::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -30%;
-    width: 30%;
-    height: 100%;
-    animation: band-beam 3.2s linear infinite;
-    @include surface.rail-beam();
-}
-@keyframes band-beam { to { left: 100%; } }
-@media (prefers-reduced-motion: reduce) { .band-rail::after { animation: none; } }
-
 .band.is-paged { display: block; }
 .is-paged .band-body {
     display: block;
