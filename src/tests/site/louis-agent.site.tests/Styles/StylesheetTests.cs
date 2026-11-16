@@ -75,6 +75,24 @@ public partial class StylesheetTests
         Assert.That(FixedColour().Matches(Css.Source(partial)).Select(found => found.Value), Is.Empty);
 
     /// <summary>
+    /// The site's buttons are the theme's presses (F151.6): the filled one is the main press and the outlined ones,
+    /// WhatsApp's and LinkedIn's among them, the second press, each drawn by the surface tool, so a button here
+    /// looks like a button anywhere on the framework's web.
+    /// </summary>
+    [Test]
+    public void TheSitesButtons_AreTheThemesPresses()
+    {
+        string elements = Css.Source("site/base/elements");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(elements, Does.Contain(".btn-fill { @include surface.press(); }"));
+            Assert.That(elements,
+                Does.Contain(".btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }"));
+        });
+    }
+
+    /// <summary>
     /// The build holds each theme's values for each style, so the page's pick has something to turn on.
     /// </summary>
     [TestCase("glass", "dark")]
@@ -95,6 +113,8 @@ public partial class StylesheetTests
             .Where(line => line.Length > 0 && !char.IsWhiteSpace(line[0]) && !line.StartsWith("/*") &&
                            !line.StartsWith('*') && !line.StartsWith("//"))
             .Where(line => !line.StartsWith('}'))
+            // Naming a tool writes no rule, so it may stand outside the frame.
+            .Where(line => !line.StartsWith("@use"))
             .ToList();
 
         Assert.That(topLevel, Is.Not.Empty, "the search found the partial's rules");
@@ -110,7 +130,7 @@ public partial class StylesheetTests
     [TestCase("padding: 64px var(--site-gutter) 40px;")]
     [TestCase(".band-strip { padding-bottom: 72px; }")]
     [TestCase(".btn:hover { transform: translateY(-2px);")]
-    [TestCase(".btn-whatsapp, .btn-linkedin { border: 1px solid var(--web-border-hover); color: var(--bs-body-color);")]
+    [TestCase(".btn-whatsapp, .btn-linkedin { display: inline-flex; align-items: center; gap: 10px; }")]
     [TestCase(".btn-whatsapp .whatsapp-mark { flex: none; color: var(--whatsapp); }")]
     [TestCase(".btn-whatsapp:hover { border-color: var(--whatsapp);")]
     [TestCase(".btn-linkedin:hover { border-color: var(--linkedin);")]

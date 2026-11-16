@@ -1,6 +1,7 @@
 /* The site's plain elements and the few utilities every site page uses: the chrome headline, the kicker, the buttons,
    the panel. All of it hangs off the frame's root (.site, the framework's SiteShell), so the chat and the admin keep
    the framework's elements (F109.1, Louis's pick: the site's look stays inside the site's frame). */
+@use "web/tools/surface";
 
 .site {
     font: 16px/1.6 var(--bs-font-sans-serif);
@@ -48,12 +49,14 @@
     .lede { font-size: 18px; line-height: 1.55; color: var(--bs-secondary-color); max-width: var(--measure); }
     .muted { color: var(--bs-secondary-color); font-size: 15px; }
 
+    /* A button is a pill, drawn as the theme's press (F151.6): the filled one the main press, the outlined ones the
+       second, so a button here looks like one anywhere on the framework's web. */
     .btn {
         display: inline-flex;
         align-items: center;
         height: 46px;
-        padding: 0 20px;
-        border-radius: var(--radius-small);
+        padding: 0 22px;
+        border-radius: 999px;
         font-size: 15px;
         font-weight: 600;
         text-decoration: none;
@@ -61,14 +64,14 @@
     }
     /* A button answers the pointer (FX82, Louis: "this one is bland no hover effect"): a small lift and a glow. */
     .btn { transition: transform .25s var(--web-ease), box-shadow .3s, border-color .3s, background .3s; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -18px rgba(var(--bs-primary-rgb), .55); }
-    .btn-fill { background: var(--bs-emphasis-color); color: var(--bs-body-bg); }
-    .btn-fill:hover { background: var(--bs-emphasis-color); color: var(--bs-body-bg); box-shadow: 0 18px 36px -14px rgba(var(--bs-primary-rgb), .75); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-fill { @include surface.press(); }
+    .btn-line, .btn-whatsapp, .btn-linkedin { @include surface.quiet-press(); }
     /* WhatsApp's and LinkedIn's buttons sit quietly beside the site's own (FX100, Louis: "the color is too bright
        here"): an outlined button with the owner's mark and name, the owner's colour on the edge under the pointer.
        WhatsApp's mark keeps its green, which WhatsApp allows on a dark ground; LinkedIn's takes the text colour, white
        on the dark, black on a light theme, the two LinkedIn allows besides its blue (ADR 0102). */
-    .btn-whatsapp, .btn-linkedin { border: 1px solid var(--web-border-hover); color: var(--bs-body-color); display: inline-flex; align-items: center; gap: 10px; }
+    .btn-whatsapp, .btn-linkedin { display: inline-flex; align-items: center; gap: 10px; }
     .btn-whatsapp .whatsapp-mark { flex: none; color: var(--whatsapp); }
     .btn-whatsapp:hover { border-color: var(--whatsapp); color: var(--bs-emphasis-color); box-shadow: 0 18px 36px -18px var(--whatsapp); }
     .btn-linkedin .linkedin-mark { flex: none; }
@@ -77,8 +80,6 @@
     .footer-link { display: inline-flex; align-items: center; gap: 6px; color: var(--bs-tertiary-color); text-decoration: none; }
     .footer-link:hover { color: var(--bs-emphasis-color); }
     .footer-link .linkedin-mark { width: 13px; height: 13px; }
-    .btn-line { border: 1px solid var(--web-border-hover); color: var(--bs-body-color); }
-    .btn-line:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
     .btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
 
