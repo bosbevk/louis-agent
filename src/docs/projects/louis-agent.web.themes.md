@@ -57,6 +57,12 @@ see-through as a pane. A press is its drawing too, with white words, no line rou
 dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
 with no blur. Flat sets an inset to its page's colour with its hairline.
 
+The agent's bar at the page's foot is glass in its own way. It wears a field's drawing, the resting one and the
+focus one while it is typed in, over a dark body that is half see-through and blurs the page behind it, so words
+that scroll under it stay out of the way. Where the words go is sunk into it with shadows only, and each chip over
+it wears the second button's drawing over a nearly solid body, since a chip floats over anything and must stay
+readable. Flat gives the three the look of its bar, its inset and its pane.
+
 The mark is a drawing as well, and glass has three of it. Standing alone it is a clear bubble with a white l in
 it in the dark, and a violet ball inside clear glass in the light. In the agent's bar it is the violet ball in
 both styles. As a letter of the site's name it is the bubble with no l, drawn a little larger than its box. Each

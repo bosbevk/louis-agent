@@ -158,4 +158,21 @@
     .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }
     .site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }
     .site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }
+    /* Under the bar the page's content fades away into the bare page, as the design has it, so nothing passes
+       sharp behind the bar: a strip of the page itself at the screen's foot, see-through at its top. It lies over
+       the content and under the way up, the header and the bar. */
+    .site:has(.site-corner .chat-widget.is-bar)::after {
+        content: "";
+        position: fixed;
+        z-index: 9;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 280px;
+        pointer-events: none;
+        @include surface.page-light();
+        background-attachment: fixed;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
+        mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
+    }
 }

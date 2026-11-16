@@ -185,8 +185,9 @@ is lost then is what the agent remembered of the old talk.
 The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
 `Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
 message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
-centred at the page's foot, at most 760 wide, drawn as a bar that floats: the theme's bar with its hairline all
-round it and the shadow of what floats. In it sit the agent's orb, a line of what the agent is
+centred at the page's foot, at most 840 wide and a full pill, drawn as a bar that floats: the theme's dock under a
+field's drawing, with the shadow of what floats. Under it the page's content fades away into the bare page, a
+strip the frame lays at the screen's foot, so nothing passes sharp behind the bar. In it sit the agent's orb, a line of what the agent is
 doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
 in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
 
@@ -629,8 +630,12 @@ its corners, a shadow, a blur and a corner. A pane that answers the pointer, suc
 pick, has a hover of its own: how far it lifts, an edge and a shadow, the last two written as shadows. A pane that
 floats over the page, such as a menu's list or the way back up, has the shadow it throws. A veil, a thin sheet
 laid over what is behind it such as the showroom's rail and its dock, has a fill, an edge and a blur. An inset, a piece set into the page such as the chat's card or a field,
-has a fill and an edge, the page's colour and the hairline. A bar, which is the header, the footer or the agent's bar, has a fill, an
-edge and a blur. The main button has a fill and the ink on it, and the second one an outline. The mark has its disc,
+has a fill and an edge, the page's colour and the hairline. A bar, which is the header or the footer, has a fill, an
+edge and a blur. A dock, which is the agent's bar at the page's foot, has a fill, an edge and a blur of its own, a
+bar's until a theme says otherwise; where the words go in it is sunk, with a fill, the shadow that sinks it and
+the shadow it has while it is typed in; and a chip that floats over the page has a fill, an edge and a blur, a
+pane's until a theme says otherwise. The main button has a fill and the ink on it, the second one an outline, and
+both the shadow a button stands on. The mark has its disc,
 its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Last come the
 drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
 `--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.

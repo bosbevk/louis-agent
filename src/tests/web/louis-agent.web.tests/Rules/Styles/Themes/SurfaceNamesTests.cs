@@ -17,7 +17,7 @@ public class SurfaceNamesTests
     /// </summary>
     private static readonly string[] Art =
     [
-        "bar", "field-focus", "field-rest", "focus-pane", "focus-pill", "gem", "group", "knob",
+        "field-focus", "field-rest", "focus-pane", "focus-pill", "gem", "group", "knob",
         "mark", "mark-ball", "mark-o",
         "pane-hover", "pane-picked", "pane-rest", "pane-showing",
         "press-disabled", "press-hover", "press-pressed", "press-rest",
@@ -37,6 +37,9 @@ public class SurfaceNamesTests
         "--web-inset-fill", "--web-inset-edge",
         "--web-bar-fill", "--web-bar-edge", "--web-bar-blur",
         "--web-press-fill", "--web-press-ink", "--web-press-edge", "--web-press-shadow",
+        "--web-dock-fill", "--web-dock-edge", "--web-dock-blur",
+        "--web-sunk-fill", "--web-sunk-shadow", "--web-sunk-lit",
+        "--web-chip-fill", "--web-chip-edge", "--web-chip-blur",
         "--web-page-lines", "--web-page-lights",
         "--web-mark-fill", "--web-mark-gloss", "--web-mark-ink",
         "--web-you", "--web-agent",

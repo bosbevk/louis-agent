@@ -39,6 +39,19 @@
     &[aria-pressed="true"] { @include drawn(quiet-press-picked, transparent); }
 }
 
+/* A chip that floats over the page, such as a question over the agent's bar (F151.6): the second button's drawing
+   over the body a theme gives a chip, since it floats over anything and must stay readable, with the chip's own
+   line and blur. */
+@mixin floating-chip() {
+    border: var(--web-chip-edge);
+    box-shadow: var(--web-press-shadow);
+    -webkit-backdrop-filter: var(--web-chip-blur);
+    backdrop-filter: var(--web-chip-blur);
+    @include drawn(quiet-press-rest, var(--web-chip-fill));
+
+    &:hover { @include drawn(quiet-press-hover, var(--web-chip-fill)); }
+}
+
 /* The pill that holds a switch's choices: a fill with a hairline drawn inside it, under its drawing. */
 @mixin group() {
     border-radius: 999px;

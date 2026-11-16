@@ -110,6 +110,22 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-press-edge: 0 solid transparent;
     --web-press-shadow: 0 5px 9px -3px rgba(12, 6, 48, .45);
 
+    // The agent's bar is glass with a body, since it floats over running words: a milky white under
+    // its drawing, a stronger blur than a pane, and no line. The box is sunk into it: a shadow under its upper
+    // edge and a lit lip along its lower one, the same while it is typed in. A chip floats over anything, so it
+    // has a milky body under its drawing.
+    --web-dock-fill: rgba(246, 244, 255, .8);
+    --web-dock-edge: none;
+    --web-dock-blur: blur(14px) saturate(1.4);
+    --web-sunk-fill: rgba(24, 12, 80, .07);
+    --web-sunk-shadow:
+        inset 0 3px 6px -1px rgba(22, 12, 70, .42), inset 0 0 0 1px rgba(22, 12, 70, .1),
+        inset 0 -1.5px 0 rgba(255, 255, 255, .85), 0 1.5px 0 rgba(255, 255, 255, .45);
+    --web-sunk-lit: var(--web-sunk-shadow);
+    --web-chip-fill: rgba(255, 255, 255, .82);
+    --web-chip-edge: 0 solid transparent;
+    --web-chip-blur: blur(14px) saturate(1.4);
+
     // The page behind the glass: fine lines slanting both ways, which stay still while the page scrolls, since a
     // line seen to blur under a pane's rim is what says it is glass. And three lights, violet, magenta and blue.
     --web-page-lines:

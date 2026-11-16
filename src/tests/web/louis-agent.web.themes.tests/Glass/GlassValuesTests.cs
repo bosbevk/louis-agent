@@ -59,4 +59,38 @@ public class GlassValuesTests
             Assert.That(Value(style, "--web-bar-blur"), Is.EqualTo("none"));
         });
     }
+
+    /// <summary>
+    /// The agent's bar is glass with a body: a see-through violet-dark under its drawing by night and a milky white
+    /// by day, a stronger blur than a pane since it floats over running words, and no line round it.
+    /// </summary>
+    [TestCase(SiteStyle.Dark, "rgba(16, 12, 34, .55)")]
+    [TestCase(SiteStyle.Light, "rgba(246, 244, 255, .8)")]
+    public void TheAgentsBar_IsGlassWithABody(SiteStyle style, string fill)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(style, "--web-dock-fill"), Is.EqualTo(fill));
+            Assert.That(Value(style, "--web-dock-blur"), Is.EqualTo("blur(14px) saturate(1.4)"));
+            Assert.That(Value(style, "--web-dock-edge"), Is.EqualTo("none"));
+        });
+    }
+
+    /// <summary>Where the words go is sunk into the bar: a shadow under its upper edge, drawn inside it.</summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheBox_IsSunkIntoTheBar(SiteStyle style) =>
+        Assert.That(Value(style, "--web-sunk-shadow"), Does.StartWith("inset 0 3px"));
+
+    /// <summary>A chip floats over anything, so it has a milky body under its drawing and blurs what is behind.</summary>
+    [TestCase(SiteStyle.Dark, "rgba(34, 34, 44, .82)")]
+    [TestCase(SiteStyle.Light, "rgba(255, 255, 255, .82)")]
+    public void AChip_HasAMilkyBody(SiteStyle style, string fill)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(style, "--web-chip-fill"), Is.EqualTo(fill));
+            Assert.That(Value(style, "--web-chip-blur"), Is.EqualTo("blur(14px) saturate(1.4)"));
+        });
+    }
 }
