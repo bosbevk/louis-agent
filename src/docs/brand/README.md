@@ -1,77 +1,83 @@
 # The louis-agent brand
 
-> **Reference.** What the logo is, which colours and type go with it, and how to use them. It names what the site
-> already does (the framework's Console theme), so the logo and the site agree.
+> **Reference.** What the mark is, how the name is written with it, which colours and type go with it, and where
+> each file is used, so the site, the docs and anything we hand out agree.
 
-The canvas with the four concepts it was picked from, and the mock-ups, is
-[louis-agent logo and brand](https://claude.ai/artifact/EdaD9zM6GivfF3AQhsh2vo).
+## The mark: the ball with the l
 
-## The mark: three slabs
+<img src="mark.svg" width="96" alt="The louis-agent mark: a violet disc with a white l" />
 
-<img src="mark.svg" width="96" alt="The louis-agent mark: three stacked slabs" />
+The mark is a ball with a small l in it, the l of louis, drawn as the Geist typeface draws it at weight 650, with the
+little curve at its foot. On the site it is the agent: the same mark sits in the agent's bar, breathing while it
+waits, and it follows the look the visitor picked. In glass it is a glass bubble with the l in it, or a violet ball
+inside clear glass. In flat, and everywhere the mark is small or printed, it is a flat disc in the brand's violet
+with a white l. That flat disc is the one in this folder, and the one in the browser's tab, on a phone's home screen
+and on the card a link shows when it is shared.
 
-Three stacked slabs: the **engine** at the bottom, **identities** in the middle, **packs** on top. They are the
-framework's own three words, stacked the way the site's films stack them. The top slab is solid steel, and the two
-below it are strokes in two grays, lighter going up.
+There is a one-ink version for paper and for anything that can only print one colour: a black disc with a white l.
+
+## The name, with the mark as its o
+
+The name is `louis-agent`, always lowercase and always with its hyphen. Where there is room, it is written in
+Geist at weight 650, set tight, with the mark standing in for its o: `l`, the ball, then `uis-agent`. The ball is
+about three quarters of a letter's height and sits on the line, like a letter. The site's header draws it that way
+with the framework's `Wordmark`, which takes the letters before the mark and after it, and tells a screen reader
+the whole name once.
+
+Give the name or the mark clear space of half the mark's height on every side. The mark on its own is never smaller
+than 16 pixels. Don't recolour the disc, tilt or stretch it, set the name in another font ("Louis Agent"), or put
+the mark beside the name as well as inside it.
+
+## The files
 
 | File | What it is | Where it goes |
 |---|---|---|
-| [mark.svg](mark.svg) | The mark on a dark ground: steel gradient `#ffffff` → `#b4b9c0` | The site, the README, anything dark |
-| [mark-light.svg](mark-light.svg) | The mark on a light ground: solid Ink `#15171a`, no gradient | Docs, print, anything light |
-| [nuget-icon.png](nuget-icon.png) | 128 × 128, the mark on the Floor colour | The NuGet packages' `PackageIcon`, when they ship (F74) |
-| [avatar.png](avatar.png) | 512 × 512, the mark on the Floor colour | The GitHub avatar, any square profile picture |
-| [social-card.png](social-card.png) | 1280 × 640, the lockup, the line, the site's address and the slogan (FX99: no repository address, the repository is private) | The site's `og:image`, link previews |
+| [mark.svg](mark.svg) | The flat violet disc `#6b4dff` with the white l, on a 120 by 120 grid | The README, the docs, anything on screen |
+| [mark-light.svg](mark-light.svg) | The one-ink mark: a black disc with a white l | Print, and anything that can only take one colour |
+| [nuget-icon.png](nuget-icon.png) | 128 by 128, the disc on a clear ground | The NuGet packages' `PackageIcon`, when they ship (F74) |
+| [avatar.png](avatar.png) | 512 by 512, the disc on a violet square, so a round crop shows it whole | The GitHub avatar, any square profile picture |
+| [social-card.png](social-card.png) | 1280 by 640: the name with the mark as its o, the line, the site's address and the slogan | The site's `og:image`, link previews |
 
-The coding agent's web app (the site) shows the lockup in its header (F110): its own copy of the mark,
-`demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg`, the drawing alone without the export's
-manifest, then the name in the mono face; and its own copy as its favicon, `wwwroot/favicon.svg`, ink on a light
-browser tab and steel on a dark one. A demo references no framework folder, so it keeps copies (ADR 0074).
+The framework's site keeps its own copies, since a site references no docs folder: `wwwroot/favicon.svg` and
+`wwwroot/brand/mark.svg` are `mark.svg`, `apple-touch-icon.png` is the disc at 180 by 180 on violet with no
+transparency, as Apple asks, `icon-192.png` the disc at 192 by 192, and `social-card.png` the card.
 
-The SVGs are drawn on a 64 × 64 grid: the top slab is the diamond `32,9 54,20 32,31 10,20` and the two strokes below it
-are 4.5 wide.
-
-## The lockup
-
-The mark, then the name `louis-agent` in **Geist Mono 500**, always lowercase and always with its hyphen. The name is a
-little taller than the mark is wide, and the gap between them is about a third of the mark.
-
-Give it clear space of half the mark's height on every side. The smallest the mark goes on its own is 16 px, and the
-lockup 120 px wide. Use the lockup wherever there's room, and the mark alone for the favicon, avatars and the NuGet
-icon. Don't colour it, tilt or stretch it, add a glow or a shadow, or set the name in another font ("Louis Agent").
+The SVGs are drawn by hand: a circle of radius 60 at the middle of a 120 by 120 grid, and the l as Geist's own outline
+at weight 650, moved with `translate(44 92) scale(.09 -.09)` to the middle of the disc. The PNGs are drawn from
+`mark.svg` by headless Chromium, the browser Playwright drives: the SVG laid at the size wanted on a page of that
+size, over the ground each row of the table names, and the page photographed. The social card is a small HTML page
+of its own drawn the same way, with Geist and Geist Mono loaded from the `geist` package on npm, so the type is the
+real one.
 
 ## Colour
 
-These are the Console theme's colours (`src/web/louis-agent.web/Styles/web/settings/_colours.scss`); nothing here is new.
+The brand's colour is one purple, Ultraviolet, in five steps from light to dark. The middle one, `#6b4dff`, is the
+disc and the main button. Both themes set the five as the framework's violet names, `--web-violet-0` to
+`--web-violet-4`.
 
-| Name | Hex | Used for |
+| Step | Hex | Used for |
 |---|---|---|
-| Floor | `#070708` | The page |
-| Panel | `#0d0e10` | Cards and panels |
-| Ink | `#15171a` | Menus; the mark on light |
-| Hairline | `#1b1d21` | Borders and dividers |
-| Steel | `#ffffff` → `#b4b9c0` | The mark; one or two things that matter on a page |
-| White | `#ffffff` | Actions, headings |
-| Soft text | `#c9ccd1` | Body copy, links |
-| Small print | `#8a9098` | Labels under 24 px |
-| Error | `#d9675f` | Failures only |
-| Warning | `#d4a72c` | Warnings only |
+| 0 | `#e2dfff` | The lightest touch: a glint, a soft ring |
+| 1 | `#9282ff` | Hover on the main button; the purple on a dark page |
+| 2 | `#6b4dff` | The mark's disc, the main button, what is the brand's to press |
+| 3 | `#3a22c4` | Pressed, and the deep side of the ball |
+| 4 | `#110a40` | The darkest: shade inside the ball |
 
-The only colours with a hue are for errors and warnings. Steel is never a background wash.
-
-The site's `--faint` (`#5c6168`) is too faint for small text on the Floor: it's about 3.3 to 1, and small text needs
-4.5 to 1. Use Small print (`#8a9098`) for any text under 24 px.
+Everything else is the page's own: black or near black with white words in the dark, a pale page with black
+words in the light. There is no rainbow. A gradient stays within the one purple, white into it or the purple into a
+lighter step of itself.
 
 ## Type
 
-Geist, at 400 and 600, is for the words people read: headings at 600 with tight tracking, and body text at 400.
-Geist Mono, at 400 and 500, is for the name, numbers, code and the small uppercase labels above headings ("MEASURED,
-NOT ASSUMED", tracked at 0.14 em). It's never used for body text.
+Geist, at 400 to 700, is for the words people read: headings at 600 and above, set tight, and body text at 400.
+Geist Mono, at 400 and 600, is for numbers, code, the address and the small uppercase labels above headings. It is
+never used for body text.
 
 ## Voice
 
 Say things like "Every number here comes from the ledger or an eval run" and "Build agents, not infrastructure."
-Use plain words, explain a term the first time, and only talk about what works today. Stay away from "revolutionary",
-"magical" and "next-gen", from any number nobody measured, and from robots, brains, sparkles and glowing gradients.
+Use plain words, explain a term the first time, and only talk about what works today. Stay away from
+"revolutionary", "magical" and "next-gen", from any number nobody measured, and from robots, brains and sparkles.
 
 ---
-[Docs index](../README.md) · Related: [the site's design doc](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
+[Docs index](../README.md) · Related: [the themes' design doc](../projects/louis-agent.web.themes.md)
