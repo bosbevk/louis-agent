@@ -210,7 +210,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M62 133H346" />
       <path class="seq-tip" d="M346 133H354" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="62" cy="133" r="4.5" />
-      <text class="seq-call-words" x="208" y="124" text-anchor="middle">GET /pricing</text>
+      <text class="seq-call-words" x="208" y="124" text-anchor="middle">GET /contact</text>
       <rect class="seq-beam seq-beam-glow" x="354" y="180" width="285" height="8" rx="0" />
       <rect class="seq-beam" x="354" y="183" width="277" height="2" rx="0" />
       <path class="pic-march" d="M354 184H631" />

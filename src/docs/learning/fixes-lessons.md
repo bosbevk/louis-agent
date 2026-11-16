@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX164 · A page taken down is taken out of what the agent reads too
+
+The prices left the landing and the menu, yet the pricing page still answered at its address, and the guide still
+quoted R500 to R1,000 a month and sent people to it. A page lives in more places than its file: the sitemap, the
+guide's map of the site, its voice, the doc it answers from, and the tests that pin each. Taking it out meant every
+one of them, and moving the address to the contact page so an old link still lands somewhere useful. An agent that
+reads the site's own docs says what they say, so a stale line there is a wrong answer to a visitor. Skill 7 (context
+engineering: what the agent reads is part of the product).
+
 ## FX161 · What a reload must keep belongs with what the reload brings back
 
 A visitor closed the guide's answer, pressed Ctrl+R, and the answer stood over the bar again. The chat itself was saved

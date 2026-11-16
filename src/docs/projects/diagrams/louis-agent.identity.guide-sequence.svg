@@ -216,7 +216,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M341.3 184H534.3" />
       <path class="seq-tip" d="M534.3 184H542.3" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="341.3" cy="184" r="4.5" />
-      <text class="seq-call-words" x="441.8" y="175" text-anchor="middle">SearchDocs("pricing")</text>
+      <text class="seq-call-words" x="441.8" y="175" text-anchor="middle">SearchDocs("demos")</text>
       <path class="seq-answer" d="M542.3 235H341.3" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="542.3" cy="235" r="4.5" />
       <text class="seq-answer-words" x="441.8" y="226" text-anchor="middle">the sections that match</text>
@@ -234,10 +234,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M341.3 388H658.9" />
       <path class="seq-tip" d="M658.9 388H666.9" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="341.3" cy="388" r="4.5" />
-      <text class="seq-call-words" x="504.1" y="379" text-anchor="middle">ShowPage("/pricing")</text>
+      <text class="seq-call-words" x="504.1" y="379" text-anchor="middle">ShowPage("/demos")</text>
       <path class="seq-answer" d="M666.9 439H42.3" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="666.9" cy="439" r="4.5" />
-      <text class="seq-answer-words" x="354.6" y="430" text-anchor="middle">the browser opens the pricing</text>
+      <text class="seq-answer-words" x="354.6" y="430" text-anchor="middle">the browser opens the demos</text>
       <path class="seq-answer" d="M341.3 490H42.3" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="341.3" cy="490" r="4.5" />
       <text class="seq-answer-words" x="191.8" y="481" text-anchor="middle">R500 to R1,000 a month, and one nudge</text>

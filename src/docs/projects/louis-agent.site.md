@@ -110,8 +110,8 @@ agent to take the visitor's details, or leads to the contact page. The framework
 the menu's "The framework" leads to its own pages.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
-`/framework/architecture`. `/what-we-build` and `/pricing` are the selling pages; pricing has two plans, each a tile
-with its price. Then there's `/contact`, and the demos.
+`/framework/architecture`. `/what-we-build` is the selling page, and no page names a price: every quote is made on
+request, so `/pricing` is moved to `/contact`. Then there are the demos.
 
 *Decided in:* [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), F110.
@@ -305,10 +305,9 @@ knows the business: its hours, prices, services and story, from files the owner 
 customers day and night, and points them to the right place or person. Every answer it gives is measured, so the owner
 sees what it costs. Every agent runs in its own closed Docker container, which sees only what it's handed.
 
-**The price is R500 to R1,000 a month**, depending on the size of the site and how much the agent has to know, plus a
-once-off fee to build the site. The exact figures, the building fee's too, come from a short call. This is the one
-public price. Anything else, like a custom agent, the framework or a licence, isn't published yet, and is asked for on
-the Contact page.
+**Every quote is made on request.** What a website with an agent costs depends on the size of the site and how
+much the agent has to know, so no price is published: each one is quoted after a short call, and asked for on the
+Contact page or by leaving details with the guide. The same holds for a custom agent, the framework or a licence.
 
 **Your first files can be written with you.** An agent is a few Markdown files: its voice, its roles, and what it
 knows about the business. For a fee, Louis can write a customer's first Markdown files with them, so the agent starts

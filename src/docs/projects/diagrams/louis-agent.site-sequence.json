@@ -11,7 +11,7 @@
       { "id": "guide", "label": "The guide", "icon": "chip", "tone": "violet" }
     ],
     "steps": [
-      { "step": "message", "from": "visitor", "to": "host", "text": "GET /pricing" },
+      { "step": "message", "from": "visitor", "to": "host", "text": "GET /contact" },
       { "step": "message", "from": "host", "to": "page", "text": "prerender it" },
       { "step": "reply", "from": "page", "to": "host", "text": "the HTML, its head and its sections" },
       { "step": "reply", "from": "host", "to": "visitor", "text": "the page, readable before the script" },

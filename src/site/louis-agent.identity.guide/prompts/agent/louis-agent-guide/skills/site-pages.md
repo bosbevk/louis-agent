@@ -11,9 +11,8 @@ These are every page there is. When one answers what someone asks, open it with 
 docs it was written from, is in your `louis-agent-guide/site-map` skill: read it before you explain a page or walk
 someone through one.
 
-- `/`: the landing, a website with an agent from R500 a month, and the proof under it.
+- `/`: the landing, a website with an agent, what it does, the demos and custom agents.
 - `/what-we-build`: what we build, in a buyer's words, and how it starts.
-- `/pricing`: the two plans, Starter and Business, and what is quoted on the short call.
 - `/contact`: how to reach the real Louis.
 - `/cv`: the real Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.

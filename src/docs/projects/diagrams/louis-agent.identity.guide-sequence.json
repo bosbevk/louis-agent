@@ -11,12 +11,12 @@
     ],
     "steps": [
       { "step": "message", "from": "visitor", "to": "guide", "text": "how much is a website with an agent?" },
-      { "step": "message", "from": "guide", "to": "docs", "text": "SearchDocs(\"pricing\")" },
+      { "step": "message", "from": "guide", "to": "docs", "text": "SearchDocs(\"demos\")" },
       { "step": "reply", "from": "docs", "to": "guide", "text": "the sections that match" },
       { "step": "message", "from": "guide", "to": "docs", "text": "ReadDoc(the best one)" },
       { "step": "reply", "from": "docs", "to": "guide", "text": "its text" },
-      { "step": "message", "from": "guide", "to": "site", "text": "ShowPage(\"/pricing\")" },
-      { "step": "reply", "from": "site", "to": "visitor", "text": "the browser opens the pricing" },
+      { "step": "message", "from": "guide", "to": "site", "text": "ShowPage(\"/demos\")" },
+      { "step": "reply", "from": "site", "to": "visitor", "text": "the browser opens the demos" },
       { "step": "reply", "from": "guide", "to": "visitor", "text": "R500 to R1,000 a month, and one nudge" },
       { "step": "block", "block": "opt", "label": "the visitor wants Louis to call, and says yes",
         "steps": [ { "step": "note", "over": ["guide"], "text": "SendLead, once" } ] }
