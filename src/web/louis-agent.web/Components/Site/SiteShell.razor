@@ -7,7 +7,10 @@
     <CascadingValue Value="_options" IsFixed="true">
         <div class="@SiteClasses">
             <div class="site-progress" id="site-progress" aria-hidden="true"></div>
-            <SectionIndex/>
+            @if (ShowIndex)
+            {
+                <SectionIndex/>
+            }
             <header class="site-header">
                 @if (Brand is not null)
                 {
@@ -19,6 +22,8 @@
                         }
                     </a>
                 }
+                @* What stage the site is at, beside its name and outside its link, since a press opens a note (FX170). *@
+                @Stage
                 @if (HasMenu)
                 {
                     <button type="button" class="site-menu-button" aria-label="Menu" aria-controls="site-menu"
@@ -66,12 +71,15 @@
                 @ChildContent
             </main>
 
-            <a class="site-up" href="#top" aria-label="Back to the top">
-                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                    <path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </a>
+            @if (ShowWayUp)
+            {
+                <a class="site-up" href="#top" aria-label="Back to the top">
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                        <path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            }
 
             @if (Footer is not null)
             {

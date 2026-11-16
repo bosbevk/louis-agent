@@ -1,0 +1,6 @@
+@* A flag that says what stage a site is at, beside its name (FX170): a small tag that opens a short note on a press,
+   the browser's own popover, so a press elsewhere or Escape closes it and nothing needs a script. *@
+<span class="site-stage">
+    <button class="stage-flag" type="button" popovertarget="@NoteId">@Label</button>
+    <span class="stage-note" id="@NoteId" popover>@Note <a href="@Href">@LinkText</a></span>
+</span>

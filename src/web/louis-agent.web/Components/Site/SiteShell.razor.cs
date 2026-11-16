@@ -31,6 +31,10 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? Tagline { get; set; }
 
+    /// <summary>What stage the site is at, such as a <c>StageFlag</c>, beside its name (FX170); empty, nothing stands there.</summary>
+    [Parameter]
+    public RenderFragment? Stage { get; set; }
+
     /// <summary>Where the brand takes you; home unless the site says otherwise.</summary>
     [Parameter]
     public string BrandHref { get; set; } = "/";
@@ -78,6 +82,19 @@ public partial class SiteShell
     /// </summary>
     [Parameter]
     public bool AnswerUnder { get; set; }
+
+    /// <summary>
+    /// Whether the frame draws the page's section index; on by default. A site may switch it off and keep it for later
+    /// (FX175, Louis: "hide this disabled, not use it, not delete it").
+    /// </summary>
+    [Parameter]
+    public bool ShowIndex { get; set; } = true;
+
+    /// <summary>
+    /// Whether the frame draws the way back up; on by default. A site may switch it off and keep it for later (FX177).
+    /// </summary>
+    [Parameter]
+    public bool ShowWayUp { get; set; } = true;
 
     /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
     private readonly PageOptions _options = new();

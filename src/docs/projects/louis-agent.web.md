@@ -336,8 +336,13 @@ the page), F127.4.1 (cards), F127.4.2 and ADR 0117 (one agent asking another), F
 The engine and an agent run without any of this: the command line, Rider, the API and MCP need no web. This part
 is what turns an agent into a website.
 
-**The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. It adds a scroll progress
-line, a way back up, and a section index on the left. When a site puts the guide in the corner as its bar, the
+**The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. Beside the site's name, and
+outside its link, the header has a slot for the site's stage, `Stage`; `StageFlag` (`Site/Brand`) fills it with a
+small tag that opens a note on a press, the browser's own popover, so a press elsewhere or Escape closes it with no
+script of ours. Beside it in `Site/Brand`, `MarkShowcase` shows a site's mark large, the orb with its letter, and,
+when asked, the name on black, white, violet and glass. The frame also adds a scroll progress
+line, a way back up, and a section index on the left. A site may switch the index off with `ShowIndex="false"` and
+the way up with `ShowWayUp="false"`, keeping both for later; louis-agent.dev has both off. When a site puts the guide in the corner as its bar, the
 corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a
 screen: the room is `--site-bar`, the name a slide, a paged section and the way up already end above, so each ends
 above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
@@ -351,7 +356,9 @@ a page. On a wider screen the sheet is no box of its own, so the links and the a
 as before, and the button is not drawn.
 
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
-menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
+menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. A site may hide a group
+for now with `Hidden`, which keeps it in the page with the browser's own `hidden` attribute, out of sight and out of
+reach, to bring back by turning it off. The group at the end of
 the bar opens its list right-aligned, so it stays on the screen. Its class names, `site-drop` and the two under it,
 are its own and not the frame's. A scoped rule marks only the last part of its selector, so if the class a list
 opens under were also on the frame's menu round it, a pointer anywhere in the menu would open every list.

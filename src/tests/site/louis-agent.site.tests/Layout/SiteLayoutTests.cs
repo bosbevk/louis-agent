@@ -125,6 +125,22 @@ public class SiteLayoutTests
         Assert.That(items, Is.EqualTo(new[] { "Demos", "Contact", "The framework" }));
     }
 
+    /// <summary>
+    /// FX176: the Demos and the framework's groups are hidden for now and kept, so the menu shows Contact alone (Louis:
+    /// "disable the demos menu items for now until it is fixed and framework").
+    /// </summary>
+    [Test]
+    public void TheDemosAndTheFrameworksMenus_AreHiddenForNow()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
+            .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
+        Assert.That(shown, Is.EqualTo(new[] { "Contact" }));
+    }
+
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
     [Test]
     public void NoPage_AnswersAtWhatWeBuild()

@@ -1,0 +1,26 @@
+@use "web/tools/surface";
+
+/* A site's stage flag (FX170): a small tag beside the name, in the brand's colour, and its note, which the browser
+   stands over the page just under the header's left, where the flag is. */
+.site-stage { display: inline-flex; align-items: center; }
+.stage-flag {
+    padding: 3px 9px;
+    border: 0;
+    font: 600 11px/1.2 var(--bs-font-monospace);
+    letter-spacing: .02em;
+    cursor: pointer;
+    @include surface.tag-agent();
+}
+.stage-note {
+    position: fixed;
+    inset: 64px auto auto 24px;
+    max-width: 320px;
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    @include surface.pane();
+}
+.stage-note a { color: var(--bs-link-color); }

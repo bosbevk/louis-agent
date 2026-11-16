@@ -23,7 +23,28 @@ public class LandingStoryTests
         var cut = ctx.Render<HomePage>();
 
         Assert.That(cut.FindAll("section").Select(section => section.Id),
-            Is.EqualTo(new[] { "top", "does", "for-you", "demos", "custom", "contact" }));
+            Is.EqualTo(new[] { "top", "does", "for-you", "brand", "demos", "custom", "contact" }));
+    }
+
+    /// <summary>
+    /// FX169: a section for the brand in the landing's middle (Louis: "add a slide dedicated to branding mixed with
+    /// one random topic", "brand section must be in the middle"): the idea, the mark large with the name on four
+    /// grounds, and the theme as its other topic, leading to the theme's page. None of its panels can be picked to
+    /// ask the guide about (Louis: "thise panels must not be clickable to the ai to explain").
+    /// </summary>
+    [Test]
+    public void TheBrand_HasASectionOfItsOwn_WithTheTheme_AndNothingToPick()
+    {
+        using var ctx = new BunitContext();
+
+        var band = ctx.Render<HomePage>().Find("section#brand");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(band.QuerySelector(".mark-showcase .mark-grounds"), Is.Not.Null);
+            Assert.That(band.QuerySelectorAll("[data-piece]"), Is.Empty);
+            Assert.That(band.QuerySelector("a[href='/framework/theme']"), Is.Not.Null);
+        });
     }
 
     /// <summary>What left the landing has a home on the framework's pages.</summary>
