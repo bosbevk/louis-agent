@@ -38,11 +38,7 @@ body::before {
 /* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
    the sidebar, the chat and the composer's fade all sit over the same light. ---- */
 body {
-    background:
-        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
-        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
-        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%),
-        var(--bs-body-bg);
+    @include surface.page-light();
     background-attachment: fixed;
 }
 .conversation { background: transparent; }

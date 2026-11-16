@@ -20,12 +20,12 @@
         0 18px 40px -18px rgba(var(--web-shadow-rgb), .3);
 }
 
-/* The edge of a card whose helper is at work: the brand's colours going round it, at the angle the card turns. */
-@mixin working-rim() {
+/* The edge of a card whose helper is at work: the brand's colour going round it through the colours given, at
+   the angle the card turns. */
+@mixin working-rim($through...) {
     background:
         linear-gradient(var(--bs-secondary-bg), var(--bs-secondary-bg)) padding-box,
-        conic-gradient(from var(--angle), var(--bs-primary), var(--bs-success-text-emphasis), var(--bs-success),
-            var(--bs-primary)) border-box;
+        conic-gradient(from var(--angle), var(--bs-primary), $through, var(--bs-primary)) border-box;
 }
 
 /* A helper's square mark: the sidebar's dark foot run into its deeper shade, with a shadow under it. */
@@ -49,4 +49,19 @@
 /* A link's line in the brand's colour, no width at rest, for the sheet to grow under the pointer. */
 @mixin underline() {
     background: linear-gradient(var(--bs-primary), var(--bs-primary)) 0 100% / 0 2px no-repeat;
+}
+
+/* A small helper's mark: the second colour of the brand run into its deeper shade. */
+@mixin minion() {
+    background: linear-gradient(135deg, var(--bs-success), var(--bs-success-text-emphasis));
+}
+
+/* The light behind a chat: the brand's colour from the top right, its second colour from the bottom left and a
+   breath of the first in the middle, over the page's own colour. */
+@mixin page-light() {
+    background:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%),
+        var(--bs-body-bg);
 }

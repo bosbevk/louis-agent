@@ -48,8 +48,8 @@
 
 /* A small disc that stands for someone or something, such as a profile's or a source's: the brand's colour run
    into its second one. */
-@mixin badge() {
-    background: linear-gradient(135deg, var(--bs-primary), var(--bs-success-text-emphasis));
+@mixin badge($angle: 135deg) {
+    background: linear-gradient($angle, var(--bs-primary), var(--bs-success-text-emphasis));
 }
 
 /* A thin line of a piece's own colour along its top, as an accented tile has. */
@@ -60,4 +60,10 @@
 /* A line in the brand's two colours, such as the one down the side of a specialist's work. */
 @mixin brand-line($angle: 180deg) {
     background: linear-gradient($angle, var(--bs-primary), var(--bs-success));
+}
+
+/* The handle you drag to size a panel, while the pointer is on it: the brand's colour run deeper, and its glow. */
+@mixin grip() {
+    background: linear-gradient(var(--bs-primary), var(--web-primary-deep));
+    box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
 }

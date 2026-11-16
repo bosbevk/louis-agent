@@ -1,3 +1,5 @@
+@use "sass:list";
+
 /* The surface tool's lines and washes (F151.4): the hairlines between parts, a piece's own line and ring, and
    the faint washes of a colour over a row or a small button. */
 
@@ -101,4 +103,19 @@
 /* What is behind a piece, blurred. */
 @mixin frosted($blur: 14px) {
     backdrop-filter: blur($blur);
+}
+
+/* The depth of a piece that lies on the page: a shadow under it, how far down, how soft, how far pulled in and how
+   strong; a line of light inside its top where it has one; and a closer shadow, as how far down, how soft and
+   how strong. */
+@mixin depth($down, $soft, $pull, $strength, $shine: null, $close: null) {
+    $shadows: (0 $down $soft $pull rgba(var(--web-shadow-rgb), $strength),);
+    @if $shine != null {
+        $shadows: list.join((0 1px 0 rgba(var(--web-overlay-rgb), $shine) inset,), $shadows, comma);
+    }
+    @if $close != null {
+        $closer: 0 list.nth($close, 1) list.nth($close, 2) rgba(var(--web-shadow-rgb), list.nth($close, 3));
+        $shadows: list.append($shadows, $closer, comma);
+    }
+    box-shadow: $shadows;
 }

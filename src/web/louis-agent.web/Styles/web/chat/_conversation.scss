@@ -28,7 +28,7 @@
     position: relative; @include surface.panel(); border-radius: 18px; padding: 14px 18px;
     @include surface.lined(); @include surface.raised($more: true); animation: rise .45s var(--web-ease) both;
 }
-.delegation.running { border-color: transparent; @include surface.working-rim(); animation: rise .45s var(--web-ease) both, spin 2.6s linear infinite; }
+.delegation.running { border-color: transparent; @include surface.working-rim(var(--bs-success-text-emphasis), var(--bs-success)); animation: rise .45s var(--web-ease) both, spin 2.6s linear infinite; }
 @keyframes spin { to { --angle: 360deg; } }
 .delegation.failed { @include surface.edged(rgba(var(--web-failed-rgb), .45)); }
 .delegation-head { display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none; user-select: none; }

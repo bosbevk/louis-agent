@@ -47,9 +47,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "Components/Site/Showroom/Mock/Website/MockPage.razor.scss",
         "Pages/Admin/Packs.razor.scss",
         "Styles/web/base/_elements.scss",
-        "Styles/web/layout/_panels.scss",
-        "Styles/web/layout/_responsive.scss",
-        "Styles/web/layout/_shell.scss"
     ];
 
     /// <summary>The properties that draw a surface.</summary>
@@ -174,6 +171,12 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("shimmer")]
     [TestCase("spotlight")]
     [TestCase("underline")]
+    [TestCase("ground")]
+    [TestCase("hovering")]
+    [TestCase("grip")]
+    [TestCase("depth")]
+    [TestCase("minion")]
+    [TestCase("page-light")]
     public void TheTool_DrawsEachKindOfSurface(string kind) =>
         Assert.That(Tool, Does.Contain($"@mixin {kind}("));
 

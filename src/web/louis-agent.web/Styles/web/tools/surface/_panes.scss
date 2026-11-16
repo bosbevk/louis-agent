@@ -136,3 +136,13 @@
     backdrop-filter: var(--web-bar-blur);
     @include drawn(bar, var(--web-bar-fill));
 }
+
+/* Only a piece's colour, where the fill it also has as an image must stay. */
+@mixin ground($fill) {
+    background-color: $fill;
+}
+
+/* A dialog over the whole page: a deep shadow under it and a faint ring of the brand's colour round it. */
+@mixin hovering() {
+    box-shadow: 0 30px 80px -20px rgba(var(--bs-black-rgb), .8), 0 0 0 1px rgba(var(--bs-primary-rgb), .08);
+}
