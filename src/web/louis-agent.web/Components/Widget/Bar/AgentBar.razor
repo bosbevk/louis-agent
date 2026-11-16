@@ -6,7 +6,7 @@
    what the guide is doing, and the box, which is always there to type in. Over it the guide's last answer, or the
    whole talk. It draws what the widget's runner holds and asks the widget to send, so the widget stays the one
    engine and the bar is only its look. *@
-<div class="agent-bar" @ref="_bar">
+<div class="@BarClasses" @ref="_bar">
     @* The chips while the guide waits: the site's own questions at first, and once there is a talk, a next step
        from where it was. Each chip asks its question, one of them drawn bright, and the last word says the box is
        there too, since a chip is a shortcut and never the only way in (F134's rule 3). While they give way they
@@ -46,7 +46,9 @@
             <button type="button" aria-label="@Text.ClosePiece" @onclick="OnClearPiece">×</button>
         </div>
     }
-    @* What the site stands on each side (FX168), beside the row and lined up with it, in the room the bar leaves. *@
+    @* The dock (FX172) holds the row, draws it in to the orb in the middle when closed, and carries what the site
+       stands on each side (FX168), attached to its edges, so the sides sit beside the orb and ride out with the box. *@
+    <div class="agent-dock" @onmouseenter="PointerCame" @onmouseleave="PointerLeftAsync">
     @if (Sides?.Start is { } start)
     {
         <div class="agent-side is-start">@start</div>
@@ -56,11 +58,16 @@
         <div class="agent-side is-end">@end</div>
     }
     <div class="agent-row">
-        <Orb State="State" Label="@Title" Mark="@Initial"/>
+        @* The orb is the way in (FX172): closed, the bar is the orb alone, and a press opens the box and puts the
+           visitor in it. *@
+        <button class="agent-open" type="button" aria-label="@Text.OpenTheBar" aria-expanded="@Expanded"
+                @onclick="HoldOpenAsync">
+            <Orb State="State" Label="@Title" Mark="@Initial"/>
+        </button>
         @* The box: the line of what the guide is doing over the box itself, and a press on the line lands in the
            box. At its end, before the send button, what the talk has cost so far over how many answers (F134.5): a
            press opens the whole talk. *@
-        <div class="agent-box">
+        <div class="agent-box" inert="@(!Opening.Open)" @onfocusin="Entered" @onfocusout="LeftAsync">
             <span class="agent-doing" @onclick="FocusTheBox">@Doing</span>
             <Composer @ref="_box" Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
                       Attachments="Runner.Attachments" BoxClass="agent-input"
@@ -78,5 +85,6 @@
                 </Tools>
             </Composer>
         </div>
+    </div>
     </div>
 </div>

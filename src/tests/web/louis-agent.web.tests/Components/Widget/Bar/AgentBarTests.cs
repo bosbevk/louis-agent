@@ -1,6 +1,7 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Components.Widget.Bar;
+using LouisAgent.Web.Components.Widget.Bar.Opening;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -35,6 +36,78 @@ public class AgentBarTests
             .Add(w => w.Title, "Louis · AI")
             .Add(w => w.Placeholder, "Your question…")
             .Add(w => w.Layout, WidgetLayout.Bar));
+
+    /// <summary>
+    /// FX172: the bar starts closed, the orb alone, which says it opens the box (Louis: "the agent must start
+    /// closed").
+    /// </summary>
+    [Test]
+    public void TheBar_StartsClosed()
+    {
+        using var ctx = Context();
+
+        var cut = Bar(ctx);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".agent-bar").ClassList, Does.Contain("is-closed"));
+            Assert.That(cut.Find("button.agent-open").GetAttribute("aria-expanded"), Is.EqualTo("false"));
+        });
+    }
+
+    /// <summary>FX172: a press on the orb opens the box, for the visitor to ask in.</summary>
+    [Test]
+    public void APressOnTheOrb_OpensTheBox()
+    {
+        using var ctx = Context();
+        var cut = Bar(ctx);
+
+        cut.Find("button.agent-open").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".agent-bar").ClassList, Does.Not.Contain("is-closed"));
+            Assert.That(cut.Find("button.agent-open").GetAttribute("aria-expanded"), Is.EqualTo("true"));
+        });
+    }
+
+    /// <summary>FX172: on a site that picked hover, the pointer over the bar opens the box (Louis: "site picks it").</summary>
+    [Test]
+    public void OnASiteThatPickedHover_ThePointerOpensTheBox()
+    {
+        using var ctx = Context();
+        ctx.Services.AddSingleton(new BarOpening(BarOpens.Hover));
+        var cut = Bar(ctx);
+
+        cut.Find(".agent-dock").MouseEnter();
+
+        Assert.That(cut.Find(".agent-bar").ClassList, Does.Not.Contain("is-closed"));
+    }
+
+    /// <summary>FX172: on a site that opens on a press, the default, the pointer alone leaves the bar closed.</summary>
+    [Test]
+    public void OnASiteThatOpensOnAPress_ThePointerAloneLeavesItClosed()
+    {
+        using var ctx = Context();
+        var cut = Bar(ctx);
+
+        cut.Find(".agent-dock").MouseEnter();
+
+        Assert.That(cut.Find(".agent-bar").ClassList, Does.Contain("is-closed"));
+    }
+
+    /// <summary>FX172: a second press on the orb closes the box again (Louis: "when i click it again it must close").</summary>
+    [Test]
+    public void ASecondPressOnTheOrb_ClosesTheBox()
+    {
+        using var ctx = Context();
+        var cut = Bar(ctx);
+
+        cut.Find("button.agent-open").Click();
+        cut.Find("button.agent-open").Click();
+
+        Assert.That(cut.Find(".agent-bar").ClassList, Does.Contain("is-closed"));
+    }
 
     /// <summary>
     /// Before anything is asked the bar is the orb, idle, the guide's name where its doing goes, and the box; there

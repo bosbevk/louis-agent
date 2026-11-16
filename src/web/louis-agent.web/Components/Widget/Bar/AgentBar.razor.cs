@@ -1,6 +1,7 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Chat;
 using LouisAgent.Web.Components.Widget.Bar.Caption;
+using LouisAgent.Web.Components.Widget.Bar.Opening;
 using LouisAgent.Web.Components.Widget.Bar.Sides;
 using LouisAgent.Web.Components.Widget.Orb;
 using LouisAgent.Web.Scripts;
@@ -103,6 +104,21 @@ public partial class AgentBar : IAsyncDisposable
     /// <summary>Whether the visitor opened the whole talk.</summary>
     private bool _talkOpen;
 
+    /// <summary>How long the box stays open after the visitor leaves it, so a glance away does not close it.</summary>
+    private static readonly TimeSpan ClosesAfter = TimeSpan.FromSeconds(3);
+
+    /// <summary>Whether the visitor holds the bar open: they pressed the orb, or are in the box (FX172).</summary>
+    private bool _held;
+
+    /// <summary>Whether the visitor is in the box just now.</summary>
+    private bool _inBox;
+
+    /// <summary>Whether the pointer holds the bar open, on a site that opens it under the pointer (FX172).</summary>
+    private bool _pointerOver;
+
+    /// <summary>Whether the pointer has left the bar and not yet come back.</summary>
+    private bool _pointerAway;
+
     /// <summary>When the guide last showed a place, while the orb still shows it.</summary>
     private DateTimeOffset? _shownAt;
 
@@ -162,6 +178,92 @@ public partial class AgentBar : IAsyncDisposable
 
     /// <summary>Whether the visitor is being heard: they are writing, or hold a piece of the page they picked.</summary>
     private bool Heard => !string.IsNullOrWhiteSpace(Runner.Draft) || Piece is not null;
+
+    /// <summary>
+    /// What the bar knows for whether its box is open (FX172): it starts closed, and opens while one side needs the
+    /// other.
+    /// </summary>
+    private BarFacts Opening => new(_held || _pointerOver, Runner.Streaming, !string.IsNullOrWhiteSpace(Runner.Draft),
+        Piece is not null, Caption is not null || TalkShows);
+
+    /// <summary>Whether the site opens its bar under the pointer, as it named through its areas; a press if it named none.</summary>
+    private bool OpensUnderThePointer => Services.GetService<BarOpening>()?.Opens == BarOpens.Hover;
+
+    /// <summary>The pointer came over the bar: on a site that opens under the pointer, that holds it open.</summary>
+    private void PointerCame()
+    {
+        if (!OpensUnderThePointer) return;
+        _pointerOver = true;
+        _pointerAway = false;
+    }
+
+    /// <summary>The pointer left the bar: a moment later, if it has not come back, it no longer holds it open.</summary>
+    private async Task PointerLeftAsync()
+    {
+        if (!_pointerOver) return;
+        _pointerAway = true;
+        await Task.Delay(ClosesAfter);
+        if (!_pointerAway) return;
+        _pointerOver = false;
+        StateHasChanged();
+    }
+
+    /// <summary>The bar's classes: closed to the orb alone until one side needs the other.</summary>
+    private string BarClasses => Opening.Open ? "agent-bar" : "agent-bar is-closed";
+
+    /// <summary>Whether the orb's press has the box open, as a screen reader is told.</summary>
+    private string Expanded => Opening.Open ? "true" : "false";
+
+    /// <summary>
+    /// The visitor pressed the orb: a closed box opens and they are put in it; an open one closes again (Louis: "when
+    /// i click it again it must close"), its standing answer put away with it, unless the guide is still answering.
+    /// </summary>
+    private async Task HoldOpenAsync()
+    {
+        if (Opening.Open)
+        {
+            await CloseAsync();
+            return;
+        }
+
+        _held = true;
+        // Drawn open first, so the box is no longer out of reach when the visitor is put in it.
+        StateHasChanged();
+        await Task.Yield();
+        await FocusTheBox();
+    }
+
+    /// <summary>
+    /// Closes the box: the visitor's hold lets go, and an answer standing over it, or the whole talk, is put away. A
+    /// guide still answering keeps it open, since the visitor would miss the words.
+    /// </summary>
+    private async Task CloseAsync()
+    {
+        _held = false;
+        _pointerOver = false;
+        _talkOpen = false;
+        if (!Runner.Streaming && (Caption is not null || TalkShows)) await PutTheAnswerAway();
+    }
+
+    /// <summary>The visitor is in the box, which holds it open.</summary>
+    private void Entered()
+    {
+        _held = true;
+        _inBox = true;
+    }
+
+    /// <summary>
+    /// The visitor left the box: a moment later, if they have not come back, it lets the bar close, unless something
+    /// else still holds it open.
+    /// </summary>
+    private async Task LeftAsync()
+    {
+        _inBox = false;
+        await Task.Delay(ClosesAfter);
+        if (_inBox) return;
+        _held = false;
+        StateHasChanged();
+    }
 
     /// <summary>The guide's mark on its orb: the first letter of its name, as the design drew it.</summary>
     private string? Initial => Title.Length > 0 ? Title[..1] : null;

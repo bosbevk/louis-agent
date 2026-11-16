@@ -190,13 +190,23 @@ message and the tool calls stay the widget's, and only what it draws differs. Th
 centred at the page's foot, at most 840 wide and a full pill, drawn as a bar that floats: the theme's dock under a
 field's drawing, with the shadow of what floats. Under it the page's content fades away into the bare page, a
 strip the frame lays at the screen's foot, so nothing passes sharp behind the bar. In it sit the agent's orb, a line of what the agent is
-doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
-in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
+doing, and the box. A press on that line lands in the box. Over the bar stands the agent's last answer, or the
+whole talk when the visitor opens it.
+
+The bar starts closed, as the orb alone, and opens only while one side needs the other. It opens while the visitor
+holds it (they pressed the orb, which puts them in the box, or they are in the box), while they are writing or
+have picked a piece of the page, while the guide is answering, and while an answer or the whole talk stands over the
+bar. Three seconds after the visitor leaves the box, with nothing else holding it, it closes again, and a second
+press on the orb closes it at once, putting away the answer that stood over it, unless the guide is still answering.
+The row sits in a dock that draws in to the ball in the middle of the bar and opens out from there, one short move.
+A closed box is out of reach of the keyboard too, so no one tabs into words they can't see. The rule is one small
+record, `BarFacts`, and its `Open`.
 
 A site may stand something in the empty room on each side of the bar, such as its name and a note. It wraps its
 widget in `BarSides` (`Widget/Bar/Sides`), giving a start and an end. They reach the bar through Blazor's cascade,
-so the widget between them carries nothing for them. The bar draws them just outside its row, level with it, and
-only on a screen at least 1440 wide. On a narrower one they stand aside rather than crowd it. The note on the right
+so the widget between them carries nothing for them. The bar hangs them on the edges of the dock that holds its
+row, level with it, so they sit beside the orb when the bar is closed and ride out with the box as it opens, and only
+on a screen at least 1440 wide. On a narrower one they stand aside rather than crowd it. The note on the right
 can be the framework's `BrandNote` (`Site/Brand`): a line with a link under it, its mark before its words.
 
 The orb (`Widget/Orb`) is a general part of its own: a disc with five states, and the agent's mark on it, which

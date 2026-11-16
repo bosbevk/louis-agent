@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX172 · When a thing shows is a rule of its own, worth a type
+
+Louis wanted the agent bar to start closed and open only when the visitor or the guide needs the other. Every fact
+that decides it was already in the bar: whether the guide is answering, whether the visitor is writing or picked a
+piece, whether an answer stands. What was missing was the rule that joins them, and one fact of the visitor's own,
+that they pressed the orb or are in the box. Put on a small record of its own, `BarFacts`, the rule reads as one
+line and is tested case by case without drawing anything, while the bar only asks it. The same holds for the
+orb's state, which the bar also asks of a type. Skill 18 (testing and shipping: a rule tested apart from its
+drawing).
+
 ## FX171 · A page is more than its file
 
 Louis asked for the "What we build" page to go, with everything of it. Deleting the page's file was the smallest

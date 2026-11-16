@@ -230,8 +230,8 @@ is held to the repo by a test. No page links to the repository. The landing's `P
 search engines (`Content/SiteFacts.cs`).
 
 Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
-framework's widget as its bar: the mark, a box that is always there to type in, and the site's three questions as
-chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
+framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,
+and the site's three questions as chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
 button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
 "Louis · AI", and hides its work (`ShowWork="false"`). On a screen wide enough, the bar has the site's brand on
 either side of it. On the left stands the name, with the mark as its o. On the right stands the tagline, with Louis's

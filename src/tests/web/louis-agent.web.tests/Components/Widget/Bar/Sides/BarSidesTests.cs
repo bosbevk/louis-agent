@@ -50,8 +50,8 @@ public class BarSidesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".agent-bar > .agent-side.is-start .the-name"), Is.Not.Null);
-            Assert.That(cut.Find(".agent-bar > .agent-side.is-end .the-note"), Is.Not.Null);
+            Assert.That(cut.Find(".agent-bar .agent-dock > .agent-side.is-start .the-name"), Is.Not.Null);
+            Assert.That(cut.Find(".agent-bar .agent-dock > .agent-side.is-end .the-note"), Is.Not.Null);
         });
     }
 

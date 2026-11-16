@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Widget.Bar;
+using LouisAgent.Web.Components.Widget.Bar.Opening;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Themes;
@@ -133,6 +134,18 @@ public class SiteAreasTests
 
         Assert.That(One<AgentSuggestions>(services).Questions,
             Is.EqualTo(new[] { "Walk me through this page", "What does it cost?" }));
+    }
+
+    /// <summary>
+    /// FX172: a site picks how its guide's bar opens, on a press or under the pointer, through the builder (Louis:
+    /// "site picks it"), and the bar reads it.
+    /// </summary>
+    [Test]
+    public void HowTheBarOpens_IsNamedThroughTheBuilder()
+    {
+        var services = Named(areas => areas.BarOpens(BarOpens.Hover));
+
+        Assert.That(One<BarOpening>(services).Opens, Is.EqualTo(BarOpens.Hover));
     }
 
     /// <summary>An area that carries a theme, as a theme's package adds one (F151.1).</summary>

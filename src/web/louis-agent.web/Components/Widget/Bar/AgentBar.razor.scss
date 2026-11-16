@@ -17,26 +17,37 @@
     flex-direction: column;
     gap: 10px;
 }
-/* The row is the bar that floats (F151.4, F151.6): 104 high round a ball of 76 with 14 of room on every side, its
-   ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
-   reach past its edge. The ball is the mark as the bar shows it. */
-/* What the site stands on each side (FX168), in the room the bar leaves: as high as the row (its ball of 76 with 14
-   of room over and under it) and level with it, just outside the bar. Only a screen wide enough for both has them;
-   on a narrower one they stand aside rather than crowd the bar. */
+/* The dock holds the row (FX172): open, it is the bar's whole width; closed, it draws in to the ball and its room, in
+   the middle (Louis: "must be centered"), and opens out again from there in one short move, never on a loop. */
+.agent-dock {
+    position: relative;
+    max-width: 100%;
+    margin-inline: auto;
+    // Its width, since an auto margin in the bar's column would shrink it to its content (Louis: "longer").
+    width: 100%;
+    transition: max-width .4s var(--web-ease);
+}
+.agent-bar.is-closed .agent-dock { max-width: calc(76px + 2 * 14px); }
+/* What the site stands on each side (FX168), attached to the dock's edges (Louis: "the must attach"): beside the
+   ball when closed, beside the box's ends when open, and level with the row. Only a screen wide enough for both has
+   them; on a narrower one they stand aside rather than crowd the bar. */
 .agent-side {
     position: absolute;
+    top: 0;
     bottom: 0;
-    height: calc(76px + 2 * 14px);
     display: none;
     align-items: center;
     white-space: nowrap;
 }
-.agent-side.is-start { right: calc(100% + 36px); }
-.agent-side.is-end { left: calc(100% + 36px); }
+.agent-side.is-start { right: calc(100% + 28px); }
+.agent-side.is-end { left: calc(100% + 28px); }
 .agent-side.is-start ::deep .wordmark { font-size: 26px; }
 @media (min-width: 1440px) {
     .agent-side { display: flex; }
 }
+/* The row is the bar that floats (F151.4, F151.6): 104 high round a ball of 76 with 14 of room on every side, its
+   ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
+   reach past its edge. The ball is the mark as the bar shows it. */
 .agent-row {
     display: flex;
     align-items: center;
@@ -46,6 +57,21 @@
     @include surface.floating-bar();
     border-radius: 999px;
 }
+/* The orb's press (FX172): the orb itself, with nothing of a button's own drawn round it. */
+.agent-open {
+    flex: none;
+    display: grid;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+}
+/* Closed, the bar is the orb alone (FX172, Louis: "the agent must start closed"): the row fills the drawn-in dock,
+   its room even on both sides of the ball, and the box it clips is out of reach. */
+.agent-row { transition: padding .4s var(--web-ease); }
+.agent-bar.is-closed .agent-row { padding-right: 14px; }
+.agent-bar.is-closed .agent-box { visibility: hidden; }
 .agent-row ::deep .orb {
     width: 76px;
     height: 76px;
