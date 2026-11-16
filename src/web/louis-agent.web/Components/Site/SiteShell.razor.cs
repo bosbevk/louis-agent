@@ -31,6 +31,10 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? Tagline { get; set; }
 
+    /// <summary>What stage the site is at, such as a <c>StageFlag</c>, beside its name (FX170); empty, nothing stands there.</summary>
+    [Parameter]
+    public RenderFragment? Stage { get; set; }
+
     /// <summary>Where the brand takes you; home unless the site says otherwise.</summary>
     [Parameter]
     public string BrandHref { get; set; } = "/";

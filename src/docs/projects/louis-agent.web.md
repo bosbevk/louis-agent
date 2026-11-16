@@ -336,7 +336,11 @@ the page), F127.4.1 (cards), F127.4.2 and ADR 0117 (one agent asking another), F
 The engine and an agent run without any of this: the command line, Rider, the API and MCP need no web. This part
 is what turns an agent into a website.
 
-**The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. It adds a scroll progress
+**The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. Beside the site's name, and
+outside its link, the header has a slot for the site's stage, `Stage`; `StageFlag` (`Site/Brand`) fills it with a
+small tag that opens a note on a press, the browser's own popover, so a press elsewhere or Escape closes it with no
+script of ours. Beside it in `Site/Brand`, `MarkShowcase` shows a site's mark large, the orb with its letter, and,
+when asked, the name on black, white, violet and glass. The frame also adds a scroll progress
 line, a way back up, and a section index on the left, which a site may switch off with `ShowIndex="false"` and keep
 for later; louis-agent.dev has it off. When a site puts the guide in the corner as its bar, the
 corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a

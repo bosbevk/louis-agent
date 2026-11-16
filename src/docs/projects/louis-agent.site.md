@@ -103,7 +103,9 @@ that says what each one means, and a visitor who presses a state's button holds 
 headline "Ask the website.", a few words on what we build, a website that answers for a business, and two buttons,
 "Ask for yours" and "See what it does", which goes to that section. Under the hero runs the tape, one line of what
 the agents did that never stops. Then comes what it does, as four glass cards, then where it runs, three cards for
-your server, your model and your data, then the demos, three photographs fanned out, each in a glass window with its
+your server, your model and your data. In the middle stands the brand: the idea that the mark is the agent itself,
+the mark large with the name on black, white, violet and glass, and the theme beside it, which leads to its page.
+None of its panels can be picked to ask the guide about. Then come the demos, three photographs fanned out, each in a glass window with its
 business's made-up address in the bar. The one a visitor picks, or the guide shows, comes to the front. Custom agents come next: a
 product window plays the guesthouse, the restaurant and the law practice in turn, each its own page with its agent
 answering a visitor from its recorded talk, drawing the request and sending it on a yes. The last strip asks the
@@ -228,6 +230,10 @@ on it.
 The pages are written from the docs the guide reads. Every number comes from the ledger or an eval run, and each claim
 is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
 search engines (`Content/SiteFacts.cs`).
+
+Beside the site's name in the header stands its stage, a small "alpha-1" flag. A press on it opens a short note,
+that this is version alpha-1 and a visitor may run into inconsistencies while it is built, with a way to the
+contact page; a press anywhere else closes it.
 
 Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
 framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,

@@ -87,4 +87,22 @@ public class ShowroomLayoutTests
 
         Assert.That(cut.FindComponent<LouisAgent.Web.Components.Site.SiteShell>().Instance.ShowIndex, Is.False);
     }
+
+    /// <summary>
+    /// FX170: the header says the site is at alpha-1, and a press says what that means (Louis: "flag in the header
+    /// version: alpha disclosure", "running version alpha-1 may experience inconsistencies").
+    /// </summary>
+    [Test]
+    public void TheHeader_FlagsAlphaOne()
+    {
+        using var ctx = SitePageContext.Create();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-header .site-stage button.stage-flag").TextContent.Trim(), Is.EqualTo("alpha-1"));
+            Assert.That(cut.Find(".site-header .stage-note").TextContent, Does.Contain("inconsistencies"));
+        });
+    }
 }

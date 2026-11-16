@@ -511,6 +511,25 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX170 · The browser's own popover before a script of ours
+
+Louis wanted a flag in the header saying the site is at alpha-1, with a short note behind it. A note that opens on
+hover fails on a phone and for a keyboard, and one that opens on a press usually needs a script to open it, close it
+on a press elsewhere and on Escape, and stand it over the page. The browser does all of that itself now: a button
+names the note it opens with `popovertarget`, and the note says it is one with `popover`. So the flag is markup and
+styles, nothing more, and it works the same everywhere the browser does. The flag sits beside the site's name and
+not inside it, since the name is a link home and a button can't stand inside a link. Skill 18 (testing and shipping:
+the test holds the button and its note named to each other).
+
+## FX169 · A part any site could draw goes to the framework, even when one site asks for it
+
+Louis wanted a section on the landing for the brand, with the theme beside it, and nothing in it the guide could be
+asked about. The landing is the site's, but the mark shown large, with the name on four grounds, is a part any site
+could use to show its own brand. So it went to the framework as `MarkShowcase`, given the site's name and letters,
+and the site's section is only the framework's band, tiles and that part, configured. The tiles' own switch, `Pick`,
+kept them out of the guide's reach without anything new. Skill 20 (extensibility: a site configured from framework
+parts).
+
 ## FX175 · Off is not gone: a switch keeps a part for later
 
 Louis wanted the section index out of sight on his site, but not deleted. The frame drew it on every site, with no
