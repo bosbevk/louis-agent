@@ -126,6 +126,8 @@ a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-
 :is([data-piece]:hover, [data-selected], [data-lit]) > .piece-tag { opacity: 1; transform: none; }
 [data-selected] > .piece-tag::before { content: attr(data-picked); }
 [data-lit] > .piece-tag { @include surface.tag-agent(); border-radius: 8px; }
+/* The piece the agent shows wears the theme's showing drawing on its own edge, over the dimmed page. */
+[data-piece][data-lit] { @include surface.showing(); }
 [data-lit] > .piece-tag::before { content: attr(data-shown); }
 [data-lit] > .piece-tag::after {
     content: "";
