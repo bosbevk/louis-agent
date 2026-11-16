@@ -136,6 +136,22 @@ public class SiteLayoutTests
         });
     }
 
+    /// <summary>From every page you can ask for a site of your own: the header ends with that button.</summary>
+    [Test]
+    public void TheHeader_EndsWithTheWayToAskForYours()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var ask = cut.Find(".site-header .site-actions > a.btn.btn-solid");
+        Assert.Multiple(() =>
+        {
+            Assert.That(ask.TextContent, Is.EqualTo("Ask for yours"));
+            Assert.That(ask.GetAttribute("href"), Is.EqualTo("/contact"));
+        });
+    }
+
     /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
     [Test]
     public void TheSlogan_SitsUnderTheBrand()
@@ -158,24 +174,46 @@ public class SiteLayoutTests
         Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because you can"));
     }
 
-    /// <summary>The brand is the lockup (F110): the mark, its copy, then the name, as the brand guide says.</summary>
+    /// <summary>
+    /// The brand is the name with the mark as its o (F151.6), and a screen reader hears "louis-agent". The old
+    /// mark's picture is gone from the name.
+    /// </summary>
     [Test]
-    public void TheBrand_IsTheLockup()
+    public void TheBrand_IsTheNameWithTheMarkAsItsO()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
-        var brand = cut.Find(".site-brand");
 
         Assert.Multiple(() =>
         {
-            Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("src"), Is.EqualTo("brand/mark.svg"));
-            Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("alt"), Is.EqualTo(""));
-            Assert.That(brand.QuerySelector(".site-brand-name")!.TextContent.Trim(), Is.EqualTo("louis-agent"));
-            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot,
-                    "src/site/louis-agent.site/wwwroot/brand/mark.svg")),
-                "the mark is the app's own copy");
+            Assert.That(cut.Find(".site-brand .wordmark .wordmark-name").TextContent, Is.EqualTo("louis-agent"));
+            Assert.That(cut.Find(".site-brand .wordmark .wordmark-seen").TextContent, Is.EqualTo("luis-agent"));
+            Assert.That(cut.FindAll(".site-brand img"), Is.Empty);
         });
+    }
+
+    /// <summary>Each of the site's three frames draws the name that way, the showroom's and the admin's too.</summary>
+    [TestCase("SiteLayout")]
+    [TestCase("ShowroomLayout")]
+    [TestCase("AdminLayout")]
+    public void EachFrame_DrawsTheNameWithTheMark(string layout)
+    {
+        string markup = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/site/louis-agent.site/Layout", $"{layout}.razor"));
+
+        Assert.That(markup, Does.Contain("<Brand><Wordmark Before=\"l\" After=\"uis-agent\" /></Brand>"));
+    }
+
+    /// <summary>The footer's name is drawn the same way.</summary>
+    [Test]
+    public void TheFootersName_IsDrawnWithTheMark()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.Find(".site-footer .wordmark .wordmark-name").TextContent, Is.EqualTo("louis-agent"));
     }
 
     /// <summary>
@@ -201,24 +239,25 @@ public class SiteLayoutTests
                     "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
                     "/triage-demo"
                 }));
-            Assert.That(cut.FindAll(".site-actions"), Is.Empty, "no Watch it work");
+            Assert.That(cut.Find(".site-actions").TextContent, Does.Not.Contain("Watch it work"));
             Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);
         });
     }
 
     /// <summary>
-    /// The guide sits in the frame's corner, folded, on every page, offered as the page's tour alone (FX114).
+    /// The guide stands on every page as the bar at its foot, the one the showroom has (F151.6, Louis: "we will use
+    /// the same guide as in design chat widget everywhere"): no tour button floats in the corner.
     /// </summary>
     [Test]
-    public void TheCorner_HoldsTheGuide_Folded()
+    public void TheCorner_HoldsTheGuide_AsTheBar()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.FindAll(".site-corner .chat-widget button.widget-tour"), Has.Count.EqualTo(1));
-        Assert.That(cut.FindAll(".site-corner button.widget-button"), Is.Empty);
-        Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
+        Assert.That(cut.FindAll(".site-corner .chat-widget.is-bar .agent-bar"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll("button.widget-tour"), Is.Empty);
+        Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
     }
 
     /// <summary>

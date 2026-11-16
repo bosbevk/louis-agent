@@ -14,7 +14,7 @@ namespace LouisAgent.Site.Tests.Pages;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "A website that talks to your customers.")]
+    [TestCase(typeof(HomePage), "/", "Ask the website.")]
     [TestCase(typeof(HowItWorksPage), "/framework/how-it-works", "One turn, through every layer.")]
     [TestCase(typeof(ArchitecturePage), "/framework/architecture",
         "The whole framework, as the repository is laid out.")]
@@ -178,7 +178,8 @@ public class SitePagesTests
 
     /// <summary>
     /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, from R500 a month, then "Ask for yours"
-    /// and "See one work", with the tour Louis liked (F118) kept beside them, and Louis taking a lead in the aside.
+    /// and "See one work", and Louis taking a lead in the aside. No tour button: the guide's bar is at the foot of
+    /// every page (F151.6, Louis: "these button must go").
     /// </summary>
     [Test]
     public void TheHero_SellsTheWebsiteWithAnAgent()
@@ -191,14 +192,16 @@ public class SitePagesTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find(".hero .kicker").TextContent, Does.Contain("from R500 a month"));
-            Assert.That(cut.Find(".hero h1").TextContent, Does.Contain("website"));
-            Assert.That(actions, Has.Count.EqualTo(3));
+            Assert.That(cut.Find(".hero h1").TextContent, Is.EqualTo("Ask the website."));
+            Assert.That(cut.Find(".hero").ClassList, Does.Contain("is-centred"));
+            Assert.That(cut.FindAll(".hero .hero-art .mark-states .orb"), Has.Count.EqualTo(1),
+                "the mark, above the words");
+            Assert.That(actions, Has.Count.EqualTo(2));
             Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Ask for yours"));
             Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See one work"));
-            Assert.That(actions[2].TextContent, Does.Contain("Take the tour"));
             Assert.That(actions[0].GetAttribute("href"), Is.EqualTo("/contact"));
             Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/demos"));
-            Assert.That(actions[2].ClassList, Does.Contain("guide-button"));
+            Assert.That(cut.FindAll(".hero .guide-button"), Is.Empty);
             Assert.That(cut.FindAll(".hero .live-lead"), Has.Count.EqualTo(1), "Louis taking a lead, beside it");
             Assert.That(cut.Find(".hero .live-lead .turn-head").TextContent, Does.Contain("Louis · AI"));
         });

@@ -56,12 +56,25 @@
     background: linear-gradient(135deg, var(--bs-success), var(--bs-success-text-emphasis));
 }
 
-/* The light behind a chat: the brand's colour from the top right, its second colour from the bottom left and a
-   breath of the first in the middle, over the page's own colour. */
+/* The page behind everything: the theme's lines over the page's own colour. Its lights are a layer of their own. */
 @mixin page-light() {
-    background:
-        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
-        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
-        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%),
-        var(--bs-body-bg);
+    background: var(--web-page-lines), var(--bs-body-bg);
+}
+
+/* The lights behind the page's content (F151.6): the theme's, on a layer of their own that fills the screen and
+   holds still (Louis, 2026-11-16: the drifting lights held still), so nothing behind the glass is painted again
+   while the page is open. What includes it says its content. */
+@mixin page-lights() {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--web-page-lights);
+}
+
+/* The page behind as one piece, where something must stand in for it, such as the fade under the agent's bar: the
+   lights over the page's own lines and colour, held to the screen as the page's are. */
+@mixin page-behind() {
+    background: var(--web-page-lights), var(--web-page-lines), var(--bs-body-bg);
+    background-attachment: fixed;
 }

@@ -10,7 +10,7 @@ body::before {
    into a picture: a grey cast and a file of many megabytes. And a page that says it is dark has its sheet painted
    with the browser's own dark canvas, which no background rule reaches: the margins printed black. Paper is light. */
 @media print {
-    body::before { display: none; }
+    body::before, body::after { display: none; }
     :root { color-scheme: light; }
 }
 .app { position: relative; z-index: 1; }
@@ -35,12 +35,14 @@ body::before {
 /* A brand of a mark and a name keeps them on one line, the tagline under them (F144). */
 .brand-line { display: inline-flex; align-items: center; gap: 8px; }
 .tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--bs-secondary-color); text-wrap: balance; animation: rise .7s .9s var(--web-ease) both; }
-/* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
-   the sidebar, the chat and the composer's fade all sit over the same light. ---- */
+/* ---- The page behind everything (F20, F151.6): the theme's lines on the page, held still while it scrolls, and
+   the theme's lights on a layer under all the page holds, so the sidebar, the chat and the composer's fade all sit
+   over the same light, which holds still. ---- */
 body {
     @include surface.page-light();
     background-attachment: fixed;
 }
+body::after { content: ""; @include surface.page-lights(); }
 .conversation { background: transparent; }
 .composer { @include surface.fades-up(.92, 55%); }
 .user-message { @include surface.spoken-deep(); }

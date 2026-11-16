@@ -177,9 +177,9 @@ public class AgentBarTests
 
     /// <summary>
     /// The chips float over whatever the page shows, a business's light website included. Hovered, a chip once
-    /// turned to see-through white and vanished over a light page. So a chip is a pane of its own that floats, drawn
-    /// by the surface tool, a hovered chip gets no wash of its own over that, and the note after the chips has a
-    /// backing too.
+    /// turned to see-through white and vanished over a light page. So a chip is the surface tool's floating chip,
+    /// which has the body a theme gives a chip (F151.6), a hovered chip gets no wash of its own over that, and the
+    /// note after the chips has a backing too.
     /// </summary>
     [Test]
     public void OverALightPage_AChipStaysReadable_HoveredToo()
@@ -192,7 +192,7 @@ public class AgentBarTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(chip, Does.Contain("@include surface.float("));
+            Assert.That(chip, Does.Contain("@include surface.floating-chip();"));
             Assert.That(hovered, Is.Not.Empty.And.Not.Contain("background").And.Not.Contain("surface."),
                 "never see-through white");
             Assert.That(noted, Does.Contain("@include surface.tag();"));

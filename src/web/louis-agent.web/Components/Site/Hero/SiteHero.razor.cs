@@ -4,9 +4,10 @@ namespace LouisAgent.Web.Components.Site.Hero;
 
 /// <summary>
 /// The first thing on a site's landing (F118, ADR 0106): a kicker, the headline, a lede, a quiet note, the actions,
-/// and something alive beside them when the site has it. Every site's landing opens this way and only the words
-/// differ, so the shape is the framework's and the site fills the slots. It marks itself as the page's "Top" in the
-/// section index.
+/// and something alive beside them when the site has it. A site may open the words with a piece of art, and may
+/// have it all stand centred, with what was beside the words below them (F151.6). Every site's landing opens this
+/// way and only the words differ, so the shape is the framework's and the site fills the slots. It marks itself as
+/// the page's "Top" in the section index.
 /// </summary>
 /// <remarks>
 /// Template Method, in Razor (Gang of Four), as <see cref="SiteShell"/> is: the layout is fixed here and a site
@@ -40,6 +41,18 @@ public partial class SiteHero
     /// <summary>What stands beside the words: a live turn, a picture, nothing.</summary>
     [Parameter] public RenderFragment? Aside { get; set; }
 
-    /// <summary>Two columns only when there is something for the second one.</summary>
-    private string Classes => Aside is null ? "hero" : "hero with-aside";
+    /// <summary>A piece of art that opens the words, above the kicker, such as the agent's mark drawn large.</summary>
+    [Parameter] public RenderFragment? Art { get; set; }
+
+    /// <summary>The words stand centred, and what would stand beside them goes below.</summary>
+    [Parameter] public bool Centred { get; set; }
+
+    /// <summary>Two columns only when there is something for the second one, centred when the site says so.</summary>
+    private string Classes => (Aside, Centred) switch
+    {
+        (null, false) => "hero",
+        (null, true) => "hero is-centred",
+        (_, false) => "hero with-aside",
+        _ => "hero with-aside is-centred"
+    };
 }

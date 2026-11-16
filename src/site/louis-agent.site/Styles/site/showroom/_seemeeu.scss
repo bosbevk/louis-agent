@@ -1,0 +1,5 @@
+/* Seemeeu Guesthouse's own values (F151.6): Atlantic with sand on it, on a salt-white page with deep sea ink.
+   Its website keeps this one look whatever theme and style the page around it wears, its agent's corner too. */
+@use "../../tools/business";
+
+@include business.site("seemeeu.example", #0b3a4a, #e9dcc3, #fbf8f2, #14262d);

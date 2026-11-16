@@ -171,11 +171,23 @@ The widget knows the page. A script module beside it reads the page's address, t
 is sent, and the runner sends them with the first message written from a page. So the guide answers about what
 the visitor sees.
 
+The widget's talk outlives the widget. A site that has the showroom keeps one guide per identity
+(`Widget/Door/GuideKeeper`): its runner with the chat and the session, whether its panel is open, and the page its
+last message came from. A move to a page in another layout throws the widget away and builds another, and the new
+one takes that guide over, so the talk carries on, even in the middle of an answer. A reload of the page throws the
+whole app away, so there the widget reads the browser instead: when it starts, its runner takes up the newest talk
+saved under the widget's key, unless that talk has ended (`ChatRunner.ResumeAsync`). The talk shows again, and the
+next question goes to the same session. The API keeps a session only while it runs, and lets one go after four idle hours, so
+that session may be gone. Then the message comes back as not found, the widget drops the old talk and asks the
+same question again in a new session, with the page's words once more. The visitor gets an answer either way. What
+is lost then is what the agent remembered of the old talk.
+
 The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
 `Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
 message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
-centred at the page's foot, at most 760 wide, drawn as a bar that floats: the theme's bar with its hairline all
-round it and the shadow of what floats. In it sit the agent's orb, a line of what the agent is
+centred at the page's foot, at most 840 wide and a full pill, drawn as a bar that floats: the theme's dock under a
+field's drawing, with the shadow of what floats. Under it the page's content fades away into the bare page, a
+strip the frame lays at the screen's foot, so nothing passes sharp behind the bar. In it sit the agent's orb, a line of what the agent is
 doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
 in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
 
@@ -295,8 +307,18 @@ The engine and an agent run without any of this: the command line, Rider, the AP
 is what turns an agent into a website.
 
 **The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. It adds a scroll progress
-line, a way back up, and a section index on the left. The index is built from the page's bands: each band puts
+line, a way back up, and a section index on the left. When a site puts the guide in the corner as its bar, the
+corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a
+screen: the room is `--site-bar`, the name a slide, a paged section and the way up already end above, so each ends
+above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
 itself on the frame's list as it draws.
+
+On a phone, 720 pixels wide or less, the header is one slim row: the site's name, and a menu button at the right.
+The button opens a sheet that hangs just under the header, over the page, holding the links one under the other,
+then the look switch and the site's actions. The sheet wears the theme's look for what floats over the page's
+words. It stays open while the visitor opens a list in it, such as the demos, and shuts when a link takes them to
+a page. On a wider screen the sheet is no box of its own, so the links and the actions stand in the header's row
+as before, and the button is not drawn.
 
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
 menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
@@ -308,9 +330,27 @@ in-page link that lands its section centred, and a reveal that each marked block
 enters. All of it honours the system's less-motion setting, unless the viewer switched motion on. A site marks what
 moves and holds the look (the keyframes, the index, the line) in its own partials, so a site chooses its motion.
 
+The frame's module also brings the lens, the bend a piece of real glass gives what lies behind it, kept in a module
+of its own, `js/lens.js`. A theme that has one says how thick its glass is: how many pixels its wall is at the edge
+and how much higher its middle stands. A theme whose wall is 0 has no lens, and the module does nothing. A pane
+says in its own styles that it may wear the lens, through a value the surface tool sets on it and never hands down
+to what the pane holds: a pane under the pointer, a pane picked or opened, and a pane the agent shows. Only the pane
+under the pointer and the picked and shown ones wear it, so every other pane stays clear glass and the page pays for
+one or two lenses, never for all of them. A picked pane keeps it while it is within 400 pixels of the screen, lit
+white from inside along its edge; a shown one is lit violet. The lens itself is an SVG filter laid on what is behind
+the pane: a picture of how far each point is moved, worked out at half size from Snell's law over a rounded top,
+and a picture of the light on its edge. Both are worked out once for each size and kept, so putting the lens on a
+pane a second time costs about a millisecond. Only Chromium runs an SVG filter on what is behind a piece, so every
+other browser keeps the clear pane.
+
 **What a page is built of.** A page is built of `Band`s, each a named section, and the framework's `SiteHero`,
 `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words. A `GuideButton` anywhere asks the
 guide a question.
+
+A `SiteHero` is the first thing on a landing: a kicker, the headline, a lede, a quiet note and the actions, each a
+slot the site fills, with something alive beside the words when the site has it. A site may also open the words with
+a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside
+the words goes below them.
 
 A `Band` is one named area of a page: a section with a required id, an optional kicker and the site's classes. It
 draws no style of its own. The id is required so that every area on every site is named, and the guide can send a
@@ -477,7 +517,8 @@ tour stops at the same places whatever the page looks like. On a phone the title
 chapters.
 
 **A business's website, as a mock** (`Mock/`). `SiteMock` is a browser bar, the business's sample brand, a page
-that scrolls inside the mock, and its agent's chat.
+that scrolls inside the mock, and its agent's chat. It says whose website it is in a `data-site` attribute, the
+business's address, so a site's sheet can set that business's own values for the theme's names under it.
 
 The mock is as big as its window. It names one size, between 12 and 17 px, that follows its own width or its
 height, whichever asks for less. Its header and its page take that size, and everything they hold is sized in em.
@@ -609,8 +650,12 @@ its corners, a shadow, a blur and a corner. A pane that answers the pointer, suc
 pick, has a hover of its own: how far it lifts, an edge and a shadow, the last two written as shadows. A pane that
 floats over the page, such as a menu's list or the way back up, has the shadow it throws. A veil, a thin sheet
 laid over what is behind it such as the showroom's rail and its dock, has a fill, an edge and a blur. An inset, a piece set into the page such as the chat's card or a field,
-has a fill and an edge, the page's colour and the hairline. A bar, which is the header, the footer or the agent's bar, has a fill, an
-edge and a blur. The main button has a fill and the ink on it, and the second one an outline. The mark has its disc,
+has a fill and an edge, the page's colour and the hairline. A bar, which is the header or the footer, has a fill, an
+edge and a blur. A dock, which is the agent's bar at the page's foot, has a fill, an edge and a blur of its own, a
+bar's until a theme says otherwise; where the words go in it is sunk, with a fill, the shadow that sinks it and
+the shadow it has while it is typed in; and a chip that floats over the page has a fill, an edge and a blur, a
+pane's until a theme says otherwise. The main button has a fill and the ink on it, the second one an outline, and
+both the shadow a button stands on. The mark has its disc,
 its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Last come the
 drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
 `--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.

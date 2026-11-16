@@ -52,6 +52,14 @@
 .site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
 .site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
 
+/* The actions at the header's end stand in a row, the look switch and what the site adds, a little apart. */
+.site-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+
+/* The menu (F151.6): on a wide screen it is no box of its own, so the links and the actions stand in the header's
+   row, and its button is not drawn. On a phone the button opens it as a sheet under the header. */
+.site-menu { display: contents; }
+.site-menu-button { display: none; }
+
 .site-main {
     flex: 1;
     max-width: 1280px;
@@ -130,11 +138,39 @@
    into the bar. */
 @media (max-width: 720px) {
     .site { --site-bar: 60px; padding-bottom: var(--site-bar); }
-    .site-header { gap: 12px; }
-    /* The actions, the look switch among them (F151.3), take a row of their own under the brand, so the switch's two
-       groups stay in reach and the menu keeps its row below. */
-    .site-actions { width: 100%; order: 2; }
-    .site-nav { gap: 16px; width: 100%; order: 3; }
+    /* The header is one slim row, the site's name and the menu button (F151.6, Louis's pick A of three: a top bar
+       with a sheet, as phones do), so the page keeps the screen. */
+    .site-header { gap: 12px; flex-wrap: nowrap; padding: 12px 16px; }
+    .site-menu-button {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 44px;
+        height: 44px;
+        margin-left: auto;
+        color: var(--bs-emphasis-color);
+        border-radius: 14px;
+        @include surface.quiet-press();
+    }
+    /* The sheet hangs under the header, over the page, and holds the links one under the other, then the switches
+       and the site's actions; it is placed by the header, not the screen, since a header with a blur is the box its
+       fixed children are placed in. */
+    .site-menu { display: none; }
+    .site-menu[data-open] {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 12px;
+        right: 12px;
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-height: calc(100dvh - 96px);
+        overflow-y: auto;
+        padding: 20px;
+        @include surface.frosted-float($radius: 18px);
+    }
+    .site-nav { margin-left: 0; flex-direction: column; gap: 16px; font-size: 17px; }
     .site-corner {
         left: 0;
         right: 0;
@@ -147,4 +183,31 @@
         @include surface.bar($side: top, $blur: none);
     }
     .site-up { left: 16px; bottom: calc(var(--site-bar) + 12px); }
+}
+
+/* With the guide as a bar in the corner (F151.6), the bar places itself at the page's foot, so the corner is no box
+   of its own, and the frame keeps the room the bar says it stands (--bar-room, from the bar's own module; until it
+   has said, the bar's usual height with its chips). That room is --site-bar, the name a slide, a paged section and
+   the way up already end above, on a wide screen and a phone alike. These come after the phone's rules, so they win
+   there too. On a screen only: paper has no bar, so a printed page keeps no room for one. */
+@media screen {
+    .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: var(--site-bar); }
+    .site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }
+    .site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }
+    /* Under the bar the page's content fades away into the bare page, as the design has it, so nothing passes
+       sharp behind the bar: a strip of the page itself at the screen's foot, see-through at its top. It lies over
+       the content and under the way up, the header and the bar. */
+    .site:has(.site-corner .chat-widget.is-bar)::after {
+        content: "";
+        position: fixed;
+        z-index: 9;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 280px;
+        pointer-events: none;
+        @include surface.page-behind();
+        -webkit-mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
+        mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
+    }
 }

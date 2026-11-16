@@ -17,7 +17,8 @@ public class SurfaceNamesTests
     /// </summary>
     private static readonly string[] Art =
     [
-        "bar", "field-focus", "field-rest", "focus-pane", "focus-pill", "gem", "group", "knob",
+        "field-focus", "field-rest", "focus-pane", "focus-pill", "gem", "group", "knob",
+        "mark", "mark-ball", "mark-o",
         "pane-hover", "pane-picked", "pane-rest", "pane-showing",
         "press-disabled", "press-hover", "press-pressed", "press-rest",
         "quiet-press-disabled", "quiet-press-hover", "quiet-press-picked", "quiet-press-pressed", "quiet-press-rest",
@@ -31,11 +32,16 @@ public class SurfaceNamesTests
         "--web-pane-fill", "--web-pane-edge", "--web-pane-rim", "--web-pane-light", "--web-pane-shadow",
         "--web-pane-blur", "--web-pane-radius",
         "--web-pane-hover-lift", "--web-pane-hover-edge", "--web-pane-hover-shadow",
-        "--web-float-shadow",
+        "--web-lens-wall", "--web-lens-rise",
+        "--web-float-shadow", "--web-frost-fill", "--web-frost-blur",
         "--web-veil-fill", "--web-veil-edge", "--web-veil-blur",
         "--web-inset-fill", "--web-inset-edge",
         "--web-bar-fill", "--web-bar-edge", "--web-bar-blur",
-        "--web-press-fill", "--web-press-ink", "--web-press-edge",
+        "--web-press-fill", "--web-press-ink", "--web-press-edge", "--web-press-shadow",
+        "--web-dock-fill", "--web-dock-edge", "--web-dock-blur",
+        "--web-sunk-fill", "--web-sunk-shadow", "--web-sunk-lit",
+        "--web-chip-fill", "--web-chip-edge", "--web-chip-blur",
+        "--web-page-lines", "--web-page-lights",
         "--web-mark-fill", "--web-mark-gloss", "--web-mark-ink",
         "--web-you", "--web-agent",
         "--web-violet-0", "--web-violet-1", "--web-violet-2", "--web-violet-3", "--web-violet-4",

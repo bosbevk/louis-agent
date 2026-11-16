@@ -26,4 +26,20 @@ public sealed class KeptGuide
 
     /// <summary>The page its last message carried, so a new page's words go once.</summary>
     public string? PageSentFor { get; set; }
+
+    /// <summary>
+    /// The visitor's last question, when the server has let the talk's session go, after hours idle or a restart
+    /// (F151.6); none while the talk goes on. Asking lets the old talk go, so the question can be asked again in a
+    /// new one with the page's words once more, and the guide never stands there taking no more messages. A talk
+    /// gone on its very first question is left as it is, with its notice: a new session that is gone at once would
+    /// only be gone again.
+    /// </summary>
+    public string? QuestionToAskAgain()
+    {
+        if (Runner?.Chat is not { Ended: true, Turns: [_, .., { UserText: var question }] }) return null;
+
+        Runner.Chat = null;
+        PageSentFor = null;
+        return question;
+    }
 }

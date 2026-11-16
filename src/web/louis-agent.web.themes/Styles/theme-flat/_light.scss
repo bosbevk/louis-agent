@@ -8,7 +8,10 @@
 @use "web/tools/colours";
 @use "theme-art";
 
-:root[data-theme="flat"][data-style="light"] {
+/* The values, as a set a piece can wear on its own: the page wears them under its theme and style, below, and a
+   piece that keeps one look whatever the page wears, such as a picture of someone's website, includes them and
+   sets its own colours over them. */
+@mixin values {
     // Written once each: the build makes the number form from the same value.
     @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
     @include colours.both(bs-danger, #d9675f);
@@ -79,9 +82,14 @@
     --web-pane-hover-lift: 0px;
     --web-pane-hover-edge: 0 0 0 2px #6b4dff;
     --web-pane-hover-shadow: 0 0 transparent;
+    // The lens: flat is solid, so nothing bends.
+    --web-lens-wall: 0;
+    --web-lens-rise: 0;
 
     // What floats over the page throws no shadow either: its line sets it apart.
     --web-float-shadow: none;
+    --web-frost-fill: var(--web-pane-fill);
+    --web-frost-blur: var(--web-pane-blur);
 
     // A veil, a panel on the stage: solid in flat, as a pane is.
     --web-veil-fill: var(--web-pane-fill);
@@ -101,6 +109,26 @@
     --web-press-fill: #6b4dff;
     --web-press-ink: #ffffff;
     --web-press-edge: 1.5px solid #0b0b0e;
+    --web-press-shadow: none;
+
+    // The agent's bar is a bar, the box in it an inset that lights when it is typed in, and a chip a small pane.
+    --web-dock-fill: var(--web-bar-fill);
+    --web-dock-edge: var(--web-bar-edge);
+    --web-dock-blur: var(--web-bar-blur);
+    --web-sunk-fill: var(--web-inset-fill);
+    --web-sunk-shadow: none;
+    --web-sunk-lit: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85), 0 0 26px -6px rgba(var(--web-overlay-rgb), .6);
+    --web-chip-fill: var(--web-pane-fill);
+    --web-chip-edge: var(--web-pane-edge);
+    --web-chip-blur: var(--web-pane-blur);
+
+    // The page: no lines, and the lights the framework has: the colour you press from the top right, the second
+    // colour from the bottom left, and a breath of the first in the middle.
+    --web-page-lines: none;
+    --web-page-lights:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
 
     // The mark: the same flat violet disc and white l.
     --web-mark-fill: #6b4dff;
@@ -123,3 +151,5 @@
 
     color-scheme: light;
 }
+
+:root[data-theme="flat"][data-style="light"] { @include values; }

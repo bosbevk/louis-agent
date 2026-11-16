@@ -81,9 +81,14 @@
     --web-pane-hover-lift: 0px;
     --web-pane-hover-edge: 0 0 0 1px #8fd6a4;
     --web-pane-hover-shadow: 0 0 transparent;
+    // The lens: retro is solid, so nothing bends.
+    --web-lens-wall: 0;
+    --web-lens-rise: 0;
 
     // What floats over the page throws no shadow: its line sets it apart.
     --web-float-shadow: none;
+    --web-frost-fill: var(--web-pane-fill);
+    --web-frost-blur: var(--web-pane-blur);
 
     // A veil, a panel on a stage: solid, as a pane is.
     --web-veil-fill: var(--web-pane-fill);
@@ -103,6 +108,26 @@
     --web-press-fill: #8fd6a4;
     --web-press-ink: #111714;
     --web-press-edge: 1px solid #5c7a67;
+    --web-press-shadow: none;
+
+    // The agent's bar is a bar, the box in it an inset that lights when it is typed in, and a chip a small pane.
+    --web-dock-fill: var(--web-bar-fill);
+    --web-dock-edge: var(--web-bar-edge);
+    --web-dock-blur: var(--web-bar-blur);
+    --web-sunk-fill: var(--web-inset-fill);
+    --web-sunk-shadow: none;
+    --web-sunk-lit: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85), 0 0 26px -6px rgba(var(--web-overlay-rgb), .6);
+    --web-chip-fill: var(--web-pane-fill);
+    --web-chip-edge: var(--web-pane-edge);
+    --web-chip-blur: var(--web-pane-blur);
+
+    // The page: no lines, and the lights the framework has: the colour you press from the top right, the second
+    // colour from the bottom left, and a breath of the first in the middle.
+    --web-page-lines: none;
+    --web-page-lights:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
 
     // The mark: a flat disc of the colour you press.
     --web-mark-fill: #8fd6a4;

@@ -10,6 +10,11 @@ button:disabled { cursor: default; opacity: .4; }
 a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 * { scrollbar-width: thin; scrollbar-color: var(--web-scrollbar) transparent; }
 
+/* What a pane says to the frame's lens (F151.6): 1 for a piece it may bend under the pointer, 2 for one picked, 3
+   for one the agent shows, 0 for anything else. Registered so it is never handed down: a pane's words and buttons
+   are not panes of their own. */
+@property --web-lens-piece { syntax: "<integer>"; inherits: false; initial-value: 0; }
+
 /* A quieter line of text, anywhere: a hint, a count, a date. */
 .muted { color: var(--bs-secondary-color); }
 

@@ -95,6 +95,18 @@ public class SiteMockTests
         Assert.That(Mock(ctx).Find(".mock-chrome .mock-address").TextContent, Is.EqualTo("bakery.example"));
     }
 
+    /// <summary>
+    /// The mock says whose website it is, by its address (F151.6), so a site's sheet can set that business's own
+    /// values under it and under nothing else.
+    /// </summary>
+    [Test]
+    public void TheMock_SaysWhoseWebsiteItIs()
+    {
+        using var ctx = new BunitContext();
+
+        Assert.That(Mock(ctx).Find(".site-mock").GetAttribute("data-site"), Is.EqualTo("bakery.example"));
+    }
+
     /// <summary>The business's header has its name and its menu of its pages, and its hero line follows.</summary>
     [Test]
     public void TheBusinesssHeader_AndHero_AreItsOwn()

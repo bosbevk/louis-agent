@@ -12,8 +12,11 @@ namespace LouisAgent.Web.Themes.Tests;
 /// </summary>
 public class ThemesArtTests
 {
-    /// <summary>Where a site's page finds the themes project's files, from its own compiled stylesheet.</summary>
-    private const string Served = "../_content/louis-agent.web.themes/";
+    /// <summary>
+    /// Where a page finds the themes project's files, written from the site's root: a drawing is a value, and a
+    /// browser reads its address from the sheet of the rule that uses it, which for a component is not the site's.
+    /// </summary>
+    private const string Served = "/_content/louis-agent.web.themes/";
 
     /// <summary>The themes project's served files on disk.</summary>
     private static readonly string Root = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot");

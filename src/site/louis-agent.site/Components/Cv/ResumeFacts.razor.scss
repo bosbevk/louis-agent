@@ -1,15 +1,16 @@
-/* The CV's facts row (F142): cells on a hairline grid, the number big over what it counts. */
+@use "web/tools/surface";
+
+/* The CV's facts row (F142): one of the theme's panes, its cells side by side with a hairline between them, the
+   number big over what it counts (F151.6). */
 .cv-facts {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1px;
     margin-top: 32px;
-    background: var(--bs-border-color);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 12px;
     overflow: hidden;
+    @include surface.pane($radius: 12px);
 }
-.cv-fact { padding: 20px; background: var(--bs-tertiary-bg); }
+.cv-fact { padding: 20px; box-shadow: inset 1px 0 0 var(--bs-border-color); }
+.cv-fact:first-child { box-shadow: none; }
 .cv-fact b {
     display: block;
     font-size: 28px;
@@ -31,7 +32,11 @@
     .cv-facts {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         margin-top: 4mm;
+        border: 1px solid var(--bs-border-color);
         border-radius: 2.5mm;
+        background: none;
+        box-shadow: none;
+        backdrop-filter: none;
         break-inside: avoid;
     }
     .cv-fact { padding: 3.5mm; }

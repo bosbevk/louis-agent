@@ -49,25 +49,57 @@ that sets every name the framework sets: about sixty colours, each written throu
 or `colours.numbers` so its two forms agree, the faces and the easing, and the surfaces, such as a pane's fill, rim
 and blur. When the page's `<html>` says that theme and that style, the block's values win over the framework's.
 
-Glass in the dark is black with white words and Ultraviolet for the purple. A pane is almost clear, has no border
-of its own, takes its edge from a rim that is brightest at the bottom left and the top right, has two lights inside
-those corners, blurs what is behind it and throws no shadow. A piece set into the page, an inset such as the chat's
-card or a field, is as see-through as a pane, its edge drawn by its drawing. A bar is solid with a hairline, and a
-press is solid violet with white words. The mark is a ball of violet glass with a white letter. Flat sets an inset
-to its page's colour with its hairline.
+Glass in the dark is black with white words and Ultraviolet for the purple. A pane is its drawing and nothing
+else: no colour is painted under it and it has no border of its own, since the drawing holds its rim and its
+lights. The page shows through it sharp, with no blur, only a little brightened and deepened in colour, and it
+throws the shadow of something that stands off the page. At rest it carries a painted still bend at its edge: the
+light a lens would gather at its thick rim, white from the top left and a little violet at the far corner, drawn
+once as the pane's light and a few shadows inside its edge. Nothing in glass blurs what is behind it, the bar and
+the chips included. The agent's answer that floats over the page, and the talk it opens into, are clear glass with
+no blur too, but over a soft body nearly as thick as paint, a pale grey violet in the light and a deep violet black
+in the dark, so the page's words under them never read through. A piece set into the page, an inset such as the
+chat's card or a field, is as see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
+dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
+with no blur. Flat sets an inset to its page's colour with its hairline.
 
-A pane that answers the pointer differs between the two as well. In glass it lifts three pixels and wears no edge
-and no new shadow, since its light is in the hover drawing. In flat it stays where it is and wears a two pixel ring
-of the violet. What floats over the page throws a deep shadow in glass and none in flat, where its line sets it
-apart.
+The agent's bar at the page's foot is glass in its own way. It wears a field's drawing, the resting one and the
+focus one while it is typed in, over a dark body that is half see-through, so words that scroll under it stay out
+of the way. Where the words go is sunk into it with shadows only, and each chip over
+it wears the second button's drawing over a nearly solid body, since a chip floats over anything and must stay
+readable. Flat gives the three the look of its bar, its inset and its pane.
 
-A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: the pane's fill
-and blur, with no edge. In flat it is the pane's fill with the pane's edge and no blur.
+The mark is a drawing as well, and glass has three of it. Standing alone it is a clear bubble with a white l in
+it in the dark, and a violet ball inside clear glass in the light. In the agent's bar it is the violet ball in
+both styles. As a letter of the site's name it is the bubble with no l, drawn a little larger than its box. Each
+drawing moves a slow light across itself, and holds still under less motion. Since the drawing holds the l, glass
+gives the mark no disc, no gloss and no ink, so a letter a component writes on the mark does not show. A site
+whose agent is not louis-agent's sets the mark's drawings to none and the mark's own names, as each business in
+the showroom does.
 
-Glass in the light turns white and black over and keeps the purple. The page is a pale wash of the violet, mixed
-from its second step a third of the way into white, so it follows the purple. The words are black, and a
-visitor's mark is black. A pane is white glass, brighter than the page, with a white rim, a fine violet-dark line
-outside it and a soft shadow under it. A bar is near-white with a hairline.
+The page behind the glass is part of the theme. Glass lays a picture of silk ribbons of light behind the page's
+content, one for the dark and one for the light, each 3840 by 2160 pixels and stretched to cover the screen. It sits
+on a layer of its own that holds still while the page scrolls, so nothing behind the glass is painted again as the
+visitor reads; under the agent's bar the page's content fades into that same picture. The pictures are files this
+project serves beside the drawings, `glass/dark/silk.webp` and `glass/light/silk.webp`. Glass draws no lines of its
+own. Flat draws no lines either and keeps the framework's own three soft lights, which hold still as well.
+
+Glass bends what is behind a pane as real glass does, in the pane under the pointer and in the one picked or
+shown. Its glass is 52 pixels thick at the edge and its middle stands 70 higher, the cards of the design page.
+Flat has no lens, so its panes stay as they are. The bending itself is the framework's, in its frame.
+
+A pane that answers the pointer differs between the two as well. In glass it lifts three pixels, wears no edge and
+keeps the shadow it always throws, since its light is in the hover drawing. In flat it stays where it is and wears
+a two pixel ring of the violet. What floats over the page throws a pane's shadow in glass and none in flat, where
+its line sets it apart.
+
+A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: see-through,
+with the pane's colour change, no blur and no edge. In flat it is the pane's fill with the pane's edge and no blur.
+
+Glass in the light turns white and black over and keeps the purple. The page is a wash of the violet, mixed from
+its second step a little over half way into white, so it follows the purple and is deep enough for a white rim to
+stand against. The words are black, and a visitor's mark is black. A pane is its drawing here too, with the page
+sharp behind it, a little deepened in colour, and a soft violet-dark shadow under it. A bar is a plain pale band with a
+hairline.
 
 Flat draws every surface as one solid colour with a hairline round it, with no gradient, shadow or blur anywhere,
 so a pane's rim, light, shadow and blur are all `none`. In the dark the page is black and a pane a near-black
@@ -80,8 +112,8 @@ In both themes your own message sits under the same ink as a press, since the fr
 
 ### 4. Drawings, handed over as values
 
-A glass piece is a drawing laid over a see-through blur. The framework names one drawing for each part and state,
-32 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
+A glass piece is a drawing laid over what is behind it, seen sharp. The framework names one drawing for each part and state,
+34 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
 own value, since the framework draws no glass. Glass sets each to the address of its drawing, and flat to `none`.
 So a theme still hands over only values, and no component names a theme.
 
@@ -89,8 +121,11 @@ The drawings are SVGs with no size of their own: their shapes are written agains
 draws one fresh at whatever size the piece is. They are in `wwwroot/glass/dark/` and `wwwroot/glass/light/`, one
 file each, named for the part and the state. The project is built as a Razor class library, though it holds no
 component, so a site that references it serves them at `_content/louis-agent.web.themes/`. The list of drawings
-is written once, in `Styles/_theme-art.scss`, and each theme's sheet sets every one of them from it. A site's
-compiled sheet sits in its `css/` folder, so a drawing's address in it starts `../_content/`.
+is written once, in `Styles/_theme-art.scss`, and each theme's sheet sets every one of them from it. A drawing's
+address is written from the site's root, so it starts `/_content/`. It can't be written from the site's `css/`
+folder: a drawing is a value, and Chrome reads a value's address from the sheet of the rule that uses it. A
+component's rules are in its library's own sheet, which is served under `_content/`, so from there an address
+that starts `../_content/` leads to `_content/_content/` and finds nothing.
 
 ### 5. Held to the framework's names
 
@@ -109,7 +144,7 @@ framework really sets.
 | `Styles/theme-glass/_dark.scss`, `_light.scss` | Glass's values in the dark style and in the light |
 | `Styles/theme-flat/_dark.scss`, `_light.scss` | Flat's values in the dark style and in the light |
 | `Styles/_theme-art.scss` | The list of drawings, written once, and the two ways a theme names them: each to its drawing, or each to none |
-| `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, served at `_content/louis-agent.web.themes/` |
+| `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, and the page behind, `silk.webp`, served at `_content/louis-agent.web.themes/` |
 | `Styles/app.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`obj/css/`, not served) |
 
 ## Configuration

@@ -1,7 +1,7 @@
 @use "web/tools/surface";
 
-/* The agent bar (F134.3), as the J and K mockups drew it: fixed at the foot of the page, centred and at most 760 wide,
-   a glass bar with the orb, a line of what the guide is doing over the box, and over it the guide's last answer or
+/* The agent bar (F134.3, F151.6), as the design page draws it: fixed at the foot of the page, centred and at most
+   840 wide, a bar of glass rounded at both ends with the mark as a ball, a line of what the guide is doing over the box, and over it the guide's last answer or
    the whole talk, each a part of its own. The page keeps the bar's room free at its bottom (--bar-room), so nothing
    ends under it. It is centred by its margins, not moved by a transform, since a transform would hold the talk's
    drawer inside the bar. */
@@ -10,28 +10,33 @@
     z-index: 80;
     left: 0;
     right: 0;
-    bottom: 18px;
+    bottom: 22px;
     margin-inline: auto;
-    width: min(760px, calc(100vw - 28px));
+    width: min(840px, calc(100vw - 28px));
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-/* The row is a bar that floats (F151.4). It keeps 14 pixels of room around the orb for its rings, 13 of its own and
-   the bar's one pixel edge, so the bar is 74 high round a mark of 46, and cuts whatever of its glow would still reach past the edge,
-   so the orb's light stays inside the bar. */
+/* The row is the bar that floats (F151.4, F151.6): 104 high round a ball of 76 with 14 of room on every side, its
+   ends half circles, and a little more room after the send button. It cuts whatever of the ball's light would
+   reach past its edge. The ball is the mark as the bar shows it. */
 .agent-row {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 13px;
+    gap: 18px;
+    padding: 14px 25px 14px 14px;
     overflow: clip;
     @include surface.floating-bar();
-    border-radius: 32px;
+    border-radius: 999px;
+}
+.agent-row ::deep .orb {
+    width: 76px;
+    height: 76px;
+    @include surface.mark-ball();
 }
 
-/* The box, as the design drew it: the line of what the guide is doing over the words being typed, on one inset
-   field that lights when it is typed in, and at its end the talk's total and the round send button. The composer
+/* The box, as the design drew it: the line of what the guide is doing over the words being typed, in one place
+   sunk into the bar, 62 high and rounded like it, and at its end the talk's total and the round send button. The composer
    draws the field's text and its buttons in a box of its own, which is taken out of the layout here, so the line,
    the text and the buttons are laid on the box's one grid and the field is drawn under the first two. */
 .agent-box {
@@ -41,21 +46,23 @@
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 10px;
     align-items: center;
+    align-content: center;
+    min-height: 62px;
 }
 .agent-box::before {
     content: "";
     grid-area: 1 / 1 / 3 / 2;
     align-self: stretch;
     transition: box-shadow .3s;
-    @include surface.field($radius: 14px);
+    @include surface.sunk($radius: 999px);
 }
-.agent-box:focus-within::before { @include surface.field-lit(); }
+.agent-box:focus-within::before { @include surface.sunk-lit(); }
 .agent-doing {
     grid-area: 1 / 1;
     position: relative;
     height: 21px;
     overflow: hidden;
-    padding: 6px 12px 0;
+    padding: 6px 26px 0;
     font: 500 11.5px/15px var(--bs-font-monospace);
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -68,11 +75,14 @@
     position: relative;
     min-width: 0;
     max-height: 160px;
-    padding: 1px 12px 6px;
+    padding: 1px 26px 6px;
     border: 0;
     outline: 0;
     resize: none;
-    font: 400 16px/1.4 inherit;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.4;
     color: var(--bs-emphasis-color);
     background: none;
 }
@@ -80,11 +90,10 @@
 .agent-box ::deep .composer-tools { grid-area: 1 / 2 / 3 / 3; gap: 10px; }
 .agent-box ::deep .send, .agent-box ::deep .stop {
     flex: none;
-    width: 44px;
-    height: 44px;
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
-    font-size: 20px;
-    box-shadow: none;
+    font-size: 22px;
 }
 .agent-box ::deep .send:disabled { opacity: .45; }
 
@@ -135,14 +144,19 @@
 }
 .agent-chips button {
     padding: 9px 15px;
-    font: 500 13.5px/1.2 inherit;
+    /* The family is the page's; the shorthand can't take inherit for it alone, so each part is said. */
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    border-radius: 999px;
     color: var(--bs-emphasis-color);
     cursor: pointer;
     transition: transform .3s var(--web-spring, ease-out), background-color .3s;
-    @include surface.float($radius: 999px);
+    @include surface.floating-chip();
 }
-/* The chips float over whatever the page shows, a light website included, so each is a pane of its own and never
-   a see-through wash. */
+/* The chips float over whatever the page shows, a light website included, so each has the body a theme gives a
+   chip and is never a see-through wash. */
 .agent-chips button:hover { transform: translateY(-2px); }
 .agent-chips button.is-suggested { font-weight: 600; @include surface.press(); }
 /* The note has a backing of its own, quieter, so its words read over a light page too. */
@@ -163,6 +177,17 @@
         scrollbar-width: none;
     }
     .agent-chips button, .agent-chips-note { flex: none; }
+}
+
+/* On a phone the bar is smaller, so the page keeps most of the screen: a ball of 52 in 10 of room, and a send
+   button of 44. */
+@media (max-width: 720px) {
+    .agent-row { gap: 10px; padding: 10px 14px 10px 10px; }
+    .agent-row ::deep .orb { width: 52px; height: 52px; }
+    .agent-box { min-height: 52px; }
+    .agent-doing { padding-inline: 18px; }
+    .agent-box ::deep textarea { padding-inline: 18px; font-size: 16px; }
+    .agent-box ::deep .send, .agent-box ::deep .stop { width: 44px; height: 44px; font-size: 20px; }
 }
 
 /* For a visitor who asked for less motion, each thing is simply where it belongs. */

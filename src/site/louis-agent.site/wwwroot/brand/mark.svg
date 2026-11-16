@@ -1,11 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="louis-agent">
-  <defs>
-    <linearGradient id="steel" gradientUnits="userSpaceOnUse" x1="0" y1="8" x2="0" y2="56">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#b4b9c0"/>
-    </linearGradient>
-  </defs>
-  <path d="M10 43 L32 54 L54 43" fill="none" stroke="#5c6168" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M10 33 L32 44 L54 33" fill="none" stroke="#a9aeb5" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M32 9 L54 20 L32 31 L10 20 Z" fill="url(#steel)" stroke="url(#steel)" stroke-width="2" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="louis-agent">
+  <!-- The louis-agent mark (src/docs/brand/README.md): a flat disc with the l, Geist's l at weight 650. -->
+  <circle cx="60" cy="60" r="60" fill="#6b4dff"/>
+  <path d="M68 133 68.5 710H207.5V147.5Q207.5 125.5 218.0 115.5Q228.5 105.5 249 105.5H286.5V0H202.5Q138 0 103.0 32.25Q68 64.5 68 133Z" transform="translate(44 92) scale(.09 -.09)" fill="#ffffff"/>
 </svg>

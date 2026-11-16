@@ -7,21 +7,33 @@
    inside its corners, the shadow it throws, how it blurs what is behind it, and its corner. Today it is the panel
    colour in the shared frame's hairline and corner, with none of the rest. A pane that answers the pointer has a
    hover of its own (F151.4): how far it lifts, an edge and a shadow, both written as shadows, the card deck's today.
-   A float is a pane over the page, such as a menu's list: the shadow it throws, the menu's today.
+   A theme may bend what is behind a pane as real glass does (F151.6), in the pane under the pointer and the one
+   picked or shown: how thick the glass is at its edge and how much higher its middle stands, in pixels. A wall of
+   0 is no lens, as today.
+   A float is a pane over the page, such as a menu's list: the shadow it throws, the menu's today. A frosted float
+   is one that stands over the page's words, such as the agent's answer: its body and its blur, a pane's today.
    A veil is a panel the stage shows through, such as the showroom's rail: its fill, its edge and its blur, the
    rail's today.
    An inset is a piece set into the page, such as the chat's card and a field (F151.4): its fill and its edge, the
    page's colour and the hairline today.
-   A bar is the header, the footer and the agent's bar: its fill, its edge and its blur, as the site's header has
-   them today.
-   A press is the main button, its words, and the second button's outline.
+   A bar is the header and the footer: its fill, its edge and its blur, as the site's header has them today.
+   A dock is the agent's bar at the page's foot (F151.6): its fill, its edge and its blur, a bar's today. What is
+   sunk into it is where the words go: its fill, the shadow that sinks it and the one it has while it is typed in,
+   an inset with a bright line when typed in today. A chip floats over the page: its fill, its edge and its blur, a
+   pane's today.
+   A press is the main button, its words, the second button's outline, and the shadow a button stands on, none
+   today.
+   The page is what lies behind everything (F151.6): lines drawn on it that stay still while it scrolls, and lights
+   on a layer of their own behind the page's content. Today there are no lines, and the lights are the brand's
+   colour from the top right, its second colour from the bottom left and a breath of the first in the middle.
    The mark is the agent's orb: its disc, its gloss and its letter, as the orb draws them today.
    You and the agent are each one's mark: the brightest words for you, the framework's purple for the agent.
    The violet is the brand's purple in five steps, light to dark; until a theme sets them, all five are the
    framework's one purple.
    The art is a drawing a theme may lay on a piece (F151.4), one name for each part and state, named for the
    drawing: a pane, the main button and the second, a field, a switch, the focus ring, a slider, a well, a tag, the
-   live label, a switch's group, the header and the cut stone on a picked piece. A theme sets each to the address of
+   live label, a switch's group, the header, the cut stone on a picked piece, and the mark three ways: as it
+   stands alone, as the ball in the agent's bar, and as a letter of the site's name. A theme sets each to the address of
    a drawing or to none; the framework draws no glass, so each is none here. */
 
 :root {
@@ -35,8 +47,12 @@
     --web-pane-hover-lift: -3px;
     --web-pane-hover-edge: 0 0 0 1px rgba(var(--bs-primary-rgb), .45);
     --web-pane-hover-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45);
+    --web-lens-wall: 0;
+    --web-lens-rise: 0;
 
     --web-float-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8);
+    --web-frost-fill: var(--web-pane-fill);
+    --web-frost-blur: var(--web-pane-blur);
 
     --web-veil-fill: rgba(var(--bs-body-bg-rgb), .55);
     --web-veil-edge: 1px solid rgba(var(--web-overlay-rgb), .1);
@@ -52,6 +68,23 @@
     --web-press-fill: var(--web-cta);
     --web-press-ink: var(--web-on-primary);
     --web-press-edge: 1px solid var(--web-border-hover);
+    --web-press-shadow: none;
+
+    --web-dock-fill: var(--web-bar-fill);
+    --web-dock-edge: var(--web-bar-edge);
+    --web-dock-blur: var(--web-bar-blur);
+    --web-sunk-fill: var(--web-inset-fill);
+    --web-sunk-shadow: none;
+    --web-sunk-lit: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85), 0 0 26px -6px rgba(var(--web-overlay-rgb), .6);
+    --web-chip-fill: var(--web-pane-fill);
+    --web-chip-edge: var(--web-pane-edge);
+    --web-chip-blur: var(--web-pane-blur);
+
+    --web-page-lines: none;
+    --web-page-lights:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
 
     --web-mark-fill:
         radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));
@@ -67,7 +100,6 @@
     --web-violet-3: var(--web-purple);
     --web-violet-4: var(--web-purple);
 
-    --web-art-bar: none;
     --web-art-field-focus: none;
     --web-art-field-rest: none;
     --web-art-focus-pane: none;
@@ -75,6 +107,9 @@
     --web-art-gem: none;
     --web-art-group: none;
     --web-art-knob: none;
+    --web-art-mark: none;
+    --web-art-mark-ball: none;
+    --web-art-mark-o: none;
     --web-art-pane-hover: none;
     --web-art-pane-picked: none;
     --web-art-pane-rest: none;

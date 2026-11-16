@@ -26,4 +26,13 @@ public sealed record Page(
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     string? Focus = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    PageArea? Selected = null);
+    PageArea? Selected = null)
+{
+    /// <summary>The page with what the visitor has on their screen: the section in view and the card open.</summary>
+    public Page Seen(PageArea? inView, PageArea? open) =>
+        this with
+        {
+            InView = inView,
+            Open = open
+        };
+}

@@ -44,8 +44,9 @@
 /* The strip sits in a band of its own (FX82), so it gets the hairline every band has and stands clear of the band above
    it (FX76, Louis: "increase the paddings or margins between slides"). */
 .band-strip { padding-bottom: 72px; }
-/* The framework's strip in this site's steel, dark words on it. */
-.site { --web-strip-bg: var(--steel); --web-strip-text: var(--bs-body-bg); --web-strip-muted: #3d4148; }
+/* The framework's strip in the brand's colour, with the words a theme sets for on it, the quiet line the same a little
+   see-through. */
+.site { --web-strip-bg: var(--steel); --web-strip-text: var(--web-on-primary); --web-strip-muted: color-mix(in srgb, var(--web-on-primary) 82%, transparent); }
 /* How it works for you (F128.1): the three steps from a call to a live agent, each on its own line, its lead word bright. */
 .buyer-steps { display: grid; gap: 10px; max-width: var(--measure); margin: 0 0 28px; padding-left: 1.3em; color: var(--bs-secondary-color); }
 .buyer-steps strong { color: var(--bs-emphasis-color); }

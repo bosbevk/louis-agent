@@ -1,11 +1,24 @@
+@use "drawn" as *;
+
 /* The surface tool's marks (F151.4): the agent's mark with its rings, and the small marks a piece wears, a
    marker, a badge, a line of progress or of the brand. */
 
-/* The agent's mark: its disc, its gloss and the letter on it, each the theme's. */
+/* The agent's mark: the theme's drawing of it over its disc, with its gloss and the letter on it. A theme whose
+   drawing holds the letter gives the letter no ink. */
 @mixin mark() {
     color: var(--web-mark-ink);
-    background: var(--web-mark-fill);
     box-shadow: var(--web-mark-gloss);
+    @include drawn(mark, var(--web-mark-fill));
+}
+
+/* The mark as the ball in the agent's bar, on a piece that is already the mark. */
+@mixin mark-ball() {
+    @include drawn(mark-ball, var(--web-mark-fill));
+}
+
+/* The mark as a letter of the site's name, on a piece that is already the mark. */
+@mixin mark-letter() {
+    @include drawn(mark-o, var(--web-mark-fill));
 }
 
 /* A ring round the mark, in a colour: the quiet one it breathes with, the visitor's while it listens. */
@@ -25,9 +38,10 @@
     box-shadow: var(--web-mark-gloss), 0 0 22px 1px rgba(var(--web-overlay-rgb), .8);
 }
 
-/* The mark made small, such as the dot beside the agent's name on its answer: its disc alone, with no gloss. */
+/* The mark made small, such as the dot beside the agent's name on its answer: its drawing over its disc, with no
+   gloss. */
 @mixin mark-dot() {
-    background: var(--web-mark-fill);
+    @include drawn(mark-ball, var(--web-mark-fill));
 }
 
 /* A small mark beside a label, such as the dot before a section's name, and the same mark lit for the one in view. */

@@ -10,7 +10,7 @@
 ## Purpose
 
 This is the framework's own website, louis-agent.dev. It says what louis-agent is, how it works, what's built on it,
-and what Louis sells. The guide sits in the corner and answers questions from the docs.
+and what Louis sells. The guide stands as a bar at the foot of every page and answers questions from the docs.
 
 It's the visitor area of a business, built on the framework's web just the way a customer's site would be. A portal
 comes later. It lives beside the framework, in `src/`, and it's the one place in `src/` that uses packs and an
@@ -95,8 +95,11 @@ the folders under `demos/`.
 The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads: What we
 build · Pricing · Demos · Contact · The framework.
 
-`/` is one page that moves, with the offer first. There's the hero (a website with an agent, from R500 a month, with
-Louis taking a lead beside it), then what it does, then how it works for you (three steps, and the facts a buyer
+`/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
+large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
+that says what each one means, and a visitor who presses a state's button holds it there. Under the mark come the
+offer (a website with an agent, from R500 a month), the headline "Ask the website.", the buttons, and Louis taking a
+lead in a window below. Then comes what it does, then how it works for you (three steps, and the facts a buyer
 trusts). Then come custom agents, the demos, one band of proof (built on a framework of its own, measured, with links
 into it), and a strip that asks a business for theirs.
 
@@ -119,7 +122,17 @@ its own, written in `Components/Showroom/Websites/` as its scene and its places.
 `ShowPage`, the mock goes to that place ([louis-agent.identity.showroom](louis-agent.identity.showroom.md)).
 
 Each website has three pages a visitor can click through; Wills and estates is a fourth, opened from its card. Each
-business wears a brand of its own, with marks, faces and headers from mockup 0. Once the recording ends, *Try it
+business wears a brand of its own, with marks, faces and headers from mockup 0.
+
+A business's website keeps that one look whatever theme and style the page around it wears, and its agent's corner
+is the business's too. Each business has a sheet of its own under `Styles/site/showroom/`, which names the website
+by its address and gives its four colours: its brand, the words on the brand, its page and its ink. The sheet
+includes the site's `business` tool, which sets the theme's names under that business's mock. It starts from the
+flat theme's light values, so every name is set and no drawing of a theme's is laid on the website, and then sets
+the business's own over them: the page and two shades of it, the ink and quieter mixes of it for the words and the
+lines, and the brand for what you press, the visitor's messages and the agent's mark.
+
+Once the recording ends, *Try it
 yourself* puts the visitor in a live chat with the business's agent, in the same place. The page names its identity
 and a first question.
 
@@ -209,8 +222,11 @@ The pages are written from the docs the guide reads. Every number comes from the
 is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
 search engines (`Content/SiteFacts.cs`).
 
-Louis in the corner is the guide's identity. The widget is titled "Louis · AI", and hides its work
-(`ShowWork="false"`).
+Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
+framework's widget as its bar: the mark, a box that is always there to type in, and the site's three questions as
+chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
+button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
+"Louis · AI", and hides its work (`ShowWork="false"`).
 
 *Decided in:* F123, [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
 

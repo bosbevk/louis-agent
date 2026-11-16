@@ -12,7 +12,11 @@
     box-shadow: $shadow;
     -webkit-backdrop-filter: var(--web-pane-blur);
     backdrop-filter: var(--web-pane-blur);
-    @include drawn(pane-rest, $fill);
+    // A piece the frame's lens may bend while the pointer is on it, in a theme that has one.
+    --web-lens-piece: 1;
+    // At rest the theme's light lies under the drawing, where glass paints the bend its lens would give; under the
+    // pointer the lens itself takes over, so the light goes.
+    @include drawn(pane-rest, #{var(--web-pane-light), $fill});
 
     &:hover { @include drawn(pane-hover, $fill); }
 }
@@ -36,11 +40,18 @@
     &:focus { @include drawn(field-focus, $fill); }
 }
 
-/* A field said to be typed in by what holds it, such as the box in the agent's bar, whose field is drawn under its
-   words: the focus drawing, and a bright line inside it with a light round it. */
-@mixin field-lit($fill: var(--web-inset-fill)) {
-    box-shadow: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85), 0 0 26px -6px rgba(var(--web-overlay-rgb), .6);
-    @include drawn(field-focus, $fill);
+/* Where the words go in the agent's bar (F151.6): set into the bar with the theme's fill and the shadow that
+   sinks it, and no drawing of its own, since the bar it is in is the drawn piece. */
+@mixin sunk($radius: var(--bs-border-radius)) {
+    border: var(--web-inset-edge);
+    border-radius: $radius;
+    background: var(--web-sunk-fill);
+    box-shadow: var(--web-sunk-shadow);
+}
+
+/* That place while it is typed in, said by what holds it: the shadow the theme gives it then. */
+@mixin sunk-lit() {
+    box-shadow: var(--web-sunk-lit);
 }
 
 /* A pane that is typed in, such as the chat's box: its line in the brand's colour, a soft ring of it, the shadow
@@ -64,8 +75,10 @@
     }
 }
 
-/* A pane that is open, such as the card whose story shows: its edge in the brand's colour, and the picked drawing. */
+/* A pane that is open, such as the card whose story shows: its edge in the brand's colour, and the picked drawing,
+   and it wears the lens as a picked piece does. */
 @mixin opened() {
+    --web-lens-piece: 2;
     border-color: rgba(var(--bs-primary-rgb), .7);
     @include drawing(pane-picked);
 }
@@ -74,6 +87,14 @@
    what floats. */
 @mixin float($radius: var(--web-pane-radius), $fill: var(--web-pane-fill)) {
     @include pane($fill: $fill, $radius: $radius, $shadow: var(--web-float-shadow));
+}
+
+/* A pane that floats over the page's words, such as the agent's answer: a float with the theme's frosted body and
+   blur, so what lies under it does not read through. */
+@mixin frosted-float($radius: var(--web-pane-radius)) {
+    @include float($radius: $radius, $fill: var(--web-frost-fill));
+    -webkit-backdrop-filter: var(--web-frost-blur);
+    backdrop-filter: var(--web-frost-blur);
 }
 
 /* A panel the stage shows through, such as the showroom's rail, its cues and a dock: a kind of its own, with its own
@@ -111,30 +132,34 @@
     @include drawn(well, var(--bs-tertiary-bg));
 }
 
-/* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. */
-@mixin picked() { @include drawing(pane-picked); }
+/* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. It wears
+   the lens while it stays picked, lit white from inside; a piece the agent is showing wears it lit violet. */
+@mixin picked() { --web-lens-piece: 2; @include drawing(pane-picked); }
 
 /* A piece the agent is showing: its showing drawing laid on it, written where the component says the agent lit it. */
-@mixin showing() { @include drawing(pane-showing); }
+@mixin showing() { --web-lens-piece: 3; @include drawing(pane-showing); }
 
-/* The header, the footer or the agent's bar: its fill and drawing, a hairline towards the page, and its blur. A bar
-   at the foot of the page passes top, so its hairline is on the page's side, and a bar that holds something fixed to
-   the screen passes no blur, since a blur makes the bar the box such a thing is placed in. */
+/* The header or the footer: its fill, a hairline towards the page, and its blur, with no drawing in any theme,
+   since a bar is the one thing that stays put and the glass belongs to what scrolls under it. A bar at the foot of
+   the page passes top, so its hairline is on the page's side, and a bar that holds something fixed to the screen
+   passes no blur, since a blur makes the bar the box such a thing is placed in. */
 @mixin bar($side: bottom, $blur: var(--web-bar-blur)) {
     border-#{$side}: var(--web-bar-edge);
     -webkit-backdrop-filter: $blur;
     backdrop-filter: $blur;
-    @include drawn(bar, var(--web-bar-fill));
+    background: var(--web-bar-fill);
 }
 
-/* A bar that floats over the page, such as the agent's at the page's foot: its hairline goes all round it, and it
-   throws the shadow of what floats. */
+/* The agent's bar, which floats at the page's foot (F151.6): the theme's body, line and blur for it under a
+   field's drawing, the shadow of what floats, and the focus drawing while something in it is typed in. */
 @mixin floating-bar() {
-    border: var(--web-bar-edge);
+    border: var(--web-dock-edge);
     box-shadow: var(--web-float-shadow);
-    -webkit-backdrop-filter: var(--web-bar-blur);
-    backdrop-filter: var(--web-bar-blur);
-    @include drawn(bar, var(--web-bar-fill));
+    -webkit-backdrop-filter: var(--web-dock-blur);
+    backdrop-filter: var(--web-dock-blur);
+    @include drawn(field-rest, var(--web-dock-fill));
+
+    &:focus-within { @include drawn(field-focus, var(--web-dock-fill)); }
 }
 
 /* Only a piece's colour, where the fill it also has as an image must stay. */

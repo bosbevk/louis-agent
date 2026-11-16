@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\louis-agent.web\louis-agent.web.csproj" />
+    <ProjectReference Include="..\..\web\louis-agent.web.themes\louis-agent.web.themes.csproj" />
     <!-- The guide's name, for its chat in the corner (F109.3); the guide itself runs on the site's host. -->
     <ProjectReference Include="..\louis-agent.identity.guide\louis-agent.identity.guide.csproj" />
     <!-- F106.3.4: the triage pack's demo, played on /triage-demo. -->

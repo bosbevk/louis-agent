@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Tests.Rules.Styles;
+namespace LouisAgent.Web.Tests.Rules.Styles.Surfaces;
 
 /// <summary>
 /// F151.4: every surface in the framework's web is drawn by the shared tools, which read the names a theme sets, so a
@@ -100,6 +100,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("lifts")]
     [TestCase("opened")]
     [TestCase("float")]
+    [TestCase("frosted-float")]
     [TestCase("slab")]
     [TestCase("tint")]
     [TestCase("accent-line")]
@@ -118,7 +119,9 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("mark-lit")]
     [TestCase("mark-dot")]
     [TestCase("floating-bar")]
-    [TestCase("field-lit")]
+    [TestCase("sunk")]
+    [TestCase("sunk-lit")]
+    [TestCase("floating-chip")]
     [TestCase("wash")]
     [TestCase("write-in")]
     [TestCase("beacon")]
@@ -137,7 +140,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("fades-up")]
     [TestCase("image-fill")]
     [TestCase("glint")]
-    [TestCase("frosted")]
+    [TestCase("frosted-float")]
     [TestCase("spoken")]
     [TestCase("spoken-deep")]
     [TestCase("typed-in")]

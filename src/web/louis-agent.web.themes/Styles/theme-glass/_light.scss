@@ -1,9 +1,9 @@
-/* Glass, in the light (F151.2, ADR 0124): the glass mockup's light values, under "The light mode" and "Glass cards,
-   in the light". White and black swap places and the purple stays: the words are black, a visitor's mark is black,
-   and the page is a pale wash of the violet, mixed from its second step so it follows the purple. A pane is white
-   glass, brighter than the page, that lets the page through blurred: its rim is white all the way round, brightest
-   at the bottom left and the top right, a fine violet-dark line runs outside it, and it throws a soft shadow. A bar
-   is near-white with a hairline, and a press is solid violet with white words. The red, amber, blue and green, the
+/* Glass, in the light (F151.2, ADR 0124): the design page's light values. White and black swap places and the
+   purple stays: the words are black, a visitor's mark is black, and the page is a wash of the violet, mixed from
+   its second step so it follows the purple and deep enough for a white rim to stand on. A pane is its drawing
+   alone, which holds its rim and its lights: nothing is painted under it, nothing blurs the page seen through
+   it, and it throws a soft shadow. The page behind is a picture of silk ribbons of light. A bar is a plain
+   pale band with a hairline, and a press is its drawing with white words. The red, amber, blue and green, the
    caption on a photo's mat and the hover grey are the framework's own, since the mockup does not show them, and the
    error words a darker red to read on white. The faces and the easing are the framework's. */
 
@@ -11,8 +11,8 @@
 @use "web/tools/colours";
 @use "theme-art";
 
-// The page: the second violet step, a third of the way into white.
-$page: color.mix(#9282ff, #ffffff, 34%);
+// The page: the second violet step, a little over half way into white, deep enough for a white rim to stand on.
+$page: color.mix(#9282ff, #ffffff, 54%);
 
 :root[data-theme="glass"][data-style="light"] {
     // Written once each: the build makes the number form from the same value.
@@ -60,7 +60,7 @@ $page: color.mix(#9282ff, #ffffff, 34%);
 
     --bs-emphasis-color: #0b0b0e;
     --bs-body-color: #0b0b0e;
-    --bs-secondary-color: #5b5b69;
+    --bs-secondary-color: #37324e;
     --bs-tertiary-color: #6c6c7a;
     --bs-border-color: rgba(30, 16, 90, .2);
     --web-code-bg: #{color.mix(#9282ff, #ffffff, 16%)};
@@ -73,60 +73,83 @@ $page: color.mix(#9282ff, #ffffff, 34%);
     --web-ease: cubic-bezier(.2, .8, .2, 1);
     --web-spring: cubic-bezier(.34, 1.56, .64, 1);
 
-    // A pane: white glass over the page, a white rim, the lights inside two corners, a soft shadow.
-    --web-pane-fill:
-        linear-gradient(125deg, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, .42) 40%,
-            rgba(255, 255, 255, .32) 62%, rgba(255, 255, 255, .6) 100%);
+    // A pane is its drawing alone: nothing painted under it, the page seen through it sharp, and the
+    // shadow of something that stands off the page.
+    --web-pane-fill: transparent;
     --web-pane-edge: none;
-    --web-pane-rim:
-        conic-gradient(from 218deg, #fff 0deg, rgba(255, 255, 255, .6) 50deg, #fff 96deg,
-            rgba(255, 255, 255, .55) 148deg, #fff 180deg, rgba(255, 255, 255, .6) 232deg, #fff 280deg,
-            rgba(255, 255, 255, .55) 330deg, #fff 360deg);
+    --web-pane-rim: none;
+    // At rest it carries a painted still bend: the light the lens would gather at its thick rim, the far side a
+    // little violet, drawn once as its light and its inside shadows.
     --web-pane-light:
-        radial-gradient(84px 8px at 17% 100%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(8px 64px at 0% 78%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(92px 8px at 80% 0%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(8px 56px at 100% 23%, #fff 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(44px 6px at 10% 0%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 70%),
-        radial-gradient(6px 40px at 100% 85%, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, 0) 70%);
+        radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, .28), transparent 42%),
+        radial-gradient(90% 60% at 100% 100%, rgba(226, 223, 255, .18), transparent 45%),
+        linear-gradient(118deg, transparent 46%, rgba(255, 255, 255, .1) 50%, transparent 56%);
     --web-pane-shadow:
-        0 0 0 1px rgba(30, 16, 90, .14), 0 2px 5px rgba(30, 16, 90, .12), 0 36px 54px -30px rgba(30, 16, 100, .6);
-    --web-pane-blur: blur(18px) saturate(1.35);
+        0 14px 22px -14px rgba(22, 12, 70, .55),
+        inset 0 0 0 1px rgba(255, 255, 255, .55), inset 14px 16px 18px -14px rgba(255, 255, 255, .75),
+        inset -16px -18px 22px -16px rgba(107, 77, 255, .45), inset 0 0 26px -10px rgba(146, 130, 255, .35);
+    --web-pane-blur: saturate(1.5);
     --web-pane-radius: 22px;
     // Under the pointer it lifts, and its light is in the hover drawing: no edge, and the shadow it always throws.
     --web-pane-hover-lift: -3px;
     --web-pane-hover-edge: 0 0 transparent;
     --web-pane-hover-shadow: var(--web-pane-shadow);
+    // The lens: the card under the pointer, or picked or shown, bends what is behind it as the design's cards.
+    --web-lens-wall: 52;
+    --web-lens-rise: 70;
 
     // What floats over the page throws a pane's own shadow.
     --web-float-shadow: var(--web-pane-shadow);
+    // The agent's answer over the page's words is clear glass with its drawn edges and no blur, over the soft body
+    // a quiet press has, thick enough to read on.
+    --web-frost-fill: rgba(204, 203, 218, .9);
+    --web-frost-blur: none;
 
     // A veil, a panel the stage shows through: glass as a pane is.
-    --web-veil-fill: var(--web-pane-fill);
+    --web-veil-fill: transparent;
     --web-veil-edge: none;
     --web-veil-blur: var(--web-pane-blur);
 
-    // An inset, set into the page: white glass, as see-through as a pane, its edge drawn by its drawing.
-    --web-inset-fill: rgba(255, 255, 255, .4);
+    // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
+    --web-inset-fill: transparent;
     --web-inset-edge: none;
 
-    // A bar: near-white over the page, a violet-dark hairline.
-    --web-bar-fill: rgba(255, 255, 255, .78);
+    // A bar is never glass: a plain band of pale violet over a hairline, since it is the one thing that stays put.
+    --web-bar-fill: #f3f0ff;
     --web-bar-edge: 1px solid rgba(30, 16, 90, .16);
-    --web-bar-blur: blur(12px);
+    --web-bar-blur: none;
 
-    // A press: solid violet, white words; the second a dark outline.
-    --web-press-fill: #6b4dff;
+    // A press is its drawing alone, with white words, and it stands on a short dark shadow; the second has no line.
+    --web-press-fill: transparent;
     --web-press-ink: #ffffff;
-    --web-press-edge: 1.5px solid rgba(12, 12, 28, .55);
+    --web-press-edge: 0 solid transparent;
+    --web-press-shadow: 0 5px 9px -3px rgba(12, 6, 48, .45);
 
-    // The mark: the same ball of violet glass as in the dark.
-    --web-mark-fill:
-        radial-gradient(58% 58% at 50% 100%, rgba(226, 223, 255, .85) 0%, rgba(146, 130, 255, .3) 45%,
-            rgba(146, 130, 255, 0) 100%),
-        radial-gradient(64% 64% at 50% 40%, #9282ff 0%, #6b4dff 50%, #3a22c4 86%, #110a40 100%);
-    --web-mark-gloss: inset 0 0 0 1.5px rgba(226, 223, 255, .55), inset 0 -3px 8px rgba(17, 10, 64, .35);
-    --web-mark-ink: #ffffff;
+    // The agent's bar is glass with a body, since it floats over running words: a milky white under
+    // its drawing, nothing blurred behind it, and no line. The box is sunk into it: a shadow under its upper
+    // edge and a lit lip along its lower one, the same while it is typed in. A chip floats over anything, so it
+    // has a milky body under its drawing.
+    --web-dock-fill: rgba(246, 244, 255, .8);
+    --web-dock-edge: none;
+    --web-dock-blur: saturate(1.4);
+    --web-sunk-fill: rgba(24, 12, 80, .07);
+    --web-sunk-shadow:
+        inset 0 3px 6px -1px rgba(22, 12, 70, .42), inset 0 0 0 1px rgba(22, 12, 70, .1),
+        inset 0 -1.5px 0 rgba(255, 255, 255, .85), 0 1.5px 0 rgba(255, 255, 255, .45);
+    --web-sunk-lit: var(--web-sunk-shadow);
+    --web-chip-fill: rgba(255, 255, 255, .82);
+    --web-chip-edge: 0 solid transparent;
+    --web-chip-blur: saturate(1.4);
+
+    // The page behind the glass: a picture of silk ribbons of light over the whole screen, which holds still, and no
+    // lines of its own.
+    --web-page-lines: none;
+    --web-page-lights: url("/_content/louis-agent.web.themes/glass/light/silk.webp") center / cover no-repeat;
+
+    // The mark is its drawing alone, which holds the l: no disc under it, no gloss, and no ink for a letter.
+    --web-mark-fill: transparent;
+    --web-mark-gloss: none;
+    --web-mark-ink: transparent;
 
     // You, and the agent.
     --web-you: #0b0b0e;
