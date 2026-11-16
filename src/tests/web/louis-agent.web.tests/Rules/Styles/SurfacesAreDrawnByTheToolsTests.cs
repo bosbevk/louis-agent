@@ -29,18 +29,6 @@ public class SurfacesAreDrawnByTheToolsTests
         "packs/web/louis-agent.pack.files.web/Styles/pack-files/_files.scss",
         "packs/web/louis-agent.pack.git.web/Styles/pack-git/_changes.scss",
         "packs/web/louis-agent.pack.triage.web/Styles/pack-triage/_demo.scss",
-        "src/web/louis-agent.web.evals/Components/Reviews/AgreementPanel.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Reviews/CalibrationCard.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Reviews/Queue/ReviewCountBadge.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Reviews/ReviewPanel.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Reviews/ReviewPill.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Studio/DraftList.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Studio/Promptfoo/PromptfooPanel.razor.scss",
-        "src/web/louis-agent.web.evals/Components/Studio/Try/TryStep.razor.scss",
-        "src/web/louis-agent.web.evals/Pages/Building/EvalStudio.razor.scss",
-        "src/web/louis-agent.web.evals/Pages/Building/Prompts.razor.scss",
-        "src/web/louis-agent.web.evals/Styles/evals/_reviews.scss",
-        "src/web/louis-agent.web.evals/Styles/evals/_studio.scss"
     ];
 
     /// <summary>The properties that draw a surface.</summary>
