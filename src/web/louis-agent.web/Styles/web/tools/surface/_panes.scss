@@ -83,6 +83,14 @@
     @include pane($fill: $fill, $radius: $radius, $shadow: var(--web-float-shadow));
 }
 
+/* A pane that floats over the page's words, such as the agent's answer: a float with the theme's frosted body and
+   blur, so what lies under it does not read through. */
+@mixin frosted-float($radius: var(--web-pane-radius)) {
+    @include float($radius: $radius, $fill: var(--web-frost-fill));
+    -webkit-backdrop-filter: var(--web-frost-blur);
+    backdrop-filter: var(--web-frost-blur);
+}
+
 /* A panel the stage shows through, such as the showroom's rail, its cues and a dock: a kind of its own, with its own
    fill, edge and blur, since on a site with no theme it is see-through where a pane is solid. A piece whose corner
    is its shape, a column, a pill or a circle, passes it. */

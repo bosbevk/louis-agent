@@ -94,4 +94,20 @@ public class GlassValuesTests
     [TestCase(SiteStyle.Light, "rgba(255, 255, 255, .82)")]
     public void AChip_HasAMilkyBody(SiteStyle style, string fill) =>
         Assert.That(Value(style, "--web-chip-fill"), Is.EqualTo(fill));
+
+    /// <summary>
+    /// The agent's answer that floats over the page is frosted, the one exception to glass's clear panes (Louis,
+    /// 2026-11-16, of the answer over a card: "just the overlay one need more frosting"): a milky body, and a blur
+    /// where the browser can draw one.
+    /// </summary>
+    [TestCase(SiteStyle.Dark, "rgba(18, 14, 38, .84)")]
+    [TestCase(SiteStyle.Light, "rgba(248, 246, 255, .86)")]
+    public void TheAnswerOverThePage_IsFrosted(SiteStyle style, string fill)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(style, "--web-frost-fill"), Is.EqualTo(fill));
+            Assert.That(Value(style, "--web-frost-blur"), Is.EqualTo("blur(18px) saturate(1.4)"));
+        });
+    }
 }

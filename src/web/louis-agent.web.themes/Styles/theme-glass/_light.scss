@@ -89,6 +89,9 @@ $page: color.mix(#9282ff, #ffffff, 54%);
 
     // What floats over the page throws a pane's own shadow.
     --web-float-shadow: var(--web-pane-shadow);
+    // The agent's answer over the page's words is frosted, glass's one blur, so what is under it can't be read.
+    --web-frost-fill: rgba(248, 246, 255, .86);
+    --web-frost-blur: blur(18px) saturate(1.4);
 
     // A veil, a panel the stage shows through: glass as a pane is.
     --web-veil-fill: transparent;

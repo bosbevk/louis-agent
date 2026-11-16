@@ -10,7 +10,7 @@
     max-height: min(60vh, 520px);
     padding: 16px 18px 12px;
     animation: rise .35s var(--web-ease, ease-out) both;
-    @include surface.float($radius: 22px);
+    @include surface.frosted-float($radius: 22px);
 }
 .agent-talk-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .agent-talk-head b { font-size: 18px; letter-spacing: -.02em; color: var(--bs-emphasis-color); }

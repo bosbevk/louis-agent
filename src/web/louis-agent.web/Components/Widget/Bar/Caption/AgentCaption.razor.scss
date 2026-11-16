@@ -26,9 +26,9 @@
     overflow-y: auto;
     padding: 18px 20px 14px;
     backface-visibility: hidden;
-    /* A pane that floats (F151.4). A card that turns in depth gets no blur of what is behind it from some browsers,
-       so a theme whose pane is see-through lets the page's words show through it while it turns. */
-    @include surface.float($radius: 22px);
+    /* A pane that floats over the page's words, frosted (F151.6). A card that turns in depth gets no blur of what
+       is behind it from some browsers, so the frosted body is what keeps the page's words from showing through. */
+    @include surface.frosted-float($radius: 22px);
 }
 .caption-back { transform: rotateY(180deg); }
 

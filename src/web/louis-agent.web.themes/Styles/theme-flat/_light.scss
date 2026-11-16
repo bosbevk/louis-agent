@@ -85,6 +85,8 @@
 
     // What floats over the page throws no shadow either: its line sets it apart.
     --web-float-shadow: none;
+    --web-frost-fill: var(--web-pane-fill);
+    --web-frost-blur: var(--web-pane-blur);
 
     // A veil, a panel on the stage: solid in flat, as a pane is.
     --web-veil-fill: var(--web-pane-fill);

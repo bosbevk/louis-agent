@@ -53,7 +53,8 @@ Glass in the dark is black with white words and Ultraviolet for the purple. A pa
 else: no colour is painted under it and it has no border of its own, since the drawing holds its rim and its
 lights. The page shows through it sharp, with no blur, only a little brightened and deepened in colour, and it
 throws the shadow of something that stands off the page. Nothing in glass blurs what is behind it, the bar and the
-chips included. A piece set into the page, an inset such as the chat's card or a field, is as
+chips included, with one exception: the agent's answer that floats over the page, and the talk it opens into, are
+frosted, a milky body with a strong blur behind it, so the page's words under them never read through. A piece set into the page, an inset such as the chat's card or a field, is as
 see-through as a pane. A press is its drawing too, with white words, no line round the second button, and a short
 dark shadow under it. A bar is the one thing that is never glass: a plain band of deep violet over a hairline,
 with no blur. Flat sets an inset to its page's colour with its hairline.
@@ -105,7 +106,7 @@ In both themes your own message sits under the same ink as a press, since the fr
 ### 4. Drawings, handed over as values
 
 A glass piece is a drawing laid over what is behind it, seen sharp. The framework names one drawing for each part and state,
-32 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
+34 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
 own value, since the framework draws no glass. Glass sets each to the address of its drawing, and flat to `none`.
 So a theme still hands over only values, and no component names a theme.
 
@@ -136,7 +137,7 @@ framework really sets.
 | `Styles/theme-glass/_dark.scss`, `_light.scss` | Glass's values in the dark style and in the light |
 | `Styles/theme-flat/_dark.scss`, `_light.scss` | Flat's values in the dark style and in the light |
 | `Styles/_theme-art.scss` | The list of drawings, written once, and the two ways a theme names them: each to its drawing, or each to none |
-| `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, served at `_content/louis-agent.web.themes/` |
+| `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, and the page behind, `silk.webp`, served at `_content/louis-agent.web.themes/` |
 | `Styles/app.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`obj/css/`, not served) |
 
 ## Configuration
