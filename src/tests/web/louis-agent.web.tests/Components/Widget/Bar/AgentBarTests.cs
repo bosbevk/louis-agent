@@ -60,6 +60,31 @@ public class AgentBarTests
     }
 
     /// <summary>
+    /// While the visitor writes, the orb listens (F151.4), and the chips stay, since a chip is still a way in. With
+    /// the box empty again it is idle.
+    /// </summary>
+    [Test]
+    public void WhileTheVisitorWrites_TheOrbListens_AndTheChipsStay()
+    {
+        using var ctx = Context();
+        var asks = new AgentSuggestions(["What is this site?"]);
+        ctx.Services.AddSingleton(asks);
+        var cut = Bar(ctx);
+
+        cut.Find("#composer-input").Input("What is");
+        var writing = cut.Find(".agent-bar .orb").ClassList.ToList();
+        var chips = cut.Find(".agent-chips").ClassList.ToList();
+        cut.Find("#composer-input").Input("");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(writing, Does.Contain("is-listening"));
+            Assert.That(chips, Does.Not.Contain("is-away"));
+            Assert.That(cut.Find(".agent-bar .orb").ClassList, Does.Contain("is-idle"));
+        });
+    }
+
+    /// <summary>
     /// Once a question has an answer, the answer stands over the box as a caption, with no talk drawn, and the
     /// caption's button opens the whole talk in its place.
     /// </summary>
@@ -152,25 +177,33 @@ public class AgentBarTests
 
     /// <summary>
     /// The chips float over whatever the page shows, a business's light website included. Hovered, a chip once
-    /// turned to see-through white and vanished over a light page. So a hovered chip keeps a dark glass of its own,
-    /// and the note after the chips has a backing too.
+    /// turned to see-through white and vanished over a light page. So a chip is a pane of its own that floats, drawn
+    /// by the surface tool, a hovered chip gets no wash of its own over that, and the note after the chips has a
+    /// backing too.
     /// </summary>
     [Test]
     public void OverALightPage_AChipStaysReadable_HoveredToo()
     {
         string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Widget/Bar/AgentBar.razor.scss")).ReplaceLineEndings("\n");
-        int at = styles.IndexOf(".agent-chips button:hover {", StringComparison.Ordinal);
-        string hovered = at < 0 ? "" : styles[at..styles.IndexOf('}', at)];
-        int note = styles.IndexOf("\n.agent-chips-note {", StringComparison.Ordinal);
-        string noted = note < 0 ? "" : styles[note..styles.IndexOf("\n}", note + 1, StringComparison.Ordinal)];
+        string chip = RuleAt(styles, "\n.agent-chips button {");
+        string hovered = RuleAt(styles, "\n.agent-chips button:hover {");
+        string noted = RuleAt(styles, "\n.agent-chips-note {");
 
         Assert.Multiple(() =>
         {
-            Assert.That(hovered, Does.Contain("background: rgba(var(--bs-secondary-bg-rgb)"));
-            Assert.That(hovered, Does.Not.Contain("--web-overlay-rgb"), "never see-through white");
-            Assert.That(noted, Does.Contain("background: rgba(var(--bs-body-bg-rgb)"));
+            Assert.That(chip, Does.Contain("@include surface.float("));
+            Assert.That(hovered, Is.Not.Empty.And.Not.Contain("background").And.Not.Contain("surface."),
+                "never see-through white");
+            Assert.That(noted, Does.Contain("@include surface.tag();"));
         });
+    }
+
+    /// <summary>A rule of the sheet from where it opens to its closing brace; empty when it is not there.</summary>
+    private static string RuleAt(string styles, string opens)
+    {
+        int at = styles.IndexOf(opens, StringComparison.Ordinal);
+        return at < 0 ? "" : styles[at..styles.IndexOf('}', at)];
     }
 
     /// <summary>

@@ -1,7 +1,9 @@
 @use "web/tools/pressed";
+@use "web/tools/surface";
 
 /* CardDeck's own styles (F113): the summaries as a row of card-shaped buttons that lift under the pointer, the open
-   one marked on its edge, and the story under the row sliding in once. Colours read the framework's names. */
+   one marked on its edge, and the story under the row sliding in once. Each card and the story are panes (F151.4),
+   so they wear a theme, and how a card answers the pointer is the theme's too. */
 .card-deck { display: flex; flex-direction: column; gap: 16px; }
 .card-deck-row { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 16px; }
 
@@ -13,15 +15,12 @@
     flex-direction: column;
     gap: 8px;
     padding: 22px 44px 22px 24px;
-    border: 1px solid var(--bs-border-color);
-    border-radius: 14px;
-    background: var(--bs-secondary-bg);
     cursor: pointer;
     text-align: left;
-    transition: transform .25s var(--web-ease), border-color .3s, box-shadow .3s;
+    @include surface.pane();
+    @include surface.lifts();
 }
-.card-summary:hover, .card-summary:focus-visible { transform: translateY(-3px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45); }
-.card-summary.open { border-color: rgba(var(--bs-primary-rgb), .7); }
+.card-summary.open { @include surface.opened(); }
 /* A card is a piece too (F127.7): the one the visitor opened or the guide showed is pressed. */
 .card-summary[data-selected] { @include pressed.look; }
 .card-title { font: 600 18px/1.2 var(--bs-font-sans-serif); letter-spacing: -.02em; color: var(--bs-emphasis-color); }
@@ -33,9 +32,8 @@
 /* The story slides in under the row; a new card's story slides in afresh (the deck keys it on the card). */
 .card-detail {
     padding: 24px 28px;
-    border: 1px solid rgba(var(--bs-primary-rgb), .35);
-    border-radius: 14px;
-    background: var(--bs-secondary-bg);
+    @include surface.pane();
+    @include surface.opened();
     animation: card-slide .45s var(--web-ease) both;
 }
 .card-detail-title { display: block; margin-bottom: 10px; font: 600 11px/1 var(--bs-font-monospace); letter-spacing: 1.4px; text-transform: uppercase; color: var(--bs-tertiary-color); }

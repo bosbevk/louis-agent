@@ -1,3 +1,6 @@
+@use "web/tools/mock";
+@use "web/tools/surface";
+
 /* A card on a mocked business's website (F127.1): a soft panel of the business's page with a band of its brand colour
    on top, its title in the business's typeface, its note (a price) under it in the brand colour, and its words. The
    note goes under the title, since a card in a row of three has no room beside it. Its sizes are in em, so it
@@ -6,10 +9,10 @@
     position: relative;
     overflow: hidden;
     padding: 1.1em 1.25em 1.25em;
-    border-top: 3px solid var(--mock-brand);
-    border-radius: .8em;
-    background: color-mix(in srgb, var(--mock-page) 90%, var(--mock-ink));
+    @include surface.pane();
 }
+/* The band of the brand's colour on top, said after the pane, which draws no line of its own here. */
+.mock-card { @include mock.line(top, $width: 3px); }
 
 /* A card with a page of its own opens it (F127.2): a quiet link in the brand colour under its words. */
 .mock-card-open {
@@ -23,7 +26,7 @@
     cursor: pointer;
 }
 .mock-card-open:hover { text-decoration: underline; }
-.mock-card-open:focus-visible { outline: 2px solid var(--mock-brand); outline-offset: 2px; }
+.mock-card-open:focus-visible { @include mock.focus(); }
 
 /* A card its agent shows is pressed, as a visitor's tap would press it, not ringed (Louis: "this is press boxes so do
    not show the ring around this type rather the press"): it sinks and springs back, and a ripple of the business's
@@ -39,7 +42,7 @@
     margin: -16px 0 0 -16px;
     border-radius: 50%;
     pointer-events: none;
-    background: var(--mock-brand);
+    @include mock.fill();
     opacity: 0;
     animation: mock-ripple 1.2s ease-out;
 }

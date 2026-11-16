@@ -1,4 +1,5 @@
 @use "themed" as *;
+@use "surface";
 
 /* A field of a form: its label over its box. A pack's screen form and the form an agent asks with in the chat (F127.4.3)
    draw the same, and a scoped rule reaches only its own file's elements, so each includes these rather than copy them.
@@ -14,12 +15,15 @@
     }
 }
 
+/* The box is a field (F151.4): set into the page, with its own drawing at rest and in focus, so it wears a theme
+   where a site set no look of its own. */
 @mixin box($look: null, $size: 13.5px) {
     min-width: 0;
     padding: themed($look, padding, 6px 10px);
-    border: themed($look, border, 1px solid var(--bs-border-color));
-    border-radius: themed($look, radius, var(--bs-border-radius));
-    background: themed($look, bg, var(--bs-body-bg));
+    @include surface.field(
+        $fill: themed($look, bg, var(--web-inset-fill)),
+        $edge: themed($look, border, var(--web-inset-edge)),
+        $radius: themed($look, radius, var(--bs-border-radius)));
     color: themed($look, ink, var(--bs-body-color));
     font-size: themed($look, size, $size);
 }

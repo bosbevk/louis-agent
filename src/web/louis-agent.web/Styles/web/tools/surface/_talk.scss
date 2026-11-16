@@ -1,0 +1,67 @@
+/* The surface tool's conversation (F151.4): what a chat draws that nothing else does. What you said, the helper
+   an agent hands work to, the line that says it is working, and the light and the links of an answer. */
+
+/* What you said: a bubble in the second colour of the brand, run into its deeper shade, with a shadow under it. */
+@mixin spoken() {
+    background: linear-gradient(135deg, var(--bs-success), var(--web-success-deep));
+    box-shadow: 0 8px 22px -10px rgba(var(--web-shadow-rgb), .7);
+}
+
+/* The same bubble's depth: a line of light inside its top and a darker shadow under it. */
+@mixin spoken-deep() {
+    box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .08) inset, 0 12px 28px -12px rgba(var(--bs-black-rgb), .7);
+}
+
+/* The row you type in, while you type: its line toward the brand's colour, a soft ring of it and a shadow. */
+@mixin typed-in() {
+    border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg));
+    box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--bs-primary) 12%, transparent),
+        0 18px 40px -18px rgba(var(--web-shadow-rgb), .3);
+}
+
+/* The edge of a card whose helper is at work: the brand's colour going round it through the colours given, at
+   the angle the card turns. */
+@mixin working-rim($through...) {
+    background:
+        linear-gradient(var(--bs-secondary-bg), var(--bs-secondary-bg)) padding-box,
+        conic-gradient(from var(--angle), var(--bs-primary), $through, var(--bs-primary)) border-box;
+}
+
+/* A helper's square mark: the sidebar's dark foot run into its deeper shade, with a shadow under it. */
+@mixin helper() {
+    background: linear-gradient(135deg, var(--web-sidebar-foot), var(--web-sidebar-foot-deep));
+    box-shadow: 0 6px 16px -6px rgba(var(--web-shadow-rgb), .6);
+}
+
+/* The words that say the agent is working: a band of light that the sheet moves along them. */
+@mixin shimmer() {
+    background:
+        linear-gradient(90deg, var(--bs-secondary-color) 0%, var(--bs-emphasis-color) 50%, var(--bs-secondary-color) 100%);
+}
+
+/* A soft light in the brand's colour where the pointer is, at the --mx and --my the page sets. */
+@mixin spotlight() {
+    background:
+        radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(var(--bs-primary-rgb), .14), transparent 60%);
+}
+
+/* A link's line in the brand's colour, no width at rest, for the sheet to grow under the pointer. */
+@mixin underline() {
+    background: linear-gradient(var(--bs-primary), var(--bs-primary)) 0 100% / 0 2px no-repeat;
+}
+
+/* A small helper's mark: the second colour of the brand run into its deeper shade. */
+@mixin minion() {
+    background: linear-gradient(135deg, var(--bs-success), var(--bs-success-text-emphasis));
+}
+
+/* The light behind a chat: the brand's colour from the top right, its second colour from the bottom left and a
+   breath of the first in the middle, over the page's own colour. */
+@mixin page-light() {
+    background:
+        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%),
+        var(--bs-body-bg);
+}

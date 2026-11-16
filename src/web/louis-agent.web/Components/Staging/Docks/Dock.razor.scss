@@ -1,5 +1,6 @@
 @use "web/tools/accents";
 @use "web/tools/glow";
+@use "web/tools/surface";
 
 /* A dock (F134.1): a see-through bar of round-cornered buttons. Each button's icon is in its colour, the accent's,
    or in the colour of the place the dock stands in. The current one is tinted and ringed in that colour and opens to
@@ -12,9 +13,8 @@
     align-items: center;
     gap: 8px;
     padding: 8px;
-    border-radius: 22px;
-    background: rgba(var(--bs-tertiary-bg-rgb), .66);
-    backdrop-filter: blur(20px);
+    @include surface.veil($radius: 22px);
+    border: 0;
     box-shadow:
         inset 0 1px 0 rgba(var(--web-overlay-rgb), .12),
         inset 0 0 0 1px rgba(var(--web-overlay-rgb), .07),
@@ -36,13 +36,12 @@
     transition: background-color .3s, color .3s, gap .4s var(--web-ease);
 }
 .dock-item ::deep .line-icon { font-size: 21px; color: var(--dock-light); }
-.dock-item:hover { background: rgba(var(--web-overlay-rgb), .06); }
+.dock-item:hover { @include surface.tint(var(--web-overlay-rgb), .06); }
 .dock-name { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width .5s var(--web-ease); }
 .dock-item.is-current {
     gap: 10px;
     color: var(--bs-emphasis-color);
-    background: glow.tint(var(--dock-light), 16%);
-    box-shadow: inset 0 0 0 1px glow.tint(var(--dock-light), 45%);
+    @include glow.current(var(--dock-light), 45%);
 }
 .dock-item.is-current .dock-name { max-width: 180px; }
 .dock-divider {
@@ -50,7 +49,7 @@
     width: 1px;
     height: 26px;
     margin: 0 4px;
-    background: rgba(var(--web-overlay-rgb), .12);
+    @include surface.hairline(.12);
 }
 
 /* On a narrow screen the dock is its icons only, so it fits a phone. The current one keeps its tint and ring, and

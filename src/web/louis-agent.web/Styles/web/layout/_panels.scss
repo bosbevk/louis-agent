@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* ---- The three panels (F20): sidebar, chat, Werk. From xl (1200px) the Werk panel is a fourth column that folds away
    (.work-hidden); below it, a Bootstrap offcanvas that slides in from the right (out of the grid, so nothing moves). ---- */
 @media (min-width: 1200px) {
@@ -11,28 +13,28 @@
 }
 .work {
     display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow: hidden; color: var(--bs-body-color);
-    border-left: 1px solid var(--bs-border-color);
+    @include surface.rule(left);
     /* A gradient, not a colour: Bootstrap makes an offcanvas's background-color transparent at its breakpoint. */
-    background-image: linear-gradient(color-mix(in srgb, var(--bs-tertiary-bg) 88%, transparent), color-mix(in srgb, var(--bs-tertiary-bg) 88%, transparent));
+    @include surface.image-fill(color-mix(in srgb, var(--bs-tertiary-bg) 88%, transparent));
 }
 @media (max-width: 1199.98px) {
-    .work.offcanvas-xl { --bs-offcanvas-width: min(360px, 90vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); background-color: var(--bs-tertiary-bg); }
+    .work.offcanvas-xl { --bs-offcanvas-width: min(360px, 90vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); @include surface.ground(var(--bs-tertiary-bg)); }
 }
-.work-head { display: flex; align-items: center; gap: 8px; padding: 18px 16px 12px 20px; border-bottom: 1px solid var(--bs-border-color); }
+.work-head { display: flex; align-items: center; gap: 8px; padding: 18px 16px 12px 20px; @include surface.rule(); }
 .work-title { font-weight: 800; font-size: 16px; color: var(--bs-emphasis-color); }
-.work-count { font-size: 11px; font-weight: 700; color: var(--bs-primary-text-emphasis); background: var(--bs-primary-bg-subtle); border-radius: 999px; padding: 1px 8px; }
+.work-count { font-size: 11px; font-weight: 700; color: var(--bs-primary-text-emphasis); @include surface.panel(var(--bs-primary-bg-subtle)); border-radius: 999px; padding: 1px 8px; }
 .work-head .icon { margin-left: auto; width: 32px; height: 32px; place-items: center; color: var(--bs-secondary-color); }
 .work-head .icon + .icon { margin-left: 0; }
-.work-head .icon:hover { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
+.work-head .icon:hover { @include surface.tint(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
 .work-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; scrollbar-gutter: stable; }
-.work-item { background: var(--bs-secondary-bg); border: 1px solid var(--bs-border-color); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; animation: rise .4s var(--web-ease) both; }
-.work-item.running { border: 1px solid transparent; background: linear-gradient(var(--bs-secondary-bg), var(--bs-secondary-bg)) padding-box, conic-gradient(from var(--angle), var(--bs-primary), var(--bs-success-text-emphasis), var(--bs-primary)) border-box; animation: rise .4s var(--web-ease) both, spin 2.6s linear infinite; }
+.work-item { @include surface.panel(); @include surface.lined(); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; animation: rise .4s var(--web-ease) both; }
+.work-item.running { border: 1px solid transparent; @include surface.working-rim(var(--bs-success-text-emphasis)); animation: rise .4s var(--web-ease) both, spin 2.6s linear infinite; }
 .work-item.running .work-avatar { animation: ring 1.8s var(--web-ease) infinite; }
-.work-status { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 10px; background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); }
-.work-item.running .work-status { background: var(--bs-primary-bg-subtle); color: var(--bs-primary-text-emphasis); }
-.work-item.failed .work-status { background: rgba(var(--bs-danger-rgb), .14); color: var(--bs-danger); }
+.work-status { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 10px; @include surface.panel(var(--bs-success-bg-subtle)); color: var(--bs-success-text-emphasis); }
+.work-item.running .work-status { @include surface.panel(var(--bs-primary-bg-subtle)); color: var(--bs-primary-text-emphasis); }
+.work-item.failed .work-status { @include surface.tint(var(--bs-danger-rgb), .14); color: var(--bs-danger); }
 .work-steps { list-style: none; margin: 0; padding: 0 0 0 12px; display: flex; flex-direction: column; gap: 6px; position: relative; }
-.work-steps::before { content: ""; position: absolute; left: 3px; top: 4px; bottom: 4px; width: 2px; border-radius: 2px; background: linear-gradient(var(--bs-primary), var(--bs-success-text-emphasis)); opacity: .45; }
+.work-steps::before { content: ""; position: absolute; left: 3px; top: 4px; bottom: 4px; width: 2px; border-radius: 2px; @include surface.badge(180deg); opacity: .45; }
 .work-step { display: flex; align-items: baseline; gap: 6px; font-size: 12.5px; min-width: 0; animation: rise .3s var(--web-ease) both; }
 .work-step-mark { font-weight: 700; color: var(--bs-success-text-emphasis); width: 12px; flex: none; }
 .work-step.waiting, .work-step.waiting .work-step-mark { color: var(--bs-primary-text-emphasis); }
@@ -43,52 +45,52 @@
 .work-step.minion { align-items: flex-start; }
 .work-steps.nested { padding-left: 10px; margin-top: 2px; }
 .work-steps.nested::before { opacity: .25; }
-.toolset-chip.model { background: var(--bs-primary-bg-subtle, var(--bs-success-bg-subtle)); color: var(--bs-primary-text-emphasis, var(--bs-link-color)); }
+.toolset-chip.model { @include surface.panel(var(--bs-primary-bg-subtle, var(--bs-success-bg-subtle))); color: var(--bs-primary-text-emphasis, var(--bs-link-color)); }
 .delegation.minion { margin-left: 12px; }
-.delegation.minion .delegation-avatar { width: 30px; height: 30px; border-radius: 9px; font-size: 13px; background: linear-gradient(135deg, var(--bs-success), var(--bs-success-text-emphasis)); color: var(--web-on-primary); }
+.delegation.minion .delegation-avatar { width: 30px; height: 30px; border-radius: 9px; font-size: 13px; @include surface.minion(); color: var(--web-on-primary); }
 /* Below lg the Werk tab sits over the chat's top right: the messages start under it. */
 @media (max-width: 991.98px) { .messages { padding-top: 64px; } }
 /* ---- The sidebar's contents (F20 step 4). ---- */
 /* A line icon in the text colour: .ic plus one of the .i-* icons (their --icon). */
 .ic { display: inline-block; width: 16px; height: 16px; flex: none; background: currentColor; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
-.side-search kbd, .search-dialog kbd { margin-left: auto; font: 600 11px var(--bs-font-sans-serif); color: var(--bs-tertiary-color); background: rgba(var(--web-overlay-rgb), .06); border: 1px solid var(--bs-border-color); border-radius: 6px; padding: 1px 6px; }
+.side-search kbd, .search-dialog kbd { margin-left: auto; font: 600 11px var(--bs-font-sans-serif); color: var(--bs-tertiary-color); @include surface.tint(var(--web-overlay-rgb), .06); @include surface.lined(); border-radius: 6px; padding: 1px 6px; }
 .side-nav { display: flex; flex-direction: column; gap: 2px; }
 .side-link {
     display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border: 0; border-radius: 10px; background: none;
     color: var(--bs-body-color); font-size: 14px; font-weight: 500; text-align: left; text-decoration: none; transition: background .2s, color .2s;
 }
-.side-link:hover { background: rgba(var(--web-overlay-rgb), .06); color: var(--bs-emphasis-color); }
+.side-link:hover { @include surface.tint(var(--web-overlay-rgb), .06); color: var(--bs-emphasis-color); }
 .side-link .ic { color: var(--bs-secondary-color); }
 .side-link:hover .ic { color: var(--bs-primary); }
 .sidebar-label { padding-top: 14px; }
 .sidebar-label-row .icon { width: 24px; height: 24px; display: grid; place-items: center; padding: 0; font-size: 16px; color: var(--bs-secondary-color); }
 .chat-item .item-menu { opacity: 0; width: 30px; height: 30px; display: grid; place-items: center; padding: 0; color: var(--bs-secondary-color); }
 .chat-item:hover .item-menu, .chat-item.active .item-menu, .item-menu[aria-expanded="true"] { opacity: 1; }
-.chat-item .item-menu:hover { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
+.chat-item .item-menu:hover { @include surface.tint(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
 /* The chat menus (Bootstrap dropdowns), in the theme. */
-.sidebar .dropdown-menu { --bs-dropdown-bg: var(--web-menu-bg); --bs-dropdown-border-color: var(--bs-border-color); --bs-dropdown-link-color: var(--bs-body-color); --bs-dropdown-link-hover-bg: rgba(var(--web-overlay-rgb), .07); --bs-dropdown-link-hover-color: var(--bs-emphasis-color); --bs-dropdown-link-active-bg: rgba(var(--bs-primary-rgb), .2); --bs-dropdown-divider-bg: var(--bs-border-color); border-radius: 14px; padding: 6px; box-shadow: 0 18px 40px -12px rgba(var(--bs-black-rgb), .7); font-size: 14px; min-width: 210px; }
+.sidebar .dropdown-menu { --bs-dropdown-bg: var(--web-menu-bg); --bs-dropdown-border-color: var(--bs-border-color); --bs-dropdown-link-color: var(--bs-body-color); --bs-dropdown-link-hover-bg: rgba(var(--web-overlay-rgb), .07); --bs-dropdown-link-hover-color: var(--bs-emphasis-color); --bs-dropdown-link-active-bg: rgba(var(--bs-primary-rgb), .2); --bs-dropdown-divider-bg: var(--bs-border-color); border-radius: 14px; padding: 6px; @include surface.cast(18px, 40px, -12px, .7, var(--bs-black-rgb)); font-size: 14px; min-width: 210px; }
 .dropdown-item { display: flex; align-items: center; gap: 10px; border-radius: 8px; padding: 7px 10px; }
 .dropdown-item .ic { color: var(--bs-secondary-color); }
 .dropdown-item:hover .ic { color: var(--bs-primary); }
 .dropdown-item.danger, .dropdown-item.danger .ic { color: var(--bs-danger); }
 /* The footer: a profile card, then the settings. */
-.side-footer { margin: 0 -14px -16px; background: var(--web-sidebar-foot); }
-.profile-avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--web-on-primary); background: linear-gradient(135deg, var(--bs-primary), var(--bs-success-text-emphasis)); flex: none; }
+.side-footer { margin: 0 -14px -16px; @include surface.panel(var(--web-sidebar-foot)); }
+.profile-avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--web-on-primary); @include surface.badge(); flex: none; }
 .profile-who { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
 .profile-who strong { color: var(--bs-emphasis-color); font-size: 14px; }
 .profile-who small { color: var(--bs-secondary-color); font-size: 11.5px; }
 /* The chat search (Components/ChatSearch.razor). */
-.search-backdrop { position: fixed; inset: 0; z-index: 1050; background: rgba(var(--web-backdrop-rgb), .6); backdrop-filter: blur(4px); animation: fade .2s ease both; }
+.search-backdrop { position: fixed; inset: 0; z-index: 1050; @include surface.tint(var(--web-backdrop-rgb), .6); @include surface.frosted(4px); animation: fade .2s ease both; }
 .search-dialog {
     position: fixed; z-index: 1051; top: min(14vh, 120px); left: 50%; transform: translateX(-50%); width: min(620px, calc(100vw - 32px));
     display: flex; flex-direction: column; max-height: 70vh; border-radius: 18px; overflow: hidden;
-    background: var(--web-dialog-bg); border: 1px solid var(--bs-border-color); box-shadow: 0 30px 80px -20px rgba(var(--bs-black-rgb), .8), 0 0 0 1px rgba(var(--bs-primary-rgb), .08);
+    @include surface.panel(var(--web-dialog-bg)); @include surface.lined(); @include surface.hovering();
     animation: pop .25s var(--web-spring) both;
 }
 @keyframes fade { from { opacity: 0; } }
 @keyframes pop { from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(.98); } }
 .search-result .ic { color: var(--bs-secondary-color); }
-.search-result.selected { background: rgba(var(--bs-primary-rgb), .12); }
+.search-result.selected { @include surface.tint(var(--bs-primary-rgb), .12); }
 .search-result.selected .ic { color: var(--bs-primary); }
 .i-compass { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='m15.5 8.5-2 5-5 2 2-5z'/></svg>"); }
 .i-sparkle { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3v4M12 17v4M3 12h4M17 12h4M6.5 6.5l2.5 2.5M15 15l2.5 2.5M6.5 17.5 9 15M15 9l2.5-2.5'/></svg>"); }

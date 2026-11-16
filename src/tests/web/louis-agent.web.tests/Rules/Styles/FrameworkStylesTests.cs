@@ -65,7 +65,7 @@ public partial class FrameworkStylesTests
     [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
     [TestCase("animation: widget-pulse")]
     [TestCase(".site-nav { margin-left: auto;")]
-    [TestCase("border-radius: 999px;\n    background: var(--web-cta);")]
+    [TestCase("@include surface.beacon();\n    @include surface.press();")]
     [TestCase("position: fixed;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
               "        width: 100vw;\n        height: 50dvh;")]
     [TestCase(".site-corner { position: fixed; right: 24px; bottom: 72px;")]
@@ -184,6 +184,8 @@ public partial class FrameworkStylesTests
     {
         string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss")).ReplaceLineEndings("\n");
+        string tool = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Styles/web/tools/_mock.scss"));
         int light = mock.IndexOf(".mock-page ::deep .mock-section.is-shown::after {", StringComparison.Ordinal);
 
         Assert.Multiple(() =>
@@ -191,7 +193,8 @@ public partial class FrameworkStylesTests
             Assert.That(light, Is.GreaterThan(0));
             Assert.That(mock[light..mock.IndexOf('}', light)],
                 Does.Contain("animation: area-spotlight 4s var(--web-ease) both;")
-                    .And.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
+                    .And.Contain("@include mock.spotlit();"));
+            Assert.That(tool, Does.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
             Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
                                            "    .mock-page ::deep .mock-section.is-shown::after { display: none; }"));
         });
@@ -325,6 +328,18 @@ public partial class FrameworkStylesTests
             Assert.That(link + colours, Does.Not.Contain("--web-paper"));
         });
     }
+
+    /// <summary>
+    /// F151.4: the four tools that drew a surface before the surface tool now draw through it, so the pieces that
+    /// include them wear a theme: a window's frame is a pane, the chat card is set into the page, a field is a field,
+    /// and a pressed look lays the picked drawing.
+    /// </summary>
+    [TestCase("_window.scss", "@include surface.pane(")]
+    [TestCase("_chat-card.scss", "@include surface.inset(")]
+    [TestCase("_field.scss", "@include surface.field(")]
+    [TestCase("_pressed.scss", "@include surface.picked(")]
+    public void AnOldTool_DrawsThroughTheSurfaceTool(string tool, string include) =>
+        Assert.That(File.ReadAllText(Path.Combine(Styles, "tools", tool)), Does.Contain(include));
 
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]

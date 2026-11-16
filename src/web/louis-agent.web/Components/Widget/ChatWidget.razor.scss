@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* ---- The chat widget (F109.3): a round button, and above it a panel the size of a phone's screen with the chat's own
    list and composer. The page puts the widget where it wants it (a site's frame has a corner for it); the panel opens
    upwards from the button. Scoped: the list, the turns and the composer inside are reached under ::deep. ---- */
@@ -15,25 +17,21 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border: 1px solid var(--web-border-hover);
     border-radius: 999px;
-    background: var(--web-cta);
-    color: var(--web-on-primary);
     font: 700 15px/1 var(--bs-font-sans-serif);
     letter-spacing: .01em;
     cursor: pointer;
-    box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55);
     animation: widget-pulse 2.8s var(--web-ease) infinite;
     transition: transform .25s var(--web-spring), box-shadow .25s var(--web-ease);
+    @include surface.beacon();
+    @include surface.press();
 }
 .widget-button:hover { transform: translateY(-2px) scale(1.03); animation-play-state: paused; }
 .widget-icon { display: inline-flex; }
 .chat-widget.is-open .widget-button { padding: 0; animation: none; font-size: 20px; }
 @keyframes widget-pulse {
-    0%, 100% {
-        box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55);
-    }
-    50% { box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7); }
+    0%, 100% { @include surface.beacon(); }
+    50% { @include surface.beacon($swollen: true); }
 }
 
 .widget-panel {
@@ -41,11 +39,8 @@
     height: min(560px, calc(100vh - 100px));
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--bs-border-color);
-    border-radius: 14px;
-    background: var(--bs-body-bg);
-    box-shadow: 0 16px 48px rgba(var(--web-shadow-rgb), .45);
     overflow: hidden;
+    @include surface.float($radius: 14px, $fill: var(--web-inset-fill));
 }
 
 .widget-head {
@@ -53,8 +48,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 14px;
-    border-bottom: 1px solid var(--bs-border-color);
-    background: var(--bs-secondary-bg);
+    @include surface.rule();
+    @include surface.panel();
 }
 .widget-title { font: 600 14px var(--bs-font-sans-serif); color: var(--bs-emphasis-color); }
 .widget-head-tools { display: flex; align-items: center; gap: 8px; color: var(--bs-secondary-color); }
@@ -71,21 +66,21 @@
 .widget-greeting { margin: 0; font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
 ::deep .widget-list .turn { font-size: 14px; gap: 10px; margin-bottom: 20px; }
 
-.widget-composer { padding: 10px; border-top: 1px solid var(--bs-border-color); }
-yes /* The piece the visitor selected (F127.7): a chip over the box, what the guide is asked about, with its close. */
+.widget-composer { padding: 10px; @include surface.rule($side: top); }
+/* The piece the visitor selected (F127.7): a chip over the box, what the guide is asked about, with its close. */
 /* The selected piece's chip, in the corner's panel and in the bar alike (F134.5), so its look reaches into the
-   bar. */
+   bar. It is a tag in the visitor's colour (F151.4). */
 ::deep .piece-chip {
     display: inline-flex; align-items: center; gap: 8px; max-width: 100%; margin: 0 0 8px; padding: 4px 6px 4px 12px;
-    border: 1px solid rgba(var(--bs-primary-rgb), .3); border-radius: 999px; font-size: 12.5px;
-    color: var(--bs-body-color); background: rgba(var(--bs-primary-rgb), .06);
+    font-size: 12.5px; color: var(--bs-body-color);
+    @include surface.tag-you();
 }
 ::deep .piece-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 ::deep .piece-chip button {
     flex: none; width: 20px; height: 20px; border: 0; border-radius: 999px; padding: 0; line-height: 1;
-    background: transparent; color: var(--bs-secondary-color); cursor: pointer;
+    background: none; color: var(--bs-secondary-color); cursor: pointer;
 }
-::deep .piece-chip button:hover { color: var(--bs-body-color); background: rgba(var(--bs-primary-rgb), .12); }
+::deep .piece-chip button:hover { color: var(--bs-body-color); @include surface.wash(); }
 ::deep .widget-composer textarea { font-size: 14px; }
 
 /* On a phone the folded corner is a bar across the bottom (FX113): the tour and the guide's button side by side,
@@ -108,7 +103,7 @@ yes /* The piece the visitor selected (F127.7): a chip over the box, what the gu
         width: 100vw;
         height: 50dvh;
         border: 0;
-        border-top: 1px solid var(--web-border-hover);
+        @include surface.rule($side: top);
         border-radius: 14px 14px 0 0;
     }
     .widget-panel.is-min { height: auto; }

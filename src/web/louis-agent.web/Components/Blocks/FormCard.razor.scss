@@ -1,3 +1,4 @@
+@use "web/tools/surface";
 @use "web/tools/chat-card";
 @use "web/tools/field";
 @use "web/tools/themed" as *;
@@ -16,18 +17,18 @@
 .form-input { @include field.box(web-form-input, 14px); width: 100%; font-family: inherit; transition: border-color .15s, background .15s; }
 /* A long answer's box grows with what is typed, from three lines. */
 textarea.form-input { resize: vertical; field-sizing: content; min-height: 4.5em; }
-.form-input:focus { outline: none; border-color: themed(web-form-input, focus, var(--bs-primary)); }
+.form-input:focus { outline: none; @include surface.edged(themed(web-form-input, focus, var(--bs-primary))); }
 .form-input[disabled] { opacity: .6; }
 .form-send {
     align-self: flex-start; width: themed(web-form-send, width, auto); padding: themed(web-form-send, padding, 7px 16px);
     border: 0; border-radius: themed(web-form-send, radius, 10px); font: inherit; font-weight: 600;
-    background: themed(web-form-send, bg, var(--bs-primary)); color: themed(web-form-send, ink, var(--bs-body-bg));
+    @include surface.panel(themed(web-form-send, bg, var(--bs-primary))); color: themed(web-form-send, ink, var(--bs-body-bg));
     box-shadow: themed(web-form-send, shadow, none); cursor: pointer; transition: transform .15s, opacity .15s;
 }
 .form-send:hover:not([disabled]) { transform: translateY(-1px); }
 .form-send[disabled] { opacity: .5; cursor: default; }
 .form-sent {
-    border-color: themed(web-form-sent, border-color, var(--bs-primary));
-    background: themed(web-form-sent, bg, rgba(var(--bs-primary-rgb), .08));
+    @include surface.edged(themed(web-form-sent, border-color, var(--bs-primary)));
+    @include surface.panel(themed(web-form-sent, bg, rgba(var(--bs-primary-rgb), .08)));
 }
 .form-value { font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }

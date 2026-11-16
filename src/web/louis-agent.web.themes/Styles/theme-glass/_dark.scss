@@ -7,6 +7,7 @@
    the mockup's, which are the framework's. A theme sets every name the framework sets; ThemeSheet holds it. */
 
 @use "web/tools/colours";
+@use "theme-art";
 
 :root[data-theme="glass"][data-style="dark"] {
     // Written once each: the build makes the number form from the same value.
@@ -87,6 +88,22 @@
     --web-pane-shadow: none;
     --web-pane-blur: blur(14px) brightness(1.12);
     --web-pane-radius: 22px;
+    // Under the pointer it lifts, and its light is in the hover drawing: no edge and no shadow, as shadows of nothing.
+    --web-pane-hover-lift: -3px;
+    --web-pane-hover-edge: 0 0 transparent;
+    --web-pane-hover-shadow: 0 0 transparent;
+
+    // What floats over the page throws a deep shadow on the black.
+    --web-float-shadow: 0 24px 50px -24px #000;
+
+    // A veil, a panel the stage shows through: glass as a pane is.
+    --web-veil-fill: var(--web-pane-fill);
+    --web-veil-edge: none;
+    --web-veil-blur: var(--web-pane-blur);
+
+    // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
+    --web-inset-fill: rgba(255, 255, 255, .012);
+    --web-inset-edge: none;
 
     // A bar: the page shows through it a little, blurred, over a hairline.
     --web-bar-fill: rgba(5, 5, 6, .86);
@@ -116,6 +133,9 @@
     --web-violet-2: #6b4dff;
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
+
+    // Each part's drawing, and each of its states, served by this project (F151.4).
+    @include theme-art.drawn(glass, dark);
 
     color-scheme: dark;
 }

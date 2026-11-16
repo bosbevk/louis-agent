@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* ComposerTools's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
 .composer-spacer { flex: 1; }
 .tool-button {
@@ -5,7 +7,7 @@
     border-radius: 10px; border: 1px solid transparent; background: none; color: var(--bs-secondary-color); font-size: 13px; font-weight: 600;
     transition: background .2s, color .2s, border-color .2s;
 }
-.tool-button:hover, .tool-button[aria-expanded="true"] { background: rgba(var(--web-overlay-rgb), .06); color: var(--bs-emphasis-color); border-color: var(--bs-border-color); }
+.tool-button:hover, .tool-button[aria-expanded="true"] { color: var(--bs-emphasis-color); @include surface.tint(var(--web-overlay-rgb), .06); @include surface.edged(); }
 .model-button { color: var(--bs-body-color); }
 .model-button .i-chevron { width: 14px; height: 14px; color: var(--bs-secondary-color); }
 .file-item { position: relative; cursor: pointer; }

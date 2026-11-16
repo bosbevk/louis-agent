@@ -16,6 +16,11 @@ public partial class MockStylesTests
     private static string Styles(string file) =>
         File.ReadAllText(Path.Combine(Mock, file)).ReplaceLineEndings("\n");
 
+    /// <summary>The mock tool, which draws what only a mock website has, in the business's colours.</summary>
+    private static string Tool() =>
+        File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Styles/web/tools/_mock.scss"))
+            .ReplaceLineEndings("\n");
+
     /// <summary>The rule a selector opens, up to its closing brace.</summary>
     private static string Rule(string styles, string selector)
     {
@@ -108,7 +113,8 @@ public partial class MockStylesTests
         Assert.Multiple(() =>
         {
             Assert.That(Rule(mock, ".mock-loading"),
-                Does.Contain("background: var(--mock-brand);").And.Contain("animation: mock-loading"));
+                Does.Contain("@include mock.loading();").And.Contain("animation: mock-loading"));
+            Assert.That(Tool(), Does.Contain("@mixin loading() {\n    background: var(--mock-brand);"));
             Assert.That(Rule(mock, ".mock-address.is-new"), Does.Contain("animation: mock-address-new"));
             Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
                                            "    .mock-loading { display: none; }"));
@@ -144,9 +150,10 @@ public partial class MockStylesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule(styles, ".mock-widget"),
-                Does.Contain("0 0 44px -8px color-mix(in srgb, var(--mock-brand) 75%, transparent)"));
-            Assert.That(Rule(styles, ".mock-widget-head"), Does.Contain("linear-gradient(135deg"));
+            Assert.That(Rule(styles, ".mock-widget"), Does.Contain("@include mock.widget();"));
+            Assert.That(Tool(), Does.Contain("0 0 44px -8px tone(brand, 75%);"));
+            Assert.That(Rule(styles, ".mock-widget-head"), Does.Contain("@include mock.widget-head();"));
+            Assert.That(Tool(), Does.Contain("@mixin widget-head() {\n    background: linear-gradient(135deg"));
             Assert.That(Rule(styles, ".mock-live"), Does.Contain("animation: mock-online"));
             Assert.That(styles, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
                                              "    .mock-live { animation: none; }"));

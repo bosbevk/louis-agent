@@ -1,11 +1,14 @@
 @use "themed" as *;
+@use "surface";
 
 /* A card under an agent's words in the chat: the choices it offers (F127.4.1) and the form it asks with (F127.4.3) sit
    on the same hairline box, so each includes this rather than copy it. Given a look's name, a site may set each part
-   (the form's: --web-form-border, -radius, -bg, -ink). */
+   (the form's: --web-form-border, -radius, -bg, -ink). The box is an inset, set into the page (F151.4, Louis's pick C
+   of three), so it wears a theme where a site set no look of its own. */
 @mixin card($look: null) {
-    border: themed($look, border, 1px solid var(--bs-border-color));
-    border-radius: themed($look, radius, 12px);
-    background: themed($look, bg, var(--bs-body-bg));
+    @include surface.inset(
+        $fill: themed($look, bg, var(--web-inset-fill)),
+        $edge: themed($look, border, var(--web-inset-edge)),
+        $radius: themed($look, radius, var(--web-pane-radius)));
     color: themed($look, ink, var(--bs-body-color));
 }

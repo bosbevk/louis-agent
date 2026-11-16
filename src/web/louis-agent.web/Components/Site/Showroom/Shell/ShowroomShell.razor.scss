@@ -1,5 +1,6 @@
 @use "web/tools/accents";
 @use "web/tools/glow";
+@use "web/tools/surface";
 
 /* The showroom's frame (F127.1, Louis: "it can be themed colourful and fancy"): lit from the top right in the colour of
    the demo on screen (--accent, from its class), a faint purple and blue in the far corners, and a fine grid that fades
@@ -42,9 +43,7 @@
     align-items: center;
     gap: 14px;
     padding: 12px 24px;
-    border-bottom: 1px solid var(--bs-border-color);
-    background: rgba(var(--bs-body-bg-rgb), .7);
-    backdrop-filter: blur(10px);
+    @include surface.bar();
 }
 .showroom-brand {
     display: flex;
@@ -61,20 +60,18 @@
     letter-spacing: .14em;
     text-transform: uppercase;
     color: var(--web-on-primary);
-    background: glow.shade(var(--accent), 90deg);
+    @include glow.fill(var(--accent), 90deg);
     @include glow.glow(var(--accent), 14px, -2px);
 }
 .showroom-grow { flex: 1; }
-/* The ways back: to the site, and on a demo to all the demos (F127.2), alike. */
+/* The ways back: to the site, and on a demo to all the demos (F127.2), alike, each a quiet press (F151.4). */
 .showroom-back, .showroom-demos {
     padding: 6px 12px;
-    border: 1px solid var(--web-border-hover);
     border-radius: 9px;
     font-size: 13px;
-    color: var(--web-soft-text);
     text-decoration: none;
+    @include surface.quiet-press();
 }
-.showroom-back:hover, .showroom-demos:hover { color: var(--bs-emphasis-color); border-color: var(--bs-emphasis-color); }
 
 /* The rail beside the stage; the stage takes what's left, and keeps room at its bottom for the corner (--corner-room),
    so a demo's offer never ends under the guide's button. */
@@ -136,7 +133,6 @@
         align-items: center;
         justify-content: center;
         padding: 0 12px;
-        border-top: 1px solid var(--bs-border-color);
-        background: rgba(var(--bs-body-bg-rgb), .96);
+        @include surface.bar($side: top, $blur: none);
     }
 }

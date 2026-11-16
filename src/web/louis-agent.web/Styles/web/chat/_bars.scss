@@ -1,15 +1,17 @@
+@use "web/tools/surface";
+
 .chat-title.muted { color: var(--bs-secondary-color); font-weight: 600; }
 .chat-heading .item-menu { opacity: 1; width: 30px; height: 30px; display: grid; place-items: center; padding: 0; color: var(--bs-secondary-color); }
-.chat-heading .item-menu:hover { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
-.header-button { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 11px; font-size: 13px; font-weight: 700; color: var(--bs-body-color); background: rgba(var(--web-overlay-rgb), .04); border: 1px solid var(--bs-border-color); transition: border-color .2s, color .2s, background .2s; }
-.header-button:hover, .header-button[aria-expanded="true"] { color: var(--bs-emphasis-color); border-color: rgba(var(--bs-primary-rgb), .45); background: rgba(var(--web-overlay-rgb), .07); }
+.chat-heading .item-menu:hover { @include surface.tint(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
+.header-button { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 11px; font-size: 13px; font-weight: 700; color: var(--bs-body-color); @include surface.tint(var(--web-overlay-rgb), .04); @include surface.lined(); transition: border-color .2s, color .2s, background .2s; }
+.header-button:hover, .header-button[aria-expanded="true"] { color: var(--bs-emphasis-color); @include surface.edged(rgba(var(--bs-primary-rgb), .45)); @include surface.tint(var(--web-overlay-rgb), .07); }
 .header-button .ic { color: var(--bs-primary); }
-.pill-plus { height: 36px; padding: 0 15px; font-size: 13px; color: var(--web-on-primary); background: var(--web-cta); box-shadow: 0 8px 20px -10px rgba(var(--bs-primary-rgb), .8); }
-.pill-plus:hover { transform: translateY(-1px); box-shadow: 0 12px 24px -10px rgba(var(--bs-primary-rgb), .95); }
-.dropdown-item.active, .dropdown-item:active { background: rgba(var(--bs-primary-rgb), .14); color: var(--bs-emphasis-color); }
+.pill-plus { height: 36px; padding: 0 15px; font-size: 13px; color: var(--web-on-primary); @include surface.panel(var(--web-cta)); @include surface.cast(8px, 20px, -10px, .8); }
+.pill-plus:hover { transform: translateY(-1px); @include surface.cast(12px, 24px, -10px, .95); }
+.dropdown-item.active, .dropdown-item:active { @include surface.tint(var(--bs-primary-rgb), .14); color: var(--bs-emphasis-color); }
 .dropdown-item.active .ic { color: var(--bs-primary); }
 /* Every menu in the app, in the theme (the sidebar's rule, for the top bar too). */
-.app .dropdown-menu { --bs-dropdown-bg: var(--web-menu-bg); --bs-dropdown-border-color: var(--bs-border-color); --bs-dropdown-link-color: var(--bs-body-color); --bs-dropdown-link-hover-bg: rgba(var(--web-overlay-rgb), .07); --bs-dropdown-link-hover-color: var(--bs-emphasis-color); --bs-dropdown-link-active-bg: rgba(var(--bs-primary-rgb), .2); --bs-dropdown-divider-bg: var(--bs-border-color); --bs-dropdown-header-color: var(--bs-tertiary-color); border-radius: 14px; padding: 6px; box-shadow: 0 18px 40px -12px rgba(var(--bs-black-rgb), .7); font-size: 14px; min-width: 210px; }
+.app .dropdown-menu { --bs-dropdown-bg: var(--web-menu-bg); --bs-dropdown-border-color: var(--bs-border-color); --bs-dropdown-link-color: var(--bs-body-color); --bs-dropdown-link-hover-bg: rgba(var(--web-overlay-rgb), .07); --bs-dropdown-link-hover-color: var(--bs-emphasis-color); --bs-dropdown-link-active-bg: rgba(var(--bs-primary-rgb), .2); --bs-dropdown-divider-bg: var(--bs-border-color); --bs-dropdown-header-color: var(--bs-tertiary-color); border-radius: 14px; padding: 6px; @include surface.cast(18px, 40px, -12px, .7, var(--bs-black-rgb)); font-size: 14px; min-width: 210px; }
 @media (max-width: 1199.98px) and (min-width: 992px) { .messages { padding-top: clamp(20px, 4vw, 44px); } }
 .toast-pill .ic { color: var(--bs-primary); }
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px) scale(.96); } }
@@ -32,6 +34,6 @@
 .message-actions { display: flex; align-items: center; gap: 2px; margin-top: -6px; opacity: 0; transition: opacity .2s; }
 .turn:hover .message-actions, .message-actions:focus-within, .turn:last-child .message-actions { opacity: 1; }
 .action { display: inline-flex; align-items: center; gap: 6px; height: 30px; min-width: 30px; padding: 0 7px; border: 0; border-radius: 8px; background: none; color: var(--bs-secondary-color); font-size: 12.5px; font-weight: 600; transition: background .2s, color .2s; }
-.action:hover { background: rgba(var(--web-overlay-rgb), .07); color: var(--bs-emphasis-color); }
+.action:hover { @include surface.tint(var(--web-overlay-rgb), .07); color: var(--bs-emphasis-color); }
 .action .ic { width: 15px; height: 15px; }
 .i-refresh { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 12a8 8 0 1 1-2.3-5.7L20 8M20 3v5h-5'/></svg>"); }

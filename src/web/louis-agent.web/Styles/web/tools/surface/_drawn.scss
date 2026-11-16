@@ -1,0 +1,17 @@
+/* How the surface tool lays a theme's drawing on a piece (F151.4): the parts every kind of surface shares. The
+   tool's own files use these; a sheet includes a kind, never these. */
+
+/* The drawing of one part and state, stretched over the piece, and what shows under it. */
+@mixin drawn($art, $under) {
+    background: var(--web-art-#{$art}) center / 100% 100% no-repeat, #{$under};
+}
+
+/* How much smaller a piece is while it is pressed. */
+$pressed: scale(.97);
+
+/* Only a state's drawing, laid on a piece over whatever fill it has, so the piece keeps its own. */
+@mixin drawing($art) {
+    background-image: var(--web-art-#{$art});
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}

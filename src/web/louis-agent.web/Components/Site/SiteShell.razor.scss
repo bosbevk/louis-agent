@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* ---- A site's public frame (F109.1, from the framework's static site): a header with the brand, the menu and the
    actions, the main column, a footer, and a corner that floats over every page. Scoped: what a site puts in a slot
    is reached under ::deep. A site sets --site-gutter in its own settings; without it the frame keeps a plain
@@ -13,8 +15,7 @@
     height: 2px;
     width: 0;
     z-index: 30;
-    background: var(--web-cta);
-    box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
+    @include surface.progress();
 }
 
 /* The header stays at the top of the screen (FX111): a slide settles under it, so the room above a slide holds the
@@ -23,15 +24,13 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(var(--bs-body-bg-rgb), .86);
-    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
     padding: 18px var(--site-gutter, 24px);
-    border-bottom: 1px solid var(--bs-border-color);
     flex-wrap: wrap;
+    @include surface.bar();
 }
 
 /* The brand is a lockup when a site gives it a mark: the mark, then the name, set in the mono face as the brand's
@@ -88,13 +87,13 @@
 .site-footer {
     margin-top: auto;
     padding: 20px var(--site-gutter, 24px);
-    border-top: 1px solid var(--bs-border-color);
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
     font: 13px var(--bs-font-monospace);
     color: var(--bs-tertiary-color);
+    @include surface.bar($side: top);
 }
 
 /* The way back up (F118, Louis: "we need a up button to take you to the top again"): a round button in the lower-left
@@ -109,18 +108,15 @@
     height: 44px;
     display: grid;
     place-items: center;
-    border: 1px solid var(--bs-border-color);
-    border-radius: 50%;
-    background: var(--bs-secondary-bg);
     color: var(--bs-secondary-color);
-    box-shadow: var(--bs-box-shadow);
     opacity: 0;
     translate: 0 12px;
     pointer-events: none;
-    transition: opacity .3s var(--web-ease), translate .3s var(--web-ease), color .2s, border-color .2s;
+    transition: opacity .3s var(--web-ease), translate .3s var(--web-ease), color .2s;
+    @include surface.float($radius: 50%);
 }
 .site-up[data-shown] { opacity: 1; translate: 0 0; pointer-events: auto; }
-.site-up:hover, .site-up:focus-visible { color: var(--bs-emphasis-color); border-color: var(--bs-emphasis-color); }
+.site-up:hover, .site-up:focus-visible { color: var(--bs-emphasis-color); }
 
 /* The corner floats over the page, high enough to clear the footer's line when the page is scrolled to its end (FX72),
    so the footer's words stay readable; what a site puts in it sizes itself. It sits above the sticky header (FX115),
@@ -148,8 +144,7 @@
         align-items: center;
         justify-content: center;
         padding: 0 12px;
-        border-top: 1px solid var(--bs-border-color);
-        background: rgba(var(--bs-body-bg-rgb), .96);
+        @include surface.bar($side: top, $blur: none);
     }
     .site-up { left: 16px; bottom: calc(var(--site-bar) + 12px); }
 }

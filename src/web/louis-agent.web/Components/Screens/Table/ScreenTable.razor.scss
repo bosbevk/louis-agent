@@ -1,9 +1,10 @@
+@use "web/tools/surface";
 @use "web/tools/screen-answer";
 
 /* A pack's described screen, on the portal's own parts (card-p, header-button, admin-table): only its search box, its
    paging, and rows that open nothing are its own. */
 .screen-search { display: flex; gap: 8px; margin-bottom: 12px; }
-.screen-search input { flex: 1; min-width: 0; padding: 6px 12px; border: 1px solid var(--bs-border-color); border-radius: 10px; background: var(--bs-body-bg); color: var(--bs-body-color); font-size: 13.5px; }
+.screen-search input { flex: 1; min-width: 0; padding: 6px 12px; color: var(--bs-body-color); font-size: 13.5px; @include surface.field($radius: 10px); }
 .screen-table .admin-table tbody tr { cursor: default; }
 /* Every line of text in the table's card, the ones a pack's view puts in its slot too, sits tight. */
 .screen-table ::deep p { margin: 0; }

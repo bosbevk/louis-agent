@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <!-- F151.2: the themes a site can opt into, glass and flat, each a package of values (ADR 0124). A folder per
        theme, each with one class that adds an area carrying the theme, and its sheets of values for its dark and its
-       light style; nothing here names a component. It holds no component of its own, so it needs no Razor. A site's
-       own build compiles the sheets, as it does the framework's. -->
+       light style; nothing here names a component. A site's own build compiles the sheets, as it does the
+       framework's. F151.4: a Razor class library, though it holds no component, so its wwwroot is served at
+       _content/louis-agent.web.themes/: the glass theme's drawings, one for each part and state (Louis's pick A of
+       three, a drawing is a value). -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Web.Themes</RootNamespace>
     <TargetFramework>net10.0</TargetFramework>
@@ -19,7 +21,8 @@
 
   <ItemGroup>
     <!-- Louis's pick A of three: the build compiles Styles/app.scss, the framework's names and every theme's
-         sheets, to wwwroot/css/app.css, so the tests hold each theme to the names. No site loads that file. -->
+         sheets, to obj/css/app.css, so the tests hold each theme to the names. No site loads that file, and it is
+         not served, being outside wwwroot. -->
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
   </ItemGroup>
 

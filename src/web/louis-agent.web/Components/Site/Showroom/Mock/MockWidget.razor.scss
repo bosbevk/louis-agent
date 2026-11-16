@@ -1,3 +1,6 @@
+@use "web/tools/mock";
+@use "web/tools/surface";
+
 /* The agent's widget on a mocked business's website (F127.1): under a head in the business's brand colour (--mock-*,
    from the mock) with its mark and a live dot. On a wide window it stands beside the website, a column of its own
    under the browser's bar (F134.2, the K mockup), so it covers none of the website; folded to its head it floats over
@@ -13,11 +16,7 @@
     width: 360px;
     overflow: hidden;
     border-radius: 14px;
-    background: var(--bs-secondary-bg);
-    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08),
-        0 0 0 4px color-mix(in srgb, var(--mock-brand) 22%, transparent),
-        0 22px 44px -10px rgba(var(--web-shadow-rgb), .55),
-        0 0 44px -8px color-mix(in srgb, var(--mock-brand) 75%, transparent);
+    @include mock.widget();
     --recorded-height: 400px;
 }
 .mock-widget-head {
@@ -28,9 +27,7 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--mock-on-brand);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--mock-brand) 80%, var(--mock-on-brand)),
-        var(--mock-brand) 55%, color-mix(in srgb, var(--mock-brand) 70%, rgb(var(--web-shadow-rgb))));
-    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--mock-on-brand) 15%, transparent);
+    @include mock.widget-head();
 }
 .mock-mark { display: inline-flex; flex: none; width: 20px; height: 20px; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
@@ -38,8 +35,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--web-ok);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--web-ok) 25%, transparent);
+    @include mock.live-dot();
     animation: mock-online 2s ease-in-out infinite;
 }
 /* A live chat says so (F127.2, mockup 4): a small tag after the label, in the head's own brand-light colour. */
@@ -49,19 +45,19 @@
     font: 700 10px/1.2 var(--bs-font-monospace);
     letter-spacing: .08em;
     text-transform: uppercase;
-    border: 1px solid color-mix(in srgb, var(--mock-on-brand) 45%, transparent);
+    @include mock.line($of: on-brand, $share: 45%);
 }
 @keyframes mock-online {
-    50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--web-ok) 0%, transparent); }
+    50% { @include mock.live-dot($swollen: true); }
 }
 .mock-widget-body ::deep .recorded-chat { border: 0; border-radius: 0; }
 .mock-widget-body ::deep .recorded-bar { display: none; }
 /* The agent's answers in bubbles of their own, as the visitor's questions already are. */
 .mock-widget-body ::deep .assistant-message .markdown {
     padding: 8px 12px;
-    border: 1px solid rgba(var(--web-overlay-rgb), .08);
     border-radius: 14px 14px 14px 4px;
-    background: rgba(var(--web-overlay-rgb), .06);
+    @include surface.lined(rgba(var(--web-overlay-rgb), .08));
+    @include surface.tint(var(--web-overlay-rgb), .06);
 }
 
 /* Minimised and maximised (F127.2, Louis: "we should have an minimize and maximize"; the buttons are the chat window's
@@ -92,8 +88,7 @@
         width: clamp(320px, 29cqi, 520px);
         min-height: 0;
         border-radius: 0;
-        box-shadow: -1px 0 0 rgba(var(--web-overlay-rgb), .1),
-            0 0 44px -8px color-mix(in srgb, var(--mock-brand) 75%, transparent);
+        @include mock.widget($beside: true);
         @include fills;
     }
 }

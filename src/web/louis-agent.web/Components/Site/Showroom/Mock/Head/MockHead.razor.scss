@@ -1,3 +1,6 @@
+@use "web/tools/mock";
+@use "web/tools/surface";
+
 /* A mocked business's header (F127.1, apart from its mock since F127.2): its mark, its wordmark in its display face
    (--mock-face) with its tagline under it, and its menu, both in its small capitals (--mock-caps) and its label colour
    (--mock-label), all set on its mock from its brand. A band of its brand colour unless its mock says another. It
@@ -12,7 +15,8 @@
     font-family: var(--mock-face);
     font-size: var(--mock-size);
     color: var(--mock-on-brand);
-    background: var(--mock-brand);
+    @include mock.wears();
+    @include surface.bar($blur: none);
 }
 .mock-mark { display: inline-flex; flex: none; width: 3em; height: 3em; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
@@ -46,25 +50,23 @@
 .font-bodoni .mock-name { font-size: 1.5em; font-weight: 500; letter-spacing: .18em; }
 
 /* A band (a coastal boutique): a hairline of its text colour under it. */
-.head-band .mock-header { box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--mock-on-brand) 35%, transparent); }
+.head-band .mock-header { @include mock.head-band(); }
 
 /* Ruled (an established firm): the page's colour under a rule of its label colour, the words in its brand colour. */
 .head-ruled .mock-header {
     padding-top: 1.35em;
     color: var(--mock-brand);
-    background: var(--mock-page);
-    box-shadow: inset 0 3px 0 var(--mock-label), inset 0 -1px 0 color-mix(in srgb, var(--mock-brand) 14%, transparent);
+    @include mock.head-ruled();
 }
 
 /* Lined (a farm bistro): the page's colour over a double line of its brand colour. */
 .head-lined .mock-header {
     padding-bottom: 1.35em;
     color: var(--mock-brand);
-    background: var(--mock-page);
-    box-shadow: inset 0 -1px 0 var(--mock-brand), inset 0 -4px 0 var(--mock-page), inset 0 -5px 0 var(--mock-brand);
+    @include mock.head-lined();
 }
 .head-ruled .mock-nav-item.is-current, .head-lined .mock-nav-item.is-current {
-    box-shadow: inset 0 -2px 0 var(--mock-label);
+    @include mock.head-current();
 }
 
 /* A narrow mock (a phone): the wordmark smaller, and the menu in a row of its own under the name, scrolling sideways,

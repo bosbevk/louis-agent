@@ -1,5 +1,6 @@
 @use "web/tools/accents";
 @use "web/tools/pressed";
+@use "web/tools/surface";
 
 /* A tile that shows a measurement (F118, from a site's sections): the number big in the mono face, the note under it
    close. The panel itself is the site's look. */
@@ -9,13 +10,13 @@
 
 /* An accented tile (F128.1): a thin edge of its colour along the top, and its heading in it. */
 @include accents.classes;
-[class*="accent-"] { border-top: 2px solid var(--accent); }
+[class*="accent-"] { @include surface.accent-line(); }
 [class*="accent-"] h3 { color: var(--accent); }
 
-/* A tile is a piece the visitor or the guide can select (F127.7): a pointer and a soft ring on hover, and pressed
-   once selected, in the tile's own colour where it has one. */
-[data-piece] { cursor: pointer; transition: transform .15s, box-shadow .15s, border-color .15s; }
-[data-piece]:hover { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .25); }
+/* A tile is a piece the visitor or the guide can select (F127.7): a pointer, the edge and shadow a theme gives a
+   pane under the pointer (F151.4), staying where it is, and pressed once selected, in the tile's own colour where
+   it has one. */
+[data-piece] { cursor: pointer; @include surface.lifts($lift: 0); }
 [data-piece][data-selected] { @include pressed.look; }
 
 @media (max-width: 600px) {

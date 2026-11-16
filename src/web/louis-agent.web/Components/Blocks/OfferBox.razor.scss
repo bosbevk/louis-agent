@@ -1,3 +1,4 @@
+@use "web/tools/surface";
 @use "web/tools/field";
 @use "web/tools/themed" as *;
 
@@ -9,11 +10,11 @@
     transition: border-color .15s, background .15s;
 }
 textarea.offer-input { resize: vertical; field-sizing: content; min-height: 2.6em; }
-.offer-input:focus { outline: none; border-color: themed(web-form-input, focus, var(--bs-primary)); }
+.offer-input:focus { outline: none; @include surface.edged(themed(web-form-input, focus, var(--bs-primary))); }
 .offer-input[disabled] { opacity: .6; }
 .offer-send {
     flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; font: inherit; font-weight: 700;
-    background: themed(web-form-send, bg, var(--bs-primary)); color: themed(web-form-send, ink, var(--bs-body-bg));
+    @include surface.panel(themed(web-form-send, bg, var(--bs-primary))); color: themed(web-form-send, ink, var(--bs-body-bg));
     cursor: pointer; transition: transform .15s, opacity .15s;
 }
 .offer-send:hover:not([disabled]) { transform: translateY(-1px); }

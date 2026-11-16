@@ -1,3 +1,4 @@
+@use "web/tools/surface";
 @use "web/tools/field";
 
 /* One labelled box of a form (F142): the framework's field label over its box, which lights when it has the focus,
@@ -18,8 +19,8 @@
 }
 .field-box:focus {
     outline: 0;
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .18);
+    @include surface.edged(var(--bs-primary));
+    @include surface.ring(rgba(var(--bs-primary-rgb), .18), 3px);
 }
 textarea.field-box {
     min-height: 5.4em;

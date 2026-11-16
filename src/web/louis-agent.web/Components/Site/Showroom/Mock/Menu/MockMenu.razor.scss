@@ -1,3 +1,6 @@
+@use "web/tools/mock";
+@use "web/tools/surface";
+
 /* A real menu (F127.1, Louis: "like having a real menu"): a card of the business's page with a thin rule of its brand
    colour, its courses in columns, each course's name in the business's typeface over a rule, and each dish set as a
    printed menu sets it, a dotted leader running from its name to its price, its words quiet under them. The courses
@@ -9,14 +12,13 @@
     gap: 1.6em 2.6em;
     margin-top: 1.2em;
     padding: 1.8em 2em;
-    border: 1px solid color-mix(in srgb, var(--mock-brand) 30%, transparent);
-    border-radius: .9em;
-    background: color-mix(in srgb, var(--mock-page) 94%, var(--mock-ink));
+    @include mock.card-as(94%, 30%, .9em);
+    @include surface.pane();
 }
 .mock-menu ::deep .mock-course-name {
     margin: 0 0 .7em;
     padding-bottom: .5em;
-    border-bottom: 1px solid color-mix(in srgb, var(--mock-brand) 35%, transparent);
+    @include mock.line(bottom, $share: 35%);
     font: 600 .95em/1.2 var(--mock-face);
     letter-spacing: .12em;
     text-transform: uppercase;
@@ -36,7 +38,7 @@
 .mock-menu ::deep .mock-dish-leader {
     flex: 1;
     min-width: 1em;
-    border-bottom: 1px dotted color-mix(in srgb, var(--mock-ink) 40%, transparent);
+    @include mock.line(bottom, ink, 40%, $style: dotted);
 }
 .mock-menu ::deep .mock-dish-price { font-size: 1em; font-weight: 700; color: var(--mock-brand); }
 .mock-menu ::deep .mock-dish-words { font-size: .9em; font-style: italic; line-height: 1.45; opacity: .75; }

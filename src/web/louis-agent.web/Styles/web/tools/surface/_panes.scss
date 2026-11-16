@@ -1,0 +1,148 @@
+@use "drawn" as *;
+
+/* The surface tool's panes (F151.4): what holds other things. A card or a panel, what is set into the page, a
+   field, a bar, and what floats over the page, each with its states. */
+
+/* A card or a panel: its fill and its drawing, its edge and corner, the shadow it throws and the blur behind it. A
+   piece that has its own corner or look today passes it, and the theme's names stand in for the rest. */
+@mixin pane($fill: var(--web-pane-fill), $edge: var(--web-pane-edge), $radius: var(--web-pane-radius),
+    $shadow: var(--web-pane-shadow)) {
+    border: $edge;
+    border-radius: $radius;
+    box-shadow: $shadow;
+    -webkit-backdrop-filter: var(--web-pane-blur);
+    backdrop-filter: var(--web-pane-blur);
+    @include drawn(pane-rest, $fill);
+
+    &:hover { @include drawn(pane-hover, $fill); }
+}
+
+/* A piece set into the page, such as the chat's card (Louis's pick C of three): a pane with the inset's fill and
+   edge, see-through in glass as a pane is. */
+@mixin inset($fill: var(--web-inset-fill), $edge: var(--web-inset-edge), $radius: var(--web-pane-radius)) {
+    border: $edge;
+    border-radius: $radius;
+    -webkit-backdrop-filter: var(--web-pane-blur);
+    backdrop-filter: var(--web-pane-blur);
+    @include drawn(pane-rest, $fill);
+}
+
+/* A field of a form: set into the page as an inset is, with its own drawing at rest and in focus. */
+@mixin field($fill: var(--web-inset-fill), $edge: var(--web-inset-edge), $radius: var(--bs-border-radius)) {
+    border: $edge;
+    border-radius: $radius;
+    @include drawn(field-rest, $fill);
+
+    &:focus { @include drawn(field-focus, $fill); }
+}
+
+/* A field said to be typed in by what holds it, such as the box in the agent's bar, whose field is drawn under its
+   words: the focus drawing, and a bright line inside it with a light round it. */
+@mixin field-lit($fill: var(--web-inset-fill)) {
+    box-shadow: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85), 0 0 26px -6px rgba(var(--web-overlay-rgb), .6);
+    @include drawn(field-focus, $fill);
+}
+
+/* A pane that is typed in, such as the chat's box: its line in the brand's colour, a soft ring of it, the shadow
+   of what floats, and the theme's focus drawing. */
+@mixin lit() {
+    border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg));
+    box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), .12), var(--web-float-shadow);
+    @include drawing(focus-pane);
+}
+
+/* A pane that answers the pointer, such as a card you open or a tile you pick: how far it lifts, its edge and its
+   shadow while the pointer is on it are the theme's (Louis's pick A of three, with his change: no tool draws a ring).
+   A theme with no hover edge or shadow sets a shadow that draws nothing, so the two always list. A piece that must
+   stay where it is passes a lift of 0. */
+@mixin lifts($lift: var(--web-pane-hover-lift)) {
+    transition: translate .25s var(--web-ease), box-shadow .3s;
+
+    &:hover, &:focus-visible {
+        translate: 0 $lift;
+        box-shadow: var(--web-pane-hover-edge), var(--web-pane-hover-shadow);
+    }
+}
+
+/* A pane that is open, such as the card whose story shows: its edge in the brand's colour, and the picked drawing. */
+@mixin opened() {
+    border-color: rgba(var(--bs-primary-rgb), .7);
+    @include drawing(pane-picked);
+}
+
+/* A pane that floats over the page, such as a menu's list or the way back up: a pane with the shadow a theme gives
+   what floats. */
+@mixin float($radius: var(--web-pane-radius), $fill: var(--web-pane-fill)) {
+    @include pane($fill: $fill, $radius: $radius, $shadow: var(--web-float-shadow));
+}
+
+/* A panel the stage shows through, such as the showroom's rail, its cues and a dock: a kind of its own, with its own
+   fill, edge and blur, since on a site with no theme it is see-through where a pane is solid. A piece whose corner
+   is its shape, a column, a pill or a circle, passes it. */
+@mixin veil($radius: var(--web-pane-radius)) {
+    border: var(--web-veil-edge);
+    border-radius: $radius;
+    -webkit-backdrop-filter: var(--web-veil-blur);
+    backdrop-filter: var(--web-veil-blur);
+    @include drawn(pane-rest, var(--web-veil-fill));
+}
+
+/* A flat part inside a piece, such as a window's title or one of its panes: one of the theme's colours, no edge and
+   no drawing, since the piece it is in is the surface. */
+@mixin panel($fill: var(--bs-secondary-bg)) {
+    background: $fill;
+}
+
+/* A quiet box inside a piece, such as a hint under a chat: a faint wash with a faint line inside it. */
+@mixin bubble() {
+    background: rgba(var(--web-overlay-rgb), .04);
+    box-shadow: inset 0 0 0 1px rgba(var(--web-overlay-rgb), .08);
+}
+
+/* A slab in a colour the site names for it, such as the closing strip: solid, with no drawing, since its words are
+   written for that colour. */
+@mixin slab($fill) {
+    background: $fill;
+}
+
+/* What is set into a pane, such as a small film or a tile. */
+@mixin well() {
+    border-radius: calc(var(--web-pane-radius) - 6px);
+    @include drawn(well, var(--bs-tertiary-bg));
+}
+
+/* A piece the visitor picked: its picked drawing laid on it, written where the component says it is picked. */
+@mixin picked() { @include drawing(pane-picked); }
+
+/* A piece the agent is showing: its showing drawing laid on it, written where the component says the agent lit it. */
+@mixin showing() { @include drawing(pane-showing); }
+
+/* The header, the footer or the agent's bar: its fill and drawing, a hairline towards the page, and its blur. A bar
+   at the foot of the page passes top, so its hairline is on the page's side, and a bar that holds something fixed to
+   the screen passes no blur, since a blur makes the bar the box such a thing is placed in. */
+@mixin bar($side: bottom, $blur: var(--web-bar-blur)) {
+    border-#{$side}: var(--web-bar-edge);
+    -webkit-backdrop-filter: $blur;
+    backdrop-filter: $blur;
+    @include drawn(bar, var(--web-bar-fill));
+}
+
+/* A bar that floats over the page, such as the agent's at the page's foot: its hairline goes all round it, and it
+   throws the shadow of what floats. */
+@mixin floating-bar() {
+    border: var(--web-bar-edge);
+    box-shadow: var(--web-float-shadow);
+    -webkit-backdrop-filter: var(--web-bar-blur);
+    backdrop-filter: var(--web-bar-blur);
+    @include drawn(bar, var(--web-bar-fill));
+}
+
+/* Only a piece's colour, where the fill it also has as an image must stay. */
+@mixin ground($fill) {
+    background-color: $fill;
+}
+
+/* A dialog over the whole page: a deep shadow under it and a faint ring of the brand's colour round it. */
+@mixin hovering() {
+    box-shadow: 0 30px 80px -20px rgba(var(--bs-black-rgb), .8), 0 0 0 1px rgba(var(--bs-primary-rgb), .08);
+}

@@ -174,15 +174,21 @@ the visitor sees.
 The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
 `Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
 message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
-centred at the page's foot, at most 760 wide, in glass. In it sit the agent's orb, a line of what the agent is
+centred at the page's foot, at most 760 wide, drawn as a bar that floats: the theme's bar with its hairline all
+round it and the shadow of what floats. In it sit the agent's orb, a line of what the agent is
 doing, and the box, which is there from the start, so a visitor can type at any moment. A press on that line lands
 in the box. Over the bar stands the agent's last answer, or the whole talk when the visitor opens it.
 
-The orb (`Widget/Orb`) is a general part of its own: a silver disc with four states, and the agent's mark on it,
-which the bar makes the first letter of the agent's name. Idle it breathes, thinking an arc goes round it, showing
-rings go out from it, and speaking it pulses. Which state it shows is a rule, `OrbStates.Of`, that reads only what
-the chat says of itself: a place the agent just showed, then whether it is streaming, then whether the answer's
-words have come. So the orb never shows a state the agent isn't in. Its rings keep close to the disc in every
+The orb (`Widget/Orb`) is a general part of its own: a disc with five states, and the agent's mark on it, which
+the bar makes the first letter of the agent's name. The disc is the theme's mark, drawn from the mark's fill, its
+gloss and its ink, so it is a silver disc with no theme named, a ball of violet glass in the glass theme and a flat
+violet disc in the flat one. Idle it breathes. Listening, its ring is in the visitor's colour. Thinking an arc goes
+round it, showing rings go out from it, and speaking it pulses. Which state it shows is a rule, `OrbStates.Of`,
+that reads only what the chat says of itself: a place the agent just showed, then whether it is streaming, then
+whether the answer's words have come. Only when the agent is doing none of those does it listen, while the visitor
+has words in the box or holds a piece of the page they picked. So the orb never shows a state the agent isn't in.
+The disc is 46 pixels across with 14 of room round it, which makes the bar 74 high. Its rings keep close to the
+disc in every
 state, and the bar's row cuts whatever glow would still reach past its edge, so the orb's light stays inside the
 bar.
 
@@ -203,7 +209,7 @@ chips step aside, and it is never more than 45% of the screen's height, so a lon
 the page away.
 
 Every answer with something to say stands as a caption (`Widget/Bar/Caption/AgentCaption`), from its first words
-on, while it is still coming in. A caption is a card of glass 400 wide with two sides. The front has the agent's
+on, while it is still coming in. A caption is a card 400 wide with two sides, drawn as a pane that floats. The front has the agent's
 orb and name, what the answer cost, a close, the answer's words, the question the agent asked over its choices,
 and the choices as pills, the suggested one bright and a choice's why as its tip. The pills wait until the answer
 is whole. Under them is a way into the box, and two quiet links: to the card's other side, and to the whole talk.
@@ -222,8 +228,11 @@ On a wide screen, from 901 wide, the caption's module decides where it stands. A
 stands beside it: to the right of the place where the screen has room, else to its left, else under it. The
 widget's script leaves a mark (`data-lit`) on the place it lit, which stays after the spotlight fades, and says so
 when it lights another, so a caption that already stands moves there. An answer that lit no place stands the same
-way beside the piece of the page the visitor chose to ask about, when one is chosen. While a caption stands beside
-a place, the place keeps a quiet ring, the spotlight's own ring left on with no dim, so the two read as one. A
+way beside the piece of the page the visitor chose to ask about, when one is chosen. When that place has a card
+beside it, the caption takes the card's place instead: where the card stands, as wide and at least as tall as it,
+with its corners. The card is the piece of the page straight after the place, or else the one straight before it,
+and it counts only while it lies flat and shows between the header and the bar. While a caption stands beside
+a place or in the place of the card beside it, the place keeps a quiet ring, the spotlight's own ring left on with no dim, so the two read as one. A
 caption with no place to stand beside (none lit or chosen, a place as wide as the screen, or one scrolled off)
 stands at the bar's left, beside the orb, where the screen has room for it. Only where it has none does it stand
 over the bar, and then the page makes room for it as the paragraph above tells. On a phone, up to 900 wide, the
@@ -596,12 +605,43 @@ the browser keeps a visitor's pick under, `site.theme` and `site.style`, and the
 
 **What a theme sets.** A colour can't say "glass", so beside the colours `web/settings/_surfaces.scss` names the
 surfaces too. A pane, which is a card or a panel, has a fill, an edge, a rim drawn as its edge line, a light inside
-its corners, a shadow, a blur and a corner. A bar, which is the header, the footer or the agent's bar, has a fill, an
+its corners, a shadow, a blur and a corner. A pane that answers the pointer, such as a card you open or a tile you
+pick, has a hover of its own: how far it lifts, an edge and a shadow, the last two written as shadows. A pane that
+floats over the page, such as a menu's list or the way back up, has the shadow it throws. A veil, a thin sheet
+laid over what is behind it such as the showroom's rail and its dock, has a fill, an edge and a blur. An inset, a piece set into the page such as the chat's card or a field,
+has a fill and an edge, the page's colour and the hairline. A bar, which is the header, the footer or the agent's bar, has a fill, an
 edge and a blur. The main button has a fill and the ink on it, and the second one an outline. The mark has its disc,
-its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Each name is set
-to the look the framework draws today, so a site with no theme looks as it always has, and no component reads them
-yet. Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
+its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. Last come the
+drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
+`--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.
+Each name is set to the look the framework draws with no theme, so a site that names none looks as it always has.
+Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
 every colour name and every surface name, once for each style.
+
+**A sheet says what a piece is, and a tool draws it.** Take the chat's box you type in. Its sheet doesn't write a
+background, a border or a shadow. It says the box is a pane that floats, and that it is lit while you type, and
+the surface tool writes the lines from the names above. So glass makes the box a sheet of glass and flat makes it
+a plain card, and the box's own sheet never changes. The tool is `web/tools/_surface.scss`, a mixin for each kind
+of surface, kept in files by what they are: the panes, the presses, the marks, the lines and washes, and what
+only a conversation draws. Some kinds read a theme's own names, such as a pane, a field, a bar and a small piece's
+hairline. Others are plain, such as a wash of a colour or a shadow thrown in it, and take the colour from the
+sheet, so they follow a theme through its colours. A kind writes its lines where it is included, so the tool adds
+nothing to a stylesheet by itself.
+
+A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of the library a line at a
+time, and a line that sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
+gradient counts as drawn by hand. No sheet may, and one that does fails the test. The tools themselves and the
+settings are not read, since that is where the drawing lives.
+
+The showroom's mock website is the one place that wears a business's colours and not the site's. A mock sets
+`--mock-brand`, `--mock-page`, `--mock-ink` and its other colours from the business's data, and the mock website
+is drawn from those. What every website has is still drawn by the surface tool: its header and foot are a bar, a
+place's card is a pane and its main button is a press. For that the mock sets the names the surface tool reads to
+the business's colours, on its header and on its page, and lays no drawing of a theme on them. So the pieces go
+through the same tool as the rest of the library, and the agent's chat beside the website keeps the site's own
+look. What only a mock has is a second tool, `web/tools/_mock.scss`: a header's ruled or doubled line, a photo
+washed in the brand's colour, the browser's window and its bar, the widget's ring and glow, and the spotlight on a
+place the agent shows.
 
 **The visitor picks the look with a switch.** `LookSwitch` is two small groups of buttons: the site's themes, by
 name and in the order named, when it offers two or more, and Dark and Light when it offers any. A site that offers
@@ -730,7 +770,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `Location/`: `LocatedPlace`, `LocationProblem`), `ChatLanguages`, `ChatCosts`, `ModelNames` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
-| `Styles/web/` | The globals: `settings/_colours.scss` and `settings/_surfaces.scss` (the names a theme sets, F151.1), `tools/` (`_colours.scss`, both forms of a colour from one value; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
+| `Styles/web/` | The globals: `settings/_colours.scss` and `settings/_surfaces.scss` (the names a theme sets, F151.1), `tools/` (`_colours.scss`, both forms of a colour from one value; `_mock.scss`, how a mocked business's website is drawn in the business's own colours; `_surface.scss`, which hands on the files of `tools/surface/` under one name (the panes, the presses, the marks, the lines and washes, and what only a conversation draws, such as what you said and the line that says the agent is working), a mixin for each kind of surface, a pane, an inset set into the page, a field, a bar, a press, a quiet press, a chip, a tag, a well and a switch's group, a pane that lifts, is open or floats, a slab, a tint, an accent line, a marker and a progress line, the agent's mark with its rings, a bar that floats, a field lit from outside, a wash of a piece's own ink, a visitor's tag, a press that must be seen and the light that crosses it, a piece's own line and its colour under the pointer, a ring, a badge, a line in the brand's two colours, a pane lit while it is typed in, a veil, a panel, a chat bubble, a rule along one side, a hairline, an outline and a track, and the picked and showing drawings laid on a piece, each drawing its piece from the names a theme sets, its drawing over its fill, F151.4; `_window.scss`, `_chat-card.scss`, `_field.scss` and `_pressed.scss` draw through it; `_glow.scss`, the showroom's light in the one colour a demo has, with a mark for each piece it lights, which reads no theme's name; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
 | `Components/Editing/` | Pieces for a page a person edits (F142). The framework decides nothing about how a site edits its pages. louis-agent.dev builds its CV's editor from them ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md), the site's own): `TextField` and `FieldGroup` (a labelled box, a few under a heading), `TagInput` (words as chips), `ListEdits` (add, take out, replace, move, each a new list) and `EditedItem` (an item with the way to hand back a changed copy). `Inline/` is for a page edited where it stands: `InlineEdit` (click the words, a box with a tick and a cross, Enter keeps, Escape drops, and plain words when nobody listens), `InlineForm` (the same for an item of several fields), `ItemTools` and `ItemAdd` (move, remove, open and add for a list on the page), and `PartChanges`, which gives a part a listener exactly when the whole has one |
 | `Components/Icons/` | `LineIconView`, a line icon from the framework's one set (part 8) |
 | `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `WorkBody`, `PlainBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |

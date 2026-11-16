@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* A faint paper grain over the soft background, so large areas never look flat or digital (fixed, under everything). */
 body::before {
     content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .05; mix-blend-mode: overlay;
@@ -14,18 +16,18 @@ body::before {
 .app { position: relative; z-index: 1; }
 .conversation { background: transparent; }
 /* A gradient, not a colour: at lg Bootstrap sets an offcanvas's background-color to transparent !important. */
-.sidebar { background-image: linear-gradient(color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent), color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent)); }
+.sidebar { @include surface.image-fill(color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent)); }
 /* Type: balanced headline lines, no lone last words in answers, figures that line up. */
 .empty h1 { text-wrap: balance; letter-spacing: -1.6px; font-weight: 800; }
 .markdown p, .markdown li { text-wrap: pretty; }
 .markdown { font-variant-numeric: tabular-nums; }
 /* Hairlines, not borders: a touch of charcoal mixed into the background, and an inner light on raised surfaces. */
-.suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { border-color: color-mix(in srgb, var(--bs-emphasis-color) 10%, var(--bs-body-bg)); }
+.suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { @include surface.edged(color-mix(in srgb, var(--bs-emphasis-color) 10%, var(--bs-body-bg))); }
 /* The sidebar: a small label over the chats, as in a well-made app. */
 .sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--bs-tertiary-color); padding: 6px 12px 0; }
 /* Focus is always visible, in orange, and never a browser default. */
-:focus-visible { outline: 2px solid color-mix(in srgb, var(--bs-primary) 70%, transparent); outline-offset: 3px; }
-.input-row:focus-within { border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bs-primary) 12%, transparent), 0 18px 40px -18px rgba(var(--web-shadow-rgb), .3); }
+:focus-visible { @include surface.focus-ring(); }
+.input-row:focus-within { @include surface.typed-in(); }
 /* Scrolling never shifts the layout. */
 .messages, .chat-list { scrollbar-gutter: stable; }
 /* The tagline under the logo in the sidebar. */
@@ -36,15 +38,11 @@ body::before {
 /* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
    the sidebar, the chat and the composer's fade all sit over the same light. ---- */
 body {
-    background:
-        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
-        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
-        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%),
-        var(--bs-body-bg);
+    @include surface.page-light();
     background-attachment: fixed;
 }
 .conversation { background: transparent; }
-.composer { background: linear-gradient(to top, rgba(var(--bs-body-bg-rgb), .92) 55%, rgba(var(--bs-body-bg-rgb), 0)); }
-.user-message { box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .08) inset, 0 12px 28px -12px rgba(var(--bs-black-rgb), .7); }
-.new-chat { box-shadow: 0 8px 22px -8px rgba(var(--bs-primary-rgb), .6); }
+.composer { @include surface.fades-up(.92, 55%); }
+.user-message { @include surface.spoken-deep(); }
+.new-chat { @include surface.cast(8px, 22px, -8px, .6); }
 .tagline { color: var(--bs-secondary-color); }

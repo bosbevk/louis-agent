@@ -1,0 +1,21 @@
+/* The surface tool (F151.4): one mixin for each kind of surface the mockups have, each drawing its piece from the
+   names a theme sets and from nothing else, so a theme reaches every piece and a component never names a theme
+   (ADR 0124). A pane is a card or a panel. A bar is the header, the footer or the agent's bar. A press is the main
+   button, a quiet press the second one, and a chip a small thing to press that is not a button in a form. A tag is a
+   label that sits on a piece, and a well is what is set into a pane.
+
+   A surface is a drawing laid over its fill (Louis's pick A of three: a drawing is a value). The drawing is the
+   theme's --web-art-{part}-{state}, stretched to the piece, since a drawing has no size of its own; a theme with no
+   drawings sets them to none and the fill alone shows. A state is the same piece with its state's drawing: hover,
+   pressed, off and picked. A pressed piece is also made a little smaller here, in every theme. Written where it's
+   included: a tool writes no CSS of its own.
+
+   The kinds are in files by what they are, in surface/: panes, presses, marks, lines and washes, and the
+   conversation. This file
+   hands them on under one name, so a sheet says surface.pane() whichever file holds it. */
+
+@forward "surface/panes";
+@forward "surface/presses";
+@forward "surface/marks";
+@forward "surface/lines";
+@forward "surface/talk";

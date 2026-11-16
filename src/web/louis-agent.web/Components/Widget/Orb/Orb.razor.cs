@@ -5,7 +5,8 @@ namespace LouisAgent.Web.Components.Widget.Orb;
 
 /// <summary>
 /// The agent's orb (F134.3): a disc beside the agent's box that shows what it is doing, with the agent's mark on it.
-/// Idle it breathes, thinking an arc goes round, showing rings go out from it, speaking it pulses.
+/// Idle it breathes, listening it wears a ring in the visitor's colour, thinking an arc goes round, showing rings go
+/// out from it, speaking it pulses.
 /// </summary>
 /// <remarks>
 /// A general part of the framework's web (F134's rule 1): it knows nothing of a chat, only its state, which a caller

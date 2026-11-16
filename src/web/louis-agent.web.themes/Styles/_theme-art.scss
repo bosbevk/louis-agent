@@ -1,0 +1,29 @@
+/* The drawings a theme may lay on a piece (F151.4, Louis's pick A of three: a drawing is a value), one for each part
+   and state, as the framework names them --web-art-{drawing}. Written once here, and each theme's sheet sets a value
+   for every one: glass a drawing this project serves, flat none. */
+
+$drawings: (
+    bar, field-focus, field-rest, focus-pane, focus-pill, gem, group, knob,
+    pane-hover, pane-picked, pane-rest, pane-showing,
+    press-disabled, press-hover, press-pressed, press-rest,
+    quiet-press-disabled, quiet-press-hover, quiet-press-picked, quiet-press-pressed, quiet-press-rest,
+    slider-fill, slider-track, status, tag-agent, tag-you, tag,
+    toggle-off-disabled, toggle-off, toggle-on-disabled, toggle-on, well
+);
+
+/* Where a site's page finds this project's files, from the stylesheet its build makes, wwwroot/css/app.css. */
+$served: "../_content/louis-agent.web.themes/";
+
+/* Every drawing named, each to the file of this theme and style. */
+@mixin drawn($theme, $style) {
+    @each $drawing in $drawings {
+        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg");
+    }
+}
+
+/* Every drawing named none: a theme that lays no drawing on any piece. */
+@mixin none() {
+    @each $drawing in $drawings {
+        --web-art-#{$drawing}: none;
+    }
+}

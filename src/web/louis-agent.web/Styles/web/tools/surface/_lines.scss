@@ -1,0 +1,126 @@
+@use "sass:list";
+
+/* The surface tool's lines and washes (F151.4): the hairlines between parts, a piece's own line and ring, and
+   the faint washes of a colour over a row or a small button. */
+
+/* A hairline between two parts, on the side given: the edge a theme gives a bar. */
+@mixin rule($side: bottom, $edge: var(--web-bar-edge)) {
+    border-#{$side}: $edge;
+}
+
+/* A hairline drawn as a block of its own, such as the line between two groups, as strong as given. */
+@mixin hairline($strength: .14) {
+    background: rgba(var(--web-overlay-rgb), $strength);
+}
+
+/* A piece that is only its outline, such as a number in a ring: the second button's edge. */
+@mixin outlined() {
+    border: var(--web-press-edge);
+}
+
+/* The groove a line fills as something plays. */
+@mixin track() {
+    background: var(--bs-border-color);
+}
+
+/* A piece's own line: the hairline a theme draws between parts, so a small piece keeps a line in a theme whose
+   panes have none, or a line in the colour, width and style given. */
+@mixin lined($colour: null, $width: 1px, $style: solid) {
+    @if $colour == null {
+        border: var(--web-bar-edge);
+    } @else {
+        border: $width $style $colour;
+    }
+}
+
+/* The line of a piece taking a colour, as it does under the pointer or while it is switched on. */
+@mixin edged($colour: var(--bs-border-color), $side: null) {
+    @if $side == null {
+        border-color: $colour;
+    } @else {
+        border-#{$side}-color: $colour;
+    }
+}
+
+/* A ring round a piece, in a colour: round a disc so it stands off what is under it, or round a field in use. */
+@mixin ring($colour, $width: 3px) {
+    box-shadow: 0 0 0 $width $colour;
+}
+
+/* A row or a tile under the pointer, such as a link in a menu: a wash of the brand's colour, or of the colour and
+   strength given. */
+@mixin tint($rgb: var(--bs-primary-rgb), $strength: .08) {
+    background: rgba($rgb, $strength);
+}
+
+/* A wash of a piece's own ink over whatever it sits on, such as a small button in a window's head, which may be
+   plain or in a business's colour. */
+@mixin wash($strength: 14%) {
+    background: color-mix(in srgb, currentColor $strength, transparent);
+}
+
+/* The shadow a piece throws in a colour, the brand's unless it names another: how far down, how soft, how far
+   pulled in, and how strong. */
+@mixin cast($down, $soft, $pull, $strength, $rgb: var(--bs-primary-rgb)) {
+    box-shadow: 0 $down $soft $pull rgba($rgb, $strength);
+}
+
+/* A piece raised a little off the page, and more under the pointer or when it is open. */
+@mixin raised($more: false) {
+    @if $more {
+        box-shadow: var(--bs-box-shadow);
+    } @else {
+        box-shadow: var(--bs-box-shadow-sm);
+    }
+}
+
+/* The brand's own glow round a piece that is typed in. */
+@mixin glowing() {
+    box-shadow: var(--web-glow);
+}
+
+/* The ring round whatever the keyboard is on, in the brand's colour unless another is given, clear of the piece. */
+@mixin focus-ring($colour: color-mix(in srgb, var(--bs-primary) 70%, transparent), $clear: 3px) {
+    outline: 2px solid $colour;
+    outline-offset: $clear;
+}
+
+/* The page's colour fading out upward, behind what sits at the foot of a scrolling list. */
+@mixin fades-up($strength: 1, $until: 60%) {
+    background: linear-gradient(to top, rgba(var(--bs-body-bg-rgb), $strength) $until, rgba(var(--bs-body-bg-rgb), 0));
+}
+
+/* A fill written as an image, for a piece whose colour Bootstrap forces clear. */
+@mixin image-fill($colour) {
+    background-image: linear-gradient($colour, $colour);
+}
+
+/* A band of light across a press, for the sheet to slide from one side to the other. */
+@mixin glint() {
+    background: linear-gradient(90deg, transparent, rgba(var(--web-overlay-rgb), .45), transparent);
+}
+
+/* What is behind a piece, blurred. */
+@mixin frosted($blur: 14px) {
+    backdrop-filter: blur($blur);
+}
+
+/* The depth of a piece that lies on the page: a shadow under it, how far down, how soft, how far pulled in and how
+   strong; a line of light inside its top where it has one; and a closer shadow, as how far down, how soft and
+   how strong. */
+@mixin depth($down, $soft, $pull, $strength, $shine: null, $close: null) {
+    $shadows: (0 $down $soft $pull rgba(var(--web-shadow-rgb), $strength),);
+    @if $shine != null {
+        $shadows: list.join((0 1px 0 rgba(var(--web-overlay-rgb), $shine) inset,), $shadows, comma);
+    }
+    @if $close != null {
+        $closer: 0 list.nth($close, 1) list.nth($close, 2) rgba(var(--web-shadow-rgb), list.nth($close, 3));
+        $shadows: list.append($shadows, $closer, comma);
+    }
+    box-shadow: $shadows;
+}
+
+/* The colour of an outline a piece already has, such as the dashes round words that can be changed. */
+@mixin outline-colour($colour: var(--bs-primary)) {
+    outline-color: $colour;
+}

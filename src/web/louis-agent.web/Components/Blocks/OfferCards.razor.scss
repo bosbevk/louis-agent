@@ -1,3 +1,4 @@
+@use "web/tools/surface";
 @use "web/tools/chat-card";
 
 /* Choices the agent offered (F127.4.1): a card per choice under the answer, the suggested one in the accent. A card
@@ -10,10 +11,10 @@
     font: inherit; transition: border-color .15s, transform .15s;
 }
 button.offer-card { cursor: pointer; }
-button.offer-card:hover:not([disabled]) { border-color: var(--bs-primary); transform: translateY(-1px); }
+button.offer-card:hover:not([disabled]) { @include surface.edged(var(--bs-primary)); transform: translateY(-1px); }
 button.offer-card[disabled] { cursor: default; opacity: .6; }
-.offer ::deep .offer-card.is-suggested { border-color: var(--bs-primary); box-shadow: 0 0 0 1px var(--bs-primary); }
-.offer-card.is-chosen { border-color: var(--bs-primary); background: rgba(var(--bs-primary-rgb), .08); }
+.offer ::deep .offer-card.is-suggested { @include surface.edged(var(--bs-primary)); @include surface.ring(var(--bs-primary), 1px); }
+.offer-card.is-chosen { @include surface.edged(var(--bs-primary)); @include surface.tint(var(--bs-primary-rgb), .08); }
 .offer ::deep .offer-label { font-weight: 600; font-size: 14px; }
 /* The suggested card's tag stands in its top corner, so its label keeps clear of it, however narrow the card. */
 .offer ::deep .offer-card.is-suggested .offer-label { padding-right: 84px; }

@@ -1,0 +1,79 @@
+@use "drawn" as *;
+
+/* The surface tool's presses (F151.4): what a visitor presses, and the labels that sit on a piece. */
+
+/* The main button: what the brand gives you to press, with its words, hover, pressed and off. */
+@mixin press() {
+    border: 0;
+    color: var(--web-press-ink);
+    @include drawn(press-rest, var(--web-press-fill));
+
+    &:hover:not(:disabled) { @include drawn(press-hover, var(--web-press-fill)); }
+    &:active:not(:disabled) {
+        transform: $pressed;
+        @include drawn(press-pressed, var(--web-press-fill));
+    }
+    &:disabled { cursor: default; @include drawn(press-disabled, var(--web-press-fill)); }
+}
+
+/* The second button: an outline in the words' colour, with its hover, pressed and off. */
+@mixin quiet-press() {
+    border: var(--web-press-edge);
+    color: var(--bs-body-color);
+    @include drawn(quiet-press-rest, transparent);
+
+    &:hover:not(:disabled) { @include drawn(quiet-press-hover, transparent); }
+    &:active:not(:disabled) {
+        transform: $pressed;
+        @include drawn(quiet-press-pressed, transparent);
+    }
+    &:disabled { cursor: default; @include drawn(quiet-press-disabled, transparent); }
+}
+
+/* A chip: drawn as the second button, and picked when it says it is pressed. */
+@mixin chip() {
+    @include quiet-press();
+
+    &[aria-pressed="true"] { @include drawn(quiet-press-picked, transparent); }
+}
+
+/* The pill that holds a switch's choices: a fill with a hairline drawn inside it, under its drawing. */
+@mixin group() {
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--bs-border-color);
+    @include drawn(group, var(--bs-secondary-bg));
+}
+
+/* A label that sits on a piece. */
+@mixin tag() {
+    border-radius: 999px;
+    @include drawn(tag, var(--bs-tertiary-bg));
+}
+
+/* The label on a piece the visitor picked: in their colour, a faint wash of it inside a line of it. */
+@mixin tag-you() {
+    border: 1px solid color-mix(in srgb, var(--web-you) 30%, transparent);
+    border-radius: 999px;
+    @include drawn(tag-you, color-mix(in srgb, var(--web-you) 6%, transparent));
+}
+
+/* A press that must be seen, such as the button that opens the guide: a ring and a glow in the brand's colour, and
+   the same swollen, for the top of its pulse. */
+@mixin beacon($swollen: false) {
+    @if $swollen {
+        box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7);
+    } @else {
+        box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55);
+    }
+}
+
+/* A light that crosses a press from side to side: a slanted band, see-through at both ends. */
+@mixin sweep() {
+    background: linear-gradient(105deg, transparent 30%, rgba(var(--web-overlay-rgb), .85) 50%, transparent 70%);
+}
+
+/* A choice the visitor writes themselves: a dashed line round it where the others have a solid one. */
+@mixin write-in() {
+    border-color: transparent;
+    outline: 1px dashed rgba(var(--web-overlay-rgb), .4);
+}

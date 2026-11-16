@@ -1,3 +1,4 @@
+@use "web/tools/surface";
 @use "web/tools/field";
 
 /* A field of short words (F142): the framework's field box, holding the tags as chips and the box that takes the
@@ -11,14 +12,14 @@
     padding: 5px 6px;
     cursor: text;
 }
-.tag-input:focus-within { border-color: var(--bs-primary); box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .18); }
+.tag-input:focus-within { @include surface.edged(var(--bs-primary)); @include surface.ring(rgba(var(--bs-primary-rgb), .18), 3px); }
 .tag {
     display: inline-flex;
     align-items: center;
     gap: 2px;
     padding: 2px 2px 2px 9px;
     border-radius: 6px;
-    background: var(--bs-secondary-bg);
+    @include surface.panel();
     font-size: 12.5px;
     line-height: 1.5;
 }
@@ -33,7 +34,7 @@
     line-height: 1;
     cursor: pointer;
 }
-.tag-remove:hover { background: var(--bs-tertiary-bg); color: var(--bs-danger); }
+.tag-remove:hover { @include surface.panel(var(--bs-tertiary-bg)); color: var(--bs-danger); }
 .tag-entry {
     flex: 1;
     min-width: 8ch;
