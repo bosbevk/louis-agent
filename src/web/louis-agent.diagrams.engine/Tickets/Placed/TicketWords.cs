@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Engine.Words;
 namespace LouisAgent.Diagrams.Engine.Tickets.Placed;
 
 /// <summary>
-/// One kind of words on a ticket: its kicker, its title, a row's label. It knows the style that draws them and
+/// One kind of words on a ticket: its topic, its title, a row's label. It knows the style that draws them and
 /// the face that says how wide they run.
 /// </summary>
 /// <remarks>
@@ -17,7 +17,7 @@ namespace LouisAgent.Diagrams.Engine.Tickets.Placed;
 public sealed record TicketWords(string Cls, Face Face)
 {
     /// <summary>The small line over the title, the title, and the line under it.</summary>
-    public static readonly TicketWords Kicker = new("ticket-kicker", new Face(7.4)),
+    public static readonly TicketWords Topic = new("ticket-topic", new Face(7.4)),
         Title = new("ticket-title", new Face(13.2)),
         Subtitle = new("ticket-subtitle", new Face(6.6));
 

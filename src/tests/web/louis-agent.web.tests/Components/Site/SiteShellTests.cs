@@ -125,7 +125,7 @@ public class SiteShellTests
         {
             builder.OpenComponent<Band>(0);
             builder.AddComponentParameter(1, nameof(Band.Id), "rule");
-            builder.AddComponentParameter(2, nameof(Band.Kicker), "One rule");
+            builder.AddComponentParameter(2, nameof(Band.Topic), "One rule");
             builder.CloseComponent();
             builder.OpenComponent<Band>(3);
             builder.AddComponentParameter(4, nameof(Band.Id), "contact");

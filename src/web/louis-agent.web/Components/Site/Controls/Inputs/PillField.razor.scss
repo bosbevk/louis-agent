@@ -1,0 +1,5 @@
+@use "web/tools/surface";
+
+/* The design page's field (FX162): a 48 px pill, its drawing at rest and in focus, the input itself plain inside. */
+.pill-field { display: flex; align-items: center; flex: 1; min-width: 0; height: 48px; padding: 0 20px; @include surface.field-pill(); }
+.pill-field input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: inherit; font: 500 15px var(--bs-font-sans-serif); }

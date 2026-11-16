@@ -88,9 +88,6 @@
     <loc>https://louis-agent.dev/framework/architecture</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/framework/architecture/how</loc>
-  </url>
-  <url>
     <loc>https://louis-agent.dev/framework/architecture/concepts</loc>
   </url>
   <url>
@@ -266,6 +263,9 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/packs/rules</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/theme</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/whats-coming</loc>

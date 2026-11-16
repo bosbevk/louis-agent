@@ -1,0 +1,8 @@
+@* A heading and its summary (ADR 0125): the opening of a part of a page, which a site gives as words. *@
+<div class="intro">
+    <h3>@Title</h3>
+    @if (Summary is not null)
+    {
+        <p class="summary">@Markdown.Inline(Summary)</p>
+    }
+</div>

@@ -269,7 +269,7 @@ These are the types involved:
 | `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
-| `Content/`, `Graphs/` | `SiteDoors`, `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |
+| `Content/`, `Graphs/` | `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |
 | `Styles/app.scss`, `Styles/site/` | The framework's Sass and the triage pack's demo, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |
 

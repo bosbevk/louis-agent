@@ -48,9 +48,21 @@
 /* The slogan under the brand (FX79): one quiet mono line, the site's own words. */
 .site-tagline { font: 500 11px/1 var(--bs-font-monospace); letter-spacing: .04em; color: var(--bs-tertiary-color); }
 
-.site-nav { margin-left: auto; display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
-.site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
-.site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
+/* The menu is one rail (FX162, Louis's pick C of three): the theme's group round it, as the look switch has, and each
+   link a choice in it that takes the quiet glass under the pointer. */
+.site-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    font-size: 14px;
+    @include surface.group();
+}
+.site-nav ::deep a { padding: 7px 13px; @include surface.rail-choice(); }
+/* The page the visitor is on stays chosen, as the look switch's choice does (Louis: "must stay selected if I'm on
+   that page"): a site marks its link active, as Blazor's NavLink does. */
+.site-nav ::deep a.active { @include surface.press(); }
 
 /* The actions at the header's end stand in a row, the look switch and what the site adds, a little apart. */
 .site-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
@@ -170,7 +182,17 @@
         padding: 20px;
         @include surface.frosted-float($radius: 18px);
     }
-    .site-nav { margin-left: 0; flex-direction: column; gap: 16px; font-size: 17px; }
+    /* In the sheet the links stand one under the other, out of the rail. */
+    .site-nav {
+        margin-left: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 0;
+        font-size: 17px;
+        box-shadow: none;
+        background: none;
+    }
     .site-corner {
         left: 0;
         right: 0;

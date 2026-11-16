@@ -23,7 +23,7 @@ public class CvPageTests
 
     /// <summary>Waits until the hero's summary says this.</summary>
     private static void WaitForSummary(IRenderedComponent<CvPage> page, string summary) =>
-        page.WaitForAssertion(() => Assert.That(page.Find(".cv-hero .lede").TextContent, Is.EqualTo(summary)),
+        page.WaitForAssertion(() => Assert.That(page.Find(".cv-hero .summary").TextContent, Is.EqualTo(summary)),
             TimeSpan.FromSeconds(10));
 
     /// <summary>The page is at /cv, headed by Louis's name, with the links a recruiter needs.</summary>

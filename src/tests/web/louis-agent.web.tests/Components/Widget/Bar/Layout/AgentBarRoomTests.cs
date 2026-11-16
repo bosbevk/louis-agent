@@ -77,7 +77,7 @@ public class AgentBarRoomTests
     }
 
     /// <summary>
-    /// On a screen less tall the start gives up its lede, and on a short one some of its size too, so the deck
+    /// On a screen less tall the start gives up its summary, and on a short one some of its size too, so the deck
     /// keeps the height its windows need and the stage still stands on one screen above the bar.
     /// </summary>
     [Test]
@@ -90,7 +90,7 @@ public class AgentBarRoomTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(shorter, Does.Contain(".start-lede { display: none; }").And.Contain("--start-rest:"));
+            Assert.That(shorter, Does.Contain(".start-summary { display: none; }").And.Contain("--start-rest:"));
             Assert.That(start, Does.Contain("@media (min-width: 901px) and (max-height: 820px) {"));
             Assert.That(start, Does.Contain("--deck-least: 290px;").And.Not.Contain("--deck-least: 200px;"),
                 "never so low that a window can't keep its website and chat side by side");

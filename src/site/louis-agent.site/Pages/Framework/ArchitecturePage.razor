@@ -3,9 +3,9 @@
 <PageTitle>Architecture · louis-agent</PageTitle>
 <PageHead Description="The whole louis-agent framework as its repository is laid out: every project that ships, by family, from the engine to the sites." />
 
-<Band Id="top" Kicker="Architecture">
+<Band Id="top" Topic="Architecture">
     <BandTitle Class="chrome">The whole framework, as the repository is laid out.</BandTitle>
-    <p class="lede">Every project that ships has its place here, one line each. The folders say what ships: <code>src/</code> is the framework and its own site, <code>packs/</code> what an agent can do, <code>demos/</code> what someone built on it. A test holds this page to the solution file, so a new project can't be left off.</p>
+    <p class="summary">Every project that ships has its place here, one line each. The folders say what ships: <code>src/</code> is the framework and its own site, <code>packs/</code> what an agent can do, <code>demos/</code> what someone built on it. A test holds this page to the solution file, so a new project can't be left off.</p>
     <pre class="listing"><code>src/engine/   the engine: core, and what sits on it, one library each
 src/hosts/    the hosts, as libraries: a CLI, Rider's protocol, the HTTP API, the MCP server, the accounts
 src/web/      the framework's web: what every site shares
@@ -18,14 +18,8 @@ demos/        louis-agent/ (the coding agent, its chat and admin), puls/ (the as
     <GraphView Spec="ArchitectureGraph.Spec" Title="The groups of the repository, and which rests on which" />
 </Band>
 
-@* The whole framework at a glance, from the landing (F128.1): its film, then its four concepts. *@
-<Band Id="how" Kicker="In six scenes" Class="band-movie">
-    <h2 class="chrome reveal">The whole framework, in six scenes.</h2>
-    <FilmFrame><ShortMovie /></FilmFrame>
-    <p class="band-note">The parts and the words are the real ones. <a href="/framework/how-it-works">The long version</a> follows one turn through every layer of core.</p>
-</Band>
 
-<Band Id="concepts" Kicker="Four concepts" Short="Concepts">
+<Band Id="concepts" Topic="Four concepts" Short="Concepts">
     <h2 class="chrome reveal">The engine is how, an identity is who, a pack is what.</h2>
     <TileRow>
         <Tile Title="The engine is how">The loop, streaming, the guards, the ledger and handing work to other sessions. It names no product, and every host is a library a few lines of yours start.</Tile>

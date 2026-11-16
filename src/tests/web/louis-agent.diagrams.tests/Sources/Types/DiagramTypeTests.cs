@@ -46,7 +46,7 @@ public class DiagramTypeTests
                                     "kind": "ticket",TYPE
                                     "title": "Booking request: the garden room",
                                     "ticket": {
-                                      "kicker": "BOOKING REQUEST",
+                                      "topic": "BOOKING REQUEST",
                                       "title": "The garden room",
                                       "rows": [ { "icon": "users", "label": "Guests", "value": "2 adults" } ]
                                     }

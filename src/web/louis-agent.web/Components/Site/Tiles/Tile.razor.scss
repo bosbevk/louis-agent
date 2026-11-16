@@ -8,10 +8,24 @@
 .stat-value { font: 700 44px/1 var(--bs-font-monospace); letter-spacing: -.03em; }
 .stat-note { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
 
-/* An accented tile (F128.1): a thin edge of its colour along the top, and its heading in it. */
+/* A tile of words is the design's card (FX162): its icon in a glass chip, a bold heading in the words' strongest
+   colour, and its few words in their second. An accent only colours a selected tile's press. */
 @include accents.classes;
-[class*="accent-"] { @include surface.accent-line(); }
-[class*="accent-"] h3 { color: var(--accent); }
+.tile-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 10px;
+    color: var(--bs-emphasis-color);
+    border-radius: 14px;
+    // Solid white glass (Louis: "solid white glass"): the theme's panel, white by day, with a soft shadow under it.
+    @include surface.panel(var(--bs-secondary-bg));
+    @include surface.cast(6px, 14px, -8px, .35, var(--web-shadow-rgb));
+}
+.tile-icon ::deep svg { width: 22px; height: 22px; }
+article h3 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: var(--bs-emphasis-color); }
+article p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--bs-secondary-color); }
 
 /* A tile is a piece the visitor or the guide can select (F127.7): a pointer, the edge and shadow a theme gives a
    pane under the pointer (F151.4), staying where it is, and pressed once selected, in the tile's own colour where

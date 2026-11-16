@@ -18,7 +18,7 @@ public class DrawnCardTests
     private const string Booking =
         """
         {
-          "kicker": "BOOKING REQUEST",
+          "topic": "BOOKING REQUEST",
           "title": "The garden room",
           "subtitle": "Seemeeu Guesthouse · Yzerfontein",
           "rows": [
@@ -62,7 +62,9 @@ public class DrawnCardTests
         });
     }
 
-    /// <summary>A call the library wouldn't draw (an icon there is none of), or one that failed, draws no card.</summary>
+    /// <summary>
+    /// A call the library wouldn't draw (an icon there is none of), or one that failed, draws no card.
+    /// </summary>
     [Test]
     public void ABadOrFailedCall_DrawsNoCard()
     {

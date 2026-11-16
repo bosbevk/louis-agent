@@ -51,7 +51,7 @@ public class ResumeViewTests
         Assert.Multiple(() =>
         {
             Assert.That(now.QuerySelector("h2")!.TextContent, Is.EqualTo("louis-agent: an AI agent framework."));
-            Assert.That(now.QuerySelector(".lede")!.TextContent, Is.EqualTo("An AI agent framework in C#."));
+            Assert.That(now.QuerySelector(".summary")!.TextContent, Is.EqualTo("An AI agent framework in C#."));
             Assert.That(now.QuerySelector(".panel .cv-part-label")!.TextContent, Is.EqualTo("Evaluation"));
             Assert.That(now.QuerySelector(".panel h3")!.TextContent, Is.EqualTo("Evals in C#"));
             Assert.That(now.QuerySelector(".panel p")!.TextContent, Is.EqualTo("One harness for every check."));

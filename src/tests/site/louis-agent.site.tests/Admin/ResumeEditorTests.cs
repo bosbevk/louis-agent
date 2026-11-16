@@ -17,7 +17,7 @@ namespace LouisAgent.Site.Tests.Admin;
 public class ResumeEditorTests
 {
     /// <summary>The summary on the editor's sheet, drawn by the page's own view.</summary>
-    private const string SheetSummary = ".resume-sheet .cv-hero .lede";
+    private const string SheetSummary = ".resume-sheet .cv-hero .summary";
 
     /// <summary>The CV with this headline, which the page never draws.</summary>
     private static Resume With(string headline) =>

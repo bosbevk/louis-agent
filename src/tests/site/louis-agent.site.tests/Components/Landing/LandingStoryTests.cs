@@ -56,13 +56,15 @@ public class LandingStoryTests
         Assert.Multiple(() =>
         {
             Assert.That(measured, Does.Contain("First principles."));
-            Assert.That(architecture, Does.Contain("film-short").And.Contain("The engine is how"));
+            Assert.That(architecture, Does.Contain("The engine is how"));
         });
     }
 
-    /// <summary>How it works for you is three steps, then the facts a buyer trusts.</summary>
+    /// <summary>
+    /// Where it runs, as the design page has it (FX162): your server, your model and your data, three cards.
+    /// </summary>
     [Test]
-    public void HowItWorksForYou_IsThreeSteps_AndTheFactsABuyerTrusts()
+    public void WhereItRuns_IsYourServerYourModelAndYourData()
     {
         using var ctx = new BunitContext();
 
@@ -70,22 +72,24 @@ public class LandingStoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(band.QuerySelectorAll("ol.buyer-steps > li"), Has.Length.EqualTo(3));
-            Assert.That(band.TextContent, Does.Contain("short call").And.Contain("made-up data"));
-            Assert.That(band.TextContent, Does.Contain("South Africa").And.Contain("measured")
-                .And.Contain("closed").And.Contain("what you give it"));
+            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("It runs where you say."));
+            Assert.That(band.QuerySelectorAll(".tiles article h3").Select(title => title.TextContent),
+                Is.EqualTo(new[] { "Your server", "Your model", "Your data" }));
         });
     }
 
-    /// <summary>The demos band leads to the demos.</summary>
+    /// <summary>
+    /// The demos band fans out the three businesses, each a way into its demo (FX162, the design's fan).
+    /// </summary>
     [Test]
-    public void TheDemosBand_LeadsToTheDemos()
+    public void TheDemosBand_LeadsToEachDemo()
     {
         using var ctx = new BunitContext();
 
         var band = ctx.Render<HomePage>().Find("section#demos");
 
-        Assert.That(band.QuerySelectorAll("a[href='/demos']"), Has.Length.GreaterThanOrEqualTo(1));
+        Assert.That(band.QuerySelectorAll(".shot-fan a").Select(shot => shot.GetAttribute("href")),
+            Is.EqualTo(new[] { "/law-practice-demo", "/guesthouse-demo", "/restaurant-demo" }));
     }
 
     /// <summary>The last strip speaks to a business and asks for theirs.</summary>

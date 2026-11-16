@@ -4,8 +4,8 @@ using LouisAgent.Web.Components.Site.Tiles;
 namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
-/// F127.1: a demo page is a stage in its demo's colour, standing on the lit stage since F134.2: the kicker, the title
-/// as the page's one h1, the lede, then the player with what to watch, and the offer under them.
+/// F127.1: a demo page is a stage in its demo's colour, standing on the lit stage since F134.2: the topic, the title
+/// as the page's one h1, the summary, then the player with what to watch, and the offer under them.
 /// </summary>
 public class DemoStageTests
 {
@@ -15,15 +15,15 @@ public class DemoStageTests
         {
             parameters
                 .Add(stage => stage.Accent, TileAccent.Green)
-                .Add(stage => stage.Kicker, "A bakery")
+                .Add(stage => stage.Topic, "A bakery")
                 .Add(stage => stage.Title, "Bread at dawn.")
-                .Add(stage => stage.Lede, "A baker's agent answers before the oven is warm.")
+                .Add(stage => stage.Summary, "A baker's agent answers before the oven is warm.")
                 .Add(stage => stage.Player, "<div class=\"player\">The chat</div>")
                 .Add(stage => stage.Offer, "<a href=\"/contact\">Ask for yours</a>");
             if (cues) parameters.Add(stage => stage.Cues, "<ol class=\"cues\"><li>One</li></ol>");
         });
 
-    /// <summary>The stage wears its demo's colour, and its title is the page's one h1, under the kicker.</summary>
+    /// <summary>The stage wears its demo's colour, and its title is the page's one h1, under the topic.</summary>
     [Test]
     public void TheStage_WearsItsColour_AndTheTitleIsTheH1()
     {
@@ -34,9 +34,9 @@ public class DemoStageTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find(".demo-stage").ClassList, Does.Contain("accent-green"));
-            Assert.That(cut.Find(".stage-head .stage-kicker").TextContent, Is.EqualTo("A bakery"));
+            Assert.That(cut.Find(".stage-head .stage-topic").TextContent, Is.EqualTo("A bakery"));
             Assert.That(cut.FindAll("h1").Select(h => h.TextContent), Is.EqualTo(new[] { "Bread at dawn." }));
-            Assert.That(cut.Find(".stage-head .stage-lede").TextContent, Does.StartWith("A baker's agent"));
+            Assert.That(cut.Find(".stage-head .stage-summary").TextContent, Does.StartWith("A baker's agent"));
         });
     }
 

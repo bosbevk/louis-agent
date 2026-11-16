@@ -1,23 +1,16 @@
-/* The framework's site's styles (F124): the framework's rules and the triage pack's demo, in the order the framework's
-   always came, then the site's look. A name under web/ is the framework's Sass and one under pack- a pack's, each found
-   through sasscompiler.json, so nothing is copied; a name under site/ is the site's own: its values right after the
-   framework's colours and its elements right after the framework's, so the site's win where they meet, and the landing,
-   the films and its phone rules last. The two themes' sheets (F151.6) come after the site's elements, one block per
-   theme and style, picked by the page's <html>; a name under theme- is a theme's. The build makes wwwroot/css/app.css
+/* The framework's site's styles (F124): the framework's rules, the two themes and the triage pack's demo, and nothing
+   of the site's own (FX162, Louis: "remove all custom css from .site we should just use the theme", "I need all
+   custom css out immediately"). A name under web/ is the framework's Sass, one under theme- a theme's and one under
+   pack- a pack's, each found through sasscompiler.json, so nothing is copied. The build makes wwwroot/css/app.css
    from this. */
-
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
-@forward "site/settings/tokens";
 @forward "web/base/elements";
-@forward "site/base/elements";
 @forward "theme-glass/dark";
 @forward "theme-glass/light";
 @forward "theme-flat/dark";
 @forward "theme-flat/light";
-
 @forward "web/settings/brands";
-@forward "site/settings/brands";
 @forward "web/layout/shell";
 @forward "web/chat/conversation";
 @forward "web/layout/responsive";
@@ -27,19 +20,4 @@
 @forward "web/chat/bars";
 @forward "web/chat/pages";
 @forward "web/showroom/fonts";
-
 @forward "pack-triage/demo";
-
-@forward "site/chat/guide-form";
-@forward "site/landing/live-turn";
-@forward "site/landing/sections";
-@forward "site/landing/motion";
-@forward "site/movie/stage";
-@forward "site/movie/short";
-@forward "site/movie/detail";
-@forward "site/showroom/demos";
-@forward "site/showroom/seemeeu";
-@forward "site/showroom/wheatfield";
-@forward "site/showroom/koringland";
-@forward "site/layout/responsive";
-@forward "site/cv/print";

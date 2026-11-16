@@ -3,6 +3,20 @@
 /* The surface tool's marks (F151.4): the agent's mark with its rings, and the small marks a piece wears, a
    marker, a badge, a line of progress or of the brand. */
 
+/* A heading's words with a band of the theme's colour sweeping through them (FX162, the design page's .chrome and its
+   shine): the words' strongest colour, a violet band in its middle, painted into the letters only, the band moving
+   across every eight seconds. The animation is the base elements' web-shine. */
+@mixin chrome-words() {
+    color: transparent;
+    background: linear-gradient(100deg, var(--bs-emphasis-color) 0%, var(--bs-emphasis-color) 34%,
+        color-mix(in srgb, var(--bs-primary) 70%, var(--bs-emphasis-color)) 46%, var(--bs-primary) 56%,
+        var(--bs-emphasis-color) 72%, var(--bs-emphasis-color) 100%);
+    background-size: 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: web-shine 8s ease-in-out infinite;
+}
+
 /* The agent's mark: the theme's drawing of it over its disc, with its gloss and the letter on it. A theme whose
    drawing holds the letter gives the letter no ink. */
 @mixin mark() {
@@ -85,15 +99,16 @@
 /* The spotlight the guide puts on a place: a ring of the brand's colour, a soft light behind it, and the rest of
    the page dimmed by a shadow as large as the screen. */
 @mixin spotlit() {
-    box-shadow:
-        0 0 0 2px rgba(var(--bs-primary-rgb), .85),
-        0 0 56px rgba(var(--bs-primary-rgb), .35),
-        0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
+    border-radius: var(--web-pane-radius);
+    box-shadow: 0 0 56px rgba(var(--bs-primary-rgb), .35), 0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62);
+    @include drawing(pane-showing);
 }
 
-/* The ring a place keeps while the guide's words stand beside it: quieter, and with no dimming. */
+/* A place the agent is showing while its words stand beside it (FX162, the design page's "the agent, showing it"): the
+   theme's showing drawing over it, a violet edge with a light running round, and no dimming. No ring of its own. */
 @mixin kept-ring() {
-    box-shadow: 0 0 0 1.5px rgba(var(--web-overlay-rgb), .55), 0 0 44px -6px rgba(var(--web-overlay-rgb), .4);
+    border-radius: var(--web-pane-radius);
+    @include drawing(pane-showing);
 }
 
 /* The row you picked in a list, such as a file in a tree: a line of the brand's colour down its side, drawn inside

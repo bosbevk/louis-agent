@@ -1,0 +1,4 @@
+@use "web/tools/surface";
+
+/* The design page's well (FX162): set into the glass, quiet words in the code face. */
+.well { min-height: 64px; padding: 14px 18px; font: 500 13px/1.5 var(--bs-font-monospace); color: var(--bs-secondary-color); @include surface.well(); border-radius: 16px; }

@@ -26,7 +26,7 @@ public class SitePlacesTests
     public sealed class PlacesPage : ComponentBase
     {
         protected override void BuildRenderTree(RenderTreeBuilder builder) => builder.AddMarkupContent(0,
-            "<section id=\"intro\" class=\"band\"><p class=\"kicker reveal\">How it answers</p>" +
+            "<section id=\"intro\" class=\"band\"><p class=\"topic reveal\">How it answers</p>" +
             "<h2>Every question, day and night</h2>" +
             "<article class=\"panel stat\" id=\"0-66-0-13\" data-piece><span class=\"stat-value chrome\">" +
             "$0.66 → $0.13</span><span class=\"stat-note\">a benchmark run before and after prompt caching</span>" +

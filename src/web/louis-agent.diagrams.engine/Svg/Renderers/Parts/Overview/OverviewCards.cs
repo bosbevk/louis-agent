@@ -83,7 +83,7 @@ internal static class OverviewCards
         }
 
         for (int at = 0; at < card.TextLines.Count; at++)
-            writer.Text(centre, under + text + line * at, card.TextLines[at], "crd-lede");
+            writer.Text(centre, under + text + line * at, card.TextLines[at], "crd-summary");
     }
 
     /// <summary>

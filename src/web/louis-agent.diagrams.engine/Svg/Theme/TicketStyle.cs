@@ -45,7 +45,7 @@ internal static class TicketStyle
           .{{LightPaint}}-2 { stop-color: var(--ticket-accent, var(--blue-line)); stop-opacity: 0; }
           .mrq-edge-0, .mrq-edge-1, .mrq-edge-2 { stop-color: var(--ticket-accent, var(--violet-line)); }
           .ticket-rule { fill: var(--ticket-line, var(--mrq-hair)); }
-          .ticket-kicker {
+          .ticket-topic {
             fill: var(--ticket-accent, var(--violet-ink)); font: 600 10px var(--mono); letter-spacing: 1.4px;
           }
           .ticket-title {

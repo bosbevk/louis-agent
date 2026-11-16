@@ -9,7 +9,7 @@
                                       ValueChanged="HeadlineChanged"/></BandTitle>
 @if (Project.Description is not null || Editable)
 {
-    <p class="lede"><InlineEdit Value="@Project.Description" Label="What you are building" Multiline Rows="5"
+    <p class="summary"><InlineEdit Value="@Project.Description" Label="What you are building" Multiline Rows="5"
                                 ValueChanged="DescriptionChanged"/></p>
 }
 <div class="grid-2 cv-parts">

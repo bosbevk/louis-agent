@@ -49,7 +49,7 @@ public class ShowroomStartTests
         return ctx.Render<ShowroomStart>(parameters => parameters
             .Add(start => start.Featured, "/florist-demo")
             .Add(start => start.Title, "Watch the agents at work.")
-            .Add(start => start.Lede, "Each demo is a real run."));
+            .Add(start => start.Summary, "Each demo is a real run."));
     }
 
     /// <summary>The word in the bar of the window that is forward.</summary>
@@ -71,7 +71,7 @@ public class ShowroomStartTests
             Assert.That(start.Find(".lit-stage").ClassList, Does.Contain("accent-blue"), "the florist's colour");
             Assert.That(start.FindAll("h1").Select(heading => heading.TextContent),
                 Is.EqualTo(new[] { "Watch the agents at work." }));
-            Assert.That(start.Find("section#top .start-lede").TextContent, Is.EqualTo("Each demo is a real run."));
+            Assert.That(start.Find("section#top .start-summary").TextContent, Is.EqualTo("Each demo is a real run."));
         });
     }
 

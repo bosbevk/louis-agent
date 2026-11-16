@@ -5,7 +5,19 @@
 .hero.with-aside { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
 
 .hero-text { display: flex; flex-direction: column; gap: 22px; }
-.hero-text .lede { max-width: 46ch; }
+.hero-text .summary { max-width: 46ch; }
+/* The hero's headline, as the design page draws it (FX162): the largest words on the page, bold and tight, with the
+   heading's sweep of colour; its summary under it a size up from a band's. */
+.hero-text h1 {
+    margin: 0;
+    padding-bottom: .08em;
+    font-size: clamp(54px, 7.4vw, 124px);
+    font-weight: 700;
+    line-height: .98;
+    letter-spacing: -.04em;
+    text-wrap: balance;
+}
+.hero-text .summary { font-size: 20px; }
 
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 

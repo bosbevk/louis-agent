@@ -9,7 +9,7 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Tests.Tickets;
 
 /// <summary>
-/// A ticket laid out and drawn (F127.4.1): a head with its kicker, title, subtitle and status pill, the rows with
+/// A ticket laid out and drawn (F127.4.1): a head with its topic, title, subtitle and status pill, the rows with
 /// an icon each, and a note in a well at the foot. Every word stays inside the card and clear of the pill, a long
 /// value wraps and the card grows, and its colours are the page's when the page gives them.
 /// </summary>

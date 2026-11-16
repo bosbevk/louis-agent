@@ -24,14 +24,14 @@ public static class TicketCard
     private static readonly JsonSerializerOptions CallJson = new() { PropertyNameCaseInsensitive = true };
 
     /// <summary>
-    /// The ticket the parts describe, its title the kicker and the title together; refused with the reason when an
+    /// The ticket the parts describe, its title the topic and the title together; refused with the reason when an
     /// icon or a tone isn't one there is, or the reader wouldn't draw it.
     /// </summary>
-    public static DiagramSource Of(string kicker, string title, IReadOnlyList<TicketRowInput> rows,
+    public static DiagramSource Of(string topic, string title, IReadOnlyList<TicketRowInput> rows,
         string? subtitle = null, TicketStatusInput? status = null, string? note = null)
     {
-        var spec = new TicketSpec(kicker, title, rows.Select(RowOf).ToList(), subtitle, StatusOf(status), note);
-        var source = new DiagramSource(DiagramKind.Ticket, $"{kicker}: {title}", Ticket: spec);
+        var spec = new TicketSpec(topic, title, rows.Select(RowOf).ToList(), subtitle, StatusOf(status), note);
+        var source = new DiagramSource(DiagramKind.Ticket, $"{topic}: {title}", Ticket: spec);
         return DiagramReader.Read(DiagramWriter.Write(source));
     }
 
@@ -43,7 +43,7 @@ public static class TicketCard
         try
         {
             var call = JsonSerializer.Deserialize<TicketCall>(input, CallJson);
-            return call is null ? null : Of(call.Kicker, call.Title, call.Rows, call.Subtitle, call.Status, call.Note);
+            return call is null ? null : Of(call.Topic, call.Title, call.Rows, call.Subtitle, call.Status, call.Note);
         }
         catch (Exception ex) when (ex is JsonException or InvalidDataException or ArgumentNullException)
         {
@@ -86,7 +86,7 @@ public static class TicketCard
 
     /// <summary>A <c>ShowCard</c> call's input, as the stream carries it.</summary>
     private sealed record TicketCall(
-        string Kicker,
+        string Topic,
         string Title,
         IReadOnlyList<TicketRowInput> Rows,
         string? Subtitle = null,

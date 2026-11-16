@@ -1,0 +1,35 @@
+@* One chat turn as it streams, looping (FX162, moved from the site): a window with its bar and dots, and the lines a
+   site gives as records (ADR 0125), each fading in on its own delay, then the turn's cost. The window is the
+   framework's; the words are the site's. *@
+<div class="live-turn" role="img" aria-label="@Label">
+    <div class="turn-head">
+        <span class="turn-dot"></span><span class="turn-dot"></span><span class="turn-dot"></span>
+        <span>@Title</span>
+    </div>
+    <div class="turn-body">
+        @foreach (var line in Lines)
+        {
+            <div class="@ClassesOf(line)" style="--d: @DelayOf(line.At)">
+                @if (line.Kind == TurnLineKind.Tool)
+                {
+                    <span class="ln-tool">tool</span> @line.Text <span class="ln-arg">@line.Argument</span>
+                }
+                else
+                {
+                    @line.Text
+                }
+                @if (line.Kind == TurnLineKind.Answer)
+                {
+                    <span class="caret"></span>
+                }
+            </div>
+        }
+        @if (Cost is not null)
+        {
+            <div class="turn-bill">
+                <div class="bill-rule"></div>
+                <div class="ln ln-cost" style="--d: @DelayOf(CostAt)">@Markdown.Inline(Cost)</div>
+            </div>
+        }
+    </div>
+</div>

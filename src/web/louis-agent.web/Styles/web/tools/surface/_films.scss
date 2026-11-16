@@ -1,0 +1,47 @@
+/* The surface tool's films and shots (FX162): the design page's small screens that play what the agent does, the pill
+   that names the tool it called, the beam along their rail, and the photographs fanned out in a row. Each is the
+   design's rule as it stands, its colours read from the theme's names: a screen is dark in every style, its marks
+   the ink a main button carries, and the accent is the theme's own. */
+
+/* A small screen that plays something: dark, with a fine edge of its own marks. */
+@mixin film() {
+    border-radius: 14px;
+    background: rgba(var(--web-shadow-rgb), .55);
+    border: 1px solid color-mix(in srgb, var(--web-on-primary) 12%, transparent);
+}
+
+/* A shape on a film: a soft tile of the screen's marks. */
+@mixin film-tile($strength: 8%) { background: color-mix(in srgb, var(--web-on-primary) $strength, transparent); }
+
+/* A line being drawn on a film: the marks' colour running into the theme's. */
+@mixin film-bar() { background: linear-gradient(90deg, var(--web-on-primary), var(--bs-primary)); }
+
+/* A picked tile on a film, lifted and ringed in the theme's colour. */
+@mixin film-picked() {
+    background: color-mix(in srgb, var(--bs-primary) 35%, transparent);
+    box-shadow: 0 0 0 2px var(--bs-primary), 0 14px 30px -8px var(--bs-primary);
+}
+
+/* A choice on a film, and the one that lights as it is pressed. */
+@mixin film-choice() { border: 1px solid color-mix(in srgb, var(--web-on-primary) 18%, transparent); color: var(--web-on-primary); }
+@mixin film-choice-lit() { background: var(--bs-primary); box-shadow: 0 0 30px var(--bs-primary); }
+
+/* What the agent called, as a pill: its name in the code face after a lit dot. */
+@mixin call() {
+    border: 1px solid color-mix(in srgb, var(--bs-primary) 40%, transparent);
+    background: color-mix(in srgb, var(--bs-primary) 10%, transparent);
+    color: var(--bs-emphasis-color);
+}
+@mixin call-dot() { border-radius: 50%; background: var(--bs-primary); box-shadow: 0 0 10px var(--bs-primary); }
+
+/* The rail cards stand under, with a beam of the theme's colour running along it. */
+@mixin rail() { background: color-mix(in srgb, var(--bs-emphasis-color) 10%, transparent); }
+@mixin rail-beam() { background: linear-gradient(90deg, transparent, var(--bs-primary), var(--web-on-primary)); }
+
+/* A photograph in the fan: a fine edge, a deep shadow with the theme's glow, and its caption fading up from dark. */
+@mixin shot() {
+    border: 1px solid color-mix(in srgb, var(--web-on-primary) 14%, transparent);
+    box-shadow: 0 50px 90px -30px rgba(var(--web-shadow-rgb), .9), 0 0 70px -20px var(--bs-primary);
+}
+@mixin shot-lifted() { box-shadow: 0 60px 110px -30px rgba(var(--web-shadow-rgb), .9), 0 0 110px -10px var(--bs-primary); }
+@mixin shot-caption() { background: linear-gradient(transparent, rgba(var(--web-shadow-rgb), .94)); }

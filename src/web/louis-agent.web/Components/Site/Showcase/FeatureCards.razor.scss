@@ -1,0 +1,45 @@
+@use "web/tools/surface";
+
+/* The design page's "What it does" (FX162): a rail with its beam, then four cards, each a small dark film playing what
+   the agent does, its title, its words and the tool it called. */
+.feature-rail { position: relative; height: 2px; margin-top: 54px; overflow: hidden; @include surface.rail(); }
+.feature-rail::after { content: ""; position: absolute; top: 0; left: -30%; width: 30%; height: 100%; animation: feature-beam 3.2s linear infinite; @include surface.rail-beam(); }
+.features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+.feature { gap: 12px; }
+.feature h3 { margin: 8px 0 0; font-size: 24px; font-weight: 700; line-height: 1.1; letter-spacing: -.04em; color: var(--bs-emphasis-color); }
+.feature p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--bs-secondary-color); }
+
+.film { position: relative; height: 150px; overflow: hidden; @include surface.film(); }
+.film-show { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; padding: 22px 16px; }
+.film-show i { border-radius: 8px; animation: film-show 4.5s ease-in-out infinite; @include surface.film-tile(); }
+.film-show i:nth-child(3) { animation-name: film-pick; }
+.film-draw { display: grid; align-content: center; gap: 11px; padding: 0 26px; }
+.film-draw i { height: 9px; border-radius: 9px; transform-origin: 0 50%; animation: film-draw 4.5s var(--web-ease) infinite; @include surface.film-bar(); }
+.film-draw i:nth-child(1) { width: 55%; height: 14px; }
+.film-draw i:nth-child(2) { width: 90%; animation-delay: .25s; opacity: .6; }
+.film-draw i:nth-child(3) { width: 78%; animation-delay: .5s; opacity: .6; }
+.film-draw i:nth-child(4) { width: 62%; animation-delay: .75s; opacity: .6; }
+.film-ask { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; padding: 0 16px; }
+.film-ask p { margin: 0; padding: 7px 12px; border-radius: 12px 12px 12px 4px; font-size: 12.5px; line-height: 1.4; @include surface.film-choice(); @include surface.film-tile(); }
+.film-ask div { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Each choice stays on one line, as the design draws them. */
+.film-ask i { padding: 5px 10px; border-radius: 999px; font: normal 500 12px var(--bs-font-sans-serif); white-space: nowrap; @include surface.film-choice(); }
+.film-ask i:first-child { animation: film-ask 4.5s ease-in-out infinite; }
+.film-flip { display: grid; place-items: center; perspective: 700px; }
+.film-flip div { position: relative; width: 74%; height: 96px; transform-style: preserve-3d; animation: film-flip 6s var(--web-ease) infinite; }
+.film-flip span { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px; border-radius: 12px; backface-visibility: hidden; font-size: 13px; text-align: center; @include surface.film-choice(); @include surface.film-tile(7%); }
+.film-flip span + span { transform: rotateY(180deg); font: 12px/1.7 var(--bs-font-monospace); }
+
+.call { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: 4px; padding: 5px 11px; border-radius: 999px; font: 12.5px var(--bs-font-monospace); @include surface.call(); }
+.call::before { content: ""; width: 7px; height: 7px; @include surface.call-dot(); }
+
+@keyframes feature-beam { to { left: 100%; } }
+@keyframes film-show { 30%, 85% { opacity: .35; } }
+@keyframes film-pick { 30%, 85% { transform: translateY(-9px); @include surface.film-picked(); } }
+@keyframes film-draw { 0%, 8% { transform: scaleX(0); } 35%, 88% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
+@keyframes film-ask { 48% { transform: scale(.9); } 56%, 90% { transform: none; @include surface.film-choice-lit(); } }
+@keyframes film-flip { 0%, 35% { transform: none; } 50%, 88% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
+
+@media (max-width: 980px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .features { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .feature-rail::after, .film *, .film-flip div { animation: none; } }

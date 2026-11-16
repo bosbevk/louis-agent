@@ -3,13 +3,13 @@
 <PageTitle>Packs · louis-agent</PageTitle>
 <PageHead Description="What an agent can do is a package: every louis-agent pack, its tools and the rules a pack keeps, from files and git to the web." />
 
-<Band Id="top" Kicker="Packs">
+<Band Id="top" Topic="Packs">
     <BandTitle Class="chrome">What an agent can do is a package.</BandTitle>
-    <p class="lede">A pack is tools and their guide. An agent has only the packs its program names, and a session only the toolsets it asks for, so its prompt never describes a tool it can't use.</p>
+    <p class="summary">A pack is tools and their guide. An agent has only the packs its program names, and a session only the toolsets it asks for, so its prompt never describes a tool it can't use.</p>
     <GraphView Spec="PacksGraph.Spec" Title="A pack, what it holds, and what a session loads from it" />
 </Band>
 
-<Band Id="general" Kicker="General tools">
+<Band Id="general" Topic="General tools">
     <CardDeck>
         <Card Title="louis-agent.pack.files" Summary="The workspace's files, and documents as text.">
             <p>Read, write, search, copy, rename and delete in the workspace, and read PDF, Word and Excel as text.</p>
@@ -47,7 +47,7 @@
     </CardDeck>
 </Band>
 
-<Band Id="cook" Kicker="The packs behind Puls's cook">
+<Band Id="cook" Topic="The packs behind Puls's cook">
     <CardDeck Columns="4">
         <Card Title="louis-agent.pack.where-to-buy" Summary="A shop's branches near you, as a short table.">
             <p>Finds a shop's branches near you from OpenStreetMap, and hands the model a short table instead of a map to guess at.</p>
@@ -64,7 +64,7 @@
     </CardDeck>
 </Band>
 
-<Band Id="rules" Kicker="The rules a pack keeps">
+<Band Id="rules" Topic="The rules a pack keeps">
     <ul class="rules">
         <li><strong>Only the contracts.</strong> A pack references the small contracts package, never the engine, so it can ship on its own. A console app runs one from a package with no engine in its dependencies.</li>
         <li><strong>No other pack.</strong> A pack never knows about another pack or an identity. Only a demo's own program knows them all.</li>

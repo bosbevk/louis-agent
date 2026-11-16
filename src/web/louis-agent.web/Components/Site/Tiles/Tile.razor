@@ -1,6 +1,10 @@
-@* One tile in a row (F118): a panel with a number and its note, or a title and a few words, rising as it enters. The
-   panel's look (.panel, .chrome) is the site's own, as a band's kicker is; the number's layout sits beside this. *@
+@* One tile in a row (F118): the theme's pane with a number and its note, or an icon in a glass chip, a title and a
+   few words, rising as it enters (FX162, as the design's cards are). *@
 <article class="@Classes" data-delay="@DelayValue" id="@PieceAddress" data-piece="@IsPiece">
+    @if (Icon is { } icon)
+    {
+        <span class="tile-icon"><LineIconView Icon="icon" /></span>
+    }
     @if (Title is not null)
     {
         <h3>@Title</h3>
@@ -12,6 +16,10 @@
     @if (Note is not null)
     {
         <span class="stat-note">@Note</span>
+    }
+    @if (Text is not null)
+    {
+        <p>@Markdown.Inline(Text)</p>
     }
     @if (ChildContent is not null)
     {

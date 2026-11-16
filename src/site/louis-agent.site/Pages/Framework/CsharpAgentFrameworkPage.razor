@@ -5,13 +5,13 @@
 
 @* Written for what people type into a search engine (F123): what louis-agent is, and a fair comparison with
    Microsoft's two frameworks, each claim about theirs from their own pages (read 2026-11-09, linked below). *@
-<Band Id="top" Kicker="C# agent framework">
+<Band Id="top" Topic="C# agent framework">
     <BandTitle Class="chrome">An AI agent framework in C#, on your own hardware.</BandTitle>
-    <p class="lede">louis-agent is an AI agent framework written in 100% C#, on .NET 10 and Microsoft.Extensions.AI. It runs where you run it: in Docker on your own machine or your own server, with a local model through Ollama, or with Anthropic or any OpenAI-compatible service when you choose one. No cloud agent service sits between your agent and your data.</p>
+    <p class="summary">louis-agent is an AI agent framework written in 100% C#, on .NET 10 and Microsoft.Extensions.AI. It runs where you run it: in Docker on your own machine or your own server, with a local model through Ollama, or with Anthropic or any OpenAI-compatible service when you choose one. No cloud agent service sits between your agent and your data.</p>
     <p class="band-note">This page says what it is, what Microsoft's two frameworks for agents are, and how to choose. What it says about theirs comes from their own documentation, linked at each claim.</p>
 </Band>
 
-<Band Id="ours" Kicker="louis-agent">
+<Band Id="ours" Topic="louis-agent">
     <div class="grid-2">
         <article class="panel">
             <h3>Your own hardware</h3>
@@ -33,19 +33,19 @@
     <p class="band-note">Where it stands: one person in South Africa builds it, the packages aren't on NuGet yet and the repository is private. Workflows, where one agent hands work to another and decides on what comes back, are <a href="/framework/whats-coming">planned</a>.</p>
 </Band>
 
-<Band Id="agent-framework" Kicker="Microsoft Agent Framework" Short="Agent Framework">
+<Band Id="agent-framework" Topic="Microsoft Agent Framework" Short="Agent Framework">
     <h2 class="chrome">Microsoft Agent Framework</h2>
-    <p class="lede">Microsoft calls it the direct successor to Semantic Kernel and AutoGen, made by the same teams. It builds agents and multi-agent workflows in .NET and Python, with Go in public preview. <a href="https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview" target="_blank" rel="noopener">Microsoft Learn</a></p>
+    <p class="summary">Microsoft calls it the direct successor to Semantic Kernel and AutoGen, made by the same teams. It builds agents and multi-agent workflows in .NET and Python, with Go in public preview. <a href="https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview" target="_blank" rel="noopener">Microsoft Learn</a></p>
     <p class="band-note">Its README lists graph-based workflows with checkpointing, streaming and human in the loop, middleware, built-in OpenTelemetry tracing, several model providers, and hosting that includes A2A and Foundry hosted agents. It uses MCP for tools, and it is MIT licensed. <a href="https://github.com/microsoft/agent-framework" target="_blank" rel="noopener">Its repository</a></p>
 </Band>
 
-<Band Id="semantic-kernel" Kicker="Semantic Kernel">
+<Band Id="semantic-kernel" Topic="Semantic Kernel">
     <h2 class="chrome">Semantic Kernel</h2>
-    <p class="lede">Microsoft describes it as a lightweight, open-source development kit for building AI agents in C#, Python and Java. <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview/" target="_blank" rel="noopener">Microsoft Learn</a></p>
+    <p class="summary">Microsoft describes it as a lightweight, open-source development kit for building AI agents in C#, Python and Java. <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview/" target="_blank" rel="noopener">Microsoft Learn</a></p>
     <p class="band-note">Its README now opens with "Semantic Kernel is now Microsoft Agent Framework" and calls that its enterprise-ready successor. It is MIT licensed. <a href="https://github.com/microsoft/semantic-kernel" target="_blank" rel="noopener">Its repository</a></p>
 </Band>
 
-<Band Id="choose" Kicker="Which to pick">
+<Band Id="choose" Topic="Which to pick">
     <div class="grid-2">
         <article class="panel">
             <h3>Pick Microsoft Agent Framework</h3>

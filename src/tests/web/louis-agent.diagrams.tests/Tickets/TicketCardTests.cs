@@ -19,7 +19,7 @@ public class TicketCardTests
         new("paw", "Dog", "Welcome in this room")
     ];
 
-    /// <summary>An agent's parts become a ticket diagram, its title the kicker and the title together.</summary>
+    /// <summary>An agent's parts become a ticket diagram, its title the topic and the title together.</summary>
     [Test]
     public void TheParts_BecomeATicket()
     {
@@ -67,7 +67,7 @@ public class TicketCardTests
     public void ACallsInput_ReadsBackIntoTheSameTicket()
     {
         const string input = """
-                             {"kicker":"BOOKING REQUEST","title":"The garden room",
+                             {"topic":"BOOKING REQUEST","title":"The garden room",
                               "rows":[{"Icon":"calendar","label":"Dates","value":"Fri 14 to Sun 16 Nov"},
                                       {"icon":"paw","label":"Dog","value":"Welcome in this room"}],
                               "status":{"label":"Sent","tone":"green"}}
@@ -81,8 +81,8 @@ public class TicketCardTests
 
     /// <summary>A call whose input can't be a ticket draws nothing, rather than failing the chat.</summary>
     [TestCase("not json")]
-    [TestCase("""{"kicker":"K","title":"T","rows":[]}""")]
-    [TestCase("""{"kicker":"K","title":"T","rows":[{"icon":"rocket","label":"a","value":"b"}]}""")]
+    [TestCase("""{"topic":"K","title":"T","rows":[]}""")]
+    [TestCase("""{"topic":"K","title":"T","rows":[{"icon":"rocket","label":"a","value":"b"}]}""")]
     [TestCase(null)]
     public void ABadCall_DrawsNothing(string? input) => Assert.That(TicketCard.FromCall(input), Is.Null);
 

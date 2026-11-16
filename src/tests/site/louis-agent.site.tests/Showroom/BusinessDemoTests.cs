@@ -81,10 +81,10 @@ public class BusinessDemoTests
     private static IRenderedComponent<BusinessDemo> Demo(BunitContext ctx) =>
         ctx.Render<BusinessDemo>(parameters => parameters
             .Add(demo => demo.Accent, TileAccent.Blue)
-            .Add(demo => demo.Kicker, "A guesthouse")
+            .Add(demo => demo.Topic, "A guesthouse")
             .Add(demo => demo.Business, "Seemeeu Guesthouse")
             .Add(demo => demo.Heading, "A weekend by the beach, with the dog.")
-            .Add(demo => demo.Lede, "A couple asks about a weekend away.")
+            .Add(demo => demo.Summary, "A couple asks about a weekend away.")
             .Add(demo => demo.Address, "seemeeu.example")
             .Add(demo => demo.Colours, new MockColours("#0b3a4a", "#e9dcc3", "#fbf8f2", "#14262d"))
             .Add(demo => demo.Mark, (RenderFragment)(_ => { }))

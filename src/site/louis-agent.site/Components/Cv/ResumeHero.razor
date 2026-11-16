@@ -11,7 +11,7 @@
         <h1 class="chrome"><InlineEdit Value="@Basics.Name" Label="Name" ValueChanged="NameChanged"/></h1>
         @if (Basics.Summary is not null || Editable)
         {
-            <p class="lede"><InlineEdit Value="@Basics.Summary" Label="Summary" Multiline Rows="6"
+            <p class="summary"><InlineEdit Value="@Basics.Summary" Label="Summary" Multiline Rows="6"
                                         ValueChanged="SummaryChanged"/></p>
         }
         @if (Editable)

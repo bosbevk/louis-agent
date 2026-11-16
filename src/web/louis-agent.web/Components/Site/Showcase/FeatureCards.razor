@@ -1,0 +1,35 @@
+@* What the agent does, as the design page shows it (FX162): a rail with a beam running along it, and a card for each
+   thing it does, its small film playing, its title, its words and the tool it called. A site gives them as records
+   (ADR 0125). *@
+<div class="feature-rail" aria-hidden="true"></div>
+<div class="features">
+    @for (var index = 0; index < Items.Count; index++)
+    {
+        var feature = Items[index];
+        <article class="panel feature reveal" data-delay="@index">
+            @switch (feature.Film)
+            {
+                case FeatureFilm.Show:
+                    <div class="film film-show" aria-hidden="true"><i></i><i></i><i></i></div>
+                    break;
+                case FeatureFilm.Draw:
+                    <div class="film film-draw" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                    break;
+                case FeatureFilm.Ask:
+                    <div class="film film-ask" aria-hidden="true">
+                        <p>May I send it to the owner now?</p>
+                        <div><i>Book it</i><i>Change</i><i>Not now</i></div>
+                    </div>
+                    break;
+                default:
+                    <div class="film film-flip" aria-hidden="true">
+                        <div><span>Your request has been sent.</span><span>ShowCard · SendLead · 1.2 s</span></div>
+                    </div>
+                    break;
+            }
+            <h3>@feature.Title</h3>
+            <p>@Markdown.Inline(feature.Text)</p>
+            <span class="call">@feature.Call</span>
+        </article>
+    }
+</div>

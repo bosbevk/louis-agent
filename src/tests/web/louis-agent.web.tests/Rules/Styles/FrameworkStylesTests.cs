@@ -66,7 +66,7 @@ public partial class FrameworkStylesTests
     [TestCase("animation: widget-pulse")]
     [TestCase(".widget-button::before {")]
     [TestCase("@keyframes widget-pulse {\n    0%, 100% { opacity: 0; }\n    50% { opacity: 1; }\n}")]
-    [TestCase(".site-nav { margin-left: auto;")]
+    [TestCase(".site-nav {\n    margin-left: auto;")]
     [TestCase("@include surface.beacon();\n    @include surface.press();")]
     [TestCase("position: fixed;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
               "        width: 100vw;\n        height: 50dvh;")]
@@ -118,7 +118,7 @@ public partial class FrameworkStylesTests
     [Test]
     public void APagedSection_KeepsItsHeadingWithItsContent() =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
-            Does.Contain(".is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }"));
+            Does.Contain(".is-paged .band-body ::deep > :is(.topic, h1, h2, h3, .summary) { break-after: avoid; }"));
 
     /// <summary>
     /// A card the frame's script finds cut in two by a page break, but that fits on a page, starts on the next page

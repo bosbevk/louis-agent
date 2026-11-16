@@ -1,0 +1,9 @@
+/* The guide as the design page lays out its controls: cards three across, each its intro then its controls, and the
+   other parts under them, one after the other. */
+.theme-guide { display: grid; gap: 64px; }
+.guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.guide-grid .panel { padding: 26px; }
+.guide-part { display: grid; gap: 16px; }
+.guide-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
+.guide-label { min-width: 64px; font: 500 12px var(--bs-font-monospace); color: var(--bs-secondary-color); }
+@media (max-width: 980px) { .guide-grid { grid-template-columns: minmax(0, 1fr); } }

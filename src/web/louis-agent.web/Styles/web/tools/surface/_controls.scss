@@ -1,0 +1,65 @@
+@use "drawn" as *;
+
+/* The surface tool's controls (FX162): the design page's switch, slider, field, well, tags, status and focus ring
+   ("Every control, cut from the same glass"), its rules taken as they stand, each drawing the theme's own name for it.
+   A theme with no drawings shows the plain fill under each. */
+
+/* A switch: its drawing on or off, and off-and-unusable. */
+@mixin toggle() {
+    position: relative;
+    width: 62px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    @include drawn(toggle-off, var(--bs-tertiary-bg));
+
+    &[aria-pressed="true"] { @include drawn(toggle-on, var(--bs-primary)); }
+    &:disabled { cursor: default; @include drawn(toggle-off-disabled, var(--bs-tertiary-bg)); }
+    &[aria-pressed="true"]:disabled { @include drawn(toggle-on-disabled, var(--bs-primary)); }
+}
+
+/* A slider's groove, the part filled up to its value, and its knob. */
+@mixin slider-track() { border-radius: 6px; @include drawn(slider-track, var(--bs-tertiary-bg)); }
+@mixin slider-fill() { @include drawn(slider-fill, var(--bs-primary)); filter: drop-shadow(0 0 5px var(--bs-primary)); }
+@mixin knob() { border-radius: 50%; @include drawn(knob, var(--bs-body-bg)); }
+
+/* A field a visitor types in: its drawing at rest, and in focus while it holds the caret. */
+@mixin field-pill() {
+    border-radius: 999px;
+    @include drawn(field-rest, var(--web-inset-fill));
+
+    &:focus-within { @include drawn(field-focus, var(--web-inset-fill)); }
+}
+
+/* The agent's label: white words on its own drawing. */
+@mixin tag-agent() {
+    border-radius: 999px;
+    color: var(--web-on-primary);
+    @include drawn(tag-agent, var(--bs-primary));
+}
+
+/* A small pill that says what is happening, its live dot before the words. */
+@mixin status() {
+    border-radius: 999px;
+    @include drawn(status, var(--bs-tertiary-bg));
+}
+@mixin status-dot() {
+    border-radius: 50%;
+    background: var(--web-ok);
+    box-shadow: 0 0 8px var(--web-ok);
+}
+
+/* The focus ring: its own drawing laid 7 pixels outside the piece, so it goes with any state. The piece holds it as its
+   ::after while the keyboard is on it. */
+@mixin focus-drawn() {
+    &:focus-visible { outline: 0; }
+    &:focus-visible::after {
+        content: "";
+        position: absolute;
+        inset: -7px;
+        pointer-events: none;
+        @include drawn(focus-pill, transparent);
+    }
+}

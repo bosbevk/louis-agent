@@ -3,13 +3,11 @@
 <PageTitle>How the engine works · louis-agent</PageTitle>
 <PageHead Description="One turn through every layer of the louis-agent engine, the loop from the guards to the ledger, and how the web works with the backend." />
 
-<Band Id="top" Kicker="How it works · in detail" Class="band-movie">
+<Band Id="top" Topic="How it works · in detail">
     <BandTitle Class="chrome">One turn, through every layer.</BandTitle>
-    <p class="lede">Sixty seconds, ten scenes. The six slabs inside core are the real middleware in its real order, outermost first, the way <code>ChatPipeline.cs</code> builds it.</p>
-    <FilmFrame><DetailedMovie /></FilmFrame>
 </Band>
 
-<Band Id="loop" Kicker="The loop: the parts a turn meets, in order">
+<Band Id="loop" Topic="The loop: the parts a turn meets, in order">
     <GraphView Spec="TurnGraph.Spec" Title="One turn: your program, a host, the engine's pipeline, the model and a tool, the ledger" />
     <ul class="rules">
         <li><strong>Your program.</strong> A few lines in a project of your own: they name the catalogue, who the agent is and what it can do, and start a host. A demo is such a project, and so is a customer's.</li>
@@ -22,8 +20,8 @@
     </ul>
 </Band>
 
-<Band Id="web" Kicker="The web: a website with an agent, working with the backend">
-    <p class="lede">The agent runs without the web, from the terminal, Rider, the API or MCP. The framework's web is the part that turns an agent into a website: the pages, the guide in the corner, and everything between them and the engine.</p>
+<Band Id="web" Topic="The web: a website with an agent, working with the backend">
+    <p class="summary">The agent runs without the web, from the terminal, Rider, the API or MCP. The framework's web is the part that turns an agent into a website: the pages, the guide in the corner, and everything between them and the engine.</p>
     <GraphView Spec="WebGraph.Spec" Title="The web with the backend: a browser, the site and the guide, the API and the accounts, the engine, the model and ShowPage" />
     <ul class="rules">
         <li><strong>The site.</strong> A Blazor WebAssembly app on the framework's web, all C#, served by the API from the same address. It reaches the engine only over HTTP, so the engine never knows a page exists.</li>
@@ -35,7 +33,7 @@
     </ul>
 </Band>
 
-<Band Id="rules" Kicker="The rules every turn keeps">
+<Band Id="rules" Topic="The rules every turn keeps">
     <ul class="rules">
         <li><strong>An agent runs in a closed Docker container.</strong> It sees only the folders mounted into it and the secrets handed to it. The fetcher it must use refuses your network's internal addresses. Nothing it does reaches the machine it runs on.</li>
         <li><strong>Arguments are data.</strong> Model text never reaches a shell. A tool gets typed arguments.</li>

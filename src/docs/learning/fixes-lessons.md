@@ -501,5 +501,15 @@ for those. A bare link to the same address went to Blazor's router instead, whic
 put. The test passed on the address and missed the move. Clicking it in the browser found it, and the test now asks
 for the section's name too. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX162 · A page made of data can't lose its look
+
+When the site's own stylesheets came out so it would wear the theme alone, nearly every section lost its look at once.
+They were written as headings, paragraphs and lists, and their look lived in the sheets that went. Nothing in them was
+the theme's. The cure was a rule (ADR 0125): a site's pages hold no HTML, only the framework's controls given words and
+data. A heading with its summary is one control, named entries another, the design page's cards, films and fan more.
+Once a section is data handed to a control, the theme reaches it, and changing the look is one change in one place.
+The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
+(`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

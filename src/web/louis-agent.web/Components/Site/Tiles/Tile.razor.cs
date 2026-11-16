@@ -1,5 +1,6 @@
 using System.Globalization;
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Web.Components.Site.Pieces;
 using Microsoft.AspNetCore.Components;
 
@@ -12,6 +13,10 @@ namespace LouisAgent.Web.Components.Site.Tiles;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0106-the-landing-is-a-business-website-from-the-framework.md">ADR 0106: the landing is a business website from the framework</seealso>
 public partial class Tile
 {
+    /// <summary>The icon in the tile's glass chip, over its heading; none for a tile without one.</summary>
+    [Parameter]
+    public DiagramIcon? Icon { get; set; }
+
     /// <summary>The tile's heading, for a tile of words.</summary>
     [Parameter]
     public string? Title { get; set; }
@@ -27,6 +32,10 @@ public partial class Tile
     /// <summary>How many steps after the row's first tile this one rises; none for the first.</summary>
     [Parameter]
     public int Delay { get; set; }
+
+    /// <summary>The tile's words in Markdown, so they may hold a link (ADR 0125); instead of words given as content.</summary>
+    [Parameter]
+    public string? Text { get; set; }
 
     /// <summary>The tile's words, as a paragraph.</summary>
     [Parameter]

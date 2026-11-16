@@ -1,0 +1,12 @@
+@* A few steps in order (ADR 0125): each its number in a violet glass circle, then its title and words as one quiet
+   sentence. A site gives them as records. *@
+<ol class="steps">
+    @for (var index = 0; index < Items.Count; index++)
+    {
+        var step = Items[index];
+        <li>
+            <span class="step-number" aria-hidden="true">@(index + 1)</span>
+            <span class="step-words"><span class="step-title">@step.Title</span> @Markdown.Inline(step.Text)</span>
+        </li>
+    }
+</ol>

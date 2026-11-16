@@ -1,0 +1,13 @@
+@* Three photographs fanned out (FX162, the design page's "Three businesses, three agents"): the one in the middle
+   stands forward, the two beside it turn in, each with its caption and a reflection under it. A site gives them as
+   records (ADR 0125). *@
+<div class="shot-fan">
+    @for (var index = 0; index < Items.Count; index++)
+    {
+        var shot = Items[index];
+        <a class="@PlaceOf(index)" href="@shot.Href">
+            <img src="@shot.Image" alt="" loading="lazy" />
+            <span><b>@shot.Title</b>@shot.Line</span>
+        </a>
+    }
+</div>
