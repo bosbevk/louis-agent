@@ -134,4 +134,28 @@ public class TilesTests
             Assert.That(number.Find("article").Id, Is.EqualTo("100-adrs"));
         });
     }
+
+    /// <summary>
+    /// A tile wears the theme's finish until a site switches a part off (Louis: "this should be options to switch on
+    /// or off on a panel"): the lens that bends what is behind it, the tilt towards the pointer, and being picked.
+    /// </summary>
+    [Test]
+    public void ATile_BendsTiltsAndIsPicked_UntilSwitchedOff()
+    {
+        using var ctx = new BunitContext();
+
+        var finished = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your model")).Find("article");
+        var plain = ctx.Render<Tile>(p => p.Add(t => t.Title, "Your data")
+            .Add(t => t.Lens, false).Add(t => t.Tilt, false).Add(t => t.Pick, false)).Find("article");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(finished.HasAttribute("data-tilt"), Is.True);
+            Assert.That(finished.HasAttribute("data-lens"), Is.False);
+            Assert.That(finished.HasAttribute("data-piece"), Is.True);
+            Assert.That(plain.HasAttribute("data-tilt"), Is.False);
+            Assert.That(plain.GetAttribute("data-lens"), Is.EqualTo("off"));
+            Assert.That(plain.HasAttribute("data-piece"), Is.False);
+        });
+    }
 }

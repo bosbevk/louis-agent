@@ -30,7 +30,8 @@
 .film-flip span { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px; border-radius: 12px; backface-visibility: hidden; font-size: 13px; text-align: center; @include surface.film-choice(); @include surface.film-tile(7%); }
 .film-flip span + span { transform: rotateY(180deg); font: 12px/1.7 var(--bs-font-monospace); }
 
-.call { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: 4px; padding: 5px 11px; border-radius: 999px; font: 12.5px var(--bs-font-monospace); @include surface.call(); }
+/* The pill stands at the card's foot, so the four line up whatever their words. */
+.call { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: auto; padding: 5px 11px; border-radius: 999px; font: 12.5px var(--bs-font-monospace); @include surface.call(); }
 .call::before { content: ""; width: 7px; height: 7px; @include surface.call-dot(); }
 
 @keyframes feature-beam { to { left: 100%; } }

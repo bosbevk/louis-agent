@@ -6,7 +6,8 @@
     @for (var index = 0; index < Items.Count; index++)
     {
         var feature = Items[index];
-        <article class="panel feature reveal" data-delay="@index">
+        <article class="panel feature reveal" data-delay="@index" id="@AddressOf(feature)" data-piece="@Pick"
+                 data-tilt="@Tilt" data-lens="@LensSwitch">
             @switch (feature.Film)
             {
                 case FeatureFilm.Show:

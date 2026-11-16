@@ -58,6 +58,15 @@ public class GlassValuesTests
     }
 
     /// <summary>
+    /// A glass card leans towards the pointer as the design's cards do (Louis: "yes a lens with a tilt"): seven
+    /// degrees across its width and its height.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheTilt_IsTheDesignsCard(SiteStyle style) =>
+        Assert.That(Value(style, "--web-tilt"), Is.EqualTo("7"));
+
+    /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
     /// screen (Louis's pick C of three), with no lines of its own.
     /// </summary>

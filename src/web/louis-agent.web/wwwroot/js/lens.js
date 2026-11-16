@@ -89,7 +89,8 @@ let near = null, sized = null, looks = null;
 const worn = new Map();   // each piece wearing a lens, and its filter's id
 const read = () => { const s = getComputedStyle(document.documentElement);
     glass = { wall: +s.getPropertyValue("--web-lens-wall") || 0, rise: +s.getPropertyValue("--web-lens-rise") || 0 }; };
-const kind = el => +getComputedStyle(el).getPropertyValue("--web-lens-piece") || 0;
+// A panel a site switched the lens off on (data-lens="off") is no piece of glass to it.
+const kind = el => el.dataset?.lens === "off" ? 0 : +getComputedStyle(el).getPropertyValue("--web-lens-piece") || 0;
 
 // Puts the lens on a piece, or draws it again at its new size or light.
 const wear = el => {

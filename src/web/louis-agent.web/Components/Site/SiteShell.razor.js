@@ -6,6 +6,7 @@
 // system's "less motion" unless the viewer switched motion on.
 import { motion, reducedMotion } from "../../js/preferences.js";
 import { lens } from "../../js/lens.js";
+import { tilt } from "../../js/tilt.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -191,6 +192,8 @@ export function attach(pageBase, place) {
     paginate();
     // The glass's lens, in a theme that has one, on the pane under the pointer and the ones picked or shown.
     lens.attach();
+    // And its tilt, on a panel that leans towards the pointer.
+    tilt.attach();
     if (pageBase !== base) {
         base = pageBase;
         if (place) arriveAt(place);
@@ -204,4 +207,5 @@ export function detach() {
     seen?.disconnect();
     seen = null;
     lens.detach();
+    tilt.detach();
 }

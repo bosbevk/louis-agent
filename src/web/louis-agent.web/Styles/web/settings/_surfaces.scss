@@ -9,7 +9,8 @@
    hover of its own (F151.4): how far it lifts, an edge and a shadow, both written as shadows, the card deck's today.
    A theme may bend what is behind a pane as real glass does (F151.6), in the pane under the pointer and the one
    picked or shown: how thick the glass is at its edge and how much higher its middle stands, in pixels. A wall of
-   0 is no lens, as today.
+   0 is no lens, as today. A pane under the pointer may lean towards it: the tilt, in degrees across its width and
+   its height, 0 for a pane that stays still, as today.
    A float is a pane over the page, such as a menu's list: the shadow it throws, the menu's today. A frosted float
    is one that stands over the page's words, such as the agent's answer: its body and its blur, a pane's today.
    A veil is a panel the stage shows through, such as the showroom's rail: its fill, its edge and its blur, the
@@ -49,6 +50,7 @@
     --web-pane-hover-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45);
     --web-lens-wall: 0;
     --web-lens-rise: 0;
+    --web-tilt: 0;
 
     --web-float-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8);
     --web-frost-fill: var(--web-pane-fill);

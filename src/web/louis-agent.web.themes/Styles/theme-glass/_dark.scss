@@ -92,6 +92,8 @@
     // The lens: the card under the pointer, or picked or shown, bends what is behind it as the design's cards.
     --web-lens-wall: 52;
     --web-lens-rise: 70;
+    // And it leans towards the pointer, seven degrees across, as the design's cards.
+    --web-tilt: 7;
 
     // What floats over the page throws a pane's own shadow.
     --web-float-shadow: var(--web-pane-shadow);
