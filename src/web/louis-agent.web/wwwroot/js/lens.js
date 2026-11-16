@@ -63,11 +63,12 @@ const bendMap = (w, h, wall, rise) => {
     return [href, far];
 };
 
-// Where the glass is frosted: fully where its top lies flat, not at all where it turns down to the edge.
+// Where the glass is frosted: everywhere but its steepest rim, so the frost reaches the edge evenly (Louis: "the blur
+// is not reaching anywhere"), and the rim stays clear to bend sharply.
 const frostMap = (w, h, rise) => {
     const half = Math.min(w, h) / 2, [FX, DX] = side(w, 1, half, rise), [FY, DY] = side(h, 1, half, rise);
     return picture(w, h, d => { for (let y = 0, j = 0; y < h; y++) for (let x = 0; x < w; x++, j += 4) {
-        const flat = 1 / Math.hypot(DX[x] * FY[y], DY[y] * FX[x], 1), a = Math.min(Math.max((flat - .8) / .17, 0), 1);
+        const flat = 1 / Math.hypot(DX[x] * FY[y], DY[y] * FX[x], 1), a = Math.min(Math.max((flat - .15) / .3, 0), 1);
         d[j] = d[j + 1] = d[j + 2] = 255; d[j + 3] = 255 * a * a * (3 - 2 * a);
     } });
 };

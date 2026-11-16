@@ -73,7 +73,7 @@ public class GlassValuesTests
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
     public void TheFrost_BlursOnlyWhatIsBehind(SiteStyle style) =>
-        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("6"));
+        Assert.That(Value(style, "--web-lens-frost"), Is.EqualTo("3"));
 
     /// <summary>
     /// The page behind the glass is a picture of silk ribbons of light, one for each style, laid over the whole
