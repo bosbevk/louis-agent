@@ -93,8 +93,8 @@ the folders under `demos/`.
 ### 3. Selling first, the framework as proof
 
 The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads: What we
-build · Demos · Contact · The framework. At the header's end a three-line button opens the settings, a glass panel
-down the right of the screen with the look switches and the CV. No price stands anywhere a visitor first looks:
+build · Demos · Contact · The framework. At the header's end a three-line button opens the settings, a thin glass bar
+under the header with the look switches and the CV. No price stands anywhere a visitor first looks:
 every quote is made on request.
 
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn

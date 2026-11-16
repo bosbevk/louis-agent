@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Site.Looks;
 
 /// <summary>
-/// Holds a site's settings in a glass panel down the right of the screen: the look switches and whatever else the
+/// Holds a site's settings in a thin glass bar under the header: the look switches and whatever else the
 /// site puts there, such as a CV. The frame opens and shuts it from its header's three-line button.
 /// </summary>
 /// <remarks>
