@@ -47,6 +47,14 @@ public partial class RecordedChat : IDisposable
     [Parameter]
     public string PlayAgain { get; set; } = "";
 
+    /// <summary>When it starts playing: on its own, or only when asked (F160).</summary>
+    [Parameter]
+    public RecordedStart Start { get; set; }
+
+    /// <summary>What the Play button says while the talk waits to be started.</summary>
+    [Parameter]
+    public string Play { get; set; } = "";
+
     /// <summary>How fast it plays: 1 as recorded, 0 for no waits at all.</summary>
     [Parameter]
     public double Pace { get; set; } = 1;
@@ -116,14 +124,24 @@ public partial class RecordedChat : IDisposable
     /// <summary>Done at once while the play is not held; else once it is let go.</summary>
     private Task WhileHeld() => _held?.Task ?? Task.CompletedTask;
 
-    /// <summary>Starts playing once the window is on the page.</summary>
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    /// <summary>Started when asked, the first question waits in the window, so the visitor sees what is to come.</summary>
+    protected override void OnInitialized()
     {
-        if (firstRender) await PlayAsync();
+        if (Start != RecordedStart.WhenAsked || Turns.Count == 0) return;
+        _chat.Turns.Add(new Turn { UserText = Turns[0].Question });
     }
 
-    /// <summary>Plays the conversation from the start, as the play-again button asks.</summary>
-    private Task PlayAsync() => PlayFromAsync(1);
+    /// <summary>Starts playing once the window is on the page, unless it waits to be asked.</summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Start == RecordedStart.OnItsOwn) await PlayFromStartAsync();
+    }
+
+    /// <summary>Whether the talk waits to be asked to play: it starts when asked, and is neither playing nor over.</summary>
+    private bool Waiting => Start == RecordedStart.WhenAsked && !_playing && !_ended;
+
+    /// <summary>Plays the conversation from the start, as the Play and play-again buttons ask.</summary>
+    private Task PlayFromStartAsync() => PlayFromAsync(1);
 
     /// <summary>
     /// Plays the conversation from a turn, by its number from one (F127.1, Louis: "this should be clickable so visitors

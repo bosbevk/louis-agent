@@ -283,4 +283,36 @@ public class RecordedChatTests
 
         Assert.That(askedWhileHeld, Is.False, "the question waited while the play was held");
     }
+
+    /// <summary>
+    /// Started when asked (F160, Louis: "do not make it autoplay"), nothing plays: the first question waits with a
+    /// Play button, the theme's main one, and a press plays the talk to its end.
+    /// </summary>
+    [Test]
+    public void StartedWhenAsked_TheFirstQuestionWaits_UntilPlayIsPressed()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, [new RecordedTurn("First question", Source), new RecordedTurn("Second", Source)])
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.Start, RecordedStart.WhenAsked)
+            .Add(chat => chat.Play, "Play the talk")
+            .Add(chat => chat.Ending, Offer));
+        Thread.Sleep(400);
+        var waiting = cut.FindAll(".recorded-chat .turn .user-text").Select(text => text.TextContent).ToList();
+        bool ended = cut.FindAll(".offer").Count > 0;
+        var play = cut.Find(".recorded-wait button.btn.btn-fill.btn-small");
+        string playWords = play.TextContent;
+        play.Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)), TimeSpan.FromSeconds(5));
+        Assert.Multiple(() =>
+        {
+            Assert.That(waiting, Is.EqualTo(new[] { "First question" }));
+            Assert.That(ended, Is.False);
+            Assert.That(playWords, Is.EqualTo("Play the talk"));
+            Assert.That(cut.FindAll(".recorded-chat .turn .user-text"), Has.Count.EqualTo(2));
+        });
+    }
 }

@@ -1,8 +1,15 @@
 @* A recorded session in a window: the chat's own list of turns, typing out as it did, then the site's ending, the
-   theme's button to try the agent live when the site gives its words, and a button that plays it again. *@
+   theme's button to try the agent live when the site gives its words, and a button that plays it again. Started
+   when asked, its first question waits over the theme's Play button. *@
 <div class="recorded-chat">
     <div class="recorded-bar"><span class="recorded-dots" aria-hidden="true"><i></i><i></i><i></i></span>@Title</div>
     <MessageList Chat="_chat" Streaming="_playing" Currency="Currency" ShowWork="ShowWork" />
+    @if (Waiting)
+    {
+        <div class="recorded-wait">
+            <button class="btn btn-fill btn-small" type="button" @onclick="PlayFromStartAsync">@Play</button>
+        </div>
+    }
     @if (_ended)
     {
         <div class="recorded-end">
@@ -11,7 +18,7 @@
             {
                 <button class="btn btn-fill btn-small" type="button" @onclick="() => Tried.InvokeAsync()">@TryIt</button>
             }
-            <button class="recorded-again" type="button" @onclick="PlayAsync">@PlayAgain</button>
+            <button class="recorded-again" type="button" @onclick="PlayFromStartAsync">@PlayAgain</button>
         </div>
     }
 </div>
