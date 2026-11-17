@@ -1,11 +1,9 @@
-/* The framework's site's styles (F160.1): the framework's rules and the two themes, and nothing of the site's own. A
-   name under web/ is the framework's Sass and one under theme- a theme's, each found through sasscompiler.json, so
-   nothing is copied. The build makes wwwroot/css/app.css from this. */
+/* The framework's site's styles (F160.1): the framework's rules and the flat theme alone, the site's only one, and
+   nothing of the site's own. A name under web/ is the framework's Sass and one under theme- a theme's, each found
+   through sasscompiler.json, so nothing is copied. The build makes wwwroot/css/app.css from this. */
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
 @forward "web/base/elements";
-@forward "theme-glass/dark";
-@forward "theme-glass/light";
 @forward "theme-flat/dark";
 @forward "theme-flat/light";
 @forward "web/settings/brands";

@@ -32,7 +32,7 @@ internal static class PagePalettes
 
     /// <summary>A flat card on a dark page: flat's near-black pane, and its dark grey line.</summary>
     private const string FlatCardsDark =
-        "--pic-body: #101013; --pic-hair: #2b2b33; --mrq-hair: #2b2b33; --pic-march: rgba(255, 255, 255, .75);";
+        "--pic-body: #141418; --pic-hair: #2b2b33; --mrq-hair: #2b2b33; --pic-march: rgba(255, 255, 255, .75);";
 
     /// <summary>
     /// A card on a page, in every theme: glass's sheened card and the quiet card's faint wash are both the card's own

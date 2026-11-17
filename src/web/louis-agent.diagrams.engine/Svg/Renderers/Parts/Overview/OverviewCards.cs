@@ -127,7 +127,7 @@ internal static class OverviewCards
         double left = box.Left + CardSizes.QuietPad;
         int titles = card.TitleLines.Count;
         writer.Box(box, Corner, "crd-quiet")
-            .Icon(left, box.Top + QuietIcon, TintIcon, card.Card.Icon, "crd-icon quiet");
+            .Icon(left, box.Top + QuietIcon, TintIcon, card.Card.Icon, Toned("crd-icon quiet", card.Card));
         for (int at = 0; at < titles; at++)
             writer.Text(box.Left + CardSizes.QuietTitleLeft, box.Top + QuietTitle + CardSizes.QuietTitleLine * at,
                 card.TitleLines[at], "crd-name quiet", "start");

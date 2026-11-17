@@ -73,7 +73,9 @@ public class CardsRendererTests
             [
                 new CardRow([new Card("family", DiagramIcon.Browser, "The web", "src/web", "", CardLook.Highlight,
                     DiagramTone.Teal)]),
-                new CardRow([new Card("one", DiagramIcon.Box, "One part", null, "What it does.", Tone: DiagramTone.Teal)])
+                new CardRow([new Card("one", DiagramIcon.Box, "One part", null, "What it does.", Tone: DiagramTone.Teal)]),
+                // No line reaches it, so it is a quiet card, and its icon still wears its tone.
+                new CardRow([new Card("two", DiagramIcon.Box, "Apart", null, "On its own.", Tone: DiagramTone.Red)])
             ],
             [new CardLink("family", "one")]));
 
@@ -85,6 +87,7 @@ public class CardsRendererTests
             Assert.That(drawn, Does.Contain("class=\"crd-badge tone-teal\"").And.Contain("class=\"crd-tint tone-teal\"")
                 .And.Contain("class=\"crd-icon tone-teal\""));
             Assert.That(drawn, Does.Contain(".crd-tint.tone-teal { fill: var(--teal-line); }"));
+            Assert.That(drawn, Does.Contain("class=\"crd-icon quiet tone-red\""), "a quiet card's icon in its tone");
             Assert.That(plain, Does.Contain("class=\"crd-tint\"").And.Not.Contain("class=\"crd-tint tone-"),
                 "no tone, the violet");
         });

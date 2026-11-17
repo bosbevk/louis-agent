@@ -146,6 +146,25 @@ public class LookSwitchTests
         cut.WaitForAssertion(() => Assert.That(PressedWords(cut), Is.EqualTo(new[] { "Flat", "Dark" })));
     }
 
+    /// <summary>
+    /// A page the first paint put in a theme this site doesn't offer, one this browser remembers from before, is put
+    /// back in the site's first theme, so a site that offers only flat always opens flat (Louis: "this must always
+    /// load flat").
+    /// </summary>
+    [Test]
+    public void ARememberedThemeTheSiteDoesNotOffer_IsPutBackToItsFirst()
+    {
+        using var ctx = new BunitContext();
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.LookSwitch);
+        module.Mode = JSRuntimeMode.Loose;
+        module.Setup<PageLook?>("current").SetResult(new PageLook("glass", "light"));
+
+        var cut = Render(ctx, areas => areas.Add(ThemeArea(new SiteTheme("flat", "Flat"))));
+
+        cut.WaitForAssertion(() =>
+            Assert.That(module.Invocations["pickTheme"].Single().Arguments, Is.EqualTo(new object?[] { "flat" })));
+    }
+
     /// <summary>On the narrowest phones the switch's two groups may sit one above the other, not overflow.</summary>
     [Test]
     public void OnANarrowPhone_TheGroupsMayWrap() =>

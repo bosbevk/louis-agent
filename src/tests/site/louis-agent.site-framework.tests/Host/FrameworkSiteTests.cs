@@ -42,11 +42,12 @@ public class FrameworkSiteTests
     }
 
     /// <summary>
-    /// The site opens in flat, light (Louis: "this ones default will be the flat white theme"), offers glass beside
-    /// it, and turns on the framework's pages, a package as the accounts are.
+    /// The site opens in flat, light, and offers flat alone, so a visitor picks only light or dark (Louis: "this ones
+    /// default will be the flat white theme", then "this must always load flat so no glass theme here yet"), and
+    /// turns on the framework's pages, a package as the accounts are.
     /// </summary>
     [Test]
-    public void TheSite_OpensInFlat_ThenOffersGlass()
+    public void TheSite_OpensInFlat_AndOffersFlatAlone()
     {
         var areas = new ServiceCollection().AddSiteAreas(FrameworkAreas.Name).BuildServiceProvider()
             .GetRequiredService<SiteAreas>();
@@ -55,7 +56,7 @@ public class FrameworkSiteTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(areas.Themes.Select(theme => theme.Id), Is.EqualTo(new[] { "flat", "glass" }));
+            Assert.That(areas.Themes.Select(theme => theme.Id), Is.EqualTo(new[] { "flat" }));
             Assert.That(areas.Names, Does.Contain("framework"));
             Assert.That(page, Does.Contain("<html lang=\"en\" data-theme=\"flat\" data-style=\"light\">"),
                 "the page's first paint is flat, light");

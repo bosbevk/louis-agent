@@ -130,8 +130,8 @@ public class PageSvgTests
             Assert.That(page, Does.Contain("[data-theme=\"flat\"][data-style=\"light\"] :scope"));
             Assert.That(page, Does.Contain("[data-theme=\"flat\"][data-style=\"dark\"] :scope"));
             Assert.That(page, Does.Contain("[data-theme=\"glass\"][data-style=\"light\"] :scope"));
-            Assert.That(page, Does.Contain("--ground: #ffffff").And.Contain("--ground: #000000"),
-                "flat's white and black grounds");
+            Assert.That(page, Does.Contain("--ground: #f7f7f8").And.Contain("--ground: #0c0c0e"),
+                "flat's grounds, a tad darker than white and a very dark grey, as its pages are");
         });
     }
 

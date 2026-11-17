@@ -1,9 +1,9 @@
 @use "web/tools/surface";
 
 /* A few steps (ADR 0125; Louis: "a purple glass circle", "no bold"): each number in the theme's main button drawn as a
-   circle, then the step's words in one quiet sentence, its title only a shade stronger. */
-.steps { display: grid; gap: 16px; max-width: 64ch; margin: 0; padding: 0; list-style: none; }
-.steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; gap: 14px; }
+   circle, then the step's words in one quiet sentence, its title only a shade stronger. Where they stand is
+   Bootstrap's, in the markup; what is left here is their look and the reading width. */
+.steps { max-width: 64ch; }
 .step-number {
     display: grid;
     place-items: center;
@@ -13,5 +13,5 @@
     font: 600 14px/1 var(--bs-font-sans-serif);
     @include surface.press();
 }
-.step-words { padding-top: 4px; font-size: 17px; line-height: 1.6; color: var(--bs-secondary-color); }
+.step-words { font-size: 17px; line-height: 1.6; color: var(--bs-secondary-color); }
 .step-title { color: var(--bs-emphasis-color); }
