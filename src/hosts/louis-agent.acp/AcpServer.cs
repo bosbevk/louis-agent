@@ -110,7 +110,7 @@ internal sealed class AcpServer
                     await InitializeAsync(id, parameters, cancellationToken);
                     break;
                 case "session/new":
-                    await NewSessionAsync(id, parameters, cancellationToken);
+                    await StartSessionAsync(id, parameters, cancellationToken);
                     break;
                 case "session/prompt":
                     await PromptAsync(id, parameters, cancellationToken);
@@ -142,13 +142,13 @@ internal sealed class AcpServer
         await _writer.WriteResultAsync(id, AcpCapabilities.Result, cancellationToken);
     }
 
-    private async Task NewSessionAsync(JsonElement? id, JsonElement parameters, CancellationToken cancellationToken)
+    private async Task StartSessionAsync(JsonElement? id, JsonElement parameters, CancellationToken cancellationToken)
     {
         string cwd = parameters.TryGetProperty("cwd", out JsonElement cwdElement)
             ? cwdElement.GetString() ?? string.Empty
             : string.Empty;
         string sessionId = $"sess_{Guid.NewGuid():N}";
-        var history = _agent.NewHistory();
+        var history = _agent.StartHistory();
         history.Add(new ChatMessage(ChatRole.System,
             MessageText.Format(AcpModelText.WorkspaceNotice, new { Root = _agent.WorkspaceRoot })));
 

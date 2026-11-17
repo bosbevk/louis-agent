@@ -52,14 +52,14 @@ public class EndsEachAnswerTests
     /// A turn as an identity that ends each answer with <paramref name="endsWith"/> and stops on
     /// <see cref="Stops"/>, the visitor saying <paramref name="message"/>.
     /// </summary>
-    private static async Task TurnAsync(IChatClient client, string? endsWith, string message = "Walk me through")
+    private static async Task RunTurnAsync(IChatClient client, string? endsWith, string message = "Walk me through")
     {
         var engine = new AgentEngine(new CompositeSkillProvider(), client, TestPaths.Agent(),
             toolsets: [new AskingTools()])
         { Thinking = ReasoningEffort.Low };
         var guide = new TurnIdentity("guide", false, endsWith, Stops);
         using var _ = TurnIdentity.Use(guide);
-        await foreach (var __ in engine.StreamPromptAsync(engine.NewHistory(), message))
+        await foreach (var __ in engine.StreamPromptAsync(engine.StartHistory(), message))
         {
         }
     }
@@ -75,7 +75,7 @@ public class EndsEachAnswerTests
     {
         var client = new FakeChatClient(_ => Says("Alright, we'll stop here."), _ => CallsAsk());
 
-        await TurnAsync(client, endsWith: nameof(AskingTools.Ask), message);
+        await RunTurnAsync(client, endsWith: nameof(AskingTools.Ask), message);
 
         Assert.That(client.Requests, Has.Count.EqualTo(requests));
     }
@@ -89,7 +89,7 @@ public class EndsEachAnswerTests
     {
         var client = new FakeChatClient(_ => Says("Here is the stop."), _ => CallsAsk(), _ => Says("Never asked."));
 
-        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+        await RunTurnAsync(client, endsWith: nameof(AskingTools.Ask));
 
         var asked = client.Requests[1].Options!;
         Assert.Multiple(() =>
@@ -119,7 +119,7 @@ public class EndsEachAnswerTests
             _ => Says("It answered in its window: answer its question there."),
             _ => CallsAsk());
 
-        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+        await RunTurnAsync(client, endsWith: nameof(AskingTools.Ask));
 
         Assert.That(client.Requests, Has.Count.EqualTo(2), "no third request for choices");
     }
@@ -133,7 +133,7 @@ public class EndsEachAnswerTests
     {
         var client = new FakeChatClient(_ => CallsForm(good: true), _ => CallsAsk());
 
-        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+        await RunTurnAsync(client, endsWith: nameof(AskingTools.Ask));
 
         Assert.That(client.Requests, Has.Count.EqualTo(1), "no second request for choices");
     }
@@ -144,7 +144,7 @@ public class EndsEachAnswerTests
     {
         var client = new FakeChatClient(_ => CallsForm(good: false), _ => Says("Tell me your name."), _ => CallsAsk());
 
-        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+        await RunTurnAsync(client, endsWith: nameof(AskingTools.Ask));
 
         Assert.That(client.Requests, Has.Count.EqualTo(3));
     }
@@ -156,8 +156,8 @@ public class EndsEachAnswerTests
         var offered = new FakeChatClient(_ => CallsAsk(), _ => Says("Never asked."));
         var plain = new FakeChatClient(_ => Says("Here is the stop."), _ => CallsAsk());
 
-        await TurnAsync(offered, endsWith: nameof(AskingTools.Ask));
-        await TurnAsync(plain, endsWith: null);
+        await RunTurnAsync(offered, endsWith: nameof(AskingTools.Ask));
+        await RunTurnAsync(plain, endsWith: null);
 
         Assert.That((offered.Requests.Count, plain.Requests.Count), Is.EqualTo((1, 1)));
     }

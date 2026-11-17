@@ -80,7 +80,7 @@ public class UsageSessionTests
         var engine = new AgentEngine(
             new MarkdownSkillProvider(TestPaths.SampleSkills),
             new FakeChatClient(_ => Reply(), _ => Reply()), TestPaths.Agent(), usageSink: new ListUsageSink());
-        var history = engine.NewHistory();
+        var history = engine.StartHistory();
         var session = new UsageSession();
 
         for (int turn = 1; turn <= 2; turn++)

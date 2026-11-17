@@ -1530,6 +1530,36 @@ saved lists end in `.chats`, but the guide's is `widget-chats` and the showroom'
 takes every key that ends in `chats`. Its look was caught by eye: a panel lays its parts in a column, so the reset's
 line and press stood centred until its rule said "row".
 
+## Pacing in the engine, and where it sits (F155, 2026-11-17)
+
+Streaming shows a model's words as they come, but a model sends them in bursts. F154 paced them on the page; F155
+gives the engine the same, so Rider, the CLI and the API can have even text too. The research for it found one
+pattern everywhere: put a queue between the model and the reader, and drain it at a pace of its own. That is a
+producer and a consumer at different speeds. The reader keeps up with the model, so the turn is never held back, and
+the writer keeps a reader's pace, catching up when it falls behind.
+
+Where it sits mattered as much as how it works. Louis picked a pacer on the turn's stream on its way out, a
+Decorator, over one inside the chat pipeline. Inside, every tool round would have waited for its text, and the
+traces would have timed the pacing as if it were the model. Outside, the agent's work, its cost records and its
+history run at the model's speed, and only what a host reads is spread out. He also settled that three layers of
+pacing were too many: each pacer holds the text back to keep its rhythm, so pacing twice only adds lag. So there is
+one rule, `WordPace`, shared by the engine and the page, and one switch on each, with only one on per path.
+
+The research changed the rule too. A fixed speed either falls behind a fast model or shows its bursts again, so the
+pace became continuous, the larger of a steady pace and what is waiting over a short window. And a server must cut
+on whole words, or a word or a markdown mark breaks across two pieces.
+
+The tests ran the pacer on a fake clock, so they could see how much went out by when without waiting. They found the
+fault worth remembering. A model's last update carries only its finish, and the first pacer sent all the waiting
+text at once before anything that was not text, so at the end of every reply the pacing did nothing. The step's own
+tests had missed it, because their turn paused between updates and the text went out before the finish arrived. A
+turn that sends everything at once showed it in one run. The lesson: a test of timing has to give the code the
+worst arrival, not the kind one.
+
+The step also brought a naming rule, ADR 0126. The first name was `PacedStream.Of(turn, clock)`, and `Of` in this
+repo means a record built from another type, which this wasn't. It became `turn.Paced(clock)`, a stream operator as
+LINQ names them, and the rule now says which word a method takes by what it does.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

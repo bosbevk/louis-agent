@@ -70,11 +70,11 @@ public class ChatPipelineTests
         using (UsageScope.Begin())
         {
             if (streamed)
-                await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), prompt))
+                await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), prompt))
                 {
                 }
             else
-                await engine.ProcessPromptAsync(engine.NewHistory(), prompt);
+                await engine.ProcessPromptAsync(engine.StartHistory(), prompt);
         }
 
         lock (spans) return (root, spans.Where(a => a.TraceId == root.TraceId).ToList());
@@ -85,7 +85,7 @@ public class ChatPipelineTests
         spans.Where(a => a.GetTagItem(Operation) as string == operation).ToList();
 
     /// <summary>A file in the workspace for the model to read; the test deletes it.</summary>
-    private static string Written(string content, out string relative, string prefix = "trace")
+    private static string WriteFile(string content, out string relative, string prefix = "trace")
     {
         relative = $"{prefix}-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
@@ -100,7 +100,7 @@ public class ChatPipelineTests
     [TestCase(true)]
     public async Task Turn_MakesOneChatSpanPerRequestAndOneToolSpanPerCall(bool streamed)
     {
-        string path = Written("a small file", out string relative);
+        string path = WriteFile("a small file", out string relative);
         try
         {
             var client = new FakeChatClient(
@@ -139,7 +139,7 @@ public class ChatPipelineTests
     [Test]
     public async Task Turn_SummaryIsATracedRequestToo()
     {
-        string path = Written(new string('x', ToolCallGuards.MaxToolResultChars + 1), out string relative);
+        string path = WriteFile(new string('x', ToolCallGuards.MaxToolResultChars + 1), out string relative);
         try
         {
             var sink = new ListUsageSink();
@@ -173,7 +173,7 @@ public class ChatPipelineTests
             "the capture variable is on for this process (TelemetryCapture)");
 
         string[] markers = ["MARKER-USER-WORDS", "MARKER-FILE-NAME", "MARKER-FILE-CONTENT", "MARKER-REPLY"];
-        string path = Written("MARKER-FILE-CONTENT" + new string('x', ToolCallGuards.MaxToolResultChars + 1),
+        string path = WriteFile("MARKER-FILE-CONTENT" + new string('x', ToolCallGuards.MaxToolResultChars + 1),
             out string relative, "MARKER-FILE-NAME");
         try
         {

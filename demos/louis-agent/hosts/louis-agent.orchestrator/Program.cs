@@ -148,7 +148,7 @@ while (!stop.IsCancellationRequested)
         IReadOnlyList<UsageRecord>? TriageUsage() => engine.RecordsUsage ? triage.Records : null;
         try
         {
-            answer = await engine.ProcessPromptAsync(engine.NewHistory(), TriagePrompt(error), stop.Token);
+            answer = await engine.ProcessPromptAsync(engine.StartHistory(), TriagePrompt(error), stop.Token);
         }
         catch (Exception ex) when (Stopping.ByUser(ex, stop.Token))
         {

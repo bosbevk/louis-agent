@@ -32,7 +32,7 @@ public class AgentEngineFactoryTests
         new(new FakeChatClient(), Options(peer), capacity: capacity, catalog: TestTools.Catalog);
 
     /// <summary>The names of an engine's tools.</summary>
-    private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
+    private static string[] ListToolNames(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
 
     /// <summary>
     /// A factory with only <paramref name="enabled"/> roles on (F29); every one is built in (CL8 step 4).
@@ -163,7 +163,7 @@ public class AgentEngineFactoryTests
             async Task<string> AskAsync(AgentEngineFactory factory)
             {
                 var engine = factory.GetOrCreate([]);
-                return await engine.ProcessPromptAsync(engine.NewHistory(), "hello");
+                return await engine.ProcessPromptAsync(engine.StartHistory(), "hello");
             }
 
             string recorded, replayed;
@@ -197,9 +197,9 @@ public class AgentEngineFactoryTests
         var factory = new AgentEngineFactory(own, Options(), sessionLlms: [new SessionLlm("ollama-puls", local)]);
 
         var onLocal = factory.GetOrCreate([], llm: "ollama-puls");
-        Assert.That(await onLocal.ProcessPromptAsync(onLocal.NewHistory(), "prices?"), Is.EqualTo("qwen"));
+        Assert.That(await onLocal.ProcessPromptAsync(onLocal.StartHistory(), "prices?"), Is.EqualTo("qwen"));
         var onOwn = factory.GetOrCreate([]);
-        Assert.That(await onOwn.ProcessPromptAsync(onOwn.NewHistory(), "hello"), Is.EqualTo("haiku"));
+        Assert.That(await onOwn.ProcessPromptAsync(onOwn.StartHistory(), "hello"), Is.EqualTo("haiku"));
 
         Assert.That((own.Requests.Count, local.Requests.Count), Is.EqualTo((1, 1)),
             "each request went to its own model");
@@ -312,9 +312,9 @@ public class AgentEngineFactoryTests
         var files = factory.GetOrCreate([TestToolset.Files.Wire()]);
         var git = factory.GetOrCreate([TestToolset.Git.Wire()]);
 
-        Assert.That(Names(files), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
-        Assert.That(Names(git), Does.Contain("GetStatus").And.Not.Contain("ReadWorkspaceFile"));
-        Assert.That(Names(files), Does.Contain("ExecuteSkill").And.Not.Contain("CreateTool"),
+        Assert.That(ListToolNames(files), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
+        Assert.That(ListToolNames(git), Does.Contain("GetStatus").And.Not.Contain("ReadWorkspaceFile"));
+        Assert.That(ListToolNames(files), Does.Contain("ExecuteSkill").And.Not.Contain("CreateTool"),
             "no skills toolset, no self-extension");
     }
 
@@ -322,7 +322,7 @@ public class AgentEngineFactoryTests
     [Test]
     public void TheSkillsToolset_AddsTheSelfExtensionTools()
     {
-        Assert.That(Names(Factory().GetOrCreate([TestToolset.Files.Wire(), CoreToolset.Skills.Wire()])),
+        Assert.That(ListToolNames(Factory().GetOrCreate([TestToolset.Files.Wire(), CoreToolset.Skills.Wire()])),
             Does.Contain("CreateTool").And.Contain("CreateSkillFile"));
     }
 
@@ -387,7 +387,7 @@ public class AgentEngineFactoryTests
     [Test]
     public void NoToolsets_GivesOnlyTheEnginesOwnTools()
     {
-        Assert.That(Names(Factory().GetOrCreate([])),
+        Assert.That(ListToolNames(Factory().GetOrCreate([])),
             Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "ReadSkill" }));
     }
 
@@ -406,7 +406,7 @@ public class AgentEngineFactoryTests
         var minion = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
             tool: "FetchUrl");
 
-        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }),
+        Assert.That(ListToolNames(minion), Is.EqualTo(new[] { "FetchUrl" }),
             "one tool: no clock, no ExecuteSkill, no WebSearch");
         Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod minion: Lookup").And
             .Contain("You are a **minion**")

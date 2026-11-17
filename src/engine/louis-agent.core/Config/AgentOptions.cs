@@ -98,6 +98,13 @@ public sealed class AgentOptions
     public bool UsageInChat { get; set; }
 
     /// <summary>
+    /// STREAM_PACE: on paces a turn's text on its way out of the engine, at a steady pace in whole words, so a host's
+    /// reader gets it evenly, not in the model's bursts (F155); off by default, the stream as the model sends it. A host
+    /// turns it on, and a page that already paces its own words leaves it off, so the words are paced once.
+    /// </summary>
+    public bool StreamPace { get; set; }
+
+    /// <summary>
     /// PRICES_FILE: the price table for the ledger's costs; null means config/prices.json, found like config/.env.
     /// </summary>
     public string? PricesFile { get; set; }
@@ -268,7 +275,7 @@ public sealed class AgentOptions
     /// when it's read, ignored when the new one is set too (a product's compose sets ROLES_ENABLED, and env_file passes
     /// config/.env in).
     /// </summary>
-    private static string? RolesSetting(Func<string, string?> raw)
+    private static string? ReadRolesSetting(Func<string, string?> raw)
     {
         string? roles = raw("ROLES_ENABLED");
         string? old = raw("PERSONALITIES_ENABLED");
@@ -307,6 +314,7 @@ public sealed class AgentOptions
             LogDirectory = Get("LOG_DIRECTORY"),
             UsageLedger = !string.Equals(Get("USAGE_LEDGER"), "off", StringComparison.OrdinalIgnoreCase),
             UsageInChat = bool.TryParse(Get("USAGE_IN_CHAT"), out bool usageInChat) && usageInChat,
+            StreamPace = string.Equals(Get("STREAM_PACE"), "on", StringComparison.OrdinalIgnoreCase),
             PricesFile = Get("PRICES_FILE"),
             PricesUrl = Get("PRICES_URL"),
             RatesUrl = Get("RATES_URL") switch
@@ -320,12 +328,12 @@ public sealed class AgentOptions
             HostCulture = Get("HOST_CULTURE"),
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
-            RolesEnabled = ParseNames(RolesSetting(getVariable)),
+            RolesEnabled = ParseNames(ReadRolesSetting(getVariable)),
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
             AgentPeerKeys = ParsePeerKeys(Get("AGENT_PEER_KEYS")),
-            HostTimeZone = TimeZoneChecked(Get("HOST_TIME_ZONE")),
+            HostTimeZone = CheckTimeZone(Get("HOST_TIME_ZONE")),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None,
                 CultureInfo.InvariantCulture, out int budget)
                 ? budget
@@ -354,7 +362,7 @@ public sealed class AgentOptions
     /// and reached the model's place line as written, two hours off; every other setting stops the host when it's
     /// wrong.
     /// </summary>
-    private static string? TimeZoneChecked(string? name) =>
+    private static string? CheckTimeZone(string? name) =>
         name is null || TimeZoneInfo.TryFindSystemTimeZoneById(name, out _)
             ? name
             : throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownHostTimeZone,

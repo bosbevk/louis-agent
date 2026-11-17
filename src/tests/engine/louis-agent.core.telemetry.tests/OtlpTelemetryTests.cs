@@ -74,7 +74,7 @@ public class OtlpTelemetryTests
     {
         _telemetry = OtlpTelemetry.Instance.Start();
 
-        await OneTurnAsync();
+        await RunOneTurnAsync();
         OtlpTelemetry.Instance.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync(Operation), Is.True, "no span reached the collector");
@@ -90,7 +90,7 @@ public class OtlpTelemetryTests
         Environment.SetEnvironmentVariable(ServiceVariable, "my-host");
         _telemetry = OtlpTelemetry.Instance.Start();
 
-        await OneTurnAsync();
+        await RunOneTurnAsync();
         OtlpTelemetry.Instance.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync("my-host"), Is.True);
@@ -112,7 +112,7 @@ public class OtlpTelemetryTests
         Environment.SetEnvironmentVariable(EndpointVariable, null);
         _telemetry = OtlpTelemetry.Instance.Start();
 
-        await OneTurnAsync();
+        await RunOneTurnAsync();
         OtlpTelemetry.Instance.Flush();
         await Task.Delay(200);
 
@@ -161,7 +161,7 @@ public class OtlpTelemetryTests
     }
 
     /// <summary>One turn with one model request, as <c>ChatPipelineTests</c> runs it, on a fake model.</summary>
-    private static async Task OneTurnAsync()
+    private static async Task RunOneTurnAsync()
     {
         var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hallo")));
         var engine = new AgentEngine(
@@ -170,6 +170,6 @@ public class OtlpTelemetryTests
             usageSink: new ListUsageSink());
 
         using (UsageScope.Begin())
-            await engine.ProcessPromptAsync(engine.NewHistory(), "Hallo?");
+            await engine.ProcessPromptAsync(engine.StartHistory(), "Hallo?");
     }
 }

@@ -43,13 +43,13 @@ public class ChatPipelineReplayTests
 
     private static ChatResponse Say(string text) => new(new ChatMessage(ChatRole.Assistant, text));
 
-    private static IDisposable Flow(WebReplayMode web, bool model) =>
+    private static IDisposable SetReplay(WebReplayMode web, bool model) =>
         SessionReplay.Use(new SessionReplay(web, Trial, model));
 
     /// <summary>Two streamed turns on one history; returns each turn's streamed text and the history.</summary>
     private static async Task<(string[] Texts, List<ChatMessage> History)> TwoTurns(AgentEngine engine)
     {
-        var history = engine.NewHistory();
+        var history = engine.StartHistory();
         var texts = new List<string>();
         foreach (string prompt in new[] { "what is in the file?", "thanks" })
         {
@@ -85,13 +85,13 @@ public class ChatPipelineReplayTests
                 : new FakeChatClient(_ => Read(relative), _ => Say("It's all x."), _ => Say("You're welcome."));
             var recording = new ListUsageSink();
             string[] recorded;
-            using (Flow(WebReplayMode.Record, model: false)) (recorded, _) = await TwoTurns(Engine(live, recording));
+            using (SetReplay(WebReplayMode.Record, model: false)) (recorded, _) = await TwoTurns(Engine(live, recording));
 
             var throwing = new FakeChatClient(_ => throw new InvalidOperationException("the model was called"));
             var replaying = new ListUsageSink();
             string[] replayed;
             List<ChatMessage> history;
-            using (Flow(WebReplayMode.Replay, model: true))
+            using (SetReplay(WebReplayMode.Replay, model: true))
                 (replayed, history) = await TwoTurns(Engine(throwing, replaying));
 
             Assert.That(replayed, Is.EqualTo(recorded));
@@ -130,7 +130,7 @@ public class ChatPipelineReplayTests
     {
         var live = new FakeChatClient(_ => Say("one"), _ => Say("two"));
 
-        using (Flow(WebReplayMode.Replay, model: false)) await TwoTurns(Engine(live, new ListUsageSink()));
+        using (SetReplay(WebReplayMode.Replay, model: false)) await TwoTurns(Engine(live, new ListUsageSink()));
 
         Assert.That(live.Requests, Has.Count.EqualTo(2));
         Assert.That(_folder.Entries, Is.Empty);

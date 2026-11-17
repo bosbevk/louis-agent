@@ -111,7 +111,7 @@ public class PricingUsageSinkTests
 
         AgentEngine engine = AgentHost
             .Build(new LlmOptions(), agent, new StubClientFactory(new FakeChatClient(_ => response))).Engine;
-        await engine.ProcessPromptAsync(engine.NewHistory(), "hi");
+        await engine.ProcessPromptAsync(engine.StartHistory(), "hi");
 
         string line = File.ReadAllLines(Path.Combine(_dir, JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow))).Single();
         using var json = JsonDocument.Parse(line);

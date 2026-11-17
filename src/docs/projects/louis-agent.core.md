@@ -56,6 +56,24 @@ result.
 
 When the turn is done, the whole turn is added to the history in one piece.
 
+A model sends its words in bursts: sometimes a word, sometimes a sentence at once. A host can ask the engine to
+even them out, with `STREAM_PACE=on`. Then `StreamPromptAsync` hands the turn out through `turn.Paced(clock)`, a
+stream operator that changes when the text comes, not what comes. Inside it, a reader takes the turn as fast as it
+arrives into a queue, so the turn is never held back, and about thirty times a second a writer hands out what the
+pace allows, cut back to the last whole word, so no word, character or markdown mark is split across two pieces. The
+pace is `WordPace`, the rule the web's caption paces its words by too, in the shared `louis-agent.session-stream`:
+90 letters a second while little is waiting, and with more waiting, fast enough to show it within a second, so it
+never falls behind a fast model and never jumps. Anything that is not text, a tool call, the thinking, the usage or
+the end, keeps its place: it waits while the text before it finishes at the finishing pace, about a second and a
+quarter for a couple of hundred letters, and then goes out as it was. An error in the turn reaches the host after
+the text before it, and a cancelled turn stops the reader.
+
+The pacing sits after the turn on purpose. The model call, the tool loop, the usage records, the traces and the
+history all run at the model's own speed, so turning it on slows no agent's work and changes no cost or timing the
+engine records; only what a host reads is spread out. It is off by default, so the evals, which run their turns
+through the API, keep their speed. Words need pacing only once on their way to a reader: a host that turns this on
+serves a page that leaves its own pacing off, and the other way round.
+
 ### 3. The guards around every tool call
 
 A tool call can go wrong in a few ways, and each one has a guard.
@@ -249,6 +267,7 @@ This part is for looking things up: every folder and file of core, and what's in
 |---|---|
 | `Agent/AgentEngine.cs` | The engine as a facade (S, CL15): wires the skills, the tools, the guards and the pipeline once; a turn, a command and the self-extension tools go to the classes below |
 | `Agent/Turns/` | `TurnRunner` (one turn: the history seeded and kept current, the reply whole or streamed, a cut-off reply continued; it opens the turn's span (F52), made current again after every `yield` of the streamed form), `ChatPipeline` (the middleware in its order, and the summaries' client; every model request traced (OpenTelemetry, no content)), `ToolCallGuards` (cut-off calls never run, oversized results summarised), `ToolCallText` (a call's arguments on one line for the CLI and Rider) |
+| `Agent/Turns/Pacing/` | `PacedStream` (the stream operator `turn.Paced(clock)`: a turn's text handed out at `WordPace`'s pace in whole words, everything else in the turn's order, when `STREAM_PACE` is on, F155), `WaitingText` (the text not yet handed out, cut on a whole word) |
 | `Agent/EngineTools/OwnTools.cs` | The tools an engine registers itself: `ExecuteSkill` and the clock in every session, the toolsets' objects, and the four self-extension tools as the `skills` toolset |
 | `Agent/Commands/UserCommands.cs` | `/tools`, `/approve`, `/reject`, `/usage`: answered without the model, from the agent-built tools, the skill files and the session's usage |
 | `Agent/ToolRegistry.cs` | The tools in name order (one name each), public methods as tools, discovered tools |
@@ -319,7 +338,7 @@ Logging). `ArchitectureTests` holds both rules ([src/engine/louis-agent.core/CLA
 |---|---|
 | `AgentHost` | Static bootstrap, the flow: `Build`, `BuildToolHost`; the pieces are `HostEnvironment.Load`, `SkillLoader.Load`, `RoleFiles.Check`, `PriceTableLoader.Load`, `ExchangeRatesLoader.Load`, `UsageLedger.Open` |
 | `UsageScope` | Open one per turn in a host (`Begin(host:, session:, turn:, tags:)`); every request inside it is attributed to it |
-| `AgentEngine` | `StreamPromptAsync`, `ProcessPromptAsync`, `NewHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`. Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
+| `AgentEngine` | `StreamPromptAsync` (its text paced when `STREAM_PACE` is on, F155), `ProcessPromptAsync`, `StartHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`. Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
 | `ISkillProvider` | `Documentation` (system prompt text) + `Skills` (runnable procedures) |
 | `ILlmClientFactory` | Builds the `IChatClient`; tests inject a fake |
 | `WorkspaceBoundary` / `SensitiveFiles` | Internal (`Guardrails/`), used by the file tools and the API's file and git endpoints, so the same rules apply |
@@ -331,7 +350,7 @@ attributes (121 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
 `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`,
-`LLM_CACHE`, `LLM_CACHE_TTL`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `AGENT_PEERS`, `MINION_LLMS`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
+`LLM_CACHE`, `LLM_CACHE_TTL`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `STREAM_PACE`, `AGENT_PEERS`, `MINION_LLMS`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
 `HOST_CULTURE`, `DISPLAY_CURRENCY`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
 `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`, `SEARXNG_URL`, `BROWSER_URL`, `PAGE_RENDERER`, `WEB_REPLAY` (the default for eval
