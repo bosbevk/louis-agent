@@ -57,8 +57,7 @@ public static class LouisAgentDevAreas
     {
         focuses.Default(GuideFocus.Selling.Wire())
             .Under("/demos", GuideFocus.Demos.Wire())
-            .Under("/framework", GuideFocus.Framework.Wire())
-            .Under("/csharp-ai-agent-framework", GuideFocus.Framework.Wire());
+            .Under("/framework", GuideFocus.Framework.Wire());
         foreach (var demo in SiteDemos.All.All) focuses.Under(demo.Address, GuideFocus.Demos.Wire());
     }
 }

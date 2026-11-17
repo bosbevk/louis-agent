@@ -5,25 +5,15 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Site.Tests.Host;
 
 /// <summary>
-/// The framework's pages moved under <c>/framework</c> (F128.1, Louis: "the page names must change now"), so the
-/// site can sell first and the framework's pages can later move whole to their own site. An old address, from a
-/// bookmark or a search result, still lands where its place is now.
+/// A page that gave way to another (the doctor's practice's demo to the guesthouse's, F127.1) still answers an old
+/// address, from a bookmark or a search result, with where its place is now.
 /// </summary>
 public class MovedPagesTests
 {
     /// <summary>An old address leads to its new one, with its section and its page of a section kept.</summary>
     [TestCase("/doctors-practice-demo", "/guesthouse-demo")]
-    [TestCase("/how-it-works", "/framework/how-it-works")]
-    [TestCase("/how-it-works/loop/2", "/framework/how-it-works/loop/2")]
-    [TestCase("/architecture", "/framework/architecture")]
-    [TestCase("/identities/levels", "/framework/identities/levels")]
-    [TestCase("/packs", "/framework/packs")]
-    [TestCase("/build-your-own", "/framework/build-your-own")]
-    [TestCase("/proof", "/framework/measured")]
-    [TestCase("/proof/rand", "/framework/measured/rand")]
-    [TestCase("/built-on-it", "/framework/built-on-it")]
-    [TestCase("/whats-coming", "/framework/whats-coming")]
-    [TestCase("/Packs/", "/framework/packs")]
+    [TestCase("/doctors-practice-demo/booking", "/guesthouse-demo/booking")]
+    [TestCase("/Pricing/", "/contact")]
     public void AnOldAddress_LeadsToItsNewOne(string old, string now) =>
         Assert.That(MovedPages.Where(old), Is.EqualTo(now));
 

@@ -34,7 +34,6 @@ public class SiteLayoutTests
     /// and only its, is the active one, in the menu's row or in a group's list, so the rail can draw it pressed.
     /// </summary>
     [TestCase("/contact", "Contact")]
-    [TestCase("/framework/architecture", "Architecture")]
     [TestCase("/demos", "All demos")]
     public void TheMenu_MarksThePageYouAreOn(string page, string link)
     {
@@ -89,15 +88,7 @@ public class SiteLayoutTests
     }
 
     /// <summary>The menu leads to each page, from every page.</summary>
-    [TestCase("/framework/how-it-works")]
-    [TestCase("/framework/architecture")]
-    [TestCase("/framework/identities")]
-    [TestCase("/framework/packs")]
-    [TestCase("/framework/build-your-own")]
-    [TestCase("/csharp-ai-agent-framework")]
-    [TestCase("/framework/measured")]
-    [TestCase("/framework/built-on-it")]
-    [TestCase("/framework/whats-coming")]
+    [TestCase("/demos")]
     [TestCase("/contact")]
     public void TheMenu_LeadsToThePage(string address)
     {
@@ -109,9 +100,9 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, Contact, and the framework last of
-    /// its pages; no Pricing (Louis: "remove pricing"), no What we build (FX171, Louis: "remove this page and
-    /// everything of it"), and the CV mark in the settings (FX163).
+    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, then Contact; no Pricing (Louis:
+    /// "remove pricing"), no What we build (FX171, Louis: "remove this page and everything of it"), and no framework
+    /// group, since the framework's pages left for their own site (F160.1); the CV mark is in the settings (FX163).
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -122,15 +113,15 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(items, Is.EqualTo(new[] { "Demos", "Contact", "The framework" }));
+        Assert.That(items, Is.EqualTo(new[] { "Demos", "Contact" }));
     }
 
     /// <summary>
-    /// FX176: the Demos and the framework's groups are hidden for now and kept, so the menu shows Contact alone (Louis:
-    /// "disable the demos menu items for now until it is fixed and framework").
+    /// FX176: the Demos group is hidden for now and kept, so the menu shows Contact alone (Louis: "disable the demos
+    /// menu items for now until it is fixed").
     /// </summary>
     [Test]
-    public void TheDemosAndTheFrameworksMenus_AreHiddenForNow()
+    public void TheDemosMenu_IsHiddenForNow()
     {
         using var ctx = Context();
 
@@ -150,35 +141,6 @@ public class SiteLayoutTests
             .Select(route => route.Template);
 
         Assert.That(routes, Does.Not.Contain("/what-we-build"));
-    }
-
-    /// <summary>
-    /// The framework's pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"),
-    /// since F128.1 with Measured, Built on it and What's coming inside it; the comparison with Microsoft's frameworks
-    /// is the last (F123).
-    /// </summary>
-    [Test]
-    public void TheFrameworksPages_AreOneGroup()
-    {
-        using var ctx = Context();
-
-        var cut = ctx.Render<SiteLayout>();
-
-        Assert.Multiple(() =>
-        {
-            var menu = cut.FindAll(".site-nav .site-drop")
-                .Single(group => group.QuerySelector(".site-drop-label")!.TextContent == "The framework");
-            Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
-                Is.EqualTo(new[]
-                {
-                    "/framework/how-it-works", "/framework/architecture", "/framework/identities",
-                    "/framework/packs", "/framework/build-your-own", "/framework/measured",
-                    "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
-                    "/csharp-ai-agent-framework"
-                }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(1),
-                "Contact stands in the bar alone since What we build went (FX171), the CV mark in the settings (FX163)");
-        });
     }
 
     /// <summary>
