@@ -1,0 +1,38 @@
+{
+  "kind": "sequence",
+  "title": "F157 the Google integration suite: a visitor asks the guesthouse for a room",
+  "caption": "The tool asks for a token for the turn's tenant and one scope; only the accounts library ever holds the refresh token, and a booking waits for the visitor's yes.",
+  "sequence": {
+    "participants": [
+      { "id": "V", "label": "A visitor", "actor": true, "tone": "blue" },
+      { "id": "A", "label": "The agent", "icon": "chip", "tone": "violet" },
+      { "id": "T", "label": "SheetsTools · CalendarTools", "icon": "box", "tone": "green" },
+      { "id": "C", "label": "AccountConnections", "icon": "shield", "tone": "teal" },
+      { "id": "D", "label": "Accounts database", "icon": "database", "tone": "amber" },
+      { "id": "G", "label": "Google", "icon": "cloud", "tone": "red" }
+    ],
+    "steps": [
+      { "step": "message", "from": "V", "to": "A", "text": "a room for two, next Friday and Saturday?" },
+      { "step": "message", "from": "A", "to": "T", "text": "ReadSheet(\"Rates\", \"A1:D20\")" },
+      { "step": "message", "from": "T", "to": "C", "text": "TokenAsync(google, the turn's tenant, sheets read)" },
+      { "step": "message", "from": "C", "to": "D", "text": "the tenant's refresh token" },
+      { "step": "reply", "from": "D", "to": "C", "text": "protected bytes" },
+      { "step": "note", "over": ["C"], "text": "unprotected in memory only" },
+      { "step": "message", "from": "C", "to": "G", "text": "refresh token for an access token" },
+      { "step": "reply", "from": "G", "to": "C", "text": "access token, about an hour" },
+      { "step": "reply", "from": "C", "to": "T", "text": "ConnectionToken" },
+      { "step": "message", "from": "T", "to": "G", "text": "spreadsheets.values.get" },
+      { "step": "reply", "from": "G", "to": "T", "text": "the rows" },
+      { "step": "reply", "from": "T", "to": "A", "text": "the rates as a table" },
+      { "step": "message", "from": "A", "to": "T", "text": "FindFreeTimes(Fri, Sun, nights)" },
+      { "step": "message", "from": "T", "to": "G", "text": "freeBusy.query (token kept until it expires)" },
+      { "step": "reply", "from": "G", "to": "T", "text": "busy periods" },
+      { "step": "reply", "from": "T", "to": "A", "text": "free: both nights" },
+      { "step": "reply", "from": "A", "to": "V", "text": "both nights are free at R1 200 a night; shall I book?" },
+      { "step": "message", "from": "V", "to": "A", "text": "yes, Anna, 082 555 0100" },
+      { "step": "message", "from": "A", "to": "T", "text": "BookTime(...), once, on the yes" },
+      { "step": "message", "from": "T", "to": "G", "text": "events.insert on the business's calendar" },
+      { "step": "reply", "from": "A", "to": "V", "text": "booked" }
+    ]
+  }
+}
