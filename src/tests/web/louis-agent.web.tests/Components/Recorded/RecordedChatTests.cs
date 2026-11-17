@@ -315,4 +315,67 @@ public class RecordedChatTests
             Assert.That(cut.FindAll(".recorded-chat .turn .user-text"), Has.Count.EqualTo(2));
         });
     }
+
+    /// <summary>Three turns, started when asked, with no waits and the theme's words for each button.</summary>
+    private static IRenderedComponent<RecordedChat> ThreeTurns(BunitContext ctx, bool held = false) =>
+        ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns,
+                [new RecordedTurn("First", Source), new RecordedTurn("Second", Source), new RecordedTurn("Third", Source)])
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.Start, RecordedStart.WhenAsked)
+            .Add(chat => chat.Play, "Play")
+            .Add(chat => chat.PlayOn, "Play on")
+            .Add(chat => chat.Hold, held)
+            .Add(chat => chat.Ending, Offer));
+
+    /// <summary>
+    /// Asked for one turn (F160, a turn is a stop the guide shows), the turns before it show whole, that turn plays,
+    /// and the play stops after it with Play on, which plays the rest.
+    /// </summary>
+    [Test]
+    public void AskedForATurn_ItPlays_AndStopsAfterIt()
+    {
+        using var ctx = Context();
+        var started = new List<int>();
+        var cut = ThreeTurns(ctx);
+        cut.Render(parameters => parameters.Add(chat => chat.TurnStarted, (int turn) => started.Add(turn)));
+
+        _ = cut.InvokeAsync(() => cut.Instance.PlayTurnAsync(2));
+        cut.WaitForElement(".recorded-wait .btn-fill", TimeSpan.FromSeconds(5));
+        var stopped = cut.FindAll(".recorded-chat .turn .user-text").Select(text => text.TextContent).ToList();
+        var playOn = cut.Find(".recorded-wait .btn-fill");
+        string playOnWords = playOn.TextContent;
+        bool canPlayAgain = cut.FindAll(".recorded-wait .recorded-again").Count == 1;
+        bool endedEarly = cut.FindAll(".offer").Count > 0;
+        playOn.Click();
+
+        cut.WaitForElement(".offer", TimeSpan.FromSeconds(5));
+        Assert.Multiple(() =>
+        {
+            Assert.That(stopped, Is.EqualTo(new[] { "First", "Second" }));
+            Assert.That((playOnWords, canPlayAgain, endedEarly), Is.EqualTo(("Play on", true, false)));
+            Assert.That(started.Take(2), Is.EqualTo(new[] { 1, 2 }));
+            Assert.That(cut.FindAll(".recorded-chat .turn"), Has.Count.EqualTo(3));
+        });
+    }
+
+    /// <summary>
+    /// Asked for a turn while the guide talks, the window keeps what it shows and the turn waits until let go, so the
+    /// visitor reads the guide's line first.
+    /// </summary>
+    [Test]
+    public void AskedForATurnWhileHeld_ItWaitsUntilLetGo()
+    {
+        using var ctx = Context();
+        var cut = ThreeTurns(ctx, held: true);
+
+        _ = cut.InvokeAsync(() => cut.Instance.PlayTurnAsync(2));
+        Thread.Sleep(400);
+        var whileHeld = cut.FindAll(".recorded-chat .turn .user-text").Select(text => text.TextContent).ToList();
+        cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
+
+        cut.WaitForState(() => cut.FindAll(".recorded-wait .btn-fill").Any(button => button.TextContent == "Play on"),
+            TimeSpan.FromSeconds(5));
+        Assert.That(whileHeld, Is.EqualTo(new[] { "First" }), "the first question still waits, nothing played");
+    }
 }
