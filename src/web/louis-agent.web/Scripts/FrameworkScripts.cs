@@ -74,4 +74,9 @@ public static class FrameworkScripts
 
     /// <summary>A file the page fetched, handed to the browser as a download.</summary>
     public const string Download = Content + "js/download.js";
+
+    /// <summary>
+    /// This browser's saved lists of chats, and forgetting all it keeps but one key, for Reset my session (F153).
+    /// </summary>
+    public const string Reset = Content + "Components/Admin/Reset/ResetSession.razor.js";
 }

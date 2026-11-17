@@ -1,7 +1,10 @@
 using System.Reflection;
+using LouisAgent.Testing;
+using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Pages.Admin;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -39,8 +42,46 @@ public class AdminHomeTests
         var access = new AdminAccess();
         ctx.Services.AddSingleton(access);
         ctx.Services.AddSingleton(new SiteAreas(areas));
-        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, new ChatSettings()));
+        var settings = new ChatSettings();
+        ctx.Services.AddSingleton(settings);
+        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(Handler) { BaseAddress = new Uri("http://localhost/") },
+            settings));
         return (ctx.Render<AdminHome>(), access);
+    }
+
+    /// <summary>The API's answers: every session is ended.</summary>
+    private static readonly StubHandler Handler = new(_ => new HttpResponseMessage(System.Net.HttpStatusCode.NoContent));
+
+    /// <summary>
+    /// F153: the home draws Reset my session above the cards, and a press resets this browser: its saved session
+    /// ended, everything forgotten but the admin's key.
+    /// </summary>
+    [Test]
+    public async Task TheHome_DrawsReset_AboveTheCards_AndAPressResets()
+    {
+        using var ctx = new BunitContext();
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Reset);
+        module.Setup<string[]>("chatKeys").SetResult(["louis-agent.widget-chats"]);
+        var forget = module.SetupVoid("forget", ChatStore.AdminKeyKey);
+        forget.SetVoidResult();
+        ctx.JSInterop.Setup<string?>("localStorage.getItem", "louis-agent.widget-chats")
+            .SetResult("""[{"sessionId":"guide-1","title":"t","turns":[]}]""");
+
+        var (home, _) = Render(ctx, CardArea("overview", typeof(FirstCard)));
+        var reset = home.Find(".admin-reset");
+        string before = home.Find(".admin-reset button").TextContent.Trim();
+        await home.Find(".admin-reset button").ClickAsync(new());
+
+        // The page reloads at the end, so after the press the button still says it is resetting.
+        Assert.Multiple(() =>
+        {
+            Assert.That(reset.NextElementSibling!.ClassName, Is.EqualTo("admin-home-cards"));
+            Assert.That(before, Is.EqualTo("Reset my session"));
+            Assert.That(home.Find(".admin-reset button").TextContent.Trim(), Is.EqualTo("Resetting…"));
+            Assert.That(Handler.Requests.Select(r => r.Url), Does.Contain("http://localhost/v1/sessions/guide-1"));
+            Assert.That(forget.Invocations, Has.Count.EqualTo(1));
+        });
     }
 
     /// <summary>An area that brings this card.</summary>
