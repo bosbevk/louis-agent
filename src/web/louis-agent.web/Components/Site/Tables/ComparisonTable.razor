@@ -1,0 +1,26 @@
+@* Things set side by side (F160.1): what is compared across the top, the topics down the side. *@
+<div class="comparison-wrap">
+    <table class="comparison">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                @foreach (var column in Columns)
+                {
+                    <th scope="col">@column</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Rows)
+            {
+                <tr>
+                    <th scope="row">@row.Topic</th>
+                    @foreach (var cell in row.Cells)
+                    {
+                        <td>@cell</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

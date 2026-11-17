@@ -18,5 +18,11 @@ public enum WebErrorMessage
         "A theme's id is written into the page and its stylesheet, so it is lower-case letters, digits and hyphens " +
         "only: '{Id}' is not.")]
     [Holes(typeof(ThemeIdRefusedHoles))]
-    ThemeIdRefused
+    ThemeIdRefused,
+
+    [Description(
+        "The comparison's row '{Topic}' has {Cells} cells, but the comparison has {Columns} columns: give the row " +
+        "one cell under each column.")]
+    [Holes(typeof(ComparisonRowShortHoles))]
+    ComparisonRowShort
 }

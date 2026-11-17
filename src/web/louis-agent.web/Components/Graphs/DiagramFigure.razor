@@ -1,0 +1,9 @@
+@* A page's picture (F160.1): the diagram engine's own SVG, inline so it wears the page's theme and style, and its
+   caption under it when it has one. *@
+<figure class="diagram-figure">
+    @Svg
+    @if (Caption is not null)
+    {
+        <figcaption>@Caption</figcaption>
+    }
+</figure>

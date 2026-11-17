@@ -32,4 +32,25 @@ public static class PageScheme
           [{{Attribute}}="{{Dark}}"] svg { {{dark}} }
           [{{Attribute}}="{{Light}}"] svg { {{light}} }
           """;
+
+    /// <summary>The attribute our pages carry on their <c>&lt;html&gt;</c> to say which theme is on (F160.1).</summary>
+    public const string ThemeAttribute = "data-theme";
+
+    /// <summary>What the theme's attribute says for the flat theme.</summary>
+    public const string Flat = "flat";
+
+    /// <summary>What the theme's attribute says for the glass theme.</summary>
+    public const string Glass = "glass";
+
+    /// <summary>
+    /// The rules that give a page of one theme its own colours, light and dark (F160.1, Louis's pick C): they name
+    /// the theme and the style together, so they win over the style alone wherever both are said. They live only in a
+    /// page's copy, inside its <c>@scope</c>, where the drawing itself is <c>:scope</c>: a bare <c>svg</c> there would
+    /// mean an svg inside it.
+    /// </summary>
+    internal static string ThemeRules(string theme, string light, string dark) =>
+        $$"""
+          [{{ThemeAttribute}}="{{theme}}"][{{Attribute}}="{{Light}}"] :scope { {{light}} }
+          [{{ThemeAttribute}}="{{theme}}"][{{Attribute}}="{{Dark}}"] :scope { {{dark}} }
+          """;
 }

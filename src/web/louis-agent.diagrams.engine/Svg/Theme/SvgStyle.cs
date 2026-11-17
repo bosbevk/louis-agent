@@ -47,7 +47,7 @@ internal static class SvgStyle
         """;
 
     /// <summary>One palette as the picture's colour variables, each tone's three among them.</summary>
-    private static string Variables(SvgPalette palette) =>
+    internal static string Variables(SvgPalette palette) =>
         $"--ground: {palette.Ground}; --line: {palette.Line}; --text: {palette.Text}; " +
         $"--quiet: {palette.Quiet}; --chip: {palette.Chip}; --accent: {palette.Accent};" +
         string.Concat(palette.Tones.Select(tone =>

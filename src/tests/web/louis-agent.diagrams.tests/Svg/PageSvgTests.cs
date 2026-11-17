@@ -115,4 +115,28 @@ public class PageSvgTests
     [Test]
     public void TheFile_KeepsItsPlainStyles() =>
         Assert.That(DiagramRenderers.Render(Ticket()), Does.Not.Contain("@scope"));
+
+    /// <summary>
+    /// F160.1: in a page, a drawing wears the page's theme as well as its style (Louis's pick C: "a palette per theme
+    /// in the engine"): flat's own colours on a flat page, glass's on a glass one, light or dark.
+    /// </summary>
+    [Test]
+    public void ThePagesCopy_WearsFlatOrGlass()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain("[data-theme=\"flat\"][data-style=\"light\"] :scope"));
+            Assert.That(page, Does.Contain("[data-theme=\"flat\"][data-style=\"dark\"] :scope"));
+            Assert.That(page, Does.Contain("[data-theme=\"glass\"][data-style=\"light\"] :scope"));
+            Assert.That(page, Does.Contain("--ground: #ffffff").And.Contain("--ground: #000000"),
+                "flat's white and black grounds");
+        });
+    }
+
+    /// <summary>A file names no site's theme: the docs' pictures stay byte for byte as they were.</summary>
+    [Test]
+    public void TheFile_WearsNoSitesTheme() =>
+        Assert.That(DiagramRenderers.Render(Flow()), Does.Not.Contain("data-theme"));
 }
