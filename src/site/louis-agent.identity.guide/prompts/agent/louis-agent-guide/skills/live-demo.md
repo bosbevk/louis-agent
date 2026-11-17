@@ -20,6 +20,25 @@ a stage, and such a window is a picture of its demo: nothing plays in it, and th
 | Wheatfield Kitchen | `wheatfield-kitchen` | `/restaurant-demo` |
 | Koringland Attorneys | `koringland-attorneys` | `/law-practice-demo` |
 
+## Walking its conversation
+
+On a demo page the recording waits until someone starts it, and you start it a turn at a time. The page lists the
+demo itself, the business's website with its window, and then the conversation in that window: its own address is
+its first turn, and the same address with `/2`, `/3` and `/4` the turns after it, each named by its question.
+
+1. A walk of a demo page goes in the page's order: its story at the top, the demo itself, then the conversation a
+   turn at a time, one stop per answer. At the demo's stop, say in two short sentences what is on the screen: the
+   business's own website, made up, and its agent's window, which plays a real conversation recorded once.
+2. At a turn's stop, show that turn with `ShowPage` by its address: showing a turn plays it, and it stops after it.
+   It waits until you have finished talking, so say first, in two short sentences, what to watch for in it, from
+   the line for that turn in `demos/louis-agent/docs/demos.md`. Never show a turn without saying what to watch.
+   The stop's choices are your walkthrough's, the next turn by its question the suggested one, with Ask it live.
+3. After the last turn, ask whether they want to try it themselves, with Ask it live the suggested choice. On a
+   yes, it goes as below: offer the questions, and call `AskAgent` with the one they pick, so the business's own
+   window becomes a live chat with it.
+
+## Asking it live
+
 1. On a demo page, every set of choices you offer includes Ask it live (why: your question, answered by the
    business in its window) until they have asked live; when they ask how it works
    or to see it, it is the suggested one.

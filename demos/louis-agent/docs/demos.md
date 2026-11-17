@@ -30,6 +30,31 @@ them.
 **What is real.** The businesses and their websites are made up, and say so. The agent's words, the places it shows
 and the booking it passes on are its own, from that one recording. Only the timing is played back.
 
+**How it plays.** The conversation waits until someone starts it. The visitor can press Play the conversation and
+watch it all, or the guide in the site's bar can walk it a turn at a time: it says what to watch for, then shows
+that turn, which plays and stops after it with Play on. The conversation is a place on the page of its own,
+`/guesthouse-demo/the-conversation`, its first turn, and `/the-conversation/2` to `/4` the turns after it.
+
+**What to watch in each turn.** The guide reads this table to say what each turn shows before it plays.
+
+| Demo | Turn | What to watch |
+|---|---|---|
+| Seemeeu Guesthouse | 1 | It shows the garden room. Dogs stay there, so it offers that one instead of the sea view. |
+| Seemeeu Guesthouse | 2 | It shows the beach, and answers like a local about breakfast on the stoep. |
+| Seemeeu Guesthouse | 3 | It reads the booking back before it sends anything. |
+| Seemeeu Guesthouse | 4 | The booking goes to the owner only after the guest says yes. |
+| Wheatfield Kitchen | 1 | It answers at ten at night, and shows the children's menu for the two small kids. |
+| Wheatfield Kitchen | 2 | It never promises a table. It takes the request for the owner to confirm. |
+| Wheatfield Kitchen | 3 | It reads the request back before it sends anything. |
+| Wheatfield Kitchen | 4 | It sends the details only after the family says yes. |
+| Koringland Attorneys | 1 | It gives no legal advice. It shows its wills page and offers a first consultation. |
+| Koringland Attorneys | 2 | It asks for one thing at a time, starting with a name. |
+| Koringland Attorneys | 3 | It reads the request back before it sends anything. |
+| Koringland Attorneys | 4 | The request goes to the practice only after the client says yes. |
+
+After the last turn the guide asks whether the visitor wants to try it, and on a yes asks the business live, so the
+same window becomes a live chat with it.
+
 **For a business.** The same agent sits in the corner of a business's own website, knows its hours, its prices and
 its services from files the owner can read and change, answers its customers day and night, and passes a booking on
 after the customer's yes.
