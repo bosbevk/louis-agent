@@ -872,8 +872,9 @@ and not on a screen. The code is the link as well, so a PDF read on a screen can
 `PrintableLink` is both at once, the link on a screen and its code in its place on paper.
 
 A page that prints as itself stands in a `PaperSheet`. On a screen it changes nothing. On paper the framework's
-paper stylesheet, `Styles/web/paper/_sheet.scss`, which a site lists among its styles, makes it an A4 sheet: black
-and near-black ink on white, set on the page's root so a sheet's margins print white too, the site's frame, its
+paper stylesheet, `Styles/web/paper/_sheet.scss`, which a site lists among its styles with its colours in
+`Styles/web/settings/_paper.scss`, makes it an A4 sheet: black and near-black ink on white, set on the page's root
+so a sheet's margins print white too, the site's frame, its
 corner and the guide left off, no button since paper can't press one, and the page's number at each sheet's foot.
 The sheet sets only what belongs to the whole page, its bands and its headings, and each control's own layout on
 paper sits beside it.

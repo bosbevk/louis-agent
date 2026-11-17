@@ -1,3 +1,5 @@
+@use "web/tools/surface";
+
 /* A page that prints as itself (the PaperSheet component): "Save as PDF" is the browser's print dialog, and these
    rules set such a page for A4, in the page's own desktop layout, in ink dark enough to print, every link a QR code.
    Here is what belongs to the whole sheet: its size and footer, its colours, the site's frame left off, and the
@@ -16,31 +18,13 @@
     @bottom-right {
         content: counter(page) " of " counter(pages);
         font: 8pt system-ui, "Segoe UI", sans-serif;
-        color: #2a2e33;
+        color: var(--bs-tertiary-color);
     }
 }
 
 @media print {
-    /* The page's colours, set for paper where the screen's are set for the theme: black and near black, since a
-       light grey doesn't survive a printer. They are set on the page's root, whose background is what a sheet's
-       margins are painted with: set lower down, the margins printed dark around a white page. A theme sets its
-       colours under the page's theme and style, which weighs more than the root alone, so the second selector weighs
-       as much again and these still win on paper whatever look the page is in. */
-    :root:has(.paper-sheet),
-    :root[data-theme][data-style]:has(.paper-sheet) {
-        --bs-body-bg: #fff;
-        --bs-body-color: #111;
-        --bs-emphasis-color: #000;
-        --bs-secondary-color: #1c1f23;
-        --bs-tertiary-color: #2a2e33;
-        --bs-border-color: #6b7079;
-        --bs-secondary-bg: #fff;
-        --bs-tertiary-bg: #fff;
-        --web-ok: #0f5c26;
-        background: #fff;
-        color: #111;
-    }
-    body:has(.paper-sheet) { background: #fff; color: #111; }
+    /* The page's colours on paper, black on white, are values, so they are in settings/_paper.scss beside the
+       theme's names. */
     body:has(.paper-sheet)::before,
     body:has(.paper-sheet)::after { display: none; }
 
@@ -84,8 +68,8 @@
         margin-bottom: 0;
         padding-bottom: 0;
         background: none;
-        color: #000;
-        -webkit-text-fill-color: #000;
+        color: var(--bs-emphasis-color);
+        -webkit-text-fill-color: var(--bs-emphasis-color);
     }
 
     /* A band takes the room its words need, with a rule over it. */
@@ -96,7 +80,7 @@
         max-width: none;
         margin-top: 7mm;
         padding: 5mm 0 0;
-        border-top: 1px solid var(--bs-border-color);
+        @include surface.rule(top, 1px solid var(--bs-border-color));
     }
     .paper-sheet .band:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 

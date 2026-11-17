@@ -9,9 +9,13 @@ namespace LouisAgent.Web.Tests.Components.Paper;
 /// </summary>
 public class PaperSheetTests
 {
-    /// <summary>The framework's paper stylesheet.</summary>
-    private static string Sheet() => File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-        "src/web/louis-agent.web/Styles/web/paper/_sheet.scss"));
+    /// <summary>The framework's paper stylesheet, with the colours of paper from its settings.</summary>
+    private static string Sheet() =>
+        File.ReadAllText(Path.Combine(Styles, "paper/_sheet.scss")) +
+        File.ReadAllText(Path.Combine(Styles, "settings/_paper.scss"));
+
+    /// <summary>The framework's global styles.</summary>
+    private static readonly string Styles = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Styles/web");
 
     /// <summary>The sheet wraps the page and adds nothing else.</summary>
     [Test]
