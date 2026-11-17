@@ -12,6 +12,7 @@ cp config/.env.secrets.example config/.env.secrets   # add ANTHROPIC_API_KEY and
 dotnet build louis-agent-solution.sln
 dotnet test src/tests/engine/louis-agent.core.tests
 dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli               # interactive CLI
+git config commit.template .gitmessage   # the commit message's shape, shown by git commit
 ```
 
 Docker (web app + API on http://127.0.0.1:5080):

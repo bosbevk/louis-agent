@@ -1,0 +1,23 @@
+# type(scope): step N - what changed, in plain words
+#
+# The why, as one or two paragraphs wrapped at about 85:
+#   What it means first, for someone who uses it.
+#   Then what changed, and why this design and not the others:
+#   the pattern, the ADR, Louis's pick in his own words, quoted.
+#   For a fix: what was seen, and its cause.
+#   Then the tests: which was seen failing first, what was checked
+#   by eye, and what was not checked.
+#
+# ---- The first line -------------------------------------------------
+#   type    feat | fix | refactor | test | docs
+#   scope   the id in lowercase: f22, fx14, cl3, f49.1
+#           or the area when there is none: ollama, guide
+#   step N  only on a plan's steps: "step 3 - "
+#   e.g.    feat(f22): step 3 - ReadTable for spreadsheets
+#           fix(fx14): the prompt budget counts cached tokens
+#
+# ---- Never ----------------------------------------------------------
+#   No Co-Authored-By, and no other line that names Claude.
+#   No author but Louis Marais <84603591+bosbevk@users.noreply.github.com>.
+#
+# Lines starting with # are dropped by git. The rest is in /ship-it.

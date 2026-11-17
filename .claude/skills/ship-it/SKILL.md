@@ -1,6 +1,6 @@
 ---
 name: ship-it
-description: Commit, push, open a pull request or merge. Use it for every commit, when Louis says push or merge, when a pull request is opened, and when a branch is named or brought up to date with main. It holds the branch names, the commit message, who a commit is authored as, what runs before a pull request, its body, the checks, and merging only on Louis's word, one pull request at a time.
+description: Commit, push, open a pull request or merge. Use it for every commit, when Louis says push or merge, when a pull request is about to open, and when a branch is named or brought up to date with main. It holds the branch names, the commit message and its template, who a commit is authored as, what runs before a pull request, the checks, and merging only on Louis's word, one pull request at a time.
 ---
 
 # Ship it
@@ -32,6 +32,9 @@ A fix's branch, and where it starts, are in `/fix-a-bug`.
 why. `type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`,
 `f49.1`), or the area when there is none (`ollama`, `guide`); `step N -` only on a plan's steps.
 
+**The template** at the repo's root, `.gitmessage`, holds the same shape as comment lines git drops. A clone turns it
+on once with `git config commit.template .gitmessage`. Rider's own commit box doesn't read it; a `git commit` does.
+
 - **Who it is authored as.** Louis, 2026-10-19: "when you make a commit, commit as https://github.com/bosbevk".
   The author is `Louis Marais <84603591+bosbevk@users.noreply.github.com>`, set in the repo's own git config.
   Check it before a commit with `git config user.name` and `git config user.email`. Never commit under another
@@ -58,12 +61,8 @@ Run `git fetch origin main` and look at `origin/main`. The local `main` can be h
 
 ## The pull request
 
-- **Its title** has the shape of a commit message's first line, such as
-  `fix(fx154): the CV prints as its page, on white paper, every link a QR code`.
-- **Its body** is in plain words and in this order. What it means comes first. Then what changed, and for a fix
-  what was wrong: what was seen, and its cause. Then the tests: what was seen failing first, what was checked by
-  eye, and what was not checked.
-- **No line names Claude**, as for a commit: no "Generated with Claude Code" line, nor any other attribution.
+Its title, its body's sections in their order and what is never in it are in `/open-a-pull-request`, and GitHub's
+template, `.github/pull_request_template.md`, holds the same sections.
 
 ## The checks
 
