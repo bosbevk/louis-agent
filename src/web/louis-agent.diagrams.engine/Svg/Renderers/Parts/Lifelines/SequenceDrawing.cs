@@ -39,7 +39,7 @@ internal static class SequenceDrawing
 
         // The steps are the body, and the key goes across under them. Five fades are a sequence's to ask for: a
         // call's beam and its mirror for a call to the left, a lifeline, a frame's top edge, and the glass.
-        return PictureBuilder.Titled(source.Title, Measures)
+        return PictureBuilder.Titled(source.Title, geometry, Measures)
             .Type(TypeNames.Of(source))
             .Paint(SequenceStyle.BeamFade)
             .Paint(SequenceStyle.BackFade)

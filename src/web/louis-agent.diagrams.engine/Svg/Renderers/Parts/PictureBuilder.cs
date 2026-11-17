@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
@@ -35,10 +36,20 @@ internal sealed class PictureBuilder
     /// </summary>
     private const double TypeGap = 28, CaptionRoom = 34, CaptionRise = 8;
 
+    /// <summary>How far under the title's words the header's hairline runs.</summary>
+    private const double HeaderRule = 12;
+
+    /// <summary>
+    /// How far in from the picture's sides the header's words and the brand stand, so they don't sit on its edge
+    /// (Louis: "must also move in a bit"). The hairlines still run the whole width.
+    /// </summary>
+    public const double Inset = 16;
+
     /// <summary>The type's name, in its spaced capitals.</summary>
     private static readonly Face TypeFace = new(7.6);
 
     private readonly string _title;
+    private readonly IGeometry _geometry;
     private readonly PictureMeasures _measures;
     private readonly List<Fade> _paints = [];
     private readonly List<string> _styles = [];
@@ -47,13 +58,15 @@ internal sealed class PictureBuilder
     private Func<double, (double Height, Action<SvgWriter, double> Draw)>? _key;
     private double _width, _height;
 
-    private PictureBuilder(string title, PictureMeasures measures) => (_title, _measures) = (title, measures);
+    private PictureBuilder(string title, IGeometry geometry, PictureMeasures measures) =>
+        (_title, _geometry, _measures) = (title, geometry, measures);
 
     /// <summary>
-    /// A picture begun, by its title: the name it is known by, and the words in its top left corner.
+    /// A picture begun, by its title: the name it is known by, and the words in its top left corner, drawn with the
+    /// geometry the kind draws its own parts with.
     /// </summary>
-    public static PictureBuilder Titled(string title, PictureMeasures? measures = null) =>
-        new(title, measures ?? PictureMeasures.Usual);
+    public static PictureBuilder Titled(string title, IGeometry geometry, PictureMeasures? measures = null) =>
+        new(title, geometry, measures ?? PictureMeasures.Usual);
 
     /// <summary>The words in the title's line, when they say more than the picture's name does.</summary>
     public PictureBuilder Heading(string words)
@@ -130,7 +143,7 @@ internal sealed class PictureBuilder
     /// How wide a picture must be at least for its title and its type to stand side by side on one line.
     /// </summary>
     public static double HeadWidth(string title, string? type) =>
-        TitleFace.Width(title) + (type is null ? 0 : TypeGap + TypeFace.Width(type));
+        2 * Inset + TitleFace.Width(title) + (type is null ? 0 : TypeGap + TypeFace.Width(type));
 
     /// <summary>The picture, as one SVG file's text.</summary>
     public string Build()
@@ -141,23 +154,34 @@ internal sealed class PictureBuilder
         // The key is laid out for that width.
         double width = Math.Max(_width, HeadWidth(heading, _type));
         var key = _key?.Invoke(width);
-        double keyTop = _measures.Head + _height + _measures.KeyGap;
-        double under = key is null ? _measures.Head + _height : keyTop + key.Value.Height;
+
+        // The footer always follows the body: the key, its own rule its hairline, or the brand's row alone.
+        double footerTop = _measures.Head + _height + _measures.KeyGap;
+        double under = footerTop + (key?.Height ?? PictureBrand.Room);
         double height = under + (_caption is null ? 0 : CaptionRoom);
 
-        // The fades first, the light's before a kind's own. Then the parts, in the one order every picture has.
+        // The fades first, the light's before a kind's own. Then the parts, in the one order every picture has:
+        // the header (its title, its type and the hairline under them), the body, the footer and the caption.
         var writer = new SvgWriter().Paint(MarqueeLook.LightFade);
         foreach (var fade in _paints) writer.Paint(fade);
         if (_lights is null) Light(writer, width);
         _lights?.Invoke(writer);
-        writer.Text(0, TitleLine, heading, "mrq-title", "start");
-        if (_type is not null) writer.Text(width, TitleLine, _type, "pic-group", "end");
+        writer.Text(Inset, TitleLine, heading, "mrq-title", "start");
+        if (_type is not null) writer.Text(width - Inset, TitleLine, _type, "pic-group", "end");
+        Hairline(writer, _geometry, TitleLine + HeaderRule, width);
         _body?.Invoke(writer);
-        key?.Draw(writer, keyTop);
+        if (key is null) Hairline(writer, _geometry, footerTop, width);
+        key?.Draw(writer, footerTop);
+        PictureBrand.Draw(writer, width - Inset, footerTop);
         if (_caption is not null) writer.Text(0, height - CaptionRise, _caption, "caption", "start");
 
-        return writer.Write(SvgTheme.Site, _title, width, height, string.Concat(_styles));
+        // The kind's own styles in the order given, and the brand's after them.
+        return writer.Write(SvgTheme.Site, _title, width, height, string.Concat(_styles) + PictureBrand.Style);
     }
+
+    /// <summary>A hairline across the picture, as the key's own rule is drawn, so header and footer match.</summary>
+    private static void Hairline(SvgWriter writer, IGeometry geometry, double y, double width) =>
+        writer.Box(geometry.Box(0, y, width, 1), 0, "mrq-rule");
 
     /// <summary>
     /// The light behind the top of the picture: an oval as wide as the picture, where it has faded to nothing at

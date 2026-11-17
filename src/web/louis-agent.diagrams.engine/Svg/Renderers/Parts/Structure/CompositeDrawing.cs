@@ -46,7 +46,7 @@ internal static class CompositeDrawing
 
         // The class is the body, and the key goes across under it, under a rule the accent's edge fills. Its
         // styles are the looks it borrows, a flow's word and a component's pin and chip, and last its own.
-        return PictureBuilder.Titled(source.Title)
+        return PictureBuilder.Titled(source.Title, geometry)
             .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgeFade)
             .Body("cps", Class(spec, placed, geometry), placed.Width, placed.Height)

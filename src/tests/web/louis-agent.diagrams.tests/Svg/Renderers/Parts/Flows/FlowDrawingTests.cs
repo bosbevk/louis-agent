@@ -157,7 +157,7 @@ public class FlowDrawingTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(shapes.Count(shape => shape.Class == "mrq-rule"), Is.EqualTo(1));
+            Assert.That(shapes.Count(shape => shape.Class == "mrq-rule"), Is.EqualTo(2), "the header's and the key's");
             Assert.That(badges, Has.Count.EqualTo(4), "blue, teal, red and amber");
             Assert.That(badges.Select(badge => badge.Class), Is.All.StartsWith("pic-fill tone-"));
             Assert.That(shapes.Select(shape => shape.Class), Has.None.Contains("pic-swatch"));

@@ -1,8 +1,8 @@
-<svg viewBox="-24 -24 944 422" width="944" height="422" role="img" aria-label="louis-agent.identity.puls.judges at a glance" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 944 482" width="944" height="482" role="img" aria-label="louis-agent.identity.puls.judges at a glance" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.identity.puls.judges at a glance</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
-  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
 }
 @media (prefers-color-scheme: dark) {
   svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
@@ -21,7 +21,7 @@
 .arrow.tone-red { fill: var(--red-line); }
 .arrow.tone-amber { fill: var(--amber-line); }
 svg {
-  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
 }
 .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .note-icon {
@@ -34,7 +34,7 @@ svg {
   <style>
 svg {
   --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
-  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
 }
 @media (prefers-color-scheme: dark) {
   svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
@@ -142,7 +142,30 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .crd-quiet {
   fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
   stroke-width: 1;
-}</style>
+}.crd-badge.tone-plain { fill: var(--plain-line); }
+.crd-tint.tone-plain { fill: var(--plain-line); }
+.crd-icon.tone-plain { stroke: var(--plain-ink); }
+.crd-badge.tone-blue { fill: var(--blue-line); }
+.crd-tint.tone-blue { fill: var(--blue-line); }
+.crd-icon.tone-blue { stroke: var(--blue-ink); }
+.crd-badge.tone-green { fill: var(--green-line); }
+.crd-tint.tone-green { fill: var(--green-line); }
+.crd-icon.tone-green { stroke: var(--green-ink); }
+.crd-badge.tone-violet { fill: var(--violet-line); }
+.crd-tint.tone-violet { fill: var(--violet-line); }
+.crd-icon.tone-violet { stroke: var(--violet-ink); }
+.crd-badge.tone-teal { fill: var(--teal-line); }
+.crd-tint.tone-teal { fill: var(--teal-line); }
+.crd-icon.tone-teal { stroke: var(--teal-ink); }
+.crd-badge.tone-red { fill: var(--red-line); }
+.crd-tint.tone-red { fill: var(--red-line); }
+.crd-icon.tone-red { stroke: var(--red-ink); }
+.crd-badge.tone-amber { fill: var(--amber-line); }
+.crd-tint.tone-amber { fill: var(--amber-line); }
+.crd-icon.tone-amber { stroke: var(--amber-ink); }
+.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.2em; }
+</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -175,11 +198,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="944" height="422" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="482" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.puls.judges at a glance</text>
-    <text class="pic-group" x="896" y="14" text-anchor="end">Overview</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">louis-agent.identity.puls.judges at a glance</text>
+    <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
+    <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
     <g class="crd-cards" transform="translate(0 38)">
       <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
       <rect class="crd-rail" x="58" y="189.3" width="780" height="1.5" rx="0" />
@@ -237,6 +261,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="crd-name" x="676" y="263" text-anchor="start">Only the runner</text>
       <text class="pic-text" x="630" y="298" text-anchor="start">No host carries the harness. Only the</text>
       <text class="pic-text" x="630" y="316" text-anchor="start">eval runner references it.</text>
+    </g>
+    <rect class="mrq-rule" x="0" y="400" width="896" height="1" rx="0" />
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="880" y="422" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
 </svg>

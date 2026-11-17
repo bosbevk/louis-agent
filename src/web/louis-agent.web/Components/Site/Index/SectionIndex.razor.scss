@@ -63,10 +63,12 @@
     color: var(--bs-secondary-color);
 }
 .site-docs-sections .site-index a:hover { translate: none; color: var(--bs-body-color); }
+/* The section in view: its stretch of the line in the theme's violet and a thicker bar on it, so it stands out of
+   the grey line at a glance (Louis: "grey line is fine, but we should have a bigger marker for selected"). */
 .site-docs-sections .site-index a.active {
     @include surface.edged(var(--bs-primary), left);
+    @include surface.marked(var(--bs-primary), left);
     background: none;
-    box-shadow: none;
     color: var(--bs-body-color);
     font-weight: 600;
 }

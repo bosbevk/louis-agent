@@ -1,4 +1,5 @@
 @use "sass:list";
+@use "sass:map";
 
 /* The surface tool's lines and washes (F151.4): the hairlines between parts, a piece's own line and ring, and
    the faint washes of a colour over a row or a small button. */
@@ -40,6 +41,15 @@
     } @else {
         border-#{$side}-color: $colour;
     }
+}
+
+/* A thick mark along one side of a piece, inside its edge, so with the edge in the same colour it reads as one bar:
+   the item in view in a list of them, marked plainer than a hairline (F160.1, Louis: "a bigger marker for
+   selected"). */
+$-mark-offsets: (left: 1 0, right: -1 0, top: 0 1, bottom: 0 -1);
+@mixin marked($colour: var(--bs-primary), $side: left, $width: 2px) {
+    $offset: map.get($-mark-offsets, $side);
+    box-shadow: inset (list.nth($offset, 1) * $width) (list.nth($offset, 2) * $width) 0 0 $colour;
 }
 
 /* A ring round a piece, in a colour: round a disc so it stands off what is under it, or round a field in use. */

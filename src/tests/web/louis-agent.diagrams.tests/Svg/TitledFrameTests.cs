@@ -154,7 +154,9 @@ public class TitledFrameTests
             Caption = "The separation ADR 0027 and ADR 0028 document."
         }));
 
-        Assert.That(svg.Descendants(Svg + "tspan").Select(Class), Is.All.EqualTo("note-rest"));
+        // The note's own words, not the brand's mark, which is a span of the wordmark.
+        var note = svg.Descendants(Svg + "text").Where(text => Class(text) == "notes").Descendants(Svg + "tspan");
+        Assert.That(note.Select(Class), Is.All.EqualTo("note-rest"));
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
+using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Svg.Paints;
+using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
@@ -8,7 +10,9 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 /// quiet card. A card's text is <see cref="PictureLook"/>'s.
 /// </summary>
 /// <remarks>
-/// A card has no tone, so the colour here is the look's own: one accent, the palette's violet running to its blue.
+/// The colour here is the look's own, one accent, the palette's violet running to its blue, unless a card names a
+/// tone of its own (F160.1): then its badge, tint and icon wear that tone's line and ink, as the other kinds' parts
+/// wear theirs.
 /// What a sequence wears too, the small title, the light, the glass, the pill and a node, is
 /// <see cref="MarqueeLook"/>'s, and what every picture in the new look wears is <see cref="PictureLook"/>'s. The
 /// rail's fade and the badge's are paints: the style fills a part with one by its id and colours its stops, and
@@ -31,7 +35,20 @@ internal static class CardsStyle
     /// <summary>
     /// The style. It is the same for every theme, since its colours are the theme's own variables.
     /// </summary>
-    public const string Rules =
+    public static readonly string Rules = Look + Tones();
+
+    /// <summary>
+    /// Three rules a tone, for a card that names one: its headline's badge solid in the tone's line, its tint the
+    /// line faintly, its icon in the tone's ink.
+    /// </summary>
+    private static string Tones() => string.Concat(Enum.GetValues<DiagramTone>().Select(tone => tone.Wire())
+        .Select(name =>
+            $".crd-badge.tone-{name} {{ fill: var(--{name}-line); }}\n" +
+            $".crd-tint.tone-{name} {{ fill: var(--{name}-line); }}\n" +
+            $".crd-icon.tone-{name} {{ stroke: var(--{name}-ink); }}\n"));
+
+    /// <summary>The look every card wears, the violet's, before a tone's rules.</summary>
+    private const string Look =
         $$"""
 
           .crd-rail { fill: url(#{{RailPaint}}); }

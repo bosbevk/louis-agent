@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Web.Docs;
 using LouisAgent.Web.Framework.Content;
 using LouisAgent.Web.Framework.Pages;
@@ -79,6 +80,9 @@ public class OverviewPageTests
                 string picture = section.QuerySelector("figure.diagram-figure svg")!.InnerHtml;
                 Assert.That(family.Projects.Where(project => !picture.Contains(project.Name)), Is.Empty,
                     $"{family.Name} names every project it ships");
+                // Its cards wear its colour (Louis: "give each one a color this color we can then reuse").
+                Assert.That(picture, Does.Contain($"class=\"crd-tint tone-{family.Tone.Wire()}\""),
+                    $"{family.Name}'s cards in its colour");
             }
         });
     }

@@ -38,7 +38,7 @@ internal static class ClassesDrawing
         // The types and their links are the body, and the key goes across the picture's width under them. Two
         // of the look's fades are a class chart's to ask for: a contract's top edge with the key's rule, and the
         // glass.
-        return PictureBuilder.Titled(source.Title)
+        return PictureBuilder.Titled(source.Title, geometry)
             .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgeFade)
             .Paint(MarqueeLook.GlassFade)

@@ -35,7 +35,7 @@ internal static class PictureLook
 
           svg {
             {{Light}}
-            --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            --pic-sans: {{PictureFonts.Sans}};
           }
           {{PageScheme.Rules(Light, Dark)}}
           .pic-edge { stroke: var(--quiet); }
