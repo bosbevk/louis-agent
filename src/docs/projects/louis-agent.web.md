@@ -640,6 +640,19 @@ layout, and the home at `/admin`. Everything inside is an area with its pages, i
 the home. The home draws each area's card in the order the site named them, in two columns, one on a phone.
 "Home" is first in the sidebar.
 
+**Above the cards, the owner can see the site as a first visit.** Reset my session puts this browser back to how a
+new visitor finds the site, so the owner needn't open a private window. One press does it, with no second press to
+confirm, and it runs in a fixed order. First it finds every list of chats the browser saved: the chat page's, the
+guide's in the bar and the showroom's, and any list added later, since it takes every key whose name ends in
+`chats`. It reads each list as the chat reads it, and ends every session in it on the API, with the same `DELETE`
+the chat's own delete sends. A session the server refuses, or can't be reached for, stops none of the rest; the
+server lets it expire. Only then does it forget everything the browser keeps for the site, in localStorage and in
+sessionStorage, putting back one thing, the admin's key, and it reloads the page. The sessions go first so that a
+reset that fails half way still has their ids. The chat's own API key is forgotten too, so on a site whose API
+needs one the chat asks for it again, as on a first visit. The work is one class, `SessionReset`, with a small
+module beside its button that lists and clears the keys, since C# can't list what localStorage holds; the button,
+`ResetSession`, only draws and presses, and says it is resetting while it runs.
+
 Three areas come with the framework.
 
 **The overview**, `Overview(count => count.Tool("SendLead", "leads"))`, names the tools it counts. The API
@@ -869,7 +882,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
 | `Components/Areas/Themes/` | `SiteTheme`, a theme's id and name; `SiteStyle`, light or dark; `SiteLook`, the attributes, the remembered keys and the default style both sides share (F151.1) |
 | `Components/Site/Looks/` | `LookSwitch`, the switch a visitor picks the look with, and its module `LookSwitch.razor.js`; `PageLook`, the look the module reads off the page (F151.3) |
-| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `Admin/Reset/`, Reset my session, `SessionReset` and its button `ResetSession` with its module (F153); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
 | `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
