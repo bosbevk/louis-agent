@@ -1,4 +1,6 @@
 using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Docs.Contents;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Framework.Tests;
@@ -22,6 +24,29 @@ public class FrameworkAreaTests
         {
             Assert.That(areas.Names, Is.EqualTo(new[] { "framework" }));
             Assert.That(areas.PageAssemblies, Does.Contain(FrameworkLibrary.Assembly));
+        });
+    }
+
+    /// <summary>
+    /// The framework's pages bring their own contents, in reading order, for the docs layout's menu and page turns:
+    /// every page in it is a page of the package, so the menu never leads nowhere.
+    /// </summary>
+    [Test]
+    public void TheFramework_BringsItsContents_EachAPageOfIt()
+    {
+        var services = new ServiceCollection();
+        services.AddSiteAreas(areas => areas.Framework());
+
+        var contents = services.BuildServiceProvider().GetRequiredService<DocsContents>();
+        var routes = FrameworkLibrary.Assembly.GetTypes()
+            .SelectMany(type => type.GetCustomAttributes(typeof(RouteAttribute), false).Cast<RouteAttribute>())
+            .Select(route => route.Template).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(contents.Groups.SelectMany(group => group.Entries).Select(entry => entry.Address),
+                Is.SubsetOf(routes));
+            Assert.That(contents.FindEntry("/")?.Title, Is.EqualTo("Overview"));
         });
     }
 }

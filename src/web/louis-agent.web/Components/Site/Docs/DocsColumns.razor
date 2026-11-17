@@ -1,0 +1,10 @@
+@* The docs layout's three columns (F160.1): the site's menu, the page the frame hands in, and the page's sections as
+   "On this page", the same list the floating index reads, docked. *@
+<div class="site-docs">
+    <aside class="site-docs-menu">@Menu</aside>
+    @ChildContent
+    <aside class="site-docs-sections" aria-label="On this page">
+        <span class="site-docs-sections-label">On this page</span>
+        <SectionIndex/>
+    </aside>
+</div>

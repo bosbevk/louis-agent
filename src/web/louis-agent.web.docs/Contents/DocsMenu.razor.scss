@@ -1,0 +1,40 @@
+@use "web/tools/surface";
+
+/* The docs menu (F160.1): each group's name small and spaced in the mono face, its pages as plain rows; under the
+   pointer a row takes the theme's faint wash, and the page being read a stronger one with the deep violet's words,
+   as the design Louis picked has it, each drawn by the framework's surface tool. On a phone the groups run in one
+   wrapping row. */
+.docs-menu { display: flex; flex-direction: column; gap: 22px; }
+
+.docs-menu-group { display: flex; flex-direction: column; gap: 2px; }
+
+.docs-menu-label {
+    margin: 0 0 6px 10px;
+    font: 600 11px/1.2 var(--bs-font-monospace);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--bs-tertiary-color);
+}
+
+.docs-menu a {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    transition: background-color .15s var(--web-ease), color .15s var(--web-ease);
+
+    &:hover { @include surface.tint(); color: var(--bs-body-color); }
+
+    &[aria-current="page"] {
+        @include surface.tint($strength: .16);
+        color: var(--bs-primary-text-emphasis);
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 760px) {
+    .docs-menu { flex-direction: row; flex-wrap: wrap; gap: 4px 14px; }
+    .docs-menu-group { flex-direction: row; flex-wrap: wrap; align-items: center; }
+    .docs-menu-label { margin: 0 4px 0 0; }
+}

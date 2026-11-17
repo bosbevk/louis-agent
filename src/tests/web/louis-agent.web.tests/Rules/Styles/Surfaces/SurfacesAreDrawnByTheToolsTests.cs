@@ -18,7 +18,8 @@ public class SurfacesAreDrawnByTheToolsTests
     /// <summary>The folders whose sheets are read: the framework's web, and the libraries built on it.</summary>
     private static readonly string[] Read =
     [
-        "src/web/louis-agent.web", "src/web/louis-agent.web.accounts", "src/web/louis-agent.web.evals", "packs/web"
+        "src/web/louis-agent.web", "src/web/louis-agent.web.accounts", "src/web/louis-agent.web.evals",
+        "src/web/louis-agent.web.docs", "src/web/louis-agent.web.framework", "packs/web"
     ];
 
     /// <summary>The properties that draw a surface.</summary>

@@ -1,12 +1,16 @@
 @inherits LayoutComponentBase
-@* The framework's site's frame, filled with what's this site's own: its name, its line and its footer. The seven
-   pages join its menu as they are written (F160.1, steps 5 to 9). *@
+@* The framework's site's frame, the docs layout Louis picked (F160.1): the framework's pages down the left, the page
+   in the middle with the page before and after at its foot, and its sections on the right as "On this page". *@
 
-<SiteShell Layout="PageLayout.Flow" MovingPage="true" ShowIndex="false" ShowWayUp="false">
+<SiteShell Layout="PageLayout.Docs" ShowWayUp="false">
     <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
     <Tagline>The C# AI agent framework</Tagline>
+    <Sidebar><DocsMenu /></Sidebar>
     <Footer>
         <span><Wordmark Before="l" After="uis-agent" /> · an AI agent framework in C#</span>
     </Footer>
-    <ChildContent>@Body</ChildContent>
+    <ChildContent>
+        @Body
+        <PageTurn />
+    </ChildContent>
 </SiteShell>

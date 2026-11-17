@@ -1,10 +1,12 @@
 using LouisAgent.Web.Components.Areas;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Framework;
 
 /// <summary>
 /// The framework's pages as an area a site names (F160.1, Louis: "the framework must be a package like accounts"):
-/// <c>.Framework()</c> brings the pages to the site's router.
+/// <c>.Framework()</c> brings the pages to the site's router, and their contents in reading order to the docs
+/// layout's menu and page turns.
 /// </summary>
 /// <remarks>
 /// An extension on the framework's <see cref="SiteAreasBuilder"/>, from this library, since the framework's web
@@ -14,7 +16,8 @@ namespace LouisAgent.Web.Framework;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0120-nothing-is-hand-wired-from-the-framework.md">ADR 0120: nothing is hand-wired from the framework</seealso>
 public static class FrameworkArea
 {
-    /// <summary>The framework's pages, on the site's router.</summary>
+    /// <summary>The framework's pages, on the site's router, with their contents.</summary>
     public static SiteAreasBuilder Framework(this SiteAreasBuilder areas) =>
-        areas.Add(new SiteArea("framework", _ => { }, [FrameworkLibrary.Assembly]));
+        areas.Add(new SiteArea("framework", services => services.AddSingleton(FrameworkContents.All),
+            [FrameworkLibrary.Assembly]));
 }

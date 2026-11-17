@@ -66,6 +66,10 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>The site's menu down the left of a docs page (F160.1), drawn only in the docs layout.</summary>
+    [Parameter]
+    public RenderFragment? Sidebar { get; set; }
+
     /// <summary>
     /// How the site's pages are laid out (F118): flowing, unless the site asks for slides; a page may choose the other
     /// for itself with a <see cref="PageLayoutChoice"/>.
@@ -102,13 +106,23 @@ public partial class SiteShell
     /// <summary>The page's choice, else the site's.</summary>
     private PageLayout Laid => _options.Layout ?? Layout;
 
+    /// <summary>Whether the page is drawn in the docs layout's three columns (F160.1).</summary>
+    private bool InDocs => Laid == PageLayout.Docs;
+
     /// <summary>
     /// The frame's root classes: the frame, the layout the page is drawn in, which its styles read, whether the page
     /// behind moves, and whether the agent's answer rises from underneath.
     /// </summary>
-    private string SiteClasses =>
-        (Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow") + (MovingPage ? " page-moves" : "")
-        + (AnswerUnder ? " answers-under" : "");
+    private string SiteClasses => "site " + LayoutClass + (MovingPage ? " page-moves" : "")
+                                  + (AnswerUnder ? " answers-under" : "");
+
+    /// <summary>The class the layout's styles read, one for each layout.</summary>
+    private string LayoutClass => Laid switch
+    {
+        PageLayout.Slides => "layout-slides",
+        PageLayout.Docs => "layout-docs",
+        _ => "layout-flow"
+    };
 
     /// <summary>Redraws when the page makes or takes back its choice, and shuts the menu when a page opens.</summary>
     protected override void OnInitialized()
