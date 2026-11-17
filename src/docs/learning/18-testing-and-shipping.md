@@ -1479,6 +1479,35 @@ first is cheaper than proving it afterwards.
 are test counts: the site's tests went from 484 to 589 and the web's from 760 to 802 across the feature. Still to
 do by eye: the page and the editor at phone width, and a real PDF from the print dialog.
 
+## Words at a pace, and an answer that leaves (F154, 2026-11-17)
+
+The guide's answer used to appear in whatever bursts the model streamed it in, arrive with a fixed CSS rise, and
+vanish in one frame when it was put away. Louis picked a motion with three parts: the answer grows out of where it
+comes from, its words come at a steady pace, and it fades before it goes.
+
+The pace is the part worth studying. Streaming shows the model's words as they come, but the model sends them in
+bursts, sometimes a word, sometimes a sentence at once. A steady pace is a buffer between how fast words arrive and how
+fast a person reads, and a buffer needs a rule for falling behind, or it grows without end. `WordPace` is that rule,
+one pure function from one frame to the next: 90 letters a second; when far behind, a pace of the gap and some more;
+once the answer is done, a pace that finishes it soon. The first version used a pace of the gap alone, and its own
+tests caught why that fails: a pace that is the gap over the time left slows as the gap closes, and never arrives. Each
+faster pace now keeps a floor that does not shrink. Because the rule takes its times as arguments, its tests give it
+frames and need no clock and no browser.
+
+Two lessons came from the browser, not the tests. A script beside a component is served only under the component's
+own name, so the first motion module was never loaded and the answer showed no words at all; the module tests had only
+checked that each file was on disk, and missed every path `FrameworkScripts` builds from a constant. They now hold each
+module to a place the library serves. And the caption tidied up its motion before it let go of the page, so when the
+motion module had failed, the page stayed dimmed: letting go of the page now comes first, whatever fails after.
+
+The leaving answer taught a Blazor lesson. A caption drawn in a separate spot as it leaves would be a new caption, and
+would grow in again instead of fading. So the bar draws all its captions in one list keyed by their answer, and a
+leaving caption is the same one, told it is leaving. Which answers are leaving is a small class, `CaptionHandOver`,
+tested apart from the drawing, as the pace is.
+
+What waits: Louis noted pacing further down as well, in the engine and in the API (F155, F156), so the words travel at a
+steady pace before they reach the page.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
