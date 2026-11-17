@@ -31,11 +31,11 @@ $served: "/_content/louis-agent.web.themes/";
     }
 }
 
-/* Only the mark and the bar's ball drawn, each to the file of this theme and style, and every other drawing none:
-   a theme that lays nothing on its pieces but carries the brand's letter on its mark (FX181, flat). */
+/* Only the marks drawn, the mark, the bar's ball and the name's o, each to the file of this theme and style, and
+   every other drawing none: a theme that lays nothing on its pieces but draws its own mark (FX181, flat). */
 @mixin marks-only($theme, $style) {
     @include none();
-    @each $drawing in (mark, mark-ball) {
+    @each $drawing in (mark, mark-ball, mark-o) {
         --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg");
     }
 }

@@ -127,6 +127,7 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "aria-label=\"LinkedIn\"")]
     [TestCase(typeof(ContactPage), "On LinkedIn")]
     [TestCase(typeof(ContactPage), "class=\"tile-brand\"")]
+    [TestCase(typeof(ContactPage), ">Ask for a website</a>")]
     [TestCase(typeof(ContactPage), "</svg> 066 391 2470</a>")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]

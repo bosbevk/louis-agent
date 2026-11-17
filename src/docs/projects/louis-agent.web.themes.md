@@ -131,7 +131,7 @@ In both themes your own message sits under the same ink as a press, since the fr
 A glass piece is a drawing laid over what is behind it, seen sharp. The framework names one drawing for each part and state,
 34 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
 own value, since the framework draws no glass. Glass sets each to the address of its drawing. Flat sets every one
-to `none` but two, its mark and the bar's ball, which carry the brand's l. So a theme still hands over only values,
+to `none` but three, its mark and the bar's ball, which carry the brand's l on a disc the size of glass's ball, since flat has no bubble round it, and the name's o, the disc alone. So a theme still hands over only values,
 and no component names a theme.
 
 The drawings are SVGs with no size of their own: their shapes are written against their own edges, so the browser
@@ -162,7 +162,7 @@ framework really sets.
 | `Styles/theme-flat/_dark.scss`, `_light.scss` | Flat's values in the dark style and in the light |
 | `Styles/_theme-art.scss` | The list of drawings, written once, and the three ways a theme names them: each to its drawing, each to none, or none but the mark's |
 | `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, and the page behind, `silk.webp`, served at `_content/louis-agent.web.themes/` |
-| `wwwroot/flat/dark/`, `wwwroot/flat/light/` | Flat's two drawings, the mark and the bar's ball, each the brand's stepped l |
+| `wwwroot/flat/dark/`, `wwwroot/flat/light/` | Flat's three drawings: the mark and the bar's ball, each a disc with the brand's stepped l, and the name's o |
 | `Styles/app.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`obj/css/`, not served) |
 
 ## Configuration
@@ -186,7 +186,7 @@ its name, once, even when it is named twice, and that glass named before flat co
 `FlatSheetTests` read the compiled `app.css`, through `CompiledThemes`, and ask `ThemeSheet` which of the
 framework's names their theme leaves unset, in each style; the answer must be none. `ThemesArtTests` reads the
 values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none
-but its mark's two, which are there too. `FlatFollowsItsDesignTests` holds flat to its design: the mark, no lights
+but its mark's three, which are there too. `FlatFollowsItsDesignTests` holds flat to its design: the mark, no lights
 and no glow, the solid headline, the smaller o, the pane's line that only changes colour under the pointer, the
 presses' hovers, and the icon's plate.
 

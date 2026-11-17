@@ -50,7 +50,7 @@ public class ThemesArtTests
     }
 
     /// <summary>
-    /// Flat lays no drawing on any piece but its mark (FX181): the mark and the bar's ball carry the brand's l, each
+    /// Flat lays no drawing on any piece but its mark (FX181): the mark and the bar's ball carry the brand's l on its disc, the name's o is the disc, each
     /// served by the project and there on disk, and every other name is none.
     /// </summary>
     [TestCase(SiteStyle.Dark)]
@@ -59,7 +59,7 @@ public class ThemesArtTests
     {
         string word = style.Wire();
         var art = Art(FlatTheme.Theme, style);
-        string[] marks = ["mark", "mark-ball"];
+        string[] marks = ["mark", "mark-ball", "mark-o"];
         Assert.That(art, Has.Count.GreaterThan(30), "flat's art names were read");
 
         var drawn = art.Where(name => name.Value != "none").Select(name => name.Key["--web-art-".Length..]);

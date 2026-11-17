@@ -29,7 +29,27 @@ public class FlatFollowsItsDesignTests
         {
             Assert.That(Value(style, "--web-art-mark"), Does.Contain($"flat/{style.Wire()}/mark.svg"));
             Assert.That(Value(style, "--web-art-mark-ball"), Does.Contain($"flat/{style.Wire()}/mark-ball.svg"));
+            Assert.That(Value(style, "--web-art-mark-o"), Does.Contain($"flat/{style.Wire()}/mark-o.svg"));
             Assert.That(Value(style, "--web-mark-ink"), Is.EqualTo("transparent"));
+        });
+    }
+
+    /// <summary>
+    /// FX181: the orb's disc is glass's ball without its bubble, 37 of 60 across scaled by 1.055, so it is drawn in
+    /// the mark and nothing fills under it (Louis: "circle is still too big"); the o of the name is the disc whole.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void TheOrbsDisc_IsGlasssBall_DrawnWithNothingUnderIt(SiteStyle style)
+    {
+        string drawings = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot/flat", style.Wire());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(style, "--web-mark-fill"), Is.EqualTo("transparent"));
+            Assert.That(File.ReadAllText(Path.Combine(drawings, "mark.svg")), Does.Contain("r=\"39\""));
+            Assert.That(File.ReadAllText(Path.Combine(drawings, "mark-ball.svg")), Does.Contain("r=\"39\""));
+            Assert.That(File.ReadAllText(Path.Combine(drawings, "mark-o.svg")), Does.Contain("r=\"60\""));
         });
     }
 

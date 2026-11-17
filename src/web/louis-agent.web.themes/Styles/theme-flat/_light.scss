@@ -148,9 +148,9 @@
     --web-icon-fill: #ffffff;
     --web-icon-shadow: none;
 
-    // The mark: the same flat violet disc carrying the brand's stepped l, drawn, so the letter handed to the orb gets
-    // no ink (FX181).
-    --web-mark-fill: #6b4dff;
+    // The mark: the same flat violet disc carrying the brand's stepped l, drawn whole at glass's ball's size, so
+    // nothing fills under it and the letter handed to the orb gets no ink (FX181).
+    --web-mark-fill: transparent;
     --web-mark-gloss: none;
     --web-mark-ink: transparent;
 

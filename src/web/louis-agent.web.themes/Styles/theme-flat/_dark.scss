@@ -143,9 +143,10 @@
     --web-icon-fill: #000000;
     --web-icon-shadow: none;
 
-    // The mark: a flat violet disc carrying the brand's l with a violet step under it, drawn, so the letter handed
-    // to the orb gets no ink (FX181, Louis's pick of three, "the stepped").
-    --web-mark-fill: #6b4dff;
+    // The mark: a flat violet disc carrying the brand's l with a violet step under it, drawn whole, the disc the
+    // size of glass's ball, since flat has no bubble round it; so nothing fills under it and the letter handed to the
+    // orb gets no ink (FX181, Louis's pick of three, "the stepped", and "circle is still too big").
+    --web-mark-fill: transparent;
     --web-mark-gloss: none;
     --web-mark-ink: transparent;
 
