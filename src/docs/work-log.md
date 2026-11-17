@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 124 | 94 |
-| Fixes (`FX`) | 164 | 6 |
+| Fixes (`FX`) | 166 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -282,10 +282,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (164 done)
+## Fixes (166 done)
 
 | Id | When | What |
 |---|---|---|
+| FX178 | 2026-11-17 | The glass orb's drifting lights blur inside the whole ball, so no straight line cuts it drawn large |
+| FX174 | 2026-11-17 | The share card carries the site's own glass orb, light, drawn at 2400 by 1260 |
 | FX177 | 2026-11-17 | The way back up is switched off on louis-agent.dev, kept in the framework for later |
 | FX176 | 2026-11-17 | The Demos and The framework menus are hidden for now, kept, the menu shows Contact alone |
 | FX170 | 2026-11-17 | The header flags alpha-1, and a press says the site may show inconsistencies while it is built |

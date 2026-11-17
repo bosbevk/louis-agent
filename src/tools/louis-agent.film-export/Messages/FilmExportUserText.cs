@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using LouisAgent.Composition.Messages;
+using LouisAgent.FilmExport.Messages.Holes;
 
 namespace LouisAgent.FilmExport.Messages;
 
@@ -6,9 +8,11 @@ namespace LouisAgent.FilmExport.Messages;
 public enum FilmExportUserText
 {
     [Description("Unknown film '{Name}'. Supported: {Supported}.")]
+    [Holes(typeof(UnknownFilmHoles))]
     UnknownFilm,
 
     [Description("No louis-agent-solution.sln above {Folder}: run this from inside the repo.")]
+    [Holes(typeof(RepoNotFoundHoles))]
     RepoNotFound,
 
     [Description("The site didn't answer at {Address}.")]
@@ -18,11 +22,18 @@ public enum FilmExportUserText
     EncodeFailed,
 
     [Description("{Film}: rendering {Frames} frames")]
+    [Holes(typeof(RenderingHoles))]
     Rendering,
 
     [Description("{Film}: encoding")]
+    [Holes(typeof(EncodingHoles))]
     Encoding,
 
     [Description("{Film}: {Path}, {Megabytes} MB")]
+    [Holes(typeof(ExportedHoles))]
     Exported,
+
+    [Description("The share card: {Path}")]
+    [Holes(typeof(CardWrittenHoles))]
+    CardWritten,
 }
