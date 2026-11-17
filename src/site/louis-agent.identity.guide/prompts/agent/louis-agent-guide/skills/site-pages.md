@@ -16,8 +16,6 @@ someone through one.
 - `/cv`: the real Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.
 - `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`: three made-up businesses' agents at work.
-- `/coding-agent`: the coding agent fixing a real bug, recorded once.
-- `/triage-demo`: the triage team at work on a failed order, recorded once.
 - `/framework/how-it-works`: one turn through every layer of the engine.
 - `/framework/architecture`: the whole framework and every project that ships.
 - `/framework/identities`: what an identity is and the three that exist.

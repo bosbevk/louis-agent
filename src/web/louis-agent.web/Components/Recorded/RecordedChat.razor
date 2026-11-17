@@ -1,5 +1,5 @@
-@* A recorded session in a window: the chat's own list of turns, typing out as it did, then the site's ending and a
-   button that plays it again. *@
+@* A recorded session in a window: the chat's own list of turns, typing out as it did, then the site's ending, the
+   theme's button to try the agent live when the site gives its words, and a button that plays it again. *@
 <div class="recorded-chat">
     <div class="recorded-bar"><span class="recorded-dots" aria-hidden="true"><i></i><i></i><i></i></span>@Title</div>
     <MessageList Chat="_chat" Streaming="_playing" Currency="Currency" ShowWork="ShowWork" />
@@ -7,6 +7,10 @@
     {
         <div class="recorded-end">
             @Ending
+            @if (TryIt is not null)
+            {
+                <button class="btn btn-fill btn-small" type="button" @onclick="() => Tried.InvokeAsync()">@TryIt</button>
+            }
             <button class="recorded-again" type="button" @onclick="PlayAsync">@PlayAgain</button>
         </div>
     }

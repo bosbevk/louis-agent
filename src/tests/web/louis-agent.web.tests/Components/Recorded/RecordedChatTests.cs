@@ -89,6 +89,32 @@ public class RecordedChatTests
         Assert.That(cut.Markup, Does.Contain("the agent at work"));
     }
 
+    /// <summary>
+    /// FX194: a way to try the agent live is the theme's own button, drawn by the chat beside Play again, once the
+    /// play is over. The site gave its own unstyled button before, which showed as the browser's grey box.
+    /// </summary>
+    [Test]
+    public void TryingItLive_IsTheThemesButton_OnceThePlayIsOver()
+    {
+        using var ctx = Context();
+        int tried = 0;
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, [new RecordedTurn("Hello", Source)])
+            .Add(chat => chat.PlayAgain, "Play again")
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.TryIt, "Try it yourself")
+            .Add(chat => chat.Tried, () => tried++));
+        var button = cut.WaitForElement(".recorded-end button.btn.btn-fill.btn-small", TimeSpan.FromSeconds(5));
+        button.Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(button.TextContent, Is.EqualTo("Try it yourself"));
+            Assert.That(tried, Is.EqualTo(1));
+        });
+    }
+
     /// <summary>The ending waits for the play to finish, and play again starts it over.</summary>
     [Test]
     public void TheEnding_ShowsWhenThePlayIsOver_AndPlaysAgain()

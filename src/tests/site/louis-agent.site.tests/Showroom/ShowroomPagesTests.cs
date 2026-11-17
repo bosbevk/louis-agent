@@ -16,16 +16,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Site.Tests.Showroom;
 
 /// <summary>
-/// F127.1: the demos live in the showroom. The site registers its five, each in its group and colour, and a business's
-/// demo plays on a mock of its own website, with its sample brand and the cues of what to watch.
+/// F127.1: the demos live in the showroom. The site registers its three, each in its group and colour, and a business's
+/// demo plays on a mock of its own website, with its sample brand and nothing beside it (FX194).
 /// </summary>
 public class ShowroomPagesTests
 {
     /// <summary>
-    /// The site's five demos, in the rail's order, each in its group and its own colour (Louis's pick 1a).
+    /// The site's three demos, the businesses', in the rail's order, each in its own colour (FX195, Louis: "delete these
+    /// 2", the coding agent and the triage team).
     /// </summary>
     [Test]
-    public void TheSite_RegistersItsFiveDemos_EachInItsColour()
+    public void TheSite_RegistersItsThreeDemos_EachInItsColour()
     {
         var demos = SiteDemos.All.All.Select(d => (d.Address, d.Group, d.Accent));
 
@@ -35,8 +36,6 @@ public class ShowroomPagesTests
                 ("/guesthouse-demo", DemoGroup.ForYourBusiness, TileAccent.Blue),
                 ("/restaurant-demo", DemoGroup.ForYourBusiness, TileAccent.Green),
                 ("/law-practice-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
-                ("/coding-agent", DemoGroup.AgentsAtWork, TileAccent.Red),
-                ("/triage-demo", DemoGroup.AgentsAtWork, TileAccent.Purple),
             }));
     }
 
@@ -64,7 +63,7 @@ public class ShowroomPagesTests
 
     /// <summary>
     /// A business's demo plays on a mock of its own website, in its colour, with its own address, its sample brand's
-    /// mark, and four cues of what to watch beside it, the first its agent showing its website.
+    /// mark, and nothing beside it: no cues, no notes and no offer (FX194).
     /// </summary>
     [TestCase(typeof(RestaurantDemoPage), "accent-green", "wheatfieldkitchen.example")]
     [TestCase(typeof(LawPracticeDemoPage), "accent-yellow", "koringland.example")]
@@ -81,14 +80,8 @@ public class ShowroomPagesTests
             Assert.That(cut.Find(".site-mock .mock-address").TextContent, Is.EqualTo(address));
             Assert.That(cut.Find(".site-mock .mock-header .mock-mark svg"), Is.Not.Null, "its sample brand's mark");
             Assert.That(cut.Find(".site-mock .mock-tagline").TextContent, Is.Not.Empty, "its tagline");
-            Assert.That(cut.FindAll(".stage-cues .cues-list > li"), Has.Count.EqualTo(4));
-            Assert.That(cut.Find(".stage-cues .cues-list > li").TextContent, Does.Contain("shows"),
-                "the first cue is the agent showing its website (Louis: \"first show them the room\")");
-            Assert.That(cut.Find("#make-it-yours h2").TextContent, Does.StartWith("A custom agent for your"),
-                "what a custom agent could add (Louis: \"integrate with the booking system if they have one\")");
-            Assert.That(cut.FindAll("#make-it-yours li.note"), Has.Count.EqualTo(3));
-            Assert.That(cut.Find(".stage-cues button.cue-go").GetAttribute("title"), Is.EqualTo("Watch from here"),
-                "a cue plays from its turn (Louis: \"this should be clickable so visitors can rewind\")");
+            Assert.That(cut.FindAll(".stage-cues, #make-it-yours, .stage-offer"), Is.Empty,
+                "nothing beside the agent (FX194, Louis: \"the rest takes the shine away from the real AI\")");
             Assert.That(cut.FindAll("h1"), Has.Count.EqualTo(1));
             var chat = cut.FindComponent<RecordedChat>().Instance;
             Assert.That((chat.Pace, chat.TurnGap), Is.EqualTo((2.5, 2200)),

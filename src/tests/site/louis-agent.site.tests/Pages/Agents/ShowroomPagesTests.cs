@@ -50,7 +50,8 @@ public class ShowroomPagesTests
             Assert.That(chat.ShowWork, Is.False, "as its customer would see it");
             Assert.That(chat.Turns, Has.Count.GreaterThanOrEqualTo(3), "a conversation, not one question");
             Assert.That(chat.Turns.Select(turn => turn.Source), Is.All.StartsWith("recordings/showroom/"));
-            Assert.That(cut.FindAll("a[href='/contact']"), Is.Not.Empty);
+            Assert.That(cut.FindAll("a[href='/contact']"), Is.Empty,
+                "the offer is the showroom frame's, not the demo's (FX194)");
         });
     }
 
@@ -99,8 +100,7 @@ public class ShowroomPagesTests
         Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
             Is.EqualTo(new[]
             {
-                "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
-                "/triage-demo"
+                "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo"
             }));
     }
 

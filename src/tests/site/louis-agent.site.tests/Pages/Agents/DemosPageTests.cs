@@ -9,8 +9,7 @@ namespace LouisAgent.Site.Tests.Pages.Agents;
 /// <summary>
 /// The demo index (F122, Louis: "a button there called demos", "which takes you to the demo index"). Since F134.1 it
 /// is the showroom's start as a stage: a window for each of the three businesses, the guesthouse forward first
-/// (Louis: "make the guesthouse the main one"), and a dock with a button for each. The coding agent and the triage
-/// team are not on it (Louis's pick, 2026-11-14): they keep their own pages, and the rail beside a demo.
+/// (Louis: "make the guesthouse the main one"), and a dock with a button for each.
 /// </summary>
 public class DemosPageTests
 {
@@ -48,15 +47,13 @@ public class DemosPageTests
 
     /// <summary>
     /// Each window has its own address under the start's (ADR 0107), the ones the sitemap lists. Opened at one, that
-    /// business is forward, with its name and its way in, so each address is its own page. The two agents at work
-    /// have no window here, so at an address that names one of them the guesthouse is forward, as at any place the
-    /// start doesn't have.
+    /// business is forward, with its name and its way in, so each address is its own page. At a place the start
+    /// doesn't have, the guesthouse is forward.
     /// </summary>
     [TestCase("/demos/guesthouse-demo", "A guesthouse", "/guesthouse-demo")]
     [TestCase("/demos/restaurant-demo", "A restaurant", "/restaurant-demo")]
     [TestCase("/demos/law-practice-demo", "A law practice", "/law-practice-demo")]
     [TestCase("/demos/coding-agent", "A guesthouse", "/guesthouse-demo")]
-    [TestCase("/demos/triage-demo", "A guesthouse", "/guesthouse-demo")]
     public void OpenedAtAWindowsAddress_ThatBusinessIsForward(string address, string name, string wayIn)
     {
         using var ctx = SitePageContext.Create();

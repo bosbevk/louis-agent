@@ -33,9 +33,8 @@ the agents with the dotnet pack, and by hand as above.
 
 A small C# library that matches bank payments to invoices by the invoice number in the reference and the full
 amount, with four tests and **two seeded bugs** its tests catch: a lower-case reference is missed, and `INV-104` takes
-the payment meant for `INV-1042`. The site's `/coding-agent` page plays the coding agent fixing both, recorded once
-on a fresh git copy of this folder ([how to record it again](../recordings/README.md)). Like the order service, it
-has no entry in the solution, so its failing tests never run in CI.
+the payment meant for `INV-1042`. Like the order service, it has no entry in the solution, so its failing tests never
+run in CI.
 
 ```bash
 cd demos/louis-agent/samples/invoice-matcher

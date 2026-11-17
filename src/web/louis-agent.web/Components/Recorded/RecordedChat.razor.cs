@@ -60,6 +60,17 @@ public partial class RecordedChat : IDisposable
     public RenderFragment? Ending { get; set; }
 
     /// <summary>
+    /// The words of a way to try the agent live once the play is over, drawn as the theme's main button; none
+    /// draws no button.
+    /// </summary>
+    [Parameter]
+    public string? TryIt { get; set; }
+
+    /// <summary>Told when the visitor presses the way to try the agent live.</summary>
+    [Parameter]
+    public EventCallback Tried { get; set; }
+
+    /// <summary>
     /// How long a turn waits after the one before, in milliseconds, as a person reads the answer and types (F127.1,
     /// Louis: "slow it down like realtime"); none by default.
     /// </summary>

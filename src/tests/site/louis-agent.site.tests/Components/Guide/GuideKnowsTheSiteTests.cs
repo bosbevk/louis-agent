@@ -102,8 +102,6 @@ public class GuideKnowsTheSiteTests
     /// explain them"): the voice sends it to the demo index and to the doc that explains each demo, and the doc says
     /// what each shows, how it was made and what it would mean for a business.
     /// </summary>
-    [TestCase("## The coding agent fixing a bug (`/coding-agent`)")]
-    [TestCase("## The triage team at work (`/triage-demo`)")]
     [TestCase("**How it was made.**")]
     [TestCase("**For a business.**")]
     public void TheDemos_AreExplained_InTheDocTheVoiceNames(string words)

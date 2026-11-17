@@ -2,7 +2,6 @@ using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
-using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
 using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Door;
@@ -13,13 +12,13 @@ namespace LouisAgent.Site.Components.Showroom;
 
 /// <summary>
 /// One showroom business's demo (F128.2; since F127.1 on the framework's stage): its recorded conversation played on a
-/// mock of its own website, in its sample brand, with the cues of what to watch beside it and the offer under it. Each
-/// page names its business, its brand, its turns and its cues; the shape is this one.
+/// mock of its own website, in its sample brand, and nothing beside it, so the agent is the show (FX194, Louis: "the
+/// rest takes the shine away from the real AI"). Each page names its business, its brand and its turns; the shape is
+/// this one.
 /// </summary>
 /// <remarks>
-/// The page's two pieces of state are the turn the play has reached and the place its agent last showed: the recorded
-/// chat says each turn as it starts and each tool call as it plays, the cues light up to the one and the website goes
-/// to the other, so none of the three knows the others (Mediator).
+/// The page's state is the place its agent last showed: the recorded chat says each tool call as it plays and the
+/// website goes there, so neither knows the other (Mediator).
 /// </remarks>
 public partial class BusinessDemo : IDisposable
 {
@@ -101,24 +100,9 @@ public partial class BusinessDemo : IDisposable
     [Parameter, EditorRequired]
     public RenderFragment Pages { get; set; } = null!;
 
-    /// <summary>The kind of business, as the notes' heading names it: "guesthouse".</summary>
-    [Parameter, EditorRequired]
-    public string KindOf { get; set; } = "";
-
-    /// <summary>
-    /// What a custom agent could add for a business like this one (Louis: "we could integrate with the booking system
-    /// if they have one etc. Custom Agent").
-    /// </summary>
-    [Parameter, EditorRequired]
-    public IReadOnlyList<DemoNote> CustomNotes { get; set; } = [];
-
     /// <summary>The conversation, a turn at a time.</summary>
     [Parameter, EditorRequired]
     public IReadOnlyList<RecordedTurn> Turns { get; set; } = [];
-
-    /// <summary>What to watch for, each about a turn.</summary>
-    [Parameter, EditorRequired]
-    public IReadOnlyList<DemoCue> Cues { get; set; } = [];
 
     /// <summary>
     /// The business's identity, by the name the site's catalogue knows, for a visitor to try live:
@@ -131,9 +115,6 @@ public partial class BusinessDemo : IDisposable
     [Parameter, EditorRequired]
     public string Hint { get; set; } = "";
 
-    /// <summary>The turn the play has reached; none before it starts.</summary>
-    private int _reached;
-
     /// <summary>What the demo is, over its title: the kind and the business.</summary>
     private string KickerLine => $"{Topic} · {Business}";
 
@@ -143,9 +124,6 @@ public partial class BusinessDemo : IDisposable
     /// <summary>The place on its website its agent last showed; none at home.</summary>
     private string? _shown;
 
-    /// <summary>The recorded chat, which a clicked cue plays from its turn.</summary>
-    private RecordedChat? _chat;
-
     /// <summary>Whether the visitor is trying the agent live rather than watching the recording.</summary>
     private bool _trying;
 
@@ -154,19 +132,9 @@ public partial class BusinessDemo : IDisposable
     /// <summary>The showroom's words, the site's own when it has them.</summary>
     private ShowroomText Words => Services.GetService<ShowroomText>() ?? new ShowroomText();
 
-    /// <summary>
-    /// A clicked cue plays the conversation from its turn (Louis: "this should be clickable so visitors can rewind").
-    /// </summary>
-    private Task PlayFrom(int turn) =>
-        _trying ? Task.CompletedTask : _chat?.PlayFromAsync(turn) ?? Task.CompletedTask;
-
-    /// <summary>
-    /// Notes the turn the play has reached, so the cues light up to it; a play from the start brings the website
-    /// home.
-    /// </summary>
+    /// <summary>A play from the start brings the website home.</summary>
     private void Reach(int turn)
     {
-        _reached = turn;
         if (turn == 1) _shown = null;
     }
 
@@ -186,8 +154,6 @@ public partial class BusinessDemo : IDisposable
     {
         _trying = true;
         _shown = null;
-        // The recorded chat goes with the swap; a new one is drawn on the way back.
-        _chat = null;
     }
 
     /// <summary>Back to the recording, which plays again from its start.</summary>

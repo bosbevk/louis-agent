@@ -126,11 +126,12 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// FX176: the Demos and the framework's groups are hidden for now and kept, so the menu shows Contact alone (Louis:
-    /// "disable the demos menu items for now until it is fixed and framework").
+    /// FX176: the framework's group is hidden for now and kept (Louis: "disable the demos menu items for now until it
+    /// is fixed and framework"). The Demos are back beside Contact once the demos are fixed (FX195, Louis: "when you
+    /// are done with the demos, enabled the menu item again").
     /// </summary>
     [Test]
-    public void TheDemosAndTheFrameworksMenus_AreHiddenForNow()
+    public void TheDemosMenu_IsShown_AndTheFrameworksIsHiddenForNow()
     {
         using var ctx = Context();
 
@@ -138,7 +139,7 @@ public class SiteLayoutTests
 
         var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(shown, Is.EqualTo(new[] { "Contact" }));
+        Assert.That(shown, Is.EqualTo(new[] { "Demos", "Contact" }));
     }
 
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
@@ -282,8 +283,7 @@ public class SiteLayoutTests
             Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
-                    "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
-                    "/triage-demo"
+                    "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo"
                 }));
             Assert.That(cut.Find(".site-header").TextContent, Does.Not.Contain("Watch it work"));
             Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);

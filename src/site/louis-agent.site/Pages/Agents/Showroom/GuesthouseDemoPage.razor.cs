@@ -1,6 +1,5 @@
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
-using LouisAgent.Web.Components.Site.Showroom.Stage;
 
 namespace LouisAgent.Site.Pages.Agents.Showroom;
 
@@ -23,34 +22,11 @@ public partial class GuesthouseDemoPage
         new("Yes please, send it.", "recordings/showroom/seemeeu-guesthouse-4.sse"),
     ];
 
-    /// <summary>What to watch for, each lit as the play reaches its turn.</summary>
-    private static readonly DemoCue[] WhatToWatch =
-    [
-        new(1, "It shows the garden room: dogs stay there, so it offers that one instead."),
-        new(2, "It shows the beach, and answers like a local about breakfast on the stoep."),
-        new(3, "It reads the booking back before it sends anything."),
-        new(4, "The booking goes to the owner only after the guest says yes."),
-    ];
-
     /// <summary>
     /// Seemeeu Guesthouse's sample brand, a coastal boutique (F127.2, mockup 0): Atlantic, sand, salt and its slate
     /// ink, its labels in sea glass.
     /// </summary>
     private static readonly MockColours Brand = new("#0b3a4a", "#e9dcc3", "#fbf8f2", "#14262d", "#8fbfb9");
-
-    /// <summary>
-    /// What a custom agent could add for a guesthouse (Louis: "we could integrate with the booking system if they
-    /// have one etc. Custom Agent").
-    /// </summary>
-    private static readonly DemoNote[] Notes =
-    [
-        new("Book into your booking system",
-            "If you take bookings online, it sees which rooms are free and holds one in the system you already use, " +
-            "instead of passing a request on."),
-        new("Take the deposit",
-            "It sends the guest a secure payment link, so the booking is confirmed the moment the deposit is paid."),
-        new("Answer on WhatsApp", "The same agent, with the same facts, answers your guests on WhatsApp too."),
-    ];
 
     /// <summary>The facts under its hero, each one its agent knows.</summary>
     private static readonly string[] Facts =
