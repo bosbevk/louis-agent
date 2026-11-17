@@ -22,7 +22,7 @@ public class EditingTheFactsTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.Retype(".cv-fact:nth-child(1) b", "21 years");
+        view.Retype(".fact:nth-child(1) b", "21 years");
 
         Assert.Multiple(() =>
         {
@@ -40,7 +40,7 @@ public class EditingTheFactsTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.RetypeLong(".cv-fact:nth-child(2) span", "pull requests, each reviewed");
+        view.RetypeLong(".fact:nth-child(2) span", "pull requests, each reviewed");
 
         Assert.That(handed.Value!.Facts[1], Is.EqualTo(Facts[1] with { Label = "pull requests, each reviewed" }));
     }
@@ -79,7 +79,7 @@ public class EditingTheFactsTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.Find(".cv-facts button.item-add").Click();
+        view.Find(".facts button.item-add").Click();
 
         Assert.Multiple(() =>
         {

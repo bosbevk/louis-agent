@@ -1,0 +1,9 @@
+@* A strip of facts (ADR 0125): its facts side by side on one of the theme's panes, and a cell at its foot when a
+   site gives one. *@
+<div class="facts">
+    @ChildContent
+    @if (Add is not null)
+    {
+        <div class="facts-add">@Add</div>
+    }
+</div>

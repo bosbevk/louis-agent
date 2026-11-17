@@ -1,0 +1,20 @@
+@* One entry of a timeline (ADR 0125): when, with a word under the dates while it still runs and the buttons that
+   change it, then its title, where it was and what a site says of it. *@
+<article class="timeline-entry">
+    <div class="when">
+        @When
+        @if (Current is not null)
+        {
+            <em>@Current</em>
+        }
+        @Tools
+    </div>
+    <div class="timeline-words">
+        <h3>@Title</h3>
+        @if (Place is not null)
+        {
+            <div class="place">@Place</div>
+        }
+        @ChildContent
+    </div>
+</article>

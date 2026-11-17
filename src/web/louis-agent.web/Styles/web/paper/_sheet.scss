@@ -1,0 +1,109 @@
+/* A page that prints as itself (the PaperSheet component): "Save as PDF" is the browser's print dialog, and these
+   rules set such a page for A4, in the page's own desktop layout, in ink dark enough to print, every link a QR code.
+   Here is what belongs to the whole sheet: its size and footer, its colours, the site's frame left off, and the
+   bands and words every page shares. Each control's own layout on paper sits beside it. All of it is for paper
+   only, and only for a page that holds a sheet. A site lists this among its styles. */
+
+/* The sheet. The page's own footer, its number, stands where the browser would print its date, title and address. */
+@page paper {
+    size: A4;
+    margin: 13mm 14mm 15mm;
+
+    @top-left { content: ""; }
+    @top-center { content: ""; }
+    @top-right { content: ""; }
+    @bottom-left { content: ""; }
+    @bottom-right {
+        content: counter(page) " of " counter(pages);
+        font: 8pt system-ui, "Segoe UI", sans-serif;
+        color: #2a2e33;
+    }
+}
+
+@media print {
+    /* The page's colours, set for paper where the screen's are set for the theme: black and near black, since a
+       light grey doesn't survive a printer. They are set on the page's root, whose background is what a sheet's
+       margins are painted with: set lower down, the margins printed dark around a white page. A theme sets its
+       colours under the page's theme and style, which weighs more than the root alone, so the second selector weighs
+       as much again and these still win on paper whatever look the page is in. */
+    :root:has(.paper-sheet),
+    :root[data-theme][data-style]:has(.paper-sheet) {
+        --bs-body-bg: #fff;
+        --bs-body-color: #111;
+        --bs-emphasis-color: #000;
+        --bs-secondary-color: #1c1f23;
+        --bs-tertiary-color: #2a2e33;
+        --bs-border-color: #6b7079;
+        --bs-secondary-bg: #fff;
+        --bs-tertiary-bg: #fff;
+        --web-ok: #0f5c26;
+        background: #fff;
+        color: #111;
+    }
+    body:has(.paper-sheet) { background: #fff; color: #111; }
+    body:has(.paper-sheet)::before,
+    body:has(.paper-sheet)::after { display: none; }
+
+    /* What is the site's frame and not the page, and every button, since paper can't press one. */
+    body:has(.paper-sheet) .site-header,
+    body:has(.paper-sheet) .site-footer,
+    body:has(.paper-sheet) .site-index,
+    body:has(.paper-sheet) .site-progress,
+    body:has(.paper-sheet) .site-up,
+    body:has(.paper-sheet) .site-corner,
+    body:has(.paper-sheet) .chat-widget,
+    body:has(.paper-sheet) .guide-button,
+    .paper-sheet .btn,
+    .paper-sheet .band-pager { display: none !important; }
+
+    /* The frame's column, without its width, its room or its entrance, which would print half faded. */
+    body:has(.paper-sheet) .site,
+    body:has(.paper-sheet) .site-main {
+        display: block;
+        min-height: 0;
+        max-width: none;
+        padding: 0;
+        background: none;
+        animation: none;
+        opacity: 1;
+        translate: none;
+    }
+
+    .paper-sheet {
+        page: paper;
+        font-size: 10.15pt;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    /* Nothing rises or fades in on paper: what would enter is simply there. */
+    .paper-sheet * { animation: none !important; transition: none !important; }
+
+    /* The big words are plain black on paper. */
+    .paper-sheet .chrome {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        background: none;
+        color: #000;
+        -webkit-text-fill-color: #000;
+    }
+
+    /* A band takes the room its words need, with a rule over it. */
+    .paper-sheet .band {
+        display: grid;
+        gap: 3mm;
+        min-height: 0;
+        max-width: none;
+        margin-top: 7mm;
+        padding: 5mm 0 0;
+        border-top: 1px solid var(--bs-border-color);
+    }
+    .paper-sheet .band:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+
+    /* A topic stays on the sheet of the heading under it, never alone at the foot of the one before. */
+    .paper-sheet .topic { font-size: 7.75pt; font-weight: 600; color: var(--bs-tertiary-color); break-after: avoid; }
+    .paper-sheet .band h2 { max-width: none; font-size: 16.75pt; line-height: 1.15; break-after: avoid; }
+    .paper-sheet h3 { break-after: avoid; }
+    .paper-sheet .summary { max-width: none; font-size: 10.35pt; line-height: 1.5; color: var(--bs-body-color); }
+    .paper-sheet a { color: inherit; text-decoration: none; }
+}

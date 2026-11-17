@@ -1,0 +1,14 @@
+/* A timeline: its entries one under the other. A ruled one, such as a CV's jobs, has a line between entries and room
+   around each; close rows, such as a list of courses, sit nearer with none. The entries draw themselves. */
+.timeline { display: grid; gap: 14px; }
+.timeline.is-ruled { gap: 0; }
+.timeline.is-ruled ::deep .timeline-entry { padding-block: 26px; border-top: 1px solid var(--bs-border-color); }
+.timeline.is-ruled ::deep .timeline-entry:first-child { padding-top: 0; border-top: 0; }
+/* A button a site puts after the entries, such as the one that adds one, keeps its own size. */
+.timeline ::deep .item-add { justify-self: start; }
+
+@media print {
+    .timeline { gap: 0; }
+    .timeline.is-ruled ::deep .timeline-entry { padding-block: 4mm; }
+    .timeline:not(.is-ruled) ::deep .timeline-entry { padding-block: 2.2mm; }
+}

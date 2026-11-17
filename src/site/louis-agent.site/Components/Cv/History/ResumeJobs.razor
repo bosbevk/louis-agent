@@ -1,31 +1,28 @@
 @using LouisAgent.Web.Components.Editing
 @using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Web.Components.Site.History
 @using LouisAgent.Site.Resumes.History
-@* The CV's jobs (F142), newest first: when, as what, where, what was shipped and the stack it was built with. When
-   the page is edited, a title and each point are clicked and retyped, the stack is tags, the dates and the company
-   open on a small form, and the jobs and each job's points are lists. *@
-<div class="cv-jobs">
+@* The CV's jobs (F142), newest first on the framework's timeline: when, as what, where, what was shipped and the
+   stack it was built with. When the page is edited, a title and each point are clicked and retyped, the stack is
+   tags, the dates and the company open on a small form, and the jobs and each job's points are lists. *@
+<Timeline>
     @for (int index = 0; index < Work.Count; index++)
     {
         // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
         int at = index;
         var job = Work[at];
-        <article class="job">
-            <div class="when">
-                @ResumeDates.Span(job.StartDate, job.EndDate, "now")
-                @if (job.EndDate is null)
-                {
-                    <em>current</em>
-                }
+        <TimelineEntry Current="@(job.EndDate is null ? "current" : null)">
+            <When>@ResumeDates.Span(job.StartDate, job.EndDate, "now")</When>
+            <Tools>
                 @if (Editable)
                 {
                     <ItemTools Noun="job" At="at" Count="Work.Count" OnOpen="() => Open(at)"
                                OnMove="step => MoveAsync(at, step)" OnRemove="() => RemoveAsync(at)"/>
                 }
-            </div>
-            <div>
-                <h3><InlineEdit Value="@job.Position" Label="Job title" ValueChanged="@TitleChanged(at)"/></h3>
-                <div class="org">@OrgOf(job)</div>
+            </Tools>
+            <Title><InlineEdit Value="@job.Position" Label="Job title" ValueChanged="@TitleChanged(at)"/></Title>
+            <Place>@OrgOf(job)</Place>
+            <ChildContent>
                 @if (Editable && _open == at)
                 {
                     <InlineForm @key="at" TItem="ResumeWork" Item="job" Label="@($"job {at + 1}")"
@@ -62,24 +59,19 @@
                 }
                 @if (Editable)
                 {
-                    <div class="job-points"><ItemAdd Label="Add a point" OnAdd="() => AddPointAsync(at)"/></div>
+                    <ItemAdd Label="Add a point" OnAdd="() => AddPointAsync(at)"/>
                     <TagInput Tags="job.Keywords" Label="@($"Stack of job {at + 1}")" Placeholder="Add to the stack"
                               TagsChanged="tags => StackAsync(at, tags)"/>
                 }
-                else if (job.Keywords.Count > 0)
+                else
                 {
-                    <div class="stack">
-                        @foreach (var keyword in job.Keywords)
-                        {
-                            <span>@keyword</span>
-                        }
-                    </div>
+                    <TagList Tags="job.Keywords"/>
                 }
-            </div>
-        </article>
+            </ChildContent>
+        </TimelineEntry>
     }
     @if (Editable)
     {
         <ItemAdd Label="Add a job" OnAdd="AddAsync"/>
     }
-</div>
+</Timeline>

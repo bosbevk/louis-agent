@@ -52,11 +52,12 @@ public class ResumeViewTests
         {
             Assert.That(now.QuerySelector("h2")!.TextContent, Is.EqualTo("louis-agent: an AI agent framework."));
             Assert.That(now.QuerySelector(".summary")!.TextContent, Is.EqualTo("An AI agent framework in C#."));
-            Assert.That(now.QuerySelector(".panel .cv-part-label")!.TextContent, Is.EqualTo("Evaluation"));
+            Assert.That(now.QuerySelector(".panel .panel-topic")!.TextContent, Is.EqualTo("Evaluation"));
             Assert.That(now.QuerySelector(".panel h3")!.TextContent, Is.EqualTo("Evals in C#"));
             Assert.That(now.QuerySelector(".panel p")!.TextContent, Is.EqualTo("One harness for every check."));
-            Assert.That(now.QuerySelector(".panel a")!.GetAttribute("href"), Is.EqualTo("/framework/measured"));
-            Assert.That(now.QuerySelector(".panel a")!.TextContent, Does.Contain("Measured, not assumed"));
+            Assert.That(now.QuerySelector(".panel a.screen-link")!.GetAttribute("href"),
+                Is.EqualTo("/framework/measured"));
+            Assert.That(now.QuerySelector(".panel a.screen-link")!.TextContent, Does.Contain("Measured, not assumed"));
         });
     }
 
@@ -77,15 +78,15 @@ public class ResumeViewTests
     {
         using var ctx = new BunitContext();
 
-        var job = Render(ctx, Sample()).Find(".job");
+        var job = Render(ctx, Sample()).Find("#experience .timeline-entry");
 
         Assert.Multiple(() =>
         {
             Assert.That(job.QuerySelector(".when")!.TextContent, Does.Contain("Mar 2021 – Jun 2024"));
             Assert.That(job.QuerySelector("h3")!.TextContent, Is.EqualTo("Senior developer"));
-            Assert.That(job.QuerySelector(".org")!.TextContent, Does.Contain("Kohde"));
+            Assert.That(job.QuerySelector(".place")!.TextContent, Does.Contain("Kohde"));
             Assert.That(job.QuerySelector("li")!.TextContent, Is.EqualTo("Shipped the price-rule agent"));
-            Assert.That(job.QuerySelectorAll(".stack span").Select(tag => tag.TextContent),
+            Assert.That(job.QuerySelectorAll(".tag-list .tag").Select(tag => tag.TextContent),
                 Is.EqualTo(new[] { "C#", "Azure" }));
         });
     }
@@ -98,7 +99,7 @@ public class ResumeViewTests
         var sample = Sample();
         var current = sample with { Work = [sample.Work[0] with { EndDate = null }] };
 
-        var when = Render(ctx, current).Find(".job .when").TextContent;
+        var when = Render(ctx, current).Find("#experience .when").TextContent;
 
         Assert.That(when, Does.Contain("Mar 2021 – now").And.Contain("current"));
     }
@@ -137,8 +138,8 @@ public class ResumeViewTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(view.Find(".edu").TextContent, Does.Contain("Evaluate AI Applications"));
-            Assert.That(view.Find(".resume-also").TextContent, Does.Contain("Azure Developer").And.Contain("Chess"));
+            Assert.That(view.Find("#education .timeline").TextContent, Does.Contain("Evaluate AI Applications"));
+            Assert.That(view.Find("#also .tiles").TextContent, Does.Contain("Azure Developer").And.Contain("Chess"));
         });
     }
 }

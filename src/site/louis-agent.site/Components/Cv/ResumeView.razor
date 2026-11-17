@@ -1,6 +1,8 @@
 @* Louis's CV, drawn from its record (F142), as the approved page lays it out: who he is and the facts, what he's
-   building now, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
-<div class="resume">
+   building now, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it,
+   and the whole is a sheet of paper when it is printed. *@
+@using LouisAgent.Web.Components.Paper
+<PaperSheet>
     <Band Id="top" Topic="Curriculum vitae · louis-agent.dev/cv" Short="CV">
         <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"
                     BasicsChanged="BasicsChanged" LanguagesChanged="LanguagesChanged"/>
@@ -35,4 +37,4 @@
                     InterestsChanged="InterestsChanged"/>
         @End
     </Band>
-</div>
+</PaperSheet>

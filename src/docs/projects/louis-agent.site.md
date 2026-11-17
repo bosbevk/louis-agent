@@ -363,7 +363,11 @@ its card don't open without it.
 
 ### The page
 
-`Pages/About/CvPage` draws `Components/Cv/ResumeView`, with a band per part. In the browser, it asks the API
+`Pages/About/CvPage` draws `Components/Cv/ResumeView`, with a band per part. The CV has no styles of its own, as
+nothing on this site does: each part is the framework's controls given the CV's words. Who he is stands in a
+`ProfileHero` beside his photo, the few numbers in a `FactStrip`, what he builds now and his skills in `Panel`s, a
+job's stack and a skill group in a `TagList`, and the jobs and the schooling in a `Timeline`, the dates in a column
+of their own. In the browser, it asks the API
 (`ApiResumeSource`). When the host draws it for a search engine, it reads the saved file directly. That's
 `IResumeSource`, a Strategy picked by where the page runs.
 
@@ -379,10 +383,12 @@ page never draws. The area, `ResumeArea`, brings its link and its card to the fr
 ### Save as PDF
 
 `ResumePrint` opens the browser's print dialog. On paper, the CV is its desktop layout set for A4, in near-black ink,
-with its own footer. `Styles/site/cv/_print.scss` sets the sheet, and each part's paper rules sit beside its
-component. Every link becomes a QR code, the framework's `PaperLink`.
+with the page's number at each sheet's foot. The view stands in the framework's `PaperSheet`, which sets the sheet,
+and each control keeps its own layout on paper beside it. Every link becomes a QR code, the framework's `PaperLink`:
+the ways to reach him are a row of codes under the hero, and a panel's link is a `PrintableLink`, the link on a
+screen and its code on paper.
 
-*Decided in:* FX154.
+*Decided in:* FX154, FX191.
 
 ## Tests
 

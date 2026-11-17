@@ -1,0 +1,30 @@
+@use "web/tools/surface";
+
+/* A strip of facts: one of the theme's panes, its facts four across with a hairline between them, two on a phone,
+   and four in one row on paper, kept whole on a page. */
+.facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: hidden;
+    @include surface.pane($radius: 12px);
+}
+.facts ::deep .fact + .fact { box-shadow: inset 1px 0 0 var(--bs-border-color); }
+.facts-add { grid-column: 1 / -1; display: flex; justify-content: center; padding: 12px; }
+/* A foot a site left empty, such as the add button on a page that isn't edited, takes no room. */
+.facts-add:empty { display: none; }
+
+@media (max-width: 820px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media print {
+    .facts {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border: 1px solid var(--bs-border-color);
+        border-radius: 2.5mm;
+        background: none;
+        box-shadow: none;
+        backdrop-filter: none;
+        break-inside: avoid;
+    }
+}

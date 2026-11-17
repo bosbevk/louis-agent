@@ -21,7 +21,9 @@ public class ResumeOnPaperTests
             .Add(view => view.Photo, TheCv.Photo)
             .Add(view => view.Availability, TheCv.Availability));
 
-    /// <summary>Every link has its code: the live CV, each profile, the email, each panel and each assessment.</summary>
+    /// <summary>
+    /// Every link has its code: the live CV, each profile, the email, each panel and each assessment.
+    /// </summary>
     [Test]
     public void EveryLink_HasItsCode()
     {
@@ -62,7 +64,7 @@ public class ResumeOnPaperTests
         using var ctx = new BunitContext();
         var view = Render(ctx);
 
-        var written = view.FindAll(".cv-codes a.paper-link").ToDictionary(
+        var written = view.FindAll(".profile-paper a.paper-link").ToDictionary(
             link => link.QuerySelector("b")!.TextContent,
             link => link.QuerySelector(".paper-link-address")!.TextContent);
 

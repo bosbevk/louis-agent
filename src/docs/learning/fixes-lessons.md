@@ -511,6 +511,18 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX191 · Taking the styles out takes the page with them
+
+FX162 took every stylesheet out of the site so that its look would be the theme's alone. That was the right rule, but
+the CV's parts still drew their own HTML, a hero grid, a column of dates, a row of tags, and those classes now
+pointed at nothing. Every test still passed, because the tests found the parts by their classes and the classes were
+all still there. The page itself was a heap: the summary ran into the name, the jobs had no date column, and it no
+longer printed as a sheet. The fix finishes what FX162 started. The shapes a CV needs became framework controls, a
+person's hero, a strip of facts, a timeline, a panel and a row of tags, each with its own layout on a screen, on a
+phone and on paper, and the CV now only gives them its words. A page that prints stands in a paper sheet, which
+sets the A4 page for any site. The lesson: when a rule removes what draws a page, a test that finds markup can't see
+the damage, so the page is looked at, on a screen and on paper, before the rule is called done. Skill 18.
+
 ## FX190 · A browser drops a line it can't read, silently
 
 `font: 500 13px/1.4 inherit` looks like it says "this size, this weight, the rest from the parent". But `inherit` can

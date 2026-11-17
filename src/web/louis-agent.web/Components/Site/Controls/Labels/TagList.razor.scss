@@ -1,0 +1,6 @@
+/* A row of plain tags that wraps, a little apart; closer on paper. */
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+
+@media print {
+    .tag-list { gap: 1.2mm; }
+}
