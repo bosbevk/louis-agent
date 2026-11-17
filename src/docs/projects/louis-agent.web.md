@@ -355,7 +355,8 @@ is what turns an agent into a website.
 **The frame.** `SiteShell` is a header, the page, a footer and the guide in its corner. Beside the site's name, and
 outside its link, the header has a slot for the site's stage, `Stage`; `StageFlag` (`Site/Brand`) fills it with a
 small tag that opens a note on a press, the browser's own popover, so a press elsewhere or Escape closes it with no
-script of ours. Beside it in `Site/Brand`, `MarkShowcase` shows a site's mark large, the orb with its letter, and,
+script of ours. The tag keeps its words on one line, so on a phone a label such as "alpha-1" never breaks at its
+hyphen. Beside it in `Site/Brand`, `MarkShowcase` shows a site's mark large, the orb with its letter, and,
 when asked, the name on black, white, violet and glass. The frame also adds a scroll progress
 line, a way back up, and a section index on the left. A site may switch the index off with `ShowIndex="false"` and
 the way up with `ShowWayUp="false"`, keeping both for later; louis-agent.dev has both off. When a site puts the guide in the corner as its bar, the
