@@ -23,6 +23,8 @@
   <ItemGroup>
     <!-- The framework's web: the parts the pages are configured from, and the areas a site names. -->
     <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+    <!-- The docs' parts: each section ends with links to its docs by their paths. -->
+    <ProjectReference Include="..\louis-agent.web.docs\louis-agent.web.docs.csproj" />
   </ItemGroup>
 
 </Project>

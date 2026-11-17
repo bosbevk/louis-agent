@@ -1,5 +1,6 @@
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Web.Docs;
 using LouisAgent.Web.Framework;
 using LouisAgent.Web.Themes.Flat;
 using LouisAgent.Web.Themes.Glass;
@@ -22,8 +23,12 @@ public static class FrameworkAreas
     /// <summary>The word the Overview's places sit under, as in <c>/overview/the-engine</c>.</summary>
     public const string Home = "overview";
 
-    /// <summary>Names the site's areas: flat, then glass, and the framework's pages.</summary>
-    public static void Name(SiteAreasBuilder areas) => areas.Flat().Glass().Framework();
+    /// <summary>
+    /// Names the site's areas: flat, then glass, the framework's pages, and where their doc links lead, the repo on
+    /// GitHub until the docs have a site of their own.
+    /// </summary>
+    public static void Name(SiteAreasBuilder areas) =>
+        areas.Flat().Glass().Framework().Docs(DocsAddress.GitHub("bosbevk/louis-agent", "main"));
 
     /// <summary>
     /// Every place's address on the site's pages, its own and the framework package's, so a page knows which place it

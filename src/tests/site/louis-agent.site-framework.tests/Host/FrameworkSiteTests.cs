@@ -2,6 +2,7 @@ using LouisAgent.Api.Site.Rendering;
 using LouisAgent.SiteFramework;
 using LouisAgent.SiteFrameworkApi;
 using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Docs;
 using LouisAgent.Web.Framework.Pages;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +28,17 @@ public class FrameworkSiteTests
             Assert.That(rendered!.Title, Does.Contain("louis-agent"));
             Assert.That(rendered.Body, Does.Contain("<h1"));
         });
+    }
+
+    /// <summary>The site's doc links lead to the repo on GitHub, until the docs have a site of their own.</summary>
+    [Test]
+    public void TheSitesDocLinks_LeadToGitHub()
+    {
+        var docs = new ServiceCollection().AddSiteAreas(FrameworkAreas.Name).BuildServiceProvider()
+            .GetService<DocsAddress>();
+
+        Assert.That(docs?.For("src/docs/README.md"),
+            Is.EqualTo("https://github.com/bosbevk/louis-agent/blob/main/src/docs/README.md"));
     }
 
     /// <summary>
