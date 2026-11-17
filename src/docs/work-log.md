@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 125 | 97 |
+| Features (`F`) | 126 | 97 |
 | Fixes (`FX`) | 176 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
@@ -156,10 +156,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (125 done)
+## Features (126 done)
 
 | Id | When | What |
 |---|---|---|
+| F153 | 2026-11-17 | Reset my session on the admin's home (Louis's pick A of three): one press ends every session this browser saved on the API, forgets both storages but the admin key, and reloads, so the owner sees the site as a first visit (`SessionReset`, `ResetSession`) |
 | F154 | 2026-11-17 | The answer's motion (Louis's pick A of three): the guide's words come at a steady pace while they stream (`WordPace`), its answer grows out of the bar's orb or the card it covers, and it fades before it goes (`CaptionHandOver`, `wwwroot/js/caption-motion.js`); an answer in a card's place fits its words (his pick C); the caption lets go of the page first when it goes |
 | F151.5 | 2026-11-16 | The libraries and the other sites: the account pages, the eval studio and the packs' views drawn by the surface tool, so they wear the site's theme, held by the same rule test; code-review on glass, flat and its own retro, now with a light style, its picker gone; Puls keeps its brand; the pulsing buttons' glow on a layer of its own |
 | F151.4 | 2026-11-16 | The framework's components: one surface tool, `web/tools/_surface.scss`, draws every pane, bar, press and field of `louis-agent.web` from the names a theme sets, so the site's parts, the stage, the widget and the mark, the chat, the admin and the rest follow glass and flat, light and dark; a rule test refuses any sheet that draws a surface by hand; the showroom's mock website wears its business's colours through the same tool and a mock tool of its own; the mark has a fifth state, Listening (ADR 0124) |

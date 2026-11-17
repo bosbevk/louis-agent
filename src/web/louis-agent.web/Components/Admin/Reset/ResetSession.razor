@@ -1,0 +1,10 @@
+@* Reset my session (F153): one press puts this browser back to a first visit, so the owner sees the site as a new
+   visitor does, and the admin's key stays. *@
+
+<section class="card-p admin-reset">
+    <div>
+        <strong>See it as a first visit</strong>
+        <p>Ends every chat this browser had, forgets what it kept about the site, and reloads. The admin key stays.</p>
+    </div>
+    <button type="button" disabled="@_resetting" @onclick="ResetAsync">@(_resetting ? "Resetting…" : "Reset my session")</button>
+</section>

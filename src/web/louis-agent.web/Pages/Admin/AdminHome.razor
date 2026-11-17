@@ -3,7 +3,9 @@
 @implements IDisposable
 
 @* The admin's home (F144, Louis's pick, a home of cards): each area the site named draws its card here, in the order
-   named; a refused key, which a card reports, is asked for once, above them. *@
+   named; a refused key, which a card reports, is asked for once, above them, and Reset my session stands above the
+   cards (F153). *@
+@using LouisAgent.Web.Components.Admin.Reset
 
 <PageTitle>Admin</PageTitle>
 
@@ -18,6 +20,9 @@
 {
     <AdminGate Error="@error" NeedsKey="true" OnSaved="Access.Clear"/>
 }
+
+@* Reset my session (F153), above the cards: the owner sees the site as a first visit. *@
+<ResetSession/>
 
 @if (Cards.Count == 0)
 {

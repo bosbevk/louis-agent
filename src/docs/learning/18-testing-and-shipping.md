@@ -1508,6 +1508,28 @@ tested apart from the drawing, as the pace is.
 What waits: Louis noted pacing further down as well, in the engine and in the API (F155, F156), so the words travel at a
 steady pace before they reach the page.
 
+## One press to be a first visitor again (F153, 2026-11-17)
+
+Louis wanted to see his site the way a new visitor does, without opening a private window. That turns out to be a
+lesson in where a conversation lives. An agent's conversation is in two places: the server keeps the session, and
+the browser keeps its own copy, the list of chats with each session's id. Resetting means ending both, and the
+order matters. The reset ends every session on the server first, while the browser still holds the ids, and only
+then forgets the lists. Done the other way round, a reset that failed half way would lose the ids and leave sessions
+on the server that nothing can name.
+
+The work is one small class with one call, a Facade over the module, the chat store, the API and the navigation,
+and inside it a Transaction Script, one procedure in order. That shape made the order testable without a browser or
+a server: the test gives the class a stand-in for the browser's script and an API that records every request, and
+checks the `DELETE`s, then the forgetting, then the reload. One session the server says it no longer has stops none
+of the rest, and the test holds that too.
+
+Two things the plan had wrong were caught by the build and by reading the keys. The plan split the reset and its
+button into two steps, but Blazor refuses a component's script with no component beside it, and a rule test needs
+every function the C# calls to be in a module that exists, so the two landed as one commit. And the plan said the
+saved lists end in `.chats`, but the guide's is `widget-chats` and the showroom's `showroom-chats`, so the reset
+takes every key that ends in `chats`. Its look was caught by eye: a panel lays its parts in a column, so the reset's
+line and press stood centred until its rule said "row".
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
