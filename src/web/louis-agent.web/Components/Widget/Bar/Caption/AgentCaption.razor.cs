@@ -95,6 +95,56 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>Whether the answer had shown a place when the module last stood the caption.</summary>
     private bool _stoodBeside;
 
+    /// <summary>How often the caption steps its words on while they come, about thirty times a second.</summary>
+    private static readonly TimeSpan Frame = TimeSpan.FromMilliseconds(33);
+
+    /// <summary>
+    /// Whether the words come at a pace (F154): only for an answer still streaming when the caption first draws, so an
+    /// answer already done shows whole and a reload never types it out again.
+    /// </summary>
+    private bool _paced;
+
+    /// <summary>How many letters show just now, part letters kept, as <see cref="WordPace"/> said.</summary>
+    private double _shown;
+
+    /// <summary>The module that grows the caption in and fades it out (F154).</summary>
+    private JsModule? _motion;
+
+    /// <summary>Stops the pace when the caption goes.</summary>
+    private readonly CancellationTokenSource _pacing = new();
+
+    /// <summary>The words to draw: those the pace has reached, or all of them once it has done.</summary>
+    private string Shown => _paced ? Words[..Math.Min(Words.Length, WordPace.Letters(_shown))] : Words;
+
+    /// <summary>An answer still streaming when the caption first draws comes at a pace.</summary>
+    protected override void OnInitialized() => _paced = Streaming;
+
+    /// <summary>
+    /// Steps the words on about thirty times a second, as the pace says, until the answer is done and all have shown.
+    /// </summary>
+    private async Task PaceAsync(CancellationToken stop)
+    {
+        using var frames = new PeriodicTimer(Frame);
+        long last = System.Diagnostics.Stopwatch.GetTimestamp();
+        try
+        {
+            // Each tick waits free of the page's own turn, and the drawing is handed back to it.
+            while (await frames.WaitForNextTickAsync(stop).ConfigureAwait(false))
+            {
+                TimeSpan since = System.Diagnostics.Stopwatch.GetElapsedTime(last);
+                last = System.Diagnostics.Stopwatch.GetTimestamp();
+                _shown = WordPace.Next(_shown, Words.Length, since, done: !Streaming);
+                if (!Streaming && WordPace.Letters(_shown) >= Words.Length) _paced = false;
+                await InvokeAsync(StateHasChanged);
+                if (!_paced) return;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // The caption went while its words were still coming.
+        }
+    }
+
     /// <summary>Turns the caption over, or back to the answer.</summary>
     private void Turn() => _turned = !_turned;
 
@@ -123,6 +173,21 @@ public partial class AgentCaption : IAsyncDisposable
             _stoodBeside = Beside;
             _module = new JsModule(JS, FrameworkScripts.Caption);
             await _module.InvokeVoidAsync("standBeside", _caption);
+            // It grows in from where it comes from (F154); a visitor who asked for less motion sees its words at once.
+            _motion = new JsModule(JS, FrameworkScripts.CaptionMotion);
+            try
+            {
+                if (await _motion.InvokeAsync<bool>("lessMotion")) _paced = false;
+                await _motion.InvokeVoidAsync("growIn", _caption);
+            }
+            catch (JSException)
+            {
+                // No motion to be had: the words show whole rather than not at all.
+                _paced = false;
+                StateHasChanged();
+            }
+
+            if (_paced) _ = PaceAsync(_pacing.Token);
             return;
         }
 
@@ -134,17 +199,32 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>The caption is going: its module stops following the page, and is let go.</summary>
     public async ValueTask DisposeAsync()
     {
-        if (_module is null) return;
-        // The browser may be gone already, with the page.
-        try
+        await _pacing.CancelAsync();
+        _pacing.Dispose();
+        GC.SuppressFinalize(this);
+        if (_module is not null)
         {
-            await _module.InvokeVoidAsync("letGo", _caption);
-        }
-        catch (JSDisconnectedException)
-        {
+            // First the page is let go of, the place lit and the dimming, whatever else fails after (Louis: "click
+            // closed and stayed like this"). The browser may be gone already, with the page.
+            try
+            {
+                await _module.InvokeVoidAsync("letGo", _caption);
+            }
+            catch (JSDisconnectedException)
+            {
+            }
+
+            await _module.DisposeAsync();
         }
 
-        await _module.DisposeAsync();
-        GC.SuppressFinalize(this);
+        if (_motion is null) return;
+        // A motion module that never loaded fails here too, and the caption is going anyway.
+        try
+        {
+            await _motion.DisposeAsync();
+        }
+        catch (JSException)
+        {
+        }
     }
 }

@@ -8,8 +8,7 @@
     align-self: center;
     width: min(400px, 100%);
     perspective: 1400px;
-    /* Its entry holds nothing once it has played, so the module's glide to another spot can move it after. */
-    animation: rise .45s var(--web-spring, ease-out) backwards;
+    /* Its entry is its motion module's: it grows in from where it comes from (F154). */
 }
 .caption-flip {
     display: grid;
@@ -155,10 +154,9 @@
         width: 400px;
     }
     .agent-caption[data-stands][data-in-place] { width: var(--caption-w); }
-    .agent-caption[data-in-place] .caption-face {
-        min-height: var(--caption-h);
-        border-radius: var(--caption-r);
-    }
+    /* In a card's place it keeps the card's width and corners but fits its words, with no empty stretch under them
+       (F154, Louis's pick C). */
+    .agent-caption[data-in-place] .caption-face { border-radius: var(--caption-r); }
 }
 
 @media (prefers-reduced-motion: reduce) {

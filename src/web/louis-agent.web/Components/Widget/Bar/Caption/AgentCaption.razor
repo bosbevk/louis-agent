@@ -20,9 +20,9 @@
                             aria-label="@Text.CloseCaption" @onclick="OnClose">×</button>
                 }
             </div>
-            @if (Words.Length > 0)
+            @if (Shown.Length > 0)
             {
-                <div class="caption-says">@Markdown.ToHtml(Words)</div>
+                <div class="caption-says">@Markdown.ToHtml(Shown)</div>
             }
             @if (Offer is { } offer)
             {

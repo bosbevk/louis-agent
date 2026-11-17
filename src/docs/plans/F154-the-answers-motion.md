@@ -126,5 +126,9 @@ drawing, skill 18, in [the goal](../GOAL.md).
 
 ## Approved during the build
 
+- **2026-11-17, the answer in a card's place fits its words.** Louis, of an answer that stood in a card's place and
+  kept the card's height with an empty stretch under its words: "1C", fit the card to the answer. It keeps the card's
+  width and corners and is as tall as its words. Of a faint tint for the caption's glass: "2 leave it", none.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md), [louis-agent.web](../projects/louis-agent.web.md)

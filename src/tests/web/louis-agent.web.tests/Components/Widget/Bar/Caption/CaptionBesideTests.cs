@@ -70,9 +70,10 @@ public class CaptionBesideTests
     /// <summary>
     /// F151.4, FX163: when the piece the answer is about stands in a row of cards, the agent's words take the place of
     /// the cards beside it, as the row's rule says (Louis's two pictures): in a row of four, the two on the far side;
-    /// in a row of three or fewer, the next one, or the one before for the last. Where they stand, how wide and tall
-    /// they are together, and their corners. The module says so by a mark of its own with those measures, and the
-    /// styles read them. With no row the words stand beside the piece as before, which the other tests here hold.
+    /// in a row of three or fewer, the next one, or the one before for the last. Where they stand, how wide they are
+    /// together, and their corners; the words fit their own height, with no empty stretch under them (F154, Louis's
+    /// pick C). The module says so by a mark of its own with those measures, and the styles read them. With no row the
+    /// words stand beside the piece as before, which the other tests here hold.
     /// </summary>
     [Test]
     public void InARowOfCards_TheWordsTakeTheirNeighboursPlace_TheirSizeAndTheirCorners()
@@ -87,10 +88,10 @@ public class CaptionBesideTests
                 "only a piece, never a whole section the guide lit");
             Assert.That(Module, Does.Contain("matches(\"[data-piece]\")"), "a card is a piece of the page");
             Assert.That(Module, Does.Contain("dataset.inPlace"), "the module's mark, an attribute of its own");
-            Assert.That(Module, Does.Contain("--caption-w").And.Contain("--caption-h").And.Contain("--caption-r"));
+            Assert.That(Module, Does.Contain("--caption-w").And.Contain("--caption-r").And.Not.Contain("--caption-h"));
             Assert.That(WideBlock,
                 Does.Contain(".agent-caption[data-stands][data-in-place] { width: var(--caption-w); }"));
-            Assert.That(WideBlock, Does.Contain("min-height: var(--caption-h);"));
+            Assert.That(WideBlock, Does.Not.Contain("min-height: var(--caption-h);"));
             Assert.That(WideBlock, Does.Contain("border-radius: var(--caption-r);"));
         });
     }
