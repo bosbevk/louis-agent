@@ -13,7 +13,10 @@
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    font: 700 17px/1 inherit;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1;
     @include surface.mark();
 }
 .orb::before, .orb::after {

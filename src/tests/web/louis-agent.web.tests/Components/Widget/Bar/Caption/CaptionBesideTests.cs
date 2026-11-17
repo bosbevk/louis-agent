@@ -24,6 +24,26 @@ public class CaptionBesideTests
     private static string Styles => Read("Bar/Caption/AgentCaption.razor.scss");
     private static string WidgetScript => Read("ChatWidget.razor.js");
 
+    /// <summary>
+    /// FX190: the way into the box keeps the caption's face, small, on the left. Its font was written
+    /// <c>13px/1.4 inherit</c>, which a browser throws away whole, so the press took the browser's own button font,
+    /// centred and, on a phone, large enough to break over two lines.
+    /// </summary>
+    [Test]
+    public void TheWayIntoTheBox_KeepsTheCaptionsSmallFace_OnTheLeft()
+    {
+        int start = Styles.IndexOf(".caption-ask {", StringComparison.Ordinal);
+        string rule = Styles[start..Styles.IndexOf('}', start)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rule, Does.Not.Contain("13px/1.4 inherit"));
+            Assert.That(rule, Does.Contain("font: inherit;"));
+            Assert.That(rule, Does.Contain("font-size: 13px;"));
+            Assert.That(rule, Does.Contain("text-align: left;"));
+        });
+    }
+
     /// <summary>The screens the module counts as wide, as it says them to the browser.</summary>
     private static string WideQuery
     {
