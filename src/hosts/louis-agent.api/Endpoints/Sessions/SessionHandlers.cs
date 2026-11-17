@@ -87,20 +87,20 @@ internal sealed class SessionHandlers(AgentHostContext host)
         if (request?.InvalidTag() is { } invalid)
         {
             var tooLong = new InvalidTagHoles(invalid, CreateSessionRequestReading.MaxTagLength);
-            return Bad(MessageText.Format(ApiUserText.InvalidTag, tooLong));
+            return RefuseBadRequest(MessageText.Format(ApiUserText.InvalidTag, tooLong));
         }
 
         if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
         {
             var unknownZone = new UnknownTimeZoneHoles(request.TimeZone);
-            return Bad(MessageText.Format(ApiUserText.UnknownTimeZone, unknownZone));
+            return RefuseBadRequest(MessageText.Format(ApiUserText.UnknownTimeZone, unknownZone));
         }
 
         // "stream" names the format the session's events are written in (F18 step 1f).
-        if (FormatOf(request) is not { } format) return UnknownFormat(request!.Stream);
+        if (ReadFormat(request) is not { } format) return RefuseUnknownFormat(request!.Stream);
         if (!ReplayResolution.TryResolve(request, _defaultReplay, host.Agent.KeepsRecordings, out var replay,
                 out string? refusal))
-            return Bad(refusal!);
+            return RefuseBadRequest(refusal!);
 
         // A trial recorded again (the runner's one retry) starts afresh, so a replay sees the second attempt, not the
         // first (F18 step 5a).
@@ -120,7 +120,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         }
         catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
         {
-            return Bad(ex.Message);
+            return RefuseBadRequest(ex.Message);
         }
 
         if (admitted is not null) door.Admit(session.Id, context);
@@ -138,7 +138,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// <summary>The session now; 404 for one this instance doesn't have.</summary>
     public SessionAnswer GetSession(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session) return UnknownSession(id);
+        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
         return TypedResults.Json(SessionReply.Of(session), SessionJson.SnakeCase);
     }
 
@@ -148,22 +148,22 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// </summary>
     public WorkAnswer GetSessionWork(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session) return UnknownSession(id);
-        if (session.IsBusy) return Busy(id);
+        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
+        if (session.IsBusy) return RefuseBusy(id);
         return TypedResults.Json(SessionWorkReply.Of(session), SessionJson.SnakeCase);
     }
 
     /// <summary>Removes the session; 404 for one this instance doesn't have.</summary>
     public DeletedAnswer DeleteSession(string id, AgentSessions sessions)
     {
-        if (!sessions.Remove(id)) return UnknownSession(id);
+        if (!sessions.Remove(id)) return RefuseUnknownSession(id);
         return TypedResults.Json(new SessionDeletedReply(id, true), SessionJson.SnakeCase);
     }
 
     /// <summary>Cancels the session's running turn, saying whether there was one; 404 for an unknown session.</summary>
     public CancelledAnswer CancelSession(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session) return UnknownSession(id);
+        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
         return TypedResults.Json(new SessionCancelledReply(id, session.Cancel()), SessionJson.SnakeCase);
     }
 
@@ -173,10 +173,10 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// </summary>
     public TurnAnswer SendMessage(string id, SendMessageRequest request, AgentSessions sessions, HttpContext http)
     {
-        if (sessions.Get(id) is not { } session) return UnknownSession(id);
+        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
         string prompt = TurnStream.BuildPrompt(request);
-        if (string.IsNullOrWhiteSpace(prompt)) return Bad(MessageText.Format(ApiUserText.EmptyMessage));
-        if (!session.TryStartTurn(http.RequestAborted, out var turn)) return Busy(id);
+        if (string.IsNullOrWhiteSpace(prompt)) return RefuseBadRequest(MessageText.Format(ApiUserText.EmptyMessage));
+        if (!session.TryStartTurn(http.RequestAborted, out var turn)) return RefuseBusy(id);
 
         // The agents' windows on the visitor's screen, for an ask to one of them this turn (FX134).
         session.Windows = request.Windows ?? [];
@@ -194,38 +194,42 @@ internal sealed class SessionHandlers(AgentHostContext host)
             prompt = MessageText.Format(ApiModelText.UserPlace, where) + "\n\n" + prompt;
         }
 
+        // The engine paces the words when its host turned STREAM_PACE on, and says so before the first word, so a page
+        // leaves its own pacer off and the words are paced once (F156).
+        if (host.Agent.StreamPace) http.Response.Headers[ApiHeaders.StreamPaced] = ApiHeaders.StreamPacedOn;
+
         return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns));
     }
 
     /// <summary>
     /// The stream format the body names; Claude's when there is no body, none for a name it doesn't know.
     /// </summary>
-    private static StreamFormat? FormatOf(CreateSessionRequest? request) =>
+    private static StreamFormat? ReadFormat(CreateSessionRequest? request) =>
         request is null ? StreamFormat.Claude : request.StreamFormatOrNull();
 
     /// <summary>The 400 for a stream format that isn't one of ours, naming them.</summary>
-    private static JsonHttpResult<ApiError> UnknownFormat(string? format)
+    private static JsonHttpResult<ApiError> RefuseUnknownFormat(string? format)
     {
         var unknown = new UnknownStreamFormatHoles(format, string.Join(", ", SettingChoice.Names<StreamFormat>()));
-        return Bad(MessageText.Format(ApiUserText.UnknownStreamFormat, unknown));
+        return RefuseBadRequest(MessageText.Format(ApiUserText.UnknownStreamFormat, unknown));
     }
 
     /// <summary>The 404 for a session this instance doesn't have.</summary>
-    private static JsonHttpResult<ApiError> UnknownSession(string id)
+    private static JsonHttpResult<ApiError> RefuseUnknownSession(string id)
     {
         var unknown = new UnknownSessionHoles(id);
         return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownSession, unknown));
     }
 
     /// <summary>The 409 for a session that is still answering, naming it in the address to cancel it.</summary>
-    private static JsonHttpResult<ApiError> Busy(string id)
+    private static JsonHttpResult<ApiError> RefuseBusy(string id)
     {
         var busy = new SessionBusyHoles(id);
         return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, busy));
     }
 
     /// <summary>A 400 with its reason.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
+    private static JsonHttpResult<ApiError> RefuseBadRequest(string message) => ApiErrors.BadRequest(message);
 
     /// <summary>
     /// What a visitor's session is allowed to be: the open identity the door admitted, the toolsets of its own packs

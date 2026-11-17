@@ -59,11 +59,11 @@ internal static class ApiTestHost
         DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null,
         IReadOnlyList<IAgentPack>? morePacks = null, bool evals = true,
         IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
-        IReadOnlyDictionary<string, Uri>? agentPeers = null)
+        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
-            agentPeers);
+            agentPeers, streamPace);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host, openDoor ?? OpenDoorOptions.Shut);
@@ -88,7 +88,7 @@ internal static class ApiTestHost
     }
 
     /// <summary>Every route the API maps, endpoint by endpoint.</summary>
-    public static IReadOnlyList<RouteEndpoint> Routes(WebApplication app) =>
+    public static IReadOnlyList<RouteEndpoint> ListRoutes(WebApplication app) =>
         ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>()
         .ToList();
 
@@ -96,7 +96,7 @@ internal static class ApiTestHost
     /// The route's pattern with its group prefix and constraints (<c>/v1/admin/benchmarks/runs/{id}</c>); every route's
     /// starts with a slash.
     /// </summary>
-    public static string Pattern(RouteEndpoint endpoint)
+    public static string ReadPattern(RouteEndpoint endpoint)
     {
         string text = endpoint.RoutePattern.RawText ?? "";
         Assert.That(text, Does.StartWith("/"), "a route's raw pattern names its whole path, group prefix included");
@@ -107,16 +107,16 @@ internal static class ApiTestHost
     /// The route as <c>METHOD /pattern</c>: its methods joined with commas, or <c>ANY</c> for a route that takes every
     /// method.
     /// </summary>
-    public static string Line(RouteEndpoint endpoint)
+    public static string DescribeRoute(RouteEndpoint endpoint)
     {
         var methods = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods;
         string method = methods is { Count: > 0 } ? string.Join(",", methods) : "ANY";
-        return $"{method} {Pattern(endpoint)}";
+        return $"{method} {ReadPattern(endpoint)}";
     }
 
     /// <summary>Who may call the route, as the key gate reads it.</summary>
-    public static RouteAccess Access(RouteEndpoint endpoint) =>
-        AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
+    public static RouteAccess ReadAccess(RouteEndpoint endpoint) =>
+        AgentKeyGate.AccessFor(new PathString(ReadPattern(endpoint)), endpoint);
 
     /// <summary>
     /// What the API runs on: an engine over the model given (one that is never called, unless a test sends a message),
@@ -127,18 +127,19 @@ internal static class ApiTestHost
 
     /// <summary>
     /// The agent the test API runs: Puls and any identity a test adds, on Puls's packs and any it adds, with this
-    /// workspace and model, and the peers a test names (none by default).
+    /// workspace and model, the peers a test names (none by default), and its words paced when a test says so (F156).
     /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
         IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null,
-        IReadOnlyDictionary<string, Uri>? agentPeers = null)
+        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
     {
         var options = new AgentOptions
         {
             WorkspaceRoot = workspaceRoot,
             SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
             RatesUrl = null,
-            AgentPeers = agentPeers ?? new Dictionary<string, Uri>()
+            AgentPeers = agentPeers ?? new Dictionary<string, Uri>(),
+            StreamPace = streamPace
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         // A test may add an identity beside Puls's (F109.3: a session names its identity).

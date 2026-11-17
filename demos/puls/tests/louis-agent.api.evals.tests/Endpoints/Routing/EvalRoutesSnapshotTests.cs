@@ -18,8 +18,8 @@ public class EvalRoutesSnapshotTests
     private static string Snapshot()
     {
         using var app = ApiTestHost.Build();
-        var routes = ApiTestHost.Routes(app)
-            .Select(endpoint => $"{ApiTestHost.Line(endpoint)} ({ApiTestHost.Access(endpoint)})")
+        var routes = ApiTestHost.ListRoutes(app)
+            .Select(endpoint => $"{ApiTestHost.DescribeRoute(endpoint)} ({ApiTestHost.ReadAccess(endpoint)})")
             .Order(StringComparer.Ordinal).ToList();
         return JsonSerializer.Serialize(routes, new JsonSerializerOptions
         {
