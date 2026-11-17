@@ -134,10 +134,4 @@ public class FlatFollowsItsDesignTests
     [TestCase(SiteStyle.Light)]
     public void TheWordmarksO_IsGlasssBallWithoutItsBubble(SiteStyle style) =>
         Assert.That(Value(style, "--web-wordmark-o"), Is.EqualTo(".5em"));
-
-    /// <summary>FX183: a heading's band is the words' own colour, so the headline reads solid.</summary>
-    [TestCase(SiteStyle.Dark)]
-    [TestCase(SiteStyle.Light)]
-    public void TheHeadingBand_IsTheWordsOwnColour(SiteStyle style) =>
-        Assert.That(Value(style, "--web-heading-band"), Is.EqualTo("var(--bs-emphasis-color)"));
 }

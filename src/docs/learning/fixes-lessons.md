@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX196 · Paint through letters, and their edges go soft
+
+The big headings wore a gradient clipped into their letters, a violet band on glass and the words' own colour on flat.
+On Louis's screen the edges read as a soft rim, though a local screenshot looked nearly the same as plain text, so
+the exact cause on his screen was not pinned down. What is known is that a background clipped to the letters is
+painted as an image in their shape, not drawn as text. So the heading now takes its strongest colour as ordinary
+text, and the theme value that held the band is gone, since nothing reads it. The lesson: when a look can't be
+reproduced but the plain way does the same job, the plain way wins, and a heading that must read crisp everywhere is
+plain ink. Skill 18.
+
 ## FX195 · What a guide may offer is what the site still has
 
 Two demos left the site, and with them their pages, their rail entries, their recordings and the triage pack's web

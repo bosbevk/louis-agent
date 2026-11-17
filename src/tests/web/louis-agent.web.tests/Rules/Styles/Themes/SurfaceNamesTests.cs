@@ -42,7 +42,7 @@ public class SurfaceNamesTests
         "--web-dock-fill", "--web-dock-edge", "--web-dock-blur",
         "--web-sunk-fill", "--web-sunk-shadow", "--web-sunk-lit",
         "--web-chip-fill", "--web-chip-edge", "--web-chip-blur",
-        "--web-page-lines", "--web-page-lights", "--web-heading-band", "--web-wordmark-o",
+        "--web-page-lines", "--web-page-lights", "--web-wordmark-o",
         "--web-press-hover-fill", "--web-quiet-hover-fill", "--web-quiet-hover-ink", "--web-chip-hover-edge",
         "--web-icon-fill", "--web-icon-shadow",
         "--web-mark-fill", "--web-mark-gloss", "--web-mark-ink",

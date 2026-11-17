@@ -42,6 +42,33 @@ public partial class WordsPaintOnceTests
         Assert.That(stacked, Is.Empty);
     }
 
+    /// <summary>
+    /// FX196, Louis: "make it just solid ink". A big heading's words are their strongest colour, painted as plain
+    /// text paints, with no colour clipped into the letters, so their edges are as crisp as any text's.
+    /// </summary>
+    [Test]
+    public void AHeadingsWords_AreSolidInk()
+    {
+        string marks = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Styles/web/tools/surface/_marks.scss"));
+        int start = marks.IndexOf("@mixin chrome-words", StringComparison.Ordinal);
+        string mixin = marks[start..(marks.IndexOf('}', start) + 1)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(mixin, Does.Contain("color: var(--bs-emphasis-color);"));
+            Assert.That(mixin, Does.Not.Contain("background-clip"));
+        });
+    }
+
+    /// <summary>With the headings solid, no theme sets the colour of a band through them.</summary>
+    [Test]
+    public void NoTheme_SetsAHeadingsBand() =>
+        Assert.That(Sheets().Concat(Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "demos"), "*.scss",
+                    SearchOption.AllDirectories))
+                .Where(file => File.ReadAllText(file).Contains("--web-heading-band")).Select(Path.GetFileName),
+            Is.Empty);
+
     /// <summary>A heading's colour no longer moves through its letters.</summary>
     [Test]
     public void AHeadingsWords_DoNotSweep() =>
