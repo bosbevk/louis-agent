@@ -24,6 +24,12 @@ public class ThemesArtTests
     /// </summary>
     private const int FlatMarks = 3;
 
+    /// <summary>
+    /// The version glass's drawings and its silk are at, in their addresses, for the same reason (FX189): a browser
+    /// keeps them for an hour by their address.
+    /// </summary>
+    private const int GlassDrawings = 1;
+
     /// <summary>The themes project's served files on disk.</summary>
     private static readonly string Root = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot");
 
@@ -48,11 +54,24 @@ public class ThemesArtTests
         var wrong = art.Where(name =>
         {
             string drawing = name.Key["--web-art-".Length..];
-            string expected = $"url(\"{Served}glass/{word}/{drawing}.svg\")";
+            string expected = $"url(\"{Served}glass/{word}/{drawing}.svg?v={GlassDrawings}\")";
             return name.Value != expected || !File.Exists(Path.Combine(Root, "glass", word, $"{drawing}.svg"));
         }).Select(name => $"{name.Key}: {name.Value}");
 
         Assert.That(wrong, Is.Empty);
+    }
+
+    /// <summary>
+    /// FX189: glass's page behind, its silk, carries the drawings' version in its address too, so a new silk is
+    /// fetched again as a new drawing is.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void GlasssSilk_CarriesTheDrawingsVersion(SiteStyle style)
+    {
+        string lights = ThemeSheet.Values(CompiledThemes.Css(), GlassTheme.Theme, style)["--web-page-lights"];
+
+        Assert.That(lights, Does.Contain($"glass/{style.Wire()}/silk.webp?v={GlassDrawings}\""));
     }
 
     /// <summary>

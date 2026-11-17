@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX189 · A file that changes needs an address that changes
+
+The server lets a browser keep a theme's drawing for an hour by its address. Flat's mark showed what that costs: a
+drawing changed, its address did not, and Louis's Chrome went on drawing the old one even after a hard refresh,
+since a drawing reached through the stylesheet was not fetched again. Glass's drawings and its silk had the same
+risk for every returning visitor. They now carry their version in their address, raised whenever one changes, so a
+new drawing is a new address the browser has never kept. The lesson: caching is keyed by the address, so anything
+that can change must change its address when it does. Skill 18 (testing and shipping: a test holds every drawing's
+address to its version).
+
 ## FX188 · Things that do the same job should say the same thing
 
 The contact page had three WhatsApp buttons. One said the number and two said "Chat on WhatsApp", because each was

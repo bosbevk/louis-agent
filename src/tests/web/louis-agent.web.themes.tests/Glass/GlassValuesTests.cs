@@ -105,7 +105,7 @@ public class GlassValuesTests
         {
             Assert.That(Value(style, "--web-page-lights"),
                 Is.EqualTo(
-                    $"url(\"/_content/louis-agent.web.themes/glass/{folder}/silk.webp\") center / cover no-repeat"));
+                    $"url(\"/_content/louis-agent.web.themes/glass/{folder}/silk.webp?v=1\") center / cover no-repeat"));
             Assert.That(Value(style, "--web-page-lines"), Is.EqualTo("none"));
         });
     }

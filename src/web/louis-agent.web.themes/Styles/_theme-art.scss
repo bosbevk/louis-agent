@@ -17,10 +17,12 @@ $drawings: (
    under _content, so an address written from the site's css folder led nowhere from there. */
 $served: "/_content/louis-agent.web.themes/";
 
-/* Every drawing named, each to the file of this theme and style. */
-@mixin drawn($theme, $style) {
+/* Every drawing named, each to the file of this theme and style. A browser keeps a drawing for an hour by its
+   address, so the address carries the drawings' version, raised whenever one changes, and every browser fetches the
+   new one (FX189). */
+@mixin drawn($theme, $style, $version) {
     @each $drawing in $drawings {
-        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg");
+        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg?v=#{$version}");
     }
 }
 
