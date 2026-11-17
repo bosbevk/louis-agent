@@ -138,9 +138,9 @@ of the model (attach it, show it in a picker, keep it in the context). Reading o
 chosen by the *user*: a template, like a slash command.
 
 Our server published only tools. The packs' feeds (the shop-prices tables, ADR 0070) are plainly resources: read-only
-data with a name, a description and a text. Now `resources/list` shows `feed://shop-prices` and `resources/read`
+data with a name, a description and a text. Now `resources/list` shows `feeds://shop-prices` and `resources/read`
 returns the same JSON the API serves at `/v1/feeds/shop-prices`. The same tables now reach a model two ways: the
-`EstimatePrices` *tool* for the model to price a list, the `feed://` *resource* for an app that wants the whole table.
+`EstimatePrices` *tool* for the model to price a list, the `feeds://` *resource* for an app that wants the whole table.
 
 ### One shape, two protocols
 
@@ -152,7 +152,7 @@ MCP" buys: the convertibility was designed in before anything was converted.
 | | The API | The MCP server |
 |---|---|---|
 | Find the feeds | `GET /v1/feeds` | `resources/list` |
-| Read one | `GET /v1/feeds/shop-prices` | `resources/read feed://shop-prices` |
+| Read one | `GET /v1/feeds/shop-prices` | `resources/read feeds://shop-prices` |
 | Not there | `404` | the protocol's "resource not found" error |
 | Who | anyone (open) | whoever holds the MCP key (HTTP); the parent process (stdio) |
 
@@ -171,7 +171,7 @@ Behind the key over HTTP, open on the API. One gate for the whole MCP endpoint, 
 JSON-RPC body to let `resources/*` through. The data is still free to anyone on the API.
 
 Read whole, no updates. A feed doesn't send `notifications/resources/updated` when Stats SA's new month is uploaded; a
-client re-reads. A large feed would become a resource template (`feed://shop-prices/{province}`).
+client re-reads. A large feed would become a resource template (`feeds://shop-prices/{province}`).
 
 Set up once. Both transports used to register the tools on their own; `McpPrimitives.Add` is now the one place, so the
 next primitive (a prompt, say) can't be forgotten in one of them.
@@ -222,6 +222,18 @@ Off, the model drops most of its answer in one second, in bursts and uneven gaps
 about three seconds at an even few hundred letters a second, in smaller pieces. The pacing's cost is there too: the
 last word comes about two seconds later, the price of spreading a burst. A graph of the two runs showed it best, so a
 chart kind for the docs' own diagram tool (F158) and the probe as a tool of the repo (F159) come next, to keep it.
+
+## A scheme names what it serves, in the words the rest uses (CL67, 2026-11-17)
+
+An MCP resource's address starts with a scheme, the part before `://`, and the spec lets a server pick its own. Ours
+said `feed://shop-prices` while the API's route for the same thing is `/v1/feeds/shop-prices`, and the docs coming
+next will be `docs://` beside `/v1/docs` and `docs.louis-agent.dev`. One thing named two ways is one thing a reader
+has to translate, so the feeds' scheme is plural now too: `feeds://shop-prices`. The scheme is an enum
+(`ResourceScheme`, ADR 0043), so the rename was one member renamed through Rider and its one use followed.
+
+No alias keeps `feed://` working. Nothing outside our own parts reads it yet, and until something is sold nothing we
+send between our own parts is kept backward compatible (ADR 0049): an alias would be a second name to test and
+explain for a reader that doesn't exist.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md) ·

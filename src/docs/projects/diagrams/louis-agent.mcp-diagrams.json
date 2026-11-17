@@ -100,7 +100,7 @@
         "step": "message",
         "from": "C",
         "to": "S",
-        "text": "resources/read feed://{name}"
+        "text": "resources/read feeds://{name}"
       },
       {
         "step": "message",

@@ -1,7 +1,7 @@
 # 0072. The MCP server publishes the packs' feeds as resources
 
 **Status:** Accepted · **Date:** 2026-11-04 (Louis picked item 1, "the packs' feeds as MCP resources", then *one
-resource per feed*, *`feed://{name}`*, *a real client in memory* and *behind the key, like all*) · **Recorded:** 2026-11-04
+resource per feed*, *`feeds://{name}`*, *a real client in memory* and *behind the key, like all*) · **Recorded:** 2026-11-04
 
 ## Context
 
@@ -12,9 +12,9 @@ server published only tools: a client using louis-agent over MCP couldn't read t
 may act), **resources** (data the application or the user chooses to put in front of the model, read by a URI) and
 **prompts**. A feed is plainly a resource. Four choices were open, each with three options:
 
-- **How:** one resource per feed through the SDK's own `McpServerResource`; one template `feed://{name}` (a client
+- **How:** one resource per feed through the SDK's own `McpServerResource`; one template `feeds://{name}` (a client
   would have to know the names); or hand-written `resources/list` and `resources/read` handlers (redoing the SDK).
-- **The URI:** `feed://{name}`; `louis-agent://feeds/{name}` (the product's name in the engine); or the API's `https`
+- **The URI:** `feeds://{name}`; `louis-agent://feeds/{name}` (the product's name in the engine); or the API's `https`
   URL (the server would have to know the API, and a client might fetch it directly).
 - **The test:** a real client against a real server over in-memory pipes; the mapping alone; or a check by hand.
 - **Who over HTTP:** behind the MCP key like everything else; `resources/*` open (a second auth rule reading JSON-RPC
@@ -22,7 +22,7 @@ may act), **resources** (data the application or the user chooses to put in fron
 
 ## Decision
 
-*The MCP server publishes every feed in the catalogue as a resource, `feed://{name}`, `application/json`, read whole
+*The MCP server publishes every feed in the catalogue as a resource, `feeds://{name}`, `application/json`, read whole
 by `ReadJsonAsync` when a client asks; over HTTP it sits behind the server's key.*
 
 - **`FeedResources.From(feeds)`** (`src/hosts/louis-agent.mcp/Resources/`, an Adapter) makes one SDK resource per
@@ -40,5 +40,5 @@ by `ReadJsonAsync` when a client asks; over HTTP it sits behind the server's key
 - The same data reaches a model two ways: the tool for the model, the resource for the application.
 - Over HTTP the feeds need the MCP key, though the API gives them to anyone; the data stays open there. Opening them
   over MCP too would be a new decision.
-- A feed is read whole, as on the API; paging or a filter would be a resource template (`feed://{name}/{province}`)
+- A feed is read whole, as on the API; paging or a filter would be a resource template (`feeds://{name}/{province}`)
   when a feed needs it. Feeds don't send `notifications/resources/updated` when their data changes.

@@ -131,7 +131,7 @@ with these tests through a project reference that brings no assembly, just like 
 These run the MCP SDK's real server and client, joined by two in-memory pipes, so there's no port and no process.
 `InMemoryMcp.cs` sets that up; it isn't a test itself.
 
-`Resources/FeedResourcesTests.cs` checks that each feed is listed as `feed://{name}` with its description and
+`Resources/FeedResourcesTests.cs` checks that each feed is listed as `feeds://{name}` with its description and
 `application/json`, that it reads back as its JSON, and that an unknown URI gets the protocol's error.
 `McpPrimitivesTests.cs` checks the one setup both transports use: the catalogue's feeds as resources, beside the
 engine's tools.

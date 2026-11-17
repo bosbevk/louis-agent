@@ -29,8 +29,8 @@ public class FeedResourcesTests
 
         Assert.That(listed.Select(r => (r.Uri, r.Name, r.Description, r.MimeType)), Is.EquivalentTo(new[]
         {
-            ("feed://rent", "rent", "The rent feed", MediaTypeNames.Application.Json),
-            ("feed://fuel", "fuel", "The fuel feed", MediaTypeNames.Application.Json),
+            ("feeds://rent", "rent", "The rent feed", MediaTypeNames.Application.Json),
+            ("feeds://fuel", "fuel", "The fuel feed", MediaTypeNames.Application.Json),
         }));
     }
 
@@ -39,13 +39,13 @@ public class FeedResourcesTests
     {
         await using var mcp = await ServeAsync(new FakeFeed("rent", """{"notice":"averages"}"""));
 
-        var read = await mcp.Client.ReadResourceAsync("feed://rent");
+        var read = await mcp.Client.ReadResourceAsync("feeds://rent");
 
         var text = read.Contents.OfType<TextResourceContents>().Single();
         Assert.Multiple(() =>
         {
             Assert.That(text.Text, Is.EqualTo("""{"notice":"averages"}"""));
-            Assert.That(text.Uri, Is.EqualTo("feed://rent"));
+            Assert.That(text.Uri, Is.EqualTo("feeds://rent"));
             Assert.That(text.MimeType, Is.EqualTo(MediaTypeNames.Application.Json));
         });
     }
@@ -55,7 +55,7 @@ public class FeedResourcesTests
     {
         await using var mcp = await ServeAsync(new FakeFeed("rent"));
 
-        Assert.That(async () => await mcp.Client.ReadResourceAsync("feed://nope"), Throws.InstanceOf<McpException>());
+        Assert.That(async () => await mcp.Client.ReadResourceAsync("feeds://nope"), Throws.InstanceOf<McpException>());
     }
 
     [Test]

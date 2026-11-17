@@ -19,7 +19,7 @@ tools are already held to MCP's shapes by `PackConvertibilityTests` ([ADR 0028](
 ## Publish a feed
 
 Nothing to do here either. Every feed a pack lists (`IAgentPack.Feeds`, [ADR 0070](../adr/0070-packs-publish-data-feeds.md))
-is a resource, `feed://{name}`, set up by `McpPrimitives.Add` for both transports
+is a resource, `feeds://{name}`, set up by `McpPrimitives.Add` for both transports
 ([ADR 0072](../adr/0072-feeds-are-mcp-resources.md)); the API serves the same feed at `/v1/feeds/{name}`. Add the feed
 in its pack ([Build a pack](build-a-pack.md)).
 
@@ -58,7 +58,7 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:5090/         
 
 For stdio, add the server to a client from `config/rider/rider-mcp-servers.example.json` and ask it to list the tools.
 Over stdio by hand: pipe `initialize`, `notifications/initialized`, `resources/list` and `resources/read` (with
-`{"uri":"feed://shop-prices"}`) as JSON-RPC lines into the built server with `PACKS=shop-prices`. In code,
+`{"uri":"feeds://shop-prices"}`) as JSON-RPC lines into the built server with `PACKS=shop-prices`. In code,
 `src/tests/hosts/louis-agent.mcp.tests` runs a real client against the server over in-memory pipes (`InMemoryMcp`); its
 auth is core's `HostAuth` (`HostAuthTests`), and the tools are tested where they live.
 
