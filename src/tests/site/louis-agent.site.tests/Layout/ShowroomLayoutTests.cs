@@ -100,11 +100,14 @@ public class ShowroomLayoutTests
     }
 
     /// <summary>
-    /// FX192: what the showroom's start draws of the site's own, its frame and its three windows, is configured
-    /// framework controls and holds no HTML tag of the site's, as ADR 0125 has it. The offer is the framework's
+    /// FX192: what the showroom's start draws of the site's own, the page, its frame, its guide and its three
+    /// windows, is configured framework controls and holds no HTML tag of the site's, as ADR 0125 has it (Louis:
+    /// "this must be all frame work controls, only the site in the actual demo is not framework"). The offer is the framework's
     /// button, and the thing each window's agent showed is a card the framework draws.
     /// </summary>
+    [TestCase("Pages/Agents/DemosPage.razor")]
     [TestCase("Layout/ShowroomLayout.razor")]
+    [TestCase("Components/Guide/ExpertChat.razor")]
     [TestCase("Components/Showroom/Windows/SeemeeuWindow.razor")]
     [TestCase("Components/Showroom/Windows/WheatfieldWindow.razor")]
     [TestCase("Components/Showroom/Windows/KoringlandWindow.razor")]
