@@ -1,0 +1,49 @@
+@page "/how-it-works"
+
+<PageTitle>How it works · louis-agent</PageTitle>
+<PageHead Description="How the louis-agent C# AI agent framework works. One turn through every layer, the web with the backend, every identity and pack, and the rules every turn keeps." />
+
+@* How it works (F160.1, step 10): one turn through every layer, drawn, then the pipeline's layers in order, the web
+   with the backend, every identity and pack in the repo, and the rules every turn keeps, each section ending with
+   the docs it was written from. *@
+<Band Id="top" Topic="How it works" Title="One turn, through every layer." Summary="You send a message, the API hands it to the engine with the chat so far, and the engine runs the model and its tools until there is an answer, streamed back as it is written. Every request of a turn goes through the same six layers, outermost first.">
+    <DiagramFigure Source="OneTurn.Source" />
+    <TermList Terms="HowItWorks.Layers" />
+    <DocLinks>
+        <DocLink Path="src/docs/architecture/06-runtime-view.md">A turn, step by step</DocLink>
+        <DocLink Path="src/engine/louis-agent.core/Agent/Turns/ChatPipeline.cs">The pipeline</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="the-web" Topic="The web" Title="The web, with the backend." Summary="A site is C# in the browser, drawn first by its host so a search engine can read it. Its agent runs behind the API, in sessions.">
+    <TermList Terms="HowItWorks.TheWeb" />
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">Every site on the framework's web</DocLink>
+        <DocLink Path="src/docs/AGENT_COMMUNICATION.md">Every message on the wire</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="identities" Topic="Identities" Title="Who an agent is." Summary="An identity is its voice, its rules and its skills, as markdown, with the packs it uses by name. These are the ones in the repo.">
+    <TermList Terms="HowItWorks.Identities" />
+    <DocLinks>
+        <DocLink Path="src/docs/guides/build-an-identity.md">Build an identity</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="packs" Topic="Packs" Title="What an agent can do." Summary="A pack is tools in a package of its own, which references no other pack, so an MCP server can serve it as it is. These are the ones in the repo.">
+    <TermList Terms="HowItWorks.Packs" />
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0028-packs-stay-convertible-to-mcp.md">Packs stay convertible to MCP</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="the-rules" Topic="The rules" Title="What every turn keeps." Summary="A few rules hold on every turn, whatever the agent, each kept in code and not left to the prompt.">
+    <TermList Terms="HowItWorks.Rules" />
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0004-arguments-as-data.md">Arguments as data</DocLink>
+        <DocLink Path="src/docs/adr/0005-guard-the-context.md">Guard the context</DocLink>
+        <DocLink Path="src/docs/adr/0008-history-is-append-only.md">History is append-only</DocLink>
+        <DocLink Path="src/docs/adr/0007-measure-every-request.md">Measure every request</DocLink>
+        <DocLink Path="src/docs/adr/0068-every-fetch-obeys-robots-txt.md">Every fetch obeys robots.txt</DocLink>
+    </DocLinks>
+</Band>
