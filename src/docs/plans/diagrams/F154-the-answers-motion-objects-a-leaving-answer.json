@@ -1,0 +1,23 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F154 The answer's motion: what the bar holds while an answer leaves",
+  "caption": "For the length of a fade the bar draws two captions: the one leaving, and the next one if it has come.",
+  "flow": {
+    "nodes": [
+      { "id": "bar", "icon": "stack", "tone": "teal", "label": "AgentBar" },
+      { "id": "leaving", "icon": "file", "tone": "amber", "label": "AgentCaption\nLeaving, fading" },
+      { "id": "next", "icon": "file", "tone": "teal", "label": "AgentCaption\nthe next answer, growing in" },
+      { "id": "pace", "icon": "clock", "tone": "green", "label": "WordPace\none per caption" },
+      { "id": "module", "icon": "chip", "tone": "green", "label": "JsModule\nthe motion module" }
+    ],
+    "edges": [
+      { "from": "bar", "to": "leaving" },
+      { "from": "bar", "to": "next" },
+      { "from": "next", "to": "pace" },
+      { "from": "leaving", "to": "module" },
+      { "from": "next", "to": "module" }
+    ],
+    "direction": "down"
+  }
+}

@@ -12,17 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 124 | 94 |
+| Features (`F`) | 124 | 95 |
 | Fixes (`FX`) | 166 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (130 in the TODO)
+## Open (131 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
+| F154 | The answer's motion (Louis's pick A of three): the guide's answer grows out of the bar or the card it covers, its words come at a steady pace (`WordPace`), and it fades before it goes; no new package | Now |
 | F148 | One docs endpoint: a small header on every doc, one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, after F151 |
 | F150 | Every doc follows its kind's pattern: one pattern per kind of doc, held by a test whose list can only shrink; the framework's and the packs' docs, the 34 project docs first; its own plan | Now, after F148 |
 | F149 | The docs' lists are generated: the project tables, the settings table, the indexes and a project doc's fact sections written from the code and its comments by the docs' tool and checked in CI; its own plan | Now, after F150 |
