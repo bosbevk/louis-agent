@@ -28,10 +28,10 @@ public class ChatRunnerTests
         public readonly List<string> Opened = [];
         public int Changed, Ended;
 
-        /// <summary>Builds it all; a gone session answers 404 on its message.</summary>
-        public Harness(bool sessionGone = false, ChatText? text = null)
+        /// <summary>Builds it all; a gone session answers 404 on its message, and a paced one says so (F156).</summary>
+        public Harness(bool sessionGone = false, ChatText? text = null, bool paced = false)
         {
-            var api = FixtureApi.Client(Settings, out Handler, sessionGone);
+            var api = FixtureApi.Client(Settings, out Handler, sessionGone, paced);
             Store = new ChatStore(Js, Settings);
             Runner = new ChatRunner(api, Store, text ?? new ChatText(),
                 () => api.CreateSessionAsync([SampleToolset.Alpha]), Clock);
@@ -88,6 +88,21 @@ public class ChatRunnerTests
         await h.Runner.SendAsync();
 
         Assert.That(calls, Is.EqualTo(new[] { "AskAgent" }));
+    }
+
+    /// <summary>
+    /// F156: a turn whose answer says the server paced it is marked so, for the page to leave its own pacer off; one
+    /// whose answer doesn't is not.
+    /// </summary>
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task ATurn_IsMarkedServerPaced_WhenItsAnswerSaysSo(bool paced)
+    {
+        var h = new Harness(paced: paced) { Runner = { Draft = SessionStreamFixture.Question } };
+
+        await h.Runner.SendAsync();
+
+        Assert.That(h.Runner.Chat!.Turns[^1].ServerPaced, Is.EqualTo(paced));
     }
 
     /// <summary>A message opens a session, streams the turn and saves the chat.</summary>
@@ -335,10 +350,10 @@ public class ChatRunnerTests
     {
         var h = new Harness(text: new ChatText { NewChat = "Nuwe gesprek" });
 
-        Assert.That(h.Runner.TitleFor("Hallo\ndaar", []), Is.EqualTo("Hallo daar"));
-        Assert.That(h.Runner.TitleFor("", [new Attachment("a.txt", "")]), Is.EqualTo("a.txt"));
-        Assert.That(h.Runner.TitleFor("", []), Is.EqualTo("Nuwe gesprek"));
-        Assert.That(h.Runner.TitleFor(new string('x', 60), []), Is.EqualTo(new string('x', 50) + "…"));
+        Assert.That(h.Runner.WriteTitle("Hallo\ndaar", []), Is.EqualTo("Hallo daar"));
+        Assert.That(h.Runner.WriteTitle("", [new Attachment("a.txt", "")]), Is.EqualTo("a.txt"));
+        Assert.That(h.Runner.WriteTitle("", []), Is.EqualTo("Nuwe gesprek"));
+        Assert.That(h.Runner.WriteTitle(new string('x', 60), []), Is.EqualTo(new string('x', 50) + "…"));
     }
 
     /// <summary>A session that fails to open keeps the draft and says why.</summary>

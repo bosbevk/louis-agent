@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using LouisAgent.Api.Contracts;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Storage;
@@ -20,10 +21,20 @@ public static class FixtureApi
     /// <summary>The client the pages use, on a stub that answers from the fixture.</summary>
     public static AgentApi Client(ChatSettings settings) => Client(settings, out _);
 
-    /// <summary>The same, with the stub's request log, for a test that checks what was asked of the API.</summary>
-    public static AgentApi Client(ChatSettings settings, out StubHandler handler, bool sessionGone = false)
+    /// <summary>
+    /// The same, with the stub's request log, for a test that checks what was asked of the API; a turn's answer says
+    /// the server paced it when the test asks (F156).
+    /// </summary>
+    public static AgentApi Client(ChatSettings settings, out StubHandler handler, bool sessionGone = false,
+        bool paced = false)
     {
-        handler = new StubHandler(request => sessionGone ? AnswerSessionGone(request) : Answer(request));
+        handler = new StubHandler(request =>
+        {
+            var answer = sessionGone ? AnswerSessionGone(request) : Answer(request);
+            if (paced && request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages")
+                answer.Headers.Add(ApiHeaders.StreamPaced, ApiHeaders.StreamPacedOn);
+            return answer;
+        });
         return new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);
     }
 

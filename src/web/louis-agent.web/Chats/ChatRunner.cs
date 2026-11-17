@@ -111,7 +111,7 @@ public sealed class ChatRunner(
                 Chat = new Chat
                 {
                     SessionId = sessionId,
-                    Title = title ?? TitleFor(message, attachments)
+                    Title = title ?? WriteTitle(message, attachments)
                 };
                 store.Chats.Insert(0, Chat);
                 SessionOpened?.Invoke(sessionId);
@@ -143,8 +143,9 @@ public sealed class ChatRunner(
         var redraw = new RedrawThrottle(_clock, RedrawEvery, () => Changed?.Invoke());
         try
         {
+            // A turn the server paced is marked so, for its caption to leave the page's own pacer off (F156).
             await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments, page,
-                               Windows))
+                               Windows, onServerPaced: () => turn.ServerPaced = true))
             {
                 // A tool call is one new block the moment it starts; its result later changes that block, adding none.
                 int blocks = turn.Blocks.Count;
@@ -249,7 +250,7 @@ public sealed class ChatRunner(
     /// <summary>
     /// A chat's title: its first message on one line, else its first attachment's name, else the app's "New chat".
     /// </summary>
-    public string TitleFor(string message, List<Attachment> attachments)
+    public string WriteTitle(string message, List<Attachment> attachments)
     {
         string title = message.Length > 0
             ? message.ReplaceLineEndings(" ")
