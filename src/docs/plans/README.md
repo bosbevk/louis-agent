@@ -12,6 +12,7 @@ built or comes next, and every plan as it was is at the tag
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F155-pacing-in-the-engine.md](F155-pacing-in-the-engine.md) | *F155 Pacing in the engine*: a paced stream over the turn's stream, on with `STREAM_PACE` | 2026-11-17, not yet | Louis's pick A of three; five steps |
 | [F40-sales-playground.md](F40-sales-playground.md) | Draft: *F40 The sales playground* (Phase 4) | not yet | Moved whole out of the old platform plan on 2026-11-07 (CL56); rewritten into the plan Louis approves when it starts |
 | [F07-budgets.md](F07-budgets.md) | Draft: *F7 Cost you can see and stop* (Phase 5) | not yet | The same |
 | [F39-orchestration.md](F39-orchestration.md) | Draft: *F39 Orchestration* (Phase 6) | not yet | The same |

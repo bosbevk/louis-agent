@@ -1,0 +1,35 @@
+{
+  "kind": "classes",
+  "title": "F155 pacing in the engine: the interface design",
+  "caption": "The engine's turn stream passes, when a host turns it on, through a paced stream that hands out its text at the pace WordPace says, the rule the web already uses, moved where both can read it.",
+  "classes": {
+    "types": [
+      { "id": "engine", "name": "AgentEngine", "kind": "class, changed in step 5", "tone": "violet",
+        "members": [ "IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(history, userInput, ct)", "bool _paced, TimeProvider _clock" ] },
+      { "id": "runner", "name": "TurnRunner", "kind": "class, unchanged", "tone": "violet",
+        "members": [ "IAsyncEnumerable<ChatResponseUpdate> StreamAsync(history, userInput, ct)" ] },
+      { "id": "paced", "name": "PacedStream", "kind": "class, step 4", "tone": "teal",
+        "members": [ "static IAsyncEnumerable<ChatResponseUpdate> Of(source, TimeProvider clock, ct)", "a reader into a channel, a writer at the pace", "hands out whole words only" ] },
+      { "id": "pace", "name": "WordPace", "kind": "static class, moved in step 2, continuous in step 3", "tone": "teal",
+        "members": [ "static double Next(double shown, int arrived, TimeSpan since, bool done)", "pace = max(steady, backlog / catch-up)", "static int Letters(double shown)" ] },
+      { "id": "options", "name": "AgentOptions", "kind": "class, changed in step 5", "tone": "amber",
+        "members": [ "bool StreamPace  (STREAM_PACE, off by default)" ] },
+      { "id": "caption", "name": "AgentCaption", "kind": "component, using the moved rule", "tone": "blue",
+        "members": [ "paces its words on the page when the server does not (F156)" ] },
+      { "id": "hosts", "name": "The hosts", "kind": "API, Rider, CLI, unchanged", "tone": "blue",
+        "members": [ "read StreamPromptAsync as today" ] },
+      { "id": "tests", "name": "PacedStreamTests", "kind": "test, step 4", "tone": "green",
+        "members": [ "a burst comes out at the pace", "a tool call waits for the text before it", "done finishes fast", "cancelled stops the reader" ] }
+    ],
+    "relations": [
+      { "from": "engine", "to": "runner", "kind": "uses", "word": "the turn's updates" },
+      { "from": "engine", "to": "paced", "kind": "uses", "word": "when StreamPace is on" },
+      { "from": "engine", "to": "options", "kind": "uses", "word": "reads StreamPace" },
+      { "from": "paced", "to": "pace", "kind": "uses", "word": "how much to hand out" },
+      { "from": "caption", "to": "pace", "kind": "uses" },
+      { "from": "hosts", "to": "engine", "kind": "uses", "word": "StreamPromptAsync" },
+      { "from": "tests", "to": "paced", "kind": "uses", "word": "on a fake clock" }
+    ],
+    "direction": "down"
+  }
+}

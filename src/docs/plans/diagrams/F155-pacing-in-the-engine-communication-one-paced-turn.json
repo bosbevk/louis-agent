@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "F155 pacing in the engine: one paced turn",
+  "caption": "The reader takes the turn as fast as it comes; the writer hands the text out about thirty times a second at WordPace's pace, and a tool call goes out once the text before it has.",
+  "sequence": {
+    "participants": [
+      { "id": "host", "label": "A host", "icon": "server", "tone": "blue" },
+      { "id": "engine", "label": "AgentEngine", "icon": "chip", "tone": "violet" },
+      { "id": "paced", "label": "PacedStream", "icon": "clock", "tone": "teal" },
+      { "id": "runner", "label": "TurnRunner", "icon": "stack", "tone": "violet" },
+      { "id": "pace", "label": "WordPace", "icon": "book", "tone": "teal" }
+    ],
+    "steps": [
+      { "step": "message", "from": "host", "to": "engine", "text": "StreamPromptAsync(history, the question)" },
+      { "step": "message", "from": "engine", "to": "paced", "text": "Of(the turn's stream, the clock), STREAM_PACE on" },
+      { "step": "message", "from": "paced", "to": "runner", "text": "the reader: every update, as fast as it comes" },
+      { "step": "reply", "from": "runner", "to": "paced", "text": "a burst of 300 letters, into the buffer" },
+      { "step": "message", "from": "paced", "to": "pace", "text": "every 33 ms: Next(shown, arrived, since, done), continuous" },
+      { "step": "reply", "from": "pace", "to": "paced", "text": "how many letters may show now" },
+      { "step": "reply", "from": "paced", "to": "host", "text": "a text update with the whole words that fit" },
+      { "step": "reply", "from": "runner", "to": "paced", "text": "a tool call" },
+      { "step": "reply", "from": "paced", "to": "host", "text": "the rest of the text first, then the tool call as it is" },
+      { "step": "reply", "from": "runner", "to": "paced", "text": "the end: usage, finish" },
+      { "step": "reply", "from": "paced", "to": "host", "text": "the last letters at the finishing pace, then the end" }
+    ]
+  }
+}
