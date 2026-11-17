@@ -1,0 +1,31 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F157 the Google integration suite: objects in memory, one turn",
+  "caption": "The tools are built once per engine and shared by every chat, so the tenant is not a field on them: they read it from the context on each call, and the access token is cached per tenant and scope.",
+  "flow": {
+    "nodes": [
+      { "id": "factory", "label": "AgentEngineFactory", "icon": "chip", "tone": "violet" },
+      { "id": "engine", "label": "AgentEngine\n[guide, google-sheets, google-calendar]", "icon": "chip", "tone": "violet" },
+      { "id": "ctx", "label": "ToolsetContext", "icon": "box", "tone": "teal" },
+      { "id": "sheets", "label": "SheetsTools", "icon": "box", "tone": "green" },
+      { "id": "cal", "label": "CalendarTools", "icon": "box", "tone": "green" },
+      { "id": "conn", "label": "AccountConnections", "icon": "shield", "tone": "teal" },
+      { "id": "cache", "label": "access tokens\n(\"seemeeu\", sheets read) until 10:58", "icon": "clock", "tone": "amber", "shape": "data" },
+      { "id": "turn", "label": "the turn's tenant\n\"seemeeu\" (AsyncLocal, F157.1)", "icon": "tag", "tone": "amber", "shape": "data" },
+      { "id": "session", "label": "AgentSession\nOpener: the visitor\nTenant: the host's", "icon": "message", "tone": "blue" }
+    ],
+    "edges": [
+      { "from": "factory", "to": "engine", "word": "holds" },
+      { "from": "engine", "to": "ctx", "word": "holds" },
+      { "from": "engine", "to": "sheets", "word": "holds" },
+      { "from": "engine", "to": "cal", "word": "holds" },
+      { "from": "sheets", "to": "ctx", "word": "reads" },
+      { "from": "cal", "to": "ctx", "word": "reads" },
+      { "from": "ctx", "to": "conn", "word": "holds" },
+      { "from": "conn", "to": "cache", "word": "holds" },
+      { "from": "session", "to": "turn", "word": "sets for the turn" },
+      { "from": "ctx", "to": "turn", "word": "reads" }
+    ]
+  }
+}

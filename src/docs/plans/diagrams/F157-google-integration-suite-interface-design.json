@@ -1,0 +1,126 @@
+{
+  "kind": "classes",
+  "title": "F157 the Google integration suite: the interface design",
+  "caption": "A pack never sees a refresh token: it asks the connections for a short-lived access token for the turn's tenant and one scope, and the accounts library answers from its own table.",
+  "classes": {
+    "types": [
+      {
+        "id": "context",
+        "name": "IPackContext",
+        "kind": "interface, changed in F157.1",
+        "members": [
+          "string WorkspaceRoot",
+          "IPageFetcher NewFetcher()",
+          "bool InATrial",
+          "ISitePlaces Places",
+          "IConnections Connections (F157.1)",
+          "string? Tenant (F157.1, read on each call)"
+        ]
+      },
+      {
+        "id": "connections",
+        "name": "IConnections",
+        "kind": "interface, F157.1",
+        "members": [
+          "Task<ConnectionToken?> TokenAsync(ConnectionAsk ask, CancellationToken token)"
+        ]
+      },
+      {
+        "id": "ask",
+        "name": "ConnectionAsk",
+        "kind": "record, F157.1",
+        "members": [
+          "ConnectedService Service",
+          "string Tenant",
+          "IReadOnlyList<string> Scopes"
+        ]
+      },
+      {
+        "id": "tok",
+        "name": "ConnectionToken",
+        "kind": "record, F157.1",
+        "members": [
+          "string AccessToken",
+          "DateTime ExpiresUtc"
+        ]
+      },
+      {
+        "id": "none",
+        "name": "NoConnections",
+        "kind": "F157.1",
+        "members": [
+          "a host with no accounts: every ask is null"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "AccountConnections",
+        "kind": "F157.1, in louis-agent.accounts",
+        "members": [
+          "reads the tenant's refresh token from AspNetUserTokens",
+          "unprotects it with Data Protection",
+          "refreshes at Google, keeps the access token until it expires"
+        ]
+      },
+      {
+        "id": "connect",
+        "name": "ConnectHandlers",
+        "kind": "static, F157.1, in louis-agent.accounts",
+        "members": [
+          "StartAsync: to Google's consent, offline, one scope",
+          "CallbackAsync: the code for tokens, the refresh token protected and saved"
+        ]
+      },
+      {
+        "id": "pack",
+        "name": "GooglePack",
+        "kind": "F157.2",
+        "members": [
+          "string Name = \"google\"",
+          "IReadOnlyList<PackToolset> Toolsets: sheets (F157.2), calendar (F157.3), drive, gmail (later)"
+        ]
+      },
+      {
+        "id": "sheets",
+        "name": "SheetsTools",
+        "kind": "F157.2",
+        "members": [
+          "ListSheets()",
+          "ReadSheet(string sheet, string range)"
+        ]
+      },
+      {
+        "id": "calendar",
+        "name": "CalendarTools",
+        "kind": "F157.3",
+        "members": [
+          "FindFreeTimes(DateOnly from, DateOnly to, int minutes)",
+          "BookTime(DateTime startUtc, int minutes, string name, string contact)"
+        ]
+      },
+      {
+        "id": "client",
+        "name": "GoogleClients",
+        "kind": "F157.2",
+        "members": [
+          "SheetsService Sheets(ConnectionToken token)",
+          "CalendarService Calendar(ConnectionToken token)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "context", "to": "connections", "kind": "holds" },
+      { "from": "connections", "to": "ask", "kind": "uses" },
+      { "from": "connections", "to": "tok", "kind": "creates" },
+      { "from": "none", "to": "connections", "kind": "implements" },
+      { "from": "store", "to": "connections", "kind": "implements" },
+      { "from": "connect", "to": "store", "kind": "uses" },
+      { "from": "pack", "to": "sheets", "kind": "creates" },
+      { "from": "pack", "to": "calendar", "kind": "creates" },
+      { "from": "sheets", "to": "context", "kind": "uses" },
+      { "from": "calendar", "to": "context", "kind": "uses" },
+      { "from": "sheets", "to": "client", "kind": "uses" },
+      { "from": "calendar", "to": "client", "kind": "uses" }
+    ]
+  }
+}
