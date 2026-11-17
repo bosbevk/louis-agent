@@ -188,9 +188,8 @@ public class SitePagesTests
     }
 
     /// <summary>The hero's words under its headline, as the design has them.</summary>
-    private const string Summary = "We build websites that talk to your customers for you. An agent on the page answers " +
-                                "their questions, takes the booking and sends it straight to you, so you can look " +
-                                "after the guests already in front of you.";
+    private const string Summary = "Your doors close at five. Your website doesn't. It answers the question someone asks " +
+                                "at 11 at night and has the booking waiting for you in the morning.";
 
     /// <summary>
     /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, in the design's words (FX160, Louis:
