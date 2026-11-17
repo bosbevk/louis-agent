@@ -1,7 +1,7 @@
 # louis-agent.site — design
 
 > **Kind:** web app (Blazor WebAssembly), and its host `louis-agent.site-api` · **Path:** `src/site/` · **References:**
-> `louis-agent.web`, the guide (`louis-agent.identity.guide`), the triage pack's web project; the host also the
+> `louis-agent.web`, the guide (`louis-agent.identity.guide`); the host also the
 > framework's API and the docs, leads and site packs · **Runs:** louis-agent.dev, and the review copy on 127.0.0.1:5080
 > **Also shows:** `component`, `sequence`
 
@@ -166,13 +166,18 @@ recorded in the repo.
 *Decided in:* F128.2, F127.1, F127.2,
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
-### 5. The coding agent and the triage team
+### 5. Nothing beside the agent
 
-`/coding-agent` shows the coding agent fixing a bug, recorded once and played back. `/triage-demo` shows the triage
-team. Both are in the showroom, on the same stage, in their own players. Each player stands in a lit framed window,
-whose bar says `louis-agent · the coding agent` or `louis-agent · the triage team`.
+A demo's page holds its heading, a few words on the scene, and the business's website with its agent at work. There
+is nothing else on the stage: no list of what to watch, no notes on what a custom agent could add, and no offer bar,
+because those took the eye off the agent. The framework's stage still has those slots, and `BusinessDemo` leaves
+them empty.
 
-*Decided in:* [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md), F127.1, F134.
+When the recording ends, the chat's own ending holds two buttons. *Try it yourself* is the theme's main button,
+drawn by the framework's `RecordedChat` from the words the page hands it, and *Play it again* plays the talk from
+its start. The guide in the bar is the one that explains what the visitor is seeing.
+
+*Decided in:* F127.1, FX194, FX195.
 
 ### 6. The windows on the demos' start
 
@@ -190,9 +195,6 @@ A window holds no HTML of its own. It is the framework's `SiteBody` given its wo
 `ShownCard` the window fills in its code-behind and the framework draws. The showroom's frame is the same: its offer,
 "Ask for yours", is the framework's `LinkButton`. `ShowroomLayoutTests` holds the frame and the three windows to
 framework controls only.
-
-The coding agent and the triage team have no window on the start. They keep their own pages, and their place on the
-rail beside a demo's page.
 
 ### 7. The guide in the showroom
 
@@ -285,14 +287,14 @@ These are the types involved:
 
 | Path | What's in it |
 |---|---|
-| `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the demos (`RecordedChat` plays `wwwroot/recordings/coding-session.sse`; [how to record it again](../../../demos/louis-agent/recordings/README.md)) |
+| `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
 | `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
 | `Content/`, `Graphs/` | `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |
-| `Styles/app.scss`, `Styles/site/` | The framework's Sass and the triage pack's demo, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
+| `Styles/app.scss`, `Styles/site/` | The framework's Sass and the two themes, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |
 
 ## The slogan

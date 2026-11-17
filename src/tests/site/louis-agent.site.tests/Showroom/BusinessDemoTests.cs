@@ -7,7 +7,6 @@ using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
-using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -94,9 +93,7 @@ public class BusinessDemoTests
             .Add(demo => demo.HeroPhotoAlt, "Waves on the rocks")
             .Add(demo => demo.HeroAction, "Book a room")
             .Add(demo => demo.Pages, (RenderFragment)(_ => { }))
-            .Add(demo => demo.KindOf, "guesthouse")
             .Add(demo => demo.Turns, [new RecordedTurn("Do you take dogs?", "recordings/showroom/test-1.sse")])
-            .Add(demo => demo.Cues, Array.Empty<DemoCue>())
             .Add(demo => demo.Identity, "seemeeu-guesthouse")
             .Add(demo => demo.Hint, "Is breakfast included?"));
 
@@ -116,7 +113,7 @@ public class BusinessDemoTests
     private static void TryIt(IRenderedComponent<BusinessDemo> cut) =>
         cut.WaitForAssertion(() =>
         {
-            if (cut.FindAll(".demo-try") is [var button, ..]) button.Click();
+            if (cut.FindAll(".recorded-end .btn-fill") is [var button, ..]) button.Click();
             Assert.That(cut.FindAll(".live-chat"), Is.Not.Empty);
         }, TimeSpan.FromSeconds(5));
 
@@ -153,20 +150,23 @@ public class BusinessDemoTests
         });
     }
 
-    /// <summary>Try it yourself waits for the play to end, then sits beside Play it again.</summary>
+    /// <summary>
+    /// Try it yourself waits for the play to end, then sits beside Play it again as the theme's main button (FX194,
+    /// Louis: "the on button in the chat is fuckewd").
+    /// </summary>
     [Test]
-    public void TryItYourself_ShowsOnceThePlayHasEnded()
+    public void TryItYourself_ShowsOnceThePlayHasEnded_AsTheThemesButton()
     {
         using var ctx = Context();
         var cut = Demo(ctx);
-        var whilePlaying = cut.FindAll(".demo-try").Count;
+        var whilePlaying = cut.FindAll(".recorded-end .btn-fill").Count;
 
         cut.WaitForElement(".recorded-end", TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
         {
             Assert.That(whilePlaying, Is.Zero);
-            Assert.That(cut.Find(".recorded-end .demo-try").TextContent.Trim(), Is.EqualTo("Try it yourself"));
+            Assert.That(cut.Find(".recorded-end .btn.btn-fill").TextContent.Trim(), Is.EqualTo("Try it yourself"));
         });
     }
 
@@ -192,27 +192,6 @@ public class BusinessDemoTests
                 Is.EqualTo("Ask Seemeeu Guesthouse…"));
             Assert.That(cut.FindAll(".mock-live-tag"), Has.Count.EqualTo(1));
             Assert.That(cut.Find(".mock-address").TextContent, Is.EqualTo("seemeeu.example"));
-        });
-    }
-
-    /// <summary>
-    /// While the visitor tries it live, the cues wait (Louis's pick of three, after a cue clicked live crashed the
-    /// page), and they come back with the recording.
-    /// </summary>
-    [Test]
-    public void TheCues_WaitWhileLive()
-    {
-        using var ctx = Context();
-        var cut = Played(ctx);
-
-        TryIt(cut);
-        var live = cut.Find(".demo-cues").ClassList.Contains("is-waiting");
-        cut.Find(".live-leave").Click();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(live, Is.True);
-            Assert.That(cut.Find(".demo-cues").ClassList, Does.Not.Contain("is-waiting"));
         });
     }
 

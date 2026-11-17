@@ -511,6 +511,25 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX195 · What a guide may offer is what the site still has
+
+Two demos left the site, and with them their pages, their rail entries, their recordings and the triage pack's web
+screens that only those pages used. The pages were the easy part. The guide's prompts named them too, in its index of
+pages, its site map and the doc it reads to explain the demos, and a guide reads its prompts as the truth: left alone
+it would go on offering a page that answers with nothing. So a removal is not done until every text the model reads
+is searched for the address, the same way the code is. The lesson: the prompt is part of the site, and a page that
+goes takes its lines in the prompt with it. Skill 18.
+
+## FX194 · A button with no rule falls back to the browser's grey
+
+When the site's own styles came out, the demo's *Try it yourself* stayed the site's own `button class="demo-try"`,
+and nothing styled it any more, so it showed as the browser's plain grey box. The cure was to stop the site drawing a
+button at all: the framework's recorded chat already ends with a button of its own, so it now draws this one too, as
+the theme's main button, from the words the page hands it. The same look emptied the stage round the agent. The cues,
+the notes and the offer bar each had a reason, but together they pulled the eye off the agent, which is the whole
+point of the page. The lesson: a site that hands its look to the theme must hand over every element, and a page
+that shows an agent should show little else. Skill 18.
+
 ## FX193 · A colour that works on black can vanish on white
 
 The two themes' dark looks set a pale red, amber, blue and green for the demos, and the light looks simply kept them.

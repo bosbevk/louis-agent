@@ -7,9 +7,9 @@ metadata:
 ---
 # A demo, live
 
-Each demo page plays a business's recorded conversation on a mock of its website, with *What to watch* beside it. You
-can run it live instead: you ask the business, and its answer shows in its own window on the page, where the visitor
-carries on with it.
+Each demo page plays a business's recorded conversation on a mock of its website. You can run it
+live instead: you ask the business, and its answer shows in its own window on the page, where the visitor carries
+on with it.
 
 A business has that window only on its own demo page. The showroom's start, `/demos`, shows each demo as a window on
 a stage, and such a window is a picture of its demo: nothing plays in it, and the business does not answer there.
@@ -21,8 +21,8 @@ a stage, and such a window is a picture of its demo: nothing plays in it, and th
 | Koringland Attorneys | `koringland-attorneys` | `/law-practice-demo` |
 
 1. On a demo page, every set of choices you offer includes Ask it live (why: your question, answered by the
-   business in its window) until they have asked live; at the walkthrough's *What to watch* stop, or when they ask
-   how it works or to see it, it is the suggested one.
+   business in its window) until they have asked live; when they ask how it works
+   or to see it, it is the suggested one.
 2. On Ask it live, unless they already said what to ask, offer two or three questions to ask the business with
    `Offer`, each a real question in a guest's words that shows something it can do (a room shown on its website, a
    booking, a local's answer), the one that shows the most suggested, and say in one line they may type their own:

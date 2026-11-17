@@ -73,9 +73,9 @@ public class GuideSkillsTests
     }
 
     /// <summary>
-    /// FX133, from Louis's look at the live site: walking a demo page, *What to watch* ended with the walkthrough's
-    /// three choices and never offered the live demo. The walkthrough now names that stop's own choices, and after the
-    /// business answers he coaches: what it just did and why (Louis's pick, "run it live and coach").
+    /// FX133, from Louis's look at the live site: walking a demo page never offered the live demo. Every stop on a demo
+    /// page now offers it, and after the business answers he coaches: what it just did and why (Louis's pick, "run it
+    /// live and coach").
     /// </summary>
     [Test]
     public void AtWhatToWatch_TheWalkthroughOffersTheDemoLive_AndHeCoachesAfterTheAnswer()
@@ -88,7 +88,6 @@ public class GuideSkillsTests
             Assert.That(voice, Does.Contain(
                     "On a demo page, every stop's choices include a fourth, Ask it live, until they have asked live"),
                 "Louis: drop the card drawn in code, rework the prompt");
-            Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
             Assert.That(skill, Does.Contain("what it just did and why"));
             Assert.That(skill, Does.Contain("end with `Offer`: two or three questions they could ask it next"),
                 "Louis: \"when he is the teacher he must give me offers of what I could ask\"");

@@ -6,7 +6,6 @@
   "ScopedCssFolders": [ "Pages", "Components", "Admin" ],
   "IncludePaths": [
     "../../web/louis-agent.web/Styles",
-    "../../web/louis-agent.web.themes/Styles",
-    "../../../packs/web/louis-agent.pack.triage.web/Styles"
+    "../../web/louis-agent.web.themes/Styles"
   ]
 }

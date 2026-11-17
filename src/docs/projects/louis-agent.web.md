@@ -625,6 +625,8 @@ small capitals. The faces are the framework's own woff2 files under `wwwroot/fon
 **A recorded session, played back.** `RecordedChat` plays a recorded session in the chat's own view. A site gives
 it a `.sse` file of the stream the API sent, the question it answered, a title, the currency for the bill and an
 ending. A visitor watches the agent think, call its tools and answer, then sees the ending and a play-again button.
+When the site also hands it the words of a way to try the agent live, the ending holds that too, as the theme's main
+button, and the site hears when it is pressed.
 
 It reads the file with the session-stream reader and waits by each event's kind: thinking fast, the answer at
 reading speed, a beat per tool. It folds the events with the same loop the eval studio's replay uses. Its window
@@ -640,7 +642,7 @@ place its agent showed: a section under the guide's spotlight, or a card pressed
 
 **Tried live.** The business's agent can also be live in the mock's widget, opened as its identity. It sends the
 page's words, every page's places by address and the menu as links with each new page. The widget then says Live,
-the hint is a question to tap, the cues wait, and no usage line shows. The mock's chat and the guide's minimise
+the hint is a question to tap, the stage's cues wait where a page has them, and no usage line shows. The mock's chat and the guide's minimise
 and maximise with the same buttons.
 
 *Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`, F134.4's `AHeldPlay` tests.

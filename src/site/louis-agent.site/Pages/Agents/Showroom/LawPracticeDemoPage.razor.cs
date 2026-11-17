@@ -1,6 +1,5 @@
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
-using LouisAgent.Web.Components.Site.Showroom.Stage;
 
 namespace LouisAgent.Site.Pages.Agents.Showroom;
 
@@ -22,31 +21,11 @@ public partial class LawPracticeDemoPage
         new("Yes, please send it.", "recordings/showroom/koringland-attorneys-4.sse"),
     ];
 
-    /// <summary>What to watch for, each lit as the play reaches its turn.</summary>
-    private static readonly DemoCue[] WhatToWatch =
-    [
-        new(1, "It gives no legal advice: it shows its wills page and offers a first consultation."),
-        new(2, "It asks for one thing at a time, starting with a name."),
-        new(3, "It reads the request back before it sends anything."),
-        new(4, "The request goes to the practice only after the client says yes."),
-    ];
-
     /// <summary>
     /// Koringland Attorneys' sample brand, an established country firm (F127.2, mockup 0): midnight, vellum,
     /// parchment and its ink, its labels and its rule in brass.
     /// </summary>
     private static readonly MockColours Brand = new("#14213d", "#f6f2ea", "#f6f2ea", "#1b2233", "#b08d57");
-
-    /// <summary>What a custom agent could add for a law practice.</summary>
-    private static readonly DemoNote[] Notes =
-    [
-        new("Book into the diaries",
-            "It sees when the attorneys are free and books the first consultation straight into the diary."),
-        new("Collect the papers first",
-            "It asks for the ID and the documents before the meeting and files them with the matter."),
-        new("Call back when it's urgent",
-            "An arrest or a court date this week goes straight to an attorney's phone, for a call back today."),
-    ];
 
     /// <summary>The facts under its hero, each one its agent knows.</summary>
     private static readonly string[] Facts =

@@ -27,7 +27,7 @@ public class SiteNamesItsFocusesTests
     [TestCase("/home/what-it-does", GuideFocus.Selling)]
     [TestCase("/demos", GuideFocus.Demos)]
     [TestCase("/guesthouse-demo", GuideFocus.Demos)]
-    [TestCase("/coding-agent", GuideFocus.Demos)]
+    [TestCase("/law-practice-demo", GuideFocus.Demos)]
     [TestCase("/framework/packs/louis-agent-pack-git", GuideFocus.Framework)]
     [TestCase("/csharp-ai-agent-framework", GuideFocus.Framework)]
     public void APart_TakesItsFocus(string path, GuideFocus focus) =>
