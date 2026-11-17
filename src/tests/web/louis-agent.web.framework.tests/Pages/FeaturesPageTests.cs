@@ -69,7 +69,7 @@ public class FeaturesPageTests
             {
                 int count = FrameworkFeatures.All.Count(feature => feature.Area == area);
                 Assert.That(picture, Does.Contain(area.Name), "the area");
-                Assert.That(picture, Does.Contain($"{count} features"), $"{area.Name}'s count");
+                Assert.That(picture, Does.Contain($"{count} {area.Counts}"), $"{area.Name}'s count");
             }
         });
     }

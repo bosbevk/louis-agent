@@ -12,6 +12,15 @@
     color: var(--bs-tertiary-color);
 }
 
+/* The copy button: a chip, small, in the caption's face, so it reads as part of the listing's header. */
+.code-copy {
+    @include surface.chip();
+    padding: 3px 10px;
+    border-radius: 999px;
+    font: inherit;
+    cursor: pointer;
+}
+
 .code-listing pre {
     margin: 0;
     padding: 16px 18px;

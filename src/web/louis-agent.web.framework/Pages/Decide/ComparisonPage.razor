@@ -1,0 +1,18 @@
+@page "/comparison"
+
+<PageTitle>Comparison · louis-agent</PageTitle>
+<PageHead Description="louis-agent beside Microsoft Agent Framework and Semantic Kernel. What each does, from each one's own pages, read on a date the page shows." />
+
+@* Comparison (F160.1, step 12, ADR 0110): louis-agent beside Microsoft Agent Framework and Semantic Kernel, each claim
+   of ours held to a file of the repo by the page's test, the others' cells only what their own pages say, read on a
+   date shown, each page linked. *@
+<Band Id="top" Topic="Comparison" Title="Beside the others." Summary="What louis-agent does, beside what Microsoft Agent Framework and Semantic Kernel say of themselves. Where their pages say nothing of a topic, the cell says so.">
+    <ComparisonTable Columns="Comparisons.Columns" Rows="Comparisons.Rows" />
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0030-build-or-adopt.md">Build or adopt</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="sources" Topic="Comparison" Short="The sources" Title="Where their cells come from." Summary="Each of the others' pages, read on the day it names.">
+    <TermList Terms="Comparisons.SourceTerms" />
+</Band>

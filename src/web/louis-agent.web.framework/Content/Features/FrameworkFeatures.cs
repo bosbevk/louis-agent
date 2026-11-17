@@ -23,7 +23,9 @@ public static class FrameworkFeatures
         Web = new("the-web", "The web", DiagramIcon.Browser, DiagramTone.Teal),
         Guards = new("the-guards", "Its guards", DiagramIcon.Shield, DiagramTone.Red),
         Cost = new("the-cost", "What it measures", DiagramIcon.Chart, DiagramTone.Green),
-        Code = new("the-code", "The code", DiagramIcon.Code);
+        // How the code is written: kept, but its entries are rules, not features (Louis: "this is not a feature",
+        // then "keep it").
+        Code = new("the-code", "The code", DiagramIcon.Code, Counts: "rules");
 
     /// <summary>The areas, in the order the page tells them.</summary>
     public static readonly IReadOnlyList<FeatureArea> Areas = [Engine, Models, Hosts, Web, Guards, Cost, Code];
@@ -52,10 +54,13 @@ public static class FrameworkFeatures
             "The system prompt is put together from markdown files, the principles first, so you change an agent by " +
             "editing text.", Adr + "0011-prompts-are-content.md"),
         new(Engine, "Agents that ask agents", "AskAgentTools",
-            "An agent asks another by its address, an identity or one of its roles, and gets the answer back named.",
+            "An agent asks another by its address, a whole identity such as `acme` or one of its roles such as " +
+            "`acme.cook`, up to three asks a turn, and the answer comes back under a line that names who gave it. A " +
+            "team of specialists is a few addresses, not a workflow to draw.",
             Adr + "0031-orchestration-is-an-engine-function.md"),
         new(Engine, "Follow-ups that remember", "SubSessionRegistry",
-            "A specialist's chat stays open, so a follow-up question carries on where it left off.", CoreDoc),
+            "In a chat on the API, a specialist's own chat stays open after it answers, so the next question to it " +
+            "carries on where it left off, with the files you attached passed to it by name.", CoreDoc),
         new(Engine, "Small jobs on a cheap model", "MINION_LLMS",
             "A minion role runs on the model you set for it, cheapest first, a local one if you like.", CoreDoc),
         new(Engine, "An agent that grows its tools", "CreateTool",

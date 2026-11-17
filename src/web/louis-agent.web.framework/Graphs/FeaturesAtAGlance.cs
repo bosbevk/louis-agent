@@ -51,7 +51,7 @@ public static class FeaturesAtAGlance
         var features = FrameworkFeatures.All.Where(feature => feature.Area == area).ToList();
         string named = string.Join(", ", features.Take(Named).Select(feature => InASentence(feature.Name)));
         string more = features.Count > Named ? ", and more." : ".";
-        return new Card(area.Id, area.Icon, area.Name, $"{features.Count} features", char.ToUpperInvariant(named[0]) +
+        return new Card(area.Id, area.Icon, area.Name, $"{features.Count} {area.Counts}", char.ToUpperInvariant(named[0]) +
             named[1..] + more, Tone: area.Tone);
     }
 

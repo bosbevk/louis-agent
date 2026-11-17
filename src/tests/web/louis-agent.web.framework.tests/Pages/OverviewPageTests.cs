@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Web.Docs;
 using LouisAgent.Web.Framework.Content;
 using LouisAgent.Web.Framework.Pages;
+using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Framework.Tests.Pages;
@@ -19,6 +20,8 @@ public class OverviewPageTests
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(DocsAddress.GitHub("bosbevk/louis-agent", "main"));
+        // The site's words: the code listing's copy button reads them.
+        ctx.Services.AddSingleton(new ChatText());
         return ctx;
     }
 

@@ -117,4 +117,22 @@ public class NameScanTests
                 8
             }));
     }
+
+    /// <summary>
+    /// A razor page's words hold apostrophes ("what's", "page's"), which the lexer reads as a character's quotes: the
+    /// lines between them still count, so a name further down is flagged on its own line, not read off the end of
+    /// another (F160.1: the Examples page's "puls" crashed the scan).
+    /// </summary>
+    [Test]
+    public void ARazorPagesApostrophes_DoNotThrowTheLinesOut()
+    {
+        const string page = """
+                            <Band Summary="what's
+                            coming, the page's">
+                            </Band>
+                            <Band Id="web" />
+                            """;
+
+        Assert.That(RazorNameScan.Flagged(page, Names).Select(h => h.Line), Is.EqualTo(new[] { 4 }));
+    }
 }
