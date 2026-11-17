@@ -114,6 +114,13 @@
     background: $fill;
 }
 
+/* The small plate an icon stands on in a card, such as a tile's (FX186): the theme's fill for it and the shadow it
+   throws, white glass with a soft shadow in glass, the page's own colour with none in flat. */
+@mixin icon-plate() {
+    background: var(--web-icon-fill);
+    box-shadow: var(--web-icon-shadow);
+}
+
 /* A quiet box inside a piece, such as a hint under a chat: a faint wash with a faint line inside it. */
 @mixin bubble() {
     background: rgba(var(--web-overlay-rgb), .04);

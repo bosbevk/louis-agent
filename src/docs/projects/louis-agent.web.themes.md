@@ -82,19 +82,27 @@ content, one for the dark and one for the light, each 3840 by 2160 pixels and st
 on a layer of its own that holds still while the page scrolls, so nothing behind the glass is painted again as the
 visitor reads; under the agent's bar the page's content fades into that same picture. The pictures are files this
 project serves beside the drawings, `glass/dark/silk.webp` and `glass/light/silk.webp`. Glass draws no lines of its
-own. Flat draws no lines either and keeps the framework's own three soft lights, which hold still as well.
+own. Flat draws no lines either and no lights: its page is one solid colour, white or black, as its design is.
 
 Glass bends what is behind a pane as real glass does, in the pane under the pointer and in the one picked or
 shown. Its glass is 52 pixels thick at the edge and its middle stands 70 higher, the cards of the design page.
 Flat has no lens, so its panes stay as they are. The bending itself is the framework's, in its frame.
 
 A pane that answers the pointer differs between the two as well. In glass it lifts three pixels, wears no edge and
-keeps the shadow it always throws, since its light is in the hover drawing. In flat it stays where it is and wears
-a two pixel ring of the violet. What floats over the page throws a pane's shadow in glass and none in flat, where
-its line sets it apart.
+keeps the shadow it always throws, since its light is in the hover drawing. In flat it stays where it is and only
+its line changes colour, a darker grey in the light and a lighter one in the dark, as the design's card does. That
+is why flat draws a pane's line as a one pixel line inside its edge, with no border: under the pointer the
+framework puts the hover edge where the resting line was, so the same line takes the new colour and nothing grows.
+What floats over the page throws a pane's shadow in glass, and in flat wears the same line.
+
+The presses answer the pointer through values too. In glass the hover drawing does it, over the press's own
+colours. In flat, which has no drawings there, the main button turns the lighter violet, the second button fills
+with the words' colour and takes the page's colour for its words, and a chip floating over the bar takes a line in
+the words' colour. A small plate an icon stands on in a card, such as a tile's, is white glass with a soft shadow in
+glass, and in flat the page's own colour with no shadow: white in the light, black in the dark.
 
 A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: see-through,
-with the pane's colour change, no blur and no edge. In flat it is the pane's fill with the pane's edge and no blur.
+with the pane's colour change, no blur and no edge. In flat it is the pane's fill with a hairline and no blur.
 
 Glass in the light turns white and black over and keeps the purple. The page is a wash of the violet, mixed from
 its second step a little over half way into white, so it follows the purple and is deep enough for a white rim to
@@ -106,7 +114,14 @@ Flat draws every surface as one solid colour with a hairline round it, with no g
 so a pane's rim, light, shadow and blur are all `none`. In the dark the page is black and a pane a near-black
 grey. In the light the page is white and a pane a solid grey clearly darker than it, with a firmer grey line, since
 a card on a white page must be darker than the page. The press is the same solid violet in both, the second button
-an outline in the words' colour, and the mark a flat violet disc with a white letter.
+an outline in the words' colour. A heading's band is the words' own colour, so a headline reads solid, where glass
+runs its violet band through the words.
+
+Flat's mark is a flat violet disc with the brand's white l on it, and a hard step of deeper violet under the l. The
+l is a drawing, as glass's is, so the letter a site hands the orb gets no ink. As a letter of the site's name the
+mark is smaller than glass's, half the letters' size against 0.76: glass's o is a ball inside a glass bubble, and
+flat's is the ball alone, as big as glass's ball, with no bubble round it; the framework
+works out how far it drops from its size, so it stands on the line at any size.
 
 In both themes your own message sits under the same ink as a press, since the framework writes both with one name,
 `--web-on-primary`. Their ink is white, so your message is a dark grey in the dark and black in the light.
@@ -115,8 +130,9 @@ In both themes your own message sits under the same ink as a press, since the fr
 
 A glass piece is a drawing laid over what is behind it, seen sharp. The framework names one drawing for each part and state,
 34 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
-own value, since the framework draws no glass. Glass sets each to the address of its drawing, and flat to `none`.
-So a theme still hands over only values, and no component names a theme.
+own value, since the framework draws no glass. Glass sets each to the address of its drawing. Flat sets every one
+to `none` but two, its mark and the bar's ball, which carry the brand's l. So a theme still hands over only values,
+and no component names a theme.
 
 The drawings are SVGs with no size of their own: their shapes are written against their own edges, so the browser
 draws one fresh at whatever size the piece is. They are in `wwwroot/glass/dark/` and `wwwroot/glass/light/`, one
@@ -144,8 +160,9 @@ framework really sets.
 | `Flat/FlatTheme.cs` | The flat theme, its area's name, and `Flat()` |
 | `Styles/theme-glass/_dark.scss`, `_light.scss` | Glass's values in the dark style and in the light |
 | `Styles/theme-flat/_dark.scss`, `_light.scss` | Flat's values in the dark style and in the light |
-| `Styles/_theme-art.scss` | The list of drawings, written once, and the two ways a theme names them: each to its drawing, or each to none |
+| `Styles/_theme-art.scss` | The list of drawings, written once, and the three ways a theme names them: each to its drawing, each to none, or none but the mark's |
 | `wwwroot/glass/dark/`, `wwwroot/glass/light/` | Glass's drawings, one SVG for each part and state, and the page behind, `silk.webp`, served at `_content/louis-agent.web.themes/` |
+| `wwwroot/flat/dark/`, `wwwroot/flat/light/` | Flat's two drawings, the mark and the bar's ball, each the brand's stepped l |
 | `Styles/app.scss`, `sasscompiler.json` | The sheet the build compiles for the tests, the framework's names and every theme's sheets, and the compiler's settings (`obj/css/`, not served) |
 
 ## Configuration
@@ -168,16 +185,18 @@ The tests are in `src/tests/web/louis-agent.web.themes.tests`, on NUnit, a folde
 its name, once, even when it is named twice, and that glass named before flat comes first. `GlassSheetTests` and
 `FlatSheetTests` read the compiled `app.css`, through `CompiledThemes`, and ask `ThemeSheet` which of the
 framework's names their theme leaves unset, in each style; the answer must be none. `ThemesArtTests` reads the
-values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none.
+values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none
+but its mark's two, which are there too. `FlatFollowsItsDesignTests` holds flat to its design: the mark, no lights
+and no glow, the solid headline, the smaller o, the pane's line that only changes colour under the pointer, the
+presses' hovers, and the icon's plate.
 
 ## Limits and plans
 
 A picture of a screen, such as the product window, stays dark in a light style only once the part that draws it
 says so; a sheet of values can't. The starter is the one site that names the themes and lists their sheets.
 Today's components read the colours and not yet the surface names or the drawings, so a pane is not glass anywhere
-yet, and glass and flat in the dark look much alike until they do. The marks, the gauge and the dial have no
-drawing here: a mark is round and is drawn as it is, and a gauge and a dial show a number, which a drawing held as
-a value can't be given.
+yet, and glass and flat in the dark look much alike until they do. The gauge and the dial have no drawing here: they
+show a number, which a drawing held as a value can't be given.
 
 ## Related docs
 

@@ -59,4 +59,22 @@ public class WordmarkTests
 
         Assert.That(cut.Find(".wordmark-name").TextContent, Is.EqualTo("grape"));
     }
+
+    /// <summary>
+    /// FX184: the mark's size as a letter is the theme's to say (Louis: "circle too big", his pick of 0.64em for
+    /// flat), and it sits lower the bigger it is, so whatever its size it stands on the line with the letters.
+    /// </summary>
+    [Test]
+    public void TheMarksSize_IsTheThemes_AndItsDropFollowsIt()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Brand/Wordmark.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(styles, Does.Contain("width: var(--web-wordmark-o);"));
+            Assert.That(styles, Does.Contain("height: var(--web-wordmark-o);"));
+            Assert.That(styles, Does.Contain("translate: 0 calc((var(--web-wordmark-o) - .54em) * .385);"));
+        });
+    }
 }

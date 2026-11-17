@@ -94,6 +94,15 @@
         radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
         radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
         radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
+    --web-heading-band: var(--bs-primary);
+    --web-wordmark-o: .76em;
+
+    --web-press-hover-fill: var(--web-press-fill);
+    --web-quiet-hover-fill: transparent;
+    --web-quiet-hover-ink: var(--bs-body-color);
+    --web-chip-hover-edge: var(--web-chip-edge);
+    --web-icon-fill: var(--bs-secondary-bg);
+    --web-icon-shadow: 0 6px 14px -8px rgba(var(--web-shadow-rgb), .35);
 
     --web-mark-fill:
         radial-gradient(circle at 32% 26%, var(--web-bright), var(--bs-secondary-color) 55%, var(--bs-tertiary-color));

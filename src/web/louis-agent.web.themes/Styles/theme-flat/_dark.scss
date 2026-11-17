@@ -1,7 +1,7 @@
 /* Flat, in the dark (F151.2, ADR 0124): the flat mockup's dark values, under "Finish two: flat". Every surface is one
    solid colour with a hairline round it: no gradient, no shadow, no blur, anywhere. The page is black, a pane a
    near-black grey, the words white, the purple Ultraviolet. A press is solid violet with white words, and the second
-   a white outline. The mark is a flat violet disc with a white l. The red, amber, blue and green, the caption on a
+   a white outline. The mark is a flat violet disc with the brand's white l, stepped. The red, amber, blue and green, the caption on a
    photo's mat and the hover grey are the framework's own, and the faces and the easing the framework's. */
 
 @use "web/tools/colours";
@@ -66,17 +66,18 @@
     --web-ease: cubic-bezier(.2, .8, .2, 1);
     --web-spring: cubic-bezier(.34, 1.56, .64, 1);
 
-    // A pane: one solid grey and a hairline, nothing else.
+    // A pane: one solid grey and a hairline, nothing else. The hairline is drawn just inside its edge, so under the
+    // pointer the same line can take a lighter grey and only its colour changes, as the design's card does (FX185).
     --web-pane-fill: #101013;
-    --web-pane-edge: 1px solid #2b2b33;
+    --web-pane-edge: none;
     --web-pane-rim: none;
     --web-pane-light: none;
-    --web-pane-shadow: none;
+    --web-pane-shadow: inset 0 0 0 1px #2b2b33;
     --web-pane-blur: none;
     --web-pane-radius: 22px;
-    // Under the pointer it stays where it is and wears a ring of the violet: flat has no shading, so no shadow.
+    // Under the pointer it stays where it is: flat has no shading, so no shadow.
     --web-pane-hover-lift: 0px;
-    --web-pane-hover-edge: 0 0 0 2px #6b4dff;
+    --web-pane-hover-edge: inset 0 0 0 1px #55555f;
     --web-pane-hover-shadow: 0 0 transparent;
     // The lens: flat is solid, so nothing bends.
     --web-lens-wall: 0;
@@ -87,14 +88,14 @@
     --web-glass-grey: var(--bs-tertiary-bg);
     --web-tilt: 0;
 
-    // What floats over the page throws no shadow either: its line sets it apart.
-    --web-float-shadow: none;
+    // What floats over the page throws no shadow either: its line, the pane's, sets it apart.
+    --web-float-shadow: inset 0 0 0 1px #2b2b33;
     --web-frost-fill: var(--web-pane-fill);
     --web-frost-blur: var(--web-pane-blur);
 
     // A veil, a panel on the stage: solid in flat, as a pane is.
     --web-veil-fill: var(--web-pane-fill);
-    --web-veil-edge: var(--web-pane-edge);
+    --web-veil-edge: 1px solid #2b2b33;
     --web-veil-blur: none;
 
     // An inset, set into the page: the page's black and a hairline.
@@ -111,29 +112,42 @@
     --web-press-edge: 1.5px solid #ffffff;
     --web-press-shadow: none;
 
-    // The agent's bar is a bar, the box in it an inset that lights when it is typed in, and a chip a small pane.
+    // The agent's bar is a bar, the box in it an inset that lights with a ring when it is typed in, no glow, and a
+    // chip the design's second grey, a step lighter than a pane (FX182).
     --web-dock-fill: var(--web-bar-fill);
     --web-dock-edge: var(--web-bar-edge);
     --web-dock-blur: var(--web-bar-blur);
     --web-sunk-fill: var(--web-inset-fill);
     --web-sunk-shadow: none;
-    --web-sunk-lit: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85), 0 0 26px -6px rgba(var(--web-overlay-rgb), .6);
-    --web-chip-fill: var(--web-pane-fill);
-    --web-chip-edge: var(--web-pane-edge);
+    --web-sunk-lit: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85);
+    --web-chip-fill: #1a1a1f;
+    --web-chip-edge: 1px solid #2b2b33;
     --web-chip-blur: var(--web-pane-blur);
 
-    // The page: no lines, and the lights the framework has: the colour you press from the top right, the second
-    // colour from the bottom left, and a breath of the first in the middle.
+    // The page: one solid colour, no lines and no lights (FX182), and a heading's band the words' own colour, so a
+    // headline reads solid (FX183).
     --web-page-lines: none;
-    --web-page-lights:
-        radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
-        radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
-        radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
+    --web-page-lights: none;
+    --web-heading-band: var(--bs-emphasis-color);
+    // The mark as a letter of the name: the size of glass's ball without its bubble, since flat has none, the small
+    // letters' height (FX184, Louis: "the blue dot must be smaller on flat cause we do not have another bubble").
+    --web-wordmark-o: .5em;
 
-    // The mark: a flat violet disc, a white l.
+    // Under the pointer, as the design's (FX185): the main button the lighter violet, the second filled white with
+    // black words, and a chip's line white.
+    --web-press-hover-fill: #9282ff;
+    --web-quiet-hover-fill: #ffffff;
+    --web-quiet-hover-ink: #000000;
+    --web-chip-hover-edge: 1px solid #ffffff;
+    // A tile's icon stands on black, darker than its card, with no shadow (FX186, Louis: "darker").
+    --web-icon-fill: #000000;
+    --web-icon-shadow: none;
+
+    // The mark: a flat violet disc carrying the brand's l with a violet step under it, drawn, so the letter handed
+    // to the orb gets no ink (FX181, Louis's pick of three, "the stepped").
     --web-mark-fill: #6b4dff;
     --web-mark-gloss: none;
-    --web-mark-ink: #ffffff;
+    --web-mark-ink: transparent;
 
     // You, and the agent.
     --web-you: #ffffff;
@@ -146,8 +160,8 @@
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
 
-    // Flat lays no drawing on any piece (F151.4).
-    @include theme-art.none();
+    // Flat lays no drawing on any piece (F151.4) but its mark (FX181).
+    @include theme-art.marks-only(flat, dark);
 
     color-scheme: dark;
 }

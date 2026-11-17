@@ -21,11 +21,13 @@
     clip-path: inset(50%);
     white-space: nowrap;
 }
+/* The mark's size as a letter is the theme's (FX184), and it drops the more it stands above the small letters, so
+   at any size it stands on the line: .76em drops .085em, the small letters' own .54em not at all. */
 .wordmark-seen ::deep .orb {
-    width: .76em;
-    height: .76em;
+    width: var(--web-wordmark-o);
+    height: var(--web-wordmark-o);
     margin: 0 .035em 0 .03em;
-    translate: 0 .085em;
+    translate: 0 calc((var(--web-wordmark-o) - .54em) * .385);
     @include surface.mark-letter();
 }
 .wordmark-seen ::deep .orb::before, .wordmark-seen ::deep .orb::after { display: none; }

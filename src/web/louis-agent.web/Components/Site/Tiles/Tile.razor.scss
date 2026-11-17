@@ -19,9 +19,9 @@
     margin-bottom: 10px;
     color: var(--bs-emphasis-color);
     border-radius: 14px;
-    // Solid white glass (Louis: "solid white glass"): the theme's panel, white by day, with a soft shadow under it.
-    @include surface.panel(var(--bs-secondary-bg));
-    @include surface.cast(6px, 14px, -8px, .35, var(--web-shadow-rgb));
+    // Solid white glass (Louis: "solid white glass"): the theme's plate for an icon, white by day in glass with a
+    // soft shadow under it, the page's own colour with none in flat (FX186).
+    @include surface.icon-plate();
 }
 .tile-icon ::deep svg { width: 22px; height: 22px; }
 article h3 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: var(--bs-emphasis-color); }

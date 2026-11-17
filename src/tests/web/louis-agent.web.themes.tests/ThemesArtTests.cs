@@ -8,7 +8,7 @@ namespace LouisAgent.Web.Themes.Tests;
 
 /// <summary>
 /// F151.4, Louis's pick A of three: a theme hands a piece its drawing as a value. Glass names, for each part and
-/// state, a drawing the themes project serves, and flat names none, since flat draws no glass.
+/// state, a drawing the themes project serves, and flat names none but its mark's (FX181), since flat draws no glass.
 /// </summary>
 public class ThemesArtTests
 {
@@ -49,14 +49,28 @@ public class ThemesArtTests
         Assert.That(wrong, Is.Empty);
     }
 
-    /// <summary>Flat lays no drawing on any piece, in either style.</summary>
+    /// <summary>
+    /// Flat lays no drawing on any piece but its mark (FX181): the mark and the bar's ball carry the brand's l, each
+    /// served by the project and there on disk, and every other name is none.
+    /// </summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
-    public void FlatNamesNoDrawing(SiteStyle style)
+    public void FlatNamesNoDrawing_ButItsMark(SiteStyle style)
     {
+        string word = style.Wire();
         var art = Art(FlatTheme.Theme, style);
+        string[] marks = ["mark", "mark-ball"];
         Assert.That(art, Has.Count.GreaterThan(30), "flat's art names were read");
 
-        Assert.That(art.Values.Distinct(), Is.EqualTo(new[] { "none" }));
+        var drawn = art.Where(name => name.Value != "none").Select(name => name.Key["--web-art-".Length..]);
+        var missing = marks.Where(drawing =>
+            art[$"--web-art-{drawing}"] != $"url(\"{Served}flat/{word}/{drawing}.svg\")"
+            || !File.Exists(Path.Combine(Root, "flat", word, $"{drawing}.svg")));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(drawn, Is.EquivalentTo(marks));
+            Assert.That(missing, Is.Empty);
+        });
     }
 }

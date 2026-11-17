@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 125 | 96 |
-| Fixes (`FX`) | 168 | 6 |
+| Fixes (`FX`) | 176 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -285,10 +285,18 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (168 done)
+## Fixes (176 done)
 
 | Id | When | What |
 |---|---|---|
+| FX188 | 2026-11-17 | Every WhatsApp button on the contact page says the number |
+| FX187 | 2026-11-17 | A button in a column grows to hold its words |
+| FX186 | 2026-11-17 | A tile's icon plate is the theme's: white or black in flat, with no shadow |
+| FX185 | 2026-11-17 | Flat's hovers are the design's: a card's line changes colour, the buttons and chips answer |
+| FX184 | 2026-11-17 | The wordmark's o is the theme's size, smaller in flat |
+| FX183 | 2026-11-17 | Flat's headline is solid: a heading's band is a theme value |
+| FX182 | 2026-11-17 | Flat's page has no lights, its box no glow, its dark chips the design's grey |
+| FX181 | 2026-11-17 | Flat's orb carries the brand's stepped l |
 | FX180 | 2026-11-17 | The contact page's offer cards: their buttons in two even columns, the wordmark at their foot |
 | FX179 | 2026-11-17 | The alpha flag keeps its words on one line on a phone |
 | FX178 | 2026-11-17 | The glass orb's drifting lights blur inside the whole ball, so no straight line cuts it drawn large |
