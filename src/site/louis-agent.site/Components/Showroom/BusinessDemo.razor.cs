@@ -194,6 +194,23 @@ public partial class BusinessDemo : IDisposable
         // The window's page is its website's, read as its own message reads it, so the guide's ask can send it on.
         _window = windows.Show(Identity, () => _mock?.ReadPageAsync() ?? Task.FromResult<Page?>(null));
         windows.Asked += OnAsked;
+        windows.Turned += OnTurned;
+    }
+
+    /// <summary>The conversation's place on the page, which the guide shows a turn at a time (F160).</summary>
+    private const string ConversationPlace = "the-conversation";
+
+    /// <summary>The recorded conversation, which plays the turn the guide shows.</summary>
+    private RecordedChat? _recorded;
+
+    /// <summary>
+    /// The guide showed a place on the page (F160): the conversation plays that turn and stops after it. While the
+    /// visitor talks to the business live, the talk is theirs, and is left as it is.
+    /// </summary>
+    private void OnTurned(string place, int turn)
+    {
+        if (place != ConversationPlace || _trying || _recorded is not { } recorded) return;
+        _ = InvokeAsync(() => recorded.PlayTurnAsync(turn));
     }
 
     /// <summary>
@@ -216,7 +233,12 @@ public partial class BusinessDemo : IDisposable
     public void Dispose()
     {
         if (Activity is { } activity) activity.Changed -= OnGuide;
-        if (Windows is { } windows) windows.Asked -= OnAsked;
+        if (Windows is { } windows)
+        {
+            windows.Asked -= OnAsked;
+            windows.Turned -= OnTurned;
+        }
+
         _window?.Dispose();
         GC.SuppressFinalize(this);
     }

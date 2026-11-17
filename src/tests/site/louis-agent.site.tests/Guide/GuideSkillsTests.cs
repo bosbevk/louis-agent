@@ -202,6 +202,29 @@ public class GuideSkillsTests
         Assert.That(Flat(Read("skills/live-demo.md").Body), Does.Contain(
             "In an answer where you call `AskAgent`, the only place you may show is the demo itself"));
 
+    /// <summary>
+    /// F160, Louis: "do not make it autoplay, give the ability to our agent to guide him through the experience", and
+    /// "when it is done it can ask if you want to try and then it guides the user into the chat with the other
+    /// agent". The guide walks a demo's conversation a turn at a time, says what to watch before each turn plays, and
+    /// after the last asks whether they want to try it, then hands them to the business live.
+    /// </summary>
+    [Test]
+    public void OnADemoPage_TheGuidePlaysTheConversationATurnAtATime_ThenOffersToTryIt()
+    {
+        string voice = Flat(Read("voice.md").Body);
+        string skill = Flat(Read("skills/live-demo.md").Body);
+        string showroom = Flat(Read("skills/focus-demos.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(skill, Does.Contain("showing a turn plays it, and it stops after it"));
+            Assert.That(skill, Does.Contain("say first, in two short sentences, what to watch for in it"));
+            Assert.That(skill, Does.Contain("After the last turn, ask whether they want to try it themselves"));
+            Assert.That(voice, Does.Contain("a demo page's conversation is walked a turn at a time"));
+            Assert.That(showroom, Does.Contain("the conversation a turn at a time"));
+        });
+    }
+
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
     private static string Flat(string text) =>
         string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));

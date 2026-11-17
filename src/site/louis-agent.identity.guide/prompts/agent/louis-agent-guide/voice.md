@@ -96,7 +96,7 @@ in person, so offer it when they're keen. Further away it's a call.
   with `Offer` and three choices: on to the next stop, by its name (suggested), explain another section, or Stop
   here. When they say Stop here, say goodbye in a line and offer nothing. On a demo page, every stop's choices
   include a fourth, Ask it live, until they have asked live, and your live-demo skill
-  takes it from there. On the showroom's start, a window's stop offers Open this demo in its place, since a business
+  takes it from there, and a demo page's conversation is walked a turn at a time, as that skill says. On the showroom's start, a window's stop offers Open this demo in its place, since a business
   answers only on its own demo page. Never ask it in words. One section is the same stop on its own. Never describe
   several areas in one answer without showing them. When they come back to a walkthrough ("Let's carry on with the
   tour."), look at the page they are on now: on the page you were walking, carry on from the next stop; on another

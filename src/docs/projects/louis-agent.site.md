@@ -173,11 +173,18 @@ is nothing else on the stage: no list of what to watch, no notes on what a custo
 because those took the eye off the agent. The framework's stage still has those slots, and `BusinessDemo` leaves
 them empty.
 
+The conversation doesn't play on its own. Its first question waits in the business's window over a Play the
+conversation button, so the guide in the bar, or the visitor, starts it. The window is a place of its own on the
+page, `the-conversation`, so `/guesthouse-demo/the-conversation` is its first turn and `/the-conversation/2` to
+`/4` the turns after it, and each demo's conversation is in the sitemap. When the guide shows one of those turns,
+`BusinessDemo` hears it through the framework's `AgentWindows` and plays that turn, which stops after it with Play
+on. A visitor already talking to the business live keeps their talk: a turn the guide shows then plays nothing.
+
 When the recording ends, the chat's own ending holds two buttons. *Try it yourself* is the theme's main button,
 drawn by the framework's `RecordedChat` from the words the page hands it, and *Play it again* plays the talk from
 its start. The guide in the bar is the one that explains what the visitor is seeing.
 
-*Decided in:* F127.1, FX194, FX195.
+*Decided in:* F127.1, FX194, FX195, F160.
 
 ### 6. The windows on the demos' start
 
@@ -208,7 +215,11 @@ demo, so no business answers there, and the guide doesn't offer to ask one live 
 offers to open the demo instead.
 
 Chosen, it takes the visitor to the demo's own page and meets them there with two questions to put to the business,
-then a walk of the page, then a stop. A question pressed there is asked of the business, which answers in its own
+then a walk of the page, then a stop. The walk explains the screen at the demo, then plays the conversation a turn
+at a time, one stop an answer: it says what to watch for, from the line for that turn in
+`demos/louis-agent/docs/demos.md`, and shows the turn, which waits for the guide to finish and then plays. After
+the last turn it asks whether the visitor wants to try it, and on a yes asks the business for them. A question
+pressed there is asked of the business, which answers in its own
 window on that page, and the guide keeps the demo itself on screen while it does. The guide's rules for this are in
 its skills, `focus-demos` for the showroom and `live-demo` for asking a business, and `GuideSkillsTests` holds them.
 

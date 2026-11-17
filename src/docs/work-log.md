@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 128 | 97 |
+| Features (`F`) | 129 | 97 |
 | Fixes (`FX`) | 183 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
@@ -156,10 +156,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (128 done)
+## Features (129 done)
 
 | Id | When | What |
 |---|---|---|
+| F160 | 2026-11-17 | The guide walks the demo (Louis: "do not make it autoplay, give the ability to our agent to guide him through the experience"): a demo waits to be started, its conversation is a place of its own with an address per turn (his pick of three), showing a turn plays it and stops, and the guide walks it a turn at a time, saying what to watch, then offers to try the business live |
 | F156 | 2026-11-17 | The web's pacing switch (Louis's pick A of three): the API answers a turn the engine paced with `Stream-Paced: on`, the page leaves its own pacer off for it, and louis-agent.dev turns `STREAM_PACE` on, so the guide's words are paced once; ADR 0126 widened to types |
 | F155 | 2026-11-17 | Pacing in the engine (Louis's pick A of three, after research): `STREAM_PACE=on` hands a turn's text out at `WordPace`'s pace in whole words, everything else in order, outside the turn; `WordPace` moved to session-stream and made continuous, which the caption shares; ADR 0126 on method names |
 | F153 | 2026-11-17 | Reset my session on the admin's home (Louis's pick A of three): one press ends every session this browser saved on the API, forgets both storages but the admin key, and reloads, so the owner sees the site as a first visit (`SessionReset`, `ResetSession`) |

@@ -24,6 +24,16 @@ public sealed class KeptGuide
     /// <summary>How big its panel is.</summary>
     public ChatWindowSize Size { get; set; }
 
+    /// <summary>
+    /// Opens its panel, and brings one folded to its head back to its normal size, so an answer is never hidden
+    /// (F127.2); one made large stays large.
+    /// </summary>
+    public void Unfold()
+    {
+        Open = true;
+        if (Size == ChatWindowSize.Minimised) Size = ChatWindowSize.Normal;
+    }
+
     /// <summary>The page its last message carried, so a new page's words go once.</summary>
     public string? PageSentFor { get; set; }
 

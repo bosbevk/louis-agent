@@ -63,6 +63,15 @@ public sealed class AgentWindows
         return true;
     }
 
+    /// <summary>Raised with a place the guide showed on the page, and its turn (F160).</summary>
+    public event Action<string, int>? Turned;
+
+    /// <summary>
+    /// Tells the windows the guide showed a place on the page at a turn, the place itself turn one, so a recorded talk
+    /// that is that place plays that turn.
+    /// </summary>
+    public void Turn(string place, int turn) => Turned?.Invoke(place, turn);
+
     /// <summary>Tells the windows the guide's stream moved on.</summary>
     public void Move() => Moved?.Invoke();
 

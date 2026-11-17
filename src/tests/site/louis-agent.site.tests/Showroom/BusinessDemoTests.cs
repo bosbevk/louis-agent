@@ -97,10 +97,11 @@ public class BusinessDemoTests
             .Add(demo => demo.Identity, "seemeeu-guesthouse")
             .Add(demo => demo.Hint, "Is breakfast included?"));
 
-    /// <summary>The demo once its recording has played to the end.</summary>
+    /// <summary>The demo once its Play button is pressed and its recording has played to the end.</summary>
     private static IRenderedComponent<BusinessDemo> Played(BunitContext ctx)
     {
         var cut = Demo(ctx);
+        cut.Find(".recorded-wait .btn-fill").Click();
         cut.WaitForElement(".recorded-end", TimeSpan.FromSeconds(10));
         return cut;
     }
@@ -151,6 +152,45 @@ public class BusinessDemoTests
     }
 
     /// <summary>
+    /// The demo waits to be started (F160, Louis: "do not make it autoplay"): its first question shows over the
+    /// theme's Play button, and nothing plays until it is pressed.
+    /// </summary>
+    [Test]
+    public void TheDemo_WaitsForPlay()
+    {
+        using var ctx = Context();
+
+        var cut = Demo(ctx);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".recorded-wait .btn-fill").TextContent.Trim(), Is.EqualTo("Play the conversation"));
+            Assert.That(cut.FindAll(".recorded-end"), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// The guide showing the demo's conversation plays that turn (F160, a turn is a stop the guide shows); a place
+    /// that isn't the conversation plays nothing.
+    /// </summary>
+    [Test]
+    public void TheGuideShowingTheConversation_PlaysThatTurn()
+    {
+        using var ctx = Context();
+        var windows = new AgentWindows();
+        ctx.Services.AddSingleton(windows);
+        var cut = Demo(ctx);
+
+        cut.InvokeAsync(() => windows.Turn("the-demo", 1));
+        Thread.Sleep(200);
+        bool playedForAnotherPlace = cut.FindAll(".recorded-wait").Count == 0;
+        cut.InvokeAsync(() => windows.Turn("the-conversation", 1));
+
+        cut.WaitForElement(".recorded-end", TimeSpan.FromSeconds(10));
+        Assert.That(playedForAnotherPlace, Is.False);
+    }
+
+    /// <summary>
     /// Try it yourself waits for the play to end, then sits beside Play it again as the theme's main button (FX194,
     /// Louis: "the on button in the chat is fuckewd").
     /// </summary>
@@ -159,6 +199,7 @@ public class BusinessDemoTests
     {
         using var ctx = Context();
         var cut = Demo(ctx);
+        cut.Find(".recorded-wait .btn-fill").Click();
         var whilePlaying = cut.FindAll(".recorded-end .btn-fill").Count;
 
         cut.WaitForElement(".recorded-end", TimeSpan.FromSeconds(10));

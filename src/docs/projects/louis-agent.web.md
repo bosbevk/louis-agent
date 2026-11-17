@@ -145,6 +145,11 @@ guide's widget hands such a window an ask to its agent. That marks the call as s
 chat draws one line instead of the talk, and the widget tells the window each time the stream moves on. On a narrow
 screen the window is brought into view and the guide folds to its head.
 
+The windows also hear where the guide goes on the visitor's page. When the guide shows a place on the page the
+visitor is on, the widget tells the windows that place and its turn, the place itself being turn one, through
+`AgentWindows.Turn`. A recorded talk that is that place plays that turn. A place on another page is gone to first,
+and nothing on the page being left hears it. `GuidePlaces.TurnOf` reads the place and the turn from the address.
+
 The showroom's live chat is such a window. It watches the ask as one turn: the visitor's words and the answer, its
 blocks shared with the guide's stream, and the agent's tool calls handed on once each. Once the ask ends, it holds
 a chat on that agent's own session, so the visitor carries on there.
@@ -637,6 +642,20 @@ which a site's own animated panels use too. A site can make the ending's guide b
 its next turn, and once it is let go it goes on from where it stood. A business's demo holds its play while the
 site's guide is talking, so the visitor follows one voice at a time.
 
+**It can wait to be started, and play one turn.** A recorded chat says when it starts with `RecordedStart`: on its
+own as soon as it is on the page, or only when asked. Started when asked, its first question waits in the window
+over the theme's Play button, and nothing plays until it is pressed. A page can also ask it to play one turn with
+`PlayTurnAsync`. The turns before it show at once, that turn plays at its pace, and the play stops after it, with a
+Play on button that plays the rest and Play it again beside it. Playing from a turn and playing one turn are the
+same loop, from one turn to another. A hold keeps the window as it is until it is let go, so a turn asked for while
+the guide talks starts once the guide is done, rather than the window going blank.
+
+**A recorded talk is a place the guide can show.** A page can give the chat a place, its id on the page. The window
+is then a section the guide shows by that id, and it lists its turns, by number and question, where the page doesn't
+show them. The guide's view of the page reads that list the way it reads a paged section's later pages: the place
+itself is the first turn, and the same address with `/2`, `/3` and so on the turns after it, each named by its
+question. The guide reads the place as a recorded talk that plays a turn when shown.
+
 **The play moves the mock.** A recorded chat tells its page each tool call as it plays. So a mock goes to the
 place its agent showed: a section under the guide's spotlight, or a card pressed.
 
@@ -647,7 +666,7 @@ and maximise with the same buttons.
 
 *Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`, F134.4's `AHeldPlay` tests.
 
-*Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons),
+*Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons), F160 (a turn at a time),
 [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md),
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
