@@ -6,6 +6,24 @@ namespace LouisAgent.Web.Framework.Content;
 /// </summary>
 public static class ProgramListings
 {
+    /// <summary>
+    /// The coding agent's whole <c>Program.cs</c>, its usings and all: everything a program of your own needs to start
+    /// an agent in the terminal.
+    /// </summary>
+    public const string CodingAgentProgram =
+        """
+        using LouisAgent.Core.Web;
+        using LouisAgent.Core.Anthropic;
+        using LouisAgent.Core.Ollama;
+        using LouisAgent.Core.OpenAi;
+        using LouisAgent.Core.Telemetry;
+        using LouisAgent.Core.Hosting;
+        using LouisAgent.Cli;
+        using LouisAgent.Coding;
+
+        // Usage: louis-agent.coding-cli [prompt]. It loads what this demo's catalogue names.
+        """ + "\n" + RunTheCodingAgent;
+
     /// <summary>The call that starts the coding agent in the terminal, from its own <c>Program.cs</c>.</summary>
     public const string RunTheCodingAgent =
         """

@@ -10,6 +10,6 @@ public static class FrameworkContents
 {
     /// <summary>The framework's pages, as they stand.</summary>
     public static readonly DocsContents All = new([
-        new DocsGroup("Start", [new DocsEntry("Overview", "/")])
+        new DocsGroup("Start", [new DocsEntry("Overview", "/"), new DocsEntry("Getting started", "/getting-started")])
     ]);
 }
