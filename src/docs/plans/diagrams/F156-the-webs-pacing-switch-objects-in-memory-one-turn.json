@@ -1,0 +1,20 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F156 the web's pacing switch: the objects of one turn",
+  "caption": "In the browser, the turn carries whether its server paced it, and the caption drawn for it reads that once, when it first draws.",
+  "flow": {
+    "nodes": [
+      { "id": "runner", "icon": "code", "tone": "blue", "label": "runner : ChatRunner" },
+      { "id": "turn", "shape": "data", "icon": "message", "tone": "blue", "label": "turn : Turn\nServerPaced = true" },
+      { "id": "bar", "icon": "browser", "tone": "teal", "label": "bar : AgentBar" },
+      { "id": "caption", "icon": "browser", "tone": "teal", "label": "caption : AgentCaption\n_paced = Streaming and\nnot ServerPaced = false" }
+    ],
+    "edges": [
+      { "from": "runner", "to": "turn", "word": "holds, sets" },
+      { "from": "bar", "to": "turn", "word": "reads" },
+      { "from": "bar", "to": "caption", "word": "draws, with ServerPaced" }
+    ],
+    "direction": "down"
+  }
+}

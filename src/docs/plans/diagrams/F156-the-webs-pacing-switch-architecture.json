@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F156 the web's pacing switch: the architecture",
+  "caption": "The site's API turns the engine's pacing on and says so on each turn; the page in the browser reads that and paces only when the server did not.",
+  "flow": {
+    "nodes": [
+      { "id": "config", "shape": "data", "icon": "settings", "tone": "amber", "label": "STREAM_PACE=on (5)\ncompose and Azure" },
+      { "id": "engine", "icon": "chip", "tone": "violet", "label": "The engine\npaces the turn (F155)" },
+      { "id": "api", "icon": "server", "tone": "violet", "label": "The site's API (2)\nStream-Paced: on" },
+      { "id": "agentapi", "icon": "code", "tone": "blue", "label": "AgentApi, ChatRunner (3)\nthe turn ServerPaced" },
+      { "id": "caption", "icon": "browser", "tone": "teal", "label": "The guide's caption (4)\nits pacer off when\nthe server paced" },
+      { "id": "other", "icon": "browser", "tone": "teal", "label": "A page on an API\nthat doesn't pace:\nits pacer on, as now" }
+    ],
+    "edges": [
+      { "from": "config", "to": "engine", "word": "on" },
+      { "from": "engine", "to": "api", "word": "even text" },
+      { "from": "api", "to": "agentapi", "word": "the header, then the events" },
+      { "from": "agentapi", "to": "caption" },
+      { "from": "agentapi", "to": "other", "style": "dashed", "word": "no header" }
+    ],
+    "direction": "down"
+  }
+}
