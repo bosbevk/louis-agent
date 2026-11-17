@@ -13,7 +13,9 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings, string? chat
     private readonly string _chatsKey = chatsKey ?? DefaultChatsKey;
 
     private const string ApiKeyKey = "louis-agent.apiKey";
-    private const string AdminKeyKey = "louis-agent.adminKey";
+
+    /// <summary>Where the admin's key is kept: the one thing a reset of this browser keeps (F153).</summary>
+    public const string AdminKeyKey = "louis-agent.adminKey";
 
     // localStorage holds ~5 MB per site; tool output is the bulk of a chat, so only its start is kept.
     private const int MaxStoredToolResultChars = 4_000;

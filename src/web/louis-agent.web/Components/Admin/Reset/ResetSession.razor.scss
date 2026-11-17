@@ -1,0 +1,9 @@
+/* Reset my session (F153): its line on the left, its press on the right, one under the other on a phone. The press is
+   the theme's own, through the shared button. */
+.admin-reset { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.admin-reset p { margin: 4px 0 0; color: var(--bs-secondary-color); }
+.admin-reset .btn { flex: none; }
+
+@media (max-width: 600px) {
+    .admin-reset { flex-direction: column; align-items: stretch; }
+}
