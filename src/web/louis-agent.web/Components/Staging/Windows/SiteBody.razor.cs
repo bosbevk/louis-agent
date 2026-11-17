@@ -55,9 +55,9 @@ public partial class SiteBody
     [Parameter, EditorRequired]
     public string Answer { get; set; } = "";
 
-    /// <summary>One thing the agent showed, under its answer.</summary>
+    /// <summary>One thing the agent showed, drawn as a small card under its answer.</summary>
     [Parameter]
-    public RenderFragment? Shown { get; set; }
+    public ShownCard? Shown { get; set; }
 
     /// <summary>The words in the box a visitor would type in.</summary>
     [Parameter]

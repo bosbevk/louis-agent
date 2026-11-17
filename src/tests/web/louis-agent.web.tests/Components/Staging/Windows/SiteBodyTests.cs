@@ -23,7 +23,7 @@ public class SiteBodyTests
             .Add(body => body.AskNote, "answers in seconds")
             .Add(body => body.Question, "Do you bake rye?")
             .Add(body => body.Answer, "On Fridays.")
-            .Add(body => body.Shown, "<span class=\"loaf\">The rye loaf</span>")
+            .Add(body => body.Shown, new ShownCard("The rye loaf", "R45 a loaf", "images/rye.webp"))
             .Add(body => body.Hint, "Type your question"));
 
     /// <summary>
@@ -63,7 +63,9 @@ public class SiteBodyTests
             Assert.That(chat.QuerySelector(".body-ask em")!.TextContent, Is.EqualTo("answers in seconds"));
             Assert.That(chat.QuerySelector(".body-question")!.TextContent, Is.EqualTo("Do you bake rye?"));
             Assert.That(chat.QuerySelector(".body-answer")!.TextContent, Is.EqualTo("On Fridays."));
-            Assert.That(chat.QuerySelector(".body-shown .loaf")!.TextContent, Is.EqualTo("The rye loaf"));
+            Assert.That(chat.QuerySelector(".body-shown img")!.GetAttribute("src"), Is.EqualTo("images/rye.webp"));
+            Assert.That(chat.QuerySelector(".body-shown b")!.TextContent, Is.EqualTo("The rye loaf"));
+            Assert.That(chat.QuerySelector(".body-shown span")!.TextContent, Is.EqualTo("R45 a loaf"));
             Assert.That(chat.QuerySelector(".body-hint")!.TextContent, Is.EqualTo("Type your question"));
         });
     }
@@ -111,6 +113,36 @@ public class SiteBodyTests
             Assert.That(narrow, Does.Contain("grid-template-columns: minmax(0, 1fr);"), "one column");
             Assert.That(narrow, Does.Contain("grid-template-rows: 36% minmax(0, 1fr);"), "the website, then the chat");
         });
+    }
+
+    /// <summary>
+    /// FX192: the visitor's question is drawn as the chat draws a visitor's message, the theme's spoken bubble in its
+    /// own ink. Filled with the page's ink instead, it was white words on white in a dark look.
+    /// </summary>
+    [Test]
+    public void TheQuestion_IsTheChatsOwnVisitorBubble()
+    {
+        string body = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Staging/Windows/SiteBody.razor.scss")).ReplaceLineEndings("\n");
+        int start = body.IndexOf("\n.body-question {", StringComparison.Ordinal);
+        string question = start < 0 ? "" : body[start..body.IndexOf("\n}", start + 1, StringComparison.Ordinal)];
+
+        Assert.That(question, Does.Contain("@include surface.spoken();").And.Not.Contain("var(--bs-body-color)"));
+    }
+
+    /// <summary>
+    /// FX192: the website's words stand on its photo over a dark shade, so they are light in every look, as the
+    /// caption on the framework's shots is. In the theme's brightest they were black on the photo in a light look.
+    /// </summary>
+    [Test]
+    public void TheWebsitesWords_AreLightOnItsPhoto_InEveryLook()
+    {
+        string body = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Staging/Windows/SiteBody.razor.scss")).ReplaceLineEndings("\n");
+        int start = body.IndexOf("\n.body-site {", StringComparison.Ordinal);
+        string site = start < 0 ? "" : body[start..body.IndexOf('}', start)];
+
+        Assert.That(site, Does.Contain("color: var(--web-on-primary);").And.Not.Contain("--web-bright"));
     }
 
     /// <summary>

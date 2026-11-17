@@ -1,3 +1,5 @@
+using LouisAgent.Web.Components.Staging.Windows;
+
 namespace LouisAgent.Site.Components.Showroom.Windows;
 
 /// <summary>
@@ -15,4 +17,8 @@ public partial class SeemeeuWindow
 
     /// <summary>The moment of its talk the window shows.</summary>
     private static WindowTalk Talk => SiteWindowTalks.Seemeeu;
+
+    /// <summary>The room the agent showed, as the demo's page names and prices it.</summary>
+    private static readonly ShownCard Room =
+        new("The garden room", "R1,250 a night", "images/showroom/seemeeu-garden.webp");
 }
