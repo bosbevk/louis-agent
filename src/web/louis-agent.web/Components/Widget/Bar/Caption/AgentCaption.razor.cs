@@ -1,4 +1,5 @@
 using LouisAgent.Web.Chats.Calls;
+using LouisAgent.Web.Components.Widget.Bar.Caption.Motion;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -116,6 +117,17 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>The words to draw: those the pace has reached, or all of them once it has done.</summary>
     private string Shown => _paced ? Words[..Math.Min(Words.Length, WordPace.Letters(_shown))] : Words;
 
+    /// <summary>Whether the answer is on its way out: the caption fades, and then says it has gone (F154).</summary>
+    [Parameter]
+    public bool Leaving { get; set; }
+
+    /// <summary>Tells the bar the caption has faded, so it can be taken away.</summary>
+    [Parameter]
+    public EventCallback OnLeft { get; set; }
+
+    /// <summary>Whether the caption has begun to fade, so it fades once.</summary>
+    private bool _fading;
+
     /// <summary>An answer still streaming when the caption first draws comes at a pace.</summary>
     protected override void OnInitialized() => _paced = Streaming;
 
@@ -188,6 +200,22 @@ public partial class AgentCaption : IAsyncDisposable
             }
 
             if (_paced) _ = PaceAsync(_pacing.Token);
+            return;
+        }
+
+        // On its way out, it fades once and then says so; a motion that fails only means it goes without fading.
+        if (Leaving && !_fading)
+        {
+            _fading = true;
+            try
+            {
+                if (_motion is not null) await _motion.InvokeVoidAsync("leave", _caption);
+            }
+            catch (JSException)
+            {
+            }
+
+            await OnLeft.InvokeAsync();
             return;
         }
 

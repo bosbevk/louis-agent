@@ -175,6 +175,24 @@ public class AgentCaptionTests
     }
 
     /// <summary>
+    /// F154: an answer put away fades before it goes: its caption asks the motion module to fade it, and is taken away
+    /// once it has (Louis's pick A of three).
+    /// </summary>
+    [Test]
+    public void PutAway_TheCaptionFades_ThenGoes()
+    {
+        using var ctx = new BunitContext();
+        var motion = ctx.JSInterop.SetupModule(LouisAgent.Web.Scripts.FrameworkScripts.CaptionMotion);
+        motion.Mode = JSRuntimeMode.Loose;
+        var cut = Bar(ctx, ShowedAndSaid());
+
+        cut.Find(".agent-caption .caption-close").Click();
+
+        cut.WaitForState(() => cut.FindAll(".agent-caption").Count == 0, TimeSpan.FromSeconds(5));
+        Assert.That(motion.Invocations.Count(call => call.Identifier == "leave"), Is.EqualTo(1));
+    }
+
+    /// <summary>
     /// A closed answer stays closed after a reload (FX161, Louis's pick A of three): closing it marks its turn, which
     /// is saved with the chat, and a bar drawn afresh over that chat, as after Ctrl+R, shows no caption for it.
     /// </summary>

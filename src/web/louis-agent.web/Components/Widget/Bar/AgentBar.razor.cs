@@ -1,6 +1,7 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Chat;
 using LouisAgent.Web.Components.Widget.Bar.Caption;
+using LouisAgent.Web.Components.Widget.Bar.Caption.Motion;
 using LouisAgent.Web.Components.Widget.Bar.Opening;
 using LouisAgent.Web.Components.Widget.Bar.Sides;
 using LouisAgent.Web.Components.Widget.Orb;
@@ -285,6 +286,22 @@ public partial class AgentBar : IAsyncDisposable
     /// whole talk in its place.
     /// </summary>
     private Captioned? Caption => _talkOpen || IsPutAway ? null : Captioned.Of(Last);
+
+    /// <summary>Which answers are leaving, fading before they go (F154).</summary>
+    private readonly CaptionHandOver _handOver = new();
+
+    /// <summary>
+    /// The answers to draw as captions: those leaving, then the one standing. Asked once a draw, it tells the hand-over
+    /// which answer stands now, so one no longer shown begins to leave.
+    /// </summary>
+    private IReadOnlyList<Turn> CaptionTurns => _handOver.Draw(Caption is null ? null : Last);
+
+    /// <summary>An answer's caption has faded: it is taken away.</summary>
+    private void Left(Turn turn)
+    {
+        _handOver.Left(turn);
+        StateHasChanged();
+    }
 
     /// <summary>
     /// The whole talk shows once the visitor opens it. It opens by itself for an answer a caption can't hold, such as

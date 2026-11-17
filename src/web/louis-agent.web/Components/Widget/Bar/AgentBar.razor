@@ -10,17 +10,21 @@
 <div class="@BarClasses" @ref="_bar">
     @* The chips while the guide waits (F134.3), round the orb while the bar is closed (FX173). *@
     <BarChips Chips="Chips" Show="ChipsShow" OnChoose="OnChoose"/>
-    @* The guide's last answer stands as the caption (F134.4), a caption of its own for each answer. The whole talk
-       takes its place when the visitor opens it, or when the answer holds what only the talk draws. *@
-    @if (Caption is { } caption)
+    @* The guide's last answer stands as the caption (F134.4), a caption of its own for each answer, and the answers
+       on their way out fade beside it before they go (F154). Each is keyed by its answer, so a leaving caption is the
+       same caption, told it is leaving. The whole talk takes the standing one's place when the visitor opens it, or
+       when the answer holds what only the talk draws. *@
+    @foreach (var turn in CaptionTurns)
     {
-        <AgentCaption @key="Last" Title="@Title" Words="@caption.Words" Question="@caption.Question"
+        var caption = Captioned.Of(turn)!;
+        bool leaving = _handOver.IsLeaving(turn);
+        <AgentCaption @key="turn" Title="@Title" Words="@caption.Words" Question="@caption.Question"
                       Offer="caption.Offer" Work="caption.Work"
-                      Beside="caption.Beside" Currency="Currency" Streaming="Runner.Streaming"
+                      Beside="caption.Beside" Currency="Currency" Streaming="@(!leaving && Runner.Streaming)"
                       OnChoose="OnChoose" OnTalk="ToggleTalk" OnClose="PutTheAnswerAway"
-                      OnWrite="FocusTheBox"/>
+                      OnWrite="FocusTheBox" Leaving="leaving" OnLeft="() => Left(turn)"/>
     }
-    else if (TalkShows)
+    @if (Caption is null && TalkShows)
     {
         <AgentTalk Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency" ShowWork="ShowWork"
                    ShowCardAnswers="ShowCardAnswers" Chosen="OnChoose" OnClose="ToggleTalk"/>

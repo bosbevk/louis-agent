@@ -3,7 +3,7 @@ using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Tests.Components.Widget.Bar.Caption;
+namespace LouisAgent.Web.Tests.Components.Widget.Bar.Caption.Motion;
 
 /// <summary>
 /// F154: the guide's answer grows in from where it comes from, and its words, while they still stream, come at a

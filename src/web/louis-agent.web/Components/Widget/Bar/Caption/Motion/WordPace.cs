@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Components.Widget.Bar.Caption;
+namespace LouisAgent.Web.Components.Widget.Bar.Caption.Motion;
 
 /// <summary>
 /// How much of the guide's answer shows, frame by frame (F154, Louis's pick A of three): the words come at a steady

@@ -1,6 +1,6 @@
-using LouisAgent.Web.Components.Widget.Bar.Caption;
+using LouisAgent.Web.Components.Widget.Bar.Caption.Motion;
 
-namespace LouisAgent.Web.Tests.Components.Widget.Bar.Caption;
+namespace LouisAgent.Web.Tests.Components.Widget.Bar.Caption.Motion;
 
 /// <summary>
 /// F154: the guide's words come at a steady pace, not in the bursts the model streams them in (Louis's pick A of
