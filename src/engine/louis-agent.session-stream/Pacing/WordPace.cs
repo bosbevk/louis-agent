@@ -1,8 +1,9 @@
-namespace LouisAgent.Web.Components.Widget.Bar.Caption.Motion;
+namespace LouisAgent.SessionStream.Pacing;
 
 /// <summary>
-/// How much of the guide's answer shows, frame by frame (F154, Louis's pick A of three): the words come at a steady
-/// pace, not in the bursts the model streams them in. About 90 letters a second; faster when far behind what has
+/// How much of an answer shows, frame by frame (F154, Louis's pick A of three): the words come at a steady pace, not in
+/// the bursts the model streams them in. Here, where the web and the engine both read it, so a page and a host pace
+/// by one rule (F155). About 90 letters a second; faster when far behind what has
 /// arrived, so a thousand letters behind is back within <see cref="FarBehind"/> in about a second and a half; and once
 /// the answer is done, the last couple of hundred letters show in about a second and a quarter. It never shows more
 /// than has arrived, and never takes back what it showed.

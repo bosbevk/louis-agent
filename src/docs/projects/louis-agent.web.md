@@ -290,8 +290,9 @@ had added.
 
 The caption also moves as it comes and goes. While an answer is still streaming when its caption first draws, its
 words come at a steady pace and not in the bursts the model sends them in. About thirty times a second the caption
-asks `WordPace` (`Widget/Bar/Caption/Motion`) how much should show: about 90 letters a second, faster when it has fallen
-more than 240 letters behind what has arrived, and faster again once the answer is done, so the last couple of hundred
+asks `WordPace` (`Pacing/` in the shared `louis-agent.session-stream`) how much should show: about 90 letters a
+second, faster when it has fallen more than 240 letters behind what has arrived, and faster again once the answer is
+done, so the last couple of hundred
 letters show in about a second and a quarter. An answer already done when its caption draws, as after a reload, shows
 whole at once. On its first draw the caption grows out of the bar's orb, or swells out of the card whose place it
 takes, over 380 ms on the web's spring. When the bar stops showing an answer, because the visitor put it away or the
