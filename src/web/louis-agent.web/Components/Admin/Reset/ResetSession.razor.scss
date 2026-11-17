@@ -1,8 +1,18 @@
-/* Reset my session (F153): its line on the left, its press on the right, one under the other on a phone. The press is
-   the theme's own, through the shared button. */
-.admin-reset { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+@use "web/tools/surface";
+
+/* Reset my session (F153): its line on the left and its press on the right, in a row, though a panel lays its parts in
+   a column; one under the other on a phone. The press is the theme's main one, from the surface tool. */
+.admin-reset { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .admin-reset p { margin: 4px 0 0; color: var(--bs-secondary-color); }
-.admin-reset .btn { flex: none; }
+.admin-reset button {
+    flex: none;
+    height: 40px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+    @include surface.press();
+}
 
 @media (max-width: 600px) {
     .admin-reset { flex-direction: column; align-items: stretch; }
