@@ -1,3 +1,3 @@
 @* A row of the theme's buttons, side by side (FX163, ADR 0125): a band stacks what it holds, so its buttons stand in
-   this row. *@
-<div class="button-row">@ChildContent</div>
+   this row; in even columns when it is asked for them (FX180). *@
+<div class="button-row" data-columns="@Columns" style="@(Columns is { } columns ? $"--button-columns: {columns}" : null)">@ChildContent</div>

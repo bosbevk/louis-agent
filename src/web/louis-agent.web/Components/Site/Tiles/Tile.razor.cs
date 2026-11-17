@@ -43,9 +43,14 @@ public partial class Tile
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    /// <summary>The tile's own buttons, side by side under its words, at their own width; none by default.</summary>
+    /// <summary>The tile's own buttons, in two even columns under its words; none by default.</summary>
+    /// <remarks>FX180, Louis: "2 columns buttons".</remarks>
     [Parameter]
     public RenderFragment? Actions { get; set; }
+
+    /// <summary>The site's brand at the tile's foot, at its right under the buttons; none by default.</summary>
+    [Parameter]
+    public RenderFragment? Brand { get; set; }
 
     /// <summary>A colour to set the tile apart, the eval screens' four; none by default.</summary>
     [Parameter]

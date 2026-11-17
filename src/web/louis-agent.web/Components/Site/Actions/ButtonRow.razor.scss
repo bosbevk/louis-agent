@@ -1,2 +1,16 @@
 /* A row of buttons (FX163): side by side, a little apart, wrapping on a narrow screen. */
 .button-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 8px; }
+
+/* Asked for columns (FX180), as a tile asks for two: even columns, so a long button never drops to a line of its own
+   and leaves a gap beside it. Each button fills its column with its words in the middle, and long words wrap inside
+   it so its mark stays in view. On a phone they stack, one to a line. */
+.button-row[data-columns] {
+    display: grid;
+    grid-template-columns: repeat(var(--button-columns), minmax(0, 1fr));
+    align-items: stretch;
+}
+.button-row[data-columns] ::deep .btn { justify-content: center; text-align: center; white-space: normal; }
+
+@media (max-width: 600px) {
+    .button-row[data-columns] { grid-template-columns: 1fr; }
+}
