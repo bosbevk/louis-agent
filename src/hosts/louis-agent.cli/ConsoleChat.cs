@@ -20,7 +20,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
     /// <summary>Run the interactive chat loop.</summary>
     public async Task RunAsync()
     {
-        var history = engine.NewHistory();
+        var history = engine.StartHistory();
         // One CLI run is one session in the usage ledger.
         string session = $"cli_{Guid.NewGuid():N}";
         int turns = 0;
@@ -94,7 +94,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
         using var usage = UsageScope.Begin(host: "cli", session: $"cli_{Guid.NewGuid():N}", turn: 1);
         try
         {
-            await StreamToConsoleAsync(engine.NewHistory(), userInput);
+            await StreamToConsoleAsync(engine.StartHistory(), userInput);
             Console.WriteLine();
             // One prompt is the whole session, so the line has no session total.
             if (usage.Records.Count > 0) WriteUsageLine(UsageText.Line(usage.Records, display: engine.Display));

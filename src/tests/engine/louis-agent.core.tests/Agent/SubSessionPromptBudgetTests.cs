@@ -63,7 +63,7 @@ public class SubSessionPromptBudgetTests
                UsageScope.Begin(session: "sess_child", turn: 1, tags: new UsageTags(null, null, null, parent)))
         {
             before?.Invoke(scope);
-            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "count them"))
+            await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "count them"))
             {
             }
         }

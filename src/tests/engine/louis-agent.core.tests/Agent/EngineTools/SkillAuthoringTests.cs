@@ -121,7 +121,7 @@ public class SkillAuthoringTests
         engine.ReloadSkills();
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
             "and still finds it at its new path");
-        Assert.That(CountOf(engine.SkillDocumentation, "# Greeting Skills"), Is.EqualTo(1), "loaded once, not twice");
+        Assert.That(Count(engine.SkillDocumentation, "# Greeting Skills"), Is.EqualTo(1), "loaded once, not twice");
     }
 
     // Review of PR #68: CreateSkillFile lowercases the name, so /approve has to as well, or on Linux "Greeting" finds nothing.
@@ -215,7 +215,7 @@ public class SkillAuthoringTests
         Assert.That(reply, Does.Contain("older").And.Contain("not loaded"));
     }
 
-    private static int CountOf(string text, string part) => (text.Length - text.Replace(part, "").Length) / part.Length;
+    private static int Count(string text, string part) => (text.Length - text.Replace(part, "").Length) / part.Length;
 
     [Test]
     public void CreateSkillFile_RejectsInvalidSkillSections()
@@ -230,12 +230,12 @@ public class SkillAuthoringTests
 
     [TestCase(TestToolset.DotNet)]
     [TestCase(TestToolset.Python)]
-    public void CreateSkillFile_RefusesBuiltInNames(TestToolset toolset) => RefusesAsBuiltIn(toolset.Wire());
+    public void CreateSkillFile_RefusesBuiltInNames(TestToolset toolset) => AssertRefusedAsBuiltIn(toolset.Wire());
 
     [TestCase("self-extension")]
-    public void CreateSkillFile_RefusesBuiltInNames_ThatAreAGuidesOwnFile(string name) => RefusesAsBuiltIn(name);
+    public void CreateSkillFile_RefusesBuiltInNames_ThatAreAGuidesOwnFile(string name) => AssertRefusedAsBuiltIn(name);
 
-    private void RefusesAsBuiltIn(string name)
+    private void AssertRefusedAsBuiltIn(string name)
     {
         Assert.That(Engine().CreateSkillFile(name, EchoSkill), Does.Contain("built-in"));
     }
@@ -313,7 +313,7 @@ public class SkillAuthoringTests
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "first")),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "second")));
         var engine = Engine(client: client);
-        var history = engine.NewHistory();
+        var history = engine.StartHistory();
 
         await engine.ProcessPromptAsync(history, "before");
         engine.CreateSkillFile("greeting", EchoSkill);

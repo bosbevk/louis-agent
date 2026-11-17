@@ -4,6 +4,7 @@ using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
+using LouisAgent.Core.Agent.Turns.Pacing;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
@@ -41,6 +42,11 @@ public class AgentEngine
 
     /// <summary>One turn on the pipeline.</summary>
     private readonly TurnRunner _turns;
+
+    /// <summary>Whether a turn's text is paced on its way out (STREAM_PACE, F155), and the clock that paces it.</summary>
+    private readonly bool _paced;
+
+    private readonly TimeProvider _clock;
 
     /// <summary>What the user types that the model never sees.</summary>
     private readonly UserCommands _commands;
@@ -162,6 +168,8 @@ public class AgentEngine
         _guards = new ToolCallGuards(_registry,
             ChatPipeline.BuildSummaryClient(chatClient, usageSink, usageMapper, replay),
             options.SubSessionPromptBudget);
+        _paced = options.StreamPace;
+        _clock = clock ?? TimeProvider.System;
         _turns = new TurnRunner(
             ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
             () => SkillDocumentation, () => Thinking, supportsTools, () => Name);
@@ -188,7 +196,7 @@ public class AgentEngine
         _registry.RegisterDiscovered(name, description);
 
     /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
-    public List<ChatMessage> NewHistory() => _turns.NewHistory();
+    public List<ChatMessage> StartHistory() => _turns.NewHistory();
 
     /// <summary>
     /// One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in
@@ -200,11 +208,15 @@ public class AgentEngine
 
     /// <summary>
     /// One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as
-    /// they happen.
+    /// they happen; the text at a steady pace in whole words when the host turned STREAM_PACE on (F155), the turn
+    /// itself and its history untouched by it.
     /// </summary>
     public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput,
-        CancellationToken cancellationToken = default) =>
-        _turns.StreamAsync(history, userInput, cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        var turn = _turns.StreamAsync(history, userInput, cancellationToken);
+        return _paced ? turn.Paced(_clock, cancellationToken) : turn;
+    }
 
     /// <summary>
     /// Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).

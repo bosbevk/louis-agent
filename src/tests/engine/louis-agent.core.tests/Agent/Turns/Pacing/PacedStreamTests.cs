@@ -97,8 +97,8 @@ public class PacedStreamTests
     }
 
     /// <summary>
-    /// A tool call waits for the text before it, which goes out whole, and goes out itself as it is; the text after
-    /// it comes after; the order is the turn's.
+    /// A tool call waits for the text before it, which finishes at the finishing pace, and goes out itself as it is; the
+    /// text after it comes after; the order is the turn's.
     /// </summary>
     [Test]
     public async Task AToolCall_WaitsForTheTextBeforeIt_AndKeepsTheOrder()
@@ -110,10 +110,36 @@ public class PacedStreamTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(at, Is.GreaterThan(0));
+            Assert.That(at, Is.GreaterThan(1), "the text before it in pieces, not at once");
             Assert.That(TextOf(outs.Take(at)), Is.EqualTo(Burst));
             Assert.That(TextOf(outs.Skip(at + 1)), Is.EqualTo("After it."));
         });
+    }
+
+    /// <summary>
+    /// A turn that sends its text and its finish together, as a model's last update carries only its finish, is still
+    /// paced: the finish waits behind the text, which finishes at the finishing pace and does not go out at once.
+    /// </summary>
+    [Test]
+    public async Task TextWithItsFinishBehindIt_IsStillPaced()
+    {
+        var finish = new ChatResponseUpdate { FinishReason = ChatFinishReason.Stop };
+
+        var outs = await DrainAsync(AllAtOnce([Text(Burst), finish]));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(outs.Count(o => o.Update.Text.Length > 0), Is.GreaterThan(5));
+            Assert.That(outs[^1].Update, Is.SameAs(finish));
+            Assert.That(TextOf(outs), Is.EqualTo(Burst));
+        });
+    }
+
+    /// <summary>A turn that sends all its updates at once, with no pause between them.</summary>
+    private static async IAsyncEnumerable<ChatResponseUpdate> AllAtOnce(IEnumerable<ChatResponseUpdate> updates)
+    {
+        await Task.CompletedTask;
+        foreach (var update in updates) yield return update;
     }
 
     /// <summary>Once the turn ends, what is left shows at the finishing pace: 200 letters within about 1.3 seconds.</summary>

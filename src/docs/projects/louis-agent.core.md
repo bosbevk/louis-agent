@@ -249,6 +249,7 @@ This part is for looking things up: every folder and file of core, and what's in
 |---|---|
 | `Agent/AgentEngine.cs` | The engine as a facade (S, CL15): wires the skills, the tools, the guards and the pipeline once; a turn, a command and the self-extension tools go to the classes below |
 | `Agent/Turns/` | `TurnRunner` (one turn: the history seeded and kept current, the reply whole or streamed, a cut-off reply continued; it opens the turn's span (F52), made current again after every `yield` of the streamed form), `ChatPipeline` (the middleware in its order, and the summaries' client; every model request traced (OpenTelemetry, no content)), `ToolCallGuards` (cut-off calls never run, oversized results summarised), `ToolCallText` (a call's arguments on one line for the CLI and Rider) |
+| `Agent/Turns/Pacing/` | `PacedStream` (the stream operator `turn.Paced(clock)`: a turn's text handed out at `WordPace`'s pace in whole words, everything else in the turn's order, when `STREAM_PACE` is on, F155), `WaitingText` (the text not yet handed out, cut on a whole word) |
 | `Agent/EngineTools/OwnTools.cs` | The tools an engine registers itself: `ExecuteSkill` and the clock in every session, the toolsets' objects, and the four self-extension tools as the `skills` toolset |
 | `Agent/Commands/UserCommands.cs` | `/tools`, `/approve`, `/reject`, `/usage`: answered without the model, from the agent-built tools, the skill files and the session's usage |
 | `Agent/ToolRegistry.cs` | The tools in name order (one name each), public methods as tools, discovered tools |
@@ -319,7 +320,7 @@ Logging). `ArchitectureTests` holds both rules ([src/engine/louis-agent.core/CLA
 |---|---|
 | `AgentHost` | Static bootstrap, the flow: `Build`, `BuildToolHost`; the pieces are `HostEnvironment.Load`, `SkillLoader.Load`, `RoleFiles.Check`, `PriceTableLoader.Load`, `ExchangeRatesLoader.Load`, `UsageLedger.Open` |
 | `UsageScope` | Open one per turn in a host (`Begin(host:, session:, turn:, tags:)`); every request inside it is attributed to it |
-| `AgentEngine` | `StreamPromptAsync`, `ProcessPromptAsync`, `NewHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`. Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
+| `AgentEngine` | `StreamPromptAsync` (its text paced when `STREAM_PACE` is on, F155), `ProcessPromptAsync`, `StartHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`. Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
 | `ISkillProvider` | `Documentation` (system prompt text) + `Skills` (runnable procedures) |
 | `ILlmClientFactory` | Builds the `IChatClient`; tests inject a fake |
 | `WorkspaceBoundary` / `SensitiveFiles` | Internal (`Guardrails/`), used by the file tools and the API's file and git endpoints, so the same rules apply |

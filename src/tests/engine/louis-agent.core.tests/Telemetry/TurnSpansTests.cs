@@ -45,7 +45,7 @@ public class TurnSpansTests
     [TestCase(true)]
     public async Task OneTurn_IsOneSpan_HoldingTheToolLoop(bool streamed)
     {
-        string path = Written("MARKER-FILE-CONTENT", out string relative);
+        string path = WriteFile("MARKER-FILE-CONTENT", out string relative);
         try
         {
             var client = new FakeChatClient(_ => Read(relative, "call_1"), _ => Say("MARKER-REPLY"));
@@ -153,7 +153,7 @@ public class TurnSpansTests
         new(new ChatMessage(ChatRole.Assistant, text)) { FinishReason = finish };
 
     /// <summary>A file in the workspace for the model to read; the test deletes it.</summary>
-    private static string Written(string content, out string relative)
+    private static string WriteFile(string content, out string relative)
     {
         relative = $"turn-span-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
@@ -186,11 +186,11 @@ public class TurnSpansTests
         {
             using var opened = scope?.Invoke();
             if (streamed)
-                await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), prompt))
+                await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), prompt))
                 {
                 }
             else
-                await engine.ProcessPromptAsync(engine.NewHistory(), prompt);
+                await engine.ProcessPromptAsync(engine.StartHistory(), prompt);
         }
         finally
         {

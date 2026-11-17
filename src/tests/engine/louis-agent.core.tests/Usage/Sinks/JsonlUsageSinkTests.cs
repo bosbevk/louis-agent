@@ -29,7 +29,7 @@ public class JsonlUsageSinkTests
         Tokens: tokens ?? new UsageTokens(39, null, 10_227, 206, null),
         DurationMs: 1_234, Stop: "stop");
 
-    private string[] Lines(string fileName) => File.ReadAllLines(Path.Combine(_directory, fileName));
+    private string[] ReadLines(string fileName) => File.ReadAllLines(Path.Combine(_directory, fileName));
 
     [Test]
     public void Record_AppendsOneJsonLinePerRecord()
@@ -40,7 +40,7 @@ public class JsonlUsageSinkTests
         sink.Record(Record(at));
         sink.Record(Record(at.AddSeconds(5)));
 
-        string[] lines = Lines("usage-2026-10.jsonl");
+        string[] lines = ReadLines("usage-2026-10.jsonl");
         Assert.That(lines, Has.Length.EqualTo(2));
         Assert.That(JsonSerializer.Deserialize<UsageRecord>(lines[0], JsonlUsageSink.Json), Is.EqualTo(Record(at)));
     }
@@ -50,7 +50,7 @@ public class JsonlUsageSinkTests
     {
         new JsonlUsageSink(_directory).Record(Record(new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero)));
 
-        using var json = JsonDocument.Parse(Lines("usage-2026-10.jsonl").Single());
+        using var json = JsonDocument.Parse(ReadLines("usage-2026-10.jsonl").Single());
         JsonElement root = json.RootElement;
         Assert.That(root.GetProperty("duration_ms").GetInt64(), Is.EqualTo(1_234));
         Assert.That(root.GetProperty("tokens").GetProperty("cache_read").GetInt64(), Is.EqualTo(10_227));
@@ -63,7 +63,7 @@ public class JsonlUsageSinkTests
         var at = new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero);
         new JsonlUsageSink(_directory).Record(Record(at) with { Cost = new UsageCost("USD", 0.036503m, "2026-10-10") });
 
-        using var json = JsonDocument.Parse(Lines("usage-2026-10.jsonl").Single());
+        using var json = JsonDocument.Parse(ReadLines("usage-2026-10.jsonl").Single());
         JsonElement cost = json.RootElement.GetProperty("cost");
         Assert.That(cost.GetProperty("currency").GetString(), Is.EqualTo("USD"));
         Assert.That(cost.GetProperty("amount").GetDecimal(), Is.EqualTo(0.036503m));
@@ -93,7 +93,7 @@ public class JsonlUsageSinkTests
         sink.Record(Record(at));
         sink.Record(Record(at) with { PromptHash = hash });
 
-        string[] lines = Lines("usage-2026-10.jsonl");
+        string[] lines = ReadLines("usage-2026-10.jsonl");
         Assert.That(lines[1], Is.EqualTo(lines[0][..^1] + $",\"prompt_hash\":\"{hash}\"}}"));
         Assert.That(lines[0], Does.Not.Contain("prompt_hash"));
     }
@@ -136,7 +136,7 @@ public class JsonlUsageSinkTests
         new JsonlUsageSink(_directory).Record(Record(DateTimeOffset.UtcNow,
             new UsageTokens(null, null, null, null, null)));
 
-        using var json = JsonDocument.Parse(Lines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single());
+        using var json = JsonDocument.Parse(ReadLines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single());
         JsonElement tokens = json.RootElement.GetProperty("tokens");
         Assert.That(tokens.GetProperty("input").ValueKind, Is.EqualTo(JsonValueKind.Null),
             "null means not reported; never 0");
@@ -186,9 +186,9 @@ public class JsonlUsageSinkTests
         agent.LogDirectory = _directory;
 
         AgentEngine engine = AgentHost.Build(new LlmOptions(), agent, factory).Engine;
-        await engine.ProcessPromptAsync(engine.NewHistory(), $"say hi {marker}");
+        await engine.ProcessPromptAsync(engine.StartHistory(), $"say hi {marker}");
 
-        string line = Lines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single();
+        string line = ReadLines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single();
         using var json = JsonDocument.Parse(line);
         Assert.That(json.RootElement.GetProperty("tokens").GetProperty("cache_write").GetInt64(), Is.EqualTo(10_227));
         Assert.That(json.RootElement.GetProperty("tokens").GetProperty("input").GetInt64(), Is.EqualTo(39));
@@ -239,7 +239,7 @@ public class JsonlUsageSinkTests
         sink.Record(Record(at));
         sink.Record(Record(at) with { CacheHit = true });
 
-        string[] lines = Lines("usage-2026-10.jsonl");
+        string[] lines = ReadLines("usage-2026-10.jsonl");
         Assert.That(lines[1], Is.EqualTo(lines[0][..^1] + ",\"cache_hit\":true}"));
         Assert.That(lines[0], Does.Not.Contain("cache_hit"));
     }

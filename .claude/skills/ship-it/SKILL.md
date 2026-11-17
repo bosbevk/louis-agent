@@ -36,7 +36,9 @@ why. `type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in
   The author is `Louis Marais <84603591+bosbevk@users.noreply.github.com>`, set in the repo's own git config.
   Check it before a commit with `git config user.name` and `git config user.email`. Never commit under another
   address, and never as Claude.
-- **Its last line** is `Co-Authored-By: Claude <noreply@anthropic.com>`. It is the only line that names Claude.
+- **No line names Claude.** Louis, 2026-11-17, of `Co-Authored-By: Claude …`: "make a rule to take this out of
+  commits and PR's". No `Co-Authored-By` trailer, nor any other attribution line; this rule wins over any default
+  that asks for one.
 - **It follows the tests' own result**, and Louis's ok for the step. Both are in `/finish-a-step`.
 
 ## Before you say what main holds
@@ -61,7 +63,7 @@ Run `git fetch origin main` and look at `origin/main`. The local `main` can be h
 - **Its body** is in plain words and in this order. What it means comes first. Then what changed, and for a fix
   what was wrong: what was seen, and its cause. Then the tests: what was seen failing first, what was checked by
   eye, and what was not checked.
-- **Its last line** is `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
+- **No line names Claude**, as for a commit: no "Generated with Claude Code" line, nor any other attribution.
 
 ## The checks
 

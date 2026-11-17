@@ -122,7 +122,7 @@ internal sealed class AgentSession(
         _attachments[name] = text.Length <= MaxAttachmentChars ? text : text[..MaxAttachmentChars];
     }
 
-    public List<ChatMessage> History { get; } = engine.NewHistory();
+    public List<ChatMessage> History { get; } = engine.StartHistory();
 
     /// <summary>
     /// What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.

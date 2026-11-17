@@ -36,7 +36,7 @@ public class ToolCallLogTests
             var skills = new MarkdownSkillProvider(TestPaths.SampleSkills);
             var engine = new AgentEngine(skills, client, TestPaths.Agent(), toolsets: [new PingTools()]);
 
-            await engine.ProcessPromptAsync(engine.NewHistory(), "ping Louis");
+            await engine.ProcessPromptAsync(engine.StartHistory(), "ping Louis");
         }
         finally
         {
@@ -86,7 +86,7 @@ public class ToolCallLogTests
             var engine = new AgentEngine(skills, client, TestPaths.Agent(),
                 toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]));
 
-            await engine.ProcessPromptAsync(engine.NewHistory(), "Ek is in Malmesbury, wat kan ek kook?");
+            await engine.ProcessPromptAsync(engine.StartHistory(), "Ek is in Malmesbury, wat kan ek kook?");
         }
         finally
         {
@@ -125,7 +125,7 @@ public class ToolCallLogTests
             var skills = new MarkdownSkillProvider(TestPaths.SampleSkills);
             var engine = new AgentEngine(skills, client, TestPaths.Agent(), toolsets: [new PlaceTools()]);
 
-            await engine.ProcessPromptAsync(engine.NewHistory(), "Ek is in Malmesbury, wat kan ek kook?");
+            await engine.ProcessPromptAsync(engine.StartHistory(), "Ek is in Malmesbury, wat kan ek kook?");
         }
         finally
         {

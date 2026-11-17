@@ -61,15 +61,6 @@ internal sealed class WaitingText
         return cut == 0 ? null : Hand(cut);
     }
 
-    /// <summary>Everything waiting, at once, as the text before something that is not text must go first.</summary>
-    public ChatResponseUpdate? TakeAll()
-    {
-        if (IsEmpty) return null;
-        var all = Hand(_waiting.Length);
-        _shown = _sent;
-        return all;
-    }
-
     /// <summary>Where the last whole word within the first letters allowed ends, its space or line included.</summary>
     private int FindLastWordEnd(int allowed)
     {

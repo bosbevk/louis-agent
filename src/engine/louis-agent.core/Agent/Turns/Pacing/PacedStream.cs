@@ -37,26 +37,32 @@ public static class PacedStream
         using var stop = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var reader = Task.Run(() => ReadAsync(turn, arrivals.Writer, stop.Token), CancellationToken.None);
         var text = new WaitingText();
+
+        // Something that is not text, held while the text before it finishes, so nothing overtakes it.
+        ChatResponseUpdate? held = null;
         try
         {
             using var timer = new PeriodicTimer(Tick, clock);
             long last = clock.GetTimestamp();
             while (true)
             {
-                // Everything the turn has sent so far: text waits, anything else goes once the text before it has.
-                while (arrivals.Reader.TryRead(out var update))
+                // What the turn has sent so far: text waits its pace; anything else goes at once if no text is
+                // before it, or is held, and nothing more is read until it has gone, so the order is the turn's.
+                while (held is null && arrivals.Reader.TryRead(out var update))
                 {
-                    if (WaitingText.IsText(update))
-                    {
-                        text.Add(update);
-                        continue;
-                    }
-
-                    if (text.TakeAll() is { } before) yield return before;
-                    yield return update;
+                    if (WaitingText.IsText(update)) text.Add(update);
+                    else if (text.IsEmpty) yield return update;
+                    else held = update;
                 }
 
                 bool ended = arrivals.Reader.Completion.IsCompleted;
+                if (text.IsEmpty && held is not null)
+                {
+                    yield return held;
+                    held = null;
+                    continue;
+                }
+
                 if (ended && text.IsEmpty) break;
 
                 // Nothing to pace: wait for the turn, and count the pace's time from when it sends more.
@@ -67,11 +73,12 @@ public static class PacedStream
                     continue;
                 }
 
+                // The text before something held, or before the turn's end, finishes at the finishing pace.
                 await timer.WaitForNextTickAsync(stop.Token);
                 long now = clock.GetTimestamp();
                 var since = clock.GetElapsedTime(last, now);
                 last = now;
-                if (text.Take(since, done: ended) is { } piece) yield return piece;
+                if (text.Take(since, done: ended || held is not null) is { } piece) yield return piece;
             }
 
             // The turn's own error, if it ended on one, after all the text it sent before it.
