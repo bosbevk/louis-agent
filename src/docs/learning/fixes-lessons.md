@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX179 · A hyphen is a place the browser may break a line
+
+The alpha flag in the header reads "alpha-1". On a wide screen it has room, but on a phone it sits between the name
+and the header's two buttons, and the browser looked for a place to break it. A hyphen is one such place, so the flag
+stood as "alpha-" over "1", which reads as a mistake. A short label that must read as one piece says so with
+`white-space: nowrap`, and the browser keeps it whole. The lesson: a label that looks fine at desktop width needs its
+look at phone width too, and the check after a feature is where it turned up. Skill 18 (testing and shipping: a
+test holds the flag to one line).
+
 ## FX178 · A filter only paints inside its region, and the default region moves with what it blurs
 
 Inside the glass orb, a few coloured shapes drift across the ball under one soft blur, which turns them into clouds

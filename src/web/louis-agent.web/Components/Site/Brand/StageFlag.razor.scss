@@ -8,6 +8,7 @@
     border: 0;
     font: 600 11px/1.2 var(--bs-font-monospace);
     letter-spacing: .02em;
+    white-space: nowrap;
     cursor: pointer;
     @include surface.tag-agent();
 }

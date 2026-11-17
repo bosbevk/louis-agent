@@ -8,6 +8,20 @@ namespace LouisAgent.Web.Tests.Components.Site.Brand;
 /// </summary>
 public class StageFlagTests
 {
+    /// <summary>
+    /// FX179: the flag keeps its words on one line, since on a phone, beside the name and the header's buttons, it
+    /// broke into "alpha-" over "1".
+    /// </summary>
+    [Test]
+    public void TheFlag_StaysOnOneLine()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Brand/StageFlag.razor.scss"));
+        int flag = styles.IndexOf(".stage-flag {", StringComparison.Ordinal);
+
+        Assert.That(styles[flag..styles.IndexOf('}', flag)], Does.Contain("white-space: nowrap;"));
+    }
+
     /// <summary>The flag is a press that opens its note, the browser's own popover, so nothing needs a script.</summary>
     [Test]
     public void TheFlag_OpensItsNote_AsAPopover()
