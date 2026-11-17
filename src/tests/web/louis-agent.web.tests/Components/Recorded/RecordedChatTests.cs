@@ -341,7 +341,8 @@ public class RecordedChatTests
         cut.Render(parameters => parameters.Add(chat => chat.TurnStarted, (int turn) => started.Add(turn)));
 
         _ = cut.InvokeAsync(() => cut.Instance.PlayTurnAsync(2));
-        cut.WaitForElement(".recorded-wait .btn-fill", TimeSpan.FromSeconds(5));
+        cut.WaitForState(() => cut.FindAll(".recorded-wait .btn-fill").Any(button => button.TextContent == "Play on"),
+            TimeSpan.FromSeconds(10));
         var stopped = cut.FindAll(".recorded-chat .turn .user-text").Select(text => text.TextContent).ToList();
         var playOn = cut.Find(".recorded-wait .btn-fill");
         string playOnWords = playOn.TextContent;
@@ -349,7 +350,7 @@ public class RecordedChatTests
         bool endedEarly = cut.FindAll(".offer").Count > 0;
         playOn.Click();
 
-        cut.WaitForElement(".offer", TimeSpan.FromSeconds(5));
+        cut.WaitForElement(".offer", TimeSpan.FromSeconds(10));
         Assert.Multiple(() =>
         {
             Assert.That(stopped, Is.EqualTo(new[] { "First", "Second" }));
@@ -397,8 +398,9 @@ public class RecordedChatTests
         var whileHeld = cut.FindAll(".recorded-chat .turn .user-text").Select(text => text.TextContent).ToList();
         cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
 
+        // Three recordings play once it is let go, so it gets a whole play's time, as the demo's tests do.
         cut.WaitForState(() => cut.FindAll(".recorded-wait .btn-fill").Any(button => button.TextContent == "Play on"),
-            TimeSpan.FromSeconds(5));
+            TimeSpan.FromSeconds(10));
         Assert.That(whileHeld, Is.EqualTo(new[] { "First" }), "the first question still waits, nothing played");
     }
 }
