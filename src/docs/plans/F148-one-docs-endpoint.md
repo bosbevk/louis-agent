@@ -836,7 +836,10 @@ then the code makes it pass.
 
 ## Approved during the build
 
-(empty)
+- **The docs' MCP scheme is `docs://`, and the feeds' is `feeds://` (Louis's picks, 2026-11-17).** Read every
+  `doc://{path}` here as `docs://{path}`, Louis's pick A of three ("A feed must change to Feeds"): the same word as
+  `/v1/docs` and the docs site at `docs.louis-agent.dev`, each resource carrying its page there and its GitHub address.
+  CL67 renamed `feed://` to `feeds://` to match.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [F125](F125-an-agentic-site.md) · [ADR 0070](../adr/0070-packs-publish-data-feeds.md) · [ADR 0072](../adr/0072-feeds-are-mcp-resources.md) · [ADR 0039](../adr/0039-api-routes-under-v1.md)

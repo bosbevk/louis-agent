@@ -28,7 +28,7 @@
         "id": "Feeds",
         "icon": "file",
         "tone": "teal",
-        "label": "FeedResources\ncatalogue feeds \u2192\nfeed://{name}"
+        "label": "FeedResources\ncatalogue feeds \u2192\nfeeds://{name}"
       },
       {
         "id": "Sync",

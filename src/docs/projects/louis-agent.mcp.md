@@ -47,7 +47,7 @@ agent builds or approves a tool, clients get told with `notifications/tools/list
 
 ### 4. The feeds as resources
 
-`FeedResources` turns each feed in the catalogue (`AgentCatalog.Feeds`) into one resource: `feed://{name}`, with the
+`FeedResources` turns each feed in the catalogue (`AgentCatalog.Feeds`) into one resource: `feeds://{name}`, with the
 feed's description, as `application/json`, read whole when a client asks. They're built once at start-up, and the
 SDK answers `resources/list` and `resources/read` itself. `McpPrimitives.Add` sets up the tools and the resources
 for both transports.

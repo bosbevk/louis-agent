@@ -219,7 +219,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="101.4" y="461" text-anchor="start">FeedResources</text>
       <text class="pic-name" x="101.4" y="477" text-anchor="start">catalogue feeds →</text>
-      <text class="pic-name" x="101.4" y="493" text-anchor="start">feed://{name}</text>
+      <text class="pic-name" x="101.4" y="493" text-anchor="start">feeds://{name}</text>
       <rect class="pic-panel" x="334.8" y="430" width="248.4" height="84" rx="10" />
       <rect class="pic-fill tone-green" x="350.8" y="458" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(356.8 464) scale(0.6667)">

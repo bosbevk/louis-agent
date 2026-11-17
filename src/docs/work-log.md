@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 128 | 97 |
 | Fixes (`FX`) | 178 | 6 |
-| Cleanups (`CL`) | 39 | 30 |
+| Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -472,10 +472,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (39 done)
+## Cleanups (40 done)
 
 | Id | When | What |
 |---|---|---|
+| CL67 | 2026-11-17 | The feeds' MCP scheme is `feeds://` (Louis: "A feed must change to Feeds"), plural like `/v1/feeds` and the docs' coming `docs://`; no alias for `feed://` (ADR 0049); ADR 0072's line changed with it |
 | CL65.5 | 2026-11-15 | The pictures a project needs, and CL65 done (Louis: "the project type and requirements must drive which diagrams is required", "placed where it is used ort needed not a section"; his pick of three): every project doc states its kind from a list of nine and what it shows beyond the kind's floor, a test holds it to exactly that and the guide's table to the floor; 27 missing pictures drawn from the code, 8 deployment, 5 nested, 14 activity; no Diagrams section, each picture in its story; the `components` kind is `nested`; the `ticket` kind's name left open as CL66 |
 | CL65.4 | 2026-11-15 | What the old looks left (with its parent, Louis: "approve go unattended"): the engine holds only what a picture is drawn with today; the two layout rules nothing drew by are gone and the strategy round them is two static classes; the rules of 26 classes no drawing writes, a banner and three colours are out of the style every picture carries; the kinds' styles stand in one folder and what two kinds styled alike is styled once; a path is written one way and an arrow keeps its exact numbers; a fade is a small type named beside its style; three rule tests hold it, and each rewrite of every picture was proved by taking its one change out again; the names of the `components` and `ticket` kinds put to Louis, neither renamed |
 | CL65.6 | 2026-11-14 | The engine asks its types (Louis: "can we not have something like a calculator which does it neatly", "we cannot write spaghetti code", "keep ours and MS's but use ours."): a box and a point behind one geometry, in two families, ours on generic math in `double` and in use, Microsoft's on `RectangleF` and `Vector2` kept; a face for a width of words and a path writer for a path; every placed record holds a box, the geometry handed in from the list of renderers; a ratchet that shrank to four plain rules and a fifth; the docs' tool wrote none of the 269 pictures after each move, and a test draws each with both families |

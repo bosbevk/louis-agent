@@ -136,5 +136,10 @@ time. Free checks: the registry search, Claude Desktop against the public server
   leads and site packs only), and the guide is `src/site/louis-agent.identity.guide` with the id `louis-agent-guide`
   (`GuideIdentity`), no longer the demo's expert ([ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md)).
 
+- **The docs' MCP scheme is `docs://`, and the feeds' is `feeds://` (Louis's picks, 2026-11-17).** Read every
+  `doc://{path}` here as `docs://{path}`, Louis's pick A of three ("A feed must change to Feeds"): the same word as
+  `/v1/docs` and the docs site at `docs.louis-agent.dev`, each resource carrying its page there and its GitHub address.
+  CL67 renamed `feed://` to `feeds://` to match.
+
 ---
 [Plans](README.md) · Related: [F36 draft](F36-mcp-packs.md) · [ADR 0105](../adr/0105-the-guide-acts-on-the-page-through-a-tool-the-widget-hears.md) · [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)

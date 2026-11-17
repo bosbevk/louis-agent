@@ -251,7 +251,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M47 673H338" />
       <path class="seq-tip" d="M338 673H346" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="47" cy="673" r="4.5" />
-      <text class="seq-call-words" x="196.5" y="664" text-anchor="middle">resources/read feed://{name}</text>
+      <text class="seq-call-words" x="196.5" y="664" text-anchor="middle">resources/read feeds://{name}</text>
       <rect class="seq-beam seq-beam-glow" x="346" y="720" width="625.8" height="8" rx="0" />
       <rect class="seq-beam" x="346" y="723" width="617.8" height="2" rx="0" />
       <path class="pic-march" d="M346 724H963.8" />

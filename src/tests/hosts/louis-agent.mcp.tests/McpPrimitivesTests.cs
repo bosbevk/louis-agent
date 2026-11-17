@@ -26,7 +26,7 @@ public class McpPrimitivesTests
         await using var mcp = await InMemoryMcp.StartAsync(options);
 
         var listed = await mcp.Client.ListResourcesAsync();
-        Assert.That(listed.Select(r => r.Uri), Is.EqualTo(new[] { "feed://rent" }));
+        Assert.That(listed.Select(r => r.Uri), Is.EqualTo(new[] { "feeds://rent" }));
     }
 
     [Test]

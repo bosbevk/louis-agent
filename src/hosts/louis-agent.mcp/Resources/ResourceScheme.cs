@@ -5,6 +5,6 @@ namespace LouisAgent.Mcp.Resources;
 /// </summary>
 public enum ResourceScheme
 {
-    /// <summary><c>feed://shop-prices</c>: data a pack publishes, read whole as JSON (ADR 0070, F56).</summary>
-    Feed,
+    /// <summary><c>feeds://shop-prices</c>: data a pack publishes, read whole as JSON (ADR 0070, F56).</summary>
+    Feeds,
 }
