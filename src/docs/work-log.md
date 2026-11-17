@@ -12,18 +12,17 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 126 | 97 |
+| Features (`F`) | 127 | 96 |
 | Fixes (`FX`) | 178 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (133 in the TODO)
+## Open (132 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
-| F155 | Pacing in the engine (Louis, 2026-11-17: "note engine pacing and api pacing"; his pick A of three): a paced stream over the turn's stream hands its text out at `WordPace`'s pace, the rule moved to session-stream, when a host turns `STREAM_PACE` on | Now |
 | F156 | The web's pacing switch (Louis, 2026-11-17: "web and engine no API"): the page's pacer turns off when the server already paces, and louis-agent.dev's API host turns the engine's `STREAM_PACE` on, so the words are paced once, never twice; the API gets no pacer of its own | Next |
 | F148 | One docs endpoint: a small header on every doc, one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, after F151 |
 | F150 | Every doc follows its kind's pattern: one pattern per kind of doc, held by a test whose list can only shrink; the framework's and the packs' docs, the 34 project docs first; its own plan | Now, after F148 |
@@ -156,10 +155,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (126 done)
+## Features (127 done)
 
 | Id | When | What |
 |---|---|---|
+| F155 | 2026-11-17 | Pacing in the engine (Louis's pick A of three, after research): `STREAM_PACE=on` hands a turn's text out at `WordPace`'s pace in whole words, everything else in order, outside the turn; `WordPace` moved to session-stream and made continuous, which the caption shares; ADR 0126 on method names |
 | F153 | 2026-11-17 | Reset my session on the admin's home (Louis's pick A of three): one press ends every session this browser saved on the API, forgets both storages but the admin key, and reloads, so the owner sees the site as a first visit (`SessionReset`, `ResetSession`) |
 | F154 | 2026-11-17 | The answer's motion (Louis's pick A of three): the guide's words come at a steady pace while they stream (`WordPace`), its answer grows out of the bar's orb or the card it covers, and it fades before it goes (`CaptionHandOver`, `wwwroot/js/caption-motion.js`); an answer in a card's place fits its words (his pick C); the caption lets go of the page first when it goes |
 | F151.5 | 2026-11-16 | The libraries and the other sites: the account pages, the eval studio and the packs' views drawn by the surface tool, so they wear the site's theme, held by the same rule test; code-review on glass, flat and its own retro, now with a light style, its picker gone; Puls keeps its brand; the pulsing buttons' glow on a layer of its own |

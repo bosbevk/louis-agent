@@ -56,6 +56,24 @@ result.
 
 When the turn is done, the whole turn is added to the history in one piece.
 
+A model sends its words in bursts: sometimes a word, sometimes a sentence at once. A host can ask the engine to
+even them out, with `STREAM_PACE=on`. Then `StreamPromptAsync` hands the turn out through `turn.Paced(clock)`, a
+stream operator that changes when the text comes, not what comes. Inside it, a reader takes the turn as fast as it
+arrives into a queue, so the turn is never held back, and about thirty times a second a writer hands out what the
+pace allows, cut back to the last whole word, so no word, character or markdown mark is split across two pieces. The
+pace is `WordPace`, the rule the web's caption paces its words by too, in the shared `louis-agent.session-stream`:
+90 letters a second while little is waiting, and with more waiting, fast enough to show it within a second, so it
+never falls behind a fast model and never jumps. Anything that is not text, a tool call, the thinking, the usage or
+the end, keeps its place: it waits while the text before it finishes at the finishing pace, about a second and a
+quarter for a couple of hundred letters, and then goes out as it was. An error in the turn reaches the host after
+the text before it, and a cancelled turn stops the reader.
+
+The pacing sits after the turn on purpose. The model call, the tool loop, the usage records, the traces and the
+history all run at the model's own speed, so turning it on slows no agent's work and changes no cost or timing the
+engine records; only what a host reads is spread out. It is off by default, so the evals, which run their turns
+through the API, keep their speed. Words need pacing only once on their way to a reader: a host that turns this on
+serves a page that leaves its own pacing off, and the other way round.
+
 ### 3. The guards around every tool call
 
 A tool call can go wrong in a few ways, and each one has a guard.
@@ -332,7 +350,7 @@ attributes (121 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
 `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`,
-`LLM_CACHE`, `LLM_CACHE_TTL`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `AGENT_PEERS`, `MINION_LLMS`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
+`LLM_CACHE`, `LLM_CACHE_TTL`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `STREAM_PACE`, `AGENT_PEERS`, `MINION_LLMS`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
 `HOST_CULTURE`, `DISPLAY_CURRENCY`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
 `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`, `SEARXNG_URL`, `BROWSER_URL`, `PAGE_RENDERER`, `WEB_REPLAY` (the default for eval
