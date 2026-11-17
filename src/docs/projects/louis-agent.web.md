@@ -271,8 +271,8 @@ stands beside it: to the right of the place where the screen has room, else to i
 widget's script leaves a mark (`data-lit`) on the place it lit, which stays after the spotlight fades, and says so
 when it lights another, so a caption that already stands moves there. An answer that lit no place stands the same
 way beside the piece of the page the visitor chose to ask about, when one is chosen. When that place has a card
-beside it, the caption takes the card's place instead: where the card stands, as wide and at least as tall as it,
-with its corners. The card is the piece of the page straight after the place, or else the one straight before it,
+beside it, the caption takes the card's place instead: where the card stands, as wide as it and with its corners,
+and as tall as its own words, so a short answer leaves no empty stretch. The card is the piece of the page straight after the place, or else the one straight before it,
 and it counts only while it lies flat and shows between the header and the bar. While a caption stands beside
 a place or in the place of the card beside it, the place keeps a quiet ring, the spotlight's own ring left on with no dim, so the two read as one. A
 caption with no place to stand beside (none lit or chosen, a place as wide as the screen, or one scrolled off)
@@ -287,6 +287,22 @@ somewhere, it glides there over half a second, and a visitor who asked for less 
 module's mark on a caption it has stood is an attribute of its own (`data-stands`), never a class: the page writes
 the caption's classes again whenever they change, as when it turns over, and that would wipe a class the module
 had added.
+
+The caption also moves as it comes and goes. While an answer is still streaming when its caption first draws, its
+words come at a steady pace and not in the bursts the model sends them in. About thirty times a second the caption
+asks `WordPace` (`Widget/Bar/Caption/Motion`) how much should show: about 90 letters a second, faster when it has fallen
+more than 240 letters behind what has arrived, and faster again once the answer is done, so the last couple of hundred
+letters show in about a second and a quarter. An answer already done when its caption draws, as after a reload, shows
+whole at once. On its first draw the caption grows out of the bar's orb, or swells out of the card whose place it
+takes, over 380 ms on the web's spring. When the bar stops showing an answer, because the visitor put it away or the
+next answer came, the caption does not vanish. It fades a few pixels lower over 200 ms and then tells the bar, which
+takes it away; while it fades it takes no clicks, and the next answer may already be growing in. Which answers are
+leaving is a small class of its own, `CaptionHandOver`, and the bar draws every caption in one list keyed by its
+answer, so a leaving caption is the same caption told it is leaving. The growing and the fading are a module of the
+framework's, `wwwroot/js/caption-motion.js`, added to whatever else moves the card, so the standing module's glide still
+carries it. A visitor who asked for less motion gets none of it: the words show at once, and the caption comes and goes
+without moving. When the caption goes it lets go of the page first, the place it lit and the dimming, whatever else
+fails after.
 
 The light falls on what a press brings up. A card of the page that says what it controls (`aria-controls`) is
 pressed as before, and the light then falls on the thing it controls and not on the card. A dock's button says so

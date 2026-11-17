@@ -191,17 +191,16 @@ const takeThePlaceOf = (cards, caption, ring, placeBox) => {
         getComputedStyle(cards[0]).borderRadius);
 };
 
-// Stands the caption in a box on the page, its size at least the box's (it grows when its words need more), with the
+// Stands the caption in a box on the page, as wide as the box and as tall as its words (F154, Louis's pick C), with the
 // corners given, and rings the place.
 const standIn = (caption, ring, placeBox, at, corners) => {
     caption.dataset.stands = "";
     caption.dataset.inPlace = "";
     // A box that starts under the header is cut to start below it, so the words never hide behind the header.
-    const top = Math.max(at.top, headerRoom), height = at.height - (top - at.top);
+    const top = Math.max(at.top, headerRoom);
     caption.style.setProperty("--caption-x", `${Math.round(at.left)}px`);
     caption.style.setProperty("--caption-y", `${Math.round(top)}px`);
     caption.style.setProperty("--caption-w", `${Math.round(at.width)}px`);
-    caption.style.setProperty("--caption-h", `${Math.round(Math.max(height, 0))}px`);
     caption.style.setProperty("--caption-r", corners);
     ring.classList.add("is-on");
     ringAround(ring, placeBox);

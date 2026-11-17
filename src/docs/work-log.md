@@ -12,17 +12,19 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 124 | 94 |
+| Features (`F`) | 125 | 96 |
 | Fixes (`FX`) | 166 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (130 in the TODO)
+## Open (132 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
+| F155 | Pacing in the engine (Louis, 2026-11-17: "note engine pacing and api pacing"): the engine hands its text out at a steady pace, as the web's `WordPace` paces it on the page, so every host gets it even, not in the model's bursts | Next |
+| F156 | Pacing in the API (Louis, 2026-11-17: "note engine pacing and api pacing"): the API sends a session's text events at a steady pace over its stream, so a client that does not pace its words still shows them evenly | Next |
 | F148 | One docs endpoint: a small header on every doc, one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, after F151 |
 | F150 | Every doc follows its kind's pattern: one pattern per kind of doc, held by a test whose list can only shrink; the framework's and the packs' docs, the 34 project docs first; its own plan | Now, after F148 |
 | F149 | The docs' lists are generated: the project tables, the settings table, the indexes and a project doc's fact sections written from the code and its comments by the docs' tool and checked in CI; its own plan | Now, after F150 |
@@ -153,10 +155,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (124 done)
+## Features (125 done)
 
 | Id | When | What |
 |---|---|---|
+| F154 | 2026-11-17 | The answer's motion (Louis's pick A of three): the guide's words come at a steady pace while they stream (`WordPace`), its answer grows out of the bar's orb or the card it covers, and it fades before it goes (`CaptionHandOver`, `wwwroot/js/caption-motion.js`); an answer in a card's place fits its words (his pick C); the caption lets go of the page first when it goes |
 | F151.5 | 2026-11-16 | The libraries and the other sites: the account pages, the eval studio and the packs' views drawn by the surface tool, so they wear the site's theme, held by the same rule test; code-review on glass, flat and its own retro, now with a light style, its picker gone; Puls keeps its brand; the pulsing buttons' glow on a layer of its own |
 | F151.4 | 2026-11-16 | The framework's components: one surface tool, `web/tools/_surface.scss`, draws every pane, bar, press and field of `louis-agent.web` from the names a theme sets, so the site's parts, the stage, the widget and the mark, the chat, the admin and the rest follow glass and flat, light and dark; a rule test refuses any sheet that draws a surface by hand; the showroom's mock website wears its business's colours through the same tool and a mock tool of its own; the mark has a fifth state, Listening (ADR 0124) |
 | F151.3 | 2026-11-15 | The two switches: `LookSwitch`, the site's themes and Dark and Light, drawn by the three frames themselves (the site's header, the chat's settings and, Louis's pick, the admin sidebar's foot) with no line in a site; a press writes the look on the page and the browser keeps it, a reload opens the same, another tab follows; on a phone the header's actions take their own row; tried in the browser on the starter (ADR 0124) |

@@ -17,6 +17,8 @@ public class AgentBarMotionTests
     private static string ChipsStyles => Read("Chips/BarChips.razor.scss");
     private static string CaptionStyles => Read("Caption/AgentCaption.razor.scss");
     private static string CaptionModule => Read("Caption/AgentCaption.razor.js");
+    private static string MotionModule => File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+        "src/web/louis-agent.web/wwwroot/js/caption-motion.js")).ReplaceLineEndings("\n");
 
     /// <summary>The rules a file keeps for a visitor who asked for less motion; empty when it has none.</summary>
     private static string LessMotion(string styles)
@@ -39,7 +41,8 @@ public class AgentBarMotionTests
     /// <summary>
     /// The caption glides to a place its answer lights after its first words, from where it stood. The glide is laid
     /// over where the caption stands, so it still keeps exactly with the page while the page scrolls to the place.
-    /// The caption's entry lets go of it once it has played, or it would hold the glide still.
+    /// Since F154 the caption's entry is its motion module's grow, added to whatever moves it, so it never holds the
+    /// glide still, and the styles keep no entry of their own.
     /// </summary>
     [Test]
     public void TheCaption_GlidesToAPlaceLitAfterItsFirstWords()
@@ -48,7 +51,8 @@ public class AgentBarMotionTests
         {
             Assert.That(CaptionModule, Does.Contain("caption.animate("));
             Assert.That(CaptionModule, Does.Contain("\"(prefers-reduced-motion: reduce)\""));
-            Assert.That(CaptionStyles, Does.Contain("animation: rise .45s var(--web-spring, ease-out) backwards;"));
+            Assert.That(MotionModule, Does.Contain("composite: \"add\""));
+            Assert.That(CaptionStyles, Does.Not.Contain("animation: rise"));
         });
     }
 

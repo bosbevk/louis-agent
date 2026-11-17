@@ -69,6 +69,32 @@ public partial class FrameworkModulesTests
     }
 
     /// <summary>
+    /// F154: every module a class names is one the library serves: a script under its <c>wwwroot/js</c>, or one named
+    /// for the component it sits beside (<c>X.razor.js</c>). A script beside a component under any other name is on
+    /// disk but never served, and the page fails to load it.
+    /// </summary>
+    [Test]
+    public void EveryModuleAClassNames_IsOneTheLibraryServes()
+    {
+        // The paths written out in a class, and those FrameworkScripts builds from its content path.
+        const string content = "./_content/louis-agent.web/";
+        var named = typeof(FrameworkScripts).GetFields()
+            .Where(field => field is { IsLiteral: true } && field.FieldType == typeof(string))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .Where(path => path.StartsWith(content, StringComparison.Ordinal) && path.EndsWith(".js", StringComparison.Ordinal))
+            .Select(path => path[content.Length..]);
+        var written = Callers()
+            .SelectMany(file => ModulePath().Matches(File.ReadAllText(file)).Select(m => m.Groups[2].Value));
+
+        var unserved = named.Concat(written).Distinct()
+            .Where(path => !path.StartsWith("js/", StringComparison.Ordinal)
+                           && !path.EndsWith(".razor.js", StringComparison.Ordinal))
+            .ToList();
+
+        Assert.That(unserved, Is.Empty);
+    }
+
+    /// <summary>
     /// Every function a class invokes on a module is exported by a module that class names. A class names its modules
     /// through <see cref="FrameworkScripts"/> (or its library's own paths), so the paths are read from that class
     /// and the names from the calls.

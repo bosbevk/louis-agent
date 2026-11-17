@@ -54,6 +54,12 @@ public static class FrameworkScripts
     /// <summary>The agent's caption standing beside the place it lit, on a wide screen (F134.4).</summary>
     public const string Caption = Content + "Components/Widget/Bar/Caption/AgentCaption.razor.js";
 
+    /// <summary>
+    /// The agent's caption growing in from where it comes from, and fading before it goes (F154). Its caption already
+    /// has a module of its own beside it, and the library serves a second only from <c>wwwroot/js</c>.
+    /// </summary>
+    public const string CaptionMotion = Content + "js/caption-motion.js";
+
     /// <summary>A piece the visitor selects for the guide, ringed on the page (F127.7).</summary>
     public const string PieceWatch = Content + "Components/Widget/Pieces/PieceWatch.razor.js";
 
