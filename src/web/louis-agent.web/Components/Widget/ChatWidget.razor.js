@@ -13,17 +13,19 @@ export function pageText() {
     const places = "section[id], [data-card][id], [data-piece][id]";
     const areas = [...document.querySelectorAll(places)].flatMap((area) => {
         const heading = headingOf(area, fold);
-        const [first, ...later] = pagesOf(area, fold);
-        return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later,
-            ...turnsOf(area, fold)];
+        const [first, ...later] = [...pagesOf(area, fold), ...turnsOf(area, fold)];
+        return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later];
     });
     return { url: location.pathname, title: document.title, text, areas, links: linksOf(main, fold) };
 }
 
-// A place's heading as the guide reads it: a card by its title, marked as one that opens; a piece by its title or its
-// number, marked as one the guide selects; a section by its topic, else its heading.
+// A place's heading as the guide reads it: a card by its title, marked as one that opens; a recorded talk as one that
+// plays; a piece by its title or its number, marked as one the guide selects; a section by its topic, else its
+// heading.
 const headingOf = (area, fold) => {
     if (area.matches("[data-card]")) return `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`;
+    // A recorded talk's answers may hold headings of their own, so it is named for what it is.
+    if (area.matches(".recorded-chat")) return "the recorded conversation, plays a turn when shown";
     if (area.matches("[data-piece]")) {
         return `${fold(area.querySelector("h3, h4, .stat-value")?.textContent) || area.id} (piece, selects)`;
     }
@@ -108,9 +110,11 @@ const pagesOf = (area, fold) => {
     }));
 };
 
-// A recorded talk's turns (F160), each a place the guide shows, a turn at a time: "the-demo/2", "turn 2 of 4: Can
-// we bring the dog?". The talk lists them where the page doesn't show them, so they are read from that list.
+// A recorded talk's turns (F160), when the talk is a place of its own, each a stop the guide shows: the place itself
+// is its first turn, as a paged section is its first page, and "the-conversation/2", "turn 2 of 4: Can we bring the
+// dog?", the next. The talk lists them where the page doesn't show them, so they are read from that list.
 const turnsOf = (area, fold) => {
+    if (!area.matches(".recorded-chat")) return [];
     const turns = [...area.querySelectorAll(".recorded-turns li[data-turn]")];
     return turns.map((turn) => ({
         id: `${area.id}/${turn.dataset.turn}`,

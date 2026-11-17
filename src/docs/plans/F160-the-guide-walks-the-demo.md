@@ -170,7 +170,11 @@ page holds, and the walk it follows.
 
 ## Approved during the build
 
-Nothing yet.
+- **2026-11-17, the conversation is its own place.** The site's address rule reads `/the-demo/1` as `/the-demo`,
+  so the demo's first turn and the demo itself were one place. Louis picked, of three, "The conversation is its own
+  place": the recorded chat's window is a section of its own inside the demo, `the-conversation`, which is its first
+  turn, and `the-conversation/2` to `/4` the turns after it. Showing the demo explains the screen; showing the
+  conversation plays a turn, and the spotlight lands on the chat window. Each demo's conversation is in the sitemap.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [the site's design doc](../projects/louis-agent.site.md)

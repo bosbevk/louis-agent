@@ -274,15 +274,24 @@
     <loc>https://louis-agent.dev/guesthouse-demo/the-demo</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/guesthouse-demo/the-conversation</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/law-practice-demo</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/law-practice-demo/the-demo</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/law-practice-demo/the-conversation</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/restaurant-demo</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/restaurant-demo/the-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/restaurant-demo/the-conversation</loc>
   </url>
 </urlset>

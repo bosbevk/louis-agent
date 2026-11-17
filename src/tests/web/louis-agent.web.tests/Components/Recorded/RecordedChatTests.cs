@@ -369,7 +369,10 @@ public class RecordedChatTests
         using var ctx = Context();
 
         var cut = ThreeTurns(ctx);
+        cut.Render(parameters => parameters.Add(chat => chat.Place, "the-conversation"));
 
+        Assert.That(cut.Find("section.recorded-chat").Id, Is.EqualTo("the-conversation"),
+            "the window is a place of its own, which the guide shows by its id");
         var list = cut.Find(".recorded-turns");
         Assert.Multiple(() =>
         {

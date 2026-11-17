@@ -60,6 +60,20 @@ public class GuidePlacesTests
     public void AnAddress_GoesToItsPlace(string address, string page, string? place) =>
         Assert.That(GuidePlaces.Target(address, Site), Is.EqualTo((page, place)));
 
+    /// <summary>
+    /// A shown address names its place and its turn (F160), the place itself turn one, so a recorded talk that is that
+    /// place knows which turn to play; an address of no page names none.
+    /// </summary>
+    [TestCase("/how-it-works/parts/2", "parts", 2)]
+    [TestCase("/identities/the-guide", "the-guide", 1)]
+    [TestCase("/identities", "top", 1)]
+    public void AnAddress_NamesItsPlaceAndTurn(string address, string place, int turn) =>
+        Assert.That(GuidePlaces.TurnOf(address, Site), Is.EqualTo((place, turn)));
+
+    /// <summary>An address of no page names no turn.</summary>
+    [Test]
+    public void AnAddressOfNoPage_NamesNoTurn() => Assert.That(GuidePlaces.TurnOf("/nowhere/x", Site), Is.Null);
+
     /// <summary>An address of no page is nothing to follow.</summary>
     [Test]
     public void AnAddressOfNoPage_GoesNowhere() => Assert.That(GuidePlaces.Target("/nowhere/x", Site), Is.Null);

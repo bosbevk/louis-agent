@@ -26,8 +26,10 @@
                     @* At a person's pace (Louis: "slow it down like realtime"): the agent writes at an easy reading
                        speed, and the visitor's next question comes after a breath, as they read and type. It waits
                        while the site's guide talks (F134.4), and it starts only when asked (F160, Louis: "do not
-                       make it autoplay"). Once it has played, the visitor can try it themselves. *@
-                    <RecordedChat Turns="Turns" Title="@Address" PlayAgain="Play it again"
+                       make it autoplay"), by the visitor's Play or by the guide showing one of its turns. Once it has played,
+                       the visitor can try it themselves. *@
+                    <RecordedChat @ref="_recorded" Turns="Turns" Title="@Address" PlayAgain="Play it again"
+                                  Place="@ConversationPlace"
                                   Start="RecordedStart.WhenAsked" Play="Play the conversation" PlayOn="Play on"
                                   ShowWork="false" Pace="2.5" TurnGap="2200" TurnStarted="Reach" ToolCalled="Show"
                                   Hold="GuideTalking" TryIt="@Words.TryItYourself" Tried="Try" />

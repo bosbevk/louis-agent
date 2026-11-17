@@ -55,6 +55,13 @@ public partial class RecordedChat : IDisposable
     [Parameter]
     public string Play { get; set; } = "";
 
+    /// <summary>
+    /// The window's place on the page, which the guide shows it by (F160): its first turn is the place, the later ones
+    /// its turns after it; none when it isn't a place of its own.
+    /// </summary>
+    [Parameter]
+    public string? Place { get; set; }
+
     /// <summary>What the button says that plays the rest, once the play has stopped after a turn.</summary>
     [Parameter]
     public string PlayOn { get; set; } = "";
