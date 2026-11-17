@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F160.1 the framework's pages: the Features page in memory",
+  "caption": "The page holds its bands; a band holds its tiles and its doc links; every doc link asks the one DocsAddress the site named.",
+  "flow": {
+    "nodes": [
+      { "id": "page", "icon": "browser", "tone": "amber", "label": "FeaturesPage" },
+      { "id": "engine", "icon": "chip", "tone": "violet", "label": "Band \"engine\"\npacing" },
+      { "id": "api", "icon": "server", "tone": "violet", "label": "Band \"api\"\nsessions, Stream-Paced" },
+      { "id": "web", "icon": "browser", "tone": "violet", "label": "Band \"web\"\nmotion, reset, caption, themes" },
+      { "id": "code", "icon": "code", "tone": "violet", "label": "Band \"code\"\nthe naming rule" },
+      { "id": "tiles", "icon": "box", "tone": "blue", "label": "Tiles\none per feature" },
+      { "id": "links", "icon": "book", "tone": "teal", "label": "DocLinks\na DocLink per doc" },
+      { "id": "address", "shape": "data", "icon": "settings", "tone": "teal", "label": "DocsAddress\nGitHub, main\none per site" }
+    ],
+    "edges": [
+      { "from": "page", "to": "engine" },
+      { "from": "page", "to": "api" },
+      { "from": "page", "to": "web" },
+      { "from": "page", "to": "code" },
+      { "from": "web", "to": "tiles", "word": "holds" },
+      { "from": "web", "to": "links", "word": "ends with" },
+      { "from": "links", "to": "address", "style": "dashed", "word": "For(path)" }
+    ]
+  }
+}
