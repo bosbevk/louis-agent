@@ -199,7 +199,30 @@ public class TilesTests
         Assert.Multiple(() =>
         {
             Assert.That(tile.LastElementChild!.ClassName, Does.Contain("button-row"));
+            Assert.That(tile.LastElementChild!.GetAttribute("data-columns"), Is.EqualTo("2"));
             Assert.That(tile.QuerySelectorAll(".button-row a"), Has.Length.EqualTo(2));
+        });
+    }
+
+    /// <summary>
+    /// FX180: a tile may end with the site's brand, at its foot under the buttons (Louis: "add some branding", his
+    /// pick of the wordmark in the foot).
+    /// </summary>
+    [Test]
+    public void ATile_EndsWithItsBrand_UnderItsButtons()
+    {
+        using var ctx = new BunitContext();
+
+        var tile = ctx.Render<Tile>(p => p.Add(t => t.Title, "A custom agent")
+            .Add(t => t.Actions, "<a class=\"btn\" href=\"/a\">Ask</a>")
+            .Add(t => t.Brand, "<span class=\"wordmark\">louis-agent</span>")).Find("article");
+        var foot = tile.LastElementChild!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(foot.ClassName, Is.EqualTo("tile-brand"));
+            Assert.That(foot.TextContent, Is.EqualTo("louis-agent"));
+            Assert.That(foot.PreviousElementSibling!.ClassName, Does.Contain("button-row"));
         });
     }
 

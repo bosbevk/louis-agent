@@ -27,6 +27,10 @@
 article h3 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: var(--bs-emphasis-color); }
 article p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--bs-secondary-color); }
 
+/* The site's brand at the tile's foot (FX180): pushed to the bottom and to the right, small and quiet, so it signs
+   the tile without competing with its words. */
+.tile-brand { margin-top: auto; align-self: flex-end; padding-top: 6px; font-size: 15px; opacity: .8; }
+
 /* A tile is a piece the visitor or the guide can select (F127.7): a pointer, the edge and shadow a theme gives a
    pane under the pointer (F151.4), staying where it is, and pressed once selected, in the tile's own colour where
    it has one. */

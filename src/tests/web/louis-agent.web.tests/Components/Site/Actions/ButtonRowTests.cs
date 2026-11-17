@@ -19,4 +19,31 @@ public class ButtonRowTests
 
         Assert.That(row.Children.Select(c => c.TextContent), Is.EqualTo(new[] { "One", "Two" }));
     }
+
+    /// <summary>
+    /// FX180: asked for columns, the buttons stand in that many even columns, so a long one no longer drops to a line
+    /// of its own and leaves a gap beside it (Louis: "2 columns buttons"); on a phone they stack, one to a line. Not
+    /// asked, a row keeps each button at its own width.
+    /// </summary>
+    [Test]
+    public void TheButtons_StandInEvenColumns_WhenAsked_AndStackOnAPhone()
+    {
+        using var ctx = new BunitContext();
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Actions/ButtonRow.razor.scss"));
+        int phone = styles.IndexOf("@media (max-width: 600px)", StringComparison.Ordinal);
+
+        var plain = ctx.Render<ButtonRow>(p => p.AddChildContent("<a class=\"btn\">One</a>")).Find(".button-row");
+        var even = ctx.Render<ButtonRow>(p => p.Add(r => r.Columns, 2).AddChildContent("<a class=\"btn\">One</a>"))
+            .Find(".button-row");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(plain.HasAttribute("data-columns"), Is.False);
+            Assert.That(even.GetAttribute("style"), Is.EqualTo("--button-columns: 2"));
+            Assert.That(styles, Does.Contain("grid-template-columns: repeat(var(--button-columns), minmax(0, 1fr));"));
+            Assert.That(phone, Is.GreaterThan(0));
+            Assert.That(styles[phone..], Does.Contain("grid-template-columns: 1fr;"));
+        });
+    }
 }

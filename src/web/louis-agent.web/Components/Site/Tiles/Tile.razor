@@ -1,5 +1,6 @@
 @* One tile in a row (F118): the theme's pane with a number and its note, or an icon in a glass chip, a title and a
-   few words, rising as it enters (FX162, as the design's cards are). *@
+   few words, rising as it enters (FX162, as the design's cards are); its buttons under them, and the site's brand
+   at its foot (FX180). *@
 <article class="@Classes" data-delay="@DelayValue" id="@PieceAddress" data-piece="@IsPiece" data-tilt="@Tilt"
          data-lens="@LensSwitch" data-reflect="@Reflect" data-glass="@Glass.ColourName"
          data-glass-type="@Glass.TypeName" style="@Glass.Style">
@@ -29,6 +30,10 @@
     }
     @if (Actions is not null)
     {
-        <ButtonRow>@Actions</ButtonRow>
+        <ButtonRow Columns="2">@Actions</ButtonRow>
+    }
+    @if (Brand is not null)
+    {
+        <span class="tile-brand">@Brand</span>
     }
 </article>

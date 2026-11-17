@@ -403,6 +403,13 @@ other browser keeps the clear pane.
 `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words. A `GuideButton` anywhere asks the
 guide a question.
 
+A tile may carry its own buttons under its words. They stand in a `ButtonRow`, which a tile asks for two even
+columns, so a long button never drops to a line of its own and leaves a gap beside it. Each button fills its column,
+its words wrapping inside it so its mark stays in view, and on a phone they stack one to a line. A row nobody asks
+for columns, as a band's closing buttons are, keeps each button at its own width. A tile may also end with the
+site's brand at its foot, at the right under its buttons, small and quiet, which is how a site signs a card with its
+wordmark.
+
 A `SiteHero` is the first thing on a landing: a kicker, the headline, a lede, a quiet note and the actions, each a
 slot the site fills, with something alive beside the words when the site has it. A site may also open the words with
 a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside

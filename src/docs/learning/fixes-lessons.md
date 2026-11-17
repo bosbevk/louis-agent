@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX180 · A shared part changes everywhere it is used, so let each use ask
+
+The contact page's cards put their buttons in a row that wraps, so a long button dropped to a line of its own and left
+a gap beside it. The first fix made every row of buttons two even columns, and the photograph of the landing showed
+what that cost: its closing band uses the same row, and its two buttons stretched across the whole page. So the row now
+takes a setting, how many columns, the way a row of tiles already does, and only a tile asks for two. A second slip
+showed in the same photograph: centred in a column too narrow for its words, a button pushed its WhatsApp mark out of
+sight, so the words now wrap inside the column. The lesson: before a shared part changes, find every place that uses it
+and look at each one. Skill 18 (testing and shipping: a test holds both kinds of row).
+
 ## FX179 · A hyphen is a place the browser may break a line
 
 The alpha flag in the header reads "alpha-1". On a wide screen it has room, but on a phone it sits between the name
