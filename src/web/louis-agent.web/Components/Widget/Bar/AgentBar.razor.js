@@ -37,13 +37,21 @@ export function letGo(bar) {
     kept.delete(bar);
 }
 
-// The room the bar needs now: as it stands, or as it rests with its chips over its row, whichever is more. The
-// chips' own height is read from what they hold, since stepped away they are folded to none.
+// The room the bar needs now: as it stands, or as it rests with its chips, whichever is more.
 const roomOf = (bar) => {
     const standing = innerHeight - bar.getBoundingClientRect().top + air;
-    const row = bar.querySelector(".agent-row");
+    return Math.max(standing, restingRoomOf(bar));
+};
+
+// The room the resting bar takes with its chips. While the bar is closed on a wide screen the chips stand round the
+// orb, placed apart from the bar's flow and never folded, so the room starts at their own top or the row's, whichever
+// is higher. Otherwise they stand over the row, and their height is read from what they hold, since stepped away
+// they are folded to none.
+const restingRoomOf = (bar) => {
+    const rowTop = (bar.querySelector(".agent-row") ?? bar).getBoundingClientRect().top;
     const chips = bar.querySelector(".agent-chips");
-    const chipsRoom = chips ? chips.scrollHeight + gap : 0;
-    const resting = innerHeight - (row ?? bar).getBoundingClientRect().top + chipsRoom + air;
-    return Math.max(standing, resting);
+    if (!chips) return innerHeight - rowTop + air;
+    if (getComputedStyle(chips).position === "absolute")
+        return innerHeight - Math.min(rowTop, chips.getBoundingClientRect().top) + air;
+    return innerHeight - rowTop + chips.scrollHeight + gap + air;
 };

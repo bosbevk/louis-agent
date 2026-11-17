@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 128 | 97 |
-| Fixes (`FX`) | 179 | 6 |
+| Fixes (`FX`) | 181 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -289,10 +289,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (179 done)
+## Fixes (181 done)
 
 | Id | When | What |
 |---|---|---|
+| FX193 | 2026-11-17 | The light looks' accents are deep enough to read, so a demo's button and its dock icon show |
+| FX192 | 2026-11-17 | `/demos` is the framework's controls, with its deck at full size and every word readable in each look |
 | FX191 | 2026-11-17 | The CV is the framework's controls again, on screen and as an A4 sheet |
 | FX190 | 2026-11-17 | The guide's answer keeps its small face on a phone: no font mixes a size with inherit |
 | FX189 | 2026-11-17 | Glass's drawings and silk carry their version in their address |
