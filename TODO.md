@@ -20,11 +20,12 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (132)
+## Open (133)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next | [plan](src/docs/plans/F151-themes-and-styles.md) |
+| F153 | Reset my session in the admin (Louis, 2026-11-16, his pick: everything for a first visit): one press on the admin's home ends every session this browser saved on the API, clears localStorage and sessionStorage except the admin key, and reloads; a small reset class beside its button, his pick of three (option A) | Now | [plan](src/docs/plans/F153-reset-my-session.md) |
 | F155 | Pacing in the engine (Louis, 2026-11-17: "note engine pacing and api pacing"): the engine hands its text out at a steady pace, as the web's `WordPace` paces it on the page, so every host gets it even, not in the model's bursts | Next | — |
 | F156 | Pacing in the API (Louis, 2026-11-17: "note engine pacing and api pacing"): the API sends a session's text events at a steady pace over its stream, so a client that does not pace its words still shows them evenly | Next | — |
 | F148 | One docs endpoint (Louis, 2026-11-13, after the guide could not say whether the README it read was GitHub's: "can we plan a docs api end point all docs must be served from that endpoint. this is next"; his pick of three: the words stay markdown, the facts are generated): every doc gets a small header (type, title, about), one docs library behind `/v1/docs` builds its list from the headers, every doc with its path, commit and GitHub address; the guide's tools and the MCP `doc://` resources read the same library; three small choices asked one at a time | Now, after F151 | [draft](src/docs/plans/F148-one-docs-endpoint.md) |

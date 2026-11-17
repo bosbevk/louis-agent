@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F153 Reset my session: the architecture",
+  "caption": "Nothing new runs on a server: the admin's home in the browser ends its sessions on the API it already calls, and clears its own storage.",
+  "flow": {
+    "nodes": [
+      { "id": "owner", "shape": "terminal", "icon": "users", "tone": "blue", "label": "The owner\non /admin" },
+      { "id": "home", "icon": "stack", "tone": "teal", "label": "The admin's home\nlouis-agent.web, in the browser\nthe button (3)" },
+      { "id": "reset", "icon": "chip", "tone": "green", "label": "SessionReset (2)\nand its module" },
+      { "id": "storage", "shape": "data", "icon": "file", "tone": "amber", "label": "localStorage, sessionStorage\nthe *.chats lists, the look,\nthe chat's choices, the keys" },
+      { "id": "api", "icon": "cloud", "tone": "violet", "label": "louis-agent.api\nDELETE /v1/sessions/{id}\nunchanged" }
+    ],
+    "edges": [
+      { "from": "owner", "to": "home", "word": "presses Reset" },
+      { "from": "home", "to": "reset" },
+      { "from": "reset", "to": "storage", "word": "reads, then clears" },
+      { "from": "reset", "to": "api", "word": "ends each session" }
+    ],
+    "direction": "down"
+  }
+}

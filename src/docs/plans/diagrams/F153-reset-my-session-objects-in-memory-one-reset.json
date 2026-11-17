@@ -1,0 +1,26 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F153 Reset my session: what one reset holds",
+  "caption": "The reset holds one module and, for a moment, one chat store per saved list; the reload lets all of it go.",
+  "flow": {
+    "nodes": [
+      { "id": "button", "icon": "stack", "tone": "teal", "label": "ResetSession\non the admin's home" },
+      { "id": "reset", "icon": "chip", "tone": "green", "label": "SessionReset\none per press" },
+      { "id": "module", "icon": "file", "tone": "amber", "label": "JsModule\nResetSession.razor.js" },
+      { "id": "chats", "icon": "message", "tone": "violet", "label": "ChatStore\nlouis-agent.chats" },
+      { "id": "widget", "icon": "message", "tone": "violet", "label": "ChatStore\nlouis-agent.widget-chats" },
+      { "id": "showroom", "icon": "message", "tone": "violet", "label": "ChatStore\nlouis-agent.showroom-chats" },
+      { "id": "api", "icon": "cloud", "tone": "violet", "label": "AgentApi\nthe site's own, scoped" }
+    ],
+    "edges": [
+      { "from": "button", "to": "reset" },
+      { "from": "reset", "to": "module" },
+      { "from": "reset", "to": "chats" },
+      { "from": "reset", "to": "widget" },
+      { "from": "reset", "to": "showroom" },
+      { "from": "reset", "to": "api" }
+    ],
+    "direction": "down"
+  }
+}
