@@ -23,8 +23,9 @@ public class EditingJobsTests
         var title = new Handed<CvRecord>();
         var point = new Handed<CvRecord>();
 
-        OnThePage.Editable(ctx, title).Retype("#experience .job:nth-child(1) h3", "Principal developer");
-        OnThePage.Editable(ctx, point).RetypeLong("#experience .job:nth-child(1) li:nth-child(2)", "Shipped it.");
+        OnThePage.Editable(ctx, title).Retype("#experience .timeline-entry:nth-child(1) h3", "Principal developer");
+        OnThePage.Editable(ctx, point)
+            .RetypeLong("#experience .timeline-entry:nth-child(1) li:nth-child(2)", "Shipped it.");
 
         Assert.Multiple(() =>
         {
@@ -64,9 +65,11 @@ public class EditingJobsTests
         var removed = new Handed<CvRecord>();
         var added = new Handed<CvRecord>();
 
-        OnThePage.Editable(ctx, removed).Find("#experience .job:nth-child(1) button[aria-label='Remove point 1']")
+        OnThePage.Editable(ctx, removed)
+            .Find("#experience .timeline-entry:nth-child(1) button[aria-label='Remove point 1']")
             .Click();
-        OnThePage.Editable(ctx, added).Find("#experience .job:nth-child(1) .job-points button.item-add").Click();
+        OnThePage.Editable(ctx, added)
+            .Find("#experience .timeline-entry:nth-child(1) .timeline-words > button.item-add").Click();
 
         Assert.Multiple(() =>
         {
@@ -90,8 +93,8 @@ public class EditingJobsTests
 
         OnThePage.Editable(ctx, moved).Find("#experience button[aria-label='Move job 1 later']").Click();
         OnThePage.Editable(ctx, removed).Find("#experience button[aria-label='Remove job 1']").Click();
-        OnThePage.Editable(ctx, added).Find("#experience .cv-jobs > button.item-add").Click();
-        OnThePage.Editable(ctx, untagged).Find("#experience .job:nth-child(1) .tag-remove").Click();
+        OnThePage.Editable(ctx, added).Find("#experience .timeline > button.item-add").Click();
+        OnThePage.Editable(ctx, untagged).Find("#experience .timeline-entry:nth-child(1) .tag-remove").Click();
 
         Assert.Multiple(() =>
         {

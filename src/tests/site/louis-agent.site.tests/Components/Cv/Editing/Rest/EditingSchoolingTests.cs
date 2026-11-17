@@ -22,7 +22,7 @@ public class EditingSchoolingTests
         var handed = new Handed<CvRecord>();
         var first = Saved.Certificates.First(certificate => certificate.Url is null);
 
-        OnThePage.Editable(ctx, handed).Retype("#education .edu-row:nth-child(1) h3", "Scope AI work");
+        OnThePage.Editable(ctx, handed).Retype("#education .timeline-entry:nth-child(1) h3", "Scope AI work");
 
         Assert.Multiple(() =>
         {
@@ -65,7 +65,7 @@ public class EditingSchoolingTests
         var noCertificate = new Handed<CvRecord>();
 
         OnThePage.Editable(ctx, noSchool).Find("#education button[aria-label='Remove school 1']").Click();
-        OnThePage.Editable(ctx, oneMore).Find("#education .add-school button.item-add").Click();
+        OnThePage.Editable(ctx, oneMore).Find("#education .timeline > button.item-add:last-child").Click();
         OnThePage.Editable(ctx, noCertificate).Find("#education button[aria-label='Remove certificate 1']").Click();
 
         Assert.Multiple(() =>

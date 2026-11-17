@@ -1,0 +1,6 @@
+/* A link that prints: on a screen a quiet link in the words' colour; on paper its code stands in its place. */
+.screen-link { display: inline-block; font-size: 14px; color: var(--bs-body-color); }
+
+@media print {
+    .screen-link { display: none; }
+}

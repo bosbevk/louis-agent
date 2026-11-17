@@ -17,7 +17,7 @@ namespace LouisAgent.Site.Tests.Admin;
 public class ResumeEditorTests
 {
     /// <summary>The summary on the editor's sheet, drawn by the page's own view.</summary>
-    private const string SheetSummary = ".resume-sheet .cv-hero .summary";
+    private const string SheetSummary = ".resume-sheet .profile .summary";
 
     /// <summary>The CV with this headline, which the page never draws.</summary>
     private static Resume With(string headline) =>
@@ -99,7 +99,7 @@ public class ResumeEditorTests
         Assert.Multiple(() =>
         {
             Assert.That(editor.Find(SheetSummary).TextContent, Is.EqualTo(Cv.Resume.Basics.Summary));
-            Assert.That(editor.Find(".resume-sheet img.cv-photo").GetAttribute("src"), Is.EqualTo(Cv.Photo));
+            Assert.That(editor.Find(".resume-sheet img.profile-photo").GetAttribute("src"), Is.EqualTo(Cv.Photo));
             Assert.That(editor.Box("Headline").GetAttribute("value"), Is.EqualTo("Kept by the API"));
             Assert.That(editor.Find(".draft-state").TextContent, Is.EqualTo("No changes"));
             Assert.That(editor.Find("button.draft-save").HasAttribute("disabled"), Is.True);

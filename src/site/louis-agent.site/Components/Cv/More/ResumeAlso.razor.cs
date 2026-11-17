@@ -39,12 +39,6 @@ public partial class ResumeAlso
     /// <summary>Whether the section is being edited.</summary>
     private bool Editable => InterestsChanged.HasDelegate;
 
-    /// <summary>The interests' panel, named when it is edited so its rows can be found.</summary>
-    private string InterestsPanel => Editable ? "panel cv-interests" : "panel";
-
-    /// <summary>While the page is edited a link leads nowhere, so a click on it doesn't leave the page.</summary>
-    private string? AddressOf(ResumeCertificate certificate) => Editable ? null : certificate.Url;
-
     /// <summary>The listener for an assessment's name, which is never left out: an emptied one is blank.</summary>
     private EventCallback<string?> NameChanged(int at) =>
         CertificatesChanged.Of<IReadOnlyList<ResumeCertificate>, string?>(

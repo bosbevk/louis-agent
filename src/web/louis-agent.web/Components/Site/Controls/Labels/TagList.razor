@@ -1,0 +1,10 @@
+@* A row of plain tags (ADR 0125), one per word; none drawn when there are none. *@
+@if (Tags.Count > 0)
+{
+    <div class="tag-list">
+        @foreach (var tag in Tags)
+        {
+            <Tag Text="@tag"/>
+        }
+    </div>
+}

@@ -2,79 +2,89 @@
 @using LouisAgent.Web.Components.Editing.Inline
 @using LouisAgent.Web.Components.Paper
 @using LouisAgent.Site.Resumes.History
-@* The CV's "Also" (F142): the assessments and societies to check, and what he does outside work. When the page is
-   edited, an assessment's name is clicked and retyped and its address is behind a small form, an interest is a
-   name with tags, and both are lists. A link leads nowhere while it is edited. *@
-<div class="grid-2 resume-also">
+@* The CV's "Also" (F142), two framework panels: the assessments and societies to check, each a link that is its QR
+   code on paper, and what he does outside work. When the page is edited, an assessment's name is clicked and
+   retyped and its address is behind a small form, an interest is a name with tags, and both are lists. A link is
+   only words while it is edited. *@
+<TileRow Columns="2">
     @if (Certificates.Count > 0 || Editable)
     {
-        <div class="panel">
-            <h3>Assessments and societies</h3>
-            @for (int index = 0; index < Certificates.Count; index++)
-            {
-                // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
-                int at = index;
-                var certificate = Certificates[at];
-                <p class="cv-assessment">
-                    <a href="@AddressOf(certificate)" target="_blank" rel="noopener"><InlineEdit
-                        Value="@certificate.Name" Label="Assessment" ValueChanged="@NameChanged(at)"/></a>
+        <Panel>
+            <Title>Assessments and societies</Title>
+            <ChildContent>
+                @for (int index = 0; index < Certificates.Count; index++)
+                {
+                    // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+                    int at = index;
+                    var certificate = Certificates[at];
                     @if (Editable)
                     {
-                        <ItemTools Noun="assessment" At="at" Count="Certificates.Count" OnOpen="() => Open(at)"
-                                   OnMove="step => MoveCertificateAsync(at, step)"
-                                   OnRemove="() => RemoveCertificateAsync(at)"/>
+                        <p class="cv-assessment">
+                            <InlineEdit Value="@certificate.Name" Label="Assessment" ValueChanged="@NameChanged(at)"/>
+                            <ItemTools Noun="assessment" At="at" Count="Certificates.Count" OnOpen="() => Open(at)"
+                                       OnMove="step => MoveCertificateAsync(at, step)"
+                                       OnRemove="() => RemoveCertificateAsync(at)"/>
+                        </p>
                     }
-                </p>
-                @if (!Editable && certificate.Url is { } onPaper)
-                {
-                    <PaperLink Href="@onPaper" Label="@certificate.Name" Small/>
+                    else if (certificate.Url is { } url)
+                    {
+                        <p><PrintableLink Href="@url" Label="@certificate.Name" Small NewTab>@certificate.Name</PrintableLink></p>
+                    }
+                    else
+                    {
+                        <p>@certificate.Name</p>
+                    }
+                    @if (Editable && _open == at)
+                    {
+                        <InlineForm @key="at" TItem="ResumeCertificate" Item="certificate"
+                                    Label="@($"assessment {at + 1}")" OnKeep="kept => KeepCertificateAsync(at, kept)"
+                                    OnDrop="Close">
+                            <TextField Label="Address" Value="@context.Item.Url" Placeholder="https://"
+                                       Hint="With none it is drawn with the certificates, under Education."
+                                       ValueChanged="address => AddressAsync(context, address)"/>
+                        </InlineForm>
+                    }
                 }
-                @if (Editable && _open == at)
+                @if (Editable)
                 {
-                    <InlineForm @key="at" TItem="ResumeCertificate" Item="certificate"
-                                Label="@($"assessment {at + 1}")" OnKeep="kept => KeepCertificateAsync(at, kept)"
-                                OnDrop="Close">
-                        <TextField Label="Address" Value="@context.Item.Url" Placeholder="https://"
-                                   Hint="With none it is drawn with the certificates, under Education."
-                                   ValueChanged="address => AddressAsync(context, address)"/>
-                    </InlineForm>
+                    <ItemAdd Label="Add an assessment" OnAdd="AddCertificateAsync"/>
                 }
-            }
-            @if (Editable)
-            {
-                <ItemAdd Label="Add an assessment" OnAdd="AddCertificateAsync"/>
-            }
-        </div>
+            </ChildContent>
+        </Panel>
     }
     @if (Interests.Count > 0 || Editable)
     {
-        <div class="@InterestsPanel">
-            <h3>Outside work</h3>
-            @for (int index = 0; index < Interests.Count; index++)
-            {
-                int at = index;
-                var interest = Interests[at];
-                @if (Editable)
-                {
-                    <div class="cv-interest">
-                        <span class="cv-interest-name"><InlineEdit Value="@interest.Name" Label="Interest"
-                                                                   ValueChanged="@InterestChanged(at)"/></span>
-                        <TagInput Tags="interest.Keywords" Label="@($"More about {interest.Name}")"
-                                  Placeholder="Add a word" TagsChanged="tags => TagsAsync(at, tags)"/>
-                        <ItemTools Noun="interest" At="at" Count="Interests.Count"
-                                   OnMove="step => MoveInterestAsync(at, step)"
-                                   OnRemove="() => RemoveInterestAsync(at)"/>
-                    </div>
-                }
-                else
-                {
-                    <p>@LineOf(interest)</p>
-                }
-            }
-            @if (Editable)
-            {
-                <ItemAdd Label="Add an interest" OnAdd="AddInterestAsync"/>
-            }
-        </div>
+        <Panel>
+            <Title>Outside work</Title>
+            <ChildContent>
+                <div class="cv-interests">
+                    @for (int index = 0; index < Interests.Count; index++)
+                    {
+                        int at = index;
+                        var interest = Interests[at];
+                        @if (Editable)
+                        {
+                            <div class="cv-interest">
+                                <span class="cv-interest-name"><InlineEdit Value="@interest.Name" Label="Interest"
+                                                                           ValueChanged="@InterestChanged(at)"/></span>
+                                <TagInput Tags="interest.Keywords" Label="@($"More about {interest.Name}")"
+                                          Placeholder="Add a word" TagsChanged="tags => TagsAsync(at, tags)"/>
+                                <ItemTools Noun="interest" At="at" Count="Interests.Count"
+                                           OnMove="step => MoveInterestAsync(at, step)"
+                                           OnRemove="() => RemoveInterestAsync(at)"/>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>@LineOf(interest)</p>
+                        }
+                    }
+                    @if (Editable)
+                    {
+                        <ItemAdd Label="Add an interest" OnAdd="AddInterestAsync"/>
+                    }
+                </div>
+            </ChildContent>
+        </Panel>
     }
-</div>
+</TileRow>

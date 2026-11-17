@@ -1,0 +1,23 @@
+/* The colours of a page on paper (the PaperSheet component, with web/paper/sheet): black and near black on white,
+   since a light grey doesn't survive a printer. They are values, so they sit here beside the theme's names, and are
+   for paper only, and only for a page that holds a sheet. They are set on the page's root, whose background is what
+   a sheet's margins are painted with: set lower down, the margins printed dark around a white page. A theme sets its
+   colours under the page's theme and style, which weighs more than the root alone, so the second selector weighs as
+   much again and these still win on paper whatever look the page is in. */
+@media print {
+    :root:has(.paper-sheet),
+    :root[data-theme][data-style]:has(.paper-sheet) {
+        --bs-body-bg: #fff;
+        --bs-body-color: #111;
+        --bs-emphasis-color: #000;
+        --bs-secondary-color: #1c1f23;
+        --bs-tertiary-color: #2a2e33;
+        --bs-border-color: #6b7079;
+        --bs-secondary-bg: #fff;
+        --bs-tertiary-bg: #fff;
+        --web-ok: #0f5c26;
+        background: #fff;
+        color: #111;
+    }
+    body:has(.paper-sheet) { background: #fff; color: #111; }
+}

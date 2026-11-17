@@ -5,3 +5,16 @@
 .tag { display: inline-block; padding: 4px 12px; font: 600 12px var(--bs-font-monospace); @include surface.tag(); border-radius: 8px; }
 .tag-you { color: var(--bs-emphasis-color); @include surface.tag-you(); }
 .tag-agent { @include surface.tag-agent(); }
+
+/* On paper: a thin line for the tag's drawing, in the page's ink, small. */
+@media print {
+    .tag {
+        padding: .6mm 1.8mm;
+        @include surface.lined(var(--bs-border-color));
+        border-radius: 1.2mm;
+        background: none;
+        box-shadow: none;
+        font-size: 7.95pt;
+        color: var(--bs-body-color);
+    }
+}

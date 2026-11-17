@@ -65,9 +65,9 @@ public class EditingAlsoTests
         using var ctx = new BunitContext();
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
-        string shown = view.Find(".cv-where .cv-languages .inline-read").TextContent;
+        string shown = view.Find(".profile-note .cv-languages .inline-read").TextContent;
 
-        view.Retype(".cv-where .cv-languages", "English, Afrikaans, isiXhosa");
+        view.Retype(".profile-note .cv-languages", "English, Afrikaans, isiXhosa");
 
         Assert.Multiple(() =>
         {

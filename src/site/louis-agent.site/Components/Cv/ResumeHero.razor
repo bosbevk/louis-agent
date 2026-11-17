@@ -3,66 +3,68 @@
 @using LouisAgent.Web.Components.Paper
 @using LouisAgent.Site.Resumes.Basics
 @using LouisAgent.Site.Resumes.Skills
-@* The CV's hero (F142): the name, the summary, where he lives and works, the ways to reach him, and the photo. When
-   the page is edited, the words are clicked and retyped, and the links are a list: each moves, goes or opens on a
-   small form, and a link leads nowhere while it is being edited. *@
-<div class="cv-hero">
-    <div>
-        <h1 class="chrome"><InlineEdit Value="@Basics.Name" Label="Name" ValueChanged="NameChanged"/></h1>
+@* The CV's hero (F142), the framework's profile hero given his words: the name, the summary, where he lives and
+   works, the ways to reach him, and the photo. When the page is edited, the words are clicked and retyped, and the
+   links are a list: each moves, goes or opens on a small form, and a link leads nowhere while it is being edited. On
+   paper each link is its QR code, in the buttons' place (FX154). *@
+<ProfileHero Photo="@Photo" PhotoText="@Basics.Name">
+    <Name><InlineEdit Value="@Basics.Name" Label="Name" ValueChanged="NameChanged"/></Name>
+    <Summary>
         @if (Basics.Summary is not null || Editable)
         {
-            <p class="summary"><InlineEdit Value="@Basics.Summary" Label="Summary" Multiline Rows="6"
-                                        ValueChanged="SummaryChanged"/></p>
+            <InlineEdit Value="@Basics.Summary" Label="Summary" Multiline Rows="6" ValueChanged="SummaryChanged"/>
         }
+    </Summary>
+    <Note>
         @if (Editable)
         {
-            <p class="cv-where">
-                <span class="cv-town"><InlineEdit Value="@Place.City" Label="Town" ValueChanged="TownChanged"/></span>,
-                <span class="cv-province"><InlineEdit Value="@Place.Region" Label="Province"
-                                                      ValueChanged="ProvinceChanged"/></span> ·
-                <span class="cv-languages"><InlineEdit Value="@ResumeLanguages.Listed(Languages)"
-                                                       Label="Languages, with commas"
-                                                       ValueChanged="LanguagesTyped"/></span>@AfterTheLanguages
-            </p>
+            <span class="cv-town"><InlineEdit Value="@Place.City" Label="Town" ValueChanged="TownChanged"/></span>@(", ")
+            <span class="cv-province"><InlineEdit Value="@Place.Region" Label="Province"
+                                                  ValueChanged="ProvinceChanged"/></span>@(" · ")
+            <span class="cv-languages"><InlineEdit Value="@ResumeLanguages.Listed(Languages)"
+                                                   Label="Languages, with commas"
+                                                   ValueChanged="LanguagesTyped"/></span>@AfterTheLanguages
         }
         else
         {
-            <p class="cv-where">@Where</p>
+            @Where
         }
-        <div class="cv-reach">
-            @for (int index = 0; index < Basics.Profiles.Count; index++)
-            {
-                // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
-                int at = index;
-                var profile = Basics.Profiles[at];
-                <a class="@ButtonOf(profile)" href="@AddressOf(profile)" target="_blank" rel="noopener">
-                    @if (profile.Network == LinkedIn)
-                    {
-                        <LinkedInMark/>
-                    }
-                    @if (profile.Network == WhatsApp)
-                    {
-                        <WhatsAppMark/>
-                    }
-                    @LabelOf(profile)
-                </a>
-                @if (Editable)
+    </Note>
+    <Actions>
+        @for (int index = 0; index < Basics.Profiles.Count; index++)
+        {
+            // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+            int at = index;
+            var profile = Basics.Profiles[at];
+            <a class="@ButtonOf(profile)" href="@AddressOf(profile)" target="_blank" rel="noopener">
+                @if (profile.Network == LinkedIn)
                 {
-                    <ItemTools Noun="link" At="at" Count="Basics.Profiles.Count" OnOpen="() => Open(at)"
-                               OnMove="step => MoveLinkAsync(at, step)" OnRemove="() => RemoveLinkAsync(at)"/>
+                    <LinkedInMark/>
                 }
-            }
+                @if (profile.Network == WhatsApp)
+                {
+                    <WhatsAppMark/>
+                }
+                @LabelOf(profile)
+            </a>
             @if (Editable)
             {
-                <span class="btn btn-line cv-email"><InlineEdit Value="@Basics.Email" Label="Email"
-                                                                ValueChanged="EmailChanged"/></span>
-                <ItemAdd Label="Add a link" OnAdd="AddLinkAsync"/>
+                <ItemTools Noun="link" At="at" Count="Basics.Profiles.Count" OnOpen="() => Open(at)"
+                           OnMove="step => MoveLinkAsync(at, step)" OnRemove="() => RemoveLinkAsync(at)"/>
             }
-            else if (Basics.Email is { } email)
-            {
-                <a class="btn btn-line" href="mailto:@email">@email</a>
-            }
-        </div>
+        }
+        @if (Editable)
+        {
+            <span class="btn btn-line cv-email"><InlineEdit Value="@Basics.Email" Label="Email"
+                                                            ValueChanged="EmailChanged"/></span>
+            <ItemAdd Label="Add a link" OnAdd="AddLinkAsync"/>
+        }
+        else if (Basics.Email is { } email)
+        {
+            <a class="btn btn-line" href="mailto:@email">@email</a>
+        }
+    </Actions>
+    <ChildContent>
         @if (Editable && OpenLink is { } link)
         {
             <InlineForm @key="_open" TItem="ResumeProfile" Item="link" Label="@OpenLabel" OnKeep="KeepLinkAsync"
@@ -75,15 +77,10 @@
                            ValueChanged="address => AddressAsync(context, address)"/>
             </InlineForm>
         }
-    </div>
-    @if (Photo is { } photo)
-    {
-        <img class="cv-photo" src="@photo" alt="@Basics.Name" width="560" height="700"/>
-    }
-    @if (!Editable)
-    {
-        @* On paper a link can't be clicked, so each is drawn as its QR code there, in the buttons' place (FX154). *@
-        <div class="cv-codes">
+    </ChildContent>
+    <Paper>
+        @if (!Editable)
+        {
             <PaperLink Href="@LiveCv" Label="The live CV"/>
             @foreach (var profile in Basics.Profiles)
             {
@@ -93,6 +90,6 @@
             {
                 <PaperLink Href="@($"mailto:{address}")" Label="Email" Address="@address"/>
             }
-        </div>
-    }
-</div>
+        }
+    </Paper>
+</ProfileHero>

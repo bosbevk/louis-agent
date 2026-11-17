@@ -1,0 +1,12 @@
+/* One fact: its figure big and bold, in even-width digits, over what it counts in quieter words. */
+.fact { display: grid; align-content: start; gap: 4px; padding: 20px; }
+.fact b { font-size: 28px; font-weight: 700; line-height: 1.15; letter-spacing: -.02em; color: var(--bs-emphasis-color); font-variant-numeric: tabular-nums; }
+.fact span { font-size: 14px; line-height: 1.45; color: var(--bs-secondary-color); }
+/* Edited on the page: its buttons sit under its words. */
+.fact ::deep .item-tools { display: flex; margin-top: 8px; }
+
+@media print {
+    .fact { padding: 3.5mm; }
+    .fact b { font-size: 15.75pt; }
+    .fact span { font-size: 8.55pt; line-height: 1.35; }
+}

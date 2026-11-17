@@ -25,8 +25,9 @@ public class EditingTheLinksTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(view.FindAll(".cv-reach a[href]"), Is.Empty);
-            Assert.That(view.FindAll(".cv-reach a.btn"), Has.Count.EqualTo(Links.Count), "still drawn as the buttons");
+            Assert.That(view.FindAll(".profile-actions a[href]"), Is.Empty);
+            Assert.That(view.FindAll(".profile-actions a.btn"), Has.Count.EqualTo(Links.Count),
+                "still drawn as the buttons");
         });
     }
 
@@ -97,7 +98,7 @@ public class EditingTheLinksTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.Find(".cv-reach button.item-add").Click();
+        view.Find(".profile-actions button.item-add").Click();
 
         Assert.Multiple(() =>
         {

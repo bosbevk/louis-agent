@@ -1,0 +1,43 @@
+@use "web/tools/surface";
+
+/* A plain panel: the theme's pane, still, its label words small in the code face over a bold heading, and what it
+   holds in the words' second colour. On paper a thin line stands for the pane, and it stays on one page. */
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 22px;
+    @include surface.pane($radius: 14px);
+}
+.panel-topic {
+    font-family: var(--bs-font-monospace);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--bs-tertiary-color);
+}
+/* Label words a site left empty take no room. */
+.panel-topic:empty { display: none; }
+.panel h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -.01em; color: var(--bs-emphasis-color); }
+.panel ::deep p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--bs-secondary-color); }
+.panel ::deep .screen-link { margin-top: auto; padding-top: 6px; }
+/* Edited on the page: its buttons sit at its foot. */
+.panel ::deep .item-tools { display: flex; margin-top: 4px; }
+
+@media print {
+    .panel {
+        gap: 1mm;
+        padding: 3.5mm;
+        @include surface.lined(var(--bs-border-color));
+        border-radius: 2.5mm;
+        background: none;
+        box-shadow: none;
+        backdrop-filter: none;
+        break-inside: avoid;
+    }
+    .panel-topic { font-size: 7.15pt; font-weight: 600; }
+    .panel h3 { font-size: 10.75pt; }
+    .panel ::deep p { font-size: 9.15pt; line-height: 1.45; color: var(--bs-body-color); }
+    .panel ::deep .paper-link { margin-top: auto; padding-top: 2mm; }
+}
