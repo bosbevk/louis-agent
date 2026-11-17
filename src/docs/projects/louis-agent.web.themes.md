@@ -117,6 +117,12 @@ a card on a white page must be darker than the page. The press is the same solid
 an outline in the words' colour. A heading's band is the words' own colour, so a headline reads solid, where glass
 runs its violet band through the words.
 
+Both themes give their light look deeper accents than their dark one. The red, amber, blue and green the dark looks
+share are pale, and on a white or violet page they all but vanish, so in the light each is a deeper shade of
+itself: deep enough for white words on it, as on a demo's button, and to stand out as an icon on the dock. The
+purple already had a light value of its own. `LightAccentsTests` holds every accent in both light looks to at least
+4.5 to 1 against white.
+
 Flat's mark is a flat violet disc with the brand's white l on it, and a hard step of deeper violet under the l. The
 l is a drawing, as glass's is, so the letter a site hands the orb gets no ink. As a letter of the site's name the
 mark is smaller than glass's, half the letters' size against 0.76: glass's o is a ball inside a glass bubble, and

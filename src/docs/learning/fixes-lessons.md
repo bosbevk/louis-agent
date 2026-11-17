@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX193 · A colour that works on black can vanish on white
+
+The two themes' dark looks set a pale red, amber, blue and green for the demos, and the light looks simply kept them.
+On black a pale colour glows. On glass's violet page the same blue stood at 1.4 to 1 against it, so a demo's button
+was white words on a pale wash and two of the dock's icons all but disappeared. The purple had always had a deeper
+value for the light, which is why the brand's own buttons looked fine and hid the problem. Each light look now has
+its own deeper shade of every accent, and a test measures each one against white with the same contrast sum the
+web's guidelines use. The lesson: a colour isn't readable on its own, only against what it stands on, so each look
+sets and checks its colours for its own page. Skill 18.
+
 ## FX192 · A measure written for one layout breaks when the layout moves
 
 The guide's bar tells the page how much room it takes at the foot of the screen, so nothing ends under it. It worked
