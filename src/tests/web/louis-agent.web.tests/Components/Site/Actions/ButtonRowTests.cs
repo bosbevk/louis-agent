@@ -46,4 +46,24 @@ public class ButtonRowTests
             Assert.That(styles[phone..], Does.Contain("grid-template-columns: 1fr;"));
         });
     }
+
+    /// <summary>
+    /// FX187: in a column a button's words may wrap, so the button grows to hold them instead of keeping its one
+    /// line's height, where the second line spilled out under it (Louis: "fix").
+    /// </summary>
+    [Test]
+    public void AButtonInAColumn_GrowsToHoldItsWords()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Actions/ButtonRow.razor.scss"));
+        int rule = styles.IndexOf(".button-row[data-columns] ::deep .btn {", StringComparison.Ordinal);
+
+        string button = styles[rule..styles.IndexOf('}', rule)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(button, Does.Contain("height: auto;"));
+            Assert.That(button, Does.Contain("min-height: 46px;"));
+        });
+    }
 }

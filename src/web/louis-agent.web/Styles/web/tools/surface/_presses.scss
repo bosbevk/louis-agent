@@ -9,7 +9,8 @@
     box-shadow: var(--web-press-shadow);
     @include drawn(press-rest, var(--web-press-fill));
 
-    &:hover:not(:disabled) { @include drawn(press-hover, var(--web-press-fill)); }
+    // Under the pointer: the theme's drawing over its hover colour, the lighter violet in flat (FX185).
+    &:hover:not(:disabled) { @include drawn(press-hover, var(--web-press-hover-fill)); }
     &:active:not(:disabled) {
         transform: $pressed;
         @include drawn(press-pressed, var(--web-press-fill));
@@ -30,7 +31,12 @@
     box-shadow: var(--web-press-shadow);
     @include drawn(quiet-press-rest, transparent);
 
-    &:hover:not(:disabled) { @include drawn(quiet-press-hover, transparent); }
+    // Under the pointer: the theme's drawing over its hover colour and words, filled with the words' colour in flat
+    // (FX185).
+    &:hover:not(:disabled) {
+        color: var(--web-quiet-hover-ink);
+        @include drawn(quiet-press-hover, var(--web-quiet-hover-fill));
+    }
     &:active:not(:disabled) {
         transform: $pressed;
         @include drawn(quiet-press-pressed, transparent);
@@ -42,6 +48,11 @@
 @mixin chip() {
     @include quiet-press();
 
+    // A chip does not fill under the pointer as the second button may: it keeps its words and only the drawing shows.
+    &:hover:not(:disabled) {
+        color: var(--bs-body-color);
+        @include drawn(quiet-press-hover, transparent);
+    }
     &[aria-pressed="true"] { @include drawn(quiet-press-picked, transparent); }
 }
 
@@ -55,7 +66,11 @@
     backdrop-filter: var(--web-chip-blur);
     @include drawn(quiet-press-rest, var(--web-chip-fill));
 
-    &:hover { @include drawn(quiet-press-hover, var(--web-chip-fill)); }
+    // Under the pointer its line takes the theme's hover line, the words' colour in flat (FX185).
+    &:hover {
+        border: var(--web-chip-hover-edge);
+        @include drawn(quiet-press-hover, var(--web-chip-fill));
+    }
 }
 
 /* A word in a rail of choices, such as a site's menu (FX162, Louis's pick C): quiet at rest, and under the pointer the

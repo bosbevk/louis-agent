@@ -4,12 +4,13 @@
    marker, a badge, a line of progress or of the brand. */
 
 /* A heading's words with a band of the theme's colour through them (FX162, the design page's .chrome): the words'
-   strongest colour, a violet band in its middle, painted into the letters only. The band stands still (FX166): moving,
-   it had every heading painted again on every frame. */
+   strongest colour, the theme's band in its middle, painted into the letters only. The band stands still (FX166):
+   moving, it had every heading painted again on every frame. A theme that sets its band to the words' own colour has
+   solid headings (FX183, flat). */
 @mixin chrome-words() {
     color: transparent;
     background: linear-gradient(100deg, var(--bs-emphasis-color) 0%, var(--bs-emphasis-color) 34%,
-        color-mix(in srgb, var(--bs-primary) 70%, var(--bs-emphasis-color)) 46%, var(--bs-primary) 56%,
+        color-mix(in srgb, var(--web-heading-band) 70%, var(--bs-emphasis-color)) 46%, var(--web-heading-band) 56%,
         var(--bs-emphasis-color) 72%, var(--bs-emphasis-color) 100%);
     background-size: 260% 100%;
     -webkit-background-clip: text;

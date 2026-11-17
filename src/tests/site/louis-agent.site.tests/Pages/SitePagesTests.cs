@@ -120,7 +120,6 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "mailto:louis.marais@live.com")]
     [TestCase(typeof(ContactPage), "href=\"https://wa.me/27663912470")]
     [TestCase(typeof(ContactPage), "066 391 2470")]
-    [TestCase(typeof(ContactPage), "Chat on WhatsApp")]
     [TestCase(typeof(ContactPage), "class=\"btn btn-whatsapp\"")]
     [TestCase(typeof(ContactPage), "aria-label=\"WhatsApp\"")]
     [TestCase(typeof(ContactPage), "href=\"https://www.linkedin.com/in/louismarais86\"")]
@@ -128,6 +127,7 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "aria-label=\"LinkedIn\"")]
     [TestCase(typeof(ContactPage), "On LinkedIn")]
     [TestCase(typeof(ContactPage), "class=\"tile-brand\"")]
+    [TestCase(typeof(ContactPage), ">Ask for a website</a>")]
     [TestCase(typeof(ContactPage), "</svg> 066 391 2470</a>")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
@@ -149,6 +149,25 @@ public class SitePagesTests
         });
 
         Assert.That(cut.Markup, Does.Contain(words));
+    }
+
+    /// <summary>
+    /// FX188: every WhatsApp button on the contact page says the same, the number beside the mark (Louis: "all my
+    /// whatsapp buttons must look the same").
+    /// </summary>
+    [Test]
+    public void EveryWhatsAppButton_SaysTheNumber()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<ContactPage>();
+        var labels = cut.FindAll("a.btn-whatsapp").Select(button => button.TextContent.Trim()).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(labels, Has.Count.EqualTo(3));
+            Assert.That(labels.Distinct(), Is.EqualTo(new[] { "066 391 2470" }));
+        });
     }
 
     /// <summary>

@@ -511,6 +511,66 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX188 · Things that do the same job should say the same thing
+
+The contact page had three WhatsApp buttons. One said the number and two said "Chat on WhatsApp", because each was
+written where it stood. A visitor reads three different buttons as three different things. They now all say the
+number beside the mark, and a test counts them and holds them to one label. The lesson: when one of a kind changes,
+look for its siblings. Skill 18 (testing and shipping: a test holds every one of a kind, not one).
+
+## FX187 · Letting words wrap means letting the box grow
+
+FX180 let a button's words wrap in its column so its mark stayed in view, but the button kept the height of one
+line, so the second line spilled out under it. A box that lets its words wrap has to let itself grow too. In a
+column the button now has a least height instead of a fixed one, and its row's buttons stretch to the same height.
+The lesson: one change to how text flows is two changes, the text's and its box's. Skill 18.
+
+## FX186 · A component that borrows a colour borrows its meaning
+
+A tile's icon stood on the panel colour, which in glass is white and in flat is the card's own grey, so in flat the
+plate vanished into its card. The plate borrowed a name that meant "a panel", not "a plate that stands out from a
+card". It now has a name of its own, and each theme says what a plate is: white glass with a soft shadow, or the page's
+own colour with none. The lesson: a value is chosen for what it means, not for the colour it happens to have in one
+theme. Skill 18.
+
+## FX185 · A hover that only changes a line's colour
+
+The flat design's card answers the pointer by turning its one line a darker grey. Ours drew a second ring outside the
+line, so the edge looked two pixels thick. A border can't take a new colour from a theme value, but a shadow can be
+replaced. So flat draws its line as a one pixel line just inside the edge, and the hover puts its own line in that
+same place. The buttons answered nothing at all in flat, because their hover lived only in glass's drawings; the
+hover colours are now values every theme sets. The lesson: when a look lives in one theme's pictures, the other
+theme inherits nothing, so the behaviour has to be a value too. Skill 18.
+
+## FX184 · Measure against the design before changing it
+
+Louis found the wordmark's o too big. Measured, it matched the flat design to half a pixel, so the design itself was
+too big there. That made it a choice, not a bug, and it went to him with pictures at three sizes. His answer was the
+reason the design had missed: glass's o is a ball inside a glass bubble, and flat has no bubble, so flat's o is the
+ball alone, glass's ball's size, half the letters' height. Its size is now a
+theme value, and the o's drop is worked out from its size, so it stands on the line whatever the size. The lesson:
+measure what is there before fixing it, so the fix is the right kind. Skill 18.
+
+## FX183 · A value hidden in a recipe can't be themed
+
+The band through a heading's words was a gradient with the violet written into it. No theme could switch it off, so
+flat's headline could not be solid as its design asks. Naming the band's colour as a value, violet by default, lets
+flat set it to the words' own colour, and the band disappears. Glass is unchanged. The lesson: anything a theme might
+want to differ on has to be a named value, not a literal inside a style. Skill 18.
+
+## FX182 · A theme starts from the defaults, so check what it kept
+
+Flat had kept the framework's three soft lights behind the page and the framework's glow round the bar's box. Neither
+is in its design, which has no gradient and no shadow anywhere. They were never chosen, only inherited. The lesson:
+when a theme copies a starting sheet, every value it keeps is a decision it made without looking. Skill 18.
+
+## FX181 · A brand drawn only in one theme vanishes in the other
+
+The brand's l on the orb existed only as glass's drawing. Flat drew nothing, so its orb showed whatever letter the
+page handed it: nothing on the landing, a capital L in the bar. Flat now has its own drawings of the mark, the l with
+a hard violet step under it, and gives the handed letter no ink, as glass does. The lesson: a brand mark belongs to
+every theme, so check it in each one. Skill 18.
+
 ## FX180 · A shared part changes everywhere it is used, so let each use ask
 
 The contact page's cards put their buttons in a row that wraps, so a long button dropped to a line of its own and left

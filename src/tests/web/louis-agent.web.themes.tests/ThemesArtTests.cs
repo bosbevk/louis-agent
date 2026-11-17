@@ -8,7 +8,7 @@ namespace LouisAgent.Web.Themes.Tests;
 
 /// <summary>
 /// F151.4, Louis's pick A of three: a theme hands a piece its drawing as a value. Glass names, for each part and
-/// state, a drawing the themes project serves, and flat names none, since flat draws no glass.
+/// state, a drawing the themes project serves, and flat names none but its mark's (FX181), since flat draws no glass.
 /// </summary>
 public class ThemesArtTests
 {
@@ -17,6 +17,12 @@ public class ThemesArtTests
     /// browser reads its address from the sheet of the rule that uses it, which for a component is not the site's.
     /// </summary>
     private const string Served = "/_content/louis-agent.web.themes/";
+
+    /// <summary>
+    /// The version flat's mark drawings are at, in their addresses: a browser keeps a drawing by its address, so a
+    /// drawing that changes takes a new one, and every browser fetches it again (FX181, Louis seeing the old mark).
+    /// </summary>
+    private const int FlatMarks = 3;
 
     /// <summary>The themes project's served files on disk.</summary>
     private static readonly string Root = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot");
@@ -49,14 +55,28 @@ public class ThemesArtTests
         Assert.That(wrong, Is.Empty);
     }
 
-    /// <summary>Flat lays no drawing on any piece, in either style.</summary>
+    /// <summary>
+    /// Flat lays no drawing on any piece but its mark (FX181): the mark and the bar's ball carry the brand's l on its disc, the name's o is the disc, each
+    /// served by the project and there on disk, and every other name is none.
+    /// </summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
-    public void FlatNamesNoDrawing(SiteStyle style)
+    public void FlatNamesNoDrawing_ButItsMark(SiteStyle style)
     {
+        string word = style.Wire();
         var art = Art(FlatTheme.Theme, style);
+        string[] marks = ["mark", "mark-ball", "mark-o"];
         Assert.That(art, Has.Count.GreaterThan(30), "flat's art names were read");
 
-        Assert.That(art.Values.Distinct(), Is.EqualTo(new[] { "none" }));
+        var drawn = art.Where(name => name.Value != "none").Select(name => name.Key["--web-art-".Length..]);
+        var missing = marks.Where(drawing =>
+            art[$"--web-art-{drawing}"] != $"url(\"{Served}flat/{word}/{drawing}.svg?v={FlatMarks}\")"
+            || !File.Exists(Path.Combine(Root, "flat", word, $"{drawing}.svg")));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(drawn, Is.EquivalentTo(marks));
+            Assert.That(missing, Is.Empty);
+        });
     }
 }
