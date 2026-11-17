@@ -142,7 +142,17 @@ choices: two questions to put to the business, a walk of the page, and a stop. I
 page but the business's own demo page, and in an answer where it does ask, the only place it shows is the demo
 itself, so the business's window stays on the visitor's screen while it answers.
 
-*Decided in:* F127.4.2, F134.
+On a demo page the business's recorded conversation waits to be started, and the guide is the one who starts it, a
+turn at a time. Its walk goes in the page's order. At the demo itself it says in two short sentences what is on the
+screen: the business's made-up website, and its agent's window, which plays a real conversation recorded once.
+Then each turn is a stop of its own. The guide first says in two short sentences what to watch for, from that
+turn's line in `demos/louis-agent/docs/demos.md`, and then shows the turn with `ShowPage`. Showing a turn plays it,
+once the guide has finished talking, and the play stops after it. The stop's choices are the next turn, Ask it
+live, another section or Stop here. After the last turn the guide asks whether the visitor wants to try it, and on
+a yes offers questions and asks the business, so the same window becomes a live chat. The `live-demo` skill has
+these rules, and `GuideSkillsTests` holds them.
+
+*Decided in:* F127.4.2, F134, F160.
 
 ![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
 

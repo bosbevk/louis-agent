@@ -12,17 +12,16 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 128 | 98 |
+| Features (`F`) | 129 | 97 |
 | Fixes (`FX`) | 183 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (134 in the TODO)
+## Open (133 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F160 | The guide walks the demo (Louis, 2026-11-17: "do not make it autoplay, give the ability to our agent to guide him through the experience"): a demo waits to be started, each recorded turn is a place the guide's ShowPage plays (his pick of three), the guide walks it turn by turn and ends by asking the visitor to try the business live; its own plan | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/louis-agent.stream-probe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
@@ -157,10 +156,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (128 done)
+## Features (129 done)
 
 | Id | When | What |
 |---|---|---|
+| F160 | 2026-11-17 | The guide walks the demo (Louis: "do not make it autoplay, give the ability to our agent to guide him through the experience"): a demo waits to be started, its conversation is a place of its own with an address per turn (his pick of three), showing a turn plays it and stops, and the guide walks it a turn at a time, saying what to watch, then offers to try the business live |
 | F156 | 2026-11-17 | The web's pacing switch (Louis's pick A of three): the API answers a turn the engine paced with `Stream-Paced: on`, the page leaves its own pacer off for it, and louis-agent.dev turns `STREAM_PACE` on, so the guide's words are paced once; ADR 0126 widened to types |
 | F155 | 2026-11-17 | Pacing in the engine (Louis's pick A of three, after research): `STREAM_PACE=on` hands a turn's text out at `WordPace`'s pace in whole words, everything else in order, outside the turn; `WordPace` moved to session-stream and made continuous, which the caption shares; ADR 0126 on method names |
 | F153 | 2026-11-17 | Reset my session on the admin's home (Louis's pick A of three): one press ends every session this browser saved on the API, forgets both storages but the admin key, and reloads, so the owner sees the site as a first visit (`SessionReset`, `ResetSession`) |

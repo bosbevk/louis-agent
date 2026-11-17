@@ -73,6 +73,37 @@ and what an MCP server would have to do for itself.
 Reuse before building held. The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
 hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
+## F160: the guide's page tool becomes the remote control of a recording (2026-11-17)
+
+**What it was.** A showroom demo played a business's recorded conversation the moment its page opened. Louis wanted
+the opposite: "do not make it autoplay, give the ability to our agent to guide him through the experience". The
+guide in the site's bar should explain the screen, start and stop the recording, and at the end bring the visitor
+into a live chat with the business's own agent.
+
+**What was built.** No new tool. The guide already had `ShowPage`, which takes an address on the site and lights that
+place, and the page already hears every tool call the guide makes. So the recorded conversation became a place on
+the page, with an address for each turn: `/guesthouse-demo/the-conversation` is turn one, `/the-conversation/2` the
+next. Showing a turn plays it and stops after it. The guide's view of the page names each turn by its question, so
+the model can pick one the way it picks any section. The prompts tell it the walk: say what to watch for, then
+show the turn, one turn an answer, and after the last ask whether they want to try it, then call `AskAgent`.
+
+**Why not a new tool.** A `PlayTurn` tool would have been a second way to point at the same thing, one more tool
+description in every request, and one more thing the model can get wrong. Giving the turns addresses made them
+look like every other place on the site. That reuses what the model already does well, and it keeps the page in
+charge of what a "show" means. The bar hands the place to the page through the same small Observer that carries an
+ask to a business's window, so the bar and the demo still know nothing of each other.
+
+**What it cost.** The site's address rule reads `/the-demo/1` as `/the-demo`, a paged section's first page being
+the section itself. So the first plan, where the turns hung off the demo, made turn one and the whole demo the same
+place, and the guide couldn't light the website without starting the talk. Louis's pick, of three, was to give the
+conversation a place of its own inside the demo. A smaller cost is timing: a turn asked for while the guide is still
+talking waits until the guide is done, so the visitor reads the line about what to watch before it plays. Waiting
+before the window is cleared, not after, keeps the window from going blank in between.
+
+**What isn't measured yet.** How well the model keeps to a turn-by-turn walk can only be seen on the live site,
+since a local run never sends the guide a question. One live walk of `/guesthouse-demo` after the deploy will show
+it.
+
 ## F128.2: a pack names no owner, and a session names its tools (2026-11-10)
 
 **What it was.** Three made-up businesses' agents (a restaurant, a law practice, a doctor's practice) for the site's
