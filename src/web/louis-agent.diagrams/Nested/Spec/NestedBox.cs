@@ -17,6 +17,10 @@ namespace LouisAgent.Diagrams.Nested.Spec;
 /// <param name="Holds">The boxes inside it, top to bottom.</param>
 /// <param name="State">The one thing it holds of its own, with the pins that carry it.</param>
 /// <param name="Ghost">Drawn dashed: what stands in this place when the usual box does not.</param>
+/// <param name="Columns">
+/// How many columns the boxes it holds stand in, side by side in rows read left to right (F160.1): one, stacked, when
+/// none is named.
+/// </param>
 public sealed record NestedBox(
     string Id,
     string Name,
@@ -28,8 +32,18 @@ public sealed record NestedBox(
     IReadOnlyList<string>? Out = null,
     IReadOnlyList<NestedBox>? Holds = null,
     NestedState? State = null,
-    bool Ghost = false)
+    bool Ghost = false,
+    int Columns = 1)
 {
     /// <summary>This box and every box inside it, however deep, each before the boxes it holds.</summary>
     public IEnumerable<NestedBox> Within() => (Holds ?? []).SelectMany(held => held.Within()).Prepend(this);
+
+    /// <summary>
+    /// How many columns its boxes truly stand in: never fewer than one, and never more than it holds, so a column
+    /// is never empty.
+    /// </summary>
+    public int ColumnsUsed => Math.Clamp(Columns, 1, Math.Max(1, Holds?.Count ?? 0));
+
+    /// <summary>The boxes it holds, row by row, as many to a row as its columns.</summary>
+    public IEnumerable<IReadOnlyList<NestedBox>> Rows() => (Holds ?? []).Chunk(ColumnsUsed);
 }

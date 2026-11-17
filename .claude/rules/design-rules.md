@@ -87,6 +87,10 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Every site is built on the framework's web:** what would be the same on every site is in `louis-agent.web`, which names no
   site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses, and names its areas with `AddSiteAreas`, **nothing wired by hand from the framework**; every
   place on a page has its own address, `/proof/rand`, never a `#`. [ADR 0084](../../src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md), [0107](../../src/docs/adr/0107-every-section-has-an-address.md), [0120](../../src/docs/adr/0120-nothing-is-hand-wired-from-the-framework.md).
+- **Layout is Bootstrap's, in the whole solution** (Louis, 2026-11-17: "bootstrap is a universal rule for this
+  project"): the grid, columns, breakpoints, spacing, display, sticky and offcanvas are Bootstrap 5.3's classes in a
+  component's markup; our Sass never writes a grid or a breakpoint, only what Bootstrap doesn't do.
+  [ADR 0085](../../src/docs/adr/0085-styles-are-written-in-sass.md).
 - **A site's look is a theme and a style, and a theme is values:** the page's `<html>` says both; a theme is a
   package that sets every name the framework lists, for light and dark, and holds no rule for a component; a
   component reads names and never names a theme; the visitor picks and the browser remembers.

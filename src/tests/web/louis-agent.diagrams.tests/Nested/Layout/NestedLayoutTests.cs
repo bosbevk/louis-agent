@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Engine.Nested.Placed.Lines;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Tests.Nested;
+namespace LouisAgent.Diagrams.Tests.Nested.Layout;
 
 /// <summary>
 /// F134.7: no place is written in a nested picture's JSON. The layout puts every box inside the one that holds

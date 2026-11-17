@@ -18,24 +18,37 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Pages;
 internal static class PagePalettes
 {
     /// <summary>
-    /// A flat panel on a light page: flat's pane grey and its firmer grey line, and no light or glass sheen behind or
-    /// on a panel, since flat has no lights (FX182).
+    /// On a page, the picture's own background is transparent in every theme (Louis: "can we make all backgrounds
+    /// transparent only the cards can have a background colour"): no light behind its top and no sheen on a panel.
     /// </summary>
-    private const string FlatPanelsLight =
-        "--pic-body: #dcdee8; --pic-hair: #a7aaba; --pic-march: rgba(255, 255, 255, .95); " +
-        "--mrq-glow: 0; --mrq-glow-far: 0; --mrq-sheet-top: 0; --mrq-sheet-end: 0; --mrq-hair: #a7aaba;";
+    private const string Transparent = "--mrq-glow: 0; --mrq-glow-far: 0; --mrq-sheet-top: 0; --mrq-sheet-end: 0;";
 
-    /// <summary>A flat panel on a dark page: flat's near-black pane and its dark grey line, and no light either.</summary>
-    private const string FlatPanelsDark =
-        "--pic-body: #101013; --pic-hair: #2b2b33; --pic-march: rgba(255, 255, 255, .75); " +
-        "--mrq-glow: 0; --mrq-glow-far: 0; --mrq-sheet-top: 0; --mrq-sheet-end: 0; --mrq-hair: #2b2b33;";
+    /// <summary>A card's fill on a light page, in both themes (Louis: "light is smoke white").</summary>
+    private const string SmokeWhite = "--pic-body: #f5f5f5;";
 
-    /// <summary>The rules a page's copy of a picture carries: each theme's colours, light and dark.</summary>
+    /// <summary>A flat card on a light page: smoke white, and flat's firm grey line.</summary>
+    private const string FlatCardsLight =
+        SmokeWhite + " --pic-hair: #a7aaba; --mrq-hair: #a7aaba; --pic-march: rgba(255, 255, 255, .95);";
+
+    /// <summary>A flat card on a dark page: flat's near-black pane, and its dark grey line.</summary>
+    private const string FlatCardsDark =
+        "--pic-body: #101013; --pic-hair: #2b2b33; --mrq-hair: #2b2b33; --pic-march: rgba(255, 255, 255, .75);";
+
+    /// <summary>
+    /// A card on a page, in every theme: glass's sheened card and the quiet card's faint wash are both the card's own
+    /// fill under its line, so the cards are the only things filled and every card can be seen (Louis: "fix the
+    /// borders or fill it with gray cannot see the boxes").
+    /// </summary>
+    private const string Cards =
+        ":scope .mrq-glass, :scope .crd-quiet " +
+        "{ fill: var(--pic-body); fill-opacity: 1; stroke: var(--pic-hair); stroke-opacity: 1; }";
+
+    /// <summary>The rules a page's copy of a picture carries: each theme's colours, light and dark, and its cards.</summary>
     public static string Rules =>
         PageScheme.ThemeRules(PageScheme.Flat,
-            SvgStyle.Variables(SvgTheme.Flat.Light) + " " + FlatPanelsLight,
-            SvgStyle.Variables(SvgTheme.Flat.Dark) + " " + FlatPanelsDark) + "\n" +
+            SvgStyle.Variables(SvgTheme.Flat.Light) + " " + FlatCardsLight + " " + Transparent,
+            SvgStyle.Variables(SvgTheme.Flat.Dark) + " " + FlatCardsDark + " " + Transparent) + "\n" +
         PageScheme.ThemeRules(PageScheme.Glass,
-            SvgStyle.Variables(SvgTheme.Site.Light) + " " + PictureLook.Light,
-            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark);
+            SvgStyle.Variables(SvgTheme.Site.Light) + " " + PictureLook.Light + " " + SmokeWhite + " " + Transparent,
+            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards;
 }

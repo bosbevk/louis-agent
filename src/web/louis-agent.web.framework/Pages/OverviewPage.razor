@@ -1,9 +1,46 @@
 @page "/"
 
 <PageTitle>louis-agent · the C# AI agent framework</PageTitle>
-<PageHead Description="louis-agent is an AI agent framework in C#, on Microsoft.Extensions.AI, that runs on your own hardware." />
+<PageHead Description="louis-agent is an AI agent framework in C#, on Microsoft.Extensions.AI, that runs on your own hardware. One engine, an identity and its packs, and a host to put it in front of people." />
 
-@* The Overview's first band; the page is written in step 5. *@
-<Band Id="top" Topic="Overview">
-    <BandTitle Class="chrome">An AI agent framework in C#.</BandTitle>
+@* The Overview (F160.1): its heading over the framework at a glance, the important parts highlighted (Louis: "do one
+   like this highlight the important ones"), then what it is with its real program, its whole map, and why C#. Each
+   section ends with the docs it was written from. *@
+<Band Id="top" Topic="The C# AI agent framework">
+    <BandTitle Class="chrome">Build agents, not infrastructure.</BandTitle>
+    <DiagramFigure Source="FrameworkAtAGlance.Source" />
+</Band>
+
+<Band Id="what-it-is" Topic="What it is" Title="A few lines of your own." Summary="The engine runs the agent's loop. An identity says who the agent is, and a pack what it can do. Your program names them and starts a host, which puts the agent in front of people. This is the coding agent's, as it stands.">
+    <CodeListing Name="Program.cs" Language="csharp" Code="@ProgramListings.RunTheCodingAgent" />
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0027-engine-identities-and-packs.md">Engine, identities and packs</DocLink>
+        <DocLink Path="src/docs/architecture/README.md">The architecture</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="the-whole" Topic="The whole framework" Title="Every project, in its family." Summary="Five families make the framework. The engine runs the agent, the hosts put it in front of people, the web is what every site is built on, the evals measure it, and the tools draw the docs' pictures and read what a model was paid. Each is below, with every project it ships.">
+    <DocLinks>
+        <DocLink Path="src/docs/projects/README.md">Every project</DocLink>
+    </DocLinks>
+</Band>
+
+@foreach (var family in FrameworkFamily.All)
+{
+    <Band Id="@family.Id" Topic="The whole framework" Short="@family.Name" Title="@family.Name" Summary="@family.Summary">
+        <DiagramFigure Source="FamilyOverview.For(family)" />
+    </Band>
+}
+
+<Band Id="why-csharp" Topic="Why C#" Title="One language, end to end." Summary="The engine, the hosts and the tests are C#, and the websites are Blazor, C# in the browser. It sits on Microsoft.Extensions.AI, so one chat client speaks to Anthropic, OpenAI and Ollama, and the engine runs its own loop over it.">
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0002-messages-api-tier-with-our-own-loop.md">Our own loop</DocLink>
+        <DocLink Path="src/docs/adr/0003-provider-strategies.md">Where providers differ</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="your-hardware" Topic="Your own hardware" Title="It runs where you put it." Summary="It runs in Docker on your own machine or server, with a local model through Ollama if you want, and no cloud agent service in between.">
+    <DocLinks>
+        <DocLink Path="src/docs/SETUP.md">Set it up</DocLink>
+    </DocLinks>
 </Band>

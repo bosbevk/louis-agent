@@ -1,35 +1,45 @@
 @use "web/tools/surface";
 
-/* The docs layout's three columns (F160.1, the design Louis picked): a menu that stays in view down the left, the page
-   in a column narrow enough to read, and "On this page" that stays in view down the right. The line between the menu
-   and the page is the theme's line between parts, drawn by the surface tool, so it stays flat in flat and takes
-   glass's look in glass. Narrower, the sections go first, then the menu stands above the page. */
-.site-docs {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 260px minmax(0, 1fr) 220px;
-    width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
-}
+/* The docs layout's own rules (F160.1): the columns, their widths and where they stand at each screen are Bootstrap's
+   grid, in the markup (ADR 0085, "always reuse"). What is left is ours: the menu and "On this page" stay in view
+   under the header, the theme's line parts the menu from the page, the page fills its column with as much room on
+   its right as on its left, and "On this page" has its small name. */
+.site-docs { flex: 1; }
 
 .site-docs-menu,
 .site-docs-sections {
+    padding-top: 28px;
+    padding-bottom: 40px;
+}
+
+@media (min-width: 992px) {
+    .site-docs-menu {
+        position: sticky;
+        top: var(--site-header-room, 72px);
+        align-self: flex-start;
+        @include surface.rule(right);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .site-docs-menu { @include surface.rule(bottom); padding-top: 12px; padding-bottom: 12px; }
+}
+
+.site-docs-sections {
     position: sticky;
     top: var(--site-header-room, 72px);
-    align-self: start;
-    max-height: calc(100dvh - var(--site-header-room, 72px));
-    overflow-y: auto;
-    padding: 28px 20px 40px;
+    align-self: flex-start;
 }
 
-.site-docs-menu { @include surface.rule(right); }
-
-.site-docs ::deep > .site-main {
-    max-width: 820px;
+/* The page fills its column, a picture or the code as wide as the column (Louis: "can't we use the same margin right
+   as we use left?", "image not 100%"); a summary keeps its own reading width. */
+.site-docs ::deep .site-main {
+    max-width: none;
     margin: 0;
-    padding: 0 48px 80px;
+    padding: 0 24px 80px;
 }
+
+.site-docs ::deep .site-main .band { max-width: none; }
 
 .site-docs-sections-label {
     display: block;
@@ -42,20 +52,3 @@
 
 /* A page of one section has nothing to choose between, so the index draws nothing and its name goes with it. */
 .site-docs-sections:not(:has(.site-index)) .site-docs-sections-label { display: none; }
-
-@media (max-width: 1100px) {
-    .site-docs { grid-template-columns: 240px minmax(0, 1fr); }
-    .site-docs-sections { display: none; }
-}
-
-@media (max-width: 760px) {
-    .site-docs { display: block; }
-    .site-docs-menu {
-        position: static;
-        max-height: none;
-        border-right: 0;
-        @include surface.rule(bottom);
-        padding: 12px 18px;
-    }
-    .site-docs ::deep > .site-main { padding: 0 18px 60px; }
-}

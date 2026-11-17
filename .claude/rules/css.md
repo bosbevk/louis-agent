@@ -13,6 +13,12 @@ colour is written, names and paths, what paper needs, how rules are moved, and w
 
 ## Before you write a rule
 
+- **Layout is Bootstrap's, in the whole solution** (Louis, 2026-11-17: "bootstrap is a universal rule for this
+  project", "solution"). Every site loads Bootstrap 5.3, so the grid, the columns, the breakpoints, spacing,
+  display, sticky and offcanvas are its classes in a component's markup (`container-fluid`, `row`, `col-lg-2`,
+  `d-none d-xl-block`, `gap-3`, `sticky-top`, `offcanvas-lg`). Never hand-write a grid or a breakpoint. Our Sass
+  keeps only what Bootstrap doesn't do: the theme's surfaces through the surface tool, offsets under our own header,
+  our words' looks. Ask first: does Bootstrap have a class for this?
 - **Always reuse.** Look first for a variable, a mixin or a partial that already does it. What repeats becomes
   one shared piece under the framework's `web/tools/`, which both places use. A site `@use`s the framework's Sass
   and never copies it. A step says what it reused and what new piece it added.

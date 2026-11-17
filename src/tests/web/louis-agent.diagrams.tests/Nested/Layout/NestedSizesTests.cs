@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Nested;
 
-namespace LouisAgent.Diagrams.Tests.Nested;
+namespace LouisAgent.Diagrams.Tests.Nested.Layout;
 
 /// <summary>
 /// CL65.6: what a part of a nested picture needs is asked in one place. A pin was built in four, each with

@@ -107,7 +107,7 @@ internal static class NestedSizes
 
     /// <summary>
     /// How wide a box must be: for its name, its chip and the words at its right, its note, its pins, its pill,
-    /// and the widest box it holds with room at both sides.
+    /// and its columns of the boxes it holds, each as wide as the widest, with room between them and at both sides.
     /// </summary>
     public static double Width(NestedBox box)
     {
@@ -116,19 +116,28 @@ internal static class NestedSizes
         double note = NoteLines(box.Note).Select(line => NameIn + WordsWidth(line) + Pad).DefaultIfEmpty(0).Max();
         double pins = PinsWidth(box) + 2 * PinInset;
         double pill = box.State is { } state ? PillWidth(state.Says) + 2 * Pad : 0;
-        double held = (box.Holds ?? []).Select(inner => Width(inner) + 2 * Pad).DefaultIfEmpty(0).Max();
+        double widest = (box.Holds ?? []).Select(Width).DefaultIfEmpty(0).Max();
+        double held = widest == 0 ? 0 : box.ColumnsUsed * widest + (box.ColumnsUsed - 1) * Gap + 2 * Pad;
 
         return new[] { Narrowest, name, note, pins, pill, held }.Max();
     }
 
     /// <summary>
-    /// How tall a box is: its name, its note, its pill, then each box it holds under a gap, and room at its foot.
+    /// How wide each column of the boxes it holds is: the room inside, less the gaps between the columns, shared.
+    /// </summary>
+    public static double ColumnWidth(NestedBox box, double width) =>
+        (width - 2 * Pad - (box.ColumnsUsed - 1) * Gap) / box.ColumnsUsed;
+
+    /// <summary>
+    /// How tall a box is: its name, its note, its pill, then each row of the boxes it holds under a gap, a row as
+    /// tall as its tallest, and room at its foot.
     /// </summary>
     public static double Height(NestedBox box)
     {
         var held = box.Holds ?? [];
         double own = Header + NoteLines(box.Note).Count * NoteLine + (box.State is null ? 0 : PillRow);
+        double rows = box.Rows().Sum(row => Gap + row.Max(Height));
 
-        return own + held.Sum(inner => Gap + Height(inner)) + (held.Count == 0 ? Foot : Pad);
+        return own + rows + (held.Count == 0 ? Foot : Pad);
     }
 }

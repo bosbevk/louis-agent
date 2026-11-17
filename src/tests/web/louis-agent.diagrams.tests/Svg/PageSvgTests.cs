@@ -135,6 +135,24 @@ public class PageSvgTests
         });
     }
 
+    /// <summary>
+    /// On a page, only the cards are filled (Louis: "can we make all backgrounds transparent only the cards can have a
+    /// background colour, light is smoke white"): no light and no sheen behind the picture, and every card, glass's and
+    /// the quiet one alike, its own fill under its line, smoke white in the light.
+    /// </summary>
+    [Test]
+    public void OnAPage_OnlyTheCardsAreFilled()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain(":scope .mrq-glass, :scope .crd-quiet { fill: var(--pic-body)"));
+            Assert.That(page, Does.Contain("--mrq-glow: 0; --mrq-glow-far: 0"), "no light behind the picture");
+            Assert.That(page, Does.Contain("--pic-body: #f5f5f5"), "smoke white in the light");
+        });
+    }
+
     /// <summary>A file names no site's theme: the docs' pictures stay byte for byte as they were.</summary>
     [Test]
     public void TheFile_WearsNoSitesTheme() =>
