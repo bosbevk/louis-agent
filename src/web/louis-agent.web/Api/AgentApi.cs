@@ -46,7 +46,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     }
 
     /// <summary>The toolsets this API can load: the ones whose settings are set.</summary>
-    public async Task<string[]> AvailableToolsetsAsync()
+    public async Task<string[]> ListAvailableToolsetsAsync()
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "v1/toolsets"));
         var reply = await response.Content.ReadFromJsonAsync<ToolsetsReply>(InfoJson.SnakeCase);
@@ -92,11 +92,11 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
 
     /// <summary>
     /// Sends a message, with the page the visitor is reading when there is one (F115), and hands back the answer's
-    /// events as they arrive.
+    /// events as they arrive; says once, before the first, when the server already paced the answer's words (F156).
     /// </summary>
     public async IAsyncEnumerable<SessionEvent> StreamMessageAsync(
         string sessionId, string message, IReadOnlyList<Attachment> attachments, Page? page = null,
-        IReadOnlyList<WindowPage>? windows = null,
+        IReadOnlyList<WindowPage>? windows = null, Action? onServerPaced = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // The browser buffers a reply unless told to stream it, which would hold the whole turn back until its end.
@@ -108,6 +108,11 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         request.SetBrowserResponseStreamingEnabled(true);
 
         using var response = await SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        // The server says before the first word whether it already paced them, so the page paces them once (F156).
+        if (response.Headers.TryGetValues(ApiHeaders.StreamPaced, out var paced) &&
+            paced.Contains(ApiHeaders.StreamPacedOn))
+            onServerPaced?.Invoke();
+
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
         await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, cancellationToken))
             yield return streamEvent;
@@ -209,7 +214,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         var response = await http.SendAsync(request, completion, cancellationToken);
         if (response.IsSuccessStatusCode) return response;
 
-        string message = await ErrorMessageAsync(response, cancellationToken);
+        string message = await ReadErrorMessageAsync(response, cancellationToken);
         var status = response.StatusCode;
         response.Dispose();
         throw new AgentApiException(status, message);
@@ -218,7 +223,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     /// <summary>
     /// The words the API sent with its error, or the status text when the reply isn't the API's error.
     /// </summary>
-    private static async Task<string> ErrorMessageAsync(HttpResponseMessage response,
+    private static async Task<string> ReadErrorMessageAsync(HttpResponseMessage response,
         CancellationToken cancellationToken)
     {
         string fallback = response.ReasonPhrase ?? response.StatusCode.ToString();

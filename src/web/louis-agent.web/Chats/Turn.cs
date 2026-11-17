@@ -29,6 +29,12 @@ public sealed class Turn
     public bool PutAway { get; set; }
 
     /// <summary>
+    /// Whether the server already paced this answer's words (F156): its answer said <c>Stream-Paced: on</c>, so the
+    /// page leaves its own pacer off and the words are paced once.
+    /// </summary>
+    public bool ServerPaced { get; set; }
+
+    /// <summary>
     /// The answer's words are what came last (F134.3): the turn ends in text, not in thinking or a tool call. The
     /// agent's orb speaks while they arrive.
     /// </summary>

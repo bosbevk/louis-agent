@@ -62,7 +62,7 @@ public partial class ChatPage
     /// </summary>
     private async Task<string> OpenSessionAsync(ChatOpening opening)
     {
-        string[] available = await Api.AvailableToolsetsAsync();
+        string[] available = await Api.ListAvailableToolsetsAsync();
         string[] own = [AskedToolset.Agents.Wire(), AskedToolset.Web.Wire()];
         return await Api.CreateSessionAsync(
             available.Contains(AskedToolset.Agents.Wire()) ? own.Where(available.Contains).ToArray() : available,

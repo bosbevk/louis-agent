@@ -16,15 +16,15 @@ public class ApiRouteRuleTests
     /// <summary>
     /// A route's literal segments: its pattern split on slashes, without the parameters (<c>{id}</c>, <c>{**name}</c>).
     /// </summary>
-    private static string[] Words(RouteEndpoint endpoint) =>
-        ApiTestHost.Pattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries).Where(s => !s.StartsWith('{')).ToArray();
+    private static string[] SplitWords(RouteEndpoint endpoint) =>
+        ApiTestHost.ReadPattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries).Where(s => !s.StartsWith('{')).ToArray();
 
     [Test]
     public void EveryRouteButHealth_IsUnderV1()
     {
         using var app = ApiTestHost.Build();
 
-        var outside = ApiTestHost.Routes(app).Select(ApiTestHost.Pattern)
+        var outside = ApiTestHost.ListRoutes(app).Select(ApiTestHost.ReadPattern)
             .Where(pattern => pattern != "/health" && !pattern.StartsWith("/v1/", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal)
             .ToList();
@@ -37,7 +37,7 @@ public class ApiRouteRuleTests
     {
         using var app = ApiTestHost.Build();
 
-        var open = ApiTestHost.Routes(app).Where(e => ApiTestHost.Access(e) == RouteAccess.Open).Select(ApiTestHost.Line).Order(StringComparer.Ordinal);
+        var open = ApiTestHost.ListRoutes(app).Where(e => ApiTestHost.ReadAccess(e) == RouteAccess.Open).Select(ApiTestHost.DescribeRoute).Order(StringComparer.Ordinal);
 
         Assert.That(open,
             Is.EqualTo(new[]
@@ -54,9 +54,9 @@ public class ApiRouteRuleTests
     {
         using var app = ApiTestHost.Build();
 
-        var wrong = ApiTestHost.Routes(app)
-            .Where(e => (ApiTestHost.Access(e) == RouteAccess.AdminKey) != ApiTestHost.Pattern(e).StartsWith("/v1/admin/", StringComparison.Ordinal))
-            .Select(ApiTestHost.Line).ToList();
+        var wrong = ApiTestHost.ListRoutes(app)
+            .Where(e => (ApiTestHost.ReadAccess(e) == RouteAccess.AdminKey) != ApiTestHost.ReadPattern(e).StartsWith("/v1/admin/", StringComparison.Ordinal))
+            .Select(ApiTestHost.DescribeRoute).ToList();
 
         Assert.That(wrong, Is.Empty, "A route is AdminKey if and only if it is under /v1/admin/:\n  " + string.Join("\n  ", wrong));
     }
@@ -66,7 +66,7 @@ public class ApiRouteRuleTests
     {
         using var app = ApiTestHost.Build();
 
-        var wrong = ApiTestHost.Routes(app).Where(e => Words(e).Intersect(Verbs).Any()).Select(ApiTestHost.Line).Order(StringComparer.Ordinal).ToList();
+        var wrong = ApiTestHost.ListRoutes(app).Where(e => SplitWords(e).Intersect(Verbs).Any()).Select(ApiTestHost.DescribeRoute).Order(StringComparer.Ordinal).ToList();
 
         Assert.That(wrong, Is.Empty, "A path names a resource, and the method is the verb (ADR 0039, rules 2 and 4):\n  " + string.Join("\n  ", wrong));
     }
@@ -77,12 +77,12 @@ public class ApiRouteRuleTests
         using var app = ApiTestHost.Build();
 
         var wrong = new List<string>();
-        foreach (var endpoint in ApiTestHost.Routes(app))
+        foreach (var endpoint in ApiTestHost.ListRoutes(app))
         {
-            var segments = ApiTestHost.Pattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries);
+            var segments = ApiTestHost.ReadPattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries);
             bool isPost = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods.SequenceEqual(new[] { "POST" }) == true;
             for (int i = 0; i < segments.Length; i++)
-                if (Actions.Contains(segments[i]) && !(i == segments.Length - 1 && isPost)) wrong.Add(ApiTestHost.Line(endpoint));
+                if (Actions.Contains(segments[i]) && !(i == segments.Length - 1 && isPost)) wrong.Add(ApiTestHost.DescribeRoute(endpoint));
         }
 
         Assert.That(wrong, Is.Empty, "An action is the last segment of a POST (ADR 0039, rule 5):\n  " + string.Join("\n  ", wrong));
@@ -92,7 +92,7 @@ public class ApiRouteRuleTests
     public void NoResource_IsNamedBothSingularAndPlural()
     {
         using var app = ApiTestHost.Build();
-        var words = ApiTestHost.Routes(app).SelectMany(Words).ToHashSet();
+        var words = ApiTestHost.ListRoutes(app).SelectMany(SplitWords).ToHashSet();
 
         var pairs = words
             .SelectMany(w => new[] { w + "s", w + "es", w.EndsWith('y') ? w[..^1] + "ies" : null }.OfType<string>().Where(words.Contains).Select(plural => $"{w} and {plural}"))

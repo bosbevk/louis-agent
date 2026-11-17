@@ -26,7 +26,7 @@ public partial class AgentKeyGateTests
         RouteEndpoint route, bool withKey)
     {
         string? method = route.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods.FirstOrDefault();
-        using var request = new HttpRequestMessage(new HttpMethod(method ?? "GET"), Sample(ApiTestHost.Pattern(route)));
+        using var request = new HttpRequestMessage(new HttpMethod(method ?? "GET"), Sample(ApiTestHost.ReadPattern(route)));
         if (withKey) request.Headers.Add("x-api-key", Key);
         return await ReadAsync(await client.SendAsync(request));
     }
@@ -78,11 +78,11 @@ public partial class AgentKeyGateTests
         var client = app.GetTestClient();
 
         var refused = new List<string>();
-        foreach (var route in ApiTestHost.Routes(app).Where(r => ApiTestHost.Access(r) == RouteAccess.Key))
+        foreach (var route in ApiTestHost.ListRoutes(app).Where(r => ApiTestHost.ReadAccess(r) == RouteAccess.Key))
         {
             var (status, errorType) = await SendAsync(client, route, withKey: false);
             if (status != HttpStatusCode.Unauthorized || errorType != ApiErrorKind.Authentication.Wire())
-                refused.Add($"{ApiTestHost.Line(route)} answered {(int)status} {errorType}");
+                refused.Add($"{ApiTestHost.DescribeRoute(route)} answered {(int)status} {errorType}");
         }
 
         Assert.That(refused, Is.Empty,
@@ -99,10 +99,10 @@ public partial class AgentKeyGateTests
         var client = app.GetTestClient();
 
         var asked = new List<string>();
-        foreach (var route in ApiTestHost.Routes(app).Where(r => ApiTestHost.Access(r) == RouteAccess.Open))
+        foreach (var route in ApiTestHost.ListRoutes(app).Where(r => ApiTestHost.ReadAccess(r) == RouteAccess.Open))
         {
             var (status, _) = await SendAsync(client, route, withKey: false);
-            if (status == HttpStatusCode.Unauthorized) asked.Add(ApiTestHost.Line(route));
+            if (status == HttpStatusCode.Unauthorized) asked.Add(ApiTestHost.DescribeRoute(route));
         }
 
         Assert.That(asked, Is.Empty,

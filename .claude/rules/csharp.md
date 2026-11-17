@@ -9,7 +9,7 @@ Loaded when a `.cs` file is read or edited. How a summary is written is in `csha
 beside this file. The ADRs named below are in `src/docs/adr/`.
 
 The rules come in this order: what "fix as you touch" covers, a choice between outcomes, an endpoint, regular
-expressions, values and what is stored or sent, choices and texts, asking the type, the names of methods, size and
+expressions, values and what is stored or sent, choices and texts, asking the type, names, size and
 shape, layout, and how a file is changed.
 
 ## What "fix as you touch" covers
@@ -123,11 +123,12 @@ line: could a type answer this? These shapes say none was asked.
 
 *Decided in:* ADR 0123.
 
-## Names of methods
+## Names
 
 | Kind | Name | Example |
 |---|---|---|
 | An action | A verb or verb phrase | `Read`, `Take`, `FindLastWordEnd` |
+| An answer to an event | `On` and what happened | `OnPointerCame`, `OnCaptionLeft` |
 | Awaited or streamed (`Task`, `ValueTask`, `IAsyncEnumerable`) | Ends in `Async` | `StreamPromptAsync` |
 | A stream operator | An extension named for what it gives back, no `Async` | `turn.Paced(clock)` |
 | A record from another of our types | `Of` | `CheckRow.Of(check, hasManual)` |
@@ -142,7 +143,10 @@ line: could a type answer this? These shapes say none was asked.
 - An extension method only as a stream operator on an interface, or where an instance method would break a
   dependency rule; its class is named for its idea, never `…Extensions`.
 - No `Get` on what should be a property, no abbreviation, no `Ex` or `2` suffix.
-- A touched file leaves with every method named this way; a rename goes through Rider.
+- A type is a noun for what it is, no prefix, no empty word (`Manager`, `Helper`, `Utils`, `Data`, `Info`, `Service`,
+  `Base`); .NET's endings (`…Exception`, `…Attribute`, `…EventArgs`) and ours (`…Holes`, `…Request`, `…Reply`,
+  `…Handlers`, `…Options`, `…Tests`); an interface `I…`; an enum singular, plural if `[Flags]`; generics `T…`.
+- A touched file leaves with every method and type named this way; a rename goes through Rider, a type with its file.
 
 *Decided in:* ADR 0126.
 

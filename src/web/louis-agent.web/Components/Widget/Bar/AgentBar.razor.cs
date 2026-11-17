@@ -191,7 +191,7 @@ public partial class AgentBar : IAsyncDisposable
     private bool OpensUnderThePointer => Services.GetService<BarOpening>()?.Opens == BarOpens.Hover;
 
     /// <summary>The pointer came onto the orb: on a site that opens under the pointer, that holds it open.</summary>
-    private void PointerCame()
+    private void OnPointerCame()
     {
         if (!OpensUnderThePointer) return;
         _pointerOver = true;
@@ -199,7 +199,7 @@ public partial class AgentBar : IAsyncDisposable
     }
 
     /// <summary>The pointer left the bar: a moment later, if it has not come back, it no longer holds it open.</summary>
-    private async Task PointerLeftAsync()
+    private async Task OnPointerLeftAsync()
     {
         if (!_pointerOver) return;
         _pointerAway = true;
@@ -247,7 +247,7 @@ public partial class AgentBar : IAsyncDisposable
     }
 
     /// <summary>The visitor is in the box, which holds it open.</summary>
-    private void Entered()
+    private void OnBoxEntered()
     {
         _held = true;
         _inBox = true;
@@ -257,7 +257,7 @@ public partial class AgentBar : IAsyncDisposable
     /// The visitor left the box: a moment later, if they have not come back, it lets the bar close, unless something
     /// else still holds it open.
     /// </summary>
-    private async Task LeftAsync()
+    private async Task OnBoxLeftAsync()
     {
         _inBox = false;
         await Task.Delay(ClosesAfter);
@@ -297,7 +297,7 @@ public partial class AgentBar : IAsyncDisposable
     private IReadOnlyList<Turn> CaptionTurns => _handOver.Draw(Caption is null ? null : Last);
 
     /// <summary>An answer's caption has faded: it is taken away.</summary>
-    private void Left(Turn turn)
+    private void OnCaptionLeft(Turn turn)
     {
         _handOver.Left(turn);
         StateHasChanged();

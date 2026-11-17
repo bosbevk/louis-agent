@@ -47,6 +47,24 @@ public class SiteImageTests
         });
     }
 
+    /// <summary>
+    /// F156: the site's API paces the guide's words, on the PC as in Azure, so they are paced once, by the server, and
+    /// the page leaves its own pacer off (Louis: "web and engine no API").
+    /// </summary>
+    [Test]
+    public void TheSite_PacesItsWords_OnThePCAsInAzure()
+    {
+        string[] azure = Lines("src/site/deploy/azure/louis-agent-app.yaml");
+        int pace = Array.IndexOf(azure, "- name: STREAM_PACE");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(pace, Is.GreaterThanOrEqualTo(0), "STREAM_PACE is set in Azure");
+            Assert.That(azure.ElementAtOrDefault(pace + 1), Is.EqualTo("value: 'on'"));
+            Assert.That(Lines("src/site/docker/docker-compose.yml"), Does.Contain("STREAM_PACE: 'on'"));
+        });
+    }
+
     /// <summary>The coding agent's API moves aside to 5082, so the two run together (Louis's pick 2A).</summary>
     [Test]
     public void TheCodingApi_MovesTo5082() =>

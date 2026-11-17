@@ -21,8 +21,9 @@
         <AgentCaption @key="turn" Title="@Title" Words="@caption.Words" Question="@caption.Question"
                       Offer="caption.Offer" Work="caption.Work"
                       Beside="caption.Beside" Currency="Currency" Streaming="@(!leaving && Runner.Streaming)"
+                      ServerPaced="turn.ServerPaced"
                       OnChoose="OnChoose" OnTalk="ToggleTalk" OnClose="PutTheAnswerAway"
-                      OnWrite="FocusTheBox" Leaving="leaving" OnLeft="() => Left(turn)"/>
+                      OnWrite="FocusTheBox" Leaving="leaving" OnLeft="() => OnCaptionLeft(turn)"/>
     }
     @if (Caption is null && TalkShows)
     {
@@ -40,7 +41,7 @@
     }
     @* The dock (FX172) holds the row, draws it in to the orb in the middle when closed, and carries what the site
        stands on each side (FX168), attached to its edges, so the sides sit beside the orb and ride out with the box. *@
-    <div class="agent-dock" @onmouseleave="PointerLeftAsync">
+    <div class="agent-dock" @onmouseleave="OnPointerLeftAsync">
     @if (Sides?.Start is { } start)
     {
         <div class="agent-side is-start">@start</div>
@@ -55,13 +56,13 @@
         @* On a site that opens its bar under the pointer, only the orb itself opens it (Louis: "hover must only be on
            orb itself"); the pointer leaving the whole dock lets it go, so moving from the orb into the box keeps it. *@
         <button class="agent-open" type="button" aria-label="@Text.OpenTheBar" aria-expanded="@Expanded"
-                @onclick="HoldOpenAsync" @onmouseenter="PointerCame">
+                @onclick="HoldOpenAsync" @onmouseenter="OnPointerCame">
             <Orb State="State" Label="@Title" Mark="@Initial"/>
         </button>
         @* The box: the line of what the guide is doing over the box itself, and a press on the line lands in the
            box. At its end, before the send button, what the talk has cost so far over how many answers (F134.5): a
            press opens the whole talk. *@
-        <div class="agent-box" inert="@(!Opening.Open)" @onfocusin="Entered" @onfocusout="LeftAsync">
+        <div class="agent-box" inert="@(!Opening.Open)" @onfocusin="OnBoxEntered" @onfocusout="OnBoxLeftAsync">
             <span class="agent-doing" @onclick="FocusTheBox">@Doing</span>
             <Composer @ref="_box" Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
                       Attachments="Runner.Attachments" BoxClass="agent-input"

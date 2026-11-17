@@ -59,6 +59,9 @@ properties:
             value: /data
           - name: USAGE_IN_CHAT
             value: 'true'
+          # The engine paces the guide's words and says so, so the page leaves its own pacer off: paced once (F156).
+          - name: STREAM_PACE
+            value: 'on'
           - name: LLM_PROVIDER
             value: anthropic
           - name: LLM_MODEL
