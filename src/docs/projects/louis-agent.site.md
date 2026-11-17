@@ -186,6 +186,11 @@ to its source. The talk is held to the demo's page and its recording. The websit
 and the name of the place shown, are held to the demo's own mock website. The chat's title, the words in its box and
 the few words under the place's name belong to the window alone.
 
+A window holds no HTML of its own. It is the framework's `SiteBody` given its words, and the place shown is a
+`ShownCard` the window fills in its code-behind and the framework draws. The showroom's frame is the same: its offer,
+"Ask for yours", is the framework's `LinkButton`. `ShowroomLayoutTests` holds the frame and the three windows to
+framework controls only.
+
 The coding agent and the triage team have no window on the start. They keep their own pages, and their place on the
 rail beside a demo's page.
 

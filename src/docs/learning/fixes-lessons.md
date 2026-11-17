@@ -511,6 +511,19 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX192 · A measure written for one layout breaks when the layout moves
+
+The guide's bar tells the page how much room it takes at the foot of the screen, so nothing ends under it. It worked
+that out by adding its chips' height on top of its row, because the chips used to stand over the row. Then the chips
+moved to stand round the orb while the bar is closed, and nobody told the measure. It went on adding their height
+on top, so the bar claimed 384 pixels where it stands in 234, and the showroom's deck, which takes what the bar
+leaves, shrank to its least. Nothing looked broken in a test, since each part was right on its own. The measure now
+asks where the chips really are. The same look at the page found two colours that only failed in one look: the
+question in each window took the page's ink as its fill, white on white in the dark, and the website's words took
+the theme's brightest, black on a photo in the light. Both now use what the chat and an action already use. The
+lesson: when a part changes where it stands, look for whatever measures it, and look at a page in every look, not
+one. Skill 18.
+
 ## FX191 · Taking the styles out takes the page with them
 
 FX162 took every stylesheet out of the site so that its look would be the theme's alone. That was the right rule, but

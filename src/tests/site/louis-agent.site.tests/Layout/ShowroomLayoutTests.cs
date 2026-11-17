@@ -100,6 +100,26 @@ public class ShowroomLayoutTests
     }
 
     /// <summary>
+    /// FX192: what the showroom's start draws of the site's own, its frame and its three windows, is configured
+    /// framework controls and holds no HTML tag of the site's, as ADR 0125 has it. The offer is the framework's
+    /// button, and the thing each window's agent showed is a card the framework draws.
+    /// </summary>
+    [TestCase("Layout/ShowroomLayout.razor")]
+    [TestCase("Components/Showroom/Windows/SeemeeuWindow.razor")]
+    [TestCase("Components/Showroom/Windows/WheatfieldWindow.razor")]
+    [TestCase("Components/Showroom/Windows/KoringlandWindow.razor")]
+    public void TheShowroomsOwnMarkup_IsFrameworkControlsOnly(string file)
+    {
+        string markup = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site", file));
+
+        // Every tag is a component's, named with a capital, and never a plain element's such as a link or an image.
+        var tags = markup.Split('<').Skip(1).Select(tag => tag.TrimStart('/')).Where(tag => tag.Length > 0);
+        var plain = tags.Where(tag => char.IsLower(tag[0])).Select(tag => tag.Split(' ', '>', '/')[0]);
+
+        Assert.That(plain, Is.Empty);
+    }
+
+    /// <summary>
     /// FX170: the header says the site is at alpha-1, and a press says what that means (Louis: "flag in the header
     /// version: alpha disclosure", "running version alpha-1 may experience inconsistencies").
     /// </summary>
