@@ -23,6 +23,8 @@ services:
       HOST_TIME_ZONE: Africa/Johannesburg
       # Costs in rand, as in Azure (Louis: "display in rands"): the region the guide's cost line shows in.
       HOST_CULTURE: en-ZA
+      # The engine paces the guide's words and says so, so the page leaves its own pacer off: paced once (F156).
+      STREAM_PACE: 'on'
       # The usage ledger and the run logs, kept on the host after the container is removed.
       LOG_DIRECTORY: /logs
       # What the site's host keeps of its own (F142): Louis's CV as the admin's editor saved it. Kept on the host too.
