@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- The share card (FX174): louis-agent's name with the glass orb as its o, the orb large beside it in a violet light,
+     the line and the site's address, at 1200 by 630, the size a link preview asks for. The orb is a photograph of the site's own, put in for {orb}; the
+     card's ground, light or dark, is the class put in for {look}. The type is Geist, loaded as the site loads it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@500;650&family=Geist+Mono:wght@400;600&display=swap">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { position: relative; font-family: "Geist", system-ui, sans-serif; }
+  body.dark {
+    color: #ffffff;
+    background: radial-gradient(620px 520px at 82% 42%, rgba(107, 77, 255, .42), rgba(107, 77, 255, 0) 70%),
+      radial-gradient(900px 600px at 100% 0%, rgba(146, 130, 255, .18), rgba(0, 0, 0, 0) 60%), #050506;
+  }
+  body.light {
+    color: #0b0b0e;
+    background: radial-gradient(620px 520px at 82% 42%, rgba(107, 77, 255, .26), rgba(107, 77, 255, 0) 70%),
+      radial-gradient(900px 600px at 0% 100%, rgba(226, 223, 255, .9), rgba(226, 223, 255, 0) 60%), #f4f2fb;
+  }
+  .name { position: absolute; left: 96px; top: 96px; display: flex; align-items: center; font-weight: 650;
+    font-size: 116px; letter-spacing: -.045em; line-height: 1; }
+  .name img { width: .86em; height: .86em; margin: .06em .02em 0; }
+  .big { position: absolute; right: 56px; top: 140px; width: 360px; height: 360px; }
+  /* The photograph is taken in a square frame; only the round orb and its ring are kept. */
+  .name img, .big { clip-path: circle(48%); }
+  .line { position: absolute; left: 96px; top: 408px; margin: 0; font-weight: 500; font-size: 50px;
+    letter-spacing: -.02em; }
+  .dark .line { color: #ecebf5; }
+  .light .line { color: #1d1b26; }
+  .foot { position: absolute; left: 96px; top: 530px; margin: 0; font-family: "Geist Mono", monospace; font-size: 28px; }
+  .dark .foot { color: #9b97b3; }
+  .light .foot { color: #5d5a6b; }
+  .foot b { font-weight: 600; }
+  .dark .foot b { color: #ffffff; }
+  .light .foot b { color: #0b0b0e; }
+</style>
+</head>
+<body class="{look}">
+  <div class="name">l<img src="{orb}" alt="">uis-agent</div>
+  <img class="big" src="{orb}" alt="">
+  <p class="line">Build agents, not infrastructure.</p>
+  <p class="foot"><b>louis-agent.dev</b> · 100% C#, because you can</p>
+</body>
+</html>

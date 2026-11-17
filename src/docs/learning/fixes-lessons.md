@@ -511,6 +511,26 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX178 · A filter only paints inside its region, and the default region moves with what it blurs
+
+Inside the glass orb, a few coloured shapes drift across the ball under one soft blur, which turns them into clouds
+of light. An SVG filter paints only inside its region, and by default that region is measured from the box of what
+it blurs. The shapes drift, so a shape that left the box was cut along a straight edge. At the bar's size the cut was
+a fraction of a pixel; drawn large for the share card it was a plain line through the ball. Measuring the region in
+the drawing's own units, the whole ball, means nothing inside it can be cut, however far a light drifts. The lesson:
+a flaw too small to see at one size is still a flaw, and drawing something larger is how it shows. Skill 18
+(testing and shipping: a test holds every mark drawing to the whole-ball region).
+
+## FX174 · Draw a brand picture from the real thing, not a copy of it
+
+Louis asked where his glass was: the card a shared link shows still had the flat disc. The glass ball lives in the
+site's styles and the theme together, and no hand-drawn copy would stay true to it as the look changes. So the card is
+drawn from the site itself. A tool starts the site, photographs the ball alone on nothing, and lays the photograph
+into the card's page, drawn at twice its size so it stays sharp. Two slips on the way taught their own lessons. A
+clip measured on screen after a scroll photographed an empty page, which a photograph of the element itself avoids.
+And a faint square came along with the ball, which a round clip on the card took away. Skill 18 (testing and
+shipping: a test holds the card's real size to what the page tells a link preview).
+
 ## FX177 · A second switch costs one line when the first was built to be switched
 
 Louis wanted the way back up out of sight too. Because FX175 had already made the frame's extras switches a site

@@ -1,9 +1,9 @@
 namespace LouisAgent.Site.Tests.Pages.Meta;
 
 /// <summary>
-/// The site's small marks (F151.6): the tab icon, the app icons and the share card are the flat violet disc with the
-/// white l, the mark Louis picked for every small size, in place of the three slabs. The brand's folder holds the
-/// same drawing.
+/// The site's small marks (F151.6): the tab icon and the app icons are the flat violet disc with the white l, the mark
+/// Louis picked for every small size, in place of the three slabs. The brand's folder holds the same drawing. The
+/// share card is large, so it carries the glass orb (FX174).
 /// </summary>
 public class SiteIconsTests
 {
@@ -40,5 +40,26 @@ public class SiteIconsTests
         int height = png[20] << 24 | png[21] << 16 | png[22] << 8 | png[23];
 
         Assert.That((width, height), Is.EqualTo((192, 192)));
+    }
+
+    /// <summary>
+    /// FX174: the share card is the size a link preview asks for, 1200 by 630, drawn at twice its points, 2400 by 1260,
+    /// so it is crisp wherever it is shown (Louis: "highest quality you have?", "super crisp"), and the page's head
+    /// tells a link preview that size.
+    /// </summary>
+    [Test]
+    public void TheShareCard_IsSharp_AndThePageSaysItsSize()
+    {
+        byte[] png = File.ReadAllBytes(Path.Combine(WebRoot, "social-card.png"));
+        int width = png[16] << 24 | png[17] << 16 | png[18] << 8 | png[19];
+        int height = png[20] << 24 | png[21] << 16 | png[22] << 8 | png[23];
+        string index = File.ReadAllText(Path.Combine(WebRoot, "index.html"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((width, height), Is.EqualTo((2400, 1260)));
+            Assert.That(index, Does.Contain($"<meta property=\"og:image:width\" content=\"{width}\" />"));
+            Assert.That(index, Does.Contain($"<meta property=\"og:image:height\" content=\"{height}\" />"));
+        });
     }
 }

@@ -11,8 +11,9 @@ The mark is a ball with a small l in it, the l of louis, drawn as the Geist type
 little curve at its foot. On the site it is the agent: the same mark sits in the agent's bar, breathing while it
 waits, and it follows the look the visitor picked. In glass it is a glass bubble with the l in it, or a violet ball
 inside clear glass. In flat, and everywhere the mark is small or printed, it is a flat disc in the brand's violet
-with a white l. That flat disc is the one in this folder, and the one in the browser's tab, on a phone's home screen
-and on the card a link shows when it is shared.
+with a white l. That flat disc is the one in this folder, and the one in the browser's tab and on a phone's home
+screen. The card a link shows when it is shared is large, so it carries the glass ball, in the site's default look,
+glass and light.
 
 There is a one-ink version for paper and for anything that can only print one colour: a black disc with a white l.
 
@@ -36,7 +37,8 @@ the mark beside the name as well as inside it.
 | [mark-light.svg](mark-light.svg) | The one-ink mark: a black disc with a white l | Print, and anything that can only take one colour |
 | [nuget-icon.png](nuget-icon.png) | 128 by 128, the disc on a clear ground | The NuGet packages' `PackageIcon`, when they ship (F74) |
 | [avatar.png](avatar.png) | 512 by 512, the disc on a violet square, so a round crop shows it whole | The GitHub avatar, any square profile picture |
-| [social-card.png](social-card.png) | 1280 by 640: the name with the mark as its o, the line, the site's address and the slogan | The site's `og:image`, link previews |
+| [social-card.png](social-card.png) | 2400 by 1260, drawn at twice its 1200 by 630 points, the size a link preview asks for: the name with the glass ball as its o, the ball large beside it, the line, the site's address and the slogan, on a light ground | The site's `og:image`, link previews |
+| [social-card-light.png](social-card-light.png), [social-card-dark.png](social-card-dark.png) | The same card on a light ground and on a dark one | To choose between, and anything that wants the dark one |
 
 The framework's site keeps its own copies, since a site references no docs folder: `wwwroot/favicon.svg` and
 `wwwroot/brand/mark.svg` are `mark.svg`, `apple-touch-icon.png` is the disc at 180 by 180 on violet with no
@@ -45,9 +47,13 @@ transparency, as Apple asks, `icon-192.png` the disc at 192 by 192, and `social-
 The SVGs are drawn by hand: a circle of radius 60 at the middle of a 120 by 120 grid, and the l as Geist's own outline
 at weight 650, moved with `translate(44 92) scale(.09 -.09)` to the middle of the disc. The PNGs are drawn from
 `mark.svg` by headless Chromium, the browser Playwright drives: the SVG laid at the size wanted on a page of that
-size, over the ground each row of the table names, and the page photographed. The social card is a small HTML page
-of its own drawn the same way, with Geist and Geist Mono loaded from the `geist` package on npm, so the type is the
-real one.
+size, over the ground each row of the table names, and the page photographed.
+
+The social card is drawn by the repo's own tool, `film-export`, with `social-card`. It starts the site, opens the
+landing's brand section in glass and light, and photographs the ball alone on nothing, so the card's glass is
+exactly the site's. It lays that photograph into the card's page, a template beside the tool
+(`Cards/social-card.html`) with Geist and Geist Mono loaded as the site loads them, and photographs the card at twice
+its size. Run it again whenever the ball's look changes; the guide to changing the site says how.
 
 ## Colour
 

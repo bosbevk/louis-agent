@@ -80,6 +80,19 @@ dotnet run --project src/tools/louis-agent.film-export -- short # one
 It needs Docker running, for the encoder. `CHROME_PATH` names the browser; without it, a Chrome for Testing is
 downloaded once into the temp folder. It starts the site's host itself, from the code as it is, and takes several
 minutes a film. Each re-export adds the films' size to git history, so group changes.
+
+## Draw the share card again
+
+The card a link to the site shows carries the glass ball photographed from the site itself. After the ball's look
+changes, draw it again and commit the pictures it writes:
+
+```bash
+dotnet run --project src/tools/louis-agent.film-export -- social-card
+```
+
+It starts the site the same way, needs no Docker, and writes the site's `wwwroot/social-card.png` and the brand
+folder's three copies (the brand's README lists them). A site that shares a link caches the card, so after it is live,
+ask Facebook's Sharing Debugger to scrape the address again.
 [ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md) says why it works this way.
 
 ## Change the CV
