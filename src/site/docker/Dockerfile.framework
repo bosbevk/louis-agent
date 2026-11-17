@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish "src/site/louis-agent.site-framework-api/louis-agent.site-framework-api.csproj" -c Release -o /app/publish
+
+# The framework's own site's host (F160.1) needs only the runtime: it serves the site's pages, and no agent yet.
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY --from=build /app/publish/ .
+# The price and rate tables the usage ledger reads, the site's own copies, so the image needs no share mounted.
+COPY --from=build /src/src/site/config/prices.json /src/src/site/config/rates.json /app/config/
+ENV CONFIG_DIRECTORY=/app/config
+ENV PRICES_FILE=/app/config/prices.json
+ENV RATES_FILE=/app/config/rates.json
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD curl -fs http://localhost:8080/health || exit 1
+ENTRYPOINT ["dotnet", "louis-agent.site-framework-api.dll"]

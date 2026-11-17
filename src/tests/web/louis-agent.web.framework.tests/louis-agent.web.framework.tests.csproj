@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The framework's pages' tests (F160.1): the area a site names, its pages with bUnit, and what they say held to
+       the repo. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Web.Framework.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bunit" Version="2.12.5" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\web\louis-agent.web.framework\louis-agent.web.framework.csproj" />
+    <!-- The repo paths the test projects share; no test project references another. -->
+    <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="Bunit" />
+    <Using Include="LouisAgent.Testing" />
+  </ItemGroup>
+
+</Project>

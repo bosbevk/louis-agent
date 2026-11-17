@@ -1,3 +1,4 @@
+using LouisAgent.Api.Contracts.Site;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Admin.Overview;
@@ -149,7 +150,11 @@ public sealed class SiteAreasBuilder
         var accountLayout = _areas.Select(area => area.AccountLayout).OfType<Type>().FirstOrDefault();
         if ((_adminLayout ?? accountLayout) is { } admin)
             services.TryAddSingleton(new SiteFrames(admin, accountLayout ?? admin));
-        services.TryAddSingleton(new SiteAreas(_areas));
+        var areas = new SiteAreas(_areas);
+        services.TryAddSingleton(areas);
+        // The host draws the areas' pages for a search engine too, told through the API's contract (F160.1).
+        var pages = new SitePageAssemblies(areas.PageAssemblies);
+        services.TryAddSingleton(pages);
     }
 
     /// <summary>Whether an area by this name is named already.</summary>

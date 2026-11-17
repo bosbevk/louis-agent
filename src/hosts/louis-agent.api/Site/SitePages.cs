@@ -24,7 +24,7 @@ public static class SitePages
     public static WebApplication MapLouisAgentSite(this WebApplication app, Assembly site,
         Action<IServiceCollection> services, Uri? publicUrl = null, string? home = null)
     {
-        var routes = SiteRoutes.Of(site, home);
+        var routes = SiteRoutes.Of(site, services, home);
         var prerenderer = new PagePrerenderer(services);
         var handler = new SitePageHandler(routes, prerenderer, publicUrl, app.Environment);
         // The site's places, for the agent's tools to find (F127.7), when this host runs agents.

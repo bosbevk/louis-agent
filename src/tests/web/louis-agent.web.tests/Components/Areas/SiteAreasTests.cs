@@ -1,5 +1,6 @@
 using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Bar.Opening;
+using LouisAgent.Api.Contracts.Site;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Themes;
@@ -197,5 +198,20 @@ public class SiteAreasTests
             .Add(ThemeArea("theme-glass", new SiteTheme("glass", "Glass again"))));
 
         Assert.That(One<SiteAreas>(services).Themes, Is.EqualTo(new[] { glass }));
+    }
+
+    /// <summary>
+    /// F160.1: the areas' pages are told to the host through the API's contract, so the host draws a package's pages
+    /// for a search engine without knowing the web: turning a package on is enough.
+    /// </summary>
+    [Test]
+    public void TheAreasPages_AreToldToTheHost()
+    {
+        var services = new ServiceCollection();
+        var pages = typeof(SiteAreasTests).Assembly;
+
+        services.AddSiteAreas(areas => areas.Add(new SiteArea("pages", _ => { }, [pages])));
+
+        Assert.That(One<SitePageAssemblies>(services).Assemblies, Is.EqualTo(new[] { pages }));
     }
 }

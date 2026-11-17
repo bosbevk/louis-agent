@@ -1,4 +1,6 @@
 using System.Reflection;
+using LouisAgent.Api.Contracts.Site;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Api.Site;
@@ -6,9 +8,11 @@ namespace LouisAgent.Api.Site;
 /// <summary>
 /// Which of a site's pages an address names (F121), from the routes the pages declare: a page's own address, or the
 /// page a section's address sits under (ADR 0107: <c>/proof/rand</c> is on <c>/proof</c>, and the landing's sections
-/// under the site's home word, <c>/home/rule</c>, are on <c>/</c>). A route with a parameter is no page of its own,
-/// and neither is one under <c>/admin</c> (F142): an admin page a site keeps in its own project sits behind the
-/// admin key, so it is never rendered for a search engine and never a place the guide sends a visitor.
+/// under the site's home word, <c>/home/rule</c>, are on <c>/</c>). The site's pages are its own and those its
+/// areas bring (F160.1), such as the framework's or the accounts'. A route with a parameter is no page of its own,
+/// neither is one under <c>/admin</c> (F142), which sits behind the admin key, nor a page behind a sign-in, which
+/// says so with <c>[Authorize]</c> (F160.1): none of these is ever rendered for a search engine or a place the guide
+/// sends a visitor.
 /// </summary>
 public sealed class SiteRoutes
 {
@@ -23,8 +27,25 @@ public sealed class SiteRoutes
     /// <summary>
     /// The site's pages by their routes, read from its assembly; the home word for the landing's sections.
     /// </summary>
-    public static SiteRoutes Of(Assembly site, string? home) => new(
-        site.GetTypes()
+    public static SiteRoutes Of(Assembly site, string? home) => Read([site], home);
+
+    /// <summary>
+    /// The site's pages and those its areas bring, which the site's own <paramref name="services"/> name, so a
+    /// package a site turns on is drawn without the host being told of it again.
+    /// </summary>
+    public static SiteRoutes Of(Assembly site, Action<IServiceCollection> services, string? home)
+    {
+        var named = new ServiceCollection();
+        services(named);
+        var areaPages = named.Select(service => service.ImplementationInstance).OfType<SitePageAssemblies>()
+            .SelectMany(pages => pages.Assemblies);
+        return Read([site, .. areaPages], home);
+    }
+
+    /// <summary>The public pages of these assemblies, by their routes, the first of a route winning.</summary>
+    private static SiteRoutes Read(IEnumerable<Assembly> assemblies, string? home) => new(
+        assemblies.Distinct().SelectMany(assembly => assembly.GetTypes())
+            .Where(type => type.GetCustomAttribute<AuthorizeAttribute>() is null)
             .SelectMany(type => type.GetCustomAttributes<RouteAttribute>().Select(route => (route.Template, type)))
             .Where(route => !route.Template.Contains('{') && !InTheAdmin(route.Template))
             .GroupBy(route => Normal(route.Template), StringComparer.OrdinalIgnoreCase)

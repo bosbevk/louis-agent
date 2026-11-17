@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="louis-agent">
+  <!-- The louis-agent mark (src/docs/brand/README.md): a flat disc with the l, Geist's l at weight 650. -->
+  <circle cx="60" cy="60" r="60" fill="#6b4dff"/>
+  <path d="M68 133 68.5 710H207.5V147.5Q207.5 125.5 218.0 115.5Q228.5 105.5 249 105.5H286.5V0H202.5Q138 0 103.0 32.25Q68 64.5 68 133Z" transform="translate(44 92) scale(.09 -.09)" fill="#ffffff"/>
+</svg>

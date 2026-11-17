@@ -20,7 +20,7 @@ public class SolutionLayoutTests
     [TestCase("src/hosts", "louis-agent.acp", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
         "louis-agent.mcp", "louis-agent.accounts", "louis-agent.accounts.contracts", "louis-agent.api.evals")]
     [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts", "louis-agent.web.evals",
-        "louis-agent.web.themes", "louis-agent.diagrams", "louis-agent.diagrams.engine")]
+        "louis-agent.web.themes", "louis-agent.web.framework", "louis-agent.diagrams", "louis-agent.diagrams.engine")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
     [TestCase("packs/tools", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",
@@ -41,8 +41,8 @@ public class SolutionLayoutTests
     [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
     [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.triage")]
     [TestCase("src/site", "louis-agent.site", "louis-agent.identity.guide", "louis-agent.site-api",
-        "louis-agent.identity.showroom")]
-    [TestCase("src/tests/site", "louis-agent.site.tests")]
+        "louis-agent.identity.showroom", "louis-agent.site-framework", "louis-agent.site-framework-api")]
+    [TestCase("src/tests/site", "louis-agent.site.tests", "louis-agent.site-framework.tests")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
         "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner",
@@ -54,7 +54,8 @@ public class SolutionLayoutTests
     [TestCase("src/tests/hosts", "louis-agent.acp.tests", "louis-agent.mcp.tests",
         "louis-agent.accounts.tests", "louis-agent.accounts.integration-tests")]
     [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing", "louis-agent.web.accounts.tests",
-        "louis-agent.web.evals.tests", "louis-agent.web.themes.tests", "louis-agent.diagrams.tests")]
+        "louis-agent.web.evals.tests", "louis-agent.web.themes.tests", "louis-agent.web.framework.tests",
+        "louis-agent.diagrams.tests")]
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",
         "louis-agent.evals.protocol.tests", "louis-agent.evals.runner.tests")]
     [TestCase("src/tests/shared", "louis-agent.testing")]

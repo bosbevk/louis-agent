@@ -1,0 +1,12 @@
+@inherits LayoutComponentBase
+@* The framework's site's frame, filled with what's this site's own: its name, its line and its footer. The seven
+   pages join its menu as they are written (F160.1, steps 5 to 9). *@
+
+<SiteShell Layout="PageLayout.Flow" MovingPage="true" ShowIndex="false" ShowWayUp="false">
+    <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
+    <Tagline>The C# AI agent framework</Tagline>
+    <Footer>
+        <span><Wordmark Before="l" After="uis-agent" /> · an AI agent framework in C#</span>
+    </Footer>
+    <ChildContent>@Body</ChildContent>
+</SiteShell>

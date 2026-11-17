@@ -45,3 +45,25 @@ services:
     volumes:
       - ../logs:/logs
       - ../data:/data
+
+  # The framework's own site (F160.1), the review copy of framework.louis-agent.dev: its pages, and no agent yet.
+  framework:
+    build:
+      context: ../../..
+      dockerfile: src/site/docker/Dockerfile.framework
+    image: louis-agent-site-framework:latest
+    container_name: louis_agent_site_framework
+    env_file:
+      - path: ../config/.env
+        required: false
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      OTEL_SERVICE_NAME: louis-agent-site-framework
+      LOG_DIRECTORY: /logs
+    # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
+    ports:
+      - "127.0.0.1:${FRAMEWORK_PORT:-5084}:8080"
+    volumes:
+      - ../logs/framework:/logs
