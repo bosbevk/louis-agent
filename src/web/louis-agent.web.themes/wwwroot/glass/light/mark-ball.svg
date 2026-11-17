@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><g class="mk-b"><defs>
 <filter id="xblb2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/></filter>
-<filter id="xblb5" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+<filter id="xblb5" filterUnits="userSpaceOnUse" x="0" y="0" width="120" height="120"><feGaussianBlur stdDeviation="5"/></filter>
 <clipPath id="xblc"><circle cx="60" cy="60" r="54"/></clipPath>
 <linearGradient id="xblgloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <linearGradient id="xblrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".4" stop-color="#fff" stop-opacity=".1"/><stop offset=".7" stop-color="#e2dfff" stop-opacity=".1"/><stop offset="1" stop-color="#e2dfff" stop-opacity=".75"/></linearGradient>
