@@ -49,6 +49,8 @@ public class FlatFollowsItsDesignTests
             Assert.That(Value(style, "--web-mark-fill"), Is.EqualTo("transparent"));
             Assert.That(File.ReadAllText(Path.Combine(drawings, "mark.svg")), Does.Contain("r=\"39\""));
             Assert.That(File.ReadAllText(Path.Combine(drawings, "mark-ball.svg")), Does.Contain("r=\"39\""));
+            // Round it nothing: where glass's bubble is, flat's page shows (Louis: "this is what I wanted").
+            Assert.That(File.ReadAllText(Path.Combine(drawings, "mark.svg")), Does.Not.Contain("r=\"57\""));
             Assert.That(File.ReadAllText(Path.Combine(drawings, "mark-o.svg")), Does.Contain("r=\"60\""));
         });
     }

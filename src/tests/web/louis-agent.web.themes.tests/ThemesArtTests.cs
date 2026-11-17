@@ -18,6 +18,12 @@ public class ThemesArtTests
     /// </summary>
     private const string Served = "/_content/louis-agent.web.themes/";
 
+    /// <summary>
+    /// The version flat's mark drawings are at, in their addresses: a browser keeps a drawing by its address, so a
+    /// drawing that changes takes a new one, and every browser fetches it again (FX181, Louis seeing the old mark).
+    /// </summary>
+    private const int FlatMarks = 3;
+
     /// <summary>The themes project's served files on disk.</summary>
     private static readonly string Root = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.themes/wwwroot");
 
@@ -64,7 +70,7 @@ public class ThemesArtTests
 
         var drawn = art.Where(name => name.Value != "none").Select(name => name.Key["--web-art-".Length..]);
         var missing = marks.Where(drawing =>
-            art[$"--web-art-{drawing}"] != $"url(\"{Served}flat/{word}/{drawing}.svg\")"
+            art[$"--web-art-{drawing}"] != $"url(\"{Served}flat/{word}/{drawing}.svg?v={FlatMarks}\")"
             || !File.Exists(Path.Combine(Root, "flat", word, $"{drawing}.svg")));
 
         Assert.Multiple(() =>

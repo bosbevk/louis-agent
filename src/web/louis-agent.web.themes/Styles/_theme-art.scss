@@ -32,10 +32,12 @@ $served: "/_content/louis-agent.web.themes/";
 }
 
 /* Only the marks drawn, the mark, the bar's ball and the name's o, each to the file of this theme and style, and
-   every other drawing none: a theme that lays nothing on its pieces but draws its own mark (FX181, flat). */
-@mixin marks-only($theme, $style) {
+   every other drawing none: a theme that lays nothing on its pieces but draws its own mark (FX181, flat). The
+   drawings are kept by a browser for an hour by their address, so the address carries their version: a drawing that
+   changes takes the next one, and every browser fetches it again. */
+@mixin marks-only($theme, $style, $version) {
     @include none();
     @each $drawing in (mark, mark-ball, mark-o) {
-        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg");
+        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg?v=#{$version}");
     }
 }

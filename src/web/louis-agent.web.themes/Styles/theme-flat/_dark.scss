@@ -162,7 +162,8 @@
     --web-violet-4: #110a40;
 
     // Flat lays no drawing on any piece (F151.4) but its mark (FX181).
-    @include theme-art.marks-only(flat, dark);
+    // Its version goes up whenever one of its drawings changes, so no browser keeps the old one.
+    @include theme-art.marks-only(flat, dark, 3);
 
     color-scheme: dark;
 }
