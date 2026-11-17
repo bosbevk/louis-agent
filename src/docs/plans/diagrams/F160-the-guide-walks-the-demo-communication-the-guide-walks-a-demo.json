@@ -1,0 +1,28 @@
+{
+  "kind": "sequence",
+  "title": "F160 the guide walks the demo: one walk, turn by turn",
+  "caption": "Each answer is one stop: the guide shows a turn, the turn plays once the guide has finished talking, and at the end it offers the live chat.",
+  "sequence": {
+    "participants": [
+      { "id": "visitor", "label": "Visitor", "icon": "users", "tone": "blue" },
+      { "id": "widget", "label": "The guide's bar", "icon": "message", "tone": "violet" },
+      { "id": "guide", "label": "The guide", "icon": "cloud", "tone": "red" },
+      { "id": "windows", "label": "AgentWindows", "icon": "stack", "tone": "violet" },
+      { "id": "demo", "label": "The demo", "icon": "stack", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "visitor", "to": "widget", "text": "Walk me through this demo" },
+      { "step": "message", "from": "widget", "to": "guide", "text": "the page, its places, the-demo/1 to the-demo/4 by question" },
+      { "step": "reply", "from": "guide", "to": "widget", "text": "ShowPage(/guesthouse-demo/the-demo/1), what to watch, Offer" },
+      { "step": "message", "from": "widget", "to": "windows", "text": "Turn(the-demo, 1)" },
+      { "step": "message", "from": "windows", "to": "demo", "text": "Turned(the-demo, 1)" },
+      { "step": "note", "over": ["demo"], "text": "held while the guide talks, then turn 1 plays and stops" },
+      { "step": "message", "from": "visitor", "to": "widget", "text": "On to the next turn" },
+      { "step": "reply", "from": "guide", "to": "widget", "text": "what turn 1 showed, ShowPage(the-demo/2), Offer" },
+      { "step": "note", "over": ["demo"], "text": "the same for turns 2 to 4" },
+      { "step": "reply", "from": "guide", "to": "widget", "text": "after the last: want to try it? Offer two questions" },
+      { "step": "message", "from": "visitor", "to": "widget", "text": "a question, picked" },
+      { "step": "message", "from": "guide", "to": "demo", "text": "AskAgent, as today: the live chat takes the recording's place" }
+    ]
+  }
+}

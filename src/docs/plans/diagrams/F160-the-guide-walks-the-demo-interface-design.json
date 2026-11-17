@@ -1,0 +1,121 @@
+{
+  "kind": "classes",
+  "title": "F160 the guide walks the demo: the interface design",
+  "caption": "The recorded chat waits to be started and plays one turn on its own; the windows hand it the turn the guide showed, as they already hand a business the guide's ask.",
+  "classes": {
+    "types": [
+      {
+        "id": "chat",
+        "name": "RecordedChat",
+        "kind": "component, steps 2 to 4",
+        "tone": "violet",
+        "members": [
+          "RecordedStart Start (2)",
+          "Task PlayTurnAsync(int turn) (3)",
+          "Task PlayFromAsync(int from)",
+          "bool Hold",
+          "EventCallback<int> TurnStarted"
+        ]
+      },
+      {
+        "id": "start",
+        "name": "RecordedStart",
+        "kind": "enum, step 2",
+        "tone": "teal",
+        "members": [
+          "OnItsOwn",
+          "WhenAsked"
+        ]
+      },
+      {
+        "id": "windows",
+        "name": "AgentWindows",
+        "kind": "Observer, step 5",
+        "tone": "violet",
+        "members": [
+          "event Action<Block> Asked",
+          "event Action<string, int> Turned (5)",
+          "bool Take(Block call)",
+          "void Turn(string section, int turn) (5)"
+        ]
+      },
+      {
+        "id": "widget",
+        "name": "ChatWidget",
+        "kind": "component, step 5",
+        "tone": "violet",
+        "members": [
+          "void OnToolCalled(Block block)",
+          "a ShowPage of section/turn on this page: Windows.Turn (5)"
+        ]
+      },
+      {
+        "id": "places",
+        "name": "GuidePlaces",
+        "kind": "unchanged",
+        "tone": "violet",
+        "members": [
+          "static (string Page, string? Place)? Target(string address, SiteAddresses addresses)"
+        ]
+      },
+      {
+        "id": "demo",
+        "name": "BusinessDemo",
+        "kind": "site component, steps 2 and 5",
+        "tone": "green",
+        "members": [
+          "Start=\"RecordedStart.WhenAsked\" (2)",
+          "void OnTurned(string section, int turn) (5)"
+        ]
+      },
+      {
+        "id": "prompts",
+        "name": "The guide's prompts",
+        "kind": "skills, step 6",
+        "tone": "amber",
+        "members": [
+          "live-demo.md: a demo page's walk, turn by turn",
+          "voice.md: a turn's stop and its choices",
+          "demos.md: what each turn shows"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "chat",
+        "to": "start",
+        "kind": "uses"
+      },
+      {
+        "from": "widget",
+        "to": "places",
+        "kind": "uses",
+        "word": "reads the address"
+      },
+      {
+        "from": "widget",
+        "to": "windows",
+        "kind": "uses",
+        "word": "Turn"
+      },
+      {
+        "from": "demo",
+        "to": "windows",
+        "kind": "uses",
+        "word": "hears Turned"
+      },
+      {
+        "from": "demo",
+        "to": "chat",
+        "kind": "holds",
+        "word": "PlayTurnAsync"
+      },
+      {
+        "from": "prompts",
+        "to": "widget",
+        "kind": "uses",
+        "word": "ShowPage /…/the-demo/2"
+      }
+    ]
+  }
+}
