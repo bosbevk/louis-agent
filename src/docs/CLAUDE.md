@@ -50,7 +50,7 @@ whether or not a skill is loaded.
 3. **Show it, and wait.** The files it changes, the commit message and the explanation, with the test failing
    before the code and passing after. No commit before Louis's ok.
 4. **Commit it on its own**, test and code together, and stop (rule 5). Never push without asking (rule 7).
-   The branch's name, the commit message and the pull request are in `/ship-it`.
+   The branch's name and the commit message are in `/ship-it`, and the pull request in `/open-a-pull-request`.
 
 **Which tests, and when.** Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main
 must be merged and full suite unit tests passes". Before a commit, run only the tests of what the step touched.
@@ -110,7 +110,8 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | A step's test passes, and it is to be shown and committed | `/finish-a-step` |
 | Something a visitor sees changed, or was deployed | `/check-a-page` |
 | Something broke, and a fix starts | `/fix-a-bug` |
-| A commit, a push, a pull request or a merge | `/ship-it` |
+| A commit, a push or a merge | `/ship-it` |
+| A pull request is opened, or its body written | `/open-a-pull-request` |
 | The last step of a feature or a cleanup | `/finish-a-feature` |
 | A picture in the docs is added or changed | `/draw-a-diagram` |
 

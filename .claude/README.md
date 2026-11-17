@@ -51,7 +51,8 @@ Two rules follow from the last row.
 | `finish-a-step` | A step's test passes, and it is to be shown and committed |
 | `check-a-page` | Something a visitor sees changed, or was deployed |
 | `fix-a-bug` | Something broke, and a fix starts |
-| `ship-it` | A commit, a push, a pull request or a merge |
+| `ship-it` | A commit, a push or a merge |
+| `open-a-pull-request` | A pull request is opened, or its body written |
 | `finish-a-feature` | The last step of a feature or a cleanup |
 | `draw-a-diagram` | A picture in the docs is added or changed |
 
