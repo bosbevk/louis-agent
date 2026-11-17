@@ -9,8 +9,8 @@ Loaded when a `.cs` file is read or edited. How a summary is written is in `csha
 beside this file. The ADRs named below are in `src/docs/adr/`.
 
 The rules come in this order: what "fix as you touch" covers, a choice between outcomes, an endpoint, regular
-expressions, values and what is stored or sent, choices and texts, asking the type, size and shape, layout, and
-how a file is changed.
+expressions, values and what is stored or sent, choices and texts, asking the type, the names of methods, size and
+shape, layout, and how a file is changed.
 
 ## What "fix as you touch" covers
 
@@ -122,6 +122,29 @@ line: could a type answer this? These shapes say none was asked.
   holds it as a ratchet.
 
 *Decided in:* ADR 0123.
+
+## Names of methods
+
+| Kind | Name | Example |
+|---|---|---|
+| An action | A verb or verb phrase | `Read`, `Take`, `FindLastWordEnd` |
+| Awaited or streamed (`Task`, `ValueTask`, `IAsyncEnumerable`) | Ends in `Async` | `StreamPromptAsync` |
+| A stream operator | An extension named for what it gives back, no `Async` | `turn.Paced(clock)` |
+| A record from another of our types | `Of` | `CheckRow.Of(check, hasManual)` |
+| From an outside shape (JSON, settings, a file) | `From` | `ReplayStore.From(options)` |
+| Chosen for a key | `For` | `RatesMappers.For(format)` |
+| A class that holds something | `Create`, `Build` | `ChatPipeline.Build(…)` |
+| From text | `Parse`, `TryParse` | `SettingChoice.TryParse` |
+| An attempt that may miss | `Try…`, a Boolean, the result in `out` | `TryRead(out var update)` |
+| A test's data builder | Named for what it builds | `Text("…")`, `Turn([…])` |
+
+- A property or field is a noun or adjective; a yes or no reads affirmative.
+- An extension method only as a stream operator on an interface, or where an instance method would break a
+  dependency rule; its class is named for its idea, never `…Extensions`.
+- No `Get` on what should be a property, no abbreviation, no `Ex` or `2` suffix.
+- A touched file leaves with every method named this way; a rename goes through Rider.
+
+*Decided in:* ADR 0126.
 
 ## Size and shape
 

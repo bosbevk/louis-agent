@@ -17,7 +17,7 @@ public class WordPaceTests
     [Test]
     public void WithLittleWaiting_ItKeepsTheSteady90LettersASecond()
     {
-        double shown = WordPace.Next(0, 80, OneFrame, done: false);
+        double shown = WordPace.Advance(0, 80, OneFrame, done: false);
 
         // A frame's length is whole ticks, so a sixtieth of a second is a hair short of it.
         Assert.That(shown, Is.EqualTo(90d / 60).Within(1e-3));
@@ -29,9 +29,9 @@ public class WordPaceTests
     {
         double shown = 0;
 
-        for (int frame = 0; frame < 95; frame++) shown = WordPace.Next(shown, 1000, OneFrame, done: false);
+        for (int frame = 0; frame < 95; frame++) shown = WordPace.Advance(shown, 1000, OneFrame, done: false);
 
-        Assert.That(1000 - WordPace.Letters(shown), Is.LessThanOrEqualTo(240));
+        Assert.That(1000 - WordPace.CountLetters(shown), Is.LessThanOrEqualTo(240));
     }
 
     /// <summary>
@@ -41,8 +41,8 @@ public class WordPaceTests
     [Test]
     public void ThePace_GrowsWithTheBacklog_WithNoStep()
     {
-        double at239 = WordPace.Next(0, 239, OneFrame, done: false);
-        double at241 = WordPace.Next(0, 241, OneFrame, done: false);
+        double at239 = WordPace.Advance(0, 239, OneFrame, done: false);
+        double at241 = WordPace.Advance(0, 241, OneFrame, done: false);
 
         Assert.That(at241 - at239, Is.LessThan(0.1));
     }
@@ -53,9 +53,9 @@ public class WordPaceTests
     {
         double shown = 0;
 
-        for (int frame = 0; frame < 125; frame++) shown = WordPace.Next(shown, 240, OneFrame, done: false);
+        for (int frame = 0; frame < 125; frame++) shown = WordPace.Advance(shown, 240, OneFrame, done: false);
 
-        Assert.That(WordPace.Letters(shown), Is.EqualTo(240));
+        Assert.That(WordPace.CountLetters(shown), Is.EqualTo(240));
     }
 
     /// <summary>Once the answer is done, the last 200 letters show within about 1.3 seconds.</summary>
@@ -64,9 +64,9 @@ public class WordPaceTests
     {
         double shown = 0;
 
-        for (int frame = 0; frame < 80; frame++) shown = WordPace.Next(shown, 200, OneFrame, done: true);
+        for (int frame = 0; frame < 80; frame++) shown = WordPace.Advance(shown, 200, OneFrame, done: true);
 
-        Assert.That(WordPace.Letters(shown), Is.EqualTo(200));
+        Assert.That(WordPace.CountLetters(shown), Is.EqualTo(200));
     }
 
     /// <summary>It never shows more than has arrived, and never takes back what it showed.</summary>
@@ -75,7 +75,7 @@ public class WordPaceTests
     [TestCase(80, 60)]
     public void ItNeverRunsAhead_NorGoesBack(double shown, int arrived)
     {
-        double next = WordPace.Next(shown, arrived, TimeSpan.FromSeconds(1), done: true);
+        double next = WordPace.Advance(shown, arrived, TimeSpan.FromSeconds(1), done: true);
 
         Assert.Multiple(() =>
         {

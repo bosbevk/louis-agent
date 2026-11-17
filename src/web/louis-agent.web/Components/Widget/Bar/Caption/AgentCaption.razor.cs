@@ -115,7 +115,7 @@ public partial class AgentCaption : IAsyncDisposable
     private readonly CancellationTokenSource _pacing = new();
 
     /// <summary>The words to draw: those the pace has reached, or all of them once it has done.</summary>
-    private string Shown => _paced ? Words[..Math.Min(Words.Length, WordPace.Letters(_shown))] : Words;
+    private string Shown => _paced ? Words[..Math.Min(Words.Length, WordPace.CountLetters(_shown))] : Words;
 
     /// <summary>Whether the answer is on its way out: the caption fades, and then says it has gone (F154).</summary>
     [Parameter]
@@ -145,8 +145,8 @@ public partial class AgentCaption : IAsyncDisposable
             {
                 TimeSpan since = System.Diagnostics.Stopwatch.GetElapsedTime(last);
                 last = System.Diagnostics.Stopwatch.GetTimestamp();
-                _shown = WordPace.Next(_shown, Words.Length, since, done: !Streaming);
-                if (!Streaming && WordPace.Letters(_shown) >= Words.Length) _paced = false;
+                _shown = WordPace.Advance(_shown, Words.Length, since, done: !Streaming);
+                if (!Streaming && WordPace.CountLetters(_shown) >= Words.Length) _paced = false;
                 await InvokeAsync(StateHasChanged);
                 if (!_paced) return;
             }

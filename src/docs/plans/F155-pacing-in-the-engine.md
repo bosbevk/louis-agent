@@ -169,5 +169,12 @@ both in [the goal](../GOAL.md).
 
 ## Approved during the build
 
+- **2026-11-17, step 4: method names have a rule, ADR 0126.** Of `PacedStream.Of(turn, clock)`, Louis asked "this Of
+  method is this a valid naming pattern?", picked A of three, an extension named for what it gives back, and asked
+  for "method name rules and ADR when to use what naming convention", applied "on all touched files"; of the
+  proposal, "yes with the test-builder exception". So the paced stream is `turn.Paced(clock)`, `WordPace.Next` is
+  `WordPace.Advance` and `WordPace.Letters` is `WordPace.CountLetters`; the steps and pictures above keep the old
+  names as they were approved.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md), [louis-agent.core](../projects/louis-agent.core.md)

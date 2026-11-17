@@ -12,9 +12,9 @@ namespace LouisAgent.SessionStream.Pacing;
 /// <remarks>
 /// Ask the type (ADR 0123): the rule is one pure function its caller asks each frame, tested with times given to it,
 /// so it needs no clock and no browser. It keeps part letters, since 90 a second is a letter and a half a frame, and the
-/// caller shows the whole ones (<see cref="Letters"/>). Continuous, the steady pace or the backlog over a short window,
-/// as smoothing a streamed answer is commonly done, since a fixed speed either falls behind a fast model or shows its
-/// bursts again (F155, Louis: "web should change to also continuous").
+/// caller shows the whole ones (<see cref="CountLetters"/>). Continuous, the steady pace or the backlog over a short
+/// window, as smoothing a streamed answer is commonly done, since a fixed speed either falls behind a fast model or
+/// shows its bursts again (F155, Louis: "web should change to also continuous").
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
 public static class WordPace
@@ -32,7 +32,7 @@ public static class WordPace
     public const double Finish = 1.2;
 
     /// <summary>How much shows a frame later: this much shown now, this much arrived, this long since the last frame.</summary>
-    public static double Next(double shown, int arrived, TimeSpan since, bool done)
+    public static double Advance(double shown, int arrived, TimeSpan since, bool done)
     {
         double behind = arrived - shown;
         if (behind <= 0) return shown;
@@ -46,6 +46,6 @@ public static class WordPace
         return Math.Min(arrived, shown + pace * since.TotalSeconds);
     }
 
-    /// <summary>The whole letters to draw of what <see cref="Next"/> says shows.</summary>
-    public static int Letters(double shown) => (int)Math.Floor(shown);
+    /// <summary>The whole letters to draw of what <see cref="Advance"/> says shows.</summary>
+    public static int CountLetters(double shown) => (int)Math.Floor(shown);
 }

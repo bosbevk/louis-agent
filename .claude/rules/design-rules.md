@@ -57,6 +57,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **A name says what the thing is, in plain words** (Louis, 2026-11-16, of `lede`: "what does that mean? names
   must be meaningful"): a class, a parameter, a CSS class or a file is named so a reader knows it without looking
   anything up; no trade jargon (`lede` is `summary`, `kicker` is `topic`).
+- **A method's name says what it does, by its kind**: a verb; `Async` on what is awaited or streamed; a stream
+  operator an extension named for what it gives back (`turn.Paced(clock)`); a factory `Of`, `From`, `For`, `Create`
+  or `Parse` by what it is made from; `Try…` a Boolean; touched files fixed. [ADR 0126](../../src/docs/adr/0126-a-methods-name-says-what-it-does.md).
 - **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
   name is an enum too. [ADR 0024](../../src/docs/adr/0024-choices-are-enums.md), [ADR 0043](../../src/docs/adr/0043-repeated-names-are-enums.md).
 - **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static
