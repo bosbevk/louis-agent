@@ -3,6 +3,13 @@
    when asked, its first question waits over the theme's Play button. Stopped after a turn, Play on plays the rest. *@
 <div class="recorded-chat">
     <div class="recorded-bar"><span class="recorded-dots" aria-hidden="true"><i></i><i></i><i></i></span>@Title</div>
+    @* Its turns by number and question, unseen on the page, so the guide can name each as a place to show (F160). *@
+    <ol class="recorded-turns" hidden>
+        @for (int number = 1; number <= Turns.Count; number++)
+        {
+            <li data-turn="@number">@Turns[number - 1].Question</li>
+        }
+    </ol>
     <MessageList Chat="_chat" Streaming="_playing" Currency="Currency" ShowWork="ShowWork" />
     @if (Waiting)
     {

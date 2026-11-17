@@ -273,12 +273,12 @@ public class RecordedChatTests
             .Add(chat => chat.Ending, Offer));
 
         Thread.Sleep(400);
-        bool askedWhileHeld = cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal);
+        bool askedWhileHeld = cut.FindAll(".recorded-chat .turn").Count > 0;
         cut.Render(parameters => parameters.Add(chat => chat.Hold, false));
 
         // Its question shows as soon as the play goes on. A wait for a state, not an assertion: NUnit counts each
         // failed try inside a retried assertion against the test, even when a later try passes.
-        cut.WaitForState(() => cut.Markup.Contains(SessionStreamFixture.Question, StringComparison.Ordinal),
+        cut.WaitForState(() => cut.FindAll(".recorded-chat .turn").Count > 0,
             TimeSpan.FromSeconds(5));
 
         Assert.That(askedWhileHeld, Is.False, "the question waited while the play was held");
@@ -356,6 +356,26 @@ public class RecordedChatTests
             Assert.That((playOnWords, canPlayAgain, endedEarly), Is.EqualTo(("Play on", true, false)));
             Assert.That(started.Take(2), Is.EqualTo(new[] { 1, 2 }));
             Assert.That(cut.FindAll(".recorded-chat .turn"), Has.Count.EqualTo(3));
+        });
+    }
+
+    /// <summary>
+    /// The chat lists its turns where the page doesn't show them (F160), each by its number and its question, so the
+    /// guide's view of the page can name every turn as a place to show.
+    /// </summary>
+    [Test]
+    public void ItsTurns_AreListedForTheGuide_UnseenOnThePage()
+    {
+        using var ctx = Context();
+
+        var cut = ThreeTurns(ctx);
+
+        var list = cut.Find(".recorded-turns");
+        Assert.Multiple(() =>
+        {
+            Assert.That(list.HasAttribute("hidden"), Is.True);
+            Assert.That(list.QuerySelectorAll("li").Select(turn => (turn.GetAttribute("data-turn"), turn.TextContent)),
+                Is.EqualTo(new[] { ("1", "First"), ("2", "Second"), ("3", "Third") }));
         });
     }
 

@@ -14,7 +14,8 @@ export function pageText() {
     const areas = [...document.querySelectorAll(places)].flatMap((area) => {
         const heading = headingOf(area, fold);
         const [first, ...later] = pagesOf(area, fold);
-        return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later];
+        return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later,
+            ...turnsOf(area, fold)];
     });
     return { url: location.pathname, title: document.title, text, areas, links: linksOf(main, fold) };
 }
@@ -104,6 +105,16 @@ const pagesOf = (area, fold) => {
     return pages.map((names, k) => ({
         id: `${area.id}/${k + 1}`,
         heading: `page ${k + 1} of ${count}: ${names.join(", ") || "continued"}`,
+    }));
+};
+
+// A recorded talk's turns (F160), each a place the guide shows, a turn at a time: "the-demo/2", "turn 2 of 4: Can
+// we bring the dog?". The talk lists them where the page doesn't show them, so they are read from that list.
+const turnsOf = (area, fold) => {
+    const turns = [...area.querySelectorAll(".recorded-turns li[data-turn]")];
+    return turns.map((turn) => ({
+        id: `${area.id}/${turn.dataset.turn}`,
+        heading: `turn ${turn.dataset.turn} of ${turns.length}: ${fold(turn.textContent)}`,
     }));
 };
 
