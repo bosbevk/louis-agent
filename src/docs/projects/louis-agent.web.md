@@ -294,7 +294,11 @@ asks `WordPace` (`Pacing/` in the shared `louis-agent.session-stream`) how much 
 second while little is waiting, and with more waiting fast enough to show it within a second, so the pace grows with
 what is waiting and never jumps, and faster again once the answer is done, so the last couple of hundred
 letters show in about a second and a quarter. An answer already done when its caption draws, as after a reload, shows
-whole at once. On its first draw the caption grows out of the bar's orb, or swells out of the card whose place it
+whole at once. So does one the server already paced: when the engine's `STREAM_PACE` is on, the API answers the turn
+with the header `Stream-Paced: on` before its first word, `AgentApi` tells the chat runner, which marks the turn
+`ServerPaced`, and the caption shows its words as they come, since pacing them twice would only add lag. louis-agent.dev's
+API paces, so its guide's words are paced there, once; a page on an API that doesn't pace keeps its own pacer. On its
+first draw the caption grows out of the bar's orb, or swells out of the card whose place it
 takes, over 380 ms on the web's spring. When the bar stops showing an answer, because the visitor put it away or the
 next answer came, the caption does not vanish. It fades a few pixels lower over 200 ms and then tells the bar, which
 takes it away; while it fades it takes no clicks, and the next answer may already be growing in. Which answers are

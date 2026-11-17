@@ -199,6 +199,30 @@ a copy of it. And no model costs anything.
 
 Tell the person first. Their words leave this hosting; the agent says so before it asks.
 
+## Paced once: the server says what it did (F156, 2026-11-17)
+
+F155 let the engine pace a turn's words; F156 had the page follow. Two parts that can each do the same job need one
+source of truth for which one does it, or they drift: two switches set by hand would one day both be on, pacing the
+words twice and adding lag, or both off. So the server says what it did, on every answer. When the engine paced the
+turn, the API sends `Stream-Paced: on` with the response, before the first word, and the page reads it and leaves its
+own pacer off for that turn. A header was picked over a new event because the stream's events copy Anthropic's own
+format, and a header carries the fact beside the stream without changing it.
+
+The pacing was then measured, with one question to the guide each way through the site's API, every piece of text
+timed as it arrived:
+
+| | Pacing off | Pacing on |
+|---|---|---|
+| Letters each second | 238 · 607 · 14 | 16 · 245 · 340 · 153 · 17 |
+| Text arrived over | 1.50 s | 3.26 s |
+| Largest piece | 35 letters | 19 letters |
+| Gap between pieces | 21 ms on average, ±28, up to 187 | 41 ms on average, ±19, up to 132 |
+
+Off, the model drops most of its answer in one second, in bursts and uneven gaps; on, the same answer arrives over
+about three seconds at an even few hundred letters a second, in smaller pieces. The pacing's cost is there too: the
+last word comes about two seconds later, the price of spreading a burst. A graph of the two runs showed it best, so a
+chart kind for the docs' own diagram tool (F158) and the probe as a tool of the repo (F159) come next, to keep it.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md) ·
 [ADR 0039](../adr/0039-api-routes-under-v1.md) · [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)

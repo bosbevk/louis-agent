@@ -188,7 +188,13 @@ by `Sessions/Streaming/StreamErrorKinds`). So a client can tell a replay miss fr
 
 `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
 
-*Decided in:* F18 step 1f, F3, FX6, FX26.
+When the host turns the engine's `STREAM_PACE` on, the engine hands out the turn's text at a steady pace in whole
+words, and the API says so: it answers the turn with the header `Stream-Paced: on` (`ApiHeaders.StreamPaced`), before
+the first event. A page that reads it leaves its own pacer off, so the words are paced once. The events themselves are
+the same either way, still Claude's shape; only when their text arrives changes. With the setting off there is no
+header, and a client paces as it likes.
+
+*Decided in:* F18 step 1f, F3, FX6, FX26, F156.
 
 ### 14. Usage
 
