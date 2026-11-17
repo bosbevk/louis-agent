@@ -51,6 +51,25 @@ public class CaptionMotionTests
         Assert.That(first.Length, Is.LessThan(Long.Length));
     }
 
+    /// <summary>
+    /// F156: an answer still arriving that the server already paced shows its words as they come, whole, since a
+    /// second pacing would only add lag (Louis: "web and engine no API").
+    /// </summary>
+    [Test]
+    public void AServerPacedAnswer_ShowsItsWordsAsTheyCome()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<AgentCaption>(parameters => parameters
+            .Add(c => c.Title, "Louis · AI")
+            .Add(c => c.Words, Long)
+            .Add(c => c.Work, new AnswerWork([], 0, null))
+            .Add(c => c.Streaming, true)
+            .Add(c => c.ServerPaced, true));
+
+        Assert.That(Shown(cut), Is.EqualTo(Long));
+    }
+
     /// <summary>An answer already done when its caption draws shows whole at once.</summary>
     [Test]
     public void ADoneAnswer_ShowsWholeAtOnce()

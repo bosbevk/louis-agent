@@ -36,12 +36,12 @@
                         @* A choice that is the visitor's own words puts them in the box, where they write it. *@
                         @if (choice.Writes is not null)
                         {
-                            <button class="@ChoiceClasses(choice)" type="button" title="@choice.Why"
+                            <button class="@ClassesFor(choice)" type="button" title="@choice.Why"
                                     @onclick="OnWrite">@choice.Label</button>
                         }
                         else
                         {
-                            <button class="@ChoiceClasses(choice)" type="button" title="@choice.Why"
+                            <button class="@ClassesFor(choice)" type="button" title="@choice.Why"
                                     disabled="@Streaming"
                                     @onclick="() => OnChoose.InvokeAsync(choice.Label)">@choice.Label</button>
                         }

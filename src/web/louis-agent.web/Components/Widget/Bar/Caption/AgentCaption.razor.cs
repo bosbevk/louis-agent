@@ -72,6 +72,13 @@ public partial class AgentCaption : IAsyncDisposable
     [Parameter]
     public bool Streaming { get; set; }
 
+    /// <summary>
+    /// Whether the server already paced the answer's words (F156), so the caption shows them as they come and the words
+    /// are paced once.
+    /// </summary>
+    [Parameter]
+    public bool ServerPaced { get; set; }
+
     /// <summary>Asks to put the answer away. With nobody to ask, the caption shows no close.</summary>
     [Parameter]
     public EventCallback OnClose { get; set; }
@@ -128,8 +135,11 @@ public partial class AgentCaption : IAsyncDisposable
     /// <summary>Whether the caption has begun to fade, so it fades once.</summary>
     private bool _fading;
 
-    /// <summary>An answer still streaming when the caption first draws comes at a pace.</summary>
-    protected override void OnInitialized() => _paced = Streaming;
+    /// <summary>
+    /// An answer still streaming when the caption first draws comes at a pace, unless the server already paced it, so
+    /// the words are paced once (F156).
+    /// </summary>
+    protected override void OnInitialized() => _paced = Streaming && !ServerPaced;
 
     /// <summary>
     /// Steps the words on about thirty times a second, as the pace says, until the answer is done and all have shown.
@@ -164,7 +174,7 @@ public partial class AgentCaption : IAsyncDisposable
     private string Classes => _turned ? "agent-caption is-turned" : "agent-caption";
 
     /// <summary>A choice's classes: a pill, marked when the agent suggests it or it is written in the box.</summary>
-    private static string ChoiceClasses(OfferChoice choice) => choice switch
+    private static string ClassesFor(OfferChoice choice) => choice switch
     {
         { Writes: not null } => "caption-choice is-written",
         { Suggested: true } => "caption-choice is-suggested",

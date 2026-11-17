@@ -120,6 +120,10 @@ beside the stream without changing the stream's own format. That is protocols, s
 
 ## Approved during the build
 
+- **2026-11-17, step 4: ADR 0126 widened to types.** Louis: "the adr we did for method names we must extend it to
+  class names do the research", and of the proposal, "yes widen the ADR". It is now "A name says what it is, or what
+  it does, by its kind", with a line for a method that answers an event (`On…`), applied to the touched files.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md), [louis-agent.web](../projects/louis-agent.web.md),
 [louis-agent.api](../projects/louis-agent.api.md)

@@ -436,7 +436,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0123-ask-the-type.md = src\docs\adr\0123-ask-the-type.md
 		src\docs\adr\0124-a-sites-look-is-a-theme-and-a-style.md = src\docs\adr\0124-a-sites-look-is-a-theme-and-a-style.md
 		src\docs\adr\0125-a-site-is-configured-framework-components.md = src\docs\adr\0125-a-site-is-configured-framework-components.md
-		src\docs\adr\0126-a-methods-name-says-what-it-does.md = src\docs\adr\0126-a-methods-name-says-what-it-does.md
+		src\docs\adr\0126-a-name-says-what-it-is-by-its-kind.md = src\docs\adr\0126-a-name-says-what-it-is-by-its-kind.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
