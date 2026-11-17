@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX190 · A browser drops a line it can't read, silently
+
+`font: 500 13px/1.4 inherit` looks like it says "this size, this weight, the rest from the parent". But `inherit` can
+only stand alone in a shorthand, so the browser throws the whole line away without a word, and a button falls back
+to the browser's own button font: centred, and on a phone larger. The guide's answer card had four such lines, so on
+a phone its choices, its links and its way into the box all grew, and the way into the box broke over two centred
+lines. Each now inherits the face alone and sets its size, weight and height apart, and a rule test refuses the
+shape anywhere in the styles. The lesson: CSS doesn't report a line it can't read, so a test has to look for the
+shapes that fail quietly. Skill 18.
+
 ## FX189 · A file that changes needs an address that changes
 
 The server lets a browser keep a theme's drawing for an hour by its address. Flat's mark showed what that costs: a

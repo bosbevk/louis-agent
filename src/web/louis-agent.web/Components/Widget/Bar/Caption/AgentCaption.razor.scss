@@ -68,7 +68,10 @@
 .caption-choice {
     padding: 9px 15px;
     border-radius: 999px;
-    font: 500 13.5px/1.2 inherit;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.2;
     text-align: left;
     cursor: pointer;
     transition: background-color .3s, transform .3s var(--web-spring, ease-out), color .3s;
@@ -79,7 +82,9 @@
 .caption-choice.is-suggested { font-weight: 600; @include surface.press(); }
 .caption-choice.is-written { cursor: text; @include surface.write-in(); }
 
-/* The way into the box, and under it the quiet ways on: to the answer's other side, and to the whole talk. */
+/* The way into the box, and under it the quiet ways on: to the answer's other side, and to the whole talk. The box is
+   a small outline before its words, as a field is drawn, and the words are the caption's own face, small and on the
+   left, since a press would otherwise take the browser's button font, centred (FX190). */
 .caption-ask {
     align-self: flex-start;
     display: inline-flex;
@@ -87,7 +92,10 @@
     gap: 8px;
     padding: 0;
     border: 0;
-    font: 13px/1.4 inherit;
+    font: inherit;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: left;
     color: var(--bs-secondary-color);
     background: none;
     cursor: text;
@@ -105,7 +113,10 @@
     padding: 4px 0 0;
     border: 0;
     white-space: nowrap;
-    font: 500 12.5px/1.4 inherit;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.4;
     text-decoration: underline;
     text-underline-offset: 3px;
     color: var(--bs-secondary-color);
