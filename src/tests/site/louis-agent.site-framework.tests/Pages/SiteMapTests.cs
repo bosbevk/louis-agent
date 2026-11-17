@@ -41,7 +41,6 @@ public class SiteMapTests
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSiteAreas(FrameworkAreas.Name);
-        ctx.Services.AddSingleton(FrameworkAreas.Addresses());
         var pages = FrameworkLibrary.Assembly.GetTypes()
             .Where(type => type.GetCustomAttributes<RouteAttribute>().Any());
 

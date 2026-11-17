@@ -1,7 +1,8 @@
+using LouisAgent.Web.Components.Site.Addresses;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Components.Site.Addresses;
+namespace LouisAgent.Web.Places;
 
 /// <summary>
 /// The router's last resort for a place's address (F118, ADR 0107): an address no page's route matches, such as

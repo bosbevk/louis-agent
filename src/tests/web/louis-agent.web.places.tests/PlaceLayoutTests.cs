@@ -1,7 +1,7 @@
 using LouisAgent.Web.Components.Site.Addresses;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Tests.Components.Site.Addresses;
+namespace LouisAgent.Web.Places.Tests;
 
 /// <summary>
 /// A place's own address draws its page in the page's own layout (F127.1, Louis: "when you refresh the page it loses

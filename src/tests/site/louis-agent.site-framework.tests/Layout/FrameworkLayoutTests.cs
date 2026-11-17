@@ -18,7 +18,6 @@ public class FrameworkLayoutTests
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSiteAreas(FrameworkAreas.Name);
-        ctx.Services.AddSingleton(FrameworkAreas.Addresses());
 
         var cut = ctx.Render<FrameworkLayout>(layout => layout.Add(l => l.Body, "<section id=\"top\">Page</section>"));
 

@@ -64,6 +64,7 @@ public sealed record FrameworkFamily(
             new("louis-agent.web.accounts", "The account pages."),
             new("louis-agent.web.evals", "The eval studio's pages."),
             new("louis-agent.web.docs", "The docs' parts, from links to the menu."),
+            new("louis-agent.web.places", "Every place on a page, its own address."),
             new("louis-agent.web.framework", "These pages."),
             new("louis-agent.diagrams", "What a diagram is, its kinds and records."),
             new("louis-agent.diagrams.engine", "What draws one, its layouts and drawings.")

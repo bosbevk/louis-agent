@@ -1,7 +1,8 @@
 using System.Reflection;
+using LouisAgent.Web.Components.Site.Addresses;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Components.Site.Addresses;
+namespace LouisAgent.Web.Places;
 
 /// <summary>
 /// The frame a place's own address is drawn in (F127.1, Louis: "when you refresh the page it loses the demo

@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Site.Addresses;
@@ -34,11 +35,24 @@ public sealed class SiteAddresses
             .ToDictionary(group => group.Key, group => group.First().Type, StringComparer.Ordinal);
     }
 
-    /// <summary>The addresses from the pages' own routes in the given assemblies, the fixed ones only.</summary>
+    /// <summary>Where every site's admin lives, behind its key (F144).</summary>
+    private const string Admin = "/admin";
+
+    /// <summary>
+    /// The addresses from the pages' own routes in the given assemblies: the fixed ones of the pages anyone may open,
+    /// by the rule the host draws pages for a search engine by. A page behind a sign-in or the admin's key has no
+    /// places, so a place's address, which the catch-all draws, can never open it around the router's own check.
+    /// </summary>
     public static SiteAddresses From(string home, params Assembly[] assemblies) =>
-        new(home, assemblies.SelectMany(assembly => assembly.GetTypes())
+        new(home, assemblies.Distinct().SelectMany(assembly => assembly.GetTypes())
+            .Where(type => type.GetCustomAttribute<AuthorizeAttribute>() is null)
             .SelectMany(type => type.GetCustomAttributes<RouteAttribute>().Select(route => (route.Template, (Type?)type)))
-            .Where(route => !route.Template.Contains('{')));
+            .Where(route => !route.Template.Contains('{') && !InTheAdmin(route.Template)));
+
+    /// <summary>Whether a route is the admin's, or one of its pages.</summary>
+    private static bool InTheAdmin(string route) =>
+        route.Equals(Admin, StringComparison.OrdinalIgnoreCase)
+        || route.StartsWith(Admin + "/", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The site's pages' addresses.</summary>
     public IReadOnlyCollection<string> Pages => _pages.Keys;

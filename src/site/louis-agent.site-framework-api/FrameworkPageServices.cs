@@ -18,8 +18,7 @@ public static class FrameworkPageServices
     public static void Register(IServiceCollection services)
     {
         services.AddSingleton(new HttpClient());
-        // Every place's address, so a page knows which place it was asked at, and the site's areas.
-        services.AddSingleton(FrameworkAreas.Addresses());
+        // The site's areas, every place's address among them, so a page knows which place it was asked at.
         services.AddSiteAreas(FrameworkAreas.Name);
     }
 }

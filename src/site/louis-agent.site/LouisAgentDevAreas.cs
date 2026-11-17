@@ -6,6 +6,7 @@ using LouisAgent.Site.Layout;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Widget.Bar.Opening;
+using LouisAgent.Web.Places;
 using LouisAgent.Web.Themes.Flat;
 using LouisAgent.Web.Themes.Glass;
 
@@ -16,7 +17,8 @@ namespace LouisAgent.Site;
 /// page is (F127.7), what its guide offers to be asked as the showroom's bar (F134.3), that bar opening under the
 /// pointer (FX172), and its admin with the
 /// overview counting the guide's leads (F127.8) and the site's own Resume area, where Louis edits his CV (F142),
-/// named through the framework's builder; the guide in its corner runs on the chat's plumbing, which every site gets.
+/// named through the framework's builder, every place on its pages with an address of its own (ADR 0107); the guide in
+/// its corner runs on the chat's plumbing, which every site gets.
 /// It offers the framework's two themes, glass first, so glass is what a first visit gets (F151.6).
 /// </summary>
 /// <remarks>
@@ -33,7 +35,10 @@ public static class LouisAgentDevAreas
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
         .Suggestions(GuideSuggestions).BarOpens(BarOpens.Hover)
         .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area)
-        .Glass().Flat();
+        .Places(Home, typeof(App).Assembly).Glass().Flat();
+
+    /// <summary>The word the landing's places sit under, as in <c>/home/welcome</c>.</summary>
+    public const string Home = "home";
 
     /// <summary>
     /// What the guide's bar offers to be asked, as chips, the first the one suggested, the last a way into the

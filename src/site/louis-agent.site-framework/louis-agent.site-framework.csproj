@@ -23,6 +23,8 @@
     <ProjectReference Include="..\..\web\louis-agent.web.themes\louis-agent.web.themes.csproj" />
     <!-- The framework's pages, the package this site turns on with .Framework(). -->
     <ProjectReference Include="..\..\web\louis-agent.web.framework\louis-agent.web.framework.csproj" />
+    <!-- Every place's own address, the area it names with .Places(). -->
+    <ProjectReference Include="..\..\web\louis-agent.web.places\louis-agent.web.places.csproj" />
   </ItemGroup>
 
   <ItemGroup>

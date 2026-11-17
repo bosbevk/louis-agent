@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- A place's own address (F160.1, ADR 0107): the router's catch-all that draws the page a place's address names, in
+       that page's layout, and the area a site names to have it. A package of its own, so a site that wants its places
+       doesn't take the admin's pages with them. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Places</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: the areas a site names, and the rule a place's address is read by. -->
+    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+  </ItemGroup>
+
+</Project>
