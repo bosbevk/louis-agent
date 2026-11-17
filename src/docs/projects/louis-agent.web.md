@@ -373,7 +373,10 @@ line, a way back up, and a section index on the left. A site may switch the inde
 the way up with `ShowWayUp="false"`, keeping both for later; louis-agent.dev has both off. When a site puts the guide in the corner as its bar, the
 corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a
 screen: the room is `--site-bar`, the name a slide, a paged section and the way up already end above, so each ends
-above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
+above the bar on a wide screen as on a phone. Under the bar the page fades into a strip of itself, fixed at the
+screen's foot, and the footer lies above that strip so its words can be seen. On a wide screen the footer keeps room
+at its right end for a small link a site may fix in the corner (`CornerLink`), and on a phone it keeps the bar's room
+under its words, so the orb never sits on them. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
 itself on the frame's list as it draws.
 
 On a phone, 720 pixels wide or less, the header is one slim row: the site's name, and a menu button at the right.
