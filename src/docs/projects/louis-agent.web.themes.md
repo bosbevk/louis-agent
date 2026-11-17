@@ -131,7 +131,7 @@ In both themes your own message sits under the same ink as a press, since the fr
 A glass piece is a drawing laid over what is behind it, seen sharp. The framework names one drawing for each part and state,
 34 of them, `--web-art-pane-rest`, `--web-art-press-hover`, `--web-art-toggle-on` and the rest, each `none` as its
 own value, since the framework draws no glass. Glass sets each to the address of its drawing. Flat sets every one
-to `none` but three, its mark and the bar's ball, which carry the brand's l on a disc the size of glass's ball, since flat has no bubble round it, and the name's o, the disc alone. A browser keeps a drawing for an hour by its address, so flat's addresses carry a version, `?v=3`, which goes up whenever one of its drawings changes; glass's do not yet. So a theme still hands over only values,
+to `none` but three, its mark and the bar's ball, which carry the brand's l on a disc the size of glass's ball, since flat has no bubble round it, and the name's o, the disc alone. A browser keeps a drawing for an hour by its address, so flat's addresses carry a version, `?v=3`, which goes up whenever one of its drawings changes. Glass's drawings and its silk carry theirs the same way, `?v=1`. So a theme still hands over only values,
 and no component names a theme.
 
 The drawings are SVGs with no size of their own: their shapes are written against their own edges, so the browser

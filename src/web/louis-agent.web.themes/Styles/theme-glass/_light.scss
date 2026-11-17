@@ -153,7 +153,7 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     // The page behind the glass: a picture of silk ribbons of light over the whole screen, which holds still, and no
     // lines of its own.
     --web-page-lines: none;
-    --web-page-lights: url("/_content/louis-agent.web.themes/glass/light/silk.webp") center / cover no-repeat;
+    --web-page-lights: url("/_content/louis-agent.web.themes/glass/light/silk.webp?v=1") center / cover no-repeat;
     // A heading's band: the violet through the words.
     --web-heading-band: var(--bs-primary);
     // The mark as a letter of the name: a full disc a little above the small letters.
@@ -183,8 +183,9 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
 
-    // Each part's drawing, and each of its states, served by this project (F151.4).
-    @include theme-art.drawn(glass, light);
+    // Each part's drawing, and each of its states, served by this project (F151.4), at their version, raised whenever
+    // a drawing or the silk changes so no browser keeps the old one (FX189).
+    @include theme-art.drawn(glass, light, 1);
 
     color-scheme: light;
 }

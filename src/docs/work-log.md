@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 126 | 97 |
-| Fixes (`FX`) | 176 | 6 |
+| Fixes (`FX`) | 177 | 6 |
 | Cleanups (`CL`) | 39 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -287,10 +287,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (176 done)
+## Fixes (177 done)
 
 | Id | When | What |
 |---|---|---|
+| FX189 | 2026-11-17 | Glass's drawings and silk carry their version in their address |
 | FX188 | 2026-11-17 | Every WhatsApp button on the contact page says the number |
 | FX187 | 2026-11-17 | A button in a column grows to hold its words |
 | FX186 | 2026-11-17 | A tile's icon plate is the theme's: white or black in flat, with no shadow |
