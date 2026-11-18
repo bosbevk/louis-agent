@@ -40,6 +40,7 @@ public class PageDescriptionsTests
             Assert.That(texts, Has.All.Length.InRange(50, 170), "long enough to say something, short enough to show");
             Assert.That(texts, Is.Unique);
             Assert.That(texts, Has.None.Contain(";"));
+            Assert.That(texts, Has.None.Contain("R500"), "no price is published");
         });
     }
 }

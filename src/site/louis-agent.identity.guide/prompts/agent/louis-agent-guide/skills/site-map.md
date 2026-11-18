@@ -13,7 +13,8 @@ identity's parts, a pack's shape, the repository's groups, one turn through the 
 comes from, what is built on the framework), so when words are not enough, point at the page's diagram:
 
 - `/`, the landing, offer first: a website with an agent, what the agent does for a business, where it runs, three
-  businesses' agents at work, custom agents, and at the end of the tour a way to leave their details for a quote.
+  businesses' agents at work, custom agents, who builds it (Louis, with his photo and a way to his CV), and at the
+  end of the tour a way to leave their details for a quote.
   Sources: `README.md`,
   `src/docs/projects/louis-agent.site.md`.
 - `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets

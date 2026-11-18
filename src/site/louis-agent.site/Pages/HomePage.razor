@@ -1,7 +1,7 @@
 @page "/"
 
 <PageTitle>Websites with an agent · louis-agent</PageTitle>
-<PageHead Description="A website for your business with an AI agent in its corner that answers your customers day and night. From R500 a month, built in South Africa." Schemas="SiteFacts.All" />
+<PageHead Description="A website for your business with an AI agent in its corner that answers your customers day and night. Built and hosted in South Africa." Schemas="SiteFacts.All" />
 
 @* One page the visitor scrolls (F110): the frame draws the progress line and the section index from the bands below
    (F118), so a band's id and topic are all a section needs to be listed. Since F128.1 it tells the story offer first:
@@ -19,14 +19,16 @@
 
 <LandingDemos />
 
-<Band Id="custom" Topic="Custom agents" Title="An agent made for your business." Summary="Watch it at work in three businesses below. It finds the right page, draws the request and asks before it sends. Yours does the same in your words, on your own systems.">
+<Band Id="custom" Topic="Custom agents" Title="An agent made for your business." Summary="A bigger job needs an agent of its own. It works in your words, on your own systems, and asks before it sends.">
 
     <ProductWindow Label="A guesthouse, a restaurant and a law practice, each with its agent answering a visitor beside the page" Scenes="BusinessScenes.All" Title="Three businesses at work" Glass="BusinessScenes.Glass" Lens="false" />
     <TileRow>
-        <Tile Icon="DiagramIcon.User" Title="Who it is">Its voice, its rules and what it knows about your business, kept in plain files you can read and change.</Tile>
-        <Tile Icon="DiagramIcon.Box" Title="What it reaches" Delay="1">Your own systems, such as your bookings, your stock and your calendar. It reads your data in code and never guesses it.</Tile>
-        <Tile Icon="DiagramIcon.Shield" Title="Closed and measured" Delay="2">It runs in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here. Every request is priced and the bill is shown in rand.</Tile>
+        <Tile Icon="DiagramIcon.User" Title="Who it is">Its voice, its rules and what it knows about your business, in plain files you can read and change.</Tile>
+        <Tile Icon="DiagramIcon.Box" Title="What it reaches" Delay="1">Your own systems, such as bookings, stock and your calendar. It reads your data. It never guesses it.</Tile>
+        <Tile Icon="DiagramIcon.Shield" Title="Closed and measured" Delay="2">It runs in a sealed box that sees only what you hand it. Every answer is priced, and the bill is shown in rand.</Tile>
     </TileRow>
 </Band>
+
+<WhoBuildsIt />
 
 <ContactStrip />

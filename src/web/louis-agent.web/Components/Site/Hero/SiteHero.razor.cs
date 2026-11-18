@@ -26,8 +26,14 @@ public partial class SiteHero
     /// <summary>The small mono line over the headline.</summary>
     [Parameter] public string? Topic { get; set; }
 
-    /// <summary>The headline, the site's biggest words.</summary>
-    [Parameter, EditorRequired] public RenderFragment? Headline { get; set; }
+    /// <summary>The headline, the site's biggest words. A site gives this or <see cref="Lines"/>.</summary>
+    [Parameter] public RenderFragment? Headline { get; set; }
+
+    /// <summary>
+    /// The headline as short sentences, each standing on a line of its own, so a two-beat line never breaks in the
+    /// middle of a sentence on a wide screen. Used in place of <see cref="Headline"/>.
+    /// </summary>
+    [Parameter] public IReadOnlyList<string>? Lines { get; set; }
 
     /// <summary>The paragraph under the headline that says what this is.</summary>
     [Parameter] public RenderFragment? Summary { get; set; }
@@ -46,6 +52,9 @@ public partial class SiteHero
 
     /// <summary>The words stand centred, and what would stand beside them goes below.</summary>
     [Parameter] public bool Centred { get; set; }
+
+    /// <summary>The headline's classes: the site's look, and a mark when it stands in lines.</summary>
+    private string HeadlineClasses => Lines is null ? "chrome" : "chrome in-lines";
 
     /// <summary>Two columns only when there is something for the second one, centred when the site says so.</summary>
     private string Classes => (Aside, Centred) switch

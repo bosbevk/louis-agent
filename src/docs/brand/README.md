@@ -37,7 +37,7 @@ the mark beside the name as well as inside it.
 | [mark-light.svg](mark-light.svg) | The one-ink mark: a black disc with a white l | Print, and anything that can only take one colour |
 | [nuget-icon.png](nuget-icon.png) | 128 by 128, the disc on a clear ground | The NuGet packages' `PackageIcon`, when they ship (F74) |
 | [avatar.png](avatar.png) | 512 by 512, the disc on a violet square, so a round crop shows it whole | The GitHub avatar, any square profile picture |
-| [social-card.png](social-card.png) | 2400 by 1260, drawn at twice its 1200 by 630 points, the size a link preview asks for: the name with the glass ball as its o, the ball large beside it, the line, the site's address and the slogan, on a light ground | The site's `og:image`, link previews |
+| [social-card.png](social-card.png) | 2400 by 1260, drawn at twice its 1200 by 630 points, the size a link preview asks for: the name with the glass ball as its o, the only ball on the card, then the slogan "The website that answers." and the site's address, on a light ground | The site's `og:image`, link previews |
 | [social-card-light.png](social-card-light.png), [social-card-dark.png](social-card-dark.png) | The same card on a light ground and on a dark one | To choose between, and anything that wants the dark one |
 
 The framework's site keeps its own copies, since a site references no docs folder: `wwwroot/favicon.svg` and
@@ -81,7 +81,8 @@ never used for body text.
 
 ## Voice
 
-Say things like "Every number here comes from the ledger or an eval run" and "Build agents, not infrastructure."
+The slogan is "The website that answers." It stands under the name in the header, in the footer and on the
+social card, and it speaks to a business owner. Say things like "Every number here comes from the ledger or an eval run" and "Build agents, not infrastructure."
 Use plain words, explain a term the first time, and only talk about what works today. Stay away from
 "revolutionary", "magical" and "next-gen", from any number nobody measured, and from robots, brains and sparkles.
 

@@ -59,4 +59,23 @@ public class SiteFactsTests
             Assert.That((width, height), Is.EqualTo((180, 180)));
         });
     }
+
+    /// <summary>
+    /// The tab and the link preview speak to a small business owner, the reader the home page is for (the brand
+    /// research of 2026-11-18): the slogan in the title, the hero's line in the preview, and no framework talk.
+    /// </summary>
+    [Test]
+    public void TheTabAndThePreview_SpeakToAnOwner()
+    {
+        string head = File.ReadAllText(Path.Combine(WebRoot, "index.html"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(head, Does.Contain("<title>louis-agent · the website that answers</title>"));
+            Assert.That(head, Does.Contain("property=\"og:title\" content=\"louis-agent · the website that answers\""));
+            Assert.That(head, Does.Contain("property=\"og:description\" content=\"Your doors close at five. Your website doesn't.\""));
+            Assert.That(head, Does.Contain("your small business"));
+            Assert.That(head, Does.Not.Contain("Microsoft.Extensions.AI"));
+        });
+    }
 }

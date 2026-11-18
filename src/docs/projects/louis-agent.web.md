@@ -434,10 +434,15 @@ for columns, as a band's closing buttons are, keeps each button at its own width
 site's brand at its foot, at the right under its buttons, small and quiet, which is how a site signs a card with its
 wordmark.
 
-A `SiteHero` is the first thing on a landing: a kicker, the headline, a lede, a quiet note and the actions, each a
+A `SiteHero` is the first thing on a landing: a topic, the headline, a summary, a quiet note and the actions, each a
 slot the site fills, with something alive beside the words when the site has it. A site may also open the words with
 a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside
 the words goes below them.
+
+A headline of two short sentences can be given as `Lines` instead. Each sentence then stands on a line of its own, a
+size smaller, so a wide screen never breaks the headline in the middle of a sentence and the buttons stay on the
+first screen. On a narrow screen a line still wraps where it must, and the heading still reads as one sentence after
+another to a screen reader.
 
 A `Band` is one named area of a page: a section with a required id, an optional kicker and the site's classes. It
 draws no style of its own. The id is required so that every area on every site is named, and the guide can send a
