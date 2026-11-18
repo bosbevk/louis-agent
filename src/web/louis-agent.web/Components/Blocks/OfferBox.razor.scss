@@ -9,8 +9,12 @@
     @include field.box(web-form-input, 14px); flex: 1; min-width: 0; font-family: inherit;
     transition: border-color .15s, background .15s;
 }
-textarea.offer-input { resize: vertical; field-sizing: content; min-height: 2.6em; }
+/* A long answer's box takes a faint wash with a box's corner, not the one-line field's pill. */
+textarea.offer-input { resize: vertical; field-sizing: content; min-height: 2.6em; border-radius: 14px; @include surface.hairline(.1); }
 .offer-input:focus { outline: none; @include surface.edged(themed(web-form-input, focus, var(--bs-primary))); }
+/* A long box is typed in with its own corner kept: the theme's focus drawing is a pill made for one line, so here it
+   is only the edge and a soft ring in the brand's colour (FX202). */
+textarea.offer-input:focus { border-radius: 14px; @include surface.hairline(.1); @include surface.ring(rgba(var(--bs-primary-rgb), .18)); }
 .offer-input[disabled] { opacity: .6; }
 .offer-send {
     flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; font: inherit; font-weight: 700;

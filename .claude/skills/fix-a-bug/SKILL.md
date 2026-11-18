@@ -1,6 +1,6 @@
 ---
 name: fix-a-bug
-description: Fix something that broke, from its first commit to its record. Use it when a bug is found or reported, when Louis asks for a fix, or when an FX id is given or needed. It holds the fix's own branch, the test that reproduces the bug, proving the cause, bundling small fixes, and the list a fix finishes by, with its rows and its lesson.
+description: Fixes something that broke, from its first commit to its record. Use when a bug is found or reported, when Louis asks for a fix, or when an FX id is given or needed. Holds the fix's branch, the test that reproduces the bug, proving the cause, bundling small fixes, and the list a fix finishes by, with its rows and its lesson.
 ---
 
 # Fix a bug
@@ -60,7 +60,7 @@ In the commit that fixes it, or the one right after:
    in the [work log](../../../src/docs/work-log.md), newest first, with the count above (`WorkLogTests` holds the counts and that
    every fix in the fixes table has a row).
 3. **Limitations:** if it removes a known limitation, delete it from the TODO's
-   [Known limitations](../../../TODO.md#known-limitations) (FX4 removes #9).
+   [Known limitations](../../../TODO.md#known-limitations).
 4. **Docs:** the design doc and the how-to of every project the fix touched, read against the code as it is now, and
    a picture that no longer shows it redrawn from its JSON ([Draw a diagram](../../../src/docs/guides/draw-a-diagram.md)); anything
    the fix changes for users (settings, MODELS, SETUP); and an [ADR](../../../src/docs/adr/README.md) if the fix made a lasting
@@ -70,8 +70,7 @@ In the commit that fixes it, or the one right after:
    fix's own heading in [Lessons from the fixes](../../../src/docs/learning/fixes-lessons.md), every fix, however small (Louis,
    2026-11-13; `WriteUpsTests` fails for a done fix with no heading there, and the lessons owed on that day are
    listed in it), and at more length in its skill's write-up where it has one; anything lasting about the code goes
-   into its project's design doc; then the fix's doc and its plan are deleted. The docs folded on 2026-10-29 are at
-   the tag `pre-cl24`.
+   into its project's design doc; then the fix's doc and its plan are deleted.
 
 ## Then
 

@@ -1,7 +1,8 @@
 @use "web/tools/surface";
 
 /* A few steps (ADR 0125; Louis: "a purple glass circle", "no bold"): each number in the theme's main button drawn as a
-   circle, then the step's words in one quiet sentence, its title only a shade stronger. Where they stand is
+   circle, then the step's words in one quiet sentence, its title only a shade stronger. The circle stands in the
+   middle of its words, so a step that wraps to two lines still has its number centred beside it. Where they stand is
    Bootstrap's, in the markup; what is left here is their look and the reading width. */
 .steps { max-width: 64ch; }
 .step-number {

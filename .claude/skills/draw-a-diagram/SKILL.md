@@ -1,6 +1,6 @@
 ---
 name: draw-a-diagram
-description: Draw, change or fix a picture in the docs. Use it when a doc needs a picture, or when a diagram's JSON file under a diagrams folder is added or edited. A picture is a JSON file that the tool draws as an SVG.
+description: Draws, changes or fixes a picture in the docs, as a JSON file the repo's tool draws as an SVG. Use when a doc needs a picture, or when a diagram's JSON under a diagrams folder is added or edited. Holds the four steps, the shapes and tones of each kind, and which pictures a project doc shows.
 paths:
   - "**/diagrams/*.json"
 ---

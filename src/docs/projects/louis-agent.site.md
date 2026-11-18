@@ -118,7 +118,7 @@ details wait for them in the morning. Two buttons follow, "Ask for yours", which
 "Watch one work", which goes to the demos so they see it before they ask. Under the buttons sits one line, the framework's announcement strip: a pill that says entries are open, "Two
 businesses get a free website.", and "See how it works". The whole line is a link to the offer's own page,
 `/free-websites`, so the landing stays on what the product does and the offer has an address of its own to share.
-That page says the site wants to show real work, so any business may enter and two are chosen. Three steps say how it
+That page says the site wants to show real work, so any business may enter and two are chosen. Each of the two gets its website built for free and hosted free for the first year. Three steps say how it
 goes (send your details, then two are chosen, then it is built with you), and three cards say what is asked in
 return, a few words on how it went, the site shown here with a link, and two short feedback calls. Its button asks
 Orbi to take the entry: Orbi asks in one form, fills in what the visitor already said, shows the entry back and mails

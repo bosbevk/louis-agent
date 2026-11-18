@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 134 | 98 |
-| Fixes (`FX`) | 187 | 6 |
+| Fixes (`FX`) | 191 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -162,7 +162,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | Id | When | What |
 |---|---|---|
 | F164.1 | 2026-11-18 | The framework's pages, the first of F164's three children: the old pages thrown away from louis-agent.dev and seven written new, Overview to Comparison, as `louis-agent.web.framework`, a package a site turns on with `.Framework()` (Louis: "the framework must be a package like accounts"); `.Docs(address)` in `louis-agent.web.docs` for a doc linked by its path; `.Places(home, site)` in `louis-agent.web.places`, the catch-all moved out; the framework's own site and its host on :5084, flat alone, in the docs layout; every picture in the page's theme, with the brand in its footer and the site's fonts; what each page says held to the repo by its test |
-| F163 | 2026-11-18 | The free websites move to their own page, `/free-websites`, and the landing keeps one line under the hero that leads there: the framework's new announcement strip, in a new slot of its hero, a plain pill with no glass; Orbi gains an always-on writing skill, short sentences with no colon, semicolon or bracket |
+| F163 | 2026-11-18 | The free websites, hosted free for the first year, move to their own page, `/free-websites`, and the landing keeps one line under the hero that leads there: the framework's new announcement strip, in a new slot of its hero, a plain pill with no glass; Orbi gains an always-on writing skill, short sentences with no colon, semicolon or bracket |
 | F162 | 2026-11-18 | Two free websites: a band right after the landing's hero where any business enters through Orbi, who takes the entry in one form and mails it on a yes; two are chosen; the theme page shows nothing twice, four cards with one switch, one off button and one status pill |
 | F161 | 2026-11-18 | The brand speaks to owners: the guide is Orbi, Louis's AI agent, telling his story as his (ADR 0113 amended); the slogan "The website that answers." in the header, footer, tab, link preview and a one-ball social card; the hero "Your doors close at five. Your website doesn't.", one sentence to a line (the framework hero's `Lines`); no price in the description; a face band naming Louis once, with his CV; every line on the landing rewritten for an owner |
 | F145.1 | 2026-11-18 | The privacy page: `/privacy` says what the site keeps and sends and the visitor's rights under POPIA, linked from every footer and the landing's data tile; the guide says what Send it does before it sends a lead |
@@ -296,10 +296,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (187 done)
+## Fixes (191 done)
 
 | Id | When | What |
 |---|---|---|
+| FX203 | 2026-11-18 | Orbi asks again for a free-website entry that makes no sense, and never sends it |
+| FX202 | 2026-11-18 | A long answer's box keeps its corner while it is typed in |
+| FX201 | 2026-11-18 | Enter your business opens Orbi's entry form first, with nothing before it |
+| FX200 | 2026-11-18 | Orbi asks for a free-website entry in a form it can draw, the step numbers stand centred, and a long answer's box is no longer a capsule |
 | FX199 | 2026-11-18 | The theme page is Theme in the menu, every control on it works, and its words speak to an owner |
 | FX198 | 2026-11-18 | Home leads the top menu on every page, the CV mark left the settings, and the privacy page names Orbi |
 | FX197 | 2026-11-17 | The footer shows again, above the fade under the guide's bar, clear of the corner's link and the orb |

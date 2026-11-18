@@ -1,6 +1,6 @@
 ---
 name: put-a-finding
-description: Put a choice to Louis with three options and wait for his pick. Use it whenever work turns up something the plan or the brief doesn't settle, such as a design point, how to shape a class, which package to add, a rule that clashes with what was asked, a layout or naming question, or a test that can't be written as asked.
+description: Puts a choice to Louis with three researched options and a recommendation, then waits for his pick. Use whenever work turns up something the plan or the brief doesn't settle, such as a design point, how to shape a class, a package, a rule that clashes with the ask, a layout or naming question, or a test that can't be written as asked.
 ---
 
 # Put a finding to Louis

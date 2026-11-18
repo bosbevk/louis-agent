@@ -19,7 +19,8 @@ public class FreeWebsitesPageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(band.TextContent, Does.Contain("Entries open").And.Contain("we choose two"));
+            Assert.That(band.TextContent, Does.Contain("Entries open").And.Contain("we choose two")
+                .And.Contain("hosted free for the first year"));
             Assert.That(band.QuerySelectorAll(".tiles article h3").Select(title => title.TextContent),
                 Is.EqualTo(new[] { "A few words from you", "Your website in our work", "Honest feedback" }));
             Assert.That(band.QuerySelector("button.btn")!.TextContent, Is.EqualTo("Enter your business"));

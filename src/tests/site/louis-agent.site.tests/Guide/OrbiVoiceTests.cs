@@ -174,14 +174,21 @@ public class OrbiVoiceTests
 
     /// <summary>
     /// Orbi runs the entry for the two free websites (Louis, 2026-11-18: "orbi must drive it", "the agent should drive
-    /// this, and fill in the form"): it knows the offer, asks for the entry in one form, fills in what the visitor
-    /// already said, shows it back and sends it to Louis only on their yes. Louis chooses the two, never Orbi.
+    /// this, and fill in the form"): it knows the offer, asks for the entry in one form, only for what the visitor
+    /// hasn't said, shows it back and sends it to Louis only on their yes. Louis chooses the two, never Orbi. An
+    /// entry that makes no sense is asked for again, never shown or sent (FX203, Louis: "if someone does this can
+    /// orbi tell him no").
     /// </summary>
     [Test]
     public void TheFreeWebsites_OrbiTakesTheEntry() =>
         Assert.That(Voice(), Does.Contain("**Two free websites, and you take the entries.**")
             .And.Contain("Louis chooses the two")
-            .And.Contain("fill in what they already told you")
+            .And.Contain("only what they haven't told you")
+            .And.Not.Contain("fill in what they already told you")
             .And.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
-            .And.Contain("never promise them a place"));
+            .And.Contain("never promise them a place")
+            .And.Contain("hosted free for the first year")
+            .And.Contain("your first and only call is `AskFor`")
+            .And.Contain("never say the form is above")
+            .And.Contain("never put an entry that makes no sense on the card"));
 }

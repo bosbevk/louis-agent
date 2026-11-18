@@ -1,6 +1,6 @@
 ---
 name: do-a-step
-description: Build one step, test first. Use it when a step of a plan starts, when Louis says go for a step, or when a fix or a small change is about to be built. It says what to read first, how the test is written and seen failing, which tests to run while building, and when to stop and ask.
+description: Builds one step of a plan, test first. Use when a step starts, when Louis says go for a step, or when a fix or a small change is about to be built. Holds what to read first, how the test is written and seen failing, which tests run while building, and when to stop and ask.
 ---
 
 # Do a step

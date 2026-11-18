@@ -1,6 +1,6 @@
 ---
 name: finish-a-step
-description: Take a built step from its test passing to a commit. Use it when a step's code is written and its test passes, before the step is shown to Louis and before any commit. It holds the order of the tests, the golden files, the docs and pictures, the formatting with Rider's tools, what Louis is shown and the commit, and what to do after a Rider reformat.
+description: Takes a built step from its passing test to a commit. Use when a step's code is written and its test passes, before the step is shown to Louis and before any commit. Holds the order of tests, golden files, docs and formatting with Rider's tools, what Louis is shown, the container rebuild, and what to do after a Rider reformat.
 ---
 
 # Finish a step

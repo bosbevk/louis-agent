@@ -1,6 +1,6 @@
 ---
 name: check-a-page
-description: Look at what a visitor sees before it is shown or pushed. Use it when a page, a component, a style or a print layout changed, when Louis asks how something looks, and after a deploy of such a change. It holds how to run a site locally, how to look at exactly 1920 by 1080 and at 390 px wide, how to print a real PDF, and the look at the live page.
+description: Looks at what a visitor sees, at exactly 1920 by 1080 and 390 wide, before a change is shown or pushed. Use when a page, a component, a style or a print layout changed, when Louis asks how something looks, or after a deploy of such a change. Holds how to run a site locally, the three ways to look (Louis's Chrome, headless Chrome at an exact size, a real print), and the look at the live page.
 ---
 
 # Check a page
@@ -37,7 +37,7 @@ line.
 - **Nothing cut off, and nothing on top of something else.**
 - **No error in the browser's console.**
 
-## Three ways to look
+## Three ways to look, and one in a cloud session
 
 ### Louis's Chrome, for clicking through
 
@@ -89,6 +89,16 @@ Then read each picture. The site is its top left corner, on grey.
   does in a desktop browser's window.
 - **`frame.html` works only over http.** Opened as a file, or written into the address, the site inside it never
   gets past its loading screen.
+
+### In a cloud session, Playwright
+
+A cloud container has no Louis's Chrome and no Windows Chrome, but Playwright and its Chromium are installed:
+`require('playwright')` works from any folder and `chromium.launch()` needs no options. Open a page with
+`viewport: { width: 1920, height: 1080 }` or `{ width: 390, height: 844 }`, which is the page's own size, so no
+frame is needed. Check `document.documentElement.scrollWidth` against the width for a sideways scroll, and read
+each picture. Start the site with made-up keys before the run command, as
+`ANTHROPIC_API_KEY=not-used-for-a-page-look AGENT_API_KEY=local-look-only`. The guide then can't answer, so a
+look at the guide's own answers waits for Louis's Chrome.
 
 ### Headless Chrome, for print
 

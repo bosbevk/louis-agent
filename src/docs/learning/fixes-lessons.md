@@ -511,6 +511,44 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX203 · An agent that passes things on must read them first
+
+Someone typed keyboard mash into the free-website entry, and Orbi laid it on a neat card with Send it suggested.
+Nothing had asked Orbi to read the answers. The recipe said ask, show and send, so it did exactly that. Whether
+"sadfsadga" is a business is judgement, and judgement belongs in the prompt, so the fix is one rule there. Orbi now
+reads what comes back, says kindly which answer it couldn't use, and asks for only those boxes again. Louis reads
+every entry, so nonsense never reaches the card. A step that hands work on to a person needs a moment where the
+agent looks at what it is handing on. Skill 7 (context engineering: the prompt says what to judge, not only what to
+do).
+
+## FX202 · A fix for one state is a fix for every state
+
+FX200 took the capsule off a long answer's box, but only while it sat still. Click into it and the box put the
+theme's focus drawing back on, and that drawing is a pill made for a one-line field. So the capsule came straight
+back, now with a violet edge. A control has several looks, at rest, in focus, pressed and turned off, and each one
+can come from a different place. Now a long box has its own focus look: the same corner and wash, with an edge and a
+soft ring in the brand's colour. When a fix changes how something looks, look at it in every state, not only the
+one in the screenshot. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
+## FX201 · When the next step is a form, make it the only step
+
+Pressing "Enter your business" sent Orbi a question, and Orbi did several things at once. It greeted the visitor,
+then asked with the form, all in one answer. The form never showed, and on the next turn Orbi pointed at a form
+that wasn't there. A model given a friendly voice will warm up first, and every extra step in the same answer is
+one more place for the form to get lost. So the entry recipe now says the form is the first and only call, with
+one short line over it. If the visitor can't see it, Orbi asks again instead of pointing at it. A button that
+promises a form should lead straight to one.
+
+## FX200 · A prompt can ask for what its tool can't do
+
+The free-websites entry told Orbi to fill in what the visitor had already said, so they would only add what was
+missing. It sounds helpful, but the form tool has no way to hold an answer. A field is a label and a kind, and the
+label is at most 30 characters. So the model had nowhere to put those answers, and the form came back refused or
+never showed. The quote recipe beside it already said the right thing, ask only what they haven't told you, and it
+works. Now the entry says that too, and names its four short labels. The lesson is to read a recipe against the
+tool's own parameters. When a prompt promises a step the tool has no slot for, the model improvises, and the
+visitor sees the seam.
+
 ## FX199 · A showcase is only as good as its weakest control
 
 The theme page shows every control a site is built from, and a visitor tries them. Three of its buttons were links
