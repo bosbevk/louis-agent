@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX203 · An agent that passes things on must read them first
+
+Someone typed keyboard mash into the free-website entry, and Orbi laid it on a neat card with Send it suggested.
+Nothing had asked Orbi to read the answers. The recipe said ask, show and send, so it did exactly that. Whether
+"sadfsadga" is a business is judgement, and judgement belongs in the prompt, so the fix is one rule there. Orbi now
+reads what comes back, says kindly which answer it couldn't use, and asks for only those boxes again. Louis reads
+every entry, so nonsense never reaches the card. A step that hands work on to a person needs a moment where the
+agent looks at what it is handing on. Skill 7 (context engineering: the prompt says what to judge, not only what to
+do).
+
 ## FX202 · A fix for one state is a fix for every state
 
 FX200 took the capsule off a long answer's box, but only while it sat still. Click into it and the box put the
