@@ -1,5 +1,6 @@
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Site.Pages;
+using LouisAgent.Site.Pages.About;
 using LouisAgent.Site.Pages.Agents;
 using LouisAgent.SiteApi;
 using LouisAgent.SiteApi.Resumes;

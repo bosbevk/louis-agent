@@ -1,6 +1,7 @@
 using System.Reflection;
 using AngleSharp.Dom;
 using LouisAgent.Site.Pages;
+using LouisAgent.Site.Pages.About;
 using LouisAgent.Site.Pages.Framework;
 using LouisAgent.Web.Components.Site.Bands;
 using Microsoft.AspNetCore.Components;
