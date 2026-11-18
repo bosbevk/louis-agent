@@ -229,8 +229,8 @@ framework controls only.
 ### 7. The guide in the showroom
 
 In the showroom the guide stands as the bar at the page's foot, with its chips "Walk me through this page", "Which
-demo is like my business?" and "What does it cost?". The first is the bright one, and it's true on the start and on
-every demo's page, since the same three stand on all of them. On the rest of the site the guide keeps its corner.
+demo is like my business?", "How do I get one?" and "Tell me about the framework". The first is the bright one, and
+it's true on the start and on every demo's page, since the same four stand on all of them. On the rest of the site the guide keeps its corner.
 
 A walk of the start goes from its top to each business's window in turn. When the guide shows a demo, its window
 comes forward, and on a wide screen the guide's answer stands beside it. A window on the start is a picture of its

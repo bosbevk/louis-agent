@@ -511,6 +511,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX205 · A second way in counts the first press again
+
+On a desktop the bar opens when the pointer comes onto the orb. That was added later, beside the press that opens it.
+The press still believed it was the only way in, so when it found the box open it closed it. A visitor who hovered and
+then clicked saw the bar open and shut at once. The test played that order, a hover and then a click, and it failed.
+The fix asks who opened the box: if only the hover did, the click is the visitor's first press and holds it open, and
+the next click closes it as before. The same change took three small things a visitor met on the way. A chip asked
+about a price the site no longer names, the slogan broke over two lines on a phone, and the tape spoke in tool names.
+Each got a test that pins the words or the rule. When a second way into the same state is added, every action that
+read that state has to learn which way it came. Skill 18 (testing and shipping: play the order a person really uses).
+
 ## FX204 · A thing that changes while it leaves must be asked again
 
 Entering the free-website entry, the page threw an error and the red bar came up. Orbi's answer had begun as a short

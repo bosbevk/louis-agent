@@ -42,7 +42,7 @@ public static class LouisAgentDevAreas
     /// </summary>
     private static readonly string[] GuideSuggestions =
     [
-        "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+        "Walk me through this page", "Which demo is like my business?", "How do I get one?",
         "Tell me about the framework"
     ];
 
