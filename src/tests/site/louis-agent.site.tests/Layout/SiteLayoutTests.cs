@@ -98,6 +98,7 @@ public class SiteLayoutTests
     [TestCase("/framework/whats-coming")]
     [TestCase("/contact")]
     [TestCase("/")]
+    [TestCase("/framework/theme")]
     public void TheMenu_LeadsToThePage(string address)
     {
         using var ctx = Context();
@@ -122,7 +123,7 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Contact", "The framework" }));
+        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Theme", "Contact", "The framework" }));
     }
 
     /// <summary>
@@ -139,7 +140,7 @@ public class SiteLayoutTests
 
         var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Contact" }));
+        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Theme", "Contact" }));
     }
 
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
@@ -174,11 +175,11 @@ public class SiteLayoutTests
                 {
                     "/framework/how-it-works", "/framework/architecture", "/framework/identities",
                     "/framework/packs", "/framework/build-your-own", "/framework/measured",
-                    "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
+                    "/framework/built-on-it", "/framework/whats-coming",
                     "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a").Select(a => a.TextContent), Is.EqualTo(new[] { "Home", "Contact" }),
-                "Home and Contact stand in the bar alone since What we build went (FX171)");
+            Assert.That(cut.FindAll(".site-nav > a").Select(a => a.TextContent), Is.EqualTo(new[] { "Home", "Theme", "Contact" }),
+                "Home, Theme and Contact stand in the bar alone since What we build went (FX171)");
         });
     }
 

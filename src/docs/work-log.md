@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 131 | 97 |
-| Fixes (`FX`) | 186 | 6 |
+| Fixes (`FX`) | 187 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -292,10 +292,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (186 done)
+## Fixes (187 done)
 
 | Id | When | What |
 |---|---|---|
+| FX199 | 2026-11-18 | The theme page is Theme in the menu, every control on it works, and its words speak to an owner |
 | FX198 | 2026-11-18 | Home leads the top menu on every page, the CV mark left the settings, and the privacy page names Orbi |
 | FX197 | 2026-11-17 | The footer shows again, above the fade under the guide's bar, clear of the corner's link and the orb |
 | FX196 | 2026-11-17 | A big heading is solid ink in every theme, with no gradient through its letters |
