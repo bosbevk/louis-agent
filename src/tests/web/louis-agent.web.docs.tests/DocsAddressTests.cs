@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Docs.Tests;
 
 /// <summary>
-/// F161.1: a page links to a doc by its path in the repo, and the site says once where those paths lead: GitHub
+/// F162.1: a page links to a doc by its path in the repo, and the site says once where those paths lead: GitHub
 /// today, the docs site later, by that one setting.
 /// </summary>
 public class DocsAddressTests

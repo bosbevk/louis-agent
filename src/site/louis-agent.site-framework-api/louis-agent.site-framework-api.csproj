@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <!-- The framework's own site's host (F161.1): the site as HTML a search engine reads, and the framework's API, with
-         no identity yet, so its agent is core alone (F161.2 gives it louis-agent · AI). -->
+    <!-- The framework's own site's host (F162.1): the site as HTML a search engine reads, and the framework's API, with
+         no identity yet, so its agent is core alone (F162.2 gives it louis-agent · AI). -->
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <RootNamespace>LouisAgent.SiteFrameworkApi</RootNamespace>

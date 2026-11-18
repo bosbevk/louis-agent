@@ -9,9 +9,9 @@ namespace LouisAgent.Api.Site;
 /// Which of a site's pages an address names (F121), from the routes the pages declare: a page's own address, or the
 /// page a section's address sits under (ADR 0107: <c>/proof/rand</c> is on <c>/proof</c>, and the landing's sections
 /// under the site's home word, <c>/home/rule</c>, are on <c>/</c>). The site's pages are its own and those its
-/// areas bring (F161.1), such as the framework's or the accounts'. A route with a parameter is no page of its own,
+/// areas bring (F162.1), such as the framework's or the accounts'. A route with a parameter is no page of its own,
 /// neither is one under <c>/admin</c> (F142), which sits behind the admin key, nor a page behind a sign-in, which
-/// says so with <c>[Authorize]</c> (F161.1): none of these is ever rendered for a search engine or a place the guide
+/// says so with <c>[Authorize]</c> (F162.1): none of these is ever rendered for a search engine or a place the guide
 /// sends a visitor.
 /// </summary>
 public sealed class SiteRoutes

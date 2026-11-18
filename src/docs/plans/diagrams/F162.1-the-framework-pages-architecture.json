@@ -1,7 +1,7 @@
 {
   "kind": "flow",
   "type": "component",
-  "title": "F161.1 the framework's pages: the architecture",
+  "title": "F162.1 the framework's pages: the architecture",
   "caption": "The site's pages configure the framework's parts; doc links lead to GitHub now and to the docs site later.",
   "flow": {
     "nodes": [

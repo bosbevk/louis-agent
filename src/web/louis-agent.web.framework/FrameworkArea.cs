@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework;
 
 /// <summary>
-/// The framework's pages as an area a site names (F161.1, Louis: "the framework must be a package like accounts"):
+/// The framework's pages as an area a site names (F162.1, Louis: "the framework must be a package like accounts"):
 /// <c>.Framework()</c> brings the pages to the site's router, and their contents in reading order to the docs
 /// layout's menu and page turns.
 /// </summary>

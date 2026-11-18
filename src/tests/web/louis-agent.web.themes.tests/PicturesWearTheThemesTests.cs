@@ -6,7 +6,7 @@ using LouisAgent.Web.Themes.Glass;
 namespace LouisAgent.Web.Themes.Tests;
 
 /// <summary>
-/// F161.1: a picture on a page wears the page's theme as well as its style (Louis's pick C: "a palette per theme in
+/// F162.1: a picture on a page wears the page's theme as well as its style (Louis's pick C: "a palette per theme in
 /// the engine"). The engine can't depend on the themes for their names, so it names the attribute and the two themes
 /// itself, and this test, which sees both, holds them equal to the ids the themes give themselves.
 /// </summary>

@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1403.6 715" width="1403.6" height="715" role="img" aria-label="F161 the framework's own site: a developer asks louis-agent · AI" xmlns="http://www.w3.org/2000/svg">
-  <title>F161 the framework's own site: a developer asks louis-agent · AI</title>
+<svg viewBox="-24 -24 1403.6 715" width="1403.6" height="715" role="img" aria-label="F162 the framework's own site: a developer asks louis-agent · AI" xmlns="http://www.w3.org/2000/svg">
+  <title>F162 the framework's own site: a developer asks louis-agent · AI</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -193,7 +193,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="1403.6" height="715" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 84a701.8 170 0 1 0 1403.6 0a701.8 170 0 1 0 -1403.6 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F161 the framework's own site: a developer asks louis-agent · AI</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F162 the framework's own site: a developer asks louis-agent · AI</text>
     <text class="pic-group" x="1339.6" y="14" text-anchor="end">Sequence diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="1355.6" height="1" rx="0" />
     <g class="seq-drawing" transform="translate(0 48)">

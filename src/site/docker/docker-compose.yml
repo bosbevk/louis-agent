@@ -46,7 +46,7 @@ services:
       - ../logs:/logs
       - ../data:/data
 
-  # The framework's own site (F161.1), the review copy of framework.louis-agent.dev: its pages, and no agent yet.
+  # The framework's own site (F162.1), the review copy of framework.louis-agent.dev: its pages, and no agent yet.
   framework:
     build:
       context: ../../..

@@ -1,15 +1,15 @@
 {
   "kind": "flow",
   "type": "component",
-  "title": "F161 the framework's own site: the architecture",
+  "title": "F162 the framework's own site: the architecture",
   "caption": "Three apps on the framework's web, each with its own host; the framework site's doc links lead to GitHub until the docs site is up.",
   "flow": {
     "nodes": [
       { "id": "visitor", "icon": "user", "tone": "blue", "label": "A business owner\nor a developer" },
-      { "id": "sell", "icon": "browser", "tone": "amber", "label": "louis-agent.dev\nsells, Louis · AI\nold framework pages gone (F161.1)" },
-      { "id": "fw", "icon": "browser", "tone": "amber", "label": "framework.louis-agent.dev\nseven pages (F161.1)\nlive (F161.3)" },
-      { "id": "fwhost", "icon": "server", "tone": "amber", "label": "louis-agent.site-framework-api\nserves and prerenders (F161.1)" },
-      { "id": "identity", "icon": "users", "tone": "green", "label": "louis-agent · AI (F161.2)\nlouis-agent.identity.framework" },
+      { "id": "sell", "icon": "browser", "tone": "amber", "label": "louis-agent.dev\nsells, Louis · AI\nold framework pages gone (F162.1)" },
+      { "id": "fw", "icon": "browser", "tone": "amber", "label": "framework.louis-agent.dev\nseven pages (F162.1)\nlive (F162.3)" },
+      { "id": "fwhost", "icon": "server", "tone": "amber", "label": "louis-agent.site-framework-api\nserves and prerenders (F162.1)" },
+      { "id": "identity", "icon": "users", "tone": "green", "label": "louis-agent · AI (F162.2)\nlouis-agent.identity.framework" },
       { "id": "packs", "icon": "box", "tone": "green", "label": "docs and site packs\nno leads" },
       { "id": "web", "icon": "stack", "tone": "violet", "label": "louis-agent.web, .web.docs\nthe parts every site draws" },
       { "id": "github", "icon": "branch", "tone": "red", "label": "GitHub\nthe docs, now" },
@@ -18,7 +18,7 @@
     "edges": [
       { "from": "visitor", "to": "sell", "word": "buys" },
       { "from": "visitor", "to": "fw", "word": "builds" },
-      { "from": "sell", "to": "fw", "word": "menu links (F161.3)" },
+      { "from": "sell", "to": "fw", "word": "menu links (F162.3)" },
       { "from": "fw", "to": "fwhost", "word": "pages and turns" },
       { "from": "fwhost", "to": "identity", "word": "runs" },
       { "from": "identity", "to": "packs", "word": "uses" },

@@ -1,6 +1,6 @@
 @use "web/tools/surface";
 
-/* A docs page's foot (F161.1): previous on the left, next on the right, each a box with the theme's line round it that
+/* A docs page's foot (F162.1): previous on the left, next on the right, each a box with the theme's line round it that
    takes the firmer grey under the pointer, drawn by the framework's surface tool; on a phone they stack. */
 .page-turn {
     display: grid;

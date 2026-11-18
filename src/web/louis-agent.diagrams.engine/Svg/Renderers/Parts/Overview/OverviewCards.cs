@@ -153,6 +153,6 @@ internal static class OverviewCards
         return room;
     }
 
-    /// <summary>A part's class, with its card's tone after it when the card names one (F161.1).</summary>
+    /// <summary>A part's class, with its card's tone after it when the card names one (F162.1).</summary>
     private static string Toned(string cls, Card card) => card.Tone is { } tone ? $"{cls} tone-{tone.Wire()}" : cls;
 }

@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Sources;
 namespace LouisAgent.Web.Framework.Graphs;
 
 /// <summary>
-/// The framework at a glance, the Overview's opening picture (F161.1, Louis, of the hero: "do one like this highlight
+/// The framework at a glance, the Overview's opening picture (F162.1, Louis, of the hero: "do one like this highlight
 /// the important ones"): louis-agent highlighted, joined to the three ideas everything in it is one of, the engine, an
 /// identity and a pack, with where it runs under them.
 /// </summary>

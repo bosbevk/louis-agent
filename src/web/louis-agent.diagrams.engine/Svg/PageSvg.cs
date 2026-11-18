@@ -24,7 +24,7 @@ internal static class PageSvg
     {
         var root = XElement.Parse(svg);
         var styles = root.Elements(Svg + "style").ToList();
-        // On a page it also wears the page's theme (F161.1): each theme's colours after the drawing's own.
+        // On a page it also wears the page's theme (F162.1): each theme's colours after the drawing's own.
         styles[^1].Value += "\n" + PagePalettes.Rules;
         foreach (var style in styles) style.Value = $"@scope {{\n{Rooted(style.Value)}\n}}";
 

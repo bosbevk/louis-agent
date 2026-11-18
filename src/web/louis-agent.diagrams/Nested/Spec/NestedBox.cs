@@ -18,7 +18,7 @@ namespace LouisAgent.Diagrams.Nested.Spec;
 /// <param name="State">The one thing it holds of its own, with the pins that carry it.</param>
 /// <param name="Ghost">Drawn dashed: what stands in this place when the usual box does not.</param>
 /// <param name="Columns">
-/// How many columns the boxes it holds stand in, side by side in rows read left to right (F161.1): one, stacked, when
+/// How many columns the boxes it holds stand in, side by side in rows read left to right (F162.1): one, stacked, when
 /// none is named.
 /// </param>
 public sealed record NestedBox(

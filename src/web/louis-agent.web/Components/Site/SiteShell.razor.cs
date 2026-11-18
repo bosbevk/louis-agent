@@ -66,7 +66,7 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    /// <summary>The site's menu down the left of a docs page (F161.1), drawn only in the docs layout.</summary>
+    /// <summary>The site's menu down the left of a docs page (F162.1), drawn only in the docs layout.</summary>
     [Parameter]
     public RenderFragment? Sidebar { get; set; }
 
@@ -106,7 +106,7 @@ public partial class SiteShell
     /// <summary>The page's choice, else the site's.</summary>
     private PageLayout Laid => _options.Layout ?? Layout;
 
-    /// <summary>Whether the page is drawn in the docs layout's three columns (F161.1).</summary>
+    /// <summary>Whether the page is drawn in the docs layout's three columns (F162.1).</summary>
     private bool InDocs => Laid == PageLayout.Docs;
 
     /// <summary>

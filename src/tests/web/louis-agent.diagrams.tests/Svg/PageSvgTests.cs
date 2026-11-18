@@ -117,7 +117,7 @@ public class PageSvgTests
         Assert.That(DiagramRenderers.Render(Ticket()), Does.Not.Contain("@scope"));
 
     /// <summary>
-    /// F161.1: in a page, a drawing wears the page's theme as well as its style (Louis's pick C: "a palette per theme
+    /// F162.1: in a page, a drawing wears the page's theme as well as its style (Louis's pick C: "a palette per theme
     /// in the engine"): flat's own colours on a flat page, glass's on a glass one, light or dark.
     /// </summary>
     [Test]

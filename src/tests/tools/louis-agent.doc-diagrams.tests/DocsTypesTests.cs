@@ -17,7 +17,7 @@ public class DocsTypesTests
     private const double Pad = 24, TitleLine = 14;
 
     /// <summary>
-    /// How far in from the picture's right edge its type stands, as the header's words do since F161.1 (Louis: "must
+    /// How far in from the picture's right edge its type stands, as the header's words do since F162.1 (Louis: "must
     /// also move in a bit"): the picture builder's own inset, which this test can't reach.
     /// </summary>
     private const double Inset = 16;

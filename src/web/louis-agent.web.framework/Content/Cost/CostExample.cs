@@ -3,7 +3,7 @@ using System.Globalization;
 namespace LouisAgent.Web.Framework.Content.Cost;
 
 /// <summary>
-/// One request worked through, as the engine prices it (F161.1, step 12): its model, its tokens in and out, the price
+/// One request worked through, as the engine prices it (F162.1, step 12): its model, its tokens in and out, the price
 /// table's prices a million tokens for that model and the table's date, and the rand a dollar buys with the rates'
 /// date. It works out the dollars and the rand itself, so the page shows sums, not numbers typed in.
 /// </summary>

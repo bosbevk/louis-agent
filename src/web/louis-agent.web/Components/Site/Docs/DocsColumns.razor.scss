@@ -1,6 +1,6 @@
 @use "web/tools/surface";
 
-/* The docs layout's own rules (F161.1): the columns, their widths and where they stand at each screen are Bootstrap's
+/* The docs layout's own rules (F162.1): the columns, their widths and where they stand at each screen are Bootstrap's
    grid, in the markup (ADR 0085, "always reuse"). What is left is ours: the menu and "On this page" stay in view
    under the header, the theme's line parts the menu from the page, the page fills its column with as much room on
    its right as on its left, and "On this page" has its small name. */

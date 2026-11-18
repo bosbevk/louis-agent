@@ -1,7 +1,7 @@
 {
   "kind": "flow",
   "type": "object",
-  "title": "F161.1 the framework's pages: the Features page in memory",
+  "title": "F162.1 the framework's pages: the Features page in memory",
   "caption": "The page holds its bands; a band holds its tiles and its doc links; every doc link asks the one DocsAddress the site named.",
   "flow": {
     "nodes": [

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Routing;
 namespace LouisAgent.Web.Docs.Contents;
 
 /// <summary>
-/// The docs layout's left column (F161.1): the site's pages under their groups, in reading order, with the page being
+/// The docs layout's left column (F162.1): the site's pages under their groups, in reading order, with the page being
 /// read marked, also when the address is one of its sections'.
 /// </summary>
 /// <remarks>

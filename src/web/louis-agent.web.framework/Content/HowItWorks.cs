@@ -3,7 +3,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content;
 
 /// <summary>
-/// What How it works tells beside its picture of a turn (F161.1, step 10): the chat pipeline's layers in their real
+/// What How it works tells beside its picture of a turn (F162.1, step 10): the chat pipeline's layers in their real
 /// order (<c>ChatPipeline</c>), the web with the backend, every identity and every pack in the repo with a line each
 /// from its own description, and the rules every turn keeps with the ADR each comes from.
 /// </summary>

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages.Decide;
 
 /// <summary>
-/// F161.1, step 12: Examples, at <c>/examples</c>, shows the agents the framework already runs, each named by the
+/// F162.1, step 12: Examples, at <c>/examples</c>, shows the agents the framework already runs, each named by the
 /// identity that makes it, which the test finds on the disk, and what's coming as its last section.
 /// </summary>
 public class ExamplesPageTests
