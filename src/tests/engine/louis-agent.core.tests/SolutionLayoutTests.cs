@@ -41,8 +41,10 @@ public class SolutionLayoutTests
     [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
     [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.triage")]
     [TestCase("src/site", "louis-agent.site", "louis-agent.identity.guide", "louis-agent.site-api",
-        "louis-agent.identity.showroom", "louis-agent.site-framework", "louis-agent.site-framework-api")]
-    [TestCase("src/tests/site", "louis-agent.site.tests", "louis-agent.site-framework.tests")]
+        "louis-agent.identity.showroom", "louis-agent.site-framework", "louis-agent.site-framework-api",
+        "louis-agent.identity.framework")]
+    [TestCase("src/tests/site", "louis-agent.site.tests", "louis-agent.site-framework.tests",
+        "louis-agent.identity.framework.tests")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
         "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner",

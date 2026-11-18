@@ -14,13 +14,15 @@ namespace LouisAgent.Web.Framework.Content;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0125-a-site-is-configured-framework-components.md">ADR 0125: a site is configured framework components</seealso>
 public static class HowItWorks
 {
-    /// <summary>The layers every request to the model goes through, outermost first, as the pipeline builds them.</summary>
+    /// <summary>
+    /// The layers every request to the model goes through, outermost first, as the pipeline builds them.
+    /// </summary>
     public static readonly IReadOnlyList<Term> Layers =
     [
         new(["the tool loop"], "Runs the model's tool calls, up to 10 rounds a message, each call through the guards."),
         new(["the tools kept"],
-            "After the last round, keeps the tool list with tool use off, so the model answers in text and the request " +
-            "still matches the ones before it."),
+            "After the last round, keeps the tool list with tool use off, so the model answers in text " +
+            "and the request still matches the ones before it."),
         new(["the usage"], "Records every request in the ledger, each round its own record."),
         new(["the cut-off calls"], "Marks a call the output limit cut short, so it is never run."),
         new(["the trace"], "Traces the request and its answer, with OpenTelemetry."),
@@ -43,8 +45,11 @@ public static class HowItWorks
     [
         new(["louis-agent.identity.coding"], "The coding agent, in Rider and the terminal."),
         new(["louis-agent.identity.triage"], "A team that triages a service's errors."),
-        new(["louis-agent.identity.puls"], "Puls, a South African general assistant, with its recipes and shop prices."),
+        new(["louis-agent.identity.puls"],
+            "Puls, a South African general assistant, with its recipes and shop prices."),
         new(["louis-agent.identity.guide"], "The guide on louis-agent.dev, who answers visitors and shows them round."),
+        new(["louis-agent.identity.framework"],
+            "The framework's Orbi, who answers developers on this site from the docs."),
         new(["louis-agent.identity.showroom"], "The agents of the showroom's three made-up businesses.")
     ];
 
@@ -73,7 +78,8 @@ public static class HowItWorks
     [
         new(["arguments as data"], "A tool takes its arguments as data, never through a shell."),
         new(["guard the context"],
-            "A result over 50,000 characters is summarised, a cut-off call is never run, and a failure carries its reason."),
+            "A result over 50,000 characters is summarised, a cut-off call is never run, " +
+            "and a failure carries its reason."),
         new(["history is append-only"],
             "Nothing edits the system prompt, the tools or an earlier message, and the turn is kept whole."),
         new(["measure every request"], "Every request is priced in the ledger, and unknown is null, never nought."),
