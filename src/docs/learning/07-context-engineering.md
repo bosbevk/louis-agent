@@ -412,5 +412,21 @@ gave the rules: short sentences, the reader's words, and nothing the code doesn'
 check and was caught. The hero said the agent "has the booking waiting" in the morning, but it can't take bookings.
 It passes on who wants to talk, so the line now says their details are waiting.
 
+## The agent runs the offer (F162, 2026-11-18)
+
+The landing now offers two free websites, so the site can show real work. Any business can enter, and two are
+chosen. The page could have held a form, but the entry goes through Orbi instead, because the site's whole point is
+an agent that does the next step. The page's button only opens the chat with a question. Everything after that lives
+in the context Orbi reads: what the offer is, what is asked in return, and how to take an entry.
+
+That last part is a small recipe in the voice. Orbi asks in one form, fills in what the visitor already said so they
+only add what is missing, shows the entry back as a card, and sends it with the same lead tool it uses for a quote,
+only after a yes. Two lines matter most. Orbi never chooses the two, and it never promises anyone a place. A model
+left to be helpful would happily say "you're in!", so the prompt says plainly that it may not. `OrbiVoiceTests`
+holds those words, so a later edit can't drop them without a test failing.
+
+The lesson is that a new offer on a page is also new context for the agent. The band and the voice change in the
+same step, or the button opens a chat with an agent that has never heard of the offer.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

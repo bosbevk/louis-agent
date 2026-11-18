@@ -106,7 +106,12 @@ that says what each one means, and a visitor who presses a state's button holds 
 headline "Your doors close at five. Your website doesn't.", which opens on the owner's problem rather than on what we
 sell. A line under it says what changes for them: the question asked at 11 at night is answered, and the person's
 details wait for them in the morning. Two buttons follow, "Ask for yours", which goes to the contact page, and
-"Watch one work", which goes to the demos so they see it before they ask. Under the hero runs the tape, one line of what
+"Watch one work", which goes to the demos so they see it before they ask. Right after the hero comes an offer, "Two
+businesses get a free website.", so the site can show real work. Any business may enter, and two are chosen: a pill
+says entries are open, three steps say how it goes (send your details, then two are chosen, then it is built with
+you), and three cards say what is asked in return, a few words on how it went, the site shown here with a link, and
+two short feedback calls. Its button asks Orbi to take the entry: Orbi asks in one form, fills in what the visitor
+already said, shows the entry back and mails it on their yes, and never promises a place. Under it runs the tape, one line of what
 the agents did that never stops. Then comes what it does, as four glass cards, "It does more than chat.", each card
 something the owner can watch happen. Where it runs comes next, "Your data stays in South Africa.": we host it in
 Azure's South African region, a bigger business may keep it on its own servers, and the data stays where it is put.
