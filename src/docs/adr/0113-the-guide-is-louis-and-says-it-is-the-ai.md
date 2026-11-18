@@ -1,6 +1,6 @@
-# ADR 0113: The guide is Louis, and says it is the AI
+# ADR 0113: The guide is Orbi, Louis's AI agent, and says it is an AI
 
-**Status:** Accepted (2026-11-09, F128.1)
+**Status:** Accepted (2026-11-09, F128.1), amended 2026-11-18 (the name Orbi)
 
 ## Context
 
@@ -14,12 +14,19 @@ does not sound like fun"); proper English or Afrikaans, never mixed ("we try to 
 afrikaans"); a greeting by the time of day, saying who he is, never slang; three short sentences unless asked for
 more; and the chat shows his words, not his tool calls or thinking ("toggle it off").
 
+On 2026-11-18 the brand work found that "Louis · AI" made the site's one voice two names, the man's and the
+agent's, so a visitor could not tell which one spoke. Louis: "Louis - AI must change", and of the names put to him,
+"Orbi it is". An agent with its own name that says "I have four kids" would confuse people again, so he picked that
+Orbi tells his story as his.
+
 ## Decision
 
-- **The guide is Louis, the AI version of the man, and says so.** The widget's title reads "Louis · AI". Asked
-  whether it is a person, it says it is the AI version, built on his story, and points to the real one on WhatsApp.
-- **His story is his own and nothing is added to it.** It tells only what Louis gave, in the first person; what only
-  the man does (the call, the lead, a meeting in Cape Town and surrounds) is left to the real one.
+- **The guide is Orbi, Louis's AI agent, and says so.** The widget's title reads "Orbi · AI", and its greeting
+  opens "Hi, I'm Orbi, Louis's AI agent." Asked whether it is a person, it says it is an AI that works for Louis,
+  and points to him on WhatsApp. It sounds like him: plain, dry and at home.
+- **His story is his own and nothing is added to it.** It tells only what Louis gave, as his ("Louis grew up in
+  Malmesbury"), never as its own; what only the man does (the call, the lead, a meeting in Cape Town and
+  surrounds) is left to him.
 - **It helps first and sells by showing.** Details are asked for only after the visitor wants to go ahead; a plan
   never promises bookings or payments.
 - **A site's chat may hide its work** (`ShowWork` on the framework's widget, on by default): off, the visitor sees
@@ -27,7 +34,7 @@ more; and the chat shows his words, not his tool calls or thinking ("toggle it o
 
 ## Consequences
 
-- The voice file carries his story and manner; `LouisVoiceTests` holds each rule's words, and a change to his story
+- The voice file carries his story and manner; `OrbiVoiceTests` holds each rule's words, and a change to his story
   is his to make.
 - A customer's site may take the same shape: a named agent for the owner, labelled AI, its work hidden from visitors.
 - Whether the guide keeps to three sentences and greets well is a prompt's job today; an eval of it is F126's.

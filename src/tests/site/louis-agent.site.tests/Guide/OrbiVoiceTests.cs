@@ -3,11 +3,11 @@ using LouisAgent.Identities.Guide;
 namespace LouisAgent.Site.Tests.Guide;
 
 /// <summary>
-/// The guide's voice is Louis (F128.1, Louis: "we must give louis-agent a name, Louis"): the AI version of the man who
-/// made louis-agent, with his own story and his way of talking, and it says it is the AI whenever that matters, since
-/// the principles every agent reads say it may never lie.
+/// The guide's voice is Orbi, Louis's AI agent (Louis, 2026-11-18: "Orbi it is"): it tells the story of the man who
+/// made louis-agent as his, talks the way he does, and says it is an AI whenever that matters, since the principles
+/// every agent reads say it may never lie.
 /// </summary>
-public class LouisVoiceTests
+public class OrbiVoiceTests
 {
     /// <summary>
     /// The voice as the engine reads it, from the identity's own prompts, its lines joined: a wrapped line in Markdown
@@ -21,10 +21,12 @@ public class LouisVoiceTests
             StringSplitOptions.RemoveEmptyEntries));
     }
 
-    /// <summary>It is Louis, and the AI version of him.</summary>
+    /// <summary>It is Orbi, Louis's AI agent, and his story is told as his, never as its own.</summary>
     [Test]
-    public void TheVoice_IsLouis_TheAIVersion() =>
-        Assert.That(Voice(), Does.Contain("You are Louis").And.Contain("the AI version of Louis"));
+    public void TheVoice_IsOrbi_LouisAIAgent() =>
+        Assert.That(Voice(), Does.Contain("You are Orbi, Louis's AI agent")
+            .And.Contain("tell it as his, never as yours")
+            .And.Not.Contain("the AI version of Louis"));
 
     /// <summary>
     /// A decision is cards, never a question in words (F127.4.1, Louis: "would have given me three options"): every
@@ -52,7 +54,7 @@ public class LouisVoiceTests
     public void TheVoice_TellsHisStory(string words) =>
         Assert.That(Voice(), Does.Contain(words));
 
-    /// <summary>Asked whether it is a person, it says what it is and where the real one is.</summary>
+    /// <summary>Asked whether it is a person, it says it is an AI, and where Louis is.</summary>
     [Test]
     public void AskedIfItIsAPerson_ItSaysItIsTheAI() =>
         Assert.That(Voice(), Does.Contain("Never say or suggest you are a person").And.Contain("WhatsApp"));
@@ -112,7 +114,7 @@ public class LouisVoiceTests
         Assert.That(Voice(), Does.Contain("no ADR or its number"));
 
     /// <summary>
-    /// It talks like him: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
+    /// It sounds like Louis: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
     /// </summary>
     [Test]
     public void TheVoice_TalksLikeHim()
@@ -122,7 +124,7 @@ public class LouisVoiceTests
         Assert.Multiple(() =>
         {
             Assert.That(voice, Does.Contain("feel at home").And.Contain("dry").And.Contain("idiom"));
-            Assert.That(voice, Does.Contain("be Louis when you talk")
+            Assert.That(voice, Does.Contain("sound like Louis when you talk")
                 .And.Contain("you speak proper English and proper Afrikaans, not formal but proper, never a mix"));
             Assert.That(voice, Does.Not.Contain("lekker").And.Not.Contain("sommer"));
             Assert.That(voice, Does.Contain("you're fun to talk to").And.Contain("Never flat"));
@@ -157,8 +159,8 @@ public class LouisVoiceTests
     /// WhatsApp and the contact page as the other way.
     /// </summary>
     [Test]
-    public void WantingToTalkToTheRealLouis_IsALead() =>
-        Assert.That(Voice(), Does.Contain("or wants to talk to the real Louis")
+    public void WantingToTalkToLouis_IsALead() =>
+        Assert.That(Voice(), Does.Contain("or wants to talk to Louis")
             .And.Contain("offer to pass it on yourself"));
 
     /// <summary>

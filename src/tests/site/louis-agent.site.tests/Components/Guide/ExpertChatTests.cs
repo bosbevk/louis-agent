@@ -45,7 +45,7 @@ public class ExpertChatTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find(".chat-widget").ClassList, Does.Contain("is-bar"));
-            Assert.That(cut.Find(".agent-doing").TextContent, Is.EqualTo("Louis · AI"));
+            Assert.That(cut.Find(".agent-doing").TextContent, Is.EqualTo("Orbi · AI"));
             Assert.That(cut.FindAll("button.widget-tour"), Is.Empty);
             Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
         });
@@ -70,11 +70,11 @@ public class ExpertChatTests
     }
 
     /// <summary>
-    /// The guide is Louis, labelled AI (F128.1, Louis's pick of three: "Louis, labelled AI"), so nobody takes it for
-    /// the man himself: it says so in its first words, and asks what brings the visitor (step 5) in his own plain way.
+    /// The guide is Orbi, Louis's AI agent (Louis, 2026-11-18: "Orbi it is"), labelled AI so nobody takes it for a
+    /// person: it says so in its first words, and asks what brings the visitor in a plain way.
     /// </summary>
     [Test]
-    public void TheGuide_IsLouis_SaysItIsAI_AndAsksWhatBringsYou()
+    public void TheGuide_IsOrbi_SaysItIsAI_AndAsksWhatBringsYou()
     {
         using var ctx = Context(out _);
         ctx.Services.AddSingleton(new GuideDoor());
@@ -83,11 +83,11 @@ public class ExpertChatTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(widget.Title, Is.EqualTo("Louis · AI"));
-            Assert.That(widget.Greeting, Does.StartWith("Hi, I'm Louis.").And.Contain("AI"));
+            Assert.That(widget.Title, Is.EqualTo("Orbi · AI"));
+            Assert.That(widget.Greeting, Does.StartWith("Hi, I'm Orbi, Louis's AI agent."));
             Assert.That(widget.Greeting, Does.Contain("What brings you here?"));
-            Assert.That(widget.Greeting, Does.Not.Contain(";"));
-            Assert.That(widget.ShowWork, Is.False, "a visitor sees his words, not his tool calls or thinking");
+            Assert.That(widget.Greeting, Does.Not.Contain(";").And.Not.Contain(":"));
+            Assert.That(widget.ShowWork, Is.False, "a visitor sees its words, not its tool calls or thinking");
         });
     }
 }
