@@ -119,3 +119,19 @@ A change to the engine reaches every image in use.
 **Never while an eval run is going.** A run started from the eval studio runs inside the container. A rebuild makes
 the container again, and that ends the run. `GET /v1/admin/evals/runs/current` says whether one is going. Wait for
 it to end, then rebuild.
+
+## An example
+
+FX204's step, once its test passed. No prompt or tool text changed, so no golden file moved. The fixes table, the
+work log and the lessons got their rows. The two C# files were checked with
+`dotnet format louis-agent-solution.sln --include <the two files> --verify-no-changes`. Louis was shown the
+cause, the test failing and then passing, the browser runs and the commit message, and the step was committed only
+after his word, on its own, test and code together.
+
+## References
+
+- [ADR 0052: edit, never a script](../../../src/docs/adr/0052-edit-never-script.md), Rider's tools first
+- [ADR 0018: the built-in prompts are embedded](../../../src/docs/adr/0018-built-in-prompts-embedded.md), why a
+  container is rebuilt
+- [Write and run tests](../../../src/docs/guides/write-tests.md#regenerate-a-golden-file), the golden files
+- [The goal's skill map](../../../src/docs/GOAL.md), for the concept a step is shown with

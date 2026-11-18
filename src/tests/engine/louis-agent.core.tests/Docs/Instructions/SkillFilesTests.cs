@@ -60,6 +60,23 @@ public class SkillFilesTests
     }
 
     /// <summary>
+    /// Every skill shows one worked example and names the sources it rests on (Louis, 2026-11-18: "a skill should
+    /// always include references and an example"). An example shows the style and the level of detail more clearly
+    /// than a description of them, and a reference lets a reader check where a rule came from.
+    /// </summary>
+    [Test]
+    public void EverySkill_HasAnExampleAndItsReferences()
+    {
+        var missing = SkillFolders()
+            .Select(folder => (Name: Path.GetFileName(folder),
+                Lines: File.ReadAllLines(Path.Combine(folder, "SKILL.md"))))
+            .Where(skill => !skill.Lines.Contains("## An example") || !skill.Lines.Contains("## References"))
+            .Select(skill => skill.Name);
+
+        Assert.That(missing, Is.Empty, "each skill has an '## An example' and a '## References' section");
+    }
+
+    /// <summary>
     /// The skills <c>CLAUDE.md</c> names and the skills there are, are the same list. <c>CLAUDE.md</c> is loaded on
     /// every turn and says which skill goes with which job. So a skill it doesn't name is one Claude isn't told to
     /// use, and a name with no skill behind it sends Claude to nothing. It names a skill as its command, in its

@@ -75,3 +75,17 @@ In the commit that fixes it, or the one right after:
 ## Then
 
 `/ship-it`. `main` is merged in and the full suite of unit tests passes before the pull request.
+
+## An example
+
+FX204. The symptom, as Louis saw it, was an unhandled `NullReferenceException` in the browser's console during
+the free-website entry. The cause was proved by reproducing it: a fake model that streamed at a person's pace
+showed the crash at `AgentBar.razor` line 20, and a test written for that order of events failed. After the fix,
+its row in the fixes table keeps the exact error and the cause in a sentence. The work log has its row, and the
+lesson has its own heading in the lessons, *A thing that changes while it leaves must be asked again*.
+
+## References
+
+- [ADR 0014: test first](../../../src/docs/adr/0014-test-first.md)
+- [The fixes table](../../../src/docs/fixes/README.md) and [the work log](../../../src/docs/work-log.md)
+- [Lessons from the fixes](../../../src/docs/learning/fixes-lessons.md), held by `WriteUpsTests`

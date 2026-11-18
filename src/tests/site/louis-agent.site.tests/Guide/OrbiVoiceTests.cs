@@ -13,10 +13,16 @@ public class OrbiVoiceTests
     /// The voice as the engine reads it, from the identity's own prompts, its lines joined: a wrapped line in Markdown
     /// is still one sentence.
     /// </summary>
-    private static string Voice()
+    private static string Voice() => Flat("voice.md");
+
+    /// <summary>One of Orbi's skills, read the same way as the voice.</summary>
+    private static string Skill(string name) => Flat($"skills/{name}.md");
+
+    /// <summary>A prompt file of Orbi's, its lines joined, so a rule is found whatever its line breaks.</summary>
+    private static string Flat(string path)
     {
         using var reader = new StreamReader(new GuideIdentity().Prompts
-            .GetFileInfo("agent/louis-agent-guide/voice.md").CreateReadStream());
+            .GetFileInfo($"agent/louis-agent-guide/{path}").CreateReadStream());
         return string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
     }
@@ -33,13 +39,17 @@ public class OrbiVoiceTests
     /// walkthrough stop ends with three choices, other choices go as cards too, and a lead is shown as a card and sent
     /// only on its click.
     /// </summary>
-    [TestCase("end with `Offer` and three choices: on to the next stop, by its name (suggested)")]
-    [TestCase("Never ask it in words.")]
-    [TestCase("**Choices as cards.**")]
-    [TestCase("Show the three back with `ShowCard`")]
-    [TestCase("When Send it comes back, call the tool once")]
-    public void TheVoice_OffersChoicesAsCards(string words) =>
-        Assert.That(Voice(), Does.Contain(words));
+    [TestCase("walk-a-page", "End with `Offer` and three choices: on to the next stop, by its name (suggested)")]
+    [TestCase("walk-a-page", "Never ask it in words.")]
+    [TestCase("take-a-lead", "Show the three back with `ShowCard`")]
+    [TestCase("take-a-lead", "When Send it comes back, call the tool once")]
+    public void TheSkills_OfferChoicesAsCards(string skill, string words) =>
+        Assert.That(Skill(skill), Does.Contain(words));
+
+    /// <summary>Any other choice in the voice goes as cards too.</summary>
+    [Test]
+    public void TheVoice_OffersChoicesAsCards() =>
+        Assert.That(Voice(), Does.Contain("**Choices as cards.**"));
 
     /// <summary>His story is the one he told, and nothing is added to it.</summary>
     [TestCase("Malmesbury")]
@@ -147,7 +157,7 @@ public class OrbiVoiceTests
         Assert.Multiple(() =>
         {
             Assert.That(voice, Does.Contain("never a choice that only says to type"));
-            Assert.That(voice, Does.Contain("one `AskFor` form, only what they haven't told you"));
+            Assert.That(Skill("take-a-lead"), Does.Contain("one `AskFor` form, only what they haven't told you"));
             Assert.That(voice, Does.Contain("ask for it with `AskFor`, one field The job (LongText)"));
             Assert.That(voice, Does.Not.Contain("one thing at a time, as a person would"));
         });
@@ -160,8 +170,8 @@ public class OrbiVoiceTests
     /// </summary>
     [Test]
     public void WantingToTalkToLouis_IsALead() =>
-        Assert.That(Voice(), Does.Contain("or wants to talk to Louis")
-            .And.Contain("offer to pass it on yourself"));
+        Assert.That(Skill("take-a-lead"), Does.Contain("or wants to talk to Louis")
+            .And.Contain("Offer to pass it on yourself"));
 
     /// <summary>
     /// Before a visitor sends their details, he says what Send it does and where the privacy page is (F145.1), so
@@ -169,7 +179,7 @@ public class OrbiVoiceTests
     /// </summary>
     [Test]
     public void BeforeALeadIsSent_HeSaysWhatSendingDoes() =>
-        Assert.That(Voice(), Does.Contain("say in one plain sentence what Send it does")
+        Assert.That(Skill("take-a-lead"), Does.Contain("say in one plain sentence what Send it does")
             .And.Contain("the privacy page says what happens to it"));
 
     /// <summary>
@@ -180,15 +190,35 @@ public class OrbiVoiceTests
     /// orbi tell him no").
     /// </summary>
     [Test]
-    public void TheFreeWebsites_OrbiTakesTheEntry() =>
+    public void TheFreeWebsites_OrbiTakesTheEntry()
+    {
+        // The start stays in the voice, so the form comes first with nothing before it; the rest is read once the
+        // form comes back.
         Assert.That(Voice(), Does.Contain("**Two free websites, and you take the entries.**")
             .And.Contain("Louis chooses the two")
             .And.Contain("only what they haven't told you")
             .And.Not.Contain("fill in what they already told you")
-            .And.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
             .And.Contain("never promise them a place")
             .And.Contain("hosted free for the first year")
             .And.Contain("your first and only call is `AskFor`")
             .And.Contain("never say the form is above")
-            .And.Contain("never put an entry that makes no sense on the card"));
+            .And.Contain("your free-website-entry skill takes it from there"));
+        Assert.That(Skill("free-website-entry"), Does.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
+            .And.Contain("Never put an entry that makes no sense on the card"));
+    }
+
+    /// <summary>
+    /// The voice works like CLAUDE.md (Louis, 2026-11-18: "why is our voice file not working like claude.md, why is
+    /// it not referencing skills"): a table names each on-demand skill by the job it is for, so Orbi reads it then.
+    /// </summary>
+    [Test]
+    public void TheVoice_NamesEverySkillItReadsOnDemand()
+    {
+        var identity = new GuideIdentity();
+        var onDemand = identity.Prompts.GetDirectoryContents("agent/louis-agent-guide/skills")
+            .Select(file => Path.GetFileNameWithoutExtension(file.Name))
+            .Where(name => Skill(name).Contains("load: on-demand"));
+
+        Assert.That(onDemand.Where(name => !Voice().Contains($"`louis-agent-guide/{name}`")), Is.Empty);
+    }
 }

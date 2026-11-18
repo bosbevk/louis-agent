@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 133 | 97 |
 | Fixes (`FX`) | 192 | 6 |
-| Cleanups (`CL`) | 40 | 30 |
+| Cleanups (`CL`) | 41 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (133 in the TODO)
+## Open (132 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -57,7 +57,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
-| CL64 | Our prompts in the skill shape: a description that says when, the never-rules first, short numbered steps, detail loaded when needed, held by a test whose list can only shrink; the cook and the guide's voice rewritten and measured before and after; its own plan | Now, after CL63 |
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
@@ -491,10 +490,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (40 done)
+## Cleanups (41 done)
 
 | Id | When | What |
 |---|---|---|
+| CL64 | 2026-11-18 | Orbi's prompts in the skill shape (narrowed by Louis to the guide alone): the voice is an index, its seven rules first and a table of on-demand skills, 4,356 words to about 3,100; five procedures became skills; every skill, Orbi's and Claude Code's, has its rules first, an example and its references, held by tests |
 | CL67 | 2026-11-17 | The feeds' MCP scheme is `feeds://` (Louis: "A feed must change to Feeds"), plural like `/v1/feeds` and the docs' coming `docs://`; no alias for `feed://` (ADR 0049); ADR 0072's line changed with it |
 | CL65.5 | 2026-11-15 | The pictures a project needs, and CL65 done (Louis: "the project type and requirements must drive which diagrams is required", "placed where it is used ort needed not a section"; his pick of three): every project doc states its kind from a list of nine and what it shows beyond the kind's floor, a test holds it to exactly that and the guide's table to the floor; 27 missing pictures drawn from the code, 8 deployment, 5 nested, 14 activity; no Diagrams section, each picture in its story; the `components` kind is `nested`; the `ticket` kind's name left open as CL66 |
 | CL65.4 | 2026-11-15 | What the old looks left (with its parent, Louis: "approve go unattended"): the engine holds only what a picture is drawn with today; the two layout rules nothing drew by are gone and the strategy round them is two static classes; the rules of 26 classes no drawing writes, a banner and three colours are out of the style every picture carries; the kinds' styles stand in one folder and what two kinds styled alike is styled once; a path is written one way and an arrow keeps its exact numbers; a fade is a small type named beside its style; three rule tests hold it, and each rewrite of every picture was proved by taking its one change out again; the names of the `components` and `ticket` kinds put to Louis, neither renamed |

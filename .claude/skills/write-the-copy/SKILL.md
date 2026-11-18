@@ -103,3 +103,18 @@ that stops being true joins its list.
 
 Show the words before and after side by side, with the rule or the research each change follows. Wording goes
 on its own branch and pull request, wording only (another thread owns the styles), through `/ship-it`.
+
+## An example
+
+The header's tagline, after the research picked the line. Before, it said "100% C#, because you can", which
+spoke to a developer about the framework. After, it says "The website that answers.", in
+`Layout/SiteLayout.razor`, where the header and the footer show it. The test that pins the words changes first and
+is seen failing, then the page. The line is four words, says what the thing does when the name doesn't, and is
+read alone, as a link preview shows it.
+
+## References
+
+- GOV.UK, [Writing for GOV.UK](https://www.gov.uk/guidance/content-design/writing-for-gov-uk)
+- NN/g, [How users read on the web](https://www.nngroup.com/articles/how-users-read-on-the-web/)
+- Mailchimp's [Content Style Guide](https://styleguide.mailchimp.com/)
+- David Ogilvy, *Confessions of an Advertising Man*, and Eugene Schwartz, *Breakthrough Advertising*

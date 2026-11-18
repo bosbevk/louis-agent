@@ -58,3 +58,17 @@ A cleanup (`CL`) finishes by the same list, and so does each child of a parent (
 ## Then
 
 `/ship-it`, for the pull request that finishes the work.
+
+## An example
+
+F35, the cook's recipe sources, closed by this list. Its TODO row went and its work-log row came in. Its
+lessons became the write-up `src/docs/learning/05-structured-outputs.md`, named in the write-ups' list. What lasts
+of its plans went into the projects' design docs, and the plans were deleted in the pull request that closed it.
+
+## References
+
+- [The work log](../../../src/docs/work-log.md), held by `WorkLogTests`
+- [The write-ups](../../../src/docs/learning/README.md), held by `WriteUpsTests`
+- [ADR 0013: the documentation's structure](../../../src/docs/adr/0013-documentation-structure.md), why a done plan
+  is deleted
+- [The goal's skill map](../../../src/docs/GOAL.md)

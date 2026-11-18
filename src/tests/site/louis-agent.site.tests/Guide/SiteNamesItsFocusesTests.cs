@@ -21,15 +21,15 @@ public class SiteNamesItsFocusesTests
     private static SiteFocuses Focuses() => new ServiceCollection().AddSiteAreas(LouisAgentDevAreas.Name)
         .BuildServiceProvider().GetRequiredService<SiteFocuses>();
 
-    /// <summary>Each part where Louis put it: the demos and every demo, the framework, and selling elsewhere.</summary>
+    /// <summary>Each part where Louis put it: the demos and every demo, and selling elsewhere, the framework's pages included.</summary>
     [TestCase("/", GuideFocus.Selling)]
     [TestCase("/contact", GuideFocus.Selling)]
     [TestCase("/home/what-it-does", GuideFocus.Selling)]
     [TestCase("/demos", GuideFocus.Demos)]
     [TestCase("/guesthouse-demo", GuideFocus.Demos)]
     [TestCase("/law-practice-demo", GuideFocus.Demos)]
-    [TestCase("/framework/packs/louis-agent-pack-git", GuideFocus.Framework)]
-    [TestCase("/csharp-ai-agent-framework", GuideFocus.Framework)]
+    [TestCase("/framework/packs/louis-agent-pack-git", GuideFocus.Selling)]
+    [TestCase("/csharp-ai-agent-framework", GuideFocus.Selling)]
     public void APart_TakesItsFocus(string path, GuideFocus focus) =>
         Assert.That(Focuses().Of(path), Is.EqualTo(focus.Wire()));
 

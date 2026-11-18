@@ -58,6 +58,11 @@ once, or when getting it wrong costs a lot.
    - The **detail** after the steps, under headings that say what each part is for: a table to look things up,
      the rules of the craft with their sources, an example.
    - **Checks**, then **Handing it over**: what is shown to Louis, and where the work goes next.
+   - **`## An example`**: one worked case of the job, from real work in this repo, so the style and the level of
+     detail are shown, not only described.
+   - **`## References`**, last: the ADRs, guides and outside sources its rules rest on, linked, so a reader can
+     check where a rule came from. Louis, 2026-11-18: "a skill should always include references and an example".
+     `SkillFilesTests` holds both headings.
 5. **Wire it in.**
    - A row in the *Skills* table of `src/docs/CLAUDE.md`, as `` `/name` ``, and a row in `.claude/README.md`'s
      table. `SkillFilesTests` holds that `CLAUDE.md` names exactly the skills there are.
@@ -90,6 +95,56 @@ once, or when getting it wrong costs a lot.
 - **No hard stop and no secret.** A stop that must always hold is in `CLAUDE.md`. A key, a password or a private
   address is never in any file here.
 
+## An example
+
+Anthropic's guide says examples show the style and the level of detail more clearly than a description of them
+does. So here is a small skill in this repo's shape, written for a real job. It is an example only, not a skill
+here. Its commands are the ones in [Write and run tests](../../../src/docs/guides/write-tests.md).
+
+````markdown
+---
+name: regenerate-golden-files
+description: Regenerates the golden files that pin what the model reads or what a component draws, and reviews
+  their diff. Use when a prompt, a tool's text or a component's markup changed on purpose and a snapshot test
+  fails. Holds the commands per test project and what to read in the diff.
+---
+# Regenerate the golden files
+
+A golden file pins what the model reads, or what a component draws. A change made on purpose rewrites it, and its
+diff is the review of that change.
+
+1. **Never regenerate to make a test pass you don't understand.** Read why it failed first.
+2. **Never leave `LOUIS_UPDATE_GOLDEN` set.** Every later run would rewrite the files instead of checking them.
+
+## Steps
+
+1. Run the failing test project once with the variable set, as
+   `LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.tests`.
+2. Read `git diff` on the golden files. Every changed line should come from your change.
+3. Run the same tests again without the variable. They pass.
+4. Show the diff with the step, and commit the golden files with it.
+
+## An example
+
+A prompt's wording changed, and `ModelRequestSnapshotTests` failed on the new line. The diff showed only that
+line, so the golden file was committed with the step.
+
+## References
+
+- Write and run tests, *Regenerate a golden file*
+````
+
+What makes it good, by Anthropic's guide:
+
+- **The description says what and when**, in the third person, with the words a person uses for the job. A bad
+  one is "Helps with tests". It doesn't say which tests, or when to load it.
+- **The stops come first**, two of them, each with its reason.
+- **The steps are short and exact.** A command is written out in full, because it must run one way.
+- **Only what Claude doesn't know.** It doesn't explain what a test is. It holds our variable, our paths, and the
+  trap of leaving the variable set.
+- **It is short.** Anthropic asks for a body under 500 lines. Ours are at most 200 (`ClaudeMdSizeTests`), and most
+  are under 100.
+
 ## The header's fields
 
 Claude Code reads more fields than `name` and `description`. Use one only when the job needs it.
@@ -107,6 +162,7 @@ Claude Code reads more fields than `name` and `description`. Use one only when t
 - The stops are at the top, and none of them is a hard stop that belongs in `CLAUDE.md`.
 - Every command in it was run once, and every path in it exists.
 - Every rule names where it comes from: Louis's words, an ADR, a test, or a source on the web.
+- It has `## An example` from real work, and `## References` with every source linked.
 - At most 200 lines, and the Docs tests pass.
 
 ## Handing it over
@@ -114,3 +170,12 @@ Claude Code reads more fields than `name` and `description`. Use one only when t
 Show Louis the whole file, the research it rests on with links, and the jobs it was tried on with what happened.
 A choice the research doesn't settle, such as which of two skills a job belongs to, goes to him through
 `/put-a-finding`. On his word it is committed on its own through `/ship-it`.
+
+## References
+
+- Anthropic, [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices):
+  the description, concise bodies, the examples pattern, the 500-line limit
+- Claude Code, [Skills](https://code.claude.com/docs/en/skills): the header's fields and how a skill loads
+- Anthropic, [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills):
+  progressive disclosure
+- [The docs rules](../../rules/docs.md), how every text here is written

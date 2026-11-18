@@ -72,3 +72,18 @@ source. The reply in the thread gives the picks in one line each and links the p
 The picked words go in on their own branch and pull request, wording only, through `/ship-it`. A slogan that
 changes what the model reads (the guide's prompts) regenerates its golden files. Save the picks to project memory
 so a later thread doesn't ask again.
+
+## An example
+
+The offer of two free websites. The inventory came first, from `main`. Then how other studios run a free build
+for their portfolio, and what they ask in return, each from a page read that day. The research went to Louis as
+a page with three options per decision, and his picks went in on their own branch: the band's words "Two
+businesses get a free website.", a draw that Louis chooses, and hosting free for the first year (Louis: "1 Year").
+
+## References
+
+- April Dunford, *Obviously Awesome*, for the five parts of positioning
+- NN/g, [competitive usability evaluations](https://www.nngroup.com/articles/competitive-usability-evaluations/)
+- Unbounce's [Conversion Benchmark Report](https://unbounce.com/conversion-benchmark-report/)
+- The Information Regulator on [POPIA](https://inforegulator.org.za/), and the EU AI Act's
+  [Article 50](https://artificialintelligenceact.eu/article/50/)

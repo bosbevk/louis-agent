@@ -50,15 +50,12 @@ public static class LouisAgentDevAreas
     private const string LeadTool = "SendLead";
 
     /// <summary>
-    /// The guide sells on the ordinary pages, guides through the showroom and every demo, and is technical about the
-    /// framework, the page that compares it with others included.
+    /// The guide sells on every page, the framework's included, and guides through the showroom and every demo.
     /// </summary>
     private static void Focuses(SiteFocusesBuilder focuses)
     {
         focuses.Default(GuideFocus.Selling.Wire())
-            .Under("/demos", GuideFocus.Demos.Wire())
-            .Under("/framework", GuideFocus.Framework.Wire())
-            .Under("/csharp-ai-agent-framework", GuideFocus.Framework.Wire());
+            .Under("/demos", GuideFocus.Demos.Wire());
         foreach (var demo in SiteDemos.All.All) focuses.Under(demo.Address, GuideFocus.Demos.Wire());
     }
 }
