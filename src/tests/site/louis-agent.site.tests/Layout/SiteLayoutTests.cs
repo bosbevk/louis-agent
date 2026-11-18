@@ -68,23 +68,21 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The CV mark (F142, Louis: "little icon CV there") stands in the settings' panel (FX163, "then we put those
-    /// buttons there"): a small document and "CV", to /cv, with a name a screen reader says.
+    /// The settings hold only the look switches, behind the three-line button (FX163). The CV mark that stood there
+    /// went once the landing showed who builds it (Louis, 2026-11-18: "we can remove that now"): the face band leads
+    /// to the CV instead.
     /// </summary>
     [Test]
-    public void TheSettings_HoldTheCvMark()
+    public void TheSettings_HoldOnlyTheLooks()
     {
         using var ctx = Context();
 
-        var last = ctx.Render<SiteLayout>().Find(".site-settings > a");
+        var cut = ctx.Render<SiteLayout>();
 
         Assert.Multiple(() =>
         {
-            Assert.That(last.GetAttribute("href"), Is.EqualTo("/cv"));
-            Assert.That(last.ClassList, Does.Contain("cv-mark"));
-            Assert.That(last.TextContent.Trim(), Is.EqualTo("CV"));
-            Assert.That(last.GetAttribute("aria-label"), Is.EqualTo("Louis's CV"));
-            Assert.That(last.QuerySelectorAll("svg"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".site-settings-button"), Has.Count.EqualTo(1), "the three-line button stays");
+            Assert.That(cut.FindAll(".site-settings a"), Is.Empty, "no CV mark, and no other link");
         });
     }
 
@@ -99,6 +97,7 @@ public class SiteLayoutTests
     [TestCase("/framework/built-on-it")]
     [TestCase("/framework/whats-coming")]
     [TestCase("/contact")]
+    [TestCase("/")]
     public void TheMenu_LeadsToThePage(string address)
     {
         using var ctx = Context();
@@ -111,7 +110,8 @@ public class SiteLayoutTests
     /// <summary>
     /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, Contact, and the framework last of
     /// its pages; no Pricing (Louis: "remove pricing"), no What we build (FX171, Louis: "remove this page and
-    /// everything of it"), and the CV mark in the settings (FX163).
+    /// everything of it"), and the CV mark in the settings (FX163). Home comes first (Louis, 2026-11-18, on the privacy
+    /// page: "there is no clear way from here back to main layout"), since the name alone isn't seen as a way home.
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -122,7 +122,7 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(items, Is.EqualTo(new[] { "Demos", "Contact", "The framework" }));
+        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Contact", "The framework" }));
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class SiteLayoutTests
 
         var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(shown, Is.EqualTo(new[] { "Demos", "Contact" }));
+        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Contact" }));
     }
 
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
@@ -177,8 +177,8 @@ public class SiteLayoutTests
                     "/framework/built-on-it", "/framework/whats-coming", "/framework/theme",
                     "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(1),
-                "Contact stands in the bar alone since What we build went (FX171), the CV mark in the settings (FX163)");
+            Assert.That(cut.FindAll(".site-nav > a").Select(a => a.TextContent), Is.EqualTo(new[] { "Home", "Contact" }),
+                "Home and Contact stand in the bar alone since What we build went (FX171)");
         });
     }
 

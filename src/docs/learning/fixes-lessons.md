@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX198 · A way home has to look like one
+
+On every inner page the only way back to the landing was the site's name in the top corner. It did lead home, but
+nothing about it said so, and a visitor on the privacy page saw no way back. The fix put a plain Home link first in
+the menu, where people look for it. The same change took the CV mark out of the settings, since the landing now
+shows who builds the site and leads to the CV from there, and the privacy page now calls the agent by its name,
+Orbi. The lesson is that a link a visitor can't recognise as one is no link at all. Skill 18 (testing and shipping:
+what a visitor sees is checked by seeing it).
+
 ## FX197 · A fixed layer covers whatever has no layer of its own
 
 The footer had been at the very bottom since FX163, but nobody could see it. Under the guide's bar the page fades
