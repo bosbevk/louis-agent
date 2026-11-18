@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 133 | 97 |
-| Fixes (`FX`) | 191 | 6 |
+| Fixes (`FX`) | 192 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -294,10 +294,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (191 done)
+## Fixes (192 done)
 
 | Id | When | What |
 |---|---|---|
+| FX204 | 2026-11-18 | The free-website entry no longer crashes the guide's bar when the form comes |
 | FX203 | 2026-11-18 | Orbi asks again for a free-website entry that makes no sense, and never sends it |
 | FX202 | 2026-11-18 | A long answer's box keeps its corner while it is typed in |
 | FX201 | 2026-11-18 | Enter your business opens Orbi's entry form first, with nothing before it |
