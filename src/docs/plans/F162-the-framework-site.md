@@ -25,8 +25,20 @@ identity". His picks of that day, each of three options after research:
 | 10 | Where the pages live | "framework will also become a subdomain": `framework.louis-agent.dev`, its own project and app, as a parent with children (A) |
 | 11 | Its agent | "no we give him his own identity": louis-agent · AI, the framework speaking for itself, labelled AI (A) |
 
-The research behind them (how Microsoft Agent Framework, Anthropic, LangChain and the AI SDK lay out their docs,
-Diátaxis, Starlight, llms.txt's uptake, the MCP resources spec, Google's URL guidance) is in F162.1's *Context*.
+The research behind them: how [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/),
+[Anthropic](https://platform.claude.com/docs/en/home), LangChain and the AI SDK lay out their docs;
+[Diátaxis](https://diataxis.fr/), the four kinds of doc ADR 0013 follows;
+[Starlight](https://starlight.astro.build/guides/sidebar/), a sidebar from folders and headers;
+[llmstxt.org](https://llmstxt.org/) and its uptake (97% of the files get no requests); the
+[MCP resources spec](https://modelcontextprotocol.io/specification/2025-11-25/server/resources) (own schemes allowed);
+Microsoft Learn's and Mintlify's docs servers (search and fetch tools); and
+[Google's URL guidance](https://developers.google.com/search/docs/crawling-indexing/url-structure) (descriptive words,
+hyphens, a simple structure). F162.1 is done: its design is in the docs of
+[louis-agent.web.framework](../projects/louis-agent.web.framework.md),
+[louis-agent.web.docs](../projects/louis-agent.web.docs.md),
+[louis-agent.web.places](../projects/louis-agent.web.places.md) and
+[louis-agent.site-framework](../projects/louis-agent.site-framework.md), and its story in the
+[extensibility write-up](../learning/20-extensibility.md).
 
 ## Design
 
@@ -89,4 +101,4 @@ agents keep to their own sites (Louis · AI never on the framework site, louis-a
   `src/docs/projects/README.md`. F162.3 moves them to the framework site's pages once its address answers.
 
 ---
-[Docs index](../README.md) · [Plans](README.md) · Related: [F162.1](F162.1-the-framework-pages.md) · [F148](F148-one-docs-endpoint.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md) · [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)
+[Docs index](../README.md) · [Plans](README.md) · Related: [louis-agent.site-framework](../projects/louis-agent.site-framework.md) · [F148](F148-one-docs-endpoint.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md) · [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)

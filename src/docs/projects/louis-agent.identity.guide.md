@@ -87,8 +87,8 @@ smaller, measured live.
 ### 6. One guide, a focus for each part of the site
 
 louis-agent.dev names which part of the site each page belongs to (`LouisAgentDevAreas`). Selling is the default.
-`/demos` and every demo are the demos part. Everything under `/framework`, and `/csharp-ai-agent-framework`, is the
-framework part. These parts are `GuideFocus`.
+`/demos` and every demo are the demos part. Everything under `/framework`, which is the theme's component guide now
+that the framework's pages are on their own site, is the framework part. These parts are `GuideFocus`.
 
 Each message's page block says which part the visitor is in. The voice reads that part's on-demand skill
 (`focus-selling`, `focus-demos` or `focus-framework`) the first time a part shows up, and again whenever it changes.

@@ -82,7 +82,8 @@ content, one for the dark and one for the light, each 3840 by 2160 pixels and st
 on a layer of its own that holds still while the page scrolls, so nothing behind the glass is painted again as the
 visitor reads; under the agent's bar the page's content fades into that same picture. The pictures are files this
 project serves beside the drawings, `glass/dark/silk.webp` and `glass/light/silk.webp`. Glass draws no lines of its
-own. Flat draws no lines either and no lights: its page is one solid colour, white or black, as its design is.
+own. Flat draws no lines either and no lights: its page is one solid colour, a white a tad darker than white in the
+light (`#f7f7f8`) and a very dark grey, almost black, in the dark (`#0c0c0e`).
 
 Glass bends what is behind a pane as real glass does, in the pane under the pointer and in the one picked or
 shown. Its glass is 52 pixels thick at the edge and its middle stands 70 higher, the cards of the design page.
@@ -99,7 +100,7 @@ The presses answer the pointer through values too. In glass the hover drawing do
 colours. In flat, which has no drawings there, the main button turns the lighter violet, the second button fills
 with the words' colour and takes the page's colour for its words, and a chip floating over the bar takes a line in
 the words' colour. A small plate an icon stands on in a card, such as a tile's, is white glass with a soft shadow in
-glass, and in flat the page's own colour with no shadow: white in the light, black in the dark.
+glass, and in flat the page's own colour with no shadow.
 
 A veil, the thin sheet the showroom lays over its stage, is a pane's own glass in the glass theme: see-through,
 with the pane's colour change, no blur and no edge. In flat it is the pane's fill with a hairline and no blur.
@@ -111,9 +112,9 @@ sharp behind it, a little deepened in colour, and a soft violet-dark shadow unde
 hairline.
 
 Flat draws every surface as one solid colour with a hairline round it, with no gradient, shadow or blur anywhere,
-so a pane's rim, light, shadow and blur are all `none`. In the dark the page is black and a pane a near-black
-grey. In the light the page is white and a pane a solid grey clearly darker than it, with a firmer grey line, since
-a card on a white page must be darker than the page. The press is the same solid violet in both, the second button
+so a pane's rim, light, shadow and blur are all `none`. In the dark the page is almost black and a pane a dark grey a
+step lighter (`#141418`). In the light the page is a tad darker than white and a pane a solid grey clearly darker than
+it, with a firmer grey line, since a card on a white page must be darker than the page. The press is the same solid violet in both, the second button
 an outline in the words' colour.
 
 A big heading reads the same in every theme. Its words are their strongest colour, painted solid as any text is, so

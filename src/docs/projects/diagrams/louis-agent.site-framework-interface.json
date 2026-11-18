@@ -1,0 +1,31 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.site-framework: the interface design",
+  "caption": "FrameworkAreas is the one place the site says what it uses; the browser's program, the host's page services and the tests all hand it to AddSiteAreas, so they draw what the site draws.",
+  "classes": {
+    "types": [
+      { "id": "areas", "name": "FrameworkAreas", "kind": "static, the site's areas",
+        "members": [ "+Home = \"overview\"", "+Name(areas)" ] },
+      { "id": "app", "name": "App", "kind": "the router" },
+      { "id": "layout", "name": "FrameworkLayout", "kind": "the site's frame" },
+      { "id": "program", "name": "Program", "kind": "the browser's program" },
+      { "id": "services", "name": "FrameworkPageServices", "kind": "static, the host's page services",
+        "members": [ "+Register(services)" ] },
+      { "id": "host", "name": "Program", "kind": "louis-agent.site-framework-api, the host" },
+      { "id": "add", "name": "AddSiteAreas", "kind": "louis-agent.web", "tone": "violet" },
+      { "id": "shell", "name": "SiteShell", "kind": "louis-agent.web, Layout = Docs", "tone": "violet" },
+      { "id": "map", "name": "MapLouisAgentSite", "kind": "louis-agent.api", "tone": "violet" },
+      { "id": "place", "name": "PlaceLayout", "kind": "louis-agent.web.places", "tone": "violet" }
+    ],
+    "relations": [
+      { "from": "program", "to": "add", "kind": "uses", "word": "names its areas with" },
+      { "from": "services", "to": "add", "kind": "uses", "word": "names its areas with" },
+      { "from": "add", "to": "areas", "kind": "uses", "word": "calls Name" },
+      { "from": "app", "to": "place", "kind": "uses", "word": "asks for the layout" },
+      { "from": "app", "to": "layout", "kind": "uses", "word": "draws pages in" },
+      { "from": "layout", "to": "shell", "kind": "uses", "word": "is drawn on" },
+      { "from": "host", "to": "map", "kind": "uses", "word": "serves the site with" },
+      { "from": "map", "to": "services", "kind": "uses", "word": "draws pages with" }
+    ]
+  }
+}

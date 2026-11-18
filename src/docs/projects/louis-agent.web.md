@@ -67,7 +67,15 @@ An area named twice counts once.
 
 **Last, it keeps one record of what the site has.** `SiteAreas` is registered once. It gives the router its page
 assemblies, it gives the admin's shell each area's admin links, and it lists the themes the areas brought, in the
-order the site named them, the first one being the site's default.
+order the site named them, the first one being the site's default. Beside it goes `SitePageAssemblies`, a record of
+the API's contracts that names the same page assemblies, so the site's host draws the pages a package brought for a
+search engine, as it draws the site's own, without the host being told of the package
+([louis-agent.api](louis-agent.api.md)).
+
+Three libraries beside the framework's web add areas this way too: `.Places(home, site)` for every place's address
+([louis-agent.web.places](louis-agent.web.places.md)), `.Docs(address)` for where a page's doc links lead
+([louis-agent.web.docs](louis-agent.web.docs.md)), and `.Framework()` for the framework's own pages
+([louis-agent.web.framework](louis-agent.web.framework.md)).
 
 `Focuses(f => …)` names the part of the site each page is. A page's part is the longest address that matches it,
 compared by whole segments, and the default when none matches. The guide's widget sends that part with every
@@ -466,21 +474,44 @@ cross it, and the bend just after a word. The view writes one SVG that scales to
 
 A word stands on its own arrow's line, on a small ground of the page's colour that hides the line behind it. A
 box that names a shape is drawn in it: a decision as a diamond, data as a slanted box, a start or an end as a
-pill. The seven pages' diagrams name none today.
+pill.
 
 The diagram plays once as it enters the screen: each arrow draws itself and each box rises, a column at a time. At
 rest it is fully drawn. The SVG's text goes out as markup from the code-behind, since Razor keeps the `text` tag
 for itself.
 
-**Slides, or a flowing page.** A site lays its pages out as one or the other, and a page may choose the other with
+**Any kind of picture on a page.** `DiagramFigure` draws a picture of any kind the diagram engine has, cards, a flow,
+a sequence, a class chart, a nested or a composite picture, from a `DiagramSource`, by the engine's own renderer, the
+same SVG the docs' pictures are, with a caption under it when the page gives one. It goes into the page inline, its
+styles kept to it, so it wears the page's theme and style, flat or glass, light or dark, by the engine's palette for
+each ([louis-agent.diagrams](louis-agent.diagrams.md)). It is as wide as the column it stands in. A kind a page needs
+that the engine lacks is added to the engine, never drawn in the figure.
+
+**Code and comparisons.** `CodeListing` shows code as text, never as markup, so a page that shows a program can
+never run it or break on it. It is named for its file, such as `Program.cs`, or its language when it has none, and a
+button copies the code exactly as shown, through the listing's own module; the button's words, Copy and Copied, are
+the site's `ChatText`. `ComparisonTable` sets things side by side: what is compared across the top, each topic a
+`ComparisonRow` down the side with one cell under each column. A row whose cells don't fill the columns is refused
+before anything is drawn, with which row it is and what it needs, so a cell can never stand under the wrong column.
+
+**Slides, a flowing page, or docs.** A site lays its pages out as one of three, and a page may choose another with
 one line. On slides every section is a screen tall with its content in the middle, and the page settles on one
 section at a time. A section with more than a screen of content pages sideways, with a pager. A diagram scales to
 fit.
 
-**Every place has its own address.** A section is `/proof/rand`. A card is `/identities/puls`. A page of a paged
-section is `/how-it-works/parts/2`. The landing's places sit under `/home`. `SiteAddresses` is the rule, and
-`SectionPage` is the catch-all route that opens any place. The address bar follows the visitor. A place's address
-opened afresh draws in its own page's layout.
+The docs layout, `PageLayout.Docs`, is for content a developer reads: the frame draws `DocsColumns`, three columns on
+Bootstrap's grid. The site's menu, which it gives the frame in its `Sidebar` slot, is down the left. The page is in a
+readable middle column. From an extra-large screen, the page's sections stand on the right as "On this page", which is
+the frame's section index docked, reading the same list of the page's bands, so a page says its sections once. Docked,
+it is a plain list with the theme's line down its left, and the section in view is marked on that line by a thicker
+bar in the theme's violet, drawn by the surface tool's `marked`. On a narrow screen the menu stands above the page.
+
+**Every place has its own address.** A section is `/pricing/plans`. A card is `/pricing/basic`. A page of a paged
+section is `/about/team/2`. The landing's places sit under the site's home word, as in `/home/welcome`. `SiteAddresses`
+is the rule. A site names `.Places(home, site)` among its areas to have its places open from their addresses: the
+catch-all route that opens any place, and the layout it draws a place in, are a package of their own,
+[louis-agent.web.places](louis-agent.web.places.md). The address bar follows the visitor. Only the pages anyone may
+open have places: a page behind a sign-in (`[Authorize]`) or under `/admin` has none.
 
 **The guide knows the page, and can go to a place on it.** The guide's widget sends the page it reads with every
 place by its address, and the place on the visitor's screen. The guide's page tool, `ShowPage`, takes an address.
@@ -504,7 +535,8 @@ and any structured data, in one head, since Blazor keeps only the last one a pag
 records (an organisation, a website, a piece of software, a breadcrumb), written as JSON-LD. The API serves each
 page as HTML with its own head and words, for crawlers that run no script.
 
-*Held by:* `SiteShellTests`, `CardDeckTests`, `GraphLayoutTests`, `GraphViewTests`, `FrameworkModulesTests`.
+*Held by:* `SiteShellTests`, `SiteShellDocsTests`, `CardDeckTests`, `GraphLayoutTests`, `GraphViewTests`,
+`DiagramFigureTests`, `CodeListingTests`, `ComparisonTableTests`, `FrameworkModulesTests`.
 
 *Decided in:* F110 (the frame's motion), F111 and ADR 0103 (diagrams), F113 (the deck), F117 and ADR 0105 (going to
 a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 0106,
@@ -823,7 +855,9 @@ page's `<html>`, so the theme's block takes over at once, and keeps the word in 
 `first-paint.js` reads, so the next page and the next visit open the same way. Nothing is sent to the host. A
 theme's id is checked before it touches the page, and a style must be light or dark. Once drawn, the switch asks
 the module which look the page is in, so the right buttons show pressed, and listens for the browser's storage
-event, so a pick made in another tab of the same site is put on this page too and the switch follows.
+event, so a pick made in another tab of the same site is put on this page too and the switch follows. A theme the
+browser remembers that this site doesn't offer is put back to the site's first, so a site that offers one theme
+always opens in it.
 
 ![The look switch holds which theme and style are on, in two groups of buttons. Three frames draw it, it reads the site's themes and words, and its module writes a press on the page and calls back when another tab picks](diagrams/louis-agent.web-components-look-switch.svg)
 
@@ -941,6 +975,9 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Site/History/` | `Timeline` and `TimelineEntry`, entries newest first with their dates in a column of their own, ruled or close rows (FX191) |
 | `Components/Site/Facts/` | `FactStrip` and `Fact`, a few figures over what they count on one of the theme's panes (FX191) |
 | `Components/Site/Hero/`, `Cards/`, `Controls/Labels/` | Beside `SiteHero`, `CardDeck` and `Tag`: `ProfileHero`, a person's hero beside their photo; `Panel`, a still pane with label words and a heading; `TagList`, a row of plain tags (FX191) |
+| `Components/Site/Code/`, `Tables/`, `Docs/` | `CodeListing`, code shown as text with a button that copies it, and its module; `ComparisonTable` and `ComparisonRow`, topics against columns; `DocsColumns`, the docs layout's three columns (F162.1) |
+| `Components/Site/Addresses/` | `SiteAddresses`, the rule that writes a place's address and reads one back; the catch-all that opens a place is in [louis-agent.web.places](louis-agent.web.places.md) (F162.1) |
+| `Components/Graphs/` | `GraphView`, a flow drawn from a `GraphSpec`; `DiagramFigure`, any kind of the diagram engine's pictures drawn inline by its own renderer (F162.1) |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `Admin/Reset/`, Reset my session, `SessionReset` and its button `ResetSession` with its module (F153); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |

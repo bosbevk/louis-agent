@@ -32,7 +32,8 @@ writes from the pages, and `robots.txt` points at it.
 3. **Add an `apple-touch-icon.png`**, 180 by 180 with no transparency, linked in `index.html`. It is the icon a phone
    puts on its home screen, and a good logo for the organisation.
 4. **Write a page for what people type.** One page per search you want to be found for, in plain words, at an address
-   that says it (`/csharp-ai-agent-framework`). Say of anyone else only what their own docs say, and link them.
+   that says it (the framework's site has `/comparison`). Say of anyone else only what their own docs say, and link
+   them.
 5. **Regenerate the sitemap** when pages change: `LOUIS_UPDATE_GOLDEN=1 dotnet test` on the site's tests with
    `--filter SitemapTests`, then commit `wwwroot/sitemap.xml`.
 
@@ -42,8 +43,7 @@ writes from the pages, and `robots.txt` points at it.
    (`louis-agent.dev`). Google gives a TXT record; add it in Cloudflare's DNS for the domain and press Verify.
 2. **Submit the sitemap** under *Sitemaps*: `https://louis-agent.dev/sitemap.xml`. Google reports how many addresses
    it found and how many it indexed.
-3. **Ask for the important pages first** under *URL inspection*: the landing and `/csharp-ai-agent-framework`, then
-   *Request indexing*. A new site waits days to weeks otherwise.
+3. **Ask for the important pages first** under *URL inspection*: the landing and `/demos`, then *Request indexing*. A new site waits days to weeks otherwise.
 4. **Check the structured data** with Google's Rich Results Test (search.google.com/test/rich-results) on the landing
    and on one other page: it should find the organisation and the breadcrumb.
 5. **Bing Webmaster Tools** (bing.com/webmasters) can import the site from Search Console in one step, sitemap

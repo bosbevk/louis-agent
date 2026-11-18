@@ -1,0 +1,31 @@
+{
+  "kind": "nested",
+  "title": "The framework site's frame: what it is made of",
+  "caption": "The site's layout is the framework's frame in its docs layout, given the site's brand and words, the pages' menu down the left, and the page with its page turns in the middle.",
+  "nested": {
+    "subtitle": "louis-agent.site-framework, Layout / FrameworkLayout",
+    "root": {
+      "id": "layout", "name": "FrameworkLayout", "kind": "layout", "tone": "green",
+      "holds": [
+        { "id": "shell", "name": "SiteShell", "kind": "general part", "tone": "violet",
+          "note": "the header, the page and the footer", "in": [ "Layout", "ShowWayUp" ],
+          "holds": [
+            { "id": "brand", "name": "Wordmark", "kind": "general part", "tone": "violet",
+              "note": "in the header and the footer", "in": [ "Before", "After" ] },
+            { "id": "menu", "name": "DocsMenu", "kind": "general part", "tone": "violet",
+              "note": "the pages under their groups, the one being read marked" },
+            { "id": "body", "name": "the page", "tone": "blue",
+              "note": "one of the framework's seven, from the router" },
+            { "id": "turn", "name": "PageTurn", "kind": "general part", "tone": "violet",
+              "note": "the page before and after" }
+          ] }
+      ]
+    },
+    "around": [
+      { "id": "router", "name": "App", "side": "before", "kind": "router", "tone": "green",
+        "heading": "Drawn by", "note": "the site's router, every page in this frame" },
+      { "id": "contents", "name": "FrameworkContents.All", "side": "after", "to": "menu", "tone": "teal",
+        "heading": "What it reads", "note": "the pages in reading order", "reads": true }
+    ]
+  }
+}

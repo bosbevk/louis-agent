@@ -60,7 +60,18 @@ page answers the shell with a 404. The public address is the request's own.
 The page's JSON-LD scripts go into the served head just as they are. And every page under the landing gets a
 `BreadcrumbList` with the site's name (`og:site_name`) and the page's title at its route (`PageBreadcrumb`).
 
-*Decided in:* F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md), F123,
+**The pages a site's areas bring are drawn too.** A site may turn on a package of pages, such as the framework's
+pages or the account pages, among its areas. The host never names such a package. `SiteRoutes` runs the services the
+program hands it, finds the `SitePageAssemblies` the framework's web registered there for the areas, and reads the
+pages of those assemblies beside the site's own, the first page of a route winning. `SitePageAssemblies` is a record in
+`louis-agent.api.contracts`, which both the web and the API reference, so neither has to reference the other.
+
+**A page behind a sign-in is never drawn.** A route with a parameter is no page of its own, and neither is one under
+`/admin`, behind the admin key. A page behind a sign-in says so with Blazor's `[Authorize]`, as the profile page does,
+and is left out too, so it is never rendered for a search engine or offered to the guide as a place. The public
+sign-in, register and reset pages have no `[Authorize]`, and are drawn like any other.
+
+*Decided in:* F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md), F123, F162.1,
 [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
 
 ### 4. Prices and rates, open to anyone
@@ -263,7 +274,7 @@ These are the types involved:
 | `Endpoints/Info/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/feeds/{name}/{id}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/Sessions/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `GET /v1/sessions/{id}/work` (its steps from its history, without its thinking; `Sessions/Work/SessionWorkReplyFactory`, F127.4.2), `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
-| `Site/` | A site's pages as HTML (F121): `SitePages.MapLouisAgentSite`, the one call; `SiteRoutes`, the page an address names (an address under `/admin` names none: a site's own admin page is never rendered for a search engine or listed for the guide, F142); `SitePageHandler`, the endpoint with the rendered pages it keeps; `PageShell`, the page put into `index.html`; `Rendering/`, the page rendered with `HtmlRenderer` and a `HeadOutlet` (`PagePrerenderer`, `PrerenderRoot`, `RenderedPage`, and the stand-ins for navigation and scripts); `Places/` (F127.7, ADR 0121), every section, card and piece of the site's pages, read from those renders (`SitePlaces`, rendered once when first asked; `PlaceReader` and `HtmlTag`, plain string reading; `PlaceSearch`, word matching), which `MapLouisAgentSite` hands the engines' context for the site pack's `FindPlace` |
+| `Site/` | A site's pages as HTML (F121): `SitePages.MapLouisAgentSite`, the one call; `SiteRoutes`, the page an address names, among the site's pages and those its areas bring through `SitePageAssemblies` (F162.1) (an address under `/admin` names none: a site's own admin page is never rendered for a search engine or listed for the guide, F142; nor does a page with `[Authorize]`, F162.1); `SitePageHandler`, the endpoint with the rendered pages it keeps; `PageShell`, the page put into `index.html`; `Rendering/`, the page rendered with `HtmlRenderer` and a `HeadOutlet` (`PagePrerenderer`, `PrerenderRoot`, `RenderedPage`, and the stand-ins for navigation and scripts); `Places/` (F127.7, ADR 0121), every section, card and piece of the site's pages, read from those renders (`SitePlaces`, rendered once when first asked; `PlaceReader` and `HtmlTag`, plain string reading; `PlaceSearch`, word matching), which `MapLouisAgentSite` hands the engines' context for the site pack's `FindPlace` |
 | `Endpoints/Workspace/WorkspaceEndpoints.cs` | `GET /v1/workspace/entries`, `GET /v1/workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `Endpoints/Git/Changes/GitChangesEndpoints.cs` | `GET /v1/git/status`, `GET /v1/git/diff`, `POST /v1/git/stage` · `unstage` · `discard`: the working tree and the index |
 | `Endpoints/Git/Commits/GitCommitsEndpoints.cs` | `POST /v1/git/commits` (`201` with `Location`), `GET /v1/git/commits?count=` (the log across branches), `GET /v1/git/commits/{sha}` |

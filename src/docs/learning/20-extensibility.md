@@ -897,3 +897,53 @@ until the transitions are measured after F151.
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a plug-in point is proved when a third thing joins by the
 door the first two used and the old way is deleted. And *17 Observability* in spirit: a cost is counted before and
 after, not assumed.
+
+## F162.1: the framework's pages, a package any site turns on (2026-11-18)
+
+louis-agent.dev had ten pages about the framework, hidden from its menu. They followed the repo's folders, seven
+held raw HTML, one still said the repository was private, and none named what was built that month. We threw all of
+it away, pages, parts, pictures, tests and addresses, and wrote seven pages new, in the order a developer reads:
+Overview, Getting started, How it works, Features, Cost and evals, Examples and Comparison. They live on a site of
+their own, meant for framework.louis-agent.dev, so louis-agent.dev sells and the new site teaches.
+
+The lesson of this child is where the pages ended up. The first plan put them in the new site's project. Louis turned
+that round: "the framework must be a package like accounts". So the pages are `louis-agent.web.framework`, and a
+site turns them on with `.Framework()` among its areas, the same door the account pages, the evals and the themes
+already use. The framework's site is then almost nothing: one line of areas, a sixteen-line layout, a stylesheet that
+lists the framework's Sass, and a host of a few lines. That is the test of a plug-in point we keep coming back to: if
+the site that ships the pages is thin, any site could ship them.
+
+Two more packages came out the same way. Where a page's doc links lead is `.Docs(address)`, from
+`louis-agent.web.docs`: a page names a doc by its path in the repo, and the site says once that paths lead to GitHub,
+so moving the docs later is one setting. And the catch-all route that opens a place's own address moved out of the
+framework's web into `louis-agent.web.places`, as `.Places(home, site)`, so a site that wants its places doesn't take
+the admin's pages with them. That move closed a gap: the addresses were read from every fixed route, so the catch-all
+could have drawn a page behind a sign-in or the admin's key around the router's own check. Now only pages anyone may
+open have places, by the same rule the host draws pages for a search
+engine by.
+
+The host was the hardest seam. It draws each page as HTML for a search engine, and it had to learn which pages a
+package brought without the host naming the package and without the API referencing the web. The answer is a record
+both already reference, `SitePageAssemblies` in the API's contracts: the web registers it from the areas, and the
+host reads it from the services the program hands over. A Separated Interface again, a contract where both sides can
+see it.
+
+What the pages say is held to the repo, which is skill 18 as much as 20. The program shown is the coding agent's real
+`Program.cs`. Every identity and pack on the disk is named. Each of the 39 features names code and a doc that exist.
+The worked request's rand is read from the price table and the rates. Every comparison claim of ours names the file
+that proves it, and theirs link to the pages we read, with the date. Every doc link is a file. A page that would say
+something untrue now fails a test before anyone reads it.
+
+What didn't go well. The plan grew from ten steps to thirteen as Louis looked at each page, and most of the growth was
+looks: a layout researched and built three ways before his pick, pictures that wear flat or glass by a palette per
+theme in the diagram engine, the brand in every picture's footer, the site's fonts in every picture. The docs
+layout's grid, first written in Sass, took round after round to get its widths right, and that is why Bootstrap's
+grid is now a rule for the whole solution (ADR 0085, amended). And the feature's id clashed twice: main took F160 and
+then F161 for other work while this branch was open, so it is F162, and the branch and its first commits keep the old
+name. Reserving an id on main when a plan is approved would have avoided both.
+
+Nothing was measured in money: no agent runs on the new site yet. Its agent is F162.2, and the subdomain is F162.3.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a package of pages is proved when the site that ships it holds
+nothing but the names of what it uses. And *11 Protocols*: a page names a doc by its path, one source the docs site,
+the API and the MCP server can all point at.

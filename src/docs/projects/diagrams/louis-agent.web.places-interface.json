@@ -1,0 +1,27 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.web.places: the interface design",
+  "caption": "A site names its places once with Places(home, site); the area reads the addresses from the site's pages and its areas', the catch-all draws the page an address names, and PlaceLayout gives it that page's frame.",
+  "classes": {
+    "types": [
+      { "id": "area", "name": "PlacesArea", "kind": "static, what a site calls",
+        "members": [ "+Places(areas, home, site) SiteAreasBuilder" ] },
+      { "id": "builder", "name": "SiteAreasBuilder", "kind": "louis-agent.web", "tone": "violet" },
+      { "id": "areas", "name": "SiteAreas", "kind": "louis-agent.web, what the site has", "tone": "violet",
+        "members": [ "+PageAssemblies" ] },
+      { "id": "addresses", "name": "SiteAddresses", "kind": "louis-agent.web, the rule both ways", "tone": "violet",
+        "members": [ "+From(home, assemblies) SiteAddresses", "+Read(address)", "+PageType(page) Type?" ] },
+      { "id": "section", "name": "SectionPage", "kind": "the catch-all route, /{*Path}",
+        "members": [ "+Path string?" ] },
+      { "id": "layout", "name": "PlaceLayout", "kind": "static, for the site's router",
+        "members": [ "+Of(route, fallback, addresses) Type" ] }
+    ],
+    "relations": [
+      { "from": "area", "to": "builder", "kind": "uses", "word": "adds an area to" },
+      { "from": "area", "to": "addresses", "kind": "creates", "word": "registers" },
+      { "from": "area", "to": "areas", "kind": "uses", "word": "reads the pages of" },
+      { "from": "section", "to": "addresses", "kind": "uses", "word": "reads" },
+      { "from": "layout", "to": "addresses", "kind": "uses", "word": "reads" }
+    ]
+  }
+}
