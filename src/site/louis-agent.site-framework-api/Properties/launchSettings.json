@@ -11,7 +11,10 @@
         "LOG_DIRECTORY": "../logs",
         "CONFIG_DIRECTORY": "../config",
         "PRICES_FILE": "../config/prices.json",
-        "RATES_FILE": "../config/rates.json"
+        "RATES_FILE": "../config/rates.json",
+        "DOCS_ROOT": "../../..",
+        "OPEN_IDENTITIES": "louis-agent-framework",
+        "OPEN_SESSIONS_PER_DAY": "50"
       }
     }
   }

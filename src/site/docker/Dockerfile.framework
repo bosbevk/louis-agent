@@ -3,11 +3,21 @@ WORKDIR /src
 COPY . .
 RUN dotnet publish "src/site/louis-agent.site-framework-api/louis-agent.site-framework-api.csproj" -c Release -o /app/publish
 
-# The framework's own site's host (F164.1) needs only the runtime: it serves the site's pages, and no agent yet.
+# The framework's own site's host (F164.1) needs only the runtime: it serves the site's pages, and the framework Orbi
+# reads docs (F164.2), it runs no build.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=build /app/publish/ .
+# The docs the framework Orbi reads (F164.2), laid out as the repo lays them so their links hold, as louis-agent.dev's
+# image carries them: the framework's, each demo's and the packs', with the repo's own front page, without the films.
+COPY --from=build /src/README.md /src/ROADMAP.md /src/TODO.md /app/docs/
+COPY --from=build /src/src/docs/ /app/docs/src/docs/
+COPY --from=build /src/demos/louis-agent/docs/ /app/docs/demos/louis-agent/docs/
+COPY --from=build /src/demos/puls/docs/ /app/docs/demos/puls/docs/
+COPY --from=build /src/packs/docs/ /app/docs/packs/docs/
+RUN rm -rf /app/docs/src/docs/films
+ENV DOCS_ROOT=/app/docs
 # The price and rate tables the usage ledger reads, the site's own copies, so the image needs no share mounted.
 COPY --from=build /src/src/site/config/prices.json /src/src/site/config/rates.json /app/config/
 ENV CONFIG_DIRECTORY=/app/config

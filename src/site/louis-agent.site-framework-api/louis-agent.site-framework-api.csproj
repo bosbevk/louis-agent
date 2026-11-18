@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <!-- The framework's own site's host (F164.1): the site as HTML a search engine reads, and the framework's API, with
-         no identity yet, so its agent is core alone (F164.2 gives it the framework Orbi). -->
+    <!-- The framework's own site's host (F164.1): the site as HTML a search engine reads, and the framework's API, which
+         runs the framework Orbi on the docs and site packs (F164.2). -->
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <RootNamespace>LouisAgent.SiteFrameworkApi</RootNamespace>
@@ -15,6 +15,10 @@
         <ProjectReference Include="..\..\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
         <ProjectReference Include="..\..\engine\louis-agent.core.anthropic\louis-agent.core.anthropic.csproj" />
         <ProjectReference Include="..\..\hosts\louis-agent.api\louis-agent.api.csproj" />
+        <!-- Who its agent is, and the two packs it names: this program's catalogue is the one place that knows them. -->
+        <ProjectReference Include="..\louis-agent.identity.framework\louis-agent.identity.framework.csproj" />
+        <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
+        <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.site\louis-agent.pack.site.csproj" />
         <!-- The web app this program serves. Its files reach this project's output through this reference. -->
         <ProjectReference Include="..\louis-agent.site-framework\louis-agent.site-framework.csproj" />
     </ItemGroup>
