@@ -511,6 +511,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX204 · A thing that changes while it leaves must be asked again
+
+Entering the free-website entry, the page threw an error and the red bar came up. Orbi's answer had begun as a short
+caption over the bar. Then, a moment later, the same answer grew a form, and a form needs the whole talk, not a
+caption. The bar had already put that answer on its way out, fading, and it kept asking it for its caption. There was
+none any more, so it fell over. The test wrote that exact order of events down: an answer captioned, then given a
+form, then let go. It failed, and one line made it pass: an answer that now needs the whole talk leaves at once. It
+only showed with a model that streams at a person's pace, so a fake model that waits between its words found it. A
+stream changes its mind as it goes, so whatever holds a piece of it must ask again before it uses it. Skill 18
+(testing and shipping: reproduce it at the speed it really happens).
+
 ## FX203 · An agent that passes things on must read them first
 
 Someone typed keyboard mash into the free-website entry, and Orbi laid it on a neat card with Send it suggested.

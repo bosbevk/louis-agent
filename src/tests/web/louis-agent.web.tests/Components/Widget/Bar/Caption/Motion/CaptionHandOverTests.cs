@@ -55,4 +55,36 @@ public class CaptionHandOverTests
             Assert.That(handOver.Leaving, Is.Empty);
         });
     }
+    /// <summary>
+    /// An answer that grows a form or an error while it streams (FX204) needs the whole talk, so it doesn't stay
+    /// behind as a caption: there is no caption left to draw, and the bar fell over drawing one.
+    /// </summary>
+    [Test]
+    public void AnAnswerThatNowNeedsTheTalk_DoesNotLeaveAsACaption()
+    {
+        var answer = new Turn
+        {
+            UserText = "Your name: Louis",
+            Blocks = [new Block { Kind = BlockKind.Text, Text = "I couldn't use two boxes." }]
+        };
+        var handOver = new CaptionHandOver();
+        handOver.Draw(answer);
+
+        // The form's call finishes streaming in, so the bar stops captioning the answer and opens the talk.
+        var form = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "AskFor",
+            ToolInput = """{"question":"Just these two.","fields":[{"label":"Why","kind":"LongText"}]}""",
+            ToolResult = "Asked."
+        };
+        answer.Blocks.Add(form);
+        var drawn = handOver.Draw(null);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(drawn, Is.Empty);
+            Assert.That(handOver.Leaving, Is.Empty);
+        });
+    }
 }

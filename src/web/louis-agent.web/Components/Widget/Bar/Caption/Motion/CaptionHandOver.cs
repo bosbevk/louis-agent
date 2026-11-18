@@ -38,11 +38,13 @@ public sealed class CaptionHandOver
 
     /// <summary>
     /// The answers to draw as captions, with this one standing now, or none: those leaving, then the standing one. One
-    /// no longer standing begins to leave.
+    /// no longer standing begins to leave. An answer that has grown a form or an error since needs the whole talk, so
+    /// it has no caption to fade with and goes at once (FX204).
     /// </summary>
     public IReadOnlyList<Turn> Draw(Turn? standing)
     {
         Showing(standing);
+        _leaving.RemoveAll(Captioned.NeedsTheTalk);
         return standing is null ? Leaving : [.. _leaving, standing];
     }
 }
