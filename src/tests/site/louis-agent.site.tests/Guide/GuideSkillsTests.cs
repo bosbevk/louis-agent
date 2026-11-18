@@ -229,6 +229,30 @@ public class GuideSkillsTests
     private static string Flat(string text) =>
         string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));
 
+    /// <summary>
+    /// Orbi writes like a writer (Louis, 2026-11-18: "give orbi a writer skill in order to type better", his pick of a
+    /// skill of its own, always on): short sentences, no colon, semicolon or bracket, one idea a paragraph, the point
+    /// first, active voice and plain words. The voice keeps who Orbi is, and no longer holds the writing rules.
+    /// </summary>
+    [Test]
+    public void Writing_IsASkillHeAlwaysHas_ApartFromTheVoice()
+    {
+        var skill = Read("skills/writing.md");
+        string body = string.Join(' ', skill.Body.Split((char[])[' ', '\r', '\n'],
+            StringSplitOptions.RemoveEmptyEntries));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(skill.Header?.Load, Is.EqualTo(SkillLoad.Always));
+            Assert.That(body, Does.StartWith("# How you write"));
+            Assert.That(body, Does.Contain("about 14 words").And.Contain("never more than 25")
+                .And.Contain("No colon").And.Contain("no semicolon").And.Contain("no brackets")
+                .And.Contain("One idea to a paragraph").And.Contain("Lead with the answer")
+                .And.Contain("Active voice").And.Contain("Read it aloud"));
+            Assert.That(Read("voice.md").Body, Does.Not.Contain("**Plain words, short.**"));
+        });
+    }
+
     /// <summary>The voice keeps who he is and how he answers, and no longer carries either map.</summary>
     [Test]
     public void TheVoice_KeepsWhoHeIs_WithoutTheMaps() =>

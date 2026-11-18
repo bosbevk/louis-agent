@@ -425,6 +425,19 @@ only after a yes. Two lines matter most. Orbi never chooses the two, and it neve
 left to be helpful would happily say "you're in!", so the prompt says plainly that it may not. `OrbiVoiceTests`
 holds those words, so a later edit can't drop them without a test failing.
 
+Soon after, the offer moved to a page of its own, `/free-websites` (F163), with one line under the landing's hero
+leading there. That changed what Orbi needs to know, not how it takes an entry: its list of pages and its site map
+gained the new address, so when someone asks about the free websites it can open that page with `ShowPage` instead
+of scrolling the landing. A page the agent can name is a page it can show.
+
+The same day Orbi got a writing skill of its own, loaded on every answer. Its voice already said "plain words,
+short", and still an answer came back with a colon, a bracket and a 40-word sentence. A loose rule inside a long
+voice file is easy for a model to drift from. So the writing rules moved to a short file of their own, each rule
+concrete enough to check: about 14 words a sentence, never more than 25, no colon, no brackets, the answer first. It
+ends with one bad sentence rewritten well, because a model copies an example more faithfully than it follows a
+description. Keeping it apart from the voice also keeps the two jobs clear. The voice is who Orbi is, and the
+skill is how each sentence is built.
+
 The lesson is that a new offer on a page is also new context for the agent. The band and the voice change in the
 same step, or the button opens a chat with an agent that has never heard of the offer.
 

@@ -1,0 +1,6 @@
+@* A one-line announcement that leads to its own page (ADR 0125): a site gives the address, its status, its sentence and
+   the words that say where it goes, and the whole line is one link. *@
+<a class="announcement-strip" href="@Href">@if (Status is not null)
+    {
+        <StatusPill Text="@Status" />
+    }<span class="announcement-text">@Text</span><span class="announcement-go">@LinkText</span></a>

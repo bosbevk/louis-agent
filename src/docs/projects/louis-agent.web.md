@@ -439,6 +439,12 @@ slot the site fills, with something alive beside the words when the site has it.
 a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside
 the words goes below them.
 
+Last in the words, after the buttons, a site may put an announcement. The framework draws it with
+`AnnouncementStrip`: one line that is a single link, a status pill such as "Entries open", a sentence, and the words
+that say where it goes. It keeps the width of its words, as a plain pill in the theme's quiet fill, with no glass. On a phone its parts wrap under each
+other, so it takes a card's corner there instead of rounding into a blob. A site uses it when something new has a
+page of its own, so the landing keeps to what the product does and the news is one tap away.
+
 A headline of two short sentences can be given as `Lines` instead. Each sentence then stands on a line of its own, a
 size smaller, so a wide screen never breaks the headline in the middle of a sentence and the buttons stay on the
 first screen. On a narrow screen a line still wraps where it must, and the heading still reads as one sentence after

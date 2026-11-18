@@ -23,7 +23,7 @@ public class LandingStoryTests
         var cut = ctx.Render<HomePage>();
 
         Assert.That(cut.FindAll("section").Select(section => section.Id),
-            Is.EqualTo(new[] { "top", "free", "does", "for-you", "brand", "demos", "custom", "who", "contact" }));
+            Is.EqualTo(new[] { "top", "does", "for-you", "brand", "demos", "custom", "who", "contact" }));
     }
 
     /// <summary>
@@ -49,27 +49,23 @@ public class LandingStoryTests
     }
 
     /// <summary>
-    /// Two websites built for free, to show real work (Louis, 2026-11-18: "give 2 websites for free in order to build
-    /// a portfolio", his pick "A band on the landing"). Businesses enter and he chooses two ("a company can send me
-    /// their details and I decide who gets the build"): right after the hero, it says entries are open, the three
-    /// steps, what is asked in return, and asks Orbi to take the business's entry.
+    /// Two free websites, told in one line under the hero (Louis, 2026-11-18: "why not just have this and link to
+    /// page?", then his pick of a framework strip): the whole line leads to the offer's own page.
     /// </summary>
     [Test]
-    public void TwoFreeWebsites_StandRightAfterTheHero_WithWhatIsAskedInReturn()
+    public void TheFreeWebsites_AreOneLineUnderTheHero_LeadingToTheirPage()
     {
         using var ctx = new BunitContext();
 
-        var band = ctx.Render<HomePage>().Find("section#free");
+        var strip = ctx.Render<HomePage>().Find("section#top a.announcement-strip");
 
         Assert.Multiple(() =>
         {
-            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("Two businesses get a free website."));
-            Assert.That(band.TextContent, Does.Contain("Entries open").And.Contain("we choose two"));
-            Assert.That(band.QuerySelectorAll(".tiles article h3").Select(title => title.TextContent),
-                Is.EqualTo(new[] { "A few words from you", "Your website in our work", "Honest feedback" }));
-            Assert.That(band.QuerySelector("button.btn")!.TextContent, Is.EqualTo("Enter your business"));
-            Assert.That(band.QuerySelector("a[href='/contact']")!.TextContent, Is.EqualTo("Write to us"));
-            Assert.That(band.TextContent, Does.Not.Contain(":").And.Not.Contain(";").And.Not.Match(@"R\d"), "no price");
+            Assert.That(strip.GetAttribute("href"), Is.EqualTo("/free-websites"));
+            Assert.That(strip.QuerySelector(".status-pill")!.TextContent, Is.EqualTo("Entries open"));
+            Assert.That(strip.QuerySelector(".announcement-text")!.TextContent,
+                Is.EqualTo("Two businesses get a free website."));
+            Assert.That(strip.QuerySelector(".announcement-go")!.TextContent, Is.EqualTo("See how it works"));
         });
     }
 

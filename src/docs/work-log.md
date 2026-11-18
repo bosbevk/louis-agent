@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 132 | 97 |
+| Features (`F`) | 133 | 97 |
 | Fixes (`FX`) | 187 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
@@ -156,10 +156,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (132 done)
+## Features (133 done)
 
 | Id | When | What |
 |---|---|---|
+| F163 | 2026-11-18 | The free websites move to their own page, `/free-websites`, and the landing keeps one line under the hero that leads there: the framework's new announcement strip, in a new slot of its hero, a plain pill with no glass; Orbi gains an always-on writing skill, short sentences with no colon, semicolon or bracket |
 | F162 | 2026-11-18 | Two free websites: a band right after the landing's hero where any business enters through Orbi, who takes the entry in one form and mails it on a yes; two are chosen; the theme page shows nothing twice, four cards with one switch, one off button and one status pill |
 | F161 | 2026-11-18 | The brand speaks to owners: the guide is Orbi, Louis's AI agent, telling his story as his (ADR 0113 amended); the slogan "The website that answers." in the header, footer, tab, link preview and a one-ball social card; the hero "Your doors close at five. Your website doesn't.", one sentence to a line (the framework hero's `Lines`); no price in the description; a face band naming Louis once, with his CV; every line on the landing rewritten for an owner |
 | F145.1 | 2026-11-18 | The privacy page: `/privacy` says what the site keeps and sends and the visitor's rights under POPIA, linked from every footer and the landing's data tile; the guide says what Send it does before it sends a lead |

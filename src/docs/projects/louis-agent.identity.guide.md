@@ -74,8 +74,12 @@ price question goes to the contact page.
 
 ### 5. Its skills
 
-Its skills sit beside the voice, in `skills/`. One is always in the prompt: `site-pages.md`, an index of every page,
-one line each, so it knows which page to open.
+Its skills sit beside the voice, in `skills/`. Some are always in the prompt. `site-pages.md` is an index of every
+page, one line each, so it knows which page to open. `writing.md` says how it writes every answer, the way a
+copywriter writes for the web: sentences of about 14 words and never more than 25, the answer first, one idea to a
+paragraph, plain words, active voice, and no colon, semicolon or bracket. It ends with a short before and after. The
+voice says who the guide is and how it sounds, and the writing skill says how each sentence is built, so neither
+crowds the other.
 
 Two more it only reads with `ReadSkill` when a question needs them. `docs-map.md` says where things are in the docs
 root, so a search goes to the right folder. `site-map.md` says what each page claims and which docs it was written
@@ -183,7 +187,7 @@ notes. A cap limits what a visitor can spend (ADR 0099).
 The tests are in `src/tests/site/louis-agent.site.tests`. `GuideIdentityTests` and `SiteCatalogTests` hold its
 name, its voice's path, its three packs, and the site's catalogue to the guide alone. `GuideKnowsTheSiteTests` holds
 the voice and its skills to every page of the site. `GuideSkillsTests` holds the split: every page in the index
-that's always loaded, and the two maps read on demand. And `CodingCatalogTests` holds it beside the coding identity,
+that's always loaded, the writing skill always loaded apart from the voice, and the two maps read on demand. And `CodingCatalogTests` holds it beside the coding identity,
 in the coding agent's catalogue.
 
 ---
