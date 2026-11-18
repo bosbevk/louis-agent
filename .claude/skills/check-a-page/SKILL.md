@@ -120,3 +120,18 @@ A print of the live page is Louis's, from his own print dialog, and so is scanni
 
 `gh run list --workflow deploy-puls.yml --limit 1` shows the deploy that followed the merge. When it has
 succeeded, open the changed page on `https://louis-agent.dev` in a new tab of Louis's Chrome and look at it.
+
+## An example
+
+FX204, checked in a cloud session. The site ran against a small fake model that streamed at a person's pace, with
+made-up keys. Playwright opened `/free-websites` at 1920 by 1080 and at 390 by 844 and played five talks: a
+nonsense entry, a good entry through to its card, a greeting before the form, an error halfway through an answer,
+and a plain hello. Each run counted the console's errors and looked for Blazor's error bar, and every picture was
+read. What was not looked at was said: the guide's real answers, since no real model ran.
+
+## References
+
+- [ADR 0107: every section has an address](../../../src/docs/adr/0107-every-section-has-an-address.md), why a
+  section further down is shot at its own address
+- `frame.html`, beside this file, for an exact size in headless Chrome
+- Playwright's own docs, for the cloud session: https://playwright.dev/docs/screenshots

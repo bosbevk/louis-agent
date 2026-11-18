@@ -54,3 +54,28 @@ The template GitHub shows, `.github/pull_request_template.md`, has the same sect
 - **The checks run** on the push (`/ship-it` says which). A red check is fixed on the branch, never skipped.
 - **The body changes with the branch.** A commit pushed after review gets its line in *What changed* and *Tests*.
 - **Louis merges**, unless he says "merge".
+
+## An example
+
+The body of a fix, in its order, each section opened by its name in bold.
+
+> The guide's bar no longer crashes when you enter the free-website draw.
+>
+> **What changed.** An answer that grows a form after it was shown as a caption now leaves the bar at once,
+> instead of fading as a caption it no longer has.
+>
+> **What was wrong.** The bar asked a leaving answer for its caption, got none, and threw a
+> `NullReferenceException`.
+>
+> **Tests.** `AnAnswerThatNowNeedsTheTalk_DoesNotLeaveAsACaption` failed first, then passed. The full suite passed
+> with `main` merged in. Five talks were looked at in a browser, at 1920 and 390.
+>
+> **Not checked.** The guide's real model, since the check used a fake one.
+>
+> **Skill.** Skill 18, testing and shipping.
+
+## References
+
+- GitHub's template, `.github/pull_request_template.md`, with the same sections
+- [The goal's skill map](../../../src/docs/GOAL.md), for the *Skill* line
+- `/ship-it`, for what runs before the pull request

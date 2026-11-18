@@ -62,3 +62,18 @@ Offer these first, where they fit.
   words.
 - **If later work must follow it**, it wants an ADR. Propose the ADR in a few lines, the rule and its reason, and
   wait for his yes. No ADR is written without it.
+
+## An example
+
+Moving Orbi's free-website entry out of its voice. The research came first: ADR 0114 and the measure behind it
+showed that a model reads an on-demand skill only when it thinks of it. Three options went on a card. The start
+stays in the voice and the rest is read on demand (recommended). The whole entry is always loaded. The whole entry
+is on demand. Each said what it changes and what it costs, and the recommendation named the finding it rested on:
+Louis's rule that the form comes first, with nothing before it.
+
+## References
+
+- [Refactoring.Guru](https://refactoring.guru/design-patterns), the Gang of Four's *Design Patterns*, Fowler's
+  [catalog of patterns](https://martinfowler.com/eaaCatalog/), and Microsoft's
+  [.NET design guidelines](https://learn.microsoft.com/dotnet/standard/design-guidelines/)
+- [ADR 0050: summaries like a person](../../../src/docs/adr/0050-summaries-like-a-person.md), where a pick is named

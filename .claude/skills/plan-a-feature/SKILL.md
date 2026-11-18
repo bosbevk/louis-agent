@@ -84,3 +84,18 @@ A design choice the plan would have to make is put to Louis before the plan is w
 The plan is deleted in the pull request that finishes its work. Before that, its lasting parts move: a decision
 that later work must follow into an ADR, which needs Louis's approval before it is written, the rest into the
 project's design doc or the write-up.
+
+## An example
+
+CL64, our prompts in the skill shape: `src/docs/plans/CL64-prompts-in-the-skill-shape.md`. It opens with its
+context in Louis's words, draws its four pictures from JSON in `diagrams/`, has a namespace map and numbered steps,
+and keeps a change he made during the build under *Approved during the build*: on 2026-11-18 he narrowed it to the
+guide alone, since the cook and Puls move to their own repos.
+
+## References
+
+- [The plans' README](../../../src/docs/plans/README.md), the sections and the index
+- `/draw-a-diagram`, for the four pictures
+- The patterns: [Refactoring.Guru](https://refactoring.guru/design-patterns), Fowler's
+  [catalog of patterns](https://martinfowler.com/eaaCatalog/), and Microsoft's
+  [.NET design guidelines](https://learn.microsoft.com/dotnet/standard/design-guidelines/)

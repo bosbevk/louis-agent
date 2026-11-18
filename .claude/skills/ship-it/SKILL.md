@@ -76,3 +76,17 @@ the unit tests, then the integration tests. A push to a branch with no pull requ
 - **The deploy follows the merge at once.** Wait for it to land. Where the change is one a visitor sees, look at
   the live page with `/check-a-page`.
 - **Then the next branch starts**, from `origin/main` after a fetch.
+
+## An example
+
+A fix, on Louis's "merge that". Its commit message takes the shape above,
+`fix(fx204): the guide's bar no longer crashes when an answer grows a form`, with the why in its body and no line naming Claude. Then `git fetch origin main` and a merge of
+`origin/main`, `dotnet build louis-agent-solution.sln`, and the full suite with
+`dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration"`, every test project passing.
+Only then the push, the pull request, and a merge commit, since he said "merge".
+
+## References
+
+- [The development guide's hard stops](../../../src/docs/CLAUDE.md#hard-stops), Louis's word for every push
+- The commit template, `.gitmessage`, and GitHub's `.github/pull_request_template.md`
+- [ADR 0075: test what you touch](../../../src/docs/adr/0075-test-what-you-touch.md), the full suite once
