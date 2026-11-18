@@ -92,11 +92,12 @@ the folders under `demos/`.
 
 ### 3. Selling first, the framework as proof
 
-The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads Contact
-alone for now. Its two groups, Demos and The framework, are kept in the page but hidden until those pages are fixed,
-and their pages still answer at their addresses. At the header's end a three-line button opens the settings, a thin glass bar
-under the header with the look switches and the CV. No price stands anywhere a visitor first looks:
-every quote is made on request.
+The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads Home,
+Demos and Contact. Home is there so every page has a plain way back to the landing, since the name in the corner
+doesn't look like a link. The framework's group is kept in the page but hidden until its pages are fixed, and those
+pages still answer at their addresses. At the header's end a three-line button opens the settings, a thin glass bar
+under the header that holds the look switches alone. The CV is reached from the landing's band about who builds it.
+No price stands anywhere a visitor first looks: every quote is made on request.
 
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
 large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
