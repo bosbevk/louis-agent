@@ -393,6 +393,36 @@ Context engineering (skill 7): an instruction is loaded by when it is needed, an
 always. Prompt design (skill 3): an instruction is written where and when it will be read, the rule first.
 
 
+## Orbi's voice as an index of skills (CL64, 2026-11-18)
+
+Louis looked at Orbi's voice beside our own `CLAUDE.md` and asked why it didn't work the same way. `CLAUDE.md` is
+short. It says what must hold on every turn, then a table points at a skill for each job, and a skill loads only when
+its job comes up. Orbi's voice had grown the other way. Every procedure lived in it, the lead, the walkthrough, the
+free-website entry, what we sell and the developer's code, so all 4,356 words went with every message.
+
+The engine could already do what `CLAUDE.md` does. Since F129 an identity's skill can be marked on demand, and the
+model sees only its name and when to read it until it calls `ReadSkill`. So the change was mostly moving words. The
+voice kept who Orbi is, the seven rules it never breaks, a table of which skill goes with which job, and how it
+answers. The procedures became skills of their own. The voice went to about 3,100 words, and a rule that had been said
+in three places is now said once.
+
+One part could not move whole. When someone presses Enter your business, the form must come first with nothing before
+it. A model reads an on-demand skill only when it thinks of it, and that read is a tool call. Put the whole entry on
+demand, and a skill read would stand in front of the form. F129's own measure warned of this: with both maps on demand,
+the guide stopped opening pages at all. So the trigger and the form stayed in the voice, and only the steps after the
+form are read on demand, while the visitor is typing. The rule from that is simple. What must happen at once loads
+always, and the detail waits.
+
+Every skill now has the same shape, Orbi's and our own. The rules it never breaks come first, at most seven, then its
+steps or its detail, then one worked example, then the sources it rests on. The example is there because Anthropic's
+guidance found that examples show the style and the level of detail more clearly than a description of them. For Orbi
+the references are the docs a skill rests on, which it can open to check, so they earn their tokens. Tests hold all of
+it: the voice's table must name every skill read on demand, and every skill must have its rules first, an example and
+its references.
+
+What wasn't done is a live measure. The plan's before-and-after run on the guide's eval needs a real model, and this
+work was checked by its tests and by reading. That measure is still worth running once.
+
 ## One name for the agent, and words for the owner (F161, 2026-11-18)
 
 The guide used to be "Louis · AI", the AI version of Louis, telling his story as "I". The brand research found the

@@ -71,3 +71,35 @@ every box, pin and neighbour is one the code has.
 A class worth opening up gets a `composite` picture: one class, the parts its constructor builds, a port for
 each thing asked of it and each thing it is handed. Name it `{project}-{class}`. Read the class's fields, its
 constructor and its public methods first: every part, port and connector is one the code has.
+
+## An example
+
+A small `flow` picture of the guide's bar, in the shape the guide shows. Three boxes, the first a pill since it
+starts the story, and one dashed arrow that carries a word.
+
+```json
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "The guide's bar: an answer and its caption",
+  "caption": "The bar asks the hand-over which answers to draw as captions.",
+  "flow": {
+    "nodes": [
+      { "id": "visitor", "label": "The visitor", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "bar", "label": "AgentBar\ndraws the captions", "icon": "message", "tone": "green" },
+      { "id": "handover", "label": "CaptionHandOver", "icon": "chip", "tone": "violet" }
+    ],
+    "edges": [
+      { "from": "visitor", "to": "bar" },
+      { "from": "bar", "to": "handover", "word": "Draw", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
+```
+
+## References
+
+- [Draw a diagram](../../../src/docs/guides/draw-a-diagram.md), with every field and a whole example of each kind
+- [ADR 0118](../../../src/docs/adr/README.md), why a picture is our own JSON and never Mermaid
+- `ProjectDocsTests`, which holds the pictures a project doc shows

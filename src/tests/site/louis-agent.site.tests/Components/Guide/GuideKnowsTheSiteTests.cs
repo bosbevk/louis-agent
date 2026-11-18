@@ -53,7 +53,7 @@ public class GuideKnowsTheSiteTests
     [TestCase("you name no price")]
     [TestCase("first Markdown files")]
     [TestCase("closed Docker container")]
-    [TestCase("When someone is interested, you can tell Louis yourself.")]
+    [TestCase("# Passing someone on to Louis")]
     [TestCase("never send twice")]
     public void TheVoice_SellsWhatTheSiteSells(string words)
     {

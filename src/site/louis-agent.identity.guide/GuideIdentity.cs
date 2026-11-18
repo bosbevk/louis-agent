@@ -65,7 +65,6 @@ public enum GuideFocus
 {
     [WireName("selling")] Selling,
     [WireName("demos")] Demos,
-    [WireName("framework")] Framework,
 }
 
 /// <summary>This identity's name (ADR 0043).</summary>

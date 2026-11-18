@@ -68,3 +68,19 @@ A picture that a script draws keeps its script, so it can be drawn again when th
 Show it before it goes into the repo: the picture, the plan it followed, the checks and their numbers, and three
 options where there is a choice to make. It goes into the repo on its own branch through `/ship-it`, with the
 brand guide's table of files brought along.
+
+## An example
+
+Redrawing the site's share card, the picture a link to louis-agent.dev shows. The plan names where it is seen (a
+link preview, a LinkedIn post), its size, the colours by name, Geist for the words, and the one thing to remember
+it by: the glass ball, the only ball on it. It is drawn by a script,
+`dotnet run --project src/tools/louis-agent.film-export social-card`, which photographs the site's own glass ball,
+so it can be drawn again when the look changes. It is checked as a link preview, and its text's contrast is worked
+out and said.
+
+## References
+
+- [The brand guide](../../../src/docs/brand/README.md) and the look of glass and flat in
+  `src/docs/plans/F151-themes-and-styles.md`, section 5
+- NN/g, [Principles of visual design](https://www.nngroup.com/articles/principles-visual-design/)
+- W3C, [WCAG 2.2, contrast (minimum)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)

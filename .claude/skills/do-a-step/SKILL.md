@@ -67,3 +67,19 @@ is shown.
 ## Then
 
 Finish the step with `/finish-a-step`.
+
+## An example
+
+FX204, the guide's bar crashing when an answer grew a form. The test came first, in the folder that mirrors the
+source: `CaptionHandOverTests.AnAnswerThatNowNeedsTheTalk_DoesNotLeaveAsACaption` plays a caption, then a form,
+then letting go. Run alone, it failed on its assertion, `But was: <Turn>`, which was kept to show. One line in
+`CaptionHandOver.Draw` made it pass. Then the whole web test project ran, 1,381 tests, and the bar was looked at in
+a browser with `/check-a-page`.
+
+## References
+
+- [ADR 0014: test first](../../../src/docs/adr/0014-test-first.md) and
+  [ADR 0075: test what you touch](../../../src/docs/adr/0075-test-what-you-touch.md)
+- [ADR 0052: edit, never a script](../../../src/docs/adr/0052-edit-never-script.md) and
+  [ADR 0054](../../../src/docs/adr/README.md) on pure moves
+- [Write and run tests](../../../src/docs/guides/write-tests.md): the commands, the shared fakes, the golden files

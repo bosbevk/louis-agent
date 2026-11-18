@@ -74,33 +74,41 @@ price question goes to the contact page.
 
 ### 5. Its skills
 
-Its skills sit beside the voice, in `skills/`. Some are always in the prompt. `site-pages.md` is an index of every
-page, one line each, so it knows which page to open. `writing.md` says how it writes every answer, the way a
-copywriter writes for the web: sentences of about 14 words and never more than 25, the answer first, one idea to a
-paragraph, plain words, active voice, and no colon, semicolon or bracket. It ends with a short before and after. The
-voice says who the guide is and how it sounds, and the writing skill says how each sentence is built, so neither
-crowds the other.
+The voice works like an index. It holds who Orbi is, the seven rules it never breaks, a table of which skill goes
+with which job, and how it answers, and it ends with one whole example answer. The skills sit beside it, in
+`skills/`, and each has the same shape. The rules it never breaks come first, then its steps or its detail, then a
+worked example, then the docs it rests on, which Orbi can open to check.
 
-Two more it only reads with `ReadSkill` when a question needs them. `docs-map.md` says where things are in the docs
-root, so a search goes to the right folder. `site-map.md` says what each page claims and which docs it was written
-from, so a question about a page's claim goes to its source. Splitting those two off made its fixed prefix about 14%
-smaller, measured live.
+Three skills are always in the prompt. `site-pages.md` is an index of every page, one line each, so it knows which
+page to open. `writing.md` says how it writes every answer, the way a copywriter writes for the web: sentences of
+about 14 words and never more than 25, the answer first, one idea to a paragraph, plain words, active voice, and no
+colon, semicolon or bracket. The voice says who the guide is and how it sounds, and the writing skill says how each
+sentence is built, so neither crowds the other. `live-demo.md` runs a business's demo live, as part 10 tells.
+
+The rest it reads with `ReadSkill` only when their job comes up, as the voice's table says. `docs-map.md` says where
+things are in the docs root, so a search goes to the right folder. `site-map.md` says what each page claims and which
+docs it was written from, so a question about a page's claim goes to its source. Splitting those two off made its
+fixed prefix about 14% smaller, measured live. `take-a-lead.md` passes someone on to Louis, from the offer to the
+card and the send. `free-website-entry.md` finishes an entry for the two free websites once its form comes back. The
+entry's start stays in the voice, so the form comes first with nothing before it and never waits on a skill being
+read. `walk-a-page.md` walks a page one stop per answer, and `what-we-sell.md` holds what is sold today, what it does
+for a business, and why it is safe. The three focus skills are part 6.
 
 *Decided in:* F129, [ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md), F109.4.
 
 ### 6. One guide, a focus for each part of the site
 
-louis-agent.dev names which part of the site each page belongs to (`LouisAgentDevAreas`). Selling is the default.
-`/demos` and every demo are the demos part. Everything under `/framework`, which is the theme's component guide now
-that the framework's pages are on their own site, is the framework part. These parts are `GuideFocus`.
+louis-agent.dev names which part of the site each page belongs to (`LouisAgentDevAreas`). `/demos` and every demo
+are the demos part. Every other page is the selling part, the theme's component guide at `/framework/theme`
+included, since the framework's own pages are on their own site. These parts are `GuideFocus`.
 
 Each message's page block says which part the visitor is in. The voice reads that part's on-demand skill
-(`focus-selling`, `focus-demos` or `focus-framework`) the first time a part shows up, and again whenever it changes.
+(`focus-selling` or `focus-demos`) the first time a part shows up, and again whenever it changes.
 
 In the selling part, it sells honestly by showing. It gives first, asks for small yeses, puts the visitor's own
 business in the live demo, never fakes a hurry, and guides them to the demos. In the demos part, it guides them
-through the showroom. In the framework part, it answers technically, names its docs, and says a diagram drawn in
-the chat is planned.
+through the showroom. On the framework's pages it still talks about the framework from the site map's entries and
+sends a developer to the page that answers them.
 
 *Decided in:* F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md).
 
@@ -187,7 +195,9 @@ notes. A cap limits what a visitor can spend (ADR 0099).
 The tests are in `src/tests/site/louis-agent.site.tests`. `GuideIdentityTests` and `SiteCatalogTests` hold its
 name, its voice's path, its three packs, and the site's catalogue to the guide alone. `GuideKnowsTheSiteTests` holds
 the voice and its skills to every page of the site. `GuideSkillsTests` holds the split: every page in the index
-that's always loaded, the writing skill always loaded apart from the voice, and the two maps read on demand. And `CodingCatalogTests` holds it beside the coding identity,
+that's always loaded, the writing skill always loaded apart from the voice, the two maps read on demand, and every
+skill in the shape, with its rules first, an example and its references. `OrbiVoiceTests` holds the voice's words,
+and that its table names every skill read on demand. And `CodingCatalogTests` holds it beside the coding identity,
 in the coding agent's catalogue.
 
 ---

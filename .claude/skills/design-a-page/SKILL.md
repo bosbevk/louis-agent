@@ -72,3 +72,20 @@ Anything about us rather than the reader (the brand, the framework) goes lower, 
 
 The flow as a table or a mockup page published as an Artifact, each section with the framework control that draws it, the current flow beside it, the evidence for each
 move, and three options where there is a choice. Then the build goes step by step through `/do-a-step`.
+
+## An example
+
+The free-websites offer on the landing page. The reader is a business owner, and the next step is to see how the
+draw works. The hero had no place for such a line, and any site could want one, so the framework got it first:
+`AnnouncementStrip`, put in `SiteHero`'s new `Announcement` slot. The landing only configures it, in
+`Components/Landing/Hero.razor`, with its link to `/free-websites`, its status "Entries open" and its words "Two
+businesses get a free website.". The look stayed the theme's, plain and not glass, as Louis asked.
+
+## References
+
+- [ADR 0125: a site is configured framework components](../../../src/docs/adr/0125-a-site-is-configured-framework-components.md)
+- NN/g on [the fold](https://www.nngroup.com/articles/scrolling-and-attention/) and
+  [the F-pattern](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/)
+- Unbounce's [Conversion Benchmark Report](https://unbounce.com/conversion-benchmark-report/), on reading level
+- Navattic's [State of the Interactive Product Demo](https://www.navattic.com/report/state-of-the-interactive-product-demo-2025),
+  vendor data

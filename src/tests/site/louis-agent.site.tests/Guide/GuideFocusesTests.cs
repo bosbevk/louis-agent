@@ -61,15 +61,14 @@ public class GuideFocusesTests
     }
 
     /// <summary>
-    /// The business reader is the selling part's: the voice no longer assumes a business owner everywhere, so on
-    /// /framework he can start technical; that default lives in the selling skill.
+    /// The business reader is the selling part's: the voice no longer assumes a business owner everywhere, that
+    /// default lives in the selling skill.
     /// </summary>
     [Test]
     public void TheBusinessReader_IsTheSellingPartsDefault()
     {
         string voice = Flat(Read("voice.md").Body);
         string selling = Flat(Read("skills/focus-selling.md").Body);
-        string framework = Flat(Read("skills/focus-framework.md").Body);
 
         Assert.Multiple(() =>
         {
@@ -79,7 +78,6 @@ public class GuideFocusesTests
                 "Louis: \"it must also guide them to demos\"");
             Assert.That(selling, Does.Contain("Give first").And.Contain("small yes").And.Contain("their own business")
                 .And.Contain("never a false hurry"), "Louis's pick: honest hooks, never manipulation");
-            Assert.That(framework, Does.Contain("diagrams").And.Contain("planned"));
         });
     }
 }
