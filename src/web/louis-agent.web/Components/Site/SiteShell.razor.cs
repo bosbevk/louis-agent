@@ -31,7 +31,9 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? Tagline { get; set; }
 
-    /// <summary>What stage the site is at, such as a <c>StageFlag</c>, beside its name (FX170); empty, nothing stands there.</summary>
+    /// <summary>
+    /// What stage the site is at, such as a <c>StageFlag</c>, beside its name (FX170); empty, nothing stands there.
+    /// </summary>
     [Parameter]
     public RenderFragment? Stage { get; set; }
 
@@ -69,6 +71,13 @@ public partial class SiteShell
     /// <summary>The site's menu down the left of a docs page (F164.1), drawn only in the docs layout.</summary>
     [Parameter]
     public RenderFragment? Sidebar { get; set; }
+
+    /// <summary>
+    /// What stands beside a docs page in its right column (F164.2), such as the site's chat docked, drawn only in the
+    /// docs layout; while it is open, it has the column in place of "On this page".
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Beside { get; set; }
 
     /// <summary>
     /// How the site's pages are laid out (F118): flowing, unless the site asks for slides; a page may choose the other

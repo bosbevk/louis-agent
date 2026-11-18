@@ -81,4 +81,30 @@ public class SiteShellDocsTests
 
         Assert.That(cut.FindAll(".site-docs"), Is.Empty);
     }
+
+    /// <summary>
+    /// F164.2: what stands beside the page, such as a docked chat, has the right column on every screen, so a phone
+    /// still has its button; "On this page" keeps to an extra-large screen, as before.
+    /// </summary>
+    [Test]
+    public void InDocs_WhatStandsBeside_HasTheRightColumn_OnEveryScreen()
+    {
+        using var ctx = Context();
+        var cut = ctx.Render<SiteShell>(shell => shell
+            .Add(s => s.Layout, PageLayout.Docs)
+            .Add(s => s.Beside, "<div class=\"the-chat\">Ask</div>")
+            .Add(s => s.ChildContent, TwoBands));
+
+        cut.WaitForAssertion(() =>
+        {
+            var beside = cut.Find(".site-docs .site-docs-beside");
+            Assert.Multiple(() =>
+            {
+                Assert.That(beside.QuerySelector(".the-chat"), Is.Not.Null, "what stands beside, in the right column");
+                Assert.That(beside.ClassList, Does.Not.Contain("d-none"), "drawn on every screen");
+                Assert.That(beside.QuerySelector(".site-docs-sections")!.ClassList,
+                    Is.SupersetOf(new[] { "d-none", "d-xl-block" }), "On this page, from an extra-large screen");
+            });
+        });
+    }
 }

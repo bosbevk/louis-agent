@@ -1,14 +1,18 @@
 @* The docs layout's three columns (F164.1), on Bootstrap's grid, which every site loads (ADR 0085): the site's menu,
    above the page on a phone and beside it from a large screen; the page, in a centred container in the room that is
-   left (Louis: "middle column"); and the page's
-   sections as "On this page", the same list the floating index reads, docked, from an extra-large screen. *@
+   left (Louis: "middle column"); and the right column, on every screen, for what stands beside the page (F164.2),
+   such as the site's chat docked, with the page's sections as "On this page", the same list the floating index
+   reads, from an extra-large screen. *@
 <div class="site-docs container-fluid">
     <div class="row">
         <aside class="site-docs-menu col-12 col-lg-2">@Menu</aside>
         <div class="site-docs-page col"><div class="container-xxl px-0">@ChildContent</div></div>
-        <aside class="site-docs-sections d-none d-xl-block col-xl-2" aria-label="On this page">
-            <span class="site-docs-sections-label">On this page</span>
-            <SectionIndex/>
-        </aside>
+        <div class="site-docs-beside col-12 col-xl-2">
+            @Beside
+            <aside class="site-docs-sections d-none d-xl-block" aria-label="On this page">
+                <span class="site-docs-sections-label">On this page</span>
+                <SectionIndex/>
+            </aside>
+        </div>
     </div>
 </div>

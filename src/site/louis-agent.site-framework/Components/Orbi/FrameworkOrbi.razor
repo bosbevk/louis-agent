@@ -1,0 +1,8 @@
+@using LouisAgent.Web.Components.Widget
+@* The framework Orbi (F164.2): the framework's chat widget, configured once with its identity and the site's words,
+   docked beside the page in the docs layout's right column (Louis's pick C), labelled as an AI as the public Orbi is.
+   It answers a developer from the docs, so it keeps its work out of sight as the public Orbi does. *@
+<ChatWidget Identity="louis-agent-framework" Title="Orbi · AI"
+            Greeting="Hi, I'm Orbi, the framework's AI agent. Ask me how louis-agent works, or about the page you're reading."
+            Placeholder="Ask about the framework…" ShowWork="false" Layout="WidgetLayout.Docked" OpenLabel="Ask Orbi"
+            CloseLabel="Close Orbi" />

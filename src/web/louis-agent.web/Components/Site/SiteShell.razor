@@ -69,8 +69,9 @@
 
             @if (InDocs)
             {
-                @* Docs (F164.1): the site's menu, the page, and its sections as "On this page", in three columns. *@
-                <DocsColumns Menu="Sidebar">
+                @* Docs (F164.1): the site's menu, the page, and on the right what stands beside it (F164.2) with its
+                   sections as "On this page", in three columns. *@
+                <DocsColumns Menu="Sidebar" Beside="Beside">
                     <main class="site-main" @key="PagePath">
                         @ChildContent
                     </main>

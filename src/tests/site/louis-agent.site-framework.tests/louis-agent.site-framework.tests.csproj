@@ -24,6 +24,8 @@
     <!-- The site's host, for the list of what a page it draws is handed. -->
     <ProjectReference Include="..\..\..\site\louis-agent.site-framework-api\louis-agent.site-framework-api.csproj" />
     <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />
+    <!-- The web's test helpers, for the stylesheet the build made. -->
+    <ProjectReference Include="..\..\web\louis-agent.web.testing\louis-agent.web.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

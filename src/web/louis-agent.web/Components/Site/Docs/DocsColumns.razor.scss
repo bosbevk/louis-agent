@@ -25,11 +25,19 @@
     .site-docs-menu { @include surface.rule(bottom); padding-top: 12px; padding-bottom: 12px; }
 }
 
-.site-docs-sections {
+/* Held in view under the header, and above it in the page's layers (the header is 30), since a sticky column is a
+   layer of its own: what stands beside the page, a chat sliding in from the side, then shows over the header. */
+.site-docs-beside {
     position: sticky;
     top: var(--site-header-room, 72px);
     align-self: flex-start;
+    z-index: 35;
 }
+
+/* An open chat beside the page has the column in place of "On this page" (F164.2, Louis's pick C), and closed it
+   gives the column back: the chat says it is open, so no state passes between the two. Bootstrap's own display class
+   on the sections is the one this must beat, hence its weight. */
+.site-docs-beside:has(.chat-widget.is-open) .site-docs-sections { display: none !important; }
 
 /* The page fills its column, a picture or the code as wide as the column (Louis: "can't we use the same margin right
    as we use left?", "image not 100%"); a summary keeps its own reading width. */

@@ -1,11 +1,14 @@
 @inherits LayoutComponentBase
+@using LouisAgent.SiteFramework.Components.Orbi
 @* The framework's site's frame, the docs layout Louis picked (F164.1): the framework's pages down the left, the page
-   in the middle with the page before and after at its foot, and its sections on the right as "On this page". *@
+   in the middle with the page before and after at its foot, and on the right the framework Orbi docked (F164.2) with
+   the page's sections as "On this page" while it is closed. *@
 
 <SiteShell Layout="PageLayout.Docs" ShowWayUp="false">
     <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
     <Tagline>The C# AI agent framework</Tagline>
     <Sidebar><DocsMenu /></Sidebar>
+    <Beside><FrameworkOrbi /></Beside>
     <Footer>
         <span><Wordmark Before="l" After="uis-agent" /> · an AI agent framework in C#</span>
     </Footer>
