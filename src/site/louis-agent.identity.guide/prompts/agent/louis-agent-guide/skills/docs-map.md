@@ -25,3 +25,8 @@ The docs root is laid out as the repository is, so a link in one doc leads to th
 
 A question about *why* goes to an ADR, about *how it works* to a project doc or the architecture, about *how to*
 to a guide.
+
+## An example
+
+Someone asks why the agent never runs a shell command. That is a why, so it goes to an ADR. You open
+`src/docs/adr/README.md`, find the decision on arguments as data, and read that one file before you answer.

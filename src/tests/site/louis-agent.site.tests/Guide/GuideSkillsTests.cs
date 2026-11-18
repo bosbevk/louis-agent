@@ -80,12 +80,12 @@ public class GuideSkillsTests
     [Test]
     public void AtWhatToWatch_TheWalkthroughOffersTheDemoLive_AndHeCoachesAfterTheAnswer()
     {
-        string voice = Flat(Read("voice.md").Body);
+        string walk = Flat(Read("skills/walk-a-page.md").Body);
         string skill = Flat(Read("skills/live-demo.md").Body);
 
         Assert.Multiple(() =>
         {
-            Assert.That(voice, Does.Contain(
+            Assert.That(walk, Does.Contain(
                     "On a demo page, every stop's choices include a fourth, Ask it live, until they have asked live"),
                 "Louis: drop the card drawn in code, rework the prompt");
             Assert.That(skill, Does.Contain("what it just did and why"));
@@ -112,13 +112,13 @@ public class GuideSkillsTests
     {
         using var reader = new StreamReader(new SitePack().Prompts.GetFileInfo("toolsets/site.md").CreateReadStream());
         string siteGuide = reader.ReadToEnd();
-        string voice = Read("voice.md").Body;
+        string walk = Read("skills/walk-a-page.md").Body;
 
         Assert.Multiple(() =>
         {
             Assert.That(new GuideIdentity().StopsOn, Is.EqualTo(new[] { "Stop here" }));
             Assert.That(siteGuide, Does.Contain("or Stop here, in those words"));
-            Assert.That(voice, Does.Contain("When they say Stop here, say goodbye in a line and offer nothing"));
+            Assert.That(walk, Does.Contain("When they say Stop here, say goodbye in a line and offer nothing"));
         });
     }
 
@@ -160,13 +160,13 @@ public class GuideSkillsTests
     [Test]
     public void OnTheStart_TheGuideOpensADemo_AndAsksABusinessOnlyOnItsOwnPage()
     {
-        string voice = Flat(Read("voice.md").Body);
+        string walk = Flat(Read("skills/walk-a-page.md").Body);
         string live = Flat(Read("skills/live-demo.md").Body);
         string showroom = Flat(Read("skills/focus-demos.md").Body);
 
         Assert.Multiple(() =>
         {
-            Assert.That(voice, Does.Contain(
+            Assert.That(walk, Does.Contain(
                 "On the showroom's start, a window's stop offers Open this demo in its place"));
             Assert.That(live, Does.Contain("Never call `AskAgent` on any page but that business's own demo page"));
             Assert.That(live, Does.Contain("take them to its demo page with `ShowPage` first"));
@@ -211,7 +211,7 @@ public class GuideSkillsTests
     [Test]
     public void OnADemoPage_TheGuidePlaysTheConversationATurnAtATime_ThenOffersToTryIt()
     {
-        string voice = Flat(Read("voice.md").Body);
+        string walk = Flat(Read("skills/walk-a-page.md").Body);
         string skill = Flat(Read("skills/live-demo.md").Body);
         string showroom = Flat(Read("skills/focus-demos.md").Body);
 
@@ -220,9 +220,21 @@ public class GuideSkillsTests
             Assert.That(skill, Does.Contain("showing a turn plays it, and it stops after it"));
             Assert.That(skill, Does.Contain("say first, in two short sentences, what to watch for in it"));
             Assert.That(skill, Does.Contain("After the last turn, ask whether they want to try it themselves"));
-            Assert.That(voice, Does.Contain("a demo page's conversation is walked a turn at a time"));
+            Assert.That(walk, Does.Contain("a demo page's conversation is walked a turn at a time"));
             Assert.That(showroom, Does.Contain("the conversation a turn at a time"));
         });
+    }
+
+    /// <summary>
+    /// Every skill of Orbi's shows one worked example (Louis, 2026-11-18: "a skill should always include references
+    /// and an example"): an example shows the model the style and the level of detail better than a rule alone.
+    /// </summary>
+    [Test]
+    public void EverySkill_ShowsAnExample()
+    {
+        var skills = new GuideIdentity().Prompts.GetDirectoryContents(Folder + "skills").Select(file => file.Name);
+
+        Assert.That(skills.Where(name => !Read($"skills/{name}").Body.Contains("\n## An example\n")), Is.Empty);
     }
 
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>

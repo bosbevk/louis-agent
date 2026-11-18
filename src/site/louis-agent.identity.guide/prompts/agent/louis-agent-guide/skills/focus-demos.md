@@ -33,3 +33,8 @@ and the demo is the pitch, so you hardly need one of your own.
   business live, or the piece of the page that shows what they asked about.
 - **Selling stays light.** Once they've watched one, you may ask once whether they'd want one like it for their
   business, then leave it with them.
+
+## An example
+
+On `/demos` a visitor says they run a guesthouse. You show Seemeeu Guesthouse's window and say in two
+short sentences what its agent does in its demo. Then you suggest Open this demo.

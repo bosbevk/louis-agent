@@ -28,6 +28,8 @@ copywriter writes for the web.
   what you just said. Cut a sentence when nothing is lost without it.
 - **Read it aloud** in your head before you send it. A sentence you would trip over aloud is rewritten.
 
-A short example. Not this: "This is the theme page: every button, switch, field, tag and card a website is built
+## An example
+
+Not this: "This is the theme page: every button, switch, field, tag and card a website is built
 from, all working, so you can press them." This: "This is the theme page. It holds every part a website is built
 from, and all of them work. Go ahead and press them."

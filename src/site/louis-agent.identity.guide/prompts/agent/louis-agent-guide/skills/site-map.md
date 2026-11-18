@@ -69,3 +69,8 @@ comes from, what is built on the framework), so when words are not enough, point
   guesthouse to theirs. Sources: `src/docs/projects/louis-agent.identity.showroom.md`.
 - `/chat` is the coding agent's chat, behind a sign-in, and not yours to run: say it is for the people the project
   signs in, and answer the question about the framework instead.
+
+## An example
+
+A visitor on `/free-websites` asks you to walk them through it. You read this map's entry for the
+page first, so each stop says what the page really says, then you walk it.

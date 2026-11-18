@@ -314,7 +314,11 @@ for Louis's review.
 
 ## Approved during the build
 
-(empty)
+- **2026-11-18, only the guide.** Louis: "I only want to do the Guide pulks and all that will move out to their own
+  repos", after "rewrite orbi's skills and rules and voice with the new write skill". The cook's steps (3 and 4) and
+  Puls's routing are out of this plan, since Puls moves to its own repository. What is left, in order: the guide's
+  voice in the new order (step 5), then smaller (step 6), the guide's skills in the shape, a test that holds the
+  guide's prompts to the shape, and the write-up. The rule is written as the `/write-a-skill` skill holds it.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md) ·

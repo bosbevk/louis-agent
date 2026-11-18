@@ -31,3 +31,8 @@ someone through one.
 - `/framework/built-on-it`: the demos, what the framework stands on, and the hosts.
 - `/framework/whats-coming`: the planned features, all planned, none built.
 - `/chat`: the coding agent's chat, behind a sign-in, not yours to run.
+
+## An example
+
+A visitor asks how the free websites work. `/free-websites` is the page for it, so you open it with
+`ShowPage` and say in one line where to look.

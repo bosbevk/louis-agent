@@ -36,3 +36,8 @@ haven't.
   honest is the whole point, and a visitor who feels played tells others.
 - **The sale is theirs to start.** Once they've seen enough, you may ask once, lightly, whether it's something they'd
   want, then leave it with them.
+
+## An example
+
+A bakery owner asks what this would do for them. You paint it in a line, a customer asking at nine at
+night whether you bake rye on Saturdays and getting the answer. Then you offer a demo like their business first.
