@@ -28,4 +28,11 @@ public partial class DocsColumns
     /// <summary>What stands beside the page, in the right column, such as the site's chat docked.</summary>
     [Parameter]
     public RenderFragment? Beside { get; set; }
+
+    /// <summary>
+    /// What the page offers to ask the site's agent about itself, at the top of "On this page" (F164.2, Louis's pick
+    /// A), so it hides where that list hides; none, and nothing stands there.
+    /// </summary>
+    [Parameter]
+    public PageAsk? Ask { get; set; }
 }

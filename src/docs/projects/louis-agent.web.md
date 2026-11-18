@@ -49,7 +49,8 @@ builder.Services.AddSiteAreas(areas => areas
 store of chats (`ChatStore`), the client that calls the API (`AgentApi`), the currency (`CurrencyState`) and an
 English `ChatText`. Each is registered only where the site set none of its own. The door comes with them
 (`GuideDoor`). It is how a button anywhere on a page reaches the site's chat: the button asks through the door, and
-the chat, listening, opens and sends the question. The buttons are the framework's, and any site may draw them, so
+the chat, listening, opens and sends the question. A button may also only open the chat, as a header's "Ask Orbi"
+does with `OpenAgentButton`, and then nothing is sent until the visitor types. The buttons are the framework's, and any site may draw them, so
 every site gets a door, and a press always has a chat to reach when the site has one.
 
 **Then it registers each area the site named.**

@@ -20,12 +20,15 @@ public class ChatWidgetDockedTests
     /// <summary>
     /// A context with what the widget asks for, over the stub API, and a door for buttons to ask through.
     /// </summary>
-    private static BunitContext Context(GuideDoor door)
+    private static BunitContext Context(GuideDoor door) => Context(door, out _);
+
+    /// <summary>The same context, with the stub that hears every call to the API.</summary>
+    private static BunitContext Context(GuideDoor door, out StubHandler handler)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
-        var api = FixtureApi.Client(settings, out _);
+        var api = FixtureApi.Client(settings, out handler);
         ctx.Services.AddSingleton(settings);
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
@@ -71,9 +74,28 @@ public class ChatWidgetDockedTests
         cut.InvokeAsync(() => door.Ask("Tell me about this page."));
 
         cut.WaitForAssertion(() =>
-            Assert.That(cut.Find(".widget-panel").ClassList,
-                Is.SupersetOf(new[] { "is-docked", "offcanvas-xl", "offcanvas-end", "show" })),
+                Assert.That(cut.Find(".widget-panel").ClassList,
+                    Is.SupersetOf(new[] { "is-docked", "offcanvas-xl", "offcanvas-end", "show" })),
             TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
+    /// The door opened with no question (F164.2 step 5, the header's Ask Orbi) opens the panel and asks nothing, so
+    /// the visitor types the first words.
+    /// </summary>
+    [Test]
+    public void TheDoorOpened_OpensThePanel_AndAsksNothing()
+    {
+        var door = new GuideDoor();
+        using var ctx = Context(door, out var handler);
+        var cut = Docked(ctx);
+
+        cut.InvokeAsync(door.Open);
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".widget-panel"), Has.Count.EqualTo(1)),
+            TimeSpan.FromSeconds(10));
+        Assert.That(handler.Requests.Where(request => request.Method == HttpMethod.Post), Is.Empty,
+            "no session opened, no message sent");
     }
 
     /// <summary>Opened by its button, where the page has no room beside it, its close gives the place back.</summary>
@@ -105,7 +127,7 @@ public class ChatWidgetDockedTests
         cut.InvokeAsync(() => door.Ask("Tell me about this page."));
 
         cut.WaitForAssertion(() =>
-            Assert.That(cut.Find(".widget-panel").QuerySelectorAll(".window-tool"), Is.Empty),
+                Assert.That(cut.Find(".widget-panel").QuerySelectorAll(".window-tool"), Is.Empty),
             TimeSpan.FromSeconds(10));
     }
 }

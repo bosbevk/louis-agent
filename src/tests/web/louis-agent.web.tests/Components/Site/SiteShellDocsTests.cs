@@ -1,7 +1,10 @@
 using LouisAgent.Web.Components.Site;
 using LouisAgent.Web.Components.Site.Bands;
+using LouisAgent.Web.Components.Site.Docs;
 using LouisAgent.Web.Components.Site.Slides;
+using LouisAgent.Web.Components.Widget.Door;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Site;
 
@@ -106,5 +109,49 @@ public class SiteShellDocsTests
                     Is.SupersetOf(new[] { "d-none", "d-xl-block" }), "On this page, from an extra-large screen");
             });
         });
+    }
+
+    /// <summary>
+    /// F164.2 (Louis's pick A): "Ask about this page" stands at the top of "On this page", so it hides where the list
+    /// hides, and a press asks the site's question through the door.
+    /// </summary>
+    [Test]
+    public void InDocs_AskAboutThisPage_StandsOverOnThisPage_AndAsksThroughTheDoor()
+    {
+        using var ctx = Context();
+        var door = new GuideDoor();
+        ctx.Services.AddSingleton(door);
+        var heard = new List<string?>();
+        door.Asked += heard.Add;
+        var ask = new PageAsk("Ask about this page", "What is this page about?");
+
+        var cut = ctx.Render<SiteShell>(shell => shell
+            .Add(s => s.Layout, PageLayout.Docs)
+            .Add(s => s.AskAboutPage, ask)
+            .Add(s => s.ChildContent, TwoBands));
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".site-docs-sections button"), Has.Count.EqualTo(1)));
+        var button = cut.Find(".site-docs-sections button");
+        button.Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(button.TextContent, Does.Contain("Ask about this page"));
+            Assert.That(heard, Is.EqualTo(new string?[] { "What is this page about?" }));
+        });
+    }
+
+    /// <summary>A site that gives no question has no button over "On this page".</summary>
+    [Test]
+    public void InDocs_WithNoQuestion_NothingStandsOverOnThisPage()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(shell => shell
+            .Add(s => s.Layout, PageLayout.Docs)
+            .Add(s => s.ChildContent, TwoBands));
+
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.FindAll(".site-docs-sections nav.site-index"), Has.Count.EqualTo(1)));
+        Assert.That(cut.FindAll(".site-docs-sections button"), Is.Empty);
     }
 }

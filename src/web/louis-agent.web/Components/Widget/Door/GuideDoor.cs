@@ -10,9 +10,14 @@ namespace LouisAgent.Web.Components.Widget.Door;
 /// </remarks>
 public sealed class GuideDoor
 {
-    /// <summary>Raised with the question a button asked.</summary>
-    public event Action<string>? Asked;
+    /// <summary>Raised with the question a button asked, or with none when a button only opens the chat.</summary>
+    public event Action<string?>? Asked;
 
     /// <summary>Asks the guide a question.</summary>
     public void Ask(string question) => Asked?.Invoke(question);
+
+    /// <summary>
+    /// Opens the chat and asks nothing (F164.2), as a header's "Ask Orbi" does, so the visitor types the first words.
+    /// </summary>
+    public void Open() => Asked?.Invoke(null);
 }

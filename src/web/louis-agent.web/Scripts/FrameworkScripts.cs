@@ -51,6 +51,9 @@ public static class FrameworkScripts
     /// <summary>The page the visitor is reading, for the guide in a site's corner (F115).</summary>
     public const string Widget = Content + "Components/Widget/ChatWidget.razor.js";
 
+    /// <summary>The keys that open a site's agent from anywhere on its page, Ctrl+I or Cmd+I (F164.2).</summary>
+    public const string OpenAgentButton = Content + "Components/Widget/Door/OpenAgentButton.razor.js";
+
     /// <summary>The room the agent's bar takes at the page's foot, told to the page (F134.3).</summary>
     public const string Bar = Content + "Components/Widget/Bar/AgentBar.razor.js";
 

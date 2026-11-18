@@ -162,17 +162,22 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>The way in from a button anywhere on the site (F118), when the site has one.</summary>
     private GuideDoor? Door => Services.GetService<GuideDoor>();
 
+    /// <summary>A button asked the guide a question, or only opened it (F164.2).</summary>
+    private void OnAsked(string? question) => InvokeAsync(() => AskAsync(question));
+
     /// <summary>
-    /// A button asked the guide a question: the panel opens and it goes as if the visitor had typed it. A minimised
-    /// panel comes back, so the answer is never hidden (F127.2).
+    /// The panel opens and the question goes as if the visitor had typed it; with none, the panel only opens. A
+    /// minimised panel comes back, so the answer is never hidden (F127.2).
     /// </summary>
-    private void OnAsked(string question) => InvokeAsync(async () =>
+    private async Task AskAsync(string? question)
     {
         _kept.Unfold();
-        Runner.Draft = question;
         StateHasChanged();
+        if (question is null) return;
+
+        Runner.Draft = question;
         await SendAsync();
-    });
+    }
 
     /// <summary>
     /// A card the guide offered was clicked (F127.4.1): its label goes as if the visitor had typed it.
@@ -277,10 +282,7 @@ public partial class ChatWidget : IAsyncDisposable
     {
         _piece = piece;
         if (Runner.Streaming) return;
-        _kept.Unfold();
-        Runner.Draft = string.Format(Text.ExplainPiece, piece.Heading);
-        StateHasChanged();
-        await SendAsync();
+        await AskAsync(string.Format(Text.ExplainPiece, piece.Heading));
     }
 
     /// <summary>

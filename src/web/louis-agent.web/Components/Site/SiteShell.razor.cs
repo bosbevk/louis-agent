@@ -1,6 +1,7 @@
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Bands;
+using LouisAgent.Web.Components.Site.Docs;
 using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
@@ -78,6 +79,13 @@ public partial class SiteShell
     /// </summary>
     [Parameter]
     public RenderFragment? Beside { get; set; }
+
+    /// <summary>
+    /// What a docs page offers to ask the site's agent about itself (F164.2), drawn at the top of "On this page" so it
+    /// hides where that list hides; none, and there is no such button.
+    /// </summary>
+    [Parameter]
+    public PageAsk? AskAboutPage { get; set; }
 
     /// <summary>
     /// How the site's pages are laid out (F118): flowing, unless the site asks for slides; a page may choose the other

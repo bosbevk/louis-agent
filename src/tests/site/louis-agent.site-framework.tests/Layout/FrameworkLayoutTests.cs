@@ -51,4 +51,26 @@ public class FrameworkLayoutTests
             Assert.That(cut.FindAll(".site-corner"), Is.Empty, "nothing floats in the corner but its narrow button");
         });
     }
+
+    /// <summary>
+    /// F164.2 step 5: "Ask Orbi" stands in the header, beside the site's looks, and "Ask about this page" over "On
+    /// this page".
+    /// </summary>
+    [Test]
+    public void AskOrbi_IsInTheHeader_AndAskAboutThisPage_OverOnThisPage()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new HttpClient { BaseAddress = new Uri("http://localhost/") });
+        ctx.Services.AddSiteAreas(FrameworkAreas.Name);
+
+        var cut = ctx.Render<FrameworkLayout>(layout => layout.Add(l => l.Body, "<section id=\"top\">Page</section>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-header .site-actions button[aria-keyshortcuts]").TextContent,
+                Does.Contain("Ask Orbi"));
+            Assert.That(cut.Find(".site-docs-sections button").TextContent, Does.Contain("Ask about this page"));
+        });
+    }
 }

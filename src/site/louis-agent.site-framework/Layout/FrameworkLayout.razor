@@ -1,12 +1,14 @@
 @inherits LayoutComponentBase
 @using LouisAgent.SiteFramework.Components.Orbi
+@using LouisAgent.Web.Components.Widget.Door
 @* The framework's site's frame, the docs layout Louis picked (F164.1): the framework's pages down the left, the page
    in the middle with the page before and after at its foot, and on the right the framework Orbi docked (F164.2) with
-   the page's sections as "On this page" while it is closed. *@
+   the page's sections as "On this page" while it is closed, under "Ask about this page"; "Ask Orbi" in the header. *@
 
-<SiteShell Layout="PageLayout.Docs" ShowWayUp="false">
+<SiteShell Layout="PageLayout.Docs" ShowWayUp="false" AskAboutPage="OrbiAsks.ThisPage">
     <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
     <Tagline>The C# AI agent framework</Tagline>
+    <Actions><OpenAgentButton Text="@OrbiAsks.Open" /></Actions>
     <Sidebar><DocsMenu /></Sidebar>
     <Beside><FrameworkOrbi /></Beside>
     <Footer>
