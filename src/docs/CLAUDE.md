@@ -77,7 +77,7 @@ Never without Louis's word, each time. His yes for one is not a yes for the next
 - **A commit.** Show the step first, and wait for his ok.
 - **The next step.** Stop after each one (rule 5).
 
-Three more ways of working, in his words:
+Four more ways of working, in his words:
 
 - **Research first.** Louis, 2026-11-13: "do research first", and of planning, "the research also applies".
   Before an answer, a finding, a plan or a doc: read the code for what is there, and read a tool's own docs when
@@ -87,6 +87,10 @@ Three more ways of working, in his words:
   thinking.
 - **Do the work yourself.** Louis, 2026-11-04: "do not pass on the work you do it". No build work is handed to another
   agent unless he asks for one.
+- **Name the skills used, live, and why.** Louis, 2026-11-18: "always output the skills you used and why", "I need
+  to be able to see live when you use a custom skill". The line that says what you are busy with names the skill
+  as it starts ("Following write-the-copy for the hero's words"), and every reply about work ends with one line
+  naming each skill it followed and what for, or "no skill" when none fit.
 
 ## What is loaded with this file
 
@@ -114,6 +118,11 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | A pull request is opened, or its body written | `/open-a-pull-request` |
 | The last step of a feature or a cleanup | `/finish-a-feature` |
 | A picture in the docs is added or changed | `/draw-a-diagram` |
+| A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written | `/research-the-market` |
+| A page or a section is planned, reordered or redesigned, always on our framework | `/design-a-page` |
+| A mark, a card, an image, a mockup or a palette is made or changed | `/design-a-graphic` |
+| Words a visitor reads are written or changed (the writer) | `/write-the-copy` |
+| A skill is written or changed | `/write-a-skill` |
 
 ## Where the rest is
 
