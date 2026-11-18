@@ -49,7 +49,8 @@ layout, and serves that for every place on the page.
 The site's admin is the framework's, named in `LouisAgentDevAreas`, with the site's own `Layout/AdminLayout`.
 
 `/admin/overview` shows the guide's talks today and this month, and their cost in rand. It shows the leads (the
-guide's `SendLead` calls), the parts of the site and the demo businesses the talks were on, and the latest talks. It
+guide's `SendLead` calls), the parts of the site and the demo businesses the talks were on, and the latest talks, each marked as yours
+when your browser held the admin key, or a visitor's. It
 reads all of that from the turn log and the ledger in the log folder. It sits behind `ADMIN_API_KEY`, or
 `AGENT_API_KEY` when that's not set, and nothing public links there (`SiteAdminTests`).
 

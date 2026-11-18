@@ -131,7 +131,8 @@ internal static class TurnStream
                 usage.Dispose();
                 // A line for the admin's overview: where the turn came from and what it did, none of what was said.
                 var finished = new TurnLogRecord(DateTimeOffset.UtcNow, session.Id, session.Turns, session.Identity,
-                    session.Page?.Url, session.Page?.Focus, tools);
+                    session.Page?.Url, session.Page?.Focus, tools,
+                    session.FromTheAdmin);
                 log?.Write(finished);
             }
 

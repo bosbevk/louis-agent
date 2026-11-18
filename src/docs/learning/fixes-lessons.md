@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX207 · Mark it where you already know it
+
+Louis asked whether the overview could tell his own talks from his clients' by their internet address. It could, but
+the privacy page promises no address is ever written down, and one address is shared by a whole office or changes on
+a phone. The browser already knew the answer: only Louis's browser holds the admin key. So when it opens a session it
+says so once, behind that key, and the session carries the mark into every turn it logs. A visitor's browser holds no
+key and sends nothing, so nothing new is kept about them. The best place to record who someone is, is the place that
+already knows it, not a guess from what the network shows. Skill 18 (testing and shipping: each part of the path has
+its own test, from the browser's call to the column on the page).
+
 ## FX206 · Borrow the shape, check the colour it brings
 
 The header's flag moved from alpha-1 to beta-1, and its look from a solid violet pill to a build status: a quiet tag

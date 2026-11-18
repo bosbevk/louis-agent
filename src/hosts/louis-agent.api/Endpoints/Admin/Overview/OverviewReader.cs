@@ -66,7 +66,7 @@ internal static class OverviewReader
         var spent = ledger.Where(record => record.Session == last.Session);
         var tools = talk.SelectMany(turn => turn.Tools).Distinct().ToList();
         return new OverviewTalk(last.At, last.Page, last.Focus, last.Identity, talk.Count, CostOf(spent, display),
-            tools);
+            tools, talk.Any(turn => turn.FromTheAdmin));
     }
 
     /// <summary>What the requests cost in the display currency; null when none of them was priced.</summary>
