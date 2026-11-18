@@ -42,7 +42,25 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
                 TimeZone: timeZone, Role: role, Identity: identity)),
         });
         var reply = await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase);
-        return reply!.SessionId;
+        await MarkMineAsync(reply!.SessionId);
+        return reply.SessionId;
+    }
+
+    /// <summary>
+    /// When this browser holds the admin key, tells the API the new session is the admin's own (FX207), so the
+    /// overview can tell the admin's talks from visitors'. A visitor's browser holds no key and says nothing.
+    /// </summary>
+    private async Task MarkMineAsync(string sessionId)
+    {
+        if (string.IsNullOrWhiteSpace(settings.AdminKey)) return;
+        try
+        {
+            using var _ = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"v1/admin/sessions/{sessionId}/mine"));
+        }
+        // An old or wrong key only loses the mark: the chat opens all the same.
+        catch (AgentApiException)
+        {
+        }
     }
 
     /// <summary>The toolsets this API can load: the ones whose settings are set.</summary>

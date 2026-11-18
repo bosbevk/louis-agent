@@ -49,6 +49,15 @@ internal sealed class AgentSession(
     public SessionOpener? Opener { get; } = opener;
 
     /// <summary>
+    /// Whether the admin's own browser opened it (FX207). The browser says so right after opening, behind the admin
+    /// key, so the overview can tell the admin's talks from visitors'.
+    /// </summary>
+    public bool FromTheAdmin { get; private set; }
+
+    /// <summary>Marks the session as the admin's own.</summary>
+    public void MarkFromTheAdmin() => FromTheAdmin = true;
+
+    /// <summary>
     /// The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).
     /// </summary>
     public StreamFormat StreamFormat { get; } = format;

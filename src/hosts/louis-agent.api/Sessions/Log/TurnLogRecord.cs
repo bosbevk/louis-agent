@@ -11,6 +11,8 @@ namespace LouisAgent.Api.Sessions.Log;
 /// <param name="Page">The page's address the message came from; none when it sent no page.</param>
 /// <param name="Focus">The part of the site that page is (F127.7); none when the site names none.</param>
 /// <param name="Tools">The names of the tools the turn called, in order, each once.</param>
+/// <param name="FromTheAdmin">Whether a browser holding the admin key opened the session (FX207), so the overview can
+/// tell the admin's own talks from visitors'.</param>
 public sealed record TurnLogRecord(
     DateTimeOffset At,
     string Session,
@@ -18,4 +20,5 @@ public sealed record TurnLogRecord(
     string? Identity,
     string? Page,
     string? Focus,
-    IReadOnlyList<string> Tools);
+    IReadOnlyList<string> Tools,
+    bool FromTheAdmin = false);

@@ -27,7 +27,8 @@ public class OverviewTests
         [new OverviewBar("selling", 2), new OverviewBar("demos", 1), new OverviewBar("framework", 1)],
         [new OverviewBar("louis-agent-guide", 3), new OverviewBar("koringland-attorneys", 1)],
         [
-            new OverviewTalk(Evening.AddMinutes(9), "/framework/packs", "framework", "louis-agent-guide", 1, null, []),
+            new OverviewTalk(Evening.AddMinutes(9), "/framework/packs", "framework", "louis-agent-guide", 1, null, [],
+                FromTheAdmin: true),
             new OverviewTalk(Evening.AddMinutes(2), "/pricing", "selling", "louis-agent-guide", 2, 0.008m,
                 ["Offer", "AskFor", "SendLead"]),
         ]);
@@ -88,6 +89,27 @@ public class OverviewTests
             Assert.That(rows[0].TextContent, Does.Contain("/framework/packs").And.Contain("unknown"),
                 "an unpriced talk's cost is unknown, never 0 (ADR 0007)");
             Assert.That(rows[1].TextContent, Does.Contain("/pricing").And.Contain("$0.008").And.Contain("leads"));
+        });
+    }
+
+    /// <summary>
+    /// FX207, Louis: "I need to see who is me and who is clients": a talk from the admin's own browser says You, a
+    /// visitor's says Visitor.
+    /// </summary>
+    [Test]
+    public void TheLatestTalks_SayWhichAreYours()
+    {
+        using var ctx = new BunitContext();
+
+        var page = Render(ctx);
+        var rows = page.FindAll(".latest-talks tbody tr");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page.FindAll(".latest-talks thead th").Select(cell => cell.TextContent),
+                Does.Contain("From"));
+            Assert.That(rows[0].QuerySelector(".talk-from")!.TextContent, Is.EqualTo("You"));
+            Assert.That(rows[1].QuerySelector(".talk-from")!.TextContent, Is.EqualTo("Visitor"));
         });
     }
 

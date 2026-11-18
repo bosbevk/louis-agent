@@ -709,7 +709,9 @@ Three areas come with the framework.
 **The overview**, `Overview(count => count.Tool("SendLead", "leads"))`, names the tools it counts. The API
 counts every tool and names no pack. Its page at `/admin/overview` draws the API's overview in the reader's
 currency: today's and the month's talks, their cost and the counted tools, the month's talks by part of the
-site and by who answered, in one colour, and the latest talks, in a table that scrolls sideways on a phone.
+site and by who answered, in one colour, and the latest talks, in a table that scrolls sideways on a phone. Each talk says whether it was
+yours or a visitor's: when a browser holds the admin key, `AgentApi` tells the API that each session it opens is the
+admin's, and a refused key only loses the mark, never the chat.
 
 **The packs**, `Packs(views => …)`, are the packs' screens and uploads, with their menu and the packs page at
 `/admin/packs`.

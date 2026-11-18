@@ -97,4 +97,21 @@ public class OverviewReaderTests
             Assert.That(latest[0].Cost, Is.Null, "an unpriced talk's cost is unknown, never 0 (ADR 0007)");
         });
     }
+
+    /// <summary>
+    /// FX207: a talk any of whose turns came from the admin's own browser is the admin's; the others are visitors'.
+    /// </summary>
+    [Test]
+    public void ATalkFromTheAdmin_IsMarked()
+    {
+        TurnLogRecord[] turns =
+        [
+            Turn(Evening, "mine", 1, "louis-agent-guide", "/", "selling") with { FromTheAdmin = true },
+            Turn(Evening.AddMinutes(1), "theirs", 1, "louis-agent-guide", "/", "selling"),
+        ];
+
+        var latest = OverviewReader.Of(Day, turns, [], Rand).Latest;
+
+        Assert.That(latest.Select(talk => talk.FromTheAdmin), Is.EqualTo(new[] { false, true }));
+    }
 }
