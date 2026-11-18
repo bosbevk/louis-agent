@@ -273,9 +273,10 @@ The pages are written from the docs the guide reads. Every number comes from the
 is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
 search engines (`Content/SiteFacts.cs`).
 
-Beside the site's name in the header stands its stage, a small "alpha-1" flag. A press on it opens a short note,
-that this is version alpha-1 and a visitor may run into inconsistencies while it is built, with a way to the
-contact page; a press anywhere else closes it.
+Beside the site's name in the header stands its stage, a small "beta-1" flag: a quiet grey tag with a slow violet
+dot before the words, which reads as a status, built and still being polished. The dot holds still for a visitor who
+asked for less motion. A press on it opens a short note, that this is version beta-1 and it works while it is still
+being polished, with a way to the contact page. A press anywhere else closes it.
 
 Orbi at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
 framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,

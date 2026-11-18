@@ -123,11 +123,11 @@ public class ShowroomLayoutTests
     }
 
     /// <summary>
-    /// FX170: the header says the site is at alpha-1, and a press says what that means (Louis: "flag in the header
-    /// version: alpha disclosure", "running version alpha-1 may experience inconsistencies").
+    /// The header says the site is at beta-1 (FX170, moved on in FX206, Louis: "move this to beta-1"), and a press
+    /// says what that means.
     /// </summary>
     [Test]
-    public void TheHeader_FlagsAlphaOne()
+    public void TheHeader_FlagsBetaOne()
     {
         using var ctx = SitePageContext.Create();
 
@@ -135,8 +135,9 @@ public class ShowroomLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".site-header .site-stage button.stage-flag").TextContent.Trim(), Is.EqualTo("alpha-1"));
-            Assert.That(cut.Find(".site-header .stage-note").TextContent, Does.Contain("inconsistencies"));
+            Assert.That(cut.Find(".site-header .site-stage button.stage-flag").TextContent.Trim(), Is.EqualTo("beta-1"));
+            Assert.That(cut.Find(".site-header .stage-note").TextContent,
+                Does.Contain("version beta-1").And.Contain("still being polished"));
         });
     }
 }
