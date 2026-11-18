@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX200 · A prompt can ask for what its tool can't do
+
+The free-websites entry told Orbi to fill in what the visitor had already said, so they would only add what was
+missing. It sounds helpful, but the form tool has no way to hold an answer. A field is a label and a kind, and the
+label is at most 30 characters. So the model had nowhere to put those answers, and the form came back refused or
+never showed. The quote recipe beside it already said the right thing, ask only what they haven't told you, and it
+works. Now the entry says that too, and names its four short labels. The lesson is to read a recipe against the
+tool's own parameters. When a prompt promises a step the tool has no slot for, the model improvises, and the
+visitor sees the seam.
+
 ## FX199 · A showcase is only as good as its weakest control
 
 The theme page shows every control a site is built from, and a visitor tries them. Three of its buttons were links

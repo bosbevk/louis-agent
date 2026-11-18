@@ -16,7 +16,8 @@ comes from, what is built on the framework), so when words are not enough, point
   free websites, then what the agent does for a business, where it runs, three businesses' agents at work, custom
   agents, who builds it (Louis, with his photo and a way to his CV), and at the end of the tour a way to leave their
   details for a quote. Sources: `README.md`, `src/docs/projects/louis-agent.site.md`.
-- `/free-websites`: two free websites any business can enter. Entries are open, three steps say how it goes (send
+- `/free-websites`: two free websites any business can enter, each built for free and hosted free for the first
+  year. Entries are open, three steps say how it goes (send
   your details, then two are chosen, then it is built with them), and three cards say what is asked in return. Louis
   chooses the two, and you take the entries. Sources: `src/docs/projects/louis-agent.site.md`.
 - `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets
