@@ -42,6 +42,10 @@
         {
             <div class="actions">@Actions</div>
         }
+        @if (Announcement is not null)
+        {
+            <div class="hero-announcement">@Announcement</div>
+        }
     </div>
     @if (Aside is not null)
     {

@@ -2,6 +2,8 @@ using System.Reflection;
 using AngleSharp.Dom;
 using LouisAgent.Site.Pages;
 using LouisAgent.Site.Pages.About;
+using LouisAgent.Site.Pages.Framework;
+using LouisAgent.Site.Pages.Offers;
 using LouisAgent.Web.Components.Site.Bands;
 using Microsoft.AspNetCore.Components;
 
@@ -17,6 +19,7 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "/", "Your doors close at five. Your website doesn't.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(PrivacyPage), "/privacy", "What happens to what you type.")]
+    [TestCase(typeof(FreeWebsitesPage), "/free-websites", "Two businesses get a free website.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();

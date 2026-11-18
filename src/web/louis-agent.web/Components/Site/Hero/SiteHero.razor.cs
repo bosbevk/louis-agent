@@ -44,6 +44,9 @@ public partial class SiteHero
     /// <summary>The buttons and links under the words.</summary>
     [Parameter] public RenderFragment? Actions { get; set; }
 
+    /// <summary>A line after the buttons that announces something, such as an offer with its own page.</summary>
+    [Parameter] public RenderFragment? Announcement { get; set; }
+
     /// <summary>What stands beside the words: a live turn, a picture, nothing.</summary>
     [Parameter] public RenderFragment? Aside { get; set; }
 

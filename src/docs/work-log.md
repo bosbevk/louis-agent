@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 132 | 98 |
-| Fixes (`FX`) | 185 | 6 |
+| Features (`F`) | 134 | 98 |
+| Fixes (`FX`) | 187 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -157,11 +157,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (132 done)
+## Features (134 done)
 
 | Id | When | What |
 |---|---|---|
 | F162.1 | 2026-11-18 | The framework's pages, the first of F162's three children: the old pages thrown away from louis-agent.dev and seven written new, Overview to Comparison, as `louis-agent.web.framework`, a package a site turns on with `.Framework()` (Louis: "the framework must be a package like accounts"); `.Docs(address)` in `louis-agent.web.docs` for a doc linked by its path; `.Places(home, site)` in `louis-agent.web.places`, the catch-all moved out; the framework's own site and its host on :5084, flat alone, in the docs layout; every picture in the page's theme, with the brand in its footer and the site's fonts; what each page says held to the repo by its test |
+| F163 | 2026-11-18 | The free websites move to their own page, `/free-websites`, and the landing keeps one line under the hero that leads there: the framework's new announcement strip, in a new slot of its hero, a plain pill with no glass; Orbi gains an always-on writing skill, short sentences with no colon, semicolon or bracket |
+| F162 | 2026-11-18 | Two free websites: a band right after the landing's hero where any business enters through Orbi, who takes the entry in one form and mails it on a yes; two are chosen; the theme page shows nothing twice, four cards with one switch, one off button and one status pill |
 | F161 | 2026-11-18 | The brand speaks to owners: the guide is Orbi, Louis's AI agent, telling his story as his (ADR 0113 amended); the slogan "The website that answers." in the header, footer, tab, link preview and a one-ball social card; the hero "Your doors close at five. Your website doesn't.", one sentence to a line (the framework hero's `Lines`); no price in the description; a face band naming Louis once, with his CV; every line on the landing rewritten for an owner |
 | F145.1 | 2026-11-18 | The privacy page: `/privacy` says what the site keeps and sends and the visitor's rights under POPIA, linked from every footer and the landing's data tile; the guide says what Send it does before it sends a lead |
 | F160 | 2026-11-17 | The guide walks the demo (Louis: "do not make it autoplay, give the ability to our agent to guide him through the experience"): a demo waits to be started, its conversation is a place of its own with an address per turn (his pick of three), showing a turn plays it and stops, and the guide walks it a turn at a time, saying what to watch, then offers to try the business live |
@@ -294,10 +296,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (185 done)
+## Fixes (187 done)
 
 | Id | When | What |
 |---|---|---|
+| FX199 | 2026-11-18 | The theme page is Theme in the menu, every control on it works, and its words speak to an owner |
+| FX198 | 2026-11-18 | Home leads the top menu on every page, the CV mark left the settings, and the privacy page names Orbi |
 | FX197 | 2026-11-17 | The footer shows again, above the fade under the guide's bar, clear of the corner's link and the orb |
 | FX196 | 2026-11-17 | A big heading is solid ink in every theme, with no gradient through its letters |
 | FX195 | 2026-11-17 | The coding agent and triage demos are gone from the site, with their links, recordings and the triage web screens; the Demos menu is back |

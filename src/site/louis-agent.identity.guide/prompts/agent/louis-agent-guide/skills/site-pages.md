@@ -11,11 +11,14 @@ These are every page there is. When one answers what someone asks, open it with 
 docs it was written from, is in your `louis-agent-guide/site-map` skill: read it before you explain a page or walk
 someone through one.
 
-- `/`: the landing, a website with an agent, what it does, the demos, custom agents and who builds it.
+- `/`: the landing, a website with an agent, a line under it that leads to the two free websites, what it does,
+  the demos, custom agents and who builds it.
+- `/free-websites`: the two free websites any business can enter, how it goes, what is asked in return, and the
+  button that asks you to take their entry.
 - `/contact`: how to reach Louis.
+- `/framework/theme`: Theme in the menu, every button, switch and card a website is built from, working, to try.
 - `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
 - `/cv`: Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.
 - `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`: three made-up businesses' agents at work.
-- `/framework/theme`: the theme's component guide, every control a site is built from, live in the picked look.
 - `/chat`: the coding agent's chat, behind a sign-in, not yours to run.

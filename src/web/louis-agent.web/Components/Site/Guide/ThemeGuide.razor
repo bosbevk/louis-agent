@@ -1,58 +1,42 @@
 @* The theme's component guide (ADR 0125): every control a site configures, live, laid out as the design page's
-   controls are. It draws itself from the theme the visitor picked, so switching the look changes every piece here. *@
+   controls are. It draws itself from the theme the visitor picked, so switching the look changes every piece here.
+   Every control works where it stands, and nothing leads away, since the framework names no site's pages. *@
 <div class="theme-guide">
     <div class="guide-grid">
         <div class="panel">
-            <Intro Title="Buttons" Summary="Both are glazed ceramic: the main one violet, the quiet one white by day and black by night." />
+            <Intro Title="Buttons" Summary="The main button is violet, and the quiet one is white by day and black by night. Press them, and the pill says so. Press Tab, and a ring of light shows where you are." />
             <div class="guide-row">
-                <LinkButton Href="/framework/theme" Text="Ask for yours" />
-                <LinkButton Href="/framework/theme" Text="See what it does" Kind="ButtonKind.Quiet" />
+                <button class="btn btn-fill" type="button" @onclick="Press">Press me</button>
+                <button class="btn btn-line" type="button" @onclick="Press">Press me too</button>
+                <button class="btn btn-fill" type="button" disabled>Can't press</button>
             </div>
-            <div class="guide-row">
-                <button class="btn btn-fill btn-small" type="button" disabled>Off</button>
-                <button class="btn btn-line btn-small" type="button" disabled>Off</button>
-            </div>
+            <div class="guide-row"><span class="guide-pressed"><StatusPill Text="@PressedText" /></span></div>
         </div>
         <div class="panel">
-            <Intro Title="Switch and slider" Summary="The switch slides its knob. Drag the slider." />
+            <Intro Title="Switch and slider" Summary="Tap the switch to turn it on or off. The one beside it is locked. Drag the slider." />
             <div class="guide-row">
-                <span class="guide-label">on</span><Switch Label="On" On="true" />
-                <span class="guide-label">off</span><Switch Label="Off" />
-                <Switch Label="Off and unusable" Disabled="true" />
+                <Switch Label="A switch" On="true" />
+                <Switch Label="A locked switch" Disabled="true" /><span class="guide-label">locked</span>
             </div>
             <div class="guide-row"><Slider Label="A value" /></div>
         </div>
         <div class="panel">
-            <Intro Title="Field" Summary="Click into it: the edge turns violet." />
+            <Intro Title="Field" Summary="Click into it and type. Its edge turns violet." />
             <div class="guide-row"><PillField Placeholder="Your email" Kind="email" /></div>
-            <Well Text="A well is cut into the glass. It holds what is read, not pressed." />
+            <Well Text="This box holds words to read, not to type in." />
         </div>
         <div class="panel">
-            <Intro Title="Tags" Summary="A plain tag, yours, and the agent's." />
+            <Intro Title="Tags" Summary="Small labels. A plain one, one for what you picked, and one for what the agent shows." />
             <div class="guide-row">
-                <Tag Text="ShowCard" />
+                <Tag Text="A tag" />
                 <Tag Text="You picked this" Kind="TagKind.You" />
-                <Tag Text="Agent shows this" Kind="TagKind.Agent" />
-            </div>
-        </div>
-        <div class="panel">
-            <Intro Title="Status" Summary="A small pill that says what is happening." />
-            <div class="guide-row">
-                <StatusPill Text="Live" />
-                <StatusPill Text="1 call · 2.1 s" />
-            </div>
-        </div>
-        <div class="panel">
-            <Intro Title="Focus" Summary="Press Tab to walk the controls: a ring of split light goes round each one." />
-            <div class="guide-row">
-                <LinkButton Href="/framework/theme" Text="Tab to me" Kind="ButtonKind.Quiet" />
-                <Switch Label="Tab to me too" />
+                <Tag Text="The agent shows this" Kind="TagKind.Agent" />
             </div>
         </div>
     </div>
 
     <section class="guide-part">
-        <Intro Title="Cards" Summary="`Tile` is the theme's pane: an icon in a flat chip, a title and its words. Point at one: it lifts, and in glass a light runs round its edge." />
+        <Intro Title="Cards" Summary="Point at a card and it lifts. In glass, light runs round its edge." />
         <TileRow>
             <Tile Icon="DiagramIcon.Server" Title="Your server">A container you host.</Tile>
             <Tile Icon="DiagramIcon.Settings" Title="Your model" Delay="1">Hosted, or local.</Tile>
@@ -61,23 +45,23 @@
     </section>
 
     <section class="guide-part">
-        <Intro Title="The look switch" Summary="`LookSwitch` lets a visitor pick the theme and the style. The browser remembers the pick." />
+        <Intro Title="The look" Summary="Pick glass or flat, and dark or light. Every part of this page changes with it, and your browser remembers." />
         <div class="guide-row"><LookSwitch /></div>
     </section>
 
     <section class="guide-part">
-        <Intro Title="The agent's mark" Summary="`MarkStates` plays the mark's four states in turn. Press a state to hold it." />
+        <Intro Title="The agent's mark" Summary="The mark shows what the agent is doing. It plays each state in turn. Press one to hold it." />
         <MarkStates />
     </section>
 
     <section class="guide-part">
-        <Intro Title="Words" Summary="`Intro` is a heading and its summary, `Steps` a few steps in order, and `TermList` named entries from records." />
+        <Intro Title="Words" Summary="A heading with its summary, a few steps in order, and a list of named things." />
         <Steps Items="StepsExample" />
         <TermList Terms="Terms" />
     </section>
 
     <section class="guide-part">
-        <Intro Title="A turn, playing" Summary="`LiveTurn` plays one chat turn in a window, line by line, over and over." />
-        <LiveTurn Title="session · toolsets: files" Label="An example chat turn, playing" Lines="TurnExample" Cost="turn 2 requests · 4k tokens · **$0.002**" CostAt="5" />
+        <Intro Title="A chat, playing" Summary="One question to the agent and its answer, played line by line, over and over." />
+        <LiveTurn Title="a chat on your website" Label="An example chat, playing" Lines="TurnExample" Cost="2 requests · 4k tokens · **$0.002**" CostAt="5" />
     </section>
 </div>

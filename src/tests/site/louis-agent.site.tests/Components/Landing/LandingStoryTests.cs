@@ -47,6 +47,27 @@ public class LandingStoryTests
     }
 
     /// <summary>
+    /// Two free websites, told in one line under the hero (Louis, 2026-11-18: "why not just have this and link to
+    /// page?", then his pick of a framework strip): the whole line leads to the offer's own page.
+    /// </summary>
+    [Test]
+    public void TheFreeWebsites_AreOneLineUnderTheHero_LeadingToTheirPage()
+    {
+        using var ctx = new BunitContext();
+
+        var strip = ctx.Render<HomePage>().Find("section#top a.announcement-strip");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(strip.GetAttribute("href"), Is.EqualTo("/free-websites"));
+            Assert.That(strip.QuerySelector(".status-pill")!.TextContent, Is.EqualTo("Entries open"));
+            Assert.That(strip.QuerySelector(".announcement-text")!.TextContent,
+                Is.EqualTo("Two businesses get a free website."));
+            Assert.That(strip.QuerySelector(".announcement-go")!.TextContent, Is.EqualTo("See how it works"));
+        });
+    }
+
+    /// <summary>
     /// FX169: a section for the brand in the landing's middle (Louis: "add a slide dedicated to branding mixed with
     /// one random topic", "brand section must be in the middle"): the idea, the mark large with the name on four
     /// grounds, and the theme as its other topic, leading to the theme's page. None of its panels can be picked to

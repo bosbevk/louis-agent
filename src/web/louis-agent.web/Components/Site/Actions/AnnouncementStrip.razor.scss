@@ -1,0 +1,27 @@
+@use "web/tools/surface";
+
+/* A one-line announcement: a plain pill, the theme's quiet fill with no edge and no glass, that holds the status, the
+   sentence and where it goes. It keeps its own width and sits in the middle; on a phone its parts wrap under each
+   other instead of running off. */
+.announcement-strip {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 16px;
+    max-width: 100%;
+    padding: 10px 20px 10px 12px;
+    color: var(--bs-emphasis-color);
+    text-decoration: none;
+    border-radius: 999px;
+    @include surface.panel(var(--bs-tertiary-bg));
+}
+.announcement-strip:focus-visible { @include surface.focus-ring(); }
+.announcement-text { font-weight: 600; }
+.announcement-go { font-weight: 600; color: var(--bs-link-color); }
+.announcement-strip:hover .announcement-go { text-decoration: underline; }
+
+/* On a phone the line wraps, so it takes a card's corner instead of a pill's, which would round into a blob. */
+@media (max-width: 600px) {
+    .announcement-strip { padding: 14px 18px; border-radius: var(--web-pane-radius); }
+}
