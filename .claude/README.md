@@ -55,6 +55,11 @@ Two rules follow from the last row.
 | `open-a-pull-request` | A pull request is opened, or its body written |
 | `finish-a-feature` | The last step of a feature or a cleanup |
 | `draw-a-diagram` | A picture in the docs is added or changed |
+| `research-the-market` | A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written |
+| `design-a-page` | A page or a section is planned, reordered or redesigned, always on our framework |
+| `design-a-graphic` | A mark, a card, an image, a mockup or a palette is made or changed |
+| `write-the-copy` | Words a visitor reads are written or changed (the writer) |
+| `write-a-skill` | A skill is written or changed |
 
 ## Changing an instruction
 
