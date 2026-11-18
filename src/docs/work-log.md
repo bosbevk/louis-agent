@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 133 | 97 |
-| Fixes (`FX`) | 188 | 6 |
+| Fixes (`FX`) | 189 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -294,10 +294,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (188 done)
+## Fixes (189 done)
 
 | Id | When | What |
 |---|---|---|
+| FX201 | 2026-11-18 | Enter your business opens Orbi's entry form first, with nothing before it |
 | FX200 | 2026-11-18 | Orbi asks for a free-website entry in a form it can draw, the step numbers stand centred, and a long answer's box is no longer a capsule |
 | FX199 | 2026-11-18 | The theme page is Theme in the menu, every control on it works, and its words speak to an owner |
 | FX198 | 2026-11-18 | Home leads the top menu on every page, the CV mark left the settings, and the privacy page names Orbi |
