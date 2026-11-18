@@ -181,7 +181,9 @@ public class OrbiVoiceTests
     public void TheFreeWebsites_OrbiTakesTheEntry() =>
         Assert.That(Voice(), Does.Contain("**Two free websites, and you take the entries.**")
             .And.Contain("Louis chooses the two")
-            .And.Contain("fill in what they already told you")
+            .And.Contain("only what they haven't told you")
+            .And.Not.Contain("fill in what they already told you")
             .And.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
-            .And.Contain("never promise them a place"));
+            .And.Contain("never promise them a place")
+            .And.Contain("hosted free for the first year"));
 }

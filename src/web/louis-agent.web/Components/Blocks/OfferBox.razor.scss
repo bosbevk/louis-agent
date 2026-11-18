@@ -9,7 +9,8 @@
     @include field.box(web-form-input, 14px); flex: 1; min-width: 0; font-family: inherit;
     transition: border-color .15s, background .15s;
 }
-textarea.offer-input { resize: vertical; field-sizing: content; min-height: 2.6em; }
+/* A long answer's box takes a faint wash with a box's corner, not the one-line field's pill. */
+textarea.offer-input { resize: vertical; field-sizing: content; min-height: 2.6em; border-radius: 14px; @include surface.hairline(.1); }
 .offer-input:focus { outline: none; @include surface.edged(themed(web-form-input, focus, var(--bs-primary))); }
 .offer-input[disabled] { opacity: .6; }
 .offer-send {
