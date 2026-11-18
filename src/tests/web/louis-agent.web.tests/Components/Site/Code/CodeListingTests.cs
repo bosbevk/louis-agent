@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Site.Code;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +75,36 @@ public class CodeListingTests
     }
 
     /// <summary>A context a listing draws in: the site's words, and its module answering anything.</summary>
+    /// <summary>
+    /// F164.2 step 6: a listing's Ask puts its code to the site's agent through the door, named for its file, the code
+    /// itself in the question, so the agent explains the code the visitor sees (every site has an agent, Louis:
+    /// "All our sites will have agents").
+    /// </summary>
+    [Test]
+    public void ItsAsk_PutsTheCodeToTheAgent()
+    {
+        using var ctx = Context();
+        var door = new GuideDoor();
+        ctx.Services.AddSingleton(door);
+        var heard = new List<string?>();
+        door.Asked += heard.Add;
+        const string program = "await CliHost.RunAsync(args);";
+
+        var cut = ctx.Render<CodeListing>(listing => listing
+            .Add(l => l.Name, "Program.cs")
+            .Add(l => l.Language, "csharp")
+            .Add(l => l.Code, program));
+        var ask = cut.Find("figure.code-listing figcaption button.code-ask");
+        ask.Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ask.TextContent.Trim(), Is.EqualTo(new ChatText().AskCode));
+            Assert.That(heard, Has.Count.EqualTo(1));
+            Assert.That(heard[0], Does.Contain("Program.cs").And.Contain(program));
+        });
+    }
+
     private static BunitContext Context()
     {
         var ctx = new BunitContext();

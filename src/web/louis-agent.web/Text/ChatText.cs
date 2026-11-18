@@ -36,6 +36,14 @@ public sealed record ChatText
     /// <summary>What a picked piece asks the guide (F127.7); {0} its heading.</summary>
     public string ExplainPiece { get; init; } = "Tell me about \"{0}\".";
 
+    /// <summary>The button on a code listing that asks the site's agent about its code (F164.2).</summary>
+    public string AskCode { get; init; } = "Ask";
+
+    /// <summary>
+    /// What a code listing's Ask puts to the agent (F164.2); {0} its file or language, {1} its language, {2} the code.
+    /// </summary>
+    public string ExplainCode { get; init; } = "Explain the code in {0}, line by line.\n\n```{1}\n{2}\n```";
+
     /// <summary>The chip's close button, read aloud: the piece is let go.</summary>
     public string ClosePiece { get; init; } = "Stop asking about this";
 

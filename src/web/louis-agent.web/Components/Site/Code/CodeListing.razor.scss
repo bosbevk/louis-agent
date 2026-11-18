@@ -12,8 +12,9 @@
     color: var(--bs-tertiary-color);
 }
 
-/* The copy button: a chip, small, in the caption's face, so it reads as part of the listing's header. */
-.code-copy {
+/* The copy and ask buttons: chips, small, in the caption's face, so they read as part of the listing's header. */
+.code-copy,
+.code-ask {
     @include surface.chip();
     padding: 3px 10px;
     border-radius: 999px;
