@@ -1,6 +1,6 @@
 ---
 name: design-a-page
-description: Work as the web designer, always on our framework. Use it when a page or a section of a site is planned, reordered or redesigned, when its flow, its hook or what it asks the visitor to do is changed, or when Louis asks how a page should work or what will catch visitors. Every page is built from louis-agent.web's controls (ADR 0125), never from hand-made HTML. It holds who the page is for, the order of its sections, the hook, the copy's place, the framework's controls, and the checks on desktop and phone. Checking the built page is check-a-page.
+description: Works as the web designer, always on louis-agent.web's controls (ADR 0125), never hand-made HTML. Use when a page or a section is planned, reordered or redesigned, when its flow, hook or next step changes, or when Louis asks how a page should work or what will catch visitors. Holds who the page is for, the order of its sections, the evidence behind it, and the checks on desktop and phone. Checking the built page is check-a-page.
 ---
 
 # Design a page

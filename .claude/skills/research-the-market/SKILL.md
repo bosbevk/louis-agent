@@ -1,6 +1,6 @@
 ---
 name: research-the-market
-description: Research the brand and the market before any words, slogan, positioning or offer are proposed. Use it when Louis asks for a slogan, a tagline, a heading, a brand audit, a competitor comparison, who a page is for, or "do market research", and before any copy for a site is written. It holds the order of the research, the sources that count, how rivals are compared, how options are put, and what is never claimed.
+description: Researches the brand and the market before any words, slogan, positioning or offer are proposed. Use when Louis asks for a slogan, a tagline, a heading, a brand audit, a competitor comparison, who a page is for, or market research, and before any copy for a site is written. Holds the order of the research, the sources that count, how rivals are compared, and what is never claimed.
 ---
 
 # Research the market

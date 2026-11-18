@@ -1,6 +1,6 @@
 ---
 name: write-a-skill
-description: Write a new Claude Code skill for this repo, or change one that is here. Use it when Louis asks for a skill, when a procedure keeps being explained again in threads, or when a skill under .claude/skills is added, renamed, split or rewritten. It holds the research first, whether the job is a skill at all, the name and the description, the body's shape, how it is wired in, and how it is tried before it is shown.
+description: Writes a new Claude Code skill for this repo, or reworks one that is here. Use when Louis asks for a skill, when a procedure keeps being explained again in threads, or when a skill under .claude/skills is added, renamed, split or rewritten. Holds the research first, whether the job is a skill at all, the name and the description, the body's shape, how it is wired in, and how it is tried before it is shown.
 ---
 
 # Write a skill
@@ -47,9 +47,10 @@ once, or when getting it wrong costs a lot.
    `draw-a-diagram`. At most 64 characters, never `claude` or `anthropic` in it, and never a vague word such as
    `helper` or `tools`. The folder and the `name` are the same (`SkillFilesTests`).
 3. **Write the description.** It is all Claude sees when it decides whether to load the skill, so it says what
-   the skill does and when to use it, with the words a person would use for that job. Start with the job, then
-   "Use it when…", then what it holds. Keep the use case first, since the listing cuts a long description, and
-   stay under 1,024 characters.
+   the skill does and when to use it, with the words a person would use for that job. Write it in the third
+   person, as Anthropic's guide asks (Louis's pick, 2026-11-18): what it does ("Draws, changes or fixes a picture
+   in the docs"), then "Use when…", then "Holds…". Keep the use case first, since the listing cuts a long
+   description, and stay under 1,024 characters. No colon followed by a space, which breaks the YAML header.
 4. **Write the body** in this order (the shape every skill here has):
    - One or two lines on what the job is, then **the stops first**, numbered, at most seven. After a long
      session is compacted only the start of a loaded skill is kept, so what must never be missed is at the top.

@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX202 · A fix for one state is a fix for every state
+
+FX200 took the capsule off a long answer's box, but only while it sat still. Click into it and the box put the
+theme's focus drawing back on, and that drawing is a pill made for a one-line field. So the capsule came straight
+back, now with a violet edge. A control has several looks, at rest, in focus, pressed and turned off, and each one
+can come from a different place. Now a long box has its own focus look: the same corner and wash, with an edge and a
+soft ring in the brand's colour. When a fix changes how something looks, look at it in every state, not only the
+one in the screenshot. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
 ## FX201 · When the next step is a form, make it the only step
 
 Pressing "Enter your business" sent Orbi a question, and Orbi did several things at once. It greeted the visitor,

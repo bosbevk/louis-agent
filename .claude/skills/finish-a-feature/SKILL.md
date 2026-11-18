@@ -1,6 +1,6 @@
 ---
 name: finish-a-feature
-description: Close a feature, a cleanup or a child of a parent on its last step. Use it when a plan's last step is reached or its done-when is met, before the pull request that finishes the work. It holds the list a feature finishes by, with the TODO and work-log rows, the docs of every project it touched, the write-up, the plan folded and deleted, and what waits for Louis's word.
+description: Closes a feature, a cleanup or a child of a parent on its last step. Use when a plan's last step is reached or its done-when is met, before the pull request that finishes the work. Holds the list a feature finishes by, with the TODO and work-log rows, the docs of every project it touched, the write-up, and the plan folded and deleted.
 ---
 
 # Finish a feature
@@ -17,8 +17,7 @@ first.
 
 ## Finishing a feature
 
-When a feature's *Done when* is met, do all of this in the same commit, so the TODO, the specs and these docs never
-drift apart. A cleanup (`CL`) finishes by the same list, and so does each child of a parent (`F49.1`):
+A cleanup (`CL`) finishes by the same list, and so does each child of a parent (`F49.1`).
 
 1. **TODO and the work log:** delete the feature's row in the TODO, and add its row (id, date, what in a few
    words) under *Features* (or *Cleanups* for a `CL`) in the [work log](../../../src/docs/work-log.md), newest first, with the
@@ -30,8 +29,7 @@ drift apart. A cleanup (`CL`) finishes by the same list, and so does each child 
    TODO's [Known limitations](../../../TODO.md#known-limitations) (the one list).
 5. **Measure:** for a feature that changes cost or quality, run its eval ([Run the evals](../../../src/docs/guides/run-the-evals.md);
    a live run spends money, so on Louis's go). The run is kept in the eval store, so the write-up names the run's id
-   and its numbers; the runs before CL10 stay in
-   [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
+   and its numbers.
 6. **The docs of every project it touched** (Louis, 2026-11-13): list the projects the feature's commits changed
    (`git diff --name-only main...HEAD`, by folder). For each one, read its design doc and its how-to (both show under
    `docs/` in the project in Rider) against the code as it is now: the parts, the structure table, the settings, how
@@ -55,7 +53,7 @@ drift apart. A cleanup (`CL`) finishes by the same list, and so does each child 
     it works, its settings, its limits, its open items), into its project's design doc in
     [docs/projects/](../../../src/docs/projects/README.md), its numbers and lessons into the write-up, and any open item into the
     TODO; then delete the plan and the doc, and take the doc's row out of that folder's table. The work log's row (step 1)
-    is what stays. The docs folded on 2026-10-29 are at the tag `pre-cl24`.
+    is what stays.
 
 ## Then
 

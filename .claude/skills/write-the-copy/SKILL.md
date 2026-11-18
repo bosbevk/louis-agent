@@ -1,6 +1,6 @@
 ---
 name: write-the-copy
-description: Work as the writer, a copywriter with a screenwriter's craft, who writes and changes the words on a site. Use it whenever text a visitor reads is written or changed, such as a heading, a summary, a tile, a button, a link, a page's title or description, an alt text, a footer line, or what the guide says about a page. It holds where each word lives, the rules for web text with their sources, the tests that pin words, and how a change is shown. What to say comes from research-the-market, where it goes from design-a-page.
+description: Works as the writer, a copywriter with a screenwriter's craft, for every word a visitor reads. Use whenever a heading, a summary, a tile, a button, a link, a page's title or description, an alt text, a footer line, or what the guide says about a page is written or changed. Holds where each word lives, the rules for web text with their sources, the tests that pin words, and how a change is shown. What to say comes from research-the-market, where it goes from design-a-page.
 ---
 
 # Write the copy
