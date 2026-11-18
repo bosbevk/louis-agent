@@ -4,23 +4,19 @@
 <div class="theme-guide">
     <div class="guide-grid">
         <div class="panel">
-            <Intro Title="Buttons" Summary="The main button is violet. The quiet one is white by day and black by night. Press them." />
+            <Intro Title="Buttons" Summary="The main button is violet, and the quiet one is white by day and black by night. Press them, and the pill says so. Press Tab, and a ring of light shows where you are." />
             <div class="guide-row">
                 <button class="btn btn-fill" type="button" @onclick="Press">Press me</button>
                 <button class="btn btn-line" type="button" @onclick="Press">Press me too</button>
+                <button class="btn btn-fill" type="button" disabled>Can't press</button>
             </div>
             <div class="guide-row"><span class="guide-pressed"><StatusPill Text="@PressedText" /></span></div>
-            <div class="guide-row">
-                <button class="btn btn-fill btn-small" type="button" disabled>Can't press</button>
-                <button class="btn btn-line btn-small" type="button" disabled>Can't press</button>
-            </div>
         </div>
         <div class="panel">
-            <Intro Title="Switch and slider" Summary="Tap a switch to turn it on or off. Drag the slider." />
+            <Intro Title="Switch and slider" Summary="Tap the switch to turn it on or off. The one beside it is locked. Drag the slider." />
             <div class="guide-row">
-                <Switch Label="A switch that starts on" On="true" />
-                <Switch Label="A switch that starts off" />
-                <span class="guide-label">locked</span><Switch Label="A locked switch" Disabled="true" />
+                <Switch Label="A switch" On="true" />
+                <Switch Label="A locked switch" Disabled="true" /><span class="guide-label">locked</span>
             </div>
             <div class="guide-row"><Slider Label="A value" /></div>
         </div>
@@ -35,20 +31,6 @@
                 <Tag Text="A tag" />
                 <Tag Text="You picked this" Kind="TagKind.You" />
                 <Tag Text="The agent shows this" Kind="TagKind.Agent" />
-            </div>
-        </div>
-        <div class="panel">
-            <Intro Title="Status" Summary="A small pill that says what is happening right now." />
-            <div class="guide-row">
-                <StatusPill Text="Live" />
-                <StatusPill Text="Answered in 2.1 s" />
-            </div>
-        </div>
-        <div class="panel">
-            <Intro Title="Focus" Summary="Press Tab to move through the page. A ring of light shows where you are." />
-            <div class="guide-row">
-                <button class="btn btn-line" type="button" @onclick="Press">Tab to me</button>
-                <Switch Label="Tab to me too" />
             </div>
         </div>
     </div>

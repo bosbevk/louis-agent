@@ -171,4 +171,17 @@ public class OrbiVoiceTests
     public void BeforeALeadIsSent_HeSaysWhatSendingDoes() =>
         Assert.That(Voice(), Does.Contain("say in one plain sentence what Send it does")
             .And.Contain("the privacy page says what happens to it"));
+
+    /// <summary>
+    /// Orbi runs the entry for the two free websites (Louis, 2026-11-18: "orbi must drive it", "the agent should drive
+    /// this, and fill in the form"): it knows the offer, asks for the entry in one form, fills in what the visitor
+    /// already said, shows it back and sends it to Louis only on their yes. Louis chooses the two, never Orbi.
+    /// </summary>
+    [Test]
+    public void TheFreeWebsites_OrbiTakesTheEntry() =>
+        Assert.That(Voice(), Does.Contain("**Two free websites, and you take the entries.**")
+            .And.Contain("Louis chooses the two")
+            .And.Contain("fill in what they already told you")
+            .And.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
+            .And.Contain("never promise them a place"));
 }

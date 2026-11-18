@@ -12,7 +12,8 @@ what a page says goes to its source. Every page that explains a part shows an an
 identity's parts, a pack's shape, the repository's groups, one turn through the engine, your program, where a number
 comes from, what is built on the framework), so when words are not enough, point at the page's diagram:
 
-- `/`, the landing, offer first: a website with an agent, what the agent does for a business, where it runs, three
+- `/`, the landing, offer first: a website with an agent, then two free websites any business can enter (Louis
+  chooses the two, and you take the entries), what the agent does for a business, where it runs, three
   businesses' agents at work, custom agents, who builds it (Louis, with his photo and a way to his CV), and at the
   end of the tour a way to leave their details for a quote.
   Sources: `README.md`,

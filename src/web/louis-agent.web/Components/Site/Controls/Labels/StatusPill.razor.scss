@@ -1,5 +1,6 @@
 @use "web/tools/surface";
 
-/* The design page's status (FX162): a pill with room on its left for the lit dot. */
-.status-pill { position: relative; display: inline-block; padding: 5px 16px 5px 32px; font: 600 14px var(--bs-font-sans-serif); color: var(--bs-emphasis-color); @include surface.status(); }
+/* The design page's status (FX162): a pill with room on its left for the lit dot. It keeps its own width where it
+   stands alone in a band's grid, instead of stretching across it. */
+.status-pill { position: relative; display: inline-block; justify-self: start; padding: 5px 16px 5px 32px; font: 600 14px var(--bs-font-sans-serif); color: var(--bs-emphasis-color); @include surface.status(); }
 .status-pill i { position: absolute; left: 13px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; @include surface.status-dot(); }

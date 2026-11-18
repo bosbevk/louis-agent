@@ -60,4 +60,41 @@ public class ThemeGuideTests
         Assert.That(cut.FindAll("button[disabled]").Where(button => button.ClassList.Contains("btn"))
             .Select(button => button.TextContent.Trim()), Has.All.EqualTo("Can't press"));
     }
+
+    /// <summary>
+    /// Each kind of control stands once (Louis, 2026-11-18, of two switches side by side: "seems like a duplicate"):
+    /// one switch to flip and one that is locked, and the one the focus card tabs to.
+    /// </summary>
+    [Test]
+    public void EachSwitch_StandsOnce()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Render(ctx);
+
+        Assert.That(cut.FindAll("button.switch").Select(button => button.GetAttribute("aria-label")),
+            Is.EqualTo(new[] { "A switch", "A locked switch" }));
+    }
+
+    /// <summary>
+    /// Nothing on the guide is shown twice (Louis, 2026-11-18: "check all these for duplicates, redesign if
+    /// necessary"): four cards, one off button, and one status pill, the one that answers the buttons. The focus ring
+    /// is said on the buttons' card, since every control wears it.
+    /// </summary>
+    [Test]
+    public void NothingIsShownTwice()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Render(ctx);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".guide-grid .panel h2, .guide-grid .panel h3").Select(title => title.TextContent),
+                Is.EqualTo(new[] { "Buttons", "Switch and slider", "Field", "Tags" }));
+            Assert.That(cut.FindAll("button.btn[disabled]"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".status-pill"), Has.Count.EqualTo(1));
+            Assert.That(cut.Find(".guide-grid .panel").TextContent, Does.Contain("Press Tab"));
+        });
+    }
 }

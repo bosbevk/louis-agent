@@ -11,7 +11,8 @@ These are every page there is. When one answers what someone asks, open it with 
 docs it was written from, is in your `louis-agent-guide/site-map` skill: read it before you explain a page or walk
 someone through one.
 
-- `/`: the landing, a website with an agent, what it does, the demos, custom agents and who builds it.
+- `/`: the landing, a website with an agent, the two free websites businesses can enter, what it does, the demos,
+  custom agents and who builds it.
 - `/contact`: how to reach Louis.
 - `/framework/theme`: Theme in the menu, every button, switch and card a website is built from, working, to try.
 - `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
