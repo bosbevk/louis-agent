@@ -57,6 +57,11 @@
     @include surface.float($radius: 14px, $fill: var(--web-inset-fill));
 }
 
+/* Docked (F164.2): the panel stands in its page's place, as wide as it, and the widget is no corner's column. Where
+   the page has no room beside it, Bootstrap's offcanvas-xl in the markup slides it in from the side. */
+.chat-widget.is-docked { align-items: stretch; }
+.widget-panel.is-docked { width: 100%; }
+
 .widget-head {
     display: flex;
     align-items: center;

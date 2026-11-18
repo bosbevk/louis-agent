@@ -4,6 +4,7 @@ using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Widget.Pieces;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget.Door;
+using LouisAgent.Web.Components.Widget.Layouts;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -125,14 +126,15 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public bool ShowWork { get; set; } = true;
 
-    /// <summary>How the widget stands: a corner, as every site has had, or a bar at the page's foot (F134.3).</summary>
+    /// <summary>
+    /// How the widget stands: a corner, as every site has had, a bar at the page's foot (F134.3), or docked beside the
+    /// page (F164.2).
+    /// </summary>
     [Parameter]
     public WidgetLayout Layout { get; set; } = WidgetLayout.Corner;
 
-    /// <summary>The widget's classes: the bar wears its own; the corner is open or not, as it always was.</summary>
-    private string WidgetClasses => Layout == WidgetLayout.Bar
-        ? "chat-widget is-bar"
-        : $"chat-widget {(Open ? "is-open" : "")}";
+    /// <summary>What the widget adds to its own class for its layout.</summary>
+    private string WidgetState => WidgetLook.StateOf(Layout, Open);
 
     /// <summary>A conversation has started and the site offers to pick it up again.</summary>
     private bool CanResume => ResumeLabel is not null && Runner.Chat is { Turns.Count: > 0 };
@@ -368,8 +370,11 @@ public partial class ChatWidget : IAsyncDisposable
         Size = ChatWindowSize.Normal;
     }
 
-    /// <summary>The panel's classes: its size, as the styles read it (F127.2).</summary>
-    private string PanelClasses => Size.ClassesOf("widget-panel");
+    /// <summary>What the panel adds: its size, as the styles read it (F127.2), or its place's when docked.</summary>
+    private string PanelState => WidgetLook.PanelOf(Layout, Size);
+
+    /// <summary>What the round button adds for its layout.</summary>
+    private string ButtonPlace => WidgetLook.ButtonOf(Layout);
 
     private void Redraw() => InvokeAsync(StateHasChanged);
 }
