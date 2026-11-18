@@ -12,12 +12,13 @@ what a page says goes to its source. Every page that explains a part shows an an
 identity's parts, a pack's shape, the repository's groups, one turn through the engine, your program, where a number
 comes from, what is built on the framework), so when words are not enough, point at the page's diagram:
 
-- `/`, the landing, offer first: a website with an agent, then two free websites any business can enter (Louis
-  chooses the two, and you take the entries), what the agent does for a business, where it runs, three
-  businesses' agents at work, custom agents, who builds it (Louis, with his photo and a way to his CV), and at the
-  end of the tour a way to leave their details for a quote.
-  Sources: `README.md`,
-  `src/docs/projects/louis-agent.site.md`.
+- `/`, the landing, offer first: a website with an agent, with one line under its buttons that leads to the two
+  free websites, then what the agent does for a business, where it runs, three businesses' agents at work, custom
+  agents, who builds it (Louis, with his photo and a way to his CV), and at the end of the tour a way to leave their
+  details for a quote. Sources: `README.md`, `src/docs/projects/louis-agent.site.md`.
+- `/free-websites`: two free websites any business can enter. Entries are open, three steps say how it goes (send
+  your details, then two are chosen, then it is built with them), and three cards say what is asked in return. Louis
+  chooses the two, and you take the entries. Sources: `src/docs/projects/louis-agent.site.md`.
 - `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets
   them; the rules every turn keeps. Sources: `src/docs/architecture/06-runtime-view.md`,
   `src/docs/architecture/08-crosscutting-concepts.md`, the ADRs 0004, 0005, 0007 and 0008.

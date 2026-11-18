@@ -1,12 +1,12 @@
 using LouisAgent.Web.Components.Site.Text;
 
-namespace LouisAgent.Site.Components.Landing;
+namespace LouisAgent.Site.Pages.Offers;
 
 /// <summary>
-/// The band that offers two websites for free, to build a portfolio. Businesses enter, and two are chosen.
+/// The page that offers two websites for free, to build a portfolio. Businesses enter, and two are chosen.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0125-a-site-is-configured-framework-components.md">ADR 0125: a site is configured framework components</seealso>
-public partial class FreeWebsites
+public partial class FreeWebsitesPage
 {
     /// <summary>How it goes, from an entry to a website that is live.</summary>
     private static readonly IReadOnlyList<Step> HowItGoes =

@@ -115,4 +115,21 @@ public class SiteHeroTests
             Assert.That(cut.Find("h1").ClassList, Does.Contain("in-lines"));
         });
     }
+
+    /// <summary>An announcement, such as an offer, stands last in the words, after the buttons.</summary>
+    [Test]
+    public void AnAnnouncement_StandsAfterTheButtons()
+    {
+        using var ctx = new BunitContext();
+
+        RenderFragment buttons = builder => builder.AddMarkupContent(0, "<a class=\"btn\">Ask</a>");
+        RenderFragment offer = builder => builder.AddMarkupContent(0, "<a class=\"offer\">Two free websites</a>");
+        var cut = ctx.Render<SiteHero>(parameters => parameters
+            .Add(hero => hero.Headline, "One")
+            .Add(hero => hero.Actions, buttons)
+            .Add(hero => hero.Announcement, offer));
+
+        Assert.That(cut.Find(".hero-text").Children.Select(child => child.ClassName),
+            Is.EqualTo(new[] { "chrome", "actions", "hero-announcement" }));
+    }
 }

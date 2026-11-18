@@ -4,9 +4,6 @@
     <loc>https://louis-agent.dev/</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/home/free</loc>
-  </url>
-  <url>
     <loc>https://louis-agent.dev/home/does</loc>
   </url>
   <url>
@@ -272,6 +269,9 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/whats-coming/site-demos</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/free-websites</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/guesthouse-demo</loc>

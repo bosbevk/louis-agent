@@ -25,6 +25,8 @@
 .hero-text .summary { font-size: 28px; }
 
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+/* An announcement after the buttons keeps its own width, so its line is only as long as its words. */
+.hero-announcement { max-width: 100%; }
 
 /* Centred (F151.6): one column, the words in the middle of it, and what would stand beside them below, no wider than
    a window reads well. What is below keeps its own text's side. */
