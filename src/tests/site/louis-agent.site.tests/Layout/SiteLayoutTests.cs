@@ -117,11 +117,11 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// FX176: the Demos group is hidden for now and kept, so the menu shows Contact alone (Louis: "disable the demos
-    /// menu items for now until it is fixed").
+    /// The Demos are back beside Contact once the demos are fixed (FX195, Louis: "when you are done with the demos,
+    /// enabled the menu item again"), and nothing in the menu is hidden.
     /// </summary>
     [Test]
-    public void TheDemosMenu_IsHiddenForNow()
+    public void TheDemosMenu_IsShown()
     {
         using var ctx = Context();
 
@@ -129,7 +129,7 @@ public class SiteLayoutTests
 
         var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(shown, Is.EqualTo(new[] { "Contact" }));
+        Assert.That(shown, Is.EqualTo(new[] { "Demos", "Contact" }));
     }
 
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
@@ -161,7 +161,10 @@ public class SiteLayoutTests
         });
     }
 
-    /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
+    /// <summary>
+    /// The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand"), and says what the site
+    /// is to a business owner when the name doesn't (the brand research of 2026-11-18).
+    /// </summary>
     [Test]
     public void TheSlogan_SitsUnderTheBrand()
     {
@@ -169,18 +172,33 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because you can"));
+        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("The website that answers."));
     }
 
-    /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
+    /// <summary>
+    /// Every page's footer leads to the privacy page (F145.1), so a visitor can find what happens to what they type
+    /// from anywhere on the site.
+    /// </summary>
     [Test]
-    public void TheFooter_SaysWhyItIsCSharp()
+    public void TheFooter_LeadsToThePrivacyPage()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because you can"));
+        var link = cut.FindAll(".site-footer a.footer-link").Single(found => found.GetAttribute("href") == "/privacy");
+        Assert.That(link.TextContent.Trim(), Is.EqualTo("Privacy"));
+    }
+
+    /// <summary>The footer carries the same slogan as the header, so the site says one thing.</summary>
+    [Test]
+    public void TheFooter_CarriesTheSlogan()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("The website that answers."));
     }
 
     /// <summary>
@@ -244,8 +262,7 @@ public class SiteLayoutTests
             Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
-                    "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
-                    "/triage-demo"
+                    "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo"
                 }));
             Assert.That(cut.Find(".site-header").TextContent, Does.Not.Contain("Watch it work"));
             Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);

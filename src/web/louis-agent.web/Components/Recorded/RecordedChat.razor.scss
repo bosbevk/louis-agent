@@ -24,7 +24,8 @@
     padding: 18px 20px;
 }
 
-.recorded-end {
+/* The ending, and the Play button a talk started when asked waits over (F160), stand in the same foot. */
+.recorded-end, .recorded-wait {
     display: flex;
     flex-wrap: wrap;
     align-items: center;

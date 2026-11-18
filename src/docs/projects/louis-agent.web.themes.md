@@ -114,8 +114,16 @@ Flat draws every surface as one solid colour with a hairline round it, with no g
 so a pane's rim, light, shadow and blur are all `none`. In the dark the page is black and a pane a near-black
 grey. In the light the page is white and a pane a solid grey clearly darker than it, with a firmer grey line, since
 a card on a white page must be darker than the page. The press is the same solid violet in both, the second button
-an outline in the words' colour. A heading's band is the words' own colour, so a headline reads solid, where glass
-runs its violet band through the words.
+an outline in the words' colour.
+
+A big heading reads the same in every theme. Its words are their strongest colour, painted solid as any text is, so
+their edges stay crisp. No theme sets a colour for headings of its own.
+
+Both themes give their light look deeper accents than their dark one. The red, amber, blue and green the dark looks
+share are pale, and on a white or violet page they all but vanish, so in the light each is a deeper shade of
+itself: deep enough for white words on it, as on a demo's button, and to stand out as an icon on the dock. The
+purple already had a light value of its own. `LightAccentsTests` holds every accent in both light looks to at least
+4.5 to 1 against white.
 
 Flat's mark is a flat violet disc with the brand's white l on it, and a hard step of deeper violet under the l. The
 l is a drawing, as glass's is, so the letter a site hands the orb gets no ink. As a letter of the site's name the

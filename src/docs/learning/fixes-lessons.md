@@ -511,6 +511,84 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX197 · A fixed layer covers whatever has no layer of its own
+
+The footer had been at the very bottom since FX163, but nobody could see it. Under the guide's bar the page fades
+into a strip of the page itself, so nothing passes sharp behind the bar. That strip is fixed to the screen's foot,
+sits at layer 9 and is solid in its lower half. The footer sat in the page's normal flow with no layer of its own,
+and a positioned layer always paints over plain flow, so the strip covered it. A click still reached the footer,
+because the strip lets the pointer through. That is why a check by what is under the pointer said the footer was
+on top while the eye saw nothing. Raising the footer to layer 10 brought it back. It is still under the bar, the
+header and the panel. Two small things showed up once it could be seen: the corner's LinkedIn link sat on its
+right-hand words, and on a phone the orb sat on its middle. So the footer keeps room for each. The lesson: anything
+fixed over the page that hides content must say what it lies under as well as what it lies over, and the check for
+"can people see it" is a look, not a hit test. Skill 18 (testing and shipping: what a visitor sees is checked by
+seeing it).
+
+## FX196 · Paint through letters, and their edges go soft
+
+The big headings wore a gradient clipped into their letters, a violet band on glass and the words' own colour on flat.
+On Louis's screen the edges read as a soft rim, though a local screenshot looked nearly the same as plain text, so
+the exact cause on his screen was not pinned down. What is known is that a background clipped to the letters is
+painted as an image in their shape, not drawn as text. So the heading now takes its strongest colour as ordinary
+text, and the theme value that held the band is gone, since nothing reads it. The lesson: when a look can't be
+reproduced but the plain way does the same job, the plain way wins, and a heading that must read crisp everywhere is
+plain ink. Skill 18.
+
+## FX195 · What a guide may offer is what the site still has
+
+Two demos left the site, and with them their pages, their rail entries, their recordings and the triage pack's web
+screens that only those pages used. The pages were the easy part. The guide's prompts named them too, in its index of
+pages, its site map and the doc it reads to explain the demos, and a guide reads its prompts as the truth: left alone
+it would go on offering a page that answers with nothing. So a removal is not done until every text the model reads
+is searched for the address, the same way the code is. The lesson: the prompt is part of the site, and a page that
+goes takes its lines in the prompt with it. Skill 18.
+
+## FX194 · A button with no rule falls back to the browser's grey
+
+When the site's own styles came out, the demo's *Try it yourself* stayed the site's own `button class="demo-try"`,
+and nothing styled it any more, so it showed as the browser's plain grey box. The cure was to stop the site drawing a
+button at all: the framework's recorded chat already ends with a button of its own, so it now draws this one too, as
+the theme's main button, from the words the page hands it. The same look emptied the stage round the agent. The cues,
+the notes and the offer bar each had a reason, but together they pulled the eye off the agent, which is the whole
+point of the page. The lesson: a site that hands its look to the theme must hand over every element, and a page
+that shows an agent should show little else. Skill 18.
+
+## FX193 · A colour that works on black can vanish on white
+
+The two themes' dark looks set a pale red, amber, blue and green for the demos, and the light looks simply kept them.
+On black a pale colour glows. On glass's violet page the same blue stood at 1.4 to 1 against it, so a demo's button
+was white words on a pale wash and two of the dock's icons all but disappeared. The purple had always had a deeper
+value for the light, which is why the brand's own buttons looked fine and hid the problem. Each light look now has
+its own deeper shade of every accent, and a test measures each one against white with the same contrast sum the
+web's guidelines use. The lesson: a colour isn't readable on its own, only against what it stands on, so each look
+sets and checks its colours for its own page. Skill 18.
+
+## FX192 · A measure written for one layout breaks when the layout moves
+
+The guide's bar tells the page how much room it takes at the foot of the screen, so nothing ends under it. It worked
+that out by adding its chips' height on top of its row, because the chips used to stand over the row. Then the chips
+moved to stand round the orb while the bar is closed, and nobody told the measure. It went on adding their height
+on top, so the bar claimed 384 pixels where it stands in 234, and the showroom's deck, which takes what the bar
+leaves, shrank to its least. Nothing looked broken in a test, since each part was right on its own. The measure now
+asks where the chips really are. The same look at the page found two colours that only failed in one look: the
+question in each window took the page's ink as its fill, white on white in the dark, and the website's words took
+the theme's brightest, black on a photo in the light. Both now use what the chat and an action already use. The
+lesson: when a part changes where it stands, look for whatever measures it, and look at a page in every look, not
+one. Skill 18.
+
+## FX191 · Taking the styles out takes the page with them
+
+FX162 took every stylesheet out of the site so that its look would be the theme's alone. That was the right rule, but
+the CV's parts still drew their own HTML, a hero grid, a column of dates, a row of tags, and those classes now
+pointed at nothing. Every test still passed, because the tests found the parts by their classes and the classes were
+all still there. The page itself was a heap: the summary ran into the name, the jobs had no date column, and it no
+longer printed as a sheet. The fix finishes what FX162 started. The shapes a CV needs became framework controls, a
+person's hero, a strip of facts, a timeline, a panel and a row of tags, each with its own layout on a screen, on a
+phone and on paper, and the CV now only gives them its words. A page that prints stands in a paper sheet, which
+sets the A4 page for any site. The lesson: when a rule removes what draws a page, a test that finds markup can't see
+the damage, so the page is looked at, on a screen and on paper, before the rule is called done. Skill 18.
+
 ## FX190 · A browser drops a line it can't read, silently
 
 `font: 500 13px/1.4 inherit` looks like it says "this size, this weight, the rest from the parent". But `inherit` can

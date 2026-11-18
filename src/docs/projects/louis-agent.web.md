@@ -145,6 +145,11 @@ guide's widget hands such a window an ask to its agent. That marks the call as s
 chat draws one line instead of the talk, and the widget tells the window each time the stream moves on. On a narrow
 screen the window is brought into view and the guide folds to its head.
 
+The windows also hear where the guide goes on the visitor's page. When the guide shows a place on the page the
+visitor is on, the widget tells the windows that place and its turn, the place itself being turn one, through
+`AgentWindows.Turn`. A recorded talk that is that place plays that turn. A place on another page is gone to first,
+and nothing on the page being left hears it. `GuidePlaces.TurnOf` reads the place and the turn from the address.
+
 The showroom's live chat is such a window. It watches the ask as one turn: the visitor's words and the answer, its
 blocks shared with the guide's stream, and the agent's tool calls handed on once each. Once the ask ends, it holds
 a chat on that agent's own session, so the visitor carries on there.
@@ -245,7 +250,8 @@ and whether they show.
 
 The bar is fixed over the page, so the page can't see how tall it stands. The bar's own module tells it, as a
 variable on the page, `--bar-room`: the distance from the top of the bar, with whatever stands over its row, down
-to the screen's foot, and a little air. A frame that holds the bar keeps that room free at its foot, so no page
+to the screen's foot, and a little air. While the bar is closed on a wide screen the chips stand round the orb and
+not over the row, so there the room is measured from the chips' own top, or the row's if that is higher. A frame that holds the bar keeps that room free at its foot, so no page
 ends under it. The room never drops under the resting bar's with its chips, so a page doesn't shift each time the
 chips step aside, and it is never more than 45% of the screen's height, so a long answer over the bar can't take
 the page away.
@@ -367,7 +373,10 @@ line, a way back up, and a section index on the left. A site may switch the inde
 the way up with `ShowWayUp="false"`, keeping both for later; louis-agent.dev has both off. When a site puts the guide in the corner as its bar, the
 corner is no floating box, since the bar places itself, and the frame keeps the bar's room free at its foot on a
 screen: the room is `--site-bar`, the name a slide, a paged section and the way up already end above, so each ends
-above the bar on a wide screen as on a phone. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
+above the bar on a wide screen as on a phone. Under the bar the page fades into a strip of itself, fixed at the
+screen's foot, and the footer lies above that strip so its words can be seen. On a wide screen the footer keeps room
+at its right end for a small link a site may fix in the corner (`CornerLink`), and on a phone it keeps the bar's room
+under its words, so the orb never sits on them. On paper there is no bar and no room kept. The index is built from the page's bands: each band puts
 itself on the frame's list as it draws.
 
 On a phone, 720 pixels wide or less, the header is one slim row: the site's name, and a menu button at the right.
@@ -408,6 +417,16 @@ other browser keeps the clear pane.
 `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words. A `GuideButton` anywhere asks the
 guide a question.
 
+A page about a person, such as a CV, has its own few. A `ProfileHero` is the name, a summary, a quiet line, the ways
+to reach them as buttons and their photo beside it all, above the words on a phone, with a row a site gives for
+paper under both columns. A `FactStrip` holds a few `Fact`s on one of the theme's panes, each a figure big over what
+it counts, four across and two on a phone. A `Timeline` holds `TimelineEntry`s, each its dates in a column of their
+own beside its title, where it was and what a site says of it, with a word such as "current" under the dates while
+it still runs. A ruled one lines its entries, as jobs are, and one of close rows doesn't, as courses are. A `Panel`
+is a still pane with small label words over its heading and anything under it, where a `Tile` is a selling card that
+moves and takes only words. A `TagList` is a row of plain `Tag`s. Every slot of these takes a fragment, not a
+string, so a site may fill it with words edited in place, and each control keeps its own layout on paper.
+
 A tile may carry its own buttons under its words. They stand in a `ButtonRow`, which a tile asks for two even
 columns, so a long button never drops to a line of its own and leaves a gap beside it. Each button fills its column,
 its words wrapping inside it so its mark stays in view, and on a phone they stack one to a line. A row nobody asks
@@ -415,10 +434,15 @@ for columns, as a band's closing buttons are, keeps each button at its own width
 site's brand at its foot, at the right under its buttons, small and quiet, which is how a site signs a card with its
 wordmark.
 
-A `SiteHero` is the first thing on a landing: a kicker, the headline, a lede, a quiet note and the actions, each a
+A `SiteHero` is the first thing on a landing: a topic, the headline, a summary, a quiet note and the actions, each a
 slot the site fills, with something alive beside the words when the site has it. A site may also open the words with
 a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside
 the words goes below them.
+
+A headline of two short sentences can be given as `Lines` instead. Each sentence then stands on a line of its own, a
+size smaller, so a wide screen never breaks the headline in the middle of a sentence and the buttons stay on the
+first screen. On a narrow screen a line still wraps where it must, and the heading still reads as one sentence after
+another to a screen reader.
 
 A `Band` is one named area of a page: a section with a required id, an optional kicker and the site's classes. It
 draws no style of its own. The id is required so that every area on every site is named, and the guide can send a
@@ -614,6 +638,8 @@ small capitals. The faces are the framework's own woff2 files under `wwwroot/fon
 **A recorded session, played back.** `RecordedChat` plays a recorded session in the chat's own view. A site gives
 it a `.sse` file of the stream the API sent, the question it answered, a title, the currency for the bill and an
 ending. A visitor watches the agent think, call its tools and answer, then sees the ending and a play-again button.
+When the site also hands it the words of a way to try the agent live, the ending holds that too, as the theme's main
+button, and the site hears when it is pressed.
 
 It reads the file with the session-stream reader and waits by each event's kind: thinking fast, the answer at
 reading speed, a beat per tool. It folds the events with the same loop the eval studio's replay uses. Its window
@@ -624,17 +650,31 @@ which a site's own animated panels use too. A site can make the ending's guide b
 its next turn, and once it is let go it goes on from where it stood. A business's demo holds its play while the
 site's guide is talking, so the visitor follows one voice at a time.
 
+**It can wait to be started, and play one turn.** A recorded chat says when it starts with `RecordedStart`: on its
+own as soon as it is on the page, or only when asked. Started when asked, its first question waits in the window
+over the theme's Play button, and nothing plays until it is pressed. A page can also ask it to play one turn with
+`PlayTurnAsync`. The turns before it show at once, that turn plays at its pace, and the play stops after it, with a
+Play on button that plays the rest and Play it again beside it. Playing from a turn and playing one turn are the
+same loop, from one turn to another. A hold keeps the window as it is until it is let go, so a turn asked for while
+the guide talks starts once the guide is done, rather than the window going blank.
+
+**A recorded talk is a place the guide can show.** A page can give the chat a place, its id on the page. The window
+is then a section the guide shows by that id, and it lists its turns, by number and question, where the page doesn't
+show them. The guide's view of the page reads that list the way it reads a paged section's later pages: the place
+itself is the first turn, and the same address with `/2`, `/3` and so on the turns after it, each named by its
+question. The guide reads the place as a recorded talk that plays a turn when shown.
+
 **The play moves the mock.** A recorded chat tells its page each tool call as it plays. So a mock goes to the
 place its agent showed: a section under the guide's spotlight, or a card pressed.
 
 **Tried live.** The business's agent can also be live in the mock's widget, opened as its identity. It sends the
 page's words, every page's places by address and the menu as links with each new page. The widget then says Live,
-the hint is a question to tap, the cues wait, and no usage line shows. The mock's chat and the guide's minimise
+the hint is a question to tap, the stage's cues wait where a page has them, and no usage line shows. The mock's chat and the guide's minimise
 and maximise with the same buttons.
 
 *Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`, F134.4's `AHeldPlay` tests.
 
-*Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons),
+*Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons), F160 (a turn at a time),
 [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md),
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
@@ -839,7 +879,9 @@ height it gave, since the row is as tall as its items.
 The third is the window. `FramedWindow` is a bar like a browser's, with an address word, then a body. The body
 can't outgrow the frame or be scrolled inside it. The framework offers three bodies, which hold no words of their
 own. `SiteBody` is a website with its chat: a photo with a name and a line over it, and one question, its answer
-and one thing the agent showed. That thing is drawn as a small card: a photo if the site gives one, a name in bold
+and one thing the agent showed. The website's words stand on its photo over a dark shade, so they are light in
+every look, and the question is the chat's own bubble for a visitor's message. The thing shown is a `ShownCard`,
+which the site fills with words and the body draws as a small card: a photo if the site gives one, a name in bold
 and a few words. The body goes by the width of its window, not the screen's: the frame's body is a container its
 content can measure. So the website's line is a share of the window's width, within limits, and in a window up to
 400 wide, a phone's upright one, the website stands over its chat, and only the website's name and line and the
@@ -858,7 +900,16 @@ the page, and the part only says what the visitor asked for.
 
 **Paper** (`Components/Paper/`, `Paper/`). `PaperLink` is a link as it is printed: its QR code, its words and its
 address written short. A link on paper can't be clicked, so this is drawn in its place when the page is printed,
-and not on a screen. The code is the link as well, so a PDF read on a screen can still be clicked.
+and not on a screen. The code is the link as well, so a PDF read on a screen can still be clicked. A
+`PrintableLink` is both at once, the link on a screen and its code in its place on paper.
+
+A page that prints as itself stands in a `PaperSheet`. On a screen it changes nothing. On paper the framework's
+paper stylesheet, `Styles/web/paper/_sheet.scss`, which a site lists among its styles with its colours in
+`Styles/web/settings/_paper.scss`, makes it an A4 sheet: black and near-black ink on white, set on the page's root
+so a sheet's margins print white too, the site's frame, its
+corner and the guide left off, no button since paper can't press one, and the page's number at each sheet's foot.
+The sheet sets only what belongs to the whole page, its bands and its headings, and each control's own layout on
+paper sits beside it.
 
 **Editing** (`Components/Editing/`). Pieces for a page a person edits. The framework decides nothing about how a
 site edits its pages. There is a labelled box and a group of them under a heading, words as chips, and list edits
@@ -887,6 +938,9 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
 | `Components/Areas/Themes/` | `SiteTheme`, a theme's id and name; `SiteStyle`, light or dark; `SiteLook`, the attributes, the remembered keys and the default style both sides share (F151.1) |
 | `Components/Site/Looks/` | `LookSwitch`, the switch a visitor picks the look with, and its module `LookSwitch.razor.js`; `PageLook`, the look the module reads off the page (F151.3) |
+| `Components/Site/History/` | `Timeline` and `TimelineEntry`, entries newest first with their dates in a column of their own, ruled or close rows (FX191) |
+| `Components/Site/Facts/` | `FactStrip` and `Fact`, a few figures over what they count on one of the theme's panes (FX191) |
+| `Components/Site/Hero/`, `Cards/`, `Controls/Labels/` | Beside `SiteHero`, `CardDeck` and `Tag`: `ProfileHero`, a person's hero beside their photo; `Panel`, a still pane with label words and a heading; `TagList`, a row of plain tags (FX191) |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `Admin/Reset/`, Reset my session, `SessionReset` and its button `ResetSession` with its module (F153); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
@@ -898,11 +952,11 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `Location/`: `LocatedPlace`, `LocationProblem`), `ChatLanguages`, `ChatCosts`, `ModelNames` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
-| `Styles/web/` | The globals: `settings/_colours.scss` and `settings/_surfaces.scss` (the names a theme sets, F151.1), `tools/` (`_colours.scss`, both forms of a colour from one value; `_mock.scss`, how a mocked business's website is drawn in the business's own colours; `_surface.scss`, which hands on the files of `tools/surface/` under one name (the panes, the presses, the marks, the lines and washes, and what only a conversation draws, such as what you said and the line that says the agent is working), a mixin for each kind of surface, a pane, an inset set into the page, a field, a bar, a press, a quiet press, a chip, a tag, a well and a switch's group, a pane that lifts, is open or floats, a slab, a tint, an accent line, a marker and a progress line, the agent's mark with its rings, a bar that floats, a field lit from outside, a wash of a piece's own ink, a visitor's tag, a press that must be seen and the light that crosses it, a piece's own line and its colour under the pointer, a ring, a badge, a line in the brand's two colours, a pane lit while it is typed in, a veil, a panel, a chat bubble, a rule along one side, a hairline, an outline and a track, and the picked and showing drawings laid on a piece, each drawing its piece from the names a theme sets, its drawing over its fill, F151.4; `_window.scss`, `_chat-card.scss`, `_field.scss` and `_pressed.scss` draw through it; `_glow.scss`, the showroom's light in the one colour a demo has, with a mark for each piece it lights, which reads no theme's name; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
+| `Styles/web/` | The globals: `settings/_colours.scss` and `settings/_surfaces.scss` (the names a theme sets, F151.1), `tools/` (`_colours.scss`, both forms of a colour from one value; `_mock.scss`, how a mocked business's website is drawn in the business's own colours; `_surface.scss`, which hands on the files of `tools/surface/` under one name (the panes, the presses, the marks, the lines and washes, and what only a conversation draws, such as what you said and the line that says the agent is working), a mixin for each kind of surface, a pane, an inset set into the page, a field, a bar, a press, a quiet press, a chip, a tag, a well and a switch's group, a pane that lifts, is open or floats, a slab, a tint, an accent line, a marker and a progress line, the agent's mark with its rings, a bar that floats, a field lit from outside, a wash of a piece's own ink, a visitor's tag, a press that must be seen and the light that crosses it, a piece's own line and its colour under the pointer, a ring, a badge, a line in the brand's two colours, a pane lit while it is typed in, a veil, a panel, a chat bubble, a rule along one side, a hairline, an outline and a track, and the picked and showing drawings laid on a piece, each drawing its piece from the names a theme sets, its drawing over its fill, F151.4; `_window.scss`, `_chat-card.scss`, `_field.scss` and `_pressed.scss` draw through it; `_glow.scss`, the showroom's light in the one colour a demo has, with a mark for each piece it lights, which reads no theme's name; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/` and `paper/` (the printed sheet, FX191); a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
 | `Components/Editing/` | Pieces for a page a person edits (F142). The framework decides nothing about how a site edits its pages. louis-agent.dev builds its CV's editor from them ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md), the site's own): `TextField` and `FieldGroup` (a labelled box, a few under a heading), `TagInput` (words as chips), `ListEdits` (add, take out, replace, move, each a new list) and `EditedItem` (an item with the way to hand back a changed copy). `Inline/` is for a page edited where it stands: `InlineEdit` (click the words, a box with a tick and a cross, Enter keeps, Escape drops, and plain words when nobody listens), `InlineForm` (the same for an item of several fields), `ItemTools` and `ItemAdd` (move, remove, open and add for a list on the page), and `PartChanges`, which gives a part a listener exactly when the whole has one |
 | `Components/Icons/` | `LineIconView`, a line icon from the framework's one set (part 8) |
-| `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `WorkBody`, `PlainBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |
-| `Components/Paper/`, `Paper/` | What a page needs when it is printed (FX154, Louis: "in a pdf hyperlinks is qr codes always"): `PaperLink`, a link as it is printed, its QR code with its words and its address written short, drawn on paper only, in the ink of the page that prints it, and still a link in a PDF read on a screen; `QrImage`, a code as a picture; `QrDrawing`, a code as data (the one place that names Net.Codecrete.QrCodeGenerator), and `PaperAddress`, an address written short |
+| `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `ShownCard`, `WorkBody`, `PlainBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |
+| `Components/Paper/`, `Paper/` | What a page needs when it is printed (FX154, Louis: "in a pdf hyperlinks is qr codes always"): `PaperLink`, a link as it is printed, its QR code with its words and its address written short, drawn on paper only, in the ink of the page that prints it, and still a link in a PDF read on a screen; `PrintableLink`, the link on a screen and its code on paper; `PaperSheet`, a page that prints as itself, set by `Styles/web/paper/_sheet.scss`; `QrImage`, a code as a picture; `QrDrawing`, a code as data (the one place that names Net.Codecrete.QrCodeGenerator), and `PaperAddress`, an address written short |
 | `Scripts/` | `JsModule`, the proxy that imports a module once and lets it go; `FrameworkScripts`, the modules' paths named once; `ChatModules`, the frame's three modules on one runtime (CL31) |
 | `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |

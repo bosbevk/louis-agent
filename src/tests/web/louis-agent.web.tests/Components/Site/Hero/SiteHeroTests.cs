@@ -94,4 +94,25 @@ public class SiteHeroTests
             Assert.That(cut.Find(".hero-art .drawing").TextContent, Is.EqualTo("o"));
         });
     }
+
+    /// <summary>
+    /// A headline of short sentences may stand one to a line (the brand work of 2026-11-18, Louis's pick "One sentence
+    /// per line"): each line is its own span, and the heading still reads as one sentence after another.
+    /// </summary>
+    [Test]
+    public void AHeadlineInLines_StandsOneSentenceToALine()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<SiteHero>(parameters => parameters
+            .Add(hero => hero.Lines, new[] { "Your doors close at five.", "Your website doesn't." }));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("h1 .headline-line").Select(line => line.TextContent),
+                Is.EqualTo(new[] { "Your doors close at five.", "Your website doesn't." }));
+            Assert.That(cut.Find("h1").TextContent, Is.EqualTo("Your doors close at five. Your website doesn't."));
+            Assert.That(cut.Find("h1").ClassList, Does.Contain("in-lines"));
+        });
+    }
 }

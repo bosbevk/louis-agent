@@ -37,6 +37,13 @@ public static class GuidePlaces
     }
 
     /// <summary>
+    /// The place a shown address names, and its turn, the place itself turn one (F160): <c>/guesthouse-demo/
+    /// the-conversation/2</c> is the conversation's second turn. Nothing for an address that names no page of the site.
+    /// </summary>
+    public static (string Place, int Turn)? TurnOf(string address, SiteAddresses addresses) =>
+        addresses.Read(address) is { } read ? (read.Section ?? SiteAddresses.Top, read.Turn ?? 1) : null;
+
+    /// <summary>
     /// One place's address as the page's script names it: <c>levels</c>, <c>parts/2</c>; the first section, <c>top</c>,
     /// is the page itself, and its pages follow the page's address.
     /// </summary>

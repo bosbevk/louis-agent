@@ -23,7 +23,7 @@ public class CvPageTests
 
     /// <summary>Waits until the hero's summary says this.</summary>
     private static void WaitForSummary(IRenderedComponent<CvPage> page, string summary) =>
-        page.WaitForAssertion(() => Assert.That(page.Find(".cv-hero .summary").TextContent, Is.EqualTo(summary)),
+        page.WaitForAssertion(() => Assert.That(page.Find(".profile .summary").TextContent, Is.EqualTo(summary)),
             TimeSpan.FromSeconds(10));
 
     /// <summary>The page is at /cv, headed by Louis's name, with the links a recruiter needs.</summary>
@@ -43,9 +43,9 @@ public class CvPageTests
             Assert.That(page.FindAll("a[href='https://github.com/bosbevk']"), Is.Not.Empty);
             Assert.That(page.Find("a.btn-whatsapp").TextContent, Does.Contain("066 391 2470"),
                 "the WhatsApp button says his number");
-            Assert.That(page.Find("img.cv-photo").GetAttribute("src"), Is.EqualTo("images/louis-marais.jpg"));
-            Assert.That(page.Find(".cv-where").TextContent, Does.Contain("open to remote and hybrid"));
-            Assert.That(page.Find(".cv-end").TextContent, Does.Contain("References on request"));
+            Assert.That(page.Find("img.profile-photo").GetAttribute("src"), Is.EqualTo("images/louis-marais.jpg"));
+            Assert.That(page.Find(".profile-note").TextContent, Does.Contain("open to remote and hybrid"));
+            Assert.That(page.Find("#also .band-note").TextContent, Does.Contain("References on request"));
             Assert.That(page.Find("button.cv-print").TextContent.Trim(), Is.EqualTo("Save as PDF"));
         });
     }

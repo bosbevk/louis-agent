@@ -2,12 +2,14 @@ using System.Net;
 using System.Text;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Widget;
@@ -111,8 +113,55 @@ public class ChatWidgetWindowsTests
         });
     }
 
-    /// <summary>A context whose API answers a message with the guide's ask.</summary>
-    private static BunitContext Context()
+    /// <summary>A guide turn that shows one place, by its address, and nothing else.</summary>
+    private static string ShowStream(string path) => $$$$"""
+        event: message_start
+        data: {"type":"message_start","message":{"session_id":"sess_fixture","role":"assistant"}}
+
+        event: content_block_start
+        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"{{{{path}}}}"}}}
+
+        event: content_block_stop
+        data: {"type":"content_block_stop","index":0}
+
+        event: message_delta
+        data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1,"output_tokens":1,"requests":1}}
+
+        event: message_stop
+        data: {"type":"message_stop"}
+
+        """;
+
+    /// <summary>
+    /// A place the guide shows on the visitor's page goes to the windows with its turn, the place itself turn one
+    /// (F160), so a recorded talk that is that place plays it; a place on another page plays nothing here.
+    /// </summary>
+    [TestCase("/guesthouse-demo/the-conversation/2", "the-conversation", 2)]
+    [TestCase("/guesthouse-demo/the-conversation", "the-conversation", 1)]
+    [TestCase("/restaurant-demo/the-conversation/2", null, 0)]
+    public void APlaceShownOnThisPage_GoesToTheWindows_WithItsTurn(string path, string? place, int turn)
+    {
+        using var ctx = Context(ShowStream(path));
+        ctx.Services.AddSingleton(new SiteAddresses("home", ["/", "/guesthouse-demo", "/restaurant-demo"]));
+        var windows = new AgentWindows();
+        ctx.Services.AddSingleton(windows);
+        var told = new List<(string, int)>();
+        windows.Turned += (shown, number) => told.Add((shown, number));
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("/guesthouse-demo");
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(w => w.Identity, "guide").Add(w => w.Title, "Ask the guide"));
+        cut.Find("button.widget-button").Click();
+
+        cut.Find("#composer-input").Input("Show me the next turn.");
+        cut.Find("button.send").Click();
+        cut.WaitForState(() => cut.FindAll(".turn").Count == 1 && cut.FindAll("button.send").Count == 1,
+            TimeSpan.FromSeconds(10));
+
+        Assert.That(told, Is.EqualTo(place is null ? [] : new[] { (place, turn) }));
+    }
+
+    /// <summary>A context whose API answers a message with the guide's ask, or the stream given.</summary>
+    private static BunitContext Context(string sse = AskStream)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
@@ -120,7 +169,7 @@ public class ChatWidgetWindowsTests
         var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/messages")
             ? new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent(AskStream, Encoding.UTF8, "text/event-stream")
+                Content = new StringContent(sse, Encoding.UTF8, "text/event-stream")
             }
             : FixtureApi.Answer(request));
         var api = new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);

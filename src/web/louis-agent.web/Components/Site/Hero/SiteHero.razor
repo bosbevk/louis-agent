@@ -12,7 +12,24 @@
         {
             <span class="topic">@Topic</span>
         }
-        <h1 class="chrome">@Headline</h1>
+        <h1 class="@HeadlineClasses">
+            @if (Lines is not null)
+            {
+                @for (int at = 0; at < Lines.Count; at++)
+                {
+                    @* A space between the lines, so the heading still reads as one sentence after another. *@
+                    @if (at > 0)
+                    {
+                        @(" ")
+                    }
+                    <span class="headline-line">@Lines[at]</span>
+                }
+            }
+            else
+            {
+                @Headline
+            }
+        </h1>
         @if (Summary is not null)
         {
             <p class="summary">@Summary</p>

@@ -40,7 +40,7 @@ public class GuideKnowsTheSiteTests
 
         string voice = WhatTheGuideReads();
 
-        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(9), "the pages were found");
         Assert.That(addresses.Where(address => !voice.Contains(address)), Is.Empty);
     }
 
@@ -102,8 +102,6 @@ public class GuideKnowsTheSiteTests
     /// explain them"): the voice sends it to the demo index and to the doc that explains each demo, and the doc says
     /// what each shows, how it was made and what it would mean for a business.
     /// </summary>
-    [TestCase("## The coding agent fixing a bug (`/coding-agent`)")]
-    [TestCase("## The triage team at work (`/triage-demo`)")]
     [TestCase("**How it was made.**")]
     [TestCase("**For a business.**")]
     public void TheDemos_AreExplained_InTheDocTheVoiceNames(string words)

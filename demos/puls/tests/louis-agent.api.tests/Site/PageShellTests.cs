@@ -65,7 +65,7 @@ public class PageShellTests
     {
         string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof", "/proof");
 
-        Assert.That(html, Does.Contain("<meta name=\"description\" content=\"An AI agent framework in C#"));
+        Assert.That(html, Does.Contain("<meta name=\"description\" content=\"A website for your small business"));
     }
 
     /// <summary>

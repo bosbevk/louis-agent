@@ -72,7 +72,25 @@ public class AgentBarRoomTests
         {
             Assert.That(module, Does.Contain("querySelector(\".agent-chips\")"));
             Assert.That(module, Does.Contain("scrollHeight"), "the chips' own height, though folded away");
-            Assert.That(module, Does.Contain("Math.max(standing, resting)"));
+            Assert.That(module, Does.Contain("Math.max(standing, restingRoomOf(bar))"));
+        });
+    }
+
+    /// <summary>
+    /// FX192: while the bar is closed its chips stand round the orb, not over its row, so their room is from their
+    /// own top. Counted over the row they claimed 384 pixels of a 1080 screen where they stand in 234, and the
+    /// showroom's deck shrank to its least.
+    /// </summary>
+    [Test]
+    public void ChipsRoundTheOrb_AreCountedFromTheirOwnTop()
+    {
+        string module = File.ReadAllText(Path.Combine(Web, "Widget/Bar/AgentBar.razor.js"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(module, Does.Contain("getComputedStyle(chips).position === \"absolute\""),
+                "the chips stand round the orb when they are placed apart from the bar's flow");
+            Assert.That(module, Does.Contain("chips.getBoundingClientRect().top"));
         });
     }
 

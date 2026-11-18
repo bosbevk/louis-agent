@@ -1,0 +1,12 @@
+@* A plain panel (ADR 0125): small label words over its heading, then what a site puts in it. *@
+<div class="panel">
+    @if (Topic is not null)
+    {
+        <span class="panel-topic">@Topic</span>
+    }
+    @if (Title is not null)
+    {
+        <h3>@Title</h3>
+    }
+    @ChildContent
+</div>

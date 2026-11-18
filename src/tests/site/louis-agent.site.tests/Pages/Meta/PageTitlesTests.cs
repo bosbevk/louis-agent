@@ -1,5 +1,6 @@
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Site.Pages;
+using LouisAgent.Site.Pages.About;
 using LouisAgent.Site.Pages.Agents;
 using LouisAgent.SiteApi;
 using LouisAgent.SiteApi.Resumes;
@@ -27,6 +28,7 @@ public class PageTitlesTests
     [TestCase(typeof(HomePage), "/", "Websites with an agent · louis-agent")]
     [TestCase(typeof(DemosPage), "/demos", "See an agent work · louis-agent")]
     [TestCase(typeof(ContactPage), "/contact", "Ask for yours · louis-agent")]
+    [TestCase(typeof(PrivacyPage), "/privacy", "Your privacy · louis-agent")]
     public async Task ABusinessPage_IsNamedForWhatItSells(Type page, string address, string title) =>
         Assert.That(await TitleOf(page, address), Is.EqualTo(title));
 }

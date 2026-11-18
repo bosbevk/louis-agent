@@ -1,6 +1,5 @@
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
-using LouisAgent.Web.Components.Site.Showroom.Stage;
 
 namespace LouisAgent.Site.Pages.Agents.Showroom;
 
@@ -22,33 +21,11 @@ public partial class RestaurantDemoPage
         new("Yes please, send it.", "recordings/showroom/wheatfield-kitchen-4.sse"),
     ];
 
-    /// <summary>What to watch for, each lit as the play reaches its turn.</summary>
-    private static readonly DemoCue[] WhatToWatch =
-    [
-        new(1, "It answers at ten at night, and shows the children's menu for the two small kids."),
-        new(2, "It never promises a table: it takes the request for the owner to confirm."),
-        new(3, "It reads the request back before it sends anything."),
-        new(4, "It sends the details only after the family says yes."),
-    ];
-
     /// <summary>
     /// Wheatfield Kitchen's sample brand, a Swartland farm bistro (F127.2, mockup 0): olive, linen and its brown ink,
     /// its labels in harvest gold and its mark in wheat.
     /// </summary>
     private static readonly MockColours Brand = new("#2c4a34", "#f7f0e1", "#f7f0e1", "#2b2418", "#9c7a2f");
-
-    /// <summary>What a custom agent could add for a restaurant.</summary>
-    private static readonly DemoNote[] Notes =
-    [
-        new("Book into your table system",
-            "If you use a booking system, it books the table straight in and sends the confirmation, instead of " +
-            "passing a request on."),
-        new("Know today's specials",
-            "It reads the day's specials and what has sold out from your kitchen, so it never offers what isn't " +
-            "there."),
-        new("Remind your guests",
-            "It reminds the guests the day before and asks them to confirm, so fewer tables stand empty."),
-    ];
 
     /// <summary>The facts under its hero, each one its agent knows.</summary>
     private static readonly string[] Facts =

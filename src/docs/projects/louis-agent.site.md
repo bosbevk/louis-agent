@@ -1,7 +1,7 @@
 # louis-agent.site — design
 
 > **Kind:** web app (Blazor WebAssembly), and its host `louis-agent.site-api` · **Path:** `src/site/` · **References:**
-> `louis-agent.web`, the guide (`louis-agent.identity.guide`), the triage pack's web project; the host also the
+> `louis-agent.web`, the guide (`louis-agent.identity.guide`); the host also the
 > framework's API and the docs, leads and site packs · **Runs:** louis-agent.dev, and the review copy on 127.0.0.1:5080
 > **Also shows:** `component`, `sequence`
 
@@ -101,23 +101,37 @@ every quote is made on request.
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
 large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
 that says what each one means, and a visitor who presses a state's button holds it there. Under the mark come the
-headline "Ask the website.", a few words on what we build, a website that answers for a business, and two buttons,
-"Ask for yours" and "See what it does", which goes to that section. Under the hero runs the tape, one line of what
-the agents did that never stops. Then comes what it does, as four glass cards, then where it runs, three cards for
-your server, your model and your data. In the middle stands the brand: the idea that the mark is the agent itself,
-the mark large with the name on black, white, violet and glass, and the theme beside it, which leads to its page.
-None of its panels can be picked to ask the guide about. Then come the demos, three photographs fanned out, each in a glass window with its
+headline "Your doors close at five. Your website doesn't.", which opens on the owner's problem rather than on what we
+sell. A line under it says what changes for them: the question asked at 11 at night is answered, and the person's
+details wait for them in the morning. Two buttons follow, "Ask for yours", which goes to the contact page, and
+"Watch one work", which goes to the demos so they see it before they ask. Under the hero runs the tape, one line of what
+the agents did that never stops. Then comes what it does, as four glass cards, "It does more than chat.", each card
+something the owner can watch happen. Where it runs comes next, "Your data stays in South Africa.": we host it in
+Azure's South African region, a bigger business may keep it on its own servers, and the data stays where it is put.
+In the middle stands the brand, "Meet Orbi.": the violet ball at the foot of the page is the agent, Orbi, and the
+owner's agent gets a name and a look of its own. The mark stands large with the name on black, white, violet and
+glass, and the looks beside it lead to the theme's page. None of its panels can be picked to ask the guide about. Then come the demos, three photographs fanned out, each in a glass window with its
 business's made-up address in the bar. The one a visitor picks, or the guide shows, comes to the front. Custom agents come next: a
 product window plays the guesthouse, the restaurant and the law practice in turn, each its own page with its agent
-answering a visitor from its recorded talk, drawing the request and sending it on a yes. The last strip asks the
-agent to take the visitor's details, or leads to the contact page. The framework itself has no band on the landing:
+answering a visitor from its recorded talk, drawing the request and sending it on a yes. Then comes who builds it,
+the one place on the landing that names Louis: the framework's profile hero in a band, with his photo, "Built by
+Louis Marais in Malmesbury.", a line on what he does for the owner, and a button to his CV. A small owner buys from a
+person, which is why it is there. The last strip asks Orbi to take the visitor's details, or "Write to us" leads to
+the contact page, and says each business is quoted after a short call. The framework itself has no band on the landing:
 its pages are its own, and the menu's group for them is hidden for now.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
 `/framework/architecture`. No page names a price: every quote is made on request, so `/pricing` is moved to
 `/contact`. Then there are the demos.
 
-*Decided in:* [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
+`/privacy` tells a visitor what happens to what they type, in the order they meet it. Their messages go to the
+model to be answered, and the site holds the chat in memory only. Their details reach Louis by mail, and only when
+they press Send it. Their address counts their chats for a day, also in memory. What is written down is the cost,
+the page and the tools of each answer, never their words. The page then sets out their rights under POPIA, says who
+answers for the site, and links the Information Regulator. Every page's footer links to it, the landing's data tile
+does too, and the guide points to it before it sends a visitor's details.
+
+*Decided in:* F145.1, [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), F110.
 
 ### 4. The showroom's three businesses
@@ -166,13 +180,25 @@ recorded in the repo.
 *Decided in:* F128.2, F127.1, F127.2,
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
-### 5. The coding agent and the triage team
+### 5. Nothing beside the agent
 
-`/coding-agent` shows the coding agent fixing a bug, recorded once and played back. `/triage-demo` shows the triage
-team. Both are in the showroom, on the same stage, in their own players. Each player stands in a lit framed window,
-whose bar says `louis-agent · the coding agent` or `louis-agent · the triage team`.
+A demo's page holds its heading, a few words on the scene, and the business's website with its agent at work. There
+is nothing else on the stage: no list of what to watch, no notes on what a custom agent could add, and no offer bar,
+because those took the eye off the agent. The framework's stage still has those slots, and `BusinessDemo` leaves
+them empty.
 
-*Decided in:* [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md), F127.1, F134.
+The conversation doesn't play on its own. Its first question waits in the business's window over a Play the
+conversation button, so the guide in the bar, or the visitor, starts it. The window is a place of its own on the
+page, `the-conversation`, so `/guesthouse-demo/the-conversation` is its first turn and `/the-conversation/2` to
+`/4` the turns after it, and each demo's conversation is in the sitemap. When the guide shows one of those turns,
+`BusinessDemo` hears it through the framework's `AgentWindows` and plays that turn, which stops after it with Play
+on. A visitor already talking to the business live keeps their talk: a turn the guide shows then plays nothing.
+
+When the recording ends, the chat's own ending holds two buttons. *Try it yourself* is the theme's main button,
+drawn by the framework's `RecordedChat` from the words the page hands it, and *Play it again* plays the talk from
+its start. The guide in the bar is the one that explains what the visitor is seeing.
+
+*Decided in:* F127.1, FX194, FX195, F160.
 
 ### 6. The windows on the demos' start
 
@@ -186,8 +212,10 @@ to its source. The talk is held to the demo's page and its recording. The websit
 and the name of the place shown, are held to the demo's own mock website. The chat's title, the words in its box and
 the few words under the place's name belong to the window alone.
 
-The coding agent and the triage team have no window on the start. They keep their own pages, and their place on the
-rail beside a demo's page.
+A window holds no HTML of its own. It is the framework's `SiteBody` given its words, and the place shown is a
+`ShownCard` the window fills in its code-behind and the framework draws. The showroom's frame is the same: its offer,
+"Ask for yours", is the framework's `LinkButton`. `ShowroomLayoutTests` holds the frame and the three windows to
+framework controls only.
 
 ### 7. The guide in the showroom
 
@@ -201,7 +229,11 @@ demo, so no business answers there, and the guide doesn't offer to ask one live 
 offers to open the demo instead.
 
 Chosen, it takes the visitor to the demo's own page and meets them there with two questions to put to the business,
-then a walk of the page, then a stop. A question pressed there is asked of the business, which answers in its own
+then a walk of the page, then a stop. The walk explains the screen at the demo, then plays the conversation a turn
+at a time, one stop an answer: it says what to watch for, from the line for that turn in
+`demos/louis-agent/docs/demos.md`, and shows the turn, which waits for the guide to finish and then plays. After
+the last turn it asks whether the visitor wants to try it, and on a yes asks the business for them. A question
+pressed there is asked of the business, which answers in its own
 window on that page, and the guide keeps the demo itself on screen while it does. The guide's rules for this are in
 its skills, `focus-demos` for the showroom and `live-demo` for asking a business, and `GuideSkillsTests` holds them.
 
@@ -236,11 +268,11 @@ Beside the site's name in the header stands its stage, a small "alpha-1" flag. A
 that this is version alpha-1 and a visitor may run into inconsistencies while it is built, with a way to the
 contact page; a press anywhere else closes it.
 
-Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
+Orbi at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
 framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,
 and the site's three questions as chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
 button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
-"Louis · AI", and hides its work (`ShowWork="false"`). Its bar opens under the pointer on its orb, and its fourth
+"Orbi · AI", and hides its work (`ShowWork="false"`). Its bar opens under the pointer on its orb, and its fourth
 chip leads into the framework. On a screen wide enough, Louis's LinkedIn stands in the screen's bottom-right corner
 as a small link, the framework's `CornerLink`. The address comes from `SiteFacts`, which also tells search engines
 about it.
@@ -280,22 +312,27 @@ These are the types involved:
 
 | Path | What's in it |
 |---|---|
-| `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the demos (`RecordedChat` plays `wwwroot/recordings/coding-session.sse`; [how to record it again](../../../demos/louis-agent/recordings/README.md)) |
+| `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
 | `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
 | `Content/`, `Graphs/` | `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |
-| `Styles/app.scss`, `Styles/site/` | The framework's Sass and the triage pack's demo, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
+| `Styles/app.scss`, `Styles/site/` | The framework's Sass and the two themes, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |
 
 ## The slogan
 
-**100% C#, because you can.** It sits under the brand in the header (the frame's `Tagline` slot) and in the footer.
-It's the one line the site says about itself.
+**The website that answers.** It sits under the brand in the header (the frame's `Tagline` slot) and in the footer.
+It's the one line the site says about itself, and it says what the site is when the name doesn't. The home page is
+for a small business owner, so the line is written for them, not for a developer.
 
-*Decided in:* FX79.
+The tab and the link preview speak to the same owner. The page's title is "louis-agent · the website that answers".
+Its description says what it does for their business in two short sentences. A shared link shows the hero's own
+line, "Your doors close at five. Your website doesn't." Developers find the framework from the framework's pages.
+
+*Decided in:* FX79, the brand research of 2026-11-18.
 
 ## The one rule
 
@@ -363,7 +400,11 @@ its card don't open without it.
 
 ### The page
 
-`Pages/About/CvPage` draws `Components/Cv/ResumeView`, with a band per part. In the browser, it asks the API
+`Pages/About/CvPage` draws `Components/Cv/ResumeView`, with a band per part. The CV has no styles of its own, as
+nothing on this site does: each part is the framework's controls given the CV's words. Who he is stands in a
+`ProfileHero` beside his photo, the few numbers in a `FactStrip`, what he builds now and his skills in `Panel`s, a
+job's stack and a skill group in a `TagList`, and the jobs and the schooling in a `Timeline`, the dates in a column
+of their own. In the browser, it asks the API
 (`ApiResumeSource`). When the host draws it for a search engine, it reads the saved file directly. That's
 `IResumeSource`, a Strategy picked by where the page runs.
 
@@ -379,10 +420,12 @@ page never draws. The area, `ResumeArea`, brings its link and its card to the fr
 ### Save as PDF
 
 `ResumePrint` opens the browser's print dialog. On paper, the CV is its desktop layout set for A4, in near-black ink,
-with its own footer. `Styles/site/cv/_print.scss` sets the sheet, and each part's paper rules sit beside its
-component. Every link becomes a QR code, the framework's `PaperLink`.
+with the page's number at each sheet's foot. The view stands in the framework's `PaperSheet`, which sets the sheet,
+and each control keeps its own layout on paper beside it. Every link becomes a QR code, the framework's `PaperLink`:
+the ways to reach him are a row of codes under the hero, and a panel's link is a `PrintableLink`, the link on a
+screen and its code on paper.
 
-*Decided in:* FX154.
+*Decided in:* FX154, FX191.
 
 ## Tests
 

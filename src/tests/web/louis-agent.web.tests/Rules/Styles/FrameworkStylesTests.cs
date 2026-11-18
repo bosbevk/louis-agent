@@ -259,10 +259,12 @@ public partial class FrameworkStylesTests
     /// <summary>
     /// With the guide as a bar in the frame's corner (F151.6), the frame keeps the room the bar says it stands, on a
     /// wide screen and a phone alike: the page's content, a slide and the way up end above the bar, the footer stands
-    /// at the very bottom (FX163, Louis: "the footer must always be at the bottom"), and the corner is no floating
-    /// box of its own, since the bar places itself.
+    /// at the very bottom (FX163, Louis: "the footer must always be at the bottom") and above the strip the page
+    /// fades into under the bar, so its words are seen, and the corner is no floating box of its own, since the bar
+    /// places itself.
     /// </summary>
     [TestCase(".site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: 0; }")]
+    [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-footer { position: relative; z-index: 10; }")]
     [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-main { padding-bottom: var(--site-bar); }")]
     [TestCase(".site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }")]
     [TestCase(
@@ -279,6 +281,35 @@ public partial class FrameworkStylesTests
                 Is.GreaterThan(shell.IndexOf("@media (max-width: 720px)", StringComparison.Ordinal)),
                 "after the phone's rules, so it wins there too");
         });
+    }
+
+    /// <summary>
+    /// The small link fixed in the screen's corner (FX173) stands only on a wide screen, and there the footer keeps
+    /// room at its right end, so the link never sits on the footer's own words.
+    /// </summary>
+    [Test]
+    public void TheCornerLink_NeverCoversTheFooter()
+    {
+        string shell = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+
+        Assert.That(shell, Does.Contain(
+            "@media (min-width: 1200px) {\n    .site:has(.corner-link) .site-footer { padding-right: 160px; }\n}"));
+    }
+
+    /// <summary>
+    /// On a phone the guide's bar spans the screen's foot, so the footer keeps the bar's room under its words, and
+    /// the orb never sits on them.
+    /// </summary>
+    [Test]
+    public void OnAPhone_TheFootersWordsStandAboveTheBar()
+    {
+        string shell = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+
+        Assert.That(shell, Does.Contain("@media screen and (max-width: 720px) {\n"
+                                        + "    .site:has(.site-corner .chat-widget.is-bar) .site-footer {"
+                                        + " padding-bottom: calc(var(--site-bar) + 12px); }\n}"));
     }
 
     /// <summary>

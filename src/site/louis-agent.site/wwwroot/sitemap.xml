@@ -19,19 +19,10 @@
     <loc>https://louis-agent.dev/home/custom</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/home/who</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/home/contact</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/coding-agent</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/coding-agent/the-demo</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/coding-agent/what-to-watch</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/coding-agent/ask</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/contact</loc>
@@ -79,13 +70,7 @@
     <loc>https://louis-agent.dev/guesthouse-demo/the-demo</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/guesthouse-demo/what-to-watch</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/guesthouse-demo/make-it-yours</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/guesthouse-demo/ask</loc>
+    <loc>https://louis-agent.dev/guesthouse-demo/the-conversation</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/law-practice-demo</loc>
@@ -94,13 +79,13 @@
     <loc>https://louis-agent.dev/law-practice-demo/the-demo</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/law-practice-demo/what-to-watch</loc>
+    <loc>https://louis-agent.dev/law-practice-demo/the-conversation</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/law-practice-demo/make-it-yours</loc>
+    <loc>https://louis-agent.dev/privacy</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/law-practice-demo/ask</loc>
+    <loc>https://louis-agent.dev/privacy/rights</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/restaurant-demo</loc>
@@ -109,21 +94,6 @@
     <loc>https://louis-agent.dev/restaurant-demo/the-demo</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/restaurant-demo/what-to-watch</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/restaurant-demo/make-it-yours</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/restaurant-demo/ask</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/triage-demo</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/triage-demo/the-demo</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/triage-demo/ask</loc>
+    <loc>https://louis-agent.dev/restaurant-demo/the-conversation</loc>
   </url>
 </urlset>

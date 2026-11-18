@@ -1,10 +1,10 @@
 @using LouisAgent.Web.Components.Editing
 @using LouisAgent.Web.Components.Editing.Inline
 @using LouisAgent.Web.Components.Paper
-@* The CV's "now" band (F142): what Louis is building, its headline and words, and a panel per part with its label
-   words, its text and the link to where the site shows it. When the page is edited, the headline, the words and a
-   panel's name and text are clicked and retyped, its label words are tags, its link opens on a small form and
-   leads nowhere meanwhile, and the panels are a list. *@
+@* The CV's "now" band (F142): what Louis is building, its headline and words, and a framework panel per part with
+   its label words, its text and the link to where the site shows it, a QR code on paper. When the page is edited,
+   the headline, the words and a panel's name and text are clicked and retyped, its label words are tags, its link
+   opens on a small form and is only words meanwhile, and the panels are a list. *@
 <BandTitle Class="chrome"><InlineEdit Value="@(Project.Headline ?? Project.Name)" Label="Headline"
                                       ValueChanged="HeadlineChanged"/></BandTitle>
 @if (Project.Description is not null || Editable)
@@ -12,53 +12,59 @@
     <p class="summary"><InlineEdit Value="@Project.Description" Label="What you are building" Multiline Rows="5"
                                 ValueChanged="DescriptionChanged"/></p>
 }
-<div class="grid-2 cv-parts">
+<TileRow Columns="2">
     @for (int index = 0; index < Project.Parts.Count; index++)
     {
         // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
         int at = index;
         var part = Project.Parts[at];
-        <div class="panel">
-            @if (Editable)
-            {
-                <TagInput Tags="part.Keywords" Label="@($"Label words of part {at + 1}")" Placeholder="Add a label word"
-                          TagsChanged="tags => LabelWordsAsync(at, tags)"/>
-            }
-            else if (part.Keywords.Count > 0)
-            {
-                <span class="cv-part-label">@string.Join(" · ", part.Keywords)</span>
-            }
-            <h3><InlineEdit Value="@part.Name" Label="Part" ValueChanged="@NameChanged(at)"/></h3>
-            <p><InlineEdit Value="@part.Summary" Label="What it is" Multiline Rows="5"
-                           ValueChanged="@SummaryChanged(at)"/></p>
-            @if (part.Url is { } url)
-            {
-                <a class="cv-part-link" href="@AddressOf(url)" target="@TargetOf(url)" rel="@RelOf(url)">@(part.Link ?? part.Name) →</a>
-            }
-            @if (!Editable && part.Url is { } onPaper)
-            {
-                <PaperLink Href="@onPaper" Label="@(part.Link ?? part.Name)" Small/>
-            }
-            @if (Editable)
-            {
-                <ItemTools Noun="part" At="at" Count="Project.Parts.Count" OnOpen="() => Open(at)"
-                           OnMove="step => MoveAsync(at, step)" OnRemove="() => RemoveAsync(at)"/>
-            }
-            @if (Editable && _open == at)
-            {
-                <InlineForm @key="at" TItem="ResumeProjectPart" Item="part" Label="@($"part {at + 1}")"
-                            OnKeep="kept => KeepAsync(at, kept)" OnDrop="Close">
-                    <TextField Label="Link words" Value="@context.Item.Link" Hint="With none, the part's name."
-                               ValueChanged="words => LinkWordsAsync(context, words)"/>
-                    <TextField Label="Address" Value="@context.Item.Url" Placeholder="/framework/how-it-works"
-                               Hint="With none, the panel has no link."
-                               ValueChanged="address => AddressAsync(context, address)"/>
-                </InlineForm>
-            }
-        </div>
+        <Panel>
+            <Topic>
+                @if (Editable)
+                {
+                    <TagInput Tags="part.Keywords" Label="@($"Label words of part {at + 1}")"
+                              Placeholder="Add a label word" TagsChanged="tags => LabelWordsAsync(at, tags)"/>
+                }
+                else
+                {
+                    @string.Join(" · ", part.Keywords)
+                }
+            </Topic>
+            <Title><InlineEdit Value="@part.Name" Label="Part" ValueChanged="@NameChanged(at)"/></Title>
+            <ChildContent>
+                <p><InlineEdit Value="@part.Summary" Label="What it is" Multiline Rows="5"
+                               ValueChanged="@SummaryChanged(at)"/></p>
+                @if (!Editable && part.Url is { } url)
+                {
+                    <PrintableLink Href="@url" Label="@(part.Link ?? part.Name)" Small NewTab="Leaves(url)">
+                        @LinkWordsOf(part)
+                    </PrintableLink>
+                }
+                @if (Editable && part.Url is not null)
+                {
+                    <p>@LinkWordsOf(part)</p>
+                }
+                @if (Editable)
+                {
+                    <ItemTools Noun="part" At="at" Count="Project.Parts.Count" OnOpen="() => Open(at)"
+                               OnMove="step => MoveAsync(at, step)" OnRemove="() => RemoveAsync(at)"/>
+                }
+                @if (Editable && _open == at)
+                {
+                    <InlineForm @key="at" TItem="ResumeProjectPart" Item="part" Label="@($"part {at + 1}")"
+                                OnKeep="kept => KeepAsync(at, kept)" OnDrop="Close">
+                        <TextField Label="Link words" Value="@context.Item.Link" Hint="With none, the part's name."
+                                   ValueChanged="words => LinkWordsAsync(context, words)"/>
+                        <TextField Label="Address" Value="@context.Item.Url" Placeholder="/framework/how-it-works"
+                                   Hint="With none, the panel has no link."
+                                   ValueChanged="address => AddressAsync(context, address)"/>
+                    </InlineForm>
+                }
+            </ChildContent>
+        </Panel>
     }
     @if (Editable)
     {
         <ItemAdd Label="Add a part" OnAdd="AddAsync"/>
     }
-</div>
+</TileRow>

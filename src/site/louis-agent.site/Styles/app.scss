@@ -1,8 +1,7 @@
-/* The framework's site's styles (F124): the framework's rules, the two themes and the triage pack's demo, and nothing
-   of the site's own (FX162, Louis: "remove all custom css from .site we should just use the theme", "I need all
-   custom css out immediately"). A name under web/ is the framework's Sass, one under theme- a theme's and one under
-   pack- a pack's, each found through sasscompiler.json, so nothing is copied. The build makes wwwroot/css/app.css
-   from this. */
+/* The framework's site's styles (F124): the framework's rules and the two themes, and nothing of the site's own
+   (FX162, Louis: "remove all custom css from .site we should just use the theme", "I need all custom css out
+   immediately"). A name under web/ is the framework's Sass and one under theme- a theme's, each found through
+   sasscompiler.json, so nothing is copied. The build makes wwwroot/css/app.css from this. */
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
 @forward "web/base/elements";
@@ -20,4 +19,5 @@
 @forward "web/chat/bars";
 @forward "web/chat/pages";
 @forward "web/showroom/fonts";
-@forward "pack-triage/demo";
+@forward "web/settings/paper";
+@forward "web/paper/sheet";

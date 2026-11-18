@@ -47,7 +47,7 @@ public class GuideSkillsTests
             .Select(route => $"`{route.Template}`").ToList();
 
         Assert.That(index.Header?.Load, Is.EqualTo(SkillLoad.Always));
-        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(9), "the pages were found");
         Assert.That(addresses.Where(address => !index.Body.Contains(address)), Is.Empty);
     }
 
@@ -73,9 +73,9 @@ public class GuideSkillsTests
     }
 
     /// <summary>
-    /// FX133, from Louis's look at the live site: walking a demo page, *What to watch* ended with the walkthrough's
-    /// three choices and never offered the live demo. The walkthrough now names that stop's own choices, and after the
-    /// business answers he coaches: what it just did and why (Louis's pick, "run it live and coach").
+    /// FX133, from Louis's look at the live site: walking a demo page never offered the live demo. Every stop on a demo
+    /// page now offers it, and after the business answers he coaches: what it just did and why (Louis's pick, "run it
+    /// live and coach").
     /// </summary>
     [Test]
     public void AtWhatToWatch_TheWalkthroughOffersTheDemoLive_AndHeCoachesAfterTheAnswer()
@@ -88,7 +88,6 @@ public class GuideSkillsTests
             Assert.That(voice, Does.Contain(
                     "On a demo page, every stop's choices include a fourth, Ask it live, until they have asked live"),
                 "Louis: drop the card drawn in code, rework the prompt");
-            Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
             Assert.That(skill, Does.Contain("what it just did and why"));
             Assert.That(skill, Does.Contain("end with `Offer`: two or three questions they could ask it next"),
                 "Louis: \"when he is the teacher he must give me offers of what I could ask\"");
@@ -202,6 +201,29 @@ public class GuideSkillsTests
     public void AskingLive_TheGuideKeepsTheBusinesssWindowOnScreen() =>
         Assert.That(Flat(Read("skills/live-demo.md").Body), Does.Contain(
             "In an answer where you call `AskAgent`, the only place you may show is the demo itself"));
+
+    /// <summary>
+    /// F160, Louis: "do not make it autoplay, give the ability to our agent to guide him through the experience", and
+    /// "when it is done it can ask if you want to try and then it guides the user into the chat with the other
+    /// agent". The guide walks a demo's conversation a turn at a time, says what to watch before each turn plays, and
+    /// after the last asks whether they want to try it, then hands them to the business live.
+    /// </summary>
+    [Test]
+    public void OnADemoPage_TheGuidePlaysTheConversationATurnAtATime_ThenOffersToTryIt()
+    {
+        string voice = Flat(Read("voice.md").Body);
+        string skill = Flat(Read("skills/live-demo.md").Body);
+        string showroom = Flat(Read("skills/focus-demos.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(skill, Does.Contain("showing a turn plays it, and it stops after it"));
+            Assert.That(skill, Does.Contain("say first, in two short sentences, what to watch for in it"));
+            Assert.That(skill, Does.Contain("After the last turn, ask whether they want to try it themselves"));
+            Assert.That(voice, Does.Contain("a demo page's conversation is walked a turn at a time"));
+            Assert.That(showroom, Does.Contain("the conversation a turn at a time"));
+        });
+    }
 
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
     private static string Flat(string text) =>

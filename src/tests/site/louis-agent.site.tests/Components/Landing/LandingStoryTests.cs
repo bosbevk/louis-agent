@@ -21,7 +21,29 @@ public class LandingStoryTests
         var cut = ctx.Render<HomePage>();
 
         Assert.That(cut.FindAll("section").Select(section => section.Id),
-            Is.EqualTo(new[] { "top", "does", "for-you", "brand", "demos", "custom", "contact" }));
+            Is.EqualTo(new[] { "top", "does", "for-you", "brand", "demos", "custom", "who", "contact" }));
+    }
+
+    /// <summary>
+    /// The landing shows who builds it, once, with his face and his name (Louis's pick, 2026-11-18, "Face and name,
+    /// once"): a small owner buys from a person, and the research found no rival shows one. It leads to his CV.
+    /// </summary>
+    [Test]
+    public void TheLanding_ShowsWhoBuildsIt_WithHisFace()
+    {
+        using var ctx = new BunitContext();
+
+        var band = ctx.Render<HomePage>().Find("section#who");
+
+        var cv = band.QuerySelectorAll("a").Single(link => link.GetAttribute("href") == "/cv");
+        Assert.Multiple(() =>
+        {
+            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("Built by Louis Marais in Malmesbury."));
+            Assert.That(band.QuerySelector("img.profile-photo")!.GetAttribute("src"), Is.EqualTo("images/louis-marais.jpg"));
+            Assert.That(band.QuerySelector("img.profile-photo")!.GetAttribute("alt"), Is.EqualTo("Louis Marais"));
+            Assert.That(cv.TextContent.Trim(), Is.EqualTo("Read his CV"));
+            Assert.That(band.TextContent, Does.Not.Contain(":").And.Not.Contain(";"));
+        });
     }
 
     /// <summary>
@@ -46,10 +68,11 @@ public class LandingStoryTests
     }
 
     /// <summary>
-    /// Where it runs, as the design page has it (FX162): your server, your model and your data, three cards.
+    /// Where it runs, for an owner (the rewrite of 2026-11-18): we host it, or a bigger business keeps it on its own
+    /// servers, and the data stays where it is put, three cards.
     /// </summary>
     [Test]
-    public void WhereItRuns_IsYourServerYourModelAndYourData()
+    public void WhereItRuns_IsHostedHere_OrOnYourOwnServers()
     {
         using var ctx = new BunitContext();
 
@@ -57,9 +80,9 @@ public class LandingStoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("Yours to run, wherever you like."));
+            Assert.That(band.QuerySelector("h2")!.TextContent, Is.EqualTo("Your data stays in South Africa."));
             Assert.That(band.QuerySelectorAll(".tiles article h3").Select(title => title.TextContent),
-                Is.EqualTo(new[] { "Your server", "Your model", "Your data" }));
+                Is.EqualTo(new[] { "We host it", "Or on your own servers", "Your data" }));
         });
     }
 
@@ -91,10 +114,10 @@ public class LandingStoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(strip.TextContent, Does.Contain("business").And.Contain("on request"));
+            Assert.That(strip.TextContent, Does.Contain("business").And.Contain("after a short call"));
             Assert.That(strip.TextContent, Does.Not.Contain("R500").And.Not.Contain("Louis"));
             Assert.That(strip.QuerySelector("button.btn")!.TextContent, Is.EqualTo("Leave your details"));
-            Assert.That(strip.QuerySelector("a[href='/contact']")!.TextContent, Is.EqualTo("Contact us"));
+            Assert.That(strip.QuerySelector("a[href='/contact']")!.TextContent, Is.EqualTo("Write to us"));
         });
     }
 }

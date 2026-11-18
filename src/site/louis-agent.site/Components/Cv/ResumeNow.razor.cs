@@ -50,9 +50,6 @@ public partial class ResumeNow
     /// <summary>The project with these panels.</summary>
     private ResumeProject With(IReadOnlyList<ResumeProjectPart> parts) => Project with { Parts = parts };
 
-    /// <summary>While the page is edited a panel's link leads nowhere, so a click doesn't leave the page.</summary>
-    private string? AddressOf(string url) => Editable ? null : url;
-
     /// <summary>A panel's label words, with one added or taken out.</summary>
     private Task LabelWordsAsync(int at, IReadOnlyList<string> words) =>
         ProjectChanged.InvokeAsync(With(Project.Parts.Replaced(at, Project.Parts[at] with { Keywords = words })));
@@ -95,12 +92,9 @@ public partial class ResumeNow
     private static Task AddressAsync(EditedItem<ResumeProjectPart> part, string? address) =>
         part.Changed.InvokeAsync(part.Item with { Url = address });
 
-    /// <summary>Whether a link leaves the site: a place on the site starts with a slash.</summary>
+    /// <summary>A link that leaves the site opens a new tab: a place on the site starts with a slash.</summary>
     private static bool Leaves(string url) => !url.StartsWith('/');
 
-    /// <summary>A link that leaves the site opens a new tab.</summary>
-    private static string? TargetOf(string url) => Leaves(url) ? "_blank" : null;
-
-    /// <summary>A link that leaves the site tells the other site nothing about this one.</summary>
-    private static string? RelOf(string url) => Leaves(url) ? "noopener" : null;
+    /// <summary>The words of a panel's link.</summary>
+    private static string LinkWordsOf(ResumeProjectPart part) => $"{part.Link ?? part.Name} →";
 }

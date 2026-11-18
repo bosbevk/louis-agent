@@ -1,9 +1,8 @@
 namespace LouisAgent.Site.Tests.Styles;
 
 /// <summary>
-/// The framework's site's stylesheet is Sass: <c>app.scss</c> lists the framework's rules, the two themes and the
-/// triage pack's demo, so it keeps no copy (F124), and nothing of the site's own (FX162). What's checked is what the
-/// build really made.
+/// The framework's site's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and the two themes, so it
+/// keeps no copy (F124), and nothing of the site's own (FX162). What's checked is what the build really made.
 /// </summary>
 public class StylesheetTests
 {
@@ -55,9 +54,4 @@ public class StylesheetTests
     [TestCase("flat", "light")]
     public void TheBuild_HoldsEachThemesValues(string theme, string style) =>
         Assert.That(Css.Read(), Does.Contain($":root[data-theme={theme}][data-style={style}]"));
-
-    /// <summary>The triage demo's rules come from the triage pack's web project, so the build found them.</summary>
-    [Test]
-    public void ThePacksRules_AreInTheBuild() =>
-        Assert.That(Css.Read(), Does.Contain(".step-popup").And.Contain(".popup-kind"));
 }

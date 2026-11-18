@@ -72,6 +72,22 @@ public class AgentWindowsTests
         });
     }
 
+    /// <summary>
+    /// A place the guide shows on the page, and its turn, is told to whoever listens (F160), so a recorded talk that is
+    /// that place plays that turn.
+    /// </summary>
+    [Test]
+    public void APlaceShown_IsToldWithItsTurn()
+    {
+        var windows = new AgentWindows();
+        var told = new List<(string, int)>();
+        windows.Turned += (place, turn) => told.Add((place, turn));
+
+        windows.Turn("the-conversation", 2);
+
+        Assert.That(told, Is.EqualTo(new[] { ("the-conversation", 2) }));
+    }
+
     /// <summary>The guide's stream moving on tells the windows, so the one showing the talk draws again.</summary>
     [Test]
     public void TheGuidesStreamMovingOn_TellsTheWindows()

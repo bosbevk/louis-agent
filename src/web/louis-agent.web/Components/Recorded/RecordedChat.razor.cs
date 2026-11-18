@@ -47,6 +47,25 @@ public partial class RecordedChat : IDisposable
     [Parameter]
     public string PlayAgain { get; set; } = "";
 
+    /// <summary>When it starts playing: on its own, or only when asked (F160).</summary>
+    [Parameter]
+    public RecordedStart Start { get; set; }
+
+    /// <summary>What the Play button says while the talk waits to be started.</summary>
+    [Parameter]
+    public string Play { get; set; } = "";
+
+    /// <summary>
+    /// The window's place on the page, which the guide shows it by (F160): its first turn is the place, the later ones
+    /// its turns after it; none when it isn't a place of its own.
+    /// </summary>
+    [Parameter]
+    public string? Place { get; set; }
+
+    /// <summary>What the button says that plays the rest, once the play has stopped after a turn.</summary>
+    [Parameter]
+    public string PlayOn { get; set; } = "";
+
     /// <summary>How fast it plays: 1 as recorded, 0 for no waits at all.</summary>
     [Parameter]
     public double Pace { get; set; } = 1;
@@ -58,6 +77,17 @@ public partial class RecordedChat : IDisposable
     /// <summary>What shows when the play is over: the site's offer.</summary>
     [Parameter]
     public RenderFragment? Ending { get; set; }
+
+    /// <summary>
+    /// The words of a way to try the agent live once the play is over, drawn as the theme's main button; none
+    /// draws no button.
+    /// </summary>
+    [Parameter]
+    public string? TryIt { get; set; }
+
+    /// <summary>Told when the visitor presses the way to try the agent live.</summary>
+    [Parameter]
+    public EventCallback Tried { get; set; }
 
     /// <summary>
     /// How long a turn waits after the one before, in milliseconds, as a person reads the answer and types (F127.1,
@@ -105,41 +135,75 @@ public partial class RecordedChat : IDisposable
     /// <summary>Done at once while the play is not held; else once it is let go.</summary>
     private Task WhileHeld() => _held?.Task ?? Task.CompletedTask;
 
-    /// <summary>Starts playing once the window is on the page.</summary>
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    /// <summary>Started when asked, the first question waits in the window, so the visitor sees what is to come.</summary>
+    protected override void OnInitialized()
     {
-        if (firstRender) await PlayAsync();
+        if (Start != RecordedStart.WhenAsked || Turns.Count == 0) return;
+        _chat.Turns.Add(new Turn { UserText = Turns[0].Question });
     }
 
-    /// <summary>Plays the conversation from the start, as the play-again button asks.</summary>
-    private Task PlayAsync() => PlayFromAsync(1);
+    /// <summary>Starts playing once the window is on the page, unless it waits to be asked.</summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Start == RecordedStart.OnItsOwn) await PlayFromStartAsync();
+    }
+
+    /// <summary>The turn the play stopped after, by its number from one; none while it plays, waits or is over.</summary>
+    private int _stoppedAfter;
+
+    /// <summary>Whether the talk waits to be asked to play: it starts when asked, and hasn't played yet.</summary>
+    private bool Waiting => Start == RecordedStart.WhenAsked && !_playing && !_ended && _stoppedAfter == 0;
+
+    /// <summary>Whether the play stopped after a turn, the rest still to come.</summary>
+    private bool Stopped => !_playing && _stoppedAfter > 0;
+
+    /// <summary>Plays the conversation from the start, as the Play and play-again buttons ask.</summary>
+    private Task PlayFromStartAsync() => PlayFromAsync(1);
+
+    /// <summary>Plays the rest, from the turn after the one it stopped after, as Play on asks.</summary>
+    private Task PlayOnAsync() => PlayFromAsync(_stoppedAfter + 1);
 
     /// <summary>
     /// Plays the conversation from a turn, by its number from one (F127.1, Louis: "this should be clickable so visitors
-    /// can rewind"), into a fresh chat, one turn after another; a play already going stops first. The turns before it
-    /// show at once, each still told as it starts, so what keeps step beside the play (the cues, a mock website)
-    /// catches up; that turn plays at its pace.
+    /// can rewind"), to its end.
     /// </summary>
-    public async Task PlayFromAsync(int from)
+    public Task PlayFromAsync(int from) => PlayAsync(from, Turns.Count);
+
+    /// <summary>
+    /// Plays the conversation up to a turn, by its number from one, and stops after it with Play on (F160): the guide
+    /// shows one turn at a time.
+    /// </summary>
+    public Task PlayTurnAsync(int turn) => PlayAsync(turn, turn);
+
+    /// <summary>
+    /// Plays from one turn to another into a fresh chat, one turn after another; a play already going stops first.
+    /// The turns before the first show at once, each still told as it starts, so what keeps step beside the play (the
+    /// cues, a mock website) catches up; the rest play at their pace. Played to the last turn, the ending shows;
+    /// else the play stops with Play on.
+    /// </summary>
+    private async Task PlayAsync(int from, int to)
     {
         _stop?.Cancel();
         _stop = new CancellationTokenSource();
         var stop = _stop.Token;
-        _chat = new ChatModel { SessionId = "recorded" };
-        (_playing, _ended) = (true, false);
-        StateHasChanged();
 
         // A page that goes away, or a second play, stops this one where it is.
         try
         {
+            // Held before it starts, the window keeps what it shows until the guide is done, rather than going blank.
+            await WhileHeld().WaitAsync(stop);
+            _chat = new ChatModel { SessionId = "recorded" };
+            (_playing, _ended, _stoppedAfter) = (true, false, 0);
+            StateHasChanged();
+
             // Each turn says it starts, so what follows the play (a showroom's cues) keeps step with it.
-            for (int number = 1; number <= Turns.Count; number++)
+            for (int number = 1; number <= to; number++)
             {
                 // A breath before the next question, as a person reads the answer and types; none while catching up.
                 if (number > from && TurnGap > 0) await Task.Delay(TurnGap, stop);
                 await WhileHeld().WaitAsync(stop);
                 await TurnStarted.InvokeAsync(number);
-                await PlayTurnAsync(Turns[number - 1], number < from ? 0 : Pace, stop);
+                await PlayRecordingAsync(Turns[number - 1], number < from ? 0 : Pace, stop);
             }
         }
         catch (OperationCanceledException)
@@ -147,14 +211,15 @@ public partial class RecordedChat : IDisposable
             return;
         }
 
-        (_playing, _ended) = (false, true);
+        bool toTheEnd = to >= Turns.Count;
+        (_playing, _ended, _stoppedAfter) = (false, toTheEnd, toTheEnd ? 0 : to);
         StateHasChanged();
     }
 
     /// <summary>
     /// Adds one turn's question to the chat and plays its recording into it at a pace, read once and kept.
     /// </summary>
-    private async Task PlayTurnAsync(RecordedTurn recorded, double pace, CancellationToken stop)
+    private async Task PlayRecordingAsync(RecordedTurn recorded, double pace, CancellationToken stop)
     {
         if (!_recordings.TryGetValue(recorded.Source, out var events))
             _recordings[recorded.Source] = events = await ReadAsync(recorded.Source, stop);

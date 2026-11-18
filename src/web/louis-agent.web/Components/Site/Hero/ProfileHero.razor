@@ -1,0 +1,29 @@
+@using LouisAgent.Web.Components.Site.Bands
+@* A person's hero (ADR 0125): the words in one column, the photo beside them, and the row for paper under both. The
+   name is the band's heading, so it is the page's h1 at its top. *@
+<div class="profile">
+    <div class="profile-words">
+        <BandTitle Class="chrome">@Name</BandTitle>
+        @if (Summary is not null)
+        {
+            <p class="summary">@Summary</p>
+        }
+        @if (Note is not null)
+        {
+            <p class="profile-note">@Note</p>
+        }
+        @if (Actions is not null)
+        {
+            <div class="profile-actions">@Actions</div>
+        }
+        @ChildContent
+    </div>
+    @if (Photo is not null)
+    {
+        <img class="profile-photo" src="@Photo" alt="@PhotoText" width="560" height="700"/>
+    }
+    @if (Paper is not null)
+    {
+        <div class="profile-paper">@Paper</div>
+    }
+</div>

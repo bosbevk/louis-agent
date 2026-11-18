@@ -30,8 +30,7 @@ public class SolutionLayoutTests
         "louis-agent.pack.where-to-buy", "louis-agent.pack.docs", "louis-agent.pack.triage", "louis-agent.pack.leads",
         "louis-agent.pack.site")]
     [TestCase("packs/evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
-    [TestCase("packs/web", "louis-agent.pack.recipes.web", "louis-agent.pack.files.web", "louis-agent.pack.git.web",
-        "louis-agent.pack.triage.web")]
+    [TestCase("packs/web", "louis-agent.pack.recipes.web", "louis-agent.pack.files.web", "louis-agent.pack.git.web")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
     [TestCase("demos/louis-agent/evals", "louis-agent.identity.triage.evals")]
@@ -80,8 +79,7 @@ public class SolutionLayoutTests
         "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",
         "louis-agent.pack.recipes.checks.tests", "louis-agent.pack.where-to-buy.checks.tests",
-        "louis-agent.pack.recipes.web.tests", "louis-agent.pack.files.web.tests", "louis-agent.pack.git.web.tests",
-        "louis-agent.pack.triage.web.tests")]
+        "louis-agent.pack.recipes.web.tests", "louis-agent.pack.files.web.tests", "louis-agent.pack.git.web.tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)
     {
         var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));

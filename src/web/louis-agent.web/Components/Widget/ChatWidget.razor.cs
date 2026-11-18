@@ -166,8 +166,7 @@ public partial class ChatWidget : IAsyncDisposable
     /// </summary>
     private void OnAsked(string question) => InvokeAsync(async () =>
     {
-        Open = true;
-        if (Size == ChatWindowSize.Minimised) Size = ChatWindowSize.Normal;
+        _kept.Unfold();
         Runner.Draft = question;
         StateHasChanged();
         await SendAsync();
@@ -200,7 +199,10 @@ public partial class ChatWidget : IAsyncDisposable
         if (ShowPageCall.PathOf(block) is not { } path || Addresses is not { } addresses) return;
         if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
+        // A place on the visitor's page goes to its windows with its turn (F160): a recorded talk that is that place
+        // plays it. A place on another page is gone to first.
         if (target.Page != PageAddress) Nav.NavigateTo(addresses.Address(target.Page, null));
+        else if (GuidePlaces.TurnOf(path, addresses) is { } turn) Windows?.Turn(turn.Place, turn.Turn);
         _ = InvokeAsync(() => ShowPlaceAsync(target.Page, target.Place, addresses));
     }
 
@@ -273,8 +275,7 @@ public partial class ChatWidget : IAsyncDisposable
     {
         _piece = piece;
         if (Runner.Streaming) return;
-        Open = true;
-        if (Size == ChatWindowSize.Minimised) Size = ChatWindowSize.Normal;
+        _kept.Unfold();
         Runner.Draft = string.Format(Text.ExplainPiece, piece.Heading);
         StateHasChanged();
         await SendAsync();

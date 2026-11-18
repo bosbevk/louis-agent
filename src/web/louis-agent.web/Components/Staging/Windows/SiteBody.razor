@@ -35,9 +35,19 @@
         </div>
         <p class="body-question">@Question</p>
         <p class="body-answer">@Answer</p>
-        @if (Shown is not null)
+        @if (Shown is { } shown)
         {
-            <div class="body-shown">@Shown</div>
+            <div class="body-shown">
+                @if (shown.Photo is not null)
+                {
+                    <img src="@shown.Photo" alt="" />
+                }
+                <b>@shown.Name</b>
+                @if (shown.Note is not null)
+                {
+                    <span>@shown.Note</span>
+                }
+            </div>
         }
         @if (Hint is not null)
         {

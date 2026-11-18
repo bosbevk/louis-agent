@@ -12,3 +12,10 @@
 @media (max-width: 600px) {
     .tiles-2, .tiles-3 { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* On paper the sheet is as narrow as a tablet, but it is laid out as the desktop is: the width a site asks for. */
+@media print {
+    .tiles { gap: 3mm; }
+    .tiles-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tiles-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

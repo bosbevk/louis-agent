@@ -33,13 +33,14 @@ public class PageDescriptionsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+            Assert.That(pages, Has.Count.GreaterThanOrEqualTo(9), "the pages were found");
             Assert.That(described.Where(page => page.Value.Count != 1).Select(page => page.Key), Is.Empty,
                 "one description a page");
             var texts = described.Values.SelectMany(text => text).ToList();
             Assert.That(texts, Has.All.Length.InRange(50, 170), "long enough to say something, short enough to show");
             Assert.That(texts, Is.Unique);
             Assert.That(texts, Has.None.Contain(";"));
+            Assert.That(texts, Has.None.Contain("R500"), "no price is published");
         });
     }
 }

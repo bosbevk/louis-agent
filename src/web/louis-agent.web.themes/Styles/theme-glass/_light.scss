@@ -3,9 +3,10 @@
    its second step so it follows the purple and deep enough for a white rim to stand on. A pane is its drawing
    alone, which holds its rim and its lights: nothing is painted under it, nothing blurs the page seen through
    it, and it throws a soft shadow. The page behind is a picture of silk ribbons of light. A bar is white glass
-   over a white edge, and a press is its drawing with white words. The red, amber, blue and green, the
-   caption on a photo's mat and the hover grey are the framework's own, since the mockup does not show them, and the
-   error words a darker red to read on white. The faces and the easing are the framework's. */
+   over a white edge, and a press is its drawing with white words. The red, amber, blue and green are deeper
+   than the dark look's, so a demo's button holds white words and its icon stands out on the violet. The caption on a
+   photo's mat and the hover grey are the framework's own, since the mockup does not show them, and the error words a
+   darker red to read on white. The faces and the easing are the framework's. */
 
 @use "sass:color";
 @use "web/tools/colours";
@@ -17,10 +18,11 @@ $page: color.mix(#9282ff, #ffffff, 54%);
 :root[data-theme="glass"][data-style="light"] {
     // Written once each: the build makes the number form from the same value.
     @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
-    @include colours.both(bs-danger, #d9675f);
-    @include colours.both(bs-warning, #d4a72c);
-    @include colours.both(bs-info, #7fa8e8);
-    @include colours.both(web-ok, #6cbf94);
+    // The accents, each deep enough for white words on it and to stand out on the violet page.
+    @include colours.both(bs-danger, #c23b31);
+    @include colours.both(bs-warning, #8a6200);
+    @include colours.both(bs-info, #2563c9);
+    @include colours.both(web-ok, #1d7a4c);
     @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
     @include colours.both(bs-body-bg, $page);            // the page
     @include colours.both(bs-secondary-bg, #ffffff);     // a panel
@@ -154,8 +156,6 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     // lines of its own.
     --web-page-lines: none;
     --web-page-lights: url("/_content/louis-agent.web.themes/glass/light/silk.webp?v=1") center / cover no-repeat;
-    // A heading's band: the violet through the words.
-    --web-heading-band: var(--bs-primary);
     // The mark as a letter of the name: a full disc a little above the small letters.
     --web-wordmark-o: .76em;
     // Under the pointer the drawings show the hover, over the presses' own colours; a tile's icon stands on the

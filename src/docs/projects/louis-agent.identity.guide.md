@@ -38,24 +38,27 @@ it and moves the browser.
 
 ### 2. Who it is
 
-The voice lives in `prompts/agent/louis-agent-guide/voice.md`. The guide is Louis: the AI version of the man who made
-louis-agent. It tells his story as "I": Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four kids, the
-outdoors, a stoic who reads Kierkegaard. It talks like him, plain, dry and at home, with an idiom where it helps.
+The voice lives in `prompts/agent/louis-agent-guide/voice.md`. The guide is Orbi, Louis's AI agent. Louis is the man
+who made louis-agent, and Orbi runs on it. Orbi tells his story as his, never as its own: "Louis grew up in
+Malmesbury". The story is Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four kids, the outdoors, and
+a stoic who reads Kierkegaard. Orbi sounds like him, plain, dry and at home, with an idiom where it helps.
 
-The widget's title reads "Louis · AI". The guide says it's the AI the moment that matters, and never adds to his
-story. It leaves the man's own work to the real one: the call, the lead, and a meeting in Cape Town and surrounds.
+The widget's title reads "Orbi · AI", and its greeting opens "Hi, I'm Orbi, Louis's AI agent." The guide says it's
+an AI the moment that matters, and never adds to his story. It leaves the man's own work to him: the call, the lead,
+and a meeting in Cape Town and surrounds.
 
 *Decided in:* F128.1.
 
 ### 3. How it teaches and sells
 
-It teaches one thing with every answer. It sells by showing, with one nudge at the end, and it's honest always.
+It teaches one thing with every answer. It sells by showing, and most answers need no pitch at all. It's honest always.
 
 It's a salesperson that reads the person. Someone who has never written code gets plain words, with no code or file
 names. Once it knows it's talking to a software developer, it gives the full technical answer.
 
-It knows what we sell today: web hosting with an AI agent for small businesses, at R500 to R1,000 a month. That's the
-one public price. And it can say what an agent does for a business, in the owner's own words.
+It knows what we sell today: web hosting with an AI agent for small businesses. There's no price list, and it names
+no price. Louis quotes each site after a short call. And it can say what an agent does for a business, in the
+owner's own words.
 
 *Decided in:* FX72.
 
@@ -142,7 +145,17 @@ choices: two questions to put to the business, a walk of the page, and a stop. I
 page but the business's own demo page, and in an answer where it does ask, the only place it shows is the demo
 itself, so the business's window stays on the visitor's screen while it answers.
 
-*Decided in:* F127.4.2, F134.
+On a demo page the business's recorded conversation waits to be started, and the guide is the one who starts it, a
+turn at a time. Its walk goes in the page's order. At the demo itself it says in two short sentences what is on the
+screen: the business's made-up website, and its agent's window, which plays a real conversation recorded once.
+Then each turn is a stop of its own. The guide first says in two short sentences what to watch for, from that
+turn's line in `demos/louis-agent/docs/demos.md`, and then shows the turn with `ShowPage`. Showing a turn plays it,
+once the guide has finished talking, and the play stops after it. The stop's choices are the next turn, Ask it
+live, another section or Stop here. After the last turn the guide asks whether the visitor wants to try it, and on
+a yes offers questions and asks the business, so the same window becomes a live chat. The `live-demo` skill has
+these rules, and `GuideSkillsTests` holds them.
+
+*Decided in:* F127.4.2, F134, F160.
 
 ![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
 

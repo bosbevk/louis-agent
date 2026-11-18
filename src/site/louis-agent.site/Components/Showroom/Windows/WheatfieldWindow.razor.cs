@@ -1,3 +1,5 @@
+using LouisAgent.Web.Components.Staging.Windows;
+
 namespace LouisAgent.Site.Components.Showroom.Windows;
 
 /// <summary>
@@ -15,4 +17,7 @@ public partial class WheatfieldWindow
 
     /// <summary>The moment of its talk the window shows.</summary>
     private static WindowTalk Talk => SiteWindowTalks.Wheatfield;
+
+    /// <summary>The place on its website the agent showed, as the demo's page names it.</summary>
+    private static readonly ShownCard Place = new("For the children", "Menu");
 }

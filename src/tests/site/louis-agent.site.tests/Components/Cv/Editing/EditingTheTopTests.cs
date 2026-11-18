@@ -28,7 +28,7 @@ public class EditingTheTopTests
         Assert.Multiple(() =>
         {
             Assert.That(view.FindAll(".inline-read, .item-tools, .item-add, .inline-form"), Is.Empty);
-            Assert.That(view.FindAll(".cv-reach a[href]"), Has.Count.EqualTo(Top.Profiles.Count + 1),
+            Assert.That(view.FindAll(".profile-actions a[href]"), Has.Count.EqualTo(Top.Profiles.Count + 1),
                 "each link, and the email");
         });
     }
@@ -41,7 +41,7 @@ public class EditingTheTopTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.Retype(".cv-hero h1", "Louis J Marais");
+        view.Retype(".profile h1", "Louis J Marais");
 
         Assert.Multiple(() =>
         {
@@ -59,7 +59,7 @@ public class EditingTheTopTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.RetypeLong(".cv-hero .summary", "Builds AI agents in C#.");
+        view.RetypeLong(".profile .summary", "Builds AI agents in C#.");
 
         Assert.That(handed.Value!.Basics.Summary, Is.EqualTo("Builds AI agents in C#."));
     }
@@ -73,14 +73,14 @@ public class EditingTheTopTests
         using var ctx = new BunitContext();
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
-        var pieces = view.FindAll(".cv-where .inline-read").Select(piece => piece.TextContent).ToList();
+        var pieces = view.FindAll(".profile-note .inline-read").Select(piece => piece.TextContent).ToList();
 
-        view.Retype(".cv-where .cv-town", "Paternoster");
+        view.Retype(".profile-note .cv-town", "Paternoster");
 
         Assert.Multiple(() =>
         {
             Assert.That(pieces, Is.EqualTo(new[] { Top.Location!.City, Top.Location.Region, "English, Afrikaans" }));
-            Assert.That(view.Find(".cv-where").TextContent, Does.Contain("open to remote and hybrid"));
+            Assert.That(view.Find(".profile-note").TextContent, Does.Contain("open to remote and hybrid"));
             Assert.That(handed.Value!.Basics.Location!.City, Is.EqualTo("Paternoster"));
             Assert.That(handed.Value.Basics.Location.Region, Is.EqualTo(Top.Location.Region));
         });
@@ -94,7 +94,7 @@ public class EditingTheTopTests
         var handed = new Handed<CvRecord>();
         var view = OnThePage.Editable(ctx, handed);
 
-        view.Retype(".cv-reach .cv-email", "louis@example.org");
+        view.Retype(".profile-actions .cv-email", "louis@example.org");
 
         Assert.That(handed.Value!.Basics.Email, Is.EqualTo("louis@example.org"));
     }

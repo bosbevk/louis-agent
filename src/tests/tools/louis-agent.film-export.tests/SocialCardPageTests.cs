@@ -25,4 +25,23 @@ public class SocialCardPageTests
             Assert.That(page, Does.Contain("<body class=\"light\">"));
         });
     }
+
+    /// <summary>
+    /// The card shows the ball once, as the name's o, since the mark never stands beside the name as well as inside it
+    /// (the brand guide); its line is the site's slogan, and its foot is the address alone, with no dot between words.
+    /// </summary>
+    [Test]
+    public void TheCard_HasOneBall_TheSlogan_AndTheAddressAlone()
+    {
+        string template = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, SocialCardPage.TemplatePath));
+        string body = template[template.IndexOf("<body", StringComparison.Ordinal)..];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(body.Split("{orb}").Length - 1, Is.EqualTo(1), "one ball");
+            Assert.That(body, Does.Contain("<p class=\"line\">The website that answers.</p>"));
+            Assert.That(body, Does.Contain("<p class=\"foot\">louis-agent.dev</p>"));
+            Assert.That(body, Does.Not.Contain("·"));
+        });
+    }
 }

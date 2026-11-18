@@ -4,24 +4,21 @@
 
 <SiteShell Layout="PageLayout.Flow" MovingPage="true" AnswerUnder="true" ShowIndex="false" ShowWayUp="false">
     <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
-    <Tagline>100% C#, because you can</Tagline>
+    <Tagline>The website that answers.</Tagline>
     <Stage><StageFlag Label="alpha-1" Note="This is version alpha-1. You may run into inconsistencies while it is built." LinkText="Tell us what you find" Href="/contact" /></Stage>
     <Links>
-        @* The demos are hidden from the menu for now, kept until they are fixed (FX176). *@
-        <SiteMenu Label="Demos" Hidden="true">
+        <SiteMenu Label="Demos">
             <NavLink href="/demos" Match="NavLinkMatch.All">All demos</NavLink>
             <NavLink href="/guesthouse-demo" Match="NavLinkMatch.All">A guesthouse</NavLink>
             <NavLink href="/restaurant-demo" Match="NavLinkMatch.All">A restaurant</NavLink>
             <NavLink href="/law-practice-demo" Match="NavLinkMatch.All">A law practice</NavLink>
-            <NavLink href="/coding-agent" Match="NavLinkMatch.All">The coding agent</NavLink>
-            <NavLink href="/triage-demo" Match="NavLinkMatch.All">The triage team</NavLink>
         </SiteMenu>
         <NavLink href="/contact" Match="NavLinkMatch.All">Contact</NavLink>
     </Links>
     <Settings><CvLink /></Settings>
     <Footer>
-        <span><Wordmark Before="l" After="uis-agent" /> · all rights reserved · <a class="footer-link" href="https://www.linkedin.com/in/louismarais86" target="_blank" rel="noopener"><LinkedInMark /> LinkedIn</a></span>
-        <span>100% C#, because you can</span>
+        <span><Wordmark Before="l" After="uis-agent" /> · all rights reserved · <a class="footer-link" href="https://www.linkedin.com/in/louismarais86" target="_blank" rel="noopener"><LinkedInMark /> LinkedIn</a> · <a class="footer-link" href="/privacy">Privacy</a></span>
+        <span>The website that answers.</span>
     </Footer>
     <Corner><ExpertChat /></Corner>
     <ChildContent>@Body</ChildContent>

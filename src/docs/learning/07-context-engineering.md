@@ -392,5 +392,25 @@ and became rules files. Two steps were too big to review in ten minutes, and wer
 Context engineering (skill 7): an instruction is loaded by when it is needed, and what must never be missed is loaded
 always. Prompt design (skill 3): an instruction is written where and when it will be read, the rule first.
 
+
+## One name for the agent, and words for the owner (F161, 2026-11-18)
+
+The guide used to be "Louis · AI", the AI version of Louis, telling his story as "I". The brand research found the
+trouble with that: one voice had two names, the man's and the agent's, and a visitor could not tell which one was
+speaking. So the guide got a name of its own, Orbi, after the violet ball it lives in. Orbi still tells Louis's story,
+but as his: "Louis grew up in Malmesbury", never "I grew up". That one change runs through the whole context the
+model reads. The voice's first line, its greeting examples, the line about being an AI, and the skills that called
+Louis "the real Louis" all had to move together, or the model would get two stories and pick either.
+
+The lesson for context engineering is that a name is a fact the model leans on everywhere. Change it in the title and
+not in the prompt, and the model says the old name back to the visitor. Here a test holds each piece: the widget's
+title and greeting in `ExpertChatTests`, and the voice's words in `OrbiVoiceTests`, which also checks that the old
+phrase "the AI version of Louis" is gone.
+
+The same day every line on the landing was rewritten for one reader, a small business owner. The writer's skill
+gave the rules: short sentences, the reader's words, and nothing the code doesn't back. One line failed that last
+check and was caught. The hero said the agent "has the booking waiting" in the morning, but it can't take bookings.
+It passes on who wants to talk, so the line now says their details are waiting.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)
