@@ -1,0 +1,41 @@
+{
+  "kind": "classes",
+  "title": "F164.2 the framework's agent: the interface design",
+  "caption": "A new identity on the framework's packs; the widget gains a docked layout the docs layout makes room for; three buttons put a question through the one door; the host answers a search over the index the guide already uses.",
+  "classes": {
+    "types": [
+      { "id": "identity", "name": "FrameworkIdentity", "kind": "step 1, an IAgentIdentity",
+        "members": [ "+Name = louis-agent-framework", "+Packs: docs, site", "+EndsEachAnswerWith = Offer" ] },
+      { "id": "iidentity", "name": "IAgentIdentity", "kind": "interface, louis-agent.composition", "tone": "violet" },
+      { "id": "catalog", "name": "FrameworkCatalog", "kind": "static, step 2, the host's",
+        "members": [ "+Create() AgentCatalog" ] },
+      { "id": "layout", "name": "WidgetLayout", "kind": "enum, louis-agent.web",
+        "members": [ "Corner, Bar", "+Docked, step 3" ], "tone": "violet" },
+      { "id": "widget", "name": "ChatWidget", "kind": "louis-agent.web, docked in step 3", "tone": "violet",
+        "members": [ "+Identity, Title, Greeting", "+Layout" ] },
+      { "id": "columns", "name": "DocsColumns", "kind": "louis-agent.web, step 4", "tone": "violet",
+        "members": [ "+Menu, ChildContent", "+Asked, step 4: the panel or On this page" ] },
+      { "id": "door", "name": "GuideDoor", "kind": "louis-agent.web", "tone": "violet",
+        "members": [ "+Ask(question)", "+Asked event" ] },
+      { "id": "ask", "name": "AskButton", "kind": "louis-agent.web, steps 5 and 6", "tone": "violet" },
+      { "id": "listing", "name": "CodeListing", "kind": "louis-agent.web, Ask about this code, step 6", "tone": "violet" },
+      { "id": "search", "name": "SiteSearch", "kind": "louis-agent.web, step 8",
+        "members": [ "+the box, its results", "+the last row: ask the agent" ] },
+      { "id": "route", "name": "SitePlaceSearch", "kind": "louis-agent.api, step 7, GET /v1/site/places",
+        "members": [ "+FindAsync(words) PlaceHit[]" ] },
+      { "id": "places", "name": "SitePlaces, PlaceSearch", "kind": "louis-agent.api, the guide's index", "tone": "violet" }
+    ],
+    "relations": [
+      { "from": "identity", "to": "iidentity", "kind": "implements" },
+      { "from": "catalog", "to": "identity", "kind": "holds" },
+      { "from": "widget", "to": "layout", "kind": "uses" },
+      { "from": "columns", "to": "widget", "kind": "holds", "word": "docks" },
+      { "from": "widget", "to": "door", "kind": "uses", "word": "listens to" },
+      { "from": "ask", "to": "door", "kind": "uses", "word": "asks" },
+      { "from": "listing", "to": "door", "kind": "uses", "word": "asks" },
+      { "from": "search", "to": "door", "kind": "uses", "word": "asks" },
+      { "from": "search", "to": "route", "kind": "uses", "word": "calls" },
+      { "from": "route", "to": "places", "kind": "uses", "word": "searches" }
+    ]
+  }
+}

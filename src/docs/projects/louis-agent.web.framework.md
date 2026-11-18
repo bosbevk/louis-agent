@@ -159,7 +159,7 @@ holds its heading, its sections in order and what it says to the repo, as the ta
 
 ## Limits and plans
 
-The pages run no agent yet: the framework's site gets its own, louis-agent · AI, in F164.2. The evals' sections wait
+The pages run no agent yet: the framework's site gets its own, the framework Orbi, in F164.2. The evals' sections wait
 for the evals to be reworked. The doc links lead to GitHub until the docs have a site of their own.
 
 ## Related docs

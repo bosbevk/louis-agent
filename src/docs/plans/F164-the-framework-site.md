@@ -99,6 +99,11 @@ agents keep to their own sites (Louis · AI never on the framework site, louis-a
   framework pages the CV's four "now" cards linked to, so they lead to the docs by path on GitHub,
   `src/docs/architecture/README.md`, `src/docs/projects/louis-agent.evals.md`, ADR 0007 and
   `src/docs/projects/README.md`. F164.3 moves them to the framework site's pages once its address answers.
+- **The framework's agent is Orbi too, the framework Orbi** (Louis, 2026-11-18: "the agents name is orbi but the
+  framework orbi", "so we have public and framework"), in place of pick 11's name, louis-agent · AI. There are two
+  Orbis, each an identity of its own on its own site: the public Orbi on louis-agent.dev, Louis's AI agent, and the
+  framework Orbi on framework.louis-agent.dev, speaking for the framework. Where this plan says louis-agent · AI, read
+  the framework Orbi; where it says Louis · AI, the public Orbi.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [louis-agent.site-framework](../projects/louis-agent.site-framework.md) · [F148](F148-one-docs-endpoint.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md) · [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)

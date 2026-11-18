@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F164.2: what the page holds when the panel is open",
+  "caption": "One door the site registers; the docked widget listens to it from the right column, and three kinds of button ask through it.",
+  "flow": {
+    "nodes": [
+      { "id": "layout", "label": "FrameworkLayout\nthe site's frame", "icon": "stack", "tone": "green" },
+      { "id": "columns", "label": "DocsColumns\nthree columns", "icon": "stack", "tone": "violet" },
+      { "id": "header", "label": "the header's search\nand Ask Orbi", "icon": "search", "tone": "violet" },
+      { "id": "page", "label": "the page\nits code listings' Ask", "icon": "browser", "tone": "green" },
+      { "id": "right", "label": "the right column\nAsk about this page", "icon": "message", "tone": "violet" },
+      { "id": "widget", "label": "ChatWidget, docked\nopen", "icon": "message", "tone": "violet" },
+      { "id": "door", "label": "GuideDoor\none for the site", "icon": "branch", "tone": "violet", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "layout", "to": "columns", "word": "holds" },
+      { "from": "layout", "to": "header", "word": "holds" },
+      { "from": "columns", "to": "page", "word": "holds" },
+      { "from": "columns", "to": "right", "word": "holds" },
+      { "from": "right", "to": "widget", "word": "holds" },
+      { "from": "header", "to": "door", "word": "asks" },
+      { "from": "page", "to": "door", "word": "asks" },
+      { "from": "widget", "to": "door", "word": "listens" }
+    ]
+  }
+}

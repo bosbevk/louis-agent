@@ -1,0 +1,33 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F164.2 the framework's agent: the architecture",
+  "caption": "The framework's site in the browser asks its own host; the host runs the framework Orbi on the docs and site packs, reads the docs from its image, and answers a search from the index of its pages.",
+  "flow": {
+    "nodes": [
+      { "id": "visitor", "label": "A developer", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "site", "label": "louis-agent.site-framework\nthe docs layout, steps 4 to 8", "icon": "browser", "tone": "green", "group": "browser" },
+      { "id": "widget", "label": "ChatWidget, docked\nlouis-agent.web, step 3", "icon": "message", "tone": "violet", "group": "browser" },
+      { "id": "host", "label": "louis-agent.site-framework-api\nthe host, step 2", "icon": "server", "tone": "green", "group": "host" },
+      { "id": "search", "label": "GET /v1/site/places\nstep 7", "icon": "search", "tone": "green", "group": "host" },
+      { "id": "identity", "label": "louis-agent.identity.framework\nstep 1", "icon": "user", "tone": "green", "group": "host" },
+      { "id": "packs", "label": "the docs and site packs", "icon": "box", "tone": "violet", "group": "host" },
+      { "id": "docs", "label": "the repo's docs\nin the image, step 2", "icon": "book", "tone": "amber", "shape": "data" },
+      { "id": "model", "label": "Claude", "icon": "cloud", "tone": "red" }
+    ],
+    "edges": [
+      { "from": "visitor", "to": "site" },
+      { "from": "site", "to": "widget", "word": "the door" },
+      { "from": "site", "to": "search", "word": "the words" },
+      { "from": "widget", "to": "host", "word": "a session, SSE" },
+      { "from": "host", "to": "identity" },
+      { "from": "identity", "to": "packs" },
+      { "from": "packs", "to": "docs", "word": "SearchDocs, ReadDoc" },
+      { "from": "host", "to": "model" }
+    ],
+    "groups": [
+      { "id": "browser", "label": "In the browser" },
+      { "id": "host", "label": "The framework's host, :5084" }
+    ]
+  }
+}
