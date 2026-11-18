@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.SiteFramework.Tests.Meta;
 
 /// <summary>
-/// The framework's site lists every page and every place on it by its own address (F162.1, step 12, ADR 0107), in the
+/// The framework's site lists every page and every place on it by its own address (F164.1, step 12, ADR 0107), in the
 /// menu's reading order, so a search engine finds them all; its robots.txt lets every crawler in and names the
 /// sitemap. The file is held to the pages: each is drawn, its places collected by the address rule, and the file must
 /// say the same. <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, as it writes the golden files.

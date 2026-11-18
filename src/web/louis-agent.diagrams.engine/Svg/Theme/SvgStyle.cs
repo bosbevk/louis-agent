@@ -27,7 +27,7 @@ internal static class SvgStyle
 
     /// <summary>
     /// The docs' frame's look (<see cref="TitledFrame"/>), added to a framed picture's style only, so a bare
-    /// picture's bytes stay as they were: the site's sans for the note's words (F162.1), and a rule for each part of
+    /// picture's bytes stay as they were: the site's sans for the note's words (F164.1), and a rule for each part of
     /// the note bar.
     /// </summary>
     public const string Frame =

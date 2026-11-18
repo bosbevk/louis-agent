@@ -16,9 +16,9 @@ few lines.
 
 The pages themselves are not in it. They are the framework's pages package,
 [louis-agent.web.framework](louis-agent.web.framework.md), which this site turns on. It runs no agent yet: its
-host starts the framework's API with no identity, and the site's own agent, louis-agent · AI, comes in F162.2.
+host starts the framework's API with no identity, and the site's own agent, louis-agent · AI, comes in F164.2.
 
-*Decided in:* F162.1, [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md),
+*Decided in:* F164.1, [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md),
 [ADR 0125](../adr/0125-a-site-is-configured-framework-components.md).
 
 ## How it works
@@ -133,7 +133,7 @@ framework ships is named on some page of the site.
 ## Limits and plans
 
 The site is on this PC only: framework.louis-agent.dev, its image in Azure and louis-agent.dev's link to it come in
-F162.3. Its agent comes in F162.2.
+F164.3. Its agent comes in F164.2.
 
 ## Related docs
 

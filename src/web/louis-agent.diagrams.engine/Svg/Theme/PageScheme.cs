@@ -33,7 +33,7 @@ public static class PageScheme
           [{{Attribute}}="{{Light}}"] svg { {{light}} }
           """;
 
-    /// <summary>The attribute our pages carry on their <c>&lt;html&gt;</c> to say which theme is on (F162.1).</summary>
+    /// <summary>The attribute our pages carry on their <c>&lt;html&gt;</c> to say which theme is on (F164.1).</summary>
     public const string ThemeAttribute = "data-theme";
 
     /// <summary>What the theme's attribute says for the flat theme.</summary>
@@ -43,7 +43,7 @@ public static class PageScheme
     public const string Glass = "glass";
 
     /// <summary>
-    /// The rules that give a page of one theme its own colours, light and dark (F162.1, Louis's pick C): they name
+    /// The rules that give a page of one theme its own colours, light and dark (F164.1, Louis's pick C): they name
     /// the theme and the style together, so they win over the style alone wherever both are said. They live only in a
     /// page's copy, inside its <c>@scope</c>, where the drawing itself is <c>:scope</c>: a bare <c>svg</c> there would
     /// mean an svg inside it.

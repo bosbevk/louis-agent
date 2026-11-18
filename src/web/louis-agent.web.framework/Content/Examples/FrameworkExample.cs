@@ -5,7 +5,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content.Examples;
 
 /// <summary>
-/// One agent the framework already runs (F162.1, step 12): its name, the identity that makes it, by its folder in the
+/// One agent the framework already runs (F164.1, step 12): its name, the identity that makes it, by its folder in the
 /// repo, the icon and colour it wears in the page's picture, what it is in a line, and what it does, a line each, from
 /// its identity's and its packs' own summaries.
 /// </summary>

@@ -121,7 +121,7 @@ public class NameScanTests
     /// <summary>
     /// A razor page's words hold apostrophes ("what's", "page's"), which the lexer reads as a character's quotes: the
     /// lines between them still count, so a name further down is flagged on its own line, not read off the end of
-    /// another (F162.1: the Examples page's "puls" crashed the scan).
+    /// another (F164.1: the Examples page's "puls" crashed the scan).
     /// </summary>
     [Test]
     public void ARazorPagesApostrophes_DoNotThrowTheLinesOut()

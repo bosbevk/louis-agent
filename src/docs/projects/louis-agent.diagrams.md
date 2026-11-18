@@ -643,7 +643,7 @@ page's `--bs-font-sans-serif` and `--bs-font-monospace`, so a picture's words an
 it falls back to the framework's defaults, Geist and Geist Mono. The framework's lists are named once there, and a
 test holds them equal to the ones the framework's web sets.
 
-*Decided in:* F162.1.
+*Decided in:* F164.1.
 
 **Tones** (`Tones/`). A box may carry an icon and a `DiagramTone`, so a colour means the same in every chart. Blue
 starts it. Green is this project. Violet is the framework. Teal is contracts and state. Amber is files and data.
@@ -724,7 +724,7 @@ over the style alone. `PageScheme` names the theme's attribute and its two words
 rules are only in a page's copy, so a picture as a file, in the docs, stays byte for byte as it was. The web's
 `DiagramFigure` is what draws such a copy on a page ([louis-agent.web](louis-agent.web.md)).
 
-*Decided in:* F127.4.1, F162.1.
+*Decided in:* F127.4.1, F164.1.
 
 ### 5. The types, in two pictures
 

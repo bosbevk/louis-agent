@@ -898,7 +898,7 @@ Concept: *20 Extensibility* in the [goal](../GOAL.md): a plug-in point is proved
 door the first two used and the old way is deleted. And *17 Observability* in spirit: a cost is counted before and
 after, not assumed.
 
-## F162.1: the framework's pages, a package any site turns on (2026-11-18)
+## F164.1: the framework's pages, a package any site turns on (2026-11-18)
 
 louis-agent.dev had ten pages about the framework, hidden from its menu. They followed the repo's folders, seven
 held raw HTML, one still said the repository was private, and none named what was built that month. We threw all of
@@ -939,10 +939,10 @@ looks: a layout researched and built three ways before his pick, pictures that w
 theme in the diagram engine, the brand in every picture's footer, the site's fonts in every picture. The docs
 layout's grid, first written in Sass, took round after round to get its widths right, and that is why Bootstrap's
 grid is now a rule for the whole solution (ADR 0085, amended). And the feature's id clashed twice: main took F160 and
-then F161 for other work while this branch was open, so it is F162, and the branch and its first commits keep the old
+then F161 for other work while this branch was open, so it is F164, and the branch and its first commits keep the old
 name. Reserving an id on main when a plan is approved would have avoided both.
 
-Nothing was measured in money: no agent runs on the new site yet. Its agent is F162.2, and the subdomain is F162.3.
+Nothing was measured in money: no agent runs on the new site yet. Its agent is F164.2, and the subdomain is F164.3.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a package of pages is proved when the site that ships it holds
 nothing but the names of what it uses. And *11 Protocols*: a page names a doc by its path, one source the docs site,

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Tests.Components.Site;
 
 /// <summary>
-/// F162.1: the frame's third layout, for docs-type content (Louis's pick of three designs, "A, with B's hero on the
+/// F164.1: the frame's third layout, for docs-type content (Louis's pick of three designs, "A, with B's hero on the
 /// Overview", and "SiteShell gains a docs mode"): the site's menu on the left, the page in a readable middle column,
 /// and the page's sections on the right as "On this page", read from the same list the floating index reads.
 /// </summary>

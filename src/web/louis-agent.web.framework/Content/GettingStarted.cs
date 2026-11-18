@@ -3,7 +3,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content;
 
 /// <summary>
-/// What Getting started tells beside its program (F162.1, step 9): whose is what, and the steps that run the coding
+/// What Getting started tells beside its program (F164.1, step 9): whose is what, and the steps that run the coding
 /// agent from its own settings, each written from the repo as it stands (the catalogue, the settings' order in
 /// <c>EnvFile</c>, the demo's <c>config/</c> and its launch profile).
 /// </summary>

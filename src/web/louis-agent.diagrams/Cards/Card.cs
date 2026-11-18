@@ -7,7 +7,7 @@ namespace LouisAgent.Diagrams.Cards;
 /// <summary>
 /// One card of an overview: what a link names it by, its icon, its title, a project or type in a code chip beside
 /// the title when it has one, a line saying what it is, how it looks, plain unless it says otherwise, and the tone
-/// its badge, tint and icon wear, the picture's violet unless it names one (F162.1).
+/// its badge, tint and icon wear, the picture's violet unless it names one (F164.1).
 /// </summary>
 public sealed record Card(
     string Id,

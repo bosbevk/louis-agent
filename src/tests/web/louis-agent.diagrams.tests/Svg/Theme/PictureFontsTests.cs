@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Sources;
 namespace LouisAgent.Diagrams.Tests.Svg.Theme;
 
 /// <summary>
-/// Every picture is written in the site's fonts (F162.1, Louis: "all diagrams must use font from website", "it is
+/// Every picture is written in the site's fonts (F164.1, Louis: "all diagrams must use font from website", "it is
 /// like the framework defaults"): on a page it reads the site's own font settings, and drawn as a file it falls back
 /// to the framework's defaults, Geist and Geist Mono, the very lists the framework's web sets.
 /// </summary>

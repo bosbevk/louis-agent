@@ -36,7 +36,7 @@
 /* The content column is 1280px wide at most, centred: under 1560px the index's 172px would reach into it. */
 @media (max-width: 1559px) { .site-index { display: none; } }
 
-/* Docked as "On this page" in the docs layout (F162.1): no floating pane and no tags, a plain list with the theme's
+/* Docked as "On this page" in the docs layout (F164.1): no floating pane and no tags, a plain list with the theme's
    line down its left, the section in view marked by that line in the theme's violet, as the design Louis picked
    draws it, each line drawn by the surface tool. Its column has room of its own, so it shows at every width the
    column does. */

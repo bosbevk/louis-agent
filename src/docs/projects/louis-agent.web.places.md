@@ -17,7 +17,7 @@ a link, and what a site names to have it.
 It is a package of its own so that a site that wants its places takes only them, and not the admin's pages that
 used to come with the framework's web.
 
-*Decided in:* F118, F162.1, [ADR 0107](../adr/0107-every-section-has-an-address.md).
+*Decided in:* F118, F164.1, [ADR 0107](../adr/0107-every-section-has-an-address.md).
 
 ## How it works
 
@@ -44,7 +44,7 @@ Only the pages anyone may open have places. A page behind a sign-in, which says 
 a page under `/admin`, behind the admin's key, have none. So a place's address can never draw such a page around the
 router's own check. It is the same rule the host draws pages for a search engine by.
 
-*Decided in:* F162.1, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
+*Decided in:* F164.1, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
 
 ### 2. The address finds its page
 

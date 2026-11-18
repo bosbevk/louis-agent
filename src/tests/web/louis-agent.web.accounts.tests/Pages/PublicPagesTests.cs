@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Accounts.Tests.Pages;
 
 /// <summary>
-/// F162.1: the accounts have a public part and a part behind a sign-in (Louis: "/Login / register / password-reset
+/// F164.1: the accounts have a public part and a part behind a sign-in (Louis: "/Login / register / password-reset
 /// etc is public"). A page behind a sign-in says so with Blazor's own <c>[Authorize]</c>, so the host never draws it
 /// for a search engine; every other page is public and drawn.
 /// </summary>

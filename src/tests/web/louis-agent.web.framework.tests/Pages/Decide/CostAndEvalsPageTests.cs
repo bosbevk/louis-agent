@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages.Decide;
 
 /// <summary>
-/// F162.1, step 12: Cost and evals, at <c>/cost-and-evals</c>, tells how a turn's cost is worked out, from the ledger
+/// F164.1, step 12: Cost and evals, at <c>/cost-and-evals</c>, tells how a turn's cost is worked out, from the ledger
 /// and the price table to the rand, with one request worked through, its numbers read from the real files; and the
 /// evals' places, each saying only that they are being reworked and are coming (Louis: "It needs to be reworked").
 /// </summary>

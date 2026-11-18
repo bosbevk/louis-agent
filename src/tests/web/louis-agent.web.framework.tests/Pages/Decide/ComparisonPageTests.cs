@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages.Decide;
 
 /// <summary>
-/// F162.1, step 12: Comparison, at <c>/comparison</c>, sets louis-agent beside Microsoft Agent Framework and Semantic
+/// F164.1, step 12: Comparison, at <c>/comparison</c>, sets louis-agent beside Microsoft Agent Framework and Semantic
 /// Kernel (ADR 0110): each claim about louis-agent names the file that proves it, which the test finds, and the others'
 /// cells say only what their own pages say, read on a date the page shows, with each page linked.
 /// </summary>

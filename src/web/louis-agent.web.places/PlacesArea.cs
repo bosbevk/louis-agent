@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace LouisAgent.Web.Places;
 
 /// <summary>
-/// Every place on a site's pages has its own address (ADR 0107), as an area a site names (F162.1):
+/// Every place on a site's pages has its own address (ADR 0107), as an area a site names (F164.1):
 /// <c>.Places(home, site)</c> brings the router's catch-all that draws a place's page, and reads the addresses from
 /// the pages the site and its other areas serve, the landing's places under <paramref name="home"/>.
 /// </summary>

@@ -84,7 +84,7 @@ from the pages.
 
 A grid where each item had a summary and a story is a deck of cards that open.
 
-*Decided in:* F117, [ADR 0107](../adr/0107-every-section-has-an-address.md), F113, F162.1.
+*Decided in:* F117, [ADR 0107](../adr/0107-every-section-has-an-address.md), F113, F164.1.
 
 ### 2. The framework's pages are on their own site
 
@@ -98,7 +98,7 @@ that proved its claims lead to the docs on GitHub.
 The films are no longer on the site either. `src/tools/louis-agent.film-export` and its exports in `src/docs/films/`
 still name the old pages and the films' files, which are gone, so the tool can't make an export until it is fixed.
 
-*Decided in:* F162.1.
+*Decided in:* F164.1.
 
 ### 3. Selling first, the framework as proof
 

@@ -7,7 +7,7 @@ namespace LouisAgent.Api.Contracts.Site;
 /// registers it, and the host reads it to draw those pages for a search engine as it draws the site's own.
 /// </summary>
 /// <remarks>
-/// A shared contract (F162.1, Louis's pick A of three): the web knows the areas and the host knows how to draw a
+/// A shared contract (F164.1, Louis's pick A of three): the web knows the areas and the host knows how to draw a
 /// page, and neither references the other, so they agree through this record in the contracts both already use,
 /// rather than the host referencing the web or every site's host naming its packages by hand.
 /// </remarks>

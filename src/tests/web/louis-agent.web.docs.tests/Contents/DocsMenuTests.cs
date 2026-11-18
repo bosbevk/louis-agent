@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Docs.Tests.Contents;
 
 /// <summary>
-/// F162.1: the docs layout's left column lists the site's pages under their groups and marks the one being read; a
+/// F164.1: the docs layout's left column lists the site's pages under their groups and marks the one being read; a
 /// page's foot leads to the page before and the page after.
 /// </summary>
 public class DocsMenuTests

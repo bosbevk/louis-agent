@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- The places' tests (F162.1): a place's address drawn in its page's own layout. -->
+  <!-- The places' tests (F164.1): a place's address drawn in its page's own layout. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Web.Places.Tests</RootNamespace>

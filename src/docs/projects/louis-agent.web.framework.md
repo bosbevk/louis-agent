@@ -20,7 +20,7 @@ Every page holds the framework's parts and nothing else: bands, tiles, term list
 and pictures from `louis-agent.web`, given their words and data. No page holds a tag of HTML. What a page says comes
 from records in `Content/`, and tests hold those records to the repo, so a page can't drift from the code it tells.
 
-*Decided in:* F162.1, [ADR 0125](../adr/0125-a-site-is-configured-framework-components.md),
+*Decided in:* F164.1, [ADR 0125](../adr/0125-a-site-is-configured-framework-components.md),
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md).
 
 ## How it works
@@ -159,7 +159,7 @@ holds its heading, its sections in order and what it says to the repo, as the ta
 
 ## Limits and plans
 
-The pages run no agent yet: the framework's site gets its own, louis-agent · AI, in F162.2. The evals' sections wait
+The pages run no agent yet: the framework's site gets its own, louis-agent · AI, in F164.2. The evals' sections wait
 for the evals to be reworked. The doc links lead to GitHub until the docs have a site of their own.
 
 ## Related docs

@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 
 /// <summary>
-/// A flow may ask for more room between the boxes stacked in a column (F162.1, Louis: "increase the space between top
+/// A flow may ask for more room between the boxes stacked in a column (F164.1, Louis: "increase the space between top
 /// and bottom a bit"), and one that doesn't is laid out as every flow always was.
 /// </summary>
 public class FlowRowGapTests

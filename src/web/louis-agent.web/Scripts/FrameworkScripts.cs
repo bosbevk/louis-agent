@@ -26,7 +26,7 @@ public static class FrameworkScripts
     /// <summary>The section index: the entries in the page's order, the one in view lit (F118).</summary>
     public const string SectionIndex = Content + "Components/Site/Index/SectionIndex.razor.js";
 
-    /// <summary>A code listing's copy: its code written to the clipboard as it stands (F162.1).</summary>
+    /// <summary>A code listing's copy: its code written to the clipboard as it stands (F164.1).</summary>
     public const string CodeListing = Content + "Components/Site/Code/CodeListing.razor.js";
 
     /// <summary>The look switch: the theme and style written on the page, remembered, and followed (F151.3).</summary>

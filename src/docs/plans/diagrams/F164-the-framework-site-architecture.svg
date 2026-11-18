@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 2327 521" width="2327" height="521" role="img" aria-label="F162 the framework's own site: the architecture" xmlns="http://www.w3.org/2000/svg">
-  <title>F162 the framework's own site: the architecture</title>
+<svg viewBox="-24 -24 2327 521" width="2327" height="521" role="img" aria-label="F164 the framework's own site: the architecture" xmlns="http://www.w3.org/2000/svg">
+  <title>F164 the framework's own site: the architecture</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -149,7 +149,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="2327" height="521" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a1163.5 190 0 1 0 2327 0a1163.5 190 0 1 0 -2327 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F162 the framework's own site: the architecture</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F164 the framework's own site: the architecture</text>
     <text class="pic-group" x="2263" y="14" text-anchor="end">Component diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="2279" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
@@ -175,7 +175,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="pic-pill pic-edge tone-blue" x="218.6" y="135" width="50" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-blue" x="243.6" y="147" text-anchor="middle">builds</text>
       <rect class="pic-pill pic-edge tone-amber" x="606" y="33" width="141" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-amber" x="676.5" y="45" text-anchor="middle">menu links (F162.3)</text>
+      <text class="pic-pill-word pic-ink tone-amber" x="676.5" y="45" text-anchor="middle">menu links (F164.3)</text>
       <rect class="pic-pill pic-edge tone-amber" x="1076" y="33" width="113" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-amber" x="1132.5" y="45" text-anchor="middle">pages and turns</text>
       <rect class="pic-pill pic-edge tone-amber" x="1500.5" y="33" width="36" height="18" rx="9" />
@@ -205,7 +205,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="327.6" y="31" text-anchor="start">louis-agent.dev</text>
       <text class="pic-name" x="327.6" y="47" text-anchor="start">sells, Louis · AI</text>
-      <text class="pic-name" x="327.6" y="63" text-anchor="start">old framework pages gone (F162.1)</text>
+      <text class="pic-name" x="327.6" y="63" text-anchor="start">old framework pages gone (F164.1)</text>
       <rect class="pic-panel" x="784.5" y="102" width="256" height="84" rx="10" />
       <rect class="pic-fill tone-amber" x="800.5" y="130" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(806.5 136) scale(0.6667)">
@@ -214,8 +214,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M8 4v4" />
       </g>
       <text class="pic-name" x="836.5" y="133" text-anchor="start">framework.louis-agent.dev</text>
-      <text class="pic-name" x="836.5" y="149" text-anchor="start">seven pages (F162.1)</text>
-      <text class="pic-name" x="836.5" y="165" text-anchor="start">live (F162.3)</text>
+      <text class="pic-name" x="836.5" y="149" text-anchor="start">seven pages (F164.1)</text>
+      <text class="pic-name" x="836.5" y="165" text-anchor="start">live (F164.3)</text>
       <rect class="pic-panel" x="1200.5" y="8" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-amber" x="1216.5" y="28" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(1222.5 34) scale(0.6667)">
@@ -225,7 +225,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 16l0 .01" />
       </g>
       <text class="pic-name" x="1252.5" y="39" text-anchor="start">louis-agent.site-framework-api</text>
-      <text class="pic-name" x="1252.5" y="55" text-anchor="start">serves and prerenders (F162.1)</text>
+      <text class="pic-name" x="1252.5" y="55" text-anchor="start">serves and prerenders (F164.1)</text>
       <rect class="pic-panel" x="1200.5" y="110" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="1216.5" y="130" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(1222.5 136) scale(0.6667)">
@@ -243,7 +243,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
-      <text class="pic-name" x="1754.6" y="39" text-anchor="start">louis-agent · AI (F162.2)</text>
+      <text class="pic-name" x="1754.6" y="39" text-anchor="start">louis-agent · AI (F164.2)</text>
       <text class="pic-name" x="1754.6" y="55" text-anchor="start">louis-agent.identity.framework</text>
       <rect class="pic-panel" x="1702.6" y="110" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-red" x="1718.6" y="130" width="28" height="28" rx="9" />

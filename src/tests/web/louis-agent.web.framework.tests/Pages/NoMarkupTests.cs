@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Framework.Tests.Pages;
 
 /// <summary>
-/// F162.1: the framework's pages hold no HTML (ADR 0125): each is configured framework parts given their words and
+/// F164.1: the framework's pages hold no HTML (ADR 0125): each is configured framework parts given their words and
 /// data, so a page can't grow a look of its own the theme doesn't reach. A tag in lower case is HTML; a component is
 /// named in capitals.
 /// </summary>

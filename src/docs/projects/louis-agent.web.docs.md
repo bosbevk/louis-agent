@@ -39,7 +39,7 @@ any other. `Docs(address)` is an extension on the framework's `SiteAreasBuilder`
 framework's web can't name the docs' parts. The accounts' and the themes' areas are added the same way. The area
 registers the address once, for every link on the site to ask.
 
-*Decided in:* F162.1, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
+*Decided in:* F164.1, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
 
 ### 2. A link to a doc
 

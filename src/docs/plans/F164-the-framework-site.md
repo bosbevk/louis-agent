@@ -1,4 +1,4 @@
-# F162 The framework's own site, framework.louis-agent.dev
+# F164 The framework's own site, framework.louis-agent.dev
 
 A plan, a parent with three children: the framework gets a site of its own on its own subdomain, seven pages written
 new that walk a visitor from what the framework is to building on it, with its own agent, louis-agent · AI, in the
@@ -33,7 +33,7 @@ The research behind them: how [Microsoft Agent Framework](https://learn.microsof
 [MCP resources spec](https://modelcontextprotocol.io/specification/2025-11-25/server/resources) (own schemes allowed);
 Microsoft Learn's and Mintlify's docs servers (search and fetch tools); and
 [Google's URL guidance](https://developers.google.com/search/docs/crawling-indexing/url-structure) (descriptive words,
-hyphens, a simple structure). F162.1 is done: its design is in the docs of
+hyphens, a simple structure). F164.1 is done: its design is in the docs of
 [louis-agent.web.framework](../projects/louis-agent.web.framework.md),
 [louis-agent.web.docs](../projects/louis-agent.web.docs.md),
 [louis-agent.web.places](../projects/louis-agent.web.places.md) and
@@ -60,11 +60,11 @@ site doesn't sell. Its host runs it with its own model key and its own usage led
 
 ### Architecture
 
-![Three apps on the framework's web: louis-agent.dev sells with Louis · AI, framework.louis-agent.dev tells the framework with louis-agent · AI, docs.louis-agent.dev comes later; doc links lead to GitHub until then](diagrams/F162-the-framework-site-architecture.svg)
+![Three apps on the framework's web: louis-agent.dev sells with Louis · AI, framework.louis-agent.dev tells the framework with louis-agent · AI, docs.louis-agent.dev comes later; doc links lead to GitHub until then](diagrams/F164-the-framework-site-architecture.svg)
 
 ### Communication: a developer asks the framework's agent
 
-![A developer on How it works asks louis-agent · AI a question; its host runs the turn on the framework identity, which searches and reads the docs and answers with a doc link](diagrams/F162-the-framework-site-communication-a-question.svg)
+![A developer on How it works asks louis-agent · AI a question; its host runs the turn on the framework identity, which searches and reads the docs and answers with a doc link](diagrams/F164-the-framework-site-communication-a-question.svg)
 
 The interface design and the objects in memory are drawn in each child's plan, from the code that child touches.
 
@@ -72,9 +72,9 @@ The interface design and the objects in memory are drawn in each child's plan, f
 
 | Child | What | Done when |
 |---|---|---|
-| F162.1 | The framework's pages: the old ones thrown away from louis-agent.dev; the site and its host on :5084; the doc link; `CodeListing` and `ComparisonTable`; the seven pages written new | The seven pages answer on :5084 in both themes, light and dark, at 1280 and 390 px; no HTML tag on them; every doc link a real file; `SiteMapTests` holds on the new site |
-| F162.2 | louis-agent · AI: its identity, voice and skills, the docs and site packs, run by the framework site's host, in the corner | It answers a framework question from the docs with a doc link, on :5084; its golden prompt reviewed; one paid test call, its cost reported |
-| F162.3 | framework.louis-agent.dev: its image, its Azure app, the deploy, DNS (Louis's step at Cloudflare), its sitemap and robots, louis-agent.dev's menu linking to it | The live address answers each page, prerendered; the guide answers there; louis-agent.dev's menu leads to it |
+| F164.1 | The framework's pages: the old ones thrown away from louis-agent.dev; the site and its host on :5084; the doc link; `CodeListing` and `ComparisonTable`; the seven pages written new | The seven pages answer on :5084 in both themes, light and dark, at 1280 and 390 px; no HTML tag on them; every doc link a real file; `SiteMapTests` holds on the new site |
+| F164.2 | louis-agent · AI: its identity, voice and skills, the docs and site packs, run by the framework site's host, in the corner | It answers a framework question from the docs with a doc link, on :5084; its golden prompt reviewed; one paid test call, its cost reported |
+| F164.3 | framework.louis-agent.dev: its image, its Azure app, the deploy, DNS (Louis's step at Cloudflare), its sitemap and robots, louis-agent.dev's menu linking to it | The live address answers each page, prerendered; the guide answers there; louis-agent.dev's menu leads to it |
 
 Each child has its own plan, branch, pull request to `main` and write-up; a child's plan is written when it starts.
 
@@ -85,20 +85,20 @@ agents keep to their own sites (Louis · AI never on the framework site, louis-a
 
 ## Concepts, and where they sit in GOAL.md
 
-- **One source of truth with several doors** (F162.1): pages link to a doc by path. *Skill 11, protocols.*
-- **Information architecture by the reader's need** (F162.1): Diátaxis, a journey from overview to reference.
+- **One source of truth with several doors** (F164.1): pages link to a doc by path. *Skill 11, protocols.*
+- **Information architecture by the reader's need** (F164.1): Diátaxis, a journey from overview to reference.
   *Skill 20, extensibility.*
-- **An agent per site, from one framework** (F162.2): an identity is who, its packs what it can do (ADR 0027).
+- **An agent per site, from one framework** (F164.2): an identity is who, its packs what it can do (ADR 0027).
   *Skill 3, prompt design.*
-- **Shipping a second app** (F162.3): an image, an app, a domain. *Skill 18, testing and shipping.*
+- **Shipping a second app** (F164.3): an image, an app, a domain. *Skill 18, testing and shipping.*
 
 ## Approved during the build
 
 - **The CV links to the docs on GitHub until the framework's site is live** (Louis, 2026-11-18, his pick A of
-  three, over linking to framework.louis-agent.dev before it answers or taking the links off): F162.1 deleted the
+  three, over linking to framework.louis-agent.dev before it answers or taking the links off): F164.1 deleted the
   framework pages the CV's four "now" cards linked to, so they lead to the docs by path on GitHub,
   `src/docs/architecture/README.md`, `src/docs/projects/louis-agent.evals.md`, ADR 0007 and
-  `src/docs/projects/README.md`. F162.3 moves them to the framework site's pages once its address answers.
+  `src/docs/projects/README.md`. F164.3 moves them to the framework site's pages once its address answers.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [louis-agent.site-framework](../projects/louis-agent.site-framework.md) · [F148](F148-one-docs-endpoint.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md) · [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)

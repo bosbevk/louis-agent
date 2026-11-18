@@ -4,7 +4,7 @@ namespace LouisAgent.Web.Framework;
 
 /// <summary>
 /// The framework's pages in reading order, under their groups: what the docs layout's menu lists and its page turns
-/// step through. A page joins it as it is written (F162.1, steps 6 to 10).
+/// step through. A page joins it as it is written (F164.1, steps 6 to 10).
 /// </summary>
 public static class FrameworkContents
 {

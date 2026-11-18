@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- A place's own address (F162.1, ADR 0107): the router's catch-all that draws the page a place's address names, in
+  <!-- A place's own address (F164.1, ADR 0107): the router's catch-all that draws the page a place's address names, in
        that page's layout, and the area a site names to have it. A package of its own, so a site that wants its places
        doesn't take the admin's pages with them. -->
   <PropertyGroup>

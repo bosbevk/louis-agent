@@ -3,7 +3,7 @@ using LouisAgent.Web.Docs.Contents;
 namespace LouisAgent.Web.Docs.Tests.Contents;
 
 /// <summary>
-/// F162.1: a docs site's contents, its pages in reading order under their groups, is the one list both the menu and a
+/// F164.1: a docs site's contents, its pages in reading order under their groups, is the one list both the menu and a
 /// page's previous and next are read from, so the two can't disagree.
 /// </summary>
 public class DocsContentsTests

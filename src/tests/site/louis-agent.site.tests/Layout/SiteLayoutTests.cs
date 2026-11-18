@@ -102,7 +102,7 @@ public class SiteLayoutTests
     /// <summary>
     /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, Theme and Contact; no Pricing (Louis:
     /// "remove pricing"), no What we build (FX171, Louis: "remove this page and everything of it"), and no framework
-    /// group, since the framework's pages left for their own site (F162.1). Home comes first (Louis, 2026-11-18, on the
+    /// group, since the framework's pages left for their own site (F164.1). Home comes first (Louis, 2026-11-18, on the
     /// privacy page: "there is no clear way from here back to main layout"), since the name alone isn't seen as a way
     /// home.
     /// </summary>

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Docs.Tests.Links;
 
 /// <summary>
-/// F162.1: a section ends with links to its docs by their paths, each leading where the site's docs' address says,
+/// F164.1: a section ends with links to its docs by their paths, each leading where the site's docs' address says,
 /// opened beside the page.
 /// </summary>
 public class DocLinkTests

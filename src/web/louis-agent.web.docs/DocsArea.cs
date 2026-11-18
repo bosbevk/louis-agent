@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Docs;
 
 /// <summary>
-/// The docs' address as an area a site names (F162.1): <c>.Docs(address)</c> says where every doc link on its pages
+/// The docs' address as an area a site names (F164.1): <c>.Docs(address)</c> says where every doc link on its pages
 /// leads.
 /// </summary>
 /// <remarks>

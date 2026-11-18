@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.SiteFramework.Tests.Layout;
 
 /// <summary>
-/// F162.1: the framework's site wears the docs layout Louis picked: its pages' menu on the left, the page in the
+/// F164.1: the framework's site wears the docs layout Louis picked: its pages' menu on the left, the page in the
 /// middle with the page before and after at its foot, and "On this page" on the right.
 /// </summary>
 public class FrameworkLayoutTests

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages;
 
 /// <summary>
-/// F162.1, step 9: Getting started, at <c>/getting-started</c>, shows a program of your own in a few lines, what it
+/// F164.1, step 9: Getting started, at <c>/getting-started</c>, shows a program of your own in a few lines, what it
 /// loads, whose is what, and where it reads its settings. Its program and its lists are the coding agent's real ones,
 /// read from the files, so the page can't drift from the code.
 /// </summary>

@@ -1,7 +1,7 @@
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 
 /// <summary>
-/// The fonts every picture is written in (F162.1, Louis: "all diagrams must use font from website", "it is like the
+/// The fonts every picture is written in (F164.1, Louis: "all diagrams must use font from website", "it is like the
 /// framework defaults"): on a page, the site's own sans and mono, read from the settings the page already has, so a
 /// picture's words and the site's brand are one font; drawn as a file, the framework's defaults, Geist and Geist Mono.
 /// </summary>

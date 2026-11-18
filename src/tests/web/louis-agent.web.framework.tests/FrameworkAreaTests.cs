@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests;
 
 /// <summary>
-/// F162.1: the framework's pages are a package a site turns on with <c>.Framework()</c>, as it turns on the accounts
+/// F164.1: the framework's pages are a package a site turns on with <c>.Framework()</c>, as it turns on the accounts
 /// (Louis: "the framework must be a package like accounts"): one area, which brings its pages to the site's router.
 /// </summary>
 public class FrameworkAreaTests

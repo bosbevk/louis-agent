@@ -152,7 +152,7 @@ public sealed class SiteAreasBuilder
             services.TryAddSingleton(new SiteFrames(admin, accountLayout ?? admin));
         var areas = new SiteAreas(_areas);
         services.TryAddSingleton(areas);
-        // The host draws the areas' pages for a search engine too, told through the API's contract (F162.1).
+        // The host draws the areas' pages for a search engine too, told through the API's contract (F164.1).
         var pages = new SitePageAssemblies(areas.PageAssemblies);
         services.TryAddSingleton(pages);
     }

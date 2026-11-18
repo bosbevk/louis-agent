@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.SiteFramework.Tests.Host;
 
 /// <summary>
-/// The framework's own site (F162.1) answers at the root of its address, framework.louis-agent.dev, with the page a
+/// The framework's own site (F164.1) answers at the root of its address, framework.louis-agent.dev, with the page a
 /// search engine reads drawn by its host, and offers the visitor the framework's two themes.
 /// </summary>
 public class FrameworkSiteTests

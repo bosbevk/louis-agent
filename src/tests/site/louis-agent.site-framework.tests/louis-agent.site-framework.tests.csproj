@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- The framework's own site's tests (F162.1): its pages and its host's page list, with bUnit (MIT). -->
+  <!-- The framework's own site's tests (F164.1): its pages and its host's page list, with bUnit (MIT). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.SiteFramework.Tests</RootNamespace>

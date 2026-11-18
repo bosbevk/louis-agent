@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Site.Tables;
 
 /// <summary>
-/// Things set side by side on a page (F162.1): what is compared across the top, each topic a row down the side with
+/// Things set side by side on a page (F164.1): what is compared across the top, each topic a row down the side with
 /// one cell under each column. A row that doesn't fill its columns is refused, with which row and what it needs, so
 /// a cell can never stand under the wrong column.
 /// </summary>

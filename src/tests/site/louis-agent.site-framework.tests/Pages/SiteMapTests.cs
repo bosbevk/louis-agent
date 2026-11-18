@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.SiteFramework.Tests.Pages;
 
 /// <summary>
-/// The framework's site tells the whole framework (ADR 0100, amended in F162.1, Louis: "change the rule then this is
+/// The framework's site tells the whole framework (ADR 0100, amended in F164.1, Louis: "change the rule then this is
 /// framework only stuff"): every project of the framework itself that ships is named on some page, so a new part of
 /// the framework can't be left off the site. The demos and the selling site are not the framework.
 /// </summary>

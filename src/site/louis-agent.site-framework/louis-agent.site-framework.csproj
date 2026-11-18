@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <!-- The framework's own site (F162.1), framework.louis-agent.dev: the framework told to a developer, page by page,
+  <!-- The framework's own site (F164.1), framework.louis-agent.dev: the framework told to a developer, page by page,
        built on the framework's web like any site. It holds its words, its pages and which parts it uses. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.SiteFramework</RootNamespace>

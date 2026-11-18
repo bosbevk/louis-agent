@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages;
 
 /// <summary>
-/// F162.1, step 10: How it works, at <c>/how-it-works</c>, follows one turn through every layer, then the web with the
+/// F164.1, step 10: How it works, at <c>/how-it-works</c>, follows one turn through every layer, then the web with the
 /// backend, every identity, every pack, and the rules every turn keeps. Its identities and packs are read from the
 /// disk, so a new one can't be left off the page.
 /// </summary>

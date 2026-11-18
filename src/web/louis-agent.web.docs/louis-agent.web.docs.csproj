@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- The docs' parts (F162.1): what any site needs to show the docs it was written from, starting with a link to a
+  <!-- The docs' parts (F164.1): what any site needs to show the docs it was written from, starting with a link to a
        doc by its path in the repo, led wherever the site's one setting says: GitHub today, a docs site later. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Web.Docs</RootNamespace>

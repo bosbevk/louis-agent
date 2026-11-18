@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 namespace LouisAgent.Diagrams.Engine.Flow.Routing;
 
 /// <summary>
-/// The arrows back to the column right beside their source, on the same row and with no word (F162.1, Louis: "that
+/// The arrows back to the column right beside their source, on the same row and with no word (F164.1, Louis: "that
 /// line must be straight the other one can bend cause of the label"): nothing stands between the two boxes, so each
 /// runs straight across, where any other arrow back takes its lane under the drawing.
 /// </summary>
