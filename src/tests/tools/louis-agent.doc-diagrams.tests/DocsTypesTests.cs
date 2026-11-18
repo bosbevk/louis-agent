@@ -16,18 +16,24 @@ public class DocsTypesTests
     /// <summary>The room a picture keeps around itself, and where its title's line stands.</summary>
     private const double Pad = 24, TitleLine = 14;
 
+    /// <summary>
+    /// How far in from the picture's right edge its type stands, as the header's words do since F161.1 (Louis: "must
+    /// also move in a bit"): the picture builder's own inset, which this test can't reach.
+    /// </summary>
+    private const double Inset = 16;
+
     /// <summary>An attribute of a shape, as a number.</summary>
     private static double Number(XElement shape, string name) =>
         double.Parse((string?)shape.Attribute(name) ?? "NaN", CultureInfo.InvariantCulture);
 
     /// <summary>
-    /// How many times a picture writes its type's name where it belongs: on the title's line, ending at the
-    /// picture's right edge.
+    /// How many times a picture writes its type's name where it belongs: on the title's line, ending a little in from
+    /// the picture's right edge.
     /// </summary>
     private static int Shown(string json, string name)
     {
         var picture = XElement.Parse(File.ReadAllText(Path.ChangeExtension(json, ".svg")));
-        double right = Number(picture, "width") - 2 * Pad;
+        double right = Number(picture, "width") - 2 * Pad - Inset;
 
         // Anywhere in the file, since the docs draw a picture inside a frame's group.
         return picture.Descendants(Svg + "text").Count(text => text.Value == name &&
