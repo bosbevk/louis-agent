@@ -19,6 +19,9 @@
    since the one-line field's pill drawing stretched over three lines looks like a capsule. */
 textarea.form-input { resize: vertical; field-sizing: content; min-height: 4.5em; border-radius: 14px; @include surface.hairline(.1); }
 .form-input:focus { outline: none; @include surface.edged(themed(web-form-input, focus, var(--bs-primary))); }
+/* A long box is typed in with its own corner kept: the theme's focus drawing is a pill made for one line, so here it
+   is only the edge and a soft ring in the brand's colour (FX202). */
+textarea.form-input:focus { border-radius: 14px; @include surface.hairline(.1); @include surface.ring(rgba(var(--bs-primary-rgb), .18)); }
 .form-input[disabled] { opacity: .6; }
 .form-send {
     align-self: flex-start; width: themed(web-form-send, width, auto); padding: themed(web-form-send, padding, 7px 16px);

@@ -54,4 +54,25 @@ public class StylesheetTests
     [TestCase("flat", "light")]
     public void TheBuild_HoldsEachThemesValues(string theme, string style) =>
         Assert.That(Css.Read(), Does.Contain($":root[data-theme={theme}][data-style={style}]"));
+    /// <summary>
+    /// A long answer's box keeps its corner while it is typed in (FX202, Louis of the focused box: "it is too
+    /// round"). The theme's focus drawing is a pill made for one line, so a long box's focus is its own: the box's
+    /// corner, its faint wash, and an edge and ring in the brand's colour, with no drawing.
+    /// </summary>
+    [TestCase("textarea.form-input:focus")]
+    [TestCase("textarea.offer-input:focus")]
+    public void ALongBox_KeepsItsCorner_WhileItIsTypedIn(string selector)
+    {
+        string css = Css.Read();
+        int start = css.IndexOf(selector + " {", StringComparison.Ordinal);
+        Assert.That(start, Is.GreaterThanOrEqualTo(0), $"the build has a rule for {selector}");
+
+        string rule = css[start..css.IndexOf('}', start)];
+        Assert.Multiple(() =>
+        {
+            Assert.That(rule, Does.Contain("border-radius: 14px"));
+            Assert.That(rule, Does.Contain("box-shadow: 0 0 0 3px"));
+            Assert.That(rule, Does.Not.Contain("--web-art-field-focus"));
+        });
+    }
 }
