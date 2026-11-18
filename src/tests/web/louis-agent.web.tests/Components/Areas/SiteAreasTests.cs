@@ -50,8 +50,8 @@ public class SiteAreasTests
         (T)services.Single(d => d.ServiceType == typeof(T)).ImplementationInstance!;
 
     /// <summary>
-    /// With no area named, the chat plumbing is there, as the guide in a corner needs it, and a site's own words
-    /// stay.
+    /// With no area named, the chat plumbing is there, as the guide in a corner needs it, the door a button asks the
+    /// chat through with it (F164.2), and a site's own words stay.
     /// </summary>
     [Test]
     public void WithNoArea_TheChatPlumbingIsThere_AndASitesOwnWordsStay()
@@ -66,6 +66,7 @@ public class SiteAreasTests
         {
             Assert.That(Has<ChatSettings>(services) && Has<ChatStore>(services) && Has<AgentApi>(services) &&
                         Has<CurrencyState>(services), Is.True);
+            Assert.That(Has<GuideDoor>(services), Is.True, "every site's buttons can reach its chat");
             Assert.That(One<ChatText>(services), Is.SameAs(words));
             Assert.That(One<SiteAreas>(services).Names, Is.Empty);
             Assert.That(Has<SiteFrames>(services) || Has<ChatHandoff>(services), Is.False);

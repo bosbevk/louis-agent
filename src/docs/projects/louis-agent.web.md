@@ -47,7 +47,10 @@ builder.Services.AddSiteAreas(areas => areas
 
 **First it registers the chat's plumbing, for every site.** The settings kept in the browser (`ChatSettings`), the
 store of chats (`ChatStore`), the client that calls the API (`AgentApi`), the currency (`CurrencyState`) and an
-English `ChatText`. Each is registered only where the site set none of its own.
+English `ChatText`. Each is registered only where the site set none of its own. The door comes with them
+(`GuideDoor`). It is how a button anywhere on a page reaches the site's chat: the button asks through the door, and
+the chat, listening, opens and sends the question. The buttons are the framework's, and any site may draw them, so
+every site gets a door, and a press always has a chat to reach when the site has one.
 
 **Then it registers each area the site named.**
 
@@ -57,8 +60,7 @@ sends it themselves.
 
 `Admin(layout)` adds the admin's frame, its home and its pages. Part 5 explains them.
 
-`Showroom(demos)` adds the demos, the guide's way in, the demos' windows and the kept guide. Part 4 explains
-them.
+`Showroom(demos)` adds the demos, the demos' windows and the kept guide. Part 4 explains them.
 
 A library adds an area of its own through `Add`. The eval studio's `Evals()` and the accounts' `Accounts(layout)`
 do that. An area may also bring a theme, a look the site can wear, in its `Theme` slot. Part 7 explains themes.

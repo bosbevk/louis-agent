@@ -81,14 +81,13 @@ public sealed class SiteAreasBuilder
     }
 
     /// <summary>
-    /// The showroom (ADR 0115): the site's demos, and the guide's way in, the demos' windows and the guide kept across
-    /// the site's layouts.
+    /// The showroom (ADR 0115): the site's demos, the demos' windows and the guide kept across the site's layouts; the
+    /// guide's way in, its door, is every site's (F164.2).
     /// </summary>
     public SiteAreasBuilder Showroom(ShowroomDemos demos) =>
         Add(new SiteArea("showroom", services =>
         {
             services.TryAddSingleton(demos);
-            services.TryAddSingleton<GuideDoor>();
             services.TryAddSingleton<AgentWindows>();
             services.TryAddSingleton<GuideKeeper>();
             services.TryAddSingleton<GuideActivity>();
