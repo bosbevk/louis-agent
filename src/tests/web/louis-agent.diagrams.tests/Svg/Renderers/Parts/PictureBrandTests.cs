@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts;
 
 /// <summary>
-/// Every picture carries the louis-agent brand, in its footer (F160.1, Louis: "every image must have our branding",
+/// Every picture carries the louis-agent brand, in its footer (F161.1, Louis: "every image must have our branding",
 /// then "Distinguise between header and footer on image", his pick "brand in the footer"): the mark and the
 /// wordmark at the footer's right, the mark the site's own.
 /// </summary>

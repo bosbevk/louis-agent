@@ -102,7 +102,7 @@ public class SiteLayoutTests
     /// <summary>
     /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, then Contact; no Pricing (Louis:
     /// "remove pricing"), no What we build (FX171, Louis: "remove this page and everything of it"), and no framework
-    /// group, since the framework's pages left for their own site (F160.1); the CV mark is in the settings (FX163).
+    /// group, since the framework's pages left for their own site (F161.1); the CV mark is in the settings (FX163).
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()

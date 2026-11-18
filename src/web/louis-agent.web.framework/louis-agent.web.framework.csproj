@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- The framework's pages (F160.1): the framework told to a developer, page by page, as a package a site turns on
+  <!-- The framework's pages (F161.1): the framework told to a developer, page by page, as a package a site turns on
        with .Framework(), as it turns on the accounts. framework.louis-agent.dev is the site that names it. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Web.Framework</RootNamespace>

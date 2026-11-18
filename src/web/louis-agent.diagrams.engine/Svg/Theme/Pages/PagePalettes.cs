@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 namespace LouisAgent.Diagrams.Engine.Svg.Theme.Pages;
 
 /// <summary>
-/// A picture's colours for each of our sites' themes, light and dark, worn when it is drawn into a page (F160.1): on a
+/// A picture's colours for each of our sites' themes, light and dark, worn when it is drawn into a page (F161.1): on a
 /// flat page flat's own, on a glass page glass's, so a picture looks like the page around it.
 /// </summary>
 /// <remarks>

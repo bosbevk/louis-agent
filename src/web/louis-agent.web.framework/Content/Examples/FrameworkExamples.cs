@@ -5,7 +5,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content.Examples;
 
 /// <summary>
-/// The agents the framework already runs, and what's coming (F160.1, step 12): Puls, the coding agent and the guide,
+/// The agents the framework already runs, and what's coming (F161.1, step 12): Puls, the coding agent and the guide,
 /// each from its identity's own summary and its catalogue, and what's next from the plans in TODO.
 /// </summary>
 /// <remarks>

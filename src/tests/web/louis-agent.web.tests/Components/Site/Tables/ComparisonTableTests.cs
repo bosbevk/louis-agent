@@ -3,7 +3,7 @@ using LouisAgent.Web.Components.Site.Tables;
 namespace LouisAgent.Web.Tests.Components.Site.Tables;
 
 /// <summary>
-/// F160.1: a page sets things side by side as a comparison, its topics down the side and what is compared across the
+/// F161.1: a page sets things side by side as a comparison, its topics down the side and what is compared across the
 /// top, each row's cells under their columns.
 /// </summary>
 public class ComparisonTableTests

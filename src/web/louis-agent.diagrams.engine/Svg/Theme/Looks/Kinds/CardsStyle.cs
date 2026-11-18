@@ -11,7 +11,7 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 /// </summary>
 /// <remarks>
 /// The colour here is the look's own, one accent, the palette's violet running to its blue, unless a card names a
-/// tone of its own (F160.1): then its badge, tint and icon wear that tone's line and ink, as the other kinds' parts
+/// tone of its own (F161.1): then its badge, tint and icon wear that tone's line and ink, as the other kinds' parts
 /// wear theirs.
 /// What a sequence wears too, the small title, the light, the glass, the pill and a node, is
 /// <see cref="MarqueeLook"/>'s, and what every picture in the new look wears is <see cref="PictureLook"/>'s. The

@@ -1,6 +1,6 @@
 {
   "kind": "sequence",
-  "title": "F160.1 the framework's pages: a visitor follows a doc link",
+  "title": "F161.1 the framework's pages: a visitor follows a doc link",
   "caption": "The page was drawn with the address the site named, so the press is an ordinary link to the doc on GitHub.",
   "sequence": {
     "participants": [

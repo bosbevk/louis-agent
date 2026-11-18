@@ -62,7 +62,7 @@ public class CardsRendererTests
     }
 
     /// <summary>
-    /// A card may wear a tone of its own (F160.1, Louis: "give each one a color this color we can then reuse talking
+    /// A card may wear a tone of its own (F161.1, Louis: "give each one a color this color we can then reuse talking
     /// about it"): a headline's badge, and a glass card's tint and icon, in that tone; a card that names none keeps
     /// the picture's violet.
     /// </summary>

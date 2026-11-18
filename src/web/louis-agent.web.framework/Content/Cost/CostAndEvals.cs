@@ -4,7 +4,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content.Cost;
 
 /// <summary>
-/// What Cost and evals tells (F160.1, step 12): the ledger, the price table and one request worked through to rand,
+/// What Cost and evals tells (F161.1, step 12): the ledger, the price table and one request worked through to rand,
 /// each written from the engine's own summaries (<c>UsageLedger</c>, <c>CostCalculator</c>) and the coding demo's
 /// <c>prices.json</c> and <c>rates.json</c>, which the page's test reads the worked request from.
 /// </summary>

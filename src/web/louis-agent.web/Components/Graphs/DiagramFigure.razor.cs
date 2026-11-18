@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Graphs;
 
 /// <summary>
-/// A page's picture (F160.1, Louis: "we must use digrams to render the graphs in svg on the page"): any kind the
+/// A page's picture (F161.1, Louis: "we must use digrams to render the graphs in svg on the page"): any kind the
 /// diagram engine draws, drawn by its own renderer as the docs' pictures are, inline on the page.
 /// </summary>
 /// <remarks>

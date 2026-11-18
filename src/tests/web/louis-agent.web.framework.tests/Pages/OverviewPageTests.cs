@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages;
 
 /// <summary>
-/// F160.1, step 6: the Overview, at the framework site's root, opens with its heading and a picture at a glance, the
+/// F161.1, step 6: the Overview, at the framework site's root, opens with its heading and a picture at a glance, the
 /// framework highlighted over its three important parts (Louis, of the hero: "do one like this highlight the
 /// important ones"), then what the framework is with its real program, its whole map, and why C#.
 /// </summary>

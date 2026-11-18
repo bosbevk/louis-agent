@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- The framework's pages' tests (F160.1): the area a site names, its pages with bUnit, and what they say held to
+  <!-- The framework's pages' tests (F161.1): the area a site names, its pages with bUnit, and what they say held to
        the repo. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>

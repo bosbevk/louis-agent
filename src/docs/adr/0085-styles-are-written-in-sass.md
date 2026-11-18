@@ -29,7 +29,7 @@ colours come after the framework's and win.
 
 **Sass covers our own styles.** Bootstrap stays on its CDN and reads the same variables, so we don't own its source or its upgrades.
 
-**Layout is Bootstrap's, in the whole solution** (amended 2026-11-17, F160.1, Louis: "bootstrap is a universal rule for this
+**Layout is Bootstrap's, in the whole solution** (amended 2026-11-17, F161.1, Louis: "bootstrap is a universal rule for this
 project", "solution", after a docs layout's grid hand-written in Sass took round after round to get its widths right). The grid,
 columns, breakpoints, spacing, display, sticky and offcanvas are Bootstrap's classes in a component's markup; no Sass of ours
 writes a grid or a breakpoint. Our Sass keeps what Bootstrap doesn't do: the theme's surfaces, offsets under our own header,

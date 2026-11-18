@@ -6,7 +6,7 @@ namespace LouisAgent.Diagrams.Tests.Flow.Routing;
 
 /// <summary>
 /// An arrow back to the column right beside it, on the same row and with no word, runs straight across between the
-/// two boxes (F160.1, Louis: "that line must be straight the other one can bend cause of the label"); an arrow back
+/// two boxes (F161.1, Louis: "that line must be straight the other one can bend cause of the label"); an arrow back
 /// with a word, or further back, still takes its lane under the drawing.
 /// </summary>
 public class BesideBackTests

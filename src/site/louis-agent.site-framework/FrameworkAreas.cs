@@ -10,7 +10,7 @@ namespace LouisAgent.SiteFramework;
 /// What the framework's own site is made of: the flat theme alone, so the site always opens flat and the visitor picks
 /// only light or dark (Louis: "this ones default will be the flat white theme", then "this must always load flat so no
 /// glass theme here yet"), and the framework's pages, the package it turns on as a site turns on the accounts. The
-/// agent in the corner joins in F160.2.
+/// agent in the corner joins in F161.2.
 /// </summary>
 /// <remarks>
 /// Composition Root (Seemann): the one place the site says which parts it uses. The browser's program, the host's

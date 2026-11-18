@@ -4,7 +4,7 @@ using LouisAgent.Web.Framework.Content.Cost;
 namespace LouisAgent.Web.Framework.Graphs.Decide;
 
 /// <summary>
-/// A request's path to rand (F160.1, step 12, Louis's pick A of three): the request, its tokens, the dated price
+/// A request's path to rand (F161.1, step 12, Louis's pick A of three): the request, its tokens, the dated price
 /// table, the cost in dollars, the ledger that keeps it, and the rand a page shows, each with the worked request's own
 /// numbers. Three along the top and three under them running back, with room between the rows, so it fits the page's
 /// width (Louis: "can we move the boxes like this to make it fit?", "make it 3 boxes top 3 bottom and increase the

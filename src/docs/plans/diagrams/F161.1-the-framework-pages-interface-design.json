@@ -1,6 +1,6 @@
 {
   "kind": "classes",
-  "title": "F160.1 the framework's pages: the interface design",
+  "title": "F161.1 the framework's pages: the interface design",
   "caption": "The doc link reads the docs' address the site names; two new parts draw code and comparisons; the pages only configure them.",
   "classes": {
     "types": [

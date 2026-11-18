@@ -12,6 +12,6 @@ public enum PageLayout
     /// <summary>Each section one screen, its content in the middle, the page settling on a section as it scrolls; a section with more than a screen pages sideways.</summary>
     Slides,
 
-    /// <summary>Docs-type content (F160.1): the site's menu on the left, the page in a readable middle column, and the page's sections on the right as "On this page".</summary>
+    /// <summary>Docs-type content (F161.1): the site's menu on the left, the page in a readable middle column, and the page's sections on the right as "On this page".</summary>
     Docs
 }

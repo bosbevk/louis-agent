@@ -5,7 +5,7 @@ using LouisAgent.Web.Components.Graphs;
 namespace LouisAgent.Web.Tests.Components.Graphs;
 
 /// <summary>
-/// F160.1: a page's picture is drawn by the diagram engine's own renderer, inline as SVG (Louis: "we must use
+/// F161.1: a page's picture is drawn by the diagram engine's own renderer, inline as SVG (Louis: "we must use
 /// digrams to render the graphs in svg on the page"), wearing the page's theme and style, with its caption under it.
 /// </summary>
 public class DiagramFigureTests

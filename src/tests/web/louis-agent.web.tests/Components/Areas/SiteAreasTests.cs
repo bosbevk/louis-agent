@@ -201,7 +201,7 @@ public class SiteAreasTests
     }
 
     /// <summary>
-    /// F160.1: the areas' pages are told to the host through the API's contract, so the host draws a package's pages
+    /// F161.1: the areas' pages are told to the host through the API's contract, so the host draws a package's pages
     /// for a search engine without knowing the web: turning a package on is enough.
     /// </summary>
     [Test]

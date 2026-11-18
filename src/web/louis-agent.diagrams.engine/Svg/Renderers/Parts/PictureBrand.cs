@@ -3,7 +3,7 @@ using System.Xml.Linq;
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 
 /// <summary>
-/// The louis-agent brand in a picture's footer (F160.1, Louis: "every image must have our branding", his pick "brand
+/// The louis-agent brand in a picture's footer (F161.1, Louis: "every image must have our branding", his pick "brand
 /// in the footer"): the site's own wordmark, the name with the mark, the violet disc, standing in for its "o" (Louis:
 /// "must look like this one just a bit smaller"), at the footer's right on the line the key's heading stands on.
 /// </summary>

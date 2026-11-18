@@ -25,7 +25,7 @@ business behind it.
   solution file and asks that every project of the framework itself, under `src/engine`, `src/hosts`, `src/web`,
   `src/evals` and `src/tools`, that is not a test or a test helper is named on some page of framework.louis-agent.dev.
   A new framework project fails the site until the site says what it is. The demos and the selling site are not the
-  framework, so they are not held to it (amended 2026-11-17, F160.1, Louis: "change the rule then this is framework
+  framework, so they are not held to it (amended 2026-11-17, F161.1, Louis: "change the rule then this is framework
   only stuff"); the packs are held by the page that lists them.
 - **The pages are written from the docs, and the guide reads the same docs.** A page's claims are held to the repo by
   tests the way *Build your own* holds its program (`BuildYourOwnTests`): the rand to the rates file

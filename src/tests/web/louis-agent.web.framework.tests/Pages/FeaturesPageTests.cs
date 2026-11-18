@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages;
 
 /// <summary>
-/// F160.1, step 11: Features, at <c>/features</c>, says what the framework does, by area. Each feature names the code
+/// F161.1, step 11: Features, at <c>/features</c>, says what the framework does, by area. Each feature names the code
 /// that does it and the doc that tells it, and both are held to the repo, so a feature that is taken out fails the
 /// page.
 /// </summary>

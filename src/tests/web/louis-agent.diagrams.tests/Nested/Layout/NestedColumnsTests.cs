@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Nested.Spec;
 namespace LouisAgent.Diagrams.Tests.Nested.Layout;
 
 /// <summary>
-/// F160.1 (Louis, of the framework's map: "split this in two columns"): a box may hold its boxes in columns, side by
+/// F161.1 (Louis, of the framework's map: "split this in two columns"): a box may hold its boxes in columns, side by
 /// side in rows, read left to right, so a box holding many is wide rather than tall. One column is the default, so
 /// every picture that names none is drawn as before.
 /// </summary>

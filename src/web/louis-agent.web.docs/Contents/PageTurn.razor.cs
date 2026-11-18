@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Routing;
 namespace LouisAgent.Web.Docs.Contents;
 
 /// <summary>
-/// A docs page's foot (F160.1): the page before and the page after in reading order, so someone reading straight
+/// A docs page's foot (F161.1): the page before and the page after in reading order, so someone reading straight
 /// through never needs the menu. Read from the site's <see cref="DocsContents"/>, the list the menu is drawn from.
 /// </summary>
 public partial class PageTurn : IDisposable

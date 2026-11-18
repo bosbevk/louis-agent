@@ -36,7 +36,7 @@ public sealed record SvgTheme(SvgPalette Dark, SvgPalette Light)
             }));
 
     /// <summary>
-    /// The flat theme's (F160.1, Louis's pick C, a palette per theme in the engine): flat's own values from its two
+    /// The flat theme's (F161.1, Louis's pick C, a palette per theme in the engine): flat's own values from its two
     /// sheets, a ground a tad darker than white or a near-black grey, its firmer grey line, black or near-white words and its solid grey
     /// for a chip, with the brand's violet; the tones are the site's, so a tone means the same in every picture.
     /// </summary>

@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Sources;
 namespace LouisAgent.Web.Framework.Graphs;
 
 /// <summary>
-/// What the coding agent's program loads (F160.1, step 9): the program highlighted, its catalogue's identities and
+/// What the coding agent's program loads (F161.1, step 9): the program highlighted, its catalogue's identities and
 /// packs, and what the host lends it, each named as the code names it, so a reader can find it.
 /// </summary>
 /// <remarks>

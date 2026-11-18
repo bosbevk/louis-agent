@@ -7,7 +7,7 @@ using LouisAgent.Web.Framework.Content.Features;
 namespace LouisAgent.Web.Framework.Graphs;
 
 /// <summary>
-/// Everything the framework does, at a glance (F160.1, step 11, Louis's pick A of three, "Areas at a glance"): the
+/// Everything the framework does, at a glance (F161.1, step 11, Louis's pick A of three, "Areas at a glance"): the
 /// framework highlighted, then a card an area in its own colour, with how many features it has and the first three
 /// by name.
 /// </summary>

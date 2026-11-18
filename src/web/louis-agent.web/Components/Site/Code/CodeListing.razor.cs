@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 namespace LouisAgent.Web.Components.Site.Code;
 
 /// <summary>
-/// Code on a page (F160.1): a listing named for its file, or its language when it has none, the code shown as text so
+/// Code on a page (F161.1): a listing named for its file, or its language when it has none, the code shown as text so
 /// a page that shows a program can never run it or break with it, with a button that copies it exactly as shown
 /// (Louis: "this must be an actual code block you can copy paste").
 /// </summary>

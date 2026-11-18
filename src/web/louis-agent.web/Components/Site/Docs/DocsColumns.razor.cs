@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Site.Docs;
 
 /// <summary>
-/// The docs layout's three columns (F160.1, Louis's pick "A, with B's hero on the Overview"): the site's menu on the
+/// The docs layout's three columns (F161.1, Louis's pick "A, with B's hero on the Overview"): the site's menu on the
 /// left, the page in a readable middle column, and the page's sections on the right as "On this page".
 /// </summary>
 /// <remarks>

@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace LouisAgent.Web.Docs.Messages;
 
-/// <summary>What the docs' parts say when a site is set up wrong (F160.1, ADR 0009).</summary>
+/// <summary>What the docs' parts say when a site is set up wrong (F161.1, ADR 0009).</summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum DocsErrorMessage
 {

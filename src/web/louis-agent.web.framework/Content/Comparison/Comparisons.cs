@@ -4,7 +4,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content.Comparison;
 
 /// <summary>
-/// louis-agent beside Microsoft Agent Framework and Semantic Kernel (F160.1, step 12, ADR 0110): what louis-agent does,
+/// louis-agent beside Microsoft Agent Framework and Semantic Kernel (F161.1, step 12, ADR 0110): what louis-agent does,
 /// each held to a file of the repo, and what the others' own pages say, read on <see cref="ReadOn"/>, nothing more.
 /// Where their pages say nothing of a topic, the cell says so, and never that they lack it.
 /// </summary>
