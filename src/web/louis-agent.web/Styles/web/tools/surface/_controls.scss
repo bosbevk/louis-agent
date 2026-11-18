@@ -45,6 +45,16 @@
     border-radius: 999px;
     @include drawn(status, var(--bs-tertiary-bg));
 }
+/* A live dot in the brand's colour with a soft ring, the stage flag's (FX206); its ring breathes out to nothing. */
+@mixin brand-dot() {
+    border-radius: 50%;
+    background: var(--bs-primary);
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .22);
+}
+@mixin brand-dot-out() {
+    box-shadow: 0 0 0 5px rgba(var(--bs-primary-rgb), 0);
+}
+
 @mixin status-dot() {
     border-radius: 50%;
     background: var(--web-ok);

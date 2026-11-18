@@ -1,16 +1,33 @@
 @use "web/tools/surface";
 
-/* A site's stage flag (FX170): a small tag beside the name, in the brand's colour, and its note, which the browser
-   stands over the page just under the header's left, where the flag is. */
+/* A site's stage flag (FX170): a build status beside the name (FX206, Louis's pick C), the framework's quiet tag
+   with a slow dot in the brand's colour before its words, and its note, which the browser stands over the page just
+   under the header's left, where the flag is. The dot is the only colour, so the mark stays the one big violet thing. */
 .site-stage { display: inline-flex; align-items: center; }
 .stage-flag {
-    padding: 3px 9px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px 5px 8px;
     border: 0;
     font: 600 11px/1.2 var(--bs-font-monospace);
     letter-spacing: .02em;
+    color: var(--bs-emphasis-color);
     white-space: nowrap;
     cursor: pointer;
-    @include surface.tag-agent();
+    @include surface.tag();
+}
+.stage-flag::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    @include surface.brand-dot();
+    animation: stage-breathe 2.4s ease-in-out infinite;
+}
+@keyframes stage-breathe { 50% { @include surface.brand-dot-out(); } }
+@media (prefers-reduced-motion: reduce) {
+    .stage-flag::before { animation: none; }
 }
 .stage-note {
     position: fixed;

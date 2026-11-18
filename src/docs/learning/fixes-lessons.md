@@ -511,6 +511,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX206 · Borrow the shape, check the colour it brings
+
+The header's flag moved from alpha-1 to beta-1, and its look from a solid violet pill to a build status: a quiet tag
+with a small violet dot that breathes. The framework already had a status pill with a live dot, so it was the first
+thing reused. In the browser it came out green, because a status pill means "all is well" and wears that colour. A
+violet dot on a green pill is two accents on one element, which the brand rules out. The plain tag carried the same
+shape with no colour of its own, and the dot became the one accent. The tests could not see that clash, only the
+browser could. Reuse the shape, then look at what colour comes with it. Skill 18 (testing and shipping: a look is
+checked by seeing it).
+
 ## FX205 · A second way in counts the first press again
 
 On a desktop the bar opens when the pointer comes onto the orb. That was added later, beside the press that opens it.
