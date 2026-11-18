@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX201 · When the next step is a form, make it the only step
+
+Pressing "Enter your business" sent Orbi a question, and Orbi did several things at once. It greeted the visitor,
+then asked with the form, all in one answer. The form never showed, and on the next turn Orbi pointed at a form
+that wasn't there. A model given a friendly voice will warm up first, and every extra step in the same answer is
+one more place for the form to get lost. So the entry recipe now says the form is the first and only call, with
+one short line over it. If the visitor can't see it, Orbi asks again instead of pointing at it. A button that
+promises a form should lead straight to one.
+
 ## FX200 · A prompt can ask for what its tool can't do
 
 The free-websites entry told Orbi to fill in what the visitor had already said, so they would only add what was

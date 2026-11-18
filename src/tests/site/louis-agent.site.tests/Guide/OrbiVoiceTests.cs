@@ -185,5 +185,7 @@ public class OrbiVoiceTests
             .And.Not.Contain("fill in what they already told you")
             .And.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
             .And.Contain("never promise them a place")
-            .And.Contain("hosted free for the first year"));
+            .And.Contain("hosted free for the first year")
+            .And.Contain("your first and only call is `AskFor`")
+            .And.Contain("never say the form is above"));
 }
