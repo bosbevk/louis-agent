@@ -117,7 +117,14 @@ The framework's rule lives at `/framework/measured`, and its short film and four
 `/framework/architecture`. No page names a price: every quote is made on request, so `/pricing` is moved to
 `/contact`. Then there are the demos.
 
-*Decided in:* [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
+`/privacy` tells a visitor what happens to what they type, in the order they meet it. Their messages go to the
+model to be answered, and the site holds the chat in memory only. Their details reach Louis by mail, and only when
+they press Send it. Their address counts their chats for a day, also in memory. What is written down is the cost,
+the page and the tools of each answer, never their words. The page then sets out their rights under POPIA, says who
+answers for the site, and links the Information Regulator. Every page's footer links to it, the landing's data tile
+does too, and the guide points to it before it sends a visitor's details.
+
+*Decided in:* F145.1, [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), F110.
 
 ### 4. The showroom's three businesses

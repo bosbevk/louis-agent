@@ -224,3 +224,20 @@ that only reached the log was not mailed to anyone and the guide must never say 
 Resend sender is one JSON post with our own `HttpClient`, so no package sits between us and the wire, and a refusal
 comes back as text with the service's words, never a throw into the loop (ADR 0005). Skill 3 (tools) and skill 15.
 
+## Saying what is kept, before anyone asks (F145.1, 2026-11-18)
+
+An agent that takes a visitor's words and their details owes them a plain account of what happens to both. South
+Africa's privacy law, POPIA, asks for it in section 18: what is collected, why, who gets it, and what the person may
+do about it. So the site now has a privacy page at `/privacy`, and every footer links to it.
+
+The lesson is in how the page was written. Each line was read off the code before it was typed, not off what we
+believed the site did. The door that counts a visitor's chats keeps the count in memory for a day and writes nothing.
+The turn log keeps the page, the section and the tools of each answer, never the words. A trace span carries the
+session's ids, never a word of the talk. Only two things leave the country: the messages to the model, and the mail
+with a visitor's details. A privacy page that promised more than the code does would be the one place a visitor is
+told something untrue, so the code is the source and the page follows it.
+
+The consent sits where the doubt comes. Before the guide sends a lead, it says in one sentence what Send it does and
+that the privacy page says what happens next, so the visitor's press of the button is an informed yes. That builds
+on F112, where the press itself was already the only way a lead goes out. Skill 15, safety, and skill 16, the
+human in the loop.

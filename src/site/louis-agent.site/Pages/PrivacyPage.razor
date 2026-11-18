@@ -1,0 +1,32 @@
+@page "/privacy"
+
+<PageTitle>Your privacy · louis-agent</PageTitle>
+<PageHead Description="What louis-agent.dev keeps when you talk to the agent in its corner, what it sends, who sees it, and your rights under POPIA." />
+
+@* The privacy page (F145.1): what the site keeps and sends, in the order a visitor meets it, then their rights under
+   POPIA, configured on the framework's band and tiles (ADR 0125). Every line says what the code does today. *@
+<Band Id="top" Topic="Privacy" Title="What happens to what you type." Summary="This site has an AI agent in its corner. Here is what it keeps, what it sends and who sees it. Your words are used to answer you, and your details reach us only when you say send.">
+    <TileRow Columns="2">
+        <Tile Icon="DiagramIcon.User" Title="What you type" Text="Your messages go to Anthropic, the company whose model writes the answers, in the United States. They are used to answer you. The site holds your chat in memory only while it runs, and forgets it when it restarts." />
+        <Tile Icon="DiagramIcon.Box" Title="Your details" Delay="1" Text="If you ask to be contacted, the agent asks for your name and how to reach you. It shows you what it will send, and sends it only when you press Send it. It reaches us by email, through Resend, a mail service." />
+        <Tile Icon="DiagramIcon.Shield" Title="Your internet address" Text="It counts how many chats you open, up to 20 a day. The count is kept in memory for a day, and never written down." />
+        <Tile Icon="DiagramIcon.Database" Title="What is written down" Delay="1" Text="For each answer, the site writes down what it cost, the page you were on and which tools the agent used. Never your words. The timing of each step goes to Azure's monitoring, also without your words." />
+        <Tile Icon="DiagramIcon.Server" Title="Where it runs" Text="In Azure's South African region. Two things leave the country. Your messages go to the model, to answer you, and the mail with your details goes through Resend." />
+        <Tile Icon="DiagramIcon.Settings" Title="Your look" Delay="1" Text="The look you pick, light or dark, is kept in your own browser. It is sent nowhere." />
+    </TileRow>
+</Band>
+
+<Band Id="rights" Topic="Your rights" Title="Ask, correct, delete." Summary="Under POPIA, South Africa's privacy law, you may ask what we hold about you, have it corrected or deleted, and object to how it is used. The person who runs this site and answers for it is Louis Marais.">
+    <TileRow Columns="2">
+        <Tile Title="Ask us" Text="Write one mail saying what you want, and we answer it.">
+            <Actions>
+                <LinkButton Href="mailto:louis.marais@live.com?subject=My%20privacy" Text="Write to us" />
+            </Actions>
+        </Tile>
+        <Tile Title="Not happy with the answer?" Delay="1" Text="You may complain to the Information Regulator, who oversees POPIA in South Africa.">
+            <Actions>
+                <LinkButton Href="https://inforegulator.org.za" Text="The Information Regulator" Kind="ButtonKind.Quiet" NewTab="true" />
+            </Actions>
+        </Tile>
+    </TileRow>
+</Band>

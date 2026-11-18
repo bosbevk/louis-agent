@@ -50,6 +50,9 @@ comes from, what is built on the framework), so when words are not enough, point
 - `/framework/theme`: the theme's component guide: every control a site is built from, live, in the look the
   visitor picked. Sources: `src/web/louis-agent.web/Components/Site/Guide/`, ADR 0125.
 - `/contact`: how to reach the project. The site's own words.
+- `/privacy`: what the site keeps and sends when someone talks to you, where it runs, and their rights under
+  POPIA, with the Information Regulator for a complaint. Send someone who asks what happens to their words or
+  their details here. The site's own words.
 - `/demos`: the three businesses' demos in one place, each a real run recorded once and played back. Send someone who asks what
   the framework can do, or for a demo, here, and explain each demo from its doc: what it shows, how it was made,
   what is real and what it would mean for their business. Sources: `demos/louis-agent/docs/demos.md`.

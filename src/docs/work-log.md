@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 129 | 97 |
+| Features (`F`) | 130 | 97 |
 | Fixes (`FX`) | 185 | 6 |
 | Cleanups (`CL`) | 40 | 30 |
 
@@ -30,7 +30,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F149 | The docs' lists are generated: the project tables, the settings table, the indexes and a project doc's fact sections written from the code and its comments by the docs' tool and checked in CI; its own plan | Now, after F150 |
 | F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now |
 | F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
-| F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F147 |
+| F145 | Who a talk was with: the visitor's IP on the overview, a retention rule, the privacy page told about both (the page itself came in F145.1); its own plan | Now, after F147 |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now |
 | F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
 | F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now |
@@ -156,10 +156,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (129 done)
+## Features (130 done)
 
 | Id | When | What |
 |---|---|---|
+| F145.1 | 2026-11-18 | The privacy page: `/privacy` says what the site keeps and sends and the visitor's rights under POPIA, linked from every footer and the landing's data tile; the guide says what Send it does before it sends a lead |
 | F160 | 2026-11-17 | The guide walks the demo (Louis: "do not make it autoplay, give the ability to our agent to guide him through the experience"): a demo waits to be started, its conversation is a place of its own with an address per turn (his pick of three), showing a turn plays it and stops, and the guide walks it a turn at a time, saying what to watch, then offers to try the business live |
 | F156 | 2026-11-17 | The web's pacing switch (Louis's pick A of three): the API answers a turn the engine paced with `Stream-Paced: on`, the page leaves its own pacer off for it, and louis-agent.dev turns `STREAM_PACE` on, so the guide's words are paced once; ADR 0126 widened to types |
 | F155 | 2026-11-17 | Pacing in the engine (Louis's pick A of three, after research): `STREAM_PACE=on` hands a turn's text out at `WordPace`'s pace in whole words, everything else in order, outside the turn; `WordPace` moved to session-stream and made continuous, which the caption shares; ADR 0126 on method names |

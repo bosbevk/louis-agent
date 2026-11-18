@@ -27,6 +27,7 @@ public class SitePagesTests
     [TestCase(typeof(BuiltOnItPage), "/framework/built-on-it", "Three agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(WhatsComingPage), "/framework/whats-coming", "Planned, and said so.")]
+    [TestCase(typeof(PrivacyPage), "/privacy", "What happens to what you type.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
@@ -113,6 +114,7 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "That is the end of the tour.")]
     [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
+    [TestCase(typeof(HomePage), "href=\"/privacy\"")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(ContactPage), "Custom agents")]
     [TestCase(typeof(ContactPage), "A website with an agent")]
