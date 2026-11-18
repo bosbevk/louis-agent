@@ -82,7 +82,11 @@ agents keep to their own sites (Louis · AI never on the framework site, louis-a
 
 ## Approved during the build
 
-(empty)
+- **The CV links to the docs on GitHub until the framework's site is live** (Louis, 2026-11-18, his pick A of
+  three, over linking to framework.louis-agent.dev before it answers or taking the links off): F162.1 deleted the
+  framework pages the CV's four "now" cards linked to, so they lead to the docs by path on GitHub,
+  `src/docs/architecture/README.md`, `src/docs/projects/louis-agent.evals.md`, ADR 0007 and
+  `src/docs/projects/README.md`. F162.3 moves them to the framework site's pages once its address answers.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [F162.1](F162.1-the-framework-pages.md) · [F148](F148-one-docs-endpoint.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md) · [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)
