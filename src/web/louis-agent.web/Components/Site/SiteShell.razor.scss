@@ -234,6 +234,9 @@
     .site:has(.site-corner .chat-widget.is-bar) { --site-bar: var(--bar-room, 150px); padding-bottom: 0; }
     .site:has(.site-corner .chat-widget.is-bar) .site-main { padding-bottom: var(--site-bar); }
     .site:has(.site-corner .chat-widget.is-bar) .site-up { bottom: calc(var(--site-bar) + 12px); }
+    /* The footer lies over the strip the page fades into under the bar (below), or the strip's solid foot hides its
+       words; the bar still stands over the footer's middle. */
+    .site:has(.site-corner .chat-widget.is-bar) .site-footer { position: relative; z-index: 10; }
     .site-corner:has(.chat-widget.is-bar) { position: static; height: auto; padding: 0; border: 0; background: none; }
     /* Under the bar the page's content fades away into the bare page, as the design has it, so nothing passes
        sharp behind the bar: a strip of the page itself at the screen's foot, see-through at its top. It lies over
@@ -251,4 +254,16 @@
         -webkit-mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
         mask-image: linear-gradient(to bottom, transparent, var(--bs-body-bg) 52%);
     }
+}
+
+/* On a wide screen a site may fix a small link in the screen's corner (FX173, CornerLink); the footer keeps room at its
+   right end for it, so the link never sits on the footer's own words. */
+@media (min-width: 1200px) {
+    .site:has(.corner-link) .site-footer { padding-right: 160px; }
+}
+
+/* On a phone the guide's bar spans the screen's foot, so the footer keeps the bar's room under its words, and the orb
+   never sits on them. */
+@media screen and (max-width: 720px) {
+    .site:has(.site-corner .chat-widget.is-bar) .site-footer { padding-bottom: calc(var(--site-bar) + 12px); }
 }

@@ -511,6 +511,20 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX197 · A fixed layer covers whatever has no layer of its own
+
+The footer had been at the very bottom since FX163, but nobody could see it. Under the guide's bar the page fades
+into a strip of the page itself, so nothing passes sharp behind the bar. That strip is fixed to the screen's foot,
+sits at layer 9 and is solid in its lower half. The footer sat in the page's normal flow with no layer of its own,
+and a positioned layer always paints over plain flow, so the strip covered it. A click still reached the footer,
+because the strip lets the pointer through. That is why a check by what is under the pointer said the footer was
+on top while the eye saw nothing. Raising the footer to layer 10 brought it back. It is still under the bar, the
+header and the panel. Two small things showed up once it could be seen: the corner's LinkedIn link sat on its
+right-hand words, and on a phone the orb sat on its middle. So the footer keeps room for each. The lesson: anything
+fixed over the page that hides content must say what it lies under as well as what it lies over, and the check for
+"can people see it" is a look, not a hit test. Skill 18 (testing and shipping: what a visitor sees is checked by
+seeing it).
+
 ## FX196 · Paint through letters, and their edges go soft
 
 The big headings wore a gradient clipped into their letters, a violet band on glass and the words' own colour on flat.
