@@ -1,6 +1,6 @@
 ---
 name: plan-a-feature
-description: Write, change or finish a plan. Use it before the first step of a feature, of a fix that takes more than one step, or of a cleanup, when Louis asks for a plan, when a plan grows past ten steps, or when he approves a change while it is being built.
+description: Writes, changes or finishes a plan. Use before the first step of a feature, a cleanup or a fix of more than one step, when Louis asks for a plan, when a plan grows past ten steps, or when he approves a change during the build. Holds the research first, where the plan goes, its sections and four pictures, and its records.
 ---
 
 # Plan a feature

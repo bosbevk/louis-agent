@@ -1,6 +1,6 @@
 ---
 name: ship-it
-description: Commit, push, open a pull request or merge. Use it for every commit, when Louis says push or merge, when a pull request is about to open, and when a branch is named or brought up to date with main. It holds the branch names, the commit message and its template, who a commit is authored as, what runs before a pull request, the checks, and merging only on Louis's word, one pull request at a time.
+description: Commits, pushes, opens a pull request or merges, only on Louis's word and one pull request at a time. Use for every commit, when Louis says push or merge, when a pull request is about to open, and when a branch is named or brought up to date with main. Holds the branch names, the commit message, who a commit is authored as, what runs before a pull request, and the checks.
 ---
 
 # Ship it

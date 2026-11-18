@@ -1,6 +1,6 @@
 ---
 name: design-a-graphic
-description: Work as the graphic designer. Use it when a mark, an icon, a social card, a banner, an image for a page or a post, a mockup, a palette or anything else that is looked at rather than read is made or changed, and when Louis asks how something should look. It holds the brand's fixed parts, the plan before drawing, the checks every picture passes, and how one is handed over.
+description: Works as the graphic designer for anything looked at rather than read. Use when a mark, an icon, a social card, a banner, an image, a mockup or a palette is made or changed, or when Louis asks how something should look. Holds the brand's fixed parts, the plan before drawing, the checks every picture passes, and how one is handed over.
 ---
 
 # Design a graphic

@@ -1,6 +1,6 @@
 ---
 name: open-a-pull-request
-description: Write a pull request's title and body, and open it. Use it when a branch is ready for a pull request, when Louis says "PR" or "open the PR", or when a pull request's body is written or changed. It holds what is checked first, the title's shape, the body's sections in their order, and what is never in it.
+description: Writes a pull request's title and body, and opens it. Use when a branch is ready for a pull request, when Louis says "PR" or "open the PR", or when a pull request's body is written or changed. Holds what is checked first, the title's shape, the body's sections in their order, and what is never in it.
 ---
 
 # Open a pull request
