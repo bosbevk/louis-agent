@@ -93,9 +93,10 @@ the folders under `demos/`.
 ### 3. Selling first, the framework as proof
 
 The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads Home,
-Demos and Contact. Home is there so every page has a plain way back to the landing, since the name in the corner
-doesn't look like a link. The framework's group is kept in the page but hidden until its pages are fixed, and those
-pages still answer at their addresses. At the header's end a three-line button opens the settings, a thin glass bar
+Demos, Theme and Contact. Home is there so every page has a plain way back to the landing, since the name in the
+corner doesn't look like a link. Theme leads to `/framework/theme`, where every button, switch and card the site is
+built from stands working, to press and try, in the look the visitor picked. The rest of the framework's group is
+kept in the page but hidden until its pages are fixed, and those pages still answer at their addresses. At the header's end a three-line button opens the settings, a thin glass bar
 under the header that holds the look switches alone. The CV is reached from the landing's band about who builds it.
 No price stands anywhere a visitor first looks: every quote is made on request.
 

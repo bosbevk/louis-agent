@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX199 · A showcase is only as good as its weakest control
+
+The theme page shows every control a site is built from, and a visitor tries them. Three of its buttons were links
+back to the page itself, so a press did nothing, and the off controls had no words, so they looked broken. A
+showcase that has one dead control makes the whole kit look unfinished. Now each button counts its presses where you
+can see it, an off control says it is off, and the page holds no link at all. That also fixed a quieter fault, since
+the framework's guide had named one site's address. Every control was then pressed in a real browser before it was
+shown. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
 ## FX198 · A way home has to look like one
 
 On every inner page the only way back to the landing was the site's name in the top corner. It did lead home, but

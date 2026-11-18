@@ -18,10 +18,10 @@ public partial class ThemeGuide
     /// <summary>The playing turn's example lines.</summary>
     private static readonly IReadOnlyList<TurnLine> TurnExample =
     [
-        new(TurnLineKind.Prompt, "› what changed in the last commit?", 0),
-        new(TurnLineKind.Think, "thinking · read the log first", 1.2),
-        new(TurnLineKind.Tool, "GitLog", 2.4, "-1"),
-        new(TurnLineKind.Answer, "One file. The header is white glass now.", 3.8)
+        new(TurnLineKind.Prompt, "› are you open on Sunday?", 0),
+        new(TurnLineKind.Think, "thinking · check the hours first", 1.2),
+        new(TurnLineKind.Tool, "ReadHours", 2.4, "sunday"),
+        new(TurnLineKind.Answer, "Yes, from nine to one. Shall I book you a table?", 3.8)
     ];
 
     /// <summary>The steps' example.</summary>
@@ -32,10 +32,25 @@ public partial class ThemeGuide
         new("It's yours.", "Hosted and kept running.")
     ];
 
+    /// <summary>How many times the guide's buttons were pressed, so a press shows it worked.</summary>
+    private int _presses;
+
+    /// <summary>What the pill under the buttons says.</summary>
+    /// <remarks>A switch expression on the count, one arm a case, since there are three (ADR 0051).</remarks>
+    private string PressedText => _presses switch
+    {
+        0 => "Not pressed yet",
+        1 => "Pressed once",
+        _ => $"Pressed {_presses} times"
+    };
+
+    /// <summary>A press of any of the guide's buttons counts.</summary>
+    private void Press() => _presses++;
+
     /// <summary>The term list's example entries.</summary>
     private static readonly IReadOnlyList<Term> Terms =
     [
-        new(["louis-agent.core"], "The engine: the tool loop, the skills and the usage ledger."),
-        new(["louis-agent.web", "louis-agent.web.themes"], "The framework's web and its themes, in `src/web`.")
+        new(["Hours"], "When you are open, day by day."),
+        new(["Services", "Bookings"], "What you offer, and how people book it.")
     ];
 }

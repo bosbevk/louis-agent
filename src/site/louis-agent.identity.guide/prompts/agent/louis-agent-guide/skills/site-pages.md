@@ -13,6 +13,7 @@ someone through one.
 
 - `/`: the landing, a website with an agent, what it does, the demos, custom agents and who builds it.
 - `/contact`: how to reach Louis.
+- `/framework/theme`: Theme in the menu, every button, switch and card a website is built from, working, to try.
 - `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
 - `/cv`: Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.
@@ -26,5 +27,4 @@ someone through one.
 - `/framework/measured`: the numbers, and what drives the project.
 - `/framework/built-on-it`: the demos, what the framework stands on, and the hosts.
 - `/framework/whats-coming`: the planned features, all planned, none built.
-- `/framework/theme`: the theme's component guide, every control a site is built from, live in the picked look.
 - `/chat`: the coding agent's chat, behind a sign-in, not yours to run.

@@ -48,8 +48,9 @@ comes from, what is built on the framework), so when words are not enough, point
   `demos/puls/docs/`, `demos/louis-agent/docs/`, ADR 0030.
 - `/framework/whats-coming`: the planned features by id, each marked planned. Sources: `ROADMAP.md`, `TODO.md`,
   `src/docs/plans/`. Everything there is planned, not built; say so.
-- `/framework/theme`: the theme's component guide: every control a site is built from, live, in the look the
-  visitor picked. Sources: `src/web/louis-agent.web/Components/Site/Guide/`, ADR 0125.
+- `/framework/theme`: Theme in the menu. Every button, switch and card a website is built from, working, in the
+  look the visitor picked; a visitor can press and try each one. Sources:
+  `src/web/louis-agent.web/Components/Site/Guide/`, ADR 0125.
 - `/contact`: how to reach the project. The site's own words.
 - `/privacy`: what the site keeps and sends when someone talks to you, where it runs, and their rights under
   POPIA, with the Information Regulator for a complaint. Send someone who asks what happens to their words or
