@@ -15,7 +15,7 @@ namespace LouisAgent.Site.Tests.Pages;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "Ask the website.")]
+    [TestCase(typeof(HomePage), "/", "Your doors close at five. Your website doesn't.")]
     [TestCase(typeof(HowItWorksPage), "/framework/how-it-works", "One turn, through every layer.")]
     [TestCase(typeof(ArchitecturePage), "/framework/architecture",
         "The whole framework, as the repository is laid out.")]
@@ -112,9 +112,9 @@ public class SitePagesTests
     [TestCase(typeof(ProofPage), "Competition")]
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
-    [TestCase(typeof(HomePage), "That is the end of the tour.")]
+    [TestCase(typeof(HomePage), "Leave your details with Orbi below")]
     [TestCase(typeof(BuiltOnItPage), "The guide")]
-    [TestCase(typeof(HomePage), "closed Docker container")]
+    [TestCase(typeof(HomePage), "sealed box that sees only what you hand it")]
     [TestCase(typeof(HomePage), "href=\"/privacy\"")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(ContactPage), "Custom agents")]
@@ -191,13 +191,14 @@ public class SitePagesTests
     }
 
     /// <summary>The hero's words under its headline, as the design has them.</summary>
-    private const string Summary = "Your doors close at five. Your website doesn't. It answers the question someone asks " +
-                                "at 11 at night and has the booking waiting for you in the morning.";
+    private const string Summary = "It answers the question someone asks at 11 at night, and has their details waiting " +
+                                "for you in the morning.";
 
     /// <summary>
     /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, in the design's words (FX160, Louis:
     /// "replace the red with the green", and of the line above the headline, "take this out"), then "Ask for yours"
-    /// and "See what it does", with nothing under them. No tour button: the guide's bar is at the foot of every page (F151.6, Louis: "these button must
+    /// and "See what it does", with nothing under them. Since the brand research of 2026-11-18 the owner's problem is
+    /// the headline, and the second button leads to the demos, "Watch one work", so they see it before they ask. No tour button: the guide's bar is at the foot of every page (F151.6, Louis: "these button must
     /// go").
     /// </summary>
     [Test]
@@ -211,17 +212,16 @@ public class SitePagesTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.FindAll(".hero .topic"), Is.Empty, "no line above the headline");
-            Assert.That(cut.Find(".hero h1").TextContent, Is.EqualTo("Ask the website."));
+            Assert.That(cut.Find(".hero h1").TextContent, Is.EqualTo("Your doors close at five. Your website doesn't."));
+            Assert.That(cut.FindAll(".hero h1 .headline-line"), Has.Count.EqualTo(2), "one sentence to a line");
             Assert.That(cut.Find(".hero").ClassList, Does.Contain("is-centred"));
             Assert.That(cut.FindAll(".hero .hero-art .mark-states .orb"), Has.Count.EqualTo(1),
                 "the mark, above the words");
             Assert.That(actions, Has.Count.EqualTo(2));
             Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Ask for yours"));
-            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See what it does"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Watch one work"));
             Assert.That(actions[0].GetAttribute("href"), Is.EqualTo("/contact"));
-            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/home/does"));
-            Assert.That(actions[1].GetAttribute("data-section"), Is.EqualTo("does"),
-                "a move within the page, which the frame makes, as the index's links do");
+            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/demos"));
             Assert.That(cut.Find(".hero .summary").TextContent, Is.EqualTo(Summary));
             Assert.That(cut.FindAll(".hero p.muted"), Is.Empty, "no note under the words");
             Assert.That(cut.FindAll(".hero .hero-aside"), Is.Empty, "nothing under the buttons");

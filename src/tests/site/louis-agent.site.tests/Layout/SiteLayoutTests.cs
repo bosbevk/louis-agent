@@ -200,7 +200,10 @@ public class SiteLayoutTests
         });
     }
 
-    /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
+    /// <summary>
+    /// The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand"), and says what the site
+    /// is to a business owner when the name doesn't (the brand research of 2026-11-18).
+    /// </summary>
     [Test]
     public void TheSlogan_SitsUnderTheBrand()
     {
@@ -208,7 +211,7 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because you can"));
+        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("The website that answers."));
     }
 
     /// <summary>
@@ -226,15 +229,15 @@ public class SiteLayoutTests
         Assert.That(link.TextContent.Trim(), Is.EqualTo("Privacy"));
     }
 
-    /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
+    /// <summary>The footer carries the same slogan as the header, so the site says one thing.</summary>
     [Test]
-    public void TheFooter_SaysWhyItIsCSharp()
+    public void TheFooter_CarriesTheSlogan()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because you can"));
+        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("The website that answers."));
     }
 
     /// <summary>

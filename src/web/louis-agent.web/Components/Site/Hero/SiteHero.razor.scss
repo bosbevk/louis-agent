@@ -17,6 +17,10 @@
     letter-spacing: -.04em;
     text-wrap: balance;
 }
+/* A headline in lines: each sentence on its own line, a size smaller so two lines and the buttons fit the first
+   screen. A line still wraps on a narrow screen, where it must. */
+.hero-text h1.in-lines { font-size: clamp(44px, 5.6vw, 104px); text-wrap: wrap; }
+.hero-text h1 .headline-line { display: block; }
 /* A size bigger than the design's 20px (Louis: "make this font bigger"). */
 .hero-text .summary { font-size: 28px; }
 

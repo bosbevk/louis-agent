@@ -167,7 +167,7 @@ A prompt is behaviour. Moving a sentence can change an answer, and F129 showed i
 demand it stopped opening pages, until an index went back in. So no rewrite is kept on a test's word alone.
 
 - **Free, at every step.** The word count before and after. The golden file of what the model reads, its diff
-  reviewed. The word-level tests that pin a prompt (`LouisVoiceTests`, the cook's eval tests), changed in the same
+  reviewed. The word-level tests that pin a prompt (`OrbiVoiceTests`, the cook's eval tests), changed in the same
   commit where a pinned phrase moved. And an inventory in the pull request: every sentence of the old file, and
   where it is in the new one.
 - **Paid, on Louis's go each time.** The identity's eval, live, on the prompt before and on the prompt after: the
@@ -248,7 +248,7 @@ No project or folder is added, so this is a map of files.
 | `demos/puls/identity/louis-agent.identity.puls/prompts/specialists/puls-cook.md` | Reordered, then smaller | 3, 4 |
 | The recipes, shop-prices and where-to-buy packs' guides or tool texts | What the cook hands them, if choice 3 says so | 4 |
 | `src/site/louis-agent.identity.guide/prompts/agent/louis-agent-guide/voice.md` and its `skills/` | Reordered, then smaller | 5, 6 |
-| The golden files, `LouisVoiceTests`, the cook's eval tests | Follow each prompt | 2 to 6 |
+| The golden files, `OrbiVoiceTests`, the cook's eval tests | Follow each prompt | 2 to 6 |
 | `src/docs/learning/03-prompt-design.md` | New: the first write-up of skill 3 | 7 |
 
 ### Namespace map
@@ -281,7 +281,7 @@ for Louis's review.
    the size rule and off the list. *Test:* for a tool's new text, the tool's own test first; for skills below the
    agent, the loader's tests first. *Check:* the paid measure again, against step 3's numbers.
 5. **The guide's voice, in the new order.** As step 3, for `voice.md`: its never-rules first and said once, *How
-   you answer* in short points. *Check:* `LouisVoiceTests`, the golden diff, and the six questions on the local
+   you answer* in short points. *Check:* `OrbiVoiceTests`, the golden diff, and the six questions on the local
    site, before and after.
 6. **The guide's voice, smaller.** Open choice 4 first. Then what the pick names moves out, an index line kept in
    for anything the guide must know exists (ADR 0114). *Check:* as step 5, and the fixed prefix in tokens before

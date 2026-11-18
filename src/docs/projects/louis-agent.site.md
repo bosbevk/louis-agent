@@ -101,16 +101,23 @@ every quote is made on request.
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
 large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
 that says what each one means, and a visitor who presses a state's button holds it there. Under the mark come the
-headline "Ask the website.", a few words on what we build, a website that answers for a business, and two buttons,
-"Ask for yours" and "See what it does", which goes to that section. Under the hero runs the tape, one line of what
-the agents did that never stops. Then comes what it does, as four glass cards, then where it runs, three cards for
-your server, your model and your data. In the middle stands the brand: the idea that the mark is the agent itself,
-the mark large with the name on black, white, violet and glass, and the theme beside it, which leads to its page.
-None of its panels can be picked to ask the guide about. Then come the demos, three photographs fanned out, each in a glass window with its
+headline "Your doors close at five. Your website doesn't.", which opens on the owner's problem rather than on what we
+sell. A line under it says what changes for them: the question asked at 11 at night is answered, and the person's
+details wait for them in the morning. Two buttons follow, "Ask for yours", which goes to the contact page, and
+"Watch one work", which goes to the demos so they see it before they ask. Under the hero runs the tape, one line of what
+the agents did that never stops. Then comes what it does, as four glass cards, "It does more than chat.", each card
+something the owner can watch happen. Where it runs comes next, "Your data stays in South Africa.": we host it in
+Azure's South African region, a bigger business may keep it on its own servers, and the data stays where it is put.
+In the middle stands the brand, "Meet Orbi.": the violet ball at the foot of the page is the agent, Orbi, and the
+owner's agent gets a name and a look of its own. The mark stands large with the name on black, white, violet and
+glass, and the looks beside it lead to the theme's page. None of its panels can be picked to ask the guide about. Then come the demos, three photographs fanned out, each in a glass window with its
 business's made-up address in the bar. The one a visitor picks, or the guide shows, comes to the front. Custom agents come next: a
 product window plays the guesthouse, the restaurant and the law practice in turn, each its own page with its agent
-answering a visitor from its recorded talk, drawing the request and sending it on a yes. The last strip asks the
-agent to take the visitor's details, or leads to the contact page. The framework itself has no band on the landing:
+answering a visitor from its recorded talk, drawing the request and sending it on a yes. Then comes who builds it,
+the one place on the landing that names Louis: the framework's profile hero in a band, with his photo, "Built by
+Louis Marais in Malmesbury.", a line on what he does for the owner, and a button to his CV. A small owner buys from a
+person, which is why it is there. The last strip asks Orbi to take the visitor's details, or "Write to us" leads to
+the contact page, and says each business is quoted after a short call. The framework itself has no band on the landing:
 its pages are its own, and the menu's group for them is hidden for now.
 
 The framework's rule lives at `/framework/measured`, and its short film and four concepts at
@@ -261,11 +268,11 @@ Beside the site's name in the header stands its stage, a small "alpha-1" flag. A
 that this is version alpha-1 and a visitor may run into inconsistencies while it is built, with a way to the
 contact page; a press anywhere else closes it.
 
-Louis at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
+Orbi at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
 framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,
 and the site's three questions as chips over it. So the visitor meets one guide on the site's pages and in the showroom alike, and no page has a
 button of its own to start a tour: the first chip asks for a walk through the page in view. The widget is titled
-"Louis · AI", and hides its work (`ShowWork="false"`). Its bar opens under the pointer on its orb, and its fourth
+"Orbi · AI", and hides its work (`ShowWork="false"`). Its bar opens under the pointer on its orb, and its fourth
 chip leads into the framework. On a screen wide enough, Louis's LinkedIn stands in the screen's bottom-right corner
 as a small link, the framework's `CornerLink`. The address comes from `SiteFacts`, which also tells search engines
 about it.
@@ -317,10 +324,15 @@ These are the types involved:
 
 ## The slogan
 
-**100% C#, because you can.** It sits under the brand in the header (the frame's `Tagline` slot) and in the footer.
-It's the one line the site says about itself.
+**The website that answers.** It sits under the brand in the header (the frame's `Tagline` slot) and in the footer.
+It's the one line the site says about itself, and it says what the site is when the name doesn't. The home page is
+for a small business owner, so the line is written for them, not for a developer.
 
-*Decided in:* FX79.
+The tab and the link preview speak to the same owner. The page's title is "louis-agent · the website that answers".
+Its description says what it does for their business in two short sentences. A shared link shows the hero's own
+line, "Your doors close at five. Your website doesn't." Developers find the framework from the framework's pages.
+
+*Decided in:* FX79, the brand research of 2026-11-18.
 
 ## The one rule
 

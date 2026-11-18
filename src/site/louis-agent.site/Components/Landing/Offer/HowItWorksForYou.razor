@@ -1,9 +1,9 @@
-@* Where it runs (F128.1, as the design page has it): your server, your model and your data, configured on the
-   framework's band and tiles (ADR 0125). *@
-<Band Id="for-you" Topic="where it runs" Title="Yours to run, wherever you like." Summary="It is built on louis-agent, our own framework in C#. It runs on your own hardware or in your own cloud account, with the model you choose.">
+@* Where it runs (F128.1, rewritten for an owner on 2026-11-18): we host it here, a bigger business may keep it on
+   its own servers, and the data stays where it is put, configured on the framework's band and tiles (ADR 0125). *@
+<Band Id="for-you" Topic="where it runs" Title="Your data stays in South Africa." Summary="We host it for you in Azure's South African region. A bigger business can run it on its own servers instead.">
     <TileRow>
-        <Tile Icon="DiagramIcon.Server" Title="Your server">One container, on your hardware or in your cloud.</Tile>
-        <Tile Icon="DiagramIcon.Settings" Title="Your model" Delay="1">A hosted model, or one running on your own machine.</Tile>
+        <Tile Icon="DiagramIcon.Server" Title="We host it">Your site and its agent run in one sealed box that sees only what you hand it.</Tile>
+        <Tile Icon="DiagramIcon.Settings" Title="Or on your own servers" Delay="1">A bigger business can keep it in-house, with a model of its own.</Tile>
         <Tile Icon="DiagramIcon.Database" Title="Your data" Delay="2" Text="It stays where you put it. This site runs in Azure's South African region, and says plainly what it keeps.">
             <Actions>
                 <LinkButton Href="/privacy" Text="What this site keeps" Kind="ButtonKind.Quiet" />
