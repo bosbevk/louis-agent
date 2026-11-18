@@ -209,6 +209,9 @@ public partial class AgentBar : IAsyncDisposable
         StateHasChanged();
     }
 
+    /// <summary>The hover opened the box and nothing else keeps it, so a press there is the visitor's first.</summary>
+    private bool OpenedByThePointerAlone => _pointerOver && !_held;
+
     /// <summary>The bar's classes: closed to the orb alone until one side needs the other.</summary>
     private string BarClasses => Opening.Open ? "agent-bar" : "agent-bar is-closed";
 
@@ -217,11 +220,12 @@ public partial class AgentBar : IAsyncDisposable
 
     /// <summary>
     /// The visitor pressed the orb: a closed box opens and they are put in it; an open one closes again (Louis: "when
-    /// i click it again it must close"), its standing answer put away with it, unless the guide is still answering.
+    /// i click it again it must close"), its standing answer put away with it, unless the guide is still answering. A
+    /// box only the pointer opened is the visitor's first press, so it holds it open (FX205).
     /// </summary>
     private async Task HoldOpenAsync()
     {
-        if (Opening.Open)
+        if (Opening.Open && !OpenedByThePointerAlone)
         {
             await CloseAsync();
             return;

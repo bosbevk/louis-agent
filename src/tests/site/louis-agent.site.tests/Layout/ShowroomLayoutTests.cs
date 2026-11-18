@@ -26,7 +26,7 @@ public class ShowroomLayoutTests
             Assert.That(cut.FindAll(".agent-chips button").Select(chip => chip.TextContent),
                 Is.EqualTo(new[]
                 {
-                    "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+                    "Walk me through this page", "Which demo is like my business?", "How do I get one?",
                     "Tell me about the framework"
                 }));
         });
@@ -49,7 +49,7 @@ public class ShowroomLayoutTests
             Assert.That(cut.FindAll(".agent-chips button").Select(chip => chip.TextContent),
                 Is.EqualTo(new[]
                 {
-                    "Walk me through this page", "Which demo is like my business?", "What does it cost?",
+                    "Walk me through this page", "Which demo is like my business?", "How do I get one?",
                     "Tell me about the framework"
                 }));
         });

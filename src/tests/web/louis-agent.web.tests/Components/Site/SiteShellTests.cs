@@ -140,6 +140,17 @@ public class SiteShellTests
         });
     }
 
+    /// <summary>FX205: the slogan stays on one line, on a phone too, since a slogan split in two reads as two.</summary>
+    [Test]
+    public void TheTagline_StaysOnOneLine()
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
+        int tagline = rules.IndexOf(".site-tagline {", StringComparison.Ordinal);
+
+        Assert.That(rules[tagline..rules.IndexOf('}', tagline)], Does.Contain("white-space: nowrap;"));
+    }
+
     /// <summary>
     /// The links go in the header's menu, and the actions come after them, both in the sheet a phone opens from the
     /// menu button (F151.6); on a wider screen the sheet is no box of its own, so they stand in the header's row.

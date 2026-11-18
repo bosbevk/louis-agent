@@ -105,6 +105,38 @@ public class AgentBarTests
         Assert.That(cut.Find(".agent-bar").ClassList, Does.Contain("is-closed"));
     }
 
+    /// <summary>
+    /// FX205: on a site that opens under the pointer, the press that follows the hover keeps the box open and puts
+    /// the visitor in it. The hover opened it, so the press is the visitor's first, not a second one.
+    /// </summary>
+    [Test]
+    public void OnASiteThatPickedHover_APressAfterTheHover_KeepsTheBoxOpen()
+    {
+        using var ctx = Context();
+        ctx.Services.AddSingleton(new BarOpening(BarOpens.Hover));
+        var cut = Bar(ctx);
+
+        cut.Find("button.agent-open").MouseEnter();
+        cut.Find("button.agent-open").Click();
+
+        Assert.That(cut.Find(".agent-bar").ClassList, Does.Not.Contain("is-closed"));
+    }
+
+    /// <summary>FX205: after that press, the next one closes it, as on every site.</summary>
+    [Test]
+    public void OnASiteThatPickedHover_ASecondPress_ClosesTheBox()
+    {
+        using var ctx = Context();
+        ctx.Services.AddSingleton(new BarOpening(BarOpens.Hover));
+        var cut = Bar(ctx);
+
+        cut.Find("button.agent-open").MouseEnter();
+        cut.Find("button.agent-open").Click();
+        cut.Find("button.agent-open").Click();
+
+        Assert.That(cut.Find(".agent-bar").ClassList, Does.Contain("is-closed"));
+    }
+
     /// <summary>FX172: a second press on the orb closes the box again (Louis: "when i click it again it must close").</summary>
     [Test]
     public void ASecondPressOnTheOrb_ClosesTheBox()
