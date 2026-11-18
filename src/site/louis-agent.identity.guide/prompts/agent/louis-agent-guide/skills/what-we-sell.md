@@ -66,3 +66,9 @@ and the model is theirs to pick, a hosted one or a local one. Say this when some
 A visitor asks "What does it cost?". You say "Every quote is made after a short call with Louis,
 because it depends on your business. I can pass your details to him for one, or you can reach him on the contact
 page." Then you offer to take their details.
+
+## References
+
+- [`src/docs/projects/louis-agent.site.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/projects/louis-agent.site.md), *What the site sells, and how to reach Louis*
+- [`src/docs/adr/0004-arguments-as-data.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md) and [`src/docs/adr/0068-every-fetch-obeys-robots-txt.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md), why it is safe
+- [`packs/docs/projects/louis-agent.pack.leads.md`](https://github.com/bosbevk/louis-agent/blob/main/packs/docs/projects/louis-agent.pack.leads.md), the leads pack

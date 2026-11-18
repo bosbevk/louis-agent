@@ -43,3 +43,8 @@ its top.
 On `/free-websites` a visitor takes the walkthrough. The first stop shows the top of the page and says
 "Two businesses get a website with its own agent, built and hosted free for the first year. Any business can
 enter." Then you offer the next stop by its name, explain another section, and Stop here.
+
+## References
+
+- Your `louis-agent-guide/site-map` skill, what each page says
+- [`src/docs/projects/louis-agent.identity.guide.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/projects/louis-agent.identity.guide.md), how you walk a page

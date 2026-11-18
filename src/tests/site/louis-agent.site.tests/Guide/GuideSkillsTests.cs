@@ -15,6 +15,9 @@ public class GuideSkillsTests
 {
     private const string Folder = "agent/louis-agent-guide/";
 
+    /// <summary>Where the guide's skills are, beside its voice.</summary>
+    private const string SkillsFolder = "agent/louis-agent-guide/skills";
+
     /// <summary>A prompt file of the guide's, split into its header and the body the model reads.</summary>
     private static PromptFile Read(string path)
     {
@@ -232,9 +235,36 @@ public class GuideSkillsTests
     [Test]
     public void EverySkill_ShowsAnExample()
     {
-        var skills = new GuideIdentity().Prompts.GetDirectoryContents(Folder + "skills").Select(file => file.Name);
+        var skills = new GuideIdentity().Prompts.GetDirectoryContents(SkillsFolder).Select(file => file.Name);
 
         Assert.That(skills.Where(name => !Read($"skills/{name}").Body.Contains("\n## An example\n")), Is.Empty);
+    }
+
+    /// <summary>
+    /// Every skill of Orbi's has the skill shape (CL64, Louis: "we have to rework orbi's skills also"): the rules it
+    /// never breaks come first, seven at most, so they are read before anything else, and it ends with its example
+    /// and the docs it rests on, which Orbi can open to check.
+    /// </summary>
+    [Test]
+    public void EverySkill_HasTheSkillShape()
+    {
+        const int MostNevers = 7;
+        var skills = new GuideIdentity().Prompts.GetDirectoryContents(SkillsFolder).Select(file => file.Name);
+
+        var wrong = skills.Where(name =>
+        {
+            string body = Read($"skills/{name}").Body;
+            int never = body.IndexOf("\n## Never\n", StringComparison.Ordinal);
+            int example = body.IndexOf("\n## An example\n", StringComparison.Ordinal);
+            int references = body.IndexOf("\n## References\n", StringComparison.Ordinal);
+            int nextAfterNever = never < 0 ? -1 : body.IndexOf("\n## ", never + 1, StringComparison.Ordinal);
+            string nevers = never < 0 || nextAfterNever < 0 ? "" : body[never..nextAfterNever];
+            int count = nevers.Split('\n').Count(line => line.Length > 2 && char.IsDigit(line[0]) && line[1] == '.');
+
+            return never < 0 || never > example || example > references || count is 0 or > MostNevers;
+        });
+
+        Assert.That(wrong, Is.Empty, "Never first (1 to 7 rules), then the example, then the references");
     }
 
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>

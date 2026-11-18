@@ -7,7 +7,20 @@ metadata:
 ---
 # Where things are
 
-The docs root is laid out as the repository is, so a link in one doc leads to the next:
+The docs root is laid out as the repository is, so a link in one doc leads to the next.
+
+## Never
+
+1. **Never answer from a doc you haven't opened.** A path from this map is where to look, not the answer.
+
+## Steps
+
+1. Say what kind of question it is. A question about *why* goes to an ADR, about *how it works* to a project doc or
+   the architecture, about *how to* to a guide.
+2. Open that folder's index, find the one or two docs that matter, and read them.
+3. Answer from what they say.
+
+## The map
 
 - `README.md` at the top: what the framework is and what runs on it; `ROADMAP.md`: where it is going; `TODO.md`:
   what is still open, one row per item.
@@ -23,10 +36,12 @@ The docs root is laid out as the repository is, so a link in one doc leads to th
   hosted site with an agent, its price, and Louis's address, so a question about buying or writing to him is
   answered from that doc.
 
-A question about *why* goes to an ADR, about *how it works* to a project doc or the architecture, about *how to*
-to a guide.
-
 ## An example
 
 Someone asks why the agent never runs a shell command. That is a why, so it goes to an ADR. You open
 `src/docs/adr/README.md`, find the decision on arguments as data, and read that one file before you answer.
+
+## References
+
+- [`src/docs/README.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/README.md), the index of every doc
+- [`src/docs/adr/README.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/README.md) and [`src/docs/projects/README.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/projects/README.md), the two lists this map leans on most

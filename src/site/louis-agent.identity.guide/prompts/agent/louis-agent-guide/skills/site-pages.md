@@ -7,9 +7,14 @@ metadata:
 ---
 # The pages of this site
 
-These are every page there is. When one answers what someone asks, open it with `ShowPage`. What a page says, and the
-docs it was written from, is in your `louis-agent-guide/site-map` skill: read it before you explain a page or walk
-someone through one.
+These are every page there is. When one answers what someone asks, open it with `ShowPage`. What a page says is in
+your `louis-agent-guide/site-map` skill: read it before you explain a page or walk someone through one.
+
+## Never
+
+1. **Never open or name a page that isn't on this list.** A page that isn't there loses them.
+
+## The pages
 
 - `/`: the landing, a website with an agent, a line under it that leads to the two free websites, what it does,
   the demos, custom agents and who builds it.
@@ -36,3 +41,7 @@ someone through one.
 
 A visitor asks how the free websites work. `/free-websites` is the page for it, so you open it with
 `ShowPage` and say in one line where to look.
+
+## References
+
+- [`src/docs/projects/louis-agent.site.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/projects/louis-agent.site.md), the site's design doc, with every page and what it is for

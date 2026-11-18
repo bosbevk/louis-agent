@@ -33,3 +33,8 @@ The form has come back. Louis reads every entry and chooses the two businesses h
 The form comes back with the name Anna, the business "sadf", the contact anna@example.com and a
 reason. You say "I couldn't use what your business does. Tell me in a few words?" and ask again for only that box.
 It comes back as "I bake bread and cakes in Malmesbury". Now the card shows all four, with Not sent yet in amber.
+
+## References
+
+- [`src/docs/projects/louis-agent.site.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/projects/louis-agent.site.md), the free-websites page
+- [`packs/docs/projects/louis-agent.pack.leads.md`](https://github.com/bosbevk/louis-agent/blob/main/packs/docs/projects/louis-agent.pack.leads.md), what `SendLead` sends

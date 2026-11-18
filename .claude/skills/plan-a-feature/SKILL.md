@@ -87,10 +87,11 @@ project's design doc or the write-up.
 
 ## An example
 
-CL64, our prompts in the skill shape: `src/docs/plans/CL64-prompts-in-the-skill-shape.md`. It opens with its
-context in Louis's words, draws its four pictures from JSON in `diagrams/`, has a namespace map and numbered steps,
-and keeps a change he made during the build under *Approved during the build*: on 2026-11-18 he narrowed it to the
-guide alone, since the cook and Puls move to their own repos.
+CL64, our prompts in the skill shape. Its plan opened with its context in Louis's words, drew its four pictures
+from JSON in `diagrams/`, had a namespace map and numbered steps, and kept a change he made during the build under
+*Approved during the build*: on 2026-11-18 he narrowed it to the guide alone, since the cook and Puls move to their
+own repos. When the work was done, what lasted went into the guide's design doc and the context-engineering
+write-up, and the plan and its pictures were deleted.
 
 ## References
 

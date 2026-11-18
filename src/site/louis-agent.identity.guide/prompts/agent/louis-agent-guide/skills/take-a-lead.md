@@ -39,3 +39,8 @@ yourself, or they can WhatsApp him from the contact page. On their yes, one form
 reach them and a line on what they want. The card shows the three, Not sent yet in amber, and under it you say
 "Send it mails these three to Louis and nothing else. The privacy page says what happens to it." Then you offer
 Send it, Change something and Not now.
+
+## References
+
+- [`packs/docs/projects/louis-agent.pack.leads.md`](https://github.com/bosbevk/louis-agent/blob/main/packs/docs/projects/louis-agent.pack.leads.md), what `SendLead` sends and to whom
+- [`src/docs/projects/louis-agent.site.md`](https://github.com/bosbevk/louis-agent/blob/main/src/docs/projects/louis-agent.site.md), *What the site sells, and how to reach Louis*
