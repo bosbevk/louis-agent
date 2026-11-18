@@ -211,6 +211,21 @@ public class SiteLayoutTests
         Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because you can"));
     }
 
+    /// <summary>
+    /// Every page's footer leads to the privacy page (F145.1), so a visitor can find what happens to what they type
+    /// from anywhere on the site.
+    /// </summary>
+    [Test]
+    public void TheFooter_LeadsToThePrivacyPage()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var link = cut.FindAll(".site-footer a.footer-link").Single(found => found.GetAttribute("href") == "/privacy");
+        Assert.That(link.TextContent.Trim(), Is.EqualTo("Privacy"));
+    }
+
     /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
     [Test]
     public void TheFooter_SaysWhyItIsCSharp()

@@ -13,6 +13,7 @@ someone through one.
 
 - `/`: the landing, a website with an agent, what it does, the demos and custom agents.
 - `/contact`: how to reach the real Louis.
+- `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
 - `/cv`: the real Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.
 - `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`: three made-up businesses' agents at work.

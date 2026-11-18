@@ -160,4 +160,13 @@ public class LouisVoiceTests
     public void WantingToTalkToTheRealLouis_IsALead() =>
         Assert.That(Voice(), Does.Contain("or wants to talk to the real Louis")
             .And.Contain("offer to pass it on yourself"));
+
+    /// <summary>
+    /// Before a visitor sends their details, he says what Send it does and where the privacy page is (F145.1), so
+    /// they agree knowing what happens to it, as POPIA asks.
+    /// </summary>
+    [Test]
+    public void BeforeALeadIsSent_HeSaysWhatSendingDoes() =>
+        Assert.That(Voice(), Does.Contain("say in one plain sentence what Send it does")
+            .And.Contain("the privacy page says what happens to it"));
 }
