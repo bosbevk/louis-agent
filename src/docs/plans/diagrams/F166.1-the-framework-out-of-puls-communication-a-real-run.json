@@ -1,0 +1,21 @@
+{
+  "kind": "sequence",
+  "title": "F166.1: an integration test starts a real eval run",
+  "caption": "The test asks the API to run an eval; the API starts the test runner, a small program on the framework's runner library and the test agent, and reads its results back.",
+  "sequence": {
+    "participants": [
+      { "id": "test", "label": "An integration test", "actor": true, "tone": "blue" },
+      { "id": "api", "label": "The API, in memory", "icon": "server", "tone": "violet" },
+      { "id": "runner", "label": "api.test-runner", "icon": "play", "tone": "green" },
+      { "id": "agent", "label": "TestAgent", "icon": "chip", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "test", "to": "api", "text": "start a run of the sample eval" },
+      { "step": "message", "from": "api", "to": "runner", "text": "starts the process RunnerBuild found" },
+      { "step": "message", "from": "runner", "to": "agent", "text": "each case, on the framework's runner" },
+      { "step": "reply", "from": "agent", "to": "runner", "text": "the answers, scored by the checks" },
+      { "step": "reply", "from": "runner", "to": "api", "text": "the run's records" },
+      { "step": "reply", "from": "api", "to": "test", "text": "the run, as the eval studio sees it" }
+    ]
+  }
+}

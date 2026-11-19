@@ -1,0 +1,21 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F166.1: the test host in memory",
+  "caption": "One test's host holds the API with a catalogue of framework parts only: the test agent, any identity the test adds, and the web, calculator and test packs.",
+  "flow": {
+    "nodes": [
+      { "id": "test", "shape": "terminal", "icon": "user", "tone": "blue", "label": "a test\nApiTestHost.Build(...)" },
+      { "id": "app", "icon": "server", "tone": "violet", "label": "the API\nin memory" },
+      { "id": "catalog", "icon": "stack", "tone": "green", "label": "AgentCatalog" },
+      { "id": "identity", "icon": "chip", "tone": "green", "label": "TestAgent.Identity\nand any the test adds" },
+      { "id": "packs", "icon": "box", "tone": "violet", "label": "web, calculator, TestTools\nand any the test adds" }
+    ],
+    "edges": [
+      { "from": "test", "to": "app" },
+      { "from": "app", "to": "catalog" },
+      { "from": "catalog", "to": "identity" },
+      { "from": "catalog", "to": "packs" }
+    ]
+  }
+}

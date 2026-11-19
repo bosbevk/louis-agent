@@ -1,0 +1,26 @@
+{
+  "kind": "classes",
+  "title": "F166.1: the interface design",
+  "caption": "The API's test host builds its agent from framework fakes and packs instead of Puls, and finds a test runner of its own; nothing in the tests names a product.",
+  "classes": {
+    "types": [
+      { "id": "host", "name": "ApiTestHost", "kind": "static, louis-agent.api.testing", "tone": "green",
+        "members": [ "+Build(...)", "agent: TestAgent (step 1)" ] },
+      { "id": "agent", "name": "TestAgent", "kind": "static, new, step 1", "tone": "green",
+        "members": [ "+Identity", "+Packs: web, calculator, TestTools" ] },
+      { "id": "fake", "name": "FakeIdentity", "kind": "louis-agent.testing", "tone": "violet" },
+      { "id": "runnerbuild", "name": "RunnerBuild", "kind": "static, step 3", "tone": "green",
+        "members": [ "+Dll: the test runner's" ] },
+      { "id": "testrunner", "name": "louis-agent.api.test-runner", "kind": "new program, step 3", "tone": "green" },
+      { "id": "runner", "name": "louis-agent.evals.runner", "kind": "the framework's runner library", "tone": "violet" },
+      { "id": "pulsid", "name": "PulsIdentity", "kind": "no longer used here", "tone": "amber" }
+    ],
+    "relations": [
+      { "from": "host", "to": "agent", "kind": "uses", "word": "builds with" },
+      { "from": "agent", "to": "fake", "kind": "uses" },
+      { "from": "runnerbuild", "to": "testrunner", "kind": "uses", "word": "finds" },
+      { "from": "testrunner", "to": "runner", "kind": "uses", "word": "builds" },
+      { "from": "testrunner", "to": "agent", "kind": "uses" }
+    ]
+  }
+}
