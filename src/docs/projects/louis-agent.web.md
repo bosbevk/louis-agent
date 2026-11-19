@@ -1,8 +1,11 @@
 # louis-agent.web — design
 
 > **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
-> **References:** Markdig, Net.Codecrete.QrCodeGenerator, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
-> louis-agent.code-review, louis-agent.puls and louis-agent.starter
+> **References:** louis-agent.composition, louis-agent.choices, louis-agent.session-stream, louis-agent.api.contracts,
+> louis-agent.diagrams and louis-agent.diagrams.engine; Markdig, Net.Codecrete.QrCodeGenerator,
+> Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site: louis-agent.site,
+> louis-agent.site-framework, louis-agent.code-review, louis-agent.puls and louis-agent.starter; the web libraries
+> beside it (accounts, evals, places, docs, framework, themes); and the packs' own views under `packs/web/`
 > **Also shows:** `component`, `sequence`
 
 ![The framework's web, and its parts: the chat's frame, the admin's frame, the site's parts, styles and scripts, and the seams](diagrams/louis-agent.web.svg)
@@ -34,7 +37,7 @@ any page can use. *Structure*, further down, goes folder by folder, for looking 
 ### 1. A site says what it has
 
 A site never builds or registers the framework's parts itself. It names its **areas**, in one call, and the
-framework does the rest. This is the framework's own site:
+framework does the rest. This is louis-agent.dev's, cut short:
 
 ```csharp
 builder.Services.AddSiteAreas(areas => areas
@@ -248,7 +251,7 @@ round it, showing rings go out from it, and speaking it pulses. Which state it s
 that reads only what the chat says of itself: a place the agent just showed, then whether it is streaming, then
 whether the answer's words have come. Only when the agent is doing none of those does it listen, while the visitor
 has words in the box or holds a piece of the page they picked. So the orb never shows a state the agent isn't in.
-The disc is 46 pixels across with 14 of room round it, which makes the bar 74 high. Its rings keep close to the
+The ball is 68 pixels across with 14 of room on every side, which makes the bar 96 high. Its rings keep close to the
 disc in every
 state, and the bar's row cuts whatever glow would still reach past its edge, so the orb's light stays inside the
 bar.
@@ -751,7 +754,7 @@ page's words, every page's places by address and the menu as links with each new
 the hint is a question to tap, the stage's cues wait where a page has them, and no usage line shows. The mock's chat and the guide's minimise
 and maximise with the same buttons.
 
-*Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`, F134.4's `AHeldPlay` tests.
+*Held by:* `RecordedChatTests`, among them `AHeldPlay_WaitsUntilLetGo`, `RecordingPaceTests` and `TurnReplayTests`.
 
 *Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons), F160 (a turn at a time),
 [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md),
@@ -1032,7 +1035,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `Admin/Reset/`, Reset my session, `SessionReset` and its button `ResetSession` with its module (F153); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
-| `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
+| `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; `AdminHome`, the admin's home, `Overview` and `Packs`; the eval pages are in `louis-agent.web.evals` |
 | `Components/Imports/` | `ImportCard`, an upload by default, and `ImportForm`, the rules of when a preview or a save may run |
 | `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice`, `Toast` |
 | `Components/Chat/Shell/` | `ChatShell`, the whole frame, with `ChatOpening` and `ChatShellEmpty`, the two records it hands a site, and `ChatHandoff`, how a screen's button opens the chat with a draft |
@@ -1096,7 +1099,7 @@ unset, and `IndexLook`, which each site's own tests use to hold its `index.html`
 
 *Decided in:* CL57.
 
-## Limits and plans
+## Limits
 
 Some things are left out on purpose. There's no landing page, because that's what makes a site itself. There's no
 NuGet package for the framework or the template, since the template works inside this repo until packages exist.
@@ -1104,9 +1107,8 @@ There's no screen served as an MCP App, because no plan names one. Bulk selectio
 or dates, wait until a second screen needs them. And a view can't be swapped without a rebuild, since a custom
 component is built in, though a description isn't.
 
-`Chats/` holds eleven files and `Components/Chat/` ten, over the "about six" of
-[ADR 0034](../adr/0034-code-a-person-can-maintain.md). The next time they change, split them by concern, with the
-records apart from the stream's folding.
+`Chats/` holds sixteen files at its top, well over the "about six" of
+[ADR 0034](../adr/0034-code-a-person-can-maintain.md), with the records and the stream's folding side by side.
 
 `UsageFormat` repeats core's `UsageText` number rules, so a change to one must be made in both (see
 [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)).
