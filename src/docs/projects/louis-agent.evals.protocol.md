@@ -1,8 +1,9 @@
 # louis-agent.evals.protocol — design
 
 > **Kind:** contracts library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.protocol/` · **References:**
-> louis-agent.choices only · **Used by:** louis-agent.evals (the writer), louis-agent.api (the reader and the
-> export), louis-agent.web and louis-agent.puls (the live view)
+> louis-agent.choices only · **Used by:** louis-agent.evals (the writer), louis-agent.evals.checks (the kinds a grade
+> carries), louis-agent.api.evals (the reader, the store and the export), louis-agent.web.evals (the live view), and
+> louis-agent.api
 > **Also shows:** `component`, `sequence`
 
 ![The eval protocol: one event per line, the run's and the conversation's events, and its choices as enums](diagrams/louis-agent.evals.protocol.svg)
@@ -15,6 +16,9 @@ the contract between them, version 2: the records the runner writes on stdout an
 Both sides use the very same types. So if one side renames a field, the other side fails to compile, instead of
 quietly showing an empty column. It's records and enums only, with no behaviour. It references nothing but
 `louis-agent.choices`, so each side can take it without dragging in the others.
+
+The rest of this doc goes through the contract in the order a run writes it: the line format, the run's own events,
+each conversation's events, how words and fields are spelled, and what happens to a line that isn't an event.
 
 *Decided in:* [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md).
 
@@ -54,8 +58,9 @@ are our own, not OpenTelemetry's `gen_ai.*`.
 ### 5. A line that isn't an event is for people
 
 Not every line on stdout is an event. `EvalProtocolJson.Read` returns null for any line that isn't a JSON object
-with a known `event`, and the live view just shows it as a log line. `Line` writes an event. Both use one options
-object, so reading and writing always agree.
+with a known `event`, and the live view just shows it as a log line. It's strict about the contract, so a missing
+field, or a null where the record has none, isn't an event either. `Line` writes an event. Both use one options
+object, so reading and writing always agree. Enums are read by their names only, never as numbers.
 
 ![The eval protocol: written as JSON lines, read by the API and the web](diagrams/louis-agent.evals.protocol-diagrams.svg)
 
@@ -88,12 +93,16 @@ The tests are in `src/tests/evals/louis-agent.evals.protocol.tests`. They check 
 through `EvalProtocolJson`, that `event` comes first, that the time is written with a `Z`, and that a person's line
 and an unknown event both read as none.
 
-Two more tests pin the sides down: the harness's writer is held to a golden file in `louis-agent.evals.tests`, and
-the API's reader in its `RecordedV2RunTests`.
+Two more tests pin the sides down. The harness's writer is tested in `louis-agent.evals.tests`
+(`ProtocolWriterTests`), which reads each line back with the contract's own reader, so the tests hold the records and
+never the JSON text. The API's recording of a run is tested in `RecordedV2RunTests`, in the Puls demo's
+`louis-agent.api.evals.tests`.
 
 ## Limits and plans
 
-The calibration report still travels as an `@` line, outside the contract (`CalibrationLine`).
+The calibration report still travels as an `@` line, outside the contract. The harness writes it
+(`CalibrationLine`, in `louis-agent.evals`), and the API reads it with a reader of its own
+(`CalibrationLineReader`).
 
 ## Related docs
 
