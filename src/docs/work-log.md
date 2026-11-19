@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 137 | 98 |
-| Fixes (`FX`) | 195 | 6 |
+| Fixes (`FX`) | 196 | 6 |
 | Cleanups (`CL`) | 41 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -298,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (195 done)
+## Fixes (196 done)
 
 | Id | When | What |
 |---|---|---|
+| FX208 | 2026-11-19 | On a phone the header has one three-line button, its sheet holding the settings too, and the page no longer scrolls sideways |
 | FX207 | 2026-11-18 | The admin's latest talks say which are the admin's own and which are visitors' |
 | FX206 | 2026-11-18 | The header says beta-1, a quiet tag with a slow violet dot |
 | FX205 | 2026-11-18 | The orb's bar stays open after a hover and a click, a chip without a price, a one-line slogan, a tape in plain words |

@@ -1,3 +1,5 @@
+using LouisAgent.Web.Components.Areas;
+using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Components.Site;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,5 +68,71 @@ public class SiteShellMenuTests
         cut.InvokeAsync(() => ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("/pricing"));
 
         Assert.That(cut.Find(".site-menu").HasAttribute("data-open"), Is.False);
+    }
+
+    /// <summary>A context whose site offers glass and flat, so the frame draws the look switch.</summary>
+    private static BunitContext WithThemes()
+    {
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSiteAreas(areas => areas
+            .Add(new SiteArea("theme-glass", _ => { }, [], Theme: new SiteTheme("glass", "Glass")))
+            .Add(new SiteArea("theme-flat", _ => { }, [], Theme: new SiteTheme("flat", "Flat"))));
+        return ctx;
+    }
+
+    /// <summary>
+    /// FX208 (Louis's pick A of three): on a phone the menu is the one button, so a site's settings, the look switch
+    /// and what the site puts there, also stand at the foot of the menu's sheet.
+    /// </summary>
+    [Test]
+    public void WithSettings_TheSheetHoldsThemToo()
+    {
+        using var ctx = WithThemes();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Links, "<a class=\"my-link\" href=\"x\">X</a>")
+            .Add(shell => shell.Settings, "<a class=\"cv\" href=\"/cv\">CV</a>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".site-menu .site-menu-settings .look-switch"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".site-menu .site-menu-settings a.cv"), Has.Count.EqualTo(1));
+        });
+    }
+
+    /// <summary>
+    /// A site with settings and no links still has a menu button, since on a phone the settings have no other way in.
+    /// </summary>
+    [Test]
+    public void WithSettingsAlone_TheMenuButtonIsStillDrawn()
+    {
+        using var ctx = WithThemes();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Settings, "<a class=\"cv\" href=\"/cv\">CV</a>"));
+
+        Assert.That(cut.FindAll(".site-header .site-menu-button"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// FX208: on a phone the settings' own button and panel aren't drawn, so the header holds one three-line button
+    /// and fits a 390 screen; on a wide screen the sheet's copy of the settings isn't shown.
+    /// </summary>
+    [Test]
+    public void OnAPhone_OnlyTheMenuButtonStands()
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+        int phoneAt = rules.IndexOf("@media (max-width: 720px)", StringComparison.Ordinal);
+        string wide = rules[..phoneAt];
+        string phone = rules[phoneAt..];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(wide, Does.Contain(".site-menu-settings { display: none; }"));
+            Assert.That(phone, Does.Contain(".site-settings-button, .site-settings { display: none; }"));
+            Assert.That(phone, Does.Contain(".site-menu-settings {"));
+        });
     }
 }

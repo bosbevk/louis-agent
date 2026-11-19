@@ -511,6 +511,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX208 · Two buttons that look the same are one too many
+
+On a phone, louis-agent.dev's header had two round buttons, both drawing the same three lines, and the page slid
+sideways. The flag that had just changed, beta-1, was the first suspect, but the old alpha-1 flag was the same width.
+The picture settled it: the brand, the flag and the two buttons, with their gaps, needed about 406 pixels on a 390
+screen, and the two buttons had stood side by side since FX163 put the settings behind a three-line button of their
+own. The fix took one button away rather than squeezing the row: on a phone the menu's sheet holds the settings at its
+foot, which the frame already did for a site with no settings. A layout fault on a phone is often a duplicate, not a
+lack of room, and the last change is a suspect to check, not the cause. Skill 18 (testing and shipping: a look is
+proved by looking, and measured from the picture when the browser can't be scripted).
+
 ## FX207 · Mark it where you already know it
 
 Louis asked whether the overview could tell his own talks from his clients' by their internet address. It could, but

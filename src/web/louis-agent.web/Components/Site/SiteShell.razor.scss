@@ -74,6 +74,8 @@
    row, and its button is not drawn. On a phone the button opens it as a sheet under the header. */
 .site-menu { display: contents; }
 .site-menu-button { display: none; }
+/* The sheet's copy of the settings is a phone's (FX208): on a wide screen they keep their own button and panel. */
+.site-menu-settings { display: none; }
 /* The settings' three-line button at the header's end (FX163): a round glass button, the theme's second, round as
    every button is (Louis: "this should be round", "the same way we do our buttons"). */
 .site-settings-button {
@@ -172,6 +174,11 @@
     /* The header is one slim row, the site's name and the menu button (F151.6, Louis's pick A of three: a top bar
        with a sheet, as phones do), so the page keeps the screen. */
     .site-header { gap: 12px; flex-wrap: nowrap; padding: 12px 16px; }
+    /* One three-line button on a phone (FX208, Louis's pick A of three): the settings' own button and panel give way
+       to the menu, whose sheet holds them at its foot, so two buttons that looked the same no longer push the header
+       past a 390 screen. */
+    .site-settings-button, .site-settings { display: none; }
+    .site-menu-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
     .site-menu-button {
         display: grid;
         place-items: center;
