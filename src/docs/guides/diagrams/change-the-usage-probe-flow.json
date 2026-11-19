@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the usage probe: check a new provider or model",
+  "caption": "Run it, compare the ledger lines with the raw counts, and price the model if it has no row.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "run", "label": "Run the probe\nsmall real requests", "icon": "terminal", "tone": "green" },
+      { "id": "model", "label": "The provider", "icon": "cloud", "tone": "red" },
+      { "id": "compare", "label": "Do the ledger lines\nmatch the counts?", "tone": "green", "shape": "decision" },
+      { "id": "fix", "label": "Fix the mapper", "icon": "code", "tone": "green" },
+      { "id": "price", "label": "Its prices in\nprices.json", "icon": "file", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "you", "to": "run" },
+      { "from": "run", "to": "model" },
+      { "from": "model", "to": "compare", "word": "raw counts" },
+      { "from": "compare", "to": "fix", "word": "no" },
+      { "from": "compare", "to": "price", "word": "yes" }
+    ],
+    "direction": "right"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "Change the CLI at a glance",
+  "caption": "The thinnest host: CliHost runs it, ConsoleChat writes the turn, and behaviour stays in core.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "cli", "icon": "terminal", "title": "The CLI", "code": "louis-agent.cli", "look": "highlight",
+          "text": "A chat with the agent in your terminal, or one prompt." }
+      ] },
+      { "cards": [
+        { "id": "host", "icon": "chip", "title": "CliHost", "text": "Builds the agent from what the demo names." },
+        { "id": "chat", "icon": "message", "title": "ConsoleChat", "text": "Writes the engine's stream to the terminal." },
+        { "id": "texts", "icon": "file", "title": "CliUserText", "text": "Every word it prints." }
+      ] },
+      { "cards": [
+        { "id": "commands", "icon": "code", "title": "Chat commands", "text": "Core's UserCommands, for every host." },
+        { "id": "tests", "icon": "checks", "title": "Its tests", "text": "Through AgentEngine, in core's tests." }
+      ] }
+    ],
+    "links": [
+      { "from": "cli", "to": "host" },
+      { "from": "cli", "to": "chat" },
+      { "from": "cli", "to": "texts" }
+    ]
+  }
+}

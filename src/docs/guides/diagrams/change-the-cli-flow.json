@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the CLI: how a turn is shown",
+  "caption": "Change the case in the switch, keep its words in CliUserText, and stdout for the answer.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "open", "label": "Open\nStreamToConsoleAsync", "icon": "code", "tone": "green" },
+      { "id": "case", "label": "Change or add\nthe case", "icon": "code", "tone": "green" },
+      { "id": "words", "label": "Its words in\nCliUserText", "icon": "file", "tone": "teal" },
+      { "id": "out", "label": "The answer alone\non stdout", "icon": "terminal", "tone": "green", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "open" },
+      { "from": "open", "to": "case" },
+      { "from": "case", "to": "words" },
+      { "from": "words", "to": "out" }
+    ],
+    "direction": "right"
+  }
+}

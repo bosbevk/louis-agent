@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "Change the ACP server at a glance",
+  "caption": "It only translates: Rider's JSON-RPC into a turn, and the turn back into session/update.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "acp", "icon": "server", "title": "The ACP server", "code": "louis-agent.acp", "look": "highlight",
+          "text": "The agent in Rider's AI chat, over stdin and stdout." }
+      ] },
+      { "cards": [
+        { "id": "server", "icon": "chip", "title": "AcpServer", "text": "Each request to its handler; only the flow." },
+        { "id": "relay", "icon": "message", "title": "TurnRelay", "text": "The turn's stream as session/update." },
+        { "id": "protocol", "icon": "code", "title": "Protocol", "text": "JsonRpcWriter and the capabilities." }
+      ] },
+      { "cards": [
+        { "id": "texts", "icon": "file", "title": "Its texts", "text": "AcpLogMessage, AcpUserText, AcpModelText." },
+        { "id": "tests", "icon": "checks", "title": "The transcript", "text": "A recorded Rider chat, pinned." }
+      ] }
+    ],
+    "links": [
+      { "from": "acp", "to": "server" },
+      { "from": "acp", "to": "relay" },
+      { "from": "acp", "to": "protocol" }
+    ]
+  }
+}

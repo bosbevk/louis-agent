@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the ACP server: add a protocol method",
+  "caption": "The test first, a case in the switch, the capability if Rider must know, the reply through JsonRpcWriter.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "test", "label": "The request in\nthe transcript test", "icon": "checks", "tone": "green" },
+      { "id": "case", "label": "A case in\nHandleRequestAsync", "icon": "code", "tone": "green" },
+      { "id": "know", "label": "Must Rider know?", "tone": "green", "shape": "decision" },
+      { "id": "caps", "label": "Say it in\nAcpCapabilities", "icon": "code", "tone": "teal" },
+      { "id": "reply", "label": "Reply through\nJsonRpcWriter", "icon": "message", "tone": "green", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "test" },
+      { "from": "test", "to": "case" },
+      { "from": "case", "to": "know" },
+      { "from": "know", "to": "caps", "word": "yes" },
+      { "from": "know", "to": "reply", "word": "no" },
+      { "from": "caps", "to": "reply" }
+    ],
+    "direction": "right"
+  }
+}
