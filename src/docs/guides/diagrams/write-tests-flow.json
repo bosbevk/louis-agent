@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Write and run tests: the test first",
+  "caption": "The test fails on an assertion before any code, then passes, and goes into the same commit.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "write", "label": "Write the test,\nstub the member", "icon": "code", "tone": "green" },
+      { "id": "fail", "label": "Fails on\nan assertion?", "tone": "green", "shape": "decision" },
+      { "id": "code", "label": "Write the code\nuntil it passes", "icon": "code", "tone": "green" },
+      { "id": "suite", "label": "The project's\nsuite, all green", "icon": "checks", "tone": "green" },
+      { "id": "commit", "label": "Test and code\nin one commit", "icon": "branch", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "you", "to": "write" },
+      { "from": "write", "to": "fail" },
+      { "from": "fail", "to": "write", "word": "no" },
+      { "from": "fail", "to": "code", "word": "yes" },
+      { "from": "code", "to": "suite" },
+      { "from": "suite", "to": "commit" }
+    ],
+    "direction": "right"
+  }
+}

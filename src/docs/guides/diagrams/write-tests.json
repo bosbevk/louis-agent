@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Write and run tests at a glance",
+  "caption": "Every test runs offline: a fake plays the model, a stub answers HTTP, and a run costs nothing.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "tests", "icon": "checks", "title": "The tests", "code": "dotnet test", "look": "highlight",
+          "text": "Written first, beside the source they mirror, on NUnit and bUnit." }
+      ] },
+      { "cards": [
+        { "id": "unit", "icon": "code", "title": "Unit tests", "text": "Offline, on the shared fakes." },
+        { "id": "integration", "icon": "server", "title": "Integration tests", "code": "*.integration-tests", "text": "Leave their process: git, Mongo, a runner." },
+        { "id": "golden", "icon": "file", "title": "Golden files", "text": "What the model reads, and what a page draws." },
+        { "id": "rules", "icon": "shield", "title": "Rule tests", "text": "The code's shape: layers, sizes, names." }
+      ] },
+      { "cards": [
+        { "id": "ci", "icon": "cloud", "title": "CI", "code": "ci.yml", "text": "Build, formatting, unit, then integration, on every pull request." }
+      ] }
+    ],
+    "links": [
+      { "from": "tests", "to": "unit" },
+      { "from": "tests", "to": "integration" },
+      { "from": "tests", "to": "golden" },
+      { "from": "tests", "to": "rules" }
+    ]
+  }
+}

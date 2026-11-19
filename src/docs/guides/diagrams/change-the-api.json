@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Change the API at a glance",
+  "caption": "Every route is under /v1 and closed behind the key until it is opened on purpose.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "api", "icon": "server", "title": "The API", "code": "louis-agent.api", "look": "highlight",
+          "text": "Sessions over HTTP, their answers streamed as Server-Sent Events." }
+      ] },
+      { "cards": [
+        { "id": "endpoints", "icon": "code", "title": "Endpoints", "code": "Endpoints/", "text": "One area a file, mapped on the v1 group." },
+        { "id": "sessions", "icon": "message", "title": "Sessions", "code": "Sessions/", "text": "Options fixed when one opens." },
+        { "id": "stream", "icon": "chart", "title": "The event stream", "text": "Claude-shaped events, only ever added to." },
+        { "id": "site", "icon": "browser", "title": "A site's pages", "code": "MapLouisAgentSite", "text": "Each served as HTML." }
+      ] },
+      { "cards": [
+        { "id": "key", "icon": "shield", "title": "The key and the goldens", "text": "AGENT_API_KEY on every route, and the route table pinned." }
+      ] }
+    ],
+    "links": [
+      { "from": "api", "to": "endpoints" },
+      { "from": "api", "to": "sessions" },
+      { "from": "api", "to": "stream" },
+      { "from": "api", "to": "site" }
+    ]
+  }
+}
