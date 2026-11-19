@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "The guides at a glance",
+  "caption": "Build something new across projects, or change one project; each guide links its project's design doc.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "guides", "icon": "book", "title": "The guides", "code": "src/docs/guides/", "look": "highlight",
+          "text": "How-tos for a developer changing the code." }
+      ] },
+      { "cards": [
+        { "id": "build", "icon": "box", "title": "Build something new", "text": "A pack, an identity, a site, an eval, a diagram." },
+        { "id": "start", "icon": "terminal", "title": "Every day", "text": "Get started, the tests, debugging, common errors." },
+        { "id": "change", "icon": "folder", "title": "Change a project", "text": "One guide per project, from the CLI to the engine." }
+      ] },
+      { "cards": [
+        { "id": "design", "icon": "file", "title": "Design docs", "code": "src/docs/projects/", "text": "How each project works." }
+      ] }
+    ],
+    "links": [
+      { "from": "guides", "to": "build" },
+      { "from": "guides", "to": "start" },
+      { "from": "guides", "to": "change" },
+      { "from": "change", "to": "design" }
+    ]
+  }
+}
