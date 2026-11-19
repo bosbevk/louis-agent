@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "Change the eval pages at a glance",
+  "caption": "One call turns the pages on; each page has one job, and what it shows is in its address.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "evals", "icon": "checks", "title": "The eval pages", "code": "louis-agent.web.evals", "look": "highlight",
+          "text": "The evals and their stored runs, for the builders." }
+      ] },
+      { "cards": [
+        { "id": "list", "icon": "book", "title": "The Evals page", "code": "/admin/evals", "text": "One list and one details pane." },
+        { "id": "run", "icon": "chart", "title": "A run's page", "text": "Tabs, each in the address." },
+        { "id": "review", "icon": "users", "title": "The Review page", "code": "/admin/review", "text": "One answer at a time." }
+      ] },
+      { "cards": [
+        { "id": "area", "icon": "settings", "title": "The area", "code": ".Evals()", "text": "Turns them on for a site." },
+        { "id": "api", "icon": "server", "title": "The API's admin routes", "text": "MapLouisAgentEvals, behind the admin key." }
+      ] }
+    ],
+    "links": [
+      { "from": "evals", "to": "list" },
+      { "from": "evals", "to": "run" },
+      { "from": "evals", "to": "review" }
+    ]
+  }
+}

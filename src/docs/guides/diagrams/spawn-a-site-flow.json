@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Spawn a site: make one",
+  "caption": "Install the template, make and build the site, add it to the solution, and serve it from a program.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "install", "label": "Install\nthe template", "icon": "terminal", "tone": "green" },
+      { "id": "make", "label": "dotnet new louis-site\nthen build", "icon": "code", "tone": "green" },
+      { "id": "sln", "label": "Add it to the solution\nand SolutionLayoutTests", "icon": "file", "tone": "amber", "shape": "data" },
+      { "id": "serve", "label": "Serve it from\na program", "icon": "server", "tone": "green", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "install" },
+      { "from": "install", "to": "make" },
+      { "from": "make", "to": "sln" },
+      { "from": "sln", "to": "serve" }
+    ],
+    "direction": "right"
+  }
+}
