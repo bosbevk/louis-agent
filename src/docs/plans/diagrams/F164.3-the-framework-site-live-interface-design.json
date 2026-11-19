@@ -1,0 +1,28 @@
+{
+  "kind": "classes",
+  "title": "F164.3: the interface design",
+  "caption": "No new C# type: the deploy script's table of apps gains a second entry, which names its own yaml, image and secrets file, and the domain verb learns a subdomain.",
+  "classes": {
+    "types": [
+      { "id": "script", "name": "deploy.ps1", "kind": "the verbs", "tone": "violet",
+        "members": [ "+release -App", "+update -App", "+secrets -App", "+domain -App (subdomain, step 2)" ] },
+      { "id": "apps", "name": "$Apps", "kind": "the table of apps",
+        "members": [ "louis-agent-app", "louis-agent-framework-app (step 1)" ] },
+      { "id": "site", "name": "louis-agent-app.yaml", "kind": "louis-agent.dev", "tone": "amber" },
+      { "id": "framework", "name": "louis-agent-framework-app.yaml", "kind": "new, step 3", "tone": "green",
+        "members": [ "OPEN_IDENTITIES louis-agent-framework", "OPEN_SESSIONS_PER_DAY 20", "DOCS_ROOT /app/docs", "logs on framework/logs" ] },
+      { "id": "secrets", "name": "config/.env.secrets.framework", "kind": "git-ignored, step 1", "tone": "amber",
+        "members": [ "AGENT_API_KEY", "ADMIN_API_KEY" ] },
+      { "id": "workflow", "name": "deploy-puls.yml", "kind": "the workflow, step 4", "tone": "violet" },
+      { "id": "layout", "name": "SiteLayout", "kind": "louis-agent.dev's menu, step 6", "tone": "green" },
+      { "id": "cv", "name": "cv.json", "kind": "the CV's four links, step 7", "tone": "amber" }
+    ],
+    "relations": [
+      { "from": "script", "to": "apps", "kind": "holds" },
+      { "from": "apps", "to": "site", "kind": "uses" },
+      { "from": "apps", "to": "framework", "kind": "uses" },
+      { "from": "apps", "to": "secrets", "kind": "uses", "word": "reads keys from" },
+      { "from": "workflow", "to": "script", "kind": "uses", "word": "releases each app with" }
+    ]
+  }
+}
