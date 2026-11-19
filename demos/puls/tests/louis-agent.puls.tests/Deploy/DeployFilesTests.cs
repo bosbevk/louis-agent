@@ -150,6 +150,50 @@ public class DeployFilesTests
     public void TheSecondAppsYaml_NamesWhatIsItsOwn(string line) =>
         Assert.That(CodingApp.Select(l => l.Trim()), Does.Contain(line));
 
+    /// <summary>The framework's site's yaml (F164.3), each line trimmed; it fails plainly while there is none.</summary>
+    private static List<string> FrameworkApp()
+    {
+        string path = Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure/louis-agent-framework-app.yaml");
+        Assert.That(File.Exists(path), "src/site/deploy/azure/louis-agent-framework-app.yaml");
+        return File.ReadAllLines(path).Select(l => l.Trim()).ToList();
+    }
+
+    /// <summary>
+    /// The framework's yaml names its own app, image and keys, reads the vault with the shared identity, logs to the
+    /// shared share in a folder of its own (Louis's pick A), opens the door to the framework Orbi at 20 a day (his
+    /// pick A of three) and reads the docs its image carries; it keeps the markers the script fills.
+    /// </summary>
+    [TestCase("name: louis-agent-framework-app")]
+    [TestCase("image: acrpulsza.azurecr.io/louis-agent-site-framework:TAG")]
+    [TestCase("'APP_IDENTITY_ID': {}")]
+    [TestCase("secretRef: anthropic-api-key")]
+    [TestCase("secretRef: agent-api-key-framework")]
+    [TestCase("secretRef: admin-api-key-framework")]
+    [TestCase("value: louis-agent-framework")]
+    [TestCase("value: '20'")]
+    [TestCase("value: /app/docs")]
+    [TestCase("storageName: louis-agent-vol")]
+    [TestCase("subPath: framework/logs")]
+    [TestCase("mountPath: /logs")]
+    [TestCase("# SECRETS")]
+    public void TheFrameworksYaml_NamesWhatIsItsOwn_AndWhatItShares(string line) =>
+        Assert.That(FrameworkApp(), Does.Contain(line));
+
+    /// <summary>
+    /// The framework's site sells nothing and keeps nothing of its own: no lead mail, no CV, no peers to ask, no VM
+    /// and no database, and only the logs on the share, never louis-agent.dev's own folders.
+    /// </summary>
+    [TestCase("LEADS_TO")]
+    [TestCase("RESEND_API_KEY")]
+    [TestCase("SITE_DATA_DIRECTORY")]
+    [TestCase("AGENT_PEERS")]
+    [TestCase("mountPath: /data")]
+    [TestCase("subPath: logs")]
+    [TestCase("VM_IP")]
+    [TestCase("ACCOUNTS_SQL_URL")]
+    public void TheFrameworksYaml_HoldsNothingItDoesntUse(string text) =>
+        Assert.That(FrameworkApp(), Has.None.Contains(text));
+
     /// <summary>
     /// The site runs the guide alone (F124), so it mounts no workspace: the image carries the docs and the price
     /// tables, and the share keeps only the logs.
