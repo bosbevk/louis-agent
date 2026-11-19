@@ -58,7 +58,9 @@ Two rules follow from the last row.
 | `research-the-market` | A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written |
 | `design-a-page` | A page or a section is planned, reordered or redesigned, always on our framework |
 | `design-a-graphic` | A mark, a card, an image, a mockup or a palette is made or changed |
-| `write-the-copy` | Words a visitor reads are written or changed (the writer) |
+| `write-the-copy` | Words a visitor reads on a site are written or changed (the story and web writer) |
+| `write-the-docs` | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) |
+| `write-the-framework` | A framework doc or page is checked against the code, or a framework page changes (the framework writer) |
 | `write-a-skill` | A skill is written or changed |
 
 ## Changing an instruction
