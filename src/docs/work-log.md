@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 137 | 97 |
+| Features (`F`) | 138 | 97 |
 | Fixes (`FX`) | 196 | 6 |
 | Cleanups (`CL`) | 41 | 29 |
 
@@ -155,11 +155,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (137 done)
+## Features (138 done)
 
 | Id | When | What |
 |---|---|---|
 | F164 | 2026-11-19 | The framework's own site, closed: its three children built (F164.1 the seven pages as a package, F164.2 the framework Orbi with its search and four ways to ask, F164.3 the second Azure app), live at framework.louis-agent.dev with its certificate, louis-agent.dev's menu and CV leading there; tested live by Louis |
+| F165 | 2026-11-19 | The trust page at `/trust` on louis-agent.dev, after a reviewer asked for real technical facts (Louis's pick: a status on every tile): five parts, where it runs, your data with every company that handles it, AI safety, if something breaks, and the reviewer's checklist before paying customers; every fact In place or Not yet, each in place held to a file of the repo by a test; a tile's status in the framework; the footer and the guide lead to it |
 | F164.3 | 2026-11-19 | framework.louis-agent.dev as a second Azure app, F164's last child: one more row in `deploy.ps1`'s table, on louis-agent.dev's identity and share with its logs in `framework/logs` and keys of its own; the `domain` verb tells a subdomain from an apex; a release makes the folders its app names; every merge releases both sites; 20 sessions a day everywhere; "Framework" on louis-agent.dev's menu and the CV's four cards on the new site; the Azure docs rewritten to what runs today |
 | F164.2 | 2026-11-19 | The framework Orbi, F164's second child: `louis-agent.identity.framework`, an identity of its own on the docs and site packs, run by the framework site's host with its door open and the docs in its image; the chat docked beside a page as a third `WidgetLayout`, in the docs layout's right column in place of "On this page"; the door moved into what every site gets; Ask Orbi in the header with Ctrl+I, Ask about this page, Ask on every code listing; a search window with Ctrl+K over `GET /v1/site/places`, the site's places with no model and Orbi asked last; one live check, R0.037 and R0.06 |
 | F164.1 | 2026-11-18 | The framework's pages, the first of F164's three children: the old pages thrown away from louis-agent.dev and seven written new, Overview to Comparison, as `louis-agent.web.framework`, a package a site turns on with `.Framework()` (Louis: "the framework must be a package like accounts"); `.Docs(address)` in `louis-agent.web.docs` for a doc linked by its path; `.Places(home, site)` in `louis-agent.web.places`, the catch-all moved out; the framework's own site and its host on :5084, flat alone, in the docs layout; every picture in the page's theme, with the brand in its footer and the site's fonts; what each page says held to the repo by its test |

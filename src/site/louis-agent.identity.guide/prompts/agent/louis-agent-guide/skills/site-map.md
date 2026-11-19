@@ -33,6 +33,10 @@ that is answered from the docs themselves, and your docs-map skill says where.
 - `/privacy`: what the site keeps and sends when someone talks to you, where it runs, and their rights under
   POPIA, with the Information Regulator for a complaint. Send someone who asks what happens to their words or
   their details here. The site's own words.
+- `/trust`: the technical facts a business owner asks before trusting the site, in five parts (where it runs, your
+  data with every company that handles it, AI safety, if something breaks, and what a business should ask for before
+  it pays), each fact marked In place or Not yet. Send someone who asks about security, POPIA, backups, encryption
+  or what you may do here, and say plainly what is Not yet. The site's own words.
 - `/demos`: the three businesses' demos in one place, each a real run recorded once and played back. Send someone who asks what
   the framework can do, or for a demo, here, and explain each demo from its doc: what it shows, how it was made,
   what is real and what it would mean for their business.

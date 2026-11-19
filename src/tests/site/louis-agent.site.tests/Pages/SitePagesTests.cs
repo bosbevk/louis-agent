@@ -19,6 +19,7 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "/", "Your doors close at five. Your website doesn't.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(PrivacyPage), "/privacy", "What happens to what you type.")]
+    [TestCase(typeof(TrustPage), "/trust", "What keeps your business safe here, and what doesn't yet.")]
     [TestCase(typeof(FreeWebsitesPage), "/free-websites", "Two businesses get a free website.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {

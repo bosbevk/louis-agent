@@ -8,6 +8,10 @@
     {
         <span class="tile-icon"><LineIconView Icon="icon" /></span>
     }
+    @if (ShowsStatus)
+    {
+        <span class="tile-status" data-status="@StatusMark">@StatusText</span>
+    }
     @if (Title is not null)
     {
         <h3>@Title</h3>

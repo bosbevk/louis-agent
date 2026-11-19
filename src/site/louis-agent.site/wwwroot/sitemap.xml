@@ -99,4 +99,22 @@
   <url>
     <loc>https://louis-agent.dev/restaurant-demo/the-conversation</loc>
   </url>
+  <url>
+    <loc>https://louis-agent.dev/trust</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/trust/where-it-runs</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/trust/your-data</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/trust/ai-safety</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/trust/if-something-breaks</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/trust/before-paying-customers</loc>
+  </url>
 </urlset>
