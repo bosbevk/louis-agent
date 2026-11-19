@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The docs' parts (F164.1): what any site needs to show the docs it was written from, starting with a link to a
+       doc by its path in the repo, led wherever the site's one setting says: GitHub today, a docs site later. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Docs</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- A library has no page to watch; left unset, the Sass package compiles its watcher attribute into us. -->
+    <SassCompilerEnableWatcher>false</SassCompilerEnableWatcher>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
+    <!-- A component's own X.razor.scss, compiled to the X.razor.css Blazor scopes and bundles; sasscompiler.json. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: the areas a site names. -->
+    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+    <!-- The Sass compiler's settings are read at build time only; published, the libraries' copies would land on one
+         path and dotnet publish refuses (FX62). -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
+  </ItemGroup>
+
+</Project>

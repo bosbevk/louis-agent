@@ -1,9 +1,0 @@
-@* Where it runs, on the Architecture page: Docker on a developer's machine or a customer's own, and this site in
-   Azure, configured on the framework's controls (ADR 0125). *@
-<Band Id="where-it-runs" Topic="where it runs">
-    <Intro Title="Docker on your own hardware, or Container Apps in Azure." />
-    <TileRow Columns="2">
-        <Tile Icon="DiagramIcon.Server" Title="On a developer's machine">Every host is a Docker image on the .NET SDK, started from a demo's compose file with the repository mounted as the workspace. Rider starts the ACP server per chat, the API serves the web app on one port, and a local model runs in Ollama beside them when a profile asks for it.</Tile>
-        <Tile Icon="DiagramIcon.Cloud" Title="In Azure, from GitHub" Delay="1" Text="This site is one Container App in Azure's South African region, its own image with its guide and nothing else, asleep when nobody visits. Its keys sit in a vault, and a merge to `main` releases it after green CI, signed in without a password. A customer's site with an agent runs the same way, or on the customer's own hardware." />
-    </TileRow>
-</Band>

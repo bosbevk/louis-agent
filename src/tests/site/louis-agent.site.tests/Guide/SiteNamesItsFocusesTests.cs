@@ -28,8 +28,7 @@ public class SiteNamesItsFocusesTests
     [TestCase("/demos", GuideFocus.Demos)]
     [TestCase("/guesthouse-demo", GuideFocus.Demos)]
     [TestCase("/law-practice-demo", GuideFocus.Demos)]
-    [TestCase("/framework/packs/louis-agent-pack-git", GuideFocus.Selling)]
-    [TestCase("/csharp-ai-agent-framework", GuideFocus.Selling)]
+    [TestCase("/framework/theme", GuideFocus.Selling)]
     public void APart_TakesItsFocus(string path, GuideFocus focus) =>
         Assert.That(Focuses().Of(path), Is.EqualTo(focus.Wire()));
 

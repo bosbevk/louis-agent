@@ -34,4 +34,13 @@ public sealed record SvgTheme(SvgPalette Dark, SvgPalette Light)
                 [DiagramTone.Red] = new("#f9e1e6", "#e2456c", "#a51d42"),
                 [DiagramTone.Amber] = new("#fbeedd", "#ef9a2d", "#a35d0c")
             }));
+
+    /// <summary>
+    /// The flat theme's (F164.1, Louis's pick C, a palette per theme in the engine): flat's own values from its two
+    /// sheets, a ground a tad darker than white or a near-black grey, its firmer grey line, black or near-white words and its solid grey
+    /// for a chip, with the brand's violet; the tones are the site's, so a tone means the same in every picture.
+    /// </summary>
+    public static SvgTheme Flat { get; } = new(
+        new SvgPalette("#0c0c0e", "#2b2b33", "#f4f4f6", "#a3a3ad", "#141418", "#6b4dff", Site.Dark.Tones),
+        new SvgPalette("#f7f7f8", "#a7aaba", "#0b0b0e", "#44444f", "#dcdee8", "#6b4dff", Site.Light.Tones));
 }

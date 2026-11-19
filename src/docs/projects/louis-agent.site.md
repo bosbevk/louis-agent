@@ -1,16 +1,19 @@
 # louis-agent.site — design
 
 > **Kind:** web app (Blazor WebAssembly), and its host `louis-agent.site-api` · **Path:** `src/site/` · **References:**
-> `louis-agent.web`, the guide (`louis-agent.identity.guide`); the host also the
-> framework's API and the docs, leads and site packs · **Runs:** louis-agent.dev, and the review copy on 127.0.0.1:5080
+> `louis-agent.web`, `louis-agent.web.themes`, `louis-agent.web.places`, the guide (`louis-agent.identity.guide`); the
+> host also the framework's API and the docs, leads and site packs · **Runs:** louis-agent.dev, and the review copy on
+> 127.0.0.1:5080
 > **Also shows:** `component`, `sequence`
 
-![The framework's website, and its parts: the pages, the guide, the showroom, its own host and its image](diagrams/louis-agent.site.svg)
+![louis-agent.dev, and its parts: the pages, the guide, the showroom, the CV, its own host and its image](diagrams/louis-agent.site.svg)
 
 ## Purpose
 
-This is the framework's own website, louis-agent.dev. It says what louis-agent is, how it works, what's built on it,
-and what Louis sells. The guide stands as a bar at the foot of every page and answers questions from the docs.
+This is louis-agent.dev, the website that sells websites with agents. It says what Louis sells, lets a visitor watch
+three made-up businesses' agents at work and try them, and carries his CV. The guide stands as a bar at the foot of
+every page and answers questions from the docs. The framework's own pages are not here: they are the framework's
+site, [louis-agent.site-framework](louis-agent.site-framework.md), meant for framework.louis-agent.dev.
 
 It's the visitor area of a business, built on the framework's web just the way a customer's site would be. A portal
 comes later. It lives beside the framework, in `src/`, and it's the one place in `src/` that uses packs and an
@@ -66,7 +69,7 @@ the logs.
 `src/site/deploy/azure/louis-agent-app.yaml` is the Container App louis-agent.dev runs. `SiteImageTests` holds the
 image.
 
-## The pages and films
+## The pages
 
 The home page is a run of bands the visitor scrolls through, inside the site's layout.
 
@@ -75,31 +78,38 @@ The home page is a run of bands the visitor scrolls through, inside the site's l
 ### 1. Every place has an address
 
 Every page is built from `Band`s, one per section, each with an id in words. So every place on the site has its own
-address, and the guide can take a visitor straight there. The sitemap lists them all, and a test writes it from the
-pages.
+address, and the guide can take a visitor straight there. The site names its places among its areas, with
+`.Places(Home, typeof(App).Assembly)` in `LouisAgentDevAreas`, and the router draws a place opened afresh in its own
+page's layout ([louis-agent.web.places](louis-agent.web.places.md)). The sitemap lists them all, and a test writes it
+from the pages.
 
 A grid where each item had a summary and a story is a deck of cards that open.
 
-*Decided in:* F117, [ADR 0107](../adr/0107-every-section-has-an-address.md), F113.
+*Decided in:* F117, [ADR 0107](../adr/0107-every-section-has-an-address.md), F113, F164.1.
 
-### 2. A diagram held to the code
+### 2. The framework's pages are on their own site
 
-Every page that explains a part of the framework shows one animated diagram of it. The framework's `GraphView` draws
-it, from data in `Graphs/`, and a test holds each to the code. The identity's parts are held to the page's list, the
-architecture's boxes to the solution file's groups, the turn's pipeline to the middleware's order, and the demos to
-the folders under `demos/`.
+The framework's pages are no longer on louis-agent.dev. They are written new as the framework's pages package and
+served by the framework's own site ([louis-agent.site-framework](louis-agent.site-framework.md)), so this site sells
+and that one teaches. What stays here is `/framework/theme`, the theme's component guide, which the landing and the
+themes link to. The old framework addresses answer with nothing, and no page of this site links to them:
+`SiteLinksTests` holds every link on the site to a place on it. The CV's four "now" cards, which prove its claims,
+lead to their places on framework.louis-agent.dev, and `CvContentTests` holds each place to that site's sitemap, so a
+place renamed there fails a test here.
 
-*Decided in:* F111.
+The films are no longer on the site either. `src/tools/louis-agent.film-export` and its exports in `src/docs/films/`
+still name the old pages and the films' files, which are gone, so the tool can't make an export until it is fixed.
+
+*Decided in:* F164.1, F164.3.
 
 ### 3. Selling first, the framework as proof
 
-The site sells first, and the framework is the proof. It still tells the whole architecture. The menu reads Home,
-Demos, Theme and Contact. Home is there so every page has a plain way back to the landing, since the name in the
-corner doesn't look like a link. Theme leads to `/framework/theme`, where every button, switch and card the site is
-built from stands working, to press and try, in the look the visitor picked. The rest of the framework's group is
-kept in the page but hidden until its pages are fixed, and those pages still answer at their addresses. At the header's end a three-line button opens the settings, a thin glass bar
-under the header that holds the look switches alone. The CV is reached from the landing's band about who builds it.
-No price stands anywhere a visitor first looks: every quote is made on request.
+The site sells first, and the framework is the proof, told on the framework's own site. The menu reads Home,
+Demos, Framework, Theme and Contact. Home is there so every page has a plain way back to the landing, since the name
+in the corner doesn't look like a link. Framework leads to framework.louis-agent.dev, the framework's own site. Theme leads to `/framework/theme`, where every button, switch and card the site is
+built from stands working, to press and try, in the look the visitor picked. At the header's end a three-line button
+opens the settings, a thin glass bar under the header that holds the look switches alone. The CV is reached from the
+landing's band about who builds it. No price stands anywhere a visitor first looks: every quote is made on request.
 
 `/` is one page that moves, with the offer first. The hero stands centred and opens with the agent's mark, drawn
 large. The mark plays four of its states in turn, resting, listening, thinking and answering, with a line under it
@@ -128,11 +138,10 @@ the one place on the landing that names Louis: the framework's profile hero in a
 Louis Marais in Malmesbury.", a line on what he does for the owner, and a button to his CV. A small owner buys from a
 person, which is why it is there. The last strip asks Orbi to take the visitor's details, or "Write to us" leads to
 the contact page, and says each business is quoted after a short call. The framework itself has no band on the landing:
-its pages are its own, and the menu's group for them is hidden for now.
+its pages are on its own site.
 
-The framework's rule lives at `/framework/measured`, and its short film and four concepts at
-`/framework/architecture`. No page names a price: every quote is made on request, so `/pricing` is moved to
-`/contact`. Then there are the demos.
+No page names a price: every quote is made on request, so `/pricing` is moved to `/contact`. Then there are the
+demos.
 
 `/privacy` tells a visitor what happens to what they type, in the order they meet it. Their messages go to the
 model to be answered, and the site holds the chat in memory only. Their details reach Louis by mail, and only when
@@ -253,22 +262,7 @@ talk's total, and each of a demo's "could also" notes is a piece a visitor press
 
 *Decided in:* F134.
 
-### 8. The framework's own pages
-
-The framework's pages sit under `/framework`, so the site sells first and they can move whole to
-`framework.louis-agent.dev` one day. `/framework/how-it-works` has the detailed film, one turn through core, and the
-rules every turn keeps. `/framework/architecture` has every project that ships, by family, `src/site` among them.
-Then come `/framework/identities`, `/framework/packs`, `/framework/build-your-own` (a real program and catalogue),
-`/framework/measured` (the numbers in dollars and rand), `/framework/built-on-it`, and `/framework/whats-coming`
-(planned features by id, each marked planned).
-
-`/csharp-ai-agent-framework` stays where search found it. The host sends each old address on, section and all, with a
-permanent redirect (`MovedPages`, in `louis-agent.site-api`). `SiteLinksTests` holds every link on the site to a place
-on it.
-
-*Decided in:* F128.1, F130, F123.
-
-### 9. Every claim held to the repo
+### 8. Every claim held to the repo
 
 The pages are written from the docs the guide reads. Every number comes from the ledger or an eval run, and each claim
 is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
@@ -290,47 +284,25 @@ about it.
 
 *Decided in:* F123, [ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md).
 
-### 10. The two films
-
-The two films are made of CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to
-its container, a floor seen from above, each part a slab raised off it, the turn as a light flying above them with its
-shadow, a detail card, and a caption strip.
-
-`_short.scss` (36 seconds, six scenes) and `_detail.scss` (60 seconds, ten scenes) add where each part stands, the
-camera's keyframes, and when each part lights up. Every keyframe name ends in the film's letter. The detailed film's
-six slabs inside core are the chat pipeline's middleware, in its real order (`DetailedMovieTests`).
-
-The films are the content, so a visitor's reduced-motion setting never stills them.
-
-*Decided in:* FX35.
-
-### 11. The films on GitHub
-
-The exports for GitHub, in `src/docs/films/`, are rendered from that same CSS, frame by frame, by
-`src/tools/louis-agent.film-export`. It starts this host on a spare port, seeks each animation in a headless Chrome,
-and encodes the frames in Docker. `films.sha256` records what each one was made from, and `ExportedFilmsTests` fails
-until a changed film is exported again.
-
-*Decided in:* [ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md).
-
 ![A visitor opens a page and asks: the page comes prerendered, and the guide's answer streams from the same host](diagrams/louis-agent.site-sequence.svg)
 
 These are the types involved:
 
-![The types: the site holds its words, places, demos and diagrams, on the framework's shell](diagrams/louis-agent.site-interface.svg)
+![The types: the site holds its words, demos and CV, on the framework's shell, its places through the places package](diagrams/louis-agent.site-interface.svg)
 
 ## Structure
 
 | Path | What's in it |
 |---|---|
-| `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
+| `Pages/` | The site's pages: the home page and contact; under `About/`, the CV and the privacy page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
-| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
+| `Components/` | `Cv/` (the CV's view, its parts and its print), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, who builds it, the contact strip, and under `Offer/` the bands of the offer), `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
-| `Content/`, `Graphs/` | `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |
-| `Styles/app.scss`, `Styles/site/` | The framework's Sass and the two themes, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
+| `Content/` | `SiteFacts`, the site's facts for search engines; `Cv` and `cv.json`, the CV the site is built with |
+| `LouisAgentDevAreas.cs` | The site's areas: the showroom, the focuses, the guide's suggestions, the admin and the CV's area, its places, and glass and flat |
+| `Styles/app.scss` | The framework's Sass and the two themes ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |
 
 ## The slogan
@@ -442,14 +414,14 @@ screen and its code on paper.
 
 The tests are in `src/tests/site/louis-agent.site.tests`, on NUnit with bUnit.
 
-`Pages/*Tests` render the pages and hold them to the repo. `SiteMapTests` checks every project the solution ships is
-named on a page. `IdentitiesPageTests` and `PacksPageTests` check every identity and pack. `BuildYourOwnTests` checks
-the real program. `ProofPageTests` checks the rand at the rates file's rate and date. `StandsOnTests` checks that
-every package named is referenced. And `WhatsComingTests` checks every planned feature is an open TODO row.
+`Pages/*Tests` render the pages and hold them to their addresses, headings and named sections. `SiteLinksTests` holds
+every link on the site to a place on it, `Pages/Meta/` each page's title, description, heading and the sitemap, and
+`Pages/Claims/WhatIsTrueTests` what the pages claim. `Showroom/*Tests` hold the three businesses' demos, their
+recordings and their identities.
 
-`Components/Guide/GuideKnowsTheSiteTests` holds the guide's voice to every page. `Movies/*Tests` pin each film.
-`Styles/StylesheetTests` reads what the build made. `Host/SiteCatalogTests` and `Host/SiteImageTests` hold the host
-and its image.
+`Components/Guide/GuideKnowsTheSiteTests` holds the guide's voice to every page. `Styles/StylesheetTests` reads what
+the build made. `Host/SiteCatalogTests` and `Host/SiteImageTests` hold the host and its image, `Host/MovedPagesTests`
+the two old addresses sent on, and `Host/PagesForACrawlerTests` every page drawn for a search engine.
 
 The CV has its own: `Resumes/*Tests` (the strict read, the dates, what's private, the draft), `Components/Cv/` (the
 view's golden file, and `Editing/` for every change made on the page), `Admin/*Tests` (the area, and the editor

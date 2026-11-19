@@ -21,7 +21,8 @@
     @include colours.both(bs-info, #2563c9);
     @include colours.both(web-ok, #1d7a4c);
     @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
-    @include colours.both(bs-body-bg, #ffffff);          // the page
+    // The page a tad darker than white (Louis: "same with the white make it a tad darker white").
+    @include colours.both(bs-body-bg, #f7f7f8);          // the page
     @include colours.both(bs-secondary-bg, #dcdee8);     // a panel, darker than the page
     @include colours.both(bs-tertiary-bg, #cdd0dc);      // the menu
     @include colours.both(bs-success-text-emphasis, #3c3c50, web-success-text);
@@ -105,11 +106,11 @@
     --web-veil-edge: 1px solid #a7aaba;
     --web-veil-blur: none;
 
-    // An inset, set into the page: the page's white and a firmer grey line.
-    --web-inset-fill: #ffffff;
+    // An inset, set into the page: the page's own white and a firmer grey line.
+    --web-inset-fill: #f7f7f8;
     --web-inset-edge: 1px solid #a7aaba;
-    // A bar: as white as the page, one hairline towards it.
-    --web-bar-fill: #ffffff;
+    // A bar: the page's own white, one hairline towards it.
+    --web-bar-fill: #f7f7f8;
     --web-bar-edge: 1px solid #a7aaba;
     --web-bar-blur: none;
 
@@ -142,10 +143,10 @@
     // white words, and a chip's line black.
     --web-press-hover-fill: #9282ff;
     --web-quiet-hover-fill: #0b0b0e;
-    --web-quiet-hover-ink: #ffffff;
+    --web-quiet-hover-ink: #f7f7f8;
     --web-chip-hover-edge: 1px solid #0b0b0e;
-    // A tile's icon stands on white, set into its grey card, with no shadow (FX186, Louis: "make white").
-    --web-icon-fill: #ffffff;
+    // A tile's icon stands on the page's white, set into its grey card, with no shadow (FX186, Louis: "make white").
+    --web-icon-fill: #f7f7f8;
     --web-icon-shadow: none;
 
     // The mark: the same flat violet disc carrying the brand's stepped l, drawn whole at glass's ball's size, so

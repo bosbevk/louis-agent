@@ -1,10 +1,12 @@
 @implements IAsyncDisposable
+@using LouisAgent.Web.Components.Widget.Layouts
 @* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
    opened as the identity the page names. The words come in as parameters, so the framework names no site. With a
    tour label, the folded corner also offers a tour of the page in view (F118), which asks the guide to walk it. *@
-<div class="@WidgetClasses">
+<div class="chat-widget @WidgetState">
     @* In the bar layout (F134.3) the guide stands at the foot of the page, the box always there; in the corner, as
-       every site has had it, a button opens a panel. *@
+       every site has had it, a button opens a panel; docked (F164.2), the panel stands in its page's place, and the
+       button is there only where the page has no room beside it. *@
     @if (Layout == WidgetLayout.Bar)
     {
         <AgentBar Runner="Runner" Title="@Title" Placeholder="@Placeholder" Currency="Currency.Current"
@@ -16,12 +18,15 @@
     {
         @if (Open)
         {
-            <section class="@PanelClasses" role="dialog" aria-label="@Title">
+            <section class="widget-panel @PanelState" role="dialog" aria-label="@Title">
                 <header class="widget-head">
                     <span class="widget-title">@Title</span>
                     @* A chat window's own buttons (F127.2): fold it to its head, or spread it wide; then close. *@
                     <span class="widget-head-tools">
-                        <WindowButtons @bind-Size="Size"/>
+                        @if (WidgetLook.HasWindowButtons(Layout))
+                        {
+                            <WindowButtons @bind-Size="Size"/>
+                        }
                         <button class="icon widget-close" type="button" @onclick="Toggle"
                                 aria-label="@CloseLabel">×</button>
                     </span>
@@ -63,7 +68,7 @@
            close. *@
         @if (Open || TourLabel is null)
         {
-            <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(Open ? "true" : "false")"
+            <button class="widget-button @ButtonPlace" type="button" @onclick="Toggle" aria-expanded="@(Open ? "true" : "false")"
                     aria-label="@(Open ? CloseLabel : OpenLabel)" title="@(Open ? CloseLabel : OpenLabel)">
                 @if (Open)
                 {

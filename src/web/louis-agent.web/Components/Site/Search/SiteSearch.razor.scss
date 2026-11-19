@@ -1,0 +1,18 @@
+@use "web/tools/surface";
+
+/* The search's button (F164.2): shaped as a box, so it reads as a search, a chip as the code listing's buttons are.
+   Its keys at its end are drawn as the chat's search keys are, and the window it opens is the chat search's, both in
+   the shared panels. */
+.site-search-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 180px;
+    padding: 6px 8px 6px 12px;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--bs-secondary-color);
+    cursor: pointer;
+    @include surface.chip();
+}

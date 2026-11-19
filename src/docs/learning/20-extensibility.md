@@ -897,3 +897,96 @@ until the transitions are measured after F151.
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a plug-in point is proved when a third thing joins by the
 door the first two used and the old way is deleted. And *17 Observability* in spirit: a cost is counted before and
 after, not assumed.
+
+## F164.1: the framework's pages, a package any site turns on (2026-11-18)
+
+louis-agent.dev had ten pages about the framework, hidden from its menu. They followed the repo's folders, seven
+held raw HTML, one still said the repository was private, and none named what was built that month. We threw all of
+it away, pages, parts, pictures, tests and addresses, and wrote seven pages new, in the order a developer reads:
+Overview, Getting started, How it works, Features, Cost and evals, Examples and Comparison. They live on a site of
+their own, meant for framework.louis-agent.dev, so louis-agent.dev sells and the new site teaches.
+
+The lesson of this child is where the pages ended up. The first plan put them in the new site's project. Louis turned
+that round: "the framework must be a package like accounts". So the pages are `louis-agent.web.framework`, and a
+site turns them on with `.Framework()` among its areas, the same door the account pages, the evals and the themes
+already use. The framework's site is then almost nothing: one line of areas, a sixteen-line layout, a stylesheet that
+lists the framework's Sass, and a host of a few lines. That is the test of a plug-in point we keep coming back to: if
+the site that ships the pages is thin, any site could ship them.
+
+Two more packages came out the same way. Where a page's doc links lead is `.Docs(address)`, from
+`louis-agent.web.docs`: a page names a doc by its path in the repo, and the site says once that paths lead to GitHub,
+so moving the docs later is one setting. And the catch-all route that opens a place's own address moved out of the
+framework's web into `louis-agent.web.places`, as `.Places(home, site)`, so a site that wants its places doesn't take
+the admin's pages with them. That move closed a gap: the addresses were read from every fixed route, so the catch-all
+could have drawn a page behind a sign-in or the admin's key around the router's own check. Now only pages anyone may
+open have places, by the same rule the host draws pages for a search
+engine by.
+
+The host was the hardest seam. It draws each page as HTML for a search engine, and it had to learn which pages a
+package brought without the host naming the package and without the API referencing the web. The answer is a record
+both already reference, `SitePageAssemblies` in the API's contracts: the web registers it from the areas, and the
+host reads it from the services the program hands over. A Separated Interface again, a contract where both sides can
+see it.
+
+What the pages say is held to the repo, which is skill 18 as much as 20. The program shown is the coding agent's real
+`Program.cs`. Every identity and pack on the disk is named. Each of the 39 features names code and a doc that exist.
+The worked request's rand is read from the price table and the rates. Every comparison claim of ours names the file
+that proves it, and theirs link to the pages we read, with the date. Every doc link is a file. A page that would say
+something untrue now fails a test before anyone reads it.
+
+What didn't go well. The plan grew from ten steps to thirteen as Louis looked at each page, and most of the growth was
+looks: a layout researched and built three ways before his pick, pictures that wear flat or glass by a palette per
+theme in the diagram engine, the brand in every picture's footer, the site's fonts in every picture. The docs
+layout's grid, first written in Sass, took round after round to get its widths right, and that is why Bootstrap's
+grid is now a rule for the whole solution (ADR 0085, amended). And the feature's id clashed twice: main took F160 and
+then F161 for other work while this branch was open, so it is F164, and the branch and its first commits keep the old
+name. Reserving an id on main when a plan is approved would have avoided both.
+
+Nothing was measured in money: no agent runs on the new site yet. Its agent is F164.2, and the subdomain is F164.3.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a package of pages is proved when the site that ships it holds
+nothing but the names of what it uses. And *11 Protocols*: a page names a doc by its path, one source the docs site,
+the API and the MCP server can all point at.
+
+## F164.2: one door, four ways to ask (2026-11-19)
+
+The framework's site got an agent of its own, the framework Orbi, and every rich feature a docs site has: a search
+in the header, Ask Orbi in the header with Ctrl+I, Ask about this page on the right, and Ask on every code listing.
+Orbi is an identity of its own, beside louis-agent.dev's Orbi, on the docs and site packs only. It stands docked in
+the page's right column, and closing it gives the column back to "On this page".
+
+The lesson is how little each of the four ways to ask needed. Every one of them is a button that puts a question
+through the door, `GuideDoor`, the Observer the chat widget listens on. None of them knows the widget, so a new way
+to ask is a new button and nothing else. The code listing's Ask is one method of two statements. That only worked once
+the door itself moved. It was registered by the showroom alone, so on the framework's site, which has no showroom,
+every Ask would have pressed into nothing. Louis asked "why is there not a door feature in core?", and the door now
+comes with the chat's plumbing that `AddSiteAreas` gives every site. A plug-in point that one feature registers is
+really that feature's, and the first site without it finds out.
+
+The docked layout is the second thing worth keeping. It is a third `WidgetLayout` beside the corner and the bar, on
+the same runner, door and tool calls, and it adds almost no code of its own. What a layout adds to the widget's
+classes is asked of one type, `WidgetLook`, and the docked panel is Bootstrap's responsive offcanvas, which stands in
+place from an extra-large screen and slides in below it. So no style of ours writes a breakpoint, and how the column
+swaps between Orbi and "On this page" is one style rule that reads whether the widget says it is open. No state
+passes between the two parts.
+
+The search is retrieval with no model, which is skill 8 as much as 20. The host already read every section and card
+of the site's pages into an index for the agent's `FindPlace`. The search is a public route over that same index, so
+typing costs nothing, and only the last row, "Ask Orbi about …", spends a model call. Sharing the index found a
+fault: a diagram's own `<style>` was being read as words, so a section's text began with CSS. The agent had been
+reading that too, unseen; a search box put it in front of a person.
+
+What it cost. The live check asked Orbi twice on :5085: Ask about this page cost R0.037, and Ask on `Program.cs`
+R0.06, with 76k tokens read from the cache. Both answered from the docs with a doc's path and ended with three
+choices.
+
+What didn't go well. Five choices came up during the build that the plan hadn't settled: where the wide screen's way
+in lives, the door's move, who draws Ask about this page, whether a site with no agent hides the code listing's Ask,
+and what the search looks like. Each was put to Louis with three options, two of them drawn as screens. The plan
+named the layout and the door, but not how a visitor reaches them; drawing the ways in before step 1 would have
+settled most of these at once. The look at the end left two things open: a search result shows its place's heading,
+so two "Cost" sections read alike, and at 390 px the page's text column is narrow. And Ctrl+I didn't answer once,
+right after a page loaded, but did after a click; that wasn't looked into.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): one shared door, so a way to ask is a button. And *8 Memory and
+retrieval*: an index read from the real pages answers a search for nothing.

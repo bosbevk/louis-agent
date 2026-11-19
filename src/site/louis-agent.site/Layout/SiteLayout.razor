@@ -7,7 +7,6 @@
     <Tagline>The website that answers.</Tagline>
     <Stage><StageFlag Label="beta-1" Note="This is version beta-1. It works, and it is still being polished." LinkText="Tell us what you find" Href="/contact" /></Stage>
     <Links>
-        @* The framework's pages are hidden from the menu for now, kept until they are fixed (FX176). *@
         <NavLink href="/" Match="NavLinkMatch.All">Home</NavLink>
         <SiteMenu Label="Demos">
             <NavLink href="/demos" Match="NavLinkMatch.All">All demos</NavLink>
@@ -15,19 +14,10 @@
             <NavLink href="/restaurant-demo" Match="NavLinkMatch.All">A restaurant</NavLink>
             <NavLink href="/law-practice-demo" Match="NavLinkMatch.All">A law practice</NavLink>
         </SiteMenu>
+        @* The framework's own site (F164.3), a link of its own between the demos and the theme (Louis's pick B). *@
+        <NavLink href="https://framework.louis-agent.dev">Framework</NavLink>
         <NavLink href="/framework/theme" Match="NavLinkMatch.All">Theme</NavLink>
         <NavLink href="/contact" Match="NavLinkMatch.All">Contact</NavLink>
-        <SiteMenu Label="The framework" Hidden="true">
-            <NavLink href="/framework/how-it-works" Match="NavLinkMatch.All">How it works</NavLink>
-            <NavLink href="/framework/architecture" Match="NavLinkMatch.All">Architecture</NavLink>
-            <NavLink href="/framework/identities" Match="NavLinkMatch.All">Identities</NavLink>
-            <NavLink href="/framework/packs" Match="NavLinkMatch.All">Packs</NavLink>
-            <NavLink href="/framework/build-your-own" Match="NavLinkMatch.All">Build your own</NavLink>
-            <NavLink href="/framework/measured" Match="NavLinkMatch.All">Measured</NavLink>
-            <NavLink href="/framework/built-on-it" Match="NavLinkMatch.All">Built on it</NavLink>
-            <NavLink href="/framework/whats-coming" Match="NavLinkMatch.All">What's coming</NavLink>
-            <NavLink href="/csharp-ai-agent-framework" Match="NavLinkMatch.All">Compared</NavLink>
-        </SiteMenu>
     </Links>
     <Settings></Settings>
     <Footer>

@@ -1,8 +1,9 @@
 <#
 .SYNOPSIS
-Deploys the louis-agent demo's app to Azure (rg-puls-za): its revisions, as verbs that are each a few az commands with
-the names filled in (CL19, F61.4). Since FX122 (Louis's option A, 2026-11-09) it is the only app: Puls's app is gone,
-and the site runs alone, sleeping when unused, with no VM and no database. infra, vm and sql-access are the old Bicep
+Deploys the framework's two sites to Azure (rg-puls-za): their revisions, as verbs that are each a few az commands
+with the names filled in (CL19, F61.4). Since FX122 (Louis's option A, 2026-11-09) Puls's app is gone, and
+louis-agent.dev runs, sleeping when unused, with no VM and no database; since F164.3 the framework's own site,
+framework.louis-agent.dev, runs beside it the same way. infra, vm and sql-access are the old Bicep
 build's (the VM, Mongo and SQL that A removed): don't run them, they would create those again.
 
 .DESCRIPTION
@@ -31,8 +32,8 @@ param(
     [Parameter(Mandatory = $true, Position = 0)]
     [ValidateSet('infra', 'vm', 'build', 'workspace', 'secrets', 'update', 'release', 'domain', 'sql-access', 'logs')]
     [string]$Verb,
-    # Which app a verb works on: the louis-agent demo's app, the only one since FX122.
-    [ValidateSet('louis-agent-app')]
+    # Which app a verb works on: louis-agent.dev's, or the framework's site's (F164.3).
+    [ValidateSet('louis-agent-app', 'louis-agent-framework-app')]
     [string]$App = 'louis-agent-app',
     [string]$Ip,
     # build and release make one from the date and time when none is given, so two releases on one day keep both images
@@ -56,16 +57,28 @@ $Config = Join-Path $Repo 'demos\puls\config'
 $Bicep = Join-Path $Config 'azure\main.bicep'
 $BicepParams = Join-Path $Config 'azure\main.bicepparam'
 $Providers = @('google', 'microsoft', 'linkedin')
-# What is each app's: its image and Dockerfile, its config folder, its yaml, the Bicep output that names its identity,
-# its share, its domain, the suffix on the vault secrets that are its own (the rest both apps share), and WhenSet: the
-# keys the app runs without, each env var with its vault secret, named in the yaml only once the vault holds it (FX87).
+# What is each app's: its image and Dockerfile, its config folder and the secrets file in it, its yaml, the Bicep
+# output that names its identity, its share and the folders a release makes on it (F164.3), its domain, the suffix on
+# the vault secrets that are its own (the model's key both apps share), and WhenSet: the keys the app runs without,
+# each env var with its vault secret, named in the yaml only once the vault holds it (FX87).
 $Apps = @{
     'louis-agent-app' = @{
-        # The framework's site since F124: its own host, image, settings and yaml, all under src/site.
+        # louis-agent.dev since F124: its own host, image, settings and yaml, all under src/site.
         Image = 'louis-agent-site'; Dockerfile = 'src\site\docker\Dockerfile'
-        Config = 'src\site\config'; Yaml = 'src\site\deploy\azure\louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
-        Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'
+        Config = 'src\site\config'; SecretsFile = '.env.secrets'; Yaml = 'src\site\deploy\azure\louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
+        Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'; Folders = @()
         WhenSet = @{ RESEND_API_KEY = 'resend-api-key' }
+    }
+    'louis-agent-framework-app' = @{
+        # The framework's own site (F164.3), from the same config folder with keys of its own in their own file. It
+        # reads the vault with louis-agent.dev's identity and logs to its share (Louis's pick A of three, over an
+        # identity and share of its own made by hand, or the Bicep build run again, which FX122 rules out).
+        Image = 'louis-agent-site-framework'; Dockerfile = 'src\site\docker\Dockerfile.framework'
+        Config = 'src\site\config'; SecretsFile = '.env.secrets.framework'; Yaml = 'src\site\deploy\azure\louis-agent-framework-app.yaml'; IdentityOutput = 'codingAppIdentityId'
+        Share = 'louis-agent-workspace'; Hostname = 'framework.louis-agent.dev'; Suffix = '-framework'
+        # The folders its yaml mounts from the share, a parent before its child, which a release makes first.
+        Folders = @('framework', 'framework/logs')
+        WhenSet = @{}
     }
 }
 $AppInfo = $Apps[$App]
@@ -144,10 +157,11 @@ function Get-Secrets {
     # The app's secrets as name/value pairs, from the git-ignored config files and the deployment's outputs; a missing
     # value is reported by name, never printed. No `&` in a value: az is a batch file on Windows, and cmd would cut
     # the value there (connectTimeoutMS was lost that way on 2026-10-24).
-    $secretsFile = Join-Path $AppConfig '.env.secrets'
+    $secretsFile = Join-Path $AppConfig $AppInfo.SecretsFile
     $suffix = $AppInfo.Suffix
     $wanted = @()
     # The model key, and this app's own keys, suffixed as they were beside Puls (FX122: no Mongo or SQL secret now).
+    # The model key is one both apps share: a secrets file without it leaves the vault's value as it is.
     $wanted += @{ name = 'anthropic-api-key'; value = Get-EnvValue $secretsFile 'ANTHROPIC_API_KEY' }
     $wanted += @{ name = "agent-api-key$suffix"; value = Get-EnvValue $secretsFile 'AGENT_API_KEY' }
     $wanted += @{ name = "admin-api-key$suffix"; value = Get-EnvValue $secretsFile 'ADMIN_API_KEY' }
@@ -302,24 +316,38 @@ switch ($Verb) {
         $highest = if ($numbers.Count -gt 0) { [int]($numbers | Measure-Object -Maximum).Maximum } else { 0 }
         $next = 'v{0:D3}' -f ($highest + 1)
         Write-Host "Release: image tagged $Tag, then $App revision $next."
+        # The folders the app's yaml mounts from its share, made before the revision so a first release finds them
+        # (F164.3, Louis's pick B of three). A folder there already is left as it is: the command fails on one only
+        # with --fail-on-exist. An app that names none, as louis-agent.dev, never reads the storage key.
+        if ($AppInfo.Folders.Count -gt 0) {
+            $key = Read-Az storage account keys list -n 'pulsstorage' -g $ResourceGroup --query '[0].value' -o tsv
+            if ($LASTEXITCODE -ne 0 -or -not $key) { throw 'Could not read the storage key of pulsstorage.' }
+            foreach ($folder in $AppInfo.Folders) {
+                Write-Host "  $($AppInfo.Share)/$folder"
+                Invoke-Az storage directory create --account-name 'pulsstorage' --account-key $key --share-name $AppInfo.Share -n $folder -o none
+            }
+        }
         & $PSCommandPath build -App $App -Tag $Tag
         & $PSCommandPath update -App $App -Tag $Tag -Revision $next
     }
     'domain' {
         # The records Cloudflare needs, DNS-only (a proxied record blocks the certificate): the apex points at the
-        # environment's address, the TXT proves the domain is ours, www is a CNAME to the app's own address.
+        # environment's address, the TXT proves the domain is ours, and a subdomain (www, framework) is a CNAME from its
+        # first label to the app's own address. A name of two parts is the apex (F164.3: before, any name but www was
+        # taken for one, and framework.louis-agent.dev would have been given louis-agent.dev's A record).
         $staticIp = Get-Output 'environmentStaticIp'
         $fqdn = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.configuration.ingress.fqdn' -o tsv
         $verification = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.customDomainVerificationId' -o tsv
         if ($LASTEXITCODE -ne 0 -or -not $fqdn) { throw "$App is not deployed yet: deploy.ps1 release first." }
-        $apex = $Hostname -notmatch '^www\.'
+        $apex = $Hostname.Split('.').Count -eq 2
+        $label = $Hostname.Split('.')[0]
         Write-Host "In Cloudflare, DNS-only, for ${Hostname}:"
         if ($apex) {
             Write-Host "  A      @           $staticIp"
             Write-Host "  TXT    asuid       $verification"
         } else {
-            Write-Host "  CNAME  www         $fqdn"
-            Write-Host "  TXT    asuid.www   $verification"
+            Write-Host "  CNAME  $label   $fqdn"
+            Write-Host "  TXT    asuid.$label   $verification"
         }
         $method = if ($apex) { 'TXT' } else { 'CNAME' }
         if ($PSCmdlet.ShouldProcess($App, "az containerapp hostname add/bind $Hostname with a managed certificate ($method)")) {

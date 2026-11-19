@@ -1,0 +1,13 @@
+@* Code on a page (F164.1): named for its file or its language, with a button that asks the site's agent about it
+   (F164.2) and one that copies it as it stands, the code itself as text, never read as markup. The header's layout is
+   Bootstrap's (ADR 0085). *@
+<figure class="code-listing">
+    <figcaption class="d-flex align-items-center justify-content-between gap-3">
+        <span>@Label</span>
+        <span class="d-flex gap-2">
+            <button type="button" class="code-ask" @onclick="Ask">@Text.AskCode</button>
+            <button type="button" class="code-copy" @onclick="CopyAsync">@CopyWord</button>
+        </span>
+    </figcaption>
+    <pre><code class="language-@Language">@Code</code></pre>
+</figure>

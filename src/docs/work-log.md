@@ -12,16 +12,17 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 133 | 97 |
+| Features (`F`) | 136 | 98 |
 | Fixes (`FX`) | 195 | 6 |
 | Cleanups (`CL`) | 41 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (132 in the TODO)
+## Open (133 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
+| F164 | The framework's own site at framework.louis-agent.dev (Louis, 2026-11-17: "framework will also become a subdomain", "no we give him his own identity"): F164.1 done, the old pages thrown away and seven written new with doc links by path, on :5084; F164.2 done, its agent, the framework Orbi, docked beside the page, with a search and Ask on the header, the page and every code listing; F164.3 built, a second Azure app released on every merge, louis-agent.dev's menu and CV linking to it; left, after #403's merge, its DNS at Cloudflare, its certificate, the CV's saved copy and the live check | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/louis-agent.stream-probe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
@@ -155,10 +156,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (133 done)
+## Features (136 done)
 
 | Id | When | What |
 |---|---|---|
+| F164.3 | 2026-11-19 | framework.louis-agent.dev as a second Azure app, F164's last child: one more row in `deploy.ps1`'s table, on louis-agent.dev's identity and share with its logs in `framework/logs` and keys of its own; the `domain` verb tells a subdomain from an apex; a release makes the folders its app names; every merge releases both sites; 20 sessions a day everywhere; "Framework" on louis-agent.dev's menu and the CV's four cards on the new site; the Azure docs rewritten to what runs today |
+| F164.2 | 2026-11-19 | The framework Orbi, F164's second child: `louis-agent.identity.framework`, an identity of its own on the docs and site packs, run by the framework site's host with its door open and the docs in its image; the chat docked beside a page as a third `WidgetLayout`, in the docs layout's right column in place of "On this page"; the door moved into what every site gets; Ask Orbi in the header with Ctrl+I, Ask about this page, Ask on every code listing; a search window with Ctrl+K over `GET /v1/site/places`, the site's places with no model and Orbi asked last; one live check, R0.037 and R0.06 |
+| F164.1 | 2026-11-18 | The framework's pages, the first of F164's three children: the old pages thrown away from louis-agent.dev and seven written new, Overview to Comparison, as `louis-agent.web.framework`, a package a site turns on with `.Framework()` (Louis: "the framework must be a package like accounts"); `.Docs(address)` in `louis-agent.web.docs` for a doc linked by its path; `.Places(home, site)` in `louis-agent.web.places`, the catch-all moved out; the framework's own site and its host on :5084, flat alone, in the docs layout; every picture in the page's theme, with the brand in its footer and the site's fonts; what each page says held to the repo by its test |
 | F163 | 2026-11-18 | The free websites, hosted free for the first year, move to their own page, `/free-websites`, and the landing keeps one line under the hero that leads there: the framework's new announcement strip, in a new slot of its hero, a plain pill with no glass; Orbi gains an always-on writing skill, short sentences with no colon, semicolon or bracket |
 | F162 | 2026-11-18 | Two free websites: a band right after the landing's hero where any business enters through Orbi, who takes the entry in one form and mails it on a yes; two are chosen; the theme page shows nothing twice, four cards with one switch, one off button and one status pill |
 | F161 | 2026-11-18 | The brand speaks to owners: the guide is Orbi, Louis's AI agent, telling his story as his (ADR 0113 amended); the slogan "The website that answers." in the header, footer, tab, link preview and a one-ball social card; the hero "Your doors close at five. Your website doesn't.", one sentence to a line (the framework hero's `Lines`); no price in the description; a face band naming Louis once, with his CV; every line on the landing rewritten for an owner |

@@ -352,8 +352,9 @@ public class SequenceDrawingTests
         Assert.Multiple(() =>
         {
             Assert.That(Width(wide), Is.GreaterThan(Width(narrow)).And.GreaterThan(title.Length * 6.5));
-            Assert.That(Width(In("mrq-rule", wide).Single()), Is.EqualTo(Width(wide) - 48).Within(0.11));
-            Assert.That(Width(In("mrq-rule", narrow).Single()), Is.EqualTo(Width(narrow) - 48).Within(0.11));
+            // The header's hairline and the key's rule, each across the whole picture.
+            Assert.That(In("mrq-rule", wide).Select(Width), Has.All.EqualTo(Width(wide) - 48).Within(0.11));
+            Assert.That(In("mrq-rule", narrow).Select(Width), Has.All.EqualTo(Width(narrow) - 48).Within(0.11));
         });
     }
 

@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.web.framework at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "framework", "icon": "book", "title": "The framework's pages", "code": "louis-agent.web.framework",
+          "look": "highlight",
+          "text": "The framework told to a developer, page by page, as a package a site turns on." }
+      ] },
+      { "cards": [
+        { "id": "pages", "icon": "browser", "title": "Seven pages",
+          "text": "Overview to Comparison, in a developer's reading order." },
+        { "id": "content", "icon": "file", "title": "What they say",
+          "text": "Records held to the repo by tests: families, features, cost, claims." },
+        { "id": "graphs", "icon": "chart", "title": "Their pictures",
+          "text": "Data for the diagram engine, drawn on the page in its theme." }
+      ] },
+      { "cards": [
+        { "id": "area", "icon": "settings", "title": "The area",
+          "text": "Framework() brings the pages and their contents to a site." }
+      ] }
+    ],
+    "links": [
+      { "from": "framework", "to": "pages" },
+      { "from": "framework", "to": "content" },
+      { "from": "framework", "to": "graphs" }
+    ]
+  }
+}

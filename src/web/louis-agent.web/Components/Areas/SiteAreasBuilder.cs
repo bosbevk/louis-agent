@@ -1,3 +1,4 @@
+using LouisAgent.Api.Contracts.Site;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Admin.Overview;
@@ -80,14 +81,13 @@ public sealed class SiteAreasBuilder
     }
 
     /// <summary>
-    /// The showroom (ADR 0115): the site's demos, and the guide's way in, the demos' windows and the guide kept across
-    /// the site's layouts.
+    /// The showroom (ADR 0115): the site's demos, the demos' windows and the guide kept across the site's layouts; the
+    /// guide's way in, its door, is every site's (F164.2).
     /// </summary>
     public SiteAreasBuilder Showroom(ShowroomDemos demos) =>
         Add(new SiteArea("showroom", services =>
         {
             services.TryAddSingleton(demos);
-            services.TryAddSingleton<GuideDoor>();
             services.TryAddSingleton<AgentWindows>();
             services.TryAddSingleton<GuideKeeper>();
             services.TryAddSingleton<GuideActivity>();
@@ -149,7 +149,11 @@ public sealed class SiteAreasBuilder
         var accountLayout = _areas.Select(area => area.AccountLayout).OfType<Type>().FirstOrDefault();
         if ((_adminLayout ?? accountLayout) is { } admin)
             services.TryAddSingleton(new SiteFrames(admin, accountLayout ?? admin));
-        services.TryAddSingleton(new SiteAreas(_areas));
+        var areas = new SiteAreas(_areas);
+        services.TryAddSingleton(areas);
+        // The host draws the areas' pages for a search engine too, told through the API's contract (F164.1).
+        var pages = new SitePageAssemblies(areas.PageAssemblies);
+        services.TryAddSingleton(pages);
     }
 
     /// <summary>Whether an area by this name is named already.</summary>

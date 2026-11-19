@@ -66,6 +66,9 @@ A change travels through a scoped state's `Changed` event.
 
 ## Styles, scripts and themes
 
+- **Layout is Bootstrap's classes in the markup** (Louis, 2026-11-17: "bootstrap is a universal rule for this
+  project"): a component lays itself out with Bootstrap's grid and utilities, `row`, `col-lg-2`, `d-none d-xl-block`,
+  `gap-3`, `sticky-top`, and its `.razor.scss` holds only what Bootstrap has no class for. The how is in `css.md`.
 - **A component's own styles sit beside it.** A rule only this component draws goes in `X.razor.scss` next to
   `X.razor`, scoped and bundled by the build. A rule a site's own page draws, or a theme overrides, stays a global
   partial. The how is in `css.md`. `ScopedStylesTests` holds it.

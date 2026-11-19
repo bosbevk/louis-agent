@@ -1,0 +1,34 @@
+@use "web/tools/surface";
+
+/* A listing (F164.1): its name small in the mono face above, the code on the theme's code ground with the theme's line
+   round it, as the chat's code blocks are, scrolling sideways rather than wrapping. */
+.code-listing {
+    margin: 18px 0;
+}
+
+.code-listing figcaption {
+    margin-bottom: 6px;
+    font: 500 12px/1.3 var(--bs-font-monospace);
+    color: var(--bs-tertiary-color);
+}
+
+/* The copy and ask buttons: chips, small, in the caption's face, so they read as part of the listing's header. */
+.code-copy,
+.code-ask {
+    @include surface.chip();
+    padding: 3px 10px;
+    border-radius: 999px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.code-listing pre {
+    margin: 0;
+    padding: 16px 18px;
+    @include surface.panel(var(--web-code-bg));
+    @include surface.lined();
+    border-radius: 10px;
+    overflow-x: auto;
+    font: 13.5px/1.6 var(--bs-font-monospace);
+    color: var(--bs-body-color);
+}

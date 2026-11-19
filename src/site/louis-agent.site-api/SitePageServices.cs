@@ -2,7 +2,6 @@ using LouisAgent.Site;
 using LouisAgent.Site.Resumes.Sources;
 using LouisAgent.SiteApi.Resumes;
 using LouisAgent.Web.Components.Areas;
-using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Text;
 
 namespace LouisAgent.SiteApi;
@@ -19,9 +18,6 @@ namespace LouisAgent.SiteApi;
 /// </remarks>
 public static class SitePageServices
 {
-    /// <summary>The word the landing's places sit under, as in <c>/home/welcome</c>.</summary>
-    public const string Home = "home";
-
     /// <summary>
     /// Registers what a page the host renders asks for. The CV comes from <paramref name="resumes"/>.
     /// </summary>
@@ -32,9 +28,8 @@ public static class SitePageServices
         // A page rendered here reads the CV from the store, where the browser asks the API.
         services.AddSingleton<IResumeSource>(new StoredResumeSource(resumes));
 
-        // As the site's own program registers them: every place's address, so a page knows which place it was
-        // asked at, and the site's areas, so the showroom has its demos.
-        services.AddSingleton(SiteAddresses.From(Home, typeof(App).Assembly));
+        // As the site's own program registers them: the site's areas, so the showroom has its demos and a page knows
+        // which place it was asked at.
         services.AddSiteAreas(LouisAgentDevAreas.Name);
     }
 }

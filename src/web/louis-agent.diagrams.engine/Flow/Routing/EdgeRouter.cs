@@ -143,14 +143,20 @@ internal static class EdgeRouter
         double bend = Bend)
     {
         var self = edges.Where(edge => edge.From == edge.To).ToList();
+        // Back to the column beside it on the same row, with no word, an arrow runs straight across between the two
+        // (Louis: "that line must be straight the other one can bend cause of the label"); every other arrow back
+        // takes its lane under the drawing, where a word has room.
+        var beside = edges.Where(edge => BesideArrows.Beside(edge, byId)).ToList();
         var back = edges.Where(edge => edge.From != edge.To && byId[edge.To].Node.Column < byId[edge.From].Node.Column)
-            .ToList();
+            .Except(beside).ToList();
         var down = edges.Where(edge => edge.From != edge.To && byId[edge.To].Node.Column == byId[edge.From].Node.Column)
             .ToList();
-        var forward = edges.Except(self).Except(back).Except(down).ToList();
+        var forward = edges.Except(self).Except(back).Except(beside).Except(down).ToList();
 
         var plans = new List<Plan>();
         plans.AddRange(Forward(forward, byId, turned, geometry));
+        plans.AddRange(beside.Select(edge =>
+            BesideArrows.Across(edge, byId[edge.From].Box, byId[edge.To].Box, geometry)));
         plans.AddRange(down.Select(edge => Down(edge, byId[edge.From].Box, byId[edge.To].Box, geometry)));
         if (back.Count > 0) plans.AddRange(Back(back, byId, height, turned, geometry));
         int backLanes = back.Select(edge => edge.To).Distinct().Count();

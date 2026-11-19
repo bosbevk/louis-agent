@@ -40,7 +40,7 @@ public class GuideKnowsTheSiteTests
 
         string voice = WhatTheGuideReads();
 
-        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(9), "the pages were found");
         Assert.That(addresses.Where(address => !voice.Contains(address)), Is.Empty);
     }
 

@@ -21,6 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\web\louis-agent.web\louis-agent.web.csproj" />
     <ProjectReference Include="..\..\web\louis-agent.web.themes\louis-agent.web.themes.csproj" />
+    <!-- Every place's own address, the area it names with .Places(). -->
+    <ProjectReference Include="..\..\web\louis-agent.web.places\louis-agent.web.places.csproj" />
     <!-- The guide's name, for its chat in the corner (F109.3); the guide itself runs on the site's host. -->
     <ProjectReference Include="..\louis-agent.identity.guide\louis-agent.identity.guide.csproj" />  </ItemGroup>
 

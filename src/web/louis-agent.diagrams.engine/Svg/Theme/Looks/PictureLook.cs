@@ -20,12 +20,12 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 internal static class PictureLook
 {
     /// <summary>A panel's body and its hairline, and the marching dots, on a light page.</summary>
-    private const string Light =
+    internal const string Light =
         "--pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); " +
         "--pic-march: rgba(255, 255, 255, .95);";
 
     /// <summary>The same on a dark page, where a panel is a little of white and each depth a step lighter.</summary>
-    private const string Dark =
+    internal const string Dark =
         "--pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); " +
         "--pic-march: rgba(255, 255, 255, .75);";
 
@@ -35,7 +35,7 @@ internal static class PictureLook
 
           svg {
             {{Light}}
-            --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            --pic-sans: {{PictureFonts.Sans}};
           }
           {{PageScheme.Rules(Light, Dark)}}
           .pic-edge { stroke: var(--quiet); }

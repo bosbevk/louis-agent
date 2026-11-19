@@ -96,7 +96,9 @@ public static class GraphLayout
         // The boxes placed once with the columns far apart, only to learn how high each stands: how many tracks a
         // gap needs can depend on whether two lines in it would lie on one another, and that is a matter of heights.
         var apart = Enumerable.Range(0, columns.Count).Select(at => at * FarApart).ToList();
-        var (rough, _) = Bands.Place(spec, columns, new Bands.Grid(apart, widths, Gap, Tall), turned, geometry);
+        // The room between stacked boxes: the flow's own when it asks for more, else the usual.
+        double rowGap = spec.RowGap ?? Gap;
+        var (rough, _) = Bands.Place(spec, columns, new Bands.Grid(apart, widths, rowGap, Tall), turned, geometry);
         var heights = LongLines.Straightened(rough, spec.Edges).ToDictionary(node => node.Node.Id);
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
@@ -106,7 +108,7 @@ public static class GraphLayout
         // Every box sits on one row grid, on the row level with what feeds it (Louis: "alignment is key", "this must
         // not happen"): two middles then differ by half a row at least, never by a few pixels, so no connector ever
         // jogs. A shorter box stands in the middle of its row.
-        var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, Tall), turned,
+        var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, rowGap, Tall), turned,
             geometry);
         // A long arrow's waypoints stand in line with where it arrives, so it drops straight in.
         var placed = LongLines.Straightened(banded, spec.Edges);

@@ -1,6 +1,4 @@
 using LouisAgent.Site.Pages;
-using LouisAgent.Site.Pages.Framework;
-using LouisAgent.Site.Tests.Pages;
 
 namespace LouisAgent.Site.Tests.Components.Landing;
 
@@ -87,22 +85,6 @@ public class LandingStoryTests
             Assert.That(band.QuerySelector(".mark-showcase .mark-grounds"), Is.Not.Null);
             Assert.That(band.QuerySelectorAll("[data-piece]"), Is.Empty);
             Assert.That(band.QuerySelector("a[href='/framework/theme']"), Is.Not.Null);
-        });
-    }
-
-    /// <summary>What left the landing has a home on the framework's pages.</summary>
-    [Test]
-    public void WhatLeftTheLanding_LivesOnTheFrameworksPages()
-    {
-        using var ctx = SitePageContext.Create();
-
-        string measured = ctx.Render<ProofPage>().Markup;
-        string architecture = ctx.Render<ArchitecturePage>().Markup;
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(measured, Does.Contain("First principles."));
-            Assert.That(architecture, Does.Contain("The engine is how"));
         });
     }
 

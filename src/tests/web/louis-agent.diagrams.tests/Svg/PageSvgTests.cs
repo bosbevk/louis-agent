@@ -115,4 +115,46 @@ public class PageSvgTests
     [Test]
     public void TheFile_KeepsItsPlainStyles() =>
         Assert.That(DiagramRenderers.Render(Ticket()), Does.Not.Contain("@scope"));
+
+    /// <summary>
+    /// F164.1: in a page, a drawing wears the page's theme as well as its style (Louis's pick C: "a palette per theme
+    /// in the engine"): flat's own colours on a flat page, glass's on a glass one, light or dark.
+    /// </summary>
+    [Test]
+    public void ThePagesCopy_WearsFlatOrGlass()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain("[data-theme=\"flat\"][data-style=\"light\"] :scope"));
+            Assert.That(page, Does.Contain("[data-theme=\"flat\"][data-style=\"dark\"] :scope"));
+            Assert.That(page, Does.Contain("[data-theme=\"glass\"][data-style=\"light\"] :scope"));
+            Assert.That(page, Does.Contain("--ground: #f7f7f8").And.Contain("--ground: #0c0c0e"),
+                "flat's grounds, a tad darker than white and a very dark grey, as its pages are");
+        });
+    }
+
+    /// <summary>
+    /// On a page, only the cards are filled (Louis: "can we make all backgrounds transparent only the cards can have a
+    /// background colour, light is smoke white"): no light and no sheen behind the picture, and every card, glass's and
+    /// the quiet one alike, its own fill under its line, smoke white in the light.
+    /// </summary>
+    [Test]
+    public void OnAPage_OnlyTheCardsAreFilled()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain(":scope .mrq-glass, :scope .crd-quiet { fill: var(--pic-body)"));
+            Assert.That(page, Does.Contain("--mrq-glow: 0; --mrq-glow-far: 0"), "no light behind the picture");
+            Assert.That(page, Does.Contain("--pic-body: #f5f5f5"), "smoke white in the light");
+        });
+    }
+
+    /// <summary>A file names no site's theme: the docs' pictures stay byte for byte as they were.</summary>
+    [Test]
+    public void TheFile_WearsNoSitesTheme() =>
+        Assert.That(DiagramRenderers.Render(Flow()), Does.Not.Contain("data-theme"));
 }

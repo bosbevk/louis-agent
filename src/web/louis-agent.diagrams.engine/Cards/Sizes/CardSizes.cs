@@ -58,14 +58,15 @@ public static class CardSizes
 
     /// <summary>
     /// A headline: its title on one line, its code name's pill under it when it has one, and its text under that,
-    /// kept well inside the picture's sides.
+    /// kept well inside the picture's sides. With no text it ends under its pill, since the page around the picture
+    /// says it (Louis: "leave these text out of these graphs, website will drive it").
     /// </summary>
     private static CardSize Headline(Card card, double width, double title, double text, double line)
     {
         var lines = TextWrap.Lines(card.Text, (int)HeadlineFace.Holds(width - 2 * HeadlineSide));
         double pill = card.Code is null ? 0 : PillRoom;
-        return new CardSize(title + pill + text + line * (lines.Count - 1) + HeadlineEnd, [card.Title], false, lines,
-            false);
+        double words = lines.Count == 0 ? 0 : text + line * (lines.Count - 1);
+        return new CardSize(title + pill + words + HeadlineEnd, [card.Title], false, lines, false);
     }
 
     /// <summary>

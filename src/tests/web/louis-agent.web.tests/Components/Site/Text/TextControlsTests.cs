@@ -49,4 +49,26 @@ public class TextControlsTests
             Assert.That(items[0].QuerySelector(".term-text")!.TextContent, Is.EqualTo("The engine: the tool loop."));
         });
     }
+
+    /// <summary>
+    /// A step's number stands centred beside its words, however many lines they run to (Louis: "not centered"), laid
+    /// out by Bootstrap's own classes (ADR 0085), and the number never shrinks.
+    /// </summary>
+    [Test]
+    public void AStepsNumber_IsCentredBesideItsWords()
+    {
+        using var ctx = new BunitContext();
+        Step[] steps = [new("Copy the settings.", "Copy `.env.example` to `.env`."), new("Run it.", "Type `dotnet run`.")];
+
+        var cut = ctx.Render<Steps>(parameters => parameters.Add(list => list.Items, steps));
+        var items = cut.FindAll("ol.steps > li");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(items, Has.Count.EqualTo(2));
+            Assert.That(items.Select(item => item.ClassList), Has.All.Contains("d-flex").And.All.Contains("align-items-center"));
+            Assert.That(items[1].QuerySelector(".step-number")!.ClassList, Does.Contain("flex-shrink-0"));
+            Assert.That(items[1].QuerySelector(".step-number")!.TextContent, Is.EqualTo("2"));
+        });
+    }
 }

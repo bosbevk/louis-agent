@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace LouisAgent.SiteApi;
 
 /// <summary>
-/// The framework's pages moved under <c>/framework</c> (F128.1), so the site sells first and those pages can later
-/// move whole to the framework's own site, and the doctor's practice's demo gave way to the guesthouse's (F127.1). An
+/// The doctor's practice's demo gave way to the guesthouse's (F127.1), and the pricing page to the contact page. An
 /// old address from a bookmark or a search result is sent on, for good, to where its place is now, with its section and
 /// its page of a section kept.
 /// </summary>
@@ -13,14 +12,6 @@ public static class MovedPages
     /// <summary>Each old page's address and where it lives now.</summary>
     public static IReadOnlyDictionary<string, string> Moves { get; } = new Dictionary<string, string>
     {
-        ["/how-it-works"] = "/framework/how-it-works",
-        ["/architecture"] = "/framework/architecture",
-        ["/identities"] = "/framework/identities",
-        ["/packs"] = "/framework/packs",
-        ["/build-your-own"] = "/framework/build-your-own",
-        ["/proof"] = "/framework/measured",
-        ["/built-on-it"] = "/framework/built-on-it",
-        ["/whats-coming"] = "/framework/whats-coming",
         ["/doctors-practice-demo"] = "/guesthouse-demo",
         ["/pricing"] = "/contact"
     };

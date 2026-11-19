@@ -1,11 +1,12 @@
-@* A few steps in order (ADR 0125): each its number in a violet glass circle, then its title and words as one quiet
-   sentence. A site gives them as records. *@
-<ol class="steps">
+@* A few steps in order (ADR 0125): each its number in a violet glass circle, centred beside its title and words as one
+   quiet sentence however many lines they run to (Louis: "not centered"). The layout is Bootstrap's (ADR 0085). A site
+   gives them as records. *@
+<ol class="steps list-unstyled d-grid gap-3 m-0 p-0">
     @for (var index = 0; index < Items.Count; index++)
     {
         var step = Items[index];
-        <li>
-            <span class="step-number" aria-hidden="true">@(index + 1)</span>
+        <li class="d-flex align-items-center gap-3">
+            <span class="step-number flex-shrink-0" aria-hidden="true">@(index + 1)</span>
             <span class="step-words"><span class="step-title">@step.Title</span> @Markdown.Inline(step.Text)</span>
         </li>
     }

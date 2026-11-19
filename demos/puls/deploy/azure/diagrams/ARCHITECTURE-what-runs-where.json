@@ -1,190 +1,38 @@
 {
   "kind": "flow",
   "type": "deployment",
-  "title": "Puls in Azure: what runs where",
-  "caption": "Nothing outside reaches the services: everything here sits in rg-puls-za, the VM has no public address (both apps reach it at 10.0.2.4 and send their telemetry through the OpenTelemetry agent), SQL takes TLS only, and every secret is in the vault.",
+  "title": "The framework's two sites in Azure: what runs where",
+  "caption": "Two apps in one environment in rg-puls-za, each asleep until someone visits: they share an identity that reads the vault and a share that holds each one's logs in a folder of its own.",
   "flow": {
     "nodes": [
-      {
-        "id": "person",
-        "shape": "terminal",
-        "icon": "user",
-        "tone": "blue",
-        "label": "A person's browser"
-      },
-      {
-        "id": "env",
-        "icon": "cloud",
-        "tone": "violet",
-        "label": "puls-env (Consumption profile,\nstatic IP 4.253.73.61)",
-        "group": "apps"
-      },
-      {
-        "id": "app",
-        "icon": "box",
-        "tone": "green",
-        "label": "puls-app: the Puls image, one\ncontainer, revision vNNN",
-        "group": "apps"
-      },
-      {
-        "id": "app2",
-        "icon": "box",
-        "tone": "green",
-        "label": "louis-agent-app: the coding\nAPI serving the site and the\nchat, revision vNNN",
-        "group": "apps"
-      },
-      {
-        "id": "vm",
-        "icon": "server",
-        "tone": "green",
-        "label": "VM puls-services (Ubuntu\n24.04, Standard_B2s, no public\nIP)\nDocker: mongo:9 :27017,\nheadless-shell :9222, searxng\n:8080\ndata disk, XFS at /data",
-        "group": "services"
-      },
-      {
-        "id": "sql",
-        "shape": "data",
-        "icon": "database",
-        "tone": "amber",
-        "label": "Azure SQL puls-sql-za:\npuls_accounts, tenants puls\nand louis-agent (free offer,\npauses when idle)"
-      },
-      {
-        "id": "identity",
-        "icon": "user",
-        "tone": "teal",
-        "label": "puls-app-identity: Key Vault\nSecrets User"
-      },
-      {
-        "id": "identity2",
-        "icon": "user",
-        "tone": "teal",
-        "label": "louis-agent-app-identity: Key\nVault Secrets User"
-      },
-      {
-        "id": "vault",
-        "shape": "data",
-        "icon": "shield",
-        "tone": "amber",
-        "label": "Key Vault puls-keys: every\nsecret value"
-      },
-      {
-        "id": "insights",
-        "icon": "chart",
-        "tone": "violet",
-        "label": "Application Insights\npuls-insights, on puls-logs"
-      },
-      {
-        "id": "registry",
-        "shape": "data",
-        "icon": "box",
-        "tone": "amber",
-        "label": "Registry acrpulsza:\nlouis-agent-puls and\nlouis-agent-coding images"
-      },
-      {
-        "id": "share",
-        "shape": "data",
-        "icon": "folder",
-        "tone": "amber",
-        "label": "pulsstorage: the share\npuls-app-workspace (config/,\nlogs/, data/)"
-      },
-      {
-        "id": "share2",
-        "shape": "data",
-        "icon": "folder",
-        "tone": "amber",
-        "label": "pulsstorage: the share\nlouis-agent-workspace\n(config/, skills/, logs/,\ndata/)"
-      }
+      { "id": "person", "shape": "terminal", "icon": "user", "tone": "blue", "label": "A visitor's browser" },
+      { "id": "dns", "icon": "world", "tone": "red", "label": "Cloudflare, DNS-only\nlouis-agent.dev, framework." },
+      { "id": "site", "icon": "server", "tone": "green", "label": "louis-agent-app\nlouis-agent.dev, the public Orbi", "group": "env" },
+      { "id": "framework", "icon": "server", "tone": "green", "label": "louis-agent-framework-app\nframework.louis-agent.dev, the framework Orbi", "group": "env" },
+      { "id": "identity", "icon": "shield", "tone": "teal", "label": "louis-agent-app-identity\nKey Vault Secrets User" },
+      { "id": "vault", "shape": "data", "icon": "shield", "tone": "amber", "label": "Key Vault puls-keys\nevery secret value" },
+      { "id": "share", "shape": "data", "icon": "folder", "tone": "amber", "label": "pulsstorage, louis-agent-workspace\nlogs/, data/, framework/logs/" },
+      { "id": "registry", "shape": "data", "icon": "box", "tone": "amber", "label": "Registry acrpulsza\nlouis-agent-site, louis-agent-site-framework" },
+      { "id": "insights", "icon": "chart", "tone": "violet", "label": "Application Insights\npuls-insights, on puls-logs" },
+      { "id": "model", "icon": "chip", "tone": "red", "label": "Anthropic\nClaude Haiku 5.5" }
     ],
     "edges": [
-      {
-        "from": "person",
-        "to": "app",
-        "word": "HTTPS mypuls.co.za"
-      },
-      {
-        "from": "person",
-        "to": "app2",
-        "word": "HTTPS louis-agent.dev"
-      },
-      {
-        "from": "env",
-        "to": "app"
-      },
-      {
-        "from": "env",
-        "to": "app2"
-      },
-      {
-        "from": "env",
-        "to": "registry",
-        "word": "AcrPull"
-      },
-      {
-        "from": "app",
-        "to": "vm"
-      },
-      {
-        "from": "app2",
-        "to": "vm"
-      },
-      {
-        "from": "app",
-        "to": "sql"
-      },
-      {
-        "from": "app2",
-        "to": "sql",
-        "word": "tenant louis-agent"
-      },
-      {
-        "from": "app",
-        "to": "identity",
-        "word": "reads with",
-        "style": "dashed"
-      },
-      {
-        "from": "app2",
-        "to": "identity2",
-        "word": "reads with",
-        "style": "dashed"
-      },
-      {
-        "from": "identity",
-        "to": "vault",
-        "style": "dashed"
-      },
-      {
-        "from": "identity2",
-        "to": "vault",
-        "style": "dashed"
-      },
-      {
-        "from": "app",
-        "to": "insights"
-      },
-      {
-        "from": "app2",
-        "to": "insights"
-      },
-      {
-        "from": "app",
-        "to": "share",
-        "word": "mounted at /workspace"
-      },
-      {
-        "from": "app2",
-        "to": "share2",
-        "word": "mounted at /workspace"
-      }
+      { "from": "person", "to": "dns", "word": "HTTPS" },
+      { "from": "dns", "to": "site" },
+      { "from": "dns", "to": "framework" },
+      { "from": "site", "to": "identity", "word": "reads with", "style": "dashed" },
+      { "from": "framework", "to": "identity", "style": "dashed" },
+      { "from": "identity", "to": "vault", "style": "dashed" },
+      { "from": "site", "to": "share" },
+      { "from": "framework", "to": "share" },
+      { "from": "registry", "to": "site", "word": "AcrPull", "style": "dashed" },
+      { "from": "site", "to": "insights" },
+      { "from": "framework", "to": "insights" },
+      { "from": "site", "to": "model" },
+      { "from": "framework", "to": "model" }
     ],
     "groups": [
-      {
-        "id": "apps",
-        "label": "apps subnet 10.0.0.0/23, delegated to Container Apps"
-      },
-      {
-        "id": "services",
-        "label": "services subnet 10.0.2.0/24, NSG: 27017, 9222, 8080 from the apps subnet only"
-      }
+      { "id": "env", "label": "puls-env, Consumption, asleep at no replicas" }
     ]
   }
 }

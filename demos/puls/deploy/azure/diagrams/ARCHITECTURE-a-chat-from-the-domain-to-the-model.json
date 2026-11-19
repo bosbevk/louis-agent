@@ -1,113 +1,24 @@
 {
   "kind": "sequence",
-  "title": "Puls in Azure: a chat, from the domain to the model",
-  "caption": "One app in front: DNS points the domain at it, it signs the person in, and it reaches Mongo, Chrome and the model behind it.",
+  "title": "The framework's two sites in Azure: a chat, from the domain to the model",
+  "caption": "DNS points a name at its app, the app wakes if it was asleep, the open door lets the visitor talk to its Orbi, and the answer streams back from the model.",
   "sequence": {
     "participants": [
-      {
-        "id": "B",
-        "icon": "browser",
-        "tone": "blue",
-        "label": "Browser"
-      },
-      {
-        "id": "CF",
-        "icon": "world",
-        "tone": "red",
-        "label": "Cloudflare DNS (DNS-only records)"
-      },
-      {
-        "id": "A",
-        "icon": "server",
-        "tone": "green",
-        "label": "puls-app"
-      },
-      {
-        "id": "SQL",
-        "icon": "database",
-        "tone": "amber",
-        "label": "Azure SQL"
-      },
-      {
-        "id": "VM",
-        "icon": "server",
-        "tone": "amber",
-        "label": "puls-services"
-      },
-      {
-        "id": "M",
-        "icon": "cloud",
-        "tone": "red",
-        "label": "Anthropic"
-      }
+      { "id": "browser", "label": "A visitor's browser", "actor": true, "tone": "blue" },
+      { "id": "dns", "label": "Cloudflare DNS", "icon": "world", "tone": "red" },
+      { "id": "app", "label": "The site's app", "icon": "server", "tone": "green" },
+      { "id": "model", "label": "Anthropic", "icon": "chip", "tone": "red" }
     ],
     "steps": [
-      {
-        "step": "message",
-        "from": "B",
-        "to": "CF",
-        "text": "mypuls.co.za?"
-      },
-      {
-        "step": "reply",
-        "from": "CF",
-        "to": "B",
-        "text": "4.253.73.61 (A), www a CNAME to the app\u0027s own address"
-      },
-      {
-        "step": "message",
-        "from": "B",
-        "to": "A",
-        "text": "GET / over HTTPS"
-      },
-      {
-        "step": "reply",
-        "from": "A",
-        "to": "B",
-        "text": "the Puls web app"
-      },
-      {
-        "step": "message",
-        "from": "B",
-        "to": "A",
-        "text": "POST /account/login"
-      },
-      {
-        "step": "message",
-        "from": "A",
-        "to": "SQL",
-        "text": "the user (the database resumes after a pause; EF retries)"
-      },
-      {
-        "step": "reply",
-        "from": "A",
-        "to": "B",
-        "text": "Set-Cookie"
-      },
-      {
-        "step": "message",
-        "from": "B",
-        "to": "A",
-        "text": "POST /v1/sessions (cookie \u002B X-Requested-With)"
-      },
-      {
-        "step": "message",
-        "from": "A",
-        "to": "VM",
-        "text": "27017 Mongo (runs, prices, recipes), 9222 Chrome, 8080 SearXNG"
-      },
-      {
-        "step": "message",
-        "from": "A",
-        "to": "M",
-        "text": "the model\u0027s answer"
-      },
-      {
-        "step": "reply",
-        "from": "A",
-        "to": "B",
-        "text": "streamed"
-      }
+      { "step": "message", "from": "browser", "to": "dns", "text": "framework.louis-agent.dev?" },
+      { "step": "reply", "from": "dns", "to": "browser", "text": "a CNAME to the app's own address" },
+      { "step": "message", "from": "browser", "to": "app", "text": "GET / over HTTPS" },
+      { "step": "note", "over": ["app"], "text": "a cold start if nobody was on it" },
+      { "step": "reply", "from": "app", "to": "browser", "text": "the page, drawn as HTML" },
+      { "step": "message", "from": "browser", "to": "app", "text": "POST /v1/sessions as its Orbi, no key: the open door" },
+      { "step": "message", "from": "app", "to": "model", "text": "the turn" },
+      { "step": "reply", "from": "model", "to": "app", "text": "the model's answer" },
+      { "step": "reply", "from": "app", "to": "browser", "text": "streamed" }
     ]
   }
 }

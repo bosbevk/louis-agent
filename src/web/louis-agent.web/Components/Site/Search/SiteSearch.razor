@@ -1,0 +1,44 @@
+@* A site's search (F164.2, Louis's pick A): a button in the header, Ctrl+K or Cmd+K, that opens a window over the page
+   in the chat search's look, the site's places as the visitor types and asking its agent the same words last. Arrow
+   keys move, Enter opens, Escape closes. *@
+<button type="button" class="site-search-button" aria-keyshortcuts="Control+K Meta+K" @ref="_button"
+        @onclick="OpenWindow">
+    <span class="ic i-search" aria-hidden="true"></span>
+    <span>@Text</span>
+    <kbd>Ctrl K</kbd>
+</button>
+
+@if (_open)
+{
+    <div class="search-backdrop" @onclick="Close"></div>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="@Text">
+        <div class="search-input">
+            <span class="ic i-search" aria-hidden="true"></span>
+            <input id="site-search-input" placeholder="@Placeholder" autocomplete="off" @ref="_input"
+                   @bind="_query" @bind:event="oninput" @bind:after="FindAsync" @onkeydown="OnKeyDown"
+                   @onkeydown:preventDefault="_handled"/>
+            <kbd>Esc</kbd>
+        </div>
+        @if (HasWords)
+        {
+            <div class="search-results">
+                @for (int i = 0; i < _places.Count; i++)
+                {
+                    var place = _places[i];
+                    int index = i;
+                    <button type="button" class="search-result @Selected(index)" @onclick="() => Go(place)"
+                            @onmouseenter="() => _selected = index">
+                        <span class="ic i-file" aria-hidden="true"></span>
+                        <span class="search-text"><strong>@place.Heading</strong><small>@place.WordsAfterHeading()</small></span>
+                    </button>
+                }
+                <button type="button" class="search-result @Selected(_places.Count)" @onclick="Ask"
+                        @onmouseenter="() => _selected = _places.Count">
+                    <span class="ic i-sparkle" aria-hidden="true"></span>
+                    <span class="search-text"><strong>@AskWords</strong></span>
+                </button>
+            </div>
+        }
+        <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> @Words.SearchChoose · <kbd>Enter</kbd> @Words.SearchOpen</div>
+    </div>
+}

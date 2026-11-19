@@ -1,0 +1,39 @@
+@page "/getting-started"
+
+<PageTitle>Getting started · louis-agent</PageTitle>
+<PageHead Description="Start an AI agent in C# with louis-agent. A program of two lines names its identities and packs and starts a host. What it loads, what is yours, and where it reads its settings." />
+
+@* Getting started (F164.1, step 9): a program of your own in a few lines, the coding agent's whole file, what it
+   loads, whose is what, and where it reads its settings, each section ending with the docs it was written from. *@
+<Band Id="top" Topic="Getting started" Title="Your agent, in two lines." Summary="A program of your own names what its agent loads and starts a host. This is the coding agent's, the whole file, as it runs in the terminal.">
+    <CodeListing Name="Program.cs" Language="csharp" Code="@ProgramListings.CodingAgentProgram" />
+    <DocLinks>
+        <DocLink Path="demos/louis-agent/hosts/louis-agent.coding-cli/Program.cs">The program</DocLink>
+        <DocLink Path="src/docs/adr/0076-core-ships-no-agent.md">Core ships no agent</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="what-it-loads" Topic="What it loads" Title="Who it can be, and what it can do." Summary="The catalogue names the identities and the packs. The coding agent's has three identities and nine packs. The host lends the rest, the web access, the telemetry and the model providers.">
+    <DiagramFigure Source="WhatItLoads.Source" />
+    <DocLinks>
+        <DocLink Path="demos/louis-agent/hosts/louis-agent.coding-catalog/CodingCatalog.cs">The catalogue</DocLink>
+        <DocLink Path="src/engine/louis-agent.core/Hosting/HostServices.cs">What a host lends</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="whose-is-what" Topic="Whose is what" Title="A few files are yours." Summary="You write the program, its catalogue, your identities and your settings. The engine, the host and the packs come as packages.">
+    <TermList Terms="GettingStarted.WhoseIsWhat" />
+    <DocLinks>
+        <DocLink Path="src/docs/adr/0027-engine-identities-and-packs.md">Engine, identities and packs</DocLink>
+        <DocLink Path="src/docs/adr/0074-the-folders-say-what-ships.md">The folders say what ships</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="where-it-stands" Topic="Where it stands" Title="Its settings, then run it." Summary="Each program reads the settings of its own config folder, the first that sets a name winning. With the .NET 10 SDK, three steps get the coding agent answering.">
+    <TermList Terms="GettingStarted.SettingsOrder" />
+    <Steps Items="GettingStarted.RunIt" />
+    <DocLinks>
+        <DocLink Path="src/docs/SETUP.md">How settings are loaded</DocLink>
+        <DocLink Path="demos/louis-agent/config/.env.example">Every setting</DocLink>
+    </DocLinks>
+</Band>

@@ -69,7 +69,7 @@ internal sealed class NestedRenderer : IDiagramRenderer
 
         // Its layout stands every box under the title's room already, and holds the key. So the body is drawn
         // straight in, and the picture is as tall as the layout says.
-        return PictureBuilder.Titled(source.Title).Heading(heading).Type(TypeNames.Of(source))
+        return PictureBuilder.Titled(source.Title, geometry).Heading(heading).Type(TypeNames.Of(source))
             .Draw(writer => Draw(writer, placed, geometry), placed.Width, placed.Height - PictureMeasures.Usual.Head)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, NestedStyle.Rules)
             .Build();

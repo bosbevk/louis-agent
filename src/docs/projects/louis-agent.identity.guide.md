@@ -98,8 +98,9 @@ for a business, and why it is safe. The three focus skills are part 6.
 
 ### 6. One guide, a focus for each part of the site
 
-louis-agent.dev names which part of the site each page belongs to (`LouisAgentDevAreas`). `/demos` and every demo are the demos part.
-Every other page is the selling part, the framework's pages included. These parts are `GuideFocus`.
+louis-agent.dev names which part of the site each page belongs to (`LouisAgentDevAreas`). `/demos` and every demo
+are the demos part. Every other page is the selling part, the theme's component guide at `/framework/theme`
+included, since the framework's own pages are on their own site. These parts are `GuideFocus`.
 
 Each message's page block says which part the visitor is in. The voice reads that part's on-demand skill
 (`focus-selling` or `focus-demos`) the first time a part shows up, and again whenever it changes.

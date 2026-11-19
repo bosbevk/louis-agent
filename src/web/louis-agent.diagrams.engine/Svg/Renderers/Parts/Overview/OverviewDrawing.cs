@@ -40,7 +40,7 @@ internal static class OverviewDrawing
 
         // A light behind each highlighted card, where another kind has one behind its top. The picture has no
         // key. Four fades are its own to ask for: the rail, the badge, a card's top edge, and the glass.
-        return PictureBuilder.Titled(source.Title, Measures)
+        return PictureBuilder.Titled(source.Title, geometry, Measures)
             .Type(TypeNames.Of(source))
             .Paint(CardsStyle.RailFade)
             .Paint(CardsStyle.BadgeFade)

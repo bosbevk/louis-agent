@@ -11,6 +11,7 @@ public class ForwardedHeadersTests
 {
     /// <summary>The app's yaml sets the switch, and sets it on (Puls's app is not deployed since FX122).</summary>
     [TestCase("louis-agent-app.yaml")]
+    [TestCase("louis-agent-framework-app.yaml")]
     public void TheApp_ReadsTheForwardedScheme(string yaml)
     {
         var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure", yaml))

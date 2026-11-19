@@ -1,0 +1,12 @@
+@using LouisAgent.Web.Components.Areas
+@using LouisAgent.Web.Components.Site.Addresses
+@using LouisAgent.Web.Places
+@inject SiteAddresses Addresses
+@inject SiteAreas Areas
+@* Every page in the site's one frame; a place's own address, /how-it-works/the-turn, opens its page at that place. *@
+<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="Areas.PageAssemblies"
+        NotFoundPage="typeof(Errors.NotFound)">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@PlaceLayout.Of(routeData, typeof(FrameworkLayout), Addresses)"/>
+    </Found>
+</Router>
