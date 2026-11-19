@@ -44,6 +44,7 @@ logs/
 # Secrets and local configuration, in any demo's config/ (see its .env.secrets.example)
 **/config/.env
 **/config/.env.secrets
+**/config/.env.secrets.framework
 **/config/.env.mongo
 **/config/.env.sql
 **/config/.env.searxng

@@ -54,15 +54,70 @@ public class DeployFilesTests
         Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure/louis-agent-app.yaml"));
 
     /// <summary>
-    /// The script knows the one app it deploys since FX122 (Louis's option A: Puls is not deployed), and its image,
-    /// Dockerfile and yaml (the framework's site's since F124) and host.
+    /// The script knows its two apps: louis-agent.dev since F124, with its image, Dockerfile, yaml and host, and the
+    /// framework's site since F164.3.
     /// </summary>
-    [TestCase("[ValidateSet('louis-agent-app')]")]
+    [TestCase("[ValidateSet('louis-agent-app', 'louis-agent-framework-app')]")]
     [TestCase("Image = 'louis-agent-site'")]
     [TestCase("Dockerfile = 'src\\site\\docker\\Dockerfile'")]
     [TestCase("Yaml = 'src\\site\\deploy\\azure\\louis-agent-app.yaml'")]
     [TestCase("louis-agent.dev")]
     public void TheScript_KnowsBothApps(string text) => Assert.That(Script, Does.Contain(text));
+
+    /// <summary>
+    /// The framework's site's entry in the script's table of apps (F164.3), from its own line to the brace that closes
+    /// it.
+    /// </summary>
+    private static string FrameworkEntry()
+    {
+        int start = Script.IndexOf("'louis-agent-framework-app' = @{", StringComparison.Ordinal);
+        Assert.That(start, Is.GreaterThanOrEqualTo(0), "the table has no entry for louis-agent-framework-app");
+        int end = Script.IndexOf("\n    }", start, StringComparison.Ordinal);
+        return Script[start..end];
+    }
+
+    /// <summary>
+    /// The framework's app is built from its own image and yaml, answers at its subdomain, and keeps its own keys in
+    /// a file and under a suffix of its own, while it reads the vault with louis-agent.dev's identity and logs to its
+    /// share (F164.3, Louis's pick A).
+    /// </summary>
+    [TestCase("Image = 'louis-agent-site-framework'")]
+    [TestCase("Dockerfile = 'src\\site\\docker\\Dockerfile.framework'")]
+    [TestCase("Yaml = 'src\\site\\deploy\\azure\\louis-agent-framework-app.yaml'")]
+    [TestCase("Config = 'src\\site\\config'")]
+    [TestCase("SecretsFile = '.env.secrets.framework'")]
+    [TestCase("IdentityOutput = 'codingAppIdentityId'")]
+    [TestCase("Share = 'louis-agent-workspace'")]
+    [TestCase("Hostname = 'framework.louis-agent.dev'")]
+    [TestCase("Suffix = '-framework'")]
+    public void TheFrameworksEntry_NamesWhatIsItsOwn_AndWhatItShares(string text) =>
+        Assert.That(FrameworkEntry(), Does.Contain(text));
+
+    /// <summary>
+    /// The secrets each app reads come from its own file, so the two apps' keys can differ though they share a
+    /// config folder.
+    /// </summary>
+    [TestCase("SecretsFile = '.env.secrets';")]
+    [TestCase("Join-Path $AppConfig $AppInfo.SecretsFile")]
+    public void EachApp_ReadsItsKeys_FromItsOwnFile(string text) => Assert.That(Script, Does.Contain(text));
+
+    /// <summary>
+    /// The framework's keys file is git-ignored, as every other secrets file is, and its example says what to fill
+    /// in.
+    /// </summary>
+    [Test]
+    public void TheFrameworksKeys_StayOutOfGit_AndHaveAnExample()
+    {
+        var ignored = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, ".gitignore"));
+        string example = Path.Combine(TestPaths.RepoRoot, "src/site/config/.env.secrets.framework.example");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ignored, Does.Contain("**/config/.env.secrets.framework"));
+            Assert.That(File.Exists(example), "src/site/config/.env.secrets.framework.example");
+        });
+        Assert.That(File.ReadAllLines(example), Does.Contain("AGENT_API_KEY=").And.Contain("ADMIN_API_KEY="));
+    }
 
     /// <summary>
     /// The app's yaml names its own app, image, identity placeholder, share and keys, and keeps the markers the
