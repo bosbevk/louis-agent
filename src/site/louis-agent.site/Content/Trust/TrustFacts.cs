@@ -15,7 +15,7 @@ namespace LouisAgent.Site.Content.Trust;
 public static class TrustFacts
 {
     /// <summary>The Azure architecture, which several facts rest on.</summary>
-    private const string Architecture = "demos/puls/deploy/azure/ARCHITECTURE.md";
+    private const string Architecture = "src/docs/architecture/deployment-in-azure.md";
 
     /// <summary>The site's own app in Azure, its settings and what it mounts.</summary>
     private const string SiteApp = "src/site/deploy/azure/louis-agent-app.yaml";
@@ -122,7 +122,7 @@ public static class TrustFacts
             "no uptime figure yet.", Architecture),
         new(TileStatus.Open, "A tested recovery runbook",
             "The pieces to rebuild everything exist. A written, timed walk-through of a full recovery doesn't yet.",
-            "demos/puls/deploy/azure/README.md"),
+            "src/docs/guides/deploy-the-sites.md"),
     ];
 
     /// <summary>A reviewer's checklist for a business before it pays, and where each item stands.</summary>

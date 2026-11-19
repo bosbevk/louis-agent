@@ -2,17 +2,17 @@
 
 > **How-to.** How louis-agent.dev and framework.louis-agent.dev get to Azure, what runs there, where their secrets
 > come from, and what to do the first time an app goes live. **Elsewhere:** the pictures in
-> [ARCHITECTURE.md](ARCHITECTURE.md), the local stacks in [the site's docker/](../../../../src/site/docker/docker-compose.yml),
-> every setting in [Setup](../../../../src/docs/SETUP.md), the two sites in
-> [louis-agent.site](../../../../src/docs/projects/louis-agent.site.md) and
-> [louis-agent.site-framework](../../../../src/docs/projects/louis-agent.site-framework.md).
+> [the sites in Azure](../architecture/deployment-in-azure.md), the local stacks in
+> [the site's docker/](../../site/docker/docker-compose.yml), every setting in [Setup](../SETUP.md), the two sites
+> in [louis-agent.site](../projects/louis-agent.site.md) and
+> [louis-agent.site-framework](../projects/louis-agent.site-framework.md).
 
 Two websites run in Azure, and both are built on the framework. louis-agent.dev sells websites with agents, and its
 agent is the public Orbi. framework.louis-agent.dev teaches the framework, and its agent is the framework Orbi. Each
 is one Azure Container App that sleeps when nobody visits, so the first visitor after a quiet spell waits a few
 seconds for it to wake.
 
-One script, `deploy.ps1` beside this file, does every job, and one GitHub workflow runs it on every merge. So in
+One script, `src/site/deploy/azure/deploy.ps1`, beside the two apps' yaml, does every job, and one GitHub workflow runs it on every merge. So in
 practice you merge a pull request and both sites go out. This guide first says what is in Azure, then how a release
 works, then the jobs you do by hand: the first time an app goes live, its domain, its secrets, and rolling back.
 
@@ -67,7 +67,7 @@ only for this repo's `main` branch, so GitHub stores no password. The identity i
 is Contributor on `rg-puls-za`, which lets it build in the registry, read the storage key to make a folder, and
 create or update an app. It is also Key Vault Reader on `puls-keys`, so it can read the secrets' *names*, never a
 value. The verbs that read files kept off git, `secrets` and `domain`, stay on the PC. The why is
-[ADR 0097](../../../../src/docs/adr/0097-puls-deploys-from-github-without-a-password.md).
+[ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md).
 
 That identity was made once, from the PC, signed in with `az login` as the subscription's owner, in PowerShell:
 
@@ -94,7 +94,7 @@ missing.
 
 ## Releasing from the PC
 
-The same verbs run from the PC, after `az login`, from `demos\puls`:
+The same verbs run from the PC, after `az login`, from `src\site`:
 
 ```powershell
 deploy\azure\deploy.ps1 release                                  # louis-agent.dev, the default app
@@ -105,8 +105,9 @@ deploy\azure\deploy.ps1 logs -App louis-agent-framework-app      # its last line
 `build` and `update` run on their own too, `update` with the `-Tag` of an image already built and a `-Revision`.
 `workspace` copies an app's price tables into `config/` on its share, though both images now carry their own.
 
-Three verbs are left from before FX122 and must not be run: `infra`, `vm` and `sql-access`. They deploy the Bicep
-build in `demos/puls/config/azure/`, which would make the VM and the SQL server again.
+The script has no verb that builds the infrastructure. The environment, the identity and the vault were made once by
+an older Bicep build, which stays with Puls, and the script reads them back from the outputs Azure recorded for that
+deployment, `puls-build`.
 
 ## An app's secrets
 
@@ -188,4 +189,4 @@ its console, is the other half of the bill, and both sites' turns are priced in 
 month's figure is written here after the first.
 
 ---
-[Docs index](../../../../src/docs/README.md) · Related: [ARCHITECTURE.md](ARCHITECTURE.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md) · [Setup](../../../../src/docs/SETUP.md)
+[Docs index](../README.md) · Related: [The sites in Azure](../architecture/deployment-in-azure.md) · [Deployment view](../architecture/07-deployment-view.md) · [Setup](../SETUP.md)

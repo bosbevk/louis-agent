@@ -1,6 +1,6 @@
 # louis-agent-app: the framework's website, louis-agent.dev (F124: its own host since the site left the louis-agent
 # demo), on Azure Container Apps in the environment puls-env the Bicep build made (F109.2), deployed with
-# deploy.ps1 beside this file, -App louis-agent-app (the how-to is demos/puls/deploy/azure/README.md).
+# deploy.ps1 beside this file, -App louis-agent-app (the how-to is src/docs/guides/deploy-the-sites.md).
 #   deploy.ps1 update -App louis-agent-app -Tag 2026-11-08-1200 -Revision v001
 # One container: the site's host (src/site/louis-agent.site-api), on the image src/site/docker/Dockerfile builds, with
 # the guide and its three packs and nothing else: no coding agent, eval studio or accounts. It carries the docs the

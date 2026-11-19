@@ -93,9 +93,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{7B2E4C
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}"
-	ProjectSection(SolutionItems) = preProject
-		demos\puls\deploy\azure\README.md = demos\puls\deploy\azure\README.md
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0190}"
 	ProjectSection(SolutionItems) = preProject
@@ -494,6 +491,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architectur
 		src\docs\architecture\10-quality-requirements.md = src\docs\architecture\10-quality-requirements.md
 		src\docs\architecture\11-risks-and-technical-debt.md = src\docs\architecture\11-risks-and-technical-debt.md
 		src\docs\architecture\12-glossary.md = src\docs\architecture\12-glossary.md
+		src\docs\architecture\deployment-in-azure.md = src\docs\architecture\deployment-in-azure.md
 		src\docs\architecture\evals.md = src\docs\architecture\evals.md
 	EndProjectSection
 EndProject
@@ -534,6 +532,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C
 		src\docs\guides\change-the-web.md = src\docs\guides\change-the-web.md
 		src\docs\guides\common-errors.md = src\docs\guides\common-errors.md
 		src\docs\guides\debug-and-logs.md = src\docs\guides\debug-and-logs.md
+		src\docs\guides\deploy-the-sites.md = src\docs\guides\deploy-the-sites.md
 		src\docs\guides\get-started.md = src\docs\guides\get-started.md
 		src\docs\guides\run-the-evals.md = src\docs\guides\run-the-evals.md
 		src\docs\guides\write-tests.md = src\docs\guides\write-tests.md

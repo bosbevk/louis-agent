@@ -12,7 +12,7 @@ installed and the demo's `skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| Puls: `puls` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}`; its specialists run on the same instance (CL19); logs in `logs/puls`. The Azure app has its own browser and Mongo on the VM since F61.4 ([demos/puls/deploy/azure](../../../demos/puls/deploy/azure/README.md)) |
+| Puls: `puls` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}`; its specialists run on the same instance (CL19); logs in `logs/puls`. The Azure app has its own browser and Mongo on the VM since F61.4 ([Deploy the sites](../guides/deploy-the-sites.md)) |
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `ollama/Dockerfile.ollama` | Only with `--profile ollama` |
@@ -47,5 +47,5 @@ Cloudflare, with a managed certificate.
 | `rg-puls-za`, `puls-env` | `louis-agent-app`: louis-agent.dev's host on the image `src/site/docker/Dockerfile` builds, the public Orbi on the docs, leads and site packs | the vault with `louis-agent-app-identity`; its logs in `logs/` and its saved CV in `data/` on `louis-agent-workspace`; the model; `puls-insights` through the environment's OpenTelemetry agent |
 | `rg-puls-za`, `puls-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; the model; `puls-insights` |
 
-The how-to is the [deploy README](../../../demos/puls/deploy/azure/README.md), and the pictures of what runs where, a
-release, a secret's path and a chat are in [the Azure architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md).
+The how-to is [Deploy the sites](../guides/deploy-the-sites.md), and the pictures of what runs where, a release, a
+secret's path and a chat are in [the sites in Azure](deployment-in-azure.md), beside this page.

@@ -129,7 +129,7 @@ louis-agent.dev. It reads the vault with louis-agent.dev's identity and keeps it
 `framework/logs/` on louis-agent.dev's file share, so it added nothing to Azure but the app. Its own two keys come
 from `config/.env.secrets.framework`, under the vault suffix `-framework`, and the model's key is the one both sites
 share. Like louis-agent.dev, it sleeps when nobody visits. The how-to is the
-[deploy README](../../../demos/puls/deploy/azure/README.md).
+[deploy guide](../guides/deploy-the-sites.md).
 
 These are the types involved:
 

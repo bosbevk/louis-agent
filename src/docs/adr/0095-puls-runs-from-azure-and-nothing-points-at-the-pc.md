@@ -64,11 +64,11 @@ move to where the app is.
 
 ## Links
 
-- [Deploying Puls to Azure](../../../demos/puls/deploy/azure/README.md) (the how-to),
-  [the architecture in diagrams](../../../demos/puls/deploy/azure/ARCHITECTURE.md), [the deployment view](../architecture/07-deployment-view.md)
+- [Deploying Puls to Azure](../guides/deploy-the-sites.md) (the how-to),
+  [the architecture in diagrams](../architecture/deployment-in-azure.md), [the deployment view](../architecture/07-deployment-view.md)
 - [ADR 0074](0074-the-folders-say-what-ships.md) (a demo holds its own deploy), [ADR 0087](0087-identity-is-the-identity-server.md)
   and [ADR 0088](0088-a-tenant-on-every-account.md) (the accounts this build hosts), the parent plan's research record
   (why a VM, why not Container Apps for Mongo, the free offer's limits), kept in the F61 plan until it closes
 
 ---
-[Docs index](../README.md) · Related: [ADRs](README.md) · [Puls on Azure](../../../demos/puls/deploy/azure/README.md)
+[Docs index](../README.md) · Related: [ADRs](README.md) · [Puls on Azure](../guides/deploy-the-sites.md)

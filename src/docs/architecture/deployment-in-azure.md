@@ -2,9 +2,9 @@
 
 > **Explanation.** What runs where for louis-agent.dev and framework.louis-agent.dev, how a release reaches them,
 > where a secret travels and where a visitor's chat goes, in pictures. **Elsewhere:** the how-to in
-> [README.md](README.md), the whole system's deployment view in
-> [07-deployment-view](../../../../src/docs/architecture/07-deployment-view.md), the why of a release from GitHub in
-> [ADR 0097](../../../../src/docs/adr/0097-puls-deploys-from-github-without-a-password.md).
+> [Deploy the sites](../guides/deploy-the-sites.md), the whole system's deployment view in
+> [07-deployment-view](07-deployment-view.md), the why of a release from GitHub in
+> [ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md).
 
 This page is for seeing the shape of it before you change it. It goes from what runs, to how a merge reaches it, to
 how a secret gets there, to what a visitor's chat passes through, and ends with what the network lets in.
@@ -20,7 +20,7 @@ folder of its own, so the framework's site added nothing to Azure but its app. E
 the registry, and calls the model with the key both sites share. Their logs and traces go to the same
 Application Insights.
 
-![Two apps in one environment, each asleep until someone visits, sharing an identity that reads the vault and a share that holds each one's logs](diagrams/ARCHITECTURE-what-runs-where.svg)
+![Two apps in one environment, each asleep until someone visits, sharing an identity that reads the vault and a share that holds each one's logs](diagrams/deployment-in-azure-what-runs-where.svg)
 
 ## A release
 
@@ -29,14 +29,14 @@ framework's site, so a failure in the second never holds back the site that sell
 its app names on the share, which only the framework's does, builds the image and updates the app as its next
 revision.
 
-![A merge signs in by OpenID Connect and releases louis-agent.dev, then the framework's site: its folders, its image, its next revision](diagrams/ARCHITECTURE-a-release.svg)
+![A merge signs in by OpenID Connect and releases louis-agent.dev, then the framework's site: its folders, its image, its next revision](diagrams/deployment-in-azure-a-release.svg)
 
 ## A secret's path
 
 No value is ever in a file under git or on an app. It goes from a git-ignored file on the PC into the vault, and the
 release writes only references to it, which the app resolves with the shared identity.
 
-![A secret's path: from the app's own secrets file through the deploy script into the vault, and back to the app by reference](diagrams/ARCHITECTURE-a-secret-s-path.svg)
+![A secret's path: from the app's own secrets file through the deploy script into the vault, and back to the app by reference](diagrams/deployment-in-azure-a-secret-s-path.svg)
 
 ## A chat, from the domain to the model
 
@@ -44,7 +44,7 @@ Cloudflare points each name at its app, as DNS-only records. The app wakes if no
 as HTML, and lets the visitor talk to its Orbi through the open door, with no key, within the cap of 20 sessions a day
 from one address. The answer streams back from the model.
 
-![A chat from the domain to the model: DNS points at the app, the app wakes and serves the page, the open door lets the visitor in, and the answer streams back](diagrams/ARCHITECTURE-a-chat-from-the-domain-to-the-model.svg)
+![A chat from the domain to the model: DNS points at the app, the app wakes and serves the page, the open door lets the visitor in, and the answer streams back](diagrams/deployment-in-azure-a-chat-from-the-domain-to-the-model.svg)
 
 ## What the network lets through
 
@@ -56,4 +56,4 @@ Nothing else in the resource group has a public address. What the environment le
 no rule of ours narrows it.
 
 ---
-[Docs index](../../../../src/docs/README.md) · Related: [README](README.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md)
+[Docs index](../README.md) · Related: [Deploy the sites](../guides/deploy-the-sites.md) · [Deployment view](07-deployment-view.md)

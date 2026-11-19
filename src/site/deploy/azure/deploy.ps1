@@ -17,7 +17,7 @@ they made are read back from that deployment's recorded outputs.
   deploy.ps1 domain  [-App ...] [-Hostname ...]   prints the DNS records Cloudflare needs, then adds the hostname (the app's
                                                   apex by default) with a managed certificate once they resolve
   deploy.ps1 logs    [-App ...] [-Follow]
-The how-to, and what each piece is, is demos/puls/deploy/azure/README.md. Run `az login` first.
+The how-to, and what each piece is, is src/docs/guides/deploy-the-sites.md. Run `az login` first.
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(

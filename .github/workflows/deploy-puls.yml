@@ -2,7 +2,7 @@
 # PC, from GitHub, so a merge reaches louis-agent.dev and framework.louis-agent.dev without anyone's machine. By itself
 # on the merge (the push to main; CI ran on the pull request, FX93), and any time from the Actions tab's "Run workflow"
 # button. Puls is not deployed since FX122. The how-to, Louis's one-time Azure setup and the roll-back are in
-# demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
+# src/docs/guides/deploy-the-sites.md, "Every merge releases both sites"; the why in ADR 0097.
 name: Deploy the apps
 
 on:
@@ -37,7 +37,7 @@ jobs:
           [ -n "$AZURE_TENANT_ID" ] || missing="$missing AZURE_TENANT_ID"
           [ -n "$AZURE_SUBSCRIPTION_ID" ] || missing="$missing AZURE_SUBSCRIPTION_ID"
           if [ -n "$missing" ]; then
-            echo "::error::Set the repository variables$missing (Settings, Secrets and variables, Actions, Variables); the setup is in demos/puls/deploy/azure/README.md, 'Deploying from GitHub'."
+            echo "::error::Set the repository variables$missing (Settings, Secrets and variables, Actions, Variables); the setup is in src/docs/guides/deploy-the-sites.md, 'Every merge releases both sites'."
             exit 1
           fi
 
