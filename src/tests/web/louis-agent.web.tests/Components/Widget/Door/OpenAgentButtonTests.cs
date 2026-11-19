@@ -40,13 +40,14 @@ public class OpenAgentButtonTests
     }
 
     /// <summary>
-    /// Its keys are said to a screen reader, and held by its own module, which presses the button on Ctrl+I or Cmd+I.
+    /// Its keys are said to a screen reader, and held by the framework's shortcut module, which presses the button on
+    /// Ctrl+I or Cmd+I.
     /// </summary>
     [Test]
-    public void ItsKeys_AreSaid_AndHeldByItsModule()
+    public void ItsKeys_AreSaid_AndHeldByTheShortcutModule()
     {
         using var ctx = Context(new GuideDoor());
-        var module = ctx.JSInterop.SetupModule(FrameworkScripts.OpenAgentButton);
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Shortcut);
         module.SetupVoid("attach", _ => true);
 
         var cut = ctx.Render<OpenAgentButton>(parameters => parameters.Add(button => button.Text, "Ask Orbi"));
@@ -54,7 +55,7 @@ public class OpenAgentButtonTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find("button").GetAttribute("aria-keyshortcuts"), Is.EqualTo("Control+I Meta+I"));
-            module.VerifyInvoke("attach");
+            Assert.That(module.Invocations["attach"].Single().Arguments[1], Is.EqualTo("i"));
         });
     }
 }

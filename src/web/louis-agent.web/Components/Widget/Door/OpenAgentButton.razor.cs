@@ -11,8 +11,8 @@ namespace LouisAgent.Web.Components.Widget.Door;
 /// </summary>
 /// <remarks>
 /// It opens the chat through the door, as <c>AskButton</c> asks through it, so it needs no reference to the widget
-/// (Observer). Its keys are its own module's (ADR 0093), which presses the button, so a key and a press are one path,
-/// as the chat shell's Ctrl+K presses its search button.
+/// (Observer). Its keys are held by the framework's shortcut module (ADR 0093), which presses the button, so a key
+/// and a press are one path; the site's search holds its Ctrl+K the same way.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0093-a-script-is-a-module-beside-its-component.md">ADR 0093: a script is a module beside its component</seealso>
 public partial class OpenAgentButton : IAsyncDisposable
@@ -37,15 +37,15 @@ public partial class OpenAgentButton : IAsyncDisposable
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        _module = new JsModule(JS, FrameworkScripts.OpenAgentButton);
-        await _module.InvokeVoidAsync("attach", _button);
+        _module = new JsModule(JS, FrameworkScripts.Shortcut);
+        await _module.InvokeVoidAsync("attach", _button, "i");
     }
 
     /// <summary>Takes its keys down, and lets the module go with the button.</summary>
     public async ValueTask DisposeAsync()
     {
         if (_module is null) return;
-        await _module.InvokeVoidAsync("detach");
+        await _module.InvokeVoidAsync("detach", _button);
         await _module.DisposeAsync();
     }
 }

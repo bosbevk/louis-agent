@@ -68,9 +68,24 @@ public class FrameworkLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".site-header .site-actions button[aria-keyshortcuts]").TextContent,
+            Assert.That(cut.Find(".site-header .site-actions button[aria-keyshortcuts='Control+I Meta+I']").TextContent,
                 Does.Contain("Ask Orbi"));
             Assert.That(cut.Find(".site-docs-sections button").TextContent, Does.Contain("Ask about this page"));
         });
+    }
+
+    /// <summary>F164.2 step 8: the site's search stands in the header, before Ask Orbi.</summary>
+    [Test]
+    public void TheSearch_IsInTheHeader()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new HttpClient { BaseAddress = new Uri("http://localhost/") });
+        ctx.Services.AddSiteAreas(FrameworkAreas.Name);
+
+        var cut = ctx.Render<FrameworkLayout>(layout => layout.Add(l => l.Body, "<section id=\"top\">Page</section>"));
+
+        Assert.That(cut.Find(".site-header .site-actions button.site-search-button").TextContent,
+            Does.Contain("Search"));
     }
 }
