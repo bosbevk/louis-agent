@@ -10,7 +10,9 @@
         "kind": "static, what a program calls",
         "members": [
           "+AddLouisAgentApi(builder, AgentHostContext)",
-          "+UseLouisAgentKey(app)"
+          "+UseLouisAgentKey(app)",
+          "+MapLouisAgentApi(app, AgentHostContext)",
+          "+MapLouisAgentHostGroup(app) RouteGroupBuilder"
         ]
       },
       {

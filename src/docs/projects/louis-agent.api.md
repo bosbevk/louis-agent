@@ -2,7 +2,7 @@
 
 > **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and no web
 > app: a demo's program references the one it serves ·
-> **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` (5070)
+> **Docker services:** `api` in the coding demo (http://127.0.0.1:5082, `API_PORT`); `puls` in the Puls demo (5070)
 > **Also shows:** `component`
 
 ![The agent over HTTP, and its parts: sessions, the routes, the site's pages, the workspace and the admin key](diagrams/louis-agent.api.svg)
@@ -24,16 +24,28 @@ library on top of it that a program opts into: [louis-agent.api.evals](louis-age
 
 ### 1. Starting up
 
-A demo's program calls `ApiStartup.cs`. It builds the engine with `AgentHost.Build()`, and adds the services with
-`ApiMap.AddApi`: the engine, `AgentSessions`, and a `WorkspaceBoundary` for checking paths.
+The API is a library, and a program puts it together in three calls, the way ASP.NET itself is put together. Five
+programs do: the coding demo's `louis-agent.coding-api`, Puls's `louis-agent.puls-api`, the starter's
+`louis-agent.starter-api`, and the two sites' `louis-agent.site-api` and `louis-agent.site-framework-api`.
 
-Then it decides on the key, with core's `HostAuth`. Without `AGENT_API_KEY`, the start-up stops, unless
-`AGENT_AUTH=off`. With a key, it adds `AgentKeyGate`, whose check is `HostAuth.HasKey`.
+First the program builds its agent with `AgentHost.Build(...)`, from its own catalogue and services. It hands the
+result to `builder.AddLouisAgentApi(host)`. That adds the services the routes need, through `ApiMap.AddApi`: the open
+door, the engine and its engines, `AgentSessions`, and a `WorkspaceBoundary` for checking paths.
 
-Last, it maps the static files, then the API with `ApiMap.MapApi`, and the admin portal on the `/v1` group that
-returns. That's all it does; the routes and the turn's stream live in `Endpoints/` and `Sessions/`.
+Then `app.UseLouisAgentKey()` decides on the key, with core's `HostAuth`. Without `AGENT_API_KEY`, the start-up
+stops before it listens, unless `AGENT_AUTH=off` says the API is open on purpose, which is logged as a warning. With
+a key, it adds `AgentKeyGate`, which asks the open door first.
 
-*Decided in:* FX18.
+Between the key and the routes, the program serves its own web app: its static files and, usually, its site's pages
+(part 3). Last, `app.MapLouisAgentApi(host)` maps every route with `ApiMap.MapApi`, and the API's admin routes on the
+group that returns. A program that has routes of its own asks for the same `/v1` group with
+`MapLouisAgentHostGroup()`, as the site's host does for its résumé.
+
+A program could forget the key check, so the routes fail closed. `MapLouisAgentApi` and `MapLouisAgentHostGroup`
+refuse to map, and the start-up stops, if `UseLouisAgentKey` never ran. That's all start-up does; the routes and the
+turn's stream live in `Endpoints/` and `Sessions/`.
+
+*Decided in:* FX18, CL57, [ADR 0074](../adr/0074-the-folders-say-what-ships.md).
 
 ### 2. The routes
 
@@ -167,7 +179,8 @@ kept with the session, so `GetToday` and "near me" mean the user's day and place
 
 The location is said once, in front of the session's first message, as `ApiModelText.UserPlace`:
 `[The user is in {Location}; their time zone is {TimeZone}.]`. It's not in the system prompt, because engines share
-that. Without a `time_zone`, the note and `GetToday` use `Africa/Johannesburg`.
+that. Without a `time_zone`, the note and `GetToday` use the host's zone, `HOST_TIME_ZONE`, and without that the
+machine's own.
 
 Files attached to a message are remembered by name. That way `AskAgent` can forward them to the agent it asks, without
 the model having to copy them.
@@ -244,14 +257,15 @@ that identity's default voice, unless it names a role. The replies say who answe
 them, the default first.
 
 A host may name some identities as open, with a cap: `OPEN_IDENTITIES` (by commas) and `OPEN_SESSIONS_PER_DAY` (a
-list). The key gate asks `OpenDoor` first. A visitor with no key and no sign-in may then open a session with one of
+whole number). With no identity named, or a cap that is 0 or not a number, the door stays shut. The key gate asks
+`OpenDoor` first. A visitor with no key and no sign-in may then open a session with one of
 those identities, a few times a day from one address, counted across them all. The request is narrowed in code to the
 identity the door let in and its own toolsets, and it's tagged `open-door` on the ledger. The calls on that session
 pass, and past the cap the answer is a 429.
 
 When an admitted session's turn asks for another session (its `parent` tag), that one counts as the same visitor's and
 is let in for them, so the visitor's window can carry on in it. Each admitted session remembers which visitor it counts
-for.
+for, for 24 hours.
 
 The sessions and the door's list of the ones it let in live in memory, so a restart forgets both. A visitor whose
 page still holds a conversation from before it would otherwise be sent to the key's check and told to enter a key.
@@ -279,7 +293,7 @@ These are the types involved:
 
 | File | What's in it |
 |---|---|
-| `ApiStartup.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
+| `ApiStartup.cs` | The calls a program makes (part 1): `AddLouisAgentApi` (the services), `UseLouisAgentKey` (the key check, FX18), `MapLouisAgentApi` (every route and the admin routes) and `MapLouisAgentHostGroup` (the `/v1` group for a host's own routes), the last two refusing to map without the key check |
 | `Endpoints/Info/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/feeds/{name}/{id}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/Sessions/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `GET /v1/sessions/{id}/work` (its steps from its history, without its thinking; `Sessions/Work/SessionWorkReplyFactory`, F127.4.2), `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
@@ -290,6 +304,12 @@ These are the types involved:
 | `Endpoints/Git/Branches/GitBranchesEndpoints.cs` | `GET /v1/git/branches`, `GET` and `DELETE /v1/git/branches/{name}`, `POST /v1/git/merge` |
 | `Endpoints/Git/GitProcess.cs`, `Output/` | The git runner (no shell, 30 seconds at most); git's output parsed (`GitOutputParser` and its records) |
 | `Endpoints/Routing/` | `ApiMap` (the services and every route, the `/v1` group, the JSON 404, and `MapHostGroup`, the same group handed to a host for routes of its own through `MapLouisAgentHostGroup`, F142), `RouteAccess` and `WithAccess` (who may call a route), `AgentKeyGate` (the key check) |
+| `Endpoints/Routing/OpenDoor.cs`, `Config/OpenDoorOptions.cs` | The open door (part 16): who it lets in without a key, counted per address per day, and its two settings |
+| `Endpoints/Answers/CreatedJson.cs` | A `201` with its `Location` and its JSON body |
+| `Endpoints/*/…Handlers.cs` | Each route's named handler beside its `…Endpoints.cs` (sessions, info, admin) |
+| `Messages/` | The API's own texts as enums (ADR 0009): errors, log lines, what the model reads (`ApiModelText`), what the user reads, and their holes |
+| `Sessions/SessionOpener.cs` | Who opened a session when a signed-in person did: their id and tenant, read from the cookie's claims; a session a key opened has none (ADR 0088) |
+| `Sessions/Prompts/` | `TurnPrompt`, the message a turn sends the model, and `PageBlock`, the page the visitor is reading, cut at 6,000 characters |
 | `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
 | `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
 | `Sessions/TurnStream.cs` | A turn as the API streams it: the prompt from the message, its attachments and the page the visitor is reading (F115, ADR 0104, one block cut at 6,000 characters), the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end, and (F127.8) the turn's line in the turn log |
@@ -313,9 +333,11 @@ The API runs inside the program that adds it, one container per demo, reached on
 It uses core's settings, including `WEB_REPLAY` and `REPLAY_DIRECTORY`, which it reads through `ReplayResolution` and
 `AgentOptions.KeepsRecordings`. On top of those:
 
-`AGENT_API_KEY` is required on every `/v1` route except the prices, the rates and the feeds. Without it, the API
+`AGENT_API_KEY` is required on every `/v1` route except the open ones: the prices, the rates and their display, the
+feeds and a site's search of its places. Without it, the API
 refuses to start, unless `AGENT_AUTH=off`. `API_PORT` is the host port in Docker, bound to `127.0.0.1`.
-`GIT_AUTHOR_*` and `GIT_COMMITTER_*` are who commits and merges from the web app are made as. Outside Docker,
+`GIT_AUTHOR_*` and `GIT_COMMITTER_*`, set in `.env.secrets`, are who commits and merges from the web app are made
+as. Outside Docker,
 `ASPNETCORE_URLS` and `ASPNETCORE_ENVIRONMENT` matter too: an unpublished `dotnet run` only serves the web app in
 `Development`.
 
@@ -323,8 +345,9 @@ The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. Th
 [louis-agent.api.evals](louis-agent.api.evals.md). [SETUP](../SETUP.md) has the full list.
 
 The images carry the eval runner. Both Dockerfiles (`demos/louis-agent/docker/images/Dockerfile.api` and
-`Dockerfile.puls`) publish it in the build stage and copy it to `/app/evals`, its own folder beside the API's. Compose
-sets no `EVAL_RUNNER`.
+`demos/puls/docker/images/Dockerfile.puls`) publish it in the build stage and copy it to `/app/evals`, its own folder
+beside the API's. Each image sets `EVAL_RUNNER` to its runner there, such as
+`/app/evals/louis-agent.coding-eval-runner.dll`, and compose sets none of its own.
 
 *Decided in:* FX18, F18 step 4.3b.
 
@@ -368,9 +391,6 @@ A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimate
 [F7](../features/F07-budgets.md), which takes in [F11](../features/F11-usage-tab-and-reconciliation.md).
 Account-limit errors are [F8](../features/F08-reliability.md), and settings per role and per session are
 [F10](../features/F10-route-settings.md).
-
-The eval routes still answer under their old `/v1/admin/benchmarks/…` names too, until a deploy has passed (TODO,
-*Small cleanups*).
 
 ## Related docs
 
