@@ -42,7 +42,8 @@ once, or when getting it wrong costs a lot.
      `https://code.claude.com/docs/en/skills`.
    - Two or three skills in `.claude/skills/`, for the shape this repo uses.
    - For a job with its own craft (writing, design, research), the sources of that craft, as `write-the-copy`
-     cites GOV.UK and NN/g. A skill's rules come from somewhere a reader can check.
+     cites GOV.UK and NN/g and `write-the-docs` cites Diátaxis and Google. A skill's rules come from somewhere a
+     reader can check.
 2. **Name it** as a verb and what it acts on, lowercase with hyphens, as the others are: `fix-a-bug`,
    `draw-a-diagram`. At most 64 characters, never `claude` or `anthropic` in it, and never a vague word such as
    `helper` or `tools`. The folder and the `name` are the same (`SkillFilesTests`).
