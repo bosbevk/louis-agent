@@ -11,7 +11,7 @@ namespace LouisAgent.Site.Tests.Deploy;
 public class DeployWorkflowTests
 {
     private static readonly string WorkflowPath =
-        Path.Combine(TestPaths.RepoRoot, ".github/workflows/deploy-puls.yml");
+        Path.Combine(TestPaths.RepoRoot, ".github/workflows/deploy-sites.yml");
 
     private static string[] Lines() => File.Exists(WorkflowPath) ? File.ReadAllLines(WorkflowPath) : [];
 

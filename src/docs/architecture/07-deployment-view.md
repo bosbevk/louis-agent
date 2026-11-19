@@ -74,7 +74,7 @@ Two websites built on the framework run in Azure: louis-agent.dev, which sells w
 framework.louis-agent.dev, which teaches the framework. Each is one Azure Container App that sleeps when nobody
 visits. Puls isn't deployed: `mypuls.co.za` is a "coming soon" page on a free Static Web App.
 
-A merge to `main` releases both sites through `.github/workflows/deploy-puls.yml`, signed in by OpenID Connect with no
+A merge to `main` releases both sites through `.github/workflows/deploy-sites.yml`, signed in by OpenID Connect with no
 password. It runs `src/site/deploy/azure/deploy.ps1 release` once per app, louis-agent.dev first, so a failure in
 the second leaves the site that sells released. Each release builds the app's image in the registry and updates the
 app as its next revision. Each name points at its app by DNS-only records in Cloudflare, with a managed certificate.

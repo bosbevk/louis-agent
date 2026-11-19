@@ -108,7 +108,7 @@ public static class TrustFacts
     [
         new(TileStatus.Done, "Tested, then released",
             "A merge runs the tests, then releases the site as a new revision from an image with its own tag. " +
-            "Earlier images stay in the registry.", ".github/workflows/deploy-puls.yml"),
+            "Earlier images stay in the registry.", ".github/workflows/deploy-sites.yml"),
         new(TileStatus.Done, "Rebuilt from code",
             "Everything in Azure is described in one Bicep file, and one script releases the site.", Bicep),
         new(TileStatus.Done, "Your site is yours",

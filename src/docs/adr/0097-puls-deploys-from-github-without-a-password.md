@@ -12,7 +12,7 @@ builds in the registry, the app's secrets are already Key Vault references, and 
 
 ## Decision
 
-1. **A GitHub Actions workflow deploys Puls** (`.github/workflows/deploy-puls.yml`): by itself after CI passes on
+1. **A GitHub Actions workflow deploys Puls** (`.github/workflows/deploy-sites.yml`, `deploy-puls.yml` until F166.1): by itself after CI passes on
    `main` (a `workflow_run` on CI, only for its push to `main`, only on success), and from the *Run workflow* button.
    It checks out the commit CI passed, not what `main` holds by then. One deploy at a time; a second waits, none is
    cancelled half-way.

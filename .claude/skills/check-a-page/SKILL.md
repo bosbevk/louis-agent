@@ -118,8 +118,9 @@ A print of the live page is Louis's, from his own print dialog, and so is scanni
 
 ## After a deploy
 
-`gh run list --workflow deploy-puls.yml --limit 1` shows the deploy that followed the merge. When it has
-succeeded, open the changed page on `https://louis-agent.dev` in a new tab of Louis's Chrome and look at it.
+`gh run list --workflow deploy-sites.yml --limit 1` shows the deploy that followed the merge, which releases both
+sites. When it has succeeded, open the changed page on the site it belongs to, `https://louis-agent.dev` or
+`https://framework.louis-agent.dev`, in a new tab of Louis's Chrome and look at it.
 
 ## An example
 

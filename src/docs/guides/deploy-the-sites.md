@@ -56,7 +56,7 @@ before you build. An app is up when `/health` answers 200.
 
 ## Every merge releases both sites
 
-A merge to `main` runs `.github/workflows/deploy-puls.yml`, and *Actions → Deploy the apps → Run workflow* runs it any
+A merge to `main` runs `.github/workflows/deploy-sites.yml`, and *Actions → Deploy the apps → Run workflow* runs it any
 time from `main`. It releases louis-agent.dev first, then framework.louis-agent.dev, one job on one queue, so two
 merges never release at once and one never stops another half-way. If louis-agent.dev's release fails, the job stops
 there and the framework's isn't tried. If the framework's fails, louis-agent.dev is already out. The run's summary
