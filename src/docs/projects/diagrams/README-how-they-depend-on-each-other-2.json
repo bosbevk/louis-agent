@@ -9,13 +9,13 @@
         "id": "ApiPrograms",
         "icon": "terminal",
         "tone": "blue",
-        "label": "The programs that serve a site\npuls-api, coding-api"
+        "label": "The programs that serve a site\npuls-api, coding-api,\nstarter-api, site-api,\nsite-framework-api"
       },
       {
         "id": "Sites",
         "icon": "browser",
         "tone": "green",
-        "label": "The sites\nlouis-agent.puls,\nlouis-agent.code-review,\nlouis-agent.starter"
+        "label": "The sites\nlouis-agent.puls,\nlouis-agent.code-review,\nlouis-agent.starter,\nlouis-agent.site,\nlouis-agent.site-framework"
       },
       {
         "id": "PacksWeb",
@@ -27,7 +27,7 @@
         "id": "Web",
         "icon": "world",
         "tone": "violet",
-        "label": "louis-agent.web\nwhat every site shares"
+        "label": "louis-agent.web\nwhat every site shares,\nand its web.* libraries"
       },
       {
         "id": "Api",
