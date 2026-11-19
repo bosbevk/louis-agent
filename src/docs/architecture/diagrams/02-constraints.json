@@ -1,0 +1,78 @@
+{
+  "kind": "cards",
+  "title": "Constraints at a glance",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "fixed",
+            "icon": "settings",
+            "title": "Fixed before any design",
+            "code": "constraints",
+            "look": "highlight",
+            "text": "What every part has to live within, and what each one costs."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "stack",
+            "icon": "code",
+            "title": ".NET 10 and C#",
+            "text": "One solution, built and tested with dotnet everywhere."
+          },
+          {
+            "id": "providers",
+            "icon": "cloud",
+            "title": "More than one provider",
+            "text": "Claude by default, and local or OpenAI-compatible models too."
+          },
+          {
+            "id": "containers",
+            "icon": "box",
+            "title": "Our own containers",
+            "text": "Tools run where we put them, on a PC in Docker or in Azure."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "platform",
+            "icon": "terminal",
+            "title": "Windows and Linux",
+            "text": "Built on Windows, run on Linux, so tests are platform-neutral."
+          },
+          {
+            "id": "packages",
+            "icon": "stack",
+            "title": "Permissive packages",
+            "text": "MIT, Apache or BSD, and a new one is approved first."
+          },
+          {
+            "id": "learning",
+            "icon": "book",
+            "title": "A learning project",
+            "text": "Small, reviewed steps, measured before and after."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "fixed",
+        "to": "stack"
+      },
+      {
+        "from": "fixed",
+        "to": "providers"
+      },
+      {
+        "from": "fixed",
+        "to": "containers"
+      }
+    ]
+  }
+}

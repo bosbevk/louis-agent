@@ -1,0 +1,78 @@
+{
+  "kind": "cards",
+  "title": "Solution strategy at a glance",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "strat",
+            "icon": "branch",
+            "title": "The approaches everything follows",
+            "code": "strategy",
+            "look": "highlight",
+            "text": "Each one a paragraph, with the decision record that holds its reasons."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "loop",
+            "icon": "cloud",
+            "title": "Our own loop, any provider",
+            "text": "The tool loop is ours, and each provider is a library a program hands in."
+          },
+          {
+            "id": "core",
+            "icon": "chip",
+            "title": "One core, thin hosts",
+            "text": "Behaviour lives in core; a host only maps its protocol."
+          },
+          {
+            "id": "split",
+            "icon": "folder",
+            "title": "Framework apart from agents",
+            "text": "Core ships no agent; identities and packs are what an agent is."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "content",
+            "icon": "file",
+            "title": "Prompts are content",
+            "text": "Markdown embedded by level, and texts as enum templates."
+          },
+          {
+            "id": "measure",
+            "icon": "chart",
+            "title": "Measure everything",
+            "text": "Every request priced on the ledger, every answer shows its cost."
+          },
+          {
+            "id": "safe",
+            "icon": "shield",
+            "title": "Safe by construction",
+            "text": "Model text is data, tools stay in the workspace, a key guards the door."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "strat",
+        "to": "loop"
+      },
+      {
+        "from": "strat",
+        "to": "core"
+      },
+      {
+        "from": "strat",
+        "to": "split"
+      }
+    ]
+  }
+}
