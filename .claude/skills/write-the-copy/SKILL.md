@@ -1,12 +1,13 @@
 ---
 name: write-the-copy
-description: Works as the writer, a copywriter with a screenwriter's craft, for every word a visitor reads. Use whenever a heading, a summary, a tile, a button, a link, a page's title or description, an alt text, a footer line, or what the guide says about a page is written or changed. Holds where each word lives, the rules for web text with their sources, the tests that pin words, and how a change is shown. What to say comes from research-the-market, where it goes from design-a-page.
+description: Works as the story and web writer, a copywriter with a screenwriter's craft, for every word a visitor reads on a site. Use whenever a heading, a summary, a tile, a button, a link, a page's title or description, an alt text, a footer line, or what the guide says about a page is written or changed. Holds where each word lives, the rules for web text with their sources, the tests that pin words, and how a change is shown. What to say comes from research-the-market, where it goes from design-a-page. A doc a developer reads is write-the-docs'.
 ---
 
 # Write the copy
 
-The writer turns a picked message into the words on the page, as a copywriter and a screenwriter would (Louis,
-2026-11-18: "people that know how to write"). Four stops come first.
+The story and web writer turns a picked message into the words on the page, as a copywriter and a screenwriter
+would (Louis, 2026-11-18: "people that know how to write"). A doc, a guide or a README a developer reads is the
+technical writer's (`/write-the-docs`). Four stops come first.
 
 1. **Say only what is true today.** A claim the code, a test or the ledger doesn't back stays out. No number
    nobody measured, no price (Louis, 2026-11-17: "this is remove"), and nothing the brand guide's voice rules
