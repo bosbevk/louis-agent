@@ -102,9 +102,9 @@ public class SiteLayoutTests
     /// <summary>
     /// The menu leads with what the site sells (F128.1, Louis's pick 5A): Demos, Theme and Contact; no Pricing (Louis:
     /// "remove pricing"), no What we build (FX171, Louis: "remove this page and everything of it"), and no framework
-    /// group, since the framework's pages left for their own site (F164.1). Home comes first (Louis, 2026-11-18, on the
-    /// privacy page: "there is no clear way from here back to main layout"), since the name alone isn't seen as a way
-    /// home.
+    /// group, since the framework's pages left for their own site (F164.1); a link of its own leads there instead,
+    /// between Demos and Theme (F164.3, Louis's pick B of three). Home comes first (Louis, 2026-11-18, on the privacy
+    /// page: "there is no clear way from here back to main layout"), since the name alone isn't seen as a way home.
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -115,7 +115,23 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Theme", "Contact" }));
+        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Framework", "Theme", "Contact" }));
+    }
+
+    /// <summary>
+    /// The menu's Framework leads to the framework's own site, framework.louis-agent.dev (F164.3), once and only
+    /// there.
+    /// </summary>
+    [Test]
+    public void TheMenusFramework_LeadsToTheFrameworksSite()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var links = cut.FindAll(".site-nav a[href='https://framework.louis-agent.dev']");
+        Assert.That(links, Has.Count.EqualTo(1));
+        Assert.That(links[0].TextContent.Trim(), Is.EqualTo("Framework"));
     }
 
     /// <summary>
@@ -131,7 +147,7 @@ public class SiteLayoutTests
 
         var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Theme", "Contact" }));
+        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Framework", "Theme", "Contact" }));
     }
 
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
@@ -262,10 +278,7 @@ public class SiteLayoutTests
         Assert.Multiple(() =>
         {
             Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
-                Is.EqualTo(new[]
-                {
-                    "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo"
-                }));
+                Is.EqualTo(new[] { "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo" }));
             Assert.That(cut.Find(".site-header").TextContent, Does.Not.Contain("Watch it work"));
             Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);
         });
