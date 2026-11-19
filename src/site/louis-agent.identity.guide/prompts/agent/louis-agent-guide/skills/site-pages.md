@@ -23,6 +23,8 @@ your `louis-agent-guide/site-map` skill: read it before you explain a page or wa
 - `/contact`: how to reach Louis.
 - `/framework/theme`: Theme in the menu, every button, switch and card a website is built from, working, to try.
 - `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
+- `/trust`: where the site runs, what it keeps, what you may do and what happens if something breaks, each fact
+  marked In place or Not yet, and a reviewer's checklist for paying customers.
 - `/cv`: Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
 - `/demos`: the three businesses' demos in one place, each a window on a stage.
 - `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`: three made-up businesses' agents at work.

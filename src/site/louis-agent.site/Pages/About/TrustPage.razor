@@ -1,0 +1,28 @@
+@page "/trust"
+@using LouisAgent.Site.Components.Trust
+@using LouisAgent.Site.Content.Trust
+@using LouisAgent.Web.Components.Site.Tables
+
+<PageTitle>Trust and security · louis-agent</PageTitle>
+<PageHead Description="Where louis-agent.dev runs, what it keeps, what its AI agent may do and what happens if something breaks, each fact marked In place or Not yet." />
+
+@* The trust page (F165), beside the privacy page under About: real technical facts for a business owner deciding
+   whether to trust the site, each one saying whether it is in place (Louis's pick, "Status on every tile"), and a
+   reviewer's checklist answered where it stands. The facts are data in Content/Trust, held to the repo by a test. *@
+<Band Id="top" Topic="Trust" Title="What keeps your business safe here, and what doesn't yet." Summary="For a business owner deciding whether to trust us with a website and its agent. Every line says what the code does today. Where something isn't built, it says Not yet.">
+    <ButtonRow Columns="2">
+        <LinkButton Href="/privacy" Text="Read the privacy page" Kind="ButtonKind.Quiet" />
+    </ButtonRow>
+</Band>
+
+<FactBand Id="where-it-runs" Topic="Infrastructure" Title="Where it runs, and who can reach it." Summary="One Azure environment in South Africa. The site is the only thing in it with a public address." Facts="TrustFacts.WhereItRuns" />
+
+<FactBand Id="your-data" Topic="Data protection" Title="What we keep, who sees it, and your rights." Summary="Under POPIA, South Africa's privacy law. The privacy page has the detail, and the table names everyone who handles data for us." Facts="TrustFacts.YourData">
+    <ComparisonTable Columns="DataHandlers.Columns" Rows="DataHandlers.Rows" />
+</FactBand>
+
+<FactBand Id="ai-safety" Topic="AI safety" Title="What the agent may do, and what stops it." Summary="The rules that matter are code, tested without a model. The prompt says what we intend, and the code makes it so." Facts="TrustFacts.AiSafety" />
+
+<FactBand Id="if-something-breaks" Topic="Business continuity" Title="If something breaks." Summary="How a change reaches the site, how it would be rebuilt, and what is yours to take." Facts="TrustFacts.IfSomethingBreaks" />
+
+<FactBand Id="before-paying-customers" Topic="Before paying customers" Title="What a business should ask us for." Summary="A reviewer's list of what a business should see before it pays, and where each item stands today." Facts="TrustFacts.BeforePayingCustomers" />

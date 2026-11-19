@@ -208,6 +208,22 @@ public class SiteLayoutTests
         Assert.That(link.TextContent.Trim(), Is.EqualTo("Privacy"));
     }
 
+    /// <summary>
+    /// Every page's footer leads to the trust page too (F165), beside Privacy, so a business owner finds the technical
+    /// facts from anywhere on the site.
+    /// </summary>
+    [Test]
+    public void TheFooter_LeadsToTheTrustPage()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var links = cut.FindAll(".site-footer a.footer-link").Select(found => found.GetAttribute("href")).ToList();
+        Assert.That(links, Does.Contain("/trust"));
+        Assert.That(links.IndexOf("/trust"), Is.EqualTo(links.IndexOf("/privacy") + 1), "right after Privacy");
+    }
+
     /// <summary>The footer carries the same slogan as the header, so the site says one thing.</summary>
     [Test]
     public void TheFooter_CarriesTheSlogan()

@@ -150,7 +150,16 @@ the page and the tools of each answer, never their words. The page then sets out
 answers for the site, and links the Information Regulator. Every page's footer links to it, the landing's data tile
 does too, and the guide points to it before it sends a visitor's details.
 
-*Decided in:* F145.1, [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
+`/trust` sits beside it, for a business owner who wants the technical facts before trusting the site with their
+business. It has five parts, each at its own address: where it runs, their data, what the agent may do, what
+happens if something breaks, and a reviewer's checklist of what a business should ask for before it pays. Every
+fact is a tile that says In place or Not yet, so a gap is named rather than hidden, and the companies that handle
+data for the site (Azure, Anthropic, Resend, Cloudflare and GitHub) are in a table with what each sees and where.
+The facts are data in `Content/Trust/`, and every one in place names the file of the repo that shows it, which a
+test opens, so the page can only say what the code does. One `FactBand` draws each part from its list. The footer
+links Trust right after Privacy, and the guide sends someone who asks about security or backups there.
+
+*Decided in:* F165, F145.1, [ADR 0112](../adr/0112-the-site-sells-first.md), F128.1,
 [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), F110.
 
 ### 4. The showroom's three businesses
@@ -294,13 +303,13 @@ These are the types involved:
 
 | Path | What's in it |
 |---|---|
-| `Pages/` | The site's pages: the home page and contact; under `About/`, the CV and the privacy page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
+| `Pages/` | The site's pages: the home page and contact; under `About/`, the CV, the privacy page and the trust page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
-| `Components/` | `Cv/` (the CV's view, its parts and its print), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, who builds it, the contact strip, and under `Offer/` the bands of the offer), `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
+| `Components/` | `Cv/` (the CV's view, its parts and its print), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, who builds it, the contact strip, and under `Offer/` the bands of the offer), `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`), `Trust/` (`FactBand`, one part of the trust page) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
-| `Content/` | `SiteFacts`, the site's facts for search engines; `Cv` and `cv.json`, the CV the site is built with |
+| `Content/` | `SiteFacts`, the site's facts for search engines; `Cv` and `cv.json`, the CV the site is built with; `Trust/` (`TrustFact`, `TrustFacts`, `DataHandlers`), what the trust page says |
 | `LouisAgentDevAreas.cs` | The site's areas: the showroom, the focuses, the guide's suggestions, the admin and the CV's area, its places, and glass and flat |
 | `Styles/app.scss` | The framework's Sass and the two themes ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |

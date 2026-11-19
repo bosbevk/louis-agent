@@ -1,0 +1,11 @@
+@* One part of the trust page (F165): the framework's band with a tile per fact, each saying In place or Not yet,
+   and whatever the part adds under its tiles. *@
+<Band Id="@Id" Topic="@Topic" Title="@Title" Summary="@Summary">
+    <TileRow Columns="3">
+        @foreach (var fact in Facts)
+        {
+            <Tile Title="@fact.Title" Text="@fact.Text" Status="fact.Status" StatusText="@fact.StatusText" />
+        }
+    </TileRow>
+    @ChildContent
+</Band>
