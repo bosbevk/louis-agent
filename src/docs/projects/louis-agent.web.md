@@ -401,7 +401,9 @@ itself on the frame's list as it draws.
 
 On a phone, 720 pixels wide or less, the header is one slim row: the site's name, and a menu button at the right.
 The button opens a sheet that hangs just under the header, over the page, holding the links one under the other,
-then the look switch and the site's actions. The sheet wears the theme's look for what floats over the page's
+then the look switch and the site's actions. A site with settings has no settings button on a phone: the menu is the
+one three-line button there, and its sheet holds the settings at its foot, the look switch and what the site put in
+them, so two buttons that look the same never stand side by side. The sheet wears the theme's look for what floats over the page's
 words. It stays open while the visitor opens a list in it, such as the demos, and shuts when a link takes them to
 a page. On a wider screen the sheet is no box of its own, so the links and the actions stand in the header's row
 as before, and the button is not drawn.

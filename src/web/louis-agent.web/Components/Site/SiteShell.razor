@@ -48,6 +48,18 @@
                                 @Actions
                             </div>
                         }
+                        @if (HasSettings)
+                        {
+                            @* On a phone the menu is the one button (FX208), so the settings stand at the sheet's
+                               foot too; on a wide screen they keep their own button and panel. *@
+                            <div class="site-menu-settings">
+                                @if (OffersThemes)
+                                {
+                                    <LookSwitch/>
+                                }
+                                @Settings
+                            </div>
+                        }
                     </div>
                 }
                 @if (HasSettings)
