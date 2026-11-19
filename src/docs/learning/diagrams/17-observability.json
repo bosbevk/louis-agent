@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Observability: every host's logs and traces on one wire",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "chart", "title": "See what the system does in real use", "code": "skill 17",
+          "look": "highlight",
+          "text": "Logs and spans over OTLP to whichever backend a setting names, and counters for what evals can't show." }
+      ] },
+      { "cards": [
+        { "id": "traces", "icon": "branch", "title": "A turn as a tree of spans",
+          "text": "invoke_agent over the model and tool calls; a sub-session nests across the HTTP hop." },
+        { "id": "backends", "icon": "cloud", "title": "One wire, any backend",
+          "text": "The Aspire dashboard on the PC, Application Insights in Azure; about 1% of a run." }
+      ] },
+      { "cards": [
+        { "id": "counter", "icon": "database", "title": "The library's counter",
+          "text": "One record a day in library_usage, behind the admin key." },
+        { "id": "recording", "icon": "terminal", "title": "A recorded stream",
+          "text": "A session's events saved once and played back with the live chat's own code." },
+        { "id": "turnlog", "icon": "file", "title": "What the agents did",
+          "text": "A line per turn, page and tools, no words, joined with the ledger's cost." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "traces" },
+      { "from": "skill", "to": "backends" },
+      { "from": "traces", "to": "recording" },
+      { "from": "backends", "to": "counter" },
+      { "from": "backends", "to": "turnlog" }
+    ]
+  }
+}

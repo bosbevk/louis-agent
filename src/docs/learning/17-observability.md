@@ -11,6 +11,13 @@ What this answers: what observability is for an agent system, how our logs and t
 only" to "on a dashboard, every host side by side", what each of the eleven picks was and why, what it cost when
 measured, and what the build taught.
 
+![Observability: logs and spans on one wire, a turn as a tree of spans, the library's counter, a recorded stream, and what the agents did without what was said](diagrams/17-observability.svg)
+
+Two things moved since. The exporters live in their own project, `louis-agent.core.telemetry` (`OtlpTelemetry`),
+which a host opts into, so core keeps only the spans. And Azure's part is no longer a `deploy.ps1 telemetry`
+command: `puls-insights` and the environment's OpenTelemetry agent are declared in the Bicep file
+(`demos/puls/config/azure/main.bicep`).
+
 ## The idea in a paragraph
 
 A log line says *what happened*; a **span** says *how long something took and what it was part of* (a trace is a
