@@ -56,6 +56,11 @@ records, links, and how big a file that Claude loads may be.
   is fine only where the reader really scans: steps to type in a how-to, a table of parts, settings or rows.
 - **Fixed as touched** (Louis, 2026-11-14: "any touched file not doing it like this must be updated"). A change
   that touches a doc that doesn't talk this way rewrites it in the same change, keeping every fact.
+- **Every doc opens with an overview picture** (Louis, 2026-11-19: "All document should open with an overview
+  diragram, that's all other diagrams is per doc type"). Under its opening line, a `cards` picture shows what the
+  doc is about and its main parts, drawn with the diagrams tool
+  ([Draw a diagram](../../src/docs/guides/draw-a-diagram.md)). The other pictures depend on the doc's kind, as
+  `/write-the-docs` lists. A rewrite keeps every picture a doc had.
 - **In plain words** (Louis, 2026-10-26): the way a friend would explain it, casual but straight to the point, in
   short everyday sentences. Lead with what it means, then the detail. Say what a technical term means the first
   time. Name code, a class or a file, only where the reader needs to find it.

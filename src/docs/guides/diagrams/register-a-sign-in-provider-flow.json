@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Register a sign-in provider: the steps",
+  "caption": "Make the app, set its two keys, recreate the stack, and the button is on /login.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "app", "label": "Make the app\nat the provider", "icon": "world", "tone": "red" },
+      { "id": "keys", "label": "Its two keys in\nconfig/.env.secrets", "icon": "file", "tone": "amber", "shape": "data" },
+      { "id": "up", "label": "Recreate the stack\nup -d", "icon": "server", "tone": "green" },
+      { "id": "login", "label": "The button\non /login", "icon": "browser", "tone": "green", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "app" },
+      { "from": "app", "to": "keys", "word": "client ID and secret" },
+      { "from": "keys", "to": "up" },
+      { "from": "up", "to": "login" }
+    ],
+    "direction": "right"
+  }
+}

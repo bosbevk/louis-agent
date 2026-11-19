@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "Add a skill at a glance",
+  "caption": "A function skill is a markdown file: written, approved, then loaded with the skills toolset.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "file", "title": "A function skill", "code": "skills/agent/functions", "look": "highlight",
+          "text": "A markdown file the agent runs with ExecuteSkill." }
+      ] },
+      { "cards": [
+        { "id": "write", "icon": "code", "title": "Write the file", "text": "Skill sections with an Execution fence." },
+        { "id": "approve", "icon": "checks", "title": "Approve it", "text": "From pending to every session." },
+        { "id": "load", "icon": "stack", "title": "Who gets it", "text": "Sessions with the skills toolset." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "write" },
+      { "from": "skill", "to": "approve" },
+      { "from": "skill", "to": "load" }
+    ]
+  }
+}

@@ -45,6 +45,20 @@ documentation". ADR 0013 follows it; our plan is a fifth kind with its own skill
 A project doc holds two kinds on purpose: *How it works* explains, *Structure* is the reference at the end, kept
 apart under their own headings ([the docs rules](../../rules/docs.md#what-every-doc-is)).
 
+## The pictures
+
+Every doc opens with an overview picture, straight under its opening line (Louis, 2026-11-19): a `cards` picture of
+what the doc is about and its main parts. The rest depend on its kind. Each is a JSON file drawn by the diagrams
+tool (`/draw-a-diagram`), never Mermaid, and a rewrite keeps every picture the doc had.
+
+| Kind | After the overview |
+|---|---|
+| Tutorial | An `activity` flow of the lesson's steps, start to the result |
+| How-to | An `activity` flow of its steps, beside them; none when it has no steps, such as a table of fixes |
+| Reference | A `classes` or `package` picture of what it lists, where it lists types or projects |
+| Explanation | The story's pictures, each beside its part: a `component` flow, a `sequence`, an `object` flow; a project doc shows what its kind asks (`ProjectDocsTests`) |
+| Plan | Its four pictures (`/plan-a-feature`) |
+
 ## The sentence rules
 
 | Rule | How | Source |
@@ -73,6 +87,7 @@ in ([the docs rules](../../rules/docs.md#what-every-doc-is), "explanatory and de
 
 - Every fact from the old text is in the new, and each was checked in the code. Say which you could not confirm.
 - The opening line names the kind and the question, and nothing of another kind is left in the body.
+- The overview picture stands under the opening line, the kind's other pictures are there, and none was lost.
 - No sentence over 25 words; name the longest.
 - No bulleted list where it explains; no bold label followed by type names in brackets.
 - No build history: no "Claude picked", no "unattended", no dates of how the work went.

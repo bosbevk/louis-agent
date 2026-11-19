@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Get started at a glance",
+  "caption": "Your first run: the settings, the build and the CLI, then the two Docker stacks.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "start", "icon": "terminal", "title": "Your first run", "look": "highlight",
+          "text": "From a clone to a running agent on your own machine." }
+      ] },
+      { "cards": [
+        { "id": "settings", "icon": "settings", "title": "The settings", "code": "demos/louis-agent/config",
+          "text": "Copy the two files, add your keys." },
+        { "id": "build", "icon": "code", "title": "Build and test", "text": "The solution, then core's tests." },
+        { "id": "cli", "icon": "message", "title": "The CLI", "text": "Chat with the coding agent." }
+      ] },
+      { "cards": [
+        { "id": "coding", "icon": "server", "title": "The coding stack", "text": "Web app and API on port 5082." },
+        { "id": "puls", "icon": "server", "title": "The Puls stack", "text": "Puls's web app on port 5070." }
+      ] }
+    ],
+    "links": [
+      { "from": "start", "to": "settings" },
+      { "from": "start", "to": "build" },
+      { "from": "start", "to": "cli" }
+    ]
+  }
+}

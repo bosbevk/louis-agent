@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Get started: the steps of a first run",
+  "caption": "Four steps: settings, build and test, the CLI, then the commit template.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You, with a clone", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "copy", "label": "Copy the settings\nadd your keys", "icon": "settings", "tone": "amber" },
+      { "id": "build", "label": "Build the solution\nrun core's tests", "icon": "code", "tone": "green" },
+      { "id": "cli", "label": "Start the CLI", "icon": "message", "tone": "green" },
+      { "id": "template", "label": "Turn on the\ncommit template", "icon": "branch", "tone": "green" },
+      { "id": "done", "label": "A running agent", "icon": "chip", "tone": "violet", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "copy" },
+      { "from": "copy", "to": "build" },
+      { "from": "build", "to": "cli" },
+      { "from": "cli", "to": "template" },
+      { "from": "template", "to": "done" }
+    ],
+    "direction": "right"
+  }
+}

@@ -3,6 +3,8 @@
 > **How-to.** Fix the errors you're most likely to meet, by the message you see. **Elsewhere:** every fix's symptom
 > and cause in the [fixes table](../fixes/README.md); the known limitations in the [TODO](../../../TODO.md#known-limitations).
 
+![Common errors, in four groups: keys and start-up, the model, skills and bash, prices and the web](diagrams/common-errors.svg)
+
 Find the message you got in the left column. The settings files named here are your demo's, in
 `demos/{demo}/config/`.
 

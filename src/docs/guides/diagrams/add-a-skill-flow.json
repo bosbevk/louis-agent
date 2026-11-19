@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Add a skill: from what the agent wrote to every session",
+  "caption": "What the agent writes waits in pending/ until you approve it, then start a new chat.",
+  "flow": {
+    "nodes": [
+      { "id": "agent", "label": "The agent writes it\nCreateSkillFile", "icon": "chip", "tone": "blue", "shape": "terminal" },
+      { "id": "pending", "label": "functions/pending/\nthis engine only", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "pick", "label": "/approve or /reject?", "tone": "green", "shape": "decision" },
+      { "id": "live", "label": "functions/\nevery session", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "gone", "label": "Deleted", "icon": "file", "tone": "green", "shape": "terminal" },
+      { "id": "chat", "label": "Start a new chat", "icon": "message", "tone": "blue", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "agent", "to": "pending" },
+      { "from": "pending", "to": "pick", "word": "/tools lists it" },
+      { "from": "pick", "to": "live", "word": "approve" },
+      { "from": "pick", "to": "gone", "word": "reject" },
+      { "from": "live", "to": "chat" }
+    ],
+    "direction": "right"
+  }
+}

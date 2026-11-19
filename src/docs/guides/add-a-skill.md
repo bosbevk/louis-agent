@@ -5,6 +5,8 @@
 > person in [ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md); a toolset's guide in
 > [Change the engine](change-the-engine.md).
 
+![A function skill: write the file, approve it, and the sessions with the skills toolset get it](diagrams/add-a-skill.svg)
+
 A function skill is a markdown file on disk, at `demos/louis-agent/skills/agent/functions/{name}.md`. The agent writes
 one with `CreateSkillFile`, or you drop one in yourself.
 
@@ -34,6 +36,8 @@ Its arguments arrive as `SKILL_ARG_*` environment variables. Quote them, and nev
 *Decided in:* FX20, CL9, [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md).
 
 ## Approve what the agent wrote
+
+![What the agent writes waits in pending until you approve or reject it, then you start a new chat](diagrams/add-a-skill-flow.svg)
 
 What the agent writes doesn't go live for everyone straight away. It waits in
 `demos/louis-agent/skills/agent/functions/pending/`, which git ignores, and works only in the engine that wrote it.

@@ -4,6 +4,8 @@
 > which settings to fill. **Elsewhere:** how the sign-in works in [louis-agent.accounts](../projects/louis-agent.accounts.md);
 > why these three and not Facebook or X in [F61 (history)](https://github.com/bosbevk/louis-agent/blob/20f28c9f/src/docs/plans/F61-accounts-and-azure.md).
 
+![Signing in through Google, Microsoft or LinkedIn, each with its callback, and the keys in the secrets file](diagrams/register-a-sign-in-provider.svg)
+
 A provider turns on only when both of its keys are set. So a site with no keys has password sign-in alone, and a
 provider's button appears as soon as its keys do. You can add the providers one at a time.
 
@@ -14,6 +16,8 @@ is `http://127.0.0.1:5070/signin-{provider}`, and on a live site `https://{domai
 both places, add both addresses.
 
 ## Steps
+
+![The steps: make the app at the provider, put its two keys in the secrets file, recreate the stack, and the button is on /login](diagrams/register-a-sign-in-provider-flow.svg)
 
 1. **Make the app at the provider**, as its row in the table says, and copy its client ID and secret.
 2. **Put the two keys in the demo's `config/.env.secrets`**, under the names in the table. Never put them in a

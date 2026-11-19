@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "Register a sign-in provider at a glance",
+  "caption": "Three providers, each on once both its keys are set.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "signin", "icon": "users", "title": "Sign in through a provider", "look": "highlight",
+          "text": "A button on /login for each provider whose keys are set." }
+      ] },
+      { "cards": [
+        { "id": "google", "icon": "world", "title": "Google", "code": "/signin-google", "text": "An OAuth client ID." },
+        { "id": "microsoft", "icon": "world", "title": "Microsoft", "code": "/signin-microsoft", "text": "An app registration." },
+        { "id": "linkedin", "icon": "world", "title": "LinkedIn", "code": "/signin-linkedin", "text": "OpenID Connect." }
+      ] },
+      { "cards": [
+        { "id": "secrets", "icon": "shield", "title": "The keys", "code": "config/.env.secrets", "text": "Two settings per provider." },
+        { "id": "left", "icon": "info", "title": "Left out", "text": "Facebook and X, on purpose." }
+      ] }
+    ],
+    "links": [
+      { "from": "signin", "to": "google" },
+      { "from": "signin", "to": "microsoft" },
+      { "from": "signin", "to": "linkedin" }
+    ]
+  }
+}
