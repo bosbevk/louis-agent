@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "The evals at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "evals", "icon": "checks", "title": "Proving an agent with real questions", "code": "evals",
+          "look": "highlight",
+          "text": "An eval asks an identity real questions through the API, grades every answer and prices the run from the ledger." }
+      ] },
+      { "cards": [
+        { "id": "files", "icon": "file", "title": "An eval is files",
+          "text": "eval.json, its dataset, manual and rubric, in the evals project of the identity it proves." },
+        { "id": "runner", "icon": "terminal", "title": "A demo's runner",
+          "text": "Opens real sessions, grades with the catalogue's checks, and writes the protocol's lines." },
+        { "id": "api", "icon": "server", "title": "The API and the portal",
+          "text": "Start a run, record its lines, join the cost, show the runs, review and calibrate." }
+      ] },
+      { "cards": [
+        { "id": "replay", "icon": "database", "title": "Replays and re-scores",
+          "text": "A recorded run replays for free, and a stored run can be graded again." },
+        { "id": "studio", "icon": "code", "title": "The studio",
+          "text": "Makes a new eval in the portal and publishes it as a commit on its own branch." }
+      ] }
+    ],
+    "links": [
+      { "from": "evals", "to": "files" },
+      { "from": "evals", "to": "runner" },
+      { "from": "evals", "to": "api" }
+    ]
+  }
+}
