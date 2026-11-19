@@ -1,0 +1,30 @@
+{
+  "kind": "sequence",
+  "title": "A chat turn",
+  "caption": "The tool loop is FunctionInvokingChatClient's; every call goes through the guards, and the finished turn is appended to the history whole.",
+  "sequence": {
+    "participants": [
+      { "id": "H", "icon": "server", "tone": "blue", "label": "Host (CLI, ACP, API)" },
+      { "id": "E", "icon": "chip", "tone": "violet", "label": "AgentEngine" },
+      { "id": "M", "icon": "cloud", "tone": "red", "label": "Model" },
+      { "id": "G", "icon": "shield", "tone": "violet", "label": "ToolCallGuards" },
+      { "id": "T", "icon": "box", "tone": "green", "label": "A pack's tool" }
+    ],
+    "steps": [
+      { "step": "message", "from": "H", "to": "E", "text": "StreamPromptAsync(history, message)" },
+      { "step": "message", "from": "E", "to": "M", "text": "system prompt, tools, reasoning, 16k output limit" },
+      { "step": "block", "block": "loop", "label": "up to 10 tool rounds",
+        "steps": [
+          { "step": "reply", "from": "M", "to": "E", "text": "thinking, then tool calls" },
+          { "step": "message", "from": "E", "to": "G", "text": "each call: log, run, guard" },
+          { "step": "message", "from": "G", "to": "T", "text": "the call" },
+          { "step": "reply", "from": "T", "to": "G", "text": "its result, or its error" },
+          { "step": "reply", "from": "G", "to": "E", "text": "the result, summarised past 50,000 characters" },
+          { "step": "message", "from": "E", "to": "M", "text": "the results" }
+        ] },
+      { "step": "reply", "from": "M", "to": "E", "text": "the answer, streamed" },
+      { "step": "reply", "from": "E", "to": "H", "text": "thinking, calls, results and answer as they come" },
+      { "step": "note", "over": ["E"], "text": "the whole turn, thinking blocks included, appended to the history" }
+    ]
+  }
+}

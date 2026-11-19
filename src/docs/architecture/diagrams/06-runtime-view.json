@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "The runtime view at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "run", "icon": "chip", "title": "How the parts work together at run time", "code": "runtime",
+          "look": "highlight",
+          "text": "What the model can use, one turn step by step with its guards, and the work that spans several agents." }
+      ] },
+      { "cards": [
+        { "id": "caps", "icon": "box", "title": "Tools and skills",
+          "text": "A tool is a C# method the model calls; a skill is markdown in its prompt telling it how and when." },
+        { "id": "turn", "icon": "message", "title": "One chat turn",
+          "text": "The model thinks, calls tools through the guards, and streams its answer; the whole turn is kept." },
+        { "id": "agents", "icon": "users", "title": "Across agents",
+          "text": "An agent asks another by its address, an eval runs real sessions, the orchestrator fixes an error." }
+      ] }
+    ],
+    "links": [
+      { "from": "run", "to": "caps" },
+      { "from": "run", "to": "turn" },
+      { "from": "run", "to": "agents" }
+    ]
+  }
+}
