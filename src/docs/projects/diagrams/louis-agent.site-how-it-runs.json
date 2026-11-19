@@ -1,7 +1,7 @@
 {
   "kind": "flow",
   "type": "component",
-  "caption": "A few lines: the site's host is the guide alone, on the three packs it names. It serves each page as HTML first, and keeps the CV the admin saves.",
+  "caption": "A few lines: the site's host runs the guide and the showroom's three businesses, on the three packs it names. It serves each page as HTML first, and keeps the CV the admin saves.",
   "title": "louis-agent.site: How it runs",
   "flow": {
     "nodes": [

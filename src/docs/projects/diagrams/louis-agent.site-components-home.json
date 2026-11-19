@@ -1,7 +1,7 @@
 {
   "kind": "nested",
   "title": "The home page: what it is made of",
-  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then the demos and custom agents. The frame lists each band in its section index.",
+  "caption": "The site's home is a run of bands the visitor scrolls: the offer first, then the brand, the demos and custom agents, and last who builds it and the way to ask.",
   "nested": {
     "subtitle": "louis-agent.site, Pages / HomePage",
     "root": {
@@ -16,7 +16,7 @@
           "name": "Hero",
           "kind": "a band",
           "tone": "blue",
-          "note": "what it is, and the way to try it"
+          "note": "the owner's problem, two buttons and the free-websites strip"
         },
         {
           "id": "tape",
@@ -38,7 +38,15 @@
           "id": "how",
           "name": "HowItWorksForYou",
           "kind": "a band",
-          "tone": "blue"
+          "tone": "blue",
+          "note": "where it runs: in South Africa"
+        },
+        {
+          "id": "brand",
+          "name": "LandingBrand",
+          "kind": "a band",
+          "tone": "blue",
+          "note": "Meet Orbi: the idea, the mark and the theme"
         },
         {
           "id": "demos",
@@ -82,6 +90,13 @@
           ]
         },
         {
+          "id": "who",
+          "name": "WhoBuildsIt",
+          "kind": "a band",
+          "tone": "blue",
+          "note": "Louis, his photo and a way to his CV"
+        },
+        {
           "id": "contact",
           "name": "ContactStrip",
           "kind": "a band",
@@ -97,7 +112,7 @@
         "tone": "blue",
         "kind": "layout",
         "heading": "Who draws it",
-        "note": "the site's layout, on the framework's SiteShell: the header, the progress line, the section index"
+        "note": "the site's layout, on the framework's SiteShell: the header, the guide's bar, the footer"
       },
       {
         "id": "head",

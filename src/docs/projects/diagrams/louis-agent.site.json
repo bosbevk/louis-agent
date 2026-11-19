@@ -12,7 +12,7 @@
         { "id": "pages", "icon": "browser", "title": "The pages",
           "text": "Offer first, the demos to watch, every place on a page with its own address." },
         { "id": "guide", "icon": "message", "title": "The guide",
-          "text": "The chat in the corner, answering from the docs and nothing else." },
+          "text": "The bar at the foot of every page, answering from the docs and nothing else." },
         { "id": "showroom", "icon": "users", "title": "The showroom",
           "text": "Made-up businesses' agents, recorded once, then live to try." },
         { "id": "cv", "icon": "file", "title": "Louis's CV",
