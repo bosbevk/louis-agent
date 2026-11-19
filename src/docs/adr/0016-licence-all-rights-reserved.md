@@ -1,6 +1,6 @@
 # 0016. Licence: all rights reserved
 
-**Status:** Accepted · **Date:** 2026-10-15 · **Recorded:** 2026-10-15 · **Supersedes:** [0015](0015-licence-agpl.md)
+**Status:** Superseded by [0127](0127-licence-polyform-noncommercial.md) · **Date:** 2026-10-15 · **Recorded:** 2026-10-15 · **Supersedes:** [0015](0015-licence-agpl.md)
 
 ## Context
 

@@ -1,7 +1,7 @@
 # Third-party notices
 
 > **Reference.** The parts of louis-agent that someone else wrote, and the licence each one keeps. The repo's own
-> [LICENSE](LICENSE) (all rights reserved) covers only what the copyright holder wrote; everything below stays under
+> [LICENSE](LICENSE) (PolyForm Noncommercial 1.0.0) covers only what the copyright holder wrote; everything below stays under
 > its own licence, and its notice goes with it.
 
 Why this file exists: Puls and the review web app run as Blazor WebAssembly, so their DLLs are downloaded into every
