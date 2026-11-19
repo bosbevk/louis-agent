@@ -16,7 +16,7 @@ public static class CostAndEvals
 {
     /// <summary>One Claude Haiku 5.5 request, 2,000 tokens in and 500 out, at the dated prices and rate.</summary>
     public static readonly CostExample Example =
-        new("claude-haiku-5-5", 2000, 500, 0.10m, 0.50m, "2026-10-10", 16.5331m, "2026-10-09");
+        new("claude-haiku-5-5", 2000, 500, 0.10m, 0.50m, "2026-11-19", 17.2806m, "2026-11-19");
 
     /// <summary>What the ledger is and keeps.</summary>
     public static readonly IReadOnlyList<Term> Ledger =
