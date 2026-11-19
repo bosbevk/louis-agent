@@ -50,7 +50,7 @@ public class GuideSkillsTests
             .Select(route => $"`{route.Template}`").ToList();
 
         Assert.That(index.Header?.Load, Is.EqualTo(SkillLoad.Always));
-        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(9), "the pages were found");
         Assert.That(addresses.Where(address => !index.Body.Contains(address)), Is.Empty);
     }
 

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Pages;
 
 namespace LouisAgent.Diagrams.Engine.Svg;
 
@@ -22,7 +23,10 @@ internal static class PageSvg
     public static string Of(string svg)
     {
         var root = XElement.Parse(svg);
-        foreach (var style in root.Elements(Svg + "style")) style.Value = $"@scope {{\n{Rooted(style.Value)}\n}}";
+        var styles = root.Elements(Svg + "style").ToList();
+        // On a page it also wears the page's theme (F164.1): each theme's colours after the drawing's own.
+        styles[^1].Value += "\n" + PagePalettes.Rules;
+        foreach (var style in styles) style.Value = $"@scope {{\n{Rooted(style.Value)}\n}}";
 
         // An arrowhead is only kept when something points with it.
         bool arrows = root.Descendants().Any(shape =>

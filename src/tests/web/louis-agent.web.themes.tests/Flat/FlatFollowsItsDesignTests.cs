@@ -93,8 +93,8 @@ public class FlatFollowsItsDesignTests
     /// FX185: under the pointer the main button turns the lighter violet, the second fills with the words' colour and
     /// takes the page's for its words, and a chip's line turns the words' colour, as the design's do.
     /// </summary>
-    [TestCase(SiteStyle.Dark, "#ffffff", "#000000")]
-    [TestCase(SiteStyle.Light, "#0b0b0e", "#ffffff")]
+    [TestCase(SiteStyle.Dark, "#ffffff", "#0c0c0e")]
+    [TestCase(SiteStyle.Light, "#0b0b0e", "#f7f7f8")]
     public void ThePresses_UnderThePointer_AreTheDesigns(SiteStyle style, string words, string page)
     {
         Assert.Multiple(() =>
@@ -107,11 +107,12 @@ public class FlatFollowsItsDesignTests
     }
 
     /// <summary>
-    /// FX186: a tile's icon stands on white in the light and on black in the dark, darker than its card (Louis: "make
-    /// white", "darker"), with no shadow.
+    /// FX186: a tile's icon stands on the page's own colour, a tad darker than white in the light and the near-black
+    /// grey in the dark, darker than its card (Louis: "make white", "darker"; then "flat dark background just a very
+    /// dark gray almost black", "same with the white make it a tad darker white"), with no shadow.
     /// </summary>
-    [TestCase(SiteStyle.Dark, "#000000")]
-    [TestCase(SiteStyle.Light, "#ffffff")]
+    [TestCase(SiteStyle.Dark, "#0c0c0e")]
+    [TestCase(SiteStyle.Light, "#f7f7f8")]
     public void ATilesIcon_StandsOnThePagesColour(SiteStyle style, string fill)
     {
         Assert.Multiple(() =>

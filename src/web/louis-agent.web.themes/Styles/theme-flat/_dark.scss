@@ -15,8 +15,9 @@
     @include colours.both(bs-info, #7fa8e8);
     @include colours.both(web-ok, #6cbf94);
     @include colours.both(web-purple, #9282ff);          // the purple accent, light enough to read on black
-    @include colours.both(bs-body-bg, #000000);          // the page
-    @include colours.both(bs-secondary-bg, #101013);     // a panel
+    // The page a very dark grey, almost black (Louis: "flat dark background just a very dark gray almost black").
+    @include colours.both(bs-body-bg, #0c0c0e);          // the page
+    @include colours.both(bs-secondary-bg, #141418);     // a panel
     @include colours.both(bs-tertiary-bg, #1a1a1f);      // the menu
     @include colours.both(bs-success-text-emphasis, #dcdce6, web-success-text);
     @include colours.both(web-menu-bg, #1a1a1f);
@@ -34,7 +35,7 @@
     --bs-success: #2b2b33;                                // your messages, under the same white ink as a press
     --web-success-deep: #1a1a1f;
     --bs-success-bg-subtle: #1a1a1f;
-    --web-sidebar-foot: #101013;
+    --web-sidebar-foot: #141418;
     --web-sidebar-foot-deep: #000000;
     --bs-link-color: #f4f4f6;
 
@@ -46,7 +47,7 @@
     --web-photo-text: #333333;
     --web-border-hover: #55555f;
     --web-scrollbar: #2b2b33;
-    --web-dialog-bg: #101013;
+    --web-dialog-bg: #141418;
     --web-code-number: #c9c9d1;
     --web-code-comment: #7c7c88;
     --web-live-dot: #9282ff;
@@ -68,7 +69,7 @@
 
     // A pane: one solid grey and a hairline, nothing else. The hairline is drawn just inside its edge, so under the
     // pointer the same line can take a lighter grey and only its colour changes, as the design's card does (FX185).
-    --web-pane-fill: #101013;
+    --web-pane-fill: #141418;
     --web-pane-edge: none;
     --web-pane-rim: none;
     --web-pane-light: none;
@@ -98,11 +99,11 @@
     --web-veil-edge: 1px solid #2b2b33;
     --web-veil-blur: none;
 
-    // An inset, set into the page: the page's black and a hairline.
-    --web-inset-fill: #000000;
+    // An inset, set into the page: the page's own grey and a hairline.
+    --web-inset-fill: #0c0c0e;
     --web-inset-edge: 1px solid #2b2b33;
-    // A bar: as black as the page, one hairline towards it.
-    --web-bar-fill: #000000;
+    // A bar: the page's own grey, one hairline towards it.
+    --web-bar-fill: #0c0c0e;
     --web-bar-edge: 1px solid #2b2b33;
     --web-bar-blur: none;
 
@@ -135,10 +136,10 @@
     // black words, and a chip's line white.
     --web-press-hover-fill: #9282ff;
     --web-quiet-hover-fill: #ffffff;
-    --web-quiet-hover-ink: #000000;
+    --web-quiet-hover-ink: #0c0c0e;
     --web-chip-hover-edge: 1px solid #ffffff;
     // A tile's icon stands on black, darker than its card, with no shadow (FX186, Louis: "darker").
-    --web-icon-fill: #000000;
+    --web-icon-fill: #0c0c0e;
     --web-icon-shadow: none;
 
     // The mark: a flat violet disc carrying the brand's l with a violet step under it, drawn whole, the disc the

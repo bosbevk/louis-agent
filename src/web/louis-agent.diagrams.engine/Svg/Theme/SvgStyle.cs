@@ -14,7 +14,7 @@ internal static class SvgStyle
     public static string Of(SvgTheme theme) => string.Create(CultureInfo.InvariantCulture, $$"""
           svg {
             {{Variables(theme.Light)}}
-            --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+            --mono: {{Looks.PictureFonts.Mono}};
           }
           {{PageScheme.Rules(Variables(theme.Light), Variables(theme.Dark))}}
           .ground { fill: var(--ground); }
@@ -27,14 +27,14 @@ internal static class SvgStyle
 
     /// <summary>
     /// The docs' frame's look (<see cref="TitledFrame"/>), added to a framed picture's style only, so a bare
-    /// picture's bytes stay as they were: a system sans font for the note's words, and a rule for each part of
+    /// picture's bytes stay as they were: the site's sans for the note's words (F164.1), and a rule for each part of
     /// the note bar.
     /// </summary>
     public const string Frame =
-        """
+        $$"""
 
         svg {
-          --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+          --sans: {{Looks.PictureFonts.Sans}};
         }
         .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
         .note-icon {
@@ -47,7 +47,7 @@ internal static class SvgStyle
         """;
 
     /// <summary>One palette as the picture's colour variables, each tone's three among them.</summary>
-    private static string Variables(SvgPalette palette) =>
+    internal static string Variables(SvgPalette palette) =>
         $"--ground: {palette.Ground}; --line: {palette.Line}; --text: {palette.Text}; " +
         $"--quiet: {palette.Quiet}; --chip: {palette.Chip}; --accent: {palette.Accent};" +
         string.Concat(palette.Tones.Select(tone =>

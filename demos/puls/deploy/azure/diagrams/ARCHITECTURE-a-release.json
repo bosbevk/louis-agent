@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "The framework's two sites in Azure: a release",
+  "caption": "A merge runs one job that releases louis-agent.dev, then the framework's site; each release makes its app's folders, builds its image in the registry and updates the app as its next revision.",
+  "flow": {
+    "nodes": [
+      { "id": "merge", "shape": "terminal", "icon": "user", "tone": "blue", "label": "A merge to main\nor Run workflow" },
+      { "id": "signin", "icon": "shield", "tone": "violet", "label": "OpenID Connect sign-in\ngithub-puls-deploy, no password" },
+      { "id": "site", "icon": "play", "tone": "green", "label": "release -App louis-agent-app" },
+      { "id": "framework", "icon": "play", "tone": "green", "label": "release -App louis-agent-framework-app" },
+      { "id": "folders", "icon": "folder", "tone": "amber", "label": "the folders its entry names\nframework, framework/logs" },
+      { "id": "build", "icon": "box", "tone": "violet", "label": "build: az acr build\ntagged with the date and time" },
+      { "id": "update", "icon": "settings", "tone": "violet", "label": "update: the yaml filled in\nthe next vNNN, created or updated" },
+      { "id": "summary", "shape": "terminal", "icon": "checks", "tone": "blue", "label": "the run's summary\neach app's revisions" }
+    ],
+    "edges": [
+      { "from": "merge", "to": "signin" },
+      { "from": "signin", "to": "site" },
+      { "from": "site", "to": "framework", "word": "then" },
+      { "from": "framework", "to": "folders" },
+      { "from": "folders", "to": "build" },
+      { "from": "build", "to": "update" },
+      { "from": "update", "to": "summary" }
+    ],
+    "direction": "down"
+  }
+}

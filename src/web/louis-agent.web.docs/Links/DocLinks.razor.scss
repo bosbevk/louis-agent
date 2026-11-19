@@ -1,0 +1,7 @@
+/* A section's doc links: a wrapping row under the section, a little apart from it. */
+.doc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1rem;
+}

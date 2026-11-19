@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
 using LouisAgent.Diagrams.Engine.Cards.Sizes;
@@ -67,7 +68,7 @@ internal static class OverviewCards
         bool bright = card.Card.Look == CardLook.Highlight;
         double centre = card.Box.Middle.X, top = card.Box.Top, titleY = top + title;
         if (bright)
-            writer.Box(geometry.Box(centre - Badge / 2, top, Badge, Badge), Corner, "crd-badge").Icon(
+            writer.Box(geometry.Box(centre - Badge / 2, top, Badge, Badge), Corner, Toned("crd-badge", card.Card)).Icon(
                 centre - BadgeIcon / 2, top + (Badge - BadgeIcon) / 2, BadgeIcon, card.Card.Icon, "crd-badge-icon");
         else
             writer.Icon(centre - HeadingIcon / 2, top, HeadingIcon, card.Card.Icon, "crd-icon quiet");
@@ -97,9 +98,9 @@ internal static class OverviewCards
         int titles = card.TitleLines.Count;
         var tint = geometry.Box(left, box.Top + CardSizes.Pad, Tint, Tint);
         writer.Box(box, Corner, "mrq-glass");
-        PictureParts.Accent(writer, geometry, box, EdgeIn).Box(tint, TintCorner, "crd-tint")
+        PictureParts.Accent(writer, geometry, box, EdgeIn).Box(tint, TintCorner, Toned("crd-tint", card.Card))
             .Icon(tint.Left + (Tint - TintIcon) / 2, tint.Top + (Tint - TintIcon) / 2, TintIcon, card.Card.Icon,
-                "crd-icon");
+                Toned("crd-icon", card.Card));
 
         for (int at = 0; at < titles; at++)
         {
@@ -126,7 +127,7 @@ internal static class OverviewCards
         double left = box.Left + CardSizes.QuietPad;
         int titles = card.TitleLines.Count;
         writer.Box(box, Corner, "crd-quiet")
-            .Icon(left, box.Top + QuietIcon, TintIcon, card.Card.Icon, "crd-icon quiet");
+            .Icon(left, box.Top + QuietIcon, TintIcon, card.Card.Icon, Toned("crd-icon quiet", card.Card));
         for (int at = 0; at < titles; at++)
             writer.Text(box.Left + CardSizes.QuietTitleLeft, box.Top + QuietTitle + CardSizes.QuietTitleLine * at,
                 card.TitleLines[at], "crd-name quiet", "start");
@@ -151,4 +152,7 @@ internal static class OverviewCards
         writer.Box(pill, pill.HalfHeight, "mrq-pill").Text(left + CodePad, top + CodeLine, code, "mrq-code", "start");
         return room;
     }
+
+    /// <summary>A part's class, with its card's tone after it when the card names one (F164.1).</summary>
+    private static string Toned(string cls, Card card) => card.Tone is { } tone ? $"{cls} tone-{tone.Wire()}" : cls;
 }

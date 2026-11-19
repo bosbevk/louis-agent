@@ -37,19 +37,25 @@ public class DeployWorkflowTests
     }
 
     /// <summary>
-    /// The merge deploys the louis-agent app alone (FX122, Louis: "remove everything puls related from azure and
-    /// deployments"): one release, of that app, and the summary lists its revisions; Puls is not released.
+    /// The merge deploys the framework's two sites (F164.3): louis-agent.dev, then framework.louis-agent.dev, each its
+    /// own release, and the summary lists each app's revisions. Puls is not released (FX122, Louis: "remove
+    /// everything puls related from azure and deployments").
     /// </summary>
     [Test]
-    public void TheWorkflow_ReleasesTheSiteAlone()
+    public void TheWorkflow_ReleasesBothSites()
     {
         var calls = Trimmed().Where(line => line.StartsWith("run:", StringComparison.Ordinal) &&
                                             line.Contains("deploy.ps1 release", StringComparison.Ordinal)).ToList();
 
-        Assert.That(calls, Has.Count.EqualTo(1));
-        Assert.That(calls[0], Does.Contain("-App louis-agent-app"));
-        Assert.That(Trimmed(), Has.Some.Contains("-n louis-agent-app -g rg-puls-za"));
-        Assert.That(Trimmed(), Has.None.Contains("puls-app"));
+        Assert.That(calls, Has.Count.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(calls[0], Does.EndWith("-App louis-agent-app"));
+            Assert.That(calls[1], Does.EndWith("-App louis-agent-framework-app"));
+            Assert.That(Trimmed(), Has.Some.Contains("-n louis-agent-app -g rg-puls-za"));
+            Assert.That(Trimmed(), Has.Some.Contains("-n louis-agent-framework-app -g rg-puls-za"));
+            Assert.That(Trimmed(), Has.None.Contains("puls-app"));
+        });
     }
 
     /// <summary>

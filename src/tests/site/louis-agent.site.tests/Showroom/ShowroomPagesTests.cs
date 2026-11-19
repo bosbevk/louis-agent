@@ -9,6 +9,7 @@ using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Tiles;
+using LouisAgent.Web.Places;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;

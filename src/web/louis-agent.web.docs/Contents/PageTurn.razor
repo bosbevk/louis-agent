@@ -1,0 +1,11 @@
+@* A docs page's foot: the page before and the page after, in reading order, each named. *@
+<nav class="page-turn" aria-label="Previous and next">
+    @if (Before is { } before)
+    {
+        <a class="page-turn-before" href="@before.Address"><small>Previous</small><b>@before.Title</b></a>
+    }
+    @if (After is { } after)
+    {
+        <a class="page-turn-after" href="@after.Address"><small>Next</small><b>@after.Title</b></a>
+    }
+</nav>

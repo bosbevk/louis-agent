@@ -1,9 +1,12 @@
 @page "/profile"
 @layout AccountFrame
 @implements IDisposable
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 @* The profile, the same on every site: who the person is, their name, their email, their password, the ways they
-   sign in, and the way out. A guest is sent to sign in first. *@
+   sign in, and the way out. A guest is sent to sign in first. [Authorize] says it is behind a sign-in, so the host
+   never draws it for a search engine (F164.1); the sign-in pages beside it are public. *@
 
 <PageTitle>@Text.Profile</PageTitle>
 

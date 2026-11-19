@@ -56,14 +56,19 @@ public partial class LookSwitch
     protected override void OnInitialized() => _theme = Areas?.DefaultTheme?.Id;
 
     /// <summary>
-    /// Once drawn, learns the look the first paint already put the page in, and starts following other tabs. A site
-    /// with no theme draws no switch and asks nothing.
+    /// Once drawn, learns the look the first paint already put the page in, and starts following other tabs. A theme
+    /// the browser remembers that this site doesn't offer is put back to the site's first, so a site that offers one
+    /// theme always opens in it (Louis: "this must always load flat"). A site with no theme draws no switch and asks
+    /// nothing.
     /// </summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender || Themes.Count == 0) return;
 
-        Take(await Module.InvokeAsync<PageLook?>("current"));
+        var look = await Module.InvokeAsync<PageLook?>("current");
+        Take(look);
+        if (look?.Theme is { } remembered && !Offers(remembered))
+            await Module.InvokeVoidAsync("pickTheme", _theme);
         _self = DotNetObjectReference.Create(this);
         await Module.InvokeVoidAsync("listen", _self);
         StateHasChanged();
@@ -100,9 +105,12 @@ public partial class LookSwitch
     private void Take(PageLook? look)
     {
         if (look is null) return;
-        if (Themes.Any(theme => theme.Id == look.Theme)) _theme = look.Theme;
+        if (look.Theme is { } theme && Offers(theme)) _theme = theme;
         if (SettingChoice.TryParse<SiteStyle>(look.Style, out var style) && style is { } known) _style = known;
     }
+
+    /// <summary>Whether the site offers a theme, by its id.</summary>
+    private bool Offers(string theme) => Themes.Any(offered => offered.Id == theme);
 
     /// <summary>Whether a theme's button is the one that is on, as aria-pressed says it.</summary>
     private string ThemePressed(SiteTheme theme) => Pressed(theme.Id == _theme);

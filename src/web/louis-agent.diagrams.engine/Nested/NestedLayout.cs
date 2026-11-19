@@ -60,7 +60,8 @@ public static class NestedLayout
     }
 
     /// <summary>
-    /// A box at its place, then every box it holds: each as wide as the room inside, under the one before it.
+    /// A box at its place, then every box it holds, row by row: in one column each as wide as the room inside, under
+    /// the one before it; in more, side by side, each as wide as a column, a row under the tallest of the row before.
     /// </summary>
     private static IEnumerable<PlacedBox> Boxes(NestedBox box, IPoint at, double width, int depth,
         IGeometry geometry)
@@ -72,13 +73,17 @@ public static class NestedLayout
         yield return new PlacedBox(box, own, depth, notes, pill);
 
         if (pill is not null) below += NestedSizes.PillRow;
-        double inside = width - 2 * NestedSizes.Pad;
-        foreach (var held in box.Holds ?? [])
+        double column = NestedSizes.ColumnWidth(box, width);
+        foreach (var row in box.Rows())
         {
             below += NestedSizes.Gap;
-            var corner = geometry.Point(at.X + NestedSizes.Pad, below);
-            foreach (var placed in Boxes(held, corner, inside, depth + 1, geometry)) yield return placed;
-            below += NestedSizes.Height(held);
+            for (int slot = 0; slot < row.Count; slot++)
+            {
+                var corner = geometry.Point(at.X + NestedSizes.Pad + slot * (column + NestedSizes.Gap), below);
+                foreach (var placed in Boxes(row[slot], corner, column, depth + 1, geometry)) yield return placed;
+            }
+
+            below += row.Max(NestedSizes.Height);
         }
     }
 

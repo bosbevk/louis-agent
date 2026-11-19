@@ -1,0 +1,28 @@
+@use "web/tools/surface";
+
+/* A doc link: a small chip with a line round it and an arrow out, drawn by the framework's surface tool in the theme's
+   own words; under the pointer its line takes the theme's firmer grey and only the colour changes, as flat's cards do. */
+.doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    padding: .25rem .75rem;
+    @include surface.lined(var(--bs-border-color));
+    border-radius: 999px;
+    color: var(--web-soft-text);
+    font-size: .8125rem;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: border-color .15s var(--web-ease), color .15s var(--web-ease);
+
+    &::before {
+        content: "↗";
+        color: var(--bs-primary);
+    }
+
+    &:hover,
+    &:focus-visible {
+        @include surface.edged(var(--web-border-hover));
+        color: var(--bs-body-color);
+    }
+}

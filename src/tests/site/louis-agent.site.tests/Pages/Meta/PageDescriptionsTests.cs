@@ -33,7 +33,7 @@ public class PageDescriptionsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+            Assert.That(pages, Has.Count.GreaterThanOrEqualTo(9), "the pages were found");
             Assert.That(described.Where(page => page.Value.Count != 1).Select(page => page.Key), Is.Empty,
                 "one description a page");
             var texts = described.Values.SelectMany(text => text).ToList();

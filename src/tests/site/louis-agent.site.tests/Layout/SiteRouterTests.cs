@@ -1,7 +1,7 @@
 using System.Reflection;
 using LouisAgent.Site.Admin;
 using LouisAgent.Web.Components.Areas;
-using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Web.Places;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 

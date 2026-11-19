@@ -1,5 +1,6 @@
 using LouisAgent.Web.Components.Widget.Bar;
 using LouisAgent.Web.Components.Widget.Bar.Opening;
+using LouisAgent.Api.Contracts.Site;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Themes;
@@ -49,8 +50,8 @@ public class SiteAreasTests
         (T)services.Single(d => d.ServiceType == typeof(T)).ImplementationInstance!;
 
     /// <summary>
-    /// With no area named, the chat plumbing is there, as the guide in a corner needs it, and a site's own words
-    /// stay.
+    /// With no area named, the chat plumbing is there, as the guide in a corner needs it, the door a button asks the
+    /// chat through with it (F164.2), and a site's own words stay.
     /// </summary>
     [Test]
     public void WithNoArea_TheChatPlumbingIsThere_AndASitesOwnWordsStay()
@@ -65,6 +66,7 @@ public class SiteAreasTests
         {
             Assert.That(Has<ChatSettings>(services) && Has<ChatStore>(services) && Has<AgentApi>(services) &&
                         Has<CurrencyState>(services), Is.True);
+            Assert.That(Has<GuideDoor>(services), Is.True, "every site's buttons can reach its chat");
             Assert.That(One<ChatText>(services), Is.SameAs(words));
             Assert.That(One<SiteAreas>(services).Names, Is.Empty);
             Assert.That(Has<SiteFrames>(services) || Has<ChatHandoff>(services), Is.False);
@@ -197,5 +199,20 @@ public class SiteAreasTests
             .Add(ThemeArea("theme-glass", new SiteTheme("glass", "Glass again"))));
 
         Assert.That(One<SiteAreas>(services).Themes, Is.EqualTo(new[] { glass }));
+    }
+
+    /// <summary>
+    /// F164.1: the areas' pages are told to the host through the API's contract, so the host draws a package's pages
+    /// for a search engine without knowing the web: turning a package on is enough.
+    /// </summary>
+    [Test]
+    public void TheAreasPages_AreToldToTheHost()
+    {
+        var services = new ServiceCollection();
+        var pages = typeof(SiteAreasTests).Assembly;
+
+        services.AddSiteAreas(areas => areas.Add(new SiteArea("pages", _ => { }, [pages])));
+
+        Assert.That(One<SitePageAssemblies>(services).Assemblies, Is.EqualTo(new[] { pages }));
     }
 }

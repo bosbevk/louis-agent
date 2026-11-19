@@ -17,7 +17,7 @@ public class GuideButtonTests
         using var ctx = new BunitContext();
         var door = new GuideDoor();
         ctx.Services.AddSingleton(door);
-        var asked = new List<string>();
+        var asked = new List<string?>();
         door.Asked += asked.Add;
 
         var cut = ctx.Render<GuideButton>(parameters => parameters
@@ -27,7 +27,7 @@ public class GuideButtonTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(asked, Is.EqualTo(new[] { "Walk me through this site." }));
+            Assert.That(asked, Is.EqualTo(new string?[] { "Walk me through this site." }));
             Assert.That(cut.Find("button.guide-button").TextContent, Does.Contain("Take the tour"));
             Assert.That(cut.Find("button").GetAttribute("type"), Is.EqualTo("button"));
         });

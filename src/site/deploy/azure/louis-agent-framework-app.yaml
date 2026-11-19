@@ -1,0 +1,119 @@
+# louis-agent-framework-app: the framework's own site, framework.louis-agent.dev (F164.3), on Azure Container Apps in
+# the environment puls-env beside louis-agent-app, deployed with demos/puls/deploy/azure/deploy.ps1
+# -App louis-agent-framework-app (the how-to is README.md there).
+# One container: the framework site's host (src/site/louis-agent.site-framework-api), on the image
+# src/site/docker/Dockerfile.framework builds, with the framework Orbi on the docs and site packs and nothing else. It
+# carries the docs Orbi reads and its price tables. It reads the vault with louis-agent.dev's identity and logs to its
+# share, in a folder of its own (Louis's pick A of three). No secret value lives here: deploy.ps1 update writes the
+# `secrets:` block from the names the vault holds; this app's own keys carry the suffix -framework, and the model's
+# key is the one both sites share.
+name: louis-agent-framework-app
+resourceGroup: rg-puls-za
+location: South Africa North
+type: Microsoft.App/containerApps
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    'APP_IDENTITY_ID': {}
+properties:
+  environmentId: ENVIRONMENT_ID
+  workloadProfileName: Consumption
+  configuration:
+    # SECRETS
+    activeRevisionsMode: Single
+    ingress:
+      external: true
+      targetPort: 8080
+      transport: Auto
+      allowInsecure: false
+      traffic:
+        - latestRevision: true
+          weight: 100
+    registries:
+      - server: acrpulsza.azurecr.io
+        identity: system-environment
+  template:
+    revisionSuffix: 'REVISION'
+    containers:
+      # The site. Its settings mirror the framework service in src/site/docker/docker-compose.yml.
+      - name: louis-agent-framework-app
+        image: acrpulsza.azurecr.io/louis-agent-site-framework:TAG
+        env:
+          # Its name in Application Insights (F52), as the compose file names it.
+          - name: OTEL_SERVICE_NAME
+            value: louis-agent-site-framework
+          # Container Apps ends https at its ingress, so the app reads the visitor's scheme from X-Forwarded-Proto
+          # (FX68), and a page's canonical address is https.
+          - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+            value: 'true'
+          - name: HOST_TIME_ZONE
+            value: Africa/Johannesburg
+          - name: HOST_CULTURE
+            value: en-ZA
+          - name: LOG_DIRECTORY
+            value: /logs
+          # The engine paces Orbi's words and says so, so the page leaves its own pacer off: paced once (F156).
+          - name: STREAM_PACE
+            value: 'on'
+          - name: LLM_PROVIDER
+            value: anthropic
+          - name: LLM_MODEL
+            value: claude-haiku-5-5
+          - name: ANTHROPIC_API_KEY
+            secretRef: anthropic-api-key
+          # The key every /v1 call needs unless the door lets a visitor in, and the admin's: this app's own.
+          - name: AGENT_API_KEY
+            secretRef: agent-api-key-framework
+          - name: ADMIN_API_KEY
+            secretRef: admin-api-key-framework
+          # The framework Orbi's door (F164.2): a visitor talks to it without a sign-in, this many sessions a day per
+          # address, the same cap as louis-agent.dev (Louis's pick A of three, over 50 or 10).
+          - name: OPEN_IDENTITIES
+            value: louis-agent-framework
+          - name: OPEN_SESSIONS_PER_DAY
+            value: '20'
+          # The docs Orbi reads: the copy the image carries, laid out as the repo.
+          - name: DOCS_ROOT
+            value: /app/docs
+          # PROVIDERS
+          # WHEN SET
+        resources:
+          # Orbi reads docs and calls a model; it builds nothing, as louis-agent.dev.
+          cpu: 0.5
+          memory: 1Gi
+          # Container Apps ties the disk to the CPU: half a CPU allows 2 GiB.
+          ephemeralStorage: 2Gi
+        # louis-agent.dev's share, louis-agent-workspace (storage louis-agent-vol on the environment): the framework's
+        # run files and usage ledger in framework/logs, apart from louis-agent.dev's logs/, kept across revisions.
+        volumeMounts:
+          - volumeName: louis-agent-vol
+            subPath: framework/logs
+            mountPath: /logs
+        probes:
+          - type: Startup
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            failureThreshold: 120
+            timeoutSeconds: 3
+          - type: Readiness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 48
+            timeoutSeconds: 5
+          - type: Liveness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+    scale:
+      # Nothing runs while nobody is on it, as louis-agent.dev: the first visitor waits for a cold start of some seconds.
+      minReplicas: 0
+      maxReplicas: 1
+    volumes:
+      - name: louis-agent-vol
+        storageType: AzureFile
+        storageName: louis-agent-vol

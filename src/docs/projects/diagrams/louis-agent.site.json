@@ -4,13 +4,13 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "site", "icon": "world", "title": "The framework's website", "code": "louis-agent.site",
+        { "id": "site", "icon": "world", "title": "louis-agent.dev", "code": "louis-agent.site",
           "look": "highlight",
-          "text": "What louis-agent is and what Louis sells, built on the framework's web as a customer's site is." }
+          "text": "What Louis sells, websites with agents, built on the framework's web as a customer's site is." }
       ] },
       { "cards": [
         { "id": "pages", "icon": "browser", "title": "The pages",
-          "text": "Offer first, the framework as the proof, every place on a page with its own address." },
+          "text": "Offer first, the demos to watch, every place on a page with its own address." },
         { "id": "guide", "icon": "message", "title": "The guide",
           "text": "The chat in the corner, answering from the docs and nothing else." },
         { "id": "showroom", "icon": "users", "title": "The showroom",

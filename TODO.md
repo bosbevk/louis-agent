@@ -20,10 +20,11 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (133)
+## Open (134)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
+| F164 | The framework's own site at framework.louis-agent.dev (Louis, 2026-11-17: "framework will also become a subdomain", "no we give him his own identity"): F164.1 done, the old pages thrown away and seven written new with doc links by path, on :5084; F164.2 done, its agent, the framework Orbi, docked beside the page, with a search and Ask on the header, the page and every code listing; F164.3 built, a second Azure app released on every merge, louis-agent.dev's menu and CV linking to it; left, after #403's merge, its DNS at Cloudflare, its certificate, the CV's saved copy and the live check | Now | [plan](src/docs/plans/F164-the-framework-site.md) |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next | — |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/louis-agent.stream-probe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next | — |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next | [plan](src/docs/plans/F151-themes-and-styles.md) |

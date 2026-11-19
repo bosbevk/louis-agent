@@ -6,14 +6,14 @@
 // now and then (the live rates are used whenever RATES_URL answers): costs are only converted for display, and the
 // usage ledger always keeps what was charged, in USD.
 {
-  "as_of": "2026-10-09",
+  "as_of": "2026-11-19",
   "base": "USD",
   "source": "frankfurter (ECB reference rates)",
   "rates": {
-    "AUD": 1.4324, "BRL": 5.005, "CAD": 1.4226, "CHF": 0.83107, "CNY": 6.6921, "CZK": 21.746,
-    "DKK": 6.6706, "EUR": 0.89238, "GBP": 0.75641, "HKD": 7.8476, "HUF": 325.79, "IDR": 17881,
-    "ILS": 3.0573, "INR": 96.73, "ISK": 122.08, "JPY": 158.25, "KRW": 1341.49, "MXN": 18.2001,
-    "MYR": 4.085, "NOK": 9.5623, "NZD": 1.7813, "PHP": 62.821, "PLN": 3.9117, "RON": 4.7658,
-    "SEK": 9.9656, "SGD": 1.2804, "THB": 33.53, "TRY": 49.173, "ZAR": 16.5331
+    "AUD": 1.49, "BRL": 5.892, "CAD": 1.43, "CHF": 0.84261, "CNY": 6.6667, "CZK": 22.223,
+    "DKK": 6.7997, "EUR": 0.90975, "GBP": 0.76038, "HKD": 7.8456, "HUF": 336.09, "IDR": 18261,
+    "ILS": 3.2887, "INR": 93.3, "ISK": 124.82, "JPY": 159.97, "KRW": 1328.45, "MXN": 18.9183,
+    "MYR": 4.1125, "NOK": 9.6866, "NZD": 1.8095, "PHP": 63.695, "PLN": 4.0184, "RON": 4.8647,
+    "SEK": 10.141, "SGD": 1.2897, "THB": 33.905, "TRY": 50.468, "ZAR": 17.2806
   }
 }

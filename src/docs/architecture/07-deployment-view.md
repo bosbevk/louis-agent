@@ -30,22 +30,22 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 The orchestrator demo (its own compose file, a demo service with ten bugs) was removed in CL10 and comes back with
 the rewritten benchmarks; `Dockerfile.orchestrator` still builds the orchestrator.
 
-## In Azure (F61.4)
+## In Azure
 
-Puls's `config/azure/main.bicep` is the record of what Azure holds for it, deployed by `deploy/azure/deploy.ps1 infra`;
-the app itself is a yaml the script's `release` deploys as a new revision. Live since 2026-11-07 on `mypuls.co.za`; the
-CL19 deploy (Puls reaching the PC's browser and Mongo through a Tailscale sidecar) and the F58 tunnel (a placeholder
-served from the PC) are gone. The diagrams are in [Puls's architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md). A release runs from GitHub too (`.github/workflows/deploy-puls.yml`, F109.5): after green CI on `main` or from a
-button, signed in by OpenID Connect ([ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md)).
+Two websites built on the framework run in Azure: louis-agent.dev, which sells websites with agents, and
+framework.louis-agent.dev, which teaches the framework. Each is one Azure Container App that sleeps when nobody
+visits. Puls isn't deployed since FX122: `mypuls.co.za` is a "coming soon" page on a free Static Web App.
+
+A merge to `main` releases both sites through `.github/workflows/deploy-puls.yml`, signed in by OpenID Connect with
+no password ([ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md)). It runs
+`demos/puls/deploy/azure/deploy.ps1 release` once per app, louis-agent.dev first, and each release builds the app's
+image in the registry and updates the app as its next revision. Each name points at its app by DNS-only records in
+Cloudflare, with a managed certificate.
 
 | Where | What runs | Reaches |
 |---|---|---|
-| `rg-puls-za`, `puls-env` (a Container Apps environment on `puls-vnet`) | `puls-app`: the Puls image, one container, behind its key and its sign-in | the VM on private IPs; Azure SQL over TLS; `puls-insights` through the environment's OpenTelemetry agent |
-| `rg-puls-za`, `puls-env`, the second app (F109.2, [ADR 0098](../adr/0098-the-demos-app-runs-beside-puls-split-later.md)) | `louis-agent-app`: the coding API serving the framework's site and the code-review chat, on `louis-agent.dev`, its own identity, share, keys and tenant; deployed by the same script with `-App` and by the same workflow | the same VM and SQL server as Puls |
-| `rg-puls-za`, the VM `puls-services` (Ubuntu, Docker, no public IP) | `mongo:9` on 27017, `headless-shell` on 9222, `searxng` on 8080, from `deploy/azure/vm/docker-compose.services.yml`; Mongo's files on an XFS data disk at `/data` | nothing: the security group lets only the apps' subnet in |
-| `rg-puls-za`, Azure SQL `puls-sql-za` | `puls_accounts`, the free offer, paused when idle | — |
+| `rg-puls-za`, `puls-env` | `louis-agent-app`: louis-agent.dev's host on the image `src/site/docker/Dockerfile` builds, the public Orbi on the docs, leads and site packs | the vault with `louis-agent-app-identity`; its logs in `logs/` and its saved CV in `data/` on `louis-agent-workspace`; the model; `puls-insights` through the environment's OpenTelemetry agent |
+| `rg-puls-za`, `puls-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; the model; `puls-insights` |
 
-The domain points at the environment's static IP with a Container Apps managed certificate, DNS-only in Cloudflare;
-the how-to is [Puls's deploy README](../../../demos/puls/deploy/azure/README.md). The framework's site is the louis-agent
-demo's web app's landing (F109.1), deployed as the second app above on `louis-agent.dev` (F109.2), with the guide in its
-corner (F109.3) and the whole architecture on its pages (F109.4, [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md)).
+The how-to is the [deploy README](../../../demos/puls/deploy/azure/README.md), and the pictures of what runs where, a
+release, a secret's path and a chat are in [the Azure architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md).

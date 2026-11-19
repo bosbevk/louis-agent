@@ -56,7 +56,7 @@ internal static class FlowDrawing
             geometry: geometry);
 
         // The flow is the body. Its key goes across the picture's width, under a rule the accent's edge fills.
-        return PictureBuilder.Titled(source.Title)
+        return PictureBuilder.Titled(source.Title, geometry)
             .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgeFade)
             .Body("flow", Flow(placed, geometry), placed.Width, placed.Height)

@@ -5,6 +5,7 @@ using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Overview;
 
@@ -58,5 +59,37 @@ public class CardsRendererTests
 
         Assert.That(page, Does.Contain("crd-headline").And.Contain("<radialGradient id=\"mrq-light\"").And
             .Contain("@scope"));
+    }
+
+    /// <summary>
+    /// A card may wear a tone of its own (F164.1, Louis: "give each one a color this color we can then reuse talking
+    /// about it"): a headline's badge, and a glass card's tint and icon, in that tone; a card that names none keeps
+    /// the picture's violet.
+    /// </summary>
+    [Test]
+    public void ACardsTone_ColoursItsBadgeTintAndIcon()
+    {
+        var teal = new DiagramSource(DiagramKind.Cards, "The web at a glance", Cards: new CardsSpec(
+            [
+                new CardRow([new Card("family", DiagramIcon.Browser, "The web", "src/web", "", CardLook.Highlight,
+                    DiagramTone.Teal)]),
+                new CardRow([new Card("one", DiagramIcon.Box, "One part", null, "What it does.", Tone: DiagramTone.Teal)]),
+                // No line reaches it, so it is a quiet card, and its icon still wears its tone.
+                new CardRow([new Card("two", DiagramIcon.Box, "Apart", null, "On its own.", Tone: DiagramTone.Red)])
+            ],
+            [new CardLink("family", "one")]));
+
+        string drawn = DiagramRenderers.Render(teal);
+        string plain = DiagramRenderers.Render(Overview);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(drawn, Does.Contain("class=\"crd-badge tone-teal\"").And.Contain("class=\"crd-tint tone-teal\"")
+                .And.Contain("class=\"crd-icon tone-teal\""));
+            Assert.That(drawn, Does.Contain(".crd-tint.tone-teal { fill: var(--teal-line); }"));
+            Assert.That(drawn, Does.Contain("class=\"crd-icon quiet tone-red\""), "a quiet card's icon in its tone");
+            Assert.That(plain, Does.Contain("class=\"crd-tint\"").And.Not.Contain("class=\"crd-tint tone-"),
+                "no tone, the violet");
+        });
     }
 }

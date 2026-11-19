@@ -1,44 +1,59 @@
-# Puls and the louis-agent app in Azure: the architecture
+# The framework's two sites in Azure: the architecture
 
-> **Explanation.** What runs where for `mypuls.co.za` and `louis-agent.dev`, how the parts reach each other, where a secret travels and
-> where a request goes, in diagrams. **Elsewhere:** the how-to in [README.md](README.md), the build's record in
-> `demos/puls/config/azure/main.bicep`, the why in [ADR 0095](../../../../src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md), the whole system's deployment view in
-> [07-deployment-view](../../../../src/docs/architecture/07-deployment-view.md). Live since 2026-11-07 (F61.4).
+> **Explanation.** What runs where for louis-agent.dev and framework.louis-agent.dev, how a release reaches them,
+> where a secret travels and where a visitor's chat goes, in pictures. **Elsewhere:** the how-to in
+> [README.md](README.md), the whole system's deployment view in
+> [07-deployment-view](../../../../src/docs/architecture/07-deployment-view.md), the why of a release from GitHub in
+> [ADR 0097](../../../../src/docs/adr/0097-puls-deploys-from-github-without-a-password.md).
+
+This page is for seeing the shape of it before you change it. It goes from what runs, to how a merge reaches it, to
+how a secret gets there, to what a visitor's chat passes through, and ends with what the network lets in.
 
 ## What runs where
 
-One resource group, `rg-puls-za` in South Africa North. The two apps are the only things with a public address
-(F109.2: the louis-agent demo's app beside Puls, split later, [ADR 0098](../../../../src/docs/adr/0098-the-demos-app-runs-beside-puls-split-later.md));
-the three services sit on a VM that nothing outside the network can reach; the accounts are on Azure SQL's free offer,
-one database, a tenant per app; every secret value is in the vault.
+Two apps run in one Container Apps environment, `puls-env`, in the resource group `rg-puls-za`. louis-agent.dev is
+`louis-agent-app`, and framework.louis-agent.dev is `louis-agent-framework-app`. They are the only things with a
+public address, and each sleeps at no replicas until someone visits.
 
-![Puls in Azure: what runs where](diagrams/ARCHITECTURE-what-runs-where.svg)
+They share what they can. One identity reads the vault for both, and one file share holds each app's logs in a
+folder of its own, so the framework's site added nothing to Azure but its app. Each app has its own image, built in
+the registry, and calls the model with the key both sites share. Their logs and traces go to the same
+Application Insights.
 
-## The build and the verbs
+![Two apps in one environment, each asleep until someone visits, sharing an identity that reads the vault and a share that holds each one's logs](diagrams/ARCHITECTURE-what-runs-where.svg)
 
-![Puls in Azure: the build and the verbs](diagrams/ARCHITECTURE-the-build-and-the-verbs.svg)
+## A release
+
+A merge to `main` signs in to Azure with no password and runs one job. It releases louis-agent.dev first, then the
+framework's site, so a failure in the second never holds back the site that sells. Each release makes the folders
+its app names on the share, which only the framework's does, builds the image and updates the app as its next
+revision.
+
+![A merge signs in by OpenID Connect and releases louis-agent.dev, then the framework's site: its folders, its image, its next revision](diagrams/ARCHITECTURE-a-release.svg)
 
 ## A secret's path
 
-No value is ever in a file under git or on the app: it goes from the git-ignored config files into the vault, and
-the app's secrets are references the identity resolves.
+No value is ever in a file under git or on an app. It goes from a git-ignored file on the PC into the vault, and the
+release writes only references to it, which the app resolves with the shared identity.
 
-![A secret's path: from the git-ignored files through the deploy script into the vault, and back to the app by reference](diagrams/ARCHITECTURE-a-secret-s-path.svg)
+![A secret's path: from the app's own secrets file through the deploy script into the vault, and back to the app by reference](diagrams/ARCHITECTURE-a-secret-s-path.svg)
 
 ## A chat, from the domain to the model
 
-![A chat from the domain to the model: DNS points at the app, the app signs the person in, and it reaches the services and the model behind it](diagrams/ARCHITECTURE-a-chat-from-the-domain-to-the-model.svg)
+Cloudflare points each name at its app, as DNS-only records. The app wakes if nobody was on it, serves the page drawn
+as HTML, and lets the visitor talk to its Orbi through the open door, with no key, within the cap of 20 sessions a day
+from one address. The answer streams back from the model.
+
+![A chat from the domain to the model: DNS points at the app, the app wakes and serves the page, the open door lets the visitor in, and the answer streams back](diagrams/ARCHITECTURE-a-chat-from-the-domain-to-the-model.svg)
 
 ## What the network lets through
 
 | From | To | Port | Allowed by |
 |---|---|---|---|
-| The internet | `puls-app`, `louis-agent-app` | 443 | the environment's ingress, with each app's managed certificates |
-| The internet | the VM | any | nothing: no public IP, and the NSG denies all inbound but the rule below |
-| The apps' subnet (both apps) | the VM | 27017, 9222, 8080 | the NSG rule `apps-to-services` |
-| Louis's IPv4 | the VM | 22 | only while `infra -Ip` set it; `infra` without `-Ip` removes it |
-| `puls-app`, `louis-agent-app` | Azure SQL | 1433 | the server's "Allow Azure services" rule, TLS 1.2 |
-| Louis's IPv4 | Azure SQL | 1433 | the server's rule `home`, from `deploy.ps1 sql-access` |
+| The internet | `louis-agent-app`, `louis-agent-framework-app` | 443 | The environment's ingress, with each app's managed certificate; each yaml sets `allowInsecure: false` |
+
+Nothing else in the resource group has a public address. What the environment lets out is Azure's default for it;
+no rule of ours narrows it.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [README](README.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md)

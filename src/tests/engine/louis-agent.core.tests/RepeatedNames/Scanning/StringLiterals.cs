@@ -57,12 +57,16 @@ public static class StringLiterals
                 int j = i + 1;
                 while (j < n && text[j] != '"') j += text[j] == '\\' ? 2 : 1;
                 found.Add(new Literal(text[(i + 1)..Math.Min(j, n)], line, i - text.LastIndexOf('\n', i) - 1, i));
+                // A string in a razor page's markup may run over lines: they still count.
+                line += Lines(text, i, j + 1);
                 i = j + 1;
             }
             else if (c == '\'')
             {
+                // In C# a character; in a razor page's words an apostrophe, whose next may be lines away: they count.
                 int j = i + 1;
                 while (j < n && text[j] != '\'') j += text[j] == '\\' ? 2 : 1;
+                line += Lines(text, i, j + 1);
                 i = j + 1;
             }
             else i++;

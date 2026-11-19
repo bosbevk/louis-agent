@@ -1,4 +1,6 @@
 using LouisAgent.Web.Components.Site.Addresses;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Tests.Components.Site.Addresses;
 
@@ -60,4 +62,34 @@ public class SiteAddressesTests
     [TestCase("/proof/Rand Two")]
     public void AnAddressOfNoPage_IsNone(string address) =>
         Assert.That(Site.Read(address), Is.Null);
+
+    /// <summary>A page anyone may open.</summary>
+    [Route("/addresses-open")]
+    private sealed class OpenPage : ComponentBase;
+
+    /// <summary>A page only someone signed in may open.</summary>
+    [Route("/addresses-signed-in")]
+    [Authorize]
+    private sealed class SignedInPage : ComponentBase;
+
+    /// <summary>A page of the admin, behind the admin's key.</summary>
+    [Route("/admin/addresses-secret")]
+    private sealed class AdminPage : ComponentBase;
+
+    /// <summary>
+    /// Only a page anyone may open has places, by the rule the host draws pages for a search engine by: a page behind
+    /// a sign-in or the admin's key has none, so a place's address can never draw it around the router's own check.
+    /// </summary>
+    [Test]
+    public void OnlyAnOpenPage_HasPlaces()
+    {
+        var pages = SiteAddresses.From("home", typeof(SiteAddressesTests).Assembly).Pages;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(pages, Does.Contain("/addresses-open"));
+            Assert.That(pages, Does.Not.Contain("/addresses-signed-in"), "behind a sign-in");
+            Assert.That(pages, Does.Not.Contain("/admin/addresses-secret"), "behind the admin's key");
+        });
+    }
 }

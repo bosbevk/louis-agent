@@ -1,0 +1,62 @@
+@use "web/tools/surface";
+
+/* The docs layout's own rules (F164.1): the columns, their widths and where they stand at each screen are Bootstrap's
+   grid, in the markup (ADR 0085, "always reuse"). What is left is ours: the menu and "On this page" stay in view
+   under the header, the theme's line parts the menu from the page, the page fills its column with as much room on
+   its right as on its left, and "On this page" has its small name. */
+.site-docs { flex: 1; }
+
+.site-docs-menu,
+.site-docs-sections {
+    padding-top: 28px;
+    padding-bottom: 40px;
+}
+
+@media (min-width: 992px) {
+    .site-docs-menu {
+        position: sticky;
+        top: var(--site-header-room, 72px);
+        align-self: flex-start;
+        @include surface.rule(right);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .site-docs-menu { @include surface.rule(bottom); padding-top: 12px; padding-bottom: 12px; }
+}
+
+/* Held in view under the header, and above it in the page's layers (the header is 30), since a sticky column is a
+   layer of its own: what stands beside the page, a chat sliding in from the side, then shows over the header. */
+.site-docs-beside {
+    position: sticky;
+    top: var(--site-header-room, 72px);
+    align-self: flex-start;
+    z-index: 35;
+}
+
+/* An open chat beside the page has the column in place of "On this page" (F164.2, Louis's pick C), and closed it
+   gives the column back: the chat says it is open, so no state passes between the two. Bootstrap's own display class
+   on the sections is the one this must beat, hence its weight. */
+.site-docs-beside:has(.chat-widget.is-open) .site-docs-sections { display: none !important; }
+
+/* The page fills its column, a picture or the code as wide as the column (Louis: "can't we use the same margin right
+   as we use left?", "image not 100%"); a summary keeps its own reading width. */
+.site-docs ::deep .site-main {
+    max-width: none;
+    margin: 0;
+    padding: 0 24px 80px;
+}
+
+.site-docs ::deep .site-main .band { max-width: none; }
+
+.site-docs-sections-label {
+    display: block;
+    margin-bottom: 10px;
+    font: 600 11px/1.2 var(--bs-font-monospace);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--bs-tertiary-color);
+}
+
+/* A page of one section has nothing to choose between, so the index draws nothing and its name goes with it. */
+.site-docs-sections:not(:has(.site-index)) .site-docs-sections-label { display: none; }

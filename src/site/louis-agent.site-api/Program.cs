@@ -31,7 +31,7 @@ var resumes = ResumeStore.FromEnvironment();
 
 app.MapStaticAssets();
 app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly,
-    services => SitePageServices.Register(services, resumes), home: SitePageServices.Home);
+    services => SitePageServices.Register(services, resumes), home: LouisAgent.Site.LouisAgentDevAreas.Home);
 
 app.MapLouisAgentApi(host);
 

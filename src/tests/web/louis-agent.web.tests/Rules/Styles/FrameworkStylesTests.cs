@@ -68,7 +68,7 @@ public partial class FrameworkStylesTests
     [TestCase("@keyframes widget-pulse {\n    0%, 100% { opacity: 0; }\n    50% { opacity: 1; }\n}")]
     [TestCase(".site-nav {\n    margin-left: auto;")]
     [TestCase("@include surface.beacon();\n    @include surface.press();")]
-    [TestCase("position: fixed;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
+    [TestCase("position: fixed;\n        top: auto;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
               "        width: 100vw;\n        height: 50dvh;")]
     [TestCase(".site-corner { position: fixed; right: 24px; bottom: 72px;")]
     [TestCase(".markdown p { margin: 0 0 10px; }")]

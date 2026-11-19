@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "site-framework": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://127.0.0.1:5085",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "LOG_DIRECTORY": "../logs",
+        "CONFIG_DIRECTORY": "../config",
+        "PRICES_FILE": "../config/prices.json",
+        "RATES_FILE": "../config/rates.json",
+        "DOCS_ROOT": "../../..",
+        "OPEN_IDENTITIES": "louis-agent-framework",
+        "OPEN_SESSIONS_PER_DAY": "20"
+      }
+    }
+  }
+}

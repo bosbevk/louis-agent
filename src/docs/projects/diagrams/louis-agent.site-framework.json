@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.site-framework at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "site", "icon": "browser", "title": "The framework's own site", "code": "louis-agent.site-framework",
+          "look": "highlight",
+          "text": "framework.louis-agent.dev: the framework's pages, built on its web like any site." }
+      ] },
+      { "cards": [
+        { "id": "areas", "icon": "settings", "title": "What it is made of",
+          "text": "Flat, the framework's pages, the docs on GitHub and every place's address." },
+        { "id": "layout", "icon": "stack", "title": "Its frame",
+          "text": "The docs layout: the menu, the page, the search, and Orbi docked on the right." },
+        { "id": "agent", "icon": "chip", "title": "Its agent",
+          "text": "The framework Orbi, answering from the docs on the docs and site packs." },
+        { "id": "host", "icon": "server", "title": "Its host",
+          "text": "Runs Orbi, answers the search, and draws each page as HTML, on :5084." }
+      ] }
+    ],
+    "links": [
+      { "from": "site", "to": "areas" },
+      { "from": "site", "to": "layout" },
+      { "from": "site", "to": "agent" },
+      { "from": "site", "to": "host" }
+    ]
+  }
+}

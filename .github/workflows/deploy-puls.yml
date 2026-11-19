@@ -1,7 +1,7 @@
-# Deploys the louis-agent demo's app to Azure (F109.5, F109.2): the same `deploy.ps1 release` Louis runs on his PC,
-# from GitHub, so a merge reaches louis-agent.dev without anyone's machine. By itself on the merge (the push to main;
-# CI ran on the pull request, FX93), and any time from the Actions tab's "Run workflow" button. Since FX122 it is the
-# only app: Puls is not deployed. The how-to, Louis's one-time Azure setup and the roll-back are in
+# Deploys the framework's two sites to Azure (F109.5, F109.2, F164.3): the same `deploy.ps1 release` Louis runs on his
+# PC, from GitHub, so a merge reaches louis-agent.dev and framework.louis-agent.dev without anyone's machine. By itself
+# on the merge (the push to main; CI ran on the pull request, FX93), and any time from the Actions tab's "Run workflow"
+# button. Puls is not deployed since FX122. The how-to, Louis's one-time Azure setup and the roll-back are in
 # demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
 name: Deploy the apps
 
@@ -57,6 +57,11 @@ jobs:
         shell: pwsh
         run: ./demos/puls/deploy/azure/deploy.ps1 release -App louis-agent-app
 
+      # The framework's own site (F164.3), after louis-agent.dev: a failure here leaves the site that sells released.
+      - name: Release the framework's app
+        shell: pwsh
+        run: ./demos/puls/deploy/azure/deploy.ps1 release -App louis-agent-framework-app
+
       - name: Summary
         if: always()
         run: |
@@ -66,5 +71,9 @@ jobs:
             echo "Running revisions of louis-agent-app:"
             echo '```'
             az containerapp revision list -n louis-agent-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
+            echo '```'
+            echo "Running revisions of louis-agent-framework-app:"
+            echo '```'
+            az containerapp revision list -n louis-agent-framework-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

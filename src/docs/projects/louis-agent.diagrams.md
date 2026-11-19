@@ -2,8 +2,8 @@
 
 > **Kind:** library (two class libraries, `net10.0`, plain C#) · **Paths:** `src/web/louis-agent.diagrams/`, what a
 > diagram is, and `src/web/louis-agent.diagrams.engine/`, what builds one · **References:** the first references
-> louis-agent.choices, the second the first · **Used by:** louis-agent.web (the site's `GraphView`, and the
-> chat's `DrawnCard`), and `src/tools/louis-agent.doc-diagrams`, the tool that draws the docs' pictures ·
+> louis-agent.choices, the second the first · **Used by:** louis-agent.web (the site's `GraphView`, a page's
+> `DiagramFigure` and the chat's `DrawnCard`), the framework's pages' pictures, and `src/tools/louis-agent.doc-diagrams`, the tool that draws the docs' pictures ·
 > **How-to:** [Draw a diagram](../guides/draw-a-diagram.md)
 
 ![Diagrams from data, and their parts: a diagram as JSON, two layouts, one SVG with two looks, the icons and the docs' tool](diagrams/louis-agent.diagrams.svg)
@@ -340,6 +340,12 @@ serve both directions.
 box may list members under a divider in the code font, as a class's box does. It is then as wide as its longest
 member, and a member wraps at 60 characters.
 
+**Room between rows, and a straight way back.** A flow may ask for more room between the boxes stacked in a column,
+with its `RowGap`, when its rows carry words between them; with none it keeps the usual room. And an arrow back to
+the column right beside its source, on the same row and with no word, runs straight across between the two boxes,
+since nothing stands between them (`Flow/Routing/BesideArrows`). Every other arrow back takes its lane under the
+drawing.
+
 The site's `GraphView` animates the same placed graph, laid out as a flow in the docs is, in the site's own
 look.
 
@@ -526,7 +532,8 @@ a pin its box can't reach, and a neighbour beside a box the picture doesn't have
 
 **The layout walks the tree once** (`Nested/NestedLayout`). The boxes are a tree, the Composite pattern's. A box
 is as wide as its own words and the boxes it holds need, and the boxes it holds stretch to its inner width,
-stacked in the JSON's order. Every number of the layout is in `NestedSizes`. `NeighbourLayout` puts each
+stacked in the JSON's order. A box may ask for its boxes in `Columns`, side by side in rows read left to right; with
+none named it is one column, and it never stands in more columns than it holds boxes, so no column is empty. Every number of the layout is in `NestedSizes`. `NeighbourLayout` puts each
 neighbour level with its box, or under the neighbour above it when that place is taken, so every line to a
 neighbour runs straight across and none is routed.
 
@@ -622,6 +629,22 @@ well, `--ticket-accent` for the kicker, the icons, the accent and the light, and
 
 ### 3. What every kind shares
 
+**A header and a footer, with the brand** (`Svg/Renderers/Parts/PictureBuilder`, `PictureBrand`). Every picture the
+builder puts together, all the kinds but the ticket, has a header and a footer. The header holds the picture's title
+and, at its right, its type, over a hairline. The footer, under a hairline, holds the key at its left and the
+louis-agent brand at its right: the site's wordmark, "l", the violet mark standing in for its "o", then "uis-agent",
+on the line the key's heading stands on. The header's words and the brand stand a little in from the picture's sides.
+The wordmark is one line of text with the mark as a disc character in it, so the browser sets the letters and the
+mark together and the engine measures no font. The ticket is a card in the chat, not a picture, so it carries no
+brand.
+
+**Fonts** (`Svg/Theme/Looks/PictureFonts`). Every picture is written in the site's fonts. On a page it reads the
+page's `--bs-font-sans-serif` and `--bs-font-monospace`, so a picture's words and the site's are one font. As a file
+it falls back to the framework's defaults, Geist and Geist Mono. The framework's lists are named once there, and a
+test holds them equal to the ones the framework's web sets.
+
+*Decided in:* F164.1.
+
 **Tones** (`Tones/`). A box may carry an icon and a `DiagramTone`, so a colour means the same in every chart. Blue
 starts it. Green is this project. Violet is the framework. Teal is contracts and state. Amber is files and data.
 Red is outside the process. A box's arrows and their word chips take its tone.
@@ -692,7 +715,16 @@ wraps each style in `@scope`, with the root named `:scope`, since a bare `svg` i
 it and would miss the root. It drops an arrowhead that nothing uses, so two cards on one page hold no id twice. And
 it trims the empty ground round the drawing.
 
-*Decided in:* F127.4.1.
+**A page's copy wears the page's theme too** (`Svg/Theme/Pages/PagePalettes`). Our pages say their theme on their
+`<html>`, `data-theme="flat"` or `"glass"`, beside their style. The page's copy carries a palette for each theme,
+light and dark: on a flat page flat's own, solid grey panels with flat's firmer line, and on a glass page the
+engine's own palette, made for that look. On a page the picture's own background is transparent in every theme, and
+only the cards are filled, so every card can be seen. Each rule names the theme and the style together, so it wins
+over the style alone. `PageScheme` names the theme's attribute and its two words, as it names the style's. These
+rules are only in a page's copy, so a picture as a file, in the docs, stays byte for byte as it was. The web's
+`DiagramFigure` is what draws such a copy on a page ([louis-agent.web](louis-agent.web.md)).
+
+*Decided in:* F127.4.1, F164.1.
 
 ### 5. The types, in two pictures
 

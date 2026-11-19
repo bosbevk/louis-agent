@@ -44,6 +44,7 @@ logs/
 # Secrets and local configuration, in any demo's config/ (see its .env.secrets.example)
 **/config/.env
 **/config/.env.secrets
+**/config/.env.secrets.framework
 **/config/.env.mongo
 **/config/.env.sql
 **/config/.env.searxng
@@ -62,6 +63,7 @@ demos/puls/web/louis-agent.puls/wwwroot/css/
 demos/louis-agent/web/louis-agent.code-review/wwwroot/css/*.css
 demos/starter/web/louis-agent.starter/wwwroot/css/
 src/site/louis-agent.site/wwwroot/css/
+src/site/louis-agent.site-framework/wwwroot/css/
 # What the build makes from a component's own X.razor.scss, beside it (CL58); Blazor bundles it from there
 **/*.razor.css
 demos/.spawn-*/

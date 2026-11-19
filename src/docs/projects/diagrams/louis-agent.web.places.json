@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.web.places at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "places", "icon": "branch", "title": "Every place's own address", "code": "louis-agent.web.places",
+          "look": "highlight",
+          "text": "A section, a card or a page of a section, opened from its address." }
+      ] },
+      { "cards": [
+        { "id": "area", "icon": "settings", "title": "The area",
+          "text": "Places(home, site) reads the addresses from every page the site draws." },
+        { "id": "catchall", "icon": "browser", "title": "The catch-all",
+          "text": "The router's last resort draws the page an address names." },
+        { "id": "layout", "icon": "stack", "title": "The page's own frame",
+          "text": "A place opened afresh is drawn in its page's layout." }
+      ] }
+    ],
+    "links": [
+      { "from": "places", "to": "area" },
+      { "from": "places", "to": "catchall" },
+      { "from": "places", "to": "layout" }
+    ]
+  }
+}

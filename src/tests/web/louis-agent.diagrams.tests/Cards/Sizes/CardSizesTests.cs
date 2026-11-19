@@ -39,6 +39,22 @@ public class CardSizesTests
         });
     }
 
+    /// <summary>
+    /// A headline with no text is its badge, its title and its pill only, with no room kept for a line, so the page
+    /// around the picture says what it is (Louis: "leave these text out of these graphs, website will drive it").
+    /// </summary>
+    [Test]
+    public void AHeadlineWithNoText_KeepsNoRoomForIt()
+    {
+        var size = CardSizes.Of(Card(CardLook.Highlight, code: "louis-agent.web", text: ""), 896, quiet: false);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(size.TextLines, Is.Empty);
+            Assert.That(size.Height, Is.EqualTo(170 - CardSizes.HighlightText));
+        });
+    }
+
     /// <summary>A heading is a quieter headline, and lower: 92 with one line of text.</summary>
     [Test]
     public void AHeading_IsALowerHeadline() =>

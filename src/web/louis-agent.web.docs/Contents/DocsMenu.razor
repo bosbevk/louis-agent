@@ -1,0 +1,13 @@
+@* The docs layout's left column: the site's pages under their groups, in reading order, the one being read marked. *@
+<nav class="docs-menu" aria-label="Pages">
+    @foreach (var group in Contents.Groups)
+    {
+        <div class="docs-menu-group">
+            <span class="docs-menu-label">@group.Label</span>
+            @foreach (var entry in group.Entries)
+            {
+                <a href="@entry.Address" aria-current="@CurrentOf(entry)">@entry.Title</a>
+            }
+        </div>
+    }
+</nav>

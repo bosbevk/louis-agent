@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Site.Places;
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Core.Hosting;
@@ -24,11 +25,14 @@ public static class SitePages
     public static WebApplication MapLouisAgentSite(this WebApplication app, Assembly site,
         Action<IServiceCollection> services, Uri? publicUrl = null, string? home = null)
     {
-        var routes = SiteRoutes.Of(site, home);
+        var routes = SiteRoutes.Of(site, services, home);
         var prerenderer = new PagePrerenderer(services);
         var handler = new SitePageHandler(routes, prerenderer, publicUrl, app.Environment);
-        // The site's places, for the agent's tools to find (F127.7), when this host runs agents.
-        app.Services.GetService<AgentEngineFactory>()?.Context.Places.Serve(new SitePlaces(routes, prerenderer));
+        // The site's places, for the agent's tools to find (F127.7), when this host runs agents, and for its search
+        // (F164.2), on one index rendered once.
+        var places = new SitePlaces(routes, prerenderer);
+        app.Services.GetService<AgentEngineFactory>()?.Context.Places.Serve(places);
+        SitePlaceSearch.Map(app.MapHostGroup(), places);
         app.MapFallback(handler.HandleAsync);
         return app;
     }

@@ -1560,6 +1560,40 @@ The step also brought a naming rule, ADR 0126. The first name was `PacedStream.O
 repo means a record built from another type, which this wasn't. It became `turn.Paced(clock)`, a stream operator as
 LINQ names them, and the rule now says which word a method takes by what it does.
 
+## A second app is a row in a table (F164.3, 2026-11-19)
+
+framework.louis-agent.dev goes live beside louis-agent.dev as a second Azure Container App. The lesson is how little
+that took, because the deploy script was already shaped for it. `deploy.ps1` keeps a table of apps, and each entry
+holds everything one release needs: the image, the yaml, the secrets file, the identity, the share, the hostname, the
+suffix on its own vault secrets. The framework's site was one more entry, a yaml that differs from louis-agent.dev's
+only where it means to, and a second step in the workflow. Comparing the two yamls with their comments taken out
+showed exactly those lines and no others, which is a better check than reading a new file on its own.
+
+Nothing new was made in Azure but the app. It shares louis-agent.dev's identity and file share, each app's logs in a
+folder of their own, after Microsoft's own pages said a user-assigned identity "can be used by multiple resources" and
+several apps may mount one share. A second identity would have guarded against something neither app does, and
+making it would have meant running a Bicep build that FX122 rules out.
+
+Two faults were found before they could happen. The `domain` verb took any name but `www.` for an apex, so it would
+have told Louis to point framework.louis-agent.dev's apex record, `@`, at the new app, which is louis-agent.dev's own
+name. It now counts the name's parts. And the secrets file the framework's keys go in was not git-ignored: the old
+rule named `.env.secrets` exactly, so `.env.secrets.framework` would have been committed. A test now holds the line.
+
+One unknown was designed around rather than guessed at. Whether Container Apps mounts a share folder that doesn't
+exist yet could not be confirmed, so a release now makes the folders an app names, with `az storage directory
+create`, which leaves a folder there already alone. louis-agent.dev names none, so its release never reads the storage
+key and stays as it was.
+
+What didn't go well: the Azure docs had described the setup before FX122 for ten days, a VM and a database as
+running, and a workflow that "tried each release even when the other failed", which GitHub doesn't do. They were
+rewritten whole here, at Louis's pick, and their pictures redrawn. A doc that a deploy depends on goes stale exactly
+when a fix is rushed, and FX122 was rushed: the next deploy fix should touch its docs in the same change.
+
+Nothing was measured in money in this child's steps: the live release and its first paid answer come after the merge.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a second deploy target is data in a table, checked against
+the first by a diff, with an idempotent step for the one thing that couldn't be confirmed.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
