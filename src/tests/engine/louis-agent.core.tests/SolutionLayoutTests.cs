@@ -138,7 +138,7 @@ public class SolutionLayoutTests
     /// <summary>A demo carries its own settings and images, so someone can read it as one whole project.</summary>
     [TestCase("demos/puls", "config/.env.example", "config/prices.json", "config/rates.json",
         "docker/docker-compose.puls.yml", "docker/images/Dockerfile.puls", "docker/searxng/settings.yml",
-        "skills/README.md", "deploy/README.md", "deploy/azure/deploy.ps1", "docs/SETUP.md", "docs/README.md")]
+        "skills/README.md", "deploy/README.md", "docs/SETUP.md", "docs/README.md")]
     [TestCase("demos/louis-agent", "config/.env.example", "config/prices.json", "config/rates.json",
         "docker/docker-compose.yml", "docker/images/Dockerfile.api", "docker/images/ollama/Dockerfile.ollama",
         "skills/README.md", "docs/SETUP.md", "docs/README.md")]

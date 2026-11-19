@@ -55,12 +55,12 @@ jobs:
       # The image builds in the registry (az acr build), so the runner needs no Docker; each revision is the next one.
       - name: Release the louis-agent app
         shell: pwsh
-        run: ./demos/puls/deploy/azure/deploy.ps1 release -App louis-agent-app
+        run: ./src/site/deploy/azure/deploy.ps1 release -App louis-agent-app
 
       # The framework's own site (F164.3), after louis-agent.dev: a failure here leaves the site that sells released.
       - name: Release the framework's app
         shell: pwsh
-        run: ./demos/puls/deploy/azure/deploy.ps1 release -App louis-agent-framework-app
+        run: ./src/site/deploy/azure/deploy.ps1 release -App louis-agent-framework-app
 
       - name: Summary
         if: always()

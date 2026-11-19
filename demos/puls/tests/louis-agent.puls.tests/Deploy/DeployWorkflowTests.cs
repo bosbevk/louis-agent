@@ -26,7 +26,7 @@ public class DeployWorkflowTests
         Assert.That(Trimmed(), Has.None.Contains("client-secret").And.None.StartsWith("creds:"));
     }
 
-    /// <summary>The one verb the deploy identity is for; infra, vm, secrets and domain stay on Louis's PC.</summary>
+    /// <summary>The one verb the deploy identity is for; secrets and domain stay on Louis's PC.</summary>
     [Test]
     public void TheWorkflow_RunsReleaseOnly()
     {
@@ -34,6 +34,21 @@ public class DeployWorkflowTests
 
         Assert.That(calls, Is.Not.Empty);
         Assert.That(calls, Is.All.Contains("deploy.ps1 release"));
+    }
+
+    /// <summary>
+    /// Each release runs the script where it stands, beside the sites' yaml (F166.1): a path left behind would fail
+    /// only on the next merge.
+    /// </summary>
+    [Test]
+    public void TheWorkflow_RunsTheScriptBesideTheSites()
+    {
+        var calls = Trimmed().Where(line => line.StartsWith("run:", StringComparison.Ordinal) &&
+                                            line.Contains("deploy.ps1", StringComparison.Ordinal)).ToList();
+
+        Assert.That(calls, Is.Not.Empty);
+        Assert.That(calls, Is.All.StartWith("run: ./src/site/deploy/azure/deploy.ps1 "));
+        Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure/deploy.ps1")), Is.True);
     }
 
     /// <summary>

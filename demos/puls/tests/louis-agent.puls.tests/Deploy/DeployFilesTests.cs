@@ -45,9 +45,9 @@ public class DeployFilesTests
     public void TheBuild_GivesTheSecondApp_ItsOwnIdentityAndShare(string line) =>
         Assert.That(Build, Has.Some.Contains(line));
 
-    /// <summary>The deploy script, one for both apps: every verb takes -App.</summary>
+    /// <summary>The deploy script, one for both apps, beside their yaml (F166.1): every verb takes -App.</summary>
     private static readonly string Script = File.ReadAllText(
-        Path.Combine(TestPaths.RepoRoot, "demos/puls/deploy/azure/deploy.ps1"));
+        Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure/deploy.ps1"));
 
     /// <summary>The framework's site's yaml (F124: it moved to src/site with the site), with what's its own.</summary>
     private static readonly string[] CodingApp = File.ReadAllLines(
@@ -63,6 +63,16 @@ public class DeployFilesTests
     [TestCase("Yaml = 'src\\site\\deploy\\azure\\louis-agent-app.yaml'")]
     [TestCase("louis-agent.dev")]
     public void TheScript_KnowsBothApps(string text) => Assert.That(Script, Does.Contain(text));
+
+    /// <summary>
+    /// The script offers only what releases the two sites (F166.1, Louis's pick A of three): the old Bicep build's
+    /// infra, vm and sql-access, which would make the VM, Mongo and SQL again, are gone with Puls.
+    /// </summary>
+    [Test]
+    public void TheScript_OffersOnlyTheSitesVerbs() =>
+        Assert.That(Script,
+            Does.Contain("[ValidateSet('build', 'workspace', 'secrets', 'update', 'release', 'domain', 'logs')]")
+                .And.Not.Contain("'infra' {").And.Not.Contain("'vm' {").And.Not.Contain("'sql-access' {"));
 
     /// <summary>
     /// The framework's site's entry in the script's table of apps (F164.3), from its own line to the brace that closes
@@ -185,7 +195,9 @@ public class DeployFilesTests
     public void TheSecondAppsYaml_NamesWhatIsItsOwn(string line) =>
         Assert.That(CodingApp.Select(l => l.Trim()), Does.Contain(line));
 
-    /// <summary>The framework's site's yaml (F164.3), each line trimmed; it fails plainly while there is none.</summary>
+    /// <summary>
+    /// The framework's site's yaml (F164.3), each line trimmed; it fails plainly while there is none.
+    /// </summary>
     private static List<string> FrameworkApp()
     {
         string path = Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure/louis-agent-framework-app.yaml");

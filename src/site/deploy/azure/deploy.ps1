@@ -1,19 +1,13 @@
 <#
 .SYNOPSIS
 Deploys the framework's two sites to Azure (rg-puls-za): their revisions, as verbs that are each a few az commands
-with the names filled in (CL19, F61.4). Since FX122 (Louis's option A, 2026-11-09) Puls's app is gone, and
-louis-agent.dev runs, sleeping when unused, with no VM and no database; since F164.3 the framework's own site,
-framework.louis-agent.dev, runs beside it the same way. infra, vm and sql-access are the old Bicep
-build's (the VM, Mongo and SQL that A removed): don't run them, they would create those again.
+with the names filled in (CL19, F61.4). louis-agent.dev runs, sleeping when unused, with no VM and no database
+(FX122); since F164.3 the framework's own site, framework.louis-agent.dev, runs beside it the same way. The old
+Bicep build's verbs (infra, vm, sql-access) left with Puls (F166.1): the environment, the identity and the vault
+they made are read back from that deployment's recorded outputs.
 
 .DESCRIPTION
-  deploy.ps1 infra   [-WhatIf] [-Ip 1.2.3.4]     deploys demos/puls/config/azure/main.bicep: the network, the VM, the environment,
-                                                  Application Insights, the SQL server and database, the app's identity on the
-                                                  vault; creates what is missing, updates what exists. -WhatIf prints Azure's
-                                                  own what-if and writes nothing. -Ip opens SSH to the VM from that one address.
-  deploy.ps1 vm                                   copies the VM's compose, SearXNG's settings and the Mongo and SearXNG env
-                                                  files to the VM through run-command, and restarts its services
-  deploy.ps1 build   [-App ...] [-Tag 2026-11-08-1200]   builds the app's image (louis-agent-puls, louis-agent-coding) in the registry
+  deploy.ps1 build   [-App ...] [-Tag 2026-11-08-1200]   builds the app's image (louis-agent-site, louis-agent-site-framework) in the registry
   deploy.ps1 workspace [-App ...]                 copies config/prices.json and rates.json from the app's config into its share
   deploy.ps1 secrets [-App ...]                   puts the app's secrets in the vault puls-keys, from its config/.env.secrets;
                                                   never printed, a missing value skipped by name
@@ -22,20 +16,17 @@ build's (the VM, Mongo and SQL that A removed): don't run them, they would creat
   deploy.ps1 release [-App ...] [-Tag ...]        build, then update as the next revision after the one Azure runs
   deploy.ps1 domain  [-App ...] [-Hostname ...]   prints the DNS records Cloudflare needs, then adds the hostname (the app's
                                                   apex by default) with a managed certificate once they resolve
-  deploy.ps1 sql-access [-Ip 1.2.3.4]             lets this PC's public IPv4 (or -Ip) through the SQL server's firewall, for
-                                                  SQL Server Management Studio
   deploy.ps1 logs    [-App ...] [-Follow]
-The how-to, and what each piece is, is README.md beside this file. Run `az login` first; `az bicep install` once.
+The how-to, and what each piece is, is demos/puls/deploy/azure/README.md. Run `az login` first.
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('infra', 'vm', 'build', 'workspace', 'secrets', 'update', 'release', 'domain', 'sql-access', 'logs')]
+    [ValidateSet('build', 'workspace', 'secrets', 'update', 'release', 'domain', 'logs')]
     [string]$Verb,
     # Which app a verb works on: louis-agent.dev's, or the framework's site's (F164.3).
     [ValidateSet('louis-agent-app', 'louis-agent-framework-app')]
     [string]$App = 'louis-agent-app',
-    [string]$Ip,
     # build and release make one from the date and time when none is given, so two releases on one day keep both images
     # and either can be rolled back to; update needs the tag of an image already built (review, 2026-10-24).
     [string]$Tag,
@@ -48,14 +39,9 @@ if (-not $Tag -and $Verb -in @('build', 'release')) { $Tag = Get-Date -Format 'y
 $ResourceGroup = 'rg-puls-za'
 $Registry = 'acrpulsza'
 $Environment = 'puls-env'
-$Vm = 'puls-services'
 $Vault = 'puls-keys'
 $Deployment = 'puls-build'
 $Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
-$Here = $PSScriptRoot
-$Config = Join-Path $Repo 'demos\puls\config'
-$Bicep = Join-Path $Config 'azure\main.bicep'
-$BicepParams = Join-Path $Config 'azure\main.bicepparam'
 $Providers = @('google', 'microsoft', 'linkedin')
 # What is each app's: its image and Dockerfile, its config folder and the secrets file in it, its yaml, the Bicep
 # output that names its identity, its share and the folders a release makes on it (F164.3), its domain, the suffix on
@@ -115,42 +101,10 @@ function Read-Az {
 }
 
 function Get-Output([string]$Name) {
-    # One output of the last Bicep deployment: the VM's address, the environment's id, the SQL server's name, the identity.
+    # One output Azure recorded for the old Bicep deployment: the environment's id and address, the vault, the identity.
     $value = Read-Az deployment group show -n $Deployment -g $ResourceGroup --query "properties.outputs.$Name.value" -o tsv
-    if ($LASTEXITCODE -ne 0 -or -not $value) { throw "The deployment $Deployment has no output $Name yet: run deploy.ps1 infra first." }
+    if ($LASTEXITCODE -ne 0 -or -not $value) { throw "Azure has no output $Name recorded for the deployment $Deployment in $ResourceGroup." }
     return $value
-}
-
-function Set-BuildParameters {
-    # The two values the parameters file reads from the environment, so neither is ever on a command line or in a file
-    # under git: the SQL admin password from config/.env.sql, the SSH public key from the PC's own key.
-    $password = Get-EnvValue (Join-Path $Config '.env.sql') 'MSSQL_SA_PASSWORD'
-    if (-not $password) { throw 'MSSQL_SA_PASSWORD is missing in demos/puls/config/.env.sql (copy .env.sql.example); it is the SQL server''s admin password too.' }
-    $keyFile = Join-Path $env:USERPROFILE '.ssh\id_ed25519.pub'
-    if (Test-Path $keyFile) { $key = (Get-Content $keyFile -Raw).Trim() }
-    elseif ($WhatIfPreference) {
-        # A preview may run before the key exists; the placeholder is plainly one, and a real deploy refuses it.
-        Write-Host "No SSH key at ${keyFile} yet: the what-if uses a placeholder key; run ssh-keygen -t ed25519 before deploy.ps1 infra."
-        $key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPlaceholderKeyForWhatIfOnly0000000000000000 what-if'
-    }
-    else { throw "No SSH key at ${keyFile}: run ssh-keygen -t ed25519 once; the VM takes its public half." }
-    $env:PULS_SQL_ADMIN_PASSWORD = $password
-    $env:PULS_SSH_PUBLIC_KEY = $key
-    $env:PULS_SSH_FROM_IP = if ($Ip) { $Ip } else { '' }
-}
-
-function ConvertTo-UploadScript([hashtable]$Files) {
-    # A shell script that writes each file from base64, so no quoting of the content is ever needed; the env files
-    # are readable by root only.
-    $lines = @('set -e', 'mkdir -p /data/compose /data/env', 'chmod 700 /data/env')
-    foreach ($target in $Files.Keys) {
-        $bytes = [System.IO.File]::ReadAllBytes($Files[$target])
-        $lines += "echo '$([Convert]::ToBase64String($bytes))' | base64 -d > $target"
-    }
-    $lines += 'chmod 600 /data/env/.env.*'
-    $lines += 'systemctl restart puls-services'
-    $lines += 'docker ps --format "{{.Names}} {{.Status}}"'
-    return ($lines -join "`n")
 }
 
 function Get-Secrets {
@@ -180,36 +134,6 @@ function Get-Secrets {
 }
 
 switch ($Verb) {
-    'infra' {
-        Set-BuildParameters
-        if ($Ip -and $Ip -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { throw "Not an IPv4 address: $Ip." }
-        if ($WhatIfPreference) {
-            Write-Host "What the deployment $Deployment would change in ${ResourceGroup} (nothing is written):"
-            Invoke-Az deployment group what-if -n $Deployment -g $ResourceGroup -f $Bicep -p $BicepParams
-            return
-        }
-        Write-Host "Deploying $Bicep to $ResourceGroup as $Deployment (creates what is missing, updates what exists)..."
-        Invoke-Az deployment group create -n $Deployment -g $ResourceGroup -f $Bicep -p $BicepParams --query 'properties.outputs' -o json
-        Write-Host 'Next: deploy.ps1 vm (the services), deploy.ps1 secrets, then deploy.ps1 release.'
-    }
-    'vm' {
-        $files = @{
-            '/data/compose/docker-compose.services.yml' = Join-Path $Here 'vm\docker-compose.services.yml'
-            '/data/compose/settings.yml' = Join-Path $Repo 'demos\puls\docker\searxng\settings.yml'
-            '/data/env/.env.mongo' = Join-Path $Config '.env.mongo'
-            '/data/env/.env.searxng' = Join-Path $Config '.env.searxng'
-        }
-        foreach ($source in $files.Values) { if (-not (Test-Path $source)) { throw "Missing $source (the env files are copied from their .example)." } }
-        # The script goes to az as a file (@path), whole: on a command line its lines came apart (2026-11-08).
-        $script = Join-Path ([System.IO.Path]::GetTempPath()) 'puls-services-upload.sh'
-        [System.IO.File]::WriteAllText($script, (ConvertTo-UploadScript $files) + "`n", [System.Text.UTF8Encoding]::new($false))
-        Write-Host "Copying the compose, SearXNG's settings and the two env files to $Vm and restarting its services..."
-        # run-command runs as root on the VM through Azure's agent: no port on the VM opens for this. The script,
-        # env files included, passes through Azure's control plane, which keeps the last script in the VM's
-        # run-command history; the values are the same ones the vault holds.
-        try { Invoke-Az vm run-command invoke -n $Vm -g $ResourceGroup --command-id RunShellScript --scripts "@$script" --query 'value[0].message' -o tsv }
-        finally { Remove-Item $script -ErrorAction SilentlyContinue }
-    }
     'build' {
         # The commit the eval runner stamps on a run (F18): this checkout's, or "unknown" where git can't say.
         $ErrorActionPreference = 'Continue'
@@ -373,15 +297,6 @@ switch ($Verb) {
             }
             Invoke-Az containerapp hostname bind -n $App -g $ResourceGroup --hostname $Hostname --environment $Environment --validation-method $method --query '[].{name:name, state:bindingType}' -o table
         }
-    }
-    'sql-access' {
-        # SQL Server Management Studio from this PC: the server's firewall takes one IPv4 address (the rule 'home';
-        # a new home IP, the ISP's doing, means running this again). The server is puls-sql-za.database.windows.net,
-        # the login pulsadmin with config/.env.sql's password, the database puls_accounts, encryption on.
-        if (-not $Ip) { $Ip = (Invoke-RestMethod -Uri 'https://ipv4.icanhazip.com' -TimeoutSec 10).Trim() }
-        if ($Ip -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { throw "Not an IPv4 address: $Ip. Pass -Ip." }
-        Write-Host "Allowing $Ip on puls-sql-za's firewall (rule 'home')..."
-        Invoke-Az sql server firewall-rule create -g $ResourceGroup -s 'puls-sql-za' -n 'home' --start-ip-address $Ip --end-ip-address $Ip --query '{name:name, from:startIpAddress, to:endIpAddress}' -o table
     }
     'logs' {
         $followArgs = @()
