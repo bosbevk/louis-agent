@@ -8,6 +8,8 @@ This skill is usually about what a model *writes*: ask for a shape, check it in 
 what a model *reads*. If a recipe reaches the model as checked data instead of a page of prose, its amounts can be
 trusted, and a program can test the answer against them.
 
+![Structured outputs: a page's own recipe data read first, a numbered print, checks that can test the answer, and what didn't work](diagrams/05-structured-outputs.svg)
+
 ## Before and after
 
 **Before F35** the cook wrote recipes from search snippets and page text, and nothing could say whether they were right.
@@ -83,9 +85,10 @@ Read a number with its noise. The paid judge agrees with itself on about 25 of 3
 
 ## What's left
 
-Typed results between agents and validated drafts are F39 and F41, which is the half of this skill most people mean. The
-recipe library, with our own copies as one more source, is F35.3. A number out of a yield (*4 to 6* stays words) is
-F48.1's scaler.
+Typed results between agents and validated drafts are F39 and F41, which is the half of this skill most people mean,
+and both are still ahead. Two things this write-up once listed as left are built: the recipe library, with our own
+copies as one more source, came with F35.3 ([its write-up](08-memory-and-retrieval.md)), and `ScaleRecipe` (F48.1)
+scales a recipe from its yield, a range such as *4 to 6* included.
 
 ---
 [Docs index](../README.md) · [Goal](../GOAL.md) · [All write-ups](README.md)
