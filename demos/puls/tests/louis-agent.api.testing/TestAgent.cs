@@ -21,20 +21,44 @@ public static class TestAgent
     /// <summary>The identity's name, as a session names it.</summary>
     public const string Name = "testagent";
 
-    /// <summary>The voice a session opens with.</summary>
-    public const string Voice = Name + "/voice";
+    /// <summary>
+    /// The voice a session opens with, a language voice (<c>{identity}/voice-{xx}</c>), which also loads the shared
+    /// <c>voice.md</c> that routes, as a real identity's language voice does.
+    /// </summary>
+    public const string Voice = Name + "/voice-en";
 
-    /// <summary>A second voice, as an identity offers one per language.</summary>
-    public const string OtherVoice = Name + "/voice-other";
+    /// <summary>A second language voice.</summary>
+    public const string OtherVoice = Name + "/voice-de";
 
-    /// <summary>Its specialist, on the web and the calculator.</summary>
+    /// <summary>The heading of the shared voice, which a top-level session gets and a sub-session doesn't.</summary>
+    public const string RoutingHeading = "# Test agent: routing";
+
+    /// <summary>The heading of the voice a session opens with, so a test can tell which voice it got.</summary>
+    public const string VoiceHeading = "# Test agent: in English";
+
+    /// <summary>The heading of the second voice.</summary>
+    public const string OtherVoiceHeading = "# Test agent: in German";
+
+    /// <summary>Its specialist, whose role adds the web and the calculator.</summary>
     public const string Specialist = Name + "-specialist";
 
-    /// <summary>A minion its specialist hands one small task to.</summary>
-    public const string Minion = Name + "-minion";
+    /// <summary>A second specialist that adds no toolset of its own, working with what it is handed.</summary>
+    public const string Reader = Name + "-reader";
+
+    /// <summary>
+    /// What every minion of the test agent is, loaded before its role: the engine finds it as
+    /// <c>{identity}-minion</c> for a role named <c>{identity}-minion-{function}</c>.
+    /// </summary>
+    public const string MinionBase = Name + "-minion";
+
+    /// <summary>The heading of a minion role's own prompt, so a test can tell it loaded.</summary>
+    public const string MinionHeading = "# Test agent minion: lookup";
+
+    /// <summary>A minion its specialist hands one small task and one tool.</summary>
+    public const string Minion = MinionBase + "-lookup";
 
     /// <summary>A second minion, for a test that names two.</summary>
-    public const string OtherMinion = Name + "-minion-other";
+    public const string OtherMinion = MinionBase + "-find";
 
     /// <summary>The packs it names: the web and the calculator, which both stay the framework's.</summary>
     public static IReadOnlyList<IAgentPack> Packs { get; } = [new WebPack(), new CalculatorPack()];
@@ -44,24 +68,32 @@ public static class TestAgent
         packs: [.. Packs.Select(pack => pack.Name)],
         prompts: new Dictionary<string, string>
         {
-            [$"agent/{Name}/voice.md"] = Prompt("voice", "agent", "The test agent's voice."),
-            [$"agent/{Name}/voice-other.md"] = Prompt("voice-other", "agent", "The test agent's second voice."),
-            [$"specialists/{Specialist}.md"] = Prompt(Specialist, "specialist", "The test agent's specialist.",
-                "web, calculator"),
-            [$"minions/{Minion}.md"] = Prompt(Minion, "minion", "A minion with one small task."),
-            [$"minions/{OtherMinion}.md"] = Prompt(OtherMinion, "minion", "A second minion with one small task.")
+            [$"agent/{Name}/voice.md"] = Prompt("voice", "agent", RoutingHeading, "How the test agent routes."),
+            [$"agent/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
+            [$"agent/{Name}/voice-de.md"] = Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
+            [$"specialists/{Specialist}.md"] = Prompt(Specialist, "specialist", "# Test agent specialist",
+                "The test agent's specialist.", "web, calculator"),
+            [$"specialists/{Reader}.md"] =
+                Prompt(Reader, "specialist", "# Test agent reader", "Works with the toolsets it is handed."),
+            [$"minions/{MinionBase}.md"] =
+                Prompt(MinionBase, "minion", "# Test agent minion", "One task, one tool, one answer."),
+            [$"minions/{Minion}.md"] = Prompt(Minion, "minion", MinionHeading, "Looks one thing up."),
+            [$"minions/{OtherMinion}.md"] =
+                Prompt(OtherMinion, "minion", "# Test agent minion: find", "Finds one thing.")
         },
         voice: Voice,
         calls: [Specialist],
         relaysAnswersWhole: true);
 
     /// <summary>
-    /// A prompt file with the header every prompt opens with: its name, what it is, its level and toolsets.
+    /// A prompt file with the header every prompt opens with, its name, what it is, its level and toolsets, then its
+    /// heading and its words.
     /// </summary>
-    private static string Prompt(string name, string level, string description, string? toolsets = null)
+    private static string Prompt(string name, string level, string heading, string description,
+        string? toolsets = null)
     {
         string tools = toolsets is null ? "" : $"\n  toolsets: {toolsets}";
         string header = $"---\nname: {name}\ndescription: {description}\nmetadata:\n  level: {level}{tools}\n---\n";
-        return $"{header}# {name}\n\n{description}\n";
+        return $"{header}{heading}\n\n{description}\n";
     }
 }

@@ -4,8 +4,8 @@ using System.Text.Json;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Choices;
+using LouisAgent.Api.Testing;
 using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Identities.Puls;
 using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.TestHost;
@@ -22,16 +22,16 @@ public class OpenDoorTests
 {
     private const string Key = "test-key";
 
-    /// <summary>An open identity: a second one beside Puls's, on an embedded voice, with no packs.</summary>
-    private static readonly FakeIdentity Guide = new("guide", voice: "puls/voice-en");
+    /// <summary>An open identity: a second one beside the test agent, on one of its voices, with no packs.</summary>
+    private static readonly FakeIdentity Guide = new("guide", voice: TestAgent.OtherVoice);
 
     /// <summary>Another open identity, as a showroom's business is beside the guide.</summary>
-    private static readonly FakeIdentity Shop = new("shop", voice: "puls/voice-en");
+    private static readonly FakeIdentity Shop = new("shop", voice: TestAgent.OtherVoice);
 
     /// <summary>Two conversations a day from one address, with the guide or the shop.</summary>
     private static readonly OpenDoorOptions Door = new(["guide", "shop"], 2);
 
-    /// <summary>A host with Puls, the guide and the shop, behind the key, its door as given.</summary>
+    /// <summary>A host with the test agent, the guide and the shop, behind the key, its door as given.</summary>
     private static Microsoft.AspNetCore.Builder.WebApplication Host(OpenDoorOptions door) =>
         ApiTestHost.Build(Key, moreIdentities: [Guide, Shop], openDoor: door);
 
@@ -94,7 +94,7 @@ public class OpenDoorTests
     [Test]
     public async Task AnOpenIdentityThatCallsOthers_GetsTheAgentsToolset()
     {
-        var caller = new FakeIdentity("caller", voice: "puls/voice-en", calls: ["shop"]);
+        var caller = new FakeIdentity("caller", voice: TestAgent.OtherVoice, calls: ["shop"]);
         await using var app = ApiTestHost.Build(Key, moreIdentities: [caller, Shop],
             openDoor: new OpenDoorOptions(["caller"], 2),
             agentPeers: new Dictionary<string, Uri> { ["self"] = new("http://localhost:8080/") });
@@ -116,7 +116,7 @@ public class OpenDoorTests
         await app.StartAsync();
         var client = app.GetTestClient();
 
-        foreach (string? identity in new[] { PulsIdentityName.Puls.Wire(), null })
+        foreach (string? identity in new[] { TestAgent.Name, null })
         {
             using var opened = await OpenAsync(client, As(identity));
             Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), identity ?? "(none)");
@@ -276,7 +276,7 @@ public class OpenDoorTests
             Assert.That(options.Identities, Is.EqualTo(expected));
             Assert.That(options.SessionsPerDay, Is.EqualTo(expectedCap));
             Assert.That(options.IsOpen, Is.EqualTo(open));
-            Assert.That(options.Identities, Does.Not.Contain(PulsIdentityName.Puls.Wire()), "the guide is never Puls");
+            Assert.That(options.Identities, Does.Not.Contain(TestAgent.Name), "only what the setting names opens");
         });
     }
 

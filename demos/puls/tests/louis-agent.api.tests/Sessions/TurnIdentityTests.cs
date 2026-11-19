@@ -18,8 +18,8 @@ namespace LouisAgent.Api.Tests.Sessions;
 /// </summary>
 public class TurnIdentityTests
 {
-    /// <summary>A showroom business: a demonstration, on an embedded voice.</summary>
-    private static readonly FakeIdentity Shop = new("shop", voice: "puls/voice-en", demonstration: true);
+    /// <summary>A showroom business: a demonstration, on one of the test agent's voices.</summary>
+    private static readonly FakeIdentity Shop = new("shop", voice: TestAgent.OtherVoice, demonstration: true);
 
     /// <summary>A session opened as a demonstration identity keeps it, and says it's a demonstration.</summary>
     [Test]

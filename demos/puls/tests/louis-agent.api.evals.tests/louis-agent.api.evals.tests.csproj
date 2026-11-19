@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- CL57: the eval studio's tests, moved with it out of the API's tests. They sit beside the API's because, like
-       them, they open Puls's sessions and read Puls's evals. -->
+       them, they open the test agent's sessions (F166.1). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Api.Evals.Tests</RootNamespace>
@@ -25,11 +25,8 @@
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <!-- What the browser side shares, which these tests check against the API. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
-    <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <!-- F166.1: the calculator the test agent names beside the web; both stay the framework's. -->
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- The in-memory API host with the studio mapped, shared with the API's tests. -->
     <ProjectReference Include="..\louis-agent.api.testing\louis-agent.api.testing.csproj" />

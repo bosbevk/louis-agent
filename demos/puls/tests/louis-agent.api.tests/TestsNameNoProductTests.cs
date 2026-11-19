@@ -27,6 +27,8 @@ public class TestsNameNoProductTests
 
     /// <summary>The project's references that name a product, which must be none.</summary>
     [TestCase("louis-agent.api.testing")]
+    [TestCase("louis-agent.api.tests")]
+    [TestCase("louis-agent.api.evals.tests")]
     public void ATestProject_ReferencesNoProduct(string project)
     {
         var named = References(project)

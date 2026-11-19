@@ -50,7 +50,8 @@ public class ApiNamesNoProductTests
     [Test]
     public void TheProducts_AreReadFromTheIdentitiesFolder()
     {
-        Assert.That(Products(), Does.Contain(new LouisAgent.Identities.Puls.PulsIdentity().Name));
+        // The coding agent's identity, which stays in this repo whichever demo leaves it.
+        Assert.That(Products(), Does.Contain("coding"));
     }
 
     /// <summary>Every word in the API's code and project files that has a product's name in it.</summary>
@@ -75,7 +76,10 @@ public class ApiNamesNoProductTests
         }
     }
 
-    /// <summary>A hit the API may keep: one in an allowed file, or an allowed word. The coding identity's name is inside every encoding and decoding.</summary>
+    /// <summary>
+    /// A hit the API may keep: one in an allowed file, or an allowed word. The coding identity's name is inside every
+    /// encoding and decoding.
+    /// </summary>
     private static bool IsAllowed((string File, string Word) hit) =>
         hit.Word.Contains("encoding", StringComparison.OrdinalIgnoreCase) ||
         hit.Word.Contains("decoding", StringComparison.OrdinalIgnoreCase) ||

@@ -1,8 +1,6 @@
 using LouisAgent.Core.Web;
-using LouisAgent.Packs.Web;
-using LouisAgent.Identities.Puls;
+using LouisAgent.Api.Testing;
 using LouisAgent.Packs.Calculator;
-using LouisAgent.Packs.Recipes;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
 using LouisAgent.SessionStream.Wire.Replies;
@@ -18,8 +16,6 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
-using LouisAgent.Packs.ShopPrices;
-using LouisAgent.Packs.WhereToBuy;
 using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -37,17 +33,13 @@ public class AgentSessionsTests
         TestPaths.RepoRoot;
 
     /// <summary>
-    /// What the Puls stack runs with: Puls and the packs it names (where to buy and shop prices, F50.2, and the
-    /// recipes, with every site on: RECIPE_SOURCES=*, as the compose sets it, so the cook's required `recipes`
-    /// resolves once a browser is given, BrowserUrl in Sessions), and a pack whose toolset is known but off on this
-    /// instance, as a pack that misses its setting is.
+    /// What the sessions run with: the test agent and its packs (the web and the calculator, F166.1), the tests' own
+    /// tools, and a pack whose toolset is known but off on this instance, as a pack that misses its setting is.
     /// </summary>
-    private static AgentCatalog PulsCatalog() =>
-        new([new PulsIdentity()],
+    private static AgentCatalog TestCatalog() =>
+        new([TestAgent.Identity],
         [
-            new WebPack(), TestTools.Pack,
-            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new CalculatorPack(),
-            new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
+            .. TestAgent.Packs, TestTools.Pack,
             new FakePack(OffPack,
             [
                 FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
@@ -61,34 +53,35 @@ public class AgentSessionsTests
     private const string OffPack = "offpack";
 
     /// <summary>
-    /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called; a test of the
+    /// Fresh sessions on the test agent's catalogue, with a model that's never called; a test of the
     /// depth setting gives its own deepest level.
     /// </summary>
     internal static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null,
         int maxDepth = AgentOptions.DefaultAgentMaxDepth)
     {
-        var options = PulsOptions();
+        var options = TestOptions();
         options.AgentMaxDepth = maxDepth;
         return new AgentSessions(new AgentEngineFactory(new NoModel(), options,
-            services: new HostServices(WebAccess.Create), sessionLlms: llms, catalog: PulsCatalog()));
+            services: new HostServices(WebAccess.Create), sessionLlms: llms, catalog: TestCatalog()));
     }
 
+    /// <summary>A skills folder of the tests' own, so no session reads or writes a demo's.</summary>
+    private static string SkillsFolder { get; } = Directory.CreateTempSubdirectory("agent-sessions-skills-").FullName;
+
     /// <summary>
-    /// The settings a Puls stack gives the cook: the browser the recipes toolset reads through, a peer for its minions
-    /// (this instance itself) and the find-recipe minion on the instance's own model (F35.2 step 2b: the cook's header
-    /// asks for `minions`, which needs both).
+    /// The settings the sessions run with: the repo as the workspace, a peer for the minions (this instance itself)
+    /// and a minion on the instance's own model.
     /// </summary>
-    private static AgentOptions PulsOptions() =>
+    private static AgentOptions TestOptions() =>
         new()
         {
             WorkspaceRoot = RepoRoot,
-            SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
+            SkillsDirectory = SkillsFolder,
             RatesUrl = null,
-            BrowserUrl = "http://puls-browser:9222",
-            AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+            AgentPeers = new Dictionary<string, Uri> { [TestAgent.Name] = new("http://testagent:8080/") },
             MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                [PulsRole.MinionFindRecipe.Wire()] = [MinionAsk.InstanceLlm]
+                [TestAgent.OtherMinion] = [MinionAsk.InstanceLlm]
             }
         };
 
@@ -175,25 +168,23 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// The cook brings its own toolsets: Puls hands it the web, and its role adds the recipes, where to buy and the
-    /// shop prices.
+    /// A specialist brings its own toolsets: its parent hands it the files, and its role's header adds the web and the
+    /// calculator.
     /// </summary>
     [Test]
-    public void TheCook_LoadsWhereToBuyAndShopPrices_FromItsRole()
+    public void ASpecialist_LoadsTheToolsetsItsRoleNames()
     {
-        // F35.2 steps 1 and 2b and F50.2: the cook's header names its recipes, both packs' toolsets and the minions,
-        // so they come with the role, beside what Puls passed.
-        var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        // F35.2 and F50.2: a role's header names its toolsets, so they come with the role, beside what the parent
+        // passed.
+        var specialist = Sessions().Create([TestToolset.Files.Wire()], depth: 1, role: TestAgent.Specialist);
 
-        Assert.That(cook.Toolsets,
+        Assert.That(specialist.Toolsets,
             Is.EquivalentTo(new[]
             {
-                TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                ShopPricesToolset.ShopPrices.Wire(), CalculatorToolset.Calculator.Wire()
+                TestToolset.Files.Wire(), TestToolset.Web.Wire(), CalculatorToolset.Calculator.Wire()
             }));
-        Assert.That(Names(cook),
-            Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And
-                .Contain("WebSearch").And.Contain("Calculate"));
+        Assert.That(Names(specialist),
+            Does.Contain("ReadWorkspaceFile").And.Contain("WebSearch").And.Contain("Calculate"));
     }
 
     /// <summary>
@@ -223,8 +214,8 @@ public class AgentSessionsTests
         var top = sessions.Create([TestToolset.Files.Wire()]);
         var sub = sessions.Create([TestToolset.Files.Wire()], depth: 1);
 
-        Assert.That(top.Engine.SkillDocumentation, Does.Contain("# Puls - Routing"));
-        Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain("# Puls - Routing"));
+        Assert.That(top.Engine.SkillDocumentation, Does.Contain(TestAgent.RoutingHeading));
+        Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain(TestAgent.RoutingHeading));
         Assert.That(sub.Engine.SkillDocumentation, Does.Contain("# Files Skills"), "its toolsets' guides stay");
     }
 
@@ -239,7 +230,7 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A role opens at its own level: the cook as a specialist, never at the top; Puls's voice at the top, and also
+    /// A role opens at its own level: a specialist below the top, never at it; the voice at the top, and also
     /// lower down, still as a voice, when another agent asks it.
     /// </summary>
     [Test]
@@ -249,12 +240,12 @@ public class AgentSessionsTests
         var sessions = Sessions();
 
         Assert.Throws<RoleException>(() =>
-            sessions.Create([TestToolset.Web.Wire()], role: PulsRole.Cook.Wire()));
-        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: "puls/voice-af").Role,
-            Is.EqualTo("puls/voice-af"));
-        Assert.That(sessions.Create([TestToolset.Web.Wire()], role: "puls/voice-af").Role, Is.EqualTo("puls/voice-af"));
-        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
-            Is.EqualTo(PulsRole.Cook.Wire()));
+            sessions.Create([TestToolset.Web.Wire()], role: TestAgent.Specialist));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Voice).Role,
+            Is.EqualTo(TestAgent.Voice));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], role: TestAgent.Voice).Role, Is.EqualTo(TestAgent.Voice));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist).Role,
+            Is.EqualTo(TestAgent.Specialist));
     }
 
     /// <summary>
@@ -266,7 +257,7 @@ public class AgentSessionsTests
         var session = Sessions().Create([TestToolset.Files.Wire()], role: "");
 
         Assert.That(session.Role, Is.Null);
-        Assert.That(session.Engine.SkillDocumentation, Does.Contain("# Puls - Stem"));
+        Assert.That(session.Engine.SkillDocumentation, Does.Contain(TestAgent.VoiceHeading));
     }
 
     /// <summary>
@@ -331,12 +322,12 @@ public class AgentSessionsTests
     [Test]
     public void TheSessionJson_SaysRole_NotPersonality()
     {
-        var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist);
 
         Assert.That(Json(SessionCreatedReply.Of(cook)),
-            Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
+            Does.Contain($"\"role\":\"{TestAgent.Specialist}\"").And.Not.Contain("personality"));
         Assert.That(Json(SessionReply.Of(cook)),
-            Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
+            Does.Contain($"\"role\":\"{TestAgent.Specialist}\"").And.Not.Contain("personality"));
     }
 
     /// <summary>
@@ -349,7 +340,7 @@ public class AgentSessionsTests
         await session.SubSessions.AddAsync(Kept("sess_cook", []));
 
         Assert.That(Json(SessionReply.Of(session)),
-            Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
+            Does.Contain($"\"role\":\"{TestAgent.Specialist}\"").And.Not.Contain("personality"));
     }
 
     /// <summary>
@@ -363,23 +354,23 @@ public class AgentSessionsTests
             new AgentOptions
             {
                 WorkspaceRoot = RepoRoot,
-                SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
+                SkillsDirectory = SkillsFolder,
                 RatesUrl = null
-            }, services: new HostServices(WebAccess.Create), catalog: PulsCatalog());
+            }, services: new HostServices(WebAccess.Create), catalog: TestCatalog());
 
         string roles = System.Text.Json.JsonSerializer.Serialize(RolesReply.Of(engines), InfoJson.SnakeCase);
 
         Assert.That(roles,
-            Does.Contain("\"default\":\"puls/voice-af\"").And.Contain("\"specialists\":[").And
-                .Contain(PulsRole.Cook.Wire()));
+            Does.Contain($"\"default\":\"{TestAgent.Voice}\"").And.Contain("\"specialists\":[").And
+                .Contain(TestAgent.Specialist));
     }
 
     /// <summary>
-    /// A cook sub-session the chat keeps open; closing it writes its id into the list you pass, so a test can see it
-    /// was closed.
+    /// A specialist sub-session the chat keeps open; closing it writes its id into the list you pass, so a test can
+    /// see it was closed.
     /// </summary>
     private static LouisAgent.Core.Sessions.SubSessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
-        new(new Uri("http://puls-agent/"), sessionId, "puls-agent", [TestToolset.Web.Wire()], PulsRole.Cook.Wire(),
+        new(new Uri("http://testagent/"), sessionId, TestAgent.Name, [TestToolset.Web.Wire()], TestAgent.Specialist,
             () =>
             {
                 closed.Add(sessionId);
@@ -436,9 +427,9 @@ public class AgentSessionsTests
         var unnamed = sessions.Create([TestToolset.Web.Wire()], depth: 1);
         Assert.That(unnamed.Role, Is.Null);
         Assert.That(unnamed.Engine.SkillDocumentation,
-            Does.Contain("# Puls - Stem").And.Not.Contain("# Puls - Routing"));
-        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
-            Is.EqualTo(PulsRole.Cook.Wire()));
+            Does.Contain(TestAgent.VoiceHeading).And.Not.Contain(TestAgent.RoutingHeading));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist).Role,
+            Is.EqualTo(TestAgent.Specialist));
         Assert.That(sessions.Create([TestToolset.Web.Wire()]).Role, Is.Null,
             "a top-level session that names none gets the default voice");
     }
@@ -486,16 +477,16 @@ public class AgentSessionsTests
         // F30 step 4: a specialist hands a minion one task and one of its own tools; the peer checks the tool against
         // the parent session it finds here (minions run on the specialist's own instance).
         var sessions = Sessions();
-        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist);
 
         var minion = sessions.Create([TestToolset.Web.Wire()], ParentOf(cook), depth: 2,
-            role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl");
+            role: TestAgent.Minion, tool: "FetchUrl");
 
         Assert.That(minion.Depth, Is.EqualTo(2));
         Assert.That(minion.Tool, Is.EqualTo("FetchUrl"));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
         Assert.That(minion.Engine.SkillDocumentation,
-            Does.Contain("# Puls minion: Web price lookup").And.Not.Contain("# Web Skills"));
+            Does.Contain(TestAgent.MinionHeading).And.Not.Contain("# Web Skills"));
         Assert.That(cook.Tool, Is.Null, "a specialist has toolsets, not one tool");
     }
 
@@ -510,21 +501,21 @@ public class AgentSessionsTests
         // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
         var sessions = Sessions();
         // The reader, which declares no toolsets of its own: the cook's header brings the web (F127.3.1).
-        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Reader.Wire());
+        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: TestAgent.Reader);
         var withWeb = sessions.Create([TestToolset.Web.Wire(), TestToolset.Files.Wire()], depth: 1,
-            role: PulsRole.Cook.Wire());
+            role: TestAgent.Specialist);
 
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], ParentOf(withFiles), depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
+                role: TestAgent.Minion, tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
         Assert.That(
             sessions.Create([TestToolset.Files.Wire()], ParentOf(withWeb), depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "ReadWorkspaceFile").Tool,
+                role: TestAgent.Minion, tool: "ReadWorkspaceFile").Tool,
             Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the specialist's call");
         Assert.That(
             () => sessions.Create([CoreToolset.Skills.Wire()], ParentOf(withWeb), depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "ExecuteSkill"),
+                role: TestAgent.Minion, tool: "ExecuteSkill"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }
 
@@ -536,33 +527,34 @@ public class AgentSessionsTests
     public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool()
     {
         var sessions = Sessions();
-        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist);
         var parent = ParentOf(cook);
 
         Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], depth: 2, role: PulsRole.MinionWebPriceLookup.Wire(),
+            () => sessions.Create([TestToolset.Web.Wire()], depth: 2, role: TestAgent.Minion,
                 tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent"), "no parent");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], new UsageTags(null, null, null, "sess_gone#1"), depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
+                role: TestAgent.Minion, tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
         Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: PulsRole.Cook.Wire(),
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: TestAgent.Specialist,
                 tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a specialist's role is no minion role, at any depth");
         Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: "puls-minion", tool: "FetchUrl"),
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: TestAgent.MinionBase,
+                tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "the base is no role");
         Assert.That(() => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "a minion always has a role");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire()),
+                role: TestAgent.Minion),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a minion always has its one tool");
         Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire(), tool: "FetchUrl"),
+            () => sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist, tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a specialist loads toolsets, not a tool");
     }
@@ -576,9 +568,9 @@ public class AgentSessionsTests
         // F30 step 5: AskAgent sends a minion no toolsets, only the tool; the peer finds the toolset that builds it.
         // F127.5: the minions toolset is gone, since AskAgent asks minions too.
         var sessions = Sessions();
-        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist);
 
-        var minion = sessions.Create(null, ParentOf(cook), depth: 2, role: PulsRole.MinionWebPriceLookup.Wire(),
+        var minion = sessions.Create(null, ParentOf(cook), depth: 2, role: TestAgent.Minion,
             tool: "FetchUrl");
         Assert.That(minion.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));

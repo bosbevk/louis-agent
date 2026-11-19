@@ -18,7 +18,7 @@ public class TwoServersTests
     private const string PartnerKey = "partner-key";
 
     /// <summary>The partner's shop: an identity in its own voice.</summary>
-    private static readonly FakeIdentity Shop = new("shop", voice: "puls/voice-en");
+    private static readonly FakeIdentity Shop = new("shop", voice: TestAgent.OtherVoice);
 
     /// <summary>The asker on this side, who may ask the partner's shop and a bakery it doesn't have.</summary>
     private static readonly FakeIdentity Guide = new("guide", calls: ["partner:shop", "partner:bakery"]);
