@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the site: add a page",
+  "caption": "The page, the menu and the guide change together, and the tests hold all three.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "page", "label": "The page, from\nthe framework's controls", "icon": "code", "tone": "green" },
+      { "id": "menu", "label": "Its link in\nSiteLayout", "icon": "code", "tone": "green" },
+      { "id": "guide", "label": "Its address in\nthe guide's skills", "icon": "message", "tone": "green" },
+      { "id": "tests", "label": "Rows in the\npage and menu tests", "icon": "checks", "tone": "green" },
+      { "id": "sitemap", "label": "sitemap.xml\nwritten again", "icon": "file", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "you", "to": "page" },
+      { "from": "page", "to": "menu" },
+      { "from": "menu", "to": "guide" },
+      { "from": "guide", "to": "tests" },
+      { "from": "tests", "to": "sitemap" }
+    ],
+    "direction": "right"
+  }
+}

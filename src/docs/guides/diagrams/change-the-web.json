@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "Change the framework's web at a glance",
+  "caption": "What would be the same on every site is here; a site brings only its words, brand and data.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "web", "icon": "stack", "title": "The framework's web", "code": "louis-agent.web", "look": "highlight",
+          "text": "The Razor class library every site is built on." }
+      ] },
+      { "cards": [
+        { "id": "api", "icon": "server", "title": "The API client", "code": "Api/AgentApi", "text": "The only code that calls the API." },
+        { "id": "chats", "icon": "message", "title": "The chat and a turn", "code": "Chats/", "text": "The stream folded into a Turn." },
+        { "id": "components", "icon": "browser", "title": "The components", "code": "Components/", "text": "From the chat's frame to a site's bands." },
+        { "id": "text", "icon": "shield", "title": "Words and safe markdown", "code": "Text/", "text": "ChatText, and what an answer may load." }
+      ] },
+      { "cards": [
+        { "id": "styles", "icon": "settings", "title": "Styles and scripts", "text": "Beside their component, or shared under Styles/web/ and wwwroot/js/." },
+        { "id": "accounts", "icon": "users", "title": "The account pages", "code": "louis-agent.web.accounts", "text": "An area a site names." }
+      ] }
+    ],
+    "links": [
+      { "from": "web", "to": "api" },
+      { "from": "web", "to": "chats" },
+      { "from": "web", "to": "components" },
+      { "from": "web", "to": "text" }
+    ]
+  }
+}
