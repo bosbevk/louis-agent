@@ -80,7 +80,7 @@
       {
         "id": "chat",
         "name": "ExpertChat",
-        "kind": "the guide in the corner"
+        "kind": "the guide, as the bar at the foot of the page"
       },
       {
         "id": "shell",

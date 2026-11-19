@@ -255,9 +255,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
       <text class="crd-name" x="293.5" y="263" text-anchor="start">The guide</text>
-      <text class="pic-text" x="247.5" y="298" text-anchor="start">The chat in the corner,</text>
-      <text class="pic-text" x="247.5" y="316" text-anchor="start">answering from the docs and</text>
-      <text class="pic-text" x="247.5" y="334" text-anchor="start">nothing else.</text>
+      <text class="pic-text" x="247.5" y="298" text-anchor="start">The bar at the foot of every</text>
+      <text class="pic-text" x="247.5" y="316" text-anchor="start">page, answering from the</text>
+      <text class="pic-text" x="247.5" y="334" text-anchor="start">docs and nothing else.</text>
       <rect class="mrq-glass" x="459" y="222" width="207.5" height="132" rx="14" />
       <rect class="mrq-edge" x="487" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="477" y="240" width="34" height="34" rx="10" />
