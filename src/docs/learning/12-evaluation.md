@@ -8,6 +8,13 @@
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
 why the check is now a button in the admin portal instead of four commands in a terminal.
 
+![Evaluation: a judge checked against a person, the field's words, generic checks with readers, evals grown from use, and the studio](diagrams/12-evaluation.svg)
+
+Some of what follows moved on after it was written. The judge got its next round: Louis graded 60 answers in the
+portal, and the check closed on 2026-11-03 (run `cf37574d0f23`). The harness's general checks are 25 today, not 24.
+And the gap a replay can't cross, a hand-off to a sub-session, is still open, so the cook and recipes evals run live
+only ([ADR 0078](../../../packs/docs/adr/0078-a-recipe-search-asks-several-sites.md)).
+
 ## Why a judge needs checking
 
 Some things code can't grade. "Is this recipe a meal for four?" has no rule. So a model grades it, and that grade is a
@@ -156,7 +163,7 @@ found. And the logs no longer hold what you typed: the arguments, results and a 
 hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so a log says what ran and how it ended. The same text always gets the
 same hash, so you can still match two lines. `LOG_CONTENT=full` shows the values, on your own machine only.
 
-The stream format is a seam (skill 4). The agent's stream is read by one small library (`louis-agent.session- stream`)
+The stream format is a seam (skill 4). The agent's stream is read by one small library (`louis-agent.session-stream`)
 that turns each server-sent event into a record. Every host, the harness and the portal read those records, never the
 raw text. When the format changes, one reader changes. Protocol v2 is the same idea for evals: one contract the runner
 writes and the API reads (ADR 0047).
