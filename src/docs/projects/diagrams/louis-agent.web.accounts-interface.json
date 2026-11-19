@@ -1,13 +1,21 @@
 {
   "kind": "classes",
   "title": "louis-agent.web.accounts: the interface design",
-  "caption": "The account pages a site opts into: one call adds them, a client for the accounts API, the state every page reads, and the framework's account corner filled in.",
+  "caption": "The account pages a site opts into: one area adds them, a client for the accounts API, the state every page reads, and the framework's account corner filled in.",
   "classes": {
     "types": [
       {
+        "id": "area",
+        "name": "AccountArea",
+        "kind": "static, what a site calls",
+        "members": [
+          "+Accounts(areas, layout) SiteAreasBuilder"
+        ]
+      },
+      {
         "id": "services",
         "name": "AccountServices",
-        "kind": "static, what a site calls",
+        "kind": "static, what the area calls",
         "members": [
           "+AddLouisAgentAccounts(services)"
         ]
@@ -61,17 +69,68 @@
       }
     ],
     "relations": [
-      { "from": "services", "to": "api", "kind": "creates" },
-      { "from": "services", "to": "state", "kind": "creates" },
-      { "from": "services", "to": "auth", "kind": "creates" },
-      { "from": "services", "to": "menu", "kind": "creates" },
-      { "from": "state", "to": "api", "kind": "holds" },
-      { "from": "auth", "to": "state", "kind": "holds" },
-      { "from": "menu", "to": "imenu", "kind": "implements" },
-      { "from": "menu", "to": "state", "kind": "holds" },
-      { "from": "pages", "to": "api", "kind": "uses" },
-      { "from": "pages", "to": "text", "kind": "uses", "word": "words from" },
-      { "from": "api", "to": "contracts", "kind": "uses" }
+      {
+        "from": "area",
+        "to": "services",
+        "kind": "uses",
+        "word": "calls"
+      },
+      {
+        "from": "services",
+        "to": "api",
+        "kind": "creates"
+      },
+      {
+        "from": "services",
+        "to": "state",
+        "kind": "creates"
+      },
+      {
+        "from": "services",
+        "to": "auth",
+        "kind": "creates"
+      },
+      {
+        "from": "services",
+        "to": "menu",
+        "kind": "creates"
+      },
+      {
+        "from": "state",
+        "to": "api",
+        "kind": "holds"
+      },
+      {
+        "from": "auth",
+        "to": "state",
+        "kind": "holds"
+      },
+      {
+        "from": "menu",
+        "to": "imenu",
+        "kind": "implements"
+      },
+      {
+        "from": "menu",
+        "to": "state",
+        "kind": "holds"
+      },
+      {
+        "from": "pages",
+        "to": "api",
+        "kind": "uses"
+      },
+      {
+        "from": "pages",
+        "to": "text",
+        "kind": "uses",
+        "word": "words from"
+      },
+      {
+        "from": "api",
+        "to": "contracts",
+        "kind": "uses"
+      }
     ]
   }
 }
