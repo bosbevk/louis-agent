@@ -26,5 +26,6 @@ public class PulsPrompts
         new RecipesPack(new RecipesOptions()).Prompts,
         new CalculatorPack().Prompts,
         LouisAgent.Api.Tests.TestBusiness.Identity.Prompts,
+        LouisAgent.Api.Testing.TestAgent.Identity.Prompts,
     ]);
 }

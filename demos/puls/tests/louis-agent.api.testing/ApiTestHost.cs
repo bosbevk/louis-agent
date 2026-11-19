@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using LouisAgent.Core.Web;
-using LouisAgent.Packs.Web;
 using LouisAgent.Api.Endpoints.Admin;
 using LouisAgent.Api.Evals.Endpoints.Runs;
 using LouisAgent.Api.Config;
@@ -20,11 +19,6 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
-using LouisAgent.Identities.Puls;
-using LouisAgent.Packs.Calculator;
-using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.ShopPrices;
-using LouisAgent.Packs.WhereToBuy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -44,6 +38,12 @@ internal static class ApiTestHost
     /// <summary>The repository's folder, found from where the tests run.</summary>
     public static string RepoRoot { get; } =
         TestPaths.RepoRoot;
+
+    /// <summary>
+    /// The skills folder the test agent writes to, an empty one of the tests' own (F166.1: not a product's), made once
+    /// for the run.
+    /// </summary>
+    private static string SkillsFolder { get; } = Directory.CreateTempSubdirectory("api-test-skills-").FullName;
 
     /// <summary>
     /// Starts the API in memory the way ApiStartup builds it, on a test server with no port. Give it an admin key and a
@@ -118,16 +118,13 @@ internal static class ApiTestHost
     public static RouteAccess ReadAccess(RouteEndpoint endpoint) =>
         AgentKeyGate.AccessFor(new PathString(ReadPattern(endpoint)), endpoint);
 
-    /// <summary>
-    /// What the API runs on: an engine over the model given (one that is never called, unless a test sends a message),
-    /// with the Puls identity and the packs it names.
-    /// </summary>
     /// <summary>An agent with no model, for a test about how the API starts up.</summary>
     public static AgentHostContext BareHost() => HostContext(RepoRoot, new NoModel());
 
     /// <summary>
-    /// The agent the test API runs: Puls and any identity a test adds, on Puls's packs and any it adds, with this
-    /// workspace and model, the peers a test names (none by default), and its words paced when a test says so (F156).
+    /// The agent the test API runs: the test agent and any identity a test adds (F166.1: no product), on the test
+    /// agent's packs, the tests' own tools and any a test adds, with this workspace and model, the peers a test names
+    /// (none by default), and its words paced when a test says so (F156).
     /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
         IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null,
@@ -136,18 +133,14 @@ internal static class ApiTestHost
         var options = new AgentOptions
         {
             WorkspaceRoot = workspaceRoot,
-            SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
+            SkillsDirectory = SkillsFolder,
             RatesUrl = null,
             AgentPeers = agentPeers ?? new Dictionary<string, Uri>(),
             StreamPace = streamPace
         };
-        // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
-        // A test may add an identity beside Puls's (F109.3: a session names its identity).
-        var catalog = new AgentCatalog([new PulsIdentity(), .. moreIdentities ?? []],
-        [
-            new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
-            new RecipesPack(new RecipesOptions()), new CalculatorPack(), .. morePacks ?? []
-        ]);
+        // A test may add an identity beside the test agent (F109.3: a session names its identity), and its packs.
+        var catalog = new AgentCatalog([TestAgent.Identity, .. moreIdentities ?? []],
+            [.. TestAgent.Packs, TestTools.Pack, .. morePacks ?? []]);
         var engines = new AgentEngineFactory(model, options, services: new HostServices(WebAccess.Create),
             catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);

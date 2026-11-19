@@ -11,15 +11,16 @@ namespace LouisAgent.Api.Tests.Endpoints.Feeds;
 
 /// <summary>
 /// The packs' feeds over the API (ADR 0070): the list and each feed are open, so anyone reads them without the key;
-/// the API serves the pack's JSON as it is, and a name no pack publishes is the API's 404. The test host carries
-/// Puls's packs, so the shop-prices feed is there.
+/// the API serves the pack's JSON as it is, and a name no pack publishes is the API's 404. The test host runs on the
+/// test agent (F166.1), so these tests hand it the shop-prices pack, whose feed they read.
 /// </summary>
 public class FeedRouteTests
 {
-    /// <summary>The API, gated by a key the requests never send.</summary>
+    /// <summary>The API, gated by a key the requests never send, with the shop-prices pack.</summary>
     private static async Task<(WebApplication App, HttpClient Client)> StartAsync()
     {
-        var app = ApiTestHost.Build(apiKey: "secret");
+        var shopPrices = new ShopPricesPack(new ShopPricesOptions());
+        var app = ApiTestHost.Build(apiKey: "secret", morePacks: [shopPrices]);
         await app.StartAsync();
         return (app, app.GetTestClient());
     }
@@ -38,7 +39,8 @@ public class FeedRouteTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(feed.GetProperty("description").GetString(), Does.Contain("Stats SA"));
-        Assert.That(feed.GetProperty("path").GetString(), Is.EqualTo($"/v1/feeds/{ShopPricesToolset.ShopPrices.Wire()}"));
+        Assert.That(feed.GetProperty("path").GetString(),
+            Is.EqualTo($"/v1/feeds/{ShopPricesToolset.ShopPrices.Wire()}"));
     }
 
     /// <summary>A feed is the pack's JSON as the pack wrote it, without the key.</summary>
@@ -54,7 +56,8 @@ public class FeedRouteTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(response.Content.Headers.ContentType?.MediaType, Is.EqualTo("application/json"));
         Assert.That(reply.RootElement.GetProperty("notice").GetString(), Does.StartWith("Average prices"));
-        Assert.That(reply.RootElement.GetProperty("tables")[0].GetProperty("source").GetString(), Does.StartWith("Stats SA"));
+        Assert.That(reply.RootElement.GetProperty("tables")[0].GetProperty("source").GetString(),
+            Does.StartWith("Stats SA"));
     }
 
     /// <summary>An item's address is open too; a feed with no such item is the API's 404, naming both.</summary>

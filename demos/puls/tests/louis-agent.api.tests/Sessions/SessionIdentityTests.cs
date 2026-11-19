@@ -1,8 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using LouisAgent.Choices;
-using LouisAgent.Identities.Puls;
+using LouisAgent.Api.Testing;
 using Microsoft.AspNetCore.TestHost;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -15,10 +14,11 @@ namespace LouisAgent.Api.Tests.Sessions;
 public class SessionIdentityTests
 {
     /// <summary>
-    /// A second identity beside Puls's. Its voice is one of Puls's modes: the prompt source is process-wide and frozen
-    /// after its first read, so a test can't add a voice file of its own; naming an embedded one exercises the same path.
+    /// A second identity beside the test agent. Its voice is the test agent's second one: the prompt source is
+    /// process-wide and frozen after its first read, so a test can't add a voice file of its own; naming one already
+    /// registered exercises the same path.
     /// </summary>
-    private static readonly FakeIdentity Guide = new("guide", voice: "puls/voice-en");
+    private static readonly FakeIdentity Guide = new("guide", voice: TestAgent.OtherVoice);
 
     /// <summary>Naming the second identity opens the session in its voice, and the reply says so.</summary>
     [Test]
@@ -35,7 +35,7 @@ public class SessionIdentityTests
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
             Assert.That(body.RootElement.GetProperty("identity").GetString(), Is.EqualTo("guide"));
-            Assert.That(body.RootElement.GetProperty("role").GetString(), Is.EqualTo("puls/voice-en"));
+            Assert.That(body.RootElement.GetProperty("role").GetString(), Is.EqualTo(TestAgent.OtherVoice));
         });
     }
 
@@ -50,7 +50,7 @@ public class SessionIdentityTests
         using var response = await client.PostAsJsonAsync("/v1/sessions", new { });
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
-        Assert.That(body.RootElement.GetProperty("identity").GetString(), Is.EqualTo(PulsIdentityName.Puls.Wire()));
+        Assert.That(body.RootElement.GetProperty("identity").GetString(), Is.EqualTo(TestAgent.Name));
     }
 
     /// <summary>An identity the host doesn't run is a 400 that names what it runs.</summary>
@@ -84,8 +84,8 @@ public class SessionIdentityTests
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(rows.Select(row => row.GetProperty("name").GetString()),
-                Is.EqualTo(new[] { PulsIdentityName.Puls.Wire(), "guide" }));
-            Assert.That(rows[1].GetProperty("voice").GetString(), Is.EqualTo("puls/voice-en"));
+                Is.EqualTo(new[] { TestAgent.Name, "guide" }));
+            Assert.That(rows[1].GetProperty("voice").GetString(), Is.EqualTo(TestAgent.OtherVoice));
             Assert.That(rows[0].GetProperty("default").GetBoolean(), Is.True);
             Assert.That(rows[1].GetProperty("default").GetBoolean(), Is.False);
         });

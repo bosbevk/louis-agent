@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Tests.Endpoints.Admin.Imports;
 /// <summary>
 /// The packs' uploads over the API (F55), behind the admin key: the list names the shop-prices upload and its two
 /// files, a preview reads Stats SA's trimmed release, and a save on a host with no price store says it can't keep it.
-/// The test host carries Puls's packs, with no MongoDB.
+/// The test host is handed the shop-prices pack beside the test agent (F166.1), with no MongoDB.
 /// </summary>
 public class ImportRouteTests
 {
@@ -32,7 +32,9 @@ public class ImportRouteTests
 
     private static async Task<(WebApplication App, HttpClient Client)> StartAsync()
     {
-        var app = ApiTestHost.Build(adminKey: AdminKey);
+        // The shop-prices pack's upload, handed to the host, which runs on the test agent alone (F166.1).
+        var shopPrices = new ShopPricesPack(new ShopPricesOptions());
+        var app = ApiTestHost.Build(adminKey: AdminKey, morePacks: [shopPrices]);
         await app.StartAsync();
         var client = app.GetTestClient();
         client.DefaultRequestHeaders.Add("x-api-key", AdminKey);
@@ -50,7 +52,8 @@ public class ImportRouteTests
 
         var row = reply!.Imports.Single(i => i.Name == Upload);
         Assert.That(row.Description, Does.Contain("Stats SA"));
-        Assert.That(row.Files.Select(f => f.Name), Is.EqualTo(new[] { StatsSaSheet.AllUrban.Wire(), StatsSaSheet.Provinces.Wire() }));
+        Assert.That(row.Files.Select(f => f.Name),
+            Is.EqualTo(new[] { StatsSaSheet.AllUrban.Wire(), StatsSaSheet.Provinces.Wire() }));
     }
 
     /// <summary>The preview reads the files and says what saving them would store.</summary>
@@ -60,7 +63,8 @@ public class ImportRouteTests
         var (app, client) = await StartAsync();
         await using var _ = app;
 
-        var response = await client.PostAsJsonAsync($"/v1/admin/imports/{Upload}/preview", Release(), AdminJson.SnakeCase);
+        var response =
+            await client.PostAsJsonAsync($"/v1/admin/imports/{Upload}/preview", Release(), AdminJson.SnakeCase);
         var report = await response.Content.ReadFromJsonAsync<ImportReportReply>(AdminJson.SnakeCase);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -91,8 +95,10 @@ public class ImportRouteTests
         var (app, client) = await StartAsync();
         await using var _ = app;
 
-        var unknown = await client.PostAsJsonAsync("/v1/admin/imports/rent-prices/preview", Release(), AdminJson.SnakeCase);
-        var empty = await client.PostAsJsonAsync($"/v1/admin/imports/{Upload}/preview", new ImportRequest([]), AdminJson.SnakeCase);
+        var unknown =
+            await client.PostAsJsonAsync("/v1/admin/imports/rent-prices/preview", Release(), AdminJson.SnakeCase);
+        var empty = await client.PostAsJsonAsync($"/v1/admin/imports/{Upload}/preview", new ImportRequest([]),
+            AdminJson.SnakeCase);
         var anonymous = app.GetTestClient();
         var noKey = await anonymous.GetAsync("/v1/admin/imports");
 
