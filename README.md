@@ -194,7 +194,10 @@ All the docs, in reading order, are in **[src/docs/README.md](src/docs/README.md
 
 ## Licence
 
-**All rights reserved** ([LICENSE](LICENSE), since 2026-10-15). The code is public to read, but you may not use, copy,
-change, share or host it without written permission; open an issue to ask. Versions released before under MIT or the
-AGPL-3.0 keep that licence. Why: [ADR 0016](src/docs/adr/0016-licence-all-rights-reserved.md). The parts others wrote keep
-their own licences: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+**Free for noncommercial use**, under the [PolyForm Noncommercial License 1.0.0](LICENSE), since 2026-11-19. Anyone may
+use, change and share the framework for a noncommercial purpose: personal projects, study, research, and charities,
+schools and public bodies. Commercial use needs a licence from the copyright holder first; open an issue to ask. It is
+source-available, not open source, since open source allows commercial use. Versions released before keep the licence
+they were released with: MIT, the AGPL-3.0, or all rights reserved. Why:
+[ADR 0127](src/docs/adr/0127-licence-polyform-noncommercial.md). The parts others wrote keep their own licences:
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
