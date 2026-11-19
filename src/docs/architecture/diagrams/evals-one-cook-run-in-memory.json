@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "object",
   "title": "The evals: one cook run, in memory",
-  "caption": "One run, in memory: an eval's folder becomes trials, and each trial's checks grade it into events. The folder is demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its nine checks are cook-no-error, routed-to, within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, meal-for-people and meal-for-people.human.",
+  "caption": "One run, in memory: an eval's folder becomes trials, and each trial's checks grade it into events. The folder is demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its ten checks are cook-no-error, routed-to, within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, unpriced-items, meal-for-people and human.",
   "flow": {
     "nodes": [
       {
@@ -16,32 +16,32 @@
         "id": "eval",
         "icon": "checks",
         "tone": "blue",
-        "label": "FileEval : IEval\nName = puls-cook, Version = 11"
+        "label": "FileEval : IEval\nName = puls-cook, Version = 20"
       },
       {
         "id": "modes",
         "icon": "settings",
         "tone": "teal",
-        "label": "EvalMode puls-cook · EvalMode\npuls-tools"
+        "label": "EvalMode puls-tools · EvalMode\npuls-cook"
       },
       {
         "id": "data",
         "shape": "data",
         "icon": "file",
         "tone": "amber",
-        "label": "Dataset puls-cook v7\ndev and held-out scenarios,\nlabels"
+        "label": "Dataset puls-cook v8\ndev and held-out scenarios,\nlabels"
       },
       {
         "id": "graders",
         "icon": "checks",
         "tone": "green",
-        "label": "9 checks, from cook-no-error\nto meal-for-people.human"
+        "label": "10 checks, from cook-no-error\nto human"
       },
       {
         "id": "trial",
         "icon": "message",
         "tone": "teal",
-        "label": "Trial\nrun 5d1fd231c9b1 · puls-cook ·\nrepeat 1 · cook-malmesbury"
+        "label": "Trial\nrun {id} · puls-cook ·\nrepeat 1 · cook-malmesbury"
       },
       {
         "id": "transcript",
@@ -53,7 +53,7 @@
         "id": "grades",
         "icon": "chart",
         "tone": "teal",
-        "label": "Grade × 9\ne.g. untooled-shops 1.0 pass"
+        "label": "Grade × 10\ne.g. untooled-shops 1.0 pass"
       },
       {
         "id": "conv",
