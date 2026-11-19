@@ -1,4 +1,4 @@
-namespace LouisAgent.Puls.Tests.Deploy;
+namespace LouisAgent.Site.Tests.Deploy;
 
 /// <summary>
 /// Both Azure apps read the scheme the visitor used from the proxy in front of them (FX68, Louis's screenshot:

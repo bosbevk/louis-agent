@@ -1,9 +1,9 @@
-namespace LouisAgent.Puls.Tests.Deploy;
+namespace LouisAgent.Site.Tests.Deploy;
 
 /// <summary>
-/// Holds the GitHub workflow that deploys Puls (F109) to Louis's three picks: it signs in to Azure by OpenID Connect
-/// with no password stored, it runs <c>deploy.ps1 release</c> and no other verb, and it deploys by itself only after CI
-/// passes on <c>main</c>, one deploy at a time, never cancelling one half-way.
+/// Holds the GitHub workflow that deploys the framework's two sites (F109, F164.3) to Louis's three picks: it signs
+/// in to Azure by OpenID Connect with no password stored, it runs <c>deploy.ps1 release</c> and no other verb, and it
+/// deploys by itself only after CI passes on <c>main</c>, one deploy at a time, never cancelling one half-way.
 /// </summary>
 /// <remarks>
 /// Plain string checks on the file's lines, no regex (ADR 0057), as <see cref="DeployFilesTests"/> does.
