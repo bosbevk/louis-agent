@@ -1,0 +1,56 @@
+{
+  "kind": "cards",
+  "title": "Context and scope at a glance",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "sys",
+            "icon": "chip",
+            "title": "louis-agent and its neighbours",
+            "code": "C4 level 1",
+            "look": "highlight",
+            "text": "Who uses it, and what it calls across its boundary."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "people",
+            "icon": "users",
+            "title": "The people",
+            "text": "Developers, Puls's users and the site's visitors."
+          },
+          {
+            "id": "systems",
+            "icon": "server",
+            "title": "The systems that drive it",
+            "text": "Rider, MCP clients and the orchestrator."
+          },
+          {
+            "id": "calls",
+            "icon": "world",
+            "title": "What it calls",
+            "text": "The model provider, the web, the mail service and the repositories."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "sys",
+        "to": "people"
+      },
+      {
+        "from": "sys",
+        "to": "systems"
+      },
+      {
+        "from": "sys",
+        "to": "calls"
+      }
+    ]
+  }
+}

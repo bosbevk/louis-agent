@@ -4,8 +4,14 @@
 > diagrams at the [C4 model](https://c4model.com)'s levels. **Elsewhere:** the decisions themselves, one record each, in
 > [architecture decisions](../adr/README.md); a project's files and types in [projects/](../projects/README.md).
 
-Read sections 1, 3 and 5 for the system at a glance; the others when you need them. Each section is a short file of
-its own, so a reader (or Claude) loads only the one a question needs.
+![The architecture: twelve short sections, where to start, how it runs, what holds it together, and the evals](diagrams/README.svg)
+
+This is the whole system at once, before you look at any one project. It follows arc42, a standard template that
+splits an architecture into twelve sections, and its pictures follow the C4 model's levels: the system and its
+neighbours first, then its parts, then the parts of core.
+
+For the system at a glance, read sections 1, 3 and 5. The others are there when you need them. Each section is a
+short file of its own, so a reader (or Claude) loads only the one a question needs.
 
 | # | Section | Answers |
 |---|---|---|
