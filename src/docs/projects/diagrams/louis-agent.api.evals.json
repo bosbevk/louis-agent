@@ -12,7 +12,7 @@
         { "id": "runner", "icon": "terminal", "title": "The runner",
           "text": "Starts a run as its own process and records what it ran with." },
         { "id": "stores", "icon": "database", "title": "The stores",
-          "text": "Runs, grades, drafts and judge checks in MongoDB, none without its address." },
+          "text": "Runs, grades, drafts and judge checks in MongoDB. Without it only the drafts are kept, in memory." },
         { "id": "routes", "icon": "shield", "title": "The admin routes",
           "text": "Runs, reviews, notes, rescoring, drafts and trends, behind the admin key." }
       ] }
