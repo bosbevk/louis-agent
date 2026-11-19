@@ -761,20 +761,46 @@ src/web/louis-agent.diagrams.engine/
 ├── Cards/      # OverviewLayout; Placed/ (PlacedCard, PlacedOverview, PlacedRail, RailEnd); Rails/ (CardRails, Rail, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes)
 ├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
 ├── Composite/  # CompositeFlow
-├── Flow/       # Bands, FlowText, GraphLayout, LongLines, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
+├── Flow/       # Bands, FlowText, GraphLayout, LongLines, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, BesideArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
 ├── Geometry/   # Geometries, IBox, IGeometry, IPoint; DotNet/ (DotNetBox, DotNetGeometry, DotNetPoint); Generic/ (Box, GenericGeometry, Point)
 ├── Icons/      # IconPaths
 ├── Keys/       # KeyParts, KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Nested/     # KeyLayout, NeighbourLayout, NestedLayout, NestedSizes; Placed/ (PlacedBox, PlacedNeighbour, PlacedNested, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBrand, PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureFonts, PictureLook); Theme/Pages/ (PagePalettes); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames
 ├── Words/      # Face
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
 ```
+
+## Configuration
+
+Neither library reads a setting. A picture is all in its JSON, and what a page or the docs' tool asks for is said
+in the call: the bare picture, the framed one, or a page's copy.
+
+The docs' tool has two options. With none, it writes every picture that changed. With `--check`, it writes nothing
+and fails, naming any stale picture. `import <doc>` reads a doc's Mermaid blocks into JSON once.
+
+    dotnet run --project src/tools/louis-agent.doc-diagrams
+    dotnet run --project src/tools/louis-agent.doc-diagrams --check
+    dotnet run --project src/tools/louis-agent.doc-diagrams -- import src/docs/projects/louis-agent.core.md
+
+## Extending it
+
+How to write and draw a picture is in [Draw a diagram](../guides/draw-a-diagram.md), with a whole example of each
+kind.
+
+A new kind of picture starts in the small project. It gets a member of `DiagramKind` with its wire name, the records
+its JSON reads into in its own folder's `Spec/`, what the reader refuses, and the types it may be in `DiagramTypes`.
+Then the engine gets its layout in a folder of its own, and a drawing and an `IDiagramRenderer` in a folder of
+`Svg/Renderers/Parts/`, put together through `PictureBuilder`. Its style goes in `Svg/Theme/Looks/Kinds/`, and its
+renderer is one more line in `DiagramRenderers`' list, never another case in a switch. Last come a golden file in the
+tests, and an example in the guide, which `GuideExamplesTests` asks for.
+
+A new icon is one more `DiagramIcon` member, with its path data copied from Tabler into `IconPaths`.
 
 ## Tests
 
@@ -797,8 +823,8 @@ kept or refused, and `Types/` what it's called. `Svg/PageSvgTests` checks a page
 with the geometry it's told.
 
 The golden files are `Svg/Renderers/Parts/Flows/flow-look.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`,
-`Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and
-`Tickets/ticket.svg`. `LOUIS_UPDATE_GOLDEN=1` writes them anew.
+`Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg`,
+`Svg/Renderers/Parts/Structure/composite-look.svg`, `Nested/nested-start.svg` and `Tickets/ticket.svg`. `LOUIS_UPDATE_GOLDEN=1` writes them anew.
 
 `src/tests/tools/louis-agent.doc-diagrams.tests` tests the tool on a temporary folder, and the import on samples of
 each Mermaid form. `Projects/ProjectDocsTests` checks that every project doc states its kind and shows exactly what its
@@ -807,7 +833,8 @@ of them as a nested picture. `DocsDiagramsTests` runs on the real docs: every pi
 is what its JSON draws, a doc shows it, and every picture a doc shows is there. Every flow and class chart keeps its
 words and lines clear (`EveryFlow_KeepsItsWordsAndLinesClear`), every sequence keeps its words inside its drawing, every `diagrams` folder is one
 the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`). `DocsTypesTests` checks that every picture with a type
-shows its name once, on the title's line, ending at the picture's right edge.
+shows its name once, on the title's line, ending at the picture's right edge. `GuideExamplesTests` holds that the
+guide teaches every kind the tool draws with a whole example, and that each one is a file the reader really reads.
 
 `BothFamiliesDrawTests` draws every picture of the docs three ways: with the geometry in use, with Microsoft's
 family, and with our own family in `float`. It holds that Microsoft's refuses none and draws the shapes and

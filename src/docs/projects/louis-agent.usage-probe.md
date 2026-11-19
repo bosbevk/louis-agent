@@ -1,7 +1,7 @@
 # louis-agent.usage-probe — design
 
-> **Kind:** console tool (a console app) · **Path:** `src/tools/louis-agent.usage-probe/` · **References:** louis-agent.core
-> · **Docker service:** none
+> **Kind:** console tool (a console app) · **Path:** `src/tools/louis-agent.usage-probe/` · **References:** louis-agent.core,
+> and the three model providers (`louis-agent.core.anthropic`, `.core.ollama`, `.core.openai`) · **Docker service:** none
 > **Also shows:** `component`, `sequence`
 
 ![The usage probe, and what it shows: the raw report, the ledger's line, and a ledger priced](diagrams/louis-agent.usage-probe.svg)
@@ -15,6 +15,9 @@ record from it.
 Run it before you trust the ledger for a new provider, or after you upgrade an adapter package. It began as the
 spike for the usage ledger's first step.
 
+The rest of this doc walks one probe from start to finish and what it costs, then the three commands that make no
+model call. It ends with the files, the settings and the tests, to look things up.
+
 *Decided in:* F1 step 1.
 
 ## How it works
@@ -25,8 +28,8 @@ Here's one probe, from start to finish.
 
 ### 1. The default probe
 
-It builds the same client and usage mapper the agents use, with `LlmClientFactory.Create` and `CreateUsageMapper`.
-Then it sends a few one-word requests with a long system prompt, both streaming and not.
+It builds the same client and usage mapper the agents use, with `LlmClientFactory.Create` and `CreateUsageMapper`,
+over the three providers it references: Anthropic, Ollama and the OpenAI-compatible one. Then it sends a few one-word requests with a long system prompt, both streaming and not.
 
 For each request it prints three things. First, every `UsageDetails` property and `AdditionalCounts` key, exactly as
 the adapter reported it. Second, for a stream, which update carried the `UsageContent`. And third, the `ledger:`
@@ -47,9 +50,9 @@ LLM_PROFILE=ollama dotnet run --project src/tools/louis-agent.usage-probe     # 
 LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project src/tools/louis-agent.usage-probe   # and another model
 dotnet run --project src/tools/louis-agent.usage-probe -- --think           # 2 reasoning requests: is thinking text returned?
 dotnet run --project src/tools/louis-agent.usage-probe -- --lines 100           # prompt size (default 600 Anthropic, 40 others)
-dotnet run --project src/tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-2026-10.jsonl   # price and total a ledger
+dotnet run --project src/tools/louis-agent.usage-probe -- --ledger demos/louis-agent/logs/usage-2026-10.jsonl   # price and total a ledger
 dotnet run --project src/tools/louis-agent.usage-probe -- --host-culture   # write the PC's culture to config/.env (F14)
-dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps .demo/logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL (F4)
+dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps demos/louis-agent/logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL (F4)
 ```
 
 ### 2. It costs real money
@@ -105,24 +108,32 @@ These are the types involved:
 | File | What's in it |
 |---|---|
 | `Program.cs` | The whole probe |
-| `louis-agent.usage-probe.csproj` | References core only |
+| `Messages/ProbeUserText.cs` | The words it prints, as message templates |
+| `Properties/launchSettings.json` | Rider's two run profiles: `usage-probe`, and `usage-probe --host-culture` |
+| `louis-agent.usage-probe.csproj` | References core and the three providers |
 
 ## Configuration
 
-It uses core's LLM settings: `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_THINKING` and the keys. A variable you
-set in the shell wins over `config/.env`.
+It uses core's LLM settings: `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_THINKING` and the keys. It finds them
+the way every host does: in `config/.env.secrets` and `config/.env`, from the `config/` folder `CONFIG_DIRECTORY` names
+or the nearest one found going up from where it runs, then `config/.env.{LLM_PROFILE}`. A variable you set in the
+shell wins over all of them.
+
+Rider's `usage-probe` profile points it at the louis-agent demo: its `config/`, its `logs/`, and its price and rate
+tables (`PRICES_FILE`, `RATES_FILE`). The `usage-probe --host-culture` profile runs that one command.
 
 ## Extending it
 
 The steps are in [Change the usage probe](../guides/change-the-usage-probe.md). In short: you check a new provider by
-running the probe. If it misreads something, the fix is a mapper in that provider's folder, chosen in
-`LlmClientFactory.CreateUsageMapper`.
+running the probe. If it misreads something, the fix is a mapper in that provider's own project, which the
+provider's `CreateUsageMapper()` returns. `LlmClientFactory.CreateUsageMapper` asks the provider for it.
 
 ## Tests
 
 It has no tests of its own, because it exists to call real providers. The mappers it exercises are tested beside
-their providers (`AnthropicUsageMapperTests`). The reading, pricing and totals behind `--ledger` are tested in
-`UsageReportTests`.
+their providers (`AnthropicUsageMapperTests`, in `louis-agent.core.anthropic.tests`). The reading, pricing and totals behind `--ledger` are tested in
+`UsageReportTests`, the cache lifetimes behind `--cache-gaps` in `CacheGapsTests`, and the one-line write behind
+`--host-culture` in `EnvFileTests`.
 
 ## Limits and plans
 

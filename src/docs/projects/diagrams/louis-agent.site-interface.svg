@@ -296,12 +296,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-note" x="968" y="343" text-anchor="start">on a mock website</text>
       <path class="cls-divide" d="M930 363H1287" />
       <text class="cls-member" x="930" y="381" text-anchor="start">Accent, Kicker, the recording, the website</text>
-      <rect class="cls-cover" x="916" y="449" width="385" height="64" rx="14" />
-      <rect class="mrq-glass" x="916" y="449" width="385" height="64" rx="14" />
+      <rect class="cls-cover" x="916" y="443" width="385" height="76" rx="14" />
+      <rect class="mrq-glass" x="916" y="443" width="385" height="76" rx="14" />
       <rect class="cls-badge tone-green" x="930" y="467" width="28" height="28" rx="9" />
       <text class="cls-mark" x="944" y="485.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="968" y="477" text-anchor="start">ExpertChat</text>
-      <text class="pic-note" x="968" y="493" text-anchor="start">the guide in the corner</text>
+      <text class="pic-name" x="968" y="471" text-anchor="start">ExpertChat</text>
+      <text class="pic-note" x="968" y="487" text-anchor="start">the guide, as the bar at</text>
+      <text class="pic-note" x="968" y="499" text-anchor="start">the foot of the page</text>
       <rect class="cls-cover" x="916" y="589" width="385" height="64" rx="14" />
       <rect class="mrq-glass" x="916" y="589" width="385" height="64" rx="14" />
       <rect class="cls-badge tone-violet" x="930" y="607" width="28" height="28" rx="9" />

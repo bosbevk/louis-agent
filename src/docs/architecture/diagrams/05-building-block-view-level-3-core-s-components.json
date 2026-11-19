@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "component",
   "title": "Building blocks, level 3: the engine's parts",
-  "caption": "One concern a folder: hosting, the agent, the model, tools, skills, usage and guards are core's components, each depending only on the ones under it.",
+  "caption": "One concern a folder: hosting, the agent, the model, delegation, the web seam, skills, usage and guards are core's components, each depending only on the ones under it.",
   "flow": {
     "nodes": [
       {
@@ -24,34 +24,40 @@
         "label": "Llm\nLlmClientFactory (a registry),\nmiddleware, the ILlmProvider\nseam"
       },
       {
-        "id": "tools",
-        "icon": "box",
+        "id": "deleg",
+        "icon": "users",
         "tone": "green",
-        "label": "Tools\none folder per toolset"
+        "label": "Delegation\nAskAgent, sub-sessions,\nminions"
+      },
+      {
+        "id": "web",
+        "icon": "world",
+        "tone": "amber",
+        "label": "Web\nthe IWebAccess seam"
       },
       {
         "id": "skills",
         "icon": "book",
         "tone": "amber",
-        "label": "Skills\nmarkdown loaders"
+        "label": "Skills\nmarkdown loaders, prompts\nby level"
       },
       {
         "id": "usage",
         "icon": "chart",
         "tone": "teal",
-        "label": "Usage · Pricing\nledger, prices, rates"
+        "label": "Usage \u00b7 Pricing\nledger, prices, rates"
       },
       {
         "id": "guard",
         "icon": "shield",
         "tone": "violet",
-        "label": "Guardrails\nworkspace boundary, secrets,\nSSRF"
+        "label": "Guardrails\nSSRF guard, the hosts'\nkey rule"
       },
       {
         "id": "base",
         "icon": "settings",
         "tone": "teal",
-        "label": "Config · Messages · Logging"
+        "label": "Config \u00b7 Messages \u00b7 Logging"
       }
     ],
     "edges": [
@@ -65,7 +71,11 @@
       },
       {
         "from": "agent",
-        "to": "tools"
+        "to": "deleg"
+      },
+      {
+        "from": "agent",
+        "to": "web"
       },
       {
         "from": "agent",
@@ -80,7 +90,7 @@
         "to": "guard"
       },
       {
-        "from": "tools",
+        "from": "deleg",
         "to": "guard"
       },
       {
@@ -89,6 +99,10 @@
       },
       {
         "from": "usage",
+        "to": "guard"
+      },
+      {
+        "from": "web",
         "to": "guard"
       },
       {

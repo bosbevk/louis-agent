@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Draw a diagram: the four steps",
+  "caption": "The JSON and the SVG are committed together, after you have looked at the picture yourself.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "json", "label": "Write the JSON\nbeside the doc", "icon": "file", "tone": "amber", "shape": "data" },
+      { "id": "draw", "label": "Draw it\nwith the tool", "icon": "terminal", "tone": "violet" },
+      { "id": "link", "label": "Link the SVG\nin the doc", "icon": "book", "tone": "green" },
+      { "id": "test", "label": "Does the\ntest pass?", "tone": "green", "shape": "decision" },
+      { "id": "look", "label": "Look at it,\nlight and dark", "icon": "browser", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "you", "to": "json" },
+      { "from": "json", "to": "draw" },
+      { "from": "draw", "to": "link" },
+      { "from": "link", "to": "test" },
+      { "from": "test", "to": "json", "word": "no" },
+      { "from": "test", "to": "look", "word": "yes" }
+    ],
+    "direction": "right"
+  }
+}

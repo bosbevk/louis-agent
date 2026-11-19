@@ -7,6 +7,8 @@
 > [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
 > [another agent on core](../../engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
+![The runtime view: tools and skills, one chat turn, and the work across agents](diagrams/06-runtime-view.svg)
+
 ## One turn, as a film
 
 <picture>
@@ -21,10 +23,10 @@ site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demo
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in the `prompts/` of core, an identity or a pack |
+| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in the `prompts/` of core, an identity or a pack, and the function skills the agent wrote |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
-| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md`, `agent/functions/code-review.md` |
+| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md` (the dotnet pack's guide), a function skill in the skills folder's `agent/functions/` |
 
 Tools give the agent abilities; skills tell it how and when to use them. The agent can add both: `CreateSkillFile` writes
 a new skill file and `CreateTool` a script-backed tool, and each waits in a `pending/` folder for your `/approve <Name>`
@@ -39,20 +41,22 @@ names, and the engine registers only those tools:
 ```csharp
 // AgentEngineFactory: the session's toolset names → their tool objects
 var resolved = Catalog.Resolve(toolsets, Context);                         // e.g. "files", "git"
-var engine = new AgentEngine(skills, chatClient, options, supportsTools,
-    toolsets: ToolsetCatalog.BuildTools(resolved, Context), ...);
+bool selfExtension = resolved.Any(t => t.IsEngineProvided);
+var tools = ToolsetCatalog.BuildTools(resolved, Context);
+var engine = new AgentEngine(SkillLoader.Load(...), chatClient, options, supportsTools, toolsets: tools, ...);
 
-// AgentEngine constructor (simplified)
-_registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));   // every session
-_registry.AddPublicMethods(new ClockTools());                             // every session: today's date (F22)
-foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset); // only the session's toolsets
-if (selfExtension) AddSelfExtensionTools();                               // the skills toolset: CreateTool, CreateSkillFile…
+// OwnTools.Register, which the engine's constructor calls (simplified)
+registry.Add(Function(skillTools.ExecuteSkill, nameof(AgentEngine.ExecuteSkill)));  // every session
+registry.AddPublicMethods(new ClockTools(clock, options.HostTimeZone));            // every session: today's date (F22)
+foreach (object toolset in toolsets) registry.AddPublicMethods(toolset);          // only the session's toolsets
+if (selfExtension) AddSelfExtensionTools(...);    // the skills toolset: CreateSkillFile, ReloadSkills, CreateTool, ListAgentTools
 ```
 
 Every **public** instance method becomes a tool, named after the method, with its `[Description]` attributes as the
 documentation. Keep helpers `internal` or `private`. `ToolRegistry` keeps every tool in name order, so the start of
 every request is the same bytes and the prompt cache holds (F4). A toolset whose settings are missing (Paymo or DevOps
-without its API key) can't be loaded. An agent built on core, like the orchestrator, passes its own tool objects as
+without its API key, or `agents` without `AGENT_PEERS`) can't be loaded. When an identity has skills to read on
+demand, its session also gets `ReadSkill`, which reads only those. An agent built on core, like the orchestrator, passes its own tool objects as
 `toolsets:` the same way (the guide's [Building another agent on core](../../engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core)).
 
 ### How skills are loaded
@@ -61,11 +65,17 @@ The system prompt is put together from skill files, in a fixed order, by the eng
 
 It opens with the principles (`shared/principles.md`), which are the same for every agent. Then comes the role. At
 level 0 that's the session's mode, its voice and then its routing: the default `louis-agent/voice`, or Puls's language
-file followed by `puls/voice.md`. At level 1 it's a specialist's role from `specialists/`, with no routing, because its
-toolsets were chosen for it. At level 0 the identity's own skills follow the voice.
+file (`puls/voice-af`) followed by Puls's shared `puls/voice.md`. At level 1 it's a specialist's role from
+`specialists/`, with no routing, because its toolsets were chosen for it. At level 2 it's a minion's function from
+`minions/`, after its product's minion base, the file that says what every minion is.
 
-Next comes the guide of each toolset the session loaded (`toolsets/{toolset}.md`), and no other. Last, and only with
-the `skills` toolset, comes every function skill the agent wrote.
+At level 0 the identity's own skills follow the voice. The ones it always needs are there whole, and the ones it reads
+on demand are listed by name, each with the line that says when to read it.
+
+Next comes the guide of each toolset the session loaded (`toolsets/{toolset}.md`), and no other. A minion gets no
+guide, because its role says what to do with its one tool. A session with the `agents` toolset then gets the list of
+the agents it may ask, its identity's `Calls`, the same list `AskAgent` checks. Last, and only with the `skills`
+toolset, comes every function skill the agent wrote.
 
 The combined text is the system prompt. Core's own files are in `src/engine/louis-agent.core/prompts/`, and each
 identity and pack embeds its own. All of them are read only from their assemblies, so changing a word means a rebuild.
@@ -75,16 +85,12 @@ identity and pack embeds its own. All of them are read only from their assemblie
 
 ## A chat turn
 
-```
-User message
-  ↓ host (CLI / ACP / API) → AgentEngine.StreamPromptAsync(history, message)
-  ↓ system prompt = skill documentation; ChatOptions: tools, reasoning, 16k output limit
-  ↓ FunctionInvokingChatClient loop
-  │   model streams thinking + text, then tool calls
-  │   each call → ToolCallGuards.InvokeAsync (log, run, guard the result) → result back to the model
-  ↓ answer streams to the host as it is written
-  ↓ the whole turn (thinking blocks, calls, results, answer) is appended to the history
-```
+A host hands your message to the engine, and the engine sends it to the model with the system prompt, the tools,
+the reasoning setting and a 16,000-token output limit. The model thinks, then calls tools. Each call goes through the
+guards, and its result goes back to the model, round after round, until it answers. The answer streams back to the
+host as it is written, and the whole turn is kept in the history.
+
+![A chat turn: the host, the engine, the model, the guards and a pack's tool, with the tool rounds in a loop](diagrams/06-runtime-view-a-chat-turn.svg)
 
 ### Guards around tool calls
 
@@ -107,8 +113,8 @@ specialist then answers from what it has, instead of growing its context further
 
 ## A turn, step by step
 
-**1. You send a message** — from Rider, the web app, the API or the CLI. Attached files are added to the message as
-fenced code blocks (`[Attached file: name]`).
+**1. You send a message** — from Rider, a site, the API or the CLI. In Rider, attached files are added to the
+message as fenced code blocks (`[Attached file: name]`).
 
 **2. The host streams the turn**
 
@@ -167,7 +173,8 @@ continue in smaller pieces (up to 3 times when streaming).
 
 ## Debugging
 
-Every call is logged to stderr and, in Docker, to `logs/agent-{host}-{time}.log`:
+Every call is logged to stderr and, when `LOG_DIRECTORY` is set (it is in Docker), to a file per run,
+`agent-{host}-{time}-{process}.log`:
 
 ```
 [TOOL] -> GetLog({"count":1})
@@ -176,7 +183,7 @@ Every call is logged to stderr and, in Docker, to `logs/agent-{host}-{time}.log`
 [WARN] Reply cut off by the output limit (16000 tokens); asking the model to continue
 ```
 
-`logs/oversized-tool-results.jsonl` and `logs/truncated-tool-calls.jsonl` record the cases where a tool returned too
+In the same folder, `oversized-tool-results.jsonl` and `truncated-tool-calls.jsonl` record the cases where a tool returned too
 much or a reply ran out of room.
 
 To see what the model is offered, inspect `engine.Tools` (name, description, JSON schema) in a test or the debugger.
@@ -185,6 +192,6 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 
 | Scenario | What happens | In detail |
 |---|---|---|
-| **Puls delegates** | Puls opens a sub-session on its specialist with only the toolsets the task needs and a role; the specialist's steps stream into Puls's Werk panel; Puls answers in its own voice | [Agent to agent: one address for every call](../AGENT_COMMUNICATION.md#agent-to-agent-one-address-for-every-call) |
+| **Puls delegates** | Puls asks its specialist by its address (`AskAgent("puls.cook", …)`), and the specialist's session loads the toolsets its role names; its steps stream into the chat's work panel; Puls answers in its own voice | [Agent to agent: one address for every call](../AGENT_COMMUNICATION.md#agent-to-agent-one-address-for-every-call) |
 | **An eval runs** | The runner, started by the API, opens real sessions on the API, grades each conversation and writes the protocol's lines; the API records them and joins the cost from the ledger | [The evals](evals.md) |
 | **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on louis-agent.api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../../../demos/louis-agent/docs/projects/orchestrator-runbooks.md) |

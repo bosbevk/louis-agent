@@ -1,36 +1,49 @@
 # louis-agent.evals.runner — design
 
-> **Kind:** program (a console app, `net10.0`) · **Path:** `src/evals/louis-agent.evals.runner/` · **References:**
-> louis-agent.evals, louis-agent.composition (the toolsets an eval's modes name, ADR 0027), and what proves each identity
-> and pack, which only the runner references so no host carries it (ADR 0073): louis-agent.identity.puls.evals (its eval
-> folders and readers), louis-agent.identity.puls.judges (its judge), louis-agent.pack.where-to-buy.checks and
-> louis-agent.pack.recipes.checks · **Used by:** louis-agent.api (starts it as a child process; published to
-> `/app/evals` in the API's images)
-> **Also shows:** `component`
+> **Kind:** library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.runner/` · **References:** louis-agent.evals,
+> YamlDotNet · **Used by:** each demo's runner program, `demos/puls/hosts/louis-agent.puls-eval-runner` and
+> `demos/louis-agent/hosts/louis-agent.coding-eval-runner`, which the API starts as a child process (published to
+> `/app/evals` in each demo's API image)
+> **Also shows:** `component`, `deployment`
 
 ![The eval runner, and what it does: the catalogue, a run or a re-score, and the judge](diagrams/louis-agent.evals.runner.svg)
 
 ## Purpose
 
-This is the command that runs an eval: `dotnet louis-agent.evals.runner.dll run {eval}`. It lists the evals it
-knows, runs one, re-scores a stored run, writes a label sheet, and checks a judge.
+This is the command that runs an eval. It lists the evals it knows, runs one, re-scores a stored run, writes a label
+sheet, and checks a judge.
 
-The API never references an eval project itself. It starts this runner and reads what it writes on stdout. That's
-why a new eval is just a folder of files, with nothing to change in the API.
+It's a library, and the program around it is each demo's own. A demo's runner program is a few lines: it calls
+`EvalRunnerHost.RunAsync` with the checks and readers its evals can name, its model providers and its telemetry.
+Puls's, `louis-agent.puls-eval-runner`, hands in `PulsCatalogs.All`, with the packs' checks, Puls's judges and Puls's
+readers. The coding demo's hands in `RunnerCatalogs.GeneralOnly`, since its evals need only the general checks. The
+library never names a pack or an identity, because a package can't reference someone's project. So what proves an
+identity or a pack is referenced only by that demo's runner program, and no host carries it
+([ADR 0073](../adr/0073-packs-reference-no-evals.md), [ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
+
+You run it as `dotnet louis-agent.puls-eval-runner.dll run {eval}`, or the coding demo's in the same way. The API
+never references an eval project itself. It starts the runner program and reads what it writes on stdout. That's why
+a new eval is just a folder of files, with nothing to change in the API.
+
+The rest of this doc follows the runner's work: finding the evals, reading the command line, the studio's commands,
+promptfoo, a run, a re-score, checking the judge, and the stub eval it carries.
 
 *Decided in:* [ADR 0022](../adr/0022-benchmarks-recorded-from-the-protocol.md).
 
 ## How it works
+
+![One command: the program's telemetry started, the command line read, every eval folder found and those EVALS= names kept, then the command done](diagrams/louis-agent.evals.runner-flow.svg)
 
 ### 1. Finding the evals
 
 Every eval is a folder of files. `Catalog/EvalFolders` finds them: every `eval.json` under `EvalFiles/`, beside the
 runner. A folder's path in there is where it sits in the repository.
 
-The runner builds each eval's checks from the check catalogue it gathers, in `Catalog/RunnerCatalogs`, from the
-program that started it. That's the general checks first, then each pack's checks project, then Puls's judges
-(`PulsJudges.All`). A check's reader comes from the reader catalogue, held in the same record: the general readers
-first, then the program's own, such as `PulsReaders.All`.
+The runner builds each eval's checks from the catalogues its program handed in, as a `RunnerCatalogs`. The general
+checks always come first, then the program's own: for Puls, each pack's checks project and then Puls's judges. A
+check's reader comes from the reader catalogue, held in the same record: the general readers first, then the
+program's own, such as Puls's readers. A check type or reader named twice stops the runner as it starts. The judges
+build their model clients through the providers the program composed.
 
 `EVALS=` keeps only the evals of the identities it names, or all of them when it's not set. If you name something no
 eval proves, it's refused, and the refusal names the ones that do. So a typo runs nothing.
@@ -78,7 +91,8 @@ folder as a promptfoo file. A check with no counterpart is named in a comment at
 ### 5. A run
 
 A run is the harness's `EvalRunner`. It runs the modes and the repeats, and writes protocol v2 on stdout, while the
-logs go to stderr. The run's id is `BENCHMARK_RUN`, or else `local-` plus its start time.
+logs go to stderr. The runner loads no `.env` file and isn't built through `AgentHost`, so it starts the telemetry
+its program gave before anything else. The run's id is `BENCHMARK_RUN`, or else `local-` plus its start time.
 
 ### 6. A re-score
 
@@ -92,8 +106,8 @@ model judge about every label, prints how often it agrees, and ends with an `@` 
 
 ### 8. The stub eval
 
-The stub eval, in `Evals/Stub/`, answers from canned events through a `CannedSessionClient`. There's no session and
-no model. It proves the runner works end to end, in the tests and in the portal, for free.
+The stub eval, in `Evals/Stub/`, answers from canned events through a `StubSessionClient`. There's no session and
+no model. It's listed after every other eval, whichever program runs it. It proves the runner works end to end, in the tests and in the portal, for free.
 
 ![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
@@ -107,9 +121,10 @@ These are the types involved:
 
 | Folder | What's in it |
 |---|---|
-| `Arguments/` | `CommandLine`, the run request |
+| `EvalRunnerHost.cs` | The one call a program makes: the catalogues and services in, the command run, the exit code back |
+| `Arguments/` | `CommandLine`, the run request, `BenchmarkRun` (the run's id) |
 | `Calibration/` | The label sheet and the calibration commands |
-| `Catalog/` | `EvalCatalog`, `EvalFolders`, `RunnerCatalogs`, the listing line, `ChecksListing` (`--checks`) |
+| `Catalog/` | `EvalCatalog`, `EvalFolders`, `RunnerCatalogs` (what a program hands in), the listing line, `ChecksListing` (`--checks`) |
 | `Evals/Stub/` | The stub eval, its mode, role and toolset |
 | `Manuals/` | The stub's manual (`stub.md`) |
 | `Messages/`, `Refusal/` | The runner's texts and the refusal report |
@@ -129,12 +144,13 @@ The API starts it inside its container, or you start it by hand from a terminal.
 | `EVALS` | The identities whose evals the catalogue lists, by commas, case ignored (`puls` today); an unknown one is refused; unset: all |
 | `BENCHMARK_RUN` | The run's id, so the API can tie the lines to its run |
 | `AGENT_API`, `AGENT_API_KEY`, `EVAL_JUDGE_*` | Read by the harness ([louis-agent.evals](louis-agent.evals.md)) |
-| `EVAL_RUNNER` (the API's) | Where the API finds this runner; `/app/evals/louis-agent.evals.runner.dll` in the images |
+| `EVAL_RUNNER` (the API's) | Where the API finds the demo's runner program: `/app/evals/louis-agent.coding-eval-runner.dll` in the coding demo's API image, Puls's in its own |
 
 ## Extending it
 
-A new eval is a folder of files beside its identity or pack. It reaches the runner through
-`louis-agent.composition`, so nothing here changes. The steps are in [Add an eval](../guides/add-an-eval.md).
+A new eval is a folder of files beside its identity or pack. Its project is copied beside the demo's runner
+program, which references it, so nothing here changes. A new kind of check or reader is listed in the demo's
+catalogues. The steps are in [Add an eval](../guides/add-an-eval.md).
 
 ## Tests
 
@@ -144,12 +160,13 @@ an unknown name is refused) and the catalogue (an eval with no grader is refused
 every eval folder is checked for conformance, and the data files are checked to be copied beside the assembly.
 
 The studio's commands (`--checks`, `--check`, `--folder`, `--samples`) have tests too, and
-`PromptfooRoundTripTests` takes a promptfoo file all the way round. `StubCheckTests`, in the API's integration tests,
-runs the real runner through the API.
+`PromptfooRoundTripTests` takes a promptfoo file all the way round. `StubCheckTests`, in the Puls demo's API
+integration tests, runs the real runner through the API.
 
 ## Limits and plans
 
-A run that costs money waits for Louis's go. CI only runs the graders, on recorded transcripts.
+A run against a real model costs money, so it waits for Louis's go. CI only runs the graders, on recorded
+transcripts.
 
 ## Related docs
 

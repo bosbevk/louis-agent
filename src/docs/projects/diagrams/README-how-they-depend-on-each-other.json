@@ -2,14 +2,14 @@
   "kind": "flow",
   "type": "package",
   "caption": "The engine: core sits in the middle. What runs it and what picks its packs are above it, what an agent is made from is below, and the contracts they all agree on are at the bottom.",
-  "title": "How the projects depend on each other: a demo's programs, core and what runs on it, identities, packs and the contracts",
+  "title": "How the projects depend on each other: the programs, core and what runs on it, identities, packs and the contracts",
   "flow": {
     "nodes": [
       {
         "id": "Programs",
         "icon": "terminal",
         "tone": "blue",
-        "label": "A demo\u0027s programs\ncoding-api, coding-cli,\ncoding-acp, coding-mcp\npuls-api, puls-eval-runner"
+        "label": "The programs\ncoding-api, -cli, -acp, -mcp,\n-eval-runner, puls-api,\npuls-eval-runner, starter-api,\nsite-api, site-framework-api"
       },
       {
         "id": "Hosts",

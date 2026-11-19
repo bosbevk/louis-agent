@@ -65,8 +65,8 @@ The header carries the louis-agent wordmark and the line "The C# AI agent framew
 and Ask Orbi. The left column is the docs' menu, the seven pages under their groups. The middle column is the page,
 with the page before and after at its foot. The right column holds the framework Orbi, docked, and while Orbi is
 closed, on an extra-large screen, "On this page", the page's sections, the same list the frame's section index
-reads, under the button Ask about this page. The frame's way back up is switched off. The layout holds nothing but the
-framework's parts given the site's words.
+reads, under the button Ask about this page. The footer names the framework, "an AI agent framework in C#". The
+frame's way back up is switched off. The layout holds nothing but the framework's parts given the site's words.
 
 ### 3. Asking the framework Orbi
 
@@ -105,10 +105,10 @@ app.Run();
 
 It is the framework's API and the site's files. What it runs is its catalogue, `FrameworkCatalog`: the framework Orbi
 alone, on two packs, the docs it answers from and the site it shows places with. Nothing else, so a visitor reaches
-no shell, no file or git tool, and no lead. The identity is the catalogue's first, so it is the default, and the door
-for visitors without a key, `OPEN_IDENTITIES=louis-agent-framework`, opens to it alone, at most
-`OPEN_SESSIONS_PER_DAY` sessions a day from one address, 20 in the compose file and the run profile, the same
-cap as louis-agent.dev.
+no shell, no file or git tool, and no lead. The identity is the catalogue's first, so it is the default. The door
+for visitors without a key, `OPEN_IDENTITIES=louis-agent-framework`, opens to it alone. It lets one address open at
+most `OPEN_SESSIONS_PER_DAY` sessions a day, 20 in the compose file and the run profile, the same cap as
+louis-agent.dev in Azure.
 
 `MapLouisAgentSite` draws each page as HTML before the app starts in the browser, so a search engine and a reader with
 no script both get the page's words. `FrameworkPageServices` registers what a page drawn there asks for, the site's
@@ -117,7 +117,7 @@ it which assemblies the areas brought ([louis-agent.api](louis-agent.api.md)). T
 search reads and Orbi's `FindPlace` reads. Like every host of the API, it refuses to start without `AGENT_API_KEY`.
 
 It runs in the site's compose file, `src/site/docker/docker-compose.yml`, as the service `framework`, on 127.0.0.1:5084
-by default (`FRAMEWORK_PORT`), from `Dockerfile.framework`. The image is the runtime, the site's own copies of the
+by default (`FRAMEWORK_PORT`), from `Dockerfile.framework`. It keeps its logs in `src/site/logs/framework` on the PC. The image is the runtime, the site's own copies of the
 price and rate tables the usage ledger reads, and the docs Orbi reads. Those are laid out under `/app/docs` as the
 repo lays them, so their links hold: the repo's `README.md`, `ROADMAP.md` and `TODO.md`, the framework's docs
 without the films, each demo's docs and the packs'. `DOCS_ROOT` points at them. In Rider, the host's
@@ -160,9 +160,11 @@ The place to look a file up.
 The host reads the API's settings ([Setup](../SETUP.md)) from the site's `config/` folder: `AGENT_API_KEY`, and
 `ANTHROPIC_API_KEY` so Orbi can answer, from `.env.secrets`, and anything optional from `.env`. In the compose file
 the model comes from `.env.anthropic`, Claude Haiku 5.5. The run profile loads no model file, and the engine's
-defaults are the same provider and model. `OPEN_IDENTITIES` and `OPEN_SESSIONS_PER_DAY` open the door, and `DOCS_ROOT`
-says where the docs are. The compose file, the run profile and the Azure yaml set all three, the door at 20 sessions
-a day in each, and the image sets `DOCS_ROOT` too. `FRAMEWORK_PORT` picks the review copy's port.
+defaults are the same provider and model. `OPEN_IDENTITIES` and `OPEN_SESSIONS_PER_DAY` open the door, at 20 sessions
+a day in the compose file, the run profile and the Azure yaml alike. `DOCS_ROOT` says where the docs are: the image
+and the Azure yaml set it to `/app/docs`, the compose file keeps the image's, and the run profile points it at the
+repo.
+`FRAMEWORK_PORT` picks the review copy's port.
 
 ## Extending it
 

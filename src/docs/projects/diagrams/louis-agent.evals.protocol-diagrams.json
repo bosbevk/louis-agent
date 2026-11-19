@@ -22,13 +22,13 @@
         "id": "api",
         "icon": "server",
         "tone": "red",
-        "label": "louis-agent.api: the store and\nthe export"
+        "label": "louis-agent.api.evals: the store\nand the export"
       },
       {
         "id": "web",
         "icon": "browser",
         "tone": "blue",
-        "label": "louis-agent.web: the live view"
+        "label": "louis-agent.web.evals: the live view"
       },
       {
         "id": "contract",

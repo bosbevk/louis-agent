@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Build a pack at a glance",
+  "caption": "A pack names no identity and references no other pack, so it could be served as an MCP server unchanged.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "pack", "icon": "box", "title": "A pack", "code": "IAgentPack", "look": "highlight",
+          "text": "What an agent can do, on the composition contracts." }
+      ] },
+      { "cards": [
+        { "id": "tools", "icon": "code", "title": "Its tools", "code": "Tools/", "text": "Public methods: plain data in, text out." },
+        { "id": "guide", "icon": "book", "title": "Its guide", "code": "toolsets/{name}.md", "text": "When the model should use them." },
+        { "id": "settings", "icon": "settings", "title": "Its settings", "text": "Its own options class, read once." },
+        { "id": "data", "icon": "database", "title": "Feeds, screens, imports", "text": "Data it publishes, shows and takes in." }
+      ] },
+      { "cards": [
+        { "id": "root", "icon": "stack", "title": "Named by a demo", "text": "CodingCatalog lists it; Puls picks it with PackKind and PACKS." }
+      ] }
+    ],
+    "links": [
+      { "from": "pack", "to": "tools" },
+      { "from": "pack", "to": "guide" },
+      { "from": "pack", "to": "settings" },
+      { "from": "pack", "to": "data" }
+    ]
+  }
+}

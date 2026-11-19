@@ -94,7 +94,7 @@
     ],
     "relations": [
       { "from": "host", "to": "server", "kind": "creates" },
-      { "from": "host", "to": "discovery", "kind": "uses", "word": "starts" },
+      { "from": "host", "to": "discovery", "kind": "uses", "word": "AgentHost.Build starts it" },
       { "from": "server", "to": "session", "kind": "holds", "word": "one per chat" },
       { "from": "server", "to": "handler", "kind": "holds" },
       { "from": "handler", "to": "builder", "kind": "uses", "word": "the prompt's text" },

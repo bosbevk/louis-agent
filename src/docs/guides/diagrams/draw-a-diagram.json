@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Draw a diagram at a glance",
+  "caption": "A picture is data: you write what it holds, the tool places everything, and a test keeps the two equal.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "tool", "icon": "chart", "title": "The diagrams tool", "code": "louis-agent.doc-diagrams", "look": "highlight",
+          "text": "Draws every diagrams/*.json under the docs into its SVG." }
+      ] },
+      { "cards": [
+        { "id": "json", "icon": "file", "title": "The JSON", "text": "Its kind, title, caption and what it holds." },
+        { "id": "svg", "icon": "browser", "title": "The SVG", "text": "Drawn by the tool, never edited by hand." },
+        { "id": "link", "icon": "book", "title": "The link", "text": "A markdown image in the doc, with its alt text." },
+        { "id": "test", "icon": "checks", "title": "The test", "code": "DocsDiagramsTests", "text": "Fails on a stale or unlinked picture." }
+      ] },
+      { "cards": [
+        { "id": "kinds", "icon": "stack", "title": "Seven kinds", "text": "cards, flow, sequence, classes, nested, composite and ticket." }
+      ] }
+    ],
+    "links": [
+      { "from": "tool", "to": "json" },
+      { "from": "tool", "to": "svg" },
+      { "from": "tool", "to": "link" },
+      { "from": "tool", "to": "test" }
+    ]
+  }
+}

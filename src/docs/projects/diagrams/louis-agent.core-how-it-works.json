@@ -10,7 +10,7 @@
         "shape": "data",
         "icon": "file",
         "tone": "amber",
-        "label": "config/.env \u002B .env.secrets\n\u002B LLM profile\n.env.{LLM_PROFILE}\n(AgentHost.LoadEnvironment)"
+        "label": "config/.env \u002B .env.secrets\n\u002B LLM profile\n.env.{LLM_PROFILE}\n(HostEnvironment.Load)"
       },
       {
         "id": "Opts",
@@ -52,7 +52,7 @@
         "id": "Tools",
         "icon": "box",
         "tone": "green",
-        "label": "Tool classes\n(files, git, dotnet, scripts,\nweb, Paymo, DevOps, skills)"
+        "label": "Tool classes\ncore's skills and agents,\nand each pack's toolsets"
       },
       {
         "id": "Rec",

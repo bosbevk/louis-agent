@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "component",
   "title": "Context and scope: louis-agent, its people and the systems around it",
-  "caption": "One system and its neighbours: people use it, and it calls the models, the web and the services it watches.",
+  "caption": "One system and its neighbours: people use it, and it calls the models, the web, the mail and the services it watches.",
   "flow": {
     "nodes": [
       {
@@ -20,6 +20,13 @@
         "label": "Puls user\n[person]"
       },
       {
+        "id": "visitor",
+        "shape": "terminal",
+        "icon": "world",
+        "tone": "blue",
+        "label": "Site visitor\n[person]"
+      },
+      {
         "id": "rider",
         "icon": "code",
         "tone": "red",
@@ -35,7 +42,7 @@
         "id": "agent",
         "icon": "chip",
         "tone": "green",
-        "label": "louis-agent\ncoding agent and Puls"
+        "label": "louis-agent\nthe coding agent, Puls,\nthe guide, the triage team"
       },
       {
         "id": "orch",
@@ -47,7 +54,7 @@
         "id": "llm",
         "icon": "cloud",
         "tone": "red",
-        "label": "Model provider\nAnthropic \u00B7 Ollama \u00B7\nOpenAI-compatible\n[external system]"
+        "label": "Model provider\nAnthropic \u00b7 Ollama \u00b7\nOpenAI-compatible\n[external system]"
       },
       {
         "id": "repo",
@@ -60,19 +67,25 @@
         "id": "web",
         "icon": "world",
         "tone": "red",
-        "label": "Web\nsearch \u00B7 pages \u00B7 exchange\nrates\n[external system]"
+        "label": "Web\nsearch \u00b7 pages \u00b7 exchange\nrates \u00b7 OpenStreetMap\n[external system]"
       },
       {
         "id": "biz",
         "icon": "server",
         "tone": "red",
-        "label": "Paymo \u00B7 Azure DevOps\n[external system]"
+        "label": "Paymo \u00b7 Azure DevOps\n[external system]"
       },
       {
         "id": "svc",
         "icon": "server",
         "tone": "red",
         "label": "A watched service\n(a microservice)"
+      },
+      {
+        "id": "mail",
+        "icon": "mail",
+        "tone": "red",
+        "label": "Mail service\nResend\n[external system]"
       }
     ],
     "edges": [
@@ -97,6 +110,11 @@
         "word": "chat in the browser"
       },
       {
+        "from": "visitor",
+        "to": "agent",
+        "word": "the guide and the showroom,\nno sign-in, within a cap"
+      },
+      {
         "from": "mcpc",
         "to": "agent",
         "word": "MCP: tools only"
@@ -104,7 +122,7 @@
       {
         "from": "orch",
         "to": "agent",
-        "word": "HTTP \u002B SSE: fix requests"
+        "word": "HTTP + SSE: fix requests"
       },
       {
         "from": "orch",
@@ -130,6 +148,11 @@
         "from": "agent",
         "to": "biz",
         "word": "HTTPS, when keys are set"
+      },
+      {
+        "from": "agent",
+        "to": "mail",
+        "word": "a lead for the owner"
       }
     ],
     "direction": "down"

@@ -46,7 +46,7 @@
         "id": "Skills",
         "icon": "book",
         "tone": "teal",
-        "label": "SkillsToolProvider\nlist_skills \u00B7 get_skill_info \u00B7\nget_skill_documentation"
+        "label": "SkillsToolProvider\nListSkills \u00B7 GetSkillInfo \u00B7\nGetSkillDocumentation"
       }
     ],
     "edges": [

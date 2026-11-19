@@ -1,0 +1,66 @@
+{
+  "kind": "cards",
+  "title": "The architecture at a glance",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "arch",
+            "icon": "book",
+            "title": "How louis-agent is built",
+            "code": "arc42",
+            "look": "highlight",
+            "text": "Twelve standard sections, each a short file of its own, with pictures at the C4 model's levels."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "s1",
+            "icon": "info",
+            "title": "Start here",
+            "text": "Sections 1, 3 and 5: what it is, who it talks to, and its parts."
+          },
+          {
+            "id": "s6",
+            "icon": "play",
+            "title": "How it runs",
+            "text": "Section 6 for a turn and its guards, section 7 for where each part runs."
+          },
+          {
+            "id": "s8",
+            "icon": "shield",
+            "title": "What holds it together",
+            "text": "Sections 8 to 12: crosscutting concepts, decisions, quality, risks and words."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "evals",
+            "icon": "checks",
+            "title": "The evals",
+            "text": "How the harness, the runner, the protocol and the portal fit together."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "arch",
+        "to": "s1"
+      },
+      {
+        "from": "arch",
+        "to": "s6"
+      },
+      {
+        "from": "arch",
+        "to": "s8"
+      }
+    ]
+  }
+}

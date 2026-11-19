@@ -9,7 +9,7 @@
 > **Also shows:** `sequence`
 
 > **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.framework/` ·
-> **References:** `louis-agent.composition` only · **Used by:** `louis-agent.site-framework-api` (the framework's
+> **References:** `louis-agent.composition` only, and the embedded file provider package · **Used by:** `louis-agent.site-framework-api` (the framework's
 > site's host)
 
 ![The framework Orbi, and its two packs: the docs and the site](diagrams/louis-agent.identity.framework.svg)
@@ -64,13 +64,16 @@ doc says. When the docs don't say, it says it doesn't know and where they would.
 came from, by its path in the repo, such as `src/docs/adr/0027-engine-identities-and-packs.md`.
 
 It talks as one developer to another: names, files, types, the design decision and why, with a term's plain meaning
-the first time. Asked for code, it writes the whole thing from the listing in the doc it read, with its using lines
-and the settings it needs.
+the first time. It teaches, so every answer leaves the developer knowing one thing they didn't. Asked for code, it
+writes the whole thing they would paste, in a fenced block with its language, taken from the listing in the doc it
+read, with its using lines, and under it the settings it needs to run, one line each.
 
 It sees the page the developer sees. Each message from a page carries a block with the page's address, its words and
-its places by their own addresses, so "this" needs no search. When a page or a section of the site answers better
+its places by their own addresses, so "this" needs no search. A message without that block is from the same page as
+the one before. When a page or a section of the site answers better
 than a sentence, it opens it once with `ShowPage`, finding it first with `FindPlace` when it doesn't know where it
-is. And it ends with `Offer`: two or three short next steps, the likeliest one suggested.
+is, and it never opens a page when a sentence answers. And it ends with `Offer`: two or three short next steps, the
+likeliest one suggested.
 
 ![A listing asked about: it reads its skill, searches and reads the docs, answers with the doc's path, and offers choices](diagrams/louis-agent.identity.framework-sequence.svg)
 
@@ -93,8 +96,8 @@ to an ADR, a how it works to a project doc and a how-to to a guide.
 
 ### 5. Where its knowledge comes from
 
-Everything it knows comes from the docs toolset, over `DOCS_ROOT`. The site's image carries the docs laid out as the
-repo lays them, and on the PC the run profile points at the repo itself, so an answer can always name the doc it
+Everything it knows comes from the docs toolset, over `DOCS_ROOT`. The site's image carries the docs at `/app/docs`,
+laid out as the repo lays them, and on the PC the host's run profile sets `DOCS_ROOT` to `../../..`, the repo itself, so an answer can always name the doc it
 read ([louis-agent.site-framework](louis-agent.site-framework.md)).
 
 ## Structure

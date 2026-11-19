@@ -15,7 +15,7 @@
       { "step": "message", "from": "host", "to": "page", "text": "prerender it" },
       { "step": "reply", "from": "page", "to": "host", "text": "the HTML, its head and its sections" },
       { "step": "reply", "from": "host", "to": "visitor", "text": "the page, readable before the script" },
-      { "step": "message", "from": "visitor", "to": "chat", "text": "a question in the corner" },
+      { "step": "message", "from": "visitor", "to": "chat", "text": "a question in the bar" },
       { "step": "message", "from": "chat", "to": "host", "text": "open a session, then the message" },
       { "step": "note", "over": ["host"], "text": "the open door: sessions a day" },
       { "step": "message", "from": "host", "to": "guide", "text": "the turn, the page in view" },

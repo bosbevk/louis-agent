@@ -176,7 +176,7 @@ identity doesn't.
 Only the cook has passed its check; each other specialist is turned on after its own eval. The first v2 baseline
 (2026-10-29): `puls-cook` 23 of 24 in its cook mode, 6 of 24 when Puls answers itself; `puls-routing` 72 of 72; the
 local judge agrees 31 of 36 with a blind labeller, below the 90% bar
-([louis-agent.evals](../../../../src/docs/projects/louis-agent.evals.md#design-notes)). The held-out scenarios still
+([louis-agent.evals](../../../../src/docs/projects/louis-agent.evals.md#limits-and-plans)). The held-out scenarios still
 have their older, hand-cut references. The cook reads its recipes with the `recipes` pack, and goes to the web only
 for a dish no site has (F35, [write-up](../../../../src/docs/learning/05-structured-outputs.md)). The last full
 recipes run, `79ea99b3ec08`, had 30 of 30 from a page it read and 27 of 30 by the judge, in 52 s at $0.0059 an answer.

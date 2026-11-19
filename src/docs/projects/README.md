@@ -1,5 +1,7 @@
 # Project design docs
 
+![The project design docs: one per project, for the engine, the hosts, the web, identities and packs, evals and tests, and the developer tools](diagrams/README.svg)
+
 One design doc per project in the solution: what it's for, how it works, its parts, its settings, how to extend it,
 how it's tested, and its limits, with the pictures its kind of project asks for: its overview and its interface
 design always, and what its kind adds, such as a library's main path or where a host runs. Its opening quote says
@@ -11,7 +13,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 
 | Project | Kind | In one line | Doc |
 |---|---|---|---|
-| `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap; names no product (CL15) | [core](louis-agent.core.md) |
+| `louis-agent.core` | Class library | The engine: the tool loop and its guards, skills and prompts, usage, the seam to a model's provider, bootstrap; names no product, and ships no tool and no model SDK (CL15, ADR 0076) | [core](louis-agent.core.md) |
 | `louis-agent.core.web` | Class library | Web access on core (CL33): the browser, the fetcher, the robots policy, search, rendering and the recorders; a host hands it in through `HostServices` | [core.web](louis-agent.core.web.md) |
 | `louis-agent.core.telemetry` | Class library | Telemetry on core (CL33): the OpenTelemetry tracer and exporter and the collector's log sink; a host hands it in through `HostServices` | [core.telemetry](louis-agent.core.telemetry.md) |
 | `louis-agent.core.anthropic` | Class library | Claude on core (CL57): the provider strategy, the cache-write mapper, the two prompt-cache markers; a program hands `AnthropicProvider.Instance` in through `HostServices` | [core.anthropic](louis-agent.core.anthropic.md) |
@@ -43,7 +45,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `demos/louis-agent/identity/louis-agent.identity.triage`, `demos/louis-agent/evals/louis-agent.identity.triage.evals` | Class libraries | The triage team as one identity (F106.3.2): a manager with a sorter, an investigator and a reviewer, each ending with a typed tool of the triage pack; and the eval per role that proves it | [identity.triage](../../../demos/louis-agent/docs/projects/louis-agent.identity.triage.md) |
 | `demos/louis-agent/hosts/louis-agent.coding-catalog`, `louis-agent.coding-cli`, `-acp`, `-mcp`, `-api`, `-eval-runner` | Class library, and programs | The coding agent's catalogue (the one project that references its identities and packs) and its programs, each naming what the framework's host loads | [the coding agent's docs](../../../demos/louis-agent/docs/README.md) |
 | `demos/starter/web/louis-agent.starter`, `demos/starter/hosts/louis-agent.starter-api` | Blazor WebAssembly app, and its program | The smallest site on the framework's web, and what `dotnet new louis-site` makes | [Spawn a site](../guides/spawn-a-site.md) |
-| `src/engine/louis-agent.composition` | Class library | The contracts a pack, an identity and the engine share; it names no pack and leans on no project | [ADR 0076](../adr/0076-core-ships-no-agent.md) |
+| `src/engine/louis-agent.composition` | Class library | The contracts a pack, an identity and the engine share, and what they all use: the workspace and secret-file rules, the one process runner, the message texts and the web's interfaces; it names no pack and references only `louis-agent.choices` | [ADR 0076](../adr/0076-core-ships-no-agent.md) |
 | `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
 | `src/hosts/louis-agent.acp` | Library (stdio); a demo's program starts it | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp.md) |
 | `src/hosts/louis-agent.api` | Library (ASP.NET Core); a demo's program starts it | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
@@ -77,7 +79,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 
 An arrow means "references".
 
-![How the projects depend on each other: a demo's programs, core and what runs on it, identities, packs and the contracts](diagrams/README-how-they-depend-on-each-other.svg)
+![How the projects depend on each other: the programs, core and what runs on it, identities, packs and the contracts](diagrams/README-how-they-depend-on-each-other.svg)
 
 A pack or an identity references only the contracts, and core references no pack, identity or host, so only what picks the packs knows them all. Behaviour lives in core, and every host is a thin
 adapter between its protocol and `AgentEngine`.
@@ -98,18 +100,23 @@ sessions on the API, all over HTTP and SSE.
 | core | (library) | — |
 | cli | `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli` | `local-agent` |
 | acp-server | Rider starts it per chat | `acp-server` (`docker compose run --rm -T acp-server`) |
-| api + web | `docker compose … up -d api` → http://127.0.0.1:5080 | `api` |
+| api + web | `docker compose … up -d api` → http://127.0.0.1:5082 (`API_PORT`) | `api` |
 | mcp-server | an MCP client starts it (stdio), or HTTP with `MCP_TRANSPORT=http` | `mcp-server` |
 | orchestrator | `dotnet run --project demos/louis-agent/hosts/louis-agent.orchestrator` | — |
 
 ## Each doc covers
 
-**Purpose** · **How it works** · **Structure** (files and what's in them) · **Key types** · **Configuration** ·
-**Extending it** · **Tests** · **Limits and plans** (with links to [features](../features/README.md) and the
-[TODO](../../../TODO.md)) · **Related docs**.
+Every project doc keeps the same sections, by the same names, so you find things in the same place in each one.
 
-*Purpose* and *How it works* talk the way a friend would explain it: short paragraphs, with each part of the story
-under its own numbered heading. The sections after them are for looking things up.
+**Purpose** says what the project is for and who uses it. **How it works** tells the main path as a story, one
+numbered part after another (`### 1. Starting up`), with each picture beside the part it explains. **Structure** is
+the lookup: every file and folder, and the types you meet most. **Configuration** lists the settings, **Extending it**
+says how to add to it, **Tests** says where the tests are and what they hold, and **Limits and plans** says what it
+can't do yet, with links to [features](../features/README.md) and the [TODO](../../../TODO.md). **Related docs**
+closes it.
+
+*Purpose* and *How it works* talk the way a friend would explain it, in short paragraphs. The sections after them
+are for looking things up.
 
 ---
 [Docs index](../README.md) · Next: [louis-agent.core](louis-agent.core.md)

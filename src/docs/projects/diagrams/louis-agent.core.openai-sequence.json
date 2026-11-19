@@ -11,7 +11,7 @@
       { "id": "server", "label": "Your endpoint", "icon": "server", "tone": "red" }
     ],
     "steps": [
-      { "step": "message", "from": "host", "to": "factory", "text": "Create(options), LLM_PROVIDER=openai-compatible" },
+      { "step": "message", "from": "host", "to": "factory", "text": "AgentHost.Build asks Create(options), LLM_PROVIDER=openai-compatible" },
       { "step": "message", "from": "factory", "to": "provider", "text": "Create(options)" },
       { "step": "block", "block": "alt", "label": "no LLM_ENDPOINT",
         "steps": [ { "step": "reply", "from": "provider", "to": "factory", "text": "throws EndpointRequired" } ],

@@ -1,7 +1,9 @@
 # louis-agent.web.themes — design
 
 > **Kind:** contracts library (`net10.0`, built as a Razor class library so it serves files) · **Path:** `src/web/louis-agent.web.themes/` · **References:**
-> louis-agent.web only · **Used by:** louis-agent.starter, and so what `dotnet new louis-site` makes
+> louis-agent.web only · **Used by:** louis-agent.site (glass, then flat), louis-agent.site-framework (flat), the
+> code-review app (glass and flat, beside its own retro) and louis-agent.starter, and so what `dotnet new louis-site`
+> makes
 
 ![The themes: one project a site names its looks from, glass and flat, each a folder holding its theme's id and name, and nothing else](diagrams/louis-agent.web.themes.svg)
 
@@ -13,6 +15,10 @@ theme tells a site it is there, and holds the values it sets.
 
 A site offers a theme by naming it among its areas, `.Glass()` or `.Flat()`, the way it names its admin or its
 showroom. The first theme a site names is its default.
+
+The rest of this doc says how a site names a theme, what a theme is, and then the values each theme sets, from the
+page behind to the mark. It goes on to the drawings a theme hands over as values, and how the tests hold every theme
+to the framework's names. It ends with the files, to look things up, and the tests.
 
 *Decided in:* F151.2, [ADR 0124](../adr/0124-a-sites-look-is-a-theme-and-a-style.md).
 
@@ -197,15 +203,15 @@ framework's names their theme leaves unset, in each style; the answer must be no
 values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none
 but its mark's three, which are there too. `FlatFollowsItsDesignTests` holds flat to its design: the mark, no lights
 and no glow, the solid headline, the smaller o, the pane's line that only changes colour under the pointer, the
-presses' hovers, and the icon's plate.
+presses' hovers, and the icon's plate. `GlassValuesTests` holds glass to its design page in the same way: a pane and a
+button their drawing alone, nothing blurred, the silk behind, and the header's band. `GlassMarkDrawingTests` holds
+the mark's drifting lights inside its blur, so none is cut. `LightAccentsTests` holds the light accents' contrast,
+and `PicturesWearTheThemesTests` holds the theme names a picture on a page wears equal to the ids the themes give
+themselves.
 
-## Limits and plans
+## Limits
 
-A picture of a screen, such as the product window, stays dark in a light style only once the part that draws it
-says so; a sheet of values can't. The starter is the one site that names the themes and lists their sheets.
-Today's components read the colours and not yet the surface names or the drawings, so a pane is not glass anywhere
-yet, and glass and flat in the dark look much alike until they do. The gauge and the dial have no drawing here: they
-show a number, which a drawing held as a value can't be given.
+The gauge and the dial have no drawing here: they show a number, which a drawing held as a value can't be given.
 
 ## Related docs
 

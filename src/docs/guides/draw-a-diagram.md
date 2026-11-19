@@ -5,6 +5,8 @@
 > diagram is data in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) and
 > [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
+![Drawing a diagram at a glance: a JSON file you write beside the doc, the SVG the tool draws from it, the link in the doc, and the test that holds the two to each other](diagrams/draw-a-diagram.svg)
+
 ## What you will do
 
 A picture in the docs is two files that sit in a `diagrams` folder beside the doc. One is a JSON file, which you
@@ -16,6 +18,8 @@ There are four steps, and this guide takes them in order:
 2. **Draw it.** One command draws every picture that changed.
 3. **Link it** in the doc.
 4. **Check it** with the test, and look at it.
+
+![Drawing a diagram, step by step: write the JSON, draw it with the tool, link the SVG in the doc, then run the test and look at it in a light and a dark look](diagrams/draw-a-diagram-flow.svg)
 
 One rule comes before all of them: **never edit an SVG by hand.** The test compares each SVG with what its JSON
 draws, byte for byte, so a hand edit fails it.
@@ -35,7 +39,7 @@ Every file has the same things at the top.
 | `type` | What type of diagram it is, by UML's name. Only a `flow` writes it. *Say the type*, below, has the list. |
 | `title` | What the picture is. A screen reader is told it, and the docs' frame shows it. |
 | `caption` | Optional in the file, but every chart in the docs has one: the one thing to take from the picture. |
-| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `nested`, `ticket`) that holds the picture. |
+| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `nested`, `composite`, `ticket`) that holds the picture. |
 
 ### Choose the kind
 

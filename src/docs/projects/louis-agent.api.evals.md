@@ -17,19 +17,30 @@ It's its own project because it's big, and because it brings MongoDB, the checks
 program that wants the studio opts in with `app.MapLouisAgentEvals(host)`, after `MapLouisAgentApi`. A program that
 doesn't ships none of it.
 
+The rest of this doc follows that one call: how it gets ready, the routes it maps, and what each run remembers. Then
+it says what stays in the API, and ends with the folders, the settings and the tests.
+
 *Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
 ## How it works
 
-Everything starts from one call, `EvalsStartup.MapLouisAgentEvals(app, host)`. It does three things.
+Everything starts from one call, `EvalsStartup.MapLouisAgentEvals(app, host)`. Before anything else it checks that
+the API's own key check has already run, and it refuses to map if it hasn't, so the studio can't come up unguarded.
+After that it does three things.
 
 ### 1. Getting ready
 
 It reads `EvalOptions`: where the runner is, where the store is, and the address the runner calls back on. It lists
 the runner's evals, but off the start-up path, so the API doesn't wait for it.
 
-When `EVALS_MONGO_URL` is set, it opens the Mongo stores. Without it there are no stores, so no run can start, and
-the pages say so. In the background it tidies what an older build stored, and closes any runs a restart cut off.
+When `EVALS_MONGO_URL` is set, it opens the Mongo stores: the runs, the people's grades, the drafts and the judge
+checks, all in one database. Without it there are no stores for runs, grades or judge checks, so no run can start,
+and the pages say so. The drafts are the exception: without Mongo they're kept in memory, so the studio can still be
+tried, and they're gone when the API stops.
+
+In the background it deletes what an older build stored, and then closes any run still marked as running, because at
+start-up nothing runs, so such a run was cut off by a restart. It does this off the start-up path, so the API doesn't
+wait on Mongo, and a store that doesn't answer is only a warning in the log.
 
 ### 2. The routes
 

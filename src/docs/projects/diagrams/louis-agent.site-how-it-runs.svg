@@ -248,9 +248,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   </g>
   <text class="notes" x="38" y="656">
     <tspan class="note-head">A few lines:</tspan>
-    <tspan class="note-rest">the site's host is the guide alone, on the three packs it names. It serves each page as HTML first, and</tspan>
+    <tspan class="note-rest">the site's host runs the guide and the showroom's three businesses, on the three packs it names. It</tspan>
   </text>
   <text class="notes" x="38" y="673">
-    <tspan class="note-rest">keeps the CV the admin saves.</tspan>
+    <tspan class="note-rest">serves each page as HTML first, and keeps the CV the admin saves.</tspan>
   </text>
 </svg>

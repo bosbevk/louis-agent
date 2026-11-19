@@ -227,14 +227,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="seq-call-words" x="196.5" y="328" text-anchor="middle">book it for Friday</text>
       <path class="seq-answer" d="M346 403H47" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="346" cy="403" r="4.5" />
-      <text class="seq-answer-words" x="196.5" y="379" text-anchor="middle">name, contact and what they want,</text>
-      <text class="seq-answer-words" x="196.5" y="394" text-anchor="middle">repeated back</text>
+      <text class="seq-answer-words" x="196.5" y="379" text-anchor="middle">the booking on a card, Not sent yet,</text>
+      <text class="seq-answer-words" x="196.5" y="394" text-anchor="middle">with Book it</text>
       <rect class="seq-beam seq-beam-glow" x="47" y="450" width="299" height="8" rx="0" />
       <rect class="seq-beam" x="47" y="453" width="291" height="2" rx="0" />
       <path class="pic-march" d="M47 454H338" />
       <path class="seq-tip" d="M338 454H346" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="47" cy="454" r="4.5" />
-      <text class="seq-call-words" x="196.5" y="445" text-anchor="middle">yes</text>
+      <text class="seq-call-words" x="196.5" y="445" text-anchor="middle">Book it</text>
       <rect class="seq-beam seq-beam-glow" x="346" y="501" width="344.3" height="8" rx="0" />
       <rect class="seq-beam" x="346" y="504" width="336.3" height="2" rx="0" />
       <path class="pic-march" d="M346 505H682.3" />
@@ -312,6 +312,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <tspan class="note-rest">the agent opens the place the question is about, and a booking is sent</tspan>
   </text>
   <text class="notes" x="38" y="822">
-    <tspan class="note-rest">only after the customer's yes, marked as a demonstration.</tspan>
+    <tspan class="note-rest">only after the customer presses Book it, marked as a demonstration.</tspan>
   </text>
 </svg>

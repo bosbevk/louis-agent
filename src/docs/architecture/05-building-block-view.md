@@ -35,7 +35,7 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 |---|---|---|---|
 | CLI | `src/hosts/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
 | ACP server | `src/hosts/louis-agent.acp` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
-| HTTP API + web app | `src/hosts/louis-agent.api`, `demos/louis-agent/web/louis-agent.code-review` or `demos/puls/web/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
+| HTTP API + a site | `src/hosts/louis-agent.api`, with a site: `louis-agent.code-review`, `louis-agent.puls`, `louis-agent.starter`, `louis-agent.site` or `louis-agent.site-framework` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves its program's Blazor WebAssembly site |
 | MCP server | `src/hosts/louis-agent.mcp` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
 | Orchestrator (POC) | `demos/louis-agent/hosts/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
 
@@ -67,14 +67,18 @@ A session picks its toolsets when it opens, with `POST /v1/sessions` and `{ "too
 of that profile from `AgentEngineFactory`, and keeps it for its whole life. No list means `skills` only, and a name
 that's unknown or not available here is a 400 that lists the valid ones. Sessions with the same list share one
 engine, and so one prefix the provider can cache. `GET /v1/toolsets` lists the names, descriptions and whether each
-is available (never the tool definitions), and `GET /v1/sessions/{id}` returns a session's toolsets. A session that
-another agent opened (`depth: 1`) may not load `agents`.
+is available (never the tool definitions), and `GET /v1/sessions/{id}` returns a session's toolsets. A session's
+`depth` runs from 0, the agent a person talks to, to `AGENT_MAX_DEPTH` (4 by default), and a minion may not load
+`agents`.
 
 *Decided in:* F5.
 
-Two web apps share the one API codebase and `louis-agent.web`. The code-review app (`louis-agent.code-review`) has
-every toolset and is served by default. Puls (`louis-agent.puls`) is the general assistant: its chats load `agents`
-and `web`, ask `puls.cook` about cooking, and are served by Puls's own program, `louis-agent.puls-api`.
+Every site shares the one API codebase and the framework's web, `louis-agent.web`, and each is served by its own
+program. The code-review app (`louis-agent.code-review`, served by `louis-agent.coding-api`) has every toolset. Puls
+(`louis-agent.puls`) is the general assistant: its chats load `agents` and `web`, ask `puls.cook` about cooking, and
+are served by Puls's own program, `louis-agent.puls-api`. The starter (`louis-agent.starter`) is the smallest site.
+And the framework's two sites, `louis-agent.site` for louis-agent.dev and `louis-agent.site-framework` for the
+framework's own pages, are served by `louis-agent.site-api` and `louis-agent.site-framework-api`.
 
 When the agent asks another agent with `AskAgent`, you see it happen. The asked agent's own events stream to the chat
 as `sub_session` events (from `SubSessionFeed` into the API's turn stream), and the delegation card shows its
@@ -98,7 +102,9 @@ git. There are routes for the working tree (`/v1/git/status`, `/v1/git/diff`, `/
 kept and they run one at a time, in the order you clicked, and only the branch being worked on shows as busy
 ("Merging…", "Queued").
 
-Every `/v1` route needs `AGENT_API_KEY`, unless the code marks it open, as it does for the prices and the rates. The
+Every `/v1` route needs `AGENT_API_KEY`, unless the code marks it open, as it does for the prices, the rates, the
+feeds and a site's search of its places. A host may also open a few identities to the public within a daily cap
+(`OPEN_IDENTITIES`, `OPEN_SESSIONS_PER_DAY`), as louis-agent.dev opens its guide. The
 admin routes take the admin key, and `/health` and the app's own files stay public. Without a key the API refuses to
 start, unless `AGENT_AUTH=off` says you meant it. That's one pure rule in core, `Guardrails/Auth/HostAuth`, which the
 MCP server shares.
@@ -118,7 +124,8 @@ The MCP server publishes every toolset this instance can load: the packs' tools 
 web, and Paymo, DevOps and agents when their settings are set), the skills and the agent-built tools, plus three read-only ones,
 `list_skills`, `get_skill_info` and `get_skill_documentation`. It stays in step with the engine: when
 `AgentEngine.ToolsChanged` fires, it sends `notifications/tools/list_changed`. Approving an agent-built tool is for
-the user only, so it isn't offered over MCP.
+the user only, so it isn't offered over MCP. The packs' read-only feeds are published too, as resources at
+`feed://{name}`.
 
 By default it talks over stdio, for a local client that starts it as a subprocess, such as Rider or Claude Desktop.
 `MCP_TRANSPORT=http` serves Streamable HTTP instead (`MapMcp()`), for clients elsewhere. That puts the shell, git and
@@ -155,7 +162,8 @@ Some Ollama models can't take tools. Unless `LLM_SUPPORTS_TOOLS` says otherwise,
 it, it's the repository root found from the working directory. `SKILLS_DIRECTORY` is where the agent writes its own
 skills and tools, and `LOG_DIRECTORY` is where logs go. The web search settings live here too: `WEB_SEARCH_PROVIDER`,
 `TAVILY_API_KEY`, `GOOGLE_SEARCH_API_KEY` and `GOOGLE_SEARCH_ENGINE_ID`. For asking other agents there's `AGENT_PEERS`
-(`name=url` pairs) and `AGENT_API_KEY`, which is sent to those peers.
+(`name=url` pairs), `AGENT_PEER_KEYS` (each peer's own key, by the same names) and `AGENT_API_KEY`, which is sent to a
+peer that has no key of its own. `AGENT_MAX_DEPTH` says how deep a chain of asks may go.
 
 A pack's own settings are the pack's, not core's: Paymo's and Azure DevOps's keys are read by their packs, and
 Rider's MCP settings (`RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MCP_PROJECT_PATH`) by the ACP server.
@@ -242,12 +250,13 @@ CLI, the ACP server and the MCP server use every toolset the instance can load; 
 
 When the agent asks another agent with `AskAgent`, a sub-session runs on a peer as the address the parent named:
 an identity in its own voice, or one of its roles, with the toolsets its own file declares. There can be at most 3 in
-a turn, 5 minutes each. Only the answer comes back, under a line that says who answered and which tools it called,
+a turn, 5 minutes each, and the asked agent may ask the ones its own identity's `Calls` allow, down to
+`AGENT_MAX_DEPTH`; an agent already in the chain of asks is refused. Only the answer comes back, under a line that says who answered and which tools it called,
 and its usage records carry the parent turn (`parent`). If the answer comes back empty, because the asked agent used
 up all its tool rounds, it's asked once more in the same session. A sub-session gets no routing: its toolsets come
-from its own file, and it can't ask anyone further.
+from its own file.
 
-*Decided in:* F127.3.1, FX11.
+*Decided in:* F127.3.1, F127.5, FX11.
 
 ## Skills
 

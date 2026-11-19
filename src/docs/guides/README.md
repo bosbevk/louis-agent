@@ -3,7 +3,13 @@
 > **How-to.** The step-by-step guides for a developer changing the code: one per project, and one per thing you build
 > across projects (a pack, an identity). Each says what it covers first, then the steps, the tests and a checklist for
 > review. **Elsewhere:** how each project works in its [design doc](../projects/README.md); the rules every change keeps
-> in the [development guide](../../../.claude/rules/design-rules.md).
+> in the [design rules](../../../.claude/rules/design-rules.md).
+
+![The guides at a glance: one set for building something new across projects, one guide per project to change, and each project's design doc beside them](diagrams/README.svg)
+
+There are two kinds of guide here. The first table is for building something new that spans projects, such as a pack,
+an identity, a site or an eval, plus the guides every developer needs on day one. The second table has one guide per
+project, for when you change that project's code.
 
 ## Build something new
 
@@ -36,9 +42,9 @@
 | [Change the site](change-the-site.md) | `src/site/louis-agent.site` | Run it, add a page, change its look, change the CV, draw the share card again, test it |
 | [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md) | `demos/puls/web/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
 | [Change the framework's web](change-the-web.md) | `src/web/louis-agent.web` | Decide what is shared, add an API call, follow a new event, add a component |
-| [Register a sign-in provider](register-a-sign-in-provider.md) | `src/hosts/louis-agent.accounts` | What to do at Google, Microsoft and LinkedIn, the callback each wants, the keys to set (F61.3) |
-| [Change the eval pages](change-the-eval-pages.md) | `src/web/louis-agent.web` | Give a site the pages, sort its sources chart, change a page |
-| [Change the engine](change-the-engine.md) | `louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
+| [Register a sign-in provider](register-a-sign-in-provider.md) | `src/hosts/louis-agent.accounts` | What to do at Google, Microsoft and LinkedIn, the callback each wants, the keys to set |
+| [Change the eval pages](change-the-eval-pages.md) | `src/web/louis-agent.web.evals` | Give a site the pages, sort its sources chart, change a page |
+| [Change the engine](change-the-engine.md) | `src/engine/louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
 | [Change Puls](../../../demos/puls/docs/guides/change-puls.md) | `demos/puls/identity/louis-agent.identity.puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |
 | [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `demos/puls/hosts/louis-agent.host-packs` | Register a new pack or identity: its enum member, its arm, its reference |
 | [Write and run tests](write-tests.md) | `tests/` | Everything about the test projects |

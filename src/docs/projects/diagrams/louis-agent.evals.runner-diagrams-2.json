@@ -14,7 +14,7 @@
         "id": "A",
         "icon": "server",
         "tone": "violet",
-        "label": "louis-agent.api"
+        "label": "louis-agent.api.evals"
       },
       {
         "id": "R",

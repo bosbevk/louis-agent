@@ -13,7 +13,9 @@ This project lets the agent talk to any server that speaks OpenAI's chat API, at
 LM Studio, vLLM, or OpenAI itself. It's the provider strategy for all of them, built on the OpenAI SDK.
 
 Core ships no model SDK of its own. So a program that wants one of these hands
-`OpenAiCompatibleProvider.Instance` to `AgentHost.Build`, inside its `HostServices`.
+`OpenAiCompatibleProvider.Instance` to `AgentHost.Build`, inside its `HostServices`. The rest of this doc follows the
+client from the settings to the first reply: how it's made, what it does without a key, and what it adds to usage
+and caching (nothing).
 
 *Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
@@ -29,19 +31,24 @@ Here's how a client gets made.
 `openai-compatible`.
 
 When core asks it for a client with `Create(options)`, it first checks for `LLM_ENDPOINT`. Without an address
-there's nothing to talk to, so it refuses. With one, it builds the OpenAI SDK's client.
+there's nothing to talk to, so it refuses, with an error that names `LLM_ENDPOINT`. With one, it builds the OpenAI
+SDK's client for the model `LLM_MODEL` names.
+
+Only this library knows the OpenAI SDK. Core asks for a client by the provider's name, and the registry,
+`LlmClientFactory`, finds this one and wraps what it builds.
+
+![From a program to the OpenAI SDK: the program hands the provider in, core's client factory finds it by name, and it builds the SDK's chat client](diagrams/louis-agent.core.openai-how-it-works.svg)
 
 ### 2. The key, or a placeholder
 
-If you gave a key, the client uses it. If you didn't, it uses a placeholder. That's because a local server often
-wants no key at all, but the SDK insists on having something.
-
-![louis-agent.core.openai: How it works](diagrams/louis-agent.core.openai-how-it-works.svg)
+If you gave a key, the client uses it. If you didn't, it uses the placeholder `none`. That's because a local server
+often wants no key at all, but the SDK insists on having something.
 
 ### 3. Usage and caching
 
 These servers report token usage in the standard fields, and there's no prompt cache to mark. So this provider
-adds nothing there, and the seam's defaults just hold.
+adds nothing there, and the seam's defaults just hold. After the client is made, the provider is out of the picture:
+the engine talks to your endpoint through the OpenAI SDK for every reply.
 
 ![One reply from your endpoint: no endpoint and the provider refuses, with one the engine talks to it through the OpenAI SDK](diagrams/louis-agent.core.openai-sequence.svg)
 
@@ -61,7 +68,8 @@ src/tests/engine/louis-agent.core.openai.tests/   # the endpoint rule, a client 
 ## Configuration
 
 You pick it with `LLM_PROVIDER=openai-compatible` and name the model with `LLM_MODEL`. `LLM_ENDPOINT` is
-required, and `LLM_API_KEY` is optional.
+required, and `LLM_API_KEY` is optional. Core never picks this provider by itself, so `LLM_PROVIDER` has to say it.
+Every model here is taken to accept tools, unless `LLM_SUPPORTS_TOOLS=false` says otherwise.
 
 ## Tests
 

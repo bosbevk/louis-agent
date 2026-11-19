@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Add an eval at a glance",
+  "caption": "An eval that uses the harness's checks is only files, with no C# at all.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "eval", "icon": "folder", "title": "An eval", "code": "Evals/{Name}/", "look": "highlight",
+          "text": "A real task an identity has to do well, as a folder of files beside it." }
+      ] },
+      { "cards": [
+        { "id": "json", "icon": "file", "title": "eval.json", "text": "What it proves, its modes and its checks." },
+        { "id": "dataset", "icon": "database", "title": "The dataset", "code": "Dataset/", "text": "Scenarios, dev and held-out, hashed." },
+        { "id": "manual", "icon": "book", "title": "The manual", "code": "manual.md", "text": "What each check's failure means." },
+        { "id": "transcripts", "icon": "message", "title": "The transcripts", "code": "Transcripts/", "text": "A reference and its known-bads." }
+      ] },
+      { "cards": [
+        { "id": "checks", "icon": "checks", "title": "The checks", "text": "From the catalogue: fixed rules, readers, a judge, a person." }
+      ] }
+    ],
+    "links": [
+      { "from": "eval", "to": "json" },
+      { "from": "eval", "to": "dataset" },
+      { "from": "eval", "to": "manual" },
+      { "from": "eval", "to": "transcripts" }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "kind": "cards",
+  "title": "Introduction and goals at a glance",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "what",
+            "icon": "chip",
+            "title": "An AI agent framework in C#",
+            "code": "louis-agent",
+            "look": "highlight",
+            "text": "The engine, the hosts that serve it and packs of tools, and the agents built on it."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "agents",
+            "icon": "users",
+            "title": "Four agents on it",
+            "text": "The coding agent, Puls, the triage team and the guide on louis-agent.dev."
+          },
+          {
+            "id": "goals",
+            "icon": "checks",
+            "title": "Four quality goals",
+            "text": "Measured cost, safety, provider portability, and every decision explained."
+          },
+          {
+            "id": "who",
+            "icon": "user",
+            "title": "Who it is for",
+            "text": "Louis learning AI engineering, the people and agents who use it, and Claude Code."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "what",
+        "to": "agents"
+      },
+      {
+        "from": "what",
+        "to": "goals"
+      },
+      {
+        "from": "what",
+        "to": "who"
+      }
+    ]
+  }
+}
