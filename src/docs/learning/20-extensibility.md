@@ -947,3 +947,46 @@ Nothing was measured in money: no agent runs on the new site yet. Its agent is F
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a package of pages is proved when the site that ships it holds
 nothing but the names of what it uses. And *11 Protocols*: a page names a doc by its path, one source the docs site,
 the API and the MCP server can all point at.
+
+## F164.2: one door, four ways to ask (2026-11-19)
+
+The framework's site got an agent of its own, the framework Orbi, and every rich feature a docs site has: a search
+in the header, Ask Orbi in the header with Ctrl+I, Ask about this page on the right, and Ask on every code listing.
+Orbi is an identity of its own, beside louis-agent.dev's Orbi, on the docs and site packs only. It stands docked in
+the page's right column, and closing it gives the column back to "On this page".
+
+The lesson is how little each of the four ways to ask needed. Every one of them is a button that puts a question
+through the door, `GuideDoor`, the Observer the chat widget listens on. None of them knows the widget, so a new way
+to ask is a new button and nothing else. The code listing's Ask is one method of two statements. That only worked once
+the door itself moved. It was registered by the showroom alone, so on the framework's site, which has no showroom,
+every Ask would have pressed into nothing. Louis asked "why is there not a door feature in core?", and the door now
+comes with the chat's plumbing that `AddSiteAreas` gives every site. A plug-in point that one feature registers is
+really that feature's, and the first site without it finds out.
+
+The docked layout is the second thing worth keeping. It is a third `WidgetLayout` beside the corner and the bar, on
+the same runner, door and tool calls, and it adds almost no code of its own. What a layout adds to the widget's
+classes is asked of one type, `WidgetLook`, and the docked panel is Bootstrap's responsive offcanvas, which stands in
+place from an extra-large screen and slides in below it. So no style of ours writes a breakpoint, and how the column
+swaps between Orbi and "On this page" is one style rule that reads whether the widget says it is open. No state
+passes between the two parts.
+
+The search is retrieval with no model, which is skill 8 as much as 20. The host already read every section and card
+of the site's pages into an index for the agent's `FindPlace`. The search is a public route over that same index, so
+typing costs nothing, and only the last row, "Ask Orbi about …", spends a model call. Sharing the index found a
+fault: a diagram's own `<style>` was being read as words, so a section's text began with CSS. The agent had been
+reading that too, unseen; a search box put it in front of a person.
+
+What it cost. The live check asked Orbi twice on :5085: Ask about this page cost R0.037, and Ask on `Program.cs`
+R0.06, with 76k tokens read from the cache. Both answered from the docs with a doc's path and ended with three
+choices.
+
+What didn't go well. Five choices came up during the build that the plan hadn't settled: where the wide screen's way
+in lives, the door's move, who draws Ask about this page, whether a site with no agent hides the code listing's Ask,
+and what the search looks like. Each was put to Louis with three options, two of them drawn as screens. The plan
+named the layout and the door, but not how a visitor reaches them; drawing the ways in before step 1 would have
+settled most of these at once. The look at the end left two things open: a search result shows its place's heading,
+so two "Cost" sections read alike, and at 390 px the page's text column is narrow. And Ctrl+I didn't answer once,
+right after a page loaded, but did after a click; that wasn't looked into.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): one shared door, so a way to ask is a button. And *8 Memory and
+retrieval*: an index read from the real pages answers a search for nothing.

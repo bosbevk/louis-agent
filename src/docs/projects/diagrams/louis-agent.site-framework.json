@@ -12,14 +12,17 @@
         { "id": "areas", "icon": "settings", "title": "What it is made of",
           "text": "Flat, the framework's pages, the docs on GitHub and every place's address." },
         { "id": "layout", "icon": "stack", "title": "Its frame",
-          "text": "The docs layout: the menu, the page, On this page and the page turns." },
+          "text": "The docs layout: the menu, the page, the search, and Orbi docked on the right." },
+        { "id": "agent", "icon": "chip", "title": "Its agent",
+          "text": "The framework Orbi, answering from the docs on the docs and site packs." },
         { "id": "host", "icon": "server", "title": "Its host",
-          "text": "Serves the pages and draws each as HTML for a search engine, on :5084." }
+          "text": "Runs Orbi, answers the search, and draws each page as HTML, on :5084." }
       ] }
     ],
     "links": [
       { "from": "site", "to": "areas" },
       { "from": "site", "to": "layout" },
+      { "from": "site", "to": "agent" },
       { "from": "site", "to": "host" }
     ]
   }

@@ -200,9 +200,18 @@ that session may be gone. Then the message comes back as not found, the widget d
 same question again in a new session, with the page's words once more. The visitor gets an answer either way. What
 is lost then is what the agent remembered of the old talk.
 
-The same widget can also stand as a bar at the foot of the page instead of in a corner. A site picks that with its
-`Layout`, and the engine underneath is the one it always was: the runner, the door, the page that travels with a
-message and the tool calls stay the widget's, and only what it draws differs. The bar (`Widget/Bar/AgentBar`) is
+The same widget can stand three ways, and a site picks one with its `Layout`: in the corner, docked beside the page,
+or as a bar at the foot of the page. The engine underneath is the one it always was. The runner, the door, the page
+that travels with a message and the tool calls stay the widget's, and only what it draws differs. What each layout
+adds to the widget's classes is known in one place, `Widget/Layouts/WidgetLook`, so the markup never works it out.
+
+Docked, the widget is a panel in a place its page gives it, such as the docs layout's right column. It stays closed
+until something asks, through the door, and its close button gives the place back. It has no minimise or maximise
+buttons, since its size is its place's. It is Bootstrap's responsive offcanvas: from an extra-large screen it stands
+in its place, and below that it slides in from the side, with a round button in the lower-right corner to open it
+that is drawn only there. A header can open it too, with `OpenAgentButton`, through the door part 1 tells of.
+
+The bar (`Widget/Bar/AgentBar`) is
 centred at the page's foot, at most 960 wide and a full pill round a ball of 68 with 14 of room, the ball setting its
 height, drawn as a bar that
 floats (those two measures are named once on the bar, `--agent-ball` and `--agent-air`, and a phone sets them to 52
@@ -499,7 +508,9 @@ that the engine lacks is added to the engine, never drawn in the figure.
 **Code and comparisons.** `CodeListing` shows code as text, never as markup, so a page that shows a program can
 never run it or break on it. It is named for its file, such as `Program.cs`, or its language when it has none, and a
 button copies the code exactly as shown, through the listing's own module; the button's words, Copy and Copied, are
-the site's `ChatText`. `ComparisonTable` sets things side by side: what is compared across the top, each topic a
+the site's `ChatText`. Beside Copy stands Ask, which puts the listing to the site's agent through the door: the
+question names the listing and carries its code in a fenced block, in the words of `ChatText.ExplainCode`. Ask is
+drawn on every site, since every site has an agent. `ComparisonTable` sets things side by side: what is compared across the top, each topic a
 `ComparisonRow` down the side with one cell under each column. A row whose cells don't fill the columns is refused
 before anything is drawn, with which row it is and what it needs, so a cell can never stand under the wrong column.
 
@@ -514,6 +525,25 @@ readable middle column. From an extra-large screen, the page's sections stand on
 the frame's section index docked, reading the same list of the page's bands, so a page says its sections once. Docked,
 it is a plain list with the theme's line down its left, and the section in view is marked on that line by a thicker
 bar in the theme's violet, drawn by the surface tool's `marked`. On a narrow screen the menu stands above the page.
+
+The right column holds more than "On this page". What a site gives the frame's `Beside` slot stands there first,
+such as its chat docked. And a site may give the frame an ask about the page, `AskAboutPage`, a `PageAsk` with the
+button's words and the question a press puts to the agent. The columns draw it as an `AskButton` at the top of "On
+this page", so it hides where that list hides. While the chat is open, it has the column: a style rule hides "On
+this page" whenever the column holds an open widget, and closing the chat brings it back. The chat only says it is
+open, so no state passes between the two.
+
+**A search over the site's places.** `SiteSearch` is a button for a site's header, with Ctrl+K or Cmd+K, that opens
+a window over the page in the look of the chat's own search window, whose rules the two share in `_panels.scss`. As
+the visitor types two letters or more, it asks the host's `GET /v1/site/places?q=` for the places that hold the
+words ([louis-agent.api](louis-agent.api.md)), at most eight, each shown by its heading and the words after it. An
+answer that comes after newer words were typed is let go, and a failed search shows none. The arrow keys move, Enter
+opens a place at its own address, and Escape closes. The last row always asks the site's agent the same words,
+through the door, so only that row spends a model call.
+
+A button's keys are held by one shared module, `js/shortcut.js`. It presses the button when Ctrl, or Cmd on a Mac,
+comes with the button's letter, so a key and a click go the same way. `OpenAgentButton` holds Ctrl+I with it, and
+the search Ctrl+K.
 
 **Every place has its own address.** A section is `/pricing/plans`. A card is `/pricing/basic`. A page of a paged
 section is `/about/team/2`. The landing's places sit under the site's home word, as in `/home/welcome`. `SiteAddresses`
@@ -545,7 +575,7 @@ records (an organisation, a website, a piece of software, a breadcrumb), written
 page as HTML with its own head and words, for crawlers that run no script.
 
 *Held by:* `SiteShellTests`, `SiteShellDocsTests`, `CardDeckTests`, `GraphLayoutTests`, `GraphViewTests`,
-`DiagramFigureTests`, `CodeListingTests`, `ComparisonTableTests`, `FrameworkModulesTests`.
+`DiagramFigureTests`, `CodeListingTests`, `SiteSearchTests`, `ComparisonTableTests`, `FrameworkModulesTests`.
 
 *Decided in:* F110 (the frame's motion), F111 and ADR 0103 (diagrams), F113 (the deck), F117 and ADR 0105 (going to
 a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 0106,
@@ -984,7 +1014,9 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Site/History/` | `Timeline` and `TimelineEntry`, entries newest first with their dates in a column of their own, ruled or close rows (FX191) |
 | `Components/Site/Facts/` | `FactStrip` and `Fact`, a few figures over what they count on one of the theme's panes (FX191) |
 | `Components/Site/Hero/`, `Cards/`, `Controls/Labels/` | Beside `SiteHero`, `CardDeck` and `Tag`: `ProfileHero`, a person's hero beside their photo; `Panel`, a still pane with label words and a heading; `TagList`, a row of plain tags (FX191) |
-| `Components/Site/Code/`, `Tables/`, `Docs/` | `CodeListing`, code shown as text with a button that copies it, and its module; `ComparisonTable` and `ComparisonRow`, topics against columns; `DocsColumns`, the docs layout's three columns (F164.1) |
+| `Components/Site/Code/`, `Tables/`, `Docs/` | `CodeListing`, code shown as text with a button that asks the site's agent about it and one that copies it, and its module; `ComparisonTable` and `ComparisonRow`, topics against columns; `DocsColumns`, the docs layout's three columns, and `PageAsk`, what a page offers to ask about itself |
+| `Components/Site/Search/` | `SiteSearch`, a site's search window over its own places, with the agent asked last |
+| `Components/Widget/Layouts/`, `Widget/Door/` | `WidgetLook`, what each `WidgetLayout` adds to the widget; `GuideDoor`, the door, `OpenAgentButton`, a header's button that opens the chat with Ctrl+I, and `GuideKeeper`, the guide a site keeps across layouts |
 | `Components/Site/Addresses/` | `SiteAddresses`, the rule that writes a place's address and reads one back; the catch-all that opens a place is in [louis-agent.web.places](louis-agent.web.places.md) (F164.1) |
 | `Components/Graphs/` | `GraphView`, a flow drawn from a `GraphSpec`; `DiagramFigure`, any kind of the diagram engine's pictures drawn inline by its own renderer (F164.1) |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `Admin/Reset/`, Reset my session, `SessionReset` and its button `ResetSession` with its module (F153); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
@@ -1004,7 +1036,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Staging/` | `LitStage`. `Decks/`: `Deck`, `DeckPlace`. `Windows/`: `FramedWindow`, `SiteBody`, `ShownCard`, `WorkBody`, `PlainBody`, `WorkPane`. `Docks/`: `Dock`, `DockItem` (part 8) |
 | `Components/Paper/`, `Paper/` | What a page needs when it is printed (FX154, Louis: "in a pdf hyperlinks is qr codes always"): `PaperLink`, a link as it is printed, its QR code with its words and its address written short, drawn on paper only, in the ink of the page that prints it, and still a link in a PDF read on a screen; `PrintableLink`, the link on a screen and its code on paper; `PaperSheet`, a page that prints as itself, set by `Styles/web/paper/_sheet.scss`; `QrImage`, a code as a picture; `QrDrawing`, a code as data (the one place that names Net.Codecrete.QrCodeGenerator), and `PaperAddress`, an address written short |
 | `Scripts/` | `JsModule`, the proxy that imports a module once and lets it go; `FrameworkScripts`, the modules' paths named once; `ChatModules`, the frame's three modules on one runtime (CL31) |
-| `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |
+| `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js`, `shortcut.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |
@@ -1034,6 +1066,12 @@ The chat's logic has `ChatRunnerTests`, `TurnStreamTests`, `DelegationTests`, `W
 `AdminShellTests`, `ChatShellTests`, a test for each part of the chat's frame, and `Pages/Admin/`. Then there are
 `MarkdownTests`, `ToolArgsTests` and `UsageFormatTests`, and `RazorHasNoCodeTests`, which fails on a `@code` block in
 a `.razor`.
+
+The widget's layouts have `ChatWidgetDockedTests` in `Components/Widget/Layouts/`, which hold the docked panel closed
+until asked, opened by the door and closed again, with no window buttons, and its round button only below an
+extra-large screen. The door's
+header button has `OpenAgentButtonTests`, and the site's search `SiteSearchTests`, which draw the places found, open
+one, and ask the agent from the last row.
 
 A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests` and
 `SurfaceNamesTests` in `Rules/Styles/Themes/`, and `FirstPaintLookTests` and `SitesSayTheirLookTests` in

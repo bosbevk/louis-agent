@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1319.8 859" width="1319.8" height="859" role="img" aria-label="F164.2: a developer asks about the page they read" xmlns="http://www.w3.org/2000/svg">
-  <title>F164.2: a developer asks about the page they read</title>
+<svg viewBox="-24 -24 780.6 871" width="780.6" height="871" role="img" aria-label="louis-agent.identity.framework: a listing asked about" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.identity.framework: a listing asked about</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -190,66 +190,57 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1319.8" height="859" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="780.6" height="871" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 84a659.9 170 0 1 0 1319.8 0a659.9 170 0 1 0 -1319.8 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F164.2: a developer asks about the page they read</text>
-    <text class="pic-group" x="1255.8" y="14" text-anchor="end">Sequence diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1271.8" height="1" rx="0" />
+    <path class="mrq-light" d="M-24 84a390.3 170 0 1 0 780.6 0a390.3 170 0 1 0 -780.6 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">louis-agent.identity.framework: a listing asked about</text>
+    <text class="pic-group" x="716.6" y="14" text-anchor="end">Sequence diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="732.6" height="1" rx="0" />
     <g class="seq-drawing" transform="translate(0 48)">
-      <rect class="seq-life" x="51" y="84" width="1.5" height="535" rx="0" />
-      <rect class="seq-life" x="252" y="84" width="1.5" height="535" rx="0" />
-      <rect class="seq-life" x="502" y="84" width="1.5" height="535" rx="0" />
-      <rect class="seq-life" x="668.9" y="84" width="1.5" height="535" rx="0" />
-      <rect class="seq-life" x="967.9" y="84" width="1.5" height="535" rx="0" />
-      <rect class="seq-life" x="1186.5" y="84" width="1.5" height="535" rx="0" />
-      <rect class="seq-beam seq-beam-glow" x="51.7" y="129" width="201" height="8" rx="0" />
-      <rect class="seq-beam" x="51.7" y="132" width="193" height="2" rx="0" />
-      <path class="pic-march" d="M51.7 133H244.7" />
-      <path class="seq-tip" d="M244.7 133H252.7" marker-end="url(#arrow-blue)" />
+      <rect class="seq-life" x="51" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-life" x="343" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-life" x="565" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-life" x="689.6" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-beam seq-beam-glow" x="51.7" y="129" width="292" height="8" rx="0" />
+      <rect class="seq-beam" x="51.7" y="132" width="284" height="2" rx="0" />
+      <path class="pic-march" d="M51.7 133H335.7" />
+      <path class="seq-tip" d="M335.7 133H343.7" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="51.7" cy="133" r="4.5" />
-      <text class="seq-call-words" x="152.2" y="124" text-anchor="middle">a press on How it works</text>
-      <rect class="seq-beam seq-beam-glow" x="252.7" y="180" width="250" height="8" rx="0" />
-      <rect class="seq-beam" x="252.7" y="183" width="242" height="2" rx="0" />
-      <path class="pic-march" d="M252.7 184H494.7" />
-      <path class="seq-tip" d="M494.7 184H502.7" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="252.7" cy="184" r="4.5" />
-      <text class="seq-call-words" x="377.7" y="175" text-anchor="middle">Ask("Tell me about this page")</text>
-      <rect class="seq-beam seq-beam-glow" x="502.7" y="231" width="166.9" height="8" rx="0" />
-      <rect class="seq-beam" x="502.7" y="234" width="158.9" height="2" rx="0" />
-      <path class="pic-march" d="M502.7 235H661.6" />
-      <path class="seq-tip" d="M661.6 235H669.6" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="502.7" cy="235" r="4.5" />
-      <text class="seq-call-words" x="586.2" y="226" text-anchor="middle">Asked</text>
-      <rect class="seq-cover" x="525.1" y="261" width="289" height="50" rx="12" />
-      <rect class="mrq-glass" x="525.1" y="261" width="289" height="50" rx="12" />
-      <text class="pic-text" x="669.6" y="282" text-anchor="middle">the panel opens in the right column, in</text>
-      <text class="pic-text" x="669.6" y="298" text-anchor="middle">place of On this page</text>
-      <rect class="seq-beam seq-beam-glow" x="669.6" y="358" width="299" height="8" rx="0" />
-      <rect class="seq-beam" x="669.6" y="361" width="291" height="2" rx="0" />
-      <path class="pic-march" d="M669.6 362H960.6" />
-      <path class="seq-tip" d="M960.6 362H968.6" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="669.6" cy="362" r="4.5" />
-      <text class="seq-call-words" x="819.1" y="353" text-anchor="middle">the question and the page it is on</text>
-      <rect class="seq-beam seq-beam-glow" x="968.6" y="409" width="218.6" height="8" rx="0" />
-      <rect class="seq-beam" x="968.6" y="412" width="210.6" height="2" rx="0" />
-      <path class="pic-march" d="M968.6 413H1179.2" />
-      <path class="seq-tip" d="M1179.2 413H1187.2" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="968.6" cy="413" r="4.5" />
-      <text class="seq-call-words" x="1077.9" y="404" text-anchor="middle">a turn</text>
-      <rect class="seq-beam seq-beam-glow back" x="968.6" y="460" width="218.6" height="8" rx="0" />
-      <rect class="seq-beam back" x="976.6" y="463" width="210.6" height="2" rx="0" />
-      <path class="pic-march" d="M1187.2 464H976.6" />
-      <path class="seq-tip" d="M976.6 464H968.6" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="1187.2" cy="464" r="4.5" />
-      <text class="seq-call-words" x="1077.9" y="455" text-anchor="middle">SearchDocs, ReadDoc</text>
-      <path class="seq-answer" d="M968.6 530H669.6" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="968.6" cy="530" r="4.5" />
-      <text class="seq-answer-words" x="819.1" y="506" text-anchor="middle">the answer, streamed, with a doc link</text>
-      <text class="seq-answer-words" x="819.1" y="521" text-anchor="middle">and choices</text>
-      <path class="seq-answer" d="M669.6 581H51.7" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="669.6" cy="581" r="4.5" />
-      <text class="seq-answer-words" x="360.7" y="572" text-anchor="middle">read beside the page</text>
+      <text class="seq-call-words" x="197.7" y="124" text-anchor="middle">Ask on Program.cs: its code</text>
+      <rect class="seq-cover" x="258.7" y="159" width="170" height="34" rx="12" />
+      <rect class="mrq-glass" x="258.7" y="159" width="170" height="34" rx="12" />
+      <text class="pic-text" x="343.7" y="180" text-anchor="middle">ReadSkill explain-code</text>
+      <rect class="seq-beam seq-beam-glow" x="343.7" y="240" width="222" height="8" rx="0" />
+      <rect class="seq-beam" x="343.7" y="243" width="214" height="2" rx="0" />
+      <path class="pic-march" d="M343.7 244H557.7" />
+      <path class="seq-tip" d="M557.7 244H565.7" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="343.7" cy="244" r="4.5" />
+      <text class="seq-call-words" x="454.7" y="235" text-anchor="middle">SearchDocs("HostServices")</text>
+      <path class="seq-answer" d="M565.7 295H343.7" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="565.7" cy="295" r="4.5" />
+      <text class="seq-answer-words" x="454.7" y="286" text-anchor="middle">the sections that match</text>
+      <rect class="seq-beam seq-beam-glow" x="343.7" y="342" width="222" height="8" rx="0" />
+      <rect class="seq-beam" x="343.7" y="345" width="214" height="2" rx="0" />
+      <path class="pic-march" d="M343.7 346H557.7" />
+      <path class="seq-tip" d="M557.7 346H565.7" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="343.7" cy="346" r="4.5" />
+      <text class="seq-call-words" x="454.7" y="337" text-anchor="middle">ReadDoc(the best one)</text>
+      <path class="seq-answer" d="M565.7 397H343.7" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="565.7" cy="397" r="4.5" />
+      <text class="seq-answer-words" x="454.7" y="388" text-anchor="middle">its text</text>
+      <path class="seq-answer" d="M343.7 463H51.7" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="343.7" cy="463" r="4.5" />
+      <text class="seq-answer-words" x="197.7" y="439" text-anchor="middle">the lines that matter, and the doc's</text>
+      <text class="seq-answer-words" x="197.7" y="454" text-anchor="middle">path</text>
+      <rect class="seq-beam seq-beam-glow" x="343.7" y="510" width="346.6" height="8" rx="0" />
+      <rect class="seq-beam" x="343.7" y="513" width="338.6" height="2" rx="0" />
+      <path class="pic-march" d="M343.7 514H682.3" />
+      <path class="seq-tip" d="M682.3 514H690.3" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="343.7" cy="514" r="4.5" />
+      <text class="seq-call-words" x="517" y="505" text-anchor="middle">Offer(three next steps)</text>
+      <path class="seq-answer" d="M690.3 565H51.7" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="690.3" cy="565" r="4.5" />
+      <text class="seq-answer-words" x="371" y="556" text-anchor="middle">choices on cards</text>
       <rect class="seq-badge tone-blue" x="29.7" y="0" width="44" height="44" rx="13" />
       <g class="pic-badge-icon" transform="translate(40.7 11) scale(0.9167)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -257,44 +248,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="seq-name" x="51.7" y="68" text-anchor="middle">A developer</text>
       <circle class="mrq-node" cx="51.7" cy="84" r="4.5" />
-      <rect class="seq-badge tone-green" x="230.7" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(241.7 11) scale(0.9167)">
-        <path d="M8 9h8" />
-        <path d="M8 13h6" />
-        <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
-      </g>
-      <text class="seq-name" x="252.7" y="68" text-anchor="middle">Ask about this page</text>
-      <circle class="mrq-node" cx="252.7" cy="84" r="4.5" />
-      <rect class="seq-badge tone-violet" x="480.7" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(491.7 11) scale(0.9167)">
-        <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M7 8l0 8" />
-        <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
-        <path d="M14 14l3 -3l3 3" />
-      </g>
-      <text class="seq-name" x="502.7" y="68" text-anchor="middle">GuideDoor</text>
-      <circle class="mrq-node" cx="502.7" cy="84" r="4.5" />
-      <rect class="seq-badge tone-violet" x="647.6" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(658.6 11) scale(0.9167)">
-        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
-        <path d="M4 8h16" />
-        <path d="M8 4v4" />
-      </g>
-      <text class="seq-name" x="669.6" y="68" text-anchor="middle">ChatWidget, docked</text>
-      <circle class="mrq-node" cx="669.6" cy="84" r="4.5" />
-      <rect class="seq-badge tone-green" x="946.6" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(957.6 11) scale(0.9167)">
-        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-        <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-        <path d="M7 8l0 .01" />
-        <path d="M7 16l0 .01" />
-      </g>
-      <text class="seq-name" x="968.6" y="68" text-anchor="middle">The framework's host</text>
-      <circle class="mrq-node" cx="968.6" cy="84" r="4.5" />
-      <rect class="seq-badge tone-green" x="1165.2" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(1176.2 11) scale(0.9167)">
+      <rect class="seq-badge tone-green" x="321.7" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(332.7 11) scale(0.9167)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -306,11 +261,29 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="seq-name" x="1187.2" y="68" text-anchor="middle">The framework Orbi</text>
-      <circle class="mrq-node" cx="1187.2" cy="84" r="4.5" />
+      <text class="seq-name" x="343.7" y="68" text-anchor="middle">The framework Orbi</text>
+      <circle class="mrq-node" cx="343.7" cy="84" r="4.5" />
+      <rect class="seq-badge tone-violet" x="543.7" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(554.7 11) scale(0.9167)">
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6l0 13" />
+        <path d="M12 6l0 13" />
+        <path d="M21 6l0 13" />
+      </g>
+      <text class="seq-name" x="565.7" y="68" text-anchor="middle">docs pack</text>
+      <circle class="mrq-node" cx="565.7" cy="84" r="4.5" />
+      <rect class="seq-badge tone-violet" x="668.3" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(679.3 11) scale(0.9167)">
+        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+        <path d="M4 8h16" />
+        <path d="M8 4v4" />
+      </g>
+      <text class="seq-name" x="690.3" y="68" text-anchor="middle">site pack</text>
+      <circle class="mrq-node" cx="690.3" cy="84" r="4.5" />
     </g>
-    <g class="seq-legend" transform="translate(0 679)">
-      <rect class="mrq-rule" x="0" y="0" width="1271.8" height="1" rx="0" />
+    <g class="seq-legend" transform="translate(0 663)">
+      <rect class="mrq-rule" x="0" y="0" width="732.6" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="seq-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
@@ -326,23 +299,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="seq-answer" d="M530.5 48H574" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="530.5" cy="48" r="4.5" />
       <text class="pic-means" x="584" y="52.5" text-anchor="start">an answer</text>
-      <rect class="seq-swatch" x="673.4" y="38" width="40" height="20" rx="8" />
-      <text class="pic-means" x="723.4" y="52.5" text-anchor="start">a note</text>
+      <rect class="seq-swatch" x="0" y="66" width="40" height="20" rx="8" />
+      <text class="pic-means" x="50" y="80.5" text-anchor="start">a note</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1255.8" y="701" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="716.6" y="685" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="757" width="1271.8" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 767) scale(0.6667)">
+  <rect class="notebar" x="0" y="769" width="732.6" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 779) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="779">
-    <tspan class="note-rest">The button puts the question through the door; the docked panel opens beside the page and sends it with the page it is on; the agent reads the docs and answers with a</tspan>
+  <text class="notes" x="38" y="791">
+    <tspan class="note-rest">It reads its skill for the job, then the docs, and answers from what a doc says, naming the doc</tspan>
   </text>
-  <text class="notes" x="38" y="796">
-    <tspan class="note-rest">doc link.</tspan>
+  <text class="notes" x="38" y="808">
+    <tspan class="note-rest">and ending with choices.</tspan>
   </text>
 </svg>

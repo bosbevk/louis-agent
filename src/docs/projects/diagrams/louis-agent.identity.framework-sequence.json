@@ -1,0 +1,24 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.identity.framework: a listing asked about",
+  "caption": "It reads its skill for the job, then the docs, and answers from what a doc says, naming the doc and ending with choices.",
+  "sequence": {
+    "participants": [
+      { "id": "developer", "label": "A developer", "actor": true, "tone": "blue" },
+      { "id": "orbi", "label": "The framework Orbi", "icon": "chip", "tone": "green" },
+      { "id": "docs", "label": "docs pack", "icon": "book", "tone": "violet" },
+      { "id": "site", "label": "site pack", "icon": "browser", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "developer", "to": "orbi", "text": "Ask on Program.cs: its code" },
+      { "step": "note", "over": ["orbi"], "text": "ReadSkill explain-code" },
+      { "step": "message", "from": "orbi", "to": "docs", "text": "SearchDocs(\"HostServices\")" },
+      { "step": "reply", "from": "docs", "to": "orbi", "text": "the sections that match" },
+      { "step": "message", "from": "orbi", "to": "docs", "text": "ReadDoc(the best one)" },
+      { "step": "reply", "from": "docs", "to": "orbi", "text": "its text" },
+      { "step": "reply", "from": "orbi", "to": "developer", "text": "the lines that matter, and the doc's path" },
+      { "step": "message", "from": "orbi", "to": "site", "text": "Offer(three next steps)" },
+      { "step": "reply", "from": "site", "to": "developer", "text": "choices on cards" }
+    ]
+  }
+}

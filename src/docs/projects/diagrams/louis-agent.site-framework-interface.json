@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "louis-agent.site-framework: the interface design",
-  "caption": "FrameworkAreas is the one place the site says what it uses; the browser's program, the host's page services and the tests all hand it to AddSiteAreas, so they draw what the site draws.",
+  "caption": "FrameworkAreas is the one place the site says what it uses, and FrameworkCatalog the one place the host says what it runs: the framework Orbi on its two packs.",
   "classes": {
     "types": [
       { "id": "areas", "name": "FrameworkAreas", "kind": "static, the site's areas",
@@ -11,7 +11,10 @@
       { "id": "program", "name": "Program", "kind": "the browser's program" },
       { "id": "services", "name": "FrameworkPageServices", "kind": "static, the host's page services",
         "members": [ "+Register(services)" ] },
-      { "id": "host", "name": "Program", "kind": "louis-agent.site-framework-api, the host" },
+      { "id": "host", "name": "Program", "kind": "the host's program" },
+      { "id": "catalog", "name": "FrameworkCatalog", "kind": "static, what the host runs",
+        "members": [ "+Identities", "+Packs()", "+Create()" ] },
+      { "id": "identity", "name": "FrameworkIdentity", "kind": "louis-agent.identity.framework", "tone": "green" },
       { "id": "add", "name": "AddSiteAreas", "kind": "louis-agent.web", "tone": "violet" },
       { "id": "shell", "name": "SiteShell", "kind": "louis-agent.web, Layout = Docs", "tone": "violet" },
       { "id": "map", "name": "MapLouisAgentSite", "kind": "louis-agent.api", "tone": "violet" },
@@ -25,6 +28,8 @@
       { "from": "app", "to": "layout", "kind": "uses", "word": "draws pages in" },
       { "from": "layout", "to": "shell", "kind": "uses", "word": "is drawn on" },
       { "from": "host", "to": "map", "kind": "uses", "word": "serves the site with" },
+      { "from": "host", "to": "catalog", "kind": "uses", "word": "runs" },
+      { "from": "catalog", "to": "identity", "kind": "holds" },
       { "from": "map", "to": "services", "kind": "uses", "word": "draws pages with" }
     ]
   }
