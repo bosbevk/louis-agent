@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "The architecture decisions at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "adr", "icon": "book", "title": "One record per decision", "code": "adr",
+          "look": "highlight",
+          "text": "Each ADR holds its context, the decision as a rule, and what it costs; one set of numbers for the whole repo." }
+      ] },
+      { "cards": [
+        { "id": "loop", "icon": "cloud", "title": "The provider is configuration",
+          "text": "Our own loop behind IChatClient, and a strategy per provider (0002, 0003)." },
+        { "id": "session", "icon": "settings", "title": "A session stays as it started",
+          "text": "Toolsets per session and an append-only history (0006, 0008)." },
+        { "id": "safe", "icon": "shield", "title": "Measured and guarded",
+          "text": "Every request on the ledger, arguments as data, the context guarded (0007, 0004, 0005)." }
+      ] },
+      { "cards": [
+        { "id": "split", "icon": "folder", "title": "The framework holds no agent",
+          "text": "Engine, identities and packs; the folders say what ships; core ships no agent (0027, 0074, 0076)." }
+      ] }
+    ],
+    "links": [
+      { "from": "adr", "to": "loop" },
+      { "from": "adr", "to": "session" },
+      { "from": "adr", "to": "safe" }
+    ]
+  }
+}
