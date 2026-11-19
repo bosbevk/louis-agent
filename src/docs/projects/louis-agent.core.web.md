@@ -1,8 +1,8 @@
 # louis-agent.core.web — design
 
-> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core,
-> louis-agent.composition, louis-agent.choices, PuppeteerSharp · **Used by:** every host that gives its agent the web:
-> the API, the CLI, the ACP and MCP hosts, the demos' programs; the eval runner through the API's settings
+> **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.web/` · **References:** louis-agent.core
+> (and through it the composition and the choices), PuppeteerSharp · **Used by:** every program that gives its agent
+> the web: the coding demo's API, CLI, ACP and MCP programs, the Puls and starter APIs, and the two sites' APIs
 > **Also shows:** `component`
 
 ![Web access, and its parts: the robots policy, the browser, search and rendering, and the recorders](diagrams/louis-agent.core.web.svg)
@@ -14,7 +14,8 @@ and core's engine takes them through its `IWebAccess` seam.
 
 A host that wants its agent to read pages hands `AgentHost.Build` a `HostServices` with `WebAccess.Create`. A host
 that doesn't ships no browser at all. Its web tools then just say web access isn't set up, because core falls back
-to `NoWebAccess`, its Null Object (a stand-in that answers "not here" instead of failing).
+to `NoWebAccess`, its Null Object (a stand-in that answers "not here" instead of failing). Keeping it in a library of
+its own means core ships no browser binary.
 
 *Decided in:* CL33, [ADR 0091](../adr/0091-web-access-and-telemetry-are-libraries-on-core.md).
 
@@ -40,9 +41,10 @@ own, one that has no policy, so it doesn't ask itself for permission.
 Some pages only show up once JavaScript has run, so there's one real browser: `ChromeWebBrowser`, a headless Chrome
 at `BROWSER_URL`, in `Browsing/`. It uses the user agent the settings say, so it's honest about what it is.
 
-It's always wrapped by `RobotsWebBrowser`, so it obeys the policy too. Where a replay store is kept, it's also
-wrapped by the recorder. If there's no usable address, there's no browser, and a toolset that needs one is then
-unavailable.
+It's wrapped twice. Where a replay store is kept, the recorder goes round Chrome, and `RobotsWebBrowser` goes round
+both. The robots guard is on the outside, so a page robots.txt closes never reaches the recording or Chrome. If
+there's no usable address, there's no browser, and a toolset that needs one is then unavailable. This one browser is
+shared by everything that reads a page, the page renderer and the shops among them, so they share one store too.
 
 `RenderPolicy` decides what a visit is allowed to do. `LostContexts` names the errors Chrome's library loses by
 design, so the crash handler is told to expect them.
@@ -51,20 +53,29 @@ design, so the crash handler is told to expect them.
 
 ### 3. Search
 
-The search provider, in `Search/`, is whichever one the settings name, picked by `WebSearchProviderFactory`:
-DuckDuckGo, Google, SearXNG or Tavily. Each comes with a setup that says "not set up" when its keys are missing.
+The search provider, in `Search/`, is whichever one `WEB_SEARCH_PROVIDER` names, picked by
+`WebSearchProviderFactory`: Tavily, Google, SearXNG or DuckDuckGo (`ddg` works too). With none named, it takes Tavily
+when its key is set, else Google when its key and engine ID are, else SearXNG when its address is, else DuckDuckGo.
+Each comes with a setup that says "not set up" when its keys are missing.
 Where a store is kept, it's wrapped by `RecordedSearchProvider`. And a host can bring its own provider instead,
 through `Create(options, replay, search)`.
 
 ### 4. Rendering a page
 
-The page renderer, in `Rendering/`, is the one the settings pick through `PageRendererFactory`: Chrome, through the
-browser, or Tavily. A new one is made for each ask.
+The page renderer, in `Rendering/`, is the one `PAGE_RENDERER` picks through `PageRendererFactory`: Chrome, through
+the one browser, or Tavily. With none named, it's Chrome when `BROWSER_URL` is set, else Tavily when its key is. A new
+renderer is made for each ask.
 
 ### 5. A fetcher per call
 
-Each call gets its own fetcher, `Fetching/PageFetcher`. It works under the robots policy and the replay store, and
-behind the SSRF guard that core keeps (the check that stops the agent reaching private addresses).
+Each call gets its own fetcher, `Fetching/PageFetcher`, under the one robots policy and the replay store. It follows
+up to five redirects, and on every hop it asks two things before it sends anything. First, the SSRF guard that core
+keeps checks the address isn't private, loopback or link-local, so the agent can't be used to reach internal
+services. Second, the robots policy checks the site's robots.txt. When the answer comes, the page's own no-AI signals
+are checked too. A refusal throws just as the address guard does, so the tools report it the same way.
+
+In a replay, nothing leaves the process, so the per-hop address check is skipped. The robots policy is still asked,
+from the recording.
 
 ### 6. Recording and replaying
 
@@ -77,7 +88,8 @@ run costs nothing to repeat. The replay clock stays in core, beside the store.
 ### What a pack sees
 
 None of this changes what a pack gets. Its `IPackContext` (that's `ToolsetContext`) answers `WebSearch`, `Browser`,
-`Renderer` and `NewFetcher()`, all from the seam.
+`Renderer` and `NewFetcher()`, all from the seam. A host can also ask the seam's `Setup` which search provider and
+renderer the settings picked, and whether each is set up.
 
 ![Web access: from a host's program to IWebAccess and the parts behind it](diagrams/louis-agent.core.web-diagrams.svg)
 
@@ -122,10 +134,13 @@ without an address, and a host's own search provider is recorded only where a st
 
 ## Limits and plans
 
-The hand-built shop readers and recipe sources stay in their packs, not here. A new search provider or renderer is
-one setup class here. The replay clock is core's, and the recorders are here.
+The hand-built shop readers and recipe sources stay in their packs, not here. A new search provider or renderer is a
+member of its kind's enum, a provider class and a setup class here. The replay clock is core's, and the recorders are
+here.
 
-`RedirectBodies` is a workaround. CL35, on the TODO, removes it once PuppeteerSharp awaits its own redirect bodies.
+`RedirectBodies` is a workaround. PuppeteerSharp leaves every redirect's body as a failed task that nothing awaits,
+so without it the runtime would report an unawaited failure once per redirect a page followed. It goes when a
+PuppeteerSharp release awaits its own (CL35 on the TODO).
 
 ## Related docs
 
