@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "The learning write-ups at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "ups", "icon": "book", "title": "One write-up per skill", "code": "learning",
+          "look": "highlight",
+          "text": "What a piece of work taught about one skill in the goal's map, read by Louis after the work." }
+      ] },
+      { "cards": [
+        { "id": "measured", "icon": "chart", "title": "Measured before and after",
+          "text": "The numbers a change moved, from the ledger, the evals or the tests." },
+        { "id": "design", "icon": "branch", "title": "What changed, and why",
+          "text": "The design, the pattern behind it, and the trade-offs." },
+        { "id": "failed", "icon": "info", "title": "What didn't work",
+          "text": "The attempts taken back out, and what each one taught." }
+      ] },
+      { "cards": [
+        { "id": "fixes", "icon": "shield", "title": "The fixes' lessons",
+          "text": "One paragraph per fix, with the skill it teaches, in one file." }
+      ] }
+    ],
+    "links": [
+      { "from": "ups", "to": "measured" },
+      { "from": "ups", "to": "design" },
+      { "from": "ups", "to": "failed" }
+    ]
+  }
+}

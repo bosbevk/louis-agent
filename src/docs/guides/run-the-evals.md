@@ -54,7 +54,7 @@ EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose -f demos/puls/docker/do
 
 For the code-review API, it's the same with `demos/louis-agent/docker/docker-compose.yml … up -d --build api`. In
 PowerShell, set `$env:EVAL_COMMIT = git rev-parse --short HEAD` first. Without it, or set to nothing, the run says
-`unknown`. The cloud image gets it from `demos/puls/deploy/azure/deploy.ps1 build`, which passes the checkout's commit.
+`unknown`. The cloud image gets it from `src/site/deploy/azure/deploy.ps1 build`, which passes the checkout's commit.
 
 The admin portal lists the evals the runner lists, and starts one with `POST /v1/admin/evals/{check}/runs`:
 

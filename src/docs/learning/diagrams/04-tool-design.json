@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "Tool design: what the cut taught about packs",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "box", "title": "A capability as a pack with a contract", "code": "skill 4",
+          "look": "highlight",
+          "text": "Tools reach the model through packs the composition root lists, each kept in a shape an MCP server could serve." }
+      ] },
+      { "cards": [
+        { "id": "contract", "icon": "code", "title": "IAgentPack, and one catalogue",
+          "text": "Its toolsets, prompts and settings; a duplicate tool name stops the host at start-up." },
+        { "id": "test", "icon": "checks", "title": "A test, not a convention",
+          "text": "PackConvertibilityTests checks every pack through the MCP SDK, and a fake pack's eight problems." },
+        { "id": "text", "icon": "message", "title": "A tool's text is its interface",
+          "text": "No description names an identity or an owner, so one pack serves many sites." }
+      ] },
+      { "cards": [
+        { "id": "job", "icon": "chart", "title": "One job per pack, numbers in code",
+          "text": "where-to-buy and shop-prices; the total a sum, unknown a ?, the licence's credit in the text." },
+        { "id": "page", "icon": "browser", "title": "No new tool for a recording",
+          "text": "Each turn of a demo got an address, so the guide's page tool plays it." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "contract" },
+      { "from": "skill", "to": "test" },
+      { "from": "skill", "to": "text" }
+    ]
+  }
+}

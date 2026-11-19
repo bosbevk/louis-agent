@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "The quality requirements at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "q", "icon": "checks", "title": "Each quality goal, checked", "code": "quality",
+          "look": "highlight",
+          "text": "A scenario, the measure that says whether the goal held, and where you can see it." }
+      ] },
+      { "cards": [
+        { "id": "cost", "icon": "chart", "title": "Measured cost",
+          "text": "Eval runs priced from the ledger, free replays, the cost on every answer, a specialist's prompt budget." },
+        { "id": "right", "icon": "checks", "title": "Correctness",
+          "text": "The evals' checks, a person's verdict beside a model's, the orchestrator verifying its own fixes." },
+        { "id": "safe", "icon": "shield", "title": "Safety and portability",
+          "text": "The file tools refuse, hosts fail closed, and the same tools work on another model." }
+      ] }
+    ],
+    "links": [
+      { "from": "q", "to": "cost" },
+      { "from": "q", "to": "right" },
+      { "from": "q", "to": "safe" }
+    ]
+  }
+}

@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "component",
   "title": "The evals: the portal, the API and the runner",
-  "caption": "Three processes: the portal shows, the API records, and the runner runs the evals as a child process.",
+  "caption": "Three processes: the portal shows, the API records, and a demo's eval runner runs the evals as a child process.",
   "flow": {
     "nodes": [
       {
@@ -80,7 +80,7 @@
         "id": "Identity",
         "icon": "users",
         "tone": "green",
-        "label": "Puls identity\nEvals/Cook, Evals/Routing,\nEvals/Checks"
+        "label": "Puls's evals\nEvals/Cook, Evals/Routing,\nEvals/Readers"
       },
       {
         "id": "Agent",
@@ -210,7 +210,7 @@
     "groups": [
       {
         "id": "Portal",
-        "label": "Portal (louis-agent.puls, Components/Admin)"
+        "label": "Portal (louis-agent.web.evals, in a site)"
       },
       {
         "id": "API",
@@ -218,7 +218,7 @@
       },
       {
         "id": "Runner",
-        "label": "louis-agent.evals.runner (child process)"
+        "label": "A demo's eval runner on louis-agent.evals.runner (child process)"
       }
     ]
   }

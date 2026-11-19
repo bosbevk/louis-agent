@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "The deployment view at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "dep", "icon": "server", "title": "Where each part runs", "code": "deployment",
+          "look": "highlight",
+          "text": "Docker stacks on a developer's machine, every port on 127.0.0.1, and two websites in Azure." }
+      ] },
+      { "cards": [
+        { "id": "code", "icon": "code", "title": "The code-review stack",
+          "text": "The API, Rider's door, MCP and the CLI on the SDK image, with the repo mounted; Ollama by profile." },
+        { "id": "puls", "icon": "users", "title": "Puls's stack",
+          "text": "One Puls container with its SQL, Mongo, search and browser beside it." },
+        { "id": "sites", "icon": "browser", "title": "The two sites",
+          "text": "louis-agent.dev and the framework's own site, locally and as Azure Container Apps." }
+      ] },
+      { "cards": [
+        { "id": "dash", "icon": "chart", "title": "The dashboard",
+          "text": "One Aspire dashboard that every stack sends its logs and traces to." },
+        { "id": "release", "icon": "branch", "title": "A merge releases",
+          "text": "A GitHub workflow signs in to Azure without a password and releases both sites." }
+      ] }
+    ],
+    "links": [
+      { "from": "dep", "to": "code" },
+      { "from": "dep", "to": "puls" },
+      { "from": "dep", "to": "sites" }
+    ]
+  }
+}

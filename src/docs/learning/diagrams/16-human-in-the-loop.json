@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "Human in the loop: grading is a queue, not a hunt",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "user", "title": "A person's yes, made cheap and exact", "code": "skill 16",
+          "look": "highlight",
+          "text": "Where a person decides, the screen asks once, shows what will happen, and makes the answer one action." }
+      ] },
+      { "cards": [
+        { "id": "queue", "icon": "checks", "title": "Grading as a queue",
+          "text": "One answer at a time on /admin/review, keys 1, 2 and 3, a count that falls, still blind." },
+        { "id": "preview", "icon": "file", "title": "The preview is the check",
+          "text": "An upload says what saving would change, and Save writes exactly that." },
+        { "id": "click", "icon": "message", "title": "The click is the yes",
+          "text": "A ticket marked Not sent yet, cards to choose from, and a form for what only the visitor knows." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "queue" },
+      { "from": "skill", "to": "preview" },
+      { "from": "skill", "to": "click" }
+    ]
+  }
+}

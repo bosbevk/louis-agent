@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "Memory and retrieval: what the recipe library taught",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "database", "title": "What you keep, and whether anyone uses it", "code": "skill 8",
+          "look": "highlight",
+          "text": "The simplest memory there is, a list of recipes and keyword search, built and measured." }
+      ] },
+      { "cards": [
+        { "id": "keep", "icon": "folder", "title": "Each new read kept",
+          "text": "A proper recipe, field by field, its link still the site's." },
+        { "id": "source", "icon": "server", "title": "A source, not a cache",
+          "text": "The cook reads a copy from our own API, and 3 of 10 places stay for new pages." },
+        { "id": "full", "icon": "chart", "title": "Measured empty and full",
+          "text": "From empty it failed the win test; full, 31 answers were built from a copy." }
+      ] },
+      { "cards": [
+        { "id": "wrong", "icon": "info", "title": "What didn't work",
+          "text": "A memory nobody reads, made-up pages that hid bugs, and counts compared instead of checked." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "keep" },
+      { "from": "skill", "to": "source" },
+      { "from": "skill", "to": "full" }
+    ]
+  }
+}

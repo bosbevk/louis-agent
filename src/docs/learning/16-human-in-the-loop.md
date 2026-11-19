@@ -3,11 +3,15 @@
 > **Skill:** #16 in the [goal](../GOAL.md)'s map, with #12 (the eval workflow's portal) and a side lesson for #18
 > (what an unattended build may decide) · **Stage:** Phase 3, F53 *The admin portal, organised by job*, three
 > children in three pull requests (#132, #136 and F53.3's, 2026-11-03 to 2026-11-04), built unattended at Louis's word
-> · **Written by** Claude, for Louis to read (2026-11-04) · **Next:** the studio's numbered steps (the TODO's
-> leftover); approval policies per action and the approvals screen (F41, Phase 7)
+> · **Written by** Claude, for Louis to read (2026-11-04) · **Next:** approval policies per action and the approvals screen (F41,
+> Phase 7)
 
 What this answers: why grading answers is now one page with three keys instead of a walk through the runs, what the
-build decided on its own and why, and what a person in the loop is for when the judge is already a model.
+build decided on its own and why, and what a person in the loop is for when the judge is already a model. Later parts
+carry the same idea further: a preview that is the check before data is saved (F55), and a visitor's click or form as
+the yes before an agent acts (F127.4.1, F127.4.3).
+
+![Human in the loop: grading as a queue, a preview that is the check, a click that is the yes, and a form for what only a person knows](diagrams/16-human-in-the-loop.svg)
 
 ## What a person is for
 
@@ -81,8 +85,8 @@ the test for "typing in the note never grades" asserts that report. It's honest,
 The route walks the newest fifty runs, as the runs list does. A store with more waiting answers further back shows
 them only once the newer ones are graded. That's good enough for one reviewer, and a cursor can come when it isn't.
 
-The studio's numbered steps (the review's finding 5) were in F53's plan "if the budget allows". They stay on the TODO
-as F53's one leftover.
+The studio's numbered steps (the review's finding 5) were in F53's plan "if the budget allows". They were left out of
+F53 and came the same day as a side step of their own.
 
 ## Side lesson for #18: an unattended build names its picks
 

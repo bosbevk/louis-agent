@@ -1,10 +1,12 @@
 # 8 · Memory and retrieval: what the recipe library taught
 
 > **Skill:** #8 in the [goal](../GOAL.md)'s map · **Stage:** F35.3 The recipe library (2026-11-05) · **Next:** search by
-> meaning (parked as F60), and a counter on the admin page (F35.7)
+> meaning (parked as F60); the library's counter came with F35.7 ([its write-up](17-observability.md))
 
 This skill is usually about embeddings and vector stores. The first lesson came before any of that: what you keep, and
 whether anyone uses it. We built the simplest memory there is, a list of recipes and keyword search, and measured it.
+
+![Memory and retrieval: a recipe library kept from each new read, measured empty and full, and what didn't work](diagrams/08-memory-and-retrieval.svg)
 
 ## Before and after
 
@@ -92,8 +94,9 @@ before keeping its pages: the site that did best in our runs says no to republis
 Of the first 22 pages it excluded, 17 were real recipes, so a second reader went in and 16 came off the list. A list
 of "never read this again" needs someone reading it, because it hides its own mistakes.
 
-New pages fell from 10 to 3 a repeat. Ten dishes run out, and real chats are what will grow the library. And the cook's
-scaling is still left: it's the cook's most serious accuracy problem, and it has nothing to do with the library.
+New pages fell from 10 to 3 a repeat. Ten dishes run out, and real chats are what will grow the library. The cook's scaling
+was its most serious accuracy problem, and it had nothing to do with the library; it came next, as `ScaleRecipe`
+(F48.1).
 
 ---
 [Docs index](../README.md) · [Goal](../GOAL.md) · [All write-ups](README.md)

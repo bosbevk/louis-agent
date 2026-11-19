@@ -3,26 +3,36 @@
 > **Explanation.** What could go wrong, and what is knowingly unfinished. **Elsewhere:** the one list of known
 > limitations, each with what removes it, in the [TODO](../../../TODO.md#known-limitations).
 
+![Risks and technical debt: the known limitations, the open fix, the open decisions and Rider's discovery](diagrams/11-risks-and-technical-debt.svg)
+
 ## Known limitations
 
-The TODO keeps the list (in-memory sessions, a 10-round limit per message, local models' truncated prompts, changing
-tools mid-chat on Haiku 5.5, and more), each with the feature or fix that removes it.
+The TODO keeps the one list of what is true today but shouldn't stay that way, each with the feature or fix that
+removes it. It holds things like these: sessions live in memory, so a restart ends them. A message gets at most 10
+tool rounds. A local model gets a truncated prompt. And changing the tools mid-chat breaks a chat on Haiku 5.5. This
+page doesn't repeat the list, so the two can't drift apart.
 
-## Open fixes
+## The open fix
 
-| Fix | Risk |
-|---|---|
-| [FX4](../fixes/FX04-append-only-history.md) | Changing tools or skills mid-chat breaks a Haiku 5.5 chat ([0008](../adr/0008-history-is-append-only.md) not yet fully held) |
+One fix is open because it breaks a rule the design depends on. A Haiku 5.5 chat rejects a request once its system
+prompt or tool list changed after thinking blocks were written. So a tool the agent creates mid-message, an
+`/approve`, a `/reject` or a skill reload can break the chat. History is meant to be append-only
+([ADR 0008](../adr/0008-history-is-append-only.md)), and until [FX4](../fixes/FX04-append-only-history.md) lands,
+that rule isn't fully held.
 
 ## Open decisions
 
-The orchestrator's production topology, webhook triggering, pull requests instead of local branches, and whether it
-stays on core ([0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-per-microservice.md)); how often Puls should delegate (the TODO).
+The orchestrator still has open questions, recorded in its
+[ADR 0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-per-microservice.md). Should one instance serve
+every service, or one each? Should a webhook trigger it? Should it open pull requests instead of local branches? And
+should the real one keep core, or move to Anthropic's Tool Runner?
 
-## Rider MCP discovery (partial)
+## Rider's tools, found but not callable
 
-With `RIDER_MCP_AUTO_DISCOVER=true`, `AgentHost.Build()` starts a background task that asks Rider's MCP server
-(`RIDER_MCP_ENDPOINT`) for its tools (`RiderMcpClient`) and passes each to `AgentEngine.RegisterDiscoveredTool` as
-`rider_{name}` (`RiderToolDiscovery`, the ACP server's since CL57). **Today this only logs the discovered tools; they are not added to the
-model's tool list**, because calling them needs a full MCP client. Discovery is off in `config/.env`. It never blocks
-startup and failures only log.
+When the ACP server starts, it can ask Rider's MCP server (`RIDER_MCP_ENDPOINT`, by default `http://127.0.0.1:64482`)
+for its tools, in the background. Each tool it finds goes to the engine as `rider_{name}`. **Today the engine only logs
+them; they are not added to the model's tool list**, because calling them needs a full MCP client. A failure only
+logs, and it never holds up start-up.
+
+The discovery is the ACP server's own, handed to core through its `IToolDiscovery` seam, so no other host tries to
+reach Rider. It is on unless `RIDER_MCP_AUTO_DISCOVER` says `false`, and the example `config/.env` turns it off.
