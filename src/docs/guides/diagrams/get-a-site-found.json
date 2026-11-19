@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "Get a site found at a glance",
+  "caption": "The code makes every page readable and findable; the ranking comes from people's links.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "found", "icon": "search", "title": "Found by search", "look": "highlight",
+          "text": "Every page read whole, understood, and found." }
+      ] },
+      { "cards": [
+        { "id": "framework", "icon": "chip", "title": "The framework", "text": "HTML pages, JSON-LD, the sitemap." },
+        { "id": "site", "icon": "browser", "title": "The site", "text": "Descriptions, who runs it, an icon." },
+        { "id": "owner", "icon": "user", "title": "The owner, once", "text": "Search Console, Bing, the checks." }
+      ] },
+      { "cards": [
+        { "id": "links", "icon": "world", "title": "Links from other sites", "text": "What helps most, after that." },
+        { "id": "measure", "icon": "chart", "title": "Measure", "text": "Search Console's Performance report." }
+      ] }
+    ],
+    "links": [
+      { "from": "found", "to": "framework" },
+      { "from": "found", "to": "site" },
+      { "from": "found", "to": "owner" }
+    ]
+  }
+}

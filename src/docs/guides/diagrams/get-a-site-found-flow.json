@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Get a site found: what the owner does once",
+  "caption": "Verify the domain, submit the sitemap, ask for the main pages, check the data, then Bing.",
+  "flow": {
+    "nodes": [
+      { "id": "owner", "label": "The owner", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "console", "label": "Search Console\nverify the domain", "icon": "search", "tone": "red" },
+      { "id": "sitemap", "label": "Submit\nthe sitemap", "icon": "file", "tone": "amber", "shape": "data" },
+      { "id": "pages", "label": "Request indexing\nfor the main pages", "icon": "browser", "tone": "red" },
+      { "id": "rich", "label": "Rich Results Test\non two pages", "icon": "checks", "tone": "red" },
+      { "id": "bing", "label": "Import into\nBing", "icon": "world", "tone": "red", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "owner", "to": "console" },
+      { "from": "console", "to": "sitemap" },
+      { "from": "sitemap", "to": "pages" },
+      { "from": "pages", "to": "rich" },
+      { "from": "rich", "to": "bing" }
+    ],
+    "direction": "right"
+  }
+}

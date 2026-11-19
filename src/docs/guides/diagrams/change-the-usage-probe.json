@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "Change the usage probe at a glance",
+  "caption": "The probe shows a misread of usage before it reaches a bill.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "probe", "icon": "chart", "title": "The usage probe", "code": "louis-agent.usage-probe", "look": "highlight",
+          "text": "A provider's raw counts beside what the ledger makes of them." }
+      ] },
+      { "cards": [
+        { "id": "check", "icon": "cloud", "title": "Check a provider", "text": "A few small real requests." },
+        { "id": "mapper", "icon": "code", "title": "Fix a mapper", "text": "In the provider's own project." },
+        { "id": "ledger", "icon": "database", "title": "Read a ledger", "text": "--ledger and --cache-gaps, no model." }
+      ] },
+      { "cards": [
+        { "id": "prices", "icon": "file", "title": "The price table", "code": "config/prices.json", "text": "Five prices a model, dated as_of." }
+      ] }
+    ],
+    "links": [
+      { "from": "probe", "to": "check" },
+      { "from": "probe", "to": "mapper" },
+      { "from": "probe", "to": "ledger" }
+    ]
+  }
+}
