@@ -5,15 +5,20 @@
 > keep in [ADR 0027](../adr/0027-engine-identities-and-packs.md) and [ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md);
 > giving the agent a voice and roles in [Build an identity](build-an-identity.md).
 
+![A pack at a glance: what an agent can do, with its toolsets and their guides, its settings, and optionally the feeds, screens and imports it offers, named by a demo's program or an identity](diagrams/build-a-pack.svg)
+
 A **pack** is what an agent can do: one or more toolsets, the guide that tells the model when to use them, the pack's own
 settings and state. It names no identity and references no other pack's code, so it could be served as an MCP server
-one day without changing. The engine (`louis-agent.core`) never references a pack; only the composition root
-(`demos/puls/hosts/louis-agent.host-packs`) knows them all.
+one day without changing. It stands on the contracts everything agrees on, `louis-agent.composition`. The engine
+(`louis-agent.core`) never references a pack: only a demo's composition root (Puls's is
+`demos/puls/hosts/louis-agent.host-packs`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
 no network. The real packs in the repo follow the same steps: `packs/tools/louis-agent.pack.where-to-buy` is the closest
 (no settings, one tool, its own eval checks), and `packs/tools/louis-agent.pack.recipes` adds the two things `units` doesn't
 need: settings (`RecipesOptions`) and a core service (the guarded browser). Read them beside this guide.
+
+![Building a pack: the project, the tools, the guide, the pack class, settings when it needs them, registered in the composition root, then tested and tried](diagrams/build-a-pack-flow.svg)
 
 ## 1. Create the project
 
@@ -38,11 +43,11 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <InternalsVisibleTo Include="louis-agent.pack.units.tests" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Prompts\**\*.md" />
+    <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\docs\projects\louis-agent.pack.units.md" Link="docs\louis-agent.pack.units.md" />
@@ -50,11 +55,12 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
 </Project>
 ```
 
-The only project reference is core ([step 9](#9-its-checks-when-it-proves-its-tools) says why not the evals). A
-reference to another pack, an identity or anything under `src/evals/` fails `ArchitectureTests`.
+The only project reference is `louis-agent.composition`
+([step 9](#9-its-checks-when-it-proves-its-tools) says why not the evals). A reference to another pack, an identity or
+anything under `src/evals/` fails `ArchitectureTests`.
 
-The last group shows the pack's design doc under `src/docs/` in the IDE's solution explorer, as every project does;
-nothing is built or copied. Write the doc (`docs/projects/louis-agent.pack.units.md`) once the pack works.
+The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does.
+Nothing is built or copied. Write the doc (`packs/docs/projects/louis-agent.pack.units.md`) once the pack works.
 
 ## 2. Write the tools
 
@@ -62,11 +68,12 @@ Tools are the public methods of a class: each method becomes one tool, named aft
 `[Description]`. Put the class in `Tools/` and keep helpers `private` or `internal`, because every public method is a tool.
 
 ```csharp
-namespace LouisAgent.Packs.Units.Tools;
-
 using System.ComponentModel;
-using LouisAgent.Core.Messages;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Units.Messages;
+using LouisAgent.Packs.Units.Messages.Holes;
+
+namespace LouisAgent.Packs.Units.Tools;
 
 /// <summary>The units toolset: a value converted between units of one kind.</summary>
 public sealed class UnitTools
@@ -78,11 +85,19 @@ public sealed class UnitTools
         [Description("The unit to convert it to")] string to)
     {
         if (!UnitTable.TryConvert(value, from, to, out double result))
-            return MessageText.Format(UnitToolMessage.CantConvert, new { From = from, To = to });
-        return MessageText.Format(UnitToolMessage.Converted, new { Value = value, From = from, Result = result, To = to });
+        {
+            var cantConvert = new CantConvertHoles(from, to);
+            return MessageText.Format(UnitToolMessage.CantConvert, cantConvert);
+        }
+
+        var converted = new ConvertedHoles(value, from, result, to);
+        return MessageText.Format(UnitToolMessage.Converted, converted);
     }
 }
 ```
+
+A message's holes are a record named after its member (`CantConvertHoles`), in a `Holes/` folder beside the enum, built
+as a named local before it's handed over (`.claude/rules/csharp.md` has the rule).
 
 What a pack's tools must do, and why:
 
@@ -133,43 +148,41 @@ the pack needs becomes a tool. Its name is reserved once embedded: the agent can
 ## 4. Write the pack class
 
 ```csharp
-namespace LouisAgent.Packs.Units;
-
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Packs.Units.Tools;
 using Microsoft.Extensions.FileProviders;
+
+namespace LouisAgent.Packs.Units;
 
 /// <summary>Unit conversion as a pack: one toolset, units, with its guide; no settings.</summary>
 public sealed class UnitsPack : IAgentPack
 {
     public string Name => UnitsToolset.Units.Wire();
 
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; } =
+    public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new(UnitsToolset.Units.Wire(), "A value converted between units of one kind",
-            GuideFile: SkillFiles.Guide(UnitsToolset.Units.Wire()),
+            GuideFile: PackToolset.Guide(UnitsToolset.Units.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(UnitTools)],
             CreateTools: _ => [new UnitTools()],
             ParallelSafe: true),
     ];
 
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(UnitsPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(UnitsPack).Assembly);
 
     public IReadOnlyList<string> Requires => [];
 }
 ```
 
-What each part of a `ToolsetDefinition` is for:
+What each part of a `PackToolset` is for:
 
 | Field | What it is |
 |---|---|
 | `Name` | What a session asks for in `toolsets` (`"units"`), lowercase |
 | `Description` | One line, shown by `GET /v1/toolsets` |
-| `GuideFile` | `SkillFiles.Guide("units")`, which is `toolsets/units.md` in the pack's `prompts/` |
+| `GuideFile` | `PackToolset.Guide("units")`, which is `toolsets/units.md` in the pack's `prompts/` |
 | `MissingSettings` | The settings this instance lacks, by name; empty when the toolset can load. The recipes pack returns `RECIPE_SOURCES` until a site is named, and `BROWSER_URL` until there is a browser |
 | `ToolTypes` | The tool classes, so the catalogue knows the tool names without building anything |
 | `CreateTools` | Builds one object per tool class for an engine. The `IPackContext` it receives holds what the engine shares: `WorkspaceRoot`, `Browser`, `WebSearch`, `Renderer`, `CurrencyRates`, and `NewFetcher()` for a fetcher with the guards around it |
@@ -219,7 +232,7 @@ exactly what Save will do. The shop-prices pack's `StatsSaImport` is the example
 
 A name that is written in more than one place is an enum ([ADR 0043](../adr/0043-repeated-names-are-enums.md)). The pack keeps **its own**
 enum of the toolsets it offers, in its project (`UnitsToolset.cs`), and never uses another pack's or an identity's: a stranger's pack
-needs nothing of ours but `louis-agent.choices`, which core brings along.
+needs nothing of ours but `louis-agent.choices`, which `louis-agent.composition` brings along.
 
 ```csharp
 public enum UnitsToolset
@@ -244,8 +257,8 @@ A pack reads its own settings in its own options class, never through core's `Ag
 pattern (`packs/tools/louis-agent.pack.recipes/RecipesOptions.cs`): one property per setting and a `FromEnvironment` that reads
 them once. The pack takes the options in its constructor and says what is missing through `MissingSettings`.
 
-Then document each setting where people look for it: a commented line in `config/.env.example` (the recipes pack's
-`RECIPE_SOURCES` block is the model), and a row in [Setup](../SETUP.md).
+Then document each setting where people look for it: a commented line in the demo's `config/.env.example` (the recipes
+pack's `RECIPE_SOURCES` block in `demos/puls/config/.env.example` is the model), and a row in [Setup](../SETUP.md).
 
 ## 6. Register it in the composition root
 
@@ -301,12 +314,13 @@ it and read the diff, since that is exactly what the model will be sent.
 
 ## 8. Try it
 
-Set `PACKS=units` in `config/.env` (or name the pack in an identity), start the API, and check that it is there:
+Set `PACKS=units` in the demo's `config/.env` (or name the pack in an identity), start the API, and check that it is
+there. `$API` is your stack's address (Puls's is `http://127.0.0.1:5070`):
 
 ```bash
-curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/toolsets
+curl -s -H "x-api-key: $AGENT_API_KEY" $API/v1/toolsets
 curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
-     -d '{"toolsets": ["units"]}' http://127.0.0.1:5080/v1/sessions
+     -d '{"toolsets": ["units"]}' $API/v1/sessions
 ```
 
 `GET /v1/toolsets` lists `units` with `available: true`, or the settings it misses. A session that names it gets its tools
@@ -316,7 +330,7 @@ needs `PACKS` (or `IDENTITIES`) and the pack's settings in its environment.
 ## 9. Its checks (when it proves its tools)
 
 A pack references nothing under `src/evals/` ([ADR 0073](../adr/0073-packs-reference-no-evals.md)): every host loads the
-pack, and the engine is going into its own package, so a pack stays on core.
+pack, so a pack stays on the composition contracts.
 
 To prove what your tools do, first try a general check in your eval file, naming your tool in its settings
 ([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
@@ -325,7 +339,7 @@ mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
 A rule no general check can say goes in its own project, `packs/evals/louis-agent.pack.{name}.checks`,
 which only the runner references, so someone can use your tools without the evals:
 
-1. **Its csproj** references the check contract, `..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
+1. **Its csproj** references the check contract, `..\..\..\src\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
    and your pack only if it uses the pack's code. Its root namespace is the pack's.
 2. **Write the check** in `Checks/`: a class that implements `ICheck`, with a nested `Entry` (a `CheckType<Settings>`)
    that builds it from a typed `Settings` record. It reads the turn from the engine's events (`EngineEvents`), and its
@@ -341,14 +355,14 @@ in `demos/puls/tests/louis-agent.host-packs.tests`, the one project that sees bo
 
 ## Before you ask for a review
 
-- [ ] References core; no other pack, no identity, nothing under `src/evals/`.
+- [ ] References `louis-agent.composition`; no other pack, no identity, nothing under `src/evals/`.
 - [ ] What it shares with an eval is in a shared project, or duplicated with a test that holds the copies equal.
 - [ ] Tools take plain data and return text; a failure is text with its reason; a waiting tool takes a `CancellationToken`.
 - [ ] Session input (the user's place) also arrives as a parameter.
 - [ ] Outside data is framed as data; output is bounded.
 - [ ] Every text is a message enum member, with a golden of the model-facing ones.
 - [ ] The guide opens with its routing line and holds no `## Skill:`.
-- [ ] Settings in its own options class, in `config/.env.example` and in Setup.
+- [ ] Settings in its own options class, in the demo's `config/.env.example` and in Setup.
 - [ ] `PackKind`, `Plugins` and the csproj reference in the composition root; a one-word name.
 - [ ] Tests written first, every file under 200 lines (tests 400), folders mirrored.
 

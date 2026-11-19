@@ -6,6 +6,8 @@
 > [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md); running, recording, replaying and reading the results in
 > [Run the evals](run-the-evals.md); the identity an eval proves in [Build an identity](build-an-identity.md).
 
+![An eval at a glance: a folder of files beside the identity it proves, with eval.json, the dataset, the manual and the transcripts, graded by checks from the catalogue](diagrams/add-an-eval.svg)
+
 An **eval** is a real task an identity has to do well, run against the real agent and graded by checks that read the
 transcript. It is a folder of files: `eval.json` says what it is and which checks grade it, and its dataset, manual and
 transcripts sit beside it. An eval that uses the harness's checks needs no C# at all.
@@ -14,6 +16,8 @@ The example is `acme`, the hardware shop's assistant [Build an identity](build-a
 asks how many square metres of tile a room needs. `acme` is not in the repo. Puls's two evals are the working
 examples to open beside this guide: `demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/` (one general check) and
 `Evals/Cook/` (Puls's own checks, a judge and a person's review).
+
+![Adding an eval: copy the template, write eval.json and the dataset, choose the checks, write the manual and the transcripts, test it, then list it](diagrams/add-an-eval-flow.svg)
 
 ## 1. Copy the template
 
@@ -25,11 +29,11 @@ shows in a run. Copy it under your identity's `Evals/`, named for the task:
 cp -r src/evals/template/Example demos/acme/evals/louis-agent.identity.acme.evals/Evals/Quotes
 ```
 
-The identity's evals project copies every file under `Evals/` beside the build, which is how the runner finds it; a new
-identity needs this item once in its csproj, as Puls's has:
+The identity's evals project copies every file under `Evals/` beside the build, which is how the runner finds it. A new
+identity needs this item once in its csproj. This is Puls's, so put your demo's name where it says `puls`:
 
 ```xml
-<None Update="Evals\**\*" TargetPath="EvalFiles\identities\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+<None Update="Evals\**\*" TargetPath="EvalFiles\demos\puls\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
 ```
 
 The runner reaches the identity's files through the composition, so a new identity must be registered there too
@@ -150,15 +154,18 @@ evals project's list (`PulsReaders.All`), which the demo's program hands to the 
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
-that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its project's
-list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `packs/evals/louis-agent.pack.where-to-buy.checks/Checks/`),
-which the demo's program hands to the runner (`PulsCatalogs`). It lives in a project of its own, which only the runner references,
-never in the pack or identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
-ADR 0073). The worked example is `EstimatesAtShop` and its tests. Its reasons
-are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
-(`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
-so it goes in a project of its own in your `demos/{name}/evals/` that only the runner references, as
-`demos/puls/evals/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
+that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record. It's listed in its
+project's list, as the where-to-buy rules are in `WhereToBuyChecks.All`
+(`packs/evals/louis-agent.pack.where-to-buy.checks/Checks/`), which the demo's program hands to the runner
+(`PulsCatalogs`). It lives in a project of its own, which only the runner references, never in the pack or the
+identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
+[ADR 0073](../adr/0073-packs-reference-no-evals.md)). The worked example is `EstimatesAtShop` and its tests. Its reasons
+are message enum members ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)), and a turn that failed for the
+infrastructure is `Unknown` (`Verdict.InfrastructureFailure`).
+
+A model judge of your own needs the harness, which an identity never references. So it goes in a project of its own in
+your `demos/{name}/evals/` that only the runner references, as `demos/puls/evals/louis-agent.identity.puls.judges`
+does. The general `judge` with a rubric file usually does the job instead.
 
 **A judge that must see a page** (`sources`) is for a rubric that compares the answer with what a tool read, such as
 "the amounts are the page's". `"sources": ["ReadRecipe"]` adds every result of that tool in the trial to the judge's
@@ -204,20 +211,21 @@ every required check, and any other file is stray and refused. Cut them from a s
 **From the portal, instead of by hand** (F49.4): on a stored run's conversation, *Sample* makes a new sample from
 it (a variant of the scenario it ran: change the id, the expected values, the categories, add an ideal answer), and
 after you grade a conversation, *Keep as reference* (a pass) or *Keep as known-bad* (a fail, with a reason in
-kebab-case) keeps its transcript. Both wait as drafts on the Evals page, under the eval's card
+kebab-case) keeps its transcript. Both wait as drafts on the Evals page, in the eval's details
 ([ADR 0061](../adr/0061-evals-grow-from-use.md)), and the studio's publish writes them into the eval's folder with
 it ([section 9](#9-or-compose-it-in-the-studio)).
 
 ## 7. Test it
 
 `EvalConformanceTests` (in the runner's tests) runs every eval folder it finds, so your references and known-bads are
-checked with no edit. Beside the identity's tests, add one test file for the eval, as Puls's
-`Evals/Routing/RoutingEvalTests.cs` does: it loads the folder with the runner's catalogue and holds its name, version,
-modes, checks and the shape of its dataset. A check of your own gets a pass and a fail on made-up transcripts.
+checked with no edit. Then add one test file for the eval in the identity's evals tests, as Puls's
+`demos/puls/tests/louis-agent.identity.puls.evals.tests/Evals/Routing/RoutingEvalTests.cs` does. It loads the folder
+with the runner's catalogue and holds its name, version, modes, checks and the shape of its dataset. A check of your
+own gets a pass and a fail on made-up transcripts.
 
 ```bash
 dotnet test src/tests/evals/louis-agent.evals.runner.tests --filter "FullyQualifiedName~EvalConformance"
-dotnet test demos/acme/tests/louis-agent.identity.acme.tests
+dotnet test demos/acme/tests/louis-agent.identity.acme.evals.tests
 ```
 
 ## 8. List it, and run it
