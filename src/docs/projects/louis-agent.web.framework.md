@@ -157,10 +157,11 @@ The tests are in `src/tests/web/louis-agent.web.framework.tests`, on NUnit with 
 holds its heading, its sections in order and what it says to the repo, as the table in part 4 shows.
 `FrameworkAreaTests` hold that the area brings the pages and their contents, each entry a page of it.
 
-## Limits and plans
+## Limits
 
-The pages run no agent yet: the framework's site gets its own, the framework Orbi, in F164.2. The evals' sections wait
-for the evals to be reworked. The doc links lead to GitHub until the docs have a site of their own.
+The pages run no agent of their own. The framework's site docks one beside them, the framework Orbi
+([louis-agent.identity.framework](louis-agent.identity.framework.md)). The evals' sections say only that the
+evals are being reworked and are coming. The doc links lead to GitHub, since the docs have no site of their own.
 
 ## Related docs
 
