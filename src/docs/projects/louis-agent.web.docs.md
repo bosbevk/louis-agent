@@ -11,14 +11,13 @@
 A page that explains the framework is written from its docs: an ADR, a project's design doc, a guide. This library
 lets that page hand the reader on to the doc it came from, without the page knowing where the docs are kept. The
 page says which doc, by its path in the repo, such as `src/docs/adr/0126-a-name-says-what-it-is-by-its-kind.md`.
-The site says once where those paths lead. Today that is the repo on GitHub, and when the docs have a site of their
-own it will be that, by changing the one setting and no page.
+The site says once where those paths lead. Today that is the repo on GitHub. Sending them anywhere else is a change
+to that one setting, and no page changes with it.
 
 It also holds the two parts a docs site steps through its pages with: the menu down the left, and the page before
 and after at a page's foot, both read from one list of the pages so they can't disagree.
 
-It sits apart from the framework's web so that a site with no docs ships none of it. It is the first of what the
-docs will share, the pattern the docs site, the API's docs and the MCP server's docs are meant to follow.
+It sits apart from the framework's web so that a site with no docs ships none of it.
 
 ## How it works
 
@@ -127,16 +126,15 @@ pages, the page being read marked, also at one of its sections, and the page tur
 Of the framework's rules in `louis-agent.web.tests/Rules`, `SurfacesAreDrawnByTheToolsTests` reads this library's
 styles, so the menu and the page turns draw their surfaces only through the framework's surface tool.
 
-## Limits and plans
+## Limits
 
-The docs have no site of their own yet, so every link leads to GitHub. The docs site, `/v1/docs` and `docs://` are
-planned to share this way of naming a doc by its path ([F148](../plans/F148-one-docs-endpoint.md)).
+The docs have no site of their own, so every link leads to GitHub.
 
 ## Related docs
 
 [louis-agent.web.framework](louis-agent.web.framework.md) · [louis-agent.web](louis-agent.web.md) ·
 [louis-agent.site-framework](louis-agent.site-framework.md) ·
-[ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)
+[ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md) · [The F148 plan](../plans/F148-one-docs-endpoint.md)
 
 ---
 [Docs index](../README.md) · Related: [Projects](README.md) · [Plans](../plans/README.md)

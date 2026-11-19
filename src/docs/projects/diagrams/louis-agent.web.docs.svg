@@ -243,7 +243,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">Where the docs live</text>
       <text class="pic-text" x="18" y="298" text-anchor="start">One setting a site names: GitHub today,</text>
-      <text class="pic-text" x="18" y="316" text-anchor="start">a docs site later.</text>
+      <text class="pic-text" x="18" y="316" text-anchor="start">anywhere else by changing it.</text>
       <rect class="mrq-glass" x="306" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />

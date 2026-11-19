@@ -2,7 +2,8 @@
 
 > **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.accounts/` ·
 > **References:** louis-agent.web, louis-agent.accounts.contracts, Microsoft.AspNetCore.Components.Authorization ·
-> **Used by:** a site that has accounts: louis-agent.puls, louis-agent.starter, louis-agent.code-review
+> **Used by:** a site that has accounts, each naming `.Accounts(layout)` among its areas: louis-agent.puls,
+> louis-agent.starter, louis-agent.code-review
 > **Also shows:** `component`, `sequence`
 
 ![The account pages, and their parts: the pages, the client and passkeys](diagrams/louis-agent.web.accounts.svg)
@@ -13,12 +14,18 @@ This library is everything the browser does for accounts. It has the pages for s
 an email, resetting a password and editing your profile, with their forms and sections. It also has the client that
 talks to the API's `/account` routes, the words, the styles and the passkey script.
 
-It sits apart from the framework's web on purpose. A site that has accounts references it and calls
-`AddLouisAgentAccounts()`, just as its API references `louis-agent.accounts`. A site without accounts ships none of
+It sits apart from the framework's web on purpose. A site that has accounts references it and names it among its
+areas, `.Accounts(typeof(AccountLayout))`, just as its API references `louis-agent.accounts`. That one call
+registers the services (through `AddLouisAgentAccounts()`), brings the pages to the site's router
+(`AccountLibrary.Assembly`), and names the layout the pages draw inside. A site without accounts ships none of
 it, and its chat header simply draws the guest's menu, through the one seam `louis-agent.web` keeps for that. The
 server side is [louis-agent.accounts](louis-agent.accounts.md).
 
-*Decided in:* CL30, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md).
+The rest of this doc walks the library from the bottom up: the client that talks to the API, the seam the
+framework keeps for the chat's menu, the pages, passkeys, two-factor, and the words and styles. It ends with the
+folders, to look things up, the tests and what is still missing.
+
+*Decided in:* CL30, F127.6, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md).
 
 ## How it works
 
@@ -50,12 +57,14 @@ implementation lives where it exists. That way the dependency points the same wa
 
 ### 3. The pages
 
-The pages, in `Pages/`, are framework pages on `AccountFrame`. That frame draws inside whatever layout the site set
-in `SiteFrames.Account`, the same Bridge the admin's frame uses. `AccountShell` is the frame itself: one centred card
+The pages, in `Pages/`, are framework pages on `AccountFrame`. That frame draws inside the layout the site named in
+`.Accounts(layout)`, which the area builder keeps in `SiteFrames.Account`. It is the same Bridge the admin's frame
+uses: a page's layout is fixed when it's compiled, and a page in the framework can't name a layout in a site. `AccountShell` is the frame itself: one centred card
 with the site's brand.
 
 The forms (`Components/`) and the profile's sections (`Components/Profile/`, `Passkeys/`, `TwoFactor/`) each do one
-thing over the client. When something goes wrong, they say so in the site's own words, through `AccountErrors`, a
+thing over the client. The sign-in buttons for Google and the other providers draw each provider's own logo
+(`Components/Providers/`). When something goes wrong, they say so in the site's own words, through `AccountErrors`, a
 switch on Identity's codes. And after every write, they read again, so what you see is what's really stored.
 
 *Decided in:* [ADR 0042](../adr/0042-the-web-shows-the-live-results.md).
@@ -97,18 +106,24 @@ a site that names no theme they keep the site's own colours, as Puls's do.
 
 These are the types involved:
 
-![The types: one call adds the pages, a client for the accounts API, the state every page reads, and the framework's account corner filled in](diagrams/louis-agent.web.accounts-interface.svg)
+![The types: one area adds the pages, a client for the accounts API, the state every page reads, and the framework's account corner filled in](diagrams/louis-agent.web.accounts-interface.svg)
 
 ## Structure
 
+The place to look a file up.
+
 ```
 src/web/louis-agent.web.accounts/
+├── AccountArea.cs       # .Accounts(layout), the area a site names
+├── AccountLibrary.cs    # the assembly a site's router lists
 ├── Client/              # AccountApi, AccountApiException, AccountProblem, AccountState, CookieAuthenticationStateProvider, AccountServices;
 │                        # Errors/ (AccountErrors), Navigation/ (SafeReturn), TwoFactor/ (OtpAuth, SecondStep), Menu/ (AccountMenu)
 ├── Components/          # AccountShell, AccountNotice, PasswordField, ProviderButtons, LoginForm, RegisterForm;
-│                        # Profile/ (details, email, password, set password, linked logins, delete), Passkeys/ (list, sign in), TwoFactor/ (section)
+│                        # Profile/ (details, email, password, set password, linked logins, delete), Passkeys/ (list, sign in), TwoFactor/ (section),
+│                        # Providers/ (ProviderBrand, ProviderLogo)
 ├── Layout/              # AccountFrame, on SiteFrames.Account
 ├── Pages/               # login, register, confirm-email, forgot-password, reset-password, profile
+├── Scripts/             # AccountScripts, the passkeys module's path named once
 ├── Text/                # AccountText
 ├── _Imports.razor
 └── wwwroot/js/          # passkeys.js, a module served at _content/louis-agent.web.accounts/js/passkeys.js; no site lists it
@@ -120,16 +135,16 @@ src/tests/web/louis-agent.web.accounts.tests/   # the same folders; AccountTestC
 The tests are in `src/tests/web/louis-agent.web.accounts.tests`. The client's logic runs on plain NUnit: the error
 words, the return address, the authenticator link and the second step. The components and pages run on bUnit, over
 an API the test scripts (`AccountTestContext`, which keeps every request). The passkey components run on bUnit's JS
-interop in strict mode. And `AccountMenuTests` covers the seam's real side.
+interop in strict mode. `AccountMenuTests` covers the seam's real side, and `AccountAreaTests` the area a site names.
 
-The framework's own rules, in `louis-agent.web.tests/Rules`, read this library too. They check that it names no
+The framework's own rule tests, in `louis-agent.web.tests`, read this library too. They check that it names no
 site, that its Razor holds no code, that its styles hold no fixed colour, and that every passkey call is in its
 script.
 
-## Limits and plans
+## Limits
 
-Three things are still waiting: a QR code for the authenticator key, editing a passkey's name after it's made, and
-looking at the pages in a real browser.
+The authenticator key shows as text and a link, with no QR code to scan. A passkey can be added and removed, but its
+name can't be changed after it's made.
 
 ## Related docs
 

@@ -9,7 +9,7 @@
         "id": "program",
         "icon": "terminal",
         "tone": "blue",
-        "label": "Program.cs:\nAddLouisAgentAccounts()",
+        "label": "The site's areas:\n.Accounts(AccountLayout)",
         "group": "site"
       },
       {

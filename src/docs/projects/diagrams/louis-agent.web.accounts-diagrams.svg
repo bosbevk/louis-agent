@@ -169,8 +169,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="pic-name" x="64" y="65" text-anchor="start">Program.cs:</text>
-      <text class="pic-name" x="64" y="81" text-anchor="start">AddLouisAgentAccounts()</text>
+      <text class="pic-name" x="64" y="65" text-anchor="start">The site's areas:</text>
+      <text class="pic-name" x="64" y="81" text-anchor="start">.Accounts(AccountLayout)</text>
       <rect class="pic-panel" x="12" y="128" width="256" height="52" rx="10" />
       <rect class="pic-fill tone-blue" x="28" y="140" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(34 146) scale(0.6667)">
