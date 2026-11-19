@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "The glossary at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "words", "icon": "book", "title": "The words these docs use", "code": "glossary",
+          "look": "highlight",
+          "text": "Each in the sense it has here, in alphabetical order." }
+      ] },
+      { "cards": [
+        { "id": "who", "icon": "user", "title": "Who an agent is",
+          "text": "Identity, mode, language, role, router, principles." },
+        { "id": "what", "icon": "box", "title": "What it can do",
+          "text": "Pack, toolset, guide, skill." },
+        { "id": "run", "icon": "message", "title": "How it runs",
+          "text": "Host, engine, session, turn, prefix, ledger." },
+        { "id": "ask", "icon": "users", "title": "How agents ask each other",
+          "text": "Address, calls, peer, sub-session, specialist, minion." }
+      ] }
+    ],
+    "links": [
+      { "from": "words", "to": "who" },
+      { "from": "words", "to": "what" },
+      { "from": "words", "to": "run" },
+      { "from": "words", "to": "ask" }
+    ]
+  }
+}

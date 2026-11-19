@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "Risks and technical debt at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "risk", "icon": "info", "title": "What is knowingly unfinished", "code": "risks",
+          "look": "highlight",
+          "text": "What could go wrong, and where each item is tracked until something removes it." }
+      ] },
+      { "cards": [
+        { "id": "lim", "icon": "checks", "title": "Known limitations",
+          "text": "One list in the TODO, each with the feature or fix that removes it." },
+        { "id": "fix", "icon": "shield", "title": "The open fix",
+          "text": "FX4: until it lands, changing tools mid-chat can break a Haiku 5.5 chat." },
+        { "id": "dec", "icon": "branch", "title": "Open decisions",
+          "text": "The orchestrator's topology, triggers, pull requests and engine." },
+        { "id": "rider", "icon": "code", "title": "Rider's tools",
+          "text": "Found and logged by the ACP server, not yet callable." }
+      ] }
+    ],
+    "links": [
+      { "from": "risk", "to": "lim" },
+      { "from": "risk", "to": "fix" },
+      { "from": "risk", "to": "dec" },
+      { "from": "risk", "to": "rider" }
+    ]
+  }
+}
