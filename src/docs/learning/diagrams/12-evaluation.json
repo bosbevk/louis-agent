@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Evaluation: a judge is only as good as its last check against a person",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "checks", "title": "Measure what an agent does", "code": "skill 12",
+          "look": "highlight",
+          "text": "Code graders first, a model judge only where no rule fits, and that judge checked against a person." }
+      ] },
+      { "cards": [
+        { "id": "judge", "icon": "user", "title": "A judge checked against a person",
+          "text": "90% in each class, four rounds on 36 labels, then a button in the portal." },
+        { "id": "words", "icon": "book", "title": "The field's words",
+          "text": "Task, trial, transcript, grader; pass@k against pass^k; a held-out split; replays." },
+        { "id": "generic", "icon": "stack", "title": "Generic checks and readers",
+          "text": "amount-under does the compare, Puls's rand-total does the reading." }
+      ] },
+      { "cards": [
+        { "id": "grow", "icon": "message", "title": "Evals grow from use",
+          "text": "A conversation becomes a sample, a graded one a reference or a known-bad." },
+        { "id": "studio", "icon": "settings", "title": "Compose, try, publish",
+          "text": "The studio writes eval.json; the runner alone reads eval files; a try is a $0 replay." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "judge" },
+      { "from": "skill", "to": "words" },
+      { "from": "skill", "to": "generic" },
+      { "from": "judge", "to": "grow" },
+      { "from": "generic", "to": "studio" }
+    ]
+  }
+}
