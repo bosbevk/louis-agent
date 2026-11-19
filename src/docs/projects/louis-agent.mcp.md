@@ -1,7 +1,8 @@
 # louis-agent.mcp — design
 
 > **Kind:** host (a library, serving stdio or ASP.NET Core, Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp/` ·
-> **References:** louis-agent.core, louis-agent.composition, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
+> **References:** louis-agent.core (and through it the composition), ASP.NET Core, the ModelContextProtocol SDK and
+> its ASP.NET Core part · **Docker service:** `mcp-server`
 > **Also shows:** `component`
 
 ![The MCP server, and its parts: the tools in sync, the feeds as resources, and its two transports](diagrams/louis-agent.mcp.svg)
@@ -15,6 +16,9 @@ SDK.
 The thing to know is that it has **no model of its own**. The client's model decides which tool to call, one call at
 a time. If you want louis-agent to do a whole task by itself, use the API's sessions instead
 ([which interface to use](../AGENT_COMMUNICATION.md#which-interface-to-use)).
+
+The rest of this doc follows the server from start-up: how it starts without a model, the two ways a client reaches
+it, the tools it keeps in step, the feeds it serves as resources, the key over HTTP, and what it never offers.
 
 ## How it works
 
@@ -42,8 +46,8 @@ the start-up.
 `EngineToolSync` copies `AgentEngine.Tools` into the MCP tool collection, and keeps the two in step. So when the
 agent builds or approves a tool, clients get told with `notifications/tools/list_changed`.
 
-`SkillsToolProvider` adds three read-only skill tools. The skills themselves still run through the engine's
-`ExecuteSkill`.
+`SkillsToolProvider` adds three read-only skill tools, its methods `ListSkills`, `GetSkillInfo` and
+`GetSkillDocumentation`. The skills themselves still run through the engine's `ExecuteSkill`.
 
 ### 4. The feeds as resources
 
@@ -84,7 +88,9 @@ These are the types involved:
 | `McpHost.cs` | The one call a program makes: transport choice, `RunStdioAsync`, `RunHttpAsync` (with the key middleware) |
 | `McpPrimitives.cs` | What both transports publish, in one call: the engine's tools and the feeds |
 | `Tools/` | `EngineToolSync` (engine tools → MCP tools, kept in sync), `SkillsToolProvider` (the three skill tools) |
-| `Resources/` | `FeedResources` (feeds → resources), `ResourceScheme` (`feed`) |
+| `Resources/` | `FeedResources` (feeds → resources), `ResourceScheme` (`feeds`) |
+| `Transport/` | `McpTransport` (stdio or HTTP), `McpTransportSetting` (`MCP_TRANSPORT`, read once) |
+| `Messages/` | The errors, the log lines and the words a client reads (ADR 0009) |
 
 ## Configuration
 
@@ -93,7 +99,7 @@ It runs in its program, in the `mcp-server` container, over stdio or on the PC's
 ![Where the MCP server runs: a client reaches its container over stdio or on 127.0.0.1:5090, and it reaches the collector and its folders](diagrams/louis-agent.mcp-deployment.svg)
 
 It uses core's settings, without any `LLM_*`, plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY` and `AGENT_AUTH`. The
-entry for Rider as a client is `config/rider/rider-mcp-servers.example.json`.
+entry for Rider as a client is `demos/louis-agent/config/rider/rider-mcp-servers.example.json`.
 
 **In stdio mode, stdout carries the protocol**, so logging goes to stderr only.
 
@@ -106,17 +112,17 @@ by themselves. A tool only for MCP is an `[McpServerToolType]` class, registered
 
 The tests are in `src/tests/hosts/louis-agent.mcp.tests`. They run the SDK's real client against the server's setup,
 over two in-memory pipes, and check the feeds as resources with the tools beside them. The key rule is core's
-`HostAuth`, tested in `HostAuthTests`, and the tools it publishes are tested where they live. It was also checked
-by hand with an MCP client, and over HTTP with curl: no key gives 401, the right key gives 200.
+`HostAuth`, tested in `HostAuthTests`, and the tools it publishes are tested where they live. To try it by hand,
+[Change the MCP server](../guides/change-the-mcp-server.md#check-it-with-a-client) shows how: over HTTP, no key
+gives 401 and the right key 200.
 
 ## Limits and plans
 
-`AGENT_AUTH=off` runs the HTTP transport with no key at all, so it's for local use only. FX18 closed the case where
-that happened by accident.
+`AGENT_AUTH=off` runs the HTTP transport with no key at all, so it's for local use only. Without it, a missing key
+stops the server before it listens, so it can't be left open by accident.
 
-It publishes every toolset the instance can load. Choosing only some, the way API sessions do
-([F5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md)), would need a
-setting or a profile per client.
+It publishes every toolset the instance can load. A client can't choose only some, the way an API session names its
+toolsets.
 
 ## Related docs
 
