@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "The crosscutting concepts at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "rules", "icon": "stack", "title": "The rules every part follows", "code": "crosscutting",
+          "look": "highlight",
+          "text": "What holds in core, every pack and every host, whichever part you change." }
+      ] },
+      { "cards": [
+        { "id": "sec", "icon": "shield", "title": "Security",
+          "text": "Secrets stay out, paths stay in the workspace, arguments are data, fetches stay public, hosts fail closed." },
+        { "id": "msg", "icon": "message", "title": "Messages",
+          "text": "Every text is an enum member with a template; what the model reads is pinned by a golden file." },
+        { "id": "log", "icon": "chart", "title": "Logging and tracing",
+          "text": "ILogger to stderr and a run file, two records, the usage ledger, and OpenTelemetry when asked." }
+      ] },
+      { "cards": [
+        { "id": "test", "icon": "checks", "title": "Testing",
+          "text": "Tests first, with NUnit; unit tests stay in their process, integration tests in their own projects." },
+        { "id": "conf", "icon": "settings", "title": "Configuration",
+          "text": "Settings in config/.env, secrets apart, the model's in a profile, choices as enums." }
+      ] }
+    ],
+    "links": [
+      { "from": "rules", "to": "sec" },
+      { "from": "rules", "to": "msg" },
+      { "from": "rules", "to": "log" }
+    ]
+  }
+}
