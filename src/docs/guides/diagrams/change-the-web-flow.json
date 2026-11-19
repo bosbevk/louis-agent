@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the framework's web: follow a new event in the stream",
+  "caption": "The reader knows the event first, then the turn folds it, then a view shows it.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "map", "label": "Map it in the\nsession stream", "icon": "code", "tone": "teal" },
+      { "id": "test", "label": "The test first in\nTurnStreamTests", "icon": "checks", "tone": "green" },
+      { "id": "fold", "label": "Fold it in\nTurnStream", "icon": "code", "tone": "green" },
+      { "id": "show", "label": "Must a view\nshow it?", "tone": "green", "shape": "decision" },
+      { "id": "view", "label": "Turn or Block,\nand the view", "icon": "browser", "tone": "green" },
+      { "id": "done", "label": "Done", "tone": "blue", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "map" },
+      { "from": "map", "to": "test" },
+      { "from": "test", "to": "fold" },
+      { "from": "fold", "to": "show" },
+      { "from": "show", "to": "view", "word": "yes" },
+      { "from": "show", "to": "done", "word": "no" },
+      { "from": "view", "to": "done" }
+    ],
+    "direction": "right"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Change the site at a glance",
+  "caption": "louis-agent.dev holds its words, its CV and its guide; every shape and every look is the framework's.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "site", "icon": "browser", "title": "The site", "code": "louis-agent.site", "look": "highlight",
+          "text": "Pages made of the framework's controls, given the site's words." }
+      ] },
+      { "cards": [
+        { "id": "host", "icon": "server", "title": "Its host", "code": "louis-agent.site-api", "text": "The pages as HTML, and the guide's API." },
+        { "id": "guide", "icon": "message", "title": "The guide", "text": "Knows every page by its address." },
+        { "id": "cv", "icon": "file", "title": "The CV", "code": "cv.json", "text": "Data, edited on its own page." },
+        { "id": "card", "icon": "chart", "title": "The share card", "text": "The orb, photographed from the site." }
+      ] },
+      { "cards": [
+        { "id": "tests", "icon": "checks", "title": "The tests", "text": "Every page, link, claim and the sitemap held to the repo." }
+      ] }
+    ],
+    "links": [
+      { "from": "site", "to": "host" },
+      { "from": "site", "to": "guide" },
+      { "from": "site", "to": "cv" },
+      { "from": "site", "to": "card" }
+    ]
+  }
+}

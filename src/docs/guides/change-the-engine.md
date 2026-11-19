@@ -5,6 +5,8 @@
 > works in [louis-agent.core](../projects/louis-agent.core.md); the rules these steps follow in
 > [core's development guide](../../engine/louis-agent.core/CLAUDE.md); a capability of its own in [Build a pack](build-a-pack.md).
 
+![The engine at a glance: louis-agent.core holds the tool loop, prompts, settings, providers and guards, and the golden files pin what the model reads](diagrams/change-the-engine.svg)
+
 Core is the engine. It holds the tool loop (`Agent/`), asking other agents (`Delegation/`), skills and prompts
 (`Skills/`, `prompts/`), the model providers' seam (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards
 (`Guardrails/`) and the start-up every host shares (`Hosting/`). It names no product, shop or country. Who an agent is
@@ -62,13 +64,17 @@ that uses them. A running chat keeps the prompt it opened with, so start a new c
 
 ## Add a setting
 
+![Adding a setting: a test first, a property filled in FromEnvironment, an enum when it is a choice, then the demo's .env.example](diagrams/change-the-engine-flow.svg)
+
+A setting is read once, where it enters, and everything after that asks the options class for it.
+
 1. Read it once where it enters: a property in `Config/AgentOptions.cs` (or `LlmOptions` for an `LLM_*` setting),
    filled in `FromEnvironment`, with a test in `src/tests/engine/louis-agent.core.tests/Config/`. `AgentOptions.cs` is
    already long, so a group of new settings is the moment to give them a class of their own, as a pack has
    (`RecipesOptions`). A pack's settings are always in the pack's own options class.
 2. A choice from a fixed set is an enum, parsed with `SettingChoice` (case ignored, aliases allowed, never a number;
    [ADR 0024](../adr/0024-choices-are-enums.md)).
-3. Document it in `config/.env.example`. If a container needs it, add it to the compose file's service and to the
+3. Document it in the demo's `config/.env.example` (for the coding agent, `demos/louis-agent/config/.env.example`). If a container needs it, add it to the compose file's service and to the
    host's `Properties/launchSettings.json` profile, so a debug run sees what the container sees.
 
 ## Add a message
@@ -77,8 +83,10 @@ Pick the enum by what the text is and which area says it: `{Area}ErrorMessage`, 
 `{Area}ToolMessage`, in that area's own `Messages/` folder (for settings, `Config/Messages/`). A text two areas use goes
 in a shared one: core's `Messages/` holds `ErrorMessage` and `UserText`, and `louis-agent.composition` holds
 `ToolMessage`. Name the member for what happened, not for its wording. Its `[Description]` is the text, with named
-holes: `MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other })`. A host's own texts live in
-that host's `Messages/` folder.
+holes. The holes are a record named after the member, `{Member}Holes`, in a `Holes/` folder beside the enum, and the
+member names it with `[Holes(typeof(…))]`. Build the record as a named local, then hand it over:
+`var owedTool = new EndWithToolHoles(owed);` and `MessageText.Format(AgentToolMessage.EndWithTool, owedTool)`. A host's
+own texts live in that host's `Messages/` folder.
 
 Log through `ILogger` (`AgentLogging.For<T>()`), which writes to stderr only, because stdout carries the ACP and MCP
 protocols. The rules are in [Messages and logging](../../engine/louis-agent.core/CLAUDE.md#messages-and-logging).
@@ -96,8 +104,9 @@ Never check the provider's name anywhere else. For usage, the steps are in
 
 ## Add a model or a price
 
-A model is configuration. `LLM_PROFILE` picks `config/.env.anthropic` or `config/.env.ollama`, and
-[MODELS.md](../MODELS.md) lists the models. A new model needs its five prices in `config/prices.json`, copied from the
+A model is configuration. `LLM_PROFILE` picks a profile file in the demo's `config/` folder, `.env.{LLM_PROFILE}`, such
+as `.env.anthropic` or `.env.ollama`, and [MODELS.md](../MODELS.md) lists the models. A new model needs its five
+prices in the demo's `config/prices.json`, copied from the
 provider's page, with the table's `as_of` set to that day. Without them its cost is recorded as unknown, never 0. Run
 the [usage probe](change-the-usage-probe.md) before you trust a new provider's numbers.
 

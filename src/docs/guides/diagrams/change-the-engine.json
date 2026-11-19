@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Change the engine at a glance",
+  "caption": "Core is the engine every agent runs on. A new capability is a pack; core keeps only what needs its insides.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "core", "icon": "chip", "title": "The engine", "code": "louis-agent.core", "look": "highlight",
+          "text": "The tool loop, asking other agents, prompts, providers, usage, guards and start-up." }
+      ] },
+      { "cards": [
+        { "id": "tools", "icon": "code", "title": "Tools and toolsets", "text": "A pack's, except agents and skills." },
+        { "id": "prompts", "icon": "file", "title": "Built-in prompts", "code": "prompts/", "text": "Principles and core's two guides." },
+        { "id": "settings", "icon": "settings", "title": "Settings and messages", "text": "Read once, texts as enums." },
+        { "id": "providers", "icon": "cloud", "title": "Providers and prices", "text": "A strategy per difference, five prices a model." }
+      ] },
+      { "cards": [
+        { "id": "golden", "icon": "checks", "title": "The golden files", "text": "What the model reads, pinned and diffed." }
+      ] }
+    ],
+    "links": [
+      { "from": "core", "to": "tools" },
+      { "from": "core", "to": "prompts" },
+      { "from": "core", "to": "settings" },
+      { "from": "core", "to": "providers" }
+    ]
+  }
+}

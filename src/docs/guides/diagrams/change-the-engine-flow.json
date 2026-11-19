@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the engine: add a setting",
+  "caption": "Read it once where it enters, parse a choice as an enum, then document it where a run will see it.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "test", "label": "A test in\nConfig/ tests", "icon": "checks", "tone": "green" },
+      { "id": "read", "label": "A property filled\nin FromEnvironment", "icon": "code", "tone": "violet" },
+      { "id": "choice", "label": "A choice from\na fixed set?", "tone": "violet", "shape": "decision" },
+      { "id": "enum", "label": "An enum, parsed\nwith SettingChoice", "icon": "code", "tone": "teal" },
+      { "id": "doc", "label": "The demo's\n.env.example", "icon": "file", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "you", "to": "test" },
+      { "from": "test", "to": "read" },
+      { "from": "read", "to": "choice" },
+      { "from": "choice", "to": "enum", "word": "yes" },
+      { "from": "choice", "to": "doc", "word": "no" },
+      { "from": "enum", "to": "doc" }
+    ],
+    "direction": "right"
+  }
+}
