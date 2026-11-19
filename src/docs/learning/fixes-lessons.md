@@ -511,6 +511,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX209 · A warning that names a CVE is an error
+
+Every build had warned NU1903 for a while, and Rider had it as an error: the Blazor WebAssembly server package at
+10.0.13 carried CVE-2026-102870, a remote code execution in the debug proxy that the advisory rates high. The build
+still succeeded, so nothing stopped, and the warning sat beside a harmless one about a comparison. The fix was a
+version, 10.0.15, in the five hosts that pin it, and `dotnet list package --vulnerable` came back empty. A known
+vulnerability isn't noise to read past: the advisory says what is hit, and the patched version is usually one line
+away. Skill 15 (safety and security: what the build already knows is cheaper than an audit).
+
 ## FX208 · Two buttons that look the same are one too many
 
 On a phone, louis-agent.dev's header had two round buttons, both drawing the same three lines, and the page slid
