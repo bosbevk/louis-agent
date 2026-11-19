@@ -9,7 +9,7 @@
 > **Also shows:** `activity`, `sequence`
 
 > **Kind:** contracts library (`net10.0`, an identity's prompts) · **Path:** `src/site/louis-agent.identity.guide/` · **References:**
-> `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), and the coding agent's
+> `louis-agent.composition` only, and the embedded file provider package · **Used by:** `louis-agent.site-api` (the site's host), and the coding agent's
 > catalogue beside the coding identity
 
 ![The guide, and its three packs: the docs, the leads and the site](diagrams/louis-agent.identity.guide.svg)
@@ -21,7 +21,13 @@ way its docs tell it, and nothing else: no files, no git, no shell. That's this 
 one voice with three packs.
 
 It belongs to the framework, so it lives beside its site in `src/site/`. Its name says what it is. The site's host
-runs it alone, so a visitor can't reach anything else.
+runs it first, as the default, and beside it only the showroom's three made-up businesses
+([louis-agent.identity.showroom](louis-agent.identity.showroom.md)), so a visitor can't reach anything else.
+
+The rest of this doc walks the guide part by part: its packs, who it is, how it teaches and sells, how it answers,
+its skills, the focus it takes on each part of the site, a piece the visitor picked, where its knowledge comes from,
+how it asks the showroom's businesses, and how it runs a demo live. Then it says why it is open on purpose, and ends
+with the files, to look things up, and the tests.
 
 *Decided in:* F109.3, F124.
 
@@ -33,6 +39,10 @@ runs it alone, so a visitor can't reach anything else.
 pack is what it answers from. The leads pack has one tool, which mails Louis a lead when a visitor is interested and
 has said yes. The site pack has one tool too, which takes the visitor to a page or a part of one; the widget hears
 it and moves the browser.
+
+Every answer ends with choices: the identity says `EndsEachAnswerWith` the site pack's `Offer`, so the engine asks
+for one when an answer ends without it. The one exception is "Stop here", a walkthrough's last choice, after which it
+says goodbye and offers nothing (`StopsOn`).
 
 *Decided in:* F112, [ADR 0101](../adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md), F117.
 
@@ -122,8 +132,8 @@ on another page, it calls `FindPlace` first, then `ShowPage` with the address it
 
 ### 8. Where its knowledge comes from
 
-Everything it knows comes from the `docs` toolset, over `DOCS_ROOT`. The site's image carries the docs, and on the PC
-the repo's docs are mounted. So an answer can always name the doc it read. The guide is an identity, not a role, and
+Everything it knows comes from the `docs` toolset, over `DOCS_ROOT`. The site's image carries the docs at `/app/docs`,
+and on the PC the host's run profile sets `DOCS_ROOT` to `../../..`, the repo itself. So an answer can always name the doc it read. The guide is an identity, not a role, and
 it reads the docs with a tool, not from an index or a digest.
 
 ### 9. Asking the showroom's businesses
@@ -171,11 +181,11 @@ these rules, and `GuideSkillsTests` holds them.
 
 ![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
 
-![One question answered: it searches the docs, reads the best section, opens the page and answers](diagrams/louis-agent.identity.guide-sequence.svg)
+![A price asked about: it reads its skill, opens the contact page and says Louis quotes each site after a short call](diagrams/louis-agent.identity.guide-sequence.svg)
 
 These are the types involved:
 
-![The types: GuideIdentity and three enums, its name, its packs and the businesses it may ask](diagrams/louis-agent.identity.guide-interface.svg)
+![The types: GuideIdentity and four enums, its name, its packs, the businesses it may ask and its focus](diagrams/louis-agent.identity.guide-interface.svg)
 
 ## Open on purpose
 
@@ -190,15 +200,27 @@ What stays closed is held in code, not by narrowing what it talks about. Its hos
 no files, git or shell. It sends a lead only on the visitor's yes. It never quotes Louis's own money, numbers, risks or
 notes. A cap limits what a visitor can spend (ADR 0099).
 
+## Structure
+
+The place to look a file up. Paths are from `src/site/louis-agent.identity.guide/`.
+
+| Path | What's in it |
+|---|---|
+| `GuideIdentity.cs` | The identity, and its four enums: `GuideIdentityName`, `GuidePack` (docs, leads, site), `GuideCall` (the three businesses it may ask) and `GuideFocus` (selling, demos) |
+| `prompts/agent/louis-agent-guide/voice.md` | Who Orbi is, his story, the seven rules, what we sell today, what stays Louis's, the skills' table, and how it answers |
+| `prompts/agent/louis-agent-guide/skills/` | `site-pages.md`, `writing.md` and `live-demo.md`, always; `docs-map.md`, `site-map.md`, `take-a-lead.md`, `free-website-entry.md`, `walk-a-page.md`, `what-we-sell.md`, `focus-selling.md` and `focus-demos.md`, on demand |
+
 ## Tests
 
 The tests are in `src/tests/site/louis-agent.site.tests`. `GuideIdentityTests` and `SiteCatalogTests` hold its
-name, its voice's path, its three packs, and the site's catalogue to the guide alone. `GuideKnowsTheSiteTests` holds
+name, its voice's path, its three packs, and the site's catalogue: the guide first, then the businesses it may ask,
+and the program serving the site and nothing else. `GuideKnowsTheSiteTests` holds
 the voice and its skills to every page of the site. `GuideSkillsTests` holds the split: every page in the index
 that's always loaded, the writing skill always loaded apart from the voice, the two maps read on demand, and every
 skill in the shape, with its rules first, an example and its references. `OrbiVoiceTests` holds the voice's words,
-and that its table names every skill read on demand. And `CodingCatalogTests` holds it beside the coding identity,
-in the coding agent's catalogue.
+and that its table names every skill read on demand. And `CodingCatalogTests`, in
+`demos/louis-agent/tests/louis-agent.coding-catalog.tests`, holds it beside the coding identity, in the coding agent's
+catalogue.
 
 ---
 [Docs index](../README.md) · Related: [louis-agent.site](louis-agent.site.md)
