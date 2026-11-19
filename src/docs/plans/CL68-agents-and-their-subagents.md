@@ -43,17 +43,27 @@ embed files that aren't prompts (`recipe-sites.md`, the price JSON), so a provid
 only the prompt folders. And `louis-agent.site` links core's `prompts/shared/principles.md` by path, so it moves
 too.
 
+**The scope: the engine, not Puls.** Louis, when the plan was first shown: "no we are not fixing pulse we only fix
+the engine to work like this". And on the card for what happens to Puls, he picked "Leave Puls broken until it
+moves" over moving its files or having the engine read both layouts. So CL68 moves core, the packs, the framework's
+own identities in `src/site/` (the guide, the framework Orbi, the showroom) and the core tests' made-up `testprod`
+identity, which has an agent, specialists and minions and so carries the engine's tests for every level. The demos
+in `demos/` (Puls, the coding agent, the triage team) are left as they are. Once CL68.1 is merged their prompts
+no longer load, so their tests fail until each moves to its own repo or is moved on purpose later. CI runs the whole
+solution's unit tests (`.github/workflows/ci.yml`), so from CL68.1 on CI is red on those demos' tests, and the Puls
+deploy workflow, which waits for green CI and also ships the framework's site, doesn't run.
+
 ## Design
 
 ### 1. The tree, today and after
 
-Today (Puls, the guide, the showroom, a pack and core):
+Today (the core tests' `testprod`, the guide, the showroom, a pack and core):
 
 ```
-louis-agent.identity.puls/prompts/
-  agent/puls/voice.md, voice-af.md, voice-en.md
-  specialists/puls-cook.md, puls-analyst.md, ...
-  minions/puls-minion.md, puls-minion-find-recipe.md, puls-minion-web-price-lookup.md
+louis-agent.core.tests/prompts/
+  agent/testprod/voice.md, voice-af.md, voice-en.md, skills/
+  specialists/testprod-specialist.md
+  minions/testprod-minion.md, testprod-minion-lookup.md
 louis-agent.identity.guide/prompts/agent/louis-agent-guide/voice.md + skills/
 louis-agent.identity.showroom/prompts/koringland-attorneys/agent/koringland-attorneys/voice.md   (and two more)
 louis-agent.pack.web/prompts/toolsets/web.md
@@ -63,20 +73,20 @@ louis-agent.core/prompts/shared/principles.md, toolsets/agents.md, toolsets/self
 After CL68:
 
 ```
-louis-agent.identity.puls/agents/puls/
-  voice.md, voice-af.md, voice-en.md
-  lookup.md                                  (what every lookup agent loads first, was puls-minion.md)
-  subagents/cook/voice.md                    (level: subagent)
-  subagents/analyst/voice.md ...
-  subagents/find-recipe/voice.md             (level: lookup)
-  subagents/web-price-lookup/voice.md        (level: lookup)
+louis-agent.core.tests/agents/testprod/
+  voice.md, voice-af.md, voice-en.md, skills/
+  lookup.md                                  (what every lookup agent loads first, was testprod-minion.md)
+  subagents/specialist/voice.md              (level: subagent)
+  subagents/lookup/voice.md                  (level: lookup)
 louis-agent.identity.guide/agents/louis-agent-guide/voice.md + skills/
 louis-agent.identity.showroom/agents/koringland-attorneys/voice.md   (and two more, each name once)
 louis-agent.pack.web/toolsets/web.md
 louis-agent.core/shared/principles.md, toolsets/agents.md, toolsets/self-extension.md
 ```
 
-The triage and coding identities and the core tests' made-up `testprod` identity move the same way.
+The framework Orbi moves like the guide. Puls, the coding agent and the triage team stay in `prompts/` as they
+are. The pictures below use Puls and its cook as the example of the shape, since they are the agents the address
+rules were written for, but Puls's own files don't move.
 
 ### 2. What changes, and why this shape
 
@@ -86,9 +96,10 @@ engine reads. `agent/` becomes `agents/`. Since the recipes and shop-prices pack
 `EmbeddedPrompts.Of` hands back a provider that shows only the prompt folders. The showroom's three identities
 share one provider, and the catalogue counts a provider it already holds once, so each business's name appears once.
 
-**A subagent lives in its agent's folder (CL68.2).** `specialists/` goes. The cook is
-`agents/puls/subagents/cook/voice.md`. The address `puls.cook` (ADR 0117) and the folder now say the same thing,
-and who owns the cook is visible in the tree. The engine reads a role's level from its header instead of from the
+**A subagent lives in its agent's folder (CL68.2).** `specialists/` goes. A subagent is
+`agents/{identity}/subagents/{name}/voice.md`, so in this shape a cook would be
+`agents/puls/subagents/cook/voice.md`. The address `puls.cook` (ADR 0117) and the folder say the same thing, and
+who owns the cook is visible in the tree. The engine reads a role's level from its header instead of from the
 folder it sits in, and `specialist` becomes `subagent` (`RoleLevel.Subagent`, `level: subagent`). ADR 0017 chose
 a folder per level so a role couldn't open at the wrong level. Today the header is read and checked for every
 prompt anyway, so a test holds the same rule: a subagent's `voice.md` must say `subagent` or `lookup`, an agent's
@@ -96,7 +107,7 @@ must say `agent`. This is *package by feature*, everything one agent has in one 
 *package by layer*.
 
 **A minion becomes a lookup agent (CL68.3).** `minions/` goes, and its files join `subagents/` marked
-`level: lookup`. The shared base (`puls-minion.md`) becomes `agents/puls/lookup.md`. The name changes through the
+`level: lookup`. The shared base (`{identity}-minion.md`) becomes `agents/{identity}/lookup.md`. The name changes through the
 code (`MinionAsk` to `LookupAsk`, `RoleLevel.Minion` to `RoleLevel.Lookup`, `MINION_LLMS` to `LOOKUP_LLMS`, the
 minion message texts) and in ADR 0021. Nothing is kept under the old name (ADR 0049).
 
@@ -110,7 +121,7 @@ The architecture: every project's prompts lose the wrapper, and the engine reads
 
 ![Identities hold agents and their subagents, packs hold toolsets, core holds the principles; the engine reads them all through EmbeddedPrompts and the catalogue](diagrams/CL68-agents-and-their-subagents-architecture.svg)
 
-The main case: Puls asks its cook.
+The main case: an agent asks its subagent, shown as Puls asking a cook.
 
 ![Puls calls AskAgent with puls.cook, the address becomes the cook's folder, its header says subagent, and its engine is built with its toolsets](diagrams/CL68-agents-and-their-subagents-communication-puls-asks-its-cook.svg)
 
@@ -132,7 +143,7 @@ What is in memory while the cook answers.
 | `AgentAddresses` (an address to its subagent's folder) | `src/engine/louis-agent.core/Delegation/Addresses/` | `LouisAgent.Core.Delegation.Addresses` | CL68.2 |
 | A layout test: a subagent's level matches where it sits | `src/tests/engine/louis-agent.core.tests/` | `LouisAgent.Core.Tests` | CL68.2 |
 | `RoleLevel.Lookup`, `LookupAsk` (was `MinionAsk`), its messages | `src/engine/louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` | CL68.3 |
-| `LOOKUP_LLMS` (was `MINION_LLMS`) in the options and each demo's `.env.example` | `src/engine/louis-agent.core/Config/`, `demos/*/config/` | `LouisAgent.Core.Config` | CL68.3 |
+| `LOOKUP_LLMS` (was `MINION_LLMS`) in the options and `src/site/config/` | `src/engine/louis-agent.core/Config/`, `src/site/config/` | `LouisAgent.Core.Config` | CL68.3 |
 
 ### 5. What is reused
 
@@ -147,23 +158,24 @@ Each starts with its own plan, on its own branch off `main`, and ends with its p
 
 | Child | What it does | Done when |
 |---|---|---|
-| **CL68.1** `prompts/` goes, `agent/` is `agents/` | Each project embeds its prompt folders from its root; `agent/` becomes `agents/` everywhere it's named (the core constants, the identities, the agent-written skills folder `skills/agents/functions/`, the site's link to the principles); the showroom flat, one provider for its three businesses. About six steps | No `prompts/` folder is left in the repo, `PromptFolderTests` holds that, the showroom names each business once, and every unit test passes |
-| **CL68.2** Subagents inside their agent | `specialists/` goes; each specialist is `agents/{identity}/subagents/{name}/voice.md`; the level comes from the header; `specialist` becomes `subagent` in code, headers and texts; ADR 0017 superseded by a new ADR (proposed to Louis first). About eight steps | `puls.cook` opens `agents/puls/subagents/cook/voice.md`, no `specialists/` folder is left, a test refuses a level that doesn't match where a file sits, and every unit test passes |
-| **CL68.3** Minions are lookup agents | `minions/` goes; each minion is a subagent marked `level: lookup`; the base is `agents/{identity}/lookup.md`; minion becomes lookup through the code, the settings and ADR 0021; the write-up. About seven steps | No `minion` name is left in code, settings or prompts, `puls.find-recipe` still runs with one tool, and the write-up is in `src/docs/learning/` |
+| **CL68.1** `prompts/` goes, `agent/` is `agents/` | Each project embeds its prompt folders from its root; `agent/` becomes `agents/` everywhere it's named (the core constants, the identities, the agent-written skills folder `skills/agents/functions/`, the site's link to the principles); the showroom flat, one provider for its three businesses. About six steps | No `prompts/` folder is left in core, the packs or `src/site/`, `PromptFolderTests` holds that, the showroom names each business once, and every unit test outside `demos/` passes |
+| **CL68.2** Subagents inside their agent | `specialists/` goes; each specialist is `agents/{identity}/subagents/{name}/voice.md`; the level comes from the header; `specialist` becomes `subagent` in code, headers and texts; ADR 0017 superseded by a new ADR (proposed to Louis first). About eight steps | `testprod.specialist` opens `agents/testprod/subagents/specialist/voice.md`, no `specialists/` folder is left outside `demos/`, a test refuses a level that doesn't match where a file sits, and every unit test outside `demos/` passes |
+| **CL68.3** Minions are lookup agents | `minions/` goes; each minion is a subagent marked `level: lookup`; the base is `agents/{identity}/lookup.md`; minion becomes lookup through the code, the settings and ADR 0021; the write-up. About seven steps | No `minion` name is left in the engine, its settings or the framework's prompts, a lookup agent still runs with one tool handed down, and the write-up is in `src/docs/learning/` |
 
 **Open choices, each put to Louis when its child starts:**
 
 - CL68.1: how the provider shows only the prompt folders (a filter around the embedded provider, one provider per
   folder joined together, or the packs moving their other files out of the embedded set).
-- CL68.2: a subagent's name inside the engine. The address is `puls.cook` and the folder is `cook`, but sessions,
-  `ROLES_ENABLED`, the evals' labels and the stored runs know it as `puls-cook`. Either the role is called
-  `puls.cook` everywhere, or it stays `puls-cook` with the folder named `cook`, or the folder carries the old name.
+- CL68.2: a subagent's name inside the engine. The address is `{identity}.{name}` and the folder is `{name}`, but
+  sessions, `ROLES_ENABLED` and the stored runs know a role as `{identity}-{name}`. Either the role is called by its
+  address everywhere, or it keeps the dashed name with the folder named by the short one, or the folder carries the
+  dashed name.
 
 ## Verification
 
-Each step's own tests while it's built, and the full unit suite before each child's pull request, after `main` is
-merged in. By hand, for free: open a Puls chat and ask the cook something, start the guide and the three showroom
-businesses, and read their prompts on the admin's *Prompts* page. No paid run is needed: no prompt's words change,
+Each step's own tests while it's built, and before each child's pull request, after `main` is merged in, the full
+unit suite, where only the tests of the demos left behind may fail, each named in the pull request. By hand, for free: start louis-agent.dev's host, talk to the guide, try the three showroom businesses and
+let the guide ask one of them, and read their prompts on the admin's *Prompts* page. No paid run is needed: no prompt's words change,
 only where they sit. The golden files are regenerated where a path shows in what the model reads, and the diff is
 checked to be paths only.
 
