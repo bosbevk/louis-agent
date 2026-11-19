@@ -2,7 +2,7 @@
 
 > **Kind:** library (`net10.0`) · **Path:** `src/engine/louis-agent.core.telemetry/` · **References:**
 > louis-agent.core, OpenTelemetry, OpenTelemetry.Exporter.OpenTelemetryProtocol, Serilog.Sinks.OpenTelemetry ·
-> **Used by:** every host's program, the eval runner, the orchestrator
+> **Used by:** every host's program in the demos and the sites, the eval runners and the orchestrator among them
 > **Also shows:** `component`
 
 ![Telemetry, and its parts: the tracer, the log sink, and the filter that keeps our own traffic out](diagrams/louis-agent.core.telemetry.svg)
@@ -18,6 +18,9 @@ traces.
 A host opts in by handing `AgentHost.Build` a `HostServices` with `OtlpTelemetry.Instance`. Core on its own runs on
 `NoTelemetry`. It still measures every turn on its own `ActivitySource`, but nothing listens. And it still logs a
 crash once.
+
+The rest of this doc follows a host's telemetry through its life: the log sink added, the tracer started, what's held
+sent at the end, our own traffic kept out, and last, what stays in core.
 
 *Decided in:* CL33, [ADR 0091](../adr/0091-web-access-and-telemetry-are-libraries-on-core.md).
 
@@ -48,8 +51,13 @@ builds the tracer over our sources: `TurnSpans.Source`, Microsoft.Extensions.AI'
 ASP.NET Core's requests, and every `HttpClient` call. It adds the OTLP exporter only when there's an endpoint. So a
 host with no collector pays nothing.
 
-If something starts it a second time, it gets the same handle back. Disposing that handle stops the tracer, and so
-does the process exiting.
+The service name the spans carry is the host's first, and then the environment's, so `OTEL_SERVICE_NAME` and
+`OTEL_RESOURCE_ATTRIBUTES` win. The exporter reads the endpoint, the protocol and the headers from the environment
+itself, the spec's way, so on Azure the settings the managed agent injects work with nothing of ours.
+
+If something starts it a second time, it gets the same handle back, because the process has one tracer. A host
+starts it once, but a test starts it again and again. Disposing that handle sends what's left and stops the tracer,
+and so does the process exiting, which also flushes the log lines.
 
 *Decided in:* F52.
 
@@ -60,14 +68,20 @@ keep a host from exiting. It's also what a crash calls for its last word.
 
 ### 4. Keeping our own traffic out
 
-Sending log lines to the collector is itself an `HttpClient` call, and every `HttpClient` call becomes a span. Left
-alone, every batch of log lines would turn into a span of its own. `OwnTrafficFilter` stops that. It sits before
-the exporter, and drops any `HttpClient` span whose address is the collector's.
+Sending log lines to the collector is itself an `HttpClient` call, and every `HttpClient` call becomes a span. The
+trace exporter's own sends are already hidden by the OpenTelemetry SDK, but the log sink sends on a client of its
+own. Left alone, every batch of log lines would turn into a span of its own.
+
+`OwnTrafficFilter` stops that. It's a processor, and the SDK hands each finished span to its processors before the
+exporter, in the order they were added. It drops any `HttpClient` span whose address starts with the collector's, the
+way the SDK documents, by marking it as not recorded.
 
 ### 5. What stays in core
 
-Some of this lives in core, not here: `TurnSpans` (a span per turn, following the GenAI conventions), `SpanTag`,
-`LastChance`, and the seam itself with its Null Object, the stand-in that does nothing.
+Some of this lives in core, not here, because core uses it with or without a collector. The turn's span is core's:
+`TurnSpans` opens one per turn, following OpenTelemetry's GenAI conventions, and `SpanTag` names its tags. The crash
+handler, `LastChance`, is core's too, so a host with no collector still logs a crash. And so is the seam itself,
+`IHostTelemetry`, with its Null Object, `NoTelemetry`, the stand-in that does nothing.
 
 ![Telemetry: the log sink and the tracer, out to the collector](diagrams/louis-agent.core.telemetry-diagrams.svg)
 
@@ -106,8 +120,8 @@ prove the seam without this library.
 
 ## Limits and plans
 
-Metrics, such as speed or tokens per second, are F44.1's to add. A second exporter would be a second class on the
-same seam.
+Only spans and log lines are sent. There are no metrics, such as speed or tokens per second, and OTLP is the only way
+out.
 
 ## Related docs
 
