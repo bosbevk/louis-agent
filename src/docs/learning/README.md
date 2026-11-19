@@ -4,6 +4,12 @@ One short write-up per skill in the [goal](../GOAL.md)'s architecture map: what 
 changed, the trade-offs, and what didn't work. Name each file after the skill's number and name, e.g.
 `13-cost-and-token-economics.md`.
 
+![The learning write-ups: one per skill in the goal's map, each with its measures, what changed, and what didn't work](diagrams/README.svg)
+
+A write-up is read after the work, not during it. It says what a feature, a cleanup or a fix taught about one skill:
+the numbers before and after, the design and why, and what went wrong on the way. So it tells the story of the work,
+which the design docs leave out on purpose. Claude writes them, and Louis reads them afterwards.
+
 | Skill | Write-up | Covers |
 |---|---|---|
 | 4 · Tool design | [04-tool-design.md](04-tool-design.md) | F160: the guide's page tool as the remote control of a recording, a turn an address, no new tool; CL15: a capability as a pack with a contract (`IAgentPack`), tool names from one catalogue, every pack kept convertible to MCP by a test over shapes (`PackConvertibilityTests`), what the goldens showed. F50.2: one job per pack (where-to-buy, shop-prices), the numbers in code, unknown as `?`, the licence's credit in the tool's text, a store with a fallback. F128.2: a pack names no owner, so one leads tool serves a guide and a practice; an identity's packs aren't a session's toolsets; a dry run before the run that sends. By Claude, read by Louis |

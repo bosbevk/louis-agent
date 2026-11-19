@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "Structured outputs: what F35 taught",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "file", "title": "What a model reads, as checked data", "code": "skill 5",
+          "look": "highlight",
+          "text": "A recipe reaches the cook as the page's own data, so its amounts can be trusted and the answer tested." }
+      ] },
+      { "cards": [
+        { "id": "data", "icon": "code", "title": "Data first, text second",
+          "text": "The page's schema.org Recipe, read in code, whole or not at all." },
+        { "id": "print", "icon": "terminal", "title": "A numbered print",
+          "text": "Lines a model can quote by number, and a check can compare." },
+        { "id": "measure", "icon": "chart", "title": "Measurable at last",
+          "text": "From a page it read, and that page's recipe: 30 answers a run." }
+      ] },
+      { "cards": [
+        { "id": "wrong", "icon": "info", "title": "What didn't work",
+          "text": "Wrong data, a minion that saved nothing, a check that passed broken images and one that broke good ones." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "data" },
+      { "from": "skill", "to": "print" },
+      { "from": "skill", "to": "measure" }
+    ]
+  }
+}
