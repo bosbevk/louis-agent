@@ -14,7 +14,9 @@ client from the settings, the usage mapper that reads Anthropic's cache writes, 
 markers.
 
 Core ships no model SDK of its own. So a program that wants Claude hands `AnthropicProvider.Instance` to
-`AgentHost.Build`, inside its `HostServices`. A host that only runs a local model doesn't ship any of this.
+`AgentHost.Build`, inside its `HostServices`. A host that only runs a local model doesn't ship any of this. The rest
+of this doc takes the four questions core asks the provider one at a time, then shows where core's client factory
+ties them together.
 
 *Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
@@ -33,12 +35,18 @@ Its name is `anthropic`. That's what `LLM_PROVIDER` picks it by.
 
 ### 2. The client
 
-When core asks for a client with `Create(options)`, it first checks there's a key, in `ANTHROPIC_API_KEY` or
-`LLM_API_KEY`. Without one it refuses. With one, it builds the SDK's client, using the endpoint and workspace the
-settings give.
+When core asks for a client with `Create(options)`, it first checks there's a key, in `LLM_API_KEY` or
+`ANTHROPIC_API_KEY`. Without one it refuses, with an error that names both. With one, it builds the SDK's client for
+the model `LLM_MODEL` names. `LLM_ENDPOINT`, when it's set, replaces the API's address. `ANTHROPIC_WORKSPACE_ID`, when
+it's set, goes on every request as the `anthropic-workspace-id` header, because a key that isn't scoped to a workspace
+is refused unless the request names one.
 
-Claude models before 4.6 need one more thing. They reject adaptive thinking and want a fixed `budget_tokens`
-instead. So for those, the client is wrapped with `ThinkingBudget`, which swaps one for the other.
+Claude models before 4.6 need one more thing. They reject adaptive thinking, which is what the SDK's adapter sends
+when the engine asks for reasoning, and want a fixed `budget_tokens` instead. So for those (the Claude 3 models and
+the 4.0, 4.1, 4.2 and 4.5 ones), the client is wrapped with `ThinkingBudget`, which swaps one for the other on every
+request, one-shot or streamed. The budget follows the effort asked for: 2,048 tokens for low, 8,192 for high, and
+4,096 otherwise. Thinking tokens count towards the reply's maximum, so the budget leaves room for the answer and its
+tool calls.
 
 ### 3. Reading usage
 
@@ -47,9 +55,17 @@ fields, and splits them by how long they're kept, on the SDK's own usage object.
 
 ### 4. Prompt caching
 
-`CreatePromptCaching(options)` gives back `AnthropicPromptCaching`, with the lifetime `LLM_CACHE_TTL` names for the
-prompt's start. It places two markers: one at the end of the system prompt, and the automatic one the API moves
-forward through the conversation. The engine's `PromptCachingChatClient` applies them on every request.
+`CreatePromptCaching(options)` gives back `AnthropicPromptCaching`. The API reads a request as the tools, then the
+system prompt, then the messages, and caches the exact bytes up to each marker. So it places two markers.
+
+The first goes at the end of the system prompt. It covers the tools and the system prompt, the start every request
+and every session shares, and it's kept for the lifetime `LLM_CACHE_TTL` names. The second is the automatic one: the
+API puts it on the last block it can cache and moves it forward as the conversation grows, so each round reads the
+round before. It's always kept five minutes, because only the next round, seconds later, uses it.
+
+The marker is put on a copy of the last message, never on the history itself. The engine's `PromptCachingChatClient`
+applies the markers on every request, and only when `LLM_CACHE` is on: with it off, the factory gives no markers at
+all, whoever the provider is.
 
 *Decided in:* F4.
 
@@ -83,7 +99,8 @@ src/tests/engine/louis-agent.core.anthropic.tests/   # the provider, the budget,
 
 You pick it with `LLM_PROVIDER=anthropic`. The rest are `LLM_MODEL`, `ANTHROPIC_API_KEY` (or `LLM_API_KEY`),
 `LLM_ENDPOINT`, `ANTHROPIC_WORKSPACE_ID`, `LLM_CACHE`, `LLM_CACHE_TTL` and `LLM_THINKING`. Core's `LlmOptions` reads
-them all, and picks this provider by default for any model whose name starts with `claude`.
+them all. When `LLM_PROVIDER` isn't set, it picks this provider for any model whose name starts with `claude`, and when
+`LLM_MODEL` isn't set either, the model is `claude-haiku-5-5`.
 
 ## Tests
 
@@ -94,8 +111,7 @@ And on a stub handler, they check the markers as they go over the wire and the c
 
 ## Limits and plans
 
-Another provider that speaks Anthropic's API, such as Bedrock or Vertex, would be a second class here, on the same
-seam.
+Only Anthropic's own API is served. Claude through Bedrock or Vertex has no provider here.
 
 ## Related docs
 

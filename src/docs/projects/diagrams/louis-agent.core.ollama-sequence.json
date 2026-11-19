@@ -11,7 +11,7 @@
       { "id": "ollama", "label": "Ollama", "icon": "server", "tone": "red" }
     ],
     "steps": [
-      { "step": "message", "from": "host", "to": "factory", "text": "Create(options), LLM_PROVIDER=ollama" },
+      { "step": "message", "from": "host", "to": "factory", "text": "AgentHost.Build asks Create(options), LLM_PROVIDER=ollama" },
       { "step": "message", "from": "factory", "to": "provider", "text": "Create(options)" },
       { "step": "reply", "from": "provider", "to": "factory", "text": "an OllamaApiClient, ten-minute timeout" },
       { "step": "reply", "from": "factory", "to": "host", "text": "the IChatClient" },
