@@ -41,6 +41,40 @@ public class CvContentTests
         });
     }
 
+    /// <summary>The framework's own site, where the CV's "now" cards lead (F164.3).</summary>
+    private const string FrameworkSite = "https://framework.louis-agent.dev";
+
+    /// <summary>
+    /// Each "now" card leads to its place on the framework's own site (F164.3), no longer to the docs on GitHub,
+    /// which stood in while that site wasn't live.
+    /// </summary>
+    [TestCase("The engine", "/how-it-works")]
+    [TestCase("Evals in C#", "/cost-and-evals/the-evals")]
+    [TestCase("Every request measured", "/cost-and-evals/the-ledger")]
+    [TestCase("In production", "/overview/the-whole")]
+    public void EachNowCard_LeadsToItsPlace_OnTheFrameworksSite(string card, string place)
+    {
+        var parts = Cv.Resume.Now!.Parts.ToDictionary(part => part.Name, part => part.Url);
+
+        Assert.That(parts[card], Is.EqualTo(FrameworkSite + place));
+    }
+
+    /// <summary>
+    /// Every place a "now" card leads to is one the framework's site has: its sitemap, which a test there holds to its
+    /// pages, lists it.
+    /// </summary>
+    [Test]
+    public void EveryNowCardsPlace_IsInTheFrameworksSitemap()
+    {
+        string sitemap = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/site/louis-agent.site-framework/wwwroot/sitemap.xml"));
+
+        var missing = Cv.Resume.Now!.Parts.Select(part => part.Url ?? "")
+            .Where(url => !sitemap.Contains($"<loc>{url}</loc>", StringComparison.Ordinal)).ToList();
+
+        Assert.That(missing, Is.Empty);
+    }
+
     /// <summary>It holds no ID number, salary, birth date or street address.</summary>
     [Test]
     public void TheCv_HoldsNothingAPublicPageMustntShow() =>
