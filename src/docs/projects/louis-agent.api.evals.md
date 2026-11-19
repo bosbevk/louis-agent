@@ -79,7 +79,7 @@ src/hosts/louis-agent.api.evals/
 ├── Replies/               # the contracts' Of factories
 ├── Messages/              # EvalApiLogMessage, EvalApiUserText, DraftMessage, EvalListingMessage, NoteUserText, ReviewUserText
 ├── Calibrations/ Drafts/ Export/ List/ Reports/ Reviews/ Runs/ Store/ Studio/   # the studio's own parts
-demos/puls/tests/louis-agent.api.evals.tests/   # the studio's tests, beside the API's; EvalRoutesSnapshot.json pins the routes
+src/tests/hosts/louis-agent.api.evals.tests/   # the studio's tests, beside the API's; EvalRoutesSnapshot.json pins the routes
 ```
 
 ## Configuration
@@ -93,7 +93,7 @@ behind is the API's own `ADMIN_API_KEY`.
 
 ## Tests
 
-The tests are in `demos/puls/tests/louis-agent.api.evals.tests`. They cover the stores, the recorder, the reports
+The tests are in `src/tests/hosts/louis-agent.api.evals.tests`. They cover the stores, the recorder, the reports
 and trends, the drafts and the studio, and the reviews and calibrations. Each handler runs through the in-memory test
 host, `ApiTestHost`, which maps the studio for these tests and leaves it out for the API's own route snapshot.
 `EvalRoutesSnapshotTests` pins the studio's routes.

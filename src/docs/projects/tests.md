@@ -1,6 +1,6 @@
 # Test projects — design
 
-> **Kind:** test projects (NUnit) · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
+> **Kind:** test projects (NUnit) · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `src/tests/hosts/louis-agent.api.tests/`,
 > `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs/tests/louis-agent.pack.where-to-buy.tests/`, `packs/tests/louis-agent.pack.shop-prices.tests/`,
 > `packs/tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs/tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs/tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
 > `demos/louis-agent/tests/louis-agent.code-review.tests/`; the tests that leave their process in `src/tests/engine/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `src/tests/shared/louis-agent.testing/` and, for the web apps,
@@ -112,7 +112,7 @@ names, the depth and the `specialists` rule, and sessions that share an engine b
 host, no network and no model. The sessions are built on an `AgentEngineFactory` with a chat client that throws if
 it's ever called.
 
-Some API tests start a real child process where the eval runner would be. For those, `demos/puls/tests/louis-agent.api.standin`
+Some API tests start a real child process where the eval runner would be. For those, `src/tests/hosts/louis-agent.api.standin`
 stands in for the runner. It's a small console app, not a test project. The check's id picks what it does: print its
 arguments, dump the names in its environment, stream lines, fail, sleep, or never read its stdin. It's built along
 with these tests through a project reference that brings no assembly, just like the runner itself.

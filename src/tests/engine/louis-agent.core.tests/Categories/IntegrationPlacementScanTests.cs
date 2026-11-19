@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Tests.Categories;
 
-// F18 step 7.6.3: the tests that leave their process live in their own projects, `{name}.integration-tests`, apart from the unit tests. The ratchet reads each test file's mark and its project.
+// F18 step 7.6.3: the tests that leave their process live in their own projects, `{name}.integration-tests`, apart
+// from the unit tests. The ratchet reads each test file's mark and its project.
 public class IntegrationPlacementScanTests
 {
     private const string MarkedClass =
@@ -10,7 +11,8 @@ public class IntegrationPlacementScanTests
 
     [Test]
     public void AMarkedTest_InAUnitProject_IsMisplaced() =>
-        Assert.That(IntegrationPlacementTests.Misplaced("src/tests/engine/louis-agent.core.tests/Tools/Sample.cs", MarkedClass),
+        Assert.That(
+            IntegrationPlacementTests.Misplaced("src/tests/engine/louis-agent.core.tests/Tools/Sample.cs", MarkedClass),
             Has.Count.EqualTo(1));
 
     [Test]
@@ -25,7 +27,9 @@ public class IntegrationPlacementScanTests
         Assert.That(
             IntegrationPlacementTests.Misplaced("src/tests/engine/louis-agent.core.integration-tests/Tools/Sample.cs",
                 MarkedClass), Is.Empty);
-        Assert.That(IntegrationPlacementTests.Misplaced("src/tests/engine/louis-agent.core.tests/Tools/Sample.cs", UnmarkedClass),
+        Assert.That(
+            IntegrationPlacementTests.Misplaced("src/tests/engine/louis-agent.core.tests/Tools/Sample.cs",
+                UnmarkedClass),
             Is.Empty);
     }
 
@@ -38,6 +42,7 @@ public class IntegrationPlacementScanTests
     [Test]
     public void ASharedLibrarysContract_IsNotAUnitOrIntegrationTest() =>
         Assert.That(
-            IntegrationPlacementTests.Misplaced("demos/puls/tests/louis-agent.api.testing/Contracts/Store.cs", UnmarkedClass),
+            IntegrationPlacementTests.Misplaced("src/tests/hosts/louis-agent.api.testing/Contracts/Store.cs",
+                UnmarkedClass),
             Is.Empty);
 }
