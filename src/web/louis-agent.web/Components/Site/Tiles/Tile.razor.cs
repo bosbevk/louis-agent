@@ -53,6 +53,14 @@ public partial class Tile
     public RenderFragment? Brand { get; set; }
 
     /// <summary>A colour to set the tile apart, the eval screens' four; none by default.</summary>
+    /// <summary>Whether what the tile describes is in place (F165); it picks the badge's colour.</summary>
+    [Parameter]
+    public TileStatus Status { get; set; }
+
+    /// <summary>The site's words for the status, such as "In place"; with none, the tile draws no badge.</summary>
+    [Parameter]
+    public string? StatusText { get; set; }
+
     [Parameter]
     public TileAccent Accent { get; set; }
 
@@ -95,6 +103,12 @@ public partial class Tile
     private string? LensSwitch => PaneSwitch.Lens(Lens);
 
     /// <summary>The class an accent's colour hangs on, named for the colour; none for a plain tile.</summary>
+    /// <summary>A status needs both what it is and the site's words for it before the tile shows one.</summary>
+    private bool ShowsStatus => Status != TileStatus.None && StatusText is not null;
+
+    /// <summary>The status's wire name on the badge, which its style reads for the theme's green or amber.</summary>
+    private string StatusMark => Status.Wire();
+
     private string AccentClass => Accent == TileAccent.None ? "" : $" accent-{Accent.Wire()}";
 
     /// <summary>The delay the site's reveal reads, left off the first tile.</summary>

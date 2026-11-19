@@ -1,4 +1,5 @@
 @use "web/tools/accents";
+@use "web/tools/glow";
 @use "web/tools/pressed";
 @use "web/tools/surface";
 
@@ -26,6 +27,22 @@
 .tile-icon ::deep svg { width: 22px; height: 22px; }
 article h3 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: var(--bs-emphasis-color); }
 article p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--bs-secondary-color); }
+
+/* Whether what a tile describes is in place (F165): a small badge above its title, in the site's words, green when
+   done and amber when still open, both names every theme sets. A tint of the colour behind it keeps the words
+   readable on glass and on flat, light and dark. */
+.tile-status {
+    align-self: flex-start;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font: 600 12px/1.4 var(--bs-font-monospace);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--status);
+    @include glow.wash(var(--status), 16%);
+}
+.tile-status[data-status="done"] { --status: var(--web-ok); }
+.tile-status[data-status="open"] { --status: var(--bs-warning); }
 
 /* The site's brand at the tile's foot (FX180): pushed to the bottom and to the right, small and quiet, so it signs
    the tile without competing with its words. */
