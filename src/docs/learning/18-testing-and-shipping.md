@@ -9,6 +9,14 @@ What this answers: how a refactor that moved 30 files, split prompts and changed
 nothing the model reads except what was meant, and what a composition root and a catalogue's start-up checks gave the
 tests.
 
+![Testing and shipping: goldens that prove a refactor, rules a person can maintain, shipping by place, a site held to the code, and a change proved with numbers before it switches](diagrams/18-testing-and-shipping.svg)
+
+The sections run in the order the work was done, so some names below were later replaced. F54's static site was
+folded into the web app (F109.1) and rebuilt, so its `WebApplicationFactory` page tests and `SiteStylesheetTests` are
+gone. A page's description is now the `Description` of its `PageHead`. And once every picture used the new flow
+rules, the old way went (CL65.4): `IArrowRule`, `IRowRule` and `FlowRules` are gone, and the layout uses
+`ApartArrows` and `LevelRows` directly.
+
 ## Before and after
 
 | | Before CL15 | After CL15 |
