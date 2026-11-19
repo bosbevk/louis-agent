@@ -7,6 +7,8 @@
 > in [louis-agent.site](../projects/louis-agent.site.md) and
 > [louis-agent.site-framework](../projects/louis-agent.site-framework.md).
 
+![Deploy the sites: every merge releases both, the same verbs from the PC, an app's secrets, its first release, its domain, rolling back](diagrams/deploy-the-sites.svg)
+
 Two websites run in Azure, and both are built on the framework. louis-agent.dev sells websites with agents, and its
 agent is the public Orbi. framework.louis-agent.dev teaches the framework, and its agent is the framework Orbi. Each
 is one Azure Container App that sleeps when nobody visits, so the first visitor after a quiet spell waits a few
@@ -44,6 +46,8 @@ site needed nothing new in Azure but the app.
 share, so a first release finds them. It builds the image in the registry with `az acr build`, tagged with the date
 and time, so the PC needs no Docker. And it fills in the app's yaml and creates or updates the app as the next
 revision, `vNNN`, one more than the highest it has ever had (FX123).
+
+![A release: the folders its entry names, the image built in the registry, then the yaml filled in and the app updated as its next revision, until /health answers](diagrams/deploy-the-sites-flow.svg)
 
 What makes an app an app is its entry in the script's table, `$Apps`: its image and Dockerfile, its yaml, its config
 folder and its secrets file, the identity it reads the vault with, its share and the folders on it, its hostname, and

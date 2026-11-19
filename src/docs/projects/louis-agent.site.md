@@ -90,6 +90,10 @@ keeps the logs in `src/site/logs` and the CV in `src/site/data` on the PC. `src/
 `src/site/deploy/azure/louis-agent-app.yaml` is the Container App louis-agent.dev runs. `SiteImageTests` holds the
 image.
 
+The script that releases it, `deploy.ps1`, sits beside that yaml and releases the framework's own site too, one app
+at a time. A merge runs it through `.github/workflows/deploy-sites.yml`, and the tests in the site's `Deploy/` folder
+hold the script, both apps' yaml and the workflow. The how-to is [Deploy the sites](../guides/deploy-the-sites.md).
+
 ### 5. What the site is made of
 
 The whole site is named in one place, `LouisAgentDevAreas.Name`. It turns on the showroom with the site's three
@@ -472,6 +476,7 @@ The place to look a file up. The site is `src/site/louis-agent.site/`, and its h
 | `src/site/recordings/` | `record-showroom.sh`, which records the three demos, and `pages/`, the places each was sent |
 | `docker/Dockerfile`, `docker/docker-compose.yml` | The image, and the `site` service |
 | `deploy/azure/louis-agent-app.yaml` | The Container App louis-agent.dev runs |
+| `deploy/azure/deploy.ps1` | The script that builds, releases and watches both sites' apps in Azure |
 
 ## Configuration
 

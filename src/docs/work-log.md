@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 138 | 98 |
+| Features (`F`) | 139 | 98 |
 | Fixes (`FX`) | 197 | 6 |
 | Cleanups (`CL`) | 41 | 29 |
 
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F166 | Puls in its own repository (Louis, 2026-11-19: "we need to move it"), on the framework as published packages (his pick C): F166.1 the framework's parts out of `demos/puls` (the API's tests, the deploy, its tests, the workflow's name); F166.2 the framework as NuGet packages; F166.3 Puls with `recipes`, `shop-prices` and `where-to-buy` in the `puls` repo, `calculator` staying (his pick C); F166.4 Puls gone from louis-agent | Now |
+| F166 | Puls in its own repository (Louis, 2026-11-19: "we need to move it"), on the framework as published packages (his pick C): F166.1 the framework's parts out of `demos/puls` (done 2026-11-20); F166.2 the framework as NuGet packages; F166.3 Puls with `recipes`, `shop-prices` and `where-to-buy` in the `puls` repo, `calculator` staying (his pick C); F166.4 Puls gone from louis-agent | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/louis-agent.stream-probe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
@@ -156,10 +156,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (138 done)
+## Features (139 done)
 
 | Id | When | What |
 |---|---|---|
+| F166.1 | 2026-11-20 | The framework's parts out of `demos/puls`, F166's first child: the API's tests run on a made-up `TestAgent` and the framework's fakes, a test runner on the general checks and the template eval, and a sample eval each test writes for itself, moved to `src/tests/hosts`; `deploy.ps1` beside the sites' yaml without `infra`, `vm` and `sql-access`; its guide and architecture in `src/docs`; its tests in the site's; the workflow `deploy-sites.yml` |
 | F164 | 2026-11-19 | The framework's own site, closed: its three children built (F164.1 the seven pages as a package, F164.2 the framework Orbi with its search and four ways to ask, F164.3 the second Azure app), live at framework.louis-agent.dev with its certificate, louis-agent.dev's menu and CV leading there; tested live by Louis |
 | F165 | 2026-11-19 | The trust page at `/trust` on louis-agent.dev, after a reviewer asked for real technical facts (Louis's pick: a status on every tile): five parts, where it runs, your data with every company that handles it, AI safety, if something breaks, and the reviewer's checklist before paying customers; every fact In place or Not yet, each in place held to a file of the repo by a test; a tile's status in the framework; the footer and the guide lead to it |
 | F164.3 | 2026-11-19 | framework.louis-agent.dev as a second Azure app, F164's last child: one more row in `deploy.ps1`'s table, on louis-agent.dev's identity and share with its logs in `framework/logs` and keys of its own; the `domain` verb tells a subdomain from an apex; a release makes the folders its app names; every merge releases both sites; 20 sessions a day everywhere; "Framework" on louis-agent.dev's menu and the CV's four cards on the new site; the Azure docs rewritten to what runs today |

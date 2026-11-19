@@ -6,6 +6,8 @@
 > [07-deployment-view](07-deployment-view.md), the why of a release from GitHub in
 > [ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md).
 
+![The two sites in Azure: what runs where, a release, a secret's path, a chat and the network](diagrams/deployment-in-azure.svg)
+
 This page is for seeing the shape of it before you change it. It goes from what runs, to how a merge reaches it, to
 how a secret gets there, to what a visitor's chat passes through, and ends with what the network lets in.
 

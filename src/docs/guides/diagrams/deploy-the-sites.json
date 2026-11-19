@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Deploy the sites at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "guide", "icon": "server", "title": "Deploy the sites", "code": "deploy.ps1",
+          "look": "highlight",
+          "text": "One script releases louis-agent.dev and framework.louis-agent.dev to Azure Container Apps." }
+      ] },
+      { "cards": [
+        { "id": "merge", "icon": "branch", "title": "Every merge releases",
+          "text": "A workflow signs in without a password and releases both sites, louis-agent.dev first." },
+        { "id": "pc", "icon": "terminal", "title": "From the PC",
+          "text": "The same verbs after az login, from src\\site: release, build, update and logs." },
+        { "id": "secrets", "icon": "file", "title": "An app's secrets",
+          "text": "From its git-ignored file into the vault; the app holds only references." }
+      ] },
+      { "cards": [
+        { "id": "first", "icon": "checks", "title": "The first time",
+          "text": "Fill the app's secrets file and put it in the vault; the next merge creates the app." },
+        { "id": "domain", "icon": "browser", "title": "A domain",
+          "text": "The records Cloudflare needs, DNS-only, then a managed certificate." },
+        { "id": "back", "icon": "folder", "title": "Rolling back",
+          "text": "Activate the revision before by its name, or re-run an older Deploy the apps run." }
+      ] }
+    ],
+    "links": [
+      { "from": "guide", "to": "merge" },
+      { "from": "guide", "to": "pc" },
+      { "from": "guide", "to": "secrets" }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "A release: from the merge to a new revision",
+  "caption": "deploy.ps1 release does three things in order; the app is up when /health answers 200.",
+  "flow": {
+    "nodes": [
+      { "id": "merge", "label": "A merge,\nor release on the PC", "icon": "branch", "tone": "blue", "shape": "terminal" },
+      { "id": "folders", "label": "Make the folders\nits entry names", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "build", "label": "Build the image\nin the registry", "icon": "server", "tone": "violet" },
+      { "id": "update", "label": "Fill the yaml, update\nas the next revision", "icon": "file", "tone": "green" },
+      { "id": "health", "label": "/health\nanswers 200", "icon": "checks", "tone": "blue", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "merge", "to": "folders" },
+      { "from": "folders", "to": "build" },
+      { "from": "build", "to": "update" },
+      { "from": "update", "to": "health" }
+    ],
+    "direction": "right"
+  }
+}

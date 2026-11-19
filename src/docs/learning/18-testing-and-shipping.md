@@ -1594,6 +1594,50 @@ Nothing was measured in money in this child's steps: the live release and its fi
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a second deploy target is data in a table, checked against
 the first by a diff, with an idempotent step for the one thing that couldn't be confirmed.
 
+## A framework's tests use no product (F166.1, 2026-11-20)
+
+Before Puls can leave for a repository of its own, the framework has to stop leaning on it. Here, it leaned in two
+places. The API's tests, about 950 of them, ran on Puls's identity, its packs and its eval files. And the script that
+releases the framework's two sites lived in Puls's folder, with Puls's old infrastructure verbs in it. This child
+moved both out, in eight steps, without a cent spent and with nothing deployed.
+
+The API's tests now talk to an agent that doesn't exist. `TestAgent` is a made-up identity with the shape a real one
+has: language voices over a routing voice, a specialist, a reader, minions on a shared base. Its prompts live in
+memory, and its packs are fakes under the real packs' names. That's the test double pattern, Meszaros's name for a
+stand-in with the real thing's shape. The tests that only checked what the shop-prices pack does with a Stats SA
+sheet went back to that pack's own tests, which already held every one of those facts, and the API's upload and feed
+routes now prove themselves on the framework's `FakeImport` and `FakeFeed`. A test proves one thing at its own layer.
+
+The eval tests got data of their own. The integration tests start `louis-agent.api.test-runner`, the framework's
+runner with the general checks, which copies the framework's template eval beside it. The scenario and draft tests
+needed more than the template has, a follow-up, a held-out split, an expected budget, so `SampleEvalWorkspace` writes
+a small eval into a temporary folder for each test class. That's a Fresh Fixture: the values a test checks sit beside
+it, not in a product's folder that can change or leave.
+
+The rule tests did more of the work than the plan expected. `TestsNameNoProductTests`, written first, held each step.
+When the tests moved under `src/`, `SiteBoundaryTests` refused them: under `src/` nothing but the site may reference a
+pack (ADR 0076), so the test agent's real web and calculator packs became fakes too. The folder-size rule caught a
+seventh file, the solution-item rule caught a doc listed at its old place, and the diagram tool's own test caught
+that it never draws pictures under `src/site`. That last one is why the deploy docs became a guide and an
+explanation in `src/docs`, where the docs rules put each kind, and not a README beside the script.
+
+One real bug came out. The new upload test showed the API dropping every uploaded file's name: the admin page sends
+`file_name` and the API reads `fileName`. Shop-prices reads files by slot, so nothing visible had broken. It's
+queued as a fix of its own, on its own branch.
+
+What didn't go well. Twice, `git add` stopped on a file `git mv` had already renamed, and the commit went in with only
+the rename; both were caught at once and completed before anything was pushed. A path in the run-the-evals guide was
+missed in the docs step and found only at the next merge. And one guard, the browser's toolset names against the web
+pack's, would have been lost in the move to fakes; it now lives in the web pack's own tests, seen failing on a wrong
+name before it was trusted.
+
+Nothing was measured in money: no model call, no eval run and no deploy. The tests are the measure: 367 API tests,
+553 studio tests and the integration tests passed on the test agent, and 77 deploy tests moved to the site's project
+with the counts on both sides matching.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework's tests use fakes and data of their own, so a
+product can leave without taking them, and rule tests hold the line while the code moves.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
