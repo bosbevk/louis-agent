@@ -4,9 +4,13 @@
 > tests, the CLI, and the two Docker stacks. **Elsewhere:** what each setting means in each demo's
 > `config/.env.example`; the models in [MODELS.md](../MODELS.md); the hosts in their [design docs](../projects/README.md).
 
+![Your first run: the settings, the build and test, and the CLI, then the coding and Puls Docker stacks](diagrams/get-started.svg)
+
 You need the .NET 10 SDK. Everything below runs from the repo's root folder.
 
 ## Build and run the coding agent
+
+![The four steps: copy the settings, build and test, start the CLI, turn on the commit template](diagrams/get-started-flow.svg)
 
 1. **Copy the settings files** of the coding agent's demo, and put your `ANTHROPIC_API_KEY` and `AGENT_API_KEY` in
    the secrets file:
