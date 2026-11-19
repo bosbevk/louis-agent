@@ -24,7 +24,10 @@ public class DraftEndpointTests
 {
     private const string AdminKey = "admin-secret";
     private const string RunId = "8f7802b9a72e";
-    private const string Cook = "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook";
+
+    /// <summary>The sample eval's scenarios, in a workspace of the tests' own (F166.1).</summary>
+    private static readonly SampleEvalWorkspace Workspace = SampleEvalWorkspace.Create();
+
     private static readonly DateTimeOffset T0 = new(2026, 11, 3, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>The running API with its client and the draft store, so a test can check what was kept.</summary>
@@ -36,8 +39,8 @@ public class DraftEndpointTests
     }
 
     /// <summary>
-    /// Starts the API over one run of the cook eval: cook-af in two turns that a person passed, cook-paarl in one that
-    /// a person failed, and cook-atlantis, a scenario the eval's folder doesn't have, that a person was unsure of.
+    /// Starts the API over one run of the cook eval: the dev dinner in two turns that a person passed, the held-out one
+    /// in one turn that a person failed, and a scenario the eval's folder doesn't have, that a person was unsure of.
     /// </summary>
     private static async Task<Host> StartAsync()
     {
@@ -53,9 +56,9 @@ public class DraftEndpointTests
         var reviews = new InMemoryHumanReviewStore();
         foreach (var (task, verdict, questions) in new[]
                  {
-                     ("cook-af", HumanVerdict.Pass, new[] { "Wat kan ek kook?", "Vir ses?" }),
-                     ("cook-paarl", HumanVerdict.Fail, new[] { "Iets in Paarl?" }),
-                     ("cook-atlantis", HumanVerdict.Unsure, new[] { "Iets in Atlantis?" })
+                     ("dinner", HumanVerdict.Pass, new[] { "What can I cook?", "For six?" }),
+                     ("dinner-held-out", HumanVerdict.Fail, new[] { "Something for two?" }),
+                     (SampleEvalWorkspace.Missing, HumanVerdict.Unsure, new[] { "Something on Mars?" })
                  })
         {
             var key = new ConversationKey(SampleMode.Beta, 1, task);
@@ -71,14 +74,14 @@ public class DraftEndpointTests
             await reviews.AddAsync(new HumanGrade(RunId, key, "meal", verdict, "", "Louis", T0));
         }
 
-        // The cook eval as the runner lists it, its folder the repo's own.
+        // The cook eval as the runner lists it, its folder the sample eval's in the tests' own workspace.
         var catalog = new EvalList([
             new EvalEntry("cook", "Cooks", null,
-                new EvalLine("cook", 1, "Cooks", Identity: SampleIdentity.Alpha, Folder: Cook))
+                new EvalLine("cook", 1, "Cooks", Identity: SampleIdentity.Alpha, Folder: SampleEvalWorkspace.Folder))
         ]);
         var drafts = new InMemoryEvalDraftStore();
-        var app = ApiTestHost.Build(adminKey: AdminKey, store: store, catalog: catalog, reviews: reviews,
-            drafts: drafts);
+        var app = ApiTestHost.Build(workspaceRoot: Workspace.Root, adminKey: AdminKey, store: store, catalog: catalog,
+            reviews: reviews, drafts: drafts);
         await app.StartAsync();
         return new Host(app, app.GetTestClient(), drafts);
     }
@@ -96,8 +99,8 @@ public class DraftEndpointTests
     /// <summary>
     /// Asks for a sample from a conversation of the run; each test changes only the part it is about.
     /// </summary>
-    private static Task<HttpResponseMessage> PostSample(HttpClient client, string task = "cook-af",
-        string id = "cook-af-six", object? expected = null, string run = RunId) =>
+    private static Task<HttpResponseMessage> PostSample(HttpClient client, string task = "dinner",
+        string id = "dinner-six", object? expected = null, string run = RunId) =>
         Send(client, HttpMethod.Post, $"/v1/admin/benchmarks/runs/{run}/samples",
             new
             {
@@ -149,12 +152,12 @@ public class DraftEndpointTests
         var row = await JsonOf(response);
         Assert.That((row.GetProperty("sample_id").GetString(), row.GetProperty("question").GetString(),
                 row.GetProperty("eval").GetString(), row.GetProperty("identity").GetString()),
-            Is.EqualTo(("cook-af-six", "Wat kan ek kook?", "cook", SampleIdentity.Alpha)));
+            Is.EqualTo(("dinner-six", "What can I cook?", "cook", SampleIdentity.Alpha)));
         var file = JsonDocument.Parse(row.GetProperty("json").GetString()!).RootElement;
-        Assert.That(file.GetProperty("metadata").GetProperty("follow_ups")[0].GetString(), Is.EqualTo("Vir ses?"));
+        Assert.That(file.GetProperty("metadata").GetProperty("follow_ups")[0].GetString(), Is.EqualTo("For six?"));
         Assert.That(file.GetProperty("metadata").GetProperty("expected").GetProperty("budget").GetInt32(),
-            Is.EqualTo(250), "the scenario's other values stay");
-        Assert.That((await host.Drafts.OfEvalAsync("cook")).Samples.Single().Sample.Id, Is.EqualTo("cook-af-six"));
+            Is.EqualTo(SampleEvalWorkspace.Budget), "the scenario's other values stay");
+        Assert.That((await host.Drafts.OfEvalAsync("cook")).Samples.Single().Sample.Id, Is.EqualTo("dinner-six"));
     }
 
     /// <summary>A sample id that isn't kebab-case, or an expected key the scenario doesn't have, is a 400.</summary>
@@ -180,7 +183,7 @@ public class DraftEndpointTests
 
         var noRun = await PostSample(host.Client, run: "nope");
         var noConversation = await PostSample(host.Client, task: "cook-mars");
-        var noScenario = await PostSample(host.Client, task: "cook-atlantis");
+        var noScenario = await PostSample(host.Client, task: SampleEvalWorkspace.Missing);
 
         Assert.That((noRun.StatusCode, noConversation.StatusCode, noScenario.StatusCode),
             Is.EqualTo((HttpStatusCode.NotFound, HttpStatusCode.NotFound, HttpStatusCode.NotFound)));
@@ -195,13 +198,13 @@ public class DraftEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await PostTranscript(host.Client, "cook-af", "reference");
+        var response = await PostTranscript(host.Client, "dinner", "reference");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created),
             await response.Content.ReadAsStringAsync());
         var row = await JsonOf(response);
         Assert.That((row.GetProperty("file_name").GetString(), row.GetProperty("lines").GetInt32()),
-            Is.EqualTo(("cook-af.reference.txt", 7)));
+            Is.EqualTo(("dinner.reference.txt", 7)));
         var events = (await host.Drafts.OfEvalAsync("cook")).Transcripts.Single().Lines
             .Select(line => JsonDocument.Parse(line).RootElement.GetProperty("event").GetString());
         Assert.That(events, Is.EqualTo(new[] { "mode", "question", "sse", "turn", "question", "sse", "turn" }));
@@ -210,17 +213,18 @@ public class DraftEndpointTests
     /// <summary>A failed conversation is kept as a known-bad with its reason.</summary>
     [Test]
     public async Task AFailedConversation_IsKeptAsAKnownBad() =>
-        Assert.That((await JsonOf(await PostTranscript((await StartAsync()).Client, "cook-paarl", "bad", "no-shop")))
-            .GetProperty("file_name").GetString(), Is.EqualTo("cook-paarl.bad.no-shop.txt"));
+        Assert.That(
+            (await JsonOf(await PostTranscript((await StartAsync()).Client, "dinner-held-out", "bad", "no-shop")))
+            .GetProperty("file_name").GetString(), Is.EqualTo("dinner-held-out.bad.no-shop.txt"));
 
     /// <summary>
     /// A reference of a failed conversation, a known-bad of an unsure one, an unknown kind or a reason that isn't
     /// kebab-case is a 400.
     /// </summary>
-    [TestCase("cook-paarl", "reference", null)]
-    [TestCase("cook-atlantis", "bad", "no-shop")]
-    [TestCase("cook-af", "great", null)]
-    [TestCase("cook-paarl", "bad", "No shop")]
+    [TestCase("dinner-held-out", "reference", null)]
+    [TestCase(SampleEvalWorkspace.Missing, "bad", "no-shop")]
+    [TestCase("dinner", "great", null)]
+    [TestCase("dinner-held-out", "bad", "No shop")]
     public async Task AKindTheVerdictsDontBack_IsA400(string task, string kind, string? reason)
     {
         await using var host = await StartAsync();
@@ -236,7 +240,7 @@ public class DraftEndpointTests
     {
         await using var host = await StartAsync();
         await PostSample(host.Client);
-        await PostTranscript(host.Client, "cook-af", "reference");
+        await PostTranscript(host.Client, "dinner", "reference");
 
         var list = await JsonOf(await Send(host.Client, HttpMethod.Get, "/v1/admin/evals/cook/drafts"));
         var unknown = await Send(host.Client, HttpMethod.Get, "/v1/admin/evals/bake/drafts");
@@ -268,9 +272,9 @@ public class DraftEndpointTests
         await using var host = await StartAsync();
 
         var row = await JsonOf(await Send(host.Client, HttpMethod.Get,
-            $"/v1/admin/benchmarks/runs/{RunId}/scenarios/cook-af"));
+            $"/v1/admin/benchmarks/runs/{RunId}/scenarios/{SampleEvalWorkspace.Dinner}"));
 
         Assert.That((row.GetProperty("place").GetString(), row.GetProperty("expected").GetProperty("shop").GetString()),
-            Is.EqualTo(("Stellenbosch, Wes-Kaap, Suid-Afrika", "pnp")));
+            Is.EqualTo((SampleEvalWorkspace.Place, SampleEvalWorkspace.Shop)));
     }
 }

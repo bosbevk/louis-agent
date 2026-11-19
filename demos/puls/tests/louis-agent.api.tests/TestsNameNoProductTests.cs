@@ -19,9 +19,14 @@ public class TestsNameNoProductTests
         "pack.where-to-buy"
     ];
 
+    /// <summary>
+    /// Where the framework's API test projects sit for now, until they move beside the framework's tests.
+    /// </summary>
+    private const string TestsFolder = "demos/puls/tests";
+
     /// <summary>Each project reference in a test project's file, by the path it names.</summary>
     private static IEnumerable<string> References(string project) =>
-        File.ReadAllLines(Path.Combine(ApiTestHost.RepoRoot, "demos", "puls", "tests", project, $"{project}.csproj"))
+        File.ReadAllLines(Path.Combine(ApiTestHost.RepoRoot, TestsFolder, project, $"{project}.csproj"))
             .Select(line => line.Trim())
             .Where(line => line.StartsWith("<ProjectReference Include=\"", StringComparison.Ordinal));
 
@@ -29,6 +34,8 @@ public class TestsNameNoProductTests
     [TestCase("louis-agent.api.testing")]
     [TestCase("louis-agent.api.tests")]
     [TestCase("louis-agent.api.evals.tests")]
+    [TestCase("louis-agent.api.integration-tests")]
+    [TestCase("louis-agent.api.test-runner")]
     public void ATestProject_ReferencesNoProduct(string project)
     {
         var named = References(project)

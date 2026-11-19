@@ -66,7 +66,8 @@ public class SolutionLayoutTests
     [TestCase("demos/puls/tests", "louis-agent.api.tests", "louis-agent.api.integration-tests",
         "louis-agent.api.evals.tests",
         "louis-agent.api.testing",
-        "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
+        "louis-agent.api.standin", "louis-agent.api.test-runner", "louis-agent.identity.puls.tests",
+        "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
     [TestCase("demos/louis-agent/tests", "louis-agent.coding-catalog.tests",
         "louis-agent.code-review.tests", "louis-agent.identity.triage.tests",

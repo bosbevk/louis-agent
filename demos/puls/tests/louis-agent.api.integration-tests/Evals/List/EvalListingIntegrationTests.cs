@@ -10,30 +10,31 @@ namespace LouisAgent.Api.IntegrationTests.Evals.List;
 [Category("Integration")]
 public class EvalListingIntegrationTests
 {
-    /// <summary>The runner's own listing reads as the stub and Puls's four evals, each with its graders.</summary>
+    /// <summary>
+    /// The test runner's own listing reads as the stub and the template's file eval, each with its graders.
+    /// </summary>
     [Test]
     public void TheRunnersOwnListingReadsAsEvalLines()
     {
-        // The stub, and Puls's four evals: cook, routing, recipes and recipes-long (the runner loads their datasets
-        // from its own output folder).
+        // The stub, and the framework's template, the one file eval the test runner copies beside it (F166.1); the
+        // runner loads its dataset from its own output folder.
         var result = EvalListing.ForRunner(RunnerBuild.Dll).Read();
 
         Assert.That(result.Failure, Is.Null);
-        Assert.That(result.Evals.Select(e => e.Name).ToList(), Has.Count.EqualTo(5).And.Contain("stub"),
-            "the stub and the four Puls evals; the Puls eval set's tests hold their names");
+        Assert.That(result.Evals.Select(e => e.Name), Is.EquivalentTo(new[] { "stub", "template-example" }));
         var stub = result.Evals.Single(e => e.Name == "stub");
+        var template = result.Evals.Single(e => e.Name == "template-example");
         Assert.That(stub.Identity, Is.Null);
         Assert.That(stub.Version, Is.EqualTo(1));
         Assert.That(stub.Proves, Is.Not.Empty);
-        // The Puls evals are listed under their set's identity. Its name is held by the eval set's tests, which see the
-        // identity; here only that all of them have the one.
-        Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Identity).Distinct().ToList(),
-            Has.Count.EqualTo(1).And.None.Null);
-        // Every eval lists its graders, a fixed rule among them, and the Puls evals their datasets; the stub has none.
+        // A file eval is listed under the identity it proves, with its manual where it sits in the repository.
+        Assert.That((template.Identity, template.Manual),
+            Is.EqualTo(("template", "src/evals/template/Example/manual.md")));
+        // Every eval lists its graders, a fixed rule among them, and a file eval its dataset; the stub has none.
         Assert.That(result.Evals.Select(e => e.Graders?.Any(g => g.Kind == CheckKind.FixedRule)),
             Has.All.True);
         Assert.That(stub.Dataset, Is.Null);
-        Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Dataset), Has.None.Null);
+        Assert.That(template.Dataset, Is.Not.Null);
     }
 
     /// <summary>A listing that takes too long gives no evals and says so.</summary>

@@ -947,6 +947,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.framew
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.framework.tests", "src\tests\site\louis-agent.identity.framework.tests\louis-agent.identity.framework.tests.csproj", "{96FE79F4-5740-41A7-B871-8934CFA83C80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.test-runner", "demos\puls\tests\louis-agent.api.test-runner\louis-agent.api.test-runner.csproj", "{C941E655-1FBC-4592-93AB-AEB59BA6F05E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2805,6 +2807,18 @@ Global
 		{96FE79F4-5740-41A7-B871-8934CFA83C80}.Release|x64.Build.0 = Release|Any CPU
 		{96FE79F4-5740-41A7-B871-8934CFA83C80}.Release|x86.ActiveCfg = Release|Any CPU
 		{96FE79F4-5740-41A7-B871-8934CFA83C80}.Release|x86.Build.0 = Release|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Debug|x64.Build.0 = Debug|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Debug|x86.Build.0 = Debug|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Release|x64.ActiveCfg = Release|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Release|x64.Build.0 = Release|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Release|x86.ActiveCfg = Release|Any CPU
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -3059,5 +3073,6 @@ Global
 		{16F4CEAE-347A-4852-B734-D7521AF3BFFA} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172}
 		{9D1129E2-FD64-4A04-A54B-125DBE6DEB75} = {692DBA3A-6F0E-5CF7-9085-83E3D6DC4241}
 		{96FE79F4-5740-41A7-B871-8934CFA83C80} = {D5E94CAC-9957-9AF1-6140-A063876E2A11}
+		{C941E655-1FBC-4592-93AB-AEB59BA6F05E} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
 	EndGlobalSection
 EndGlobal

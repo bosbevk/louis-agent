@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- F166.1: the eval runner the API's integration tests start as a real child process, in place of a product's.
+       It is the framework's runner with the harness's general checks alone, and the framework's template as its one
+       eval, so the API is proved on the framework without any product. It is built with those tests (a project
+       reference that brings no assembly) and never shipped. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api.TestRunner</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's template eval (Louis's pick 1 of three), copied to EvalFiles/ under its path in the
+         repository, where the runner finds every eval.json and starts its manual's path from. -->
+    <None Include="..\..\..\..\src\evals\template\Example\**\*"
+          Link="EvalFiles\src\evals\template\Example\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

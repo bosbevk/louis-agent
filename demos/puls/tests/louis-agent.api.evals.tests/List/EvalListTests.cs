@@ -34,13 +34,12 @@ public class EvalListTests
     public void TheCatalogue_KeepsTheManualPathTheRunnerListed()
     {
         var merged = EvalList.Merge([
-            new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha,
-                "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md"),
+            new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha, "src/evals/template/Example/manual.md"),
             new EvalLine("quiet", 1, "No manual")
         ]);
 
         Assert.That(merged.Select(c => c.ManualPath),
-            Is.EqualTo(new string?[] { "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md", null }));
+            Is.EqualTo(new string?[] { "src/evals/template/Example/manual.md", null }));
     }
 
     /// <summary>Each listed eval is a check under its name, titled with what it proves.</summary>

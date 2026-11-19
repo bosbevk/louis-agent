@@ -63,7 +63,6 @@ public partial class ApiRoutesSnapshotTests
 
     /// <summary>A program maps only the framework's own calls, so the table above is the one that runs.</summary>
     [TestCase("src/hosts/louis-agent.api/ApiStartup.cs")]
-    [TestCase("demos/puls/hosts/louis-agent.puls-api/Program.cs")]
     [TestCase("demos/louis-agent/hosts/louis-agent.coding-api/Program.cs")]
     [TestCase("demos/starter/hosts/louis-agent.starter-api/Program.cs")]
     public void TheStartUp_MapsNoRouteOfItsOwn(string file)
