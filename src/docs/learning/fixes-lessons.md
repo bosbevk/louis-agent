@@ -3,6 +3,8 @@
 > **Answers:** what each fix taught, in one place, now that the fix docs are folded (CL24, 2026-10-29) · **Written by**
 > Claude, for Louis to read
 
+![Lessons from the fixes: what each fix taught, by its skill, most of them about testing and shipping](diagrams/fixes-lessons.svg)
+
 Each fix's symptom and cause stay in its row of the [fixes table](../fixes/README.md); the whole doc as it was is at
 the tag [`pre-cl24`](https://github.com/bosbevk/louis-agent/tree/pre-cl24/docs/fixes). Here is what each one taught,
 with its skill in the [goal](../GOAL.md)'s map. The ones with a write-up of their own skill are told at more length

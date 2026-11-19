@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "Lessons from the fixes",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "info", "title": "What each fix taught", "code": "fixes",
+          "look": "highlight",
+          "text": "Every fix ends with its lesson here, named by its skill; its symptom and cause stay in the fixes table." }
+      ] },
+      { "cards": [
+        { "id": "ship", "icon": "checks", "title": "Testing and shipping",
+          "text": "Skill 18, most of them: a check that sees what a visitor sees, a test that fails for the real cause." },
+        { "id": "safe", "icon": "shield", "title": "Safety and reliability",
+          "text": "Skills 15 and 14: fail closed, and an error that says what to do next." },
+        { "id": "measure", "icon": "chart", "title": "Measuring and seeing",
+          "text": "Skills 12, 13 and 17: a total true on every path, a replay key free of numbers." }
+      ] },
+      { "cards": [
+        { "id": "more", "icon": "book", "title": "Told at length elsewhere",
+          "text": "FX1 and FX5 to FX7 in 13, FX10 to FX14 in 10, FX18 to FX20 in 15, FX25 in 12." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "ship" },
+      { "from": "skill", "to": "safe" },
+      { "from": "skill", "to": "measure" },
+      { "from": "measure", "to": "more" }
+    ]
+  }
+}
