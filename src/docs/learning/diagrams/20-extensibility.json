@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Extensibility: a check as a catalogue entry, an eval as a folder",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "box", "title": "Add without changing what is there", "code": "skill 20",
+          "look": "highlight",
+          "text": "A plug-in point names what joins it; a new check, eval, pack, theme or site plugs in by its owner's list." }
+      ] },
+      { "cards": [
+        { "id": "checks", "icon": "checks", "title": "Checks and evals as content",
+          "text": "A check a catalogue entry, an eval a folder of files, a domain ships readers." },
+        { "id": "packs", "icon": "stack", "title": "Packs and identities",
+          "text": "A pack ships its checks; core ships no agent; a second identity joins one catalogue." },
+        { "id": "web", "icon": "browser", "title": "The framework's web",
+          "text": "Described screens, the admin's and the chat's frames, a site that names its areas." }
+      ] },
+      { "cards": [
+        { "id": "themes", "icon": "settings", "title": "Themes on a contract",
+          "text": "A theme is values for every name the framework lists, light and dark." },
+        { "id": "pages", "icon": "book", "title": "The framework's pages",
+          "text": "A package any site turns on, and one door with four ways to ask." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "checks" },
+      { "from": "skill", "to": "packs" },
+      { "from": "skill", "to": "web" },
+      { "from": "web", "to": "themes" },
+      { "from": "web", "to": "pages" }
+    ]
+  }
+}
