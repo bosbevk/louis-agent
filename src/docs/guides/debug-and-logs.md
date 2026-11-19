@@ -5,6 +5,8 @@
 > [core's guide](../../engine/louis-agent.core/CLAUDE.md#messages-and-logging); the ledger's design in
 > [ADR 0007](../adr/0007-measure-every-request.md).
 
+![Finding what the agent did: the tool log on stderr, the run files, the traces and the dashboard, the usage ledger, and the Docker habits](diagrams/debug-and-logs.svg)
+
 ## Logs
 
 Every tool call is logged to stderr, as `[TOOL] -> Name(args)` when it starts and `[TOOL] <- Name: result` (or
@@ -25,7 +27,7 @@ the default mode) and tagged with its session, host, turn, run and task. Inside 
 and each tool call, and no span carries a prompt or an answer. A crash is one `[FATAL]` line with its stack, and the
 last lines and spans still get out. A failed task that nothing awaited is one `[ERROR]`.
 
-stdout is a protocol for the ACP and MCP servers, so every log goes through `ILogger` to stderr.
+The ACP and MCP servers talk to their client over stdout. That's why every log goes through `ILogger` to stderr.
 
 *Decided in:* F18 step 4f, [ADR 0009](../adr/0009-message-text-as-enum-templates.md),
 [ADR 0064](../adr/0064-observability-through-opentelemetry.md).

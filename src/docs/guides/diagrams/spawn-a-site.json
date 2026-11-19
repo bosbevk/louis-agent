@@ -1,0 +1,27 @@
+{
+  "kind": "cards",
+  "title": "Spawn a site at a glance",
+  "caption": "A new site holds only its name and the areas it names; a fix in the framework reaches it.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "site", "icon": "browser", "title": "A new site", "code": "dotnet new louis-site", "look": "highlight",
+          "text": "A chat, an admin and a landing page, from the starter." }
+      ] },
+      { "cards": [
+        { "id": "areas", "icon": "settings", "title": "Its areas", "code": "WebsiteAreas.Name", "text": "The one place it names its parts." },
+        { "id": "look", "icon": "stack", "title": "Its look", "text": "Glass and flat, light and dark." },
+        { "id": "program", "icon": "server", "title": "Its program", "text": "Serves it, with its identities and packs." }
+      ] },
+      { "cards": [
+        { "id": "framework", "icon": "chip", "title": "The framework's web", "code": "louis-agent.web", "text": "Everything else." },
+        { "id": "check", "icon": "checks", "title": "The template's test", "text": "Makes and builds a site." }
+      ] }
+    ],
+    "links": [
+      { "from": "site", "to": "areas" },
+      { "from": "site", "to": "look" },
+      { "from": "site", "to": "program" }
+    ]
+  }
+}

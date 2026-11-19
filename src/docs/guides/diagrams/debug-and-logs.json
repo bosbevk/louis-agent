@@ -1,0 +1,25 @@
+{
+  "kind": "cards",
+  "title": "Debug and logs at a glance",
+  "caption": "What ran and how it ended, without what the user typed, unless you ask for it on your own machine.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "debug", "icon": "search", "title": "Find what the agent did", "look": "highlight",
+          "text": "The logs, the traces, the ledger and the containers." }
+      ] },
+      { "cards": [
+        { "id": "logs", "icon": "terminal", "title": "The logs", "text": "Every tool call on stderr, and run files." },
+        { "id": "traces", "icon": "chart", "title": "Traces", "code": "127.0.0.1:18888", "text": "A span per turn, request and tool." },
+        { "id": "ledger", "icon": "database", "title": "The usage ledger", "code": "usage-YYYY-MM.jsonl", "text": "Every model request." },
+        { "id": "docker", "icon": "server", "title": "Docker", "text": "Rebuild, recreate, prune." }
+      ] }
+    ],
+    "links": [
+      { "from": "debug", "to": "logs" },
+      { "from": "debug", "to": "traces" },
+      { "from": "debug", "to": "ledger" },
+      { "from": "debug", "to": "docker" }
+    ]
+  }
+}
