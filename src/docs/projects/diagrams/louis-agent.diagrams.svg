@@ -256,8 +256,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 14l3 -3l3 3" />
       </g>
       <text class="crd-name" x="370" y="263" text-anchor="start">A layout per kind</text>
-      <text class="pic-text" x="324" y="298" text-anchor="start">Flows, cards, sequences, classes and</text>
-      <text class="pic-text" x="324" y="316" text-anchor="start">tickets. Each proves every word fits.</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">Flows, cards, sequences, classes,</text>
+      <text class="pic-text" x="324" y="316" text-anchor="start">composites, nested pictures and tickets.</text>
+      <text class="pic-text" x="324" y="334" text-anchor="start">Each proves every word fits.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="132" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
@@ -277,7 +278,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 12l-8 -4.5" />
       </g>
       <text class="crd-name quiet" x="50" y="414" text-anchor="start">The icons</text>
-      <text class="pic-text" x="20" y="440" text-anchor="start">30 of Tabler's outline icons, copied in</text>
+      <text class="pic-text" x="20" y="440" text-anchor="start">37 of Tabler's outline icons, copied in</text>
       <text class="pic-text" x="20" y="457" text-anchor="start">with their MIT licence.</text>
       <rect class="crd-quiet" x="306" y="380" width="284" height="108" rx="14" />
       <g class="crd-icon quiet" transform="translate(326 400) scale(0.75)">
