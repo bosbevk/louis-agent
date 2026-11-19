@@ -7,6 +7,16 @@
 What this answers: why the cook went from pricing nothing with a source to pricing every row it could, and what that
 says about what to put in front of a model.
 
+![Context engineering: the shop's data instead of its pages, a prompt that says what it is, a line in a prompt, load it when it's needed, and rules for where the visitor is](diagrams/07-context-engineering.svg)
+
+Some of what follows is history now. The shops pack and its Checkers catalogue were removed on 2026-11-04, since the
+shops never answered, so `FindProducts`, `SHOP_CATALOGUES` and the one-shop trade-off below describe what was. Prices
+come from Stats SA's average prices now, through the shop-prices pack
+([ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)). The JSON-LD reader this page waits for was built in
+F35 ([ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)). The guide is Orbi now, so `LouisVoiceTests` became
+`OrbiVoiceTests`. And the framework part of F127.7 has a guide of its own, the framework Orbi beside the framework's
+pages, so louis-agent.dev's guide keeps two focus skills, selling and demos.
+
 ## Before and after
 
 **Before,** the cook was handed the web: search results and whole pages, read by the model, which was asked to find a
@@ -267,8 +277,8 @@ only a live run shows whether the model still reaches for the right thing.
 
 ## Where skill 7 stands
 
-GOAL.md's row lists the catalogue table under *Have today* (F33). Still to come: a JSON-LD reader so any page's structured
-data is read in code (F35, the same lesson for every site that publishes it), each model's window and price step as the
+GOAL.md's row lists the catalogue table under *Have today* (F33), and since then a page's own JSON-LD read in code
+(F35) and skills read on demand (F129). Still to come: each model's window and price step as the
 limits (F15, Phase 9), and long chats: clearing stale tool results, summarising, and a context-building step per turn
 that retrieves, ranks and budgets (F9).
 

@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "Protocols: an API is a contract",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "code", "title": "A surface others build on", "code": "skill 11",
+          "look": "highlight",
+          "text": "Routes, resources and agent calls keep one shape, closed by default and pinned by tests." }
+      ] },
+      { "cards": [
+        { "id": "routes", "icon": "shield", "title": "Routes under /v1",
+          "text": "Nouns, 201 with Location, a key on every route unless marked open, the table as a golden file." },
+        { "id": "mcp", "icon": "stack", "title": "Feeds as MCP resources",
+          "text": "feeds://shop-prices beside /v1/feeds/shop-prices, one adapter, tested in process." },
+        { "id": "peer", "icon": "server", "title": "An agent on another server",
+          "text": "partner:shop: a key per server, its directory read first and kept ten minutes." }
+      ] },
+      { "cards": [
+        { "id": "paced", "icon": "message", "title": "The server says what it did",
+          "text": "Stream-Paced: on, so the page doesn't pace the words a second time." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "routes" },
+      { "from": "skill", "to": "mcp" },
+      { "from": "skill", "to": "peer" },
+      { "from": "routes", "to": "paced" }
+    ]
+  }
+}

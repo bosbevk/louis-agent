@@ -8,6 +8,8 @@
 What this answers: which three doors Phase 1 closed before the platform cut, and the rule behind each, so the same
 mistake isn't made in a new host, tool or pack.
 
+![Safety and security: three doors closed, a door beside the gate, accounts and credentials, a tool with a side effect, and pages that say what is kept](diagrams/15-safety-and-security.svg)
+
 ## Before and after
 
 None of the three was seen in a run; each was found by reading the code for the platform plan, and proved by a test
@@ -110,8 +112,6 @@ model key's spend cap stays the real ceiling. The address is the first forwarded
 The lesson: when a public door is needed, add a guard that admits one narrow thing and leaves the gate alone, rather
 than a flag that loosens the gate for everyone.
 
----
-[Learning write-ups](README.md) · [Goal](../GOAL.md)
 
 ## A credential the page can't read (F61.1, 2026-11-07)
 
@@ -265,3 +265,6 @@ was read before the tile was written.
 
 The framework gained one small piece for it: a tile's status, an enum with the site's words, drawn in two colours
 every theme already sets. Skill 15, safety and security, with skill 16 in the approvals the page lists.
+
+---
+[Learning write-ups](README.md) · [Goal](../GOAL.md)

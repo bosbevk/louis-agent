@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Safety and security: what Phase 1 taught",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "shield", "title": "The model is an input, not a user", "code": "skill 15",
+          "look": "highlight",
+          "text": "Guard where model text becomes something that acts: fail closed, allow-lists, enforcement in code." }
+      ] },
+      { "cards": [
+        { "id": "doors", "icon": "terminal", "title": "Three doors closed",
+          "text": "A host with no key won't start, git takes values as data, a written skill waits for /approve." },
+        { "id": "open", "icon": "world", "title": "A door beside the gate",
+          "text": "One open identity, a few sessions a day from one address; the gate itself unchanged." },
+        { "id": "accounts", "icon": "user", "title": "Accounts and credentials",
+          "text": "An HttpOnly cookie with a header, providers, passkeys and two-factor." }
+      ] },
+      { "cards": [
+        { "id": "lead", "icon": "mail", "title": "A tool with a side effect",
+          "text": "SendLead checks its input and sends once, on the visitor's yes." },
+        { "id": "trust", "icon": "file", "title": "Privacy and trust pages",
+          "text": "Every line read off the code; every gap named as Not yet." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "doors" },
+      { "from": "skill", "to": "open" },
+      { "from": "skill", "to": "accounts" },
+      { "from": "open", "to": "lead" },
+      { "from": "accounts", "to": "trust" }
+    ]
+  }
+}
