@@ -2,7 +2,8 @@
 
 > **Kind:** contracts library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
 > louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
-> harness); from F49.3, the packs
+> harness), the packs' checks projects (where-to-buy, recipes), the Puls demo's evals, louis-agent.api and
+> louis-agent.api.evals
 > **Also shows:** `component`, `sequence`
 
 ![The check contract: it reads a trial, returns a grade, and the checks themselves live elsewhere](diagrams/louis-agent.evals.checks.svg)
@@ -17,6 +18,9 @@ own. A pack can't reference the harness, because the harness runs evals and name
 
 The pattern is *Separated Interface*, from Fowler's PoEAA. The contract sits in a small project its clients can
 reference, and the checks themselves live elsewhere: the general ones in the harness, and a pack's own in the pack.
+
+The rest of this doc follows a check from the outside in: what it reads, what it gives back, how an eval file names
+it, the catalogue that finds it, the one set of JSON options, and what this project may reference.
 
 *Decided in:* [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md).
 
@@ -114,7 +118,7 @@ These are the types involved:
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 | `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
 | `Markdown/` | `Lists` (an answer's tables, and its shopping list by the agents' Afrikaans and English headers) and `Links` (inline and reference-style links, images, and `IsHost`, the site or a subdomain): the plain reading an identity, a pack and the harness share (F49.3) |
-| `Readers/` | `IReader` and `ReaderCatalog`, the readers found by name and kind (F49.2b). `Kinds/` holds each kind: `IMoneyReader`, `INumberReader`, `IImageReader` and `IPriceReader`, what a general compare reads a value with, and `ILinkReader`, the recipe's link, which the recipes pack's `recipe-from-source` reads with (F35.2) |
+| `Readers/` | `IReader` and `ReaderCatalog`, the readers found by name and kind (F49.2b). `Kinds/` holds each kind: `IMoneyReader`, `INumberReader`, `IImageReader` and `IPriceReader`, what a general compare reads a value with, and `ILinkReader`, the recipe's link, which the recipes pack's `recipe-from-source` reads with (F35.2). `Listing/` holds `ListedReader` and `ReaderKind`, a reader as the studio lists it |
 | `Messages/` | `CommonGradeMessage`: the reasons a grade gives; `CheckCatalogMessage`: what the catalogue refuses |
 
 ## Tests
@@ -122,26 +126,28 @@ These are the types involved:
 `ArchitectureTests.Checks_ReferencesOnlyTheEngineTheProtocolAndTheStream`, in `louis-agent.core.tests`, holds the
 references: exactly the three above, and none into `packs/` or `identities/`.
 
-`EngineEvents` is tested in `louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`). Those tests build their
-trials with the harness tests' shared `TrialBuilder`, and one test project may not reference another. So they stay
-there until a second project needs the builder. `Verdict` is tested from the outside: by the checks that use it
+Most of `EngineEvents` is tested in `louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`). Those tests
+build their trials with the harness tests' shared `TrialBuilder`, and one test project may not reference another.
+The one reader a pack's check needs, a string field of a tool's input by name, is tested here too, in
+`louis-agent.evals.checks.tests/Trials/EngineEventsTests`. `Verdict` is tested from the outside: by the checks that use it
 (`FactsChecksTests` and the other general checks' tests), and by an identity's (`VerdictFromOutsideTests`).
 
-`src/tests/evals/louis-agent.evals.checks.tests/Catalog/CheckTypeTests` builds a check from its settings. It also
+The rest of this project's own tests are in `src/tests/evals/louis-agent.evals.checks.tests`. `Catalog/CheckTypeTests`
+builds a check from its settings. It also
 checks that a field of the wrong type, a missing field, an unknown field and no settings at all are each refused,
 naming the check type and the field. `CheckCatalogTests` finds entries by type, refuses an unknown type (naming the
-known ones), a duplicate and an unsafe type, and lists each entry with its settings' schema.
+known ones), a duplicate and an unsafe type, and lists each entry with its settings' schema. `ReaderCatalogTests`
+finds readers by name and kind, and `Markdown/` tests the shared reading of links, images and tables.
 
 ## Limits and plans
 
-`TrialBuilder` belongs to the harness tests, so `EngineEventsTests` and `AnswerOfTests` stay in
-`louis-agent.evals.tests`. They'll move with a shared builder once a pack's checks need one.
+`TrialBuilder` belongs to the harness tests, so most of `EngineEvents`' tests sit in `louis-agent.evals.tests`, not
+here.
 
-There are two copies of the MCP name rule: the catalogue's, and a private one in `EvalConformance`. One could reuse
-the other the next time either changes.
+There are two copies of the MCP name rule: the catalogue's, and a private one in the harness's `EvalConformance`.
 
 `CommonGradeMessage` holds some reasons only the harness gives, such as a check that threw or a scenario that's gone.
-A pack never gives those. They can move back to the harness if the contract's messages grow.
+A pack never gives those.
 
 The schema's root says `"type": ["object", "null"]`, because .NET's exporter allows a null record. The reader refuses
 one anyway (`NoParameters`), so it's harmless, unless the studio ever shows it.

@@ -9,7 +9,7 @@
         "id": "api",
         "icon": "server",
         "tone": "red",
-        "label": "louis-agent.api: EvalProcess,\nRunnerProcess"
+        "label": "louis-agent.api.evals: EvalProcess,\nRunnerProcess"
       },
       {
         "id": "host",
