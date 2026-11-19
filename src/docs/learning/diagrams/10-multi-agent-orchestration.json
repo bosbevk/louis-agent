@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Multi-agent orchestration: what Puls taught",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "users", "title": "One agent hands a task to another", "code": "skill 10",
+          "look": "highlight",
+          "text": "A router picks the tools and the role, a specialist works with only those, and the user watches the work." }
+      ] },
+      { "cards": [
+        { "id": "router", "icon": "branch", "title": "A router and its specialists",
+          "text": "Puls's prompt shrank from ~28,600 tokens to ~2,200; each specialist carries only its own tools." },
+        { "id": "measure", "icon": "chart", "title": "What delegation cost",
+          "text": "The same ten questions to one agent and to Puls, both priced from the usage ledger." },
+        { "id": "triage", "icon": "checks", "title": "A triage team",
+          "text": "Sorter, manager, investigator, coder and reviewer, each ending its turn with a typed call." }
+      ] },
+      { "cards": [
+        { "id": "address", "icon": "message", "title": "One address for every call",
+          "text": "AskAgent(\"puls.cook\"): the role is part of the address, and Calls says whom an identity may ask." },
+        { "id": "minion", "icon": "box", "title": "Minions",
+          "text": "A level-2 session for one task, with one of its asker's tools, never kept." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "router" },
+      { "from": "skill", "to": "measure" },
+      { "from": "skill", "to": "triage" },
+      { "from": "router", "to": "address" },
+      { "from": "router", "to": "minion" }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "Cost and token economics: what M1 and F4 taught",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "chart", "title": "Know what every request costs", "code": "skill 13",
+          "look": "highlight",
+          "text": "Record each model request, price it from a dated table, and show the same totals everywhere." }
+      ] },
+      { "cards": [
+        { "id": "ledger", "icon": "database", "title": "A ledger line per request",
+          "text": "Four token kinds that don't overlap, the cost stored with its price table, unknown never 0." },
+        { "id": "input", "icon": "message", "title": "Input is the bill",
+          "text": "150 input tokens to 1 output: the M1 baseline run cost $0.6586, 97% of it input." },
+        { "id": "cache", "icon": "stack", "title": "Caching, measured",
+          "text": "Two markers and a lifetime from the gaps: the run fell 80%, to $0.1334, with 10 of 10 fixes held." }
+      ] },
+      { "cards": [
+        { "id": "replay", "icon": "checks", "title": "A replay is a known $0",
+          "text": "Recorded answers played back for nothing; a miss fails rather than asking the model." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "ledger" },
+      { "from": "skill", "to": "input" },
+      { "from": "skill", "to": "cache" },
+      { "from": "cache", "to": "replay" }
+    ]
+  }
+}

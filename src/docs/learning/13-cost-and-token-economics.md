@@ -4,6 +4,12 @@
 > the first of M2 "Cheaper": F4 prompt caching (2026-10-11); F18's replay cache (2026-10-29) · **Next:** estimates,
 > budgets and reconciliation (F6, F7, F11)
 
+![Cost and token economics: a ledger of every request, input as the bill, caching measured, and a replay that is a known $0](diagrams/13-cost-and-token-economics.svg)
+
+A few names moved since this was written. The price table is a demo's `config/prices.json` now (each demo and the
+site keep one), the priced ledger opens in core's `UsageLedger.Open`, and the web's number rules are
+`louis-agent.web`'s `UsageFormat`.
+
 ## Before and after
 
 **Before M1** nothing read a model's usage. What a chat, a fix or a demo run cost was a guess, worked out by hand from
@@ -80,7 +86,7 @@ price_table: "2026-10-10"}`. *Alternative:* price at report time. Then a price c
 month's runs stop matching last month's bill.
 
 **5. Price in a sink decorator, not in the recorder (F2).** `PricingUsageSink` wraps the ledger in
-`AgentHost.CreateUsageSink`, where every host's records already pass. Neither the engine nor any host knows about
+`AgentHost.CreateUsageSink` (today `UsageLedger.Open`), where every host's records already pass. Neither the engine nor any host knows about
 prices. *Alternative:* price inside the recorder (the feature doc's first idea). Then the engine, and every host that
 builds one, would need the price table, and pricing could never be added or changed without touching the tool loop.
 The cost of that choice showed in F3: the turn's totals need the *priced* record, so `IUsageSink.Record` had to return
@@ -155,7 +161,7 @@ A ledger file per month, not a database. JSON lines are append-only, readable an
 (`usage-probe -- --ledger`); querying across months or by user is F11's job.
 
 Two copies of the number rules (core's `UsageText`, the web app's `UsageFormat`), to keep the agent's code out of the
-browser download. F14 has to change both.
+browser download. F14 (the display currency, 2026-10-11) changed both.
 
 The web line splits cache writes from "in" , against F3's own story: they are priced differently, so hiding them would
 hide why one answer cost more than another.
@@ -201,13 +207,15 @@ is cheap enough to run often, and a replay is free enough to run on every change
 One thing a replay can't do yet. When Puls hands a meal to its cook, the hand-off's tool result isn't exactly the same
 in the replay as in the recording, so the next request's key is different and the cache has no answer for it. Those
 turns fail instead of costing money, so the safety holds (a miss never calls the model), but a mode that delegates
-can't reproduce its grades from a replay. That's the next fix: make the sub-session's result replay-stable.
+can't reproduce its grades from a replay. That's the next fix: make the sub-session's result replay-stable. It isn't built yet. Once
+the recipe search drew its sites at random (F35.4), a replay of the cook and recipes evals was sure to miss, so those
+two run live only ([ADR 0078](../../../packs/docs/adr/0078-a-recipe-search-asks-several-sites.md)).
 
 ## Where skill 13 stands
 
 Here's how it does against the goal's four tests for a learned skill. It's built: seeing the cost (the ledger, the
-prices, showing it, M1) and cutting it (prompt caching, F4). Toolsets, estimates, budgets and reconciliation are still
-planned (F5, F6, F7, F11). It's measured: F4 against the M1 baseline is −80% on the run and −87% on louis-agent's
+prices, showing it, M1) and cutting it (prompt caching, F4). Toolsets came with F5 (write-up 10); estimates, budgets and
+reconciliation are still planned (F6, F7, F11). It's measured: F4 against the M1 baseline is −80% on the run and −87% on louis-agent's
 input, with 10 of 10 fixes held. It's written up, on this page for M1 and F4, to be extended at the rest of M2 and at
 M3. And it's explained, in the section below.
 

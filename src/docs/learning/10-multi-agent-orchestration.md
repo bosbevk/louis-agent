@@ -4,6 +4,12 @@
 > roles, F22 role tools, F20's Werk panel (2026-10-13), F127.3.1 one address for every agent call (2026-11-11) ·
 > **Status:** a first draft by Claude for Louis to edit
 
+![Multi-agent orchestration: a router and its specialists, what delegation cost, a triage team, one address for every agent call, and minions](diagrams/10-multi-agent-orchestration.svg)
+
+The parts below come in the order they were built, and some names changed on the way. The router's table that was
+`default.md` is now the routing half of a mode's file (Puls's `agent/puls/voice.md`, after its voice). The Werk
+panel is the chat's work panel. And `StartSubSession` gave way to `AskAgent` by address (F127.3.1, below).
+
 ## Before and after
 
 **Before,** one agent did everything: every tool and every guide in one prompt, about 28,600 tokens of fixed prefix
@@ -25,8 +31,8 @@ $0.0488 → $0.0378, 4/4 fixes.
 
 ## Measured: delegation against one agent (2026-10-13/14)
 
-A delegation check (`samples/puls-check/run_check.py`) asks the same ten questions twice, each in its own session:
-once to one agent with every toolset (the baseline), once to Puls with its specialists. It prices both from the usage
+A delegation check (a script under `samples/`, since removed with the other samples) asked the same ten questions twice, each in its own session:
+once to one agent with every toolset (the baseline), once to Puls with its specialists. It priced both from the usage
 ledger, by token kind.
 
 | Run | Baseline | Delegated | What it found |
@@ -44,7 +50,7 @@ Delegation pays for chat and some research, not for short lookups. Chat and the 
 were cheaper delegated in every run. The second web question (the prime rate) was dearer delegated in the roles and
 FX10–FX12 runs ($0.0104 against $0.0052, $0.0086 against $0.0059) and about even in the repeat run ($0.0078 against
 $0.0081 on the means). Short files, git and counting questions were 1.2–3.5× dearer on the repeat run's means (files-2
-and git-2 were cheaper once, in the roles run). The TODO now asks whether Puls delegates too often.
+and git-2 were cheaper once, in the roles run). Whether Puls delegates too often is still open (see *Next*).
 
 The tail matters more than the average. One badly routed task cost eight times the other nine together. The fix was
 two layers: a prompt that routes and tells every agent what tool calls cost (FX13), and a limit in code, a prompt
@@ -81,11 +87,12 @@ its header are motion carrying that same information, not decoration.
 
 ## Trade-offs and what didn't work
 
-**The roll-up isn't done.** The chat's usage still excludes its sub-sessions; the app adds them up client-side and says
-so, until the F5 roll-up lands.
+**The roll-up came after.** At first the chat's usage left out its sub-sessions, and the app added them up client-side
+and said so. F5's follow-up (2026-10-14) rolled a sub-session's usage into its parent's turn, so the totals hold it.
 
-**A role in the prompt wasn't enough.** Puls passed one in 1 delegation of 4. The peer now derives a role from the
-toolsets when none is passed (`roles.json`), so code, not the prompt, guarantees every specialist has one.
+**A role in the prompt wasn't enough.** Puls passed one in 1 delegation of 4. The peer then derived a role from the
+toolsets when none was passed (`roles.json`), so code, not the prompt, made sure every specialist had one. Today the
+role is part of the address (`puls.cook`), so there is nothing left to forget, and `roles.json` is gone.
 
 Routing is still a prompt, and a wrong route can be expensive (the $0.278 reader). Each role now says what is not its
 job (the reader hands counting back), and a prompt budget limits what a wrong route can cost.
@@ -215,8 +222,8 @@ No live run. Puls, the only identity with minions, is paused, and no voice asks 
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and
-measure it the same way; the F5 roll-up; evals per role for quality, not only cost (F18); and parallel specialists for
-a task with independent parts.
+measure it the same way; Puls on `AskAgent`, measured when Puls resumes (F135); more evals per role for quality, not
+only cost; and parallel specialists for a task with independent parts.
 
 ---
 [Learning](README.md) · [Goal](../GOAL.md)
