@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "F166: the children, in order",
+  "caption": "The framework takes back what is its own, publishes itself, and only then does Puls leave, so neither repository is ever broken in between.",
+  "flow": {
+    "nodes": [
+      { "id": "start", "shape": "terminal", "icon": "user", "tone": "blue", "label": "Puls inside louis-agent" },
+      { "id": "one", "icon": "folder", "tone": "violet", "label": "F166.1 the framework's parts out of demos/puls\nAPI tests, the deploy, its tests, the workflow's name" },
+      { "id": "two", "icon": "box", "tone": "violet", "label": "F166.2 the framework as packages\nwhere, how versioned, which projects" },
+      { "id": "three", "icon": "chip", "tone": "green", "label": "F166.3 Puls and its three packs to the puls repo\non the packages, with its history" },
+      { "id": "four", "icon": "checks", "tone": "violet", "label": "F166.4 gone from louis-agent\nthe solution, CI, the docs" },
+      { "id": "end", "shape": "terminal", "icon": "checks", "tone": "blue", "label": "two repositories, one way" }
+    ],
+    "edges": [
+      { "from": "start", "to": "one" },
+      { "from": "one", "to": "two" },
+      { "from": "two", "to": "three" },
+      { "from": "three", "to": "four" },
+      { "from": "four", "to": "end" }
+    ],
+    "direction": "down"
+  }
+}
