@@ -8,15 +8,20 @@
 What this answers: what changed in how a tool reaches the model when the shops left core for a pack, why a pack has a
 contract and a test instead of a convention, and what "convertible to MCP" buys before anything is converted.
 
+![Tool design: a capability as a pack with a contract, a test that keeps every pack convertible to MCP, one job per pack, and a page tool that drives a recording](diagrams/04-tool-design.svg)
+
+The CL15 part tells the cut as it happened. The shops pack it moved was retired later, in F50.2 (the last part
+below), and its settings went with it.
+
 ## Before and after
 
 | | Before CL15 | After CL15 |
 |---|---|---|
 | Where a toolset lives | One list in core, `ToolsetCatalog.All`, the shops among the coding tools | Core's toolsets in `ToolsetCatalog`; a pack's in its own project, listed through one `AgentCatalog` |
 | Where a tool's settings live | `AgentOptions`, one class for everything (`SHOP_CATALOGUES` beside `PAYMO_API_KEY`) | The pack's own options class, read at the composition root; core's options know no shop |
-| Who may name a tool | Any class in core; a duplicate failed when an engine was built | One function, `AgentCatalog.NamesOf`; a duplicate, or an engine tool's name, stops the host at start-up |
+| Who may name a tool | Any class in core; a duplicate failed when an engine was built | One catalogue, `AgentCatalog` (its `ToolNames`); a duplicate, or an engine tool's name, stops the host at start-up |
 | What a tool's text may say | The `area` parameter said "when Puls gave no place" | No description names an identity; the brief is "the brief" |
-| What holds the rule | A sentence in an ADR | `PackConvertibilityTests`, over every `PackKind`, through the MCP SDK's own `McpServerTool.Create` |
+| What holds the rule | A sentence in an ADR | `PackConvertibilityTests` (in Puls's host-packs tests), over every `PackKind`, through the MCP SDK's own `McpServerTool.Create` |
 | The model's view | Unchanged on purpose: the same 3 shop tools, the same guide, one routing sentence moved | Proved by the Puls golden: 3 `area` texts and 1 routing line changed, nothing else |
 
 ## What a pack is, and why it has a contract
@@ -60,7 +65,8 @@ have made the shops Puls's forever. The test now refuses it as a whole word, cas
 
 Settings belong to the thing they configure. `SHOP_CATALOGUES` in `AgentOptions` meant every host knew about shops. In
 `ShopsOptions`, read where the pack is built, the coding agent's host has no shop setting unless it loads the pack.
-The same move waits for `PAYMO_API_KEY` and the DevOps keys when CL17 makes those packs.
+The same move came for `PAYMO_API_KEY` and the DevOps keys when those became packs: the Paymo pack reads its key
+from its own `PaymoOptions`.
 
 A pack can't route itself. The shops' routing row left the coding agent's mode for the pack's guide, which loads only
 where the toolset does, so the coding agent never learns the shops exist. Nothing is lost today, and it is on the
@@ -157,8 +163,8 @@ model the exact credit line to copy, and the cook's prompt puts it under the tab
 A store with a fallback. The tool reads MongoDB at most once an hour (Cache-Aside) and falls back to the shipped
 tables when the store is down, so a price is always there; the store is the record and the files only seed it.
 
-Not yet measured live. The cook eval moved to version 14 (new toolsets); its first run waits for Louis's go (it costs
-money). The golden shows what the model now reads: the three Checkers tools gone, `FindBranches` and `EstimatePrices`
+Not measured live at the time. The cook eval moved to version 14 (new toolsets), and its first run waited for Louis's
+go, since it costs money; the eval has moved on since, and is at version 20 today. The golden shows what the model now reads: the three Checkers tools gone, `FindBranches` and `EstimatePrices`
 in.
 
 Data a pack publishes is not a tool. Louis wanted the prices served by the API, open, "free to use". The API may not
