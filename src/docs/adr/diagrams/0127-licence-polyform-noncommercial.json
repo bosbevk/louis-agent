@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "0127 at a glance: the framework's licence",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "licence", "icon": "shield", "title": "PolyForm Noncommercial 1.0.0", "code": "LICENSE",
+          "look": "highlight",
+          "text": "The framework is free to use, change and share for any noncommercial purpose, from 2026-11-19." }
+      ] },
+      { "cards": [
+        { "id": "free", "icon": "users", "title": "Free for",
+          "text": "Personal study, research and hobby projects; charities, schools and public bodies." },
+        { "id": "commercial", "icon": "tag", "title": "Commercial use",
+          "text": "Needs a licence from the copyright holder first, granted case by case." },
+        { "id": "earlier", "icon": "clock", "title": "Earlier versions",
+          "text": "Keep the licence they were released with: MIT, the AGPL-3.0, or all rights reserved." }
+      ] }
+    ],
+    "links": [
+      { "from": "licence", "to": "free" },
+      { "from": "licence", "to": "commercial" },
+      { "from": "licence", "to": "earlier" }
+    ]
+  }
+}
