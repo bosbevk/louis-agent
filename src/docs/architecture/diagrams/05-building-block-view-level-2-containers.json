@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "component",
   "title": "Building blocks, level 2: the containers",
-  "caption": "Many hosts, one core: the hosts that load an agent read its identities and packs through the composition root (Plugins.FromEnvironment()), and everything ends in core. A dashed line means uses.",
+  "caption": "Many hosts, one core: the hosts that load an agent read its identities and packs through the program's composition root (the coding agent's catalogue, or Puls's host-packs), and everything ends in core. A dashed line means uses.",
   "flow": {
     "nodes": [
       {
@@ -20,6 +20,13 @@
         "label": "Puls user"
       },
       {
+        "id": "visitor",
+        "shape": "terminal",
+        "icon": "users",
+        "tone": "blue",
+        "label": "Site visitor"
+      },
+      {
         "id": "cli",
         "icon": "terminal",
         "tone": "green",
@@ -35,7 +42,7 @@
         "id": "web",
         "icon": "browser",
         "tone": "green",
-        "label": "Web app / Puls app\n[Blazor WebAssembly]"
+        "label": "Sites\n[Blazor WebAssembly: code\nreview, Puls, louis-agent.dev]"
       },
       {
         "id": "orch",
@@ -65,25 +72,25 @@
         "id": "comp",
         "icon": "code",
         "tone": "teal",
-        "label": "Composition root\n[class library: IDENTITIES,\nPACKS]"
+        "label": "Composition root\n[coding-catalog, host-packs:\nIDENTITIES, PACKS]"
       },
       {
         "id": "ident",
         "icon": "user",
         "tone": "teal",
-        "label": "Identities\n[puls: voice, modes, roles]"
+        "label": "Identities\n[coding, puls, triage, guide:\nvoice, modes, roles]"
       },
       {
         "id": "pack",
         "icon": "box",
         "tone": "teal",
-        "label": "Packs\n[shops: toolsets, guides,\nsettings]"
+        "label": "Packs\n[files, git, web, recipes\u2026:\ntoolsets, guides, settings]"
       },
       {
         "id": "core",
         "icon": "chip",
         "tone": "violet",
-        "label": "louis-agent.core\n[class library: the engine,\ntools, skills, providers]"
+        "label": "louis-agent.core\n[class library: the loop,\nskills, the provider seam]"
       },
       {
         "id": "llm",
@@ -121,6 +128,10 @@
       },
       {
         "from": "puser",
+        "to": "web"
+      },
+      {
+        "from": "visitor",
         "to": "web"
       },
       {
