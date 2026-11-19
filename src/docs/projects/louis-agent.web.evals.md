@@ -5,12 +5,16 @@
 > `/admin/evals`, an area inside the admin's frame (F144) · **How to change them:** [Change the eval pages](../guides/change-the-eval-pages.md)
 > **Also shows:** `component`, `sequence`
 
+![The eval studio's screens: evals and their runs, answers to grade, the studio and the prompts](diagrams/louis-agent.web.evals.svg)
+
 The studio is a library on the framework's web, not a part of it. A site that wants it names it; a site that doesn't
 downloads none of it.
 
-*Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
+The rest of this doc says what the pages are for and what a site gives them. Then it walks the pages in the order you
+use them: the Evals page's list and details, a run as it goes, the Review page, one run's page, the prompts and
+imports, and the grades. It ends with the folders, to look things up, and the tests.
 
-![The eval studio's screens: evals and their runs, answers to grade, the studio and the prompts](diagrams/louis-agent.web.evals.svg)
+*Decided in:* CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md).
 
 ## Purpose
 
@@ -38,7 +42,7 @@ does.
 
 If it wants the sources chart to sort the websites its agent read, it hands a `SiteKinds` list to `.Evals(...)`. Each
 `SiteKind` is a name and the addresses it takes. A website goes under the first kind it fits. The first kind is
-green, and whatever fits none is grey and called *elsewhere*. If no kinds are named, everything is one grey slice.
+green, the kinds after it take the charts' series colours, and whatever fits none is grey and called *elsewhere*. If no kinds are named, everything is one grey slice.
 Puls's list is `PulsSites`.
 
 *Decided in:* [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md), CL58,
@@ -130,10 +134,14 @@ chart explains itself when you hover over it (`ChartInfo`).
 
 *Decided in:* F53.1, [ADR 0065](../adr/0065-the-view-is-in-the-address.md).
 
-### 6. Prompts, imports, and old addresses
+### 6. The prompts, and old addresses
 
-`/admin/prompts` lists every built-in prompt by its header. `/admin/imports` takes the packs' data uploads. The old
-`/admin/benchmarks` and `/admin/maatstawwe` addresses are gone.
+`/admin/prompts` lists every built-in prompt by what its header says: one table sorted by path, with each prompt's
+name and file, its level, its description and the toolsets it always loads. The page that takes the packs' data
+uploads, `/admin/imports`, isn't one of these: it's the framework's web's own.
+
+The old `/admin/benchmarks` and `/admin/maatstawwe` addresses are gone, with no redirect, and `PortalAddressesTests`
+fails if any file spells one again.
 
 *Decided in:* CL27, F55, [ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md).
 
@@ -162,27 +170,32 @@ These are the types involved:
 
 ## Structure
 
-Paths are from `src/web/louis-agent.web/`.
+This is the place to look things up. Paths are from `src/web/louis-agent.web.evals/`.
 
 | Path | What |
 |---|---|
-| `Pages/Reviewing/Review.razor`, `Review.razor.cs` | The Review page at `/admin/review` (F53.3): the queue read for the kept name, one answer open with its head and the blind review panel, the keys 1, 2 and 3, the count kept current for the sidebar |
-| `Pages/Building/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles in `Styles/web/admin/` |
-| `Pages/Running/Evals.razor`, `BenchmarkRun.razor` | The Evals page at `/admin/evals`: the list, the chosen eval's details, the run it starts and follows (F53.2); one stored run: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
-| `Components/EvalsPage/`, `List/`, `Details/`, `Admin/Evals/`, `Admin/Evals/List/` | The Evals page's parts: `EvalList` and `EvalListItem` (the list pane; `EvalLine`, `ModeChange`, `EvalListView`, `EvalAddress`), `EvalDetails`, `EvalRunControls` and `ManualDialog` (the details pane), `EvalScorecard`, `EvalRunTimeline`, `EvalRunOrigin`, `EvalChecks` (`EvalCardView`, `RunLine`, `RunOrigin`, `GraderGroup`, `EvalText`) |
-| `Components/LiveRun/`, `Components/Runs/`, `Components/Runs/Table/`, `Components/Head/` | `LiveRunPanel` and `LiveTurnTable` (the run in progress, its turns as they come), `LiveRunStrip` (a run is going, on every page); a stored run's row and its buttons, `RunsList` (the runs table); `StoreBanner` (the store's state), `EvalLinks` (the sidebar's links) and `EvalsCard` (the studio's card on the admin's home: the evals, the answers to review, the last run; F144) |
-| `Components/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level (its place handed in as `Place` and reported on every move as `OnMoved`), a check's trend, a chart's explanation |
-| `Components/RunPage/`, `Admin/RunPage/`, `Admin/Verdict/`, `Admin/Explorer/Place/` | The run page's parts (F53.1): `RunHead`, `RunVerdict` (the card under the head) and `RunTabBar` (a link per tab); `RunTab` and `RunTabs` (the tab, parsed once from `?tab=`, and the bar's entries), `RunAddress` (the one writer of a run's address); `RunVerdictView` and `ModeVerdict` (the verdict's numbers, worked out from the run and its trend) with `VerdictText`; `ExplorerView` and `ExplorerPlace` (where you are in the explorer, written to and read from the address) |
-| `Components/Grades/` | `GradeChips`, `GraderList`: a conversation's outcome and grades, the run's eval and graders, from the standard records (F18 step 4.5c) |
-| `Components/Charts/` | `Ring`, `TokenStack`, `TokenLegend`: the explorer's donut, stacked token bar and token legend, markup only (F18 step 6a.3b) |
-| `Components/Reviews/` | `ReviewPanel` (a conversation's blind review; it reports a stored grade through `OnGraded` and grades through its public `GradeAsync`, F53.3), `Queue/` (`ReviewItemHead`, where the open answer is from and Skip; `ReviewCountBadge`, how many wait, beside *Review* in the sidebar), `ReviewPill`, `AgreementPanel` (per judge, how often it agreed with the people), `CalibrationCard` (the judge check from the portal: the button, the latest report in sentences, the earlier ones folded; F18 step 6a.5c) |
-| `Components/Studio/`, `Admin/Studio/` | The studio's drafts (F49.4, [ADR 0061](../adr/0061-evals-grow-from-use.md)): `SampleDialog` under a conversation's card (the scenario it ran as the form's start, posted as a sample draft), `KeepButtons` under a graded review (a pass kept as a reference, a fail as a known-bad with its reason), `DraftList` on an eval's card (folded under its count, each draft with a delete, the page reloaded after); the rules in plain classes with their own tests (`SampleForm`, `KeepOffers`, `StudioText`); styles in `Styles/web/admin/_studio.scss` |
-| `Pages/Building/EvalStudio.razor`, `Components/Studio/Compose/`, `Components/Studio/Promptfoo/`, `Components/Studio/Check/`, `Components/Studio/Try/`, `Admin/Studio/`, `Admin/Studio/Compose/`, `Admin/Studio/Schema/` | The Studio page at `/admin/studio` (F49.5, [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md); named `EvalStudio`, since the folders' `.Studio` namespaces would shadow `Studio`): the evals being composed on the left, the form on the right as four numbered steps in the order they are done (the admin review's finding 6): *1 Compose* with *Save* and *View JSON*, *2 Check* (the runner's problems in its words, `StudioVerdict`), *3 Try* (`TryStep`: a replay of a run picked from the recorded runs the Evals page lists, `ReplayChoices`, this eval's own first, on the samples typed, linked to its run page) and *4 Publish* (the branch named, or a zip downloaded); each action saves first. The form is plain classes the components change in place (`EvalComposition`, `ModeEntry`, `CheckEntry`, `RubricEntry`), edited by `ComposeHead`, `ComposeChecks` and `ComposeRubrics`; a check's fields come from its settings' schema (`SchemaFields`, `SchemaField`, `FieldKind`: a property named `reader` is a pick of the runner's readers). `PromptfooPanel` imports a pasted promptfoo file into a new draft, which the page opens, listing what was left out, and exports the open draft as `promptfooconfig.yaml` |
-| `Components/Summary/` | `SummaryPanel`, `SummaryTable`, `RateBar`: a run's results by category, a rate as a bar (F18 step 5c.3, 6a.3c) |
-| `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the outcome parsed once (`GradeOutcomes`); the run's graders and a conversation's grades come from their typed rows (`RunGraders.Of`, `ConversationGrades.Of`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`); `Charts/`: the charts' colours and maths, no markup (`ChartPalette`, the six series colours for the trend chart and the explorer, `RingArcs`, `TokenKinds`, `ChartNumbers`); `Reviews/`: the review's rules and words in plain classes: `BlindReview` (the one place that knows `.human`: `IsReview`, `JudgeOf`; who answered: `OwnGrades`, `Answered`; which review a conversation shows: `ReviewOf`; what hides the judge's verdict; whether the person agreed: `Compare`), `ReviewStatus` (to review, reviewed, no review, and the list's filter `Keeps`), `ReviewText` and `AgreementText` (the sentences), `CalibrationText` and `CalibrationView` (the judge check), `ReviewerName` and `ReviewNote` (their limits), `ReviewerState`; `Reviews/Queue/` (F53.3): `ReviewQueueView` (the Review page's model), `ReviewQueueText` (its words), `ReviewKeys` (1, 2, 3 as verdicts), `ReviewQueueState` (how many wait, shared with the badge) |
-| `Admin/EvalPages.cs`, `EvalServices.cs`, `EvalArea.cs` | What the pages need from a site's services; `AddLouisAgentEvals`; `.Evals()`, the area a site names |
-| `Admin/Explorer/Sites/` | `SiteKind`, `SiteKinds`, `SiteCounts`: how a site sorts the websites its agent read, and the counts for the sources chart |
-| `Styles/evals/_pages.scss` | The one name a site lists (`evals/pages`), which forwards the pages' six partials of shared rules; a component's own rules are beside it, `Components/Summary/SummaryTable.razor.scss` and 63 more (CL58) |
+| `EvalArea.cs`, `EvalServices.cs`, `EvalLibrary.cs`, `Admin/EvalPages.cs` | `.Evals()`, the area a site names; `AddLouisAgentEvals`, which takes the site's `SiteKinds`; `EvalLibrary.Assembly`, which brings the pages to the router; what the pages need from a site's services |
+| `Pages/Running/Evals.razor`, `BenchmarkRun.razor` | The Evals page at `/admin/evals`: the list, the chosen eval's details, the run it starts and follows (F53.2); one stored run at `/admin/runs/{RunId}`: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
+| `Pages/Reviewing/Review.razor` | The Review page at `/admin/review` (F53.3): the queue read for the kept name, one answer open with its head and the blind review panel, the keys 1, 2 and 3, the count kept current for the sidebar |
+| `Pages/Building/Prompts.razor` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none) |
+| `Pages/Building/EvalStudio.razor` | The Studio page at `/admin/studio` (F49.5, [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)), named `EvalStudio` since the folders' `.Studio` namespaces would shadow `Studio`: the evals being composed on the left, and on the right the form as four numbered steps in the order they are done: *1 Compose* with *Save* and *View JSON*, *2 Check*, *3 Try* and *4 Publish* (the branch named, or a zip downloaded); each action saves first |
+| `Components/EvalsPage/`, `List/`, `Details/` | The Evals page's parts: `EvalList` and `EvalListItem` (the list pane), `EvalDetails`, `EvalRunControls` and `ManualDialog` (the details pane), `EvalScorecard`, `EvalRunTimeline`, `EvalRunOrigin` and `EvalChecks` (the card) |
+| `Admin/Evals/`, `Admin/Evals/List/` | Their models and words: `EvalCardView`, `RunLine`, `RunOrigin`, `GraderGroup`, `EvalText`; `EvalLine`, `ModeChange`, `EvalListView`, `EvalAddress` |
+| `Components/LiveRun/`, `Admin/LiveRuns/`, `Admin/Starting/` | `LiveRunPanel` and `LiveTurnTable` (the run in progress, its turns as they come), `LiveRunStrip` (a run is going, on every page); the live turns (`LiveTurn`, `LiveTurns`, `TurnKey`); what a start sends (`StartRequest`, `StartRunBody`, `NoBody`) |
+| `Components/Runs/`, `Components/Runs/Table/`, `Admin/Runs/` | A stored run's row and its buttons (`RunListItem`, `RunSettings`, `ReplayButton`, `RescoreButton`, `ReplayedFrom`, `RescoredFrom`), `RunsList` (the runs table); the runs' rules and words (`RunEstimate`, `RunSummary`, `CheckRuns`, `ModeLabels`, `RepeatSwitch`, `RunText`) and `Admin/RunModelFilter.cs`, the list's model filter |
+| `Components/Head/`, `Admin/Store/` | `StoreBanner` (the store's state, `StoreStatus`), `EvalLinks` (the sidebar's links) and `EvalsCard` (the studio's card on the admin's home: the evals, the answers to review, the last run; F144) |
+| `Components/RunExplorer.razor`, `Components/Explorer/`, `Admin/Explorer/` | A run at every level, its place handed in as `Place` and reported on every move as `OnMoved`: the crumbs and repeat picker (`Head/`), the overview's tiles, rings and cost bars (`Overview/`), the conversations (`Conversations/`), a conversation's turns, a request and two turns side by side (`Turns/`), the chats dialog (`Chats/`) and the shared parts (`Parts/`); in `Admin/Explorer/`, the run's tree (`Tree/`), where you are (`Place/`: `ExplorerView`, `ExplorerPlace`), the timeline, rings, legends and colours, a turn's replay, the words, and how a site sorts the websites read (`Sites/`: `SiteKind`, `SiteKinds`, `SiteCounts`) |
+| `Components/RunPage/`, `Admin/RunPage/`, `Admin/Verdict/` | The run page's parts (F53.1): `RunHead`, `RunVerdict` and `RunTabBar`; `RunTab` and `RunTabs` (the tab, parsed once from `?tab=`, and the bar's entries), `RunAddress` (the one writer of a run's address); `RunVerdictView` and `ModeVerdict` (the verdict's numbers) with `VerdictText` |
+| `Components/Summary/`, `Admin/Summary/` | `SummaryPanel`, `SummaryTable`, `RateBar`, `CategoryTrends`: a run's results by category, a rate as a bar; their readers and words |
+| `Components/Trends/`, `Admin/Trends/` | `TrendChart`, `TrendPanel`, `TrendPanelHead`: a check's trend; its marks, measures and geometry in plain classes |
+| `Components/Rates/`, `Admin/Rates/`, `Components/Notes/`, `Admin/Notes/` | `ModeRatesList` (each mode's pass rates) and `NotesPanel` (a run's notes), each with its reader, state and words |
+| `Components/ChartInfo.razor`, `Components/Charts/`, `Admin/Charts/` | A chart's explanation on hover, from `Admin/Charts/Guides/`; `Ring`, `TokenStack`, `TokenLegend` (markup only); the charts' colours and maths (`ChartPalette`, the six series colours, `RingArcs`, `TokenKinds`, `ChartNumbers`) |
+| `Components/Grades/`, `Admin/Grades/` | `GradeChips`, `GraderList` (F18 step 4.5c); the records both use (`GradeOutcome`, `GraderRow`, `GradeRow`, `HumanGradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Reading/`: the outcome parsed once (`GradeOutcomes`); `Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`) |
+| `Components/Reviews/`, `Components/Reviews/Queue/` | `ReviewPanel` (a conversation's blind review; it reports a stored grade through `OnGraded` and grades through its public `GradeAsync`), `ReviewPill`, `AgreementPanel` (per judge, how often it agreed with the people), `CalibrationCard` (the judge check: the button, the latest report in sentences, the earlier ones folded); `ReviewItemHead` and `ReviewCountBadge` |
+| `Admin/Reviews/`, `Admin/Reviews/Queue/` | The review's rules and words: `BlindReview` (the one place that knows `.human`), `ReviewStatus`, `ReviewText`, `AgreementText`, `AgreementView`, `CalibrationText`, `CalibrationView`, `ReviewerName`, `ReviewNote`, `ReviewerState`, `ConversationRef`; the queue's `ReviewQueueView`, `ReviewQueueText`, `ReviewKeys` and `ReviewQueueState` |
+| `Components/Studio/`, `Admin/Studio/` | The studio's drafts (F49.4, [ADR 0061](../adr/0061-evals-grow-from-use.md)): `SampleDialog` under a conversation's card (the scenario it ran as the form's start, posted as a sample draft), `KeepButtons` under a graded review (a pass kept as a reference, a fail as a known-bad with its reason), `DraftList` on an eval's card; the rules in plain classes with their own tests (`SampleForm`, `KeepOffer`, `ReplayChoices`, `StudioText`) |
+| `Components/Studio/Compose/`, `Check/`, `Try/`, `Promptfoo/`, `Admin/Studio/Compose/`, `Admin/Studio/Schema/` | The Studio page's steps: `ComposeHead`, `ComposeChecks` and `ComposeRubrics` edit the form, plain classes changed in place (`EvalComposition`, `ModeEntry`, `CheckEntry`, `RubricEntry`); a check's fields come from its settings' schema (`SchemaFields`, `SchemaField`, `FieldKind`: a property named `reader` is a pick of the runner's readers); `StudioVerdict` (the runner's problems in its words); `TryStep` (a replay of a recorded run on the samples typed, this eval's own runs first); `PromptfooPanel` (a pasted promptfoo file imported into a new draft, listing what was left out, and the open draft exported as `promptfooconfig.yaml`) |
+| `Styles/evals/_pages.scss` | The one name a site lists (`evals/pages`), which forwards the six partials of shared rules beside it (`_benchmarks`, `_evals`, `_run-page`, `_explorer`, `_reviews`, `_studio`); a component's own rules are beside it, `Components/Summary/SummaryTable.razor.scss` and 63 more (CL58) |
 
 ## Tests
 

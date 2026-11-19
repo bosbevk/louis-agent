@@ -34,7 +34,7 @@
         "step": "message",
         "from": "B",
         "to": "P",
-        "text": "opens /admin, picks an eval, presses Run"
+        "text": "opens /admin/evals, picks an eval, presses Run"
       },
       {
         "step": "message",

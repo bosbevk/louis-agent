@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 894.4 783" width="894.4" height="783" role="img" aria-label="louis-agent.web.evals: starting a run and watching it" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 880.4 798" width="880.4" height="798" role="img" aria-label="louis-agent.web.evals: starting a run and watching it" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.web.evals: starting a run and watching it</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -190,54 +190,55 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="894.4" height="783" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="880.4" height="798" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 84a447.2 170 0 1 0 894.4 0a447.2 170 0 1 0 -894.4 0Z" />
+    <path class="mrq-light" d="M-24 84a440.2 170 0 1 0 880.4 0a440.2 170 0 1 0 -880.4 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">louis-agent.web.evals: starting a run and watching it</text>
-    <text class="pic-group" x="830.4" y="14" text-anchor="end">Sequence diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="846.4" height="1" rx="0" />
+    <text class="pic-group" x="816.4" y="14" text-anchor="end">Sequence diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="832.4" height="1" rx="0" />
     <g class="seq-drawing" transform="translate(0 48)">
-      <rect class="seq-life" x="32.2" y="84" width="1.5" height="459" rx="0" />
-      <rect class="seq-life" x="352.2" y="84" width="1.5" height="459" rx="0" />
-      <rect class="seq-life" x="532.2" y="84" width="1.5" height="459" rx="0" />
-      <rect class="seq-life" x="775.2" y="84" width="1.5" height="459" rx="0" />
-      <rect class="seq-beam seq-beam-glow" x="32.9" y="129" width="320" height="8" rx="0" />
-      <rect class="seq-beam" x="32.9" y="132" width="312" height="2" rx="0" />
-      <path class="pic-march" d="M32.9 133H344.9" />
-      <path class="seq-tip" d="M344.9 133H352.9" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="32.9" cy="133" r="4.5" />
-      <text class="seq-call-words" x="192.9" y="124" text-anchor="middle">opens /admin, picks an eval, presses Run</text>
-      <rect class="seq-beam seq-beam-glow" x="352.9" y="180" width="180" height="8" rx="0" />
-      <rect class="seq-beam" x="352.9" y="183" width="172" height="2" rx="0" />
-      <path class="pic-march" d="M352.9 184H524.9" />
-      <path class="seq-tip" d="M524.9 184H532.9" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="352.9" cy="184" r="4.5" />
-      <text class="seq-call-words" x="442.9" y="175" text-anchor="middle">starts the run</text>
-      <rect class="seq-beam seq-beam-glow" x="532.9" y="231" width="243" height="8" rx="0" />
-      <rect class="seq-beam" x="532.9" y="234" width="235" height="2" rx="0" />
-      <path class="pic-march" d="M532.9 235H767.9" />
-      <path class="seq-tip" d="M767.9 235H775.9" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="532.9" cy="235" r="4.5" />
-      <text class="seq-call-words" x="654.4" y="226" text-anchor="middle">POST /v1/admin/benchmarks/...</text>
-      <path class="seq-answer" d="M775.9 286H352.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="775.9" cy="286" r="4.5" />
-      <text class="seq-answer-words" x="564.4" y="277" text-anchor="middle">the run's events, as they come</text>
-      <path class="seq-answer" d="M352.9 337H32.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="352.9" cy="337" r="4.5" />
-      <text class="seq-answer-words" x="192.9" y="328" text-anchor="middle">LiveRunPanel: its turns as they finish</text>
-      <path class="seq-answer" d="M775.9 388H352.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="775.9" cy="388" r="4.5" />
-      <text class="seq-answer-words" x="564.4" y="379" text-anchor="middle">the run ended</text>
-      <rect class="seq-beam seq-beam-glow" x="352.9" y="435" width="180" height="8" rx="0" />
-      <rect class="seq-beam" x="352.9" y="438" width="172" height="2" rx="0" />
-      <path class="pic-march" d="M352.9 439H524.9" />
-      <path class="seq-tip" d="M524.9 439H532.9" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="352.9" cy="439" r="4.5" />
-      <text class="seq-call-words" x="442.9" y="430" text-anchor="middle">reads the list again</text>
-      <path class="seq-answer" d="M352.9 505H32.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="352.9" cy="505" r="4.5" />
-      <text class="seq-answer-words" x="192.9" y="481" text-anchor="middle">the run in the list, linked to</text>
-      <text class="seq-answer-words" x="192.9" y="496" text-anchor="middle">/admin/runs/{run}</text>
+      <rect class="seq-life" x="32.2" y="84" width="1.5" height="474" rx="0" />
+      <rect class="seq-life" x="338.2" y="84" width="1.5" height="474" rx="0" />
+      <rect class="seq-life" x="518.2" y="84" width="1.5" height="474" rx="0" />
+      <rect class="seq-life" x="761.2" y="84" width="1.5" height="474" rx="0" />
+      <rect class="seq-beam seq-beam-glow" x="32.9" y="144" width="306" height="8" rx="0" />
+      <rect class="seq-beam" x="32.9" y="147" width="298" height="2" rx="0" />
+      <path class="pic-march" d="M32.9 148H330.9" />
+      <path class="seq-tip" d="M330.9 148H338.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="32.9" cy="148" r="4.5" />
+      <text class="seq-call-words" x="185.9" y="124" text-anchor="middle">opens /admin/evals, picks an eval,</text>
+      <text class="seq-call-words" x="185.9" y="139" text-anchor="middle">presses Run</text>
+      <rect class="seq-beam seq-beam-glow" x="338.9" y="195" width="180" height="8" rx="0" />
+      <rect class="seq-beam" x="338.9" y="198" width="172" height="2" rx="0" />
+      <path class="pic-march" d="M338.9 199H510.9" />
+      <path class="seq-tip" d="M510.9 199H518.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="338.9" cy="199" r="4.5" />
+      <text class="seq-call-words" x="428.9" y="190" text-anchor="middle">starts the run</text>
+      <rect class="seq-beam seq-beam-glow" x="518.9" y="246" width="243" height="8" rx="0" />
+      <rect class="seq-beam" x="518.9" y="249" width="235" height="2" rx="0" />
+      <path class="pic-march" d="M518.9 250H753.9" />
+      <path class="seq-tip" d="M753.9 250H761.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="518.9" cy="250" r="4.5" />
+      <text class="seq-call-words" x="640.4" y="241" text-anchor="middle">POST /v1/admin/benchmarks/...</text>
+      <path class="seq-answer" d="M761.9 301H338.9" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="761.9" cy="301" r="4.5" />
+      <text class="seq-answer-words" x="550.4" y="292" text-anchor="middle">the run's events, as they come</text>
+      <path class="seq-answer" d="M338.9 352H32.9" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="338.9" cy="352" r="4.5" />
+      <text class="seq-answer-words" x="185.9" y="343" text-anchor="middle">LiveRunPanel: its turns as they finish</text>
+      <path class="seq-answer" d="M761.9 403H338.9" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="761.9" cy="403" r="4.5" />
+      <text class="seq-answer-words" x="550.4" y="394" text-anchor="middle">the run ended</text>
+      <rect class="seq-beam seq-beam-glow" x="338.9" y="450" width="180" height="8" rx="0" />
+      <rect class="seq-beam" x="338.9" y="453" width="172" height="2" rx="0" />
+      <path class="pic-march" d="M338.9 454H510.9" />
+      <path class="seq-tip" d="M510.9 454H518.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="338.9" cy="454" r="4.5" />
+      <text class="seq-call-words" x="428.9" y="445" text-anchor="middle">reads the list again</text>
+      <path class="seq-answer" d="M338.9 520H32.9" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="338.9" cy="520" r="4.5" />
+      <text class="seq-answer-words" x="185.9" y="496" text-anchor="middle">the run in the list, linked to</text>
+      <text class="seq-answer-words" x="185.9" y="511" text-anchor="middle">/admin/runs/{run}</text>
       <rect class="seq-badge tone-blue" x="10.9" y="0" width="44" height="44" rx="13" />
       <g class="pic-badge-icon" transform="translate(21.9 11) scale(0.9167)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -245,36 +246,36 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="seq-name" x="32.9" y="68" text-anchor="middle">Builder</text>
       <circle class="mrq-node" cx="32.9" cy="84" r="4.5" />
-      <rect class="seq-badge tone-green" x="330.9" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(341.9 11) scale(0.9167)">
+      <rect class="seq-badge tone-green" x="316.9" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(327.9 11) scale(0.9167)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="seq-name" x="352.9" y="68" text-anchor="middle">Evals page</text>
-      <circle class="mrq-node" cx="352.9" cy="84" r="4.5" />
-      <rect class="seq-badge tone-violet" x="510.9" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(521.9 11) scale(0.9167)">
+      <text class="seq-name" x="338.9" y="68" text-anchor="middle">Evals page</text>
+      <circle class="mrq-node" cx="338.9" cy="84" r="4.5" />
+      <rect class="seq-badge tone-violet" x="496.9" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(507.9 11) scale(0.9167)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="seq-name" x="532.9" y="68" text-anchor="middle">AgentApi</text>
-      <circle class="mrq-node" cx="532.9" cy="84" r="4.5" />
-      <rect class="seq-badge tone-red" x="753.9" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(764.9 11) scale(0.9167)">
+      <text class="seq-name" x="518.9" y="68" text-anchor="middle">AgentApi</text>
+      <circle class="mrq-node" cx="518.9" cy="84" r="4.5" />
+      <rect class="seq-badge tone-red" x="739.9" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(750.9 11) scale(0.9167)">
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
         <path d="M3.6 9h16.8" />
         <path d="M3.6 15h16.8" />
         <path d="M11.5 3a17 17 0 0 0 0 18" />
         <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
-      <text class="seq-name" x="775.9" y="68" text-anchor="middle">louis-agent.api</text>
-      <circle class="mrq-node" cx="775.9" cy="84" r="4.5" />
+      <text class="seq-name" x="761.9" y="68" text-anchor="middle">louis-agent.api</text>
+      <circle class="mrq-node" cx="761.9" cy="84" r="4.5" />
     </g>
-    <g class="seq-legend" transform="translate(0 603)">
-      <rect class="mrq-rule" x="0" y="0" width="846.4" height="1" rx="0" />
+    <g class="seq-legend" transform="translate(0 618)">
+      <rect class="mrq-rule" x="0" y="0" width="832.4" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="seq-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
@@ -294,20 +295,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="767.4" y="52.5" text-anchor="start">an answer</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="830.4" y="625" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="816.4" y="640" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="681" width="846.4" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 691) scale(0.6667)">
+  <rect class="notebar" x="0" y="696" width="832.4" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 706) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="703">
+  <text class="notes" x="38" y="718">
     <tspan class="note-head">The page streams the run:</tspan>
     <tspan class="note-rest">its turns show as they finish, and the finished run joins the list with its own</tspan>
   </text>
-  <text class="notes" x="38" y="720">
+  <text class="notes" x="38" y="735">
     <tspan class="note-rest">page.</tspan>
   </text>
 </svg>
