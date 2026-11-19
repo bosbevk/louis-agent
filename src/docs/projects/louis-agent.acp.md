@@ -12,6 +12,10 @@ This host puts louis-agent inside JetBrains Rider's AI chat, using the
 [Agent Client Protocol](https://agentclientprotocol.com). Rider sends your prompts, with any files you attached, and
 the server streams back the model's thinking, its text, and a card for each tool call.
 
+The rest of this doc follows one prompt: the messages on the wire, the session it belongs to, how the prompt is
+built from what you attached, how your files are found inside the container, Rider's own tools, the cards, the
+commands and the cost line, and what the log keeps.
+
 ## How it works
 
 ![One prompt from Rider: the server starts a session, streams the engine's updates back, and ends with the prompt's result](diagrams/louis-agent.acp-how-it-works.svg)
@@ -36,24 +40,30 @@ happens to be open in the editor isn't sent. Attachments are capped at 100,000 c
 ### 4. Finding your files
 
 Rider sends Windows paths, and the server lives in a Linux container. `ACP_MOUNT_MAPPINGS` maps one to the other,
-like `C:\Users\you\RiderProjects=/repositories`. If that doesn't find it, the server searches under
-`/repositories`. A file that still can't be found is passed to the model as "could not be read — not inside a
+like `C:\Users\you\RiderProjects=/repositories`. If no mapping applies, the server looks for the file by its last
+path parts under the two folders a container mounts: `/workspace`, the main solution, and `/repositories`, your other
+repositories. A file that still can't be found is passed to the model as "could not be read — not inside a
 mounted folder". It's never guessed.
 
 ### 5. Rider's own tools
 
 Rider runs an MCP server with tools of its own. When the host starts, `RiderToolDiscovery` asks it for those tools in
-the background, and registers each one on the engine as `rider_{name}`. `RiderOptions` reads the `RIDER_MCP_*`
-settings. The coding-acp program hands this in through `HostServices.Discovery`, and no other host asks Rider for
-anything.
+the background, and registers each one on the engine as `rider_{name}`, its description marked `[Rider IDE]`. `RiderOptions` reads
+where Rider's server is, `RIDER_MCP_ENDPOINT`, whether to ask it at all, `RIDER_MCP_AUTO_DISCOVER` (on unless it's
+`false`), and the path Rider knows the project by, `RIDER_MCP_PROJECT_PATH`.
+
+This lives in the ACP host, not in core, because only Rider's chat needs it. The coding-acp program hands it in
+through `HostServices.Discovery`, `AgentHost.Build` starts it, and no other host asks Rider for anything.
 
 *Decided in:* CL57.
 
 ### 6. Tool cards
 
 Each tool call shows up in Rider as a card. It starts as a `tool_call`, in progress, and ends with a
-`tool_call_update`, completed or failed, with a preview of the output. The card's kind (read, edit, execute,
-search, fetch and so on) is guessed from the tool's name, so Rider can show a fitting icon.
+`tool_call_update`, completed or failed, with a preview of the output. The card's kind is guessed from how the
+tool's name starts, so Rider can show a fitting icon: `Read`, `Get`, `List` and `Show` are read, `Search` and `Find`
+are search, `Write`, `Create` and `Update` are edit, `Fetch` is fetch, and a shell or `DotNet` tool is execute.
+Anything else is other.
 
 ### 7. Commands, and usage
 
@@ -93,6 +103,8 @@ These are the types involved:
 | `Prompting/PromptBuilder.cs` | The model's prompt from the content blocks: text, embedded resources, attached files read and capped, the file open in the IDE left out |
 | `Paths/` | `ContainerPaths` (a Windows path from the IDE as the file in the container: `ACP_MOUNT_MAPPINGS`, the mount roots, the drive letter), `GitRoots` (the repository the active file is in) |
 | `Turns/` | `PromptHandler` (one prompt's turn: the git root, a command or the model, the usage scope, the stop reason), `TurnRelay` (thinking, text and tool cards as `session/update`), `ToolCards` (a card's kind and output preview), `AcpSession` |
+| `Rider/` | `RiderToolDiscovery` (Rider's tools found and registered), `RiderMcpClient` (the MCP call to Rider), `RiderOptions` (the `RIDER_MCP_*` settings), `DiscoveredTool` |
+| `Messages/` | The log lines, the words the model reads about an attachment, and the words the person sees (ADR 0009) |
 
 ## Tests
 
@@ -107,10 +119,11 @@ Rider starts a fresh `acp-server` container for each chat.
 
 ![Where the ACP server runs: Rider starts a container a chat and speaks JSON-RPC to it, and the server asks Rider's MCP server for its tools](diagrams/louis-agent.acp-deployment.svg)
 
-It uses core's settings, plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry is
-`config/rider/rider-acp.example.json`.
+It uses core's settings, plus `ACP_MOUNT_MAPPINGS`, `USAGE_IN_CHAT` and the three `RIDER_MCP_*` settings. Rider's
+agent-server entry is `demos/louis-agent/config/rider/rider-acp.example.json`.
 
-**stdout carries the protocol.** Anything written to `Console.Out` corrupts it, so all logging goes to stderr.
+**stdout carries the protocol.** Anything written to `Console.Out` corrupts it, so all logging goes to stderr. That
+holds when the server can't start too: the reason goes to the log on stderr, and the process exits with code 1.
 
 ## Extending it
 
@@ -120,8 +133,8 @@ The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In
 
 ## Limits and plans
 
-Sessions end when the container does. Keeping them is the
-[session architecture](../specs/SESSION_ARCHITECTURE.md), on the backlog.
+Sessions end when the container does, and a chat can't be picked back up. The
+[session architecture](../specs/SESSION_ARCHITECTURE.md) spec describes how keeping them would work.
 
 ## Related docs
 
