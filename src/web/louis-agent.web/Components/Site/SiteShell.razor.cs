@@ -146,8 +146,11 @@ public partial class SiteShell
     /// <summary>The three-line button opens the settings' panel, and shuts it again.</summary>
     private void ToggleSettings() => _settingsOpen = !_settingsOpen;
 
-    /// <summary>The menu holds the links and the actions, so it stands when the site has either.</summary>
-    private bool HasMenu => Links is not null || HasActions;
+    /// <summary>
+    /// The menu holds the links, the actions and, for a phone, the settings (FX208), so it stands when the site has
+    /// any of them.
+    /// </summary>
+    private bool HasMenu => Links is not null || HasActions || HasSettings;
 
     /// <summary>Whether the sheet a phone opens from the menu button is open (F151.6); it starts shut.</summary>
     private bool _menuOpen;
