@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1191.4 984" width="1191.4" height="984" role="img" aria-label="Puls in Azure: a chat, from the domain to the model" xmlns="http://www.w3.org/2000/svg">
-  <title>Puls in Azure: a chat, from the domain to the model</title>
+<svg viewBox="-24 -24 781.2 871" width="781.2" height="871" role="img" aria-label="The framework's two sites in Azure: a chat, from the domain to the model" xmlns="http://www.w3.org/2000/svg">
+  <title>The framework's two sites in Azure: a chat, from the domain to the model</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -190,131 +190,101 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1191.4" height="984" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="781.2" height="871" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 84a595.7 170 0 1 0 1191.4 0a595.7 170 0 1 0 -1191.4 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">Puls in Azure: a chat, from the domain to the model</text>
-    <text class="pic-group" x="1127.4" y="14" text-anchor="end">Sequence diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1143.4" height="1" rx="0" />
+    <path class="mrq-light" d="M-24 84a390.6 170 0 1 0 781.2 0a390.6 170 0 1 0 -781.2 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">The framework's two sites in Azure: a chat, from the domain to the model</text>
+    <text class="pic-group" x="717.2" y="14" text-anchor="end">Sequence diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="733.2" height="1" rx="0" />
     <g class="seq-drawing" transform="translate(0 48)">
-      <rect class="seq-life" x="32.2" y="104" width="1.5" height="657" rx="0" />
-      <rect class="seq-life" x="317.2" y="104" width="1.5" height="657" rx="0" />
-      <rect class="seq-life" x="507.6" y="104" width="1.5" height="657" rx="0" />
-      <rect class="seq-life" x="813.6" y="104" width="1.5" height="657" rx="0" />
-      <rect class="seq-life" x="957" y="104" width="1.5" height="657" rx="0" />
-      <rect class="seq-life" x="1100.4" y="104" width="1.5" height="657" rx="0" />
-      <rect class="seq-beam seq-beam-glow" x="32.9" y="149" width="285" height="8" rx="0" />
-      <rect class="seq-beam" x="32.9" y="152" width="277" height="2" rx="0" />
-      <path class="pic-march" d="M32.9 153H309.9" />
-      <path class="seq-tip" d="M309.9 153H317.9" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="32.9" cy="153" r="4.5" />
-      <text class="seq-call-words" x="175.4" y="144" text-anchor="middle">mypuls.co.za?</text>
-      <path class="seq-answer" d="M317.9 219H32.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="317.9" cy="219" r="4.5" />
-      <text class="seq-answer-words" x="175.4" y="195" text-anchor="middle">4.253.73.61 (A), www a CNAME to the</text>
-      <text class="seq-answer-words" x="175.4" y="210" text-anchor="middle">app's own address</text>
-      <rect class="seq-beam seq-beam-glow" x="32.9" y="266" width="475.4" height="8" rx="0" />
-      <rect class="seq-beam" x="32.9" y="269" width="467.4" height="2" rx="0" />
-      <path class="pic-march" d="M32.9 270H500.3" />
-      <path class="seq-tip" d="M500.3 270H508.3" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="32.9" cy="270" r="4.5" />
-      <text class="seq-call-words" x="270.6" y="261" text-anchor="middle">GET / over HTTPS</text>
-      <path class="seq-answer" d="M508.3 321H32.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="508.3" cy="321" r="4.5" />
-      <text class="seq-answer-words" x="270.6" y="312" text-anchor="middle">the Puls web app</text>
-      <rect class="seq-beam seq-beam-glow" x="32.9" y="368" width="475.4" height="8" rx="0" />
-      <rect class="seq-beam" x="32.9" y="371" width="467.4" height="2" rx="0" />
-      <path class="pic-march" d="M32.9 372H500.3" />
-      <path class="seq-tip" d="M500.3 372H508.3" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="32.9" cy="372" r="4.5" />
-      <text class="seq-call-words" x="270.6" y="363" text-anchor="middle">POST /account/login</text>
-      <rect class="seq-beam seq-beam-glow" x="508.3" y="434" width="306" height="8" rx="0" />
-      <rect class="seq-beam" x="508.3" y="437" width="298" height="2" rx="0" />
-      <path class="pic-march" d="M508.3 438H806.3" />
-      <path class="seq-tip" d="M806.3 438H814.3" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="508.3" cy="438" r="4.5" />
-      <text class="seq-call-words" x="661.3" y="414" text-anchor="middle">the user (the database resumes after a</text>
-      <text class="seq-call-words" x="661.3" y="429" text-anchor="middle">pause; EF retries)</text>
-      <path class="seq-answer" d="M508.3 489H32.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="508.3" cy="489" r="4.5" />
-      <text class="seq-answer-words" x="270.6" y="480" text-anchor="middle">Set-Cookie</text>
-      <rect class="seq-beam seq-beam-glow" x="32.9" y="551" width="475.4" height="8" rx="0" />
-      <rect class="seq-beam" x="32.9" y="554" width="467.4" height="2" rx="0" />
-      <path class="pic-march" d="M32.9 555H500.3" />
-      <path class="seq-tip" d="M500.3 555H508.3" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="32.9" cy="555" r="4.5" />
-      <text class="seq-call-words" x="270.6" y="531" text-anchor="middle">POST /v1/sessions (cookie +</text>
-      <text class="seq-call-words" x="270.6" y="546" text-anchor="middle">X-Requested-With)</text>
-      <rect class="seq-beam seq-beam-glow" x="508.3" y="617" width="449.4" height="8" rx="0" />
-      <rect class="seq-beam" x="508.3" y="620" width="441.4" height="2" rx="0" />
-      <path class="pic-march" d="M508.3 621H949.7" />
-      <path class="seq-tip" d="M949.7 621H957.7" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="508.3" cy="621" r="4.5" />
-      <text class="seq-call-words" x="733" y="597" text-anchor="middle">27017 Mongo (runs, prices, recipes),</text>
-      <text class="seq-call-words" x="733" y="612" text-anchor="middle">9222 Chrome, 8080 SearXNG</text>
-      <rect class="seq-beam seq-beam-glow" x="508.3" y="668" width="592.8" height="8" rx="0" />
-      <rect class="seq-beam" x="508.3" y="671" width="584.8" height="2" rx="0" />
-      <path class="pic-march" d="M508.3 672H1093.1" />
-      <path class="seq-tip" d="M1093.1 672H1101.1" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="508.3" cy="672" r="4.5" />
-      <text class="seq-call-words" x="804.7" y="663" text-anchor="middle">the model's answer</text>
-      <path class="seq-answer" d="M508.3 723H32.9" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="508.3" cy="723" r="4.5" />
-      <text class="seq-answer-words" x="270.6" y="714" text-anchor="middle">streamed</text>
-      <rect class="seq-badge tone-blue" x="10.9" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(21.9 11) scale(0.9167)">
-        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
-        <path d="M4 8h16" />
-        <path d="M8 4v4" />
+      <rect class="seq-life" x="88.6" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-life" x="352.6" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-life" x="524.2" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-life" x="690.2" y="84" width="1.5" height="519" rx="0" />
+      <rect class="seq-beam seq-beam-glow" x="89.3" y="129" width="264" height="8" rx="0" />
+      <rect class="seq-beam" x="89.3" y="132" width="256" height="2" rx="0" />
+      <path class="pic-march" d="M89.3 133H345.3" />
+      <path class="seq-tip" d="M345.3 133H353.3" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="89.3" cy="133" r="4.5" />
+      <text class="seq-call-words" x="221.3" y="124" text-anchor="middle">framework.louis-agent.dev?</text>
+      <path class="seq-answer" d="M353.3 184H89.3" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="353.3" cy="184" r="4.5" />
+      <text class="seq-answer-words" x="221.3" y="175" text-anchor="middle">a CNAME to the app's own address</text>
+      <rect class="seq-beam seq-beam-glow" x="89.3" y="231" width="435.6" height="8" rx="0" />
+      <rect class="seq-beam" x="89.3" y="234" width="427.6" height="2" rx="0" />
+      <path class="pic-march" d="M89.3 235H516.9" />
+      <path class="seq-tip" d="M516.9 235H524.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="89.3" cy="235" r="4.5" />
+      <text class="seq-call-words" x="307.1" y="226" text-anchor="middle">GET / over HTTPS</text>
+      <rect class="seq-cover" x="404.9" y="261" width="240" height="34" rx="12" />
+      <rect class="mrq-glass" x="404.9" y="261" width="240" height="34" rx="12" />
+      <text class="pic-text" x="524.9" y="282" text-anchor="middle">a cold start if nobody was on it</text>
+      <path class="seq-answer" d="M524.9 346H89.3" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="524.9" cy="346" r="4.5" />
+      <text class="seq-answer-words" x="307.1" y="337" text-anchor="middle">the page, drawn as HTML</text>
+      <rect class="seq-beam seq-beam-glow" x="89.3" y="408" width="435.6" height="8" rx="0" />
+      <rect class="seq-beam" x="89.3" y="411" width="427.6" height="2" rx="0" />
+      <path class="pic-march" d="M89.3 412H516.9" />
+      <path class="seq-tip" d="M516.9 412H524.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="89.3" cy="412" r="4.5" />
+      <text class="seq-call-words" x="307.1" y="388" text-anchor="middle">POST /v1/sessions as its Orbi, no key:</text>
+      <text class="seq-call-words" x="307.1" y="403" text-anchor="middle">the open door</text>
+      <rect class="seq-beam seq-beam-glow" x="524.9" y="459" width="166" height="8" rx="0" />
+      <rect class="seq-beam" x="524.9" y="462" width="158" height="2" rx="0" />
+      <path class="pic-march" d="M524.9 463H682.9" />
+      <path class="seq-tip" d="M682.9 463H690.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="524.9" cy="463" r="4.5" />
+      <text class="seq-call-words" x="607.9" y="454" text-anchor="middle">the turn</text>
+      <path class="seq-answer" d="M690.9 514H524.9" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="690.9" cy="514" r="4.5" />
+      <text class="seq-answer-words" x="607.9" y="505" text-anchor="middle">the model's answer</text>
+      <path class="seq-answer" d="M524.9 565H89.3" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="524.9" cy="565" r="4.5" />
+      <text class="seq-answer-words" x="307.1" y="556" text-anchor="middle">streamed</text>
+      <rect class="seq-badge tone-blue" x="67.3" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(78.3 11) scale(0.9167)">
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="seq-name" x="32.9" y="68" text-anchor="middle">Browser</text>
-      <circle class="mrq-node" cx="32.9" cy="104" r="4.5" />
-      <rect class="seq-badge tone-red" x="295.9" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(306.9 11) scale(0.9167)">
+      <text class="seq-name" x="89.3" y="68" text-anchor="middle">A visitor's browser</text>
+      <circle class="mrq-node" cx="89.3" cy="84" r="4.5" />
+      <rect class="seq-badge tone-red" x="331.3" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(342.3 11) scale(0.9167)">
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
         <path d="M3.6 9h16.8" />
         <path d="M3.6 15h16.8" />
         <path d="M11.5 3a17 17 0 0 0 0 18" />
         <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
-      <text class="seq-name" x="317.9" y="68" text-anchor="middle">Cloudflare DNS (DNS-only</text>
-      <text class="seq-name" x="317.9" y="88" text-anchor="middle">records)</text>
-      <circle class="mrq-node" cx="317.9" cy="104" r="4.5" />
-      <rect class="seq-badge tone-green" x="486.3" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(497.3 11) scale(0.9167)">
+      <text class="seq-name" x="353.3" y="68" text-anchor="middle">Cloudflare DNS</text>
+      <circle class="mrq-node" cx="353.3" cy="84" r="4.5" />
+      <rect class="seq-badge tone-green" x="502.9" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(513.9 11) scale(0.9167)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="seq-name" x="508.3" y="68" text-anchor="middle">puls-app</text>
-      <circle class="mrq-node" cx="508.3" cy="104" r="4.5" />
-      <rect class="seq-badge tone-amber" x="792.3" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(803.3 11) scale(0.9167)">
-        <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
-        <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
-        <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+      <text class="seq-name" x="524.9" y="68" text-anchor="middle">The site's app</text>
+      <circle class="mrq-node" cx="524.9" cy="84" r="4.5" />
+      <rect class="seq-badge tone-red" x="668.9" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(679.9 11) scale(0.9167)">
+        <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+        <path d="M9 9h6v6h-6z" />
+        <path d="M3 10h2" />
+        <path d="M3 14h2" />
+        <path d="M10 3v2" />
+        <path d="M14 3v2" />
+        <path d="M21 10h-2" />
+        <path d="M21 14h-2" />
+        <path d="M14 21v-2" />
+        <path d="M10 21v-2" />
       </g>
-      <text class="seq-name" x="814.3" y="68" text-anchor="middle">Azure SQL</text>
-      <circle class="mrq-node" cx="814.3" cy="104" r="4.5" />
-      <rect class="seq-badge tone-amber" x="935.7" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(946.7 11) scale(0.9167)">
-        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-        <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-        <path d="M7 8l0 .01" />
-        <path d="M7 16l0 .01" />
-      </g>
-      <text class="seq-name" x="957.7" y="68" text-anchor="middle">puls-services</text>
-      <circle class="mrq-node" cx="957.7" cy="104" r="4.5" />
-      <rect class="seq-badge tone-red" x="1079.1" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(1090.1 11) scale(0.9167)">
-        <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
-      </g>
-      <text class="seq-name" x="1101.1" y="68" text-anchor="middle">Anthropic</text>
-      <circle class="mrq-node" cx="1101.1" cy="104" r="4.5" />
+      <text class="seq-name" x="690.9" y="68" text-anchor="middle">Anthropic</text>
+      <circle class="mrq-node" cx="690.9" cy="84" r="4.5" />
     </g>
-    <g class="seq-legend" transform="translate(0 821)">
-      <rect class="mrq-rule" x="0" y="0" width="1143.4" height="1" rx="0" />
+    <g class="seq-legend" transform="translate(0 663)">
+      <rect class="mrq-rule" x="0" y="0" width="733.2" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="seq-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
@@ -322,29 +292,31 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="145.4" y="52.5" text-anchor="start">this project</text>
       <rect class="seq-badge tone-red" x="254.6" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="282.6" y="52.5" text-anchor="start">outside the process</text>
-      <rect class="seq-badge tone-amber" x="438" y="39" width="18" height="18" rx="6" />
-      <text class="pic-means" x="466" y="52.5" text-anchor="start">files and data</text>
-      <rect class="seq-beam seq-beam-glow" x="592.9" y="44" width="43.5" height="8" rx="0" />
-      <rect class="seq-beam" x="592.9" y="47" width="35.5" height="2" rx="0" />
-      <path class="seq-tip" d="M628.4 48H636.4" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="592.9" cy="48" r="4.5" />
-      <text class="pic-means" x="646.4" y="52.5" text-anchor="start">a call</text>
-      <path class="seq-answer" d="M720.5 48H764" marker-end="url(#arrow)" />
-      <circle class="seq-quiet-node" cx="720.5" cy="48" r="4.5" />
-      <text class="pic-means" x="774" y="52.5" text-anchor="start">an answer</text>
+      <rect class="seq-beam seq-beam-glow" x="442.5" y="44" width="43.5" height="8" rx="0" />
+      <rect class="seq-beam" x="442.5" y="47" width="35.5" height="2" rx="0" />
+      <path class="seq-tip" d="M478 48H486" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="442.5" cy="48" r="4.5" />
+      <text class="pic-means" x="496" y="52.5" text-anchor="start">a call</text>
+      <path class="seq-answer" d="M570.1 48H613.6" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="570.1" cy="48" r="4.5" />
+      <text class="pic-means" x="623.6" y="52.5" text-anchor="start">an answer</text>
+      <rect class="seq-swatch" x="0" y="66" width="40" height="20" rx="8" />
+      <text class="pic-means" x="50" y="80.5" text-anchor="start">a note</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1127.4" y="843" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="717.2" y="685" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="899" width="1143.4" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 909) scale(0.6667)">
+  <rect class="notebar" x="0" y="769" width="733.2" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 779) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="921">
-    <tspan class="note-head">One app in front:</tspan>
-    <tspan class="note-rest">DNS points the domain at it, it signs the person in, and it reaches Mongo, Chrome and the model behind it.</tspan>
+  <text class="notes" x="38" y="791">
+    <tspan class="note-rest">DNS points a name at its app, the app wakes if it was asleep, the open door lets the visitor</tspan>
+  </text>
+  <text class="notes" x="38" y="808">
+    <tspan class="note-rest">talk to its Orbi, and the answer streams back from the model.</tspan>
   </text>
 </svg>

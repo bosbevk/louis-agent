@@ -93,19 +93,20 @@ The framework's pages are no longer on louis-agent.dev. They are written new as 
 served by the framework's own site ([louis-agent.site-framework](louis-agent.site-framework.md)), so this site sells
 and that one teaches. What stays here is `/framework/theme`, the theme's component guide, which the landing and the
 themes link to. The old framework addresses answer with nothing, and no page of this site links to them:
-`SiteLinksTests` holds every link on the site to a place on it. Until the framework's site is live, the CV's cards
-that proved its claims lead to the docs on GitHub.
+`SiteLinksTests` holds every link on the site to a place on it. The CV's four "now" cards, which prove its claims,
+lead to their places on framework.louis-agent.dev, and `CvContentTests` holds each place to that site's sitemap, so a
+place renamed there fails a test here.
 
 The films are no longer on the site either. `src/tools/louis-agent.film-export` and its exports in `src/docs/films/`
 still name the old pages and the films' files, which are gone, so the tool can't make an export until it is fixed.
 
-*Decided in:* F164.1.
+*Decided in:* F164.1, F164.3.
 
 ### 3. Selling first, the framework as proof
 
 The site sells first, and the framework is the proof, told on the framework's own site. The menu reads Home,
-Demos, Theme and Contact. Home is there so every page has a plain way back to the landing, since the name in the
-corner doesn't look like a link. Theme leads to `/framework/theme`, where every button, switch and card the site is
+Demos, Framework, Theme and Contact. Home is there so every page has a plain way back to the landing, since the name
+in the corner doesn't look like a link. Framework leads to framework.louis-agent.dev, the framework's own site. Theme leads to `/framework/theme`, where every button, switch and card the site is
 built from stands working, to press and try, in the look the visitor picked. At the header's end a three-line button
 opens the settings, a thin glass bar under the header that holds the look switches alone. The CV is reached from the
 landing's band about who builds it. No price stands anywhere a visitor first looks: every quote is made on request.

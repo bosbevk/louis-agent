@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1859 1226" width="1859" height="1226" role="img" aria-label="Puls in Azure: what runs where" xmlns="http://www.w3.org/2000/svg">
-  <title>Puls in Azure: what runs where</title>
+<svg viewBox="-24 -24 2099 605" width="2099" height="605" role="img" aria-label="The framework's two sites in Azure: what runs where" xmlns="http://www.w3.org/2000/svg">
+  <title>The framework's two sites in Azure: what runs where</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -126,14 +126,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
-    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
     <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
     <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
     <radialGradient id="mrq-light">
       <stop class="mrq-light-0" offset="0" />
@@ -146,225 +149,177 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-edge-2" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1859" height="1226" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="2099" height="605" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a929.5 190 0 1 0 1859 0a929.5 190 0 1 0 -1859 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">Puls in Azure: what runs where</text>
-    <text class="pic-group" x="1795" y="14" text-anchor="end">Deployment diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1811" height="1" rx="0" />
+    <path class="mrq-light" d="M-24 74a1049.5 190 0 1 0 2099 0a1049.5 190 0 1 0 -2099 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">The framework's two sites in Azure: what runs where</text>
+    <text class="pic-group" x="2035" y="14" text-anchor="end">Deployment diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="2051" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
-      <rect class="pic-panel" x="0" y="752" width="918.5" height="224" rx="14" />
-      <text class="pic-group" x="14" y="771" text-anchor="start">apps subnet 10.0.0.0/23, delegated to Container Apps</text>
-      <rect class="pic-panel" x="1160.5" y="744" width="320.8" height="194" rx="14" />
-      <text class="pic-group" x="1174.5" y="763" text-anchor="start">services subnet 10.0.2.0/24, NSG: 27017, 9222, 8080 from the apps subnet only</text>
-      <path class="pic-line pic-edge tone-blue" d="M306 674L392 674Q416 674 416 698L416 778Q416 802 440 802L620.1 802" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M306 674L392 674Q416 674 416 698L416 778Q416 802 440 802L620.1 802" />
-      <path class="pic-line pic-edge tone-blue" d="M306 674L392 674Q416 674 416 698L416 889Q416 913 440 913L620.1 913" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M306 674L392 674Q416 674 416 698L416 889Q416 913 440 913L620.1 913" />
-      <path class="pic-line pic-edge tone-violet" d="M306 820L620.1 820" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M306 820L620.1 820" />
-      <path class="pic-line pic-edge tone-violet" d="M306 820L374 820Q398 820 398 844L398 907Q398 931 422 931L620.1 931" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M306 820L374 820Q398 820 398 844L398 907Q398 931 422 931L620.1 931" />
-      <path class="pic-line pic-edge tone-violet" d="M306 820L374 820Q398 820 398 796L398 707Q398 683 422 683L627.1 683" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M306 820L374 820Q398 820 398 796L398 707Q398 683 422 683L627.1 683" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 820L939 820Q950.5 820 950.5 831.5L950.5 831.5Q950.5 843 962 843L1172.5 843" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 820L939 820Q950.5 820 950.5 831.5L950.5 831.5Q950.5 843 962 843L1172.5 843" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 885Q968.5 861 992.5 861L1172.5 861" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 885Q968.5 861 992.5 861L1172.5 861" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 335Q950.5 311 974.5 311L1183.2 311" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 335Q950.5 311 974.5 311L1183.2 311" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 353Q968.5 329 992.5 329L1179.9 329" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 353Q968.5 329 992.5 329L1179.9 329" />
-      <path class="pic-line pic-edge tone-green reads" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 108Q950.5 84 974.5 84L1172.5 84" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-green reads" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 580Q968.5 556 992.5 556L1172.5 556" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-teal reads" d="M1469.3 84L1484.4 84Q1499.4 84 1499.4 99L1499.4 290.3Q1499.4 311 1520.1 311L1540.8 311" marker-end="url(#arrow-teal)" />
-      <path class="pic-line pic-edge tone-teal reads" d="M1469.3 556L1484.4 556Q1499.4 556 1499.4 541L1499.4 347.3Q1499.4 329 1517.7 329L1536 329" marker-end="url(#arrow-teal)" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 453Q950.5 429 974.5 429L1172.5 429" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 453Q950.5 429 974.5 429L1172.5 429" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 471Q968.5 447 992.5 447L1172.5 447" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 471Q968.5 447 992.5 447L1172.5 447" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 226Q950.5 202 974.5 202L1181.5 202" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 820L928.5 820Q950.5 820 950.5 798L950.5 226Q950.5 202 974.5 202L1181.5 202" />
-      <path class="pic-line pic-edge tone-green" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 698Q968.5 674 992.5 674L1181.5 674" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M906.5 922L944.5 922Q968.5 922 968.5 898L968.5 698Q968.5 674 992.5 674L1181.5 674" />
-      <rect class="pic-pill pic-edge tone-blue" x="451.1" y="793" width="134" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-blue" x="518.1" y="805" text-anchor="middle">HTTPS mypuls.co.za</text>
-      <rect class="pic-pill pic-edge tone-blue" x="440.6" y="904" width="155" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-blue" x="518.1" y="916" text-anchor="middle">HTTPS louis-agent.dev</text>
-      <rect class="pic-pill pic-edge tone-violet" x="323.5" y="811" width="57" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-violet" x="352" y="823" text-anchor="middle">AcrPull</text>
-      <rect class="pic-pill pic-edge tone-green" x="1003.5" y="320" width="134" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1070.5" y="332" text-anchor="middle">tenant louis-agent</text>
-      <rect class="pic-pill pic-edge tone-green" x="1031.5" y="75" width="78" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1070.5" y="87" text-anchor="middle">reads with</text>
-      <rect class="pic-pill pic-edge tone-green" x="1031.5" y="547" width="78" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1070.5" y="559" text-anchor="middle">reads with</text>
-      <rect class="pic-pill pic-edge tone-green" x="993" y="193" width="155" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1070.5" y="205" text-anchor="middle">mounted at /workspace</text>
-      <rect class="pic-pill pic-edge tone-green" x="993" y="665" width="155" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1070.5" y="677" text-anchor="middle">mounted at /workspace</text>
-      <rect class="pic-panel flow-shape pic-edge tone-blue" x="12" y="648" width="294" height="52" rx="26" />
-      <rect class="pic-fill tone-blue" x="40" y="660" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(46 666) scale(0.6667)">
+      <rect class="pic-panel" x="841.9" y="0" width="432" height="200" rx="14" />
+      <text class="pic-group" x="855.9" y="19" text-anchor="start">puls-env, Consumption, asleep at no replicas</text>
+      <path class="pic-line pic-edge tone-blue" d="M418.4 154L514.6 154" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M418.4 154L514.6 154" />
+      <path class="pic-line pic-edge tone-red" d="M785.8 154L853.9 154" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M785.8 154L853.9 154" />
+      <path class="pic-line pic-edge tone-red" d="M785.8 154L797.8 154Q809.8 154 809.8 142L809.8 90Q809.8 68 831.9 68L853.9 68" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M785.8 154L797.8 154Q809.8 154 809.8 142L809.8 90Q809.8 68 831.9 68L853.9 68" />
+      <path class="pic-line pic-edge tone-green reads" d="M1261.9 154L1354 154Q1378 154 1378 130L1378 107Q1378 86 1399 86L1420.1 86" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-green reads" d="M1261.9 68L1420.1 68" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-teal reads" d="M1762.5 68L1831.6 68" marker-end="url(#arrow-teal)" />
+      <path class="pic-line pic-edge tone-green" d="M1261.9 154L1429.1 154" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1261.9 154L1429.1 154" />
+      <path class="pic-line pic-edge tone-green" d="M1261.9 68L1372 68Q1396 68 1396 92L1396 117.1Q1396 136 1414.9 136L1433.8 136" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1261.9 68L1372 68Q1396 68 1396 92L1396 117.1Q1396 136 1414.9 136L1433.8 136" />
+      <path class="pic-line pic-edge tone-amber reads" d="M409.4 240L514.6 240L785.8 240L797.8 240Q809.8 240 809.8 228L809.8 194Q809.8 172 831.9 172L853.9 172" marker-end="url(#arrow-amber)" />
+      <path class="pic-line pic-edge tone-green" d="M1261.9 154L1354 154Q1378 154 1378 178L1378 228Q1378 249 1399 249L1420.1 249" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1261.9 154L1354 154Q1378 154 1378 178L1378 228Q1378 249 1399 249L1420.1 249" />
+      <path class="pic-line pic-edge tone-green" d="M1261.9 68L1372 68Q1396 68 1396 92L1396 219Q1396 231 1408 231L1420.1 231" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1261.9 68L1372 68Q1396 68 1396 92L1396 219Q1396 231 1408 231L1420.1 231" />
+      <path class="pic-line pic-edge tone-green" d="M1261.9 154L1354 154Q1378 154 1378 178L1378 314Q1378 335 1399 335L1420.1 335" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1261.9 154L1354 154Q1378 154 1378 178L1378 314Q1378 335 1399 335L1420.1 335" />
+      <path class="pic-line pic-edge tone-green" d="M1261.9 68L1372 68Q1396 68 1396 92L1396 305Q1396 317 1408 317L1420.1 317" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M1261.9 68L1372 68Q1396 68 1396 92L1396 305Q1396 317 1408 317L1420.1 317" />
+      <rect class="pic-pill pic-edge tone-blue" x="432.9" y="145" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="454.4" y="157" text-anchor="middle">HTTPS</text>
+      <rect class="pic-pill pic-edge tone-green" x="1280.9" y="145" width="78" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="1319.9" y="157" text-anchor="middle">reads with</text>
+      <rect class="pic-pill pic-edge tone-amber" x="425.9" y="231" width="57" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-amber" x="454.4" y="243" text-anchor="middle">AcrPull</text>
+      <rect class="pic-panel flow-shape pic-edge tone-blue" x="0" y="128" width="418.4" height="52" rx="26" />
+      <rect class="pic-fill tone-blue" x="28" y="140" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(34 146) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="pic-name" x="76" y="679" text-anchor="start">A person's browser</text>
-      <rect class="pic-panel" x="12" y="786" width="294" height="68" rx="10" />
-      <rect class="pic-fill tone-violet" x="28" y="806" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(34 812) scale(0.6667)">
-        <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
-      </g>
-      <text class="pic-name" x="64" y="817" text-anchor="start">puls-env (Consumption profile,</text>
-      <text class="pic-name" x="64" y="833" text-anchor="start">static IP 4.253.73.61)</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M638.1 632L906.5 632L888.5 716L620.1 716Z" />
-      <rect class="pic-fill tone-amber" x="648.1" y="660" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(654.1 666) scale(0.6667)">
+      <text class="pic-name" x="64" y="159" text-anchor="start">A visitor's browser</text>
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M18 206L418.4 206L400.4 274L0 274Z" />
+      <rect class="pic-fill tone-amber" x="28" y="226" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(34 232) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="pic-name" x="684.1" y="663" text-anchor="start">Registry acrpulsza:</text>
-      <text class="pic-name" x="684.1" y="679" text-anchor="start">louis-agent-puls and</text>
-      <text class="pic-name" x="684.1" y="695" text-anchor="start">louis-agent-coding images</text>
-      <rect class="pic-panel" x="620.1" y="786" width="286.4" height="68" rx="10" />
-      <rect class="pic-fill tone-green" x="636.1" y="806" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(642.1 812) scale(0.6667)">
-        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-        <path d="M12 12l8 -4.5" />
-        <path d="M12 12l0 9" />
-        <path d="M12 12l-8 -4.5" />
+      <text class="pic-name" x="64" y="237" text-anchor="start">Registry acrpulsza</text>
+      <text class="pic-name" x="64" y="253" text-anchor="start">louis-agent-site, louis-agent-site-framework</text>
+      <rect class="pic-panel" x="514.6" y="120" width="271.2" height="68" rx="10" />
+      <rect class="pic-fill tone-red" x="530.6" y="140" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(536.6 146) scale(0.6667)">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M3.6 9h16.8" />
+        <path d="M3.6 15h16.8" />
+        <path d="M11.5 3a17 17 0 0 0 0 18" />
+        <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
-      <text class="pic-name" x="672.1" y="817" text-anchor="start">puls-app: the Puls image, one</text>
-      <text class="pic-name" x="672.1" y="833" text-anchor="start">container, revision vNNN</text>
-      <rect class="pic-panel" x="620.1" y="880" width="286.4" height="84" rx="10" />
-      <rect class="pic-fill tone-green" x="636.1" y="908" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(642.1 914) scale(0.6667)">
-        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-        <path d="M12 12l8 -4.5" />
-        <path d="M12 12l0 9" />
-        <path d="M12 12l-8 -4.5" />
-      </g>
-      <text class="pic-name" x="672.1" y="911" text-anchor="start">louis-agent-app: the coding</text>
-      <text class="pic-name" x="672.1" y="927" text-anchor="start">API serving the site and the</text>
-      <text class="pic-name" x="672.1" y="943" text-anchor="start">chat, revision vNNN</text>
-      <rect class="pic-panel" x="1172.5" y="50" width="296.8" height="68" rx="10" />
-      <rect class="pic-fill tone-teal" x="1188.5" y="70" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1194.5 76) scale(0.6667)">
-        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-      </g>
-      <text class="pic-name" x="1224.5" y="81" text-anchor="start">puls-app-identity: Key Vault</text>
-      <text class="pic-name" x="1224.5" y="97" text-anchor="start">Secrets User</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1190.5 160L1469.3 160L1451.3 244L1172.5 244Z" />
-      <rect class="pic-fill tone-amber" x="1200.5" y="188" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1206.5 194) scale(0.6667)">
-        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
-      </g>
-      <text class="pic-name" x="1236.5" y="191" text-anchor="start">pulsstorage: the share</text>
-      <text class="pic-name" x="1236.5" y="207" text-anchor="start">puls-app-workspace (config/,</text>
-      <text class="pic-name" x="1236.5" y="223" text-anchor="start">logs/, data/)</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1190.5 270L1469.3 270L1451.3 370L1172.5 370Z" />
-      <rect class="pic-fill tone-amber" x="1200.5" y="306" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1206.5 312) scale(0.6667)">
-        <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
-        <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
-        <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
-      </g>
-      <text class="pic-name" x="1236.5" y="301" text-anchor="start">Azure SQL puls-sql-za:</text>
-      <text class="pic-name" x="1236.5" y="317" text-anchor="start">puls_accounts, tenants puls</text>
-      <text class="pic-name" x="1236.5" y="333" text-anchor="start">and louis-agent (free offer,</text>
-      <text class="pic-name" x="1236.5" y="349" text-anchor="start">pauses when idle)</text>
-      <rect class="pic-panel" x="1172.5" y="404" width="296.8" height="68" rx="10" />
-      <rect class="pic-fill tone-violet" x="1188.5" y="424" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1194.5 430) scale(0.6667)">
-        <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-        <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-        <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-        <path d="M4 20h14" />
-      </g>
-      <text class="pic-name" x="1224.5" y="435" text-anchor="start">Application Insights</text>
-      <text class="pic-name" x="1224.5" y="451" text-anchor="start">puls-insights, on puls-logs</text>
-      <rect class="pic-panel" x="1172.5" y="522" width="296.8" height="68" rx="10" />
-      <rect class="pic-fill tone-teal" x="1188.5" y="542" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1194.5 548) scale(0.6667)">
-        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-      </g>
-      <text class="pic-name" x="1224.5" y="553" text-anchor="start">louis-agent-app-identity: Key</text>
-      <text class="pic-name" x="1224.5" y="569" text-anchor="start">Vault Secrets User</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1190.5 624L1469.3 624L1451.3 724L1172.5 724Z" />
-      <rect class="pic-fill tone-amber" x="1200.5" y="660" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1206.5 666) scale(0.6667)">
-        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
-      </g>
-      <text class="pic-name" x="1236.5" y="655" text-anchor="start">pulsstorage: the share</text>
-      <text class="pic-name" x="1236.5" y="671" text-anchor="start">louis-agent-workspace</text>
-      <text class="pic-name" x="1236.5" y="687" text-anchor="start">(config/, skills/, logs/,</text>
-      <text class="pic-name" x="1236.5" y="703" text-anchor="start">data/)</text>
-      <rect class="pic-panel" x="1172.5" y="778" width="296.8" height="148" rx="10" />
-      <rect class="pic-fill tone-green" x="1188.5" y="838" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1194.5 844) scale(0.6667)">
+      <text class="pic-name" x="566.6" y="151" text-anchor="start">Cloudflare, DNS-only</text>
+      <text class="pic-name" x="566.6" y="167" text-anchor="start">louis-agent.dev, framework.</text>
+      <rect class="pic-panel" x="853.9" y="34" width="408" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="869.9" y="54" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(875.9 60) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="1224.5" y="809" text-anchor="start">VM puls-services (Ubuntu</text>
-      <text class="pic-name" x="1224.5" y="825" text-anchor="start">24.04, Standard_B2s, no public</text>
-      <text class="pic-name" x="1224.5" y="841" text-anchor="start">IP)</text>
-      <text class="pic-name" x="1224.5" y="857" text-anchor="start">Docker: mongo:9 :27017,</text>
-      <text class="pic-name" x="1224.5" y="873" text-anchor="start">headless-shell :9222, searxng</text>
-      <text class="pic-name" x="1224.5" y="889" text-anchor="start">:8080</text>
-      <text class="pic-name" x="1224.5" y="905" text-anchor="start">data disk, XFS at /data</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1547.4 286L1811 286L1793 354L1529.4 354Z" />
-      <rect class="pic-fill tone-amber" x="1557.4" y="306" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1563.4 312) scale(0.6667)">
+      <text class="pic-name" x="905.9" y="65" text-anchor="start">louis-agent-framework-app</text>
+      <text class="pic-name" x="905.9" y="81" text-anchor="start">framework.louis-agent.dev, the framework Orbi</text>
+      <rect class="pic-panel" x="853.9" y="120" width="408" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="869.9" y="140" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(875.9 146) scale(0.6667)">
+        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+        <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+        <path d="M7 8l0 .01" />
+        <path d="M7 16l0 .01" />
+      </g>
+      <text class="pic-name" x="905.9" y="151" text-anchor="start">louis-agent-app</text>
+      <text class="pic-name" x="905.9" y="167" text-anchor="start">louis-agent.dev, the public Orbi</text>
+      <rect class="pic-panel" x="1420.1" y="34" width="342.4" height="68" rx="10" />
+      <rect class="pic-fill tone-teal" x="1436.1" y="54" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1442.1 60) scale(0.6667)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
-      <text class="pic-name" x="1593.4" y="317" text-anchor="start">Key Vault puls-keys: every</text>
-      <text class="pic-name" x="1593.4" y="333" text-anchor="start">secret value</text>
-      <circle class="pic-port pic-edge tone-blue" cx="306" cy="674" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="306" cy="820" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="906.5" cy="820" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="906.5" cy="922" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="1469.3" cy="84" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="1469.3" cy="556" r="4" />
+      <text class="pic-name" x="1472.1" y="65" text-anchor="start">louis-agent-app-identity</text>
+      <text class="pic-name" x="1472.1" y="81" text-anchor="start">Key Vault Secrets User</text>
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1438.1 120L1762.5 120L1744.5 188L1420.1 188Z" />
+      <rect class="pic-fill tone-amber" x="1448.1" y="140" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1454.1 146) scale(0.6667)">
+        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+      </g>
+      <text class="pic-name" x="1484.1" y="151" text-anchor="start">pulsstorage, louis-agent-workspace</text>
+      <text class="pic-name" x="1484.1" y="167" text-anchor="start">logs/, data/, framework/logs/</text>
+      <rect class="pic-panel" x="1420.1" y="206" width="342.4" height="68" rx="10" />
+      <rect class="pic-fill tone-violet" x="1436.1" y="226" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1442.1 232) scale(0.6667)">
+        <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M4 20h14" />
+      </g>
+      <text class="pic-name" x="1472.1" y="237" text-anchor="start">Application Insights</text>
+      <text class="pic-name" x="1472.1" y="253" text-anchor="start">puls-insights, on puls-logs</text>
+      <rect class="pic-panel" x="1420.1" y="292" width="342.4" height="68" rx="10" />
+      <rect class="pic-fill tone-red" x="1436.1" y="312" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1442.1 318) scale(0.6667)">
+        <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+        <path d="M9 9h6v6h-6z" />
+        <path d="M3 10h2" />
+        <path d="M3 14h2" />
+        <path d="M10 3v2" />
+        <path d="M14 3v2" />
+        <path d="M21 10h-2" />
+        <path d="M21 14h-2" />
+        <path d="M14 21v-2" />
+        <path d="M10 21v-2" />
+      </g>
+      <text class="pic-name" x="1472.1" y="323" text-anchor="start">Anthropic</text>
+      <text class="pic-name" x="1472.1" y="339" text-anchor="start">Claude Haiku 5.5</text>
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M1840.6 34L2051 34L2033 102L1822.6 102Z" />
+      <rect class="pic-fill tone-amber" x="1850.6" y="54" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1856.6 60) scale(0.6667)">
+        <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+      </g>
+      <text class="pic-name" x="1886.6" y="65" text-anchor="start">Key Vault puls-keys</text>
+      <text class="pic-name" x="1886.6" y="81" text-anchor="start">every secret value</text>
+      <circle class="pic-port pic-edge tone-blue" cx="418.4" cy="154" r="4" />
+      <circle class="pic-port pic-edge tone-red" cx="785.8" cy="154" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="1261.9" cy="154" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="1261.9" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="1762.5" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="409.4" cy="240" r="4" />
     </g>
-    <rect class="mrq-rule" x="0" y="1046" width="1811" height="1" rx="0" />
-    <text class="pic-group" x="0" y="1068" text-anchor="start">How to read it</text>
-    <rect class="pic-fill tone-blue" x="0" y="1085" width="18" height="18" rx="6" />
-    <text class="pic-means" x="28" y="1098.5" text-anchor="start">starts it</text>
-    <rect class="pic-fill tone-green" x="117.4" y="1085" width="18" height="18" rx="6" />
-    <text class="pic-means" x="145.4" y="1098.5" text-anchor="start">this project</text>
-    <rect class="pic-fill tone-violet" x="254.6" y="1085" width="18" height="18" rx="6" />
-    <text class="pic-means" x="282.6" y="1098.5" text-anchor="start">the framework</text>
-    <rect class="pic-fill tone-teal" x="398.4" y="1085" width="18" height="18" rx="6" />
-    <text class="pic-means" x="426.4" y="1098.5" text-anchor="start">contracts and state</text>
-    <rect class="pic-fill tone-amber" x="581.8" y="1085" width="18" height="18" rx="6" />
-    <text class="pic-means" x="609.8" y="1098.5" text-anchor="start">files and data</text>
-    <path class="pic-panel flow-shape pic-edge" d="M750.2 1086L762.2 1086L744.2 1102L732.2 1102Z" />
-    <text class="pic-means" x="772.2" y="1098.5" text-anchor="start">data in or out</text>
-    <rect class="pic-panel flow-shape pic-edge" x="894.6" y="1086" width="30" height="16" rx="8" />
-    <text class="pic-means" x="934.6" y="1098.5" text-anchor="start">a start or an end</text>
-    <path class="flow-key pic-line pic-edge" d="M1076.8 1094H1106.8" marker-end="url(#arrow)" />
-    <text class="pic-means" x="1116.8" y="1098.5" text-anchor="start">a line has the colour of the box it leaves</text>
+    <rect class="mrq-rule" x="0" y="442" width="2051" height="1" rx="0" />
+    <text class="pic-group" x="0" y="464" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="481" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="494.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-green" x="117.4" y="481" width="18" height="18" rx="6" />
+    <text class="pic-means" x="145.4" y="494.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-violet" x="254.6" y="481" width="18" height="18" rx="6" />
+    <text class="pic-means" x="282.6" y="494.5" text-anchor="start">the framework</text>
+    <rect class="pic-fill tone-teal" x="398.4" y="481" width="18" height="18" rx="6" />
+    <text class="pic-means" x="426.4" y="494.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-red" x="581.8" y="481" width="18" height="18" rx="6" />
+    <text class="pic-means" x="609.8" y="494.5" text-anchor="start">outside the process</text>
+    <rect class="pic-fill tone-amber" x="765.2" y="481" width="18" height="18" rx="6" />
+    <text class="pic-means" x="793.2" y="494.5" text-anchor="start">files and data</text>
+    <path class="pic-panel flow-shape pic-edge" d="M933.6 482L945.6 482L927.6 498L915.6 498Z" />
+    <text class="pic-means" x="955.6" y="494.5" text-anchor="start">data in or out</text>
+    <rect class="pic-panel flow-shape pic-edge" x="1078" y="482" width="30" height="16" rx="8" />
+    <text class="pic-means" x="1118" y="494.5" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M1260.2 490H1290.2" marker-end="url(#arrow)" />
+    <text class="pic-means" x="1300.2" y="494.5" text-anchor="start">a line has the colour of the box it leaves</text>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1795" y="1068" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="2035" y="464" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="1124" width="1811" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 1134) scale(0.6667)">
+  <rect class="notebar" x="0" y="520" width="2051" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 530) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1146">
-    <tspan class="note-head">Nothing outside reaches the services:</tspan>
-    <tspan class="note-rest">everything here sits in rg-puls-za, the VM has no public address (both apps reach it at 10.0.2.4 and send their telemetry through the OpenTelemetry agent), SQL takes TLS only, and every secret is in the</tspan>
-  </text>
-  <text class="notes" x="38" y="1163">
-    <tspan class="note-rest">vault.</tspan>
+  <text class="notes" x="38" y="542">
+    <tspan class="note-head">Two apps in one environment in rg-puls-za, each asleep until someone visits:</tspan>
+    <tspan class="note-rest">they share an identity that reads the vault and a share that holds each one's logs in a folder of its own.</tspan>
   </text>
 </svg>

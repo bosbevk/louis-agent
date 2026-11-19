@@ -3,8 +3,8 @@
 > **Kind:** web app (Blazor WebAssembly), and its host `louis-agent.site-framework-api` · **Path:** `src/site/` ·
 > **References:** louis-agent.web, louis-agent.web.themes, louis-agent.web.framework, louis-agent.web.places; the
 > host also the framework's API, core's web, telemetry and Anthropic, the framework Orbi's identity, and the docs and
-> site packs · **Runs:** the review copy on 127.0.0.1:5084,
-> and framework.louis-agent.dev once it is live
+> site packs · **Runs:** framework.louis-agent.dev, the Azure app `louis-agent-framework-app`, and the review copy
+> on 127.0.0.1:5084
 
 ![The framework's own site: what it is made of, its frame and its host](diagrams/louis-agent.site-framework.svg)
 
@@ -123,6 +123,14 @@ repo lays them, so their links hold: the repo's `README.md`, `ROADMAP.md` and `T
 without the films, each demo's docs and the packs'. `DOCS_ROOT` points at them. In Rider, the host's
 `site-framework` profile runs it on 127.0.0.1:5085, reading the docs from the repo itself (`DOCS_ROOT=../../..`). The site lists every page and place in `wwwroot/sitemap.xml`, and `robots.txt` names it.
 
+In Azure it is the Container App `louis-agent-framework-app`, beside louis-agent.dev's in the same environment, on the
+same image, from `src/site/deploy/azure/louis-agent-framework-app.yaml`. Every merge to `main` releases it, after
+louis-agent.dev. It reads the vault with louis-agent.dev's identity and keeps its logs and usage ledger in
+`framework/logs/` on louis-agent.dev's file share, so it added nothing to Azure but the app. Its own two keys come
+from `config/.env.secrets.framework`, under the vault suffix `-framework`, and the model's key is the one both sites
+share. Like louis-agent.dev, it sleeps when nobody visits. The how-to is the
+[deploy README](../../../demos/puls/deploy/azure/README.md).
+
 These are the types involved:
 
 ![The types: FrameworkAreas is the site's one list of parts, which the browser, the host and the tests all name](diagrams/louis-agent.site-framework-interface.svg)
@@ -144,6 +152,8 @@ The place to look a file up.
 | `louis-agent.site-framework-api/FrameworkCatalog.cs` | What the host runs: the framework Orbi, and the docs and site packs |
 | `louis-agent.site-framework-api/FrameworkPageServices.cs` | What a page the host draws asks for |
 | `docker/Dockerfile.framework`, `docker/docker-compose.yml` | The image, and the `framework` service |
+| `deploy/azure/louis-agent-framework-app.yaml` | The Container App framework.louis-agent.dev runs |
+| `config/.env.secrets.framework.example` | The site's own two keys in Azure, to copy to the git-ignored `.env.secrets.framework` |
 
 ## Configuration
 
@@ -151,8 +161,8 @@ The host reads the API's settings ([Setup](../SETUP.md)) from the site's `config
 `ANTHROPIC_API_KEY` so Orbi can answer, from `.env.secrets`, and anything optional from `.env`. In the compose file
 the model comes from `.env.anthropic`, Claude Haiku 5.5. The run profile loads no model file, and the engine's
 defaults are the same provider and model. `OPEN_IDENTITIES` and `OPEN_SESSIONS_PER_DAY` open the door, and `DOCS_ROOT`
-says where the docs are; the compose file, the image and the run profile each set them. `FRAMEWORK_PORT` picks the
-review copy's port.
+says where the docs are. The compose file, the run profile and the Azure yaml set all three, the door at 20 sessions
+a day in each, and the image sets `DOCS_ROOT` too. `FRAMEWORK_PORT` picks the review copy's port.
 
 ## Extending it
 
@@ -174,8 +184,7 @@ framework ships is named on some page of the site.
 
 ## Limits and plans
 
-The site is on this PC only: framework.louis-agent.dev, its image in Azure and louis-agent.dev's link to it come in
-F164.3. A search result shows the heading of its place, so two places of the same name, such as two "Cost" sections,
+A search result shows the heading of its place, so two places of the same name, such as two "Cost" sections,
 read alike apart from the words under them.
 
 ## Related docs
