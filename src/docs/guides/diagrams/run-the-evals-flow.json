@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Run the evals: pick the way to run one",
+  "caption": "What you changed decides what is live and what is played back.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "What did\nyou change?", "icon": "user", "tone": "blue", "shape": "decision" },
+      { "id": "record", "label": "--web record\nlive, saved", "icon": "terminal", "tone": "green" },
+      { "id": "webreplay", "label": "--web replay --of\nweb recorded, model live", "icon": "terminal", "tone": "green" },
+      { "id": "replay", "label": "--replay\nboth recorded, $0", "icon": "terminal", "tone": "green" },
+      { "id": "ledger", "label": "The run's cost\nin the ledger", "icon": "database", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "you", "to": "record", "word": "nothing" },
+      { "from": "you", "to": "webreplay", "word": "a prompt" },
+      { "from": "you", "to": "replay", "word": "graders, harness, code" },
+      { "from": "record", "to": "ledger" },
+      { "from": "webreplay", "to": "ledger" },
+      { "from": "replay", "to": "ledger" }
+    ],
+    "direction": "right"
+  }
+}

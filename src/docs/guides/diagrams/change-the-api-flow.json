@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the API: add an endpoint",
+  "caption": "A new route is closed until opened, and its line in the route golden is the review.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "test", "label": "The test first,\nin memory", "icon": "checks", "tone": "green" },
+      { "id": "map", "label": "Named by the rule,\nmapped with its concern", "icon": "code", "tone": "violet" },
+      { "id": "open", "label": "Holds nothing\nprivate?", "tone": "violet", "shape": "decision" },
+      { "id": "mark", "label": "Marked open,\nwith why", "icon": "shield", "tone": "violet" },
+      { "id": "golden", "label": "The route golden\nwritten again", "icon": "file", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "you", "to": "test" },
+      { "from": "test", "to": "map" },
+      { "from": "map", "to": "open" },
+      { "from": "open", "to": "mark", "word": "yes" },
+      { "from": "open", "to": "golden", "word": "no, keep the key" },
+      { "from": "mark", "to": "golden" }
+    ],
+    "direction": "right"
+  }
+}

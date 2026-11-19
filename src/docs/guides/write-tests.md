@@ -4,6 +4,8 @@
 > a golden file, keep the rule tests green, and add a test project. **Elsewhere:** what each test project covers in the
 > [tests design doc](../projects/tests.md); the rules Claude loads with a test file in `.claude/rules/tests.md`.
 
+![Tests at a glance: unit tests run offline on the shared fakes, integration tests leave their process, golden files pin what the model reads and what a page draws, and rule tests hold the code's shape](diagrams/write-tests.svg)
+
 Every test runs offline: no network, no model, no Docker. A fake chat client plays the model and a stub handler
 answers HTTP, so a run costs nothing and needs no keys.
 
@@ -18,12 +20,17 @@ dotnet test src/tests/engine/louis-agent.core.tests                             
 dotnet test src/tests/engine/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"   # one class
 ```
 
-GitHub Actions runs the build, then the unit tests, then the integration tests (the two filters above, the second
-with `INTEGRATION_REQUIRED=1`) on Ubuntu, on every push to a pull request (`.github/workflows/ci.yml`). A merge to
-main runs no CI: the pull request was tested with main merged in. So a red check is the failure you'd see locally
-with that step's command. In Rider, the unit-test window runs the same tests.
+GitHub Actions runs the same steps on Ubuntu, on every push to a pull request (`.github/workflows/ci.yml`). It
+builds, checks the formatting of the C# files the pull request's own commits touched (`dotnet format
+--verify-no-changes`), then runs the unit tests and the integration tests with the two filters above, the second with
+`INTEGRATION_REQUIRED=1`. It brings a throwaway MongoDB and SQL Server, so the stores' contracts run against the real
+thing. A push to a branch with no pull request runs nothing, and neither does a merge to main, because the pull
+request was tested with main merged in. So a red check is the failure you'd see locally with that step's command. In
+Rider, the unit-test window runs the same tests.
 
 ## Write the test first
+
+![Test first: write the test, see it fail on an assertion, write the code until it passes, run the project's suite, then commit the test and the code together](diagrams/write-tests-flow.svg)
 
 A change that alters behaviour starts with its test ([ADR 0014](../adr/0014-test-first.md)):
 
@@ -69,11 +76,15 @@ hold all this, and in the solution the projects sit in the folders `unit`, `inte
 | `FailingStreamClient` | A model that fails mid-stream |
 | `StubHandler` | HTTP: a fixed answer per request, so Paymo, DevOps, web and shop tests never call out |
 | `ListUsageSink` | The usage records a request wrote |
-| `FakePrompts`, `FakeIdentity`, `FakePack`, `FakeTools` | A prompt source, an identity, a pack and its tool classes built in the test |
+| `FakePrompts`, `FakeIdentity`, `FakePack` | A prompt source, an identity and a pack built in the test |
+| `FakeTools.cs` | Small tool classes for a pack, among them ones whose tool names clash with core's or the engine's |
+| `FakeFeed`, `FakeImport`, `FakeScreen` | A pack's feed, import and screen, for the catalogue's and the API's tests |
+| `FakeDns` | A DNS answer that gets past the SSRF guard without leaving the machine |
+| `SampleEval`, `SampleIdentity`, `SampleMode`, `SampleRole`, `SampleScenario`, `SampleToolset` | Neutral names, for a test that stores, shows or parses a name and needs no real one |
 | `TestTools` | A fake pack under the real toolset names, for tests of the engine |
 | `TestPaths` | The repository root, `Agent()` (options on the repo with no network) and `Toolsets(…)` (a session's tool objects) |
 
-The web apps' tests use `src/tests/web/louis-agent.web.testing` as well: `FixtureApi` (a stub API that streams the recorded
+The web's tests, the sites' and the apps' use `src/tests/web/louis-agent.web.testing` as well: `FixtureApi` (a stub API that streams the recorded
 Puls turn), `SessionStreamFixture`, `Snapshots` and `RecordingJSRuntime`. Components render with bUnit (MIT, 2.12.5), its JS
 interop in loose mode where a component calls the page's scripts, so a call is answered with nothing and listed,
 never a failure. A test that needs a clock uses Microsoft's `FakeTimeProvider`.
@@ -94,7 +105,11 @@ markup, can't happen by accident:
 | `RecipeToolMessageSnapshot.json` (recipes pack) | `RecipeToolMessageSnapshotTests` | The recipe tools' texts |
 | `TriageToolMessageSnapshot.json` (triage pack) | `TriageToolMessageSnapshotTests` | The triage tools' texts |
 | `PulsSessionSnapshot.json` (Puls identity) | `PulsSessionSnapshotTests` | What the model is sent in Puls's chat and its cook |
+| `FrameworkSessionSnapshot.json` (framework Orbi) | `FrameworkSessionSnapshotTests` | What the model is sent in a session of the framework's guide |
 | `AcpTranscript.json` (ACP server) | `AcpTranscriptTests` | Everything the server writes to Rider |
+| `ApiRoutesSnapshot.json` (API) | `ApiRoutesSnapshotTests` | Every route of the API, with who may call it |
+| `EvalRoutesSnapshot.json` (eval studio's API) | `EvalRoutesSnapshotTests` | Every route with the studio mapped, with who may call it |
+| `AccountsRoutesSnapshot.json` (accounts) | `AccountsRoutesSnapshotTests` | Every account route, with who may call it |
 | `.html` beside each component test (web) | bUnit tests | A component's or page's markup |
 
 The first two are in `demos/louis-agent/tests/louis-agent.coding-catalog.tests`, since what the model reads depends
@@ -116,14 +131,14 @@ The `finally` matters: left set, every later run rewrites the goldens instead of
 regenerated file can show as modified in `git status` with no `git diff`: only its line endings changed, and
 `git checkout -- <file>` puts it back.
 
-**The web apps' components are pinned the same way** (T1, CL15): `src/tests/web/louis-agent.web.tests` renders
-`TurnView`, `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
-(`src/tests/engine/louis-agent.session-stream.tests/Fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
-(`Components/TurnView.html`); `demos/puls/tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`,
-the landing page and the chat page, empty and with the turn (`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and
-`demos/louis-agent/tests/louis-agent.code-review.tests` for the code-review app's chat page, each against the stub API (`FixtureApi` in
-`src/tests/web/louis-agent.web.testing`, the library the three share with the fixture replay and the snapshot helper). The
-same switch regenerates them:
+**The web's components are pinned the same way.** `src/tests/web/louis-agent.web.tests` renders `TurnView`,
+`BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
+(`src/tests/engine/louis-agent.session-stream.tests/Fixtures/session-stream.sse`), and compares each one's markup with
+the `.html` golden beside its test (`Components/TurnView.html`). `demos/puls/tests/louis-agent.puls.tests` does the
+same for `WorkPanel`, `PulsTile`, `TemplateCard`, the landing page and the chat page, empty and with the turn
+(`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and `demos/louis-agent/tests/louis-agent.code-review.tests` for
+the code-review app's chat page. Each runs against the stub API, `FixtureApi`, from the shared web testing library.
+The same switch regenerates them:
 
 ```bash
 LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.tests
@@ -131,10 +146,12 @@ LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.puls.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
 ```
 
-A mismatch writes what was rendered to `louis-agent-snapshots/` under the temp folder, so the diff can be read. The
-snapshots normalise what isn't the component's doing (per-instance SVG ids, `@ref` element references, the renderer's
-event-handler numbers, a thinking block's seconds, and the line breaks and indentation beside tags, so a page split into
-components keeps its golden; a space between tags stays, since it can be seen) and run with the invariant culture, so they never depend on the machine.
+A mismatch writes what was rendered to `louis-agent-snapshots/` under the temp folder, so the diff can be read.
+
+The snapshots leave out what isn't the component's doing: per-instance SVG ids, `@ref` element references, the
+renderer's event-handler numbers, a thinking block's seconds, and the line breaks and indentation beside tags, so a
+page split into components keeps its golden. A space between tags stays, since it can be seen. They run with the
+invariant culture, so they never depend on the machine.
 
 ## Keep the rule tests green
 

@@ -5,22 +5,27 @@
 > [louis-agent.api](../projects/louis-agent.api.md); every endpoint and event in
 > [How the agents and endpoints talk](../AGENT_COMMUNICATION.md).
 
+![The API at a glance: louis-agent.api serves sessions with their streamed answers, the workspace and git routes, the admin routes and a site's pages, all under /v1 behind the key](diagrams/change-the-api.svg)
+
 The API serves sessions over HTTP with their answers streamed as Server-Sent Events, the workspace and git endpoints,
-the admin portal, and a web app as static files. `Program.cs` is start-up only; the routes are in `Endpoints/`, a turn's
-stream in `Sessions/`. Behaviour that every host needs belongs in core.
+the admin routes, and a site's pages. A program is start-up only. The routes are in `Endpoints/`, and a turn's stream
+in `Sessions/`. Behaviour that every host needs belongs in core.
 
 ## Run it
 
 ```bash
-docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # http://127.0.0.1:5080
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # http://127.0.0.1:5082
 dotnet run --project demos/puls/hosts/louis-agent.puls-api  # Puls's settings and web app
 ```
 
-Every route is under `/v1` but `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)), and every `/v1` call needs
-`AGENT_API_KEY` as `x-api-key` (or `Authorization: Bearer`) unless the route is marked open; without a key the API
-refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md)).
+Every route is under `/v1` except `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)). Every `/v1` call needs
+`AGENT_API_KEY` as `x-api-key` (or `Authorization: Bearer`) unless the route is marked open. Without a key, the API
+refuses to start, unless `AGENT_AUTH=off` says you mean it
+([FX18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md)).
 
 ## Add an endpoint
+
+![Adding an endpoint: the test first, named by the rule, mapped with its concern, protected by the key, then the route golden written again and reviewed](diagrams/change-the-api-flow.svg)
 
 1. **Test first.** A rule the endpoint keeps (a limit, a parse, a refusal) goes in a plain class with NUnit tests in
    `demos/puls/tests/louis-agent.api.tests`, mirroring the folder; what the route answers (its status, its `Location`, its `401`)
@@ -36,7 +41,7 @@ refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/loui
    `AgentEngineFactory`, `AgentSessions`).
 4. **Protect it.** A route under `/v1` needs the key unless the code marks it otherwise, so a new one is closed until
    you open it. Mark it `.WithAccess(RouteAccess.Open)` only when it holds nothing private, and say why in a comment,
-   as the prices and the rates do. The admin endpoints have their own key (`AdminGate`, `RouteAccess.AdminKey`).
+   as the prices and the rates do. The admin endpoints have their own key, on the admin group (`AdminGroup`, `RouteAccess.AdminKey`).
    A host with a route of its own (louis-agent.dev keeps its CV) doesn't add it here: its program calls
    `app.MapLouisAgentHostGroup()` after `UseLouisAgentKey` and maps onto the group it gets, which is the same `/v1`
    with the same key check, so the host's routes are closed until opened, like the framework's own.
@@ -57,9 +62,10 @@ refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/loui
 A session's options are fixed when it opens, as its toolsets are, so its prompt stays cacheable
 ([ADR 0006](../adr/0006-toolsets-per-session.md)).
 
-1. Add the field to `Sessions/Requests/CreateSessionRequest.cs`, named in JSON as the others are (a two-word name
-   takes a `JsonPropertyName`, as `time_zone` does), with a test in `CreateSessionRequestTests` for its parsing and its
-   limits.
+1. Add the field to `CreateSessionRequest`, the contract the API and its clients share, in
+   `src/engine/louis-agent.session-stream/Wire/Requests/`. Name it in JSON as the others are (a two-word name takes a
+   `JsonPropertyName`, as `time_zone` does). The API reads it in `Sessions/Requests/CreateSessionRequestReading.cs`, with
+   a test in `CreateSessionRequestTests` for its parsing and its limits.
 2. Validate it before any engine is built, and refuse a bad value with a 400 and its reason, as an unknown role is.
 3. Pass it through `SessionEndpoints` to `AgentSessions`, which opens the session with it; a test in
    `AgentSessionsTests` with the fake model client.
@@ -70,10 +76,11 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
 ## Change the event stream
 
 `Sessions/TurnStream.cs` runs a turn, and `ITurnStreamFormat` (`Sessions/Streaming/`) writes it. Its one format is
-`Sessions/Streaming/Claude/ClaudeStreamFormat.cs`: Claude-shaped events (`message_start`, `content_block_start`, `_delta` and `_stop`
-for thinking, text, `tool_use` and `tool_result`, `message_delta` with the turn's usage, `message_stop`). A client picks the format
-with `"stream"` on `POST /v1/sessions` (`StreamFormat`; Claude by default), and the session keeps it. Three kinds of client read the
-stream: the web apps (through the session-stream reader, `louis-agent.session-stream`), the orchestrator, and the benchmarks.
+`Sessions/Streaming/Claude/ClaudeStreamFormat.cs`, which writes Claude-shaped events: `message_start`;
+`content_block_start`, `_delta` and `_stop` for thinking, text, `tool_use` and `tool_result`; `message_delta` with the
+turn's usage; and `message_stop`. A client picks the format with `"stream"` on `POST /v1/sessions` (`StreamFormat`,
+Claude by default), and the session keeps it. Three kinds of client read the stream: the web (through the
+session-stream reader, `louis-agent.session-stream`), the orchestrator, and the evals.
 
 To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
 `demos/puls/tests/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.api.tests --filter
@@ -81,13 +88,15 @@ StreamGoldenTests`. Read the golden's diff before you commit it. A new format is
 `ITurnStreamFormat` writer, tested beside `StreamGoldenTests`. Then update the stream's section in
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-event-stream).
 
-## Serve the other web app
+## Serve another web app
 
-The API serves whatever web app the program references, and nothing in the API names one, so keep it that way. A program calls
-`AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapLouisAgentSite` (each page of its web app
-served as HTML, F121), then `MapLouisAgentApi`, which refuses to map without the key check. `MapLouisAgentSite` takes
-the web app's assembly and the services its pages inject; a page that declares a `PageHead` is rendered once per
-process and served with its own title, description, structured data, canonical link and words, any other page the plain `index.html`.
+The API serves whatever web app the program references, and nothing in the API names one, so keep it that way. A
+program calls `AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapLouisAgentSite`, then
+`MapLouisAgentApi`, which refuses to map without the key check.
+
+`MapLouisAgentSite` takes the web app's assembly and the services its pages inject, and serves each page as HTML
+(F121). A page that declares a `PageHead` is rendered once per process and served with its own title, description,
+structured data, canonical link and words. Any other page gets the plain `index.html`.
 
 ## The whole program
 
@@ -109,7 +118,8 @@ using LouisAgent.Api.Evals;
 using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
 
-// The host: the catalogue says who the agent is and what it can do; the services say what it gets besides.
+// The coding agent's API. It loads what this demo's catalogue names, and serves the code-review app, with the
+// framework's accounts (F61) when ACCOUNTS_SQL_URL is set.
 var host = AgentHost.Build(CodingCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
     Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));
 var builder = WebApplication.CreateBuilder(args);
@@ -117,18 +127,21 @@ builder.AddLouisAgentApi(host);
 builder.AddLouisAgentAccounts(AccountsOptions.FromEnvironment());   // optional: sign-in, tenants (F61)
 var app = builder.Build();
 
-// The accounts first, then the key check, which takes a signed-in person in place of the key; before any route.
+// The accounts first (the tenant from the host, who the cookie says), then the key check, which takes a signed-in
+// person in place of the key. The agent can run shell commands and write files, so the key check comes before any
+// route.
 app.UseLouisAgentAccounts();                                         // optional, with the line above
 app.UseLouisAgentKey();
 
-// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}: a page meant for
-// search as its own HTML, rendered with the services its pages inject; the landing's sections sit under /home.
+// The code-review app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}. Its pages are
+// the chat and the admin, none meant for search, so each answers the plain shell; the framework's site has its own
+// host since F124.
 app.MapStaticAssets();
 app.MapLouisAgentSite(typeof(LouisAgent.CodeReview.App).Assembly, services =>
 {
     services.AddSingleton(new LouisAgent.Web.Text.ChatText());
     services.AddSingleton(new HttpClient());
-}, home: "home");
+});
 
 app.MapLouisAgentAccounts();                                         // optional, with the two above
 app.MapLouisAgentApi(host);
@@ -148,30 +161,34 @@ dotnet test demos/puls/tests/louis-agent.api.tests
 The sessions run against a fake model client that is never called; the benchmark store's contract runs against the
 in-memory store, and against MongoDB when `BENCHMARKS_MONGO_URL` is set (CI sets it). The routes run in memory
 (`ApiTestHost`): the table is pinned by `ApiRoutesSnapshot.json`, the key gate is tried on every route
-(`AgentKeyGateTests`), and the git routes run in a temporary repository (`GitResourceTests`). A streamed turn needs
+(`AgentKeyGateTests`), and the git routes run in a temporary repository (`GitResourceTests`, in
+`louis-agent.api.integration-tests`). A streamed turn needs
 the model, so check one by hand, and check a new route on the running stack with and without the key:
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5080/v1/your-endpoint                     # 401
-curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/your-endpoint                        # its answer
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5082/v1/your-endpoint                     # 401
+curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5082/v1/your-endpoint                        # its answer
 ```
 
 ## Add an eval to the portal
 
-The portal lists the C# evals the runner lists, so a new eval needs no change in the API or the portal. The runner's
+The admin's eval pages are served by the eval studio's API, `louis-agent.api.evals`, which a program maps with
+`MapLouisAgentEvals`. They list the evals the runner lists, so a new eval needs no change in the API or the pages. The runner's
 `--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
 title. The eval's name is its check's id.
 
-1. Write the eval as a folder of files in its demo (`demos/{name}/evals/louis-agent.identity.{name}.evals/Evals/{Eval}/`),
-   with its scenarios, checks and reference transcripts; [Add an eval](add-an-eval.md) walks through it.
+1. Write the eval as a folder of files in its demo's evals project (for Puls,
+   `demos/puls/evals/louis-agent.identity.puls.evals/Evals/`), with its scenarios, checks and reference transcripts.
+   [Add an eval](add-an-eval.md) walks through it.
 2. Check the runner lists it: `dotnet src/evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
    prints one line for it (build the runner first).
 3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
    `docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build`.
-4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is the file the eval's `Manual`
-   names (`evals/{project}/Manuals/{name}.md`, F18 step 7.1), which the runner's listing hands to the API.
+4. Open the admin's eval pages: the check is listed with its `proves` as its title. Its manual is the markdown file the
+   eval's `Manual` names, beside the eval, which the runner's listing hands to the API. A manual outside the eval
+   folders is never read.
 
-A run starts with `POST /v1/admin/benchmarks/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
+A run starts with `POST /v1/admin/evals/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
 `replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both.
 `EvalRunOptions` parses it once, `EvalProcess.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
 `web` or `replay_of`. A portal run is always the dev scenarios, and a replay is no point of the check's trend. [Run the evals](run-the-evals.md)
