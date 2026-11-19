@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Components.Admin.Overview;
 
 /// <summary>
-/// The latest talks on the admin's overview (F127.8): a row each with when it ended in the reader's time, its page and
-/// part, who answered, its turns, its cost, and the counted tools it called, by the site's names. Never what was said.
+/// The latest talks on the admin's overview (F127.8): a row each with whose it was (the admin's own or a visitor's,
+/// FX207), when it ended in the reader's time, its page and part, who answered, its turns, its cost, and the counted
+/// tools it called, by the site's names. Never what was said.
 /// </summary>
 public partial class LatestTalks
 {
@@ -27,6 +28,9 @@ public partial class LatestTalks
     /// <summary>The reader's currency, when they chose one.</summary>
     [Parameter]
     public CurrencyChoice? Choice { get; set; }
+
+    /// <summary>Whose the talk was: the admin's own browser had it, or a visitor's.</summary>
+    private static string FromOf(OverviewTalk talk) => talk.FromTheAdmin ? "You" : "Visitor";
 
     /// <summary>When the talk ended, in the reader's own time (ADR 0046: the screen converts).</summary>
     private static string WhenOf(OverviewTalk talk) =>

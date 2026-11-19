@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 135 | 98 |
-| Fixes (`FX`) | 192 | 6 |
+| Fixes (`FX`) | 195 | 6 |
 | Cleanups (`CL`) | 41 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -296,10 +296,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (192 done)
+## Fixes (195 done)
 
 | Id | When | What |
 |---|---|---|
+| FX207 | 2026-11-18 | The admin's latest talks say which are the admin's own and which are visitors' |
+| FX206 | 2026-11-18 | The header says beta-1, a quiet tag with a slow violet dot |
+| FX205 | 2026-11-18 | The orb's bar stays open after a hover and a click, a chip without a price, a one-line slogan, a tape in plain words |
 | FX204 | 2026-11-18 | The free-website entry no longer crashes the guide's bar when the form comes |
 | FX203 | 2026-11-18 | Orbi asks again for a free-website entry that makes no sense, and never sends it |
 | FX202 | 2026-11-18 | A long answer's box keeps its corner while it is typed in |

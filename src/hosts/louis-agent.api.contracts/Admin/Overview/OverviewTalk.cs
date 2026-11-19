@@ -8,6 +8,8 @@ namespace LouisAgent.Api.Contracts.Admin.Overview;
 /// <param name="Turns">How many turns it had.</param>
 /// <param name="Cost">What it cost, in the reply's currency; null when none of its requests was priced.</param>
 /// <param name="Tools">The tools it called, in the order first called.</param>
+/// <param name="FromTheAdmin">Whether the admin's own browser had it (FX207), so the admin can tell theirs from a
+/// visitor's.</param>
 public sealed record OverviewTalk(
     DateTimeOffset At,
     string? Page,
@@ -15,4 +17,5 @@ public sealed record OverviewTalk(
     string? Identity,
     int Turns,
     decimal? Cost,
-    IReadOnlyList<string> Tools);
+    IReadOnlyList<string> Tools,
+    bool FromTheAdmin = false);

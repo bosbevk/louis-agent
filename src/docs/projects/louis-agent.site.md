@@ -52,7 +52,8 @@ layout, and serves that for every place on the page.
 The site's admin is the framework's, named in `LouisAgentDevAreas`, with the site's own `Layout/AdminLayout`.
 
 `/admin/overview` shows the guide's talks today and this month, and their cost in rand. It shows the leads (the
-guide's `SendLead` calls), the parts of the site and the demo businesses the talks were on, and the latest talks. It
+guide's `SendLead` calls), the parts of the site and the demo businesses the talks were on, and the latest talks, each marked as yours
+when your browser held the admin key, or a visitor's. It
 reads all of that from the turn log and the ledger in the log folder. It sits behind `ADMIN_API_KEY`, or
 `AGENT_API_KEY` when that's not set, and nothing public links there (`SiteAdminTests`).
 
@@ -237,8 +238,8 @@ framework controls only.
 ### 7. The guide in the showroom
 
 In the showroom the guide stands as the bar at the page's foot, with its chips "Walk me through this page", "Which
-demo is like my business?" and "What does it cost?". The first is the bright one, and it's true on the start and on
-every demo's page, since the same three stand on all of them. On the rest of the site the guide keeps its corner.
+demo is like my business?", "How do I get one?" and "Tell me about the framework". The first is the bright one, and
+it's true on the start and on every demo's page, since the same four stand on all of them. On the rest of the site the guide keeps its corner.
 
 A walk of the start goes from its top to each business's window in turn. When the guide shows a demo, its window
 comes forward, and on a wide screen the guide's answer stands beside it. A window on the start is a picture of its
@@ -266,9 +267,10 @@ The pages are written from the docs the guide reads. Every number comes from the
 is held to the repo by a test. No page links to the repository. The landing's `PageHead` carries the site's facts for
 search engines (`Content/SiteFacts.cs`).
 
-Beside the site's name in the header stands its stage, a small "alpha-1" flag. A press on it opens a short note,
-that this is version alpha-1 and a visitor may run into inconsistencies while it is built, with a way to the
-contact page; a press anywhere else closes it.
+Beside the site's name in the header stands its stage, a small "beta-1" flag: a quiet grey tag with a slow violet
+dot before the words, which reads as a status, built and still being polished. The dot holds still for a visitor who
+asked for less motion. A press on it opens a short note, that this is version beta-1 and it works while it is still
+being polished, with a way to the contact page. A press anywhere else closes it.
 
 Orbi at the foot of the page is the guide's identity. Every layout places the same tag, `ExpertChat`, which is the
 framework's widget as its bar: the mark, a box that opens out of it when the visitor or the guide needs the other,
