@@ -241,3 +241,27 @@ The consent sits where the doubt comes. Before the guide sends a lead, it says i
 that the privacy page says what happens next, so the visitor's press of the button is an informed yes. That builds
 on F112, where the press itself was already the only way a lead goes out. Skill 15, safety, and skill 16, the
 human in the loop.
+
+## A trust page that names its gaps (F165, 2026-11-19)
+
+A reviewer read the site the way a business owner would, and asked for one thing first: a page of real technical
+facts about security, not marketing. Where it runs, what it keeps, what the agent may do, and what happens if
+something breaks. He added a list of what a business should see before it pays, from a POPIA operator agreement to an
+independent penetration test.
+
+The choice that shaped the page was what to do with the gaps. A page that lists only what is built looks cleaner, but
+a careful reader notices what is missing, and then doubts the rest. So every fact on `/trust` is a tile that says In
+place or Not yet. Writing it turned up real gaps worth fixing: the site's container runs as the image's default user,
+the file share has no backup, the logs have no retention period, outbound traffic is Azure's default, and there is
+no incident procedure, no injection suite and no outside test. Saying them out loud is what makes the In place
+tiles believable.
+
+The lesson from F145.1 held again, and harder. A trust page is a promise the code must keep, so the facts are data,
+and every one in place names the file of the repo that shows it. A test opens each file, so a fact can't point at
+something that isn't there. That doesn't prove the sentence true, but it ties every claim to the place a reviewer
+would check, and a fact whose file goes away fails the build. Encryption at rest was the one claim the repo couldn't
+show alone: it rests on Microsoft's own documentation that Azure Storage is always encrypted with 256-bit AES, which
+was read before the tile was written.
+
+The framework gained one small piece for it: a tile's status, an enum with the site's words, drawn in two colours
+every theme already sets. Skill 15, safety and security, with skill 16 in the approvals the page lists.

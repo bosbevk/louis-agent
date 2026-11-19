@@ -454,6 +454,12 @@ for columns, as a band's closing buttons are, keeps each button at its own width
 site's brand at its foot, at the right under its buttons, small and quiet, which is how a site signs a card with its
 wordmark.
 
+A tile can also say whether what it describes is in place. Its `Status` is done or open, and the site gives the
+words for it, such as "In place" or "Not yet", so the framework names nothing. The tile draws them as a small badge
+above its title, in the theme's green for done and its amber for open, two names every theme already sets, tinted
+through the glow tool's wash like any painted surface. A tile with no status, or with no words for it, draws no
+badge. A trust page marks every fact this way, so a gap is said plainly beside what is built (F165).
+
 A `SiteHero` is the first thing on a landing: a topic, the headline, a summary, a quiet note and the actions, each a
 slot the site fills, with something alive beside the words when the site has it. A site may also open the words with
 a piece of art, such as the agent's mark drawn large, and may ask for the hero centred, and then what stood beside
