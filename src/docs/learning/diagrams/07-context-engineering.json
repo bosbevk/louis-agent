@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Context engineering: what F32 to F34 taught",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "book", "title": "Put the right things in front of a model", "code": "skill 7",
+          "look": "highlight",
+          "text": "A small, exact context beats a large, fuzzy one, and what is always there holds only what is always needed." }
+      ] },
+      { "cards": [
+        { "id": "data", "icon": "database", "title": "The data, not the page",
+          "text": "Pricing went from 0 of 32 with a source to every row right, once code read the catalogue." },
+        { "id": "header", "icon": "file", "title": "A prompt says what it is",
+          "text": "A YAML header for the program, the body for the model, read once and strictly." },
+        { "id": "line", "icon": "message", "title": "What a line in a prompt does",
+          "text": "An example is copied word for word; a tone rule needs its opposite; the time is a tool." }
+      ] },
+      { "cards": [
+        { "id": "ondemand", "icon": "stack", "title": "Load it when it's needed",
+          "text": "Skills read on demand with ReadSkill, an index always in view: about 14% off the prefix." },
+        { "id": "where", "icon": "browser", "title": "Rules for where you are",
+          "text": "A focus skill per part of the site, the page's pieces found with FindPlace." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "data" },
+      { "from": "skill", "to": "header" },
+      { "from": "skill", "to": "line" },
+      { "from": "header", "to": "ondemand" },
+      { "from": "line", "to": "where" }
+    ]
+  }
+}
