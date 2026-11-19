@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "CL68 agents and their subagents: the architecture",
+  "caption": "Every project's prompts lose their prompts/ wrapper; an identity's agents hold their subagents, a pack holds its toolsets, and core reads them all through one catalogue.",
+  "flow": {
+    "nodes": [
+      { "id": "puls", "icon": "folder", "tone": "green", "label": "louis-agent.identity.puls\nagents/puls/voice.md\nagents/puls/subagents/cook/ (2)\nagents/puls/subagents/find-recipe/ (3)", "group": "identities", "shape": "data" },
+      { "id": "guide", "icon": "folder", "tone": "green", "label": "louis-agent.identity.guide\nagents/louis-agent-guide/voice.md\n+ skills/ (1)", "group": "identities", "shape": "data" },
+      { "id": "show", "icon": "folder", "tone": "green", "label": "louis-agent.identity.showroom\nagents/{business}/voice.md ×3\none shared provider (1)", "group": "identities", "shape": "data" },
+      { "id": "pack", "icon": "folder", "tone": "teal", "label": "each pack\ntoolsets/{name}.md (1)", "group": "packs", "shape": "data" },
+      { "id": "core", "icon": "folder", "tone": "violet", "label": "louis-agent.core\nshared/principles.md\ntoolsets/ (1)", "group": "engine", "shape": "data" },
+      { "id": "emb", "icon": "chip", "tone": "violet", "label": "EmbeddedPrompts\nthe prompt folders, no wrapper (1)", "group": "engine" },
+      { "id": "cat", "icon": "book", "tone": "violet", "label": "AgentCatalog\na shared provider once (1)", "group": "engine" },
+      { "id": "roles", "icon": "settings", "tone": "violet", "label": "RoleCatalog + AgentAddresses\nagents/ (1), subagents/ (2),\nlevel from the header (2, 3)", "group": "engine" },
+      { "id": "ask", "icon": "message", "tone": "violet", "label": "AskAgent + LookupAsk (3)", "group": "engine" }
+    ],
+    "edges": [
+      { "from": "puls", "to": "emb" },
+      { "from": "guide", "to": "emb" },
+      { "from": "show", "to": "emb" },
+      { "from": "pack", "to": "emb" },
+      { "from": "core", "to": "emb" },
+      { "from": "emb", "to": "cat", "word": "providers" },
+      { "from": "cat", "to": "roles", "word": "every path" },
+      { "from": "ask", "to": "roles", "word": "an address" }
+    ],
+    "groups": [
+      { "id": "identities", "label": "identities (who)" },
+      { "id": "packs", "label": "packs (what they can do)" },
+      { "id": "engine", "label": "the engine" }
+    ]
+  }
+}

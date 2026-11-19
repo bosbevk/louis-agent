@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "CL68 agents and their subagents: Puls asks its cook",
+  "caption": "The address puls.cook becomes the folder agents/puls/subagents/cook/; the header says it is a subagent, so it runs with the toolsets its header names.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "icon": "user", "tone": "blue", "label": "Puls (agent)" },
+      { "id": "A", "icon": "message", "tone": "violet", "label": "AskAgent" },
+      { "id": "R", "icon": "settings", "tone": "violet", "label": "AgentAddresses / RoleCatalog" },
+      { "id": "C", "icon": "book", "tone": "violet", "label": "PromptCatalog" },
+      { "id": "F", "icon": "server", "tone": "violet", "label": "AgentEngineFactory" },
+      { "id": "K", "icon": "user", "tone": "green", "label": "the cook (subagent)" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "A", "text": "AskAgent(\"puls.cook\", \"what can I cook tonight?\")" },
+      { "step": "message", "from": "A", "to": "R", "text": "Resolve(puls.cook)" },
+      { "step": "message", "from": "R", "to": "C", "text": "Get(\"agents/puls/subagents/cook/voice.md\")" },
+      { "step": "reply", "from": "C", "to": "R", "text": "header: level subagent, toolsets web, recipes, ..." },
+      { "step": "reply", "from": "R", "to": "A", "text": "AddressedAgent(puls, cook, Subagent)" },
+      { "step": "message", "from": "A", "to": "F", "text": "an engine for the cook's toolsets" },
+      { "step": "message", "from": "F", "to": "K", "text": "principles + cook's voice.md + its toolsets' guides" },
+      { "step": "note", "over": ["K"], "text": "a lookup agent (level lookup) gets agents/puls/lookup.md first and one tool handed down" },
+      { "step": "reply", "from": "K", "to": "A", "text": "the report" },
+      { "step": "reply", "from": "A", "to": "P", "text": "the cook's answer" }
+    ]
+  }
+}
