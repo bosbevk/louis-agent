@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Change the MCP server: check it with a client",
+  "caption": "Over HTTP the key is checked first; over stdio a client starts the server itself.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "Which\ntransport?", "icon": "user", "tone": "blue", "shape": "decision" },
+      { "id": "http", "label": "Start it over HTTP\nin Docker", "icon": "server", "tone": "violet" },
+      { "id": "nokey", "label": "A call with no key\nanswers 401", "icon": "shield", "tone": "violet" },
+      { "id": "stdio", "label": "Add it to a client\nfrom the example", "icon": "file", "tone": "amber", "shape": "data" },
+      { "id": "list", "label": "The client\nlists the tools", "icon": "checks", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "you", "to": "http", "word": "http" },
+      { "from": "http", "to": "nokey" },
+      { "from": "you", "to": "stdio", "word": "stdio" },
+      { "from": "stdio", "to": "list" }
+    ],
+    "direction": "right"
+  }
+}
