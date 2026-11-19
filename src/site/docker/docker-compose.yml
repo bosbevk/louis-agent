@@ -66,9 +66,10 @@ services:
       # The engine paces the framework Orbi's words and says so, so the page leaves its own pacer off (F156).
       STREAM_PACE: 'on'
       LOG_DIRECTORY: /logs
-      # The framework Orbi's door (F164.2): it answers a visitor without a sign-in, this many times a day per address.
+      # The framework Orbi's door (F164.2): it answers a visitor without a sign-in, this many times a day per address,
+      # the same cap as the live sites (F164.3, Louis's pick A of three).
       OPEN_IDENTITIES: louis-agent-framework
-      OPEN_SESSIONS_PER_DAY: "50"
+      OPEN_SESSIONS_PER_DAY: "20"
     # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
     ports:
       - "127.0.0.1:${FRAMEWORK_PORT:-5084}:8080"

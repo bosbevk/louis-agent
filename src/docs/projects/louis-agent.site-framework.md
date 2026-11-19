@@ -107,7 +107,8 @@ It is the framework's API and the site's files. What it runs is its catalogue, `
 alone, on two packs, the docs it answers from and the site it shows places with. Nothing else, so a visitor reaches
 no shell, no file or git tool, and no lead. The identity is the catalogue's first, so it is the default, and the door
 for visitors without a key, `OPEN_IDENTITIES=louis-agent-framework`, opens to it alone, at most
-`OPEN_SESSIONS_PER_DAY` sessions a day from one address, 50 in the compose file and the run profile.
+`OPEN_SESSIONS_PER_DAY` sessions a day from one address, 20 in the compose file and the run profile, the same
+cap as louis-agent.dev.
 
 `MapLouisAgentSite` draws each page as HTML before the app starts in the browser, so a search engine and a reader with
 no script both get the page's words. `FrameworkPageServices` registers what a page drawn there asks for, the site's
