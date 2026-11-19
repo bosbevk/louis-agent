@@ -319,19 +319,22 @@ switch ($Verb) {
     }
     'domain' {
         # The records Cloudflare needs, DNS-only (a proxied record blocks the certificate): the apex points at the
-        # environment's address, the TXT proves the domain is ours, www is a CNAME to the app's own address.
+        # environment's address, the TXT proves the domain is ours, and a subdomain (www, framework) is a CNAME from its
+        # first label to the app's own address. A name of two parts is the apex (F164.3: before, any name but www was
+        # taken for one, and framework.louis-agent.dev would have been given louis-agent.dev's A record).
         $staticIp = Get-Output 'environmentStaticIp'
         $fqdn = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.configuration.ingress.fqdn' -o tsv
         $verification = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.customDomainVerificationId' -o tsv
         if ($LASTEXITCODE -ne 0 -or -not $fqdn) { throw "$App is not deployed yet: deploy.ps1 release first." }
-        $apex = $Hostname -notmatch '^www\.'
+        $apex = $Hostname.Split('.').Count -eq 2
+        $label = $Hostname.Split('.')[0]
         Write-Host "In Cloudflare, DNS-only, for ${Hostname}:"
         if ($apex) {
             Write-Host "  A      @           $staticIp"
             Write-Host "  TXT    asuid       $verification"
         } else {
-            Write-Host "  CNAME  www         $fqdn"
-            Write-Host "  TXT    asuid.www   $verification"
+            Write-Host "  CNAME  $label   $fqdn"
+            Write-Host "  TXT    asuid.$label   $verification"
         }
         $method = if ($apex) { 'TXT' } else { 'CNAME' }
         if ($PSCmdlet.ShouldProcess($App, "az containerapp hostname add/bind $Hostname with a managed certificate ($method)")) {

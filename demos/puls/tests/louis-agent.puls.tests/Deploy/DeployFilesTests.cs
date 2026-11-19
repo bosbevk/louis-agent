@@ -94,6 +94,22 @@ public class DeployFilesTests
         Assert.That(FrameworkEntry(), Does.Contain(text));
 
     /// <summary>
+    /// The domain verb tells an apex from a subdomain by its parts (F164.3): louis-agent.dev has two and takes the
+    /// apex's A record; framework.louis-agent.dev has three and takes a CNAME and an asuid TXT at its own first label,
+    /// never louis-agent.dev's own A record.
+    /// </summary>
+    [TestCase("$apex = $Hostname.Split('.').Count -eq 2")]
+    [TestCase("$label = $Hostname.Split('.')[0]")]
+    [TestCase("Write-Host \"  CNAME  $label")]
+    [TestCase("Write-Host \"  TXT    asuid.$label")]
+    public void TheDomainVerb_GivesASubdomainItsOwnRecords(string text) => Assert.That(Script, Does.Contain(text));
+
+    /// <summary>The old rule, which took any name but www for an apex, is gone.</summary>
+    [Test]
+    public void TheDomainVerb_NoLongerTakesEveryNameButWwwForAnApex() =>
+        Assert.That(Script, Does.Not.Contain("$Hostname -notmatch '^www\\.'"));
+
+    /// <summary>
     /// The secrets each app reads come from its own file, so the two apps' keys can differ though they share a
     /// config folder.
     /// </summary>
