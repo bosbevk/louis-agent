@@ -18,7 +18,11 @@ tenant, and a company on a business site is just another row, not another deploy
 
 A demo's program calls three methods beside the API's, and the framework's web draws the pages.
 `louis-agent.accounts.contracts` holds the records the browser reads and sends, just as `louis-agent.api.contracts`
-does for the API.
+does for the API. Three programs turn accounts on today: Puls's API, the coding agent's API and the starter's API.
+
+The rest of this doc starts with the three calls a program makes, then follows a person through Identity's routes and
+ours, the cookie, the tenant, the agent's key gate, confirming an email, the three ways to sign in that aren't a
+password, mail and storage. It ends with the files, the settings and the tests, to look things up.
 
 *Decided in:* F61.2, [ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md).
 
@@ -155,7 +159,7 @@ src/hosts/louis-agent.accounts/
 ├── AccountsStartup.cs   # AddLouisAgentAccounts, UseLouisAgentAccounts, MapLouisAgentAccounts
 ├── Config/              # AccountsOptions (the settings), AccountCookies (the cookie's rules)
 ├── Endpoints/           # AccountHandlers (named static methods), AccountRoutes (the map), AccountProblems (a refusal in Identity's shape);
-│                        # Confirmation/ (the link's landing), External/ (the challenge, the callback, unlink, a first password, LocalPath),
+│                        # Confirmation/ (the link's landing), External/ (ExternalLoginHandlers: the challenge, the callback, unlink, a first password; LocalPath),
 │                        # Passkeys/ (the options, add, list, remove, sign in)
 ├── External/            # IExternalProvider, ExternalProvider (the wire names), ProviderKeys, ExternalProviders; Providers/ (Google, Microsoft, LinkedIn)
 ├── Mail/                # LogEmailSender behind Identity's IEmailSender
@@ -163,8 +167,8 @@ src/hosts/louis-agent.accounts/
 ├── Migrations/          # what `dotnet ef migrations add` wrote; a tool's record, not sized by the file rule
 ├── Store/               # AccountsDbContext, AccountUserStore, AccountsMigrator, the design-time factory (names Identity's schema version 3)
 ├── Tenants/             # TenantHost, ITenantResolver, HostTenantResolver, CurrentTenant, TenantMiddleware
-└── Users/               # AccountUser, Tenant
-src/hosts/louis-agent.accounts.contracts/   # AccountInfo, ProfileBody, ProviderInfo, the Identity bodies (two-factor's too), the passkey bodies, AccountNames, AccountJson
+└── Users/               # AccountUser, Tenant, AccountClaimsFactory (the tenant on the cookie)
+src/hosts/louis-agent.accounts.contracts/   # AccountInfo, ProfileBody, ProviderInfo, the Identity bodies (two-factor's too), the passkey bodies, AccountNames and AccountClaims, AccountJson
 src/tests/hosts/louis-agent.accounts.tests/             # pure: the host rule, the options, the cookie, the JSON pins
 src/tests/hosts/louis-agent.accounts.integration-tests/ # against the Docker SQL Server (ACCOUNTS_SQL_TEST_URL)
 ```
@@ -219,8 +223,9 @@ Several things come later: a real mail sender, Facebook and X, a QR code for the
 key as text and an `otpauth://` link; a QR encoder of our own would be a step of its own), editing a passkey's name
 after it's made, and the business site.
 
-The three providers are built, and tested against a scripted one. Signing in through the real Google, Microsoft or
-LinkedIn waits for Louis to register the apps.
+The three providers are built, and tested against a scripted one. Google sign-in works for real (FX68 made the
+return address match behind Azure's proxy). Whether Microsoft's and LinkedIn's apps are registered isn't recorded in
+the repo.
 
 A few smaller limits: one Google account links in one tenant only, and a tenant has at most one host. Identity's own
 validation messages, like a password that's too short, come in English whatever the site's language. And the

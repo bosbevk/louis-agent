@@ -16,6 +16,10 @@ It holds the contract an eval implements (`IEval`), the datasets and their loade
 the graders every identity can use, the loop that runs it all, the conformance check, the label sheet, and the
 judge's calibration. It names no identity and no product. Puls's evals live in a project of their own.
 
+The rest of this doc follows one run: what an eval is, its dataset, a trial, the checks that grade it, the protocol
+it's written in, the roll-up, and how the checks themselves are checked. It ends with the rules every grade keeps,
+then the files, the settings and the tests, to look things up.
+
 *Decided in:* F18, [ADR 0029](../adr/0029-simulations-in-csharp.md).
 
 ## How it works
@@ -24,13 +28,13 @@ Here's one run, from start to finish.
 
 ![One run: the dataset loaded strictly, each trial a conversation, a failure of the plumbing kept apart, the rest graded](diagrams/louis-agent.evals-flow.svg)
 
-### 1. An eval is a C# class
+### 1. An eval is an IEval
 
 `IEval` names an eval's modes, its dataset, its graders, and the identity it proves. A mode (`EvalMode`) is the
 toolsets and the role a session opens with. `EVALS=` picks evals by the identity they prove.
 
-Most evals today are a folder of files, read by `Files/FileEval`. The only ones still written in C# are the stub and
-the template's example.
+Most evals today are a folder of files, read by `Files/FileEval`, as the template's example in `src/evals/template/`
+is. The only one still written in C# is the runner's stub.
 
 *Decided in:* F49.2.
 
@@ -70,11 +74,13 @@ tokens, seconds, and its cost from the ledger. Metrics are there to measure; the
 
 Every family of check a standard eval tool ships has a general check here. Each is a small class with a nested
 `Entry` and its `Settings` record, named from a file. For example, `WithinTimeCheck.Entry` is built from
-`{"seconds": 120}`. `Grading/Common/GeneralChecks.All` lists all 24, by family, and
-[Add an eval](../guides/add-an-eval.md#4-choose-the-checks) has the table.
+`{"seconds": 120}`. `Grading/Common/GeneralChecks.All` lists all 25 the catalogue gets from the harness, by family,
+the judge and the human review last. [Add an eval](../guides/add-an-eval.md#4-choose-the-checks) has the table.
 
 There's a folder per family. `Facts/` has no error, time, cost, turns and tokens. `Answers/` has the text rules and
-`is-json`. `Tools/` has `tool-used` and its kin, and `routed-to`. `Compare/` extracts a value and then compares it.
+`is-json`. `Tools/` has `tool-used` and its kin, `routed-to`, and under `Results/` `tool-rows-marked`, which lists the rows a
+tool marked and only ever passes, since it measures. `Compare/` extracts a value and then compares it, or checks that
+the answer links to one of the hosts it names (`links-to-host`).
 `Similarity/` has `near`, the Levenshtein distance. And `Language/` has `answers-in-language`, which counts words per
 language, with no model.
 
@@ -137,6 +143,19 @@ class.
 
 *Decided in:* [ADR 0029](../adr/0029-simulations-in-csharp.md).
 
+### 11. The rules every grade keeps
+
+A person's review only ever checks a judge. Each `Human` grader is named `{x}.human`, beside a model grader `x` in
+the same eval, and conformance refuses any other name. A human review is never required, so the roll-up has no
+"pending" count.
+
+A required grade nobody could give is Unknown, never a pass (`PassRates`).
+
+Names are enums, one set per project. An eval set keeps its own toolset enum (`PulsToolset`, `StubToolset`), and
+`RepeatedNameTests` keeps the bare strings out.
+
+*Decided in:* F18 step 5.7, F49.3, [ADR 0043](../adr/0043-repeated-names-are-enums.md).
+
 ![The eval harness: what the runner uses, and where a run's events go](diagrams/louis-agent.evals-diagrams.svg)
 
 ![One run: for each mode, repeat and question the runner asks a session and writes the events, then grades each conversation and sums up](diagrams/louis-agent.evals-diagrams-2.svg)
@@ -144,43 +163,6 @@ class.
 These are the types involved:
 
 ![The types: an eval is an IEval, most read from a folder, and the runner asks the agent through a session client and writes each event on a line](diagrams/louis-agent.evals-interface.svg)
-
-## Design notes
-
-The full plan and feature doc, with every step's notes, are at the tag
-[`pre-cl24`](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md).
-
-**There's no parity run against the old Python harness.** Its runs were deleted before they could be exported. So
-the first C# run is the baseline, and the trends start there. The tests, and reference transcripts that pass every
-grader, hold the graders instead.
-
-**The first v2 baseline** was on 2026-10-29. `puls-cook` passed 23 of 24 when Puls handed the meal to its cook, but
-only 25% when it answered itself with web tools. `puls-routing` passed 72 of 72. The two cost $0.37 together. The
-baseline runs are `5d1fd231c9b1` (cook) and `0d3b95e093a6` (routing). A replay costs $0, because every request is a
-cache hit.
-
-After FX27, the cook's baseline is `dc272b95eaeb`: `puls-cook` 8 of 8, `puls-tools` 2 of 8, for $0.075. Its free
-replay, `c0362ff73151`, hits at all 20 turns, including the delegating ones, where the first baseline's replay
-missed at 8.
-
-**The judge isn't trusted yet.** The local judge agreed with a blind labeller on 31 of 36 meals. That's under the 90%
-bar, so its grades stay advisory until Louis's own labels calibrate it (TODO, *Now*).
-
-**A person's review only ever checks a judge.** Each `Human` grader is named `{x}.human`, beside a model grader `x`
-in the same eval. Conformance refuses any other name. A human review is never required, so the roll-up has no
-"pending" count.
-
-**A required grade nobody could give is Unknown, never a pass** (`PassRates`).
-
-**Names are enums, one set per project.** An eval set keeps its own toolset enum (`PulsToolset`, `StubToolset`), and
-`RepeatedNameTests` keeps the bare strings out.
-
-**The cook gives estimates, and reads no shop's page.** Checkers refuses our browser, and the other shops'
-`robots.txt` files disallow their search pages. So `estimates-at-shop` checks that no price is given as fact. The old
-`PricedAtRetailer` check waits, tested, for a retailer's yes. Both belong to the shops pack.
-
-*Decided in:* F18 step 5.7, F49.3, [ADR 0029](../adr/0029-simulations-in-csharp.md),
-[ADR 0043](../adr/0043-repeated-names-are-enums.md), [ADR 0038](../adr/0038-the-browser-says-what-it-is.md).
 
 ## Structure
 
@@ -190,7 +172,7 @@ in the same eval. Conformance refuses any other name. A human review is never re
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
 | `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Files/` | An eval as a folder of files (F49.2): `EvalFile` and its records, the shape of `eval.json`; `EvalFileReader`, which reads one strictly and refuses what it can't trust; `FileEval`, the eval built from the folder (its checks from the catalogue in the file's order, `Dataset/` beside it, the manual's path from the source the caller gives) |
-| `Grading/` | `NamedCheck`, a check under the name an eval file gives it; the general checks (`Common/`, with `Answers/` and `Tools/`), the model and human checks, the outcomes (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
+| `Grading/` | `NamedCheck`, a check under the name an eval file gives it; the general checks (`Common/`, a folder per family: `Facts/`, `Answers/`, `Tools/`, `Compare/` with its `Readers/`, `Similarity/`, `Language/`), the model checks (`Models/`) and the human review (`Human/`), the pass rates (`Outcomes/`) (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
 | `Messages/` | The harness's texts (errors, logs, conformance, calibration); the grade reasons, `CommonGradeMessage`, are in [louis-agent.evals.checks](louis-agent.evals.checks.md) |
 | `Protocol/` | The writer and the stored-run reader |
@@ -228,7 +210,21 @@ calibration, and the protocol writer, against its golden file. The runner's test
 ## Limits and plans
 
 A gate that only looks at recorded transcripts can't see the agent; only a real run can. The learning write-up for
-skill 12 goes into that. And a run's first line doesn't carry its dataset yet.
+skill 12 goes into that.
+
+The judge's grades are advisory. In its recorded calibration it agreed with a blind labeller on 31 of 36 meals, under
+the 90% bar ([write-up 12](../learning/12-evaluation.md)).
+
+There's no parity run against the old Python harness: its runs were deleted before they could be exported. So the
+first C# run is the baseline, and the trends start there. That was `puls-cook` 23 of 24 when Puls handed the meal to
+its cook, 25% when it answered itself with web tools, and `puls-routing` 72 of 72, for $0.37 together (runs
+`5d1fd231c9b1` and `0d3b95e093a6`). After FX27 the cook's baseline is `dc272b95eaeb`: `puls-cook` 8 of 8 and
+`puls-tools` 2 of 8, for $0.075. Its free replay, `c0362ff73151`, hits at all 20 turns. A replay costs $0, because
+every request is a cache hit. The full plan of the first harness is at the tag
+[`pre-cl24`](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md).
+
+The evals are to be redesigned: one `.eval.json` of conversations with turns, its own host and screens, and today's
+evals deleted rather than ported ([F126's plan](../plans/F126-evals-redesigned.md)).
 
 ## Related docs
 

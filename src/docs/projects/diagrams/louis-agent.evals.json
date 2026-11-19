@@ -8,8 +8,8 @@
           "text": "The one place that knows how an eval runs, so an eval set only says what it asks and how it grades." }
       ] },
       { "cards": [
-        { "id": "eval", "icon": "code", "title": "An eval is a class",
-          "text": "It names its modes, its dataset and its checks. A dataset is a folder of scenarios." },
+        { "id": "eval", "icon": "code", "title": "An eval is an IEval",
+          "text": "Most are a folder of files: its modes, its dataset of scenarios and its checks." },
         { "id": "trials", "icon": "message", "title": "Trials",
           "text": "One conversation per mode, repeat and scenario, kept as its transcript." },
         { "id": "grading", "icon": "chart", "title": "Checks and metrics",
