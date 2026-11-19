@@ -1,0 +1,26 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Add an eval: from the template to the list",
+  "caption": "Every step writes a file; the conformance test checks them all before anything spends money.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "copy", "label": "Copy the\ntemplate", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "write", "label": "eval.json and\nthe dataset", "icon": "file", "tone": "green" },
+      { "id": "checks", "label": "Choose\nthe checks", "icon": "checks", "tone": "violet" },
+      { "id": "files", "label": "Manual and\ntranscripts", "icon": "book", "tone": "green" },
+      { "id": "test", "label": "Conformance and\nits own test", "icon": "checks", "tone": "green" },
+      { "id": "list", "label": "--list\nshows it", "icon": "terminal", "tone": "blue", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "you", "to": "copy" },
+      { "from": "copy", "to": "write" },
+      { "from": "write", "to": "checks" },
+      { "from": "checks", "to": "files" },
+      { "from": "files", "to": "test" },
+      { "from": "test", "to": "list" }
+    ],
+    "direction": "right"
+  }
+}

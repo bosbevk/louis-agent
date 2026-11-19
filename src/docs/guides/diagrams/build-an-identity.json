@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "Build an identity at a glance",
+  "caption": "An identity is who an agent is; everything it can do comes from core's toolsets and the packs it names.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "identity", "icon": "user", "title": "An identity", "code": "IAgentIdentity", "look": "highlight",
+          "text": "Its name, its prompts, the packs it names and the agents it may call." }
+      ] },
+      { "cards": [
+        { "id": "mode", "icon": "message", "title": "Its mode", "code": "agent/{name}/voice.md", "text": "The voice, then the routing." },
+        { "id": "specialists", "icon": "users", "title": "Specialists", "code": "specialists/", "text": "Work handed over, with their toolsets." },
+        { "id": "minions", "icon": "chip", "title": "Minions", "code": "minions/", "text": "One task with one tool." },
+        { "id": "packs", "icon": "box", "title": "Its packs", "text": "Named, never referenced." }
+      ] },
+      { "cards": [
+        { "id": "root", "icon": "stack", "title": "The composition root", "code": "louis-agent.host-packs", "text": "IdentityKind and Plugins bring it in; IDENTITIES loads it." }
+      ] }
+    ],
+    "links": [
+      { "from": "identity", "to": "mode" },
+      { "from": "identity", "to": "specialists" },
+      { "from": "identity", "to": "minions" },
+      { "from": "identity", "to": "packs" }
+    ]
+  }
+}

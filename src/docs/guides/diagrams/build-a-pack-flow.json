@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Build a pack: from a project to a toolset a session loads",
+  "caption": "Settings come only when the pack needs them; the rest is the same for every pack.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "tools", "label": "The project\nand its tools", "icon": "code", "tone": "green" },
+      { "id": "guide", "label": "The guide and\nthe pack class", "icon": "book", "tone": "green" },
+      { "id": "need", "label": "Needs\nsettings?", "tone": "green", "shape": "decision" },
+      { "id": "options", "label": "Its options\nclass", "icon": "settings", "tone": "green" },
+      { "id": "register", "label": "Registered by\nthe demo", "icon": "stack", "tone": "violet" },
+      { "id": "test", "label": "Its tests and\ntext golden", "icon": "checks", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "you", "to": "tools" },
+      { "from": "tools", "to": "guide" },
+      { "from": "guide", "to": "need" },
+      { "from": "need", "to": "options", "word": "yes" },
+      { "from": "need", "to": "register", "word": "no" },
+      { "from": "options", "to": "register" },
+      { "from": "register", "to": "test" }
+    ],
+    "direction": "right"
+  }
+}
