@@ -110,6 +110,41 @@ public class DeployFilesTests
         Assert.That(Script, Does.Not.Contain("$Hostname -notmatch '^www\\.'"));
 
     /// <summary>
+    /// The framework's entry names the folders its share must hold before its revision mounts one (F164.3, Louis's pick
+    /// B of three): framework, then framework/logs, a parent before its child.
+    /// </summary>
+    [Test]
+    public void TheFrameworksEntry_NamesTheFoldersItsLogsNeed() =>
+        Assert.That(FrameworkEntry(), Does.Contain("Folders = @('framework', 'framework/logs')"));
+
+    /// <summary>
+    /// A release makes the folders its app names on the share before the revision, so a first release finds its logs
+    /// folder; the storage key is read only when there are folders to make, so louis-agent.dev's release, which names
+    /// none, never reads it.
+    /// </summary>
+    [TestCase("if ($AppInfo.Folders.Count -gt 0) {")]
+    [TestCase("foreach ($folder in $AppInfo.Folders) {")]
+    [TestCase(
+        "Invoke-Az storage directory create --account-name 'pulsstorage' --account-key $key --share-name $AppInfo.Share -n $folder -o none")]
+    public void TheRelease_MakesTheFoldersItsAppNames(string text)
+    {
+        int release = Script.IndexOf("    'release' {", StringComparison.Ordinal);
+        int build = Script.IndexOf("& $PSCommandPath build", release, StringComparison.Ordinal);
+
+        Assert.That(Script[release..build], Does.Contain(text));
+    }
+
+    /// <summary>louis-agent.dev's entry names no folders, so its release is as it was before F164.3.</summary>
+    [Test]
+    public void TheSitesEntry_NamesNoFolders()
+    {
+        int start = Script.IndexOf("'louis-agent-app' = @{", StringComparison.Ordinal);
+        int end = Script.IndexOf("\n    }", start, StringComparison.Ordinal);
+
+        Assert.That(Script[start..end], Does.Contain("Folders = @()"));
+    }
+
+    /// <summary>
     /// The secrets each app reads come from its own file, so the two apps' keys can differ though they share a
     /// config folder.
     /// </summary>

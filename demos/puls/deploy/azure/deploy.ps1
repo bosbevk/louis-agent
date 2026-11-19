@@ -58,15 +58,15 @@ $Bicep = Join-Path $Config 'azure\main.bicep'
 $BicepParams = Join-Path $Config 'azure\main.bicepparam'
 $Providers = @('google', 'microsoft', 'linkedin')
 # What is each app's: its image and Dockerfile, its config folder and the secrets file in it, its yaml, the Bicep
-# output that names its identity, its share, its domain, the suffix on the vault secrets that are its own (the model's
-# key both apps share), and WhenSet: the keys the app runs without, each env var with its vault secret, named in the
-# yaml only once the vault holds it (FX87).
+# output that names its identity, its share and the folders a release makes on it (F164.3), its domain, the suffix on
+# the vault secrets that are its own (the model's key both apps share), and WhenSet: the keys the app runs without,
+# each env var with its vault secret, named in the yaml only once the vault holds it (FX87).
 $Apps = @{
     'louis-agent-app' = @{
         # louis-agent.dev since F124: its own host, image, settings and yaml, all under src/site.
         Image = 'louis-agent-site'; Dockerfile = 'src\site\docker\Dockerfile'
         Config = 'src\site\config'; SecretsFile = '.env.secrets'; Yaml = 'src\site\deploy\azure\louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
-        Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'
+        Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'; Folders = @()
         WhenSet = @{ RESEND_API_KEY = 'resend-api-key' }
     }
     'louis-agent-framework-app' = @{
@@ -76,6 +76,8 @@ $Apps = @{
         Image = 'louis-agent-site-framework'; Dockerfile = 'src\site\docker\Dockerfile.framework'
         Config = 'src\site\config'; SecretsFile = '.env.secrets.framework'; Yaml = 'src\site\deploy\azure\louis-agent-framework-app.yaml'; IdentityOutput = 'codingAppIdentityId'
         Share = 'louis-agent-workspace'; Hostname = 'framework.louis-agent.dev'; Suffix = '-framework'
+        # The folders its yaml mounts from the share, a parent before its child, which a release makes first.
+        Folders = @('framework', 'framework/logs')
         WhenSet = @{}
     }
 }
@@ -314,6 +316,17 @@ switch ($Verb) {
         $highest = if ($numbers.Count -gt 0) { [int]($numbers | Measure-Object -Maximum).Maximum } else { 0 }
         $next = 'v{0:D3}' -f ($highest + 1)
         Write-Host "Release: image tagged $Tag, then $App revision $next."
+        # The folders the app's yaml mounts from its share, made before the revision so a first release finds them
+        # (F164.3, Louis's pick B of three). A folder there already is left as it is: the command fails on one only
+        # with --fail-on-exist. An app that names none, as louis-agent.dev, never reads the storage key.
+        if ($AppInfo.Folders.Count -gt 0) {
+            $key = Read-Az storage account keys list -n 'pulsstorage' -g $ResourceGroup --query '[0].value' -o tsv
+            if ($LASTEXITCODE -ne 0 -or -not $key) { throw 'Could not read the storage key of pulsstorage.' }
+            foreach ($folder in $AppInfo.Folders) {
+                Write-Host "  $($AppInfo.Share)/$folder"
+                Invoke-Az storage directory create --account-name 'pulsstorage' --account-key $key --share-name $AppInfo.Share -n $folder -o none
+            }
+        }
         & $PSCommandPath build -App $App -Tag $Tag
         & $PSCommandPath update -App $App -Tag $Tag -Revision $next
     }
