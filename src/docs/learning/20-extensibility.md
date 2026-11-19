@@ -11,6 +11,12 @@ contract left the harness, and what was left out on purpose (F49.1); then how an
 project to a folder of files beside its identity, and what that move taught (F49.2, from
 [An eval as a folder of files](#an-eval-as-a-folder-of-files-f492) on).
 
+![Extensibility: a check as a catalogue entry, an eval as a folder, a pack's own checks, the framework's web and its frames, themes on a contract, and a site that only fills](diagrams/20-extensibility.svg)
+
+The sections run in the order the work was done, so a few have been overtaken. The studio this page names as next was
+built (F49.4 and F49.5). And the triage demo's swimlanes (`SwimlaneLayout`, in F122's section) went with the coding
+agent and triage demos when FX195 took them off the site.
+
 ## Before and after
 
 | | Before F49.1 | After F49.1 |
