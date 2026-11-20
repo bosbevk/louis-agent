@@ -244,7 +244,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="52" y="735" text-anchor="start">GettingStartedPage,</text>
       <text class="pic-name" x="52" y="751" text-anchor="start">HowItWorksPage,</text>
       <text class="pic-name" x="52" y="767" text-anchor="start">FeaturesPage...</text>
-      <text class="pic-note" x="52" y="783" text-anchor="start">the seven pages</text>
+      <text class="pic-note" x="52" y="783" text-anchor="start">the pages</text>
       <rect class="cls-cover" x="458.3" y="21" width="224" height="108" rx="14" />
       <rect class="mrq-glass" x="458.3" y="21" width="224" height="108" rx="14" />
       <rect class="cls-badge tone-green" x="472.3" y="45" width="28" height="28" rx="9" />

@@ -82,7 +82,7 @@ likeliest one suggested.
 The voice ends with a table of which skill goes with which job, and the skills sit beside it in `skills/`, each in
 the same shape: its rules first, then its steps or its detail, a worked example, and the docs it rests on.
 
-Two are always in the prompt. `site-pages.md` lists the site's seven pages in reading order, with what each section
+Two are always in the prompt. `site-pages.md` lists the site's pages in reading order, with what each section
 covers, so it knows which page to open without searching; it never opens a page that isn't on that list, and says of
 the evals only that they are coming. `writing.md` says how it writes for a narrow panel beside the page: the answer
 first, sentences of about 14 words and never more than 25, at most three sentences to a paragraph, code only in a

@@ -9,7 +9,7 @@
           "text": "The framework told to a developer, page by page, as a package a site turns on." }
       ] },
       { "cards": [
-        { "id": "pages", "icon": "browser", "title": "Seven pages",
+        { "id": "pages", "icon": "browser", "title": "The pages",
           "text": "Overview to Comparison, in a developer's reading order." },
         { "id": "content", "icon": "file", "title": "What they say",
           "text": "Records held to the repo by tests: families, features, cost, claims." },

@@ -19,7 +19,7 @@
             { "id": "menu", "name": "DocsMenu", "kind": "general part", "tone": "violet",
               "note": "the pages under their groups, the one being read marked" },
             { "id": "body", "name": "the page", "tone": "blue",
-              "note": "one of the framework's seven, from the router" },
+              "note": "one of the framework's pages, from the router" },
             { "id": "turn", "name": "PageTurn", "kind": "general part", "tone": "violet",
               "note": "the page before and after" },
             { "id": "orbi", "name": "FrameworkOrbi", "kind": "the site's part", "tone": "green",

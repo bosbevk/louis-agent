@@ -62,7 +62,7 @@ names, through the places' `PlaceLayout`. The layout is the framework's frame, `
 ![The site's frame: SiteShell in its docs layout, with the brand, the pages' menu, the page and its page turns](diagrams/louis-agent.site-framework-components-layout.svg)
 
 The header carries the louis-agent wordmark and the line "The C# AI agent framework", and on its right the search
-and Ask Orbi. The left column is the docs' menu, the seven pages under their groups. The middle column is the page,
+and Ask Orbi. The left column is the docs' menu, the framework's pages under their groups. The middle column is the page,
 with the page before and after at its foot. The right column holds the framework Orbi, docked, and while Orbi is
 closed, on an extra-large screen, "On this page", the page's sections, the same list the frame's section index
 reads, under the button Ask about this page. The footer names the framework, "an AI agent framework in C#". The
