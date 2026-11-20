@@ -3,6 +3,8 @@
 > Approved 2026-10-15 · Feature: [F28 Team talk](../features/F28-team-talk.md) · Branch:
 > `claude/project-thread-381vmw`, after F25's relay step (Puls hands the report on whole)
 
+![F28's plan: the note in AskAgent's message, then the API switch, the chat's card as a thread, and the checks, step by step](../diagrams/F28-team-talk-plan.svg)
+
 ## Context
 
 Louis (2026-10-15): "can we ask Puls to try and deduce in what mood the person is in by their typing style, and pass
@@ -70,3 +72,6 @@ One commit each, with its tests; the review stop after each.
 ## Approved during the build
 
 (none yet)
+
+---
+[Plans](../../../../src/docs/plans/README.md) · Related: [F28 Team talk](../features/F28-team-talk.md) · [TODO](../../../../TODO.md)
