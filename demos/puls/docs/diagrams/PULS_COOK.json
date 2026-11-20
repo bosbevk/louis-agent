@@ -1,0 +1,37 @@
+{
+  "kind": "cards",
+  "title": "Puls's cook: what to add next",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "cook", "icon": "chip", "title": "puls-cook", "code": "research, 2026-10-26",
+          "look": "highlight",
+          "text": "What would make it the best home cook and teacher in South Africa." }
+      ] },
+      { "cards": [
+        { "id": "rivals", "icon": "search", "title": "The competition",
+          "text": "Each tied to one shop; none teaches, none works across shops." },
+        { "id": "need", "icon": "tag", "title": "What SA cooks need",
+          "text": "A tight budget, less waste, food safety, light answers to share." },
+        { "id": "teach", "icon": "book", "title": "Teaching that works",
+          "text": "Confidence measured, small wins first, and how did it go." }
+      ] },
+      { "cards": [
+        { "id": "w1", "icon": "shield", "title": "Wave 1, in F48",
+          "text": "Safety guard in code, cheaper pack size, nudges, cook mode, a list to copy, feedback." },
+        { "id": "w2", "icon": "calendar", "title": "Wave 2, F76",
+          "text": "A week on a budget, leftovers, cheap this month, diet rules, swaps, fixing mistakes." },
+        { "id": "w3", "icon": "clock", "title": "Wave 3, F88",
+          "text": "Library, help mid-cook, voice, photos, WhatsApp, dishes mastered." }
+      ] }
+    ],
+    "links": [
+      { "from": "cook", "to": "rivals" },
+      { "from": "cook", "to": "need" },
+      { "from": "cook", "to": "teach" },
+      { "from": "need", "to": "w1" },
+      { "from": "need", "to": "w2" },
+      { "from": "need", "to": "w3" }
+    ]
+  }
+}
