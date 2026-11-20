@@ -121,7 +121,7 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written | `/research-the-market` |
 | A page or a section is planned, reordered or redesigned, always on our framework | `/design-a-page` |
 | A mark, a card, an image, a mockup or a palette is made or changed | `/design-a-graphic` |
-| Words a visitor reads on a site are written or changed (the story and web writer) | `/write-the-copy` |
+| Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) | `/write-the-copy` |
 | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) | `/write-the-docs` |
 | A framework doc or page is checked against the code, or a framework page changes (the framework writer) | `/write-the-framework` |
 | A skill is written or changed | `/write-a-skill` |

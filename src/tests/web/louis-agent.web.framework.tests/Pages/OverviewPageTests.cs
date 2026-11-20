@@ -90,6 +90,28 @@ public class OverviewPageTests
         });
     }
 
+    /// <summary>
+    /// Beside the five families, the Overview names what is built on them, each by its folder, so a reader sees where
+    /// a project of their own would sit; every folder it names is one in the repo.
+    /// </summary>
+    [Test]
+    public void BuiltOnIt_NamesFoldersOfTheRepo()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<OverviewPage>();
+
+        Assert.Multiple(() =>
+        {
+            string section = cut.Find("section#built-on-it").TextContent;
+            foreach (var folder in BuiltOnIt.Folders.SelectMany(term => term.Names))
+            {
+                Assert.That(Directory.Exists(Path.Combine(TestPaths.RepoRoot, folder)), $"{folder} is a folder");
+                Assert.That(section, Does.Contain(folder), $"{folder} is on the page");
+            }
+        });
+    }
+
     /// <summary>A section ends with the docs it was written from, each a file in the repo.</summary>
     [Test]
     public void TheSections_EndWithTheirDocs()

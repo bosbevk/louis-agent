@@ -40,7 +40,7 @@ public partial class GettingStartedPageTests
     [GeneratedRegex(@"new (\w+(?:Pack|Identity))\(")]
     private static partial Regex Built();
 
-    /// <summary>It answers at its address with its heading, then its four sections, each an address of its own.</summary>
+    /// <summary>It answers at its address with its heading, then its five sections, each an address of its own.</summary>
     [Test]
     public void ThePage_HasItsHeading_AndItsSections()
     {
@@ -52,7 +52,7 @@ public partial class GettingStartedPageTests
         {
             Assert.That(cut.Find("h1").TextContent.Trim(), Is.EqualTo("Your agent, in two lines."));
             Assert.That(cut.FindAll("section[id]").Select(section => section.Id),
-                Is.EqualTo(new[] { "top", "what-it-loads", "whose-is-what", "where-it-stands" }));
+                Is.EqualTo(new[] { "top", "what-it-loads", "whose-is-what", "where-it-stands", "where-next" }));
             Assert.That(FrameworkContents.All.Pages.Select(entry => entry.Address), Does.Contain("/getting-started"),
                 "in the menu");
         });
@@ -83,6 +83,22 @@ public partial class GettingStartedPageTests
             Assert.That(built, Has.Count.GreaterThanOrEqualTo(12), "three identities and nine packs at least");
             Assert.That(built.Where(name => !loads.Contains(name)), Is.Empty);
         });
+    }
+
+    /// <summary>
+    /// It ends with where to go once the agent answers: the guides that change who it is, give it tools and put it on
+    /// a website.
+    /// </summary>
+    [Test]
+    public void ItEnds_WithTheGuidesThatComeNext()
+    {
+        using var ctx = Context();
+
+        var links = ctx.Render<GettingStartedPage>().FindAll("section#where-next a.doc-link")
+            .Select(link => link.GetAttribute("href")).ToList();
+
+        Assert.That(links, Has.Some.EndsWith("build-an-identity.md")
+            .And.Some.EndsWith("build-a-pack.md").And.Some.EndsWith("spawn-a-site.md"));
     }
 
     /// <summary>The run steps are typed where the program's settings are found: its demo's own config folder.</summary>

@@ -17,13 +17,13 @@ public static class GettingStarted
     public static readonly IReadOnlyList<Term> WhoseIsWhat =
     [
         new(["Program.cs", "CodingCatalog"],
-            "Yours. The program that starts a host, and the catalogue that names which identities and packs it loads."),
+            "Yours. The program starts a host, and the catalogue names the identities and packs it loads."),
         new(["identity/", "config/"],
             "Yours too. Who your agent is, as markdown you can read, and the settings it runs with."),
         new(["louis-agent.core", "louis-agent.cli"],
-            "The framework's. The engine that runs the loop, and the host that puts it in the terminal."),
+            "The framework's. The engine runs the loop, and this host puts it in the terminal."),
         new(["packs/tools/"],
-            "Ready-made packs. Each is what an agent can do, a package you name in your catalogue or leave out.")
+            "Ready-made packs. Each one is something an agent can do, and you name it in your catalogue or leave it out.")
     ];
 
     /// <summary>The steps from a fresh clone to the coding agent answering in the terminal.</summary>
