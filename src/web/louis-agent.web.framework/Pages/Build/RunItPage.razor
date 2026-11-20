@@ -9,7 +9,7 @@
 
 <Band Id="on-your-machine" Topic="Run it" Short="On your machine" Title="On your own machine." Summary="Two stacks run the agent and the sites. Every port binds to your own machine only, and each stack reads its settings from its own config folder. Type the commands from the repo's root.">
     <TermList Terms="RunIt.OnYourMachine" />
-    <CodeListing Name="Start them" Language="bash" Code="@RunIt.Commands" />
+    <CodeListing Name="Start them" Language="console" Code="@RunIt.Commands" />
     <DocLinks>
         <DocLink Path="demos/louis-agent/docker/README.md">The coding stack</DocLink>
         <DocLink Path="src/docs/SETUP.md">Every setting</DocLink>
@@ -18,7 +18,7 @@
 
 <Band Id="watch-it" Topic="Run it" Short="Watch it" Title="Watch every turn." Summary="Start the dashboard once, beside the others. Every turn, model request and tool call shows up there as a trace, with its logs.">
     <TermList Terms="RunIt.Watching" />
-    <CodeListing Name="Start the dashboard" Language="bash" Code="@RunIt.Dashboard.Command" />
+    <CodeListing Name="Start the dashboard" Language="console" Code="@RunIt.Dashboard.Command" />
     <DocLinks>
         <DocLink Path="src/docs/guides/debug-and-logs.md">Debug and logs</DocLink>
     </DocLinks>

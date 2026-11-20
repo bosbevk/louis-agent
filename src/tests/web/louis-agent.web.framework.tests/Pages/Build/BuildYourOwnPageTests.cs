@@ -4,7 +4,7 @@ using LouisAgent.Web.Framework.Pages.Build;
 using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Framework.Tests.Pages;
+namespace LouisAgent.Web.Framework.Tests.Pages.Build;
 
 /// <summary>
 /// Build your own, at <c>/build-your-own</c>: an identity, a pack and a site of your own, each told in a few steps

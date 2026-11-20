@@ -4,7 +4,7 @@ using LouisAgent.Web.Framework.Pages.Build;
 using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Framework.Tests.Pages;
+namespace LouisAgent.Web.Framework.Tests.Pages.Build;
 
 /// <summary>
 /// Run it, at <c>/run-it</c>: the stacks that run on your own machine, the dashboard that watches them, and the two
