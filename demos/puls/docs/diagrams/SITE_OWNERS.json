@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "For site owners",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "ua", "icon": "browser", "title": "It says what it is", "code": "Puls/1.0 (+this page)", "look": "highlight",
+          "text": "Its own user agent on every request, never a desktop browser's, and nothing about the person." }
+      ] },
+      { "cards": [
+        { "id": "reads", "icon": "search", "title": "One page per question",
+          "text": "A recipe or a map answer; no crawling, no shop pages, no logins." },
+        { "id": "robots", "icon": "shield", "title": "Takes your no",
+          "text": "robots.txt on every request, AI readers' groups too, and a page's own no-AI signals." }
+      ] },
+      { "cards": [
+        { "id": "keeps", "icon": "database", "title": "What it keeps",
+          "text": "A recipe from a site in its table, published with your name and a link to you." },
+        { "id": "stop", "icon": "mail", "title": "Ask us to stop",
+          "text": "An issue on GitHub; a stop is honoured and its copies deleted." }
+      ] }
+    ],
+    "links": [
+      { "from": "ua", "to": "reads" },
+      { "from": "ua", "to": "robots" },
+      { "from": "reads", "to": "keeps" },
+      { "from": "robots", "to": "stop" }
+    ]
+  }
+}
