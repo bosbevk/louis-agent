@@ -1,6 +1,8 @@
+using System.Xml.Linq;
 using LouisAgent.Site.Content;
 using LouisAgent.Site.Resumes;
 using LouisAgent.Site.Resumes.Privacy;
+using LouisAgent.Web.Components.Site.Addresses;
 
 namespace LouisAgent.Site.Tests.Content;
 
@@ -12,6 +14,8 @@ namespace LouisAgent.Site.Tests.Content;
 /// </summary>
 public class CvContentTests
 {
+    private static readonly XNamespace SitemapNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
+
     /// <summary>It reads, strictly, as Louis's CV.</summary>
     [Test]
     public void TheCv_Reads_AsLouissCv()
@@ -59,18 +63,23 @@ public class CvContentTests
         Assert.That(parts[card], Is.EqualTo(FrameworkSite + place));
     }
 
+    /// <summary>The word the framework's site puts its landing's sections under, as in /overview/the-whole.</summary>
+    private const string FrameworkHome = "overview";
+
     /// <summary>
-    /// Every place a "now" card leads to is one the framework's site has: its sitemap, which a test there holds to its
-    /// pages, lists it.
+    /// Every place a "now" card leads to is one the framework's site has: a page its sitemap lists, which a test
+    /// there holds to its pages, or a section of one, read by the address rule (FX216: the sitemap lists pages only).
     /// </summary>
     [Test]
-    public void EveryNowCardsPlace_IsInTheFrameworksSitemap()
+    public void EveryNowCardsPlace_IsOnAPageInTheFrameworksSitemap()
     {
-        string sitemap = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+        var sitemap = XDocument.Load(Path.Combine(TestPaths.RepoRoot,
             "src/site/louis-agent.site-framework/wwwroot/sitemap.xml"));
+        var pages = sitemap.Descendants(SitemapNamespace + "loc").Select(loc => new Uri(loc.Value).AbsolutePath);
+        var rule = new SiteAddresses(FrameworkHome, pages);
 
         var missing = Cv.Resume.Now!.Parts.Select(part => part.Url ?? "")
-            .Where(url => !sitemap.Contains($"<loc>{url}</loc>", StringComparison.Ordinal)).ToList();
+            .Where(url => rule.Read(url) is null).ToList();
 
         Assert.That(missing, Is.Empty);
     }
