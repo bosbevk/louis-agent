@@ -1,12 +1,26 @@
 # Design: Orchestrators and Self-Healing
 
-**Status:** partly proven by the orchestrator POC ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) · **Date:** moved here
-from the TODO on 2026-10-07 · **Next:** [F17 Orchestrator agent](../features/F17-orchestrator-agent.md) (a routing
-workflow with an agent for the exceptions, measured against the POC)
+> **Explanation.** How louis-agent fits into a setup that heals itself, which decisions the orchestrator proof of
+> concept settled, and what is still open. **Status:** partly proven by the orchestrator proof of concept
+> ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)). **Next:**
+> [F39 Orchestration](../../../../src/docs/plans/F39-orchestration.md), which took in
+> [F17 Orchestrator agent](../features/F17-orchestrator-agent.md), and
+> [F106.3 Triage and fix a service](../../../../src/docs/plans/F106.3-triage-and-fix-a-service.md).
 
-How louis-agent fits into a self-healing setup: an **orchestrator** agent per microservice watches it, decides what each
-problem needs, and calls louis-agent for anything that is a code change. Each decision below says what the POC showed
-and what is still open; the open items are tracked in the [TODO](../../../../TODO.md) backlog.
+![Orchestrators and self-healing: one orchestrator per service acknowledges, escalates or asks louis-agent for a fix, and checks it](../diagrams/ORCHESTRATOR_DESIGN.svg)
+
+The idea is simple. Each microservice gets an **orchestrator**, an agent that watches it. It decides what each problem
+needs, and when a problem needs a code change it calls louis-agent to make it. The orchestrator never edits code, and
+louis-agent never deploys.
+
+The doc goes in four parts. First the two kinds of agent and how they talk. Then the seven decisions for one
+orchestrator per service, each with what the proof of concept showed and what is still open. Then the fix loop inside
+louis-agent, and last a store-operations orchestrator that is only an idea so far.
+
+The proof of concept is `demos/louis-agent/hosts/louis-agent.orchestrator`. Its sample service was removed in CL10, so
+today it watches nothing until you point it at a service; the run described here is at the tag `pre-cl10`. Of the open
+items below, two are on the [TODO](../../../../TODO.md): an error tracker behind `IErrorFeed` (F99) and a webhook
+trigger beside polling (F100). The others are not on it yet.
 
 ## Two kinds of agent
 
@@ -28,7 +42,7 @@ loop and the orchestrator gets the result. (Details: [AGENT_COMMUNICATION.md](..
 |---|---|---|---|
 | 1 | **Scope per microservice**, the same way `AGENT_FUNCTION` selected a skill set before CL9: one orchestrator codebase, a configuration per service declaring its error-tracker project, repository, escalation rules and service-specific actions (e.g. payments never auto-deploys; orders may restart a stuck worker) | **Proven:** a folder per service (`Skills/order-service/service.md`) with one runbook per API method ([RUNBOOKS.md](../projects/orchestrator-runbooks.md)); selected with `ORCHESTRATOR_SERVICE` | Error-tracker project ids and service actions (no real tracker yet) |
 | 2 | **Don't run the watcher inside the service it watches**: if the service crashes, its watchdog shouldn't crash with it | **Proven:** the orchestrator is its own container | — |
-| 3 | **Topology is a deploy choice**: one shared orchestrator loaded with the right configuration per run, or one instance per service (stronger isolation: a misconfigured orchestrator can't touch another service's repository or credentials), like `acp-server` per chat and `mcp-server` per client today | One instance in the demo | Choose for production |
+| 3 | **Topology is a deploy choice**: one shared orchestrator loaded with the right configuration per run, or one instance per service (stronger isolation: a misconfigured orchestrator can't touch another service's repository or credentials), like `louis-agent.acp` per chat and `louis-agent.mcp` per client today (their containers keep the names `acp-server` and `mcp-server`) | One instance in the demo | Choose for production |
 | 4 | **Triggering**: scheduled polling and/or a webhook receiver for error-tracker and uptime alerts, per service | Polling only (`ORCHESTRATOR_POLL_SECONDS`, or `--once`) | Webhook receiver |
 | 5 | **The call into louis-agent is an API session**: each service gets its own louis-agent.api with `WORKSPACE_ROOT` fixed to its repository; the orchestrator posts the problem (stack trace, endpoint, frequency) and streams the result | **Proven:** `CallLouisAgentFix` opens one session per fix, sends "continue" follow-ups when louis-agent runs out of tool rounds, and reads the result | A pull request instead of a local branch (needs a PR tool) |
 | 6 | **Implementation tier**: originally Anthropic's Tool Runner (`BetaToolRunner`, C#), since the orchestrator has no multi-provider requirement and it matches the stack in place (`Axiz.Adobe` is a .NET/C# repository); its tools (`CallLouisAgentFix`, escalations to other agents) are plain HTTP/MCP calls, not in-process hand-offs | Built on `louis-agent.core` instead (an `AgentEngine` with its own `toolsets:`), reusing providers, the skills loader and the tool loop with no new dependency | **Decide** which to keep before building the real one |

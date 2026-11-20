@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "F17: a routing workflow, with an agent for the exceptions",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "classify", "icon": "chip", "title": "Classify", "code": "RecordDecision",
+          "look": "highlight",
+          "text": "One cheap request: expected, fixable, escalate or unclear, with the rule it matched." }
+      ] },
+      { "cards": [
+        { "id": "flow", "icon": "branch", "title": "The known paths in code", "code": "TriageWorkflow",
+          "text": "Acknowledge, escalate, or fix then confirm, the same way every time." },
+        { "id": "agent", "icon": "user", "title": "The agent for the exceptions",
+          "text": "Unclear errors, failed fixes and errors with one cause get judgement." }
+      ] },
+      { "cards": [
+        { "id": "confirm", "icon": "shield", "title": "One confirm tool", "code": "ConfirmFix",
+          "text": "Commit check, replay and tests in one call." },
+        { "id": "measure", "icon": "chart", "title": "Measured against today",
+          "text": "The triage suite: decisions right at least as often, at a lower cost per error." }
+      ] }
+    ],
+    "links": [
+      { "from": "classify", "to": "flow" },
+      { "from": "classify", "to": "agent" },
+      { "from": "flow", "to": "confirm" },
+      { "from": "agent", "to": "measure" }
+    ]
+  }
+}
