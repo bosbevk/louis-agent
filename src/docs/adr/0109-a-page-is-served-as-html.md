@@ -1,6 +1,6 @@
 # ADR 0109: A site's page is served as HTML, rendered once per deploy
 
-**Status:** Accepted (2026-11-09, F121)
+**Status:** Accepted (2026-11-09, F121) · Amended by [0128](0128-a-site-names-one-address-per-page.md)
 
 ## Context
 

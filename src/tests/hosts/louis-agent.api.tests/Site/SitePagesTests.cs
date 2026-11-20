@@ -1,4 +1,5 @@
 using System.Net;
+using LouisAgent.Api.Config;
 using LouisAgent.Api.Site;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -67,20 +68,61 @@ public class SitePagesTests
         Directory.Delete(root, recursive: true);
     }
 
-    /// <summary>A test server with this assembly as the site, its index.html in a web root of its own.</summary>
+    /// <summary>
+    /// A site that names its address in SITE_ADDRESS (FX216) gets canonical links on it, and a page asked for on any
+    /// other host, such as www, is sent there for good with its path and question; a file and the API stay where they
+    /// are, since a health probe and a chat on another site call them there.
+    /// </summary>
+    [Test]
+    public async Task ASiteAddress_IsTheOnlyHostAPageAnswersOn()
+    {
+        var (app, client, root) = await StartAsync(publicUrl: null, siteAddress: "https://site.test");
+        await using var _ = app;
+
+        string html = await client.GetStringAsync("https://site.test/sample");
+        var page = await client.GetAsync("https://www.site.test/sample/top?from=mail");
+        var file = await client.GetAsync("https://www.site.test/index.html");
+        var api = await client.GetAsync("https://www.site.test/v1/health");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+            Assert.That(page.StatusCode, Is.EqualTo(HttpStatusCode.MovedPermanently));
+            Assert.That(page.Headers.Location, Is.EqualTo(new Uri("https://site.test/sample/top?from=mail")));
+            Assert.That(file.StatusCode, Is.EqualTo(HttpStatusCode.OK), "a file is never sent on");
+            Assert.That(api.StatusCode, Is.EqualTo(HttpStatusCode.OK), "the API is never sent on");
+        });
+        Directory.Delete(root, recursive: true);
+    }
+
+    /// <summary>A stand-in for an API route on the same host as the site.</summary>
+    private static string Health() => "ok";
+
+    /// <summary>
+    /// A test server with this assembly as the site, its index.html in a web root of its own, an API route beside it,
+    /// and SITE_ADDRESS in its settings when one is given.
+    /// </summary>
     private static async Task<(WebApplication App, HttpClient Client, string Root)> StartAsync(
-        string? publicUrl = "https://site.test/")
+        string? publicUrl = "https://site.test/", string? siteAddress = null)
     {
         string root = Path.Combine(Path.GetTempPath(), "site-pages-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         await File.WriteAllTextAsync(Path.Combine(root, "index.html"), Index);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = root });
         builder.WebHost.UseTestServer();
+        if (siteAddress is not null) builder.Configuration[SiteAddressOptions.Setting] = siteAddress;
         var app = builder.Build();
+        // A file and an API route beside the pages, as a real host has.
+        app.UseStaticFiles();
+        app.MapGet("/v1/health", Health);
         app.MapLouisAgentSite(typeof(SitePagesTests).Assembly, _ => { },
             publicUrl is null ? null : new Uri(publicUrl), "home");
         await app.StartAsync();
-        return (app, app.GetTestClient(), root);
+        // The client asks at the site's own address, as a visitor who followed its links does.
+        var client = app.GetTestClient();
+        string? site = publicUrl ?? siteAddress;
+        if (site is not null) client.BaseAddress = new Uri(site);
+        return (app, client, root);
     }
 
     /// <summary>A page's address answers its own title, description, canonical address and words.</summary>
@@ -107,17 +149,25 @@ public class SitePagesTests
         Directory.Delete(root, recursive: true);
     }
 
-    /// <summary>A section's address answers its page, canonical at the section's own address.</summary>
+    /// <summary>
+    /// A section's address answers its page, and names the page as the original, however it was spelled (FX216:
+    /// Google folds copies that each claim to be the original into one of its own choosing).
+    /// </summary>
     [Test]
-    public async Task ASectionsAddress_AnswersItsPage()
+    public async Task ASectionsAddress_AnswersItsPage_WithThePageAsCanonical()
     {
         var (app, client, root) = await StartAsync();
         await using var _ = app;
 
-        string html = await client.GetStringAsync("/sample/top");
+        string section = await client.GetStringAsync("/sample/top");
+        string slashed = await client.GetStringAsync("/sample/top/");
 
-        Assert.That(html, Does.Contain("<h2>Sample words</h2>")
-            .And.Contain("<link rel=\"canonical\" href=\"https://site.test/sample/top\" />"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(section, Does.Contain("<h2>Sample words</h2>")
+                .And.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+            Assert.That(slashed, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+        });
         Directory.Delete(root, recursive: true);
     }
 

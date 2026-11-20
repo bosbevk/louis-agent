@@ -121,7 +121,7 @@ by default (`FRAMEWORK_PORT`), from `Dockerfile.framework`. It keeps its logs in
 price and rate tables the usage ledger reads, and the docs Orbi reads. Those are laid out under `/app/docs` as the
 repo lays them, so their links hold: the repo's `README.md`, `ROADMAP.md` and `TODO.md`, the framework's docs
 without the films, each demo's docs and the packs'. `DOCS_ROOT` points at them. In Rider, the host's
-`site-framework` profile runs it on 127.0.0.1:5085, reading the docs from the repo itself (`DOCS_ROOT=../../..`). The site lists every page and place in `wwwroot/sitemap.xml`, and `robots.txt` names it.
+`site-framework` profile runs it on 127.0.0.1:5085, reading the docs from the repo itself (`DOCS_ROOT=../../..`). The site lists every page in `wwwroot/sitemap.xml`, one address each and no section (ADR 0128), and `robots.txt` names it.
 
 In Azure it is the Container App `louis-agent-framework-app`, beside louis-agent.dev's in the same environment, on the
 same image, from `src/site/deploy/azure/louis-agent-framework-app.yaml`. Every merge to `main` releases it, after
@@ -180,7 +180,7 @@ the compose service and the run profile to the docs, the door and Orbi. `Layout/
 doc links lead to GitHub, that the site opens in flat and offers flat alone, that it wears the docs layout, that Orbi
 stands docked beside the page, and that the search, Ask Orbi and Ask about this page are where they belong.
 `Styles/StylesheetTests` hold that the site's styles carry the chat's rules. `Meta/SitemapTests` hold
-the sitemap to every page and place, and `robots.txt` to the sitemap. `Pages/PlacesTests` hold a family's address to
+the sitemap to every page, and `robots.txt` to the sitemap. `Pages/PlacesTests` hold a family's address to
 the Overview at its section, and the router to the catch-all. `Pages/SiteMapTests` hold that every project the
 framework ships is named on some page of the site.
 

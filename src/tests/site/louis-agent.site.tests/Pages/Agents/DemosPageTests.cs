@@ -46,7 +46,7 @@ public class DemosPageTests
     }
 
     /// <summary>
-    /// Each window has its own address under the start's (ADR 0107), the ones the sitemap lists. Opened at one, that
+    /// Each window has its own address under the start's (ADR 0107). Opened at one, that
     /// business is forward, with its name and its way in, so each address is its own page. At a place the start
     /// doesn't have, the guesthouse is forward.
     /// </summary>

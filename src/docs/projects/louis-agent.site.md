@@ -115,7 +115,8 @@ Every page is built from `Band`s, one per section, each with an id in words. So 
 address, and the guide can take a visitor straight there. The site names its places among its areas, with
 `.Places(Home, typeof(App).Assembly)`, the landing's under the word `home`, as in `/home/welcome`. The router draws a
 place opened afresh in its own page's layout ([louis-agent.web.places](louis-agent.web.places.md)). The sitemap lists
-them all, and a test writes it from the pages.
+the pages, one address each, and a test writes it from the pages. A section's address answers its page, and names the
+page as the original, so a search engine isn't handed a copy of the page at every section (ADR 0128).
 
 A grid where each item had a summary and a story is a deck of cards that open.
 
@@ -132,8 +133,8 @@ themes link to.
 
 The old framework addresses answer with nothing, and no page of this site links to them: `SiteLinksTests` holds every
 link on the site to a place on it. The CV's four "now" cards, which prove its claims, lead to their places on
-framework.louis-agent.dev. `CvContentTests` holds each of those places to that site's sitemap, so a place renamed there
-fails a test here.
+framework.louis-agent.dev. `CvContentTests` reads each of those places by the address rule over the pages in that
+site's sitemap, so a page renamed there fails a test here.
 
 The films aren't on the site any more either, which leaves their export tool stuck (see *Limits and plans*).
 

@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Site.Places;
 using LouisAgent.Api.Site.Rendering;
@@ -19,12 +20,15 @@ public static class SitePages
     /// <summary>
     /// Maps every address that isn't a file to the site's pages: <paramref name="site"/> is the site's assembly, whose
     /// routes name its pages; <paramref name="services"/> registers what its pages ask for;
-    /// <paramref name="publicUrl"/> is where the site is served (its canonical links), the address each request came
-    /// to when none is given; <paramref name="home"/> is the word its landing's sections sit under, when it has one.
+    /// <paramref name="publicUrl"/> is where the site is served (its canonical links), SITE_ADDRESS when none is given,
+    /// and the address each request came to when neither is; <paramref name="home"/> is the word its landing's sections
+    /// sit under, when it has one.
     /// </summary>
     public static WebApplication MapLouisAgentSite(this WebApplication app, Assembly site,
         Action<IServiceCollection> services, Uri? publicUrl = null, string? home = null)
     {
+        // A program may name the site's address; else SITE_ADDRESS does (FX216), read from the host's settings.
+        publicUrl ??= SiteAddressOptions.FromEnvironment(name => app.Configuration[name]).Address;
         var routes = SiteRoutes.Of(site, services, home);
         var prerenderer = new PagePrerenderer(services);
         var handler = new SitePageHandler(routes, prerenderer, publicUrl, app.Environment);

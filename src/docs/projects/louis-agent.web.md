@@ -579,8 +579,9 @@ Each has an id, so `/home/100-adrs` opens it. Three things select a piece: a cli
 A card the visitor opens. And a piece the guide shows. The last two select it with nothing sent. A selected piece is
 drawn pressed, a chip in the guide's box names it, and every message carries it until the chip is closed.
 
-**Found by search.** A site lists every page and place in its `sitemap.xml`, which a site test writes from the
-rendered pages and holds to them. A page meant for search declares a `PageHead` beside its title: its description
+**Found by search.** A site lists every page in its `sitemap.xml`, one address each and no section, which a site
+test writes from the pages and holds to them. A section's address opens its page, so the page is the one original a
+search engine is told about (ADR 0128). A page meant for search declares a `PageHead` beside its title: its description
 and any structured data, in one head, since Blazor keeps only the last one a page writes. The facts are schema.org
 records (an organisation, a website, a piece of software, a breadcrumb), written as JSON-LD. The API serves each
 page as HTML with its own head and words, for crawlers that run no script.

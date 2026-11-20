@@ -48,6 +48,10 @@ properties:
           # without it a sign-in provider is told to send the person back to http://, and Google refuses the address.
           - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
             value: 'true'
+          # The site's one address (FX216, ADR 0128): every page names it as the original, and a page asked for on
+          # any other host, such as www, is sent there.
+          - name: SITE_ADDRESS
+            value: https://louis-agent.dev
           - name: HOST_TIME_ZONE
             value: Africa/Johannesburg
           - name: HOST_CULTURE

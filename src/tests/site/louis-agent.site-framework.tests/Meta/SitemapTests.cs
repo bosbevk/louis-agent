@@ -1,18 +1,15 @@
-using System.Reflection;
 using System.Xml.Linq;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Framework;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.SiteFramework.Tests.Meta;
 
 /// <summary>
-/// The framework's site lists every page and every place on it by its own address (F164.1, step 12, ADR 0107), in the
-/// menu's reading order, so a search engine finds them all; its robots.txt lets every crawler in and names the
-/// sitemap. The file is held to the pages: each is drawn, its places collected by the address rule, and the file must
-/// say the same. <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, as it writes the golden files.
+/// The framework's site lists every page by its own address (F164.1, FX216), in the menu's reading order, so a search
+/// engine finds them all and only the originals; its robots.txt lets every crawler in and names the sitemap. The file
+/// is held to the pages, and must say the same. <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, as it writes the golden files.
 /// </summary>
 public class SitemapTests
 {
@@ -25,9 +22,9 @@ public class SitemapTests
     private static string Served(string file) =>
         Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site-framework/wwwroot", file);
 
-    /// <summary>Every page and place, in the file, and nothing else.</summary>
+    /// <summary>Every page, in the file, and nothing else.</summary>
     [Test]
-    public void TheSitemap_ListsEveryPageAndPlace()
+    public void TheSitemap_ListsEveryPage()
     {
         var expected = Addresses().Select(address => Site + address).ToList();
 
@@ -44,33 +41,16 @@ public class SitemapTests
             Does.Contain("User-agent: *").And.Contain($"Sitemap: {Site}/sitemap.xml"));
 
     /// <summary>
-    /// The pages in the menu's order, each its own address, then its places by the rule, the first section being the
-    /// page itself.
+    /// The pages in the menu's order, each by its own address. A section's address answers its page and names the
+    /// page as the original (FX216), so a sitemap that listed it would only point Google at a copy.
     /// </summary>
     private static List<string> Addresses()
     {
-        var pages = FrameworkLibrary.Assembly.GetTypes()
-            .SelectMany(type => type.GetCustomAttributes<RouteAttribute>().Select(route => (route.Template, type)))
-            .ToDictionary(page => page.Template, page => page.type);
-
-        using var ctx = new BunitContext();
-        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSiteAreas(FrameworkAreas.Name);
-        var rule = ctx.Services.GetRequiredService<SiteAddresses>();
-        var addresses = new List<string>();
-        foreach (var entry in FrameworkContents.All.Pages)
-        {
-            var cut = ctx.Render(builder =>
-            {
-                builder.OpenComponent(0, pages[entry.Address]);
-                builder.CloseComponent();
-            });
-            addresses.Add(rule.Address(entry.Address, null));
-            addresses.AddRange(cut.FindAll("section[id]").Select(place => place.Id)
-                .Where(id => id != SiteAddresses.Top).Select(id => rule.Address(entry.Address, id)));
-        }
-
-        return addresses.Distinct().ToList();
+        var services = new ServiceCollection();
+        services.AddSiteAreas(FrameworkAreas.Name);
+        using var provider = services.BuildServiceProvider();
+        var rule = provider.GetRequiredService<SiteAddresses>();
+        return FrameworkContents.All.Pages.Select(entry => rule.Address(entry.Address, null)).Distinct().ToList();
     }
 
     /// <summary>Writes the sitemap from the pages.</summary>

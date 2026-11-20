@@ -15,6 +15,8 @@ namespace LouisAgent.Api.Site;
 /// Answers a site's page address with its HTML (F121): the page rendered once and kept until the process restarts (a
 /// deploy), put into the site's index.html at the address asked for. A page that declares no description, or that
 /// fails to render, answers the plain shell as before; an address that names no page answers the shell with a 404.
+/// A site that knows its address sends a page asked for on any other host there for good (FX216), so Google sees one
+/// copy of each page, never a second one on www.
 /// </summary>
 /// <remarks>
 /// One handler class for the endpoint's work (ADR 0051), holding what every request shares: the routes, the renderer,
@@ -33,23 +35,35 @@ internal sealed class SitePageHandler(
     private readonly ConcurrentDictionary<Type, Task<RenderedPage?>> _rendered = new();
     private readonly Lazy<string> _index = new(() => ReadIndex(environment));
 
-    /// <summary>The page's HTML at its address, the plain shell, or the shell with a 404.</summary>
+    /// <summary>
+    /// The page's HTML at its address, the plain shell, the shell with a 404, or, on a host that isn't the site's, a
+    /// permanent move to the same place on the site's address.
+    /// </summary>
     /// <remarks>
     /// Guard clauses, one case each (ADR 0051). It takes the request, not the context: a method of the context alone
     /// that returns a task is bound as a plain request delegate, and its result would never be written.
     /// </remarks>
-    public async Task<ContentHttpResult> HandleAsync(HttpRequest request)
+    public async Task<Results<ContentHttpResult, RedirectHttpResult>> HandleAsync(HttpRequest request)
     {
         string address = request.Path.Value ?? "/";
         if (routes.PageFor(address) is not var (route, page)) return Html(_index.Value, StatusCodes.Status404NotFound);
+        if (IsElsewhere(request)) return TypedResults.Redirect(Moved(request).ToString(), permanent: true);
 
         // The site's public address, or the one this request came to (behind a proxy, its forwarded scheme and host).
         var site = publicUrl ?? new Uri($"{request.Scheme}://{request.Host}/");
         var rendered = await _rendered.GetOrAdd(page, _ => RenderAsync(page, new Uri(site, route)));
         if (rendered is null || rendered.Description.Length == 0) return Html(_index.Value, StatusCodes.Status200OK);
 
-        return Html(PageShell.Fill(_index.Value, rendered, site, address, route), StatusCodes.Status200OK);
+        return Html(PageShell.Fill(_index.Value, rendered, site, route), StatusCodes.Status200OK);
     }
+
+    /// <summary>Whether the site knows its address and this request came to another host, such as www.</summary>
+    private bool IsElsewhere(HttpRequest request) => publicUrl is not null
+        && !string.Equals(request.Host.Host, publicUrl.Host, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>The same place on the site's own address: the path as it was asked for, and its question.</summary>
+    private Uri Moved(HttpRequest request) =>
+        new(publicUrl!, request.Path.Value!.TrimStart('/') + request.QueryString.Value);
 
     /// <summary>
     /// A page rendered at its own route; a failure is logged once and gives the plain shell from then on.

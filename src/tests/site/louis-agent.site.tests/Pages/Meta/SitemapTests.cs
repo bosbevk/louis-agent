@@ -7,10 +7,9 @@ using LouisAgent.Site.Pages;
 namespace LouisAgent.Site.Tests.Pages.Meta;
 
 /// <summary>
-/// The site's sitemap lists every page and every place on it by its own address (F119, ADR 0107), so a search engine
-/// finds them all: search engines read a page without what follows a <c>#</c>, and only real addresses can be listed.
-/// The file is held to the pages: every site page is rendered, its sections and cards collected by the address rule,
-/// and the file must say the same. <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, as it writes the golden files.
+/// The site's sitemap lists every page by its own address (F119, FX216), so a search engine finds them all and only
+/// the originals: a section's address answers its page and names the page as its canonical. The file is held to the
+/// pages, and must say the same. <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, as it writes the golden files.
 /// </summary>
 public class SitemapTests
 {
@@ -20,9 +19,9 @@ public class SitemapTests
     private static string SitemapPath => Path.Combine(TestPaths.RepoRoot,
         "src/site/louis-agent.site/wwwroot/sitemap.xml");
 
-    /// <summary>Every page and place, in the file, and nothing else.</summary>
+    /// <summary>Every page, in the file, and nothing else.</summary>
     [Test]
-    public void TheSitemap_ListsEveryPageAndPlace()
+    public void TheSitemap_ListsEveryPage()
     {
         var expected = Addresses().Select(address => Site + address).ToList();
 
@@ -43,36 +42,19 @@ public class SitemapTests
     }
 
     /// <summary>
-    /// The site's pages and their places, in order: each page's own address, then its sections and cards by the rule,
-    /// the first section being the page itself.
+    /// The site's pages, each by its own address. A section's address answers its page and names the page as the
+    /// original (FX216), so a sitemap that listed it would only point Google at a copy.
     /// </summary>
     private static List<string> Addresses()
     {
-        var pages = typeof(HomePage).Assembly.GetTypes()
+        var routes = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
-            .Select(type => (Type: type, Route: type.GetCustomAttributes<RouteAttribute>().FirstOrDefault()?.Template))
-            .Where(page => page.Route is not null)
-            .OrderBy(page => page.Route == "/" ? "" : page.Route, StringComparer.Ordinal)
+            .Select(type => type.GetCustomAttributes<RouteAttribute>().FirstOrDefault()?.Template)
+            .OfType<string>()
+            .OrderBy(route => route == "/" ? "" : route, StringComparer.Ordinal)
             .ToList();
-        var rule = new SiteAddresses("home", pages.Select(page => page.Route!));
-
-        using var ctx = SitePageContext.Create();
-        var addresses = new List<string>();
-        foreach (var (type, route) in pages)
-        {
-            var cut = ctx.Render(builder =>
-            {
-                builder.OpenComponent(0, type);
-                builder.CloseComponent();
-            });
-            addresses.Add(rule.Address(route!, null));
-            addresses.AddRange(cut.FindAll("section[id], [data-card][id]")
-                .Select(place => place.Id)
-                .Where(id => id != SiteAddresses.Top)
-                .Select(id => rule.Address(route!, id)));
-        }
-
-        return addresses.Distinct().ToList();
+        var rule = new SiteAddresses("home", routes);
+        return routes.Select(route => rule.Address(route, null)).Distinct().ToList();
     }
 
     /// <summary>Writes the sitemap from the pages.</summary>
