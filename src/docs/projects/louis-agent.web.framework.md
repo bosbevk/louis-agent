@@ -9,8 +9,8 @@
 ## Purpose
 
 This library is the framework told to a developer, page by page. It walks someone from what the framework is to
-building on it: what it is, how to start, how a turn works, everything it does, how to build your own, what it
-costs, what already runs on it, and how it compares. Each section hands the reader on to the docs it was written from.
+building on it: what it is, how to start, how a turn works, everything it does, how to build your own and run it,
+what it costs, what already runs on it, and how it compares. Each section hands the reader on to the docs it was written from.
 
 It is a package a site turns on, the way a site turns on the account pages. The framework's own site names it with
 `.Framework()`, and any other site could do the same. So the pages are the framework's, and a site holds only its
@@ -60,6 +60,7 @@ address under its page.
 | Understand | How it works | `/how-it-works` | One turn through every layer, the web with the backend, every identity and every pack, and the rules every turn keeps |
 | Understand | Features | `/features` | The 39 things it does, in seven areas: the engine, the models, where it runs, the web, its guards, what it measures and the code |
 | Build | Build your own | `/build-your-own` | An identity, a pack and a site of your own, each in a few steps, handed on to the guide that walks it through |
+| Build | Run it | `/run-it` | The Docker stacks of your own machine with the commands that start them, the dashboard that watches them, and the two sites released to Azure on every merge |
 | Decide | Cost and evals | `/cost-and-evals` | The ledger and the price table, one request worked through to rand, and the evals' places, each saying the evals are coming |
 | Decide | Examples | `/examples` | Puls, the coding agent and the guide, by their identities, and what's coming |
 | Decide | Comparison | `/comparison` | louis-agent beside Microsoft Agent Framework and Semantic Kernel |
@@ -97,6 +98,7 @@ the repo:
 | Every folder the Overview names as built on the framework is a folder of the repo (`BuiltOnIt`) | `OverviewPageTests` |
 | Every identity and every pack on the disk is named on How it works | `HowItWorksPageTests` |
 | Each step of Build your own hands on to its guide, and every folder the steps name is in the repo (`BuildYourOwn`) | `BuildYourOwnPageTests` |
+| Each stack on Run it is a compose file with the services it names, and each release file is in the repo (`RunIt`, `ComposeStack`) | `RunItPageTests` |
 | Each feature names code that exists and a doc that exists (`FrameworkFeature`) | `FeaturesPageTests` |
 | The worked request's numbers are read from the coding demo's price table and rates (`CostExample`) | `CostAndEvalsPageTests` |
 | Each example names its identity's folder on the disk (`FrameworkExample`) | `ExamplesPageTests` |
@@ -134,7 +136,7 @@ src/web/louis-agent.web.framework/
 ├── FrameworkContents.cs    # the pages in reading order, under their groups
 ├── FrameworkLibrary.cs     # the pages' assembly, for the router
 ├── Pages/                  # OverviewPage, GettingStartedPage, HowItWorksPage, FeaturesPage;
-│                           # Build/ (BuildYourOwnPage); Decide/ (CostAndEvalsPage, ExamplesPage, ComparisonPage)
+│                           # Build/ (BuildYourOwnPage, RunItPage); Decide/ (CostAndEvalsPage, ExamplesPage, ComparisonPage)
 ├── Content/                # what the pages say: FrameworkFamily, FrameworkProject, BuiltOnIt, GettingStarted,
 │                           # HowItWorks, ProgramListings; Build/, Features/, Cost/, Examples/, Comparison/
 ├── Graphs/                 # the pictures' data: FrameworkAtAGlance, FamilyOverview, OneTurn, WhatItLoads,

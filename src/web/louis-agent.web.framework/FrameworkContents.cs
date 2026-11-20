@@ -12,7 +12,7 @@ public static class FrameworkContents
     public static readonly DocsContents All = new([
         new DocsGroup("Start", [new DocsEntry("Overview", "/"), new DocsEntry("Getting started", "/getting-started")]),
         new DocsGroup("Understand", [new DocsEntry("How it works", "/how-it-works"), new DocsEntry("Features", "/features")]),
-        new DocsGroup("Build", [new DocsEntry("Build your own", "/build-your-own")]),
+        new DocsGroup("Build", [new DocsEntry("Build your own", "/build-your-own"), new DocsEntry("Run it", "/run-it")]),
         new DocsGroup("Decide", [
             new DocsEntry("Cost and evals", "/cost-and-evals"), new DocsEntry("Examples", "/examples"),
             new DocsEntry("Comparison", "/comparison")

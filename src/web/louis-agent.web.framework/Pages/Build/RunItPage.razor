@@ -1,0 +1,33 @@
+@page "/run-it"
+
+<PageTitle>Run it · louis-agent</PageTitle>
+<PageHead Description="Run the louis-agent C# AI agent framework in Docker on your own machine, watch it on a dashboard, and see how its two sites reach Azure on every merge." />
+
+@* Run it: the stacks of your own machine with the commands that start them, the dashboard that watches them, and the
+   two sites in Azure, each section ending with the docs it was written from. *@
+<Band Id="top" Topic="Run it" Title="Run it where you want." Summary="Everything here runs in Docker, on your own machine or a server of your own. The framework's two websites run in Azure, from the same images you can start at home. Start on your machine, watch it on the dashboard, then ship it." />
+
+<Band Id="on-your-machine" Topic="Run it" Short="On your machine" Title="On your own machine." Summary="Two stacks run the agent and the sites. Every port binds to your own machine only, and each stack reads its settings from its own config folder. Type the commands from the repo's root.">
+    <TermList Terms="RunIt.OnYourMachine" />
+    <CodeListing Name="Start them" Language="bash" Code="@RunIt.Commands" />
+    <DocLinks>
+        <DocLink Path="demos/louis-agent/docker/README.md">The coding stack</DocLink>
+        <DocLink Path="src/docs/SETUP.md">Every setting</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="watch-it" Topic="Run it" Short="Watch it" Title="Watch every turn." Summary="Start the dashboard once, beside the others. Every turn, model request and tool call shows up there as a trace, with its logs.">
+    <TermList Terms="RunIt.Watching" />
+    <CodeListing Name="Start the dashboard" Language="bash" Code="@RunIt.Dashboard.Command" />
+    <DocLinks>
+        <DocLink Path="src/docs/guides/debug-and-logs.md">Debug and logs</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="in-azure" Topic="Run it" Short="In Azure" Title="Shipped on every merge." Summary="louis-agent.dev and this site run in Azure. You merge a pull request, and both sites go out.">
+    <TermList Terms="RunIt.InAzure" />
+    <DocLinks>
+        <DocLink Path="src/docs/guides/deploy-the-sites.md">Deploy the sites</DocLink>
+        <DocLink Path="src/docs/architecture/deployment-in-azure.md">The sites in Azure</DocLink>
+    </DocLinks>
+</Band>
