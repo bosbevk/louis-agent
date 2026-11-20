@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "F28 · Team talk: the plan",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "plan", "icon": "book", "title": "Team talk, in five steps", "code": "approved 2026-10-15",
+          "look": "highlight",
+          "text": "The note travels in AskAgent's message: no tool change, no engine change, no sentiment model." }
+      ] },
+      { "cards": [
+        { "id": "s1", "icon": "file", "title": "Step 1: the prompt",
+          "text": "The note's shape, the mood rule and the off marker. Built." },
+        { "id": "s2", "icon": "server", "title": "Step 2: the API",
+          "text": "read_mood on the message endpoint; a marker line when it's off." },
+        { "id": "s3", "icon": "browser", "title": "Step 3: the chat",
+          "text": "The Lees my stemming toggle, the card as a thread, the Werk panel's mood chip." }
+      ] },
+      { "cards": [
+        { "id": "s4", "icon": "checks", "title": "Step 4: the checks",
+          "text": "Both checks score briefed and record the mood; saved samples re-reported." },
+        { "id": "verify", "icon": "user", "title": "Verification",
+          "text": "Terse and long questions by hand, the toggle mid-chat, a run of each check on Louis's go." }
+      ] }
+    ],
+    "links": [
+      { "from": "plan", "to": "s1" },
+      { "from": "plan", "to": "s2" },
+      { "from": "plan", "to": "s3" },
+      { "from": "s3", "to": "s4" },
+      { "from": "s3", "to": "verify" }
+    ]
+  }
+}
