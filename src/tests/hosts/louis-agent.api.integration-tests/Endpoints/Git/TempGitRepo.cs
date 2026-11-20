@@ -27,6 +27,9 @@ internal sealed class TempGitRepo : IDisposable
         Git("config", "user.email", "test@example.com");
         Git("config", "user.name", "Test");
         Git("config", "commit.gpgsign", "false");
+        // No housekeeping in the background, which git starts by itself after a commit (FX212).
+        Git("config", "maintenance.auto", "false");
+        Git("config", "gc.auto", "0");
         Write("readme.md", "Hallo\n");
         Git("add", "readme.md");
         Git("commit", "-q", "-m", "Begin");

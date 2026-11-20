@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.TestHost;
 
 namespace LouisAgent.Api.IntegrationTests.Endpoints.Git;
 
-// CL20 step 5 (ADR 0039, rules 2 to 4): the git routes name resources (commits and branches), a create answers 201 with its
-// Location, and a delete is a DELETE. On a small repository made for the test, through the API in memory. Skipped when git isn't
-// installed.
+// CL20 step 5 (ADR 0039, rules 2 to 4): the git routes name resources (commits and branches), a create answers 201 with
+// its Location, and a delete is a DELETE. On a small repository made for the test, through the API in memory. Skipped
+// when git isn't installed.
 [Category("Integration")]
 public class GitResourceTests
 {
@@ -36,6 +36,9 @@ public class GitResourceTests
         Git("config", "user.email", "test@example.com");
         Git("config", "user.name", "Test");
         Git("config", "commit.gpgsign", "false");
+        // No housekeeping in the background, which git starts by itself after a commit (FX212).
+        Git("config", "maintenance.auto", "false");
+        Git("config", "gc.auto", "0");
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "Hallo\n");
         Git("add", "readme.md");
         Git("commit", "-q", "-m", "Begin");

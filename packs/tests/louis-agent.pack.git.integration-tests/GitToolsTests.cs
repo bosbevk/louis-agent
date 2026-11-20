@@ -36,7 +36,13 @@ public class GitToolsTests
         Git(_repo, "config", "commit.gpgsign", "false");
         // Git for Windows sets core.autocrlf globally; the file contents compared here must come back as written.
         Git(_repo, "config", "core.autocrlf", "false");
+        // No housekeeping in the background: git starts it by itself after a commit or a push, and its lock file going
+        // away mid-teardown failed the delete on CI (FX212).
+        Git(_repo, "config", "maintenance.auto", "false");
+        Git(_repo, "config", "gc.auto", "0");
         Git(_origin, "init", "-q", "--bare", "-b", "main");
+        Git(_origin, "config", "maintenance.auto", "false");
+        Git(_origin, "config", "gc.auto", "0");
         Commit("readme.md", "Hallo\n", "Begin die projek");
         var git = new GitRunner(_repo);
         _changes = new GitChangeTools(git);
