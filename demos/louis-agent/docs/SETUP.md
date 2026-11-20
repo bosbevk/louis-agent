@@ -4,6 +4,8 @@
 > setting the code reads, in the framework's [Configuration](../../../src/docs/SETUP.md); what each file here is in
 > [config/](../config/README.md); a first run in the [Quick start](QUICK_START_AGENT.md).
 
+![The coding agent's setup: its config files, a first run, debugging in Rider, and the settings only its stack and the orchestrator read](diagrams/SETUP.svg)
+
 The coding agent keeps its settings in `demos/louis-agent/config/`. Its stack sets `CONFIG_DIRECTORY` to it, and so do the
 hosts' launch profiles.
 
@@ -17,6 +19,7 @@ hosts' launch profiles.
 | `.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `.env.anthropic`, `.env.ollama`, `.env.ollama-triage` | ✅ tracked | LLM profiles: the model settings `LLM_PROFILE` picks |
 | `prices.json`, `rates.json` | ✅ tracked | Model prices and fallback exchange rates; Puls keeps a copy, held equal by a test |
+| `departments.yaml` | ✅ tracked | The triage workflow's departments: each its repository, its error log and where its people read a case |
 | `rider/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
 | `rider/rider-mcp-servers.example.json` | ✅ tracked | MCP client entry for the MCP server (replace `C:\path\to`) |
 

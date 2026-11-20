@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "Setup: the coding agent",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "config", "icon": "folder", "title": "demos/louis-agent/config", "code": "CONFIG_DIRECTORY",
+          "look": "highlight",
+          "text": "The coding agent's own settings, which its stack and its launch profiles point at." }
+      ] },
+      { "cards": [
+        { "id": "files", "icon": "file", "title": "Its files",
+          "text": ".env and .env.secrets from their examples, the LLM profiles, prices, rates, Rider's entries." },
+        { "id": "run", "icon": "terminal", "title": "A first run",
+          "text": "Copy the two examples, point REPOSITORIES_PATH at your repos, compose up the api." },
+        { "id": "rider", "icon": "code", "title": "Debugging in Rider",
+          "text": "The api profile on 5081 and mcp-http on 5091 set what the stack sets." }
+      ] },
+      { "cards": [
+        { "id": "own", "icon": "settings", "title": "Settings only it reads",
+          "text": "REPOSITORIES_PATH and API_PORT (5082) for the stack; ORCHESTRATOR_* for a run by hand." }
+      ] }
+    ],
+    "links": [
+      { "from": "config", "to": "files" },
+      { "from": "config", "to": "run" },
+      { "from": "config", "to": "rider" },
+      { "from": "run", "to": "own" }
+    ]
+  }
+}

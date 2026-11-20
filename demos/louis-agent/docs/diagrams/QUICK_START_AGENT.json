@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Louis Agent: Quick Start",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "agent", "icon": "chip", "title": "An agent on your repository", "code": "quick start",
+          "look": "highlight",
+          "text": "It reads and edits files, runs git, dotnet and shells, and searches the web, every step in view." }
+      ] },
+      { "cards": [
+        { "id": "web", "icon": "browser", "title": "The web app",
+          "text": "Chats, Files, Changes and Branches on 127.0.0.1:5082." },
+        { "id": "doors", "icon": "terminal", "title": "Puls, Rider, the CLI, the API",
+          "text": "Puls on 5070, Rider through ACP, the CLI one-shot or interactive." },
+        { "id": "prompts", "icon": "message", "title": "First prompts",
+          "text": "Review a file, build and fix, a branch and a commit, a web search." }
+      ] },
+      { "cards": [
+        { "id": "read", "icon": "search", "title": "What it did",
+          "text": "A card per tool call, the logs, and agent-built tools that wait for /approve." },
+        { "id": "cost", "icon": "chart", "title": "What it cost",
+          "text": "A line per answer, /usage, and the ledger in your currency." }
+      ] }
+    ],
+    "links": [
+      { "from": "agent", "to": "web" },
+      { "from": "agent", "to": "doors" },
+      { "from": "agent", "to": "prompts" },
+      { "from": "web", "to": "read" },
+      { "from": "prompts", "to": "cost" }
+    ]
+  }
+}

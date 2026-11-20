@@ -6,7 +6,10 @@
 Louis Agent is an AI agent that works on your repository with real tools: it reads, searches and edits files, runs git,
 `dotnet`, Python, PowerShell and bash, and searches the web. You see its thinking and every tool call as it works.
 
-Set up `config/` first ([SETUP.md](../../../src/docs/SETUP.md)): at least `ANTHROPIC_API_KEY` in `config/.env.secrets`.
+![Quick start: start the web app, Puls, Rider or the CLI, try a first prompt, read what it did and what it cost](diagrams/QUICK_START_AGENT.svg)
+
+Set up the coding agent's `config/` first ([its setup](SETUP.md)): at least `ANTHROPIC_API_KEY` in
+`demos/louis-agent/config/.env.secrets`.
 
 ## Ways to talk to it
 
@@ -26,7 +29,7 @@ The web app has a view for each job, and a theme switch:
 | **Files** | Browse the repo, open a file, **Ask agent to review**. |
 | **Changes** | See what changed, open a diff, tick files to **Stage**, **Unstage** or **Discard**, write a message and **Commit**, or **Review all** with the agent. Pushing stays with you. |
 | **Branches** | See every branch and all commits, open a commit or a branch to read its diff, **Merge** a branch into the checked-out one, and delete merged branches. |
-| **Theme** | Switch between *Retro terminal* and *Paper (soft light)*, at the bottom of the sidebar. |
+| **Theme** | Pick *Glass* (what a first visit gets), *Flat* or the app's own *Retro*, each light or dark. |
 
 ### Puls (the general assistant, in Afrikaans)
 
@@ -35,15 +38,14 @@ docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/pul
 ```
 
 Open **http://127.0.0.1:5070** and ask anything, in Afrikaans or English: *"Wat is die nuutste weergawe van .NET?"*,
-*"Lees README.md en som dit op"*, *"Hoeveel .cs-lêers is daar?"*. Puls hands each task to a specialist (a researcher,
-reader, historian or analyst), and the **Werk** panel on the right shows the work as it happens: the specialist, its
-steps, the sources it read and what it cost. **Krediete** at the top shows what the chat has cost so far. Attach text
-files with **+** (PDF, Word files and spreadsheets are read from the workspace; attaching one doesn't work yet), and set
-your location under **Instellings** if you want "near me" to work.
+*"Lees README.md en som dit op"*, *"Hoeveel .cs-lêers is daar?"*. Puls answers from the web itself and hands cooking
+to its cook, a specialist on the same instance; the work panel shows the specialist's steps, the sources it read and
+what it cost. Attach text files with **+** (PDF, Word files and spreadsheets are read from the workspace; attaching one
+doesn't work yet), and set your location in its settings if you want "near me" to work.
 
 ### Rider
 
-Add the agent server from `config/rider/rider-acp.example.json` in Rider's AI Assistant settings, then pick **Louis Agent** in
+Add the agent server from `demos/louis-agent/config/rider/rider-acp.example.json` in Rider's AI Assistant settings, then pick **Louis Agent** in
 the AI chat. Attach files with the paperclip; the agent reads them. Each new chat starts a fresh container.
 
 ### CLI
@@ -63,7 +65,7 @@ See [How the agents and endpoints talk](../../../src/docs/AGENT_COMMUNICATION.md
 ```
 Review src/hosts/louis-agent.api/Endpoints/Git/GitBranchesEndpoints.cs for bugs, most important first
 Find all TODO comments in the codebase
-Add XML doc comments to the public methods in WorkspaceTools.cs
+Add XML doc comments to the public methods in WorkspaceFileTools.cs
 ```
 
 **Build and test**
@@ -94,7 +96,7 @@ in the logs:
 [TOOL] <- GetCurrentBranch: main
 ```
 
-Container logs are kept in `logs/` (`agent-{host}-{time}.log`), plus `oversized-tool-results.jsonl` and
+Container logs are kept in `demos/louis-agent/logs/` (`agent-{host}-{time}-{process}.log`), plus `oversized-tool-results.jsonl` and
 `truncated-tool-calls.jsonl` when a tool returned too much or a reply ran out of room.
 
 ## Agent-built tools
@@ -122,7 +124,7 @@ Costs are shown in your PC's currency once `HOST_CULTURE` is set (run
 `dotnet run --project src/tools/louis-agent.usage-probe -- --host-culture` once): `R0.11`, with the rate and the dollars
 charged in `/usage`; the web app's sidebar can pick another currency. `/usage` gives the session's totals by purpose and
 by token kind. Local models are priced at $0; a model missing from
-`config/prices.json` shows "price unknown". Every request is also in the usage ledger
+`demos/louis-agent/config/prices.json` shows "price unknown". Every request is also in the usage ledger
 (`{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`); outside Docker, set `LOG_DIRECTORY` (an absolute path) to see the line at all.
 
 ## Tips
@@ -135,10 +137,10 @@ by token kind. Local models are priced at $0; a model missing from
 
 ## Troubleshooting
 
-- **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required"** — add the key to `config/.env.secrets` and restart.
+- **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required"** — add the key to `demos/louis-agent/config/.env.secrets` and restart.
 - **The web app says the API needs a key** — enter `AGENT_API_KEY` in the sidebar's API key field.
 - **Committing from the web app fails with an identity error** — set `GIT_AUTHOR_*` / `GIT_COMMITTER_*` in
-  `config/.env.secrets` and restart the api container.
+  `demos/louis-agent/config/.env.secrets` and restart the api container.
 - **A Rider chat behaves like old code** — start a **New Chat**; existing chats keep their container until closed.
 
 ---
