@@ -513,6 +513,22 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX214 · A fix that removes a thing removes what says it's there
+
+Puls left Azure with FX122, and its VM with it, but four of its own files kept saying "the Azure app has its own
+browser and Mongo on a private VM". One even named the `deploy.ps1 vm` verb that F166.1 took out. Each sentence was
+true when written, and nothing checked it afterwards, because a comment in a settings file is read only by the next
+person to open it. The cure was to search for every place that says the removed thing exists, at the time of the
+removal, not to wait for someone to be misled. Skill 18 (testing and shipping: a removal is finished when nothing
+says the thing is still there).
+
+## FX213 · The framework's words name no product
+
+The eval runner's stub, which every demo's portal lists, described itself as proving "the portal, not Puls". It was
+written when Puls's evals were the only ones beside it. The runner is the framework's, so its words name no product,
+and a test now reads the demo identities' names and holds the stub's description to none of them, so a new demo or
+Puls leaving changes nothing. Skill 20 (extensibility: what ships to everyone speaks to everyone).
+
 ## FX212 · A test owns what runs in the folder it made
 
 The git tests make a small repo each, commit to it, and delete it after. On CI one delete failed on a lock file that
