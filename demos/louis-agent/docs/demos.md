@@ -5,6 +5,8 @@
 > the public watches recordings in [ADR 0108](../../../src/docs/adr/0108-the-public-watches-the-coding-agent-recorded.md),
 > how to record them again in `src/site/recordings/record-showroom.sh`.
 
+![The demos: three made-up businesses with an agent on their website, recorded once and played back, then tried live](diagrams/demos.svg)
+
 The site's demos are at `/demos`. Each one is a real conversation with an agent built on the framework, recorded once
 and played back in the browser. Nothing runs and nothing is paid for while a visitor watches.
 

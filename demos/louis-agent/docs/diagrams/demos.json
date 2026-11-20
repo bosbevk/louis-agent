@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "The demos",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "showroom", "icon": "browser", "title": "A showroom at /demos", "code": "/demos",
+          "look": "highlight",
+          "text": "A rail of every demo, each on a stage in its own colour; the start features the guesthouse." }
+      ] },
+      { "cards": [
+        { "id": "guesthouse", "icon": "world", "title": "Seemeeu Guesthouse",
+          "text": "Shows the garden room for a dog, then sends the booking only after a yes." },
+        { "id": "restaurant", "icon": "message", "title": "Wheatfield Kitchen",
+          "text": "Answers at ten at night, never promises a table, takes the request." },
+        { "id": "law", "icon": "shield", "title": "Koringland Attorneys",
+          "text": "Gives no legal advice; offers a first consultation, one question at a time." }
+      ] },
+      { "cards": [
+        { "id": "recorded", "icon": "terminal", "title": "Recorded once, played back",
+          "text": "Real answers on the site's own model; only the timing is played back." },
+        { "id": "live", "icon": "users", "title": "Then tried live",
+          "text": "After the last turn the same window becomes a live chat with that business." }
+      ] }
+    ],
+    "links": [
+      { "from": "showroom", "to": "guesthouse" },
+      { "from": "showroom", "to": "restaurant" },
+      { "from": "showroom", "to": "law" },
+      { "from": "guesthouse", "to": "recorded" },
+      { "from": "law", "to": "live" }
+    ]
+  }
+}

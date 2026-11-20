@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "The coding agent's docs",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "agent", "icon": "code", "title": "The coding agent", "code": "demos/louis-agent",
+          "look": "highlight",
+          "text": "Our demo of the framework at work on code: a chat and admin, a triage team and an orchestrator." }
+      ] },
+      { "cards": [
+        { "id": "setup", "icon": "settings", "title": "Setup and programs",
+          "text": "Setup, a quick start, and the CLI, ACP, MCP, API and eval-runner programs." },
+        { "id": "change", "icon": "file", "title": "How to change it",
+          "text": "The web app and its site, and the orchestrator." },
+        { "id": "how", "icon": "book", "title": "How it works",
+          "text": "The chat and admin, the triage team, the orchestrator and its runbooks." }
+      ] },
+      { "cards": [
+        { "id": "demos", "icon": "browser", "title": "The demos",
+          "text": "What each demo on the site shows, how it was made, and what is real." },
+        { "id": "adrs", "icon": "branch", "title": "Its decisions",
+          "text": "ADR 0012, 0066 and 0077, numbered with the framework's." }
+      ] }
+    ],
+    "links": [
+      { "from": "agent", "to": "setup" },
+      { "from": "agent", "to": "change" },
+      { "from": "agent", "to": "how" },
+      { "from": "how", "to": "demos" },
+      { "from": "how", "to": "adrs" }
+    ]
+  }
+}
