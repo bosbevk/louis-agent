@@ -20,8 +20,11 @@ public static class TrustFacts
     /// <summary>The site's own app in Azure, its settings and what it mounts.</summary>
     private const string SiteApp = "src/site/deploy/azure/louis-agent-app.yaml";
 
-    /// <summary>Everything in Azure, in one Bicep file.</summary>
-    private const string Bicep = "demos/puls/config/azure/main.bicep";
+    /// <summary>
+    /// The how-to of the sites in Azure, which names what runs there: the storage, the vault, the registry. A fact
+    /// rests on a file the framework keeps, never a demo's (FX215).
+    /// </summary>
+    private const string AzureHowTo = "src/docs/guides/deploy-the-sites.md";
 
     /// <summary>The image the site runs from.</summary>
     private const string Dockerfile = "src/site/docker/Dockerfile";
@@ -36,11 +39,11 @@ public static class TrustFacts
             "The site is an Azure Container App in the South Africa North region. It sleeps when nobody visits and " +
             "wakes on the next visit.", SiteApp),
         new(TileStatus.Done, "Only https, only the site",
-            "The internet reaches the site on port 443 with a managed certificate, and plain http is refused. Nothing " +
-            "else we run in Azure has a public address.", Architecture),
+            "The internet reaches the site on port 443 with a managed certificate, and plain http is refused. " +
+            "Nothing else we run in Azure has a public address.", Architecture),
         new(TileStatus.Done, "Encrypted on the way and at rest",
             "Every visit is https. The site's logs sit in Azure Storage, which Microsoft encrypts at rest with " +
-            "256-bit AES, and that can't be switched off.", Bicep),
+            "256-bit AES, and that can't be switched off.", AzureHowTo),
         new(TileStatus.Done, "No passwords in the code",
             "Every key lives in Azure Key Vault. The site reads it by reference with its own managed identity, and a " +
             "release signs in to Azure from GitHub without a stored password.",
@@ -59,8 +62,8 @@ public static class TrustFacts
     public static readonly IReadOnlyList<TrustFact> YourData =
     [
         new(TileStatus.Done, "Your words aren't stored",
-            "The site holds a chat in memory while it runs and forgets it when it restarts. For each answer it writes " +
-            "down the cost, the page and the tools used, never your words.", Privacy),
+            "The site holds a chat in memory while it runs and forgets it when it restarts. " +
+            "For each answer it writes down the cost, the page and the tools used, never your words.", Privacy),
         new(TileStatus.Done, "Details sent only on your yes",
             "The agent shows what it will send and sends it once, when you press Send it. Nothing reaches us before.",
             "src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md"),
@@ -109,14 +112,15 @@ public static class TrustFacts
         new(TileStatus.Done, "Tested, then released",
             "A merge runs the tests, then releases the site as a new revision from an image with its own tag. " +
             "Earlier images stay in the registry.", ".github/workflows/deploy-sites.yml"),
-        new(TileStatus.Done, "Rebuilt from code",
-            "Everything in Azure is described in one Bicep file, and one script releases the site.", Bicep),
+        new(TileStatus.Open, "Rebuilt from code",
+            "One script releases this site and the framework's own from code. The environment they run in was built " +
+            "once from code that is being retired, so rebuilding it from nothing isn't one command yet.", AzureHowTo),
         new(TileStatus.Done, "Your site is yours",
             "A site is its own project. Its words, brand, pages and data sit apart from the framework, in code that " +
             "can be handed over.", "src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md"),
         new(TileStatus.Open, "Backups",
             "The file share that holds the logs and the site's saved content has no backup set up. Chats aren't " +
-            "stored, so no visitor's words can be lost.", Bicep),
+            "stored, so no visitor's words can be lost.", AzureHowTo),
         new(TileStatus.Open, "A promise of uptime",
             "The site runs in one region, and a sleeping site takes a moment to wake on the first visit. There is " +
             "no uptime figure yet.", Architecture),
@@ -135,8 +139,9 @@ public static class TrustFacts
             "data.", "src/docs/adr/0088-a-tenant-on-every-account.md"),
         new(TileStatus.Done, "Encryption on the way and at rest",
             "Every visit is https, and Azure encrypts what the site stores. Where it runs, above, has the detail.",
-            Bicep),
-        new(TileStatus.Open, "Documented backups and recovery", "Not set up yet. If something breaks, above, says why."),
+            AzureHowTo),
+        new(TileStatus.Open, "Documented backups and recovery",
+            "Not set up yet. If something breaks, above, says why."),
         new(TileStatus.Open, "Retention and deletion rules",
             "Chats aren't kept. The logs and the record of costs have no written period yet."),
         new(TileStatus.Done, "The model's maker and others named",
