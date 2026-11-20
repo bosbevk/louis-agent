@@ -3,7 +3,7 @@
 > **Kind:** library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.runner/` · **References:** louis-agent.evals,
 > YamlDotNet · **Used by:** each demo's runner program, `demos/puls/hosts/louis-agent.puls-eval-runner` and
 > `demos/louis-agent/hosts/louis-agent.coding-eval-runner`, which the API starts as a child process (published to
-> `/app/evals` in each demo's API image)
+> `/app/evals` in each demo's API image), and the API's tests' `src/tests/hosts/louis-agent.api.test-runner`
 > **Also shows:** `component`, `deployment`
 
 ![The eval runner, and what it does: the catalogue, a run or a re-score, and the judge](diagrams/louis-agent.evals.runner.svg)
@@ -16,7 +16,8 @@ sheet, and checks a judge.
 It's a library, and the program around it is each demo's own. A demo's runner program is a few lines: it calls
 `EvalRunnerHost.RunAsync` with the checks and readers its evals can name, its model providers and its telemetry.
 Puls's, `louis-agent.puls-eval-runner`, hands in `PulsCatalogs.All`, with the packs' checks, Puls's judges and Puls's
-readers. The coding demo's hands in `RunnerCatalogs.GeneralOnly`, since its evals need only the general checks. The
+readers. The coding demo's hands in `RunnerCatalogs.GeneralOnly`, since its evals need only the general checks, and
+so does the API's test runner, which copies the framework's template eval beside it as its one file eval. The
 library never names a pack or an identity, because a package can't reference someone's project. So what proves an
 identity or a pack is referenced only by that demo's runner program, and no host carries it
 ([ADR 0073](../adr/0073-packs-reference-no-evals.md), [ADR 0074](../adr/0074-the-folders-say-what-ships.md)).

@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "The sites in Azure at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "azure", "icon": "server", "title": "The framework's two sites in Azure", "code": "rg-puls-za",
+          "look": "highlight",
+          "text": "louis-agent.dev and framework.louis-agent.dev, two Container Apps in one environment." }
+      ] },
+      { "cards": [
+        { "id": "runs", "icon": "browser", "title": "What runs where",
+          "text": "Two apps that sleep until someone visits, sharing an identity and a share." },
+        { "id": "release", "icon": "branch", "title": "A release",
+          "text": "A merge signs in without a password and releases louis-agent.dev, then the framework's site." },
+        { "id": "secret", "icon": "file", "title": "A secret's path",
+          "text": "From a git-ignored file into the vault; the release writes only references." }
+      ] },
+      { "cards": [
+        { "id": "chat", "icon": "users", "title": "A chat",
+          "text": "DNS points at the app, it wakes, and the visitor talks to its Orbi through the open door." },
+        { "id": "net", "icon": "checks", "title": "The network",
+          "text": "Only the two apps have a public address, on 443, with a managed certificate each." }
+      ] }
+    ],
+    "links": [
+      { "from": "azure", "to": "runs" },
+      { "from": "azure", "to": "release" },
+      { "from": "azure", "to": "secret" }
+    ]
+  }
+}

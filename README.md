@@ -113,7 +113,7 @@ docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/pul
 ```
 
 Open **http://127.0.0.1:5070**. Puls ran on Azure until 2026-11-09 and is paused there while the framework comes first
-([demos/puls/deploy/azure](demos/puls/deploy/azure/README.md)); `mypuls.co.za` shows a coming-soon page. Design:
+([Deploy the sites](src/docs/guides/deploy-the-sites.md)); `mypuls.co.za` shows a coming-soon page. Design:
 [Puls's identity](demos/puls/docs/projects/louis-agent.identity.puls.md), [Puls's web app](demos/puls/docs/projects/louis-agent.puls.md).
 
 ## The coding agent

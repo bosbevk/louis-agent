@@ -12,7 +12,8 @@ namespace LouisAgent.Evals.Runner.Tests.Template;
 
 /// <summary>
 /// The template a person copies to start an eval is a folder of files that runs with no C# at all: it loads with the
-/// harness's general checks alone, its reference passes and its known-bad fails, and the runner never lists it.
+/// harness's general checks alone, its reference passes and its known-bad fails, and no product's runner lists it. The
+/// API's test runner copies it as its one sample eval (F166.1), so the API's tests list it there.
 /// </summary>
 public class TemplateFolderTests
 {
@@ -47,12 +48,16 @@ public class TemplateFolderTests
         Assert.That(failures, Is.Empty);
     }
 
-    /// <summary>No project copies it beside the runner, so no run and no portal ever shows it.</summary>
+    /// <summary>
+    /// The runner on its own copies it nowhere, so no product's run and no product's portal ever shows it; only the
+    /// API's test runner copies it, for the tests.
+    /// </summary>
     [Test]
     public void TheRunner_NeverListsIt()
     {
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, RunnerCatalogs.GeneralOnly.CheckCatalog, RunnerCatalogs.GeneralOnly.ReaderCatalog, folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerCatalogs.GeneralOnly.CheckCatalog,
+                RunnerCatalogs.GeneralOnly.ReaderCatalog, folder.Source));
 
         Assert.That(new EvalCatalog(files, new StubEval()).Evals.Select(eval => eval.Name), Does.Not.Contain(Name));
     }

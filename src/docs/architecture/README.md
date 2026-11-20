@@ -27,6 +27,7 @@ short file of its own, so a reader (or Claude) loads only the one a question nee
 | 10 | [Quality requirements](10-quality-requirements.md) | How the quality goals are checked |
 | 11 | [Risks and technical debt](11-risks-and-technical-debt.md) | Known limitations, open fixes and decisions |
 | 12 | [Glossary](12-glossary.md) | The words these docs use in a sense of their own |
+| — | [The sites in Azure](deployment-in-azure.md) | The two sites' part of the deployment view in pictures: what runs where, a release, a secret's path, a chat |
 | — | [The evals](evals.md) | How the evals are built and how a run talks: the harness, the runner, the protocol, the portal |
 
 The template is arc42 by Dr. Gernot Starke and Dr. Peter Hruschka, [arc42.org](https://arc42.org), used under CC BY-SA

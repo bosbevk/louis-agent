@@ -4,7 +4,7 @@
 #   Remove: docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env down
 # Then open http://127.0.0.1:5070. One container: a chat answers the web itself and hands cooking to a specialist on
 # this same instance (AGENT_PEERS names itself, F29; CL19 dropped the second container). puls-app on Azure has its own
-# browser and Mongo on a private VM (F61.4, demos/puls/deploy/azure/README.md); nothing here serves it.
+# browser and Mongo on a private VM (F61.4, demos/puls/deploy/README.md); nothing here serves it.
 # To see its logs and traces, start the dashboard first (F52):
 #   docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d
 name: puls

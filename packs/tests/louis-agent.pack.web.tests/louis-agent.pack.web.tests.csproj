@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
+    <!-- F166.1: the framework's web, whose browser asks for this pack's toolset by name (Browser/BrowserAsksTests). -->
+    <ProjectReference Include="..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <ProjectReference Include="..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 

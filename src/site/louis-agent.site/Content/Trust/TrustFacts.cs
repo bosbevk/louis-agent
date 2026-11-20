@@ -15,7 +15,7 @@ namespace LouisAgent.Site.Content.Trust;
 public static class TrustFacts
 {
     /// <summary>The Azure architecture, which several facts rest on.</summary>
-    private const string Architecture = "demos/puls/deploy/azure/ARCHITECTURE.md";
+    private const string Architecture = "src/docs/architecture/deployment-in-azure.md";
 
     /// <summary>The site's own app in Azure, its settings and what it mounts.</summary>
     private const string SiteApp = "src/site/deploy/azure/louis-agent-app.yaml";
@@ -108,7 +108,7 @@ public static class TrustFacts
     [
         new(TileStatus.Done, "Tested, then released",
             "A merge runs the tests, then releases the site as a new revision from an image with its own tag. " +
-            "Earlier images stay in the registry.", ".github/workflows/deploy-puls.yml"),
+            "Earlier images stay in the registry.", ".github/workflows/deploy-sites.yml"),
         new(TileStatus.Done, "Rebuilt from code",
             "Everything in Azure is described in one Bicep file, and one script releases the site.", Bicep),
         new(TileStatus.Done, "Your site is yours",
@@ -122,7 +122,7 @@ public static class TrustFacts
             "no uptime figure yet.", Architecture),
         new(TileStatus.Open, "A tested recovery runbook",
             "The pieces to rebuild everything exist. A written, timed walk-through of a full recovery doesn't yet.",
-            "demos/puls/deploy/azure/README.md"),
+            "src/docs/guides/deploy-the-sites.md"),
     ];
 
     /// <summary>A reviewer's checklist for a business before it pays, and where each item stands.</summary>

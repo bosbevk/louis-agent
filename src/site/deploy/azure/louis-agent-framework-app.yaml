@@ -1,6 +1,6 @@
 # louis-agent-framework-app: the framework's own site, framework.louis-agent.dev (F164.3), on Azure Container Apps in
-# the environment puls-env beside louis-agent-app, deployed with demos/puls/deploy/azure/deploy.ps1
-# -App louis-agent-framework-app (the how-to is README.md there).
+# the environment puls-env beside louis-agent-app, deployed with deploy.ps1 beside this file,
+# -App louis-agent-framework-app (the how-to is src/docs/guides/deploy-the-sites.md).
 # One container: the framework site's host (src/site/louis-agent.site-framework-api), on the image
 # src/site/docker/Dockerfile.framework builds, with the framework Orbi on the docs and site packs and nothing else. It
 # carries the docs Orbi reads and its price tables. It reads the vault with louis-agent.dev's identity and logs to its

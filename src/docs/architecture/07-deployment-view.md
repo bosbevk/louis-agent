@@ -2,7 +2,7 @@
 
 > **Explanation.** Where each part runs: the Docker stacks on a developer's machine, what each one mounts, and the two
 > websites in Azure. **Elsewhere:** the settings in [Setup](../SETUP.md); the Azure how-to in
-> [the deploy README](../../../demos/puls/deploy/azure/README.md).
+> [Deploy the sites](../guides/deploy-the-sites.md).
 
 ![The deployment view: four stacks on a developer's machine, and the two sites in Azure](diagrams/07-deployment-view.svg)
 
@@ -74,8 +74,8 @@ Two websites built on the framework run in Azure: louis-agent.dev, which sells w
 framework.louis-agent.dev, which teaches the framework. Each is one Azure Container App that sleeps when nobody
 visits. Puls isn't deployed: `mypuls.co.za` is a "coming soon" page on a free Static Web App.
 
-A merge to `main` releases both sites through `.github/workflows/deploy-puls.yml`, signed in by OpenID Connect with no
-password. It runs `demos/puls/deploy/azure/deploy.ps1 release` once per app, louis-agent.dev first, so a failure in
+A merge to `main` releases both sites through `.github/workflows/deploy-sites.yml`, signed in by OpenID Connect with no
+password. It runs `src/site/deploy/azure/deploy.ps1 release` once per app, louis-agent.dev first, so a failure in
 the second leaves the site that sells released. Each release builds the app's image in the registry and updates the
 app as its next revision. Each name points at its app by DNS-only records in Cloudflare, with a managed certificate.
 
@@ -84,7 +84,7 @@ app as its next revision. Each name points at its app by DNS-only records in Clo
 | `rg-puls-za`, `puls-env` | `louis-agent-app`: louis-agent.dev's host on the image `src/site/docker/Dockerfile` builds, the public Orbi on the docs, leads and site packs | the vault with `louis-agent-app-identity`; its logs in `logs/` and its saved CV in `data/` on `louis-agent-workspace`; the model; `puls-insights` through the environment's OpenTelemetry agent |
 | `rg-puls-za`, `puls-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; the model; `puls-insights` |
 
-The how-to is the [deploy README](../../../demos/puls/deploy/azure/README.md), and the pictures of what runs where, a
-release, a secret's path and a chat are in [the Azure architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md).
+The how-to is [Deploy the sites](../guides/deploy-the-sites.md), and the pictures of what runs where, a release, a
+secret's path and a chat are in [the sites in Azure](deployment-in-azure.md), beside this page.
 
 *Decided in:* FX122, [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md), [ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md).

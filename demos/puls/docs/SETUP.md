@@ -68,4 +68,4 @@ These are read by this stack or by the packs Puls loads.
 | `EVALS_MONGO_URL` (was `BENCHMARKS_MONGO_URL`, still read; the Mongo contract tests read only the old name) | How Puls reaches the eval store: `mongodb://{user}:{password}@puls-mongo:27017/?authSource=admin` (the service name). From the host, for the Mongo contract tests, the same with `127.0.0.1`, set in the shell. Without it the portal starts no runs |
 
 ---
-[Docs index](README.md) · Related: [Configuration](../../../src/docs/SETUP.md) · [Deploying to Azure](../deploy/azure/README.md)
+[Docs index](README.md) · Related: [Configuration](../../../src/docs/SETUP.md) · [Deploy the sites](../../../src/docs/guides/deploy-the-sites.md)

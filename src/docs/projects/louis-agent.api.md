@@ -364,7 +364,7 @@ changed. And anything that changes how the agent behaves belongs in core, not he
 
 ## Tests
 
-The tests are in `demos/puls/tests/louis-agent.api.tests`. They cover the sessions' toolsets, the default, unknown
+The tests are in `src/tests/hosts/louis-agent.api.tests`. They cover the sessions' toolsets, the default, unknown
 names, depth and the `specialists` rule, shared engines with separate histories, roles, a role opening only at its own
 level, and a sub-session with no role getting none. The model client in these tests is never called. The eval
 studio's tests are in `louis-agent.api.evals.tests`.

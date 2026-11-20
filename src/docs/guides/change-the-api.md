@@ -28,7 +28,7 @@ refuses to start, unless `AGENT_AUTH=off` says you mean it
 ![Adding an endpoint: the test first, named by the rule, mapped with its concern, protected by the key, then the route golden written again and reviewed](diagrams/change-the-api-flow.svg)
 
 1. **Test first.** A rule the endpoint keeps (a limit, a parse, a refusal) goes in a plain class with NUnit tests in
-   `demos/puls/tests/louis-agent.api.tests`, mirroring the folder; what the route answers (its status, its `Location`, its `401`)
+   `src/tests/hosts/louis-agent.api.tests`, mirroring the folder; what the route answers (its status, its `Location`, its `401`)
    is tested in memory with `ApiTestHost`, as `SessionCreatedTests` does.
 2. **Name it by the rule** ([ADR 0039](../adr/0039-api-routes-under-v1.md)): a noun, one plural name for a collection
    and its items (`/v1/git/branches`, `/v1/git/branches/{name}`); a create is a `POST` to the collection that answers
@@ -45,7 +45,7 @@ refuses to start, unless `AGENT_AUTH=off` says you mean it
    A host with a route of its own (louis-agent.dev keeps its CV) doesn't add it here: its program calls
    `app.MapLouisAgentHostGroup()` after `UseLouisAgentKey` and maps onto the group it gets, which is the same `/v1`
    with the same key check, so the host's routes are closed until opened, like the framework's own.
-5. **Regenerate the route golden** (`LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.api.tests --filter
+5. **Regenerate the route golden** (`LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/louis-agent.api.tests --filter
    ApiRoutesSnapshotTests`) and review its diff: one line per route, with its method and who may call it.
    `ApiRouteRuleTests` checks the rule on the real table.
 6. **Keep the guards.** A path from a client goes through `WorkspaceBoundary`; a git call through
@@ -83,7 +83,7 @@ Claude by default), and the session keeps it. Three kinds of client read the str
 session-stream reader, `louis-agent.session-stream`), the orchestrator, and the evals.
 
 To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
-`demos/puls/tests/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.api.tests --filter
+`src/tests/hosts/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/louis-agent.api.tests --filter
 StreamGoldenTests`. Read the golden's diff before you commit it. A new format is a new `StreamFormat` member and its
 `ITurnStreamFormat` writer, tested beside `StreamGoldenTests`. Then update the stream's section in
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-event-stream).
@@ -155,7 +155,7 @@ with none) and the paths in the host's run profile; the rest has defaults.
 ## Test it
 
 ```bash
-dotnet test demos/puls/tests/louis-agent.api.tests
+dotnet test src/tests/hosts/louis-agent.api.tests
 ```
 
 The sessions run against a fake model client that is never called; the benchmark store's contract runs against the

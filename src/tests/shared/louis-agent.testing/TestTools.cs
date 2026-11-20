@@ -17,6 +17,7 @@ public enum TestToolset
     PowerShell,
     Bash,
     Web,
+    Calculator,
 }
 
 /// <summary>
@@ -36,7 +37,8 @@ public static class TestTools
             FakePack.Toolset(TestToolset.Git.Wire(), typeof(FakeGitTools), _ => [new FakeGitTools()]),
             FakePack.Toolset(TestToolset.DotNet.Wire(), typeof(FakeDotNetTools), _ => [new FakeDotNetTools()]),
             FakePack.Toolset(TestToolset.Python.Wire(), typeof(FakePythonTools), _ => [new FakePythonTools()]),
-            FakePack.Toolset(TestToolset.PowerShell.Wire(), typeof(FakePowerShellTools), _ => [new FakePowerShellTools()]),
+            FakePack.Toolset(TestToolset.PowerShell.Wire(), typeof(FakePowerShellTools),
+                _ => [new FakePowerShellTools()]),
             FakePack.Toolset(TestToolset.Bash.Wire(), typeof(FakeBashTools), _ => [new FakeBashTools()]),
         ],
         new Dictionary<string, string>
@@ -62,6 +64,20 @@ public static class TestTools
             [$"toolsets/{TestToolset.Web.Wire()}.md"] = "# Web Skills\n\nSearches and reads.",
         }, comesBeforeTheEngine: true);
 
+    /// <summary>
+    /// A fake pack named as the real calculator pack is, with its one tool by the same name, for a test whose identity
+    /// names it. The framework's tests under <c>src/</c> may reference no real pack (ADR 0076).
+    /// </summary>
+    public static FakePack CalculatorPack { get; } = new(TestToolset.Calculator.Wire(),
+        [
+            FakePack.Toolset(TestToolset.Calculator.Wire(), typeof(FakeCalculatorTools),
+                _ => [new FakeCalculatorTools()]),
+        ],
+        new Dictionary<string, string>
+        {
+            [$"toolsets/{TestToolset.Calculator.Wire()}.md"] = "# Calculator Skills\n\nWorks sums out.",
+        }, comesBeforeTheEngine: true);
+
     /// <summary>A catalogue holding them, and what core has.</summary>
     public static AgentCatalog Catalog { get; } = new([], [Pack, WebPack]);
 }
@@ -82,7 +98,9 @@ public sealed class FakeGitTools
     public string GetStatus() => "clean";
 }
 
-/// <summary>The fake files toolset: it really reads and writes, as an engine test may read a file it just made.</summary>
+/// <summary>
+/// The fake files toolset: it really reads and writes, as an engine test may read a file it just made.
+/// </summary>
 public sealed class FakeFileTools(string workspaceRoot)
 {
     /// <summary>Reads the file.</summary>
@@ -134,4 +152,12 @@ public sealed class FakeWebTools
     /// <summary>Pretends to render, as a second tool a minion can be handed.</summary>
     [Description("Reads a page a browser has to draw.")]
     public string ReadRenderedPage([Description("Its address")] string url) => $"the drawn page at {url}";
+}
+
+/// <summary>The fake calculator toolset.</summary>
+public sealed class FakeCalculatorTools
+{
+    /// <summary>Pretends to work a sum out.</summary>
+    [Description("Works a sum out.")]
+    public string Calculate([Description("The sum")] string expression) => $"the answer to {expression}";
 }

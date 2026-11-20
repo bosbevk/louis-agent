@@ -66,7 +66,7 @@ And it has `Outside`, which is how an integration test asks for the outside worl
 your own machine, but fails it where `INTEGRATION_REQUIRED` is set, which is CI. `Stack` always skips a missing
 Puls-stack address.
 
-`demos/puls/tests/louis-agent.api.testing` is a library too. It holds the in-memory API host, the built runner, the
+`src/tests/hosts/louis-agent.api.testing` is a library too. It holds the in-memory API host, the built runner, the
 stand-in dlls and the store contracts. Each is written once, and runs against memory in the unit tests and against
 Mongo in the integration tests.
 
@@ -106,18 +106,37 @@ programs the guides hold, and one seam for a pack's screens.
 
 ### 6. The API's tests
 
+The API's tests prove the framework's API, so they run on the framework alone. No product's identity, pack or file is
+in them. They sit in `src/tests/hosts/` beside the other hosts' tests, and a rule test, `TestsNameNoProductTests`,
+reads each of their project files and fails on a reference to a demo or to a pack that belongs to one.
+
+The agent they talk to is made up. `TestAgent`, in `louis-agent.api.testing`, is an identity called `testagent`
+with the shape a real one has: two language voices that share a routing voice, a specialist whose role adds the web
+and the calculator, a reader that adds nothing of its own, and two minions on a shared base. Its prompts are held in
+memory, each with the header the engine reads from a real file. Its packs are fakes under the real packs' names,
+`TestTools.WebPack` and `TestTools.CalculatorPack`, because nothing under `src/` may reference a real pack. The
+in-memory host, `ApiTestHost`, builds the API on this agent and the tests' own fake tools.
+
 `AgentSessionsTests` covers how a session gets its toolsets and tools: the `skills` default, an empty list, unknown
 names, the depth and the `specialists` rule, and sessions that share an engine but not a history. It needs no web
 host, no network and no model. The sessions are built on an `AgentEngineFactory` with a chat client that throws if
-it's ever called.
+it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a specialist under itself, or the agent
+under the specialist it asked, is refused.
 
-Some API tests start a real child process where the eval runner would be. For those,
-`demos/puls/tests/louis-agent.api.standin` stands in for the runner. It's a small console app, not a test project.
-The check's id picks what it does: print its arguments, dump the names in its environment, stream lines, fail, sleep,
-or never read its stdin. It's built along with these tests through a project reference that brings no assembly, just
-like the runner itself. The eval studio's API has its own project, `louis-agent.api.evals.tests`.
+Some API tests start a real child process where the eval runner would be. Two programs are built for that, each with
+a project reference that brings no assembly. `src/tests/hosts/louis-agent.api.standin` stands in for the runner. It's
+a small console app, not a test project, and the check's id picks what it does: print its arguments, dump the names
+in its environment, stream lines, fail, sleep, or never read its stdin. `louis-agent.api.test-runner` is the real
+runner with the harness's general checks only. It copies the framework's template eval beside it, so its listing
+gives the built-in `stub` and `template-example`, and the integration tests read a file eval's identity, dataset and
+graders from it.
 
-*Decided in:* F5, F18 step 7.4.
+The eval studio's API has its own project, `louis-agent.api.evals.tests`. Its scenario and draft tests need an eval
+with more in it than the template has. `SampleEvalWorkspace` writes one into a temporary workspace for each test
+class: a dev scenario with a follow-up, an expected budget and shop, and its categories, a held-out scenario, and the
+name of one that isn't there. It writes the files through the same records the API reads them with.
+
+*Decided in:* F5, F18 step 7.4, F166.1, [ADR 0076](../adr/0076-core-ships-no-agent.md).
 
 ### 7. The orchestrator's tests
 

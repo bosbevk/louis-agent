@@ -41,7 +41,8 @@ you need otherwise.
 | [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
 | [Write and run tests](guides/write-tests.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts and web apps](../../.claude/rules/hosts-and-web.md) | How-to | A host's own message enums, a web app's folders, running a host from Rider |
-| [Deploying to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch the apps on Azure Container Apps, set their secrets, and deploy from GitHub; since 2026-11-09 only louis-agent.dev runs there |
+| [Deploy the sites](guides/deploy-the-sites.md) | How-to | Build, deploy and watch louis-agent.dev and framework.louis-agent.dev on Azure Container Apps, set their secrets, and deploy from GitHub |
+| [The sites in Azure](architecture/deployment-in-azure.md) | Explanation | What runs where in Azure, how a release reaches the sites, a secret's path and a chat's, in pictures |
 
 ## 4. The orchestrator
 

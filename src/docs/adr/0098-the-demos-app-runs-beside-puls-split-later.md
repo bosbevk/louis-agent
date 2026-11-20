@@ -40,7 +40,7 @@ second environment, VM and SQL server would double the fixed part of the bill fo
 ## Links
 
 - [ADR 0095](0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md), [ADR 0097](0097-puls-deploys-from-github-without-a-password.md), [ADR 0088](0088-a-tenant-on-every-account.md)
-- [The deploy README](../../../demos/puls/deploy/azure/README.md), [the architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md)
+- [The deploy README](../guides/deploy-the-sites.md), [the architecture](../architecture/deployment-in-azure.md)
 
 ---
 [Docs index](../README.md) · Related: [ADRs](README.md)

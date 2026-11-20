@@ -12,7 +12,7 @@ builds in the registry, the app's secrets are already Key Vault references, and 
 
 ## Decision
 
-1. **A GitHub Actions workflow deploys Puls** (`.github/workflows/deploy-puls.yml`): by itself after CI passes on
+1. **A GitHub Actions workflow deploys Puls** (`.github/workflows/deploy-sites.yml`, `deploy-puls.yml` until F166.1): by itself after CI passes on
    `main` (a `workflow_run` on CI, only for its push to `main`, only on success), and from the *Run workflow* button.
    It checks out the commit CI passed, not what `main` holds by then. One deploy at a time; a second waits, none is
    cancelled half-way.
@@ -45,10 +45,10 @@ bought a quarter of an hour's delay and nothing else. The deploy checks out the 
 
 ## Links
 
-- [Deploying from GitHub](../../../demos/puls/deploy/azure/README.md#deploying-from-github-f1095) (the setup and the
+- [Deploying from GitHub](../guides/deploy-the-sites.md#every-merge-releases-both-sites) (the setup and the
   roll-back), [ADR 0095](0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md), [ADR 0030](0030-build-or-adopt.md)
 - [azure/login](https://github.com/Azure/login),
   [OpenID Connect in Azure](https://docs.github.com/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-azure)
 
 ---
-[Docs index](../README.md) · Related: [ADRs](README.md) · [Puls on Azure](../../../demos/puls/deploy/azure/README.md)
+[Docs index](../README.md) · Related: [ADRs](README.md) · [Puls on Azure](../guides/deploy-the-sites.md)
