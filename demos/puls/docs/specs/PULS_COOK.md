@@ -1,11 +1,18 @@
 # Puls's cook: what to add next
 
-> **What this answers:** after the F48 plan ([F48-cook-and-teacher.md](../plans/F48-cook-and-teacher.md)),
-> what else would make `puls-cook` the best home cook and the best teacher in South Africa: what the competition
-> does, what cooking-teaching research says works, what SA households need, and which AI techniques help. Each idea
-> says why, how it fits our engine, and what it costs, then the whole list is put in an order. Research 2026-10-26,
-> for Louis. Nothing here is approved. The page with the diagrams drawn:
-> <https://claude.ai/artifact/RJutZeb2sak75HB2M2X1Vw>.
+> **Explanation.** Beyond the F48 plan ([F48-cook-and-teacher.md](../plans/F48-cook-and-teacher.md)), what would make
+> `puls-cook` the best home cook and the best teacher in South Africa: what the competition does, what
+> cooking-teaching research says works, what SA households need, and which AI techniques help. Each idea says why,
+> how it fits our engine and what it costs, and then the whole list is put in an order. **Elsewhere:** how the cook
+> works today in [louis-agent.identity.puls](../projects/louis-agent.identity.puls.md); the recipe library in
+> [ADR 0082](../../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md).
+
+![The cook, next: what the competition misses, what SA households need, and 18 ideas in three waves](../diagrams/PULS_COOK.svg)
+
+This is research from 2026-10-26, so its prices, launches and figures are as they stood then. Wave 1 is decided and
+goes into F48; the rest are ideas, not yet approved. Puls itself is paused for now while the framework and its site
+come first. An earlier page with the research's diagrams drawn is at
+<https://claude.ai/artifact/RJutZeb2sak75HB2M2X1Vw>.
 
 ## The short answer
 
@@ -66,7 +73,7 @@ Safety. The 2018 listeriosis outbreak, traced to polony, made over 1,000 people 
 Ready-to-eat meats are a real risk for pregnant women and small children.
 
 Power is less of a worry now. No load shedding for 408 days by June 2026, though Gauteng still has local "load
-reduction" cuts. So "cook without power" is an option on request, not a default (this corrects the F48 page).
+reduction" cuts. So "cook without power" is an option on request, not a default, which is how the F48 plan should read it.
 ([EnergyBee](https://energybee.co.za/news/eskom-408-days-no-load-shedding-june-2026))
 
 Healthy, in SA words. The national food-based dietary guidelines are 11 plain messages, for example "Make starchy
@@ -100,9 +107,13 @@ gives the cook something to teach from, and gives us real failures for the evals
 
 ## AI techniques that help
 
-Grounding in our own recipes (retrieval, skill 8). F35 records every recipe page it reads. Those pages become our own
-vetted SA recipe library: search it first, the web second. It's faster, cheaper and gives the same answer every run.
-Embeddings come later, once keyword search falls short.
+Grounding in our own recipes (retrieval, skill 8). The idea was to keep every recipe page the cook reads as our own
+vetted SA library, faster and cheaper than reading the page again. That library is built now (F35.3): each new read
+from one of our recipe sites is kept for good, as a proper recipe, and it's an open feed the cook reads like any other
+source. It isn't searched first, though. A library-first search would stop finding new recipes, so every search still
+asks the sites, and the library is one more voice among them
+([ADR 0082](../../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md)). Embeddings come later, once
+keyword search falls short.
 
 Swaps the right way (hybrid). The research survey on ingredient substitution says: hard rules in code for what must
 never be wrong (allergens, halaal, vegetarian), a curated table of good swaps, and the model only ranking them and
@@ -127,18 +138,22 @@ Each: what it is, why, how it fits, and what it costs. *Steps* are commits of ab
 
 ### Wave 1: with F48 (cheap, high value)
 
-Decided (Louis, 2026-10-30): built in F48, as F48.6 ([its steps](../plans/F48-cook-and-teacher.md)).
+These six go into F48 as its part F48.6 ([its steps](../plans/F48-cook-and-teacher.md)). None is built yet.
+
+*Decided in:* Louis, 2026-10-30.
 
 | # | Idea | Why | How it fits | Cost |
 |---|---|---|---|---|
 | 1 | **Food-safety guard** | Users miss AI recipe flaws; listeriosis | C# rules on the recipe record: poultry → "74 °C in the thickest part, juices clear", mince → 71 °C, egg dishes → 71 °C, leftovers → reheat to 74 °C and fridge within 2 hours; ready-to-eat meats → a note for pregnancy and small children. The rule adds the line; a grader checks it. | 2 steps, no model cost |
 | 2 | **Cheaper pack size** | Budget | From Stats SA's table: maize meal 5 kg R65.26 is R13.05/kg, 2.5 kg R38.53 is R15.41/kg. Code says "the 5 kg is 15% cheaper per kg" when the user will use it. | 1 step |
 | 3 | **Healthy nudges in SA words** | Health without numbers | One guideline message where it fits ("add a veg: *eat plenty of vegetables and fruit every day*"), from a small table of the 11 messages, credited. | 1 step (role + table) |
-| 4 | **Cook mode in the Puls app** | The competition's best feature | A page for one recipe: mise en place checklist first, one step on screen, a timer per step, the screen stays on (the browser's wake lock). Reads the `WriteRecipe` result, so no new model call. | 3 to 4 steps (Razor, bUnit tests) |
+| 4 | **Cook mode in the Puls app** | The competition's best feature | A page for one recipe: mise en place checklist first, one step on screen, a timer per step, the screen stays on (the browser's wake lock). Reads the result of `WriteRecipe`, the tool F48 plans, so no new model call. | 3 to 4 steps (Razor, bUnit tests) |
 | 5 | **List to share or copy** | WhatsApp is how SA shares | A "copy list" button that gives plain text ready to paste; no new data. | 1 step |
 | 6 | **"How did it go?"** | Feedback, and evals from real use | After a recipe, one tap (good / so-so / not good) and an optional line; stored with the browser id; "not good" opens troubleshooting and goes to the eval inbox. | 2 steps |
 
 ### Wave 2: one feature next ("cook for the week")
+
+This wave is one feature in the TODO, F76.
 
 | # | Idea | Why | How it fits | Cost |
 |---|---|---|---|---|
@@ -151,22 +166,30 @@ Decided (Louis, 2026-10-30): built in F48, as F48.6 ([its steps](../plans/F48-co
 
 ### Wave 3: waits for a building block
 
+This wave is F88 in the TODO. Two of its building blocks are here now: the recipe library (13) and accounts (18).
+
 | # | Idea | Waits for | Note |
 |---|---|---|---|
-| 13 | **Our own recipe library** | F35's recorded pages; keyword search first, embeddings later (skill 8) | Same answer every run; cheaper |
+| 13 | **Our own recipe library** | Built in F35.3, beside the sites rather than before them; embeddings later (skill 8) | Cheaper as it fills |
 | 14 | **Ask about this step** | Cook mode (4) | The chat knows the step you're on; a cheap model call |
 | 15 | **Hands-free voice** | Cook mode (4); browser speech | English first |
 | 16 | **Photo: does it look right?** | Vision (after F35) | Never for safety |
 | 17 | **Voice notes in, WhatsApp out** | Phase 9's front door (`louis-agent.puls.gateway`) | Where SA actually is |
-| 18 | **Dishes you've mastered** | Accounts (Phase 9) | A progress view; the browser id can start it |
+| 18 | **Dishes you've mastered** | Accounts, which Puls has now (F61) | A progress view; the browser id can start it |
 
 ## Value and cost, side by side
+
+| Wave | What it brings | What it costs to build | What it waits for |
+|---|---|---|---|
+| 1 | Safety in code, budget help, healthy nudges, cook mode, a list to share, feedback | About 10 steps, almost nothing per answer | Nothing: it goes into F48 |
+| 2 | A week on a budget, leftovers, cheap this month, diet rules, swaps, teaching | About 15 to 17 steps, a few cents a week plan | F48 first |
+| 3 | Retrieval, help mid-cook, voice, photos, WhatsApp, progress | Not costed yet | Cook mode, vision, voice, the WhatsApp front door |
 
 ## What it costs to run
 
 Wave 1 adds almost nothing per answer. The guard, pack size and nudges are code and small tables. The nudge line is
-about 20 output tokens. Cook mode reads the answer we already have. On Haiku 5.5 ($0.50 per million output tokens,
-`config/prices.json` as of 2026-10-10) that's well under a hundredth of a cent.
+about 20 output tokens. Cook mode reads the answer we already have. On Haiku 5.5 ($0.50 per million output tokens in
+`demos/puls/config/prices.json`) that's well under a hundredth of a cent.
 
 "How did it go?" is a tap, stored; a "not good" that opens troubleshooting is one normal cook turn, about a cent.
 
@@ -180,7 +203,7 @@ Louis's go, as always.
 | GOAL skill | What this adds |
 |---|---|
 | 4 · Tool design | Pack-size and safety as code the cook calls through `WriteRecipe` |
-| 8 · Memory and retrieval | Our own recipe library from F35's recorded pages; the browser id's history |
+| 8 · Memory and retrieval | Our own recipe library, built in F35.3; the browser id's history |
 | 12 · Evaluation | Safety should-nots, budget weeks, allergy refusals; real failures from "how did it go" |
 | 15 · Safety | A food-safety guard and diet rules in code, checked by a grader |
 | 16 · Human in the loop | The user's rating feeds the eval inbox; Louis labels |
