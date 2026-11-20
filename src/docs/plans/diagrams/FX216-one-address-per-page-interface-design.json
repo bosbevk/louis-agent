@@ -1,0 +1,93 @@
+{
+  "kind": "classes",
+  "title": "FX216 one address per page: the interface design",
+  "caption": "One site address, read once: the handler sends any other host on to it, and the shell names the page's route under it as the canonical.",
+  "classes": {
+    "types": [
+      {
+        "id": "options",
+        "name": "SiteAddressOptions",
+        "kind": "record, step 3",
+        "members": [
+          "+Address Uri?  (SITE_ADDRESS)",
+          "+FromEnvironment(getVariable) SiteAddressOptions",
+          "+IsElsewhere(HttpRequest) bool"
+        ]
+      },
+      {
+        "id": "pages",
+        "name": "SitePages",
+        "kind": "static, changed in step 3",
+        "members": [
+          "+MapLouisAgentSite(app, site, services, publicUrl?, home?)  (publicUrl from the options when none is passed)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "handler",
+        "name": "SitePageHandler",
+        "kind": "changed in steps 3 and 4",
+        "members": [
+          "+HandleAsync(HttpRequest) IResult  (a page on another host: 301 to the site's address)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "shell",
+        "name": "PageShell",
+        "kind": "static, changed in step 1",
+        "members": [
+          "+Fill(indexHtml, page, publicUrl, address, route) string  (canonical and og:url from route)"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "routes",
+        "name": "SiteRoutes",
+        "kind": "unchanged",
+        "members": [
+          "+PageFor(address) (route, page)?"
+        ],
+        "tone": "violet"
+      },
+      {
+        "id": "sitemap",
+        "name": "SitemapTests (both sites)",
+        "kind": "changed in step 2",
+        "members": [
+          "+TheSitemap_ListsEveryPage()"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "pages",
+        "to": "options",
+        "kind": "creates",
+        "word": "reads once"
+      },
+      {
+        "from": "pages",
+        "to": "handler",
+        "kind": "creates"
+      },
+      {
+        "from": "handler",
+        "to": "options",
+        "kind": "holds"
+      },
+      {
+        "from": "handler",
+        "to": "routes",
+        "kind": "uses",
+        "word": "address to page"
+      },
+      {
+        "from": "handler",
+        "to": "shell",
+        "kind": "uses",
+        "word": "fills the page"
+      }
+    ]
+  }
+}
