@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace LouisAgent.Api.Contracts.Admin.Imports;
 
 /// <summary>Every upload the packs take (F55): <c>GET /v1/admin/imports</c>.</summary>
@@ -16,8 +18,15 @@ public sealed record ImportSlotRow(string Name, string Description);
 /// </summary>
 public sealed record ImportRequest(IReadOnlyList<ImportFileBody>? Files);
 
-/// <summary>One uploaded file.</summary>
-public sealed record ImportFileBody(string Slot, string FileName, byte[] Content);
+/// <summary>
+/// One uploaded file. Its name is <c>file_name</c> on the wire, as the page sends it: the API binds a body with the
+/// web's camelCase defaults, so a name of two words says its own (FX210).
+/// </summary>
+public sealed record ImportFileBody(
+    string Slot,
+    [property: JsonPropertyName("file_name")]
+    string FileName,
+    byte[] Content);
 
 /// <summary>
 /// What the pack found and did: the period the files cover, how many things Save writes, whether this call saved
