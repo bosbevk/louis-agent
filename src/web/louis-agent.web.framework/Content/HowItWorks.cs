@@ -19,25 +19,26 @@ public static class HowItWorks
     /// </summary>
     public static readonly IReadOnlyList<Term> Layers =
     [
-        new(["the tool loop"], "Runs the model's tool calls, up to 10 rounds a message, each call through the guards."),
+        new(["the tool loop"],
+            "Runs the tools the model asks for, up to 10 rounds a message. Every call passes the guards first."),
         new(["the tools kept"],
-            "After the last round, keeps the tool list with tool use off, so the model answers in text " +
+            "On the last round, sends the same tool list with tool use switched off. The model answers in text, " +
             "and the request still matches the ones before it."),
-        new(["the usage"], "Records every request in the ledger, each round its own record."),
-        new(["the cut-off calls"], "Marks a call the output limit cut short, so it is never run."),
-        new(["the trace"], "Traces the request and its answer, with OpenTelemetry."),
-        new(["the replay"], "Answers from a recorded run where one is kept, so a replay costs nothing.")
+        new(["the usage"], "Writes every request to the ledger, each round as a record of its own."),
+        new(["the cut-off calls"], "Marks a tool call that the output limit cut short, so it is never run."),
+        new(["the trace"], "Traces the request and its answer with OpenTelemetry."),
+        new(["the replay"], "Answers from a recorded run when one is kept, so a replay costs nothing.")
     ];
 
     /// <summary>How a website and the backend meet.</summary>
     public static readonly IReadOnlyList<Term> TheWeb =
     [
         new(["louis-agent.web"],
-            "Every site is built on it, in Blazor WebAssembly, C# running in the browser."),
+            "What every site is built on. It is Blazor WebAssembly, so the site is C# running in the browser."),
         new(["the site's host"],
-            "Draws each page for a search engine first, then the app takes over in the browser."),
+            "Draws each page as HTML a search engine can read. Then the app takes over in the browser."),
         new(["louis-agent.api"],
-            "Holds the sessions, and streams a turn back as server-sent events while it is written.")
+            "Holds the sessions, and streams each turn back as server-sent events while it is written.")
     ];
 
     /// <summary>Every identity in the repo, who it is, in a line.</summary>
@@ -76,13 +77,17 @@ public static class HowItWorks
     /// <summary>The rules every turn keeps, each held in code.</summary>
     public static readonly IReadOnlyList<Term> Rules =
     [
-        new(["arguments as data"], "A tool takes its arguments as data, never through a shell."),
+        new(["arguments as data"],
+            "A tool gets its arguments as data, never pasted into a shell command, so model text can't become " +
+            "a new command."),
         new(["guard the context"],
-            "A result over 50,000 characters is summarised, a cut-off call is never run, " +
-            "and a failure carries its reason."),
+            "A tool result over 50,000 characters is summarised, a cut-off call is never run, " +
+            "and a failure says why it failed."),
         new(["history is append-only"],
-            "Nothing edits the system prompt, the tools or an earlier message, and the turn is kept whole."),
-        new(["measure every request"], "Every request is priced in the ledger, and unknown is null, never nought."),
-        new(["take a site's no"], "Every fetch obeys robots.txt and a page's no-AI signals, and says what it is.")
+            "Nothing edits the system prompt, the tools or an earlier message. A finished turn is kept whole."),
+        new(["measure every request"],
+            "Every request is priced in the ledger. A cost nobody knows is written as unknown, never as nought."),
+        new(["take a site's no"],
+            "Every fetch obeys robots.txt and a page's no-AI signals, and says honestly what it is.")
     ];
 }
