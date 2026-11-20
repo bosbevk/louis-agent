@@ -1,4 +1,5 @@
 using System.Net;
+using LouisAgent.Api.Config;
 using LouisAgent.Api.Site;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -67,15 +68,34 @@ public class SitePagesTests
         Directory.Delete(root, recursive: true);
     }
 
-    /// <summary>A test server with this assembly as the site, its index.html in a web root of its own.</summary>
+    /// <summary>
+    /// A site that names its address in SITE_ADDRESS (FX216) gets canonical links on it, whatever host it was asked at.
+    /// </summary>
+    [Test]
+    public async Task ASiteAddress_IsTheCanonicalsHost()
+    {
+        var (app, client, root) = await StartAsync(publicUrl: null, siteAddress: "https://site.test");
+        await using var _ = app;
+
+        string html = await client.GetStringAsync("/sample");
+
+        Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+        Directory.Delete(root, recursive: true);
+    }
+
+    /// <summary>
+    /// A test server with this assembly as the site, its index.html in a web root of its own, and SITE_ADDRESS in its
+    /// settings when one is given.
+    /// </summary>
     private static async Task<(WebApplication App, HttpClient Client, string Root)> StartAsync(
-        string? publicUrl = "https://site.test/")
+        string? publicUrl = "https://site.test/", string? siteAddress = null)
     {
         string root = Path.Combine(Path.GetTempPath(), "site-pages-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         await File.WriteAllTextAsync(Path.Combine(root, "index.html"), Index);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = root });
         builder.WebHost.UseTestServer();
+        if (siteAddress is not null) builder.Configuration[SiteAddressOptions.Setting] = siteAddress;
         var app = builder.Build();
         app.MapLouisAgentSite(typeof(SitePagesTests).Assembly, _ => { },
             publicUrl is null ? null : new Uri(publicUrl), "home");
