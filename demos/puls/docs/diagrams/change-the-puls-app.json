@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Change the Puls web app",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "app", "icon": "browser", "title": "louis-agent.puls", "code": "Blazor WebAssembly",
+          "look": "highlight",
+          "text": "Served by louis-agent.puls-api: the landing page, the chat at /gesels, and the admin portal." }
+      ] },
+      { "cards": [
+        { "id": "run", "icon": "terminal", "title": "Run it",
+          "text": "The compose stack on 5070, or the puls-api program on 5071." },
+        { "id": "chat", "icon": "message", "title": "Change the chat",
+          "text": "ChatPage fills the framework's ChatShell; the frame itself is louis-agent.web's." },
+        { "id": "landing", "icon": "box", "title": "Landing and admin",
+          "text": "A component per section, motion behind chat.motion; AdminLayout and PulsSites." }
+      ] },
+      { "cards": [
+        { "id": "words", "icon": "file", "title": "Place its words",
+          "text": "PulsText.Afrikaans for what C# builds; labels stay in the markup." },
+        { "id": "test", "icon": "checks", "title": "Test it",
+          "text": "bUnit against FixtureApi, golden pages, then a look at three widths." }
+      ] }
+    ],
+    "links": [
+      { "from": "app", "to": "run" },
+      { "from": "app", "to": "chat" },
+      { "from": "app", "to": "landing" },
+      { "from": "chat", "to": "words" },
+      { "from": "landing", "to": "test" }
+    ]
+  }
+}
