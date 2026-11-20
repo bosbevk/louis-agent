@@ -63,8 +63,9 @@ public class ImportRouteTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(report!.Saved, Is.False);
         Assert.That(report.Changes, Is.EqualTo(1));
-        // The fake names each file by its slot, so the pack got the file the request put there.
-        Assert.That(report.Facts.Select(f => f.Label), Is.EqualTo(new[] { "file" }));
+        // The fake reports each file by its slot and its name, so the pack got the file the request put there, name and
+        // all (FX210: the name was dropped on the way in).
+        Assert.That(report.Facts.Select(f => (f.Label, f.Value)), Is.EqualTo(new[] { ("file", "prices.xlsx") }));
     }
 
     /// <summary>A save asks the pack to keep the files, and says it did.</summary>

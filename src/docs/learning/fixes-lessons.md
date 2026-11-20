@@ -513,6 +513,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX210 · Two sides of one wire agree on a name only when it's written down
+
+Every file uploaded to a pack reached it with no name. The admin page wrote the body in the admin wire's snake case,
+so the name went as `file_name`. The API read the body with ASP.NET's defaults, camelCase that ignores case, so it
+looked for `fileName` and found nothing. The slot and the bytes have one-word names, which match either way, and
+shop-prices reads its files by slot, so no one saw it. A test on a fake upload that reports each file's name showed it
+at once. The repo had already solved this twice: a request record names a two-word property's wire name with
+`[JsonPropertyName]`, as `time_zone` and `row_id` do, so neither side's naming policy decides it. Then every other
+body the API reads was checked for the same gap, and none had it. Skill 18 (testing and shipping: a fake that echoes
+what it got finds what a real pack never looked at).
+
 ## FX209 · A warning that names a CVE is an error
 
 Every build had warned NU1903 for a while, and Rider had it as an error: the Blazor WebAssembly server package at
