@@ -61,7 +61,7 @@ address under its page.
 | Understand | Features | `/features` | The 39 things it does, in seven areas: the engine, the models, where it runs, the web, its guards, what it measures and the code |
 | Build | Build your own | `/build-your-own` | An identity, a pack and a site of your own, each in a few steps, handed on to the guide that walks it through |
 | Build | Run it | `/run-it` | The Docker stacks of your own machine with the commands that start them, the dashboard that watches them, and the two sites released to Azure on every merge |
-| Decide | Cost and evals | `/cost-and-evals` | The ledger and the price table, one request worked through to rand, and the evals' places, each saying the evals are coming |
+| Decide | Cost and evals | `/cost-and-evals` | The ledger and the price table, one request worked through to rand, and the evals' places, each saying what the evals' redesign plans, with its plan linked |
 | Decide | Examples | `/examples` | Puls, the coding agent and the guide, by their identities, and what's coming |
 | Decide | Comparison | `/comparison` | louis-agent beside Microsoft Agent Framework and Semantic Kernel |
 
@@ -84,8 +84,8 @@ it is named.
 
 The other pages are built the same way. Features opens on its areas at a glance and gives each area a section of
 its own. Comparison sets three columns side by side in a `ComparisonTable`. Cost and evals opens on a request's path
-to rand. Its evals' places say the evals are being reworked and are coming, and claim nothing about how they work
-today.
+to rand. Its evals' places say what the evals' redesign plans, as planned, link its plan, and claim nothing about
+how today's evals work.
 
 ### 4. What a page says is held to the repo
 
@@ -165,8 +165,8 @@ holds its heading, its sections in order and what it says to the repo, as the ta
 ## Limits
 
 The pages run no agent of their own. The framework's site docks one beside them, the framework Orbi
-([louis-agent.identity.framework](louis-agent.identity.framework.md)). The evals' sections say only that the
-evals are being reworked and are coming. The doc links lead to GitHub, since the docs have no site of their own.
+([louis-agent.identity.framework](louis-agent.identity.framework.md)). The evals' sections say only what their
+redesign plans, as planned. The doc links lead to GitHub, since the docs have no site of their own.
 
 ## Related docs
 

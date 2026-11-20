@@ -84,7 +84,7 @@ the same shape: its rules first, then its steps or its detail, a worked example,
 
 Two are always in the prompt. `site-pages.md` lists the site's pages in reading order, with what each section
 covers, so it knows which page to open without searching; it never opens a page that isn't on that list, and says of
-the evals only that they are coming. `writing.md` says how it writes for a narrow panel beside the page: the answer
+the evals only what their redesign plans, never how they work today. `writing.md` says how it writes for a narrow panel beside the page: the answer
 first, sentences of about 14 words and never more than 25, at most three sentences to a paragraph, code only in a
 fenced block, and lists only for steps and choices.
 

@@ -9,7 +9,7 @@ namespace LouisAgent.Web.Framework.Tests.Pages.Decide;
 /// <summary>
 /// F164.1, step 12: Cost and evals, at <c>/cost-and-evals</c>, tells how a turn's cost is worked out, from the ledger
 /// and the price table to the rand, with one request worked through, its numbers read from the real files; and the
-/// evals' places, each saying only that they are being reworked and are coming (Louis: "It needs to be reworked").
+/// evals' places, each saying what the approved redesign (F126) plans, as planned, with its plan linked.
 /// </summary>
 public class CostAndEvalsPageTests
 {
@@ -92,12 +92,13 @@ public class CostAndEvalsPageTests
     }
 
     /// <summary>
-    /// Each of the evals' places says they are being reworked and are coming, and claims nothing of how they work
-    /// today: no list of terms and no doc behind it.
+    /// Each of the evals' places says what the approved redesign plans, as planned, and claims nothing of how today's
+    /// evals work: no list of terms, and its one link is the plan itself, so the plan's going (when the work is done)
+    /// fails here and brings the page along.
     /// </summary>
     [TestCase("the-evals")]
     [TestCase("the-eval-studio")]
-    public void AnEvalsPlace_SaysOnlyComingSoon(string place)
+    public void AnEvalsPlace_SaysWhatThePlanBuilds(string place)
     {
         using var ctx = Context();
 
@@ -105,8 +106,14 @@ public class CostAndEvalsPageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(section.TextContent, Does.Contain("coming soon"));
-            Assert.That(section.QuerySelectorAll("ul.terms, a"), Is.Empty);
+            Assert.That(section.TextContent, Does.Contain("plan"));
+            Assert.That(section.QuerySelectorAll("ul.terms"), Is.Empty, "no claim of how today's evals work");
+            var links = section.QuerySelectorAll("a.doc-link").Select(link => link.GetAttribute("href")).ToList();
+            Assert.That(links, Has.Count.EqualTo(1).And.All.EndsWith(PlanPath), "the plan, and only the plan");
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, PlanPath)), PlanPath);
         });
     }
+
+    /// <summary>The approved plan that redesigns the evals.</summary>
+    private const string PlanPath = "src/docs/plans/F126-evals-redesigned.md";
 }
