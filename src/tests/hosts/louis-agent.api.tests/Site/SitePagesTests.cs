@@ -69,23 +69,38 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// A site that names its address in SITE_ADDRESS (FX216) gets canonical links on it, whatever host it was asked at.
+    /// A site that names its address in SITE_ADDRESS (FX216) gets canonical links on it, and a page asked for on any
+    /// other host, such as www, is sent there for good with its path and question; a file and the API stay where they
+    /// are, since a health probe and a chat on another site call them there.
     /// </summary>
     [Test]
-    public async Task ASiteAddress_IsTheCanonicalsHost()
+    public async Task ASiteAddress_IsTheOnlyHostAPageAnswersOn()
     {
         var (app, client, root) = await StartAsync(publicUrl: null, siteAddress: "https://site.test");
         await using var _ = app;
 
-        string html = await client.GetStringAsync("/sample");
+        string html = await client.GetStringAsync("https://site.test/sample");
+        var page = await client.GetAsync("https://www.site.test/sample/top?from=mail");
+        var file = await client.GetAsync("https://www.site.test/index.html");
+        var api = await client.GetAsync("https://www.site.test/v1/health");
 
-        Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+            Assert.That(page.StatusCode, Is.EqualTo(HttpStatusCode.MovedPermanently));
+            Assert.That(page.Headers.Location, Is.EqualTo(new Uri("https://site.test/sample/top?from=mail")));
+            Assert.That(file.StatusCode, Is.EqualTo(HttpStatusCode.OK), "a file is never sent on");
+            Assert.That(api.StatusCode, Is.EqualTo(HttpStatusCode.OK), "the API is never sent on");
+        });
         Directory.Delete(root, recursive: true);
     }
 
+    /// <summary>A stand-in for an API route on the same host as the site.</summary>
+    private static string Health() => "ok";
+
     /// <summary>
-    /// A test server with this assembly as the site, its index.html in a web root of its own, and SITE_ADDRESS in its
-    /// settings when one is given.
+    /// A test server with this assembly as the site, its index.html in a web root of its own, an API route beside it,
+    /// and SITE_ADDRESS in its settings when one is given.
     /// </summary>
     private static async Task<(WebApplication App, HttpClient Client, string Root)> StartAsync(
         string? publicUrl = "https://site.test/", string? siteAddress = null)
@@ -97,10 +112,17 @@ public class SitePagesTests
         builder.WebHost.UseTestServer();
         if (siteAddress is not null) builder.Configuration[SiteAddressOptions.Setting] = siteAddress;
         var app = builder.Build();
+        // A file and an API route beside the pages, as a real host has.
+        app.UseStaticFiles();
+        app.MapGet("/v1/health", Health);
         app.MapLouisAgentSite(typeof(SitePagesTests).Assembly, _ => { },
             publicUrl is null ? null : new Uri(publicUrl), "home");
         await app.StartAsync();
-        return (app, app.GetTestClient(), root);
+        // The client asks at the site's own address, as a visitor who followed its links does.
+        var client = app.GetTestClient();
+        string? site = publicUrl ?? siteAddress;
+        if (site is not null) client.BaseAddress = new Uri(site);
+        return (app, client, root);
     }
 
     /// <summary>A page's address answers its own title, description, canonical address and words.</summary>
