@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 139 | 98 |
-| Fixes (`FX`) | 198 | 6 |
+| Fixes (`FX`) | 200 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -301,10 +301,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (198 done)
+## Fixes (200 done)
 
 | Id | When | What |
 |---|---|---|
+| FX212 | 2026-11-20 | The git tests turn off git's background housekeeping in each repo they make, so its lock can't vanish mid-teardown |
+| FX211 | 2026-11-20 | The recorded chat's three-turn tests play a four-event turn instead of the 1,503-event session, so CI finishes them in time |
 | FX210 | 2026-11-20 | An upload's file name reaches its pack: `ImportFileBody` names its wire name `file_name`, which the page sends and the API now reads |
 | FX209 | 2026-11-19 | The Blazor WebAssembly server package moves to 10.0.15, past CVE-2026-102870, in all five hosts that serve a Blazor app |
 | FX208 | 2026-11-19 | On a phone the header has one three-line button, its sheet holding the settings too, and the page no longer scrolls sideways |
