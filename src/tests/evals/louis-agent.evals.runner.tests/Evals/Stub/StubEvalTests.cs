@@ -7,6 +7,7 @@ using LouisAgent.Evals.Running;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
 using LouisAgent.Evals.Runner.Evals.Stub;
+using LouisAgent.Testing;
 
 namespace LouisAgent.Evals.Runner.Tests.Evals.Stub;
 
@@ -105,6 +106,27 @@ public class StubEvalTests
         public Task CloseAsync(string session, CancellationToken cancellationToken) =>
             inner.CloseAsync(session, cancellationToken);
     }
+
+    /// <summary>
+    /// What the stub says it proves names no product: the runner is the framework's, and every demo's portal lists it
+    /// (FX213).
+    /// </summary>
+    [Test]
+    public void WhatItProves_NamesNoProduct()
+    {
+        string proves = new StubEval().Proves;
+
+        Assert.That(Products().Where(product => proves.Contains(product, StringComparison.OrdinalIgnoreCase)),
+            Is.Empty);
+    }
+
+    /// <summary>Each demo identity's product name, from its project folder's name.</summary>
+    private static IEnumerable<string> Products() =>
+        Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "demos"), "louis-agent.identity.*",
+                SearchOption.AllDirectories)
+            .Select(folder => Path.GetFileName(folder)["louis-agent.identity.".Length..])
+            .Where(name => !name.Contains('.'))
+            .Distinct();
 
     /// <summary>Runs the stub eval with that many repeats, and hands back the lines it wrote.</summary>
     private static async Task<string[]> RunAsync(int repeat)

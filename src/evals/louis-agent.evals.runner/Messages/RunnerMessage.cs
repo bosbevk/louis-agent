@@ -129,6 +129,6 @@ public enum RunnerMessage
                  + "with --web, --replay, --repeat or --split (the repeats come from the stored run).")]
     RescoreExcludesRunFlags,
 
-    [Description("The stub's canned run: it proves the portal, not Puls, and costs nothing.")]
+    [Description("The stub's canned run: it proves the portal, not an agent, and costs nothing.")]
     StubProves,
 }

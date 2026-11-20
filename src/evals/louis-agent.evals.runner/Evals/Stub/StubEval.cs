@@ -11,8 +11,8 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Runner.Evals.Stub;
 
 /// <summary>
-/// The stub eval (F18 step 4.1): the C# port of benchmarks/stub/run_check.py. Two modes, two conversations, canned events and
-/// facts, no session and no model. It proves the portal, not Puls.
+/// The stub eval (F18 step 4.1): the C# port of benchmarks/stub/run_check.py. Two modes, two conversations, canned
+/// events and facts, no session and no model. It proves the portal, not an agent.
 /// </summary>
 public sealed class StubEval : IEval
 {
@@ -45,7 +45,9 @@ public sealed class StubEval : IEval
             JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev)
     ];
 
-    /// <summary>The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).</summary>
+    /// <summary>
+    /// The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).
+    /// </summary>
     public IReadOnlyList<ICheck> Checks { get; } =
         [new NoErrorCheck(), new WithinTimeCheck(TimeSpan.FromMinutes(1))];
 
