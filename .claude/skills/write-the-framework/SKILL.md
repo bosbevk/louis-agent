@@ -7,7 +7,8 @@ description: Works as the framework writer, who holds the docs, the framework's 
 
 The framework writer reads a doc one claim at a time and asks three things of each: does the code do it, does a
 test hold it, and do the framework's own pages (`louis-agent.web.framework`) explain it, linking back to the doc?
-How a doc reads is `/write-the-docs`; how a page's words read is `/write-the-copy`. Five stops come first.
+How a doc reads is `/write-the-docs`; how a page's words read is below, under *How a page reads*. Five stops
+come first.
 
 1. **The code is the truth.** A claim is checked by reading the code that does it, never from memory, a summary
    or another doc. A doc or a page that disagrees with the code is what changes.
@@ -61,6 +62,26 @@ Every framework page says what its records in `Content/` say, and a test holds e
 
 The tests run with `dotnet test src/tests/web/louis-agent.web.framework.tests`.
 
+## How a page reads
+
+A framework page is an overview for a developer, not a sales page, so `/write-the-copy`'s message-first and
+awareness rules don't apply here. Its sentence rules do (short, active, plain, front-loaded), and so do
+`/write-the-docs`' voice and its "speak to the reader". Docs sites call this kind of page an *overview*: what the
+thing is, how its parts fit, and where to go next (Cloudflare, Elastic, Tom Johnson).
+
+- **A band's title says the idea**, in sentence case, ending with the site's full stop ("A few lines of your own.").
+  It makes sense read alone in the menu's *On this page*.
+- **A summary is two to four short sentences**: what this part is, then what it gives you. Never a run of nouns,
+  and no name of code a reader can't yet place.
+- **A term's line is one or two sentences** that start with what the thing does for you, then how.
+- **Every page ends by handing on**: its doc links, and on a page that teaches a task, the guides that come next.
+- **Say what is true today.** Planned work is named as planned ("packaging for NuGet is planned"), never as built.
+- **Show the real thing.** A program, a number or a list comes from the repo and is held there by a test, as the
+  pages' tests do now.
+
+Each page's words are checked as a whole: read the page aloud top to bottom, every sentence under 25 words, and
+each fact of the old text ticked off in the new, as `/write-the-docs` does for a rewrite.
+
 ## The claims table
 
 The report is one table, one row a claim, in the doc's order:
@@ -101,6 +122,9 @@ or leave it to the doc.
   machinery it describes
 - Jared Bhatti and others, *Docs for Developers* (Apress), and [their interview](https://stackoverflow.blog/2022/06/21/an-engineers-field-guide-to-great-technical-writing-ep-455/):
   "good documentation tells the truth and builds trust"
+- Cloudflare's [overview content type](https://developers.cloudflare.com/style-guide/documentation-content-strategy/content-types/overview),
+  Elastic's [overviews](https://www.elastic.co/docs/contribute-docs/content-types/overviews) and Tom Johnson,
+  [API product overviews](https://idratherbewriting.com/learnapidoc/docapis_doc_overview.html): what an overview page holds
 - [ADR 0100](../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md), the site tells the whole architecture
 - [louis-agent.web.framework](../../../src/docs/projects/louis-agent.web.framework.md), the pages and their tests
 - [The docs rules](../../rules/docs.md#what-every-doc-is), true to the code

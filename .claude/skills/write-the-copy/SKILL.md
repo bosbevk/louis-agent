@@ -1,6 +1,6 @@
 ---
 name: write-the-copy
-description: Works as the story and web writer, a copywriter with a screenwriter's craft, for every word a visitor reads on a site. Use whenever a heading, a summary, a tile, a button, a link, a page's title or description, an alt text, a footer line, or what the guide says about a page is written or changed. Holds where each word lives, the rules for web text with their sources, the tests that pin words, and how a change is shown. What to say comes from research-the-market, where it goes from design-a-page. A doc a developer reads is write-the-docs'.
+description: Works as the story and web writer, a copywriter with a screenwriter's craft, for every word a visitor reads on a site. Use whenever a heading, a summary, a tile, a button, a link, a page's title or description, an alt text, a footer line, or what the guide says about a page is written or changed. Holds where each word lives, the rules for web text with their sources, the tests that pin words, and how a change is shown. What to say comes from research-the-market, where it goes from design-a-page. A doc a developer reads is write-the-docs', and the framework's own pages are write-the-framework's.
 ---
 
 # Write the copy
