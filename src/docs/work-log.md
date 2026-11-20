@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 138 | 97 |
 | Fixes (`FX`) | 197 | 6 |
-| Cleanups (`CL`) | 41 | 29 |
+| Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (132 in the TODO)
+## Open (133 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -58,6 +58,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | CL66 | The `ticket` kind's name, for Louis | Later |
+| CL68 | Agents and their subagents | Now |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
