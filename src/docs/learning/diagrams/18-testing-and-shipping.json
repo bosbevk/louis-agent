@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Testing and shipping: how the cut was proved",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "checks", "title": "Prove a change, then ship it", "code": "skill 18",
+          "look": "highlight",
+          "text": "Goldens that show nothing moved but what was meant, rules held by tests, and a merge that ships itself." }
+      ] },
+      { "cards": [
+        { "id": "goldens", "icon": "file", "title": "Goldens as a refactor's proof",
+          "text": "What the model reads pinned before the cut, and the same after it, but for what was meant." },
+        { "id": "rules", "icon": "code", "title": "Rules a person can maintain",
+          "text": "A composition root tested alone, ratchets that only shrink, docs held to the code." },
+        { "id": "ship", "icon": "cloud", "title": "Shipping by place",
+          "text": "Config and Docker per place, Azure as one file, a green main deploys both apps." }
+      ] },
+      { "cards": [
+        { "id": "numbers", "icon": "chart", "title": "Proved with numbers, switched in one step",
+          "text": "A new layout built beside the old, measured, then switched in one commit." },
+        { "id": "site", "icon": "browser", "title": "A site held to the code",
+          "text": "Pages a crawler can read, facts a search engine reads, a site held to the solution." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "goldens" },
+      { "from": "skill", "to": "rules" },
+      { "from": "skill", "to": "ship" },
+      { "from": "goldens", "to": "numbers" },
+      { "from": "ship", "to": "site" }
+    ]
+  }
+}
