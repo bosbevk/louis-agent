@@ -21,6 +21,9 @@ public class GitHistoryTests
         Git("config", "user.email", "test@example.com");
         Git("config", "user.name", "Test");
         Git("config", "commit.gpgsign", "false");
+        // No housekeeping in the background, which git starts by itself after a commit (FX212).
+        Git("config", "maintenance.auto", "false");
+        Git("config", "gc.auto", "0");
 
         Commit("readme.md", "Hallo\n", "Begin die projek", "Anna", "2026-09-01T10:00:00+02:00");
         Commit("readme.md", "Hallo\nWêreld\n", "Voeg wêreld by", "Ben", "2026-10-01T10:00:00+02:00");

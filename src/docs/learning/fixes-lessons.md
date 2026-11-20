@@ -513,6 +513,24 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX212 · A test owns what runs in the folder it made
+
+The git tests make a small repo each, commit to it, and delete it after. On CI one delete failed on a lock file that
+had vanished: git had started its own housekeeping in the background after the test's commit, and it finished while
+the teardown was clearing the files' read-only flags. The teardown could have learned to forgive a missing file, but
+the housekeeping would still be working in the folder while it was deleted. So each test's repo now turns it off,
+`maintenance.auto false` and `gc.auto 0`, beside its other settings, and nothing runs in it but the test. Skill 18
+(testing and shipping: a test that makes its world decides what runs in it).
+
+## FX211 · A test's data is the smallest that shows what it checks
+
+The recorded chat's hold test passed every time on the PC and timed out on CI. bUnit's own count said why: 5,107
+renders in ten seconds, and still going. The test played the whole recorded session, 1,503 events a turn, and the
+chat draws once per event even at no pace, so two turns took one or two seconds here and more than ten on CI's
+runner. The test is about the hold, not about a long answer, so its turns now play a whole answer in four events,
+and it runs in the 400 ms it holds for. A bigger timeout would only have made the race rarer. Skill 18 (testing and
+shipping: a minimal fixture is fast on every machine).
+
 ## FX210 · Two sides of one wire agree on a name only when it's written down
 
 Every file uploaded to a pack reached it with no name. The admin page wrote the body in the admin wire's snake case,
