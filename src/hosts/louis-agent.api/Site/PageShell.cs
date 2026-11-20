@@ -4,7 +4,7 @@ namespace LouisAgent.Api.Site;
 
 /// <summary>
 /// Puts a rendered page into the site's own index.html (F121): its title, its description, its link card and its
-/// canonical address in the head, its structured data and a breadcrumb (F123), and its words inside the app's element,
+/// canonical address (the page's own, whichever of its sections was asked for: FX216) in the head, its structured data and a breadcrumb (F123), and its words inside the app's element,
 /// hidden behind the loading screen (F128.1). The app replaces both when it starts, so a visitor sees the loader, never
 /// a bare page, and a crawler that runs no script reads the words.
 /// </summary>
@@ -19,13 +19,13 @@ public static class PageShell
     private const string SiteNameTag = "<meta property=\"og:site_name\" content=\"";
 
     /// <summary>
-    /// The site's index.html with the page in it, at the address asked for on the site's public URL; the route is the
-    /// page's own, which its breadcrumb names.
+    /// The site's index.html with the page in it, named by its own route on the site's public URL. A section's address
+    /// answers this same page, so the page is the one original Google is told about, and its breadcrumb names it too.
     /// </summary>
-    public static string Fill(string indexHtml, RenderedPage page, Uri publicUrl, string address, string route)
+    public static string Fill(string indexHtml, RenderedPage page, Uri publicUrl, string route)
     {
         indexHtml = WithSchemas(indexHtml, page, publicUrl, route);
-        string canonical = Escaped(new Uri(publicUrl, address).ToString());
+        string canonical = Escaped(new Uri(publicUrl, route).ToString());
         string title = Escaped(page.Title);
         string description = Escaped(page.Description);
 

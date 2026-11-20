@@ -17,11 +17,11 @@ public class PageShellTests
     private static readonly RenderedPage Page = new("Measured · louis-agent", "Every number & its \"source\".",
         "<section id=\"top\"><h2>Every number</h2></section>");
 
-    /// <summary>The head carries the page's own title, description, link card and canonical address.</summary>
+    /// <summary>The head carries the page's own title, description, link card and canonical address, its route.</summary>
     [Test]
     public void TheHead_IsThePages()
     {
-        string html = PageShell.Fill(Index, Page, Site, "/proof/rand", "/proof");
+        string html = PageShell.Fill(Index, Page, Site, "/proof");
 
         Assert.Multiple(() =>
         {
@@ -29,8 +29,8 @@ public class PageShellTests
             Assert.That(html, Does.Contain(
                 "<meta name=\"description\" content=\"Every number &amp; its &quot;source&quot;.\""));
             Assert.That(html, Does.Contain("<meta property=\"og:title\" content=\"Measured · louis-agent\""));
-            Assert.That(html, Does.Contain("<meta property=\"og:url\" content=\"https://louis-agent.dev/proof/rand\""));
-            Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://louis-agent.dev/proof/rand\" />"));
+            Assert.That(html, Does.Contain("<meta property=\"og:url\" content=\"https://louis-agent.dev/proof\""));
+            Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://louis-agent.dev/proof\" />"));
             Assert.That(html, Does.Not.Contain("an AI agent framework in C#</title>"), "the landing's title is gone");
         });
     }
@@ -43,7 +43,7 @@ public class PageShellTests
     [Test]
     public void TheWords_SitInsideTheApp_HiddenBehindTheLoader()
     {
-        string html = PageShell.Fill(Index, Page, Site, "/proof", "/proof");
+        string html = PageShell.Fill(Index, Page, Site, "/proof");
 
         int app = html.IndexOf("<div id=\"app\">", StringComparison.Ordinal);
         int loader = html.IndexOf("BOOTING LOUIS AGENT", StringComparison.Ordinal);
@@ -63,7 +63,7 @@ public class PageShellTests
     [Test]
     public void NoDescription_KeepsTheSites()
     {
-        string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof", "/proof");
+        string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof");
 
         Assert.That(html, Does.Contain("<meta name=\"description\" content=\"A website for your small business"));
     }
@@ -77,8 +77,8 @@ public class PageShellTests
     {
         var page = Page with { Schemas = ["<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>"] };
 
-        string html = PageShell.Fill(Index, page, Site, "/proof/rand", "/proof");
-        string landing = PageShell.Fill(Index, page with { Title = "louis-agent" }, Site, "/home/custom", "/");
+        string html = PageShell.Fill(Index, page, Site, "/proof");
+        string landing = PageShell.Fill(Index, page with { Title = "louis-agent" }, Site, "/");
 
         string head = html[..html.IndexOf("</head>", StringComparison.Ordinal)];
         Assert.Multiple(() =>

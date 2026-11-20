@@ -107,17 +107,25 @@ public class SitePagesTests
         Directory.Delete(root, recursive: true);
     }
 
-    /// <summary>A section's address answers its page, canonical at the section's own address.</summary>
+    /// <summary>
+    /// A section's address answers its page, and names the page as the original, however it was spelled (FX216:
+    /// Google folds copies that each claim to be the original into one of its own choosing).
+    /// </summary>
     [Test]
-    public async Task ASectionsAddress_AnswersItsPage()
+    public async Task ASectionsAddress_AnswersItsPage_WithThePageAsCanonical()
     {
         var (app, client, root) = await StartAsync();
         await using var _ = app;
 
-        string html = await client.GetStringAsync("/sample/top");
+        string section = await client.GetStringAsync("/sample/top");
+        string slashed = await client.GetStringAsync("/sample/top/");
 
-        Assert.That(html, Does.Contain("<h2>Sample words</h2>")
-            .And.Contain("<link rel=\"canonical\" href=\"https://site.test/sample/top\" />"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(section, Does.Contain("<h2>Sample words</h2>")
+                .And.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+            Assert.That(slashed, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+        });
         Directory.Delete(root, recursive: true);
     }
 
