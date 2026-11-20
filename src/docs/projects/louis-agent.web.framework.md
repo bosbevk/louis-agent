@@ -55,8 +55,8 @@ address under its page.
 
 | Group | Page | Address | What it tells |
 |---|---|---|---|
-| Start | Overview | `/` | What it is, at a glance, with the real program, then each of the five families and every project it ships, why C#, and that it runs on your own hardware |
-| Start | Getting started | `/getting-started` | The coding agent's whole program, what it loads, whose is what, and the steps that run it |
+| Start | Overview | `/` | What it is, at a glance, with the real program, then each of the five families and every project it ships, the sites, demos and packs built on them, why C#, and that it runs on your own hardware |
+| Start | Getting started | `/getting-started` | The coding agent's whole program, what it loads, whose is what, the steps that run it, and the guides that come next |
 | Understand | How it works | `/how-it-works` | One turn through every layer, the web with the backend, every identity and every pack, and the rules every turn keeps |
 | Understand | Features | `/features` | The 39 things it does, in seven areas: the engine, the models, where it runs, the web, its guards, what it measures and the code |
 | Decide | Cost and evals | `/cost-and-evals` | The ledger and the price table, one request worked through to rand, and the evals' places, each saying the evals are coming |
@@ -93,6 +93,7 @@ the repo:
 | What | Held by |
 |---|---|
 | The program on Getting started and the Overview is the coding agent's real `Program.cs` (`ProgramListings`) | `GettingStartedPageTests`, `OverviewPageTests` |
+| Every folder the Overview names as built on the framework is a folder of the repo (`BuiltOnIt`) | `OverviewPageTests` |
 | Every identity and every pack on the disk is named on How it works | `HowItWorksPageTests` |
 | Each feature names code that exists and a doc that exists (`FrameworkFeature`) | `FeaturesPageTests` |
 | The worked request's numbers are read from the coding demo's price table and rates (`CostExample`) | `CostAndEvalsPageTests` |
@@ -132,8 +133,8 @@ src/web/louis-agent.web.framework/
 ├── FrameworkLibrary.cs     # the pages' assembly, for the router
 ├── Pages/                  # OverviewPage, GettingStartedPage, HowItWorksPage, FeaturesPage;
 │                           # Decide/ (CostAndEvalsPage, ExamplesPage, ComparisonPage)
-├── Content/                # what the pages say: FrameworkFamily, FrameworkProject, GettingStarted, HowItWorks,
-│                           # ProgramListings; Features/, Cost/, Examples/, Comparison/
+├── Content/                # what the pages say: FrameworkFamily, FrameworkProject, BuiltOnIt, GettingStarted,
+│                           # HowItWorks, ProgramListings; Features/, Cost/, Examples/, Comparison/
 ├── Graphs/                 # the pictures' data: FrameworkAtAGlance, FamilyOverview, OneTurn, WhatItLoads,
 │                           # FeaturesAtAGlance; Decide/ (CostPath, ExamplesAtAGlance)
 └── _Imports.razor
