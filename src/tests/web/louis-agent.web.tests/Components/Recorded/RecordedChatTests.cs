@@ -24,15 +24,49 @@ public class RecordedChatTests
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new ChatText());
-        var handler = new StubHandler(request => served && request.RequestUri!.AbsolutePath.EndsWith(Source)
-            ? new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(File.ReadAllText(SessionStreamFixture.StreamFile)),
-            }
-            : new HttpResponseMessage(HttpStatusCode.NotFound));
+        var handler = new StubHandler(request => (served, request.RequestUri!.AbsolutePath) switch
+        {
+            (true, var path) when path.EndsWith(Source) => Served(File.ReadAllText(SessionStreamFixture.StreamFile)),
+            (true, var path) when path.EndsWith(ShortSource) => Served(ShortStream),
+            _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+        });
         ctx.Services.AddSingleton(new HttpClient(handler) { BaseAddress = new Uri("http://site.test/") });
         return ctx;
     }
+
+    /// <summary>A stream the fake site serves, as it is.</summary>
+    private static HttpResponseMessage Served(string stream) =>
+        new(HttpStatusCode.OK) { Content = new StringContent(stream) };
+
+    /// <summary>Where the fake site serves <see cref="ShortStream"/>.</summary>
+    private const string ShortSource = "recordings/short.sse";
+
+    /// <summary>
+    /// A whole turn in four events: the answer starts, says one thing, and ends. The tests of a play's order and its
+    /// hold use it, since what they check doesn't need the recorded session's 1,503 events, each a render (FX211:
+    /// three of those at pace 0 outran a 10-second wait on CI).
+    /// </summary>
+    private const string ShortStream = """
+        event: message_start
+        data: {"type":"message_start","message":{"session_id":"sess_short","role":"assistant"}}
+
+        event: content_block_start
+        data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}
+
+        event: content_block_delta
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"An answer."}}
+
+        event: content_block_stop
+        data: {"type":"content_block_stop","index":0}
+
+        event: message_delta
+        data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}
+
+        event: message_stop
+        data: {"type":"message_stop"}
+
+
+        """;
 
     /// <summary>One recorded turn: the fixture's question and its stream.</summary>
     private static readonly RecordedTurn[] OneTurn = [new(SessionStreamFixture.Question, Source)];
@@ -316,11 +350,16 @@ public class RecordedChatTests
         });
     }
 
-    /// <summary>Three turns, started when asked, with no waits and the theme's words for each button.</summary>
+    /// <summary>
+    /// Three short turns, started when asked, with no waits and the theme's words for each button.
+    /// </summary>
     private static IRenderedComponent<RecordedChat> ThreeTurns(BunitContext ctx, bool held = false) =>
         ctx.Render<RecordedChat>(parameters => parameters
             .Add(chat => chat.Turns,
-                [new RecordedTurn("First", Source), new RecordedTurn("Second", Source), new RecordedTurn("Third", Source)])
+            [
+                new RecordedTurn("First", ShortSource), new RecordedTurn("Second", ShortSource),
+                new RecordedTurn("Third", ShortSource)
+            ])
             .Add(chat => chat.Pace, 0)
             .Add(chat => chat.Start, RecordedStart.WhenAsked)
             .Add(chat => chat.Play, "Play")
