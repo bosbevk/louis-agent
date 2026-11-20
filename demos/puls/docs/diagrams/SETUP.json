@@ -1,0 +1,30 @@
+{
+  "kind": "cards",
+  "title": "Setup: Puls",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "config", "icon": "folder", "title": "Its settings", "code": "demos/puls/config", "look": "highlight",
+          "text": "CONFIG_DIRECTORY points here, in the stack and in the API's puls profile." }
+      ] },
+      { "cards": [
+        { "id": "files", "icon": "file", "title": "The files",
+          "text": "Copy each .example: .env, .env.secrets, .env.mongo, .env.sql and .env.searxng." },
+        { "id": "run", "icon": "terminal", "title": "First run",
+          "text": "docker compose up, then 127.0.0.1:5070." },
+        { "id": "rider", "icon": "browser", "title": "In Rider",
+          "text": "The puls profile on 5071, using the stack's SearXNG and browser." }
+      ] },
+      { "cards": [
+        { "id": "settings", "icon": "settings", "title": "Puls's own settings",
+          "text": "Who it is and its packs, the eval store, SearXNG, prices, accounts, sign-in and recipe sites." }
+      ] }
+    ],
+    "links": [
+      { "from": "config", "to": "files" },
+      { "from": "config", "to": "run" },
+      { "from": "config", "to": "rider" },
+      { "from": "files", "to": "settings" }
+    ]
+  }
+}

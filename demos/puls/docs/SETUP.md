@@ -4,6 +4,8 @@
 > code reads, in the framework's [Configuration](../../../src/docs/SETUP.md); what each file here is in
 > [config/](../config/README.md).
 
+![Setup: Puls's config folder, its files, the first run, Rider, and its own settings](diagrams/SETUP.svg)
+
 Puls keeps its settings in `demos/puls/config/`. The stack sets `CONFIG_DIRECTORY` to it, and so does the API's `puls` profile.
 
 ## Files
