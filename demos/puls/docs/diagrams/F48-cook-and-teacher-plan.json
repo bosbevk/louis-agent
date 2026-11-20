@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "F48 · Recipe maths and a teaching cook: the plan",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "plan", "icon": "book", "title": "The best home cook, and the best teacher", "code": "decided 2026-10-26",
+          "look": "highlight",
+          "text": "No Cooklang: code does the maths on F35's Recipe record, and the cook teaches in every answer." }
+      ] },
+      { "cards": [
+        { "id": "maths", "icon": "code", "title": "The maths in code",
+          "text": "A line reader, a scaler, the shopping list, the estimates, WriteRecipe. F48.1 to F48.3 built: ScaleRecipe, yields, a recipe or a meal." },
+        { "id": "teach", "icon": "user", "title": "The teacher",
+          "text": "Cues and whys, a level line, an excuse table, a skill ladder of SA dishes." },
+        { "id": "pantry", "icon": "database", "title": "The pantry",
+          "text": "A global catalogue and stock per browser id, with a privacy notice and a clear button." }
+      ] },
+      { "cards": [
+        { "id": "wave1", "icon": "shield", "title": "Wave 1, F48.6",
+          "text": "Food safety in C#, the cheaper pack size, nudges, copy the list, cook mode, how did it go." },
+        { "id": "measure", "icon": "checks", "title": "Graders and a paid run",
+          "text": "Scales right, list matches, total adds up; about 20 scenarios; a before-and-after run on Louis's go." }
+      ] }
+    ],
+    "links": [
+      { "from": "plan", "to": "maths" },
+      { "from": "plan", "to": "teach" },
+      { "from": "plan", "to": "pantry" },
+      { "from": "maths", "to": "wave1" },
+      { "from": "teach", "to": "measure" }
+    ]
+  }
+}

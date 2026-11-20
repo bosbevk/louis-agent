@@ -12,6 +12,8 @@
 > background the idea came from; nothing from cooklang-skills is reused: we rewrite its ideas in our own words and code (Louis, 18:13).
 > The steps and decisions below are updated to match.
 
+![F48's plan: the maths in code, the teacher, the pantry, wave 1 and the graders, with what is built](../diagrams/F48-cook-and-teacher-plan.svg)
+
 ## The short answer
 
 I read all 14 skills, the Cook MCP server they call (`cook-mcp`, its tool list and its code) and the Cooklang spec.
