@@ -1,6 +1,6 @@
 ---
 name: site-pages
-description: The framework's site's seven pages in reading order, with their sections, so the framework Orbi knows which page and section to open without searching for it.
+description: The framework's site's pages in reading order, with their sections, so the framework Orbi knows which page and section to open without searching for it.
 metadata:
   level: agent
   load: always
@@ -19,14 +19,16 @@ page, listed in the page block when they are on it. Open one with `ShowPage` whe
 ## The pages
 
 - `/`, the Overview: what louis-agent is at a glance, a few lines of your own program, the whole framework in its
-  five families (the engine, the hosts, the web, the evals, the tools) with every project it ships, why C#, and that
-  it runs on your own hardware.
+  five families (the engine, the hosts, the web, the evals, the tools) with every project it ships, the sites, demos
+  and packs built on them, why C#, and that it runs on your own hardware.
 - `/getting-started`: your agent in two lines, the coding agent's real program; what it loads, the identities and
-  packs; whose files are whose; its settings, then run it.
+  packs; whose files are whose; its settings, then run it; and where next, the guides that make it yours.
 - `/how-it-works`: one turn through every layer; the web with the backend; who an agent is, the identities; what an
   agent can do, the packs; and the rules every turn keeps.
 - `/features`: everything it does, by area: the engine, any model, where it runs, the web, its guards, what it
   measures, and the code.
+- `/build-your-own`: make an agent of your own, in a few steps each, with the guide for each: an identity (who it
+  is), a pack (what it can do), and a site (your agent on a website, from the starter template).
 - `/cost-and-evals`: what a turn costs to the cent, the ledger, the price table and one request worked to rand, then
   the evals' places, which say they are coming.
 - `/examples`: the agents it already runs, Puls, the coding agent and the guide, and what's coming.

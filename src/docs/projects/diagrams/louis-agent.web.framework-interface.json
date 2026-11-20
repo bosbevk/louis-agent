@@ -12,7 +12,7 @@
         "members": [ "+All DocsContents" ] },
       { "id": "docs", "name": "DocsContents", "kind": "record, louis-agent.web.docs", "tone": "violet" },
       { "id": "pages", "name": "OverviewPage, GettingStartedPage, HowItWorksPage, FeaturesPage...",
-        "kind": "the seven pages" },
+        "kind": "the pages" },
       { "id": "family", "name": "FrameworkFamily", "kind": "record, one of the five families",
         "members": [ "+Id, Name, Folder, Summary", "+Icon, Tone", "+Projects", "+All" ] },
       { "id": "feature", "name": "FrameworkFeature", "kind": "record, one thing it does",

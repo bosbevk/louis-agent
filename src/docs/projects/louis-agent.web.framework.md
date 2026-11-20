@@ -4,13 +4,13 @@
 > **References:** louis-agent.web, louis-agent.web.docs, Microsoft.AspNetCore.Components.Web and .WebAssembly ·
 > **Used by:** louis-agent.site-framework, the framework's own site, which turns it on with `.Framework()`
 
-![The framework's pages: seven pages, what they say as records held to the repo, their pictures, and the area a site names](diagrams/louis-agent.web.framework.svg)
+![The framework's pages: the pages, what they say as records held to the repo, their pictures, and the area a site names](diagrams/louis-agent.web.framework.svg)
 
 ## Purpose
 
 This library is the framework told to a developer, page by page. It walks someone from what the framework is to
-building on it: what it is, how to start, how a turn works, everything it does, what it costs, what already runs on
-it, and how it compares. Each section hands the reader on to the docs it was written from.
+building on it: what it is, how to start, how a turn works, everything it does, how to build your own, what it
+costs, what already runs on it, and how it compares. Each section hands the reader on to the docs it was written from.
 
 It is a package a site turns on, the way a site turns on the account pages. The framework's own site names it with
 `.Framework()`, and any other site could do the same. So the pages are the framework's, and a site holds only its
@@ -39,7 +39,7 @@ areas.Flat().Framework().Docs(DocsAddress.GitHub("bosbevk/louis-agent", "main"))
 
 `Framework()` is an extension on the framework's `SiteAreasBuilder`, kept in this library because the framework's web
 can't name a package of pages built on it. It does two things. It brings the pages' assembly, `FrameworkLibrary.Assembly`,
-to the site's router, so the seven pages answer at their addresses. And it registers the pages' reading order,
+to the site's router, so every page answers at its address. And it registers the pages' reading order,
 `FrameworkContents.All`, which the docs layout's menu and page turns read.
 
 The site's host draws the same pages for a search engine, with no word of them in the host: the framework's web tells
@@ -48,7 +48,7 @@ the host which page assemblies the areas brought ([louis-agent.api](louis-agent.
 The pages link to their docs by path, so a site that turns them on also names where its docs live, with `.Docs()`
 ([louis-agent.web.docs](louis-agent.web.docs.md)).
 
-### 2. Seven pages, in a reading order
+### 2. The pages, in a reading order
 
 The pages sit at the root of the site's address, each page's name following its address, and each section its own
 address under its page.
@@ -59,6 +59,7 @@ address under its page.
 | Start | Getting started | `/getting-started` | The coding agent's whole program, what it loads, whose is what, the steps that run it, and the guides that come next |
 | Understand | How it works | `/how-it-works` | One turn through every layer, the web with the backend, every identity and every pack, and the rules every turn keeps |
 | Understand | Features | `/features` | The 39 things it does, in seven areas: the engine, the models, where it runs, the web, its guards, what it measures and the code |
+| Build | Build your own | `/build-your-own` | An identity, a pack and a site of your own, each in a few steps, handed on to the guide that walks it through |
 | Decide | Cost and evals | `/cost-and-evals` | The ledger and the price table, one request worked through to rand, and the evals' places, each saying the evals are coming |
 | Decide | Examples | `/examples` | Puls, the coding agent and the guide, by their identities, and what's coming |
 | Decide | Comparison | `/comparison` | louis-agent beside Microsoft Agent Framework and Semantic Kernel |
@@ -95,6 +96,7 @@ the repo:
 | The program on Getting started and the Overview is the coding agent's real `Program.cs` (`ProgramListings`) | `GettingStartedPageTests`, `OverviewPageTests` |
 | Every folder the Overview names as built on the framework is a folder of the repo (`BuiltOnIt`) | `OverviewPageTests` |
 | Every identity and every pack on the disk is named on How it works | `HowItWorksPageTests` |
+| Each step of Build your own hands on to its guide, and every folder the steps name is in the repo (`BuildYourOwn`) | `BuildYourOwnPageTests` |
 | Each feature names code that exists and a doc that exists (`FrameworkFeature`) | `FeaturesPageTests` |
 | The worked request's numbers are read from the coding demo's price table and rates (`CostExample`) | `CostAndEvalsPageTests` |
 | Each example names its identity's folder on the disk (`FrameworkExample`) | `ExamplesPageTests` |
@@ -132,9 +134,9 @@ src/web/louis-agent.web.framework/
 ├── FrameworkContents.cs    # the pages in reading order, under their groups
 ├── FrameworkLibrary.cs     # the pages' assembly, for the router
 ├── Pages/                  # OverviewPage, GettingStartedPage, HowItWorksPage, FeaturesPage;
-│                           # Decide/ (CostAndEvalsPage, ExamplesPage, ComparisonPage)
+│                           # Build/ (BuildYourOwnPage); Decide/ (CostAndEvalsPage, ExamplesPage, ComparisonPage)
 ├── Content/                # what the pages say: FrameworkFamily, FrameworkProject, BuiltOnIt, GettingStarted,
-│                           # HowItWorks, ProgramListings; Features/, Cost/, Examples/, Comparison/
+│                           # HowItWorks, ProgramListings; Build/, Features/, Cost/, Examples/, Comparison/
 ├── Graphs/                 # the pictures' data: FrameworkAtAGlance, FamilyOverview, OneTurn, WhatItLoads,
 │                           # FeaturesAtAGlance; Decide/ (CostPath, ExamplesAtAGlance)
 └── _Imports.razor

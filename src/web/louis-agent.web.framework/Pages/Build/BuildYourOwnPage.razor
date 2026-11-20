@@ -1,0 +1,32 @@
+@page "/build-your-own"
+
+<PageTitle>Build your own · louis-agent</PageTitle>
+<PageHead Description="Build your own AI agent in C# on louis-agent. An identity says who it is, a pack what it can do, and a site puts it on the web, each in a few steps with the guide that walks it through." />
+
+@* Build your own: an identity, a pack and a site of your own, each in the steps its guide walks through, and each
+   section handing on to that guide. *@
+<Band Id="top" Topic="Build your own" Title="Make an agent of your own." Summary="Three things make an agent yours. An identity says who it is, a pack gives it tools, and a site puts it on the web. Each section below shows the whole path in a few steps, then hands you to the guide that walks it through." />
+
+<Band Id="an-identity" Topic="Build your own" Short="An identity" Title="Who your agent is." Summary="An identity is your agent's name, voice and routing, with the specialists it can ask and the packs it uses. It has no tools of its own.">
+    <Steps Items="BuildYourOwn.Identity" />
+    <DocLinks>
+        <DocLink Path="src/docs/guides/build-an-identity.md">Build an identity</DocLink>
+        <DocLink Path="src/docs/adr/0027-engine-identities-and-packs.md">Engine, identities and packs</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="a-pack" Topic="Build your own" Short="A pack" Title="What your agent can do." Summary="A pack is a set of tools with a guide that tells the model when to use them. It names no identity and references no other pack, so an MCP server could serve it as it is.">
+    <Steps Items="BuildYourOwn.Pack" />
+    <DocLinks>
+        <DocLink Path="src/docs/guides/build-a-pack.md">Build a pack</DocLink>
+        <DocLink Path="src/docs/adr/0028-packs-stay-convertible-to-mcp.md">Packs stay convertible to MCP</DocLink>
+    </DocLinks>
+</Band>
+
+<Band Id="a-site" Topic="Build your own" Short="A site" Title="Your agent on a website." Summary="A new site starts from the starter template, with a chat, an admin and a plain landing page. It holds only its own name and words. For now it works inside this repo, since the framework isn't a package yet.">
+    <Steps Items="BuildYourOwn.Site" />
+    <DocLinks>
+        <DocLink Path="src/docs/guides/spawn-a-site.md">Spawn a site</DocLink>
+        <DocLink Path="src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">Every site on the framework's web</DocLink>
+    </DocLinks>
+</Band>

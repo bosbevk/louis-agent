@@ -189,7 +189,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="pic-note" x="380" y="552" text-anchor="start">the pages under their groups, the one being read marked</text>
     <rect class="pic-panel" x="358" y="602" width="370.5" height="74" rx="14" />
     <text class="pic-name" x="380" y="631" text-anchor="start">the page</text>
-    <text class="pic-note" x="380" y="652" text-anchor="start">one of the framework's seven, from the router</text>
+    <text class="pic-note" x="380" y="652" text-anchor="start">one of the framework's pages, from the router</text>
     <rect class="pic-panel" x="358" y="702" width="370.5" height="74" rx="14" />
     <text class="pic-name" x="380" y="731" text-anchor="start">PageTurn</text>
     <rect class="pic-tint tone-violet" x="460" y="718" width="89.2" height="18" rx="9" />
