@@ -8,6 +8,8 @@
 > [Change the framework's web](../../../../src/docs/guides/change-the-web.md); the folder rules in
 > [hosts-and-web.md](../../../../.claude/rules/hosts-and-web.md).
 
+![Change the code-review web app: run it, add a pack's control, call an endpoint, add a theme, place its words, and test it](../diagrams/change-the-web-app.svg)
+
 The app is Blazor WebAssembly, served by the coding agent's API on the same origin, so it has no settings of its own.
 It's a small site on the framework's web: `Pages/ChatPage.razor` is a thin page on `ChatShell`, at the root and at
 `/chat`, and `Layout/AdminLayout.razor` a small one on `AdminShell`. Files, Changes and Branches aren't its own: they're
@@ -29,7 +31,7 @@ sidebar; it stays in this browser.
 A control for a pack isn't this app's. It goes in that pack's web project under `packs/web/` and opens as an admin
 screen, as the git pack's `GitChangesView` does ([Build a pack](../../../../src/docs/guides/build-a-pack.md)). Then:
 
-1. Register it in `Program.cs`, as `GitWebViews.AddTo(views)` does, and list its Sass in `Styles/app.scss` with its
+1. Register it in `CodeReviewAreas`' `PackViewsOf`, as `GitWebViews.AddTo(views)` does, and list its Sass in `Styles/app.scss` with its
    folder in `sasscompiler.json`.
 2. Add a link in the `Views` slot of `Pages/ChatPage.razor`, if the chat's sidebar should have one. `PackMenu` lists it
    on the admin pages by itself.
@@ -59,8 +61,8 @@ Rules that only your theme needs, as retro's terminal dressing is, go in a sheet
 
 ## Words
 
-The shared components' words come from `ChatText`, whose defaults are this app's English (`Program.cs` registers
-`new ChatText()`). A label in a `.razor` is markup and stays there. A text built in C# (a notice, an error) goes in a
+The shared components' words come from `ChatText`, whose defaults are this app's English (`AddSiteAreas` registers
+`new ChatText()` when the app names no other). A label in a `.razor` is markup and stays there. A text built in C# (a notice, an error) goes in a
 class of the app's words rather than inline, as Puls keeps its own in `Text/`
 ([ADR 0009](../../../../src/docs/adr/0009-message-text-as-enum-templates.md)).
 

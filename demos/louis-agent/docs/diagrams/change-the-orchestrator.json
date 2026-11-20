@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "Change the orchestrator",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "orch", "icon": "server", "title": "louis-agent.orchestrator", "code": "proof of concept",
+          "look": "highlight",
+          "text": "Reads a service's errors, triages each with its runbooks, asks for a fix and checks the claim." }
+      ] },
+      { "cards": [
+        { "id": "runbook", "icon": "book", "title": "A runbook first",
+          "text": "Skills/{service}/{method}.md from the template; most changes are one." },
+        { "id": "tool", "icon": "code", "title": "A tool",
+          "text": "Test first, a described public method, text back, arguments as a list." },
+        { "id": "setting", "icon": "settings", "title": "A setting",
+          "text": "Read once in OrchestratorOptions, named ORCHESTRATOR_*, with a test." }
+      ] },
+      { "cards": [
+        { "id": "run", "icon": "terminal", "title": "Test and run it",
+          "text": "The tests, then one pass with --once; a run spends money on both models, so ask first." }
+      ] }
+    ],
+    "links": [
+      { "from": "orch", "to": "runbook" },
+      { "from": "orch", "to": "tool" },
+      { "from": "orch", "to": "setting" },
+      { "from": "tool", "to": "run" }
+    ]
+  }
+}
