@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 139 | 98 |
-| Fixes (`FX`) | 200 | 6 |
+| Fixes (`FX`) | 203 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -301,10 +301,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (200 done)
+## Fixes (203 done)
 
 | Id | When | What |
 |---|---|---|
+| FX215 | 2026-11-20 | The trust page's Azure facts rest on the deploy guide instead of Puls's Bicep file, and "Rebuilt from code" says Not yet, as is true |
+| FX214 | 2026-11-20 | Puls's own docs and settings no longer say its Azure app runs on a VM, untrue since FX122 |
+| FX213 | 2026-11-20 | The framework's stub eval says it proves the portal "not an agent" instead of naming Puls, held by a test |
 | FX212 | 2026-11-20 | The git tests turn off git's background housekeeping in each repo they make, so its lock can't vanish mid-teardown |
 | FX211 | 2026-11-20 | The recorded chat's three-turn tests play a four-event turn instead of the 1,503-event session, so CI finishes them in time |
 | FX210 | 2026-11-20 | An upload's file name reaches its pack: `ImportFileBody` names its wire name `file_name`, which the page sends and the API now reads |
