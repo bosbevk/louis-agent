@@ -20,7 +20,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (134)
+## Open (135)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -60,6 +60,7 @@ known limitations below are facts about today, not tasks.
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now | [plan](src/docs/plans/F126-evals-redesigned.md) |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now | [plan](src/docs/plans/F131-the-chat-on-any-website.md) |
 | CL66 | The `ticket` kind's name, for Louis: since FX156 it is drawn as a glass card (Louis: "glass but not a ticket"), and kept for now (CL65, unattended). Three options, in CL65's plan as of commit a9a875cda: `chat-card`, `card` with the `cards` kind renamed `overview`, or keep it, with what each costs | Later | Nothing to build until Louis picks |
+| CL68 | Agents and their subagents (Louis, 2026-11-19: "this prompt structure needs to be called agents. prompts can go"; "agents/{name}/Subagents/{name}"; "Minions --> lookup-agents sub-agents"): every `prompts/` folder goes, `agent/` is `agents/`, a specialist is a subagent in `agents/{identity}/subagents/{name}/voice.md`, a minion a lookup agent beside it, the level read from the header; three children, CL68.1 the wrapper, CL68.2 subagents, CL68.3 lookup agents | Now | [plan](src/docs/plans/CL68-agents-and-their-subagents.md) |
 | F137 | The site's card content as JSON (Louis, 2026-11-11, during CL60.1: "render our website cards with the info this way? that way our pages is built by json which the ai can then easily read"; his yes to cards and lists only, prose pages stay Razor): the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; reuses CL60's card records; groundwork for F133; after CL60, its own plan | Next | — |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next | [draft](src/docs/plans/F133-self-serve-sites.md) |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next | — |

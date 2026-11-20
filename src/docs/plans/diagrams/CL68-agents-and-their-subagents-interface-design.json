@@ -1,0 +1,102 @@
+{
+  "kind": "classes",
+  "title": "CL68 agents and their subagents: the interface design",
+  "caption": "An address names an agent or one of its subagents; the role catalogue turns it into a folder, and the level is read from the file's own header.",
+  "classes": {
+    "types": [
+      {
+        "id": "AgentAddress",
+        "name": "AgentAddress",
+        "kind": "record",
+        "members": [
+          "+Identity string",
+          "+Role string?",
+          "+Peer string?"
+        ]
+      },
+      {
+        "id": "IAgentIdentity",
+        "name": "IAgentIdentity",
+        "kind": "interface",
+        "members": [
+          "+Name string",
+          "+Prompts IFileProvider",
+          "+Calls IReadOnlyList<string>"
+        ]
+      },
+      {
+        "id": "EmbeddedPrompts",
+        "name": "EmbeddedPrompts",
+        "kind": "static",
+        "members": [
+          "+Of(Assembly) IFileProvider  (CL68.1: the prompt folders at the project root, no prompts/)",
+          "-Of(Assembly, string)  (CL68.1: goes, the showroom shares one)"
+        ]
+      },
+      {
+        "id": "RoleCatalog",
+        "name": "RoleCatalog",
+        "kind": "static",
+        "members": [
+          "+AgentsFolder = \"agents\"  (CL68.1, was AgentFolder \"agent\")",
+          "+SubagentsFolder = \"subagents\"  (CL68.2, was specialists/ and minions/)",
+          "+FileName(name, RoleLevel) string  (CL68.2: agents/{identity}/subagents/{role}/voice.md)",
+          "+LevelOf(role) RoleLevel?  (CL68.2: from the header)"
+        ]
+      },
+      {
+        "id": "RoleLevel",
+        "name": "RoleLevel",
+        "kind": "enum",
+        "members": [
+          "Agent",
+          "Subagent  (CL68.2, was Specialist)",
+          "Lookup  (CL68.3, was Minion)"
+        ]
+      },
+      {
+        "id": "PromptHeader",
+        "name": "PromptHeader",
+        "kind": "record",
+        "members": [
+          "+Name string",
+          "+Level RoleLevel?  (agent, subagent, lookup)",
+          "+Toolsets IReadOnlyList<string>"
+        ]
+      },
+      {
+        "id": "AgentAddresses",
+        "name": "AgentAddresses",
+        "kind": "static",
+        "members": [
+          "+Resolve(AgentAddress, identities, ...) AddressedAgent?",
+          "+IsLookup(AgentAddress) bool  (CL68.3, was IsMinion)"
+        ]
+      },
+      {
+        "id": "LookupAsk",
+        "name": "LookupAsk",
+        "members": [
+          "+MaxPerTurn int",
+          "~AskAsync(AddressedAgent, tool, task, ...) Task<string>  (CL68.3, was MinionAsk)"
+        ]
+      },
+      {
+        "id": "AgentCatalog",
+        "name": "AgentCatalog",
+        "members": [
+          "+Prompts IReadOnlyList<IFileProvider>  (CL68.1: a shared provider counted once)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "IAgentIdentity", "to": "EmbeddedPrompts", "kind": "uses", "word": "Prompts" },
+      { "from": "AgentCatalog", "to": "IAgentIdentity", "kind": "holds", "word": "each one's Prompts" },
+      { "from": "AgentAddresses", "to": "AgentAddress", "kind": "uses", "word": "reads" },
+      { "from": "AgentAddresses", "to": "RoleCatalog", "kind": "uses", "word": "the file of a role" },
+      { "from": "RoleCatalog", "to": "PromptHeader", "kind": "uses", "word": "its level" },
+      { "from": "PromptHeader", "to": "RoleLevel", "kind": "holds" },
+      { "from": "LookupAsk", "to": "AgentAddresses", "kind": "uses", "word": "a lookup agent" }
+    ]
+  }
+}
