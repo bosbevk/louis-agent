@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Change Puls",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "identity", "icon": "chip", "title": "louis-agent.identity.puls", "code": "PulsIdentity",
+          "look": "highlight",
+          "text": "One small class and a folder of embedded prompts: its name, its packs, and the roles it may ask." }
+      ] },
+      { "cards": [
+        { "id": "says", "icon": "message", "title": "What Puls says",
+          "text": "A voice file per language, the same sections in each; the routing in voice.md." },
+        { "id": "language", "icon": "file", "title": "Add a language",
+          "text": "voice-{xx}.md, then puls/voice-{xx} in ROLES_ENABLED; the language menu finds it." },
+        { "id": "specialist", "icon": "box", "title": "Add a specialist or minion",
+          "text": "Its prompt, a PulsRole and a PulsCall, an eval it passes, then the routing and ROLES_ENABLED." }
+      ] },
+      { "cards": [
+        { "id": "packs", "icon": "settings", "title": "A new capability",
+          "text": "A pack, named in PulsIdentity.Packs, never a project reference." },
+        { "id": "test", "icon": "checks", "title": "Test it",
+          "text": "The identity's tests, and the session golden file whose diff is the review." }
+      ] }
+    ],
+    "links": [
+      { "from": "identity", "to": "says" },
+      { "from": "identity", "to": "language" },
+      { "from": "identity", "to": "specialist" },
+      { "from": "specialist", "to": "packs" },
+      { "from": "says", "to": "test" }
+    ]
+  }
+}

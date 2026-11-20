@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Add a specialist: measured before Puls hands it work",
+  "caption": "Puls routes to a new specialist only after its eval has passed.",
+  "flow": {
+    "nodes": [
+      { "id": "prompt", "label": "Write its prompt\nspecialists/puls-{name}.md", "icon": "file", "tone": "blue", "shape": "terminal" },
+      { "id": "name", "label": "Name it\nPulsRole + PulsCall", "icon": "chip", "tone": "amber", "shape": "box" },
+      { "id": "eval", "label": "Its eval\nbeside Puls alone", "icon": "checks", "tone": "amber", "shape": "box" },
+      { "id": "passed", "label": "Passed?", "tone": "green", "shape": "decision" },
+      { "id": "route", "label": "Route to it\nvoice.md's tables", "icon": "message", "tone": "amber", "shape": "box" },
+      { "id": "on", "label": "Turn it on\nROLES_ENABLED", "icon": "settings", "tone": "blue", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "prompt", "to": "name" },
+      { "from": "name", "to": "eval" },
+      { "from": "eval", "to": "passed" },
+      { "from": "passed", "to": "route", "word": "yes" },
+      { "from": "passed", "to": "prompt", "word": "no" },
+      { "from": "route", "to": "on" }
+    ],
+    "direction": "right"
+  }
+}
