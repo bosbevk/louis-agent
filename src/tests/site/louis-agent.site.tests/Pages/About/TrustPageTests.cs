@@ -59,7 +59,18 @@ public class TrustPageTests
         });
     }
 
-    /// <summary>The companies that handle data for the site are named in a table, the model's maker among them.</summary>
+    /// <summary>
+    /// No fact rests on a demo's file: a demo can leave and take its files with it, and the fact would point at nothing
+    /// (FX215, Puls's Bicep file).
+    /// </summary>
+    [Test]
+    public void NoFact_RestsOnADemosFile() =>
+        Assert.That(TrustFacts.All.Where(fact => fact.Source?.StartsWith("demos/", StringComparison.Ordinal) == true)
+            .Select(fact => $"{fact.Title}: {fact.Source}"), Is.Empty);
+
+    /// <summary>
+    /// The companies that handle data for the site are named in a table, the model's maker among them.
+    /// </summary>
     [Test]
     public void TheCompaniesThatHandleData_AreNamed()
     {
