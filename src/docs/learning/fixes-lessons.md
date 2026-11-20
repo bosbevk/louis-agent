@@ -513,6 +513,19 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX216 · A copy that says it's the original is still a copy
+
+Search Console left 160 of louis-agent.dev's pages out, 95 of them as "Duplicate, Google chose different canonical
+than user". Every section had its own address, each answering its whole page word for word with a canonical link that
+named itself, and the sitemap listed them all. On top of that, www served a second copy of the site, because the
+canonical's host came from each request. Google saw dozens of copies that each claimed to be the original, believed
+none of them, and picked its own. The cure was to give every page one original and say so three ways: the canonical
+names the page's route, the sitemap lists pages only, and a page on any other host answers a 301 to the address in
+`SITE_ADDRESS` (ADR 0128). Two things were learned. A feature for people, an address for every section, can be a
+problem for a search engine unless the page says which address is the original. And "no setting to keep right" stops
+being simpler the day a second host name reaches the app. Skill 18 (testing and shipping: what a crawler is told is
+part of what ships).
+
 ## FX215 · A trust page is true first, and reassuring after
 
 The trust page held four Azure facts to Puls's Bicep file. Three were still true and only needed a source the

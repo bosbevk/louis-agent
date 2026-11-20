@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "0128 at a glance: one address per page",
+  "caption": "One original for every page: a section's address and every other host lead back to it.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "rule", "icon": "search", "title": "One address per page", "code": "SITE_ADDRESS", "look": "highlight",
+          "text": "Every page tells a search engine one original: its own route, on the site's own address." }
+      ] },
+      { "cards": [
+        { "id": "canonical", "icon": "file", "title": "A section names its page",
+          "text": "/home/does answers the landing, and its canonical link is the landing's." },
+        { "id": "sitemap", "icon": "stack", "title": "The sitemap lists pages",
+          "text": "One address per page, never a section's, so it points only at originals." },
+        { "id": "host", "icon": "exchange", "title": "Other hosts are sent on",
+          "text": "A page on www answers a 301 to the site's address; files and the API stay." }
+      ] }
+    ],
+    "links": [
+      { "from": "rule", "to": "canonical" },
+      { "from": "rule", "to": "sitemap" },
+      { "from": "rule", "to": "host" }
+    ]
+  }
+}

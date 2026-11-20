@@ -63,11 +63,20 @@ whole table, and `ApiRouteRuleTests` checks the rule on it.
 
 A program calls `MapLouisAgentSite` with its web app's assembly and the services its pages inject, instead of falling
 back to a plain `index.html`. Then a page's address, or a section's under it, answers the site's `index.html` filled in
-with the page's own title, description, link card, canonical link and body.
+with the page's own title, description, link card, canonical link and body. The canonical link always names the page's
+own route, even when a section's address was asked for, so a search engine sees one original per page and not a copy
+at every section.
 
 `HtmlRenderer` draws each page the first time it's asked for, and the result is kept until the process restarts. A
 page that declares no `PageHead`, or fails to draw (logged once), answers the plain shell. An address that names no
-page answers the shell with a 404. The public address is the request's own.
+page answers the shell with a 404.
+
+A site names where it lives in `SITE_ADDRESS`, a whole https address such as `https://louis-agent.dev`, or its
+program passes one. Every canonical link is on that address, and a page asked for on any other host, such as www,
+answers a permanent redirect (301) to the same path on it. Only pages move this way: a file and an API route answer on
+any host, because Azure's health probes and a chat on another site call them there. With no address named, which is
+how a developer runs it on localhost, the canonical link uses the address the request came to. `SiteAddressOptions`
+reads the setting.
 
 The page's JSON-LD scripts go into the served head just as they are. And every page under the landing gets a
 `BreadcrumbList` with the site's name (`og:site_name`) and the page's title at its route (`PageBreadcrumb`).
@@ -93,7 +102,8 @@ nothing. It is open, since it answers only what any visitor can read on the page
 style or a script holds, so a diagram's rules and a page's code never turn up as words.
 
 *Decided in:* F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md), F123, F164.1,
-[ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
+[ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md), FX216,
+[ADR 0128](../adr/0128-a-site-names-one-address-per-page.md).
 
 ### 4. Prices and rates, open to anyone
 
@@ -321,6 +331,7 @@ These are the types involved:
 | `Endpoints/Admin/Imports/ImportHandlers.cs`, `ImportEndpoints.cs` | The packs' uploads (F55, ADR 0071), behind the admin key: `GET /v1/admin/imports` lists each with its files, `POST …/{name}/preview` and `…/save` hand the files to the pack and return its report, all in the contract's `Admin/Imports/ImportRows.cs` |
 | `Endpoints/Admin/Screens/` | The packs' described screens (ADR 0086), behind the admin key, naming no pack: `ScreenHandlers` the list and a page of rows, `ScreenRowHandlers` a row's form, `ScreenActionHandlers` an action |
 | `Endpoints/Admin/Prompts/PromptsHandlers.cs` | `GET /v1/admin/prompts` (CL27, ADR 0063), behind the admin key: every built-in prompt from core's `PromptCatalog` as its header says it, a `PromptRow` each (path, name, description, level by its wire name or null, the toolsets it always loads) in the contract's `Admin/Prompts/PromptRows.cs` |
+| `Config/SiteAddressOptions.cs` | Where a site lives, `SITE_ADDRESS` (FX216): every canonical link's host, and where a page on another host is sent; only a whole https address counts |
 | `Config/AdminOptions.cs` | The admin key, `ADMIN_API_KEY` else `AGENT_API_KEY`; neither closes the admin routes. The studio's settings are `EvalOptions` in louis-agent.api.evals (CL57) |
 | `Endpoints/Admin/AdminGroup.cs`, `AdminGateFilter.cs`, `AdminEndpoints.cs` | The gated `/admin` group the API hands out (CL57): one filter that refuses without the key, a group per library that maps on it; the API's own admin routes are the overview, the prompts, the imports and the screens, and the eval routes are `louis-agent.api.evals`'s ([its doc](louis-agent.api.evals.md)) |
 
@@ -375,7 +386,9 @@ session's `201` (`SessionCreatedTests`), and the git resources in a temporary re
 
 For the site's pages, `PagePrerendererTests` draw a sample page, and `PageShellTests` fill the code-review site's real
 `index.html`. `SitePagesTests` ask the test server for a page, a section, a page with no description, one that throws,
-and an address with no page, and check the canonical link comes from the request's own address. `SitePlaceSearchTests`
+and an address with no page. They check that a section's canonical link names its page, that with no site address it
+comes from the request's own, and that with `SITE_ADDRESS` a page on another host is sent there while a file and an
+API route are not. `SiteAddressOptionsTests` hold which settings count as an address. `SitePlaceSearchTests`
 hold the search: a word finds its places, a word too short finds none, and the route is open. `PlaceReaderTests` hold
 how a place's words are read.
 

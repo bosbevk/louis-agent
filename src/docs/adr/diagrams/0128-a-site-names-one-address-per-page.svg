@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 944 623" width="944" height="623" role="img" aria-label="FX216 one address per page: the overview" xmlns="http://www.w3.org/2000/svg">
-  <title>FX216 one address per page: the overview</title>
+<svg viewBox="-24 -24 944 535" width="944" height="535" role="img" aria-label="0128 at a glance: one address per page" xmlns="http://www.w3.org/2000/svg">
+  <title>0128 at a glance: one address per page</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -198,44 +198,38 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="944" height="623" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="535" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">FX216 one address per page: the overview</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">0128 at a glance: one address per page</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
     <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
     <g class="crd-cards" transform="translate(0 38)">
-      <rect class="crd-rail-glow" x="-3.2" y="186" width="902.4" height="8" rx="0" />
-      <rect class="crd-rail" x="-3.2" y="189.3" width="902.4" height="1.5" rx="0" />
+      <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
+      <rect class="crd-rail" x="58" y="189.3" width="780" height="1.5" rx="0" />
       <path class="crd-line" d="M448 174V190" />
       <path class="pic-march" d="M448 174V190" />
-      <path class="crd-line" d="M80.8 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M80.8 190V222" />
-      <path class="crd-line" d="M264.4 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M264.4 190V222" />
+      <path class="crd-line" d="M142 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M142 190V222" />
       <path class="crd-line" d="M448 190V222" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M448 190V222" />
-      <path class="crd-line" d="M631.6 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M631.6 190V222" />
-      <path class="crd-line" d="M815.2 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M815.2 190V222" />
+      <path class="crd-line" d="M754 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M754 190V222" />
       <circle class="mrq-node" cx="448" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="80.8" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="264.4" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="142" cy="190" r="4.5" />
       <circle class="mrq-node" cx="448" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="631.6" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="815.2" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="754" cy="190" r="4.5" />
       <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
       <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
         <path d="M21 21l-6 -6" />
       </g>
-      <text class="crd-headline" x="448" y="92" text-anchor="middle">FX216 One address per page</text>
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">One address per page</text>
       <rect class="mrq-pill" x="395.2" y="108" width="105.6" height="24" rx="12" />
       <text class="mrq-code" x="448" y="124" text-anchor="middle">SITE_ADDRESS</text>
-      <text class="crd-summary" x="448" y="160" text-anchor="middle">Every page has one address Google reads as the original, so its copies stop competing.</text>
-      <rect class="mrq-glass" x="0" y="222" width="161.6" height="202" rx="14" />
-      <rect class="mrq-edge" x="28" y="221.5" width="105.6" height="1.6" rx="0" />
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">Every page tells a search engine one original: its own route, on the site's own address.</text>
+      <rect class="mrq-glass" x="0" y="222" width="284" height="114" rx="14" />
+      <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 248) scale(0.75)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -244,87 +238,44 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="crd-name" x="18" y="298" text-anchor="start">1. Canonical is</text>
-      <text class="crd-name" x="18" y="319" text-anchor="start">the page</text>
-      <rect class="mrq-pill" x="18" y="322" width="115.2" height="22" rx="11" />
-      <text class="mrq-code" x="28" y="337" text-anchor="start">PageShell.Fill</text>
-      <text class="pic-text" x="18" y="368" text-anchor="start">A section's address</text>
-      <text class="pic-text" x="18" y="386" text-anchor="start">names its page as</text>
-      <text class="pic-text" x="18" y="404" text-anchor="start">the original.</text>
-      <rect class="mrq-glass" x="183.6" y="222" width="161.6" height="202" rx="14" />
-      <rect class="mrq-edge" x="211.6" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="201.6" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(209.6 248) scale(0.75)">
+      <text class="crd-name" x="64" y="263" text-anchor="start">A section names its page</text>
+      <text class="pic-text" x="18" y="298" text-anchor="start">/home/does answers the landing, and its</text>
+      <text class="pic-text" x="18" y="316" text-anchor="start">canonical link is the landing's.</text>
+      <rect class="mrq-glass" x="306" y="222" width="284" height="114" rx="14" />
+      <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(332 248) scale(0.75)">
         <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
         <path d="M4 12l8 4l8 -4" />
         <path d="M4 16l8 4l8 -4" />
       </g>
-      <text class="crd-name" x="201.6" y="298" text-anchor="start">2. Sitemaps</text>
-      <text class="crd-name" x="201.6" y="319" text-anchor="start">list pages</text>
-      <rect class="mrq-pill" x="201.6" y="322" width="101.6" height="22" rx="11" />
-      <text class="mrq-code" x="211.6" y="337" text-anchor="start">SitemapTests</text>
-      <text class="pic-text" x="201.6" y="368" text-anchor="start">Both sitemaps list</text>
-      <text class="pic-text" x="201.6" y="386" text-anchor="start">one address per</text>
-      <text class="pic-text" x="201.6" y="404" text-anchor="start">page.</text>
-      <rect class="mrq-glass" x="367.2" y="222" width="161.6" height="202" rx="14" />
-      <rect class="mrq-edge" x="395.2" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="385.2" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(393.2 248) scale(0.75)">
-        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-      </g>
-      <text class="crd-name" x="385.2" y="298" text-anchor="start">3. The site's</text>
-      <text class="crd-name" x="385.2" y="319" text-anchor="start">address</text>
-      <rect class="mrq-pill" x="385.2" y="322" width="142.4" height="22" rx="11" />
-      <text class="mrq-code" x="395.2" y="337" text-anchor="start">SiteAddressOptions</text>
-      <text class="pic-text" x="385.2" y="368" text-anchor="start">One setting names</text>
-      <text class="pic-text" x="385.2" y="386" text-anchor="start">where each site</text>
-      <text class="pic-text" x="385.2" y="404" text-anchor="start">lives.</text>
-      <rect class="mrq-glass" x="550.8" y="222" width="161.6" height="202" rx="14" />
-      <rect class="mrq-edge" x="578.8" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="568.8" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(576.8 248) scale(0.75)">
+      <text class="crd-name" x="370" y="263" text-anchor="start">The sitemap lists pages</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">One address per page, never a section's,</text>
+      <text class="pic-text" x="324" y="316" text-anchor="start">so it points only at originals.</text>
+      <rect class="mrq-glass" x="612" y="222" width="284" height="114" rx="14" />
+      <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(638 248) scale(0.75)">
         <path d="M7 10h14l-4 -4" />
         <path d="M17 14h-14l4 4" />
       </g>
-      <text class="crd-name" x="568.8" y="298" text-anchor="start">4. Other hosts</text>
-      <text class="crd-name" x="568.8" y="319" text-anchor="start">sent on</text>
-      <rect class="mrq-pill" x="568.8" y="322" width="122" height="22" rx="11" />
-      <text class="mrq-code" x="578.8" y="337" text-anchor="start">SitePageHandler</text>
-      <text class="pic-text" x="568.8" y="368" text-anchor="start">A page on www or any</text>
-      <text class="pic-text" x="568.8" y="386" text-anchor="start">other host answers</text>
-      <text class="pic-text" x="568.8" y="404" text-anchor="start">301.</text>
-      <rect class="mrq-glass" x="734.4" y="222" width="161.6" height="202" rx="14" />
-      <rect class="mrq-edge" x="762.4" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="752.4" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(760.4 248) scale(0.75)">
-        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-        <path d="M3 6l0 13" />
-        <path d="M12 6l0 13" />
-        <path d="M21 6l0 13" />
-      </g>
-      <text class="crd-name" x="752.4" y="298" text-anchor="start">5. Apps and</text>
-      <text class="crd-name" x="752.4" y="319" text-anchor="start">docs</text>
-      <rect class="mrq-pill" x="752.4" y="322" width="81.2" height="22" rx="11" />
-      <text class="mrq-code" x="762.4" y="337" text-anchor="start">yaml, ADR</text>
-      <text class="pic-text" x="752.4" y="368" text-anchor="start">Both apps set it;</text>
-      <text class="pic-text" x="752.4" y="386" text-anchor="start">the new ADR amends</text>
-      <text class="pic-text" x="752.4" y="404" text-anchor="start">0107 and 0109.</text>
+      <text class="crd-name" x="676" y="263" text-anchor="start">Other hosts are sent on</text>
+      <text class="pic-text" x="630" y="298" text-anchor="start">A page on www answers a 301 to the</text>
+      <text class="pic-text" x="630" y="316" text-anchor="start">site's address; files and the API stay.</text>
     </g>
-    <rect class="mrq-rule" x="0" y="488" width="896" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="400" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="880" y="510" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="880" y="422" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="538" width="896" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 548) scale(0.6667)">
+  <rect class="notebar" x="0" y="450" width="896" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 460) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="560">
-    <tspan class="note-head">Five steps, in order:</tspan>
-    <tspan class="note-rest">Google is told which address is each page's original, and is sent there from any other.</tspan>
+  <text class="notes" x="38" y="472">
+    <tspan class="note-head">One original for every page:</tspan>
+    <tspan class="note-rest">a section's address and every other host lead back to it.</tspan>
   </text>
 </svg>

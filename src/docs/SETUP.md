@@ -142,6 +142,7 @@ without it, a Chrome for Testing is downloaded once.
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |
 | `ADMIN_API_KEY` | The admin portal's key (`/v1/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
 | `OPEN_IDENTITIES` | The guide's door (F109.3, ADR 0099; a list since F127.2): the identities, by commas, a visitor may open a session as with no key and no sign-in, with that identity's own toolsets only, under one daily cap across them all; unset, the door is shut |
+| `SITE_ADDRESS` | A site's one address, a whole https address such as `https://louis-agent.dev` (ADR 0128): every page's canonical link is on it, and a page asked for on another host, such as www, answers a 301 there; unset, a page answers on whatever address it was asked at |
 | `OPEN_SESSIONS_PER_DAY` | How many such sessions one address may open a day; 0 or unset shuts the door; past it the API answers 429 |
 | `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set, and the sold endpoint's search) and, with `PAGE_RENDERER=tavily` or no `BROWSER_URL`, `ReadRenderedPage` through Tavily Extract (two credits per five pages) |
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |

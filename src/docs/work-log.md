@@ -13,12 +13,12 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 139 | 98 |
-| Fixes (`FX`) | 203 | 7 |
+| Fixes (`FX`) | 204 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (134 in the TODO)
+## Open (133 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -60,7 +60,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | CL68 | Agents and their subagents | Now |
-| FX216 | One address per page, for Google: a section's canonical is its page, the sitemaps list pages only, other hosts sent to the site's address | Now |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
@@ -302,10 +301,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (203 done)
+## Fixes (204 done)
 
 | Id | When | What |
 |---|---|---|
+| FX216 | 2026-11-20 | One address per page, for Google: a section's canonical names its page, both sitemaps list pages only, and with `SITE_ADDRESS` a page on www or any other host is sent to the site's address (ADR 0128) |
 | FX215 | 2026-11-20 | The trust page's Azure facts rest on the deploy guide instead of Puls's Bicep file, and "Rebuilt from code" says Not yet, as is true |
 | FX214 | 2026-11-20 | Puls's own docs and settings no longer say its Azure app runs on a VM, untrue since FX122 |
 | FX213 | 2026-11-20 | The framework's stub eval says it proves the portal "not an agent" instead of naming Puls, held by a test |

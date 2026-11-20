@@ -46,6 +46,10 @@ properties:
           # (FX68), and a page's canonical address is https.
           - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
             value: 'true'
+          # The site's one address (FX216, ADR 0128): every page names it as the original, and a page asked for on
+          # any other host, such as www, is sent there.
+          - name: SITE_ADDRESS
+            value: https://framework.louis-agent.dev
           - name: HOST_TIME_ZONE
             value: Africa/Johannesburg
           - name: HOST_CULTURE

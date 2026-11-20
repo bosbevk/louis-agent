@@ -1,6 +1,6 @@
 # ADR 0107: Every place on a site's page has its own address
 
-**Status:** Accepted (2026-11-08, F118)
+**Status:** Accepted (2026-11-08, F118) · Amended by [0128](0128-a-site-names-one-address-per-page.md)
 
 ## Context
 

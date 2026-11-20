@@ -19,11 +19,18 @@ still reads it whole. That's `MapLouisAgentSite`'s job.
 The facts a page hands its `PageHead` go into the served head as structured data (JSON-LD), so a search engine knows
 what the page is about. Every page under the landing also gets a breadcrumb of the site and the page.
 
-And every place on the site has its own address. They're all listed in the site's `sitemap.xml`, which a site test
-writes from the pages, and `robots.txt` points at it.
+Every place on the site has its own address, so a link can open a page at one section. But a section's address
+answers its whole page, word for word, and a search engine that sees the same words at two addresses picks one as the
+original and drops the other. So the framework tells it which one to keep. A section's canonical link names its page,
+and the site's `sitemap.xml` lists the pages only, one address each. A site test writes the sitemap from the pages,
+and `robots.txt` points at it.
+
+The same goes for host names. A site sets `SITE_ADDRESS` to its one address, such as `https://louis-agent.dev`. Then
+every canonical link is on it, and a page asked for on any other host, such as `www.louis-agent.dev`, answers a
+permanent redirect there. Without the setting, the www copy would be a second site in Google's eyes.
 
 *Decided in:* [ADR 0107](../adr/0107-every-section-has-an-address.md), [ADR 0109](../adr/0109-a-page-is-served-as-html.md),
-[ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
+[ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md), [ADR 0128](../adr/0128-a-site-names-one-address-per-page.md).
 
 ## What a site does
 
@@ -36,7 +43,8 @@ writes from the pages, and `robots.txt` points at it.
 4. **Write a page for what people type.** One page per search you want to be found for, in plain words, at an address
    that says it (the framework's site has `/comparison`). Say of anyone else only what their own docs say, and link
    them.
-5. **Regenerate the sitemap when pages change.** Run the site's tests with `LOUIS_UPDATE_GOLDEN=1 dotnet test` and
+5. **Set `SITE_ADDRESS` in the app's settings** to the site's one https address, in its Container App's yaml.
+6. **Regenerate the sitemap when pages change.** Run the site's tests with `LOUIS_UPDATE_GOLDEN=1 dotnet test` and
    `--filter SitemapTests`, then commit `wwwroot/sitemap.xml`.
 
 ## What the owner does, once
@@ -64,6 +72,13 @@ use. Never pay for links or post the same link everywhere, because search engine
 When the packages ship, they help too. A NuGet package's project link points at the site, and its page is one more
 link people find (F74). But don't link the repository while it's private: a link to a page people can't open helps
 nobody.
+
+When Search Console's *Pages* report says why pages aren't indexed, most rows are normal for a young site.
+*Page with redirect* is an address that sends you on, like http to https or www to the site's address: Google keeps
+the address it lands on, so don't validate that row. *Discovered, currently not indexed* is a page Google hasn't
+crawled yet. The row to worry about is *Duplicate, Google chose different canonical than user*. It means two addresses
+serve the same words and both claim to be the original, which the framework's canonical links and `SITE_ADDRESS` are
+there to prevent.
 
 Then measure. After a few weeks, Search Console's *Performance* report shows which searches showed the site, where it
 ranked and how often people clicked. Look up "c# agent framework" there before you decide what to write next.
