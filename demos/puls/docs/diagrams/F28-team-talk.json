@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "F28 · Team talk",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "note", "icon": "message", "title": "Puls's note to its specialist", "code": "AskAgent(address, message)",
+          "look": "highlight",
+          "text": "Up to seven labelled lines in the task's language: who, what, how many, which shop, how they sound, where, what's said." }
+      ] },
+      { "cards": [
+        { "id": "mood", "icon": "user", "title": "How the user sounds",
+          "text": "A guess from the typing, in a customer's words; neutral when nothing shows. Built." },
+        { "id": "switch", "icon": "settings", "title": "Lees my stemming",
+          "text": "read_mood with each message; off puts [stemming: af] before the text. Prompt built, API and chat to come." }
+      ] },
+      { "cards": [
+        { "id": "card", "icon": "browser", "title": "The card as a thread",
+          "text": "The note and the reply as two people's messages, the mood in the Werk panel. To come." },
+        { "id": "checks", "icon": "checks", "title": "The checks",
+          "text": "Each conversation scores briefed and records the mood. To come." }
+      ] }
+    ],
+    "links": [
+      { "from": "note", "to": "mood" },
+      { "from": "note", "to": "switch" },
+      { "from": "mood", "to": "card" },
+      { "from": "mood", "to": "checks" }
+    ]
+  }
+}
