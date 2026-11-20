@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Change the code-review web app",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "app", "icon": "browser", "title": "louis-agent.code-review", "code": "Blazor WebAssembly",
+          "look": "highlight",
+          "text": "A small site on the framework's web, served by the coding agent's API on the same origin." }
+      ] },
+      { "cards": [
+        { "id": "run", "icon": "terminal", "title": "Run it",
+          "text": "The api container on 5082, or the coding-api program on 5081." },
+        { "id": "control", "icon": "box", "title": "Add a pack's control",
+          "text": "In the pack's web project, named in PackViewsOf, opened as an admin screen." },
+        { "id": "endpoint", "icon": "server", "title": "Call an endpoint",
+          "text": "An extension on AgentApi, never HttpClient in a component." }
+      ] },
+      { "cards": [
+        { "id": "theme", "icon": "settings", "title": "Add a theme",
+          "text": "Copy retro's two sheets and RetroTheme.cs, then name it in CodeReviewAreas." },
+        { "id": "test", "icon": "checks", "title": "Test it",
+          "text": "ChatPageTests against FixtureApi, two golden pages, then a look in a browser." }
+      ] }
+    ],
+    "links": [
+      { "from": "app", "to": "run" },
+      { "from": "app", "to": "control" },
+      { "from": "app", "to": "endpoint" },
+      { "from": "control", "to": "theme" },
+      { "from": "endpoint", "to": "test" }
+    ]
+  }
+}

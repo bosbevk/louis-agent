@@ -5,6 +5,8 @@
 > [louis-agent.orchestrator](../projects/louis-agent.orchestrator.md); how it decides and how to write a runbook in
 > [Runbooks](../projects/orchestrator-runbooks.md).
 
+![Change the orchestrator: a runbook first, then a tool, a setting, its tests and a run](../diagrams/change-the-orchestrator.svg)
+
 The orchestrator is a second agent on core with its own model. It reads new error events from a service's log, triages
 each one with the service's runbooks as its system prompt and `ServiceTools` as its only tools, asks louis-agent's API
 for a fix when one is allowed, and checks the claim itself. It is a proof of concept: in Phase 6 it becomes the
@@ -28,7 +30,7 @@ into the build, so rebuild after a change.
    ([ADR 0004](../../../../src/docs/adr/0004-arguments-as-data.md)). A claim from louis-agent is checked, never trusted.
 5. Tell the model when to use it: the runbooks' `service.md` or the method runbooks.
 
-`ServiceTools.cs` sits at the 200-line limit: a new group of tools goes in a class of its own, passed to the engine
+`ServiceTools.cs` is at the 200-line limit: a new group of tools goes in a class of its own, passed to the engine
 beside it, as the checks of a fix are in `Tools/Checks/FixChecks.cs` (`toolsets: [tools, checks]` in `Program.cs`).
 
 ## Add a setting
