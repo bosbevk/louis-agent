@@ -1,0 +1,287 @@
+<svg viewBox="-24 -24 944 667" width="944" height="667" role="img" aria-label="F28 · Team talk" xmlns="http://www.w3.org/2000/svg">
+  <title>F28 · Team talk</title>
+  <style>svg {
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+[data-style="dark"] svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+[data-style="light"] svg { --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c; }
+.ground { fill: var(--ground); }
+.arrow { fill: var(--quiet); }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
+svg {
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+</style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+[data-style="dark"] svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+[data-style="light"] svg { --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95); }
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+[data-style="dark"] svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+[data-style="light"] svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.crd-rail { fill: url(#crd-rail); }
+.crd-rail-glow { fill: url(#crd-rail); opacity: .5; filter: blur(5px); }
+.crd-rail-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.crd-rail-1 { stop-color: var(--violet-line); }
+.crd-rail-2 { stop-color: var(--blue-line); }
+.crd-rail-3 { stop-color: var(--blue-line); stop-opacity: 0; }
+.crd-line { fill: none; stroke: var(--violet-line); stroke-width: 1.5; stroke-opacity: .85; }
+.crd-badge { fill: url(#crd-badge); }
+.crd-badge-0 { stop-color: var(--violet-line); }
+.crd-badge-1 { stop-color: var(--blue-line); }
+.crd-badge-icon {
+  fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.crd-headline { fill: var(--text); font: 700 30px var(--pic-sans); letter-spacing: -.4px; }
+.crd-heading { fill: var(--text); font: 700 22px var(--pic-sans); letter-spacing: -.3px; }
+.crd-summary { fill: var(--quiet); font: 13px var(--pic-sans); }
+.crd-tint { fill: var(--violet-line); fill-opacity: .16; }
+.crd-icon {
+  fill: none; stroke: var(--violet-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.crd-icon.quiet { stroke: var(--quiet); }
+.crd-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.crd-name.quiet { font-size: 14px; }
+.crd-quiet {
+  fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
+  stroke-width: 1;
+}.crd-badge.tone-plain { fill: var(--plain-line); }
+.crd-tint.tone-plain { fill: var(--plain-line); }
+.crd-icon.tone-plain { stroke: var(--plain-ink); }
+.crd-badge.tone-blue { fill: var(--blue-line); }
+.crd-tint.tone-blue { fill: var(--blue-line); }
+.crd-icon.tone-blue { stroke: var(--blue-ink); }
+.crd-badge.tone-green { fill: var(--green-line); }
+.crd-tint.tone-green { fill: var(--green-line); }
+.crd-icon.tone-green { stroke: var(--green-ink); }
+.crd-badge.tone-violet { fill: var(--violet-line); }
+.crd-tint.tone-violet { fill: var(--violet-line); }
+.crd-icon.tone-violet { stroke: var(--violet-ink); }
+.crd-badge.tone-teal { fill: var(--teal-line); }
+.crd-tint.tone-teal { fill: var(--teal-line); }
+.crd-icon.tone-teal { stroke: var(--teal-ink); }
+.crd-badge.tone-red { fill: var(--red-line); }
+.crd-tint.tone-red { fill: var(--red-line); }
+.crd-icon.tone-red { stroke: var(--red-ink); }
+.crd-badge.tone-amber { fill: var(--amber-line); }
+.crd-tint.tone-amber { fill: var(--amber-line); }
+.crd-icon.tone-amber { stroke: var(--amber-ink); }
+.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.2em; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="crd-rail" x1="0" y1="0" x2="1" y2="0">
+      <stop class="crd-rail-0" offset="0" />
+      <stop class="crd-rail-1" offset="0.2" />
+      <stop class="crd-rail-2" offset="0.8" />
+      <stop class="crd-rail-3" offset="1" />
+    </linearGradient>
+    <linearGradient id="crd-badge" x1="0" y1="0" x2="1" y2="1">
+      <stop class="crd-badge-0" offset="0" />
+      <stop class="crd-badge-1" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="944" height="667" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F28 · Team talk</text>
+    <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
+    <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
+    <g class="crd-cards" transform="translate(0 38)">
+      <rect class="crd-rail-glow" x="134.5" y="205" width="627" height="8" rx="0" />
+      <rect class="crd-rail" x="134.5" y="208.3" width="627" height="1.5" rx="0" />
+      <path class="crd-line" d="M448 193V209" />
+      <path class="pic-march" d="M448 193V209" />
+      <path class="crd-line" d="M218.5 209V241" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M218.5 209V241" />
+      <path class="crd-line" d="M677.5 209V241" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M677.5 209V241" />
+      <circle class="mrq-node" cx="448" cy="209" r="4.5" />
+      <circle class="mrq-node" cx="218.5" cy="209" r="4.5" />
+      <circle class="mrq-node" cx="677.5" cy="209" r="4.5" />
+      <rect class="crd-rail-glow" x="134.5" y="371" width="627" height="8" rx="0" />
+      <rect class="crd-rail" x="134.5" y="374.3" width="627" height="1.5" rx="0" />
+      <path class="crd-line" d="M218.5 355V375" />
+      <path class="pic-march" d="M218.5 355V375" />
+      <path class="crd-line" d="M218.5 375V407" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M218.5 375V407" />
+      <path class="crd-line" d="M677.5 375V407" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M677.5 375V407" />
+      <circle class="mrq-node" cx="218.5" cy="375" r="4.5" />
+      <circle class="mrq-node" cx="218.5" cy="375" r="4.5" />
+      <circle class="mrq-node" cx="677.5" cy="375" r="4.5" />
+      <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
+      <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
+        <path d="M8 9h8" />
+        <path d="M8 13h6" />
+        <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+      </g>
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">Puls's note to its specialist</text>
+      <rect class="mrq-pill" x="347.6" y="108" width="200.8" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">AskAgent(address, message)</text>
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">Up to seven labelled lines in the task's language: who, what, how many, which shop, how they sound, where,</text>
+      <text class="crd-summary" x="448" y="179" text-anchor="middle">what's said.</text>
+      <rect class="mrq-glass" x="0" y="241" width="437" height="114" rx="14" />
+      <rect class="mrq-edge" x="28" y="240.5" width="381" height="1.6" rx="0" />
+      <rect class="crd-tint" x="18" y="259" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(26 267) scale(0.75)">
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+      </g>
+      <text class="crd-name" x="64" y="282" text-anchor="start">How the user sounds</text>
+      <text class="pic-text" x="18" y="317" text-anchor="start">A guess from the typing, in a customer's words; neutral when</text>
+      <text class="pic-text" x="18" y="335" text-anchor="start">nothing shows. Built.</text>
+      <rect class="mrq-glass" x="459" y="241" width="437" height="114" rx="14" />
+      <rect class="mrq-edge" x="487" y="240.5" width="381" height="1.6" rx="0" />
+      <rect class="crd-tint" x="477" y="259" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(485 267) scale(0.75)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="crd-name" x="523" y="282" text-anchor="start">Lees my stemming</text>
+      <text class="pic-text" x="477" y="317" text-anchor="start">read_mood with each message; off puts [stemming: af] before the</text>
+      <text class="pic-text" x="477" y="335" text-anchor="start">text. Prompt built, API and chat to come.</text>
+      <rect class="mrq-glass" x="0" y="407" width="437" height="114" rx="14" />
+      <rect class="mrq-edge" x="28" y="406.5" width="381" height="1.6" rx="0" />
+      <rect class="crd-tint" x="18" y="425" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(26 433) scale(0.75)">
+        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+        <path d="M4 8h16" />
+        <path d="M8 4v4" />
+      </g>
+      <text class="crd-name" x="64" y="448" text-anchor="start">The card as a thread</text>
+      <text class="pic-text" x="18" y="483" text-anchor="start">The note and the reply as two people's messages, the mood in the</text>
+      <text class="pic-text" x="18" y="501" text-anchor="start">Werk panel. To come.</text>
+      <rect class="mrq-glass" x="459" y="407" width="437" height="114" rx="14" />
+      <rect class="mrq-edge" x="487" y="406.5" width="381" height="1.6" rx="0" />
+      <rect class="crd-tint" x="477" y="425" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(485 433) scale(0.75)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="crd-name" x="523" y="448" text-anchor="start">The checks</text>
+      <text class="pic-text" x="477" y="483" text-anchor="start">Each conversation scores briefed and records the mood. To come.</text>
+    </g>
+    <rect class="mrq-rule" x="0" y="585" width="896" height="1" rx="0" />
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="880" y="607" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+    </g>
+  </g>
+</svg>
