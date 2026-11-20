@@ -20,6 +20,11 @@ public class ApiErrorRouteTests
     /// <summary>The admin key the test API is built with.</summary>
     private const string AdminKey = "admin-secret";
 
+    /// <summary>
+    /// The stand-in's check that prints its start, then sleeps two seconds: a run that is surely going.
+    /// </summary>
+    private const string Slow = "slow";
+
     /// <summary>A fresh folder per test: no git repository, and where the runner works.</summary>
     private string _workspace = "";
 
@@ -60,18 +65,20 @@ public class ApiErrorRouteTests
     [Test]
     public async Task StartingARun_WhileOneRuns_IsAConflict_ByteForByte()
     {
-        // The real runner with only the stub, and a store with its recorder so a start gets as far as the runner.
+        // The stand-in's slow check, and a store with its recorder so a start gets as far as the runner.
         var store = new InMemoryEvalStore();
-        var catalog = new EvalList([new EvalEntry("stub", "Stub")]);
-        var runner = new EvalProcess(catalog, _workspace, "http://127.0.0.1:1/", RunnerBuild.Dll);
+        var catalog = new EvalList([new EvalEntry(Slow, "Slow")]);
+        var runner = new EvalProcess(catalog, _workspace, "http://127.0.0.1:1/", StandInBuild.Dll);
         await using var app = ApiTestHost.Build(workspaceRoot: _workspace, adminKey: AdminKey, store: store,
             runner: runner, recorder: new EvalRecorder(store), catalog: catalog);
         await app.StartAsync();
 
-        // A run with every repeat takes longer to finish than the second start takes to arrive.
-        var busy = runner.Start("stub", EvalProcess.MaxRepeat)!;
+        // The slow check sleeps two seconds by design, so it is still going when the second start arrives on any
+        // machine; a real run's speed decided that before, and a small runner on CI finished first (F166.1, Louis's
+        // pick 1 of three).
+        var busy = runner.Start(Slow, 1)!;
         // The start takes a JSON body, so the route only matches a request that sends one.
-        using var request = new HttpRequestMessage(HttpMethod.Post, "/v1/admin/evals/stub/runs")
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"/v1/admin/evals/{Slow}/runs")
         {
             Content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json")
         };
@@ -86,7 +93,7 @@ public class ApiErrorRouteTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
         Assert.That(body, Is.EqualTo(
-            """{"type":"error","error":{"type":"conflict_error","message":"A run of stub is in progress; wait for it to end. The containers are shared, so one runs at a time."}}"""));
+            """{"type":"error","error":{"type":"conflict_error","message":"A run of slow is in progress; wait for it to end. The containers are shared, so one runs at a time."}}"""));
     }
 
     /// <summary>We can only ask git if it's on this machine.</summary>
