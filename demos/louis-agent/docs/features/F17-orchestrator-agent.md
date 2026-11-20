@@ -1,13 +1,20 @@
 # F17 · Orchestrator agent: a routing workflow, with an agent for the exceptions
 
-> **Status:** merged into F39 *Orchestration*, Part B (2026-10-19): [the platform plan](../../../../ROADMAP.md)'s
-> Phase 6 rebuilds the orchestrator on the identity split, as the `voorman` identity; the local-triage items
-> (`EscalateToHuman` idempotent per error, contradicting decisions refused) are its B5's tests; this doc stays as its
-> design · **Milestone:** M4 (after F10; before build mode) · **Depends on:** F4 (the caching strategy),
-> F8 (S4, results as tool calls), F10 (route settings), F18 (its eval)
+> **Feature doc.** What F17 was to build and why: the orchestrator's triage as a routing workflow, with an agent only
+> for the exceptions. **Status:** merged into F39 *Orchestration* as its Part B (2026-10-19), and kept as that part's
+> design. On 2026-11-07 Part B's `voorman` identity was dropped: orchestration is the engine's workflow, never an
+> identity, and what is left of Part B is a demo of that workflow triaging a service's errors
+> ([the roadmap](../../../../ROADMAP.md)'s Phase 6, [the F39 draft](../../../../src/docs/plans/F39-orchestration.md)).
+> The local-triage items (`EscalateToHuman` idempotent per error, contradicting decisions refused) are B5's tests in
+> that draft. **Milestone:** M4 (after F10). **Depends on:** F4 (the caching strategy), F8 (S4, results as tool
+> calls), F10 (route settings), F18 (its eval).
 >
-> **Spec:** [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) · **In the TODO:** merged, so its line is gone;
-> its work is on **F39 Orchestration** under *Next* ([TODO](../../../../TODO.md))
+> **Spec:** [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md). **In the TODO:** F17's own row is gone; its work
+> is the **F39 Orchestration** row, under *Now* ([TODO](../../../../TODO.md)). Nothing in this doc is built yet:
+> `ConfirmFix`, `RecordDecision` and `TriageWorkflow` don't exist in the code, and today's orchestrator still has the
+> three separate checks.
+
+![F17: a cheap classification, the known paths in code, an agent for the exceptions, one confirm tool, measured against today](../diagrams/F17-orchestrator-agent.svg)
 
 The orchestrator POC triages each error with a model that, for an auto-fixable error, always calls louis-agent and
 then the same three checks in the same order. It already follows much of Anthropic's guidance: a full brief for its
@@ -78,7 +85,7 @@ cases, so that the change is kept only when decisions hold and cost falls.
 
 *Given* F18's `triage` suite (the demo's 13 events plus cases for every row of the table above: a failing fix, no
 matching rule, three errors with one cause; louis-agent and the checks replayed from recordings, so no fix runs)
-*then* today's orchestrator is the baseline. *Then* the new one decides at least as many cases right, at a lower cost
+*then* today's orchestrator is the baseline. (The demo's 13 events and 10 confirmed fixes are the run at the tag `pre-cl10`; its sample service went in CL10, so a new run needs a service to watch.) *Then* the new one decides at least as many cases right, at a lower cost
 per error; and the full demo (**needs Louis's go-ahead**) still confirms 10/10 fixes.
 
 ## Design
@@ -90,7 +97,7 @@ The agent is today's `AgentEngine` with `ServiceTools` (now with `ConfirmFix`), 
 confirmation, with the workflow's findings in its first message.
 
 Sequential fixes, on purpose: Anthropic finds parallel sub-agents suit wide, independent work and fit poorly on
-tightly coupled work such as most coding. Fixes to one repository stay one at a time; build mode inherits this.
+tightly coupled work such as most coding. Fixes to one repository stay one at a time. (Build mode was to inherit this, but Phase 0 cut it.)
 
 Out of scope (stay in the orchestrator design and the backlog): pull requests instead of branches, a webhook trigger,
 a real error tracker, production topology, and the implementation-tier question (core vs Tool Runner).
