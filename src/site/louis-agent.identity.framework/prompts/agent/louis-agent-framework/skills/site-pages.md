@@ -29,6 +29,8 @@ page, listed in the page block when they are on it. Open one with `ShowPage` whe
   measures, and the code.
 - `/build-your-own`: make an agent of your own, in a few steps each, with the guide for each: an identity (who it
   is), a pack (what it can do), and a site (your agent on a website, from the starter template).
+- `/run-it`: run it in Docker on your own machine, the two stacks and the commands that start them; watch every turn
+  on the dashboard; and how the two sites reach Azure on every merge.
 - `/cost-and-evals`: what a turn costs to the cent, the ledger, the price table and one request worked to rand, then
   the evals' places, which say they are coming.
 - `/examples`: the agents it already runs, Puls, the coding agent and the guide, and what's coming.

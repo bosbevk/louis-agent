@@ -100,6 +100,18 @@
     <loc>https://framework.louis-agent.dev/build-your-own/a-site</loc>
   </url>
   <url>
+    <loc>https://framework.louis-agent.dev/run-it</loc>
+  </url>
+  <url>
+    <loc>https://framework.louis-agent.dev/run-it/on-your-machine</loc>
+  </url>
+  <url>
+    <loc>https://framework.louis-agent.dev/run-it/watch-it</loc>
+  </url>
+  <url>
+    <loc>https://framework.louis-agent.dev/run-it/in-azure</loc>
+  </url>
+  <url>
     <loc>https://framework.louis-agent.dev/cost-and-evals</loc>
   </url>
   <url>
