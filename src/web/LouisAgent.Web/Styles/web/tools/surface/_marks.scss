@@ -109,3 +109,14 @@
 @mixin side-line($colour: var(--bs-primary), $width: 2px) {
     box-shadow: inset $width 0 0 $colour;
 }
+
+/* A word of code in running words, on a page or in an answer (F169.1): the theme's chip for it, its fill, its ink and
+   its edge, so flat draws the page's words on its code grey with its hairline and glass the pale violet chip. The
+   corner and the room round the word are the same in every theme. */
+@mixin code-word() {
+    color: var(--web-code-word-ink);
+    border: var(--web-code-word-edge);
+    background: var(--web-code-word-fill);
+    border-radius: 6px;
+    padding: 1px 6px;
+}

@@ -1,6 +1,6 @@
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Tests.Rules.Styles;
+namespace LouisAgent.Web.Tests.Rules.Styles.Surfaces;
 
 /// <summary>
 /// F169.1: the framework's rules for a page's lines and inks ask the theme, and draw each thing once, so a value a
@@ -55,6 +55,33 @@ public class LinesAndInksTests
             Assert.That(chip, Does.Contain("border: var(--web-chip-hover-edge);"));
         });
     }
+
+    /// <summary>
+    /// A code word is drawn from the theme's three names for it, its fill, its ink and its edge, by one tool (Louis's
+    /// pick A of the design review's finding 4, and C of its follow-up: the theme decides).
+    /// </summary>
+    [Test]
+    public void ACodeWord_IsDrawnFromTheThemesThreeNames()
+    {
+        string tool = MixinBody(Path.Combine(Styles, "tools", "surface", "_marks.scss"), "code-word");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(tool, Does.Contain("var(--web-code-word-fill)"));
+            Assert.That(tool, Does.Contain("color: var(--web-code-word-ink);"));
+            Assert.That(tool, Does.Contain("border: var(--web-code-word-edge);"));
+        });
+    }
+
+    /// <summary>
+    /// A code word on a site's page and one in an answer of the agent's are both drawn by that tool, so neither
+    /// shows Bootstrap's pink or a violet of its own; the code inside a listing is not a code word and is left out.
+    /// </summary>
+    [TestCase("base/_elements.scss", ":not(pre) > code {")]
+    [TestCase("chat/_conversation.scss", ".markdown code {")]
+    public void ACodeWord_OnAPageOrInAnAnswer_IsDrawnByTheTool(string sheet, string selector) =>
+        Assert.That(File.ReadLines(Path.Combine(Styles, sheet)).Single(line => line.StartsWith(selector,
+            StringComparison.Ordinal)), Does.Contain("@include surface.code-word();"));
 
     /// <summary>A mixin's body in a sheet, from its opening line to the brace that closes it.</summary>
     private static string MixinBody(string sheet, string name) =>
