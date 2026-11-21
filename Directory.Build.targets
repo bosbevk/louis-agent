@@ -1,0 +1,14 @@
+<Project>
+
+  <!-- F166.2: what a package takes once its project has said it is one. MSBuild reads this after each project file,
+       which is why it can see IsPackable. MinVer versions the package from tags of its own name, as
+       LouisAgent.Core-0.1.0 (Louis's pick A); the project's name is the package's (ADR 0129). -->
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <MinVerTagPrefix>$(MSBuildProjectName)-</MinVerTagPrefix>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <PackageReference Include="MinVer" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

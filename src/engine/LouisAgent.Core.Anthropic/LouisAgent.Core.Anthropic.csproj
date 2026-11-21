@@ -5,6 +5,7 @@
        AgentHost.Build in its HostServices; a host on another provider ships none of this. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Core.Anthropic</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

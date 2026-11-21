@@ -1,0 +1,24 @@
+<Project>
+
+  <!-- F166.2: what every package of the framework carries. MSBuild reads this before each project file, so a project
+       says for itself whether it is a package (IsPackable), and only the 31 Puls builds on do (PackagesTests). -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <Authors>Louis Marais</Authors>
+    <Company>Louis Marais</Company>
+    <Copyright>Copyright (c) Louis Marais</Copyright>
+    <!-- The framework's licence by its SPDX name, so GitHub and NuGet show it (ADR 0127). -->
+    <PackageLicenseExpression>PolyForm-Noncommercial-1.0.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://framework.louis-agent.dev</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/bosbevk/louis-agent</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- Source Link, which the SDK carries: a reader of a package can step into the source it was built from. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Each package keeps its own version: a commit to one project doesn't move another's (MinVer's own advice for
+         projects versioned apart in one repository). -->
+    <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
+  </PropertyGroup>
+
+</Project>

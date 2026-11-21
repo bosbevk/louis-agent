@@ -5,6 +5,7 @@
        hands OpenAiCompatibleProvider.Instance to AgentHost.Build in its HostServices. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Core.OpenAi</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

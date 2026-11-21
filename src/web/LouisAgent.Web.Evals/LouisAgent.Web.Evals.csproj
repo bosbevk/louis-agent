@@ -6,6 +6,7 @@
        sits on LouisAgent.Web, which knows nothing of the studio. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Web.Evals</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
     <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>

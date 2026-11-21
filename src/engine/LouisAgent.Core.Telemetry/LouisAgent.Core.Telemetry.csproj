@@ -5,6 +5,7 @@
        opts in by handing AgentHost.Build an OtlpTelemetry in its HostServices; core alone runs on NoTelemetry. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Core.Telemetry</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
