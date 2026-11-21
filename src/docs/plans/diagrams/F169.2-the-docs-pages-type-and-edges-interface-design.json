@@ -1,0 +1,26 @@
+{
+  "kind": "classes",
+  "title": "F169.2 the docs page's type and edges: the interface design",
+  "caption": "No type is new. A band gains one parameter and its title one question, and the tests that hold them each gain or change a case, marked with its step.",
+  "classes": {
+    "types": [
+      { "id": "Band", "name": "Band", "tone": "green", "members": ["+Id string", "+Topic string?", "+Title string?", "+Summary string?", "+PartOf string?  (step 2, new: the id of the section this band is a part of)"] },
+      { "id": "BandTitle", "name": "BandTitle", "tone": "green", "members": ["+Band Band?  (by cascade)", "+Class string?", "-HeadsThePage bool  (an h1)", "-IsAPart bool  (step 2, new: an h3 with the class part-title)"] },
+      { "id": "OverviewPage", "name": "OverviewPage", "tone": "violet", "members": ["a band for each family, PartOf the-whole  (step 3)", "its top band takes its heading as Title  (step 3)"] },
+      { "id": "FrameworkFamily", "name": "FrameworkFamily", "kind": "record", "tone": "teal", "members": ["+Id string", "+Name string", "+Summary string", "+All IReadOnlyList<FrameworkFamily>"] },
+      { "id": "BandTitleTests", "name": "BandTitleTests", "members": ["+ThePagesOwnBand_HeadsItWithTheH1()", "+AnotherBand_HasAnH2()", "+ABandThatIsAPart_HasAnH3()  (step 2, new)"] },
+      { "id": "OverviewPageTests", "name": "OverviewPageTests", "members": ["+EachFamily_HasItsHeadingAndItsPicture()  (step 3: an h3, and no h2)", "+TheTopHeading_StandsOverItsSummary()  (step 3, new)"] },
+      { "id": "FrameworkStylesTests", "name": "FrameworkStylesTests", "members": ["+ABandsHeadingRule_CoversAPartsTitle_AndNoOtherH3()  (step 4, new)", "+TheDocsLayout_SizesAHeadingByItsRank(rank, size)  (step 4, new)", "+ADocsPart_ReadsItsCornersName(rule, name)  (step 6, new)", "+AStepsNumber_IsDrawnByTheStepTool()  (step 8, new)", "+TheRows_ReadAsTheStepsDo()  (step 9, new)", "+ThePageTurn_StandsOnThePagesEdge()  (step 9, new)", "+TheMenusLine_IsThePageColumns()  (step 9, new)"] },
+      { "id": "SurfaceNamesTests", "name": "SurfaceNamesTests", "members": ["+TheSurfacesSheet_SetsEverySurfaceName_AndNoOther()  (step 5: four corner names; step 7: a step's six)"] },
+      { "id": "ThemeSheet", "name": "ThemeSheet", "kind": "static", "tone": "violet", "members": ["+NamesToSet(frameworkCss) IReadOnlyList<string>", "+Missing(css, SiteTheme, SiteStyle, names) IReadOnlyList<string>"] }
+    ],
+    "relations": [
+      { "from": "BandTitle", "to": "Band", "kind": "uses", "word": "asks where it is" },
+      { "from": "OverviewPage", "to": "Band", "kind": "creates", "word": "one for each area" },
+      { "from": "OverviewPage", "to": "FrameworkFamily", "kind": "uses", "word": "the five families" },
+      { "from": "BandTitleTests", "to": "BandTitle", "kind": "uses", "word": "holds" },
+      { "from": "OverviewPageTests", "to": "OverviewPage", "kind": "uses", "word": "holds" },
+      { "from": "SurfaceNamesTests", "to": "ThemeSheet", "kind": "uses", "word": "the names to set" }
+    ]
+  }
+}

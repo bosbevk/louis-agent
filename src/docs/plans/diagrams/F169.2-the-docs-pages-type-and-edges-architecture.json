@@ -1,0 +1,30 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F169.2 the docs page's type and edges: the architecture",
+  "caption": "The page's markup comes from the framework's controls, its sizes from the docs layout's own sheet, and its corners and a step's number from the names a theme sets. The number in brackets is the step that changes the part.",
+  "flow": {
+    "nodes": [
+      { "id": "sites", "icon": "browser", "tone": "blue", "label": "Every site\nframework.louis-agent.dev: flat, the docs layout\nlouis-agent.dev: glass and flat, slides\ncode review: retro" },
+      { "id": "pages", "icon": "file", "tone": "violet", "label": "LouisAgent.Web.Framework\nOverviewPage: the families are parts,\nthe heading leads its summary (3)", "group": "web" },
+      { "id": "bands", "icon": "box", "tone": "violet", "label": "Band and BandTitle\nPartOf, and an h3 for a part (2)\nbase/_elements.scss: the heading\nrule covers a part's title (4)", "group": "web" },
+      { "id": "docs", "icon": "file", "tone": "violet", "label": "DocsColumns.razor.scss\nthe three sizes by rank (4)\nthe menu's line (9)", "group": "web", "shape": "data" },
+      { "id": "parts", "icon": "file", "tone": "violet", "label": "The parts' own sheets\nthe menu, the code block, the page turn,\nthe search window, Orbi's panel (6)\nSteps (8), TermList and PageTurn (9)", "group": "web", "shape": "data" },
+      { "id": "surfaces", "icon": "file", "tone": "violet", "label": "settings/_surfaces.scss\nlists the four corners (5)\nand a step's six names (7)\nthe surface tool's step() (8)", "group": "web", "shape": "data" },
+      { "id": "themes", "icon": "file", "tone": "amber", "label": "Flat, glass and retro,\nlight and dark: six sheets\nthe corners' values (5)\na step's values (7)", "shape": "data" },
+      { "id": "tests", "icon": "checks", "tone": "teal", "label": "BandTitleTests (2), OverviewPageTests (3)\nFrameworkStylesTests (4, 6, 8, 9)\nSurfaceNamesTests and each theme's\nsheet test (5, 7)" }
+    ],
+    "edges": [
+      { "from": "sites", "to": "pages", "word": "draw" },
+      { "from": "pages", "to": "bands", "word": "built of" },
+      { "from": "bands", "to": "docs", "word": "sized by" },
+      { "from": "parts", "to": "themes", "word": "read the names" },
+      { "from": "surfaces", "to": "themes", "word": "names to set", "style": "dashed" },
+      { "from": "tests", "to": "surfaces", "word": "holds", "style": "dashed" }
+    ],
+    "groups": [
+      { "id": "web", "label": "The framework's web: LouisAgent.Web, .Web.Docs and .Web.Framework" }
+    ],
+    "direction": "down"
+  }
+}

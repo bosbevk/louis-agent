@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "F169.2 the docs page's type and edges: a family on the Overview",
+  "caption": "The page says a band is part of a section, the band hands itself down, the title asks it and draws an h3, and the docs layout's sheet gives that rank its size.",
+  "sequence": {
+    "participants": [
+      { "id": "V", "icon": "user", "tone": "blue", "label": "A visitor", "actor": true },
+      { "id": "P", "icon": "file", "tone": "violet", "label": "OverviewPage" },
+      { "id": "B", "icon": "box", "tone": "green", "label": "Band, the-engine" },
+      { "id": "T", "icon": "box", "tone": "green", "label": "BandTitle" },
+      { "id": "S", "icon": "file", "tone": "amber", "label": "The docs layout's sheet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "V", "to": "P", "text": "opens the framework's site" },
+      { "step": "message", "from": "P", "to": "B", "text": "Id the-engine, Title \"The engine\", PartOf \"the-whole\"  (step 3)" },
+      { "step": "message", "from": "B", "to": "T", "text": "hands itself down by cascade, with the title's words" },
+      { "step": "message", "from": "T", "to": "B", "text": "are you the page's top? are you a part?  (step 2)" },
+      { "step": "reply", "from": "B", "to": "T", "text": "not the top, and part of the-whole" },
+      { "step": "reply", "from": "T", "to": "P", "text": "<h3 class=\"part-title chrome reveal\">The engine</h3>" },
+      { "step": "message", "from": "S", "to": "T", "text": ".site-docs .band .part-title: clamp(24px, 2.3vw, 28px)  (step 4)" },
+      { "step": "note", "over": ["S"], "text": "28 on a desktop, 24 on a phone; the section over it is 40 and 32" },
+      { "step": "reply", "from": "T", "to": "V", "text": "a part's heading, a step under its section's" }
+    ]
+  }
+}

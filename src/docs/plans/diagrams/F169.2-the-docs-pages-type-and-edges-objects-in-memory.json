@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F169.2 the docs page's type and edges: objects in memory",
+  "caption": "The open Overview in flat: its bands, the heading each one's title draws, and the block of values the page's corners and a step's number read. The values are as they stand after the last step.",
+  "flow": {
+    "nodes": [
+      { "id": "page", "icon": "file", "tone": "blue", "label": "OverviewPage\ninside the docs layout" },
+      { "id": "top", "icon": "box", "tone": "green", "label": "Band top\nTitle \"Build agents,\nnot infrastructure.\"\nits title: an h1, 74" },
+      { "id": "whole", "icon": "box", "tone": "green", "label": "Band the-whole\nTitle \"Every project,\nin its family.\"\nits title: an h2, 40" },
+      { "id": "families", "icon": "box", "tone": "green", "label": "Five bands, the-engine to the-tools\nPartOf \"the-whole\"\neach title: an h3, 28" },
+      { "id": "block", "icon": "file", "tone": "amber", "label": "flat's block of values\n--web-small-radius: 6px\n--web-block-radius: 10px\n--web-window-radius: 18px\n--web-step-fill: var(--web-pane-fill)\n--web-step-radius: var(--web-small-radius)", "shape": "data" },
+      { "id": "readers", "icon": "code", "tone": "violet", "label": "the menu's rows read small\nthe code block and the page turn read block\nOrbi's panel and the search window read window\na step's number reads its six names" }
+    ],
+    "edges": [
+      { "from": "page", "to": "top", "word": "holds" },
+      { "from": "page", "to": "whole", "word": "holds" },
+      { "from": "page", "to": "families", "word": "holds" },
+      { "from": "families", "to": "whole", "word": "part of", "style": "dashed" },
+      { "from": "block", "to": "readers", "word": "read by", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
