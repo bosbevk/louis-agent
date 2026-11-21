@@ -74,5 +74,12 @@ nothing in louis-agent references Puls.
 
 ## Approved during the build
 
+- **2026-11-21, before F166.2: F167, every project named for its namespace.** Putting F166.2's findings, Louis chose
+  that a package, its DLL and its namespace read the same (`LouisAgent.Core`), and then that the projects, files and
+  folders are renamed too, as a feature of its own before F166.2. F167 did that. F166.2's other picks of that day
+  (GitHub Packages now and nuget.org at `1.0`; MinVer from git tags; the 31 projects Puls reaches, each on its own
+  version; one tag per package, related tags pushed together, a guard against an unpublished dependency) go into its
+  own plan when it starts.
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [ADR 0127](../adr/0127-licence-polyform-noncommercial.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0076](../adr/0076-core-ships-no-agent.md)

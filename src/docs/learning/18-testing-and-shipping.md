@@ -1646,6 +1646,43 @@ with the counts on both sides matching.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework's tests use fakes and data of their own, so a
 product can leave without taking them, and rule tests hold the line while the code moves.
 
+## Every project named for its namespace (F167, 2026-11-21)
+
+Before the framework can be published as packages (F166.2), its names had to settle. A project was called
+`louis-agent.core` on disk while its code said `LouisAgent.Core`, and a package would have taken the first. Louis chose
+one name for all of it, so the folder, the project file, the DLL, the namespace and later the package all read
+`LouisAgent.Core`. All 155 projects moved, with their docs and their pictures.
+
+The new names were read, not invented. Each project already declared its namespace, so 146 names came straight from
+it. Nine had to be listed by hand: seven that shared a namespace with a neighbour, and the coding catalog with its
+tests, whose name says more than their namespace. Because the names were read, the code moved and no namespace in
+it changed.
+
+The rename was planned as a tool of our own with tests, and two steps of it were built: a name map that refuses a
+clash before anything is touched, and a rewriter that changes a name only where the whole name stands, the longest
+first, so `louis-agent.core.web` is never half-changed by `louis-agent.core`. Then Louis dropped it, "just as a once off
+just too many to test", and the same rules ran as plain commands, kept in `src/tools/rename-projects` with their
+reports so anyone can see what ran. Writing the rewriter first still paid off: measuring which endings follow a
+project's name found `.styles.css`, the stylesheet .NET names after the assembly, which a site would have lost.
+
+The run itself was one command and 6,245 names in 1,286 files. What took the time was everything that found a project
+by its old spelling and not by its name: a test that knew a test project by `.tests`, a rule that read identities
+from `louis-agent.identity.*`, a regular expression with the name escaped, diagram labels whose name followed a
+`\n`, Puls's routing questions with their dataset hash. The suite found almost all of it, 35 failures across 11
+projects, and each fix was small. Two were in the product: the log's service name, kept exactly what it was by turning
+`SiteApi` back into `site-api`, and the eval studio's publish folder, which had pointed at a folder that no longer
+existed while its own tests, built on the old names, stayed green. That one is the lesson: a test that makes its own
+fixture can agree with a bug.
+
+What didn't go well. Rider stayed open through the run and kept writing build folders under the new names while they
+were being cleared, so the clean-up had to wait for the build servers to stop. The tool was half built before it was
+dropped, and its two steps were taken back out of the branch, kept only on a local branch. Nothing was measured in
+money: no model call and no eval run. The measure is the suite, green but for the five tests that fail on Windows only,
+and the site answering on :5080 with its renamed stylesheet.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a change too wide for hands, made by rules that are
+written down and kept, then proved by the build and the whole suite; and a name read from the code, not invented.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)
