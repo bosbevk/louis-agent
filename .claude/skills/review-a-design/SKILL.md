@@ -33,11 +33,14 @@ come first.
 1. **Say what is reviewed**: which site, which theme, which pages, and what is left out. NN/g: the narrower the
    scope, the more detailed the review.
 2. **Read the brief**: the brand guide, the theme's rule, and the theme's values in
-   `src/web/LouisAgent.Web.Themes/Styles/theme-{name}/_light.scss` and `_dark.scss`.
+   `src/web/LouisAgent.Web.Themes/Styles/theme-{name}/_light.scss` and `_dark.scss`. A theme's rule is in the
+   themes' design doc, `src/docs/projects/LouisAgent.Web.Themes.md`, under *A theme's values*.
 3. **Read the craft on the web**, that day: two or three strong sites of the same kind on their own pages, with
-   their design system's pages where they publish one, and the standards a page is held to (*References*).
-4. **Run the site locally** as `/check-a-page` says, and take a picture of every page in light and dark at both
-   sizes. Read every picture.
+   their design system's pages where they publish one, and the standards a page is held to (*References*). A
+   cloud container's shell is refused by `www.w3.org`, `www.nngroup.com` and other hosts, so read them with the
+   web reader or a web search, not with `curl`.
+4. **Run the site locally** as `/check-a-page` says, and take a picture of every page, and of every section at
+   its own address, in light and dark at both sizes. Read every picture.
 5. **Measure** (*What is measured*), and keep each script.
 6. **Find each finding's cause in the code**: the file and the line that set the value, and whose it is. A
    theme's value, a framework component and one site's page are fixed in three different places.
@@ -63,9 +66,10 @@ you read: the code is where the cause is looked for, after the page has said wha
 | The mark and the name | Their drawn sizes wherever they stand | The brand guide |
 | What a shared link shows | The `og:` tags in the page as it is served | The platform's own docs |
 
-W3C's formula: a colour's luminance is `0.2126 R + 0.7152 G + 0.0722 B`, each channel made linear first, and the
-ratio is `(lighter + 0.05) / (darker + 0.05)`. A text over a picture or a gradient has no one ground, so it is
-flagged and looked at by hand. A ratio is never rounded up.
+W3C's formula, as G17 writes it: a colour's luminance is `0.2126 R + 0.7152 G + 0.0722 B`, each channel made
+linear first. A channel `c`, its value over 255, is `c / 12.92` when it is at most 0.04045, and
+`((c + 0.055) / 1.055) ^ 2.4` above that. The ratio is `(lighter + 0.05) / (darker + 0.05)`. A text over a
+picture or a gradient has no one ground, so it is flagged and looked at by hand. A ratio is never rounded up.
 
 ## How a finding is ranked
 
@@ -87,9 +91,9 @@ measure, its cause in the code and its source. It closes with what could not be 
 2. Research its three options (`/put-a-finding`), each from a source read that day.
 3. Draw each option on the real page: a style or a small change to the page, set by the script in that browser
    only. Put today's page and the three options on one sheet, in light and in dark, and look at the sheet yourself
-   before it is posted.
-4. Post it with the recommended option first, what each option changes and what it costs, and the sources. Then
-   the card.
+   before it is posted. The sheet is a picture, kept in the review's folder under `finding-{n}/`.
+4. Post it with the sheet attached, the recommended option first, what each option changes and what it costs,
+   and the sources. Then the card.
 5. Write his pick down where a later thread finds it: the review page, and the project's memory, with what
    building it needs. While he reads, the next finding is prepared.
 
