@@ -126,7 +126,7 @@ done when Claude has written its learning write-up and Louis has read it.
 **3b to 3e.** 3b is built (F49.1 to F49.5: the checks catalogue, evals as files, checks in packs, the studio). 3c: F35's
 recipe sources, library and minion are built and F48's maths too (`ScaleRecipe`, yields, a recipe or a meal); the rest
 of `WriteRecipe` (the list and its prices, F48.4), the pantry and the teaching answers (F48.5) and the cook's first wave
-(F48.6) remain, in that order ([plan](demos/puls/docs/plans/F48-cook-and-teacher.md)). 3d is one feature, F46. 3e is
+(F48.6) remain, in that order ([plan](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/plans/F48-cook-and-teacher.md)). 3d is one feature, F46. 3e is
 F50: the where-to-buy and shop-prices packs are built (F50.2: branches from OpenStreetMap, Stats SA's average prices
 in Mongo, uploaded in the admin portal), the weather pack is next, then gardener, farmer, stargazer, braaimaster and
 the rest, each a role on the packs it names with its eval, run before it is shown.
@@ -184,7 +184,7 @@ drawings (F138); then an agentic site ([F125](src/docs/plans/F125-an-agentic-sit
 one script tag ([F131](src/docs/plans/F131-the-chat-on-any-website.md)), the subdomains (F130), and a website with
 an agent set up by talking to it ([F133 draft](src/docs/plans/F133-self-serve-sites.md)).
 
-**Puls's track** ([draft](src/docs/plans/puls-track.md)). Every source that knows the place answers through a few tools
+**Puls's track** ([draft](https://github.com/bosbevk/puls/blob/main/docs/plans/puls-track.md)). Every source that knows the place answers through a few tools
 whose sites are data: businesses that join, open place data, a site's own JSON-LD, a few hand-built readers where terms
 allow, the open web cited last. Listings and credits are sold only with Phase 9's accounts.
 

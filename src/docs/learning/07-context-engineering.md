@@ -12,7 +12,7 @@ says about what to put in front of a model.
 Some of what follows is history now. The shops pack and its Checkers catalogue were removed on 2026-11-04, since the
 shops never answered, so `FindProducts`, `SHOP_CATALOGUES` and the one-shop trade-off below describe what was. Prices
 come from Stats SA's average prices now, through the shop-prices pack
-([ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)). The JSON-LD reader this page waits for was built in
+([ADR 0069](https://github.com/bosbevk/puls/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)). The JSON-LD reader this page waits for was built in
 F35 ([ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)). The guide is Orbi now, so `LouisVoiceTests` became
 `OrbiVoiceTests`. And the framework part of F127.7 has a guide of its own, the framework Orbi beside the framework's
 pages, so louis-agent.dev's guide keeps two focus skills, selling and demos.

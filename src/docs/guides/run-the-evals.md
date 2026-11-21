@@ -264,7 +264,7 @@ a class it says *few labels*, because a share of four is just four answers.
 
 **A judge that reads tool results can't be checked this way yet.** A label holds the questions and the answers, not
 what the tools gave back, so a judge with `sources` is asked with no page and fails every answer. Use a re-score for
-those, as the [recipes manual](../../../demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Recipes/manual.md) says.
+those, as the [recipes manual](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Recipes/manual.md) says.
 
 **Checking the judge against your grades, from the portal.** In the same card, press **Check the judge now**. The API
 writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs

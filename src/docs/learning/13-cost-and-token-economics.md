@@ -209,7 +209,7 @@ in the replay as in the recording, so the next request's key is different and th
 turns fail instead of costing money, so the safety holds (a miss never calls the model), but a mode that delegates
 can't reproduce its grades from a replay. That's the next fix: make the sub-session's result replay-stable. FX27 made it: the answer
 no longer carries the sub-session's usage, which changed from run to run. Later the recipe search began to draw its
-sites at random (F35.4), so a replay of the cook and recipes evals is sure to miss again, and those two run live only ([ADR 0078](../../../packs/docs/adr/0078-a-recipe-search-asks-several-sites.md)).
+sites at random (F35.4), so a replay of the cook and recipes evals is sure to miss again, and those two run live only ([ADR 0078](https://github.com/bosbevk/puls/blob/main/docs/adr/0078-a-recipe-search-asks-several-sites.md)).
 
 ## Where skill 13 stands
 

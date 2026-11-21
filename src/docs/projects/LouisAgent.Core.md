@@ -243,8 +243,7 @@ step by step, without its thinking, the latest 12,000 characters. Each reply's u
 A minion is a small helper on a cheap model. A specialist hands a minion one task and one of its own tools, so the
 page the minion reads never enters the specialist's context. Only the minion's short answer comes back.
 
-A minion is asked with `AskAgent` too, by its address, such as Puls's `puls.find-recipe`, which the identity lists in
-its `Calls`. It runs on this instance only, one level down, on the model `MINION_LLMS` names, at most 16 a user turn,
+A minion is asked with `AskAgent` too, by its address, which the identity lists in its `Calls`. It runs on this instance only, one level down, on the model `MINION_LLMS` names, at most 16 a user turn,
 and is never kept. No prompt tells an agent to ask one yet. Measuring the cook with them and without them is the TODO's
 *F30's minions tested*.
 
@@ -491,4 +490,4 @@ only logs, Ollama's tool support is guessed from the model's name, and a Paymo t
 [Setup](../SETUP.md) · [Models](../MODELS.md)
 
 ---
-[Projects](README.md) · Next: [LouisAgent.Identities.Puls](../../../demos/puls/docs/projects/LouisAgent.Identities.Puls.md)
+[Projects](README.md) · Next: [LouisAgent.Identities.Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Identities.Puls.md)

@@ -4,7 +4,7 @@
 > **References:** LouisAgent.Composition, LouisAgent.Choices, LouisAgent.SessionStream, LouisAgent.Api.Contracts,
 > LouisAgent.Diagrams and LouisAgent.Diagrams.Engine; Markdig, Net.Codecrete.QrCodeGenerator,
 > Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site: LouisAgent.Site,
-> LouisAgent.SiteFramework, LouisAgent.CodeReview, LouisAgent.Puls and LouisAgent.Starter; the web libraries
+> LouisAgent.SiteFramework, LouisAgent.CodeReview and LouisAgent.Starter, and Puls on its packages; the web libraries
 > beside it (accounts, evals, places, docs, framework, themes); and the packs' own views under `packs/web/`
 > **Also shows:** `component`, `sequence`
 
@@ -1064,7 +1064,7 @@ the app and kept in that browser.
 
 The steps are in [Change the framework's web](../guides/change-the-web.md). In short: a piece belongs here when it
 would be the same on every site. A new API call goes in `AgentApi`. A component's words go in `ChatText`, with English
-as the default, and in Puls's `PulsText`. A `.razor` holds markup only, and the logic goes in a plain class with tests.
+as the default, and in a site's own copy where it speaks another language. A `.razor` holds markup only, and the logic goes in a plain class with tests.
 Then rebuild the image of each app that uses it.
 
 *Decided in:* [ADR 0034](../adr/0034-code-a-person-can-maintain.md).
@@ -1116,7 +1116,7 @@ component is built in, though a description isn't.
 
 ## Related docs
 
-[LouisAgent.CodeReview](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md) · [LouisAgent.Puls](../../../demos/puls/docs/projects/LouisAgent.Puls.md) · [LouisAgent.Api](LouisAgent.Api.md) · [The eval pages](LouisAgent.Web.Evals.md)
+[LouisAgent.CodeReview](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md) · [LouisAgent.Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Puls.md) · [LouisAgent.Api](LouisAgent.Api.md) · [The eval pages](LouisAgent.Web.Evals.md)
 
 ---
 [Projects](README.md) · Previous: [LouisAgent.CodeReview](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md) · Next: [LouisAgent.Mcp](LouisAgent.Mcp.md)

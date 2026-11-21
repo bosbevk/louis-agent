@@ -3,7 +3,7 @@
 > **Reference.** What each file here is. **Elsewhere:** the commands and settings in the
 > [development guide](../../../src/docs/guides/get-started.md) and [Setup](../docs/SETUP.md); where each service runs
 > in the [deployment view](../../../src/docs/architecture/07-deployment-view.md); Puls's own stack in
-> [its docker/](../../puls/docker/README.md).
+> [its docker/](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docker/README.md).
 
 | File | What it is |
 |---|---|

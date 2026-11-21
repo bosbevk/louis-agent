@@ -32,7 +32,7 @@ Each is open work, or the design of work that another feature took in. *In the T
 | [F15](F15-model-limits.md) | Model limits: each model's context window and cache minimum, `num_ctx` for local models | planned | R §B–D | F15 *Model limits and local models* |
 | [F16](F16-summariser.md) | Summariser: one measured component for oversized tool results and compaction | merged into F9 (F16-S1 a small cleanup) | R §D | F9, and F16 under *Cleanups* |
 | [F17](../../../demos/louis-agent/docs/features/F17-orchestrator-agent.md) | Orchestrator agent: a routing workflow with an agent for the exceptions | merged into F39 | Orchestrator design | F39 *Orchestration* |
-| [F28](../../../demos/puls/docs/features/F28-team-talk.md) | Team talk: Puls briefs its specialist in a fixed note, mood included | planned (the rest) | — | F28 *Team talk, the rest* |
+| [F28](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/features/F28-team-talk.md) | Team talk: Puls briefs its specialist in a fixed note, mood included | planned (the rest) | — | F28 *Team talk, the rest* |
 
 **The milestones** in these docs' status lines (M1 to M5, *Local*) are the order of October's plan. The
 [roadmap](../../../ROADMAP.md)'s phases replaced them on 2026-10-19, and the TODO row says where each doc's work sits

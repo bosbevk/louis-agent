@@ -4,7 +4,7 @@
 > tests, the CLI, and the two Docker stacks. **Elsewhere:** what each setting means in each demo's
 > `config/.env.example`; the models in [MODELS.md](../MODELS.md); the hosts in their [design docs](../projects/README.md).
 
-![Your first run: the settings, the build and test, and the CLI, then the coding and Puls Docker stacks](diagrams/get-started.svg)
+![Your first run: the settings, the build and test, and the CLI, then the coding agent's Docker stack](diagrams/get-started.svg)
 
 You need the .NET 10 SDK. Everything below runs from the repo's root folder.
 
@@ -45,12 +45,6 @@ The coding agent's web app and API answer on `http://127.0.0.1:5082`:
 
 ```bash
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
-```
-
-Puls's web app answers on `http://127.0.0.1:5070`:
-
-```bash
-docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
 ```
 
 Always pass `--env-file demos/{demo}/config/.env`, because compose needs it for `REPOSITORIES_PATH`. When you change

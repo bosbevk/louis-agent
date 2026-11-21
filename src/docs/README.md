@@ -12,7 +12,7 @@ you need otherwise.
 | [Setup](SETUP.md) | Reference | Configure `config/.env` and `config/.env.secrets`: every setting, how they are loaded, keeping secrets safe |
 | [Models](MODELS.md) | How-to | Choose and switch the model: Claude (default), Ollama, OpenAI-compatible servers; thinking and limits |
 | [The brand](brand/README.md) | Reference | Use the logo, the colours and the type: the ball with the l and its files, the name with the mark as its o, clear space, the violet, the voice |
-| [For site owners](../../demos/puls/docs/SITE_OWNERS.md) | Reference | What a site sees when Puls reads a page for a user: the user agent, what is read and how much, how to ask us to stop or to offer a feed |
+| [For site owners](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SITE_OWNERS.md) | Reference | What a site sees when Puls reads a page for a user: the user agent, what is read and how much, how to ask us to stop or to offer a feed |
 
 ## 2. Understand it
 
@@ -54,7 +54,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Puls's web app](../../demos/puls/docs/projects/LouisAgent.Puls.md) | Reference | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
+| [Puls's web app](https://github.com/bosbevk/puls/blob/main/docs/projects/Puls.Web.md), in its own repository | Reference | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
 | [Multi-agent write-up](learning/10-multi-agent-orchestration.md) | Explanation | Read what building Puls taught: roles, routing, measured delegation (a draft) |
 
 ## 6. Project by project
@@ -102,7 +102,7 @@ question moves to the doc of that type, and the two link to each other.
 
 ## Docs that live elsewhere
 
-Docs follow what they are about. Anything about one demo or the packs sits with it: [Puls](../../demos/puls/docs/README.md),
+Docs follow what they are about. Anything about one demo or the packs sits with it: [Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/README.md),
 [the coding agent](../../demos/louis-agent/docs/README.md), [the packs](../../packs/docs/README.md). ADR numbers are shared
 across all of them, so [the ADR index](adr/README.md) lists every one.
 

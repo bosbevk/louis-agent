@@ -2,7 +2,7 @@
 
 > **Kind:** test projects (NUnit, with bUnit for components) · **Paths:** the framework's in `src/tests/`, grouped
 > like `src/` (`engine/`, `hosts/`, `evals/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
-> (`demos/puls/tests/`, `demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
+> (`demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
 > shared fakes in `src/tests/shared/LouisAgent.Testing/` and, for the web apps, `src/tests/web/LouisAgent.Web.Testing/`
 > (class libraries) · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 > **Also shows:** `package`, `sequence`
@@ -23,10 +23,10 @@ tests, to look things up, and what isn't covered yet.
 
 ### 1. Unit and integration tests, kept apart
 
-A test that starts a real process, opens Mongo or SQL Server, or needs the Puls stack is an integration test. Its class
+A test that starts a real process, opens Mongo or SQL Server, or needs a running stack is an integration test. Its class
 is marked `[Category("Integration")]`, and it lives in a project named `{name}.integration-tests`. That way a unit
 project never starts a process. Today those are core's, the API's, the accounts', the orchestrator's, the starter's,
-and the dotnet, git, recipes, shell and shop-prices packs'.
+the packages', and the dotnet, git and shell packs'.
 
 CI (`.github/workflows/ci.yml`) runs on Ubuntu, on each pull request and each merge to main. It first runs the whole
 solution with `--filter "Category!=Integration"`, then with `--filter "Category=Integration"` and
@@ -64,7 +64,7 @@ name. A test that needs the real name uses its owner's enum member.
 
 And it has `Outside`, which is how an integration test asks for the outside world. `Tool` skips a missing tool on
 your own machine, but fails it where `INTEGRATION_REQUIRED` is set, which is CI. `Stack` always skips a missing
-Puls-stack address.
+stack's address.
 
 `src/tests/hosts/LouisAgent.Api.Testing` is a library too. It holds the in-memory API host, the built runner, the
 stand-in dlls and the store contracts. Each is written once, and runs against memory in the unit tests and against
@@ -163,31 +163,25 @@ engine's tools.
 
 *Decided in:* F56.
 
-### 9. The identities', the packs' and the composition root's tests
+### 9. The identities', the packs' and the catalogue's tests
 
-Each identity and each pack has its tests beside it.
-
-Puls's identity tests prove its prompts are its own and are read through `SkillFileSource` (`PulsPromptsTests`, with
-the Puls golden `PulsSessionSnapshot.json`). Its evals and their checks have tests too: `Evals/Routing/`, and
-`Evals/Checks/`, with each check run on hand-cut answers, plus the cook's dataset, ids and conformance. The cook
-scenarios' ids are test constants in `PulsCookScenarioIds`, because an id is data, not an enum. `PulsIdsTests` holds
-each one to its dataset, and `RepeatedNameTests` lists that file and skips only that class. The judge's tests are in
-`LouisAgent.Identities.Puls.Judges.Tests`. The coding agent's catalogue has `LouisAgent.Coding.Catalog.Tests`, which
-holds the golden of every text its tools return to the model (`ToolMessageSnapshotTests`), and the triage team has
+Each identity and each pack has its tests beside it. The coding agent's catalogue has
+`LouisAgent.Coding.Catalog.Tests`, which holds the golden of every text its tools return to the model
+(`ToolMessageSnapshotTests`) and runs the shared MCP check on the packs it loads, and the triage team has
 `LouisAgent.Identities.Triage.Tests`.
 
-The where-to-buy pack's tests read Nominatim's answers from hand-written fixtures in its `jsonv2` shape, and keep the
-shop rules' tests, with their golden (`WhereToBuyToolMessageSnapshot.json`). The shop-prices pack's tests check the
-price lists from the shipped tables, with their golden (`ShopPriceToolMessageSnapshot.json`), and its store runs
-against a real Mongo in its integration tests.
+The rules every pack keeps are held over all of them at once, in `LouisAgent.Packs.Rules.Tests`, the one test project
+that references every pack in `packs/tools`. Its `EveryPack` lists one of each, and a test holds that list to the
+projects in the folder, so a new pack is held as soon as it exists. Every pack stays convertible to an MCP server
+(`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, which `LouisAgent.Testing` carries),
+against every identity's name in the repository, read from the identities' folders. A pack named in its list of known
+breaches is excused only those, and a second test fails when one is fixed, so the list only shrinks: today the DevOps
+and Paymo packs, whose waiting tools take no cancellation token (FX83). And every built-in prompt of every pack and
+identity, read from its project's `prompts/` on the disk, opens with its header, whose level is its folder's
+(`EveryPromptHasAHeaderTests`).
 
-The recipes pack's tests read a `Recipe` from recorded pages of sites that allow us (`Recipes/Fixtures/`, trimmed
-copies under 30 KB, never served), and from small inline blocks for the shapes no page shows.
-
-The composition root's tests (`LouisAgent.HostPacks.Tests`) prove that `IDENTITIES` and `PACKS` pick what they
-should (`PluginsTests`), and that every pack stays convertible to an MCP server (`PackConvertibilityTests`, through
-the MCP SDK's own `McpServerTool.Create`, a test-only package). They also check that every built-in prompt of every
-identity and pack opens with its header, and that its level is its folder's (`EveryPromptHasAHeaderTests`).
+Puls's own tests, its identity's, its packs' and its catalogue's, live with it in
+[its own repository](https://github.com/bosbevk/puls).
 
 Each of these registers the prompts its identity or pack brings in a `[SetUpFixture]`, just as a host's `Build` does.
 
@@ -204,12 +198,8 @@ recorded turn and held to the `.html` golden beside its test.
 It also holds the web's rule that a `.razor` file holds markup only. `RazorHasNoCodeTests` scans every `.razor` under
 `src/` for an `@code` block. And under `Rules/` it holds every site to the framework's site rules.
 
-Puls's tests (`LouisAgent.Puls.Tests`) cover only what's Puls's own: its pages, its layout, its words and its styles.
-They pin `WorkPanel`, `PulsTile` and `TemplateCard`, and render `ChatPage` end to end against a stub API that opens a
-session and streams the recorded turn. The empty page and the page with the turn are each a golden, and the JS calls
-the page makes are listed. Its landing page is a golden too.
-
-The code-review app's tests (`LouisAgent.CodeReview.Tests`) pin its chat page the same way, empty and with the turn.
+The code-review app's tests (`LouisAgent.CodeReview.Tests`) pin its chat page, empty and with the turn, against a
+stub API that opens a session and streams the recorded turn.
 The starter has its own (`LouisAgent.Starter.Tests`), and `LouisAgent.Starter.IntegrationTests` spawns a site the
 way `dotnet new louis-site` does.
 
@@ -257,9 +247,6 @@ and the time written with a `Z`, and that a person's line or an unknown event re
 `LouisAgent.Evals.Runner.Tests` covers the arguments, the catalogue, the stub eval's run against its golden, the
 conformance of every eval folder, the data files copied beside the assembly, and the template folder
 (`src/evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
-
-`LouisAgent.Identities.Puls.Judges.Tests` runs Puls's judge `meal-for-people` on a scripted client, and checks the
-prompt it sends against its golden, its rubric's hash, its entry and its list.
 
 The runner end to end through the API is `StubCheckTests`, in `LouisAgent.Api.IntegrationTests`. A run that costs
 money is never a test: CI grades only recorded transcripts.

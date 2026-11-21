@@ -219,13 +219,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="mrq-node" cx="142" cy="190" r="4.5" />
       <circle class="mrq-node" cx="448" cy="190" r="4.5" />
       <circle class="mrq-node" cx="754" cy="190" r="4.5" />
-      <rect class="crd-rail-glow" x="364" y="355" width="168" height="8" rx="0" />
-      <rect class="crd-rail" x="364" y="358.3" width="168" height="1.5" rx="0" />
-      <path class="crd-line" d="M448 339V359" />
-      <path class="pic-march" d="M448 339V359" />
+      <rect class="crd-rail-glow" x="58" y="355" width="474" height="8" rx="0" />
+      <rect class="crd-rail" x="58" y="358.3" width="474" height="1.5" rx="0" />
+      <path class="crd-line" d="M142 339V359" />
+      <path class="pic-march" d="M142 339V359" />
       <path class="crd-line" d="M448 359V391" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M448 359V391" />
-      <circle class="mrq-node" cx="448" cy="359" r="4.5" />
+      <circle class="mrq-node" cx="142" cy="359" r="4.5" />
       <circle class="mrq-node" cx="448" cy="359" r="4.5" />
       <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
       <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
@@ -253,12 +253,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(332 248) scale(0.75)">
-        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-        <path d="M21 21l-6 -6" />
+        <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M4 20h14" />
       </g>
-      <text class="crd-name" x="370" y="263" text-anchor="start">What Puls's cook uses</text>
-      <text class="pic-text" x="324" y="298" text-anchor="start">recipes, shop-prices, where-to-buy,</text>
-      <text class="pic-text" x="324" y="316" text-anchor="start">calculator.</text>
+      <text class="crd-name" x="370" y="263" text-anchor="start">A pack for sums</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">calculator: a sum worked out in code.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="117" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
@@ -273,14 +274,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-edge" x="28" y="390.5" width="840" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="409" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 417) scale(0.75)">
-        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-        <path d="M3 6l0 13" />
-        <path d="M12 6l0 13" />
-        <path d="M21 6l0 13" />
+        <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+        <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+        <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
       </g>
-      <text class="crd-name" x="64" y="432" text-anchor="start">Their decisions</text>
-      <text class="pic-text" x="18" y="467" text-anchor="start">ADR 0069 prices as Stats SA estimates, 0078 a search asks several sites, 0082 the recipe library as an open feed.</text>
+      <text class="crd-name" x="64" y="432" text-anchor="start">Moved with Puls</text>
+      <text class="pic-text" x="18" y="467" text-anchor="start">recipes, shop-prices and where-to-buy, with ADRs 0069, 0078 and 0082, in Puls's own repository.</text>
     </g>
     <rect class="mrq-rule" x="0" y="551" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">

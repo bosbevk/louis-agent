@@ -182,4 +182,4 @@ Docker). The next triage uses the new text. `agent-comms.md` shows what the orch
 louis-agent, which is the quickest way to check a runbook says what you meant.
 
 ---
-[Docs index](../../../../src/docs/README.md) · Previous: [Development guide](../../../../src/docs/CLAUDE.md) · Next: [Puls's web app](../../../puls/docs/projects/LouisAgent.Puls.md)
+[Docs index](../../../../src/docs/README.md) · Previous: [Development guide](../../../../src/docs/CLAUDE.md) · Next: [Puls's web app](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Puls.md)

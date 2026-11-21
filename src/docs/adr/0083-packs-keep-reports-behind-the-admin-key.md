@@ -57,7 +57,7 @@ adding up every day kept, then the last 30. It's listed only with a database.
 
 [ADR 0027](0027-engine-identities-and-packs.md) · [ADR 0046](0046-dates-are-utc.md) ·
 [ADR 0070](0070-packs-publish-data-feeds.md) · [ADR 0071](0071-packs-take-data-uploads.md) ·
-[ADR 0082](../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md) ·
+[ADR 0082](https://github.com/bosbevk/puls/blob/main/docs/adr/0082-the-recipe-library-is-an-open-feed.md) ·
 [The Computed Pattern](https://www.mongodb.com/blog/post/building-with-patterns-the-computed-pattern) ·
 [Plugin (Fowler)](https://martinfowler.com/eaaCatalog/plugin.html) ·
 [Write-up 17](../learning/17-observability.md#the-librarys-counter-f357-2026-11-06)

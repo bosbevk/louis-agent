@@ -123,4 +123,4 @@ The history is lost when you exit, and a session can't be picked back up.
 [Quick start](../../../demos/louis-agent/docs/QUICK_START_AGENT.md) · [LouisAgent.Core](LouisAgent.Core.md)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.HostPacks](../../../demos/puls/docs/projects/LouisAgent.HostPacks.md) · Next: [LouisAgent.Acp](LouisAgent.Acp.md)
+[Projects](README.md) · Previous: [LouisAgent.HostPacks](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.HostPacks.md) · Next: [LouisAgent.Acp](LouisAgent.Acp.md)

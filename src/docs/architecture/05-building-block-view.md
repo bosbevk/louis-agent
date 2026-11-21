@@ -35,7 +35,7 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 |---|---|---|---|
 | CLI | `src/hosts/LouisAgent.Cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`LouisAgent.Cli [prompt]`) |
 | ACP server | `src/hosts/LouisAgent.Acp` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
-| HTTP API + a site | `src/hosts/LouisAgent.Api`, with a site: `LouisAgent.CodeReview`, `LouisAgent.Puls`, `LouisAgent.Starter`, `LouisAgent.Site` or `LouisAgent.SiteFramework` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves its program's Blazor WebAssembly site |
+| HTTP API + a site | `src/hosts/LouisAgent.Api`, with a site: `LouisAgent.CodeReview`, `LouisAgent.Starter`, `LouisAgent.Site` or `LouisAgent.SiteFramework` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves its program's Blazor WebAssembly site |
 | MCP server | `src/hosts/LouisAgent.Mcp` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
 | Orchestrator (POC) | `demos/louis-agent/hosts/LouisAgent.Orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls LouisAgent.Api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
 
@@ -74,9 +74,8 @@ is available (never the tool definitions), and `GET /v1/sessions/{id}` returns a
 *Decided in:* F5.
 
 Every site shares the one API codebase and the framework's web, `LouisAgent.Web`, and each is served by its own
-program. The code-review app (`LouisAgent.CodeReview`, served by `LouisAgent.CodingApi`) has every toolset. Puls
-(`LouisAgent.Puls`) is the general assistant: its chats load `agents` and `web`, ask `puls.cook` about cooking, and
-are served by Puls's own program, `LouisAgent.PulsApi`. The starter (`LouisAgent.Starter`) is the smallest site.
+program. The code-review app (`LouisAgent.CodeReview`, served by `LouisAgent.CodingApi`) has every toolset. The
+starter (`LouisAgent.Starter`) is the smallest site.
 And the framework's two sites, `LouisAgent.Site` for louis-agent.dev and `LouisAgent.SiteFramework` for the
 framework's own pages, are served by `LouisAgent.SiteApi` and `LouisAgent.SiteFrameworkApi`.
 
@@ -268,8 +267,8 @@ agent at every level.
 
 Then comes the role, so who the agent is frames everything after it. At level 0 that's a mode: its voice, and then
 its routing, which says which toolset a task needs and how asking another agent works. The coding agent's default is
-`louis-agent/voice`; Puls has `puls/voice-af` and `puls/voice-en` (the language, then Puls's shared `puls/voice.md`);
-the orchestrator has `louis-agent/voice-orchestrator`. At level 1 it's a specialist's role, such as `puls-cook`, which
+`louis-agent/voice`; the triage team's manager has `triage/voice`; the orchestrator has
+`louis-agent/voice-orchestrator`. At level 1 it's a specialist's role, such as `triage-sorter`, which
 says what it does and how it reports. A minion's role comes after its product's minion base. Below level 0 there's
 no routing. At level 0 the identity's own skills follow its voice: the ones it always loads in full, then a list of
 the ones it reads when it needs them.

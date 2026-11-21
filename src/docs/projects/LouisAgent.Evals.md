@@ -2,7 +2,7 @@
 
 > **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals/` · **References:** LouisAgent.Core,
 > LouisAgent.SessionStream, LouisAgent.Evals.Protocol, LouisAgent.Evals.Checks · **Used by:** LouisAgent.Evals.Runner,
-> LouisAgent.Identities.Puls.Judges
+> and a product's own judges, such as Puls's in its own repository
 > **Also shows:** `component`
 
 ![The eval harness, and its parts: an eval as a class, trials, checks and metrics, the protocol and the judge's calibration](diagrams/LouisAgent.Evals.svg)
@@ -14,7 +14,7 @@ it asks and how it grades.
 
 It holds the contract an eval implements (`IEval`), the datasets and their loader, the trials and their transcripts,
 the graders every identity can use, the loop that runs it all, the conformance check, the label sheet, and the
-judge's calibration. It names no identity and no product. Puls's evals live in a project of their own.
+judge's calibration. It names no identity and no product. An identity's evals live in a project of their own, as the triage team's do.
 
 The rest of this doc follows one run: what an eval is, its dataset, a trial, the checks that grade it, the protocol
 it's written in, the roll-up, and how the checks themselves are checked. It ends with the rules every grade keeps,
@@ -151,7 +151,7 @@ the same eval, and conformance refuses any other name. A human review is never r
 
 A required grade nobody could give is Unknown, never a pass (`PassRates`).
 
-Names are enums, one set per project. An eval set keeps its own toolset enum (`PulsToolset`, `StubToolset`), and
+Names are enums, one set per project. An eval set keeps its own toolset enum (`StubToolset`), and
 `RepeatedNameTests` keeps the bare strings out.
 
 *Decided in:* F18 step 5.7, F49.3, [ADR 0043](../adr/0043-repeated-names-are-enums.md).
@@ -185,7 +185,7 @@ These are the types involved:
 | Setting | What it does |
 |---|---|
 | `AGENT_API`, `AGENT_API_KEY` | Where the runner's sessions open, and the key the API asks for |
-| `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT`, `EVAL_JUDGE_API_KEY` | The model judge (the Puls stack uses a local Ollama) |
+| `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT`, `EVAL_JUDGE_API_KEY` | The model judge |
 
 The runner's own settings, `EVALS` and `BENCHMARK_RUN`, are in [LouisAgent.Evals.Runner](LouisAgent.Evals.Runner.md).
 

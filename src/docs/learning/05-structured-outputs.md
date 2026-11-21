@@ -58,7 +58,7 @@ comma, and the data had no steps anyway, so we took the change back out. The fix
 
 A minion that saves nothing. A free local model doing the search sounded like an easy saving. The search was only
 about 7% of an answer, and the whole answer came out 7% dearer and 8 s slower, at the same accuracy
-([ADR 0081](../../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)). Measure the whole answer, not the
+([ADR 0081](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)). Measure the whole answer, not the
 part you changed.
 
 A check that passes broken things. `recipe-image` asked where an image came from, never whether it loads, and passed 8

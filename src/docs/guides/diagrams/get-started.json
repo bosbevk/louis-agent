@@ -1,7 +1,7 @@
 {
   "kind": "cards",
   "title": "Get started at a glance",
-  "caption": "Your first run: the settings, the build and the CLI, then the two Docker stacks.",
+  "caption": "Your first run: the settings, the build and the CLI, then the coding agent's Docker stack.",
   "cards": {
     "rows": [
       { "cards": [
@@ -15,8 +15,7 @@
         { "id": "cli", "icon": "message", "title": "The CLI", "text": "Chat with the coding agent." }
       ] },
       { "cards": [
-        { "id": "coding", "icon": "server", "title": "The coding stack", "text": "Web app and API on port 5082." },
-        { "id": "puls", "icon": "server", "title": "The Puls stack", "text": "Puls's web app on port 5070." }
+        { "id": "coding", "icon": "server", "title": "The coding stack", "text": "Web app and API on port 5082." }
       ] }
     ],
     "links": [

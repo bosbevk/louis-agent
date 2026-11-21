@@ -133,7 +133,7 @@ comes before the run that sends.
 ## F50.2: one job per pack, and the numbers in code (2026-11-04)
 
 The shops pack read Checkers' catalogue, which only a retailer's yes would let us ship, and none came. It became two
-packs ([ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)): `where-to-buy` (`FindBranches`, the nearest
+packs ([ADR 0069](https://github.com/bosbevk/puls/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)): `where-to-buy` (`FindBranches`, the nearest
 branches on OpenStreetMap) and `shop-prices` (`EstimatePrices`, a list from Stats SA's average prices).
 
 | | The shops pack | After F50.2 |

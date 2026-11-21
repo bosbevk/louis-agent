@@ -2,8 +2,8 @@
 
 > **Kind:** Razor library (`net10.0`, runs in the browser) · **Path:** `src/web/LouisAgent.Web.Accounts/` ·
 > **References:** LouisAgent.Web, LouisAgent.Accounts.Contracts, Microsoft.AspNetCore.Components.Authorization ·
-> **Used by:** a site that has accounts, each naming `.Accounts(layout)` among its areas: LouisAgent.Puls,
-> LouisAgent.Starter, LouisAgent.CodeReview
+> **Used by:** a site that has accounts, each naming `.Accounts(layout)` among its areas: LouisAgent.Starter,
+> LouisAgent.CodeReview
 > **Also shows:** `component`, `sequence`
 
 ![The account pages, and their parts: the pages, the client and passkeys](diagrams/LouisAgent.Web.Accounts.svg)
@@ -87,7 +87,7 @@ Two-factor lives in `Components/TwoFactor/` and `Client/TwoFactor/`. It shows th
 ### 6. Words and styles
 
 The words are `AccountText`, in `Text/`, in English. A site can register its own copy before
-`AddLouisAgentAccounts()`; Puls does, with `PulsAccountText.Afrikaans`.
+`AddLouisAgentAccounts()`, in its own language, as Puls does with its Afrikaans in its own repository.
 
 The styles sit beside their components. `AccountShell.razor.scss` holds the card, and under `::deep`, what every page
 draws inside it. The notice, the password field, the providers' divider, the facts and the key each have their own
@@ -96,7 +96,7 @@ file. The build scopes and bundles them, so a site lists none of them, and colou
 No sheet here draws a surface itself. The card is a pane, a box you type in is a field, the main button is a press
 and the second one a quiet press, each included from the framework's surface tool
 ([the framework's web](LouisAgent.Web.md)). So the account pages wear whatever theme the site's page wears, and on
-a site that names no theme they keep the site's own colours, as Puls's do.
+a site that names no theme they keep the site's own colours.
 
 *Decided in:* CL58, [ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md).
 

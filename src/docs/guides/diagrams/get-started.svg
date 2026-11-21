@@ -257,7 +257,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="crd-name" x="676" y="227" text-anchor="start">The CLI</text>
       <text class="pic-text" x="630" y="262" text-anchor="start">Chat with the coding agent.</text>
-      <rect class="crd-quiet" x="0" y="336" width="437" height="74" rx="14" />
+      <rect class="crd-quiet" x="0" y="336" width="896" height="74" rx="14" />
       <g class="crd-icon quiet" transform="translate(20 356) scale(0.75)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -266,15 +266,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="crd-name quiet" x="50" y="370" text-anchor="start">The coding stack</text>
       <text class="pic-text" x="20" y="396" text-anchor="start">Web app and API on port 5082.</text>
-      <rect class="crd-quiet" x="459" y="336" width="437" height="74" rx="14" />
-      <g class="crd-icon quiet" transform="translate(479 356) scale(0.75)">
-        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-        <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-        <path d="M7 8l0 .01" />
-        <path d="M7 16l0 .01" />
-      </g>
-      <text class="crd-name quiet" x="509" y="370" text-anchor="start">The Puls stack</text>
-      <text class="pic-text" x="479" y="396" text-anchor="start">Puls's web app on port 5070.</text>
     </g>
     <rect class="mrq-rule" x="0" y="474" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
@@ -289,6 +280,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   </g>
   <text class="notes" x="38" y="546">
     <tspan class="note-head">Your first run:</tspan>
-    <tspan class="note-rest">the settings, the build and the CLI, then the two Docker stacks.</tspan>
+    <tspan class="note-rest">the settings, the build and the CLI, then the coding agent's Docker stack.</tspan>
   </text>
 </svg>

@@ -33,15 +33,8 @@ The web app has a view for each job, and a theme switch:
 
 ### Puls (the general assistant, in Afrikaans)
 
-```bash
-docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
-```
-
-Open **http://127.0.0.1:5070** and ask anything, in Afrikaans or English: *"Wat is die nuutste weergawe van .NET?"*,
-*"Lees README.md en som dit op"*, *"Hoeveel .cs-lêers is daar?"*. Puls answers from the web itself and hands cooking
-to its cook, a specialist on the same instance; the work panel shows the specialist's steps, the sources it read and
-what it cost. Attach text files with **+** (PDF, Word files and spreadsheets are read from the workspace; attaching one
-doesn't work yet), and set your location in its settings if you want "near me" to work.
+Puls lives in a repository of its own, [bosbevk/puls](https://github.com/bosbevk/puls), built on this framework's
+packages. Its README says how to start it.
 
 ### Rider
 
