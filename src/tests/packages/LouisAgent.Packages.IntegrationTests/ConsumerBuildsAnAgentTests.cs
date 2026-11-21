@@ -18,19 +18,28 @@ public class ConsumerBuildsAnAgentTests
     /// <summary>What the outside project's agent answers, through the fake chat client.</summary>
     private const string Answer = "hello from the packages";
 
+    /// <summary>The Sass compiler the framework's sites use, the version they name.</summary>
+    private const string SassCompilerVersion = "1.107.1";
+
     private string _root = null!;
     private string _version = null!;
+    private string _feed = null!;
 
-    /// <summary>A folder of its own for the packages and the outside project, and a version no other run has.</summary>
-    [SetUp]
-    public void Folders()
+    /// <summary>
+    /// The 31 packed once for the class into a folder of its own, at a version no other run has.
+    /// </summary>
+    [OneTimeSetUp]
+    public void Pack()
     {
         _root = Directory.CreateTempSubdirectory("louis-packages-").FullName;
         _version = $"0.0.0-local.{Guid.NewGuid():N}"[..28];
+        _feed = Path.Combine(_root, "feed");
+        Dotnet(TestPaths.RepoRoot, "pack", "louis-agent-solution.sln", "-o", _feed,
+            $"-p:MinVerVersionOverride={_version}");
     }
 
     /// <summary>Deletes the folder, whatever happened.</summary>
-    [TearDown]
+    [OneTimeTearDown]
     public void Tidy() => Directory.Delete(_root, recursive: true);
 
     /// <summary>
@@ -40,18 +49,44 @@ public class ConsumerBuildsAnAgentTests
     [Test]
     public void AProjectOutside_BuildsAnAgent_FromThePackagesAlone()
     {
-        string feed = Path.Combine(_root, "feed");
-        Dotnet(TestPaths.RepoRoot, "pack", "louis-agent-solution.sln", "-o", feed,
-            $"-p:MinVerVersionOverride={_version}");
-
-        var packages = Directory.EnumerateFiles(feed, "*.nupkg").ToList();
+        var packages = Directory.EnumerateFiles(_feed, "*.nupkg").ToList();
         Assert.That(packages, Has.Count.EqualTo(PackageCount));
-        Assert.That(DependencyVersion(feed, "LouisAgent.Web", "LouisAgent.Composition"), Is.EqualTo(_version));
+        Assert.That(DependencyVersion(_feed, "LouisAgent.Web", "LouisAgent.Composition"), Is.EqualTo(_version));
 
-        string consumer = WriteConsumer(feed);
+        string consumer = WriteConsumer(_feed);
         string output = Dotnet(consumer, "run");
 
         Assert.That(output, Does.Contain(Answer));
+    }
+
+    /// <summary>
+    /// A site outside compiles the framework's own Sass from the package, as Puls's styles do: the package unpacks it
+    /// into the site's <c>obj/framework-sass/</c>, which the site names as its include path (F166.3's finding 6).
+    /// </summary>
+    [Test]
+    public void ASiteOutside_CompilesTheFrameworksSass_FromThePackage()
+    {
+        string site = Path.Combine(_root, "site");
+        Directory.CreateDirectory(Path.Combine(site, "Styles"));
+        WriteSources(site, _feed);
+
+        var references = new XElement("ItemGroup",
+            new XElement("PackageReference", new XAttribute("Include", "AspNetCore.SassCompiler"),
+                new XAttribute("Version", SassCompilerVersion), new XAttribute("PrivateAssets", "all")),
+            new XElement("PackageReference", new XAttribute("Include", "LouisAgent.Web"),
+                new XAttribute("Version", _version)));
+        var properties = new XElement("PropertyGroup", new XElement("TargetFramework", "net10.0"));
+        new XElement("Project", new XAttribute("Sdk", "Microsoft.NET.Sdk"), properties, references)
+            .Save(Path.Combine(site, "Site.csproj"));
+        File.WriteAllText(Path.Combine(site, "sasscompiler.json"), """
+            { "Source": "Styles", "Target": "wwwroot/css", "GenerateScopedCss": false,
+              "IncludePaths": [ "obj/framework-sass" ] }
+            """);
+        File.WriteAllText(Path.Combine(site, "Styles", "app.scss"), "@forward \"web/settings/colours\";\n");
+
+        Dotnet(site, "build");
+
+        Assert.That(File.Exists(Path.Combine(site, "wwwroot", "css", "app.css")), Is.True, "the site's styles compiled");
     }
 
     /// <summary>The version a package's nuspec names for one of its dependencies.</summary>
@@ -72,12 +107,7 @@ public class ConsumerBuildsAnAgentTests
     {
         string project = Path.Combine(_root, "consumer");
         Directory.CreateDirectory(project);
-
-        var sources = new XElement("packageSources", new XElement("clear"),
-            new XElement("add", new XAttribute("key", "framework"), new XAttribute("value", feed)),
-            new XElement("add", new XAttribute("key", "nuget.org"),
-                new XAttribute("value", "https://api.nuget.org/v3/index.json")));
-        new XElement("configuration", sources).Save(Path.Combine(project, "nuget.config"));
+        WriteSources(project, feed);
 
         var properties = new XElement("PropertyGroup", new XElement("OutputType", "Exe"),
             new XElement("TargetFramework", "net10.0"), new XElement("ImplicitUsings", "enable"),
@@ -105,6 +135,16 @@ public class ConsumerBuildsAnAgentTests
             """;
         File.WriteAllText(Path.Combine(project, "Program.cs"), program);
         return project;
+    }
+
+    /// <summary>A nuget.config that knows only the folder of packages and nuget.org.</summary>
+    private static void WriteSources(string project, string feed)
+    {
+        var sources = new XElement("packageSources", new XElement("clear"),
+            new XElement("add", new XAttribute("key", "framework"), new XAttribute("value", feed)),
+            new XElement("add", new XAttribute("key", "nuget.org"),
+                new XAttribute("value", "https://api.nuget.org/v3/index.json")));
+        new XElement("configuration", sources).Save(Path.Combine(project, "nuget.config"));
     }
 
     /// <summary>
