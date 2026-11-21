@@ -513,6 +513,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX220 · Count what overlaps by holding it open, not by hoping
+
+The test proves that a parallel engine runs a round's three tool calls at once, by counting how many run together.
+Each call waited 150 ms and ended, so three were counted only if the third had started before the first was done.
+On a quiet machine it always had. With every core busy the third came late, and the test said 2, seven times in
+twenty. The cure is the one FX219 found: hold the slow thing open on purpose. Each call now waits until the round's
+last call has started, with a cap so a broken engine fails instead of hanging, and the count no longer depends on
+timing. The lesson is that a test of concurrency must make the overlap certain, never likely: a gate that opens
+when all the parties have arrived, not a delay long enough on the machines it was tried on. Skill 18 (testing and
+shipping: a test passes for its reason, not its timing).
+
 ## FX83 · A rule that nothing runs holds nothing
 
 The DevOps and Paymo packs broke ADR 0028's rule that a waiting tool takes a cancellation token, and the check that

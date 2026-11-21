@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 145 | 72 |
-| Fixes (`FX`) | 208 | 4 |
+| Fixes (`FX`) | 209 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -276,10 +276,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (208 done)
+## Fixes (209 done)
 
 | Id | When | What |
 |---|---|---|
+| FX220 | 2026-11-22 | The parallel engine's test holds its round open until all three calls have started, so a busy machine can't make it count two |
 | FX83 | 2026-11-21 | The DevOps and Paymo packs retired: their waiting tools took no cancellation token, and nothing loaded them |
 | FX219 | 2026-11-21 | The re-score's 409 test keeps the runner busy with the stand-in's sleeper, not a stub run a fast machine finishes before the request arrives |
 | FX218 | 2026-11-21 | The pack-as-a-package integration test packs at the version it asks for, since MinVer versions every package from its tags after F166.2 and an untagged pack is no longer 1.0.0 |
