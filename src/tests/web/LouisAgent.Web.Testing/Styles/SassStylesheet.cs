@@ -40,21 +40,28 @@ public sealed partial record SassStylesheet(string Project)
             .EnumerateFiles(Path.Combine(Project, "obj"), "*.styles.css", SearchOption.AllDirectories)
             .FirstOrDefault();
         if (bundle is null) return "";
-        return BundleImport().Replace(File.ReadAllText(bundle), import => LibraryBundle(import.Groups[1].Value));
+        var manifest = Manifest();
+        return BundleImport().Replace(File.ReadAllText(bundle),
+            import => LibraryBundle(manifest, import.Groups[1].Value));
     }
 
     /// <summary>
-    /// A referenced library's bundle of scoped styles, by the library's name, from its own <c>obj/</c>.
+    /// The site build's list of what it serves, which says where every library's bundle really is: a package in
+    /// NuGet's folder, or a referenced project's <c>obj/</c> (Louis's pick A of F166.3's finding 9). None yet, none.
     /// </summary>
-    private static string LibraryBundle(string library)
+    private StaticWebAssetsManifest Manifest()
     {
-        var folders = new[] { "src/web", "packs/web" }
-            .Select(area => Path.Combine(TestPaths.RepoRoot, area, library, "obj"))
-            .Where(Directory.Exists);
-        string? bundle = folders
-            .SelectMany(obj => Directory.EnumerateFiles(obj, "*.bundle.scp.css", SearchOption.AllDirectories))
+        string? file = Directory
+            .EnumerateFiles(Path.Combine(Project, "obj"), StaticWebAssetsManifest.FileName, SearchOption.AllDirectories)
             .FirstOrDefault();
-        return bundle is null ? "" : File.ReadAllText(bundle);
+        return file is null ? new StaticWebAssetsManifest([]) : StaticWebAssetsManifest.From(file);
+    }
+
+    /// <summary>A referenced library's bundle of scoped styles, by the library's name, where the build says.</summary>
+    private static string LibraryBundle(StaticWebAssetsManifest manifest, string library)
+    {
+        string? bundle = manifest.BundleOf(library);
+        return bundle is null || !File.Exists(bundle) ? "" : File.ReadAllText(bundle);
     }
 
     /// <summary>The site's own partials on <c>app.scss</c>'s list, in its order, such as <c>chat/bars</c>.</summary>
@@ -68,14 +75,21 @@ public sealed partial record SassStylesheet(string Project)
     public IReadOnlyList<string> Listed() =>
         [.. Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value)];
 
-    /// <summary>Where one of the framework's partials sits, by the name a site's list gives it.</summary>
+    /// <summary>
+    /// Where one of the framework's partials sits, by the name a site's list gives it: in the site's
+    /// <c>obj/framework-sass/</c> when its packages unpacked them there (F166.3), else in the framework's own source.
+    /// </summary>
     /// <remarks>Guard clauses, one per library whose Sass a site lists; the framework's web is the rest.</remarks>
     public string FrameworkPartial(string partial)
     {
         string folder = Path.GetDirectoryName(partial) ?? "";
         string file = $"_{Path.GetFileName(partial)}.scss";
+        if (Directory.Exists(Unpacked)) return Path.Combine(Unpacked, folder, file);
         return Path.Combine(TestPaths.RepoRoot, LibraryStyles(partial), folder, file);
     }
+
+    /// <summary>Where the framework's packages unpack their Sass in a site that takes them (F166.3, step 3b).</summary>
+    private string Unpacked => Path.Combine(Project, "obj", "framework-sass");
 
     /// <summary>The <c>Styles</c> folder of the library a partial's name says it is from.</summary>
     private static string LibraryStyles(string partial)
