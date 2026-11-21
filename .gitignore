@@ -13,7 +13,7 @@
 *.svclog
 *.pdb
 *.cache
-packages/
+/packages/
 project.lock.json
 project.fragment.lock.json
 artifacts/
