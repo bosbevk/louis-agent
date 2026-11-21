@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "0130 at a glance: the framework as packages, one tag each",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "packages", "icon": "box", "title": "31 packages", "code": "IsPackable",
+          "look": "highlight",
+          "text": "The projects a product builds on are NuGet packages on GitHub Packages, moving to nuget.org at 1.0." }
+      ] },
+      { "cards": [
+        { "id": "version", "icon": "tag", "title": "A version from a tag",
+          "text": "MinVer reads LouisAgent.Core-0.2.0; an untagged neighbour keeps its last version." },
+        { "id": "batch", "icon": "stack", "title": "One commit, one batch",
+          "text": "A release is a tag on main; every package tagged on the commit is published together." },
+        { "id": "guard", "icon": "shield", "title": "Nothing unrestorable",
+          "text": "A package whose framework dependency is neither in the batch nor on the feed is refused." }
+      ] }
+    ],
+    "links": [
+      { "from": "packages", "to": "version" },
+      { "from": "packages", "to": "batch" },
+      { "from": "packages", "to": "guard" }
+    ]
+  }
+}

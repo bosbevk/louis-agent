@@ -63,6 +63,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   word (`Info`, `Data`, `Base`), with .NET's endings and ours (`…Holes`, `…Reply`); touched files fixed. [ADR 0126](../../src/docs/adr/0126-a-name-says-what-it-is-by-its-kind.md).
 - **A project is named for its namespace**: folder, project file, DLL and package carry its `RootNamespace` in
   PascalCase (`LouisAgent.Packs.Web`), its tests `.Tests` or `.IntegrationTests`. [ADR 0129](../../src/docs/adr/0129-a-project-is-named-for-its-namespace.md).
+- **The framework ships as packages, one tag each**: a project is a package only by saying `IsPackable`; a release is
+  a tag `LouisAgent.Core-0.2.0` on `main`, published with a guard. [ADR 0130](../../src/docs/adr/0130-the-framework-is-published-as-packages-one-tag-each.md).
 - **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
   name is an enum too. [ADR 0024](../../src/docs/adr/0024-choices-are-enums.md), [ADR 0043](../../src/docs/adr/0043-repeated-names-are-enums.md).
 - **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static

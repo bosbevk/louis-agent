@@ -498,6 +498,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0127-licence-polyform-noncommercial.md = src\docs\adr\0127-licence-polyform-noncommercial.md
 		src\docs\adr\0128-a-site-names-one-address-per-page.md = src\docs\adr\0128-a-site-names-one-address-per-page.md
 		src\docs\adr\0129-a-project-is-named-for-its-namespace.md = src\docs\adr\0129-a-project-is-named-for-its-namespace.md
+		src\docs\adr\0130-the-framework-is-published-as-packages-one-tag-each.md = src\docs\adr\0130-the-framework-is-published-as-packages-one-tag-each.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
@@ -557,6 +558,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C
 		src\docs\guides\common-errors.md = src\docs\guides\common-errors.md
 		src\docs\guides\debug-and-logs.md = src\docs\guides\debug-and-logs.md
 		src\docs\guides\deploy-the-sites.md = src\docs\guides\deploy-the-sites.md
+		src\docs\guides\publish-the-framework.md = src\docs\guides\publish-the-framework.md
 		src\docs\guides\get-started.md = src\docs\guides\get-started.md
 		src\docs\guides\run-the-evals.md = src\docs\guides\run-the-evals.md
 		src\docs\guides\write-tests.md = src\docs\guides\write-tests.md

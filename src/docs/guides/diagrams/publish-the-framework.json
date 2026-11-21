@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "Publish the framework",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "release", "icon": "box", "title": "Publish the framework", "code": "publish-packages.yml",
+          "look": "highlight",
+          "text": "A tag of a package's own name releases it to GitHub Packages, packed, guarded and pushed by the run's own token." }
+      ] },
+      { "cards": [
+        { "id": "tag", "icon": "tag", "title": "Tag a release",
+          "text": "LouisAgent.Core-0.2.0 on a commit of main; packages that belong together, tagged together." },
+        { "id": "three", "icon": "clock", "title": "More than three tags",
+          "text": "GitHub makes no event for them: push them, then delete and push one again." },
+        { "id": "guard", "icon": "shield", "title": "The guard",
+          "text": "A package whose framework dependency is neither in the batch nor on the feed stops the run." },
+        { "id": "consume", "icon": "checks", "title": "Check it from outside",
+          "text": "consume-packages.yml restores the packages with only a run's token and runs an agent." }
+      ] }
+    ],
+    "links": [
+      { "from": "release", "to": "tag" },
+      { "from": "release", "to": "three" },
+      { "from": "release", "to": "guard" },
+      { "from": "release", "to": "consume" }
+    ]
+  }
+}
