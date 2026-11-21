@@ -73,6 +73,17 @@
     @include surface.panel();
 }
 .widget-title { font: 600 14px var(--bs-font-sans-serif); color: var(--bs-emphasis-color); }
+/* The agent's mark before its name (F169.3, Louis's pick 5 of the design review): the orb, 22 across and 8 from the
+   title, its letter keeping its share of the disc, 17 of 46, and standing still with no ring. The title takes the
+   room between it and the tools. */
+.widget-mark { display: inline-flex; margin-right: 8px; }
+.widget-mark ::deep .orb {
+    width: 22px;
+    height: 22px;
+    font-size: calc(22px * 17 / 46);
+}
+.widget-mark ::deep .orb::before, .widget-mark ::deep .orb::after { display: none; }
+.widget-mark + .widget-title { margin-right: auto; }
 .widget-head-tools { display: flex; align-items: center; gap: 8px; color: var(--bs-secondary-color); }
 .widget-close { font-size: 18px; line-height: 1; }
 

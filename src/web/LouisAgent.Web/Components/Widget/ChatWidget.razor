@@ -1,5 +1,6 @@
 @implements IAsyncDisposable
 @using LouisAgent.Web.Components.Widget.Layouts
+@using LouisAgent.Web.Components.Widget.Orb
 @* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
    opened as the identity the page names. The words come in as parameters, so the framework names no site. With a
    tour label, the folded corner also offers a tour of the page in view (F118), which asks the guide to walk it. *@
@@ -20,6 +21,9 @@
         {
             <section class="widget-panel @PanelState" role="dialog" aria-label="@Title">
                 <header class="widget-head">
+                    @* The agent's mark before its name (F169.3), as the agent's bar wears it, which a screen reader
+                       skips, since the panel is labelled already. *@
+                    <span class="widget-mark" aria-hidden="true"><Orb Label="@Title" Mark="@Initial"/></span>
                     <span class="widget-title">@Title</span>
                     @* A chat window's own buttons (F127.2): fold it to its head, or spread it wide; then close. *@
                     <span class="widget-head-tools">

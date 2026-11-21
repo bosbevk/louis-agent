@@ -40,6 +40,28 @@ public class OpenAgentButtonTests
     }
 
     /// <summary>
+    /// F169.3: the button wears the mark before its words (Louis's pick 5), in a part a screen reader skips, since it
+    /// already hears the words.
+    /// </summary>
+    [Test]
+    public void TheButton_WearsTheMark_BeforeItsWords()
+    {
+        using var ctx = Context(new GuideDoor());
+
+        var cut = ctx.Render<OpenAgentButton>(parameters => parameters.Add(button => button.Text, "Ask Orbi"));
+        var button = cut.Find("button");
+        var mark = button.QuerySelector(".open-agent-mark");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(button.QuerySelectorAll(".orb"), Has.Length.EqualTo(1));
+            Assert.That(button.FirstElementChild, Is.SameAs(mark), "the mark comes before the words");
+            Assert.That(mark!.GetAttribute("aria-hidden"), Is.EqualTo("true"));
+            Assert.That(mark.QuerySelector(".orb"), Is.Not.Null);
+        });
+    }
+
+    /// <summary>
     /// Its keys are said to a screen reader, and held by the framework's shortcut module, which presses the button on
     /// Ctrl+I or Cmd+I.
     /// </summary>

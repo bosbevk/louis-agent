@@ -335,6 +335,29 @@ public class ChatWidgetTests
     }
 
     /// <summary>
+    /// F169.3: the open panel's head wears the mark before its title (Louis's pick 5), with the title's first letter
+    /// on it as the agent's bar has, in a part a screen reader skips, since the panel is labelled already.
+    /// </summary>
+    [Test]
+    public void TheOpenPanelsHead_WearsTheMark_BeforeItsTitle()
+    {
+        using var ctx = Context(out _);
+        var cut = Render(ctx);
+
+        cut.Find("button.widget-button").Click();
+        var head = cut.Find(".widget-head");
+        var mark = head.QuerySelector(".widget-mark");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(head.QuerySelectorAll(".orb"), Has.Length.EqualTo(1));
+            Assert.That(head.FirstElementChild, Is.SameAs(mark), "the mark comes before the title");
+            Assert.That(mark!.GetAttribute("aria-hidden"), Is.EqualTo("true"));
+            Assert.That(mark.QuerySelector(".orb")!.TextContent, Is.EqualTo("A"));
+        });
+    }
+
+    /// <summary>
     /// The composer's buttons are the chat's glyphs, not the words, which a 40-pixel button clips (FX69): Send is the
     /// arrow and the word is its title.
     /// </summary>
