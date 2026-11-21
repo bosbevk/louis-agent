@@ -30,8 +30,36 @@ param registryName string
 @description('The name of the environment\'s right to pull from the registry: a role assignment keeps its name for life, and Azure refuses a second one for the same right.')
 param registryPullAssignmentName string
 
-// Azure's own id for the AcrPull role, the same in every subscription.
+@description('The vault that holds the two apps\' secrets.')
+param vaultName string
+
+@description('The identity both apps read the vault with.')
+param appIdentityName string
+
+@description('The name of the apps\' identity\'s right to read the vault\'s secrets.')
+param appVaultReadAssignmentName string
+
+@description('Who fills the vault (deploy.ps1 secrets): a person, with the right to manage its secrets.')
+param vaultAdminPrincipalId string
+
+@description('The name of that person\'s right on the vault.')
+param vaultAdminAssignmentName string
+
+@description('The identity the deploy workflow releases the apps as, signed in through OIDC from main.')
+param releasePrincipalId string
+
+@description('The name of the release identity\'s right to list the vault\'s secrets, which a release names in the apps\' yaml.')
+param releaseVaultReadAssignmentName string
+
+@description('The name of the release identity\'s right to update the apps in the resource group.')
+param releaseGroupAssignmentName string
+
+// Azure's own ids for the roles the file gives, the same in every subscription.
 var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+var vaultSecretsUserRole = '4633458b-17de-408a-b874-0445c86b69e6'
+var vaultAdministratorRole = '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+var vaultReaderRole = '21090545-7ca7-4776-b22c-e363652d74d2'
+var contributorRole = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 
 // The environment pulls the apps' images as itself (the apps' yaml: identity: system-environment).
 resource environment 'Microsoft.App/managedEnvironments@2025-07-01' existing = {
@@ -97,6 +125,75 @@ module registry 'br/public:avm/res/container-registry/registry:0.13.2' = {
         roleDefinitionIdOrName: acrPullRole
       }
     ]
+    enableTelemetry: false
+  }
+}
+
+// The identity both apps read the vault with: deploy.ps1 names it in each app's secrets.
+module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = {
+  name: 'appIdentity'
+  params: {
+    name: appIdentityName
+    location: location
+    isolationScope: 'None'
+    enableTelemetry: false
+  }
+}
+
+// The vault, on role-based access, with soft delete for 90 days. Purge protection stays off, as it is today: the
+// module's default would turn it on, and a vault's purge protection can never be turned off again. Nothing else in
+// Azure reads it at deploy time, and no address is denied.
+module vault 'br/public:avm/res/key-vault/vault:0.14.3' = {
+  name: 'vault'
+  params: {
+    name: vaultName
+    location: location
+    sku: 'standard'
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 90
+    enablePurgeProtection: false
+    enableVaultForDeployment: false
+    enableVaultForTemplateDeployment: false
+    enableVaultForDiskEncryption: false
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      bypass: 'None'
+      defaultAction: 'Allow'
+    }
+    roleAssignments: [
+      {
+        name: appVaultReadAssignmentName
+        principalId: appIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: vaultSecretsUserRole
+      }
+      {
+        name: vaultAdminAssignmentName
+        principalId: vaultAdminPrincipalId
+        principalType: 'User'
+        roleDefinitionIdOrName: vaultAdministratorRole
+      }
+      {
+        name: releaseVaultReadAssignmentName
+        principalId: releasePrincipalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: vaultReaderRole
+      }
+    ]
+    enableTelemetry: false
+  }
+}
+
+// The release identity updates the apps in the group (deploy-sites.yml); it can't grant rights, so this file is
+// deployed by a person.
+module releaseGroupRight 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = {
+  name: 'releaseGroupRight'
+  params: {
+    name: releaseGroupAssignmentName
+    principalId: releasePrincipalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: contributorRole
     enableTelemetry: false
   }
 }

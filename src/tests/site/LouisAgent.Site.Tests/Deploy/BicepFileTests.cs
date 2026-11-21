@@ -92,6 +92,14 @@ public class BicepFileTests
         Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("disableIpMasking: false"));
 
     /// <summary>
+    /// The vault's purge protection stays off, as it is today: the module's default would turn it on, and once on
+    /// it can never be turned off.
+    /// </summary>
+    [Test]
+    public void TheVault_HasNoPurgeProtection() =>
+        Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("enablePurgeProtection: false"));
+
+    /// <summary>
     /// The registry denies no address: the module's default rule set would deny every one, and the environment's
     /// pulls of the apps' images with them.
     /// </summary>
