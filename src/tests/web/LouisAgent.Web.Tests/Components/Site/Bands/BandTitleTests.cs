@@ -49,7 +49,7 @@ public class BandTitleTests
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<Band>(parameters => parameters
-            .Add(band => band.Id, "agents")
+            .Add(band => band.Id, "families")
             .Add(band => band.PartOf, "the-whole")
             .AddChildContent<BandTitle>(title => title
                 .Add(t => t.Class, "chrome")
