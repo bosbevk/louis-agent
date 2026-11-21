@@ -1,0 +1,93 @@
+{
+  "kind": "flow",
+  "type": "package",
+  "title": "F169 the design review's picks: which project each child changes",
+  "caption": "Almost every pick is a change to the framework, so it reaches every site built on it. Only the footer's row and the mark above the Overview's first words are the site's own. The number in brackets is the child that changes the part.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "site",
+        "icon": "browser",
+        "tone": "green",
+        "label": "LouisAgent.SiteFramework\nthe layout and its footer (3)\nOrbi docked (3)\nindex.html and its card (6)",
+        "group": "sites"
+      },
+      {
+        "id": "others",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "louis-agent.dev, code review, the starter\nlooked at where a rule of\nthe framework changes (1, 2, 4)",
+        "group": "sites"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "violet",
+        "label": "LouisAgent.Api\nPageShell fills a page's\ncard into index.html (6)",
+        "group": "framework"
+      },
+      {
+        "id": "pages",
+        "icon": "book",
+        "tone": "violet",
+        "label": "LouisAgent.Web.Framework\nthe nine pages:\ntheir headings, rows and steps (2, 3)",
+        "group": "framework"
+      },
+      {
+        "id": "docs",
+        "icon": "folder",
+        "tone": "violet",
+        "label": "LouisAgent.Web.Docs\nthe docs menu (5)\nthe page turn",
+        "group": "framework"
+      },
+      {
+        "id": "web",
+        "icon": "box",
+        "tone": "violet",
+        "label": "LouisAgent.Web\nthe rules: ring, topic, chip, code word (1)\nthe docs layout and its type (2, 5)\nthe mark and the name (3)\nsearch window, typing box (4)",
+        "group": "framework"
+      },
+      {
+        "id": "themes",
+        "icon": "settings",
+        "tone": "amber",
+        "label": "LouisAgent.Web.Themes\nflat's two sheets:\nthe line, the inks, a code word (1)\nno depth (4)",
+        "group": "framework",
+        "shape": "data"
+      },
+      {
+        "id": "pictures",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "LouisAgent.Diagrams.Engine\na picture with no fade or blur (4)\na picture drawn for a phone (5)",
+        "group": "framework"
+      },
+      {
+        "id": "tests",
+        "icon": "checks",
+        "tone": "teal",
+        "label": "The tests that hold a look\nLouisAgent.Web.Themes.Tests\nLouisAgent.Web.Tests\n(every child)",
+        "group": "tests"
+      }
+    ],
+    "edges": [
+      { "from": "site", "to": "pages", "word": "its pages" },
+      { "from": "site", "to": "docs", "word": "its menu" },
+      { "from": "site", "to": "themes", "word": "wears flat" },
+      { "from": "site", "to": "host", "word": "served by" },
+      { "from": "others", "to": "web", "word": "built on" },
+      { "from": "pages", "to": "web", "word": "controls" },
+      { "from": "docs", "to": "web", "word": "controls" },
+      { "from": "pages", "to": "pictures", "word": "draws" },
+      { "from": "web", "to": "themes", "word": "reads the names", "style": "dashed" },
+      { "from": "tests", "to": "themes", "word": "values", "style": "dashed" },
+      { "from": "tests", "to": "web", "word": "rules", "style": "dashed" }
+    ],
+    "groups": [
+      { "id": "sites", "label": "the sites" },
+      { "id": "framework", "label": "the framework" },
+      { "id": "tests", "label": "what holds it" }
+    ],
+    "direction": "down"
+  }
+}

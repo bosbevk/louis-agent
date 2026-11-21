@@ -1,0 +1,75 @@
+{
+  "kind": "cards",
+  "title": "F169 the framework's site, as the design review picked it: the overview",
+  "caption": "Six children, in order, each its own plan, branch and pull request: the values first, then the page, the brand, the depth, the phone and the share card.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f169",
+            "icon": "browser",
+            "title": "F169 The design review's picks, built",
+            "code": "framework.louis-agent.dev",
+            "look": "highlight",
+            "text": "Thirteen findings, each picked by Louis from three options drawn on the real pages, built in six small features."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "c1",
+            "icon": "settings",
+            "title": "F169.1 Flat's lines and inks",
+            "code": "picks 4, 6, 7, 11",
+            "text": "Dark's line firmer, the faint grey readable and held by a test, the ring whole, a code word on a grey chip."
+          },
+          {
+            "id": "c2",
+            "icon": "book",
+            "title": "F169.2 The docs page's type and edges",
+            "code": "picks 1, 8, 9, 12b",
+            "text": "Headings at 74, 40 and 28, rows that read as the steps do, four named corner sizes."
+          },
+          {
+            "id": "c3",
+            "icon": "chip",
+            "title": "F169.3 The brand's parts",
+            "code": "picks 5, 12a, 12c",
+            "text": "The mark on Orbi and above the Overview's first words, the name's ball one size, the footer in one row."
+          },
+          {
+            "id": "c4",
+            "icon": "box",
+            "title": "F169.4 Flat has no depth",
+            "code": "picks 3, 13",
+            "text": "No shadow, blur or glow on a flat page, and a picture drawn with no fade."
+          },
+          {
+            "id": "c5",
+            "icon": "message",
+            "title": "F169.5 The phone",
+            "code": "pick 2",
+            "text": "The nine pages in the header's menu, the words 24 from the edge, pictures drawn for a phone."
+          },
+          {
+            "id": "c6",
+            "icon": "file",
+            "title": "F169.6 A card for each page",
+            "code": "pick 10",
+            "text": "A link to any of the nine pages previews that page's own card."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "f169", "to": "c1" },
+      { "from": "f169", "to": "c2" },
+      { "from": "f169", "to": "c3" },
+      { "from": "f169", "to": "c4" },
+      { "from": "f169", "to": "c5" },
+      { "from": "f169", "to": "c6" }
+    ]
+  }
+}

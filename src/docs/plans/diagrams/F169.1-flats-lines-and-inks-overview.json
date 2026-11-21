@@ -1,0 +1,59 @@
+{
+  "kind": "cards",
+  "title": "F169.1 flat's lines and inks: the overview",
+  "caption": "Four picks become two values in flat's sheets, three rules of the framework and three new names for a code word, each held by a test.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f1691",
+            "icon": "settings",
+            "title": "F169.1 Flat's lines and inks",
+            "code": "picks 4, 6, 7, 11",
+            "look": "highlight",
+            "text": "Every word, line and ring on a flat page can be read: words at 4.5 to 1 or more, the ring at 3 to 1."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "values",
+            "icon": "file",
+            "title": "Flat's values",
+            "code": "theme-flat/_dark.scss, _light.scss",
+            "text": "Dark's line goes to #404048. The faint grey goes to #5f5f6c in the light and #8c8c98 in the dark. Steps 2 and 3."
+          },
+          {
+            "id": "rules",
+            "icon": "box",
+            "title": "Three rules of the framework",
+            "code": "LouisAgent.Web",
+            "text": "The keyboard's ring is whole, the topic line reads the theme's purple, a quiet control takes the hairline. Steps 4, 5 and 6."
+          },
+          {
+            "id": "names",
+            "icon": "code",
+            "title": "A code word's three names",
+            "code": "--web-code-word-fill, -ink, -edge",
+            "text": "Every theme sets them. The page and Orbi's answers read them. Steps 7 and 8."
+          },
+          {
+            "id": "tests",
+            "icon": "checks",
+            "title": "The tests that hold them",
+            "code": "FlatInksTests, Contrast",
+            "text": "A new test holds flat's inks to its grounds, and the contrast sum gets a type of its own. Step 3."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "f1691", "to": "values" },
+      { "from": "f1691", "to": "rules" },
+      { "from": "f1691", "to": "names" },
+      { "from": "f1691", "to": "tests" }
+    ]
+  }
+}
