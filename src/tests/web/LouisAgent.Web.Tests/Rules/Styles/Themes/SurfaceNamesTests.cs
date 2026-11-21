@@ -31,6 +31,7 @@ public class SurfaceNamesTests
     [
         "--web-pane-fill", "--web-pane-edge", "--web-pane-rim", "--web-pane-light", "--web-pane-shadow",
         "--web-pane-blur", "--web-pane-radius",
+        "--web-small-radius", "--web-block-radius", "--web-window-radius", "--web-pill-radius",
         "--web-pane-hover-lift", "--web-pane-hover-edge", "--web-pane-hover-shadow",
         "--web-lens-wall", "--web-lens-rise", "--web-lens-frost", "--web-lens-water",
         "--web-glass-white", "--web-glass-grey", "--web-tilt",

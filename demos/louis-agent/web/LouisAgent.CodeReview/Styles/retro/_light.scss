@@ -76,6 +76,11 @@
     --web-pane-shadow: none;
     --web-pane-blur: none;
     --web-pane-radius: 4px;
+    // The four other corners (F169.2), the framework's own for now: a row or a label, a block, a window, and a pill.
+    --web-small-radius: 6px;
+    --web-block-radius: 10px;
+    --web-window-radius: 18px;
+    --web-pill-radius: 999px;
 
     // Under the pointer it stays where it is and its line turns to the colour you press.
     --web-pane-hover-lift: 0px;
