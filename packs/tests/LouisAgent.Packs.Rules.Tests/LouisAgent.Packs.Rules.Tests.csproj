@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The rules every pack keeps, held over all of them at once (F166.4, Louis's pick A of finding 5): each stays
+       convertible to an MCP server (ADR 0028), and every built-in prompt opens with its header (ADR 0063). The one
+       test project that references every pack, so a new pack is held as soon as it is listed here. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Rules.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Calculator\LouisAgent.Packs.Calculator.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.DevOps\LouisAgent.Packs.DevOps.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Docs\LouisAgent.Packs.Docs.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.DotNet\LouisAgent.Packs.DotNet.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Files\LouisAgent.Packs.Files.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Git\LouisAgent.Packs.Git.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Leads\LouisAgent.Packs.Leads.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Paymo\LouisAgent.Packs.Paymo.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Shell\LouisAgent.Packs.Shell.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Site\LouisAgent.Packs.Site.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Triage\LouisAgent.Packs.Triage.csproj" />
+    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Web\LouisAgent.Packs.Web.csproj" />
+    <!-- The fakes every test project shares, with the shared MCP convertibility check. -->
+    <ProjectReference Include="..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\..\src\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\..\src\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+  </ItemGroup>
+
+</Project>

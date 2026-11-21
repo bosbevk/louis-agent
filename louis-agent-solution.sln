@@ -124,13 +124,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A230FA11-8
 		packs\docs\README.md = packs\docs\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{67D12025-5001-5F15-8E4B-ECFCA01E1D26}"
-	ProjectSection(SolutionItems) = preProject
-		packs\docs\adr\0069-shop-prices-are-stats-sa-estimates.md = packs\docs\adr\0069-shop-prices-are-stats-sa-estimates.md
-		packs\docs\adr\0078-a-recipe-search-asks-several-sites.md = packs\docs\adr\0078-a-recipe-search-asks-several-sites.md
-		packs\docs\adr\0082-the-recipe-library-is-an-open-feed.md = packs\docs\adr\0082-the-recipe-library-is-an-open-feed.md
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{5350B428-1572-5C72-8D7F-D5EF1438F8CC}"
 	ProjectSection(SolutionItems) = preProject
 		packs\docs\projects\LouisAgent.Packs.Calculator.md = packs\docs\projects\LouisAgent.Packs.Calculator.md
@@ -497,7 +490,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{7B2E4C10
 		src\docs\plans\phase-10-engine-package.md = src\docs\plans\phase-10-engine-package.md
 		src\docs\plans\phase-7-checked-and-guarded.md = src\docs\plans\phase-7-checked-and-guarded.md
 		src\docs\plans\phase-9-what-a-sale-needs.md = src\docs\plans\phase-9-what-a-sale-needs.md
-		src\docs\plans\puls-track.md = src\docs\plans\puls-track.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"
@@ -818,6 +810,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packages", "packages", "{D4F85302-399D-D67B-9CAD-AD83AD2B9EB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LouisAgent.Packages.IntegrationTests", "src\tests\packages\LouisAgent.Packages.IntegrationTests\LouisAgent.Packages.IntegrationTests.csproj", "{31513551-1367-4F59-8EFC-885A2144D631}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LouisAgent.Packs.Rules.Tests", "packs\tests\LouisAgent.Packs.Rules.Tests\LouisAgent.Packs.Rules.Tests.csproj", "{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2389,6 +2383,18 @@ Global
 		{31513551-1367-4F59-8EFC-885A2144D631}.Release|x64.Build.0 = Release|Any CPU
 		{31513551-1367-4F59-8EFC-885A2144D631}.Release|x86.ActiveCfg = Release|Any CPU
 		{31513551-1367-4F59-8EFC-885A2144D631}.Release|x86.Build.0 = Release|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Debug|x64.Build.0 = Debug|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Debug|x86.Build.0 = Debug|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Release|x64.ActiveCfg = Release|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Release|x64.Build.0 = Release|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Release|x86.ActiveCfg = Release|Any CPU
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2421,7 +2427,6 @@ Global
 		{E284BDE8-0318-590D-8B82-47C355EC0D92} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
 		{D9D25646-A759-52BF-8F8E-D79A8FA366B8} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
 		{A230FA11-8B13-51C6-82ED-ED4E5BDDE653} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
-		{67D12025-5001-5F15-8E4B-ECFCA01E1D26} = {A230FA11-8B13-51C6-82ED-ED4E5BDDE653}
 		{5350B428-1572-5C72-8D7F-D5EF1438F8CC} = {A230FA11-8B13-51C6-82ED-ED4E5BDDE653}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C79} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
@@ -2601,5 +2606,6 @@ Global
 		{DEA72A5F-3A9E-43EC-AC11-C47C42D094CF} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0171}
 		{D4F85302-399D-D67B-9CAD-AD83AD2B9EB2} = {5D60F9F9-CB46-D329-5BCB-1BBFA2648C82}
 		{31513551-1367-4F59-8EFC-885A2144D631} = {D4F85302-399D-D67B-9CAD-AD83AD2B9EB2}
+		{252CD8C0-D3C8-453F-998F-3C4EA7C8F9D9} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
 	EndGlobalSection
 EndGlobal

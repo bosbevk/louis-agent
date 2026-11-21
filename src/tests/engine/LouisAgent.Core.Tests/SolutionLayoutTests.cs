@@ -69,7 +69,7 @@ public class SolutionLayoutTests
         "LouisAgent.Packs.DotNet.IntegrationTests", "LouisAgent.Packs.DevOps.Tests", "LouisAgent.Packs.Paymo.Tests",
         "LouisAgent.Packs.Calculator.Tests", "LouisAgent.Packs.Docs.Tests", "LouisAgent.Packs.Triage.Tests",
         "LouisAgent.Packs.Leads.Tests", "LouisAgent.Packs.Site.Tests",
-        "LouisAgent.Packs.Files.Web.Tests", "LouisAgent.Packs.Git.Web.Tests")]
+        "LouisAgent.Packs.Files.Web.Tests", "LouisAgent.Packs.Git.Web.Tests", "LouisAgent.Packs.Rules.Tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)
     {
         var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
