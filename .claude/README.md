@@ -73,6 +73,7 @@ own: its test jobs in `tests.md`, or detail it reads only when needed, as `answe
 | Site and brand | `design-a-graphic` | A mark, a card, an image, a mockup or a palette is made or changed |
 | Site and brand | `write-the-copy` | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) |
 | Site and brand | `check-a-page` | Something a visitor sees changed, or was deployed |
+| Site and brand | `review-a-design` | A built site's or a theme's design, look and feel is reviewed |
 | Sell | `answer-a-message` | A customer or a prospect sent a message, and a reply is drafted |
 | Maintain | `write-a-skill` | A skill is written or changed |
 

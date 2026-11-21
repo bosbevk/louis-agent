@@ -1,0 +1,11 @@
+# Test jobs for review-a-design
+
+Three jobs to try this skill on, in a fresh session that did not write it (`/write-a-skill`, step 7). Each ask is
+said the way Louis says it. The skill passes the first two when the session loads it from the ask alone,
+everything in *Must happen* happens, and nothing in *Must not* does. It passes the third by staying out.
+
+| # | Where, and what Louis says | Must happen | Must not |
+|---|---|---|---|
+| 1 | A fresh cloud thread. He says: "can we review from a branding and look and feel perspective the framework site design and flat themeing. Look at it from a design perspective" | The brand guide and the theme's own rule are read first. The site runs locally and every page is looked at in light and dark, at 1920 by 1080 and at 390 wide. Sizes, colours and contrast are read from the running page. Strong sites of its kind and the standards are read on the web that day, and named. The review page says what is strong, then the findings ranked, each with where it is, its measure, its cause in the code and its source. Then the first finding goes to him on its own card | A change to the repo. A finding that rests on a picture alone, with no measure. A ratio or a platform's size said from memory. Every finding put to him at once |
+| 2 | The same thread, with the review page handed over and eight findings on it. He says: "ok next finding" | The finding is measured again on the running site before it is put. What no longer holds is said plainly and taken off the review page. Three options are drawn on the real pages, in light and dark, on one sheet he can open, and the sheet was looked at before it was posted. The recommended option comes first, each option says what it changes and what it costs, and the sources are named. His pick is written down as a design choice, with what building it needs | An option described in words only. Two findings on one card. A card for a slip that has one right answer. A step that builds the pick |
+| 3 | A fresh thread, on a branch that moved the footer's links. He says: "check how the footer looks on a phone" | `/check-a-page` is the skill followed: the changed page is looked at at 390 wide and what was not looked at is said | A design review started. A review page, ranked findings or three options for a change that only needed a look |

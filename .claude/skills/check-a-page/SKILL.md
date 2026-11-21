@@ -22,7 +22,8 @@ A test can pass on a page that looks wrong, so a change a visitor sees is looked
 
 | Site | Command | Address |
 |---|---|---|
-| The framework's site | `dotnet run --project src/site/LouisAgent.SiteApi --launch-profile site` | `http://127.0.0.1:5083` |
+| louis-agent.dev | `dotnet run --project src/site/LouisAgent.SiteApi --launch-profile site` | `http://127.0.0.1:5083` |
+| The framework's own site | `dotnet run --project src/site/LouisAgent.SiteFrameworkApi --launch-profile site-framework` | `http://127.0.0.1:5085` |
 | Code review | `dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingApi --launch-profile api` | `http://127.0.0.1:5081` |
 
 Start it in the background, with the two settings of stop 4 before the command, and wait for its `Now listening`
@@ -97,8 +98,29 @@ A cloud container has no Louis's Chrome and no Windows Chrome, but Playwright an
 `viewport: { width: 1920, height: 1080 }` or `{ width: 390, height: 844 }`, which is the page's own size, so no
 frame is needed. Check `document.documentElement.scrollWidth` against the width for a sideways scroll, and read
 each picture. Start the site with made-up keys before the run command, as
-`ANTHROPIC_API_KEY=not-used-for-a-page-look AGENT_API_KEY=local-look-only`. The guide then can't answer, so a
-look at the guide's own answers waits for Louis's Chrome.
+`ANTHROPIC_API_KEY=not-used-for-a-page-look AGENT_API_KEY=local-look-only AGENT_AUTH=off`. The guide then can't
+answer, so a look at the guide's own answers waits for Louis's Chrome.
+
+A container reaches only the hosts its network allows, and that changes what a page shows.
+
+- **Bootstrap may not arrive.** A site's `index.html` asks `cdn.jsdelivr.net` for it. When that host is refused,
+  the page draws with no grid and no menu sheet. That is the container's, not a broken layout. Fetch the version
+  `index.html` names once, as `npm pack bootstrap@5.3.3`, unpack it in the scratchpad, and hand it to the page:
+
+  ```js
+  await page.route('**/cdn.jsdelivr.net/**', r => r.fulfill(r.request().url().endsWith('.css')
+    ? { path: dist + 'css/bootstrap.min.css', contentType: 'text/css' }
+    : { path: dist + 'js/bootstrap.bundle.min.js', contentType: 'application/javascript' }));
+  ```
+
+- **Light or dark is the browser's memory.** Set it before the page loads, as
+  `context.addInitScript(() => localStorage.setItem('site.style', 'dark'))`.
+- **Wait for the loading screen to leave**, as `page.waitForSelector('.loading', { state: 'detached' })`, before
+  a picture or a measure.
+- **.NET may be missing.** `apt-get update && apt-get install -y dotnet-sdk-10.0`, then build the one host
+  project the table names.
+- **The live site may be refused too.** Then the look after a deploy is made in a browser on Louis's computer,
+  where the session has one. Where it has none, say so: the look is Louis's.
 
 ### Headless Chrome, for print
 
