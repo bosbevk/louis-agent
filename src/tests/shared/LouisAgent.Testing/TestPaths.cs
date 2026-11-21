@@ -4,6 +4,9 @@ using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Web.Search;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Testing.Messages;
+using LouisAgent.Testing.Messages.Holes;
 using NUnit.Framework;
 
 namespace LouisAgent.Testing;
@@ -11,16 +14,37 @@ namespace LouisAgent.Testing;
 /// <summary>The repo's paths and the options a test builds an engine with, the same from every test project.</summary>
 public static class TestPaths
 {
-    /// <summary>The folder holding the solution, found upward, so a test project can sit at any depth.</summary>
-    public static string RepoRoot { get; } = FindRepoRoot();
+    /// <summary>
+    /// The folder holding the solution, found upward from the test's build output, so a test project can sit at any
+    /// depth, in this repository or in a product's of its own (F166.3).
+    /// </summary>
+    public static string RepoRoot { get; } = RootAbove(TestContext.CurrentContext.TestDirectory);
 
-    /// <summary>Walks up from the test's build output until it reaches the solution file.</summary>
-    private static string FindRepoRoot()
+    /// <summary>
+    /// The nearest folder at or above this one that holds a solution file, whatever it is called: a repository's root
+    /// has one, and a test project never sits below a second.
+    /// </summary>
+    public static string RootAbove(string folder)
     {
-        var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-        while (!File.Exists(Path.Combine(dir.FullName, "louis-agent-solution.sln"))) dir = dir.Parent!;
+        if (TryRootAbove(folder, out string root)) return root;
 
-        return dir.FullName;
+        var start = new NoSolutionAboveHoles(folder);
+        throw new InvalidOperationException(MessageText.Format(TestingText.NoSolutionAbove, start));
+    }
+
+    /// <summary>Whether a solution file sits at or above this folder, and the folder that holds it.</summary>
+    public static bool TryRootAbove(string folder, out string root)
+    {
+        for (var dir = new DirectoryInfo(folder); dir is not null; dir = dir.Parent)
+        {
+            if (!dir.EnumerateFiles("*.sln").Any() && !dir.EnumerateFiles("*.slnx").Any()) continue;
+
+            root = dir.FullName;
+            return true;
+        }
+
+        root = "";
+        return false;
     }
 
     /// <summary>
