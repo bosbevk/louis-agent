@@ -10,9 +10,10 @@ now"); **the engine itself**, the application framework for AI agents in .NET, f
 **a configured agent**, an identity and its packs hosted for a business; and **Puls**, the public South African
 assistant. **The rows are in build order** (Louis,
 2026-11-07: "focus on the framework first then build the agents"): the framework's track, the demand check that runs
-meanwhile and the small leftovers under *Now*; then the configured agents' phases under *Next*; then *Puls*, *Later*,
-and the *Cleanups* each done when its code is next touched. The work log's open table keeps the same order
-(`WorkLogTests`).
+meanwhile and the small leftovers under *Now*; then the configured agents' phases under *Next*; then *Later*, and the
+*Cleanups* each done when its code is next touched. The work log's open table keeps the same order (`WorkLogTests`).
+Puls's own work, and the few framework rows only Puls needs, are in [Puls's TODO](https://github.com/bosbevk/puls/blob/main/TODO.md),
+with the ids they had here.
 
 **How this list works.** Every open item is one row with an id (`F` a feature, `FX` a fix, `CL` a cleanup); a child
 (`F61.4`) is named in its parent's plan. The detail of an item lives in its plan or feature doc, written before its
@@ -20,7 +21,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (136)
+## Open (103)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -47,14 +48,11 @@ known limitations below are facts about today, not tasks.
 | F62 | Validate demand | Now | — |
 | F63 | The reference transcripts in git | Now | — |
 | F64 | The judge check can't see pages | Now | — |
-| F65 | After F35, the cook's answer | Now | — |
 | F66 | Each pack declares what it needs | Now | — |
 | F67 | A whole menu | Now | — |
-| F68 | The cook scales wrongly | Now | — |
 | F69 | The framework's `_Imports.razor` is about 90 lines | Now | — |
 | F70 | Long comment lines in the eval pages | Now | — |
 | F71 | At the next run, read the hand-off lines | Now | — |
-| F72 | Open from the recipes evals | Now | — |
 | F73 | Check the 47 new own-prices rows | Now | — |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now | [plan](src/docs/plans/F125-an-agentic-site.md) |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now | [plan](src/docs/plans/F126-evals-redesigned.md) |
@@ -68,9 +66,7 @@ known limitations below are facts about today, not tasks.
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next | — |
 | F157 | The Google integration suite (Louis, 2026-11-17: "let's go for full google integration suite"): a business connects its Google once (OAuth, offline token in Identity's table, per tenant), then its agent reads its sheets (F157.2) and books into its calendar (F157.3); an Integrations section on louis-agent.dev with the showroom's guesthouse (F157.4); Drive, Gmail and visitors' own Google later; after FX66; seven children | Next, after FX66 | [plan](src/docs/plans/F157-google-integration-suite.md) |
 | F143 | The guide drives Louis's CV (Louis, 2026-11-13: "the agent should also drive my CV", "split it in 2 features"): a generic resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill (facts only from the tool, the honest no, an interview through the leads pack, no salary or puffery), an eval of eight conversations; two open choices asked when it starts; after F142 | Next, after F142 | [plan](src/docs/plans/F143-the-guide-drives-the-cv.md) |
-| F48 | Recipe maths and a teaching cook | Next | [plan](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/plans/F48-cook-and-teacher.md) |
 | F46 | Localisation | Next | — |
-| F50 | Puls's local specialists | Next | — |
 | F40 | The sales playground | Next | — |
 | F7 | Cost you can see and stop | Next | [feature doc](src/docs/features/F07-budgets.md) |
 | FX4 | Append-only history | Next | [fix doc](src/docs/fixes/FX04-append-only-history.md) |
@@ -79,37 +75,13 @@ known limitations below are facts about today, not tasks.
 | F36 | MCP servers as packs | Next | — |
 | F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
-| F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then; the guide in the site's corner is open on purpose (F109.3, ADR 0099), only the chat is behind the sign-in | Next | — |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
 | F51 | Hosting for public traffic | Next | — |
-| F75 | Puls local spec | Puls | — |
-| F76 | Cook for the week | Puls | [spec](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/specs/PULS_COOK.md) |
-| CL16 | Reusable roles | Puls | — |
-| F77 | A domain stop-list for the browser | Puls | [doc](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SITE_OWNERS.md) |
-| F78 | Sources as data | Puls | — |
-| F79 | Places | Puls | — |
-| F80 | Local businesses | Puls | — |
-| F81 | Vision: `ScreenshotPage(url)` and images as input | Puls | — |
-| F82 | Local lookups | Puls | — |
-| F23 | Credits | Puls | — |
-| F83 | The cook's unconfirmed prices | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F25-local-cook.md) |
-| F84 | A shorter cook report | Puls | — |
-| FX59 | binary attachments sent as files, not text | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
-| FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
+| FX59 | binary attachments sent as files, not text | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
+| FX60 | a continued specialist's ledger rows name the turn that continued it | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
-| FX66 | Both Azure apps keep their data-protection keys (which sign the sign-in cookie) in the container, so every cold start after scaling to zero makes new keys and signs everyone out (the start-up log warns); the keys go to each app's share, one setting (found 2026-11-08, F109.2) | Now | — |
-| F21 | Louis's corrections to the Afrikaans | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md) |
-| F28 | Team talk, the rest | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/features/F28-team-talk.md) |
-| F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after (F127.3.1 moved it with no run, since Puls is paused), and its stored replays recorded again, since they name the old tools | Puls | [ADR 0117](src/docs/adr/0117-one-address-for-every-agent-call.md) |
-| F85 | A retailer's own prices, only with its permission or feed | Puls | — |
-| F86 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls | — |
-| F87 | The open feeds have no key and no limit | Puls | — |
-| F60 | Search by meaning | Puls, later | — |
-| F88 | The cook's wave 3 | Puls, later | [spec](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/specs/PULS_COOK.md) |
-| F89 | A Puls-owned set of a few hundred South African recipes | Puls, later | — |
-| F90 | WhatsApp as a host | Puls, later | — |
-| F91 | The eleven official languages, measured | Puls, later | — |
-| F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Puls, later | [draft](src/docs/plans/F92-voice-input.md) |
+| F90 | WhatsApp as a host | Later | — |
+| F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later | [draft](src/docs/plans/F92-voice-input.md) |
 | F93 | The `similar` check, when an eval asks for closeness of meaning | Later | — |
 | F45 | Knowledge and retrieval | Later | — |
 | F94 | Searching PDFs, investigate much later | Later | [spec](src/docs/specs/PDF_SEARCH.md) |
@@ -150,12 +122,10 @@ known limitations below are facts about today, not tasks.
 | CL47 | The portal's old benchmark routes and words removed, after Phase 3 | Cleanups | — |
 | CL48 | Remove the `/v1/admin/benchmarks/…` route aliases | Cleanups | — |
 | CL49 | Remove the eval store's old setting names | Cleanups | — |
-| CL50 | Remove `PULS_API`, the eval runner's old name for the API's address | Cleanups | — |
 | CL52 | The rest of the size list | Cleanups | — |
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
-| CL62 | A site's own words win only when registered before `AddSiteAreas` (the builder adds its defaults with `TryAdd`), which is wiring by order: give the builder a `Words(chatText, accountText)` method and have Puls pass its Afrikaans through it, so order never matters (ADR 0120, found in F127.6 step 10) | Cleanups | — |
 | CL61 | `ToolCallGuards` is over 200 lines once Rider lays out its message holes, and `Agent/Turns` holds six files: split it by responsibility (the oversized-result summary its own class, the folder into subfolders), its holes into records (ADR 0119), and have it end the turn through `TurnEnding.Ends` as `TurnRunner` does (found in F127.4.3 step 3) | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
 
