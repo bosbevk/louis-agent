@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F166.3: what the move's commands hold",
+  "caption": "One run holds the map from each old project to its new name and folder, read longest first so a longer name is never half-changed.",
+  "flow": {
+    "nodes": [
+      { "id": "run", "icon": "terminal", "tone": "violet", "label": "the move\ndry or write" },
+      { "id": "map", "icon": "box", "tone": "teal", "label": "names.tsv\n26 projects" },
+      { "id": "identity", "icon": "box", "tone": "teal", "label": "LouisAgent.Identities.Puls\n→ src/Puls.Identity", "group": "rows" },
+      { "id": "pack", "icon": "box", "tone": "teal", "label": "LouisAgent.Packs.Recipes\n→ src/Puls.Packs.Recipes", "group": "rows" },
+      { "id": "test", "icon": "box", "tone": "teal", "label": "LouisAgent.Puls.Tests\n→ tests/Puls.Web.Tests", "group": "rows" },
+      { "id": "refs", "icon": "chip", "tone": "green", "label": "framework references\n→ PackageReference 0.1.0" }
+    ],
+    "edges": [
+      { "from": "run", "to": "map" },
+      { "from": "map", "to": "identity" },
+      { "from": "map", "to": "pack" },
+      { "from": "map", "to": "test" },
+      { "from": "run", "to": "refs" }
+    ],
+    "groups": [ { "id": "rows", "label": "three of the 26 rows" } ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "sequence",
+  "title": "F166.3: the move",
+  "caption": "The framework's test helpers are fixed and released first; then the commands copy Puls into the new layout under its own names, and Puls's own CI proves it builds from the packages alone.",
+  "sequence": {
+    "participants": [
+      { "id": "louis", "label": "Louis", "actor": true, "tone": "blue" },
+      { "id": "here", "label": "louis-agent", "icon": "stack", "tone": "violet" },
+      { "id": "commands", "label": "the move's commands", "icon": "terminal", "tone": "green" },
+      { "id": "puls", "label": "puls", "icon": "chip", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "louis", "to": "here", "text": "tag LouisAgent.Testing-0.2.0" },
+      { "step": "message", "from": "louis", "to": "commands", "text": "the dry run, then the run" },
+      { "step": "message", "from": "commands", "to": "here", "text": "read Puls's files at a tagged commit" },
+      { "step": "message", "from": "commands", "to": "puls", "text": "src/ and tests/, Puls.* names, package references" },
+      { "step": "message", "from": "louis", "to": "puls", "text": "push the first commit" },
+      { "step": "reply", "from": "puls", "to": "louis", "text": "CI: built from the packages, tests green" }
+    ],
+    "numbered": false
+  }
+}
