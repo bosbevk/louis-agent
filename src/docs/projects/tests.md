@@ -174,9 +174,8 @@ The rules every pack keeps are held over all of them at once, in `LouisAgent.Pac
 that references every pack in `packs/tools`. Its `EveryPack` lists one of each, and a test holds that list to the
 projects in the folder, so a new pack is held as soon as it exists. Every pack stays convertible to an MCP server
 (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, which `LouisAgent.Testing` carries),
-against every identity's name in the repository, read from the identities' folders. A pack named in its list of known
-breaches is excused only those, and a second test fails when one is fixed, so the list only shrinks: today the DevOps
-and Paymo packs, whose waiting tools take no cancellation token (FX83). And every built-in prompt of every pack and
+against every identity's name in the repository, read from the identities' folders, with no pack excused. And every
+built-in prompt of every pack and
 identity, read from its project's `prompts/` on the disk, opens with its header, whose level is its folder's
 (`EveryPromptHasAHeaderTests`).
 

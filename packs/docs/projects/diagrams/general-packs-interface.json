@@ -17,7 +17,7 @@
       },
       {
         "id": "packs",
-        "name": "FilesPack, GitPack, DotNetPack, ShellPack, WebPack, PaymoPack, DevOpsPack",
+        "name": "FilesPack, GitPack, DotNetPack, ShellPack, WebPack",
         "kind": "one per pack, each implements IAgentPack",
         "members": [
           "+ComesBeforeTheEngine true"
@@ -52,7 +52,7 @@
         "kind": "a [Description] on each method the model calls",
         "members": [
           "WorkspaceFileTools, GitStatusTools, DotNetTools...",
-          "WebTools, PaymoTools, DevOpsTools"
+          "WebTools"
         ]
       },
       {

@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX83 · A rule that nothing runs holds nothing
+
+The DevOps and Paymo packs broke ADR 0028's rule that a waiting tool takes a cancellation token, and the check that
+says so had seen it once, when the coding agent still loaded them. From the day it stopped, no catalogue loaded them,
+so no test reached them, and the breach sat in the TODO as a note. It showed again only when a project held every pack
+at once, which is the lesson: a check that runs per catalogue covers only what some catalogue happens to load, so a
+rule about every pack needs a test that lists every pack. The fix was the other half of the same thought. Two packs
+nothing loaded and nothing published were costing a rule exception, so they went, and the list of known breaches went
+with them, empty. Skill 18 (testing and shipping: a guard covers what it runs on, nothing more).
+
 ## FX219 · A test that races the machine loses on a faster one
 
 The test for "a re-score while another run runs is a 409" started a real stub run to keep the runner busy, and said

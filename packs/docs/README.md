@@ -17,7 +17,7 @@ The tools any agent may want, one pack each. They share one doc, because they sh
 
 | Pack | What it does | Its doc |
 |---|---|---|
-| files, git, dotnet, shell, web, paymo, devops | The workspace's files, git, .NET builds and tests, scripts in a shell, web search and fetch, Paymo time entries and Azure DevOps work items | [The general packs](projects/general-packs.md) |
+| files, git, dotnet, shell, web | The workspace's files, git, .NET builds and tests, scripts in a shell, and web search and fetch | [The general packs](projects/general-packs.md) |
 
 ## A pack for sums
 

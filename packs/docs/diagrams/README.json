@@ -10,7 +10,7 @@
       ] },
       { "cards": [
         { "id": "general", "icon": "code", "title": "The general packs",
-          "text": "files, git, dotnet, shell, web, paymo, devops: one shape, one doc." },
+          "text": "files, git, dotnet, shell, web: one shape, one doc." },
         { "id": "sums", "icon": "chart", "title": "A pack for sums",
           "text": "calculator: a sum worked out in code." },
         { "id": "site", "icon": "browser", "title": "What the site and demos use",

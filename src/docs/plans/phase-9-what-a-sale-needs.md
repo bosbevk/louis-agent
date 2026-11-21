@@ -48,7 +48,7 @@ open.
 - **F15 Model limits and local models** (skill 1). Each model's window, output and cache minimum beside its prices,
   in a table dated by `as_of` (ADR 0007), which also gives skill 13 its last *Planned* item, the cache minimum and the
   price step. `num_ctx` and `think: false` sent to Ollama, so a local model gets its whole prompt (removes known
-  limitation 8). Each model's capabilities (real tool calls, thinking, whether forcing one tool works, Phase 6 A6)
+  limitation 7). Each model's capabilities (real tool calls, thinking, whether forcing one tool works, Phase 6 A6)
   measured by a simulation, run free on the local models, and kept as a capability record per model in place of
   name-prefix lists (`ThinkingBudgetModelPrefixes`, `LlmClientFactory.cs:82,88-89`; `KnownNoToolsPrefixes`,
   `LouisAgent.Core/Config/LlmOptions.cs:16`), which removes known limitation 3. Takes in F13. **Changed on 2026-10-20

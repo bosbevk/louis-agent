@@ -62,8 +62,6 @@ public static class HowItWorks
         new(["LouisAgent.Packs.Web"], "The web. Search, read a page, check a quote, convert the money it names."),
         new(["LouisAgent.Packs.Docs"], "A project's own docs. List, read and search its markdown."),
         new(["LouisAgent.Packs.Calculator"], "Sums worked out in code, so a model doesn't do them in its head."),
-        new(["LouisAgent.Packs.DevOps"], "Azure DevOps. Work items, sprints and team queries."),
-        new(["LouisAgent.Packs.Paymo"], "Paymo time tracking. Time entries, tasks, projects and summaries."),
         new(["LouisAgent.Packs.Leads"], "Tells a site's owner that someone is interested."),
         new(["LouisAgent.Packs.Site"], "Takes a visitor to a page of the site, and to a place on it."),
         new(["LouisAgent.Packs.Triage"], "What a team triages a service's errors with, starting from the error feed.")

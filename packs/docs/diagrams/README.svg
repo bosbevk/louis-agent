@@ -247,8 +247,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 4l-4 16" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">The general packs</text>
-      <text class="pic-text" x="18" y="298" text-anchor="start">files, git, dotnet, shell, web, paymo,</text>
-      <text class="pic-text" x="18" y="316" text-anchor="start">devops: one shape, one doc.</text>
+      <text class="pic-text" x="18" y="298" text-anchor="start">files, git, dotnet, shell, web: one</text>
+      <text class="pic-text" x="18" y="316" text-anchor="start">shape, one doc.</text>
       <rect class="mrq-glass" x="306" y="222" width="284" height="117" rx="14" />
       <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />

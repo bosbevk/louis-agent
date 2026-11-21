@@ -117,8 +117,7 @@ while the framework comes first, and `mypuls.co.za` shows a coming-soon page pub
 ## The coding agent
 
 It works on your repository with real tools: files, git, `dotnet`, Python, PowerShell, bash and web search. It can
-write new skills and build its own tools, and those wait for your approval. (The Azure DevOps and Paymo packs are in
-`packs/tools`, but the coding agent no longer loads them.)
+write new skills and build its own tools, and those wait for your approval.
 
 | Host | Project | What it is |
 |---|---|---|

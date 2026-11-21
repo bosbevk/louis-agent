@@ -29,11 +29,7 @@ public class FileSizeTests
         "src/engine/LouisAgent.Core/Agent/EngineTools/AgentBuiltTools.cs",
         "src/engine/LouisAgent.Core/Agent/EngineTools/SkillTools.cs",
         "packs/tools/LouisAgent.Packs.DotNet/DotNetTools.cs",
-        "packs/tools/LouisAgent.Packs.DevOps/DevOpsTools.cs",
-        "packs/tools/LouisAgent.Packs.Paymo/PaymoTools.cs",
         "src/engine/LouisAgent.Core.Web/Browsing/ChromeWebBrowser.cs",
-        "packs/tests/LouisAgent.Packs.DevOps.Tests/DevOpsToolsTests.cs",
-        "packs/tests/LouisAgent.Packs.Paymo.Tests/PaymoToolsTests.cs",
         "src/tools/LouisAgent.UsageProbe/Program.cs",
     ];
 

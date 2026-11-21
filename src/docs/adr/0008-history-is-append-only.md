@@ -20,7 +20,7 @@ with `tool_choice: none` (FX1); the finished turn is appended with its thinking 
 - Chats on Haiku 5.5 keep working across tool rounds (FX1 took the short demo from 2/4 to 4/4 fixes).
 - Toolsets are fixed per session ([0006](0006-toolsets-per-session.md)), which this rule requires as well as caching.
 - **Not yet fully held:** a tool the model creates (`CreateTool`), `/approve`, `/reject` and a skill reload still change
-  the tool list or prompt mid-chat, and break it. That is known limitation 9, removed by
+  the tool list or prompt mid-chat, and break it. That is known limitation 8, removed by
   [FX4](../fixes/FX04-append-only-history.md), which is open.
 
 ## Links
