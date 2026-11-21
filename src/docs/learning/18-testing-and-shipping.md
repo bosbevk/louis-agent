@@ -1715,6 +1715,53 @@ them with only its own token and gets an agent's answer back.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework shipped as packages, proved from outside the
 repository before and after it is published, with a guard where a mistake would be permanent.
 
+## A look measured, then held by a test (F169.1, 2026-11-21)
+
+The design review of the framework's site found flat's lines and quiet words too weak: in the dark a card's edge
+all but vanished on the near black page, the faintest words were hard to read on a card, a word of code in a
+sentence came out in Bootstrap's pink, and the keyboard's ring was drawn twice, the second time at 70 percent. Each
+fix is a value or a line of Sass. What makes it a lesson is how each one was proved, because "it looks better" is
+not a test.
+
+The idea is to turn a look into a number. WCAG, the web's accessibility rules, says how readable a colour is on
+another as a contrast ratio, from 1 to 21, worked out from each colour's relative luminance by the W3C's own sum
+(technique G18). Words need 4.5 to 1, and a ring round a control 3 to 1. So the first step was a small type in the
+web tests' shared library, `Contrast`, that takes two colours as a theme writes them and gives the ratio. It has
+tests of its own against known pairs, black on white is 21, and it learnt to read `rgb()` with percentages when
+glass's light page turned out to be written that way.
+
+With that, a theme's sheet became something a test can measure. The themes' tests already read the compiled sheet
+for each theme and style, so `FlatInksTests` asks for the three inks and the grounds they sit on and checks every
+pair. It failed first, as a test should: flat's faint grey read 3.85 to 1 on a light card and 4.46 on a dark one.
+The new greys read 4.69 and 5.53. A listing's comments, which used the same grey, failed the same way and were
+moved with it. The purple test went over every theme, not only flat, and found something the review hadn't: glass's
+light page is itself a violet wash, and the brand's middle violet on it read 2.9 to 1. That was a choice the plan
+didn't settle, so it went to Louis, and glass light now writes its purple in the brand's deep violet, 5.43 on the
+page and 9.52 on white.
+
+A line is not text, so it has no 4.5 to hold it to, and here a test pins the design instead: in the dark every one
+of flat's lines is the one firmer grey, `#404048`, which stands 1.90 to 1 off the page where the old one stood 1.39.
+The rules that draw things once are held by reading the Sass: the ring is written in one sheet only, a chip reads
+the chip's line, and a code word, on a page or in the agent's answer, goes through one mixin that reads three names
+every theme now sets. Those are plain string tests on the source, cheap and exact, and they fail the day someone
+draws the ring again in a later sheet.
+
+Numbers are not the whole story, so the built pages were measured too. A Playwright script opened nine pages of the
+two sites in every theme and style, walked every visible piece of text, worked out its real colour and the colour
+behind it, and listed everything under 4.5. One item was left: the brand's dot in the pictures, a logo, which WCAG
+exempts and a later child of the same feature replaces. The ring was measured on the page as well, at 4.75 on flat
+light and 3.84 on flat dark.
+
+What didn't go well. The diagram engine keeps its own copy of flat's palette, so changing the line in the theme
+broke a golden file in a different test project, the drawn card's, and it was found only when that project's tests
+ran; a change to a shared colour needs a search for every copy of the value first. A folder grew past six files
+when a new test went in, and a few lines went over 120, both caught by the rule tests a step later rather than
+before the commit. Nothing was spent: no model call.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a look turned into numbers a test can hold, the rule
+measured in the sheet and again on the built page, and what a number can't hold, a line or a ring drawn once, held
+by reading the source.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)
