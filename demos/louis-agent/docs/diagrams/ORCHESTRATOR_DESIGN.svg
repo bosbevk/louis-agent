@@ -235,8 +235,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 16l0 .01" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">An orchestrator per service</text>
-      <rect class="mrq-pill" x="354.4" y="108" width="187.2" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.orchestrator</text>
+      <rect class="mrq-pill" x="357.8" y="108" width="180.4" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">LouisAgent.Orchestrator</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">Watches one service's errors, decides what each needs, and decides when to ship.</text>
       <rect class="mrq-glass" x="0" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
@@ -257,7 +257,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 4l-4 16" />
       </g>
       <text class="crd-name" x="370" y="263" text-anchor="start">A code fix</text>
-      <text class="pic-text" x="324" y="298" text-anchor="start">A session on louis-agent.api: it fixes,</text>
+      <text class="pic-text" x="324" y="298" text-anchor="start">A session on LouisAgent.Api: it fixes,</text>
       <text class="pic-text" x="324" y="316" text-anchor="start">tests and hands back a branch.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="114" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />

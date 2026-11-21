@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What an agent can read of a project's own docs (F109.3): list, read and search the markdown under one folder,
+       read-only, never outside it. Needs one setting, DOCS_ROOT, and no network. References the composition's contracts
+       only. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Docs</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, toolsets/docs.md is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Packs.Docs.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\engine\LouisAgent.Composition\LouisAgent.Composition.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Packs.Docs.md" Link="docs\LouisAgent.Packs.Docs.md" />
+    <None Include="..\..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+  </ItemGroup>
+
+</Project>

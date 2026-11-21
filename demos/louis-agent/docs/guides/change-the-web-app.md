@@ -1,10 +1,10 @@
 # Change the code-review web app
 
-> **How-to.** Change `demos/louis-agent/web/louis-agent.code-review`, the browser app for chatting with the coding
+> **How-to.** Change `demos/louis-agent/web/LouisAgent.CodeReview`, the browser app for chatting with the coding
 > agent, browsing the workspace and reviewing changes: run it, add a control, call a new endpoint, add a theme, place
 > its words, and test it. The framework's website left this app in F124: changing it is
 > [Change the framework's site](../../../../src/docs/guides/change-the-site.md). **Elsewhere:** how it works in
-> [louis-agent.code-review](../projects/louis-agent.code-review.md); what it shares with Puls in
+> [LouisAgent.CodeReview](../projects/LouisAgent.CodeReview.md); what it shares with Puls in
 > [Change the framework's web](../../../../src/docs/guides/change-the-web.md); the folder rules in
 > [hosts-and-web.md](../../../../.claude/rules/hosts-and-web.md).
 
@@ -19,10 +19,10 @@ the files and git packs' views under `packs/web/`, opened as admin screens.
 
 ```bash
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api      # http://127.0.0.1:5082
-dotnet run --project demos/louis-agent/hosts/louis-agent.coding-api                             # http://127.0.0.1:5081
+dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingApi                             # http://127.0.0.1:5081
 ```
 
-The coding agent's program, `louis-agent.coding-api`, references this app, so that's what it serves. After a change to
+The coding agent's program, `LouisAgent.CodingApi`, references this app, so that's what it serves. After a change to
 the app, rebuild the `api` image or restart the run. If the API needs `AGENT_API_KEY`, enter it under *API key* in the
 sidebar; it stays in this browser.
 
@@ -69,13 +69,13 @@ class of the app's words rather than inline, as Puls keeps its own in `Text/`
 ## Test it
 
 ```bash
-dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests     # after a deliberate markup change: then read the diff
+dotnet test demos/louis-agent/tests/LouisAgent.CodeReview.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/LouisAgent.CodeReview.Tests     # after a deliberate markup change: then read the diff
 ```
 
 The packs' views and their plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `CodeLanguage`, `FileSize`) are
 tested under `packs/tests/`. `Pages/ChatPageTests` renders the whole page with bUnit against `FixtureApi`, a stub of
-the API from `src/tests/web/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a
+the API from `src/tests/web/LouisAgent.Web.Testing`. The client is the real `AgentApi`, and the message streams a
 recorded Puls turn. The empty page and the page with the turn are pinned to `ChatPage.empty.html` and
 `ChatPage.turn.html`. The tests run in the invariant culture (`TestCulture`), so the golden files never depend on the
 machine.

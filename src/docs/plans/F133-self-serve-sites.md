@@ -31,7 +31,7 @@ business down, and the site and its agent are made from that one record.**
 | Piece | State | Where |
 |---|---|---|
 | An agent that answers from facts, opens a place on the page and passes a lead on | Built | the showroom identities, `ShowPage` (ADR 0105), the leads pack |
-| Sign-in, passkeys, a second factor, a tenant from the host name | Built | F61, `louis-agent.web.accounts` |
+| Sign-in, passkeys, a second factor, a tenant from the host name | Built | F61, `LouisAgent.Web.Accounts` |
 | Every request priced in the usage ledger | Built | ADR 0007 |
 | Page, section and card components where every place has an address | Built, as markup | `MockPage`, `MockSection`, `MockCard` (ADR 0107) |
 | A new site from a template | Built, as code | `dotnet new louis-site` |

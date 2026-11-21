@@ -203,7 +203,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="379.2" y="351" text-anchor="start">louis-agent.api</text>
+      <text class="pic-name" x="379.2" y="351" text-anchor="start">LouisAgent.Api</text>
       <text class="pic-name" x="379.2" y="367" text-anchor="start">a door per site F131.1</text>
       <text class="pic-name" x="379.2" y="383" text-anchor="start">rate limits F131.1, budget</text>
       <text class="pic-name" x="379.2" y="399" text-anchor="start">F131.5</text>

@@ -8,7 +8,7 @@ to use", "for now"; picked *Packs publish data feeds* over a shop-prices route i
 
 The shop-prices pack keeps Stats SA's average prices, and our own rows, in MongoDB ([ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)).
 Louis wanted them served by the API, open to anyone, since they are free to use. But the API may not know a pack:
-only `louis-agent.composition` references packs ([ADR 0027](0027-engine-identities-and-packs.md)), and a pack
+only `LouisAgent.Composition` references packs ([ADR 0027](0027-engine-identities-and-packs.md)), and a pack
 stays convertible to an MCP server ([ADR 0028](0028-packs-stay-convertible-to-mcp.md)). Three ways were weighed:
 
 - **A shop-prices route in the API**, reading the pack's store: the API would reference a pack, which ADR 0027

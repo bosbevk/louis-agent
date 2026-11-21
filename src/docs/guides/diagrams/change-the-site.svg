@@ -229,8 +229,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M8 4v4" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">The site</text>
-      <rect class="mrq-pill" x="381.6" y="108" width="132.8" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.site</text>
+      <rect class="mrq-pill" x="385" y="108" width="126" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">LouisAgent.Site</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">Pages made of the framework's controls, given the site's words.</text>
       <rect class="mrq-glass" x="0" y="222" width="207.5" height="142" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />
@@ -242,8 +242,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 16l0 .01" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">Its host</text>
-      <rect class="mrq-pill" x="18" y="280" width="156" height="22" rx="11" />
-      <text class="mrq-code" x="28" y="295" text-anchor="start">louis-agent.site-api</text>
+      <rect class="mrq-pill" x="18" y="280" width="142.4" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="295" text-anchor="start">LouisAgent.SiteApi</text>
       <text class="pic-text" x="18" y="326" text-anchor="start">The pages as HTML, and the</text>
       <text class="pic-text" x="18" y="344" text-anchor="start">guide's API.</text>
       <rect class="mrq-glass" x="229.5" y="222" width="207.5" height="142" rx="14" />

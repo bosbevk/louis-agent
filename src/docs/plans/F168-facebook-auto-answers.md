@@ -23,9 +23,9 @@ pass a lead on. What it lacks is a way in from Facebook and a way back out.
 ending with `Offer`), its voice and its focus skills (`focus-selling.md`, `focus-demos.md`), how a focus reaches the
 prompt (`PageRequest.Focus`, read by `PageBlock.FocusOf`), the sessions API (`AgentSessions`, in memory, a session
 idle for four hours dropped), the leads pack's `SendLead`, the site pack's `Offer` (two to four choices, labels up
-to 40 characters), `SessionStreamReader` in `louis-agent.session-stream`, `PeerSession` (the engine asking another
-agent's sessions over HTTP), the API's test host (`ApiTestHost` and `TestAgent` in `src/tests/hosts/louis-agent.api.testing`), the open door (`OpenDoorOptions`), the site's host
-(`louis-agent.site-api/Program.cs`) and its deploy files (`src/site/deploy/azure`).
+to 40 characters), `SessionStreamReader` in `LouisAgent.SessionStream`, `PeerSession` (the engine asking another
+agent's sessions over HTTP), the API's test host (`ApiTestHost` and `TestAgent` in `src/tests/hosts/LouisAgent.Api.Testing`), the open door (`OpenDoorOptions`), the site's host
+(`LouisAgent.SiteApi/Program.cs`) and its deploy files (`src/site/deploy/azure`).
 
 **What was read at Meta**, all on developers.facebook.com, on 2026-11-21:
 
@@ -95,10 +95,10 @@ that make it safe (never a price, never a person, never a made-up fact).
 
 **2. Where the code lives.** Louis picked A on 2026-11-21. (A, recommended) A new framework project, `louis-agent.api.messenger`, that any site's
 host maps with one line, `app.MapLouisAgentMessenger(options)`, the way a host opts into the eval studio
-(`louis-agent.api.evals`). It asks the agent through the same `/v1/sessions` API the widget uses, over HTTP. This is
+(`LouisAgent.Api.Evals`). It asks the agent through the same `/v1/sessions` API the widget uses, over HTTP. This is
 an Adapter (Refactoring.Guru: two interfaces that don't fit, joined by a class that translates), and the queue in front
 is Microsoft's Queue-Based Load Leveling (Azure Architecture Center): Meta gets its `200` at once, the slow work
-happens behind it. (B) Inside `louis-agent.site-api` only: less to wire today, but Puls, the showroom's businesses and
+happens behind it. (B) Inside `LouisAgent.SiteApi` only: less to wire today, but Puls, the showroom's businesses and
 every client site would copy it, and the rule says a part any site could use goes to the framework. (C) A small host
 of its own, a separate container: cleanest split, but a second app to deploy, pay for and keep alive for one
 endpoint. It is not a pack: a pack is tools the model calls, and Messenger is a way in, not a tool.
@@ -153,7 +153,7 @@ turn. The worker reads the turn's stream to its end, takes the text and the `Off
 Answering late makes Meta retry, the retry makes a second answer, and an hour of failures unsubscribes the Page.
 So the endpoint only checks, records and queues, and the worker does the rest.
 
-**Why over HTTP and not in the same process.** The sessions are `internal` to `louis-agent.api`, and the design rules
+**Why over HTTP and not in the same process.** The sessions are `internal` to `LouisAgent.Api`, and the design rules
 say a whole task goes through the API's sessions. Over HTTP, the Messenger library uses the same sessions and the
 same usage ledger as the widget, and it can sit in front of any host. The cost is a local call on the same
 container, a few milliseconds.
@@ -228,14 +228,14 @@ The objects one person's message touches in memory:
 | `IMessengerSender`, `GraphMessengerSender`, `SendOutcome` | `…/Sending/` | `LouisAgent.Api.Messenger.Sending` | 6 |
 | `SendRequest`, `OutgoingMessage`, `QuickReply` | `…/Wire/Out/` | `LouisAgent.Api.Messenger.Wire.Out` | 6 |
 | `MessengerLogMessage`, `MessengerText` (ADR 0009) | `…/Messages/` | `LouisAgent.Api.Messenger.Messages` | 1 onward |
-| `GuideFocus.Messenger`, `focus-messenger.md` | `src/site/louis-agent.identity.guide/` | `LouisAgent.Identities.Guide` | 7 |
+| `GuideFocus.Messenger`, `focus-messenger.md` | `src/site/LouisAgent.Identities.Guide/` | `LouisAgent.Identities.Guide` | 7 |
 | `DeletionEndpoints`, `SignedRequest`, `DeletionReply` | `…/Deletion/` | `LouisAgent.Api.Messenger.Deletion` | 9 |
 | The Messenger eval (a `.eval.json`, files only) | where F126 puts the guide's evals | n/a | 10 |
 | The tests | `src/tests/hosts/louis-agent.api.messenger.tests/`, mirroring the folders | `LouisAgent.Api.Messenger.Tests.*` | each step |
 
 ### Folder trees
 
-Today, `src/hosts/` holds `louis-agent.api`, `.api.contracts`, `.api.evals` and the others. After:
+Today, `src/hosts/` holds `LouisAgent.Api`, `.api.contracts`, `.api.evals` and the others. After:
 
 ```
 src/hosts/louis-agent.api.messenger/     # new (step 1)
@@ -246,11 +246,11 @@ src/tests/hosts/louis-agent.api.messenger.tests/   # new (step 1), the same fold
 
 ### What is reused
 
-`louis-agent.session-stream` (`CreateSessionRequest`, `SendMessageRequest`, `PageRequest.Focus`,
-`SessionStreamReader`) for talking to the guide; `louis-agent.choices` for `TurnKind` and the guide's new focus;
+`LouisAgent.SessionStream` (`CreateSessionRequest`, `SendMessageRequest`, `PageRequest.Focus`,
+`SessionStreamReader`) for talking to the guide; `LouisAgent.Choices` for `TurnKind` and the guide's new focus;
 ASP.NET Core's `BackgroundService` and `System.Threading.Channels` for the queue; `HMACSHA256` and
 `CryptographicOperations.FixedTimeEquals` from .NET for the signature; `IHttpClientFactory` for both HTTP clients;
-`louis-agent.api.testing`'s `ApiTestHost` and `TestAgent` for step 5's tests. **No new package.** Meta's Graph API is a few JSON
+`LouisAgent.Api.Testing`'s `ApiTestHost` and `TestAgent` for step 5's tests. **No new package.** Meta's Graph API is a few JSON
 calls, so there's no SDK to adopt (Meta publishes none for .NET, and the community ones are unmaintained).
 
 ## What Louis does at Meta
@@ -277,7 +277,7 @@ One commit each, its test written first and seen failing; a review stop after ea
    (`MESSENGER_VERIFY_TOKEN`, `MESSENGER_APP_SECRET`, `MESSENGER_PAGE_TOKEN`, `MESSENGER_PAGE_ID`,
    `MESSENGER_AGENT_URL`, `MESSENGER_AGENT_KEY`, `MESSENGER_TURNS_PER_DAY`; none set means the door isn't mapped),
    `MapLouisAgentMessenger`, and the `GET` that echoes the challenge for the right token and answers `403`
-   otherwise. `louis-agent.site-api` maps it. The project's design doc starts here, and grows with each step. Test:
+   otherwise. `LouisAgent.SiteApi` maps it. The project's design doc starts here, and grows with each step. Test:
    the right token gets the challenge back, a wrong one `403`, no settings no route.
 2. **Meta's signature.** `WebhookSignature.IsValid` over the raw body; a `POST` without a valid signature gets
    `401` and nothing is read. Test: a body signed with a known secret passes; one changed byte, a missing header, a
@@ -303,7 +303,7 @@ One commit each, its test written first and seen failing; a review stop after ea
    opening line that it's Louis's AI assistant, the answer in the first line, an honest no with its reason, one
    question back, at most six short sentences, no cards, plain links, the lead when they want Louis. The guide's
    doc says it. Test: `GuideFocusesTests`, `GuideSkillsTests` and `SiteNamesItsFocusesTests` in
-   `src/tests/site/louis-agent.site.tests/Guide/`, each with the new focus.
+   `src/tests/site/LouisAgent.Site.Tests/Guide/`, each with the new focus.
 8. **Louis takes over.** First a live check: Louis answers a tester from the inbox, the Facebook app and the
    Messenger app, and the echoes are read. Then any echo not from our app makes `PageConversation` quiet for 24
    hours, and `standby` messages are read but never answered. Test: after an echo from another app, the next

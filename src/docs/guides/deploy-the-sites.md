@@ -4,8 +4,8 @@
 > come from, and what to do the first time an app goes live. **Elsewhere:** the pictures in
 > [the sites in Azure](../architecture/deployment-in-azure.md), the local stacks in
 > [the site's docker/](../../site/docker/docker-compose.yml), every setting in [Setup](../SETUP.md), the two sites
-> in [louis-agent.site](../projects/louis-agent.site.md) and
-> [louis-agent.site-framework](../projects/louis-agent.site-framework.md).
+> in [LouisAgent.Site](../projects/LouisAgent.Site.md) and
+> [LouisAgent.SiteFramework](../projects/LouisAgent.SiteFramework.md).
 
 ![Deploy the sites: every merge releases both, the same verbs from the PC, an app's secrets, its first release, its domain, rolling back](diagrams/deploy-the-sites.svg)
 

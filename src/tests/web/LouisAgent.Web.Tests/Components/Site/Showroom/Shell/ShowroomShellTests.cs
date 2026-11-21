@@ -1,0 +1,289 @@
+using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Diagrams.Icons;
+using LouisAgent.Web.Components.Site.Showroom;
+using LouisAgent.Web.Components.Site.Showroom.Shell;
+using LouisAgent.Web.Components.Site.Tiles;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Shell;
+
+/// <summary>
+/// F127.1: the showroom's frame. A slim bar of its own (Louis's pick 2a), a rail of every demo grouped by what a
+/// visitor comes for, each in its colour, the one on screen lit; on a phone the same demos as chips; and the whole
+/// frame wears the current demo's colour, so the stage is lit in it.
+/// </summary>
+public class ShowroomShellTests
+{
+    private static readonly ShowroomDemos Demos = new([
+        new ShowroomDemo("/bakery-demo", "A bakery", "Bread at dawn", DemoGroup.ForYourBusiness, TileAccent.Green,
+            DiagramIcon.Bed),
+        new ShowroomDemo("/florist-demo", "A florist", "Flowers by noon", DemoGroup.ForYourBusiness, TileAccent.Blue,
+            DiagramIcon.Dining),
+        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red,
+            DiagramIcon.Code),
+    ]);
+
+    /// <summary>
+    /// The shell on a page at <paramref name="path"/>, with the site's demos and a brand, an offer and a corner.
+    /// </summary>
+    private static IRenderedComponent<ShowroomShell> Shell(BunitContext ctx, string path)
+    {
+        ctx.Services.AddSingleton(Demos);
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(path);
+        return ctx.Render<ShowroomShell>(parameters => parameters
+            .Add(shell => shell.Brand, "<b>Brand</b>")
+            .Add(shell => shell.Offer, "<a class=\"offer\" href=\"/contact\">Ask</a>")
+            .Add(shell => shell.Corner, "<div class=\"guide\">Guide</div>")
+            .AddChildContent("<div class=\"page\">The demo</div>"));
+    }
+
+    /// <summary>The rail lists every demo under its group, in order, each a link in its colour with its sign.</summary>
+    [Test]
+    public void TheRail_ListsEveryDemo_UnderItsGroup()
+    {
+        using var ctx = new BunitContext();
+
+        var rail = Shell(ctx, "/florist-demo").Find("nav.demo-rail");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rail.QuerySelectorAll(".rail-group").Select(g => g.TextContent),
+                Is.EqualTo(new[] { "For your business", "Agents at work" }));
+            Assert.That(rail.QuerySelectorAll("a.demo-cover").Select(a => a.GetAttribute("href")),
+                Is.EqualTo(new[] { "/bakery-demo", "/florist-demo", "/coder-demo" }));
+            Assert.That(rail.QuerySelector("a[href='/coder-demo']")!.ClassList, Does.Contain("accent-red"));
+            // F134.1: each demo's sign is a line drawing, never a character a system draws its own way.
+            Assert.That(rail.QuerySelectorAll("a.demo-cover .cover-sign svg.line-icon"), Has.Count.EqualTo(3));
+            Assert.That(rail.QuerySelector("a[href='/coder-demo'] .cover-sign")!.TextContent.Trim(), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// The rail is a slim column of icons, as the K mockup has it (F134.2): each demo a link that shows only its icon,
+    /// with its name as its label for a screen reader and as a tip that slides out beside it, and no words beside it
+    /// otherwise, since the start shows them. The links stay links, so each demo is still a page an address opens.
+    /// </summary>
+    [Test]
+    public void TheRail_IsASlimColumnOfIcons_EachNamed()
+    {
+        using var ctx = new BunitContext();
+
+        var rail = Shell(ctx, "/florist-demo").Find("nav.demo-rail");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rail.QuerySelectorAll(".cover-words"), Is.Empty, "no words beside an icon");
+            Assert.That(rail.QuerySelectorAll("a.demo-cover").Select(a => a.GetAttribute("aria-label")),
+                Is.EqualTo(new[] { "A bakery", "A florist", "A coder" }));
+            Assert.That(rail.QuerySelectorAll("a.demo-cover .cover-tip[aria-hidden='true']").Select(t => t.TextContent),
+                Is.EqualTo(new[] { "A bakery", "A florist", "A coder" }), "the tip is drawn, the label is read");
+        });
+    }
+
+    /// <summary>
+    /// The rail fits (Louis: "this is not even fitting"). Its tiles and its own frame are narrower than the column the
+    /// frame keeps for it, and it never scrolls, so no scrollbar is drawn on it and a tip can slide out past its edge.
+    /// </summary>
+    [Test]
+    public void TheRail_FitsItsColumn_AndNeverScrolls()
+    {
+        string folder = Path.Combine(TestPaths.RepoRoot, "src/web/LouisAgent.Web/Components/Site/Showroom/Shell");
+        string rail = File.ReadAllText(Path.Combine(folder, "DemoRail.razor.scss"));
+        string shell = File.ReadAllText(Path.Combine(folder, "ShowroomShell.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rail, Does.Not.Contain("overflow-y").And.Not.Contain("max-height"));
+            Assert.That(rail, Does.Contain("width: 46px;").And.Contain("padding: 8px;"),
+                "a tile's 46, its frame's 16 and 2, and the 14 beside it are 78");
+            Assert.That(shell, Does.Contain(".showroom-body { display: grid; grid-template-columns: 84px"));
+        });
+    }
+
+    /// <summary>
+    /// The demo on screen is lit and marked as the current page, for a screen reader too; no other is.
+    /// </summary>
+    [Test]
+    public void TheDemoOnScreen_IsLit_AndMarkedCurrent()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Shell(ctx, "/florist-demo");
+
+        Assert.That(cut.FindAll("[aria-current='page']").Select(a => a.GetAttribute("href")),
+            Is.EqualTo(new[] { "/florist-demo", "/florist-demo" }), "in the rail and in the chips");
+        Assert.That(cut.FindAll(".is-current").Count, Is.EqualTo(2));
+    }
+
+    /// <summary>
+    /// The frame wears the current demo's colour, so everything in it is lit in it; a page that is no demo (the
+    /// start) wears the start's colour.
+    /// </summary>
+    [TestCase("/florist-demo", "accent-blue")]
+    [TestCase("/demos", "accent-purple")]
+    public void TheFrame_WearsTheDemosColour(string path, string accent)
+    {
+        using var ctx = new BunitContext();
+
+        Assert.That(Shell(ctx, path).Find(".showroom").ClassList, Does.Contain(accent));
+    }
+
+    /// <summary>
+    /// The slim bar: the brand home, the showroom's name, the way back to the site and the site's one offer; then the
+    /// page, and the corner.
+    /// </summary>
+    [Test]
+    public void TheBar_HasTheBrand_TheWayBack_AndTheOffer()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Shell(ctx, "/bakery-demo");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".showroom-bar a.showroom-brand").GetAttribute("href"), Is.EqualTo("/"));
+            Assert.That(cut.Find(".showroom-bar .showroom-pill").TextContent, Is.EqualTo("Demos"));
+            Assert.That(cut.Find(".showroom-bar a.showroom-back").TextContent, Does.Contain("Back to the site"));
+            Assert.That(cut.Find(".showroom-bar a.offer").GetAttribute("href"), Is.EqualTo("/contact"));
+            Assert.That(cut.Find("main.showroom-stage .page").TextContent, Is.EqualTo("The demo"));
+            Assert.That(cut.Find(".showroom-corner .guide").TextContent, Is.EqualTo("Guide"));
+        });
+    }
+
+    /// <summary>
+    /// A demo has a way back to all the demos (F127.2, Louis: "should also have a button back to demos"), beside the
+    /// way back to the site; the start, which is all the demos, has none.
+    /// </summary>
+    [TestCase("/bakery-demo", 1)]
+    [TestCase("/demos", 0)]
+    public void ADemo_HasAWayBackToAllTheDemos(string path, int links)
+    {
+        using var ctx = new BunitContext();
+
+        var back = Shell(ctx, path).FindAll(".showroom-bar a.showroom-demos");
+
+        Assert.That(back, Has.Count.EqualTo(links));
+        if (links == 0) return;
+        Assert.That((back[0].GetAttribute("href"), back[0].TextContent), Is.EqualTo(("/demos", "← All demos")));
+    }
+
+    /// <summary>
+    /// The corner stands beside the lit frame, not in it (F127.1, Louis's screenshot of a tour's last stop): the frame
+    /// is a layer of its own for its grid, and a corner inside it went under the guide's spotlight, dimmed with the
+    /// page.
+    /// </summary>
+    [Test]
+    public void TheCorner_StandsBesideTheFrame()
+    {
+        using var ctx = new BunitContext();
+
+        var corner = Shell(ctx, "/bakery-demo").Find(".showroom-corner");
+
+        Assert.That(corner.Closest(".showroom"), Is.Null);
+    }
+
+    /// <summary>
+    /// At a place's address (<c>/bakery-demo/the-demo</c>, opened again after a tour), the demo is still the one on
+    /// screen: lit in the rail, and the frame in its colour.
+    /// </summary>
+    [Test]
+    public void AtAPlacesAddress_ItsDemoIsStillCurrent()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new SiteAddresses("home", Demos.All.Select(demo => demo.Address)));
+
+        var cut = Shell(ctx, "/bakery-demo/the-demo");
+
+        Assert.That((cut.Find(".showroom").ClassList.Contains("accent-green"),
+            cut.Find("nav.demo-rail a[aria-current='page']").GetAttribute("href")), Is.EqualTo((true, "/bakery-demo")));
+    }
+
+    /// <summary>
+    /// On a phone the same demos are chips, in the site's order, each in its colour, with its icon (F134.1) where a
+    /// plain dot used to be.
+    /// </summary>
+    [Test]
+    public void ThePhonesChips_AreTheSameDemos()
+    {
+        using var ctx = new BunitContext();
+
+        var chips = Shell(ctx, "/bakery-demo").FindAll("nav.demo-chips a.demo-chip");
+
+        Assert.That(chips.Select(c => (c.GetAttribute("href"), c.ClassList.Contains("accent-green"))),
+            Is.EqualTo(new[] { ("/bakery-demo", true), ("/florist-demo", false), ("/coder-demo", false), }));
+        Assert.That(chips.Select(chip => chip.QuerySelectorAll(".chip-icon svg.line-icon").Length),
+            Is.All.EqualTo(1));
+    }
+
+    /// <summary>
+    /// The start is every demo at once (F134.1), on a stage with a dock of its own. So on the start the frame draws
+    /// no rail and no chips, which would list the same demos twice. The page still stands in the stage.
+    /// </summary>
+    [Test]
+    public void OnTheStart_ThereIsNoRail_AndNoChips()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Shell(ctx, "/demos");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("nav.demo-rail"), Is.Empty);
+            Assert.That(cut.FindAll("nav.demo-chips"), Is.Empty);
+            Assert.That(cut.Find("main.showroom-stage .page").TextContent, Is.EqualTo("The demo"));
+        });
+    }
+
+    /// <summary>A site's own words replace the framework's English.</summary>
+    [Test]
+    public void ASitesWords_ReplaceTheEnglish()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ShowroomText
+        {
+            Demos = "Demos!",
+            ForYourBusiness = "Vir jou besigheid"
+        });
+
+        var cut = Shell(ctx, "/bakery-demo");
+
+        Assert.That((cut.Find(".showroom-pill").TextContent, cut.Find(".rail-group").TextContent),
+            Is.EqualTo(("Demos!", "Vir jou besigheid")));
+    }
+
+    /// <summary>
+    /// A frame whose corner holds the guide as a bar keeps the bar's room free at the stage's foot (F134.3, F134's
+    /// rule 5), so no page ends under the bar. The room is the height the bar says it stands, its chips or the answer
+    /// over it and all, and the bar's usual height until it has said.
+    /// </summary>
+    [Test]
+    public void WithTheGuideAsABar_TheStageKeepsTheRoomTheBarSays()
+    {
+        string path = Path.Combine(TestPaths.RepoRoot,
+            "src/web/LouisAgent.Web/Components/Site/Showroom/Shell/ShowroomShell.razor.scss");
+        string styles = File.ReadAllText(path).ReplaceLineEndings("\n");
+
+        Assert.That(styles, Does.Contain(
+            ".showroom:has(~ .showroom-corner .chat-widget.is-bar) { --corner-room: var(--bar-room, 150px); }"));
+    }
+
+    /// <summary>
+    /// Where the stage stands alone, as on the start, its light reaches down into the room kept for the bar, so the
+    /// bar floats on the stage's floor as the design drew it, and not on a dark band under the stage.
+    /// </summary>
+    [Test]
+    public void AStageThatStandsAlone_IsLitDownIntoTheBarsRoom()
+    {
+        string web = Path.Combine(TestPaths.RepoRoot, "src/web/LouisAgent.Web/Components");
+        string frame = File.ReadAllText(Path.Combine(web, "Site/Showroom/Shell/ShowroomShell.razor.scss"));
+        string stage = File.ReadAllText(Path.Combine(web, "Staging/LitStage.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(frame,
+                Does.Contain(".showroom-body.is-alone .showroom-stage { --lit-below: var(--corner-room); }"));
+            Assert.That(stage, Does.Contain("bottom: calc(-1 * var(--lit-below, 0px));"));
+        });
+    }
+}

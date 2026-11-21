@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "acp", "icon": "server", "title": "The ACP server", "code": "louis-agent.acp", "look": "highlight",
+        { "id": "acp", "icon": "server", "title": "The ACP server", "code": "LouisAgent.Acp", "look": "highlight",
           "text": "The agent in Rider's AI chat, over stdin and stdout." }
       ] },
       { "cards": [

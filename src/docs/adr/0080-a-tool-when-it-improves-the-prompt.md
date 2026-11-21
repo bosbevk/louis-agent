@@ -35,7 +35,7 @@ A tool the model asks for is a pack's ([ADR 0076](0076-core-ships-no-agent.md)),
   tool that's meant to save money or time is measured like anything else ([ADR 0007](0007-measure-every-request.md)), and
   stays only if the numbers hold up.
 - A prompt can get shorter once a tool holds its rule, which is worth checking when a tool is added.
-- The first example is the calculator pack, `packs/louis-agent.pack.calculator`, which the cook uses to scale amounts.
+- The first example is the calculator pack, `packs/LouisAgent.Packs.Calculator`, which the cook uses to scale amounts.
 
 ## Links
 

@@ -24,13 +24,13 @@ You need the .NET 10 SDK. Everything below runs from the repo's root folder.
 
    ```bash
    dotnet build louis-agent-solution.sln
-   dotnet test src/tests/engine/louis-agent.core.tests
+   dotnet test src/tests/engine/LouisAgent.Core.Tests
    ```
 
 3. **Start the interactive CLI:**
 
    ```bash
-   dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli
+   dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingCli
    ```
 
 4. **Turn on the commit template**, so `git commit` shows you the shape a commit message takes:

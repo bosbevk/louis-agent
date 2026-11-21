@@ -276,8 +276,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M10 21v-2" />
       </g>
       <text class="crd-name quiet" x="50" y="406" text-anchor="start">The framework's web</text>
-      <rect class="mrq-pill" x="20" y="416" width="122" height="22" rx="11" />
-      <text class="mrq-code" x="30" y="431" text-anchor="start">louis-agent.web</text>
+      <rect class="mrq-pill" x="20" y="416" width="115.2" height="22" rx="11" />
+      <text class="mrq-code" x="30" y="431" text-anchor="start">LouisAgent.Web</text>
       <text class="pic-text" x="20" y="458" text-anchor="start">Everything else.</text>
       <rect class="crd-quiet" x="459" y="372" width="437" height="100" rx="14" />
       <g class="crd-icon quiet" transform="translate(479 392) scale(0.75)">

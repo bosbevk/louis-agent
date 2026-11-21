@@ -1,0 +1,83 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "LouisAgent.Api: where it runs",
+  "caption": "The API runs inside the program that adds it, one container a demo: the browser reaches it on the PC's own address, and it reaches a model, the collector and its folders.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "browser",
+        "label": "A browser or a client\nHTTP, and SSE for a turn",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "program",
+        "label": "LouisAgent.CodingApi\nthe demo's program, port 8080",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "box"
+      },
+      {
+        "id": "api",
+        "label": "LouisAgent.Api\nAddLouisAgentApi, MapLouisAgentApi",
+        "icon": "server",
+        "tone": "green",
+        "group": "box"
+      },
+      {
+        "id": "models",
+        "label": "A model's server\nAnthropic over HTTPS, or Ollama\non 11434",
+        "icon": "cloud",
+        "tone": "violet"
+      },
+      {
+        "id": "otel",
+        "label": "The telemetry collector\nOTLP on host.docker.internal:4317",
+        "icon": "chart",
+        "tone": "amber"
+      },
+      {
+        "id": "folders",
+        "label": "Mounted folders\nthe workspace, skills, logs,\nyour repositories",
+        "icon": "folder",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "browser",
+        "to": "program",
+        "word": "127.0.0.1:API_PORT → 8080"
+      },
+      {
+        "from": "program",
+        "to": "api",
+        "word": "adds"
+      },
+      {
+        "from": "api",
+        "to": "models",
+        "word": "a turn's requests"
+      },
+      {
+        "from": "api",
+        "to": "otel",
+        "word": "logs and traces"
+      },
+      {
+        "from": "api",
+        "to": "folders",
+        "word": "reads and writes"
+      }
+    ],
+    "groups": [
+      {
+        "id": "box",
+        "label": "Docker: container louis_agent_api, .NET 10 SDK image"
+      }
+    ]
+  }
+}

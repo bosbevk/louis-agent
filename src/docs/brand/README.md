@@ -87,4 +87,4 @@ Use plain words, explain a term the first time, and only talk about what works t
 "revolutionary", "magical" and "next-gen", from any number nobody measured, and from robots, brains and sparkles.
 
 ---
-[Docs index](../README.md) · Related: [the themes' design doc](../projects/louis-agent.web.themes.md)
+[Docs index](../README.md) · Related: [the themes' design doc](../projects/LouisAgent.Web.Themes.md)

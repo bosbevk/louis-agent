@@ -151,7 +151,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <rect class="mrq-rule" x="0" y="26" width="615" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="0" y="0" width="614.8" height="344" rx="14" />
-      <text class="pic-group" x="14" y="19" text-anchor="start">louis-agent.core</text>
+      <text class="pic-group" x="14" y="19" text-anchor="start">LouisAgent.Core</text>
       <path class="pic-line pic-edge tone-violet" d="M162.8 102L162.8 162" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M162.8 102L162.8 162" />
       <path class="pic-line pic-edge tone-teal" d="M162.8 214L162.8 280" marker-end="url(#arrow-teal)" />

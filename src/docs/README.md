@@ -33,7 +33,7 @@ you need otherwise.
 | [Add a skill](guides/add-a-skill.md) | How-to | Give the agent a function skill and approve it |
 | [Debug and logs](guides/debug-and-logs.md) | How-to | The tool log, the run files, the usage ledger, the Docker habits |
 | [Common errors](guides/common-errors.md) | How-to | The errors a developer meets most, by their message |
-| [Core guide](../engine/louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
+| [Core guide](../engine/LouisAgent.Core/CLAUDE.md) | How-to | Change `LouisAgent.Core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
 | [Guides](guides/README.md) | How-to | Find the step-by-step guide for the project you are changing, or for what you are building |
 | [Spawn a site](guides/spawn-a-site.md) | How-to | Make a new site with a chat and an admin from the starter, then make it yours |
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
@@ -54,7 +54,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Puls's web app](../../demos/puls/docs/projects/louis-agent.puls.md) | Reference | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
+| [Puls's web app](../../demos/puls/docs/projects/LouisAgent.Puls.md) | Reference | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
 | [Multi-agent write-up](learning/10-multi-agent-orchestration.md) | Explanation | Read what building Puls taught: roles, routing, measured delegation (a draft) |
 
 ## 6. Project by project

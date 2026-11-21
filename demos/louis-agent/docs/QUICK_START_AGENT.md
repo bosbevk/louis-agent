@@ -51,8 +51,8 @@ the AI chat. Attach files with the paperclip; the agent reads them. Each new cha
 ### CLI
 
 ```bash
-dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli                     # interactive; Ctrl+C stops a reply, 'exit' quits
-dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli -- "Your prompt here" # one-shot
+dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingCli                     # interactive; Ctrl+C stops a reply, 'exit' quits
+dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingCli -- "Your prompt here" # one-shot
 ```
 
 ### HTTP API
@@ -63,7 +63,7 @@ See [How the agents and endpoints talk](../../../src/docs/AGENT_COMMUNICATION.md
 
 **Code and files**
 ```
-Review src/hosts/louis-agent.api/Endpoints/Git/GitBranchesEndpoints.cs for bugs, most important first
+Review src/hosts/LouisAgent.Api/Endpoints/Git/GitBranchesEndpoints.cs for bugs, most important first
 Find all TODO comments in the codebase
 Add XML doc comments to the public methods in WorkspaceFileTools.cs
 ```
@@ -71,7 +71,7 @@ Add XML doc comments to the public methods in WorkspaceFileTools.cs
 **Build and test**
 ```
 Build the solution and fix any compile errors
-Run the tests in src/tests/engine/louis-agent.core.tests and explain any failures
+Run the tests in src/tests/engine/LouisAgent.Core.Tests and explain any failures
 ```
 
 **Git**
@@ -121,7 +121,7 @@ turn: 3 requests · 28k tokens (26k cached) · $0.006 · session $0.04
 ```
 
 Costs are shown in your PC's currency once `HOST_CULTURE` is set (run
-`dotnet run --project src/tools/louis-agent.usage-probe -- --host-culture` once): `R0.11`, with the rate and the dollars
+`dotnet run --project src/tools/LouisAgent.UsageProbe -- --host-culture` once): `R0.11`, with the rate and the dollars
 charged in `/usage`; the web app's sidebar can pick another currency. `/usage` gives the session's totals by purpose and
 by token kind. Local models are priced at $0; a model missing from
 `demos/louis-agent/config/prices.json` shows "price unknown". Every request is also in the usage ledger

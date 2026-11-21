@@ -256,7 +256,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="767.1" y="305" text-anchor="start">louis-agent.api</text>
+      <text class="pic-name" x="767.1" y="305" text-anchor="start">LouisAgent.Api</text>
       <text class="pic-name" x="767.1" y="321" text-anchor="start">the session, its tenant</text>
       <text class="pic-name" x="767.1" y="337" text-anchor="start">from the host (F157.1)</text>
       <rect class="pic-panel" x="715.1" y="514" width="263.6" height="68" rx="10" />
@@ -280,7 +280,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="pic-name" x="1226.8" y="305" text-anchor="start">louis-agent.core</text>
+      <text class="pic-name" x="1226.8" y="305" text-anchor="start">LouisAgent.Core</text>
       <text class="pic-name" x="1226.8" y="321" text-anchor="start">the turn's tenant</text>
       <text class="pic-name" x="1226.8" y="337" text-anchor="start">in the pack context (F157.1)</text>
       <rect class="pic-panel" x="1513.7" y="282" width="332" height="68" rx="10" />
@@ -298,7 +298,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <g class="pic-badge-icon" transform="translate(2061.9 308) scale(0.6667)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
-      <text class="pic-name" x="2091.9" y="305" text-anchor="start">louis-agent.accounts</text>
+      <text class="pic-name" x="2091.9" y="305" text-anchor="start">LouisAgent.Accounts</text>
       <text class="pic-name" x="2091.9" y="321" text-anchor="start">AccountConnections,</text>
       <text class="pic-name" x="2091.9" y="337" text-anchor="start">ConnectHandlers (F157.1)</text>
       <rect class="pic-panel" x="2039.9" y="522" width="256" height="52" rx="10" />

@@ -9,17 +9,17 @@ review must use the same framework", "code review must adapt to puls") · **Reco
 
 The engine is a framework and each product is a demo on top of it ([ADR 0074](0074-the-folders-say-what-ships.md)), but the web
 wasn't. `louis-agent.web.shared` held 2,200 lines, Puls's app held 13,100 and the code-review app its own chat page, so a new site
-would start by copying one of them. The name said "shared between two apps", and the project called `louis-agent.web` was
+would start by copying one of them. The name said "shared between two apps", and the project called `LouisAgent.Web` was
 really one demo's code-review app.
 
-Weighed for the name: *`louis-agent.web`* (taken), which reads like `louis-agent.core` and frees a misleading name, for the cost of
-two renames; *`louis-agent.web.framework`* and *`louis-agent.web.core`*, one rename each, which leave a demo looking like the
+Weighed for the name: *`LouisAgent.Web`* (taken), which reads like `LouisAgent.Core` and frees a misleading name, for the cost of
+two renames; *`LouisAgent.Web.Framework`* and *`louis-agent.web.core`*, one rename each, which leave a demo looking like the
 framework. Other frameworks split this the same way: an [ABP theme](https://abp.io/docs/latest/framework/ui/blazor/theming) is a
 Razor class library that holds layouts and global styles, and the app picks it and overrides parts.
 
 ## Decision
 
-**Every site is built on the framework's web. A web file that would be the same on every site belongs in `louis-agent.web`. A site
+**Every site is built on the framework's web. A web file that would be the same on every site belongs in `LouisAgent.Web`. A site
 holds only its words, its brand and colours, its addresses, its own pages, and which packs and views it uses. The framework names
 no site.**
 
@@ -27,7 +27,7 @@ no site.**
   it today. That's the difference from the old rule, which waited until two apps needed a piece.
 - **What differs comes in from the site:** through a slot, a parameter, or a setting a site fills in `Program.cs`, never a branch on
   which site this is.
-- **Everything in `louis-agent.web` is in English.** Another language is a site's own: Puls is the one in Afrikaans, and it fills its
+- **Everything in `LouisAgent.Web` is in English.** Another language is a site's own: Puls is the one in Afrikaans, and it fills its
   words in from outside.
 - **A site's layout only fills the framework's frame,** so it stays small, about 40 lines. `AdminShell` is that frame, with ordinary
   slots the compiler checks (Template Method). The frame couldn't be handed a settings object without losing that check, and a demo
@@ -43,7 +43,7 @@ no site.**
   switch. For today's two, Puls's shape is the one that goes in.
 
 Two tests hold it, and they read the disk, so a new site comes under them with nobody listing it. `FrameworkNamesNoSiteTests` reads
-every code, markup, style, script and project file in `louis-agent.web`, comments included. `SiteLayoutsStaySmallTests` is a
+every code, markup, style, script and project file in `LouisAgent.Web`, comments included. `SiteLayoutsStaySmallTests` is a
 ratchet: what's still too long is listed, and the list can only shrink.
 
 ## Consequences
@@ -53,11 +53,11 @@ ratchet: what's still too long is listed, and the list can only shrink.
 - **The name test finds names, not words.** An Afrikaans sentence added to the framework wouldn't fail it. Words come in through
   `ChatText`, and a review has to catch one that doesn't.
 - **The coding agent's landing page is its web app's, on the framework's site frame** (F109.1, 2026-11-08; before it, a
-  static Razor site of its own, `louis-agent.site`, that read the framework's colours and referenced nothing else). Its pages
+  static Razor site of its own, `LouisAgent.Site`, that read the framework's colours and referenced nothing else). Its pages
   draw in `SiteLayout` on the framework's `SiteShell`, its look hangs off the frame's root so the chat keeps the framework's,
   and it links to the chat at `/chat`. Louis: "the static site must become the landing page for the coding agent, it will
   be it's demo"; "that custom layout can be reused, it should be in the framework".
-- **Old commits and docs mean the other project** when they say `louis-agent.web`. The changelog, write-ups and fix docs stay as
+- **Old commits and docs mean the other project** when they say `LouisAgent.Web`. The changelog, write-ups and fix docs stay as
   they were written.
 - **The framework needs a stylesheet of its own,** which reverses "the shared components only emit class names" once F59.4 is built.
 

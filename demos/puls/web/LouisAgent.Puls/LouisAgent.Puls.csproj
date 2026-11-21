@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!-- Puls: the general assistant's web app (chat only). LouisAgent.Api serves it instead of LouisAgent.CodeReview when built
+       with -p:WebApp=puls (demos/puls/docker/images/Dockerfile.puls). -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Puls</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compiles Styles/ into wwwroot/css/app.css on every build. Build time only: nothing of it reaches the browser. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.12" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web\LouisAgent.Web.csproj" />
+    <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
+    <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Accounts\LouisAgent.Web.Accounts.csproj" />
+    <!-- CL57: the eval studio's pages and their client; a site that has the studio opts in here. -->
+    <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Evals\LouisAgent.Web.Evals.csproj" />
+    <!-- The recipes pack's own view of its screen. -->
+    <ProjectReference Include="..\..\..\..\packs\web\LouisAgent.Packs.Recipes.Web\LouisAgent.Packs.Recipes.Web.csproj" />
+    <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Api.Contracts\LouisAgent.Api.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The Sass compiler's settings are for the build, so they stay out of what's published. -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Puls.md" Link="docs\LouisAgent.Puls.md" />
+    <None Include="..\..\docs\guides\change-the-puls-app.md" Link="docs\change-the-puls-app.md" />
+  </ItemGroup>
+
+</Project>

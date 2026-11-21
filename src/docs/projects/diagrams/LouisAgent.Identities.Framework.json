@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "LouisAgent.Identities.Framework at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "orbi", "icon": "user", "title": "The framework Orbi", "code": "LouisAgent.Identities.Framework",
+          "look": "highlight",
+          "text": "Who answers beside the framework's pages: an AI that speaks for the framework, on two packs, and sells nothing." }
+      ] },
+      { "cards": [
+        { "id": "docs", "icon": "book", "title": "The docs pack",
+          "text": "What it answers from: the framework as its docs tell it, with the doc's path." },
+        { "id": "site", "icon": "browser", "title": "The site pack",
+          "text": "Finds a place on the site, shows it, and ends each answer with choices." }
+      ] }
+    ],
+    "links": [
+      { "from": "orbi", "to": "docs" },
+      { "from": "orbi", "to": "site" }
+    ]
+  }
+}

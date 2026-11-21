@@ -1,0 +1,32 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "LouisAgent.Evals.Runner: one command, step by step",
+  "caption": "The program hands in its catalogues; the runner finds every eval folder, keeps those EVALS= names, and does what the command line asks.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      { "id": "start", "label": "A demo's runner program\ncalls EvalRunnerHost", "icon": "terminal", "tone": "blue", "shape": "terminal" },
+      { "id": "telemetry", "label": "Start the telemetry\nthe program gave", "icon": "chart", "tone": "green" },
+      { "id": "parse", "label": "Read the command line", "icon": "code", "tone": "green" },
+      { "id": "bad", "label": "Refuse it\nbefore anything starts", "icon": "shield", "tone": "red", "shape": "terminal" },
+      { "id": "find", "label": "Every eval.json\nunder EvalFiles", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "choose", "label": "Keep the evals\nEVALS= names", "icon": "checks", "tone": "green" },
+      { "id": "which", "label": "Which command?", "icon": "branch", "tone": "green", "shape": "decision" },
+      { "id": "list", "label": "One JSON line\nper eval or check", "icon": "file", "tone": "green", "shape": "terminal" },
+      { "id": "run", "label": "Run or re-score,\nprotocol v2 on stdout", "icon": "play", "tone": "green", "shape": "terminal" },
+      { "id": "other", "label": "The studio, promptfoo\nor the judge's commands", "icon": "settings", "tone": "green", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "start", "to": "telemetry" },
+      { "from": "telemetry", "to": "parse" },
+      { "from": "parse", "to": "bad", "word": "bad" },
+      { "from": "parse", "to": "find", "word": "ok" },
+      { "from": "find", "to": "choose" },
+      { "from": "choose", "to": "which" },
+      { "from": "which", "to": "list", "word": "--list, --checks" },
+      { "from": "which", "to": "run", "word": "run" },
+      { "from": "which", "to": "other", "word": "the rest" }
+    ]
+  }
+}

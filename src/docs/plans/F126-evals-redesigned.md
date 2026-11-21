@@ -16,8 +16,8 @@ have an elegant back end design that still works", "we cannot have 23000 lines o
 "forget the current evals, we will redo it all" (all 2026-11-09).
 
 **What exists.** About 33,000 lines of code and 22,000 of tests across `src/evals/` (harness, check contract and
-catalogue, protocol, runner), `louis-agent.api.evals` (store, recording, the runner as a child process, reviews,
-calibration, drafts, the studio, promptfoo in and out), `louis-agent.web.evals` (five admin pages, a run page with five
+catalogue, protocol, runner), `LouisAgent.Api.Evals` (store, recording, the runner as a child process, reviews,
+calibration, drafts, the studio, promptfoo in and out), `LouisAgent.Web.Evals` (five admin pages, a run page with five
 tabs and a five-level explorer) and Puls's readers, judge and pack checks; about 300 eval files on disk. An eval is a
 folder (`eval.json`, a manual, a dataset, labels, transcripts; ADR 0058), its checks typed entries in a catalogue
 (ADR 0056).
@@ -97,14 +97,14 @@ Drawn in [F126-mockups/](F126-mockups/) with the guide's evals as sample data, i
 
 **Indicators:** red `#d9675f` (text `#e8a39c`) failed, green `#6cbf94` passed, blue `#7fa8e8` a mark you flipped,
 amber `#d4a72c` costs money or is out of date. Red is the framework's today; green, blue and amber are added as tokens
-in `src/web/louis-agent.web/Styles/web/settings/_colours.scss`.
+in `src/web/LouisAgent.Web/Styles/web/settings/_colours.scss`.
 
 ### Where each piece lives
 
 Louis, 2026-11-09: what can be shared everywhere goes to the framework, the rest to a pack's web (ADR 0074, 0084, 0086).
 
 - **The framework, shared by every site:** the five back-end parts and the schema under `src/evals/`; the eval host
-  under `src/hosts/`; the six screens and the generic tool-call fold in `src/web/louis-agent.web.evals`, naming no
+  under `src/hosts/`; the six screens and the generic tool-call fold in `src/web/LouisAgent.Web.Evals`, naming no
   pack, identity or site.
 - **A pack's web, only where a pack needs its own look:** a view of that pack's tool calls in the conversation's fold
   (a recipe card for `FindRecipes`, a price list for the shop prices) in `packs/web/`; without one the fold shows the
@@ -144,14 +144,14 @@ Old runs are deleted, not moved (ADR 0049).
 ### Folder trees
 
 Today, the parts that go: `src/evals/` (harness, checks contract, catalogue, protocol, runner, template),
-`src/hosts/louis-agent.api.evals/` (store, recording, runner process, reviews, calibration, drafts, studio, promptfoo),
-`src/web/louis-agent.web.evals/` (five pages, the run tabs and explorer), Puls's readers, judge and pack checks, and
+`src/hosts/LouisAgent.Api.Evals/` (store, recording, runner process, reviews, calibration, drafts, studio, promptfoo),
+`src/web/LouisAgent.Web.Evals/` (five pages, the run tabs and explorer), Puls's readers, judge and pack checks, and
 the eval folders under `demos/*/evals/` and `packs/evals/`. After F126.4:
 
 ```
-src/evals/louis-agent.evals/        EvalFile, Facts, Judge, EvalRun, RunStore, eval.schema.json
+src/evals/LouisAgent.Evals/        EvalFile, Facts, Judge, EvalRun, RunStore, eval.schema.json
 src/hosts/louis-agent.eval-host/    the eval host: the pages, the run job, the endpoints
-src/web/louis-agent.web.evals/      the six screens and the generic tool-call fold
+src/web/LouisAgent.Web.Evals/      the six screens and the generic tool-call fold
 packs/web/…                         a pack's own tool-call view, only where it needs one
 demos/puls/evals/*.eval.json        Puls's evals, one file each
 demos/louis-agent/evals/*.eval.json the guide's and the triage team's evals
@@ -159,16 +159,16 @@ demos/louis-agent/evals/*.eval.json the guide's and the triage team's evals
 
 ### Namespace map (proposed; each child's plan settles it)
 
-Today's `louis-agent.evals` project holds the old harness; F126.1 builds the new parts beside it in a folder of
+Today's `LouisAgent.Evals` project holds the old harness; F126.1 builds the new parts beside it in a folder of
 their own, and F126.4 deletes the old ones, so the name is kept.
 
 | Type | Folder | Namespace | Child |
 |---|---|---|---|
-| `EvalFile`, `Conversation`, `Turn`, `Fact`, `FactKind`, `JudgeMode` | `src/evals/louis-agent.evals/Files/` | `LouisAgent.Evals.Files` | F126.1 |
-| `Facts` | `src/evals/louis-agent.evals/Grading/` | `LouisAgent.Evals.Grading` | F126.1 |
-| `IJudge`, `PerCriterionJudge`, `PerConversationJudge`, `Mark` | `src/evals/louis-agent.evals/Grading/` | `LouisAgent.Evals.Grading` | F126.1 |
-| `EvalRun`, `RunResult`, `ConversationResult`, `TurnResult` | `src/evals/louis-agent.evals/Runs/` | `LouisAgent.Evals.Runs` | F126.2 |
-| `RunStore`, `Flip` | `src/evals/louis-agent.evals/Runs/` | `LouisAgent.Evals.Runs` | F126.2, F126.3 |
+| `EvalFile`, `Conversation`, `Turn`, `Fact`, `FactKind`, `JudgeMode` | `src/evals/LouisAgent.Evals/Files/` | `LouisAgent.Evals.Files` | F126.1 |
+| `Facts` | `src/evals/LouisAgent.Evals/Grading/` | `LouisAgent.Evals.Grading` | F126.1 |
+| `IJudge`, `PerCriterionJudge`, `PerConversationJudge`, `Mark` | `src/evals/LouisAgent.Evals/Grading/` | `LouisAgent.Evals.Grading` | F126.1 |
+| `EvalRun`, `RunResult`, `ConversationResult`, `TurnResult` | `src/evals/LouisAgent.Evals/Runs/` | `LouisAgent.Evals.Runs` | F126.2 |
+| `RunStore`, `Flip` | `src/evals/LouisAgent.Evals/Runs/` | `LouisAgent.Evals.Runs` | F126.2, F126.3 |
 | The eval host's program and endpoints | `src/hosts/louis-agent.eval-host/` | `LouisAgent.EvalHost` | F126.2 |
 | Tests, mirroring each | `src/tests/evals/…` | `LouisAgent.Evals.Tests.…` | each child |
 

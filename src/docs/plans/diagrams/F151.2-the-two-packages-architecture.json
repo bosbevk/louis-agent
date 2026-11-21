@@ -7,7 +7,7 @@
     "nodes": [
       {
         "id": "web",
-        "label": "louis-agent.web\nthe contract, from F151.1",
+        "label": "LouisAgent.Web\nthe contract, from F151.1",
         "icon": "chip",
         "tone": "violet"
       },

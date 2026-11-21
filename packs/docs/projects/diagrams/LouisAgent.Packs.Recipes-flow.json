@@ -1,0 +1,116 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "LouisAgent.Packs.Recipes: one search, step by step",
+  "caption": "With no site named, a search asks four enabled sites at once and shuffles their hits; with one, it asks that site. Each site searches its own way, and the list comes back framed as untrusted data.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "FindRecipes\na query",
+        "icon": "search",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "named",
+        "label": "A site\nnamed?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "scatter",
+        "label": "RecipeScatter: four enabled\nsites at random, at once",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "one",
+        "label": "That site's\nown source",
+        "icon": "world",
+        "tone": "green"
+      },
+      {
+        "id": "way",
+        "label": "Its row says\nhow it searches",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "wp",
+        "label": "WordPressSearch\nits /?s= page in the browser",
+        "icon": "browser",
+        "tone": "green"
+      },
+      {
+        "id": "web",
+        "label": "SiteWebSearch\nthe web search for that site",
+        "icon": "search",
+        "tone": "green"
+      },
+      {
+        "id": "shuffle",
+        "label": "The hits, shuffled from several sites,\nat most 10, eight by default",
+        "icon": "stack",
+        "tone": "green"
+      },
+      {
+        "id": "end",
+        "label": "The list, framed\nas untrusted recipe data",
+        "icon": "file",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "named"
+      },
+      {
+        "from": "named",
+        "to": "scatter",
+        "word": "no"
+      },
+      {
+        "from": "named",
+        "to": "one",
+        "word": "yes"
+      },
+      {
+        "from": "scatter",
+        "to": "way",
+        "word": "each site"
+      },
+      {
+        "from": "one",
+        "to": "way"
+      },
+      {
+        "from": "way",
+        "to": "wp",
+        "word": "its own search"
+      },
+      {
+        "from": "way",
+        "to": "web",
+        "word": "the web's"
+      },
+      {
+        "from": "wp",
+        "to": "shuffle"
+      },
+      {
+        "from": "web",
+        "to": "shuffle"
+      },
+      {
+        "from": "shuffle",
+        "to": "end"
+      }
+    ]
+  }
+}

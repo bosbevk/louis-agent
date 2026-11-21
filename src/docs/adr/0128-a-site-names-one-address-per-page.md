@@ -53,4 +53,4 @@ HTML.
 
 - [ADR 0107](0107-every-section-has-an-address.md), [ADR 0109](0109-a-page-is-served-as-html.md)
 - [Get a site found](../guides/get-a-site-found.md)
-- `SiteAddressOptions` and `SitePageHandler` in `src/hosts/louis-agent.api/`
+- `SiteAddressOptions` and `SitePageHandler` in `src/hosts/LouisAgent.Api/`

@@ -11,7 +11,7 @@
 set -euo pipefail
 
 port="${RECORD_PORT:-5079}"
-out="src/site/louis-agent.site/wwwroot/recordings/showroom"
+out="src/site/LouisAgent.Site/wwwroot/recordings/showroom"
 config="src/site/config"
 
 # A dry run sends no mail (the lead goes to the log) and keeps what it heard in a scratch folder.

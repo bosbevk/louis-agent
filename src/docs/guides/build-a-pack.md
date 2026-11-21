@@ -9,13 +9,13 @@
 
 A **pack** is what an agent can do: one or more toolsets, the guide that tells the model when to use them, the pack's own
 settings and state. It names no identity and references no other pack's code, so it could be served as an MCP server
-one day without changing. It stands on the contracts everything agrees on, `louis-agent.composition`. The engine
-(`louis-agent.core`) never references a pack: only a demo's composition root (Puls's is
-`demos/puls/hosts/louis-agent.host-packs`) knows them all.
+one day without changing. It stands on the contracts everything agrees on, `LouisAgent.Composition`. The engine
+(`LouisAgent.Core`) never references a pack: only a demo's composition root (Puls's is
+`demos/puls/hosts/LouisAgent.HostPacks`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
-no network. The real packs in the repo follow the same steps: `packs/tools/louis-agent.pack.where-to-buy` is the closest
-(no settings, one tool, its own eval checks), and `packs/tools/louis-agent.pack.recipes` adds the two things `units` doesn't
+no network. The real packs in the repo follow the same steps: `packs/tools/LouisAgent.Packs.WhereToBuy` is the closest
+(no settings, one tool, its own eval checks), and `packs/tools/LouisAgent.Packs.Recipes` adds the two things `units` doesn't
 need: settings (`RecipesOptions`) and a core service (the guarded browser). Read them beside this guide.
 
 ![Building a pack: the project, the tools, the guide, the pack class, settings when it needs them, registered in the composition root, then tested and tried](diagrams/build-a-pack-flow.svg)
@@ -23,8 +23,8 @@ need: settings (`RecipesOptions`) and a core service (the guarded browser). Read
 ## 1. Create the project
 
 ```bash
-dotnet new classlib -o packs/tools/louis-agent.pack.units
-dotnet sln louis-agent-solution.sln add packs/tools/louis-agent.pack.units/louis-agent.pack.units.csproj
+dotnet new classlib -o packs/tools/LouisAgent.Packs.Units
+dotnet sln louis-agent-solution.sln add packs/tools/LouisAgent.Packs.Units/LouisAgent.Packs.Units.csproj
 ```
 
 Delete the template's `Class1.cs`, and make the csproj look like the packs':
@@ -40,27 +40,27 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="louis-agent.pack.units.tests" />
+    <InternalsVisibleTo Include="LouisAgent.Packs.Units.tests" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\LouisAgent.Composition\LouisAgent.Composition.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\docs\projects\louis-agent.pack.units.md" Link="docs\louis-agent.pack.units.md" />
+    <None Include="..\..\docs\projects\LouisAgent.Packs.Units.md" Link="docs\LouisAgent.Packs.Units.md" />
   </ItemGroup>
 </Project>
 ```
 
-The only project reference is `louis-agent.composition`
+The only project reference is `LouisAgent.Composition`
 ([step 9](#9-its-checks-when-it-proves-its-tools) says why not the evals). A reference to another pack, an identity or
 anything under `src/evals/` fails `ArchitectureTests`.
 
 The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does.
-Nothing is built or copied. Write the doc (`packs/docs/projects/louis-agent.pack.units.md`) once the pack works.
+Nothing is built or copied. Write the doc (`packs/docs/projects/LouisAgent.Packs.Units.md`) once the pack works.
 
 ## 2. Write the tools
 
@@ -209,7 +209,7 @@ gives an empty page and never throws. What anyone may read belongs in a feed ins
 `RecipesUsageScreen` is the example.
 
 When a description can't say what you want, a real component replaces it by name. It goes in its own project under
-`packs/web/`, never in the pack: `louis-agent.pack.recipes.web` holds `RecipeLibraryView`, which wraps the plain table and adds a
+`packs/web/`, never in the pack: `LouisAgent.Packs.Recipes.Web` holds `RecipeLibraryView`, which wraps the plain table and adds a
 line above it, and a site adds it with `RecipeWebViews.AddTo(views)`. The pack and its web project can't reference each other,
 so a test project under `packs/tests/` sees both and holds the names they share.
 
@@ -232,7 +232,7 @@ exactly what Save will do. The shop-prices pack's `StatsSaImport` is the example
 
 A name that is written in more than one place is an enum ([ADR 0043](../adr/0043-repeated-names-are-enums.md)). The pack keeps **its own**
 enum of the toolsets it offers, in its project (`UnitsToolset.cs`), and never uses another pack's or an identity's: a stranger's pack
-needs nothing of ours but `louis-agent.choices`, which `louis-agent.composition` brings along.
+needs nothing of ours but `LouisAgent.Choices`, which `LouisAgent.Composition` brings along.
 
 ```csharp
 public enum UnitsToolset
@@ -244,17 +244,17 @@ public enum UnitsToolset
 
 Write the name out with `.Wire()` (`using LouisAgent.Choices;`): `new(UnitsToolset.Units.Wire(), …)`, `public string Name => UnitsToolset.Units.Wire();`.
 Read one in with `SettingChoice.TryParse`. Never `ToString()`, `ToLowerInvariant()` or a naming policy. The text stays text where it travels
-(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `demos/puls/tests/louis-agent.host-packs.tests`
+(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `demos/puls/tests/LouisAgent.HostPacks.Tests`
 checks that every pack an identity names and every toolset a role's header lists is one the catalogue has.
 
-Add your enum's file to the list in `RepeatedNameTests` (`src/tests/engine/louis-agent.core.tests/RepeatedNames/`): from then on a typed `"units"` anywhere in the sources and tests
-fails, so a typo cannot compile. A test that only stores or shows a toolset's name uses a sample (`SampleToolset` in `src/tests/shared/louis-agent.testing`); a test
+Add your enum's file to the list in `RepeatedNameTests` (`src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/`): from then on a typed `"units"` anywhere in the sources and tests
+fails, so a typo cannot compile. A test that only stores or shows a toolset's name uses a sample (`SampleToolset` in `src/tests/shared/LouisAgent.Testing`); a test
 that needs the real toolset uses your enum member, never a sample and never a string.
 
 ## 5. Give it settings (when it needs them)
 
 A pack reads its own settings in its own options class, never through core's `AgentOptions`. The recipes pack's is the
-pattern (`packs/tools/louis-agent.pack.recipes/RecipesOptions.cs`): one property per setting and a `FromEnvironment` that reads
+pattern (`packs/tools/LouisAgent.Packs.Recipes/RecipesOptions.cs`): one property per setting and a `FromEnvironment` that reads
 them once. The pack takes the options in its constructor and says what is missing through `MissingSettings`.
 
 Then document each setting where people look for it: a commented line in the demo's `config/.env.example` (the recipes
@@ -263,13 +263,13 @@ pack's `RECIPE_SOURCES` block in `demos/puls/config/.env.example` is the model),
 ## 6. Register it in the composition root
 
 A demo's own program names its packs. Our coding agent lists them in one class, `CodingCatalog`
-(`demos/louis-agent/hosts/louis-agent.coding-catalog`): one more `new UnitsPack()`, and a project reference. Puls picks them by
-setting, so it takes three edits in `demos/puls/hosts/louis-agent.host-packs`:
+(`demos/louis-agent/hosts/LouisAgent.Coding.Catalog`): one more `new UnitsPack()`, and a project reference. Puls picks them by
+setting, so it takes three edits in `demos/puls/hosts/LouisAgent.HostPacks`:
 
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:
    `new ShopPricesPack(ShopPricesOptions.FromEnvironment())`).
-3. A project reference to the pack in the demo's own list, `louis-agent.host-packs.csproj`.
+3. A project reference to the pack in the demo's own list, `LouisAgent.HostPacks.csproj`.
 
 In a demo with such a list, `PACKS=units` then loads it, and so does any identity whose `Packs` names `"units"`. A demo without
 one names the pack in its program: `new AgentCatalog([], [new UnitsPack()])` ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
@@ -280,15 +280,15 @@ catalogue refuses it as unknown.
 ## 7. Test it
 
 ```bash
-dotnet new nunit -o packs/tests/louis-agent.pack.units.tests
-dotnet sln louis-agent-solution.sln add packs/tests/louis-agent.pack.units.tests/louis-agent.pack.units.tests.csproj
+dotnet new nunit -o packs/tests/LouisAgent.Packs.Units.tests
+dotnet sln louis-agent-solution.sln add packs/tests/LouisAgent.Packs.Units.tests/LouisAgent.Packs.Units.tests.csproj
 ```
 
-Give the test project the packs' tests' references (the pack, and `src/tests/shared/louis-agent.testing` for the shared fakes), mirror
+Give the test project the packs' tests' references (the pack, and `src/tests/shared/LouisAgent.Testing` for the shared fakes), mirror
 the pack's folders, and write four kinds of test.
 
 The first is a prompts fixture. It registers the pack's prompts before any test reads one, the way a host does at
-start-up (`packs/tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
+start-up (`packs/tests/LouisAgent.Packs.WhereToBuy.Tests/WhereToBuyPrompts.cs`):
 `[SetUpFixture] … SkillFileSource.Use([new UnitsPack().Prompts]);`
 
 The second is a pack test, and `WhereToBuyPackTests` is the one to copy. It checks the pack's name and its toolsets,
@@ -300,7 +300,7 @@ Last is a golden of the pack's texts, so a changed word the model reads is a cha
 (`Messages/WhereToBuyToolMessageSnapshotTests.cs` and its JSON). Regenerate it with `LOUIS_UPDATE_GOLDEN=1`, and
 review the diff.
 
-Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`demos/puls/tests/louis-agent.host-packs.tests`)
+Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`demos/puls/tests/LouisAgent.HostPacks.Tests`)
 builds every pack and checks the shapes in step 2 against the MCP SDK, and `ArchitectureTests` checks its references.
 Run them with the rest:
 
@@ -336,10 +336,10 @@ To prove what your tools do, first try a general check in your eval file, naming
 ([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
 mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
 
-A rule no general check can say goes in its own project, `packs/evals/louis-agent.pack.{name}.checks`,
+A rule no general check can say goes in its own project, `packs/evals/LouisAgent.Packs.{Name}.Checks`,
 which only the runner references, so someone can use your tools without the evals:
 
-1. **Its csproj** references the check contract, `..\..\..\src\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
+1. **Its csproj** references the check contract, `..\..\..\src\evals\LouisAgent.Evals.Checks\LouisAgent.Evals.Checks.csproj`,
    and your pack only if it uses the pack's code. Its root namespace is the pack's.
 2. **Write the check** in `Checks/`: a class that implements `ICheck`, with a nested `Entry` (a `CheckType<Settings>`)
    that builds it from a typed `Settings` record. It reads the turn from the engine's events (`EngineEvents`), and its
@@ -347,15 +347,15 @@ which only the runner references, so someone can use your tools without the eval
 3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
    `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
 4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the catalogues the demo's eval program hands to the runner (`PulsCatalogs`).
-5. **Test it** in `packs/tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
+5. **Test it** in `packs/tests/LouisAgent.Packs.{Name}.Checks.Tests`, on trials built from canned events (`ShopTrials`), test
    first. The where-to-buy project is the model.
 
 A contract your pack and the eval share lives in a shared project, or is duplicated. A duplicate is held equal by a test
-in `demos/puls/tests/louis-agent.host-packs.tests`, the one project that sees both (`UnpricedMarkTests`, `ShopTableTests`).
+in `demos/puls/tests/LouisAgent.HostPacks.Tests`, the one project that sees both (`UnpricedMarkTests`, `ShopTableTests`).
 
 ## Before you ask for a review
 
-- [ ] References `louis-agent.composition`; no other pack, no identity, nothing under `src/evals/`.
+- [ ] References `LouisAgent.Composition`; no other pack, no identity, nothing under `src/evals/`.
 - [ ] What it shares with an eval is in a shared project, or duplicated with a test that holds the copies equal.
 - [ ] Tools take plain data and return text; a failure is text with its reason; a waiting tool takes a `CancellationToken`.
 - [ ] Session input (the user's place) also arrives as a parameter.

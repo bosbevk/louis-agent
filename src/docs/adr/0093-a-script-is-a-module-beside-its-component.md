@@ -50,7 +50,7 @@ a build step; not taken either, the scripts being small).
 
 ## Links
 
-[louis-agent.web](../projects/louis-agent.web.md) · [louis-agent.web.accounts](../projects/louis-agent.web.accounts.md) ·
+[LouisAgent.Web](../projects/LouisAgent.Web.md) · [LouisAgent.Web.Accounts](../projects/LouisAgent.Web.Accounts.md) ·
 [Change the framework's web](../guides/change-the-web.md) · [ADR 0084](0084-every-site-is-built-on-the-frameworks-web.md) ·
 [JavaScript isolation in Blazor (Microsoft)](https://learn.microsoft.com/aspnet/core/blazor/javascript-interoperability/javascript-isolation)
 

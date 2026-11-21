@@ -225,8 +225,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">The eval pages</text>
-      <rect class="mrq-pill" x="364.6" y="108" width="166.8" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.web.evals</text>
+      <rect class="mrq-pill" x="368" y="108" width="160" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">LouisAgent.Web.Evals</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">The evals and their stored runs, for the builders.</text>
       <rect class="mrq-glass" x="0" y="222" width="284" height="124" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />

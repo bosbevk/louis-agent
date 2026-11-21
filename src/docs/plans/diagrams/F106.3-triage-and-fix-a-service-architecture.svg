@@ -153,8 +153,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="pic-group" x="1920" y="14" text-anchor="end">Component diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="1936" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
-      <rect class="pic-panel" x="689.2" y="0" width="1246.4" height="1030" rx="14" />
-      <text class="pic-group" x="703.2" y="19" text-anchor="start">louis-agent-app (the coding API serving the site)</text>
+      <rect class="pic-panel" x="685.4" y="0" width="1250.2" height="1030" rx="14" />
+      <text class="pic-group" x="699.4" y="19" text-anchor="start">louis-agent-app (the coding API serving the site)</text>
       <path class="pic-line pic-edge tone-blue" d="M487.2 102L487.2 114Q487.2 126 499.2 126L816.6 126Q840.6 126 840.6 150L840.6 192" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M487.2 102L487.2 114Q487.2 126 499.2 126L816.6 126Q840.6 126 840.6 150L840.6 192" />
       <path class="pic-line pic-edge tone-green" d="M840.6 260L840.6 320" marker-end="url(#arrow-green)" />
@@ -169,8 +169,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M840.6 660L840.6 698Q840.6 722 864.6 722L1755.6 722Q1767.6 722 1767.6 734L1767.6 746" />
       <path class="pic-line pic-edge tone-violet" d="M840.6 660L840.6 698Q840.6 722 864.6 722L1140.6 722Q1152.6 722 1152.6 734L1152.6 746" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M840.6 660L840.6 698Q840.6 722 864.6 722L1140.6 722Q1152.6 722 1152.6 734L1152.6 746" />
-      <path class="pic-line pic-edge tone-violet" d="M840.6 660L840.6 698Q840.6 722 864.6 722L990.3 722Q1002.3 722 1002.3 734L1002.3 746L1002.3 846L1002.3 884Q1002.3 908 1026.3 908L1140.6 908Q1161.6 908 1161.6 929L1161.6 950" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M840.6 660L840.6 698Q840.6 722 864.6 722L990.3 722Q1002.3 722 1002.3 734L1002.3 746L1002.3 846L1002.3 884Q1002.3 908 1026.3 908L1140.6 908Q1161.6 908 1161.6 929L1161.6 950" />
+      <path class="pic-line pic-edge tone-violet" d="M840.6 660L840.6 698Q840.6 722 864.6 722L992.2 722Q1004.2 722 1004.2 734L1004.2 746L1004.2 846L1004.2 884Q1004.2 908 1028.2 908L1140.6 908Q1161.6 908 1161.6 929L1161.6 950" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M840.6 660L840.6 698Q840.6 722 864.6 722L992.2 722Q1004.2 722 1004.2 734L1004.2 746L1004.2 846L1004.2 884Q1004.2 908 1028.2 908L1140.6 908Q1161.6 908 1161.6 929L1161.6 950" />
       <path class="pic-line pic-edge tone-teal" d="M1776.6 846L1776.6 868Q1776.6 890 1754.6 890L188.4 890Q164.4 890 164.4 914L164.4 950" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M1776.6 846L1776.6 868Q1776.6 890 1754.6 890L188.4 890Q164.4 890 164.4 914L164.4 950" />
       <path class="pic-line pic-edge tone-teal" d="M1776.6 846L1776.6 868Q1776.6 890 1754.6 890L511.2 890Q487.2 890 487.2 914L487.2 950" marker-end="url(#arrow-teal)" />
@@ -248,18 +248,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="392.2" y="785" text-anchor="start">samples/ops-config: the second</text>
       <text class="pic-name" x="392.2" y="801" text-anchor="start">department's repository</text>
       <text class="pic-name" x="392.2" y="817" text-anchor="start">(F106.3.5)</text>
-      <rect class="pic-panel" x="701.2" y="746" width="278.8" height="100" rx="10" />
-      <rect class="pic-fill tone-teal" x="717.2" y="782" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(723.2 788) scale(0.6667)">
+      <rect class="pic-panel" x="697.4" y="746" width="286.4" height="100" rx="10" />
+      <rect class="pic-fill tone-teal" x="713.4" y="782" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(719.4 788) scale(0.6667)">
         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
         <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
-      <text class="pic-name" x="753.2" y="777" text-anchor="start">louis-agent.identity.triage:</text>
-      <text class="pic-name" x="753.2" y="793" text-anchor="start">manager voice; sorter,</text>
-      <text class="pic-name" x="753.2" y="809" text-anchor="start">investigator, reviewer roles</text>
-      <text class="pic-name" x="753.2" y="825" text-anchor="start">(F106.3.2)</text>
+      <text class="pic-name" x="749.4" y="777" text-anchor="start">LouisAgent.Identities.Triage:</text>
+      <text class="pic-name" x="749.4" y="793" text-anchor="start">manager voice; sorter,</text>
+      <text class="pic-name" x="749.4" y="809" text-anchor="start">investigator, reviewer roles</text>
+      <text class="pic-name" x="749.4" y="825" text-anchor="start">(F106.3.2)</text>
       <rect class="pic-panel" x="1024.6" y="746" width="256" height="100" rx="10" />
       <rect class="pic-fill tone-green" x="1040.6" y="782" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(1046.6 788) scale(0.6667)">
@@ -277,7 +277,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="pic-name" x="1681.6" y="777" text-anchor="start">louis-agent.pack.triage: feed,</text>
+      <text class="pic-name" x="1681.6" y="777" text-anchor="start">LouisAgent.Packs.Triage: feed,</text>
       <text class="pic-name" x="1681.6" y="793" text-anchor="start">recorder, decision tools,</text>
       <text class="pic-name" x="1681.6" y="809" text-anchor="start">RaiseToPerson, ReadTriageRun</text>
       <text class="pic-name" x="1681.6" y="825" text-anchor="start">(F106.3.1)</text>
@@ -299,9 +299,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
       <text class="pic-name" x="406.6" y="989" text-anchor="start">Mongo: runs and steps (F43)</text>
-      <rect class="pic-panel" x="1013.2" y="950" width="278.8" height="68" rx="10" />
-      <rect class="pic-fill tone-violet" x="1029.2" y="970" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1035.2 976) scale(0.6667)">
+      <rect class="pic-panel" x="1017" y="950" width="271.2" height="68" rx="10" />
+      <rect class="pic-fill tone-violet" x="1033" y="970" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1039 976) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -313,8 +313,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="pic-name" x="1065.2" y="981" text-anchor="start">louis-agent.core: Delegation</text>
-      <text class="pic-name" x="1065.2" y="997" text-anchor="start">(F39 A), checkpoints (F43)</text>
+      <text class="pic-name" x="1069" y="981" text-anchor="start">LouisAgent.Core: Delegation</text>
+      <text class="pic-name" x="1069" y="997" text-anchor="start">(F39 A), checkpoints (F43)</text>
       <rect class="pic-panel" x="402.2" y="1086" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-red" x="418.2" y="1098" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(424.2 1104) scale(0.6667)">

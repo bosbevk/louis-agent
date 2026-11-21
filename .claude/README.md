@@ -31,7 +31,7 @@ Two rules follow from the last row.
 
 | File | Loads for | Holds |
 |---|---|---|
-| [src/engine/louis-agent.core/CLAUDE.md](../src/engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
+| [src/engine/LouisAgent.Core/CLAUDE.md](../src/engine/LouisAgent.Core/CLAUDE.md) | `src/engine/LouisAgent.Core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
 | `rules/csharp.md` | `**/*.cs` | The how of every C# rule: conditionals, endpoints, records, enums, size, formatting |
 | `rules/csharp-summaries.md` | `**/*.cs` | How a summary is written, with its examples |
 | `rules/tests.md` | `src/tests/**`, `packs/tests/**`, `demos/*/tests/**` | What every test is, which tests run when, the golden files |

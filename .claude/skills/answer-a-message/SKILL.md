@@ -27,7 +27,7 @@ Five stops come first.
    a developer, a job seeker) and what they want behind the question. "Can I customise the design?" often means
    "will it look like my business?" or "will I be stuck paying someone for every change?".
 2. **Check the facts** the answer rests on in `origin/main` after `git fetch origin main`: the guide's
-   `src/site/louis-agent.identity.guide/prompts/agent/louis-agent-guide/skills/what-we-sell.md` and `voice.md`,
+   `src/site/LouisAgent.Identities.Guide/prompts/agent/louis-agent-guide/skills/what-we-sell.md` and `voice.md`,
    and `/mnt/project-files/brand/facebook/page-text.md` for what the Page itself says. An offer such as the two
    free websites is checked before it is mentioned, since it can close.
 3. **Write the reply in four parts**, most often four to six short sentences in all:
@@ -135,7 +135,7 @@ want to change the look, or only their hours and prices, which is the question b
 
 ## References
 
-- `what-we-sell.md` and `voice.md` in `src/site/louis-agent.identity.guide/prompts/agent/louis-agent-guide/`,
+- `what-we-sell.md` and `voice.md` in `src/site/LouisAgent.Identities.Guide/prompts/agent/louis-agent-guide/`,
   what we sell and the rule that every quote follows a call
 - `/mnt/project-files/brand/facebook/page-text.md`, what the Page says about itself
 - [The brand guide](../../../src/docs/brand/README.md#voice), the voice

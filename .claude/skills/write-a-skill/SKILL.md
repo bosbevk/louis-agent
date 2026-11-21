@@ -73,7 +73,7 @@ once, or when getting it wrong costs a lot.
    skill is for, said the way Louis would say them. Watch two things: does the skill load from its description
    alone, and does the work follow its steps? Each miss goes back into the file, then try again.
 7. **Run the tests** of what it touched:
-   `dotnet test src/tests/engine/louis-agent.core.tests --filter "FullyQualifiedName~Docs"`.
+   `dotnet test src/tests/engine/LouisAgent.Core.Tests --filter "FullyQualifiedName~Docs"`.
 
 ## How the body is written
 
@@ -120,7 +120,7 @@ diff is the review of that change.
 ## Steps
 
 1. Run the failing test project once with the variable set, as
-   `LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.tests`.
+   `LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/LouisAgent.Web.Tests`.
 2. Read `git diff` on the golden files. Every changed line should come from your change.
 3. Run the same tests again without the variable. They pass.
 4. Show the diff with the step, and commit the golden files with it.

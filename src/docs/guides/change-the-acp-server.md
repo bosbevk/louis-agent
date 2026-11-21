@@ -1,8 +1,8 @@
 # Change the ACP server
 
-> **How-to.** Change the Rider host, `src/hosts/louis-agent.acp`: run it in Rider, add a protocol method or a
+> **How-to.** Change the Rider host, `src/hosts/LouisAgent.Acp`: run it in Rider, add a protocol method or a
 > `session/update` kind, its texts and its tests. **Elsewhere:** how it works in
-> [louis-agent.acp](../projects/louis-agent.acp.md); the protocol at
+> [LouisAgent.Acp](../projects/LouisAgent.Acp.md); the protocol at
 > [agentclientprotocol.com](https://agentclientprotocol.com).
 
 ![The ACP server: Rider speaks JSON-RPC over stdin and stdout to AcpServer, which hands a turn to AgentEngine and relays its stream back as session/update](diagrams/change-the-acp-server.svg)
@@ -12,7 +12,7 @@ over stdin and stdout, and it only translates: the prompt into a turn for `Agent
 `session/update` notifications. Behaviour belongs in core.
 
 **stdout is the protocol.** One stray `Console.Write` corrupts it for Rider. Log through `ILogger`, which writes to
-stderr ([Messages and logging](../../engine/louis-agent.core/CLAUDE.md#messages-and-logging)).
+stderr ([Messages and logging](../../engine/LouisAgent.Core/CLAUDE.md#messages-and-logging)).
 
 ## Run it in Rider
 
@@ -28,7 +28,7 @@ stderr ([Messages and logging](../../engine/louis-agent.core/CLAUDE.md#messages-
    ```
 
 3. **To debug without Docker**, use the coding demo's run profile, in
-   `demos/louis-agent/hosts/louis-agent.coding-acp/Properties/launchSettings.json`.
+   `demos/louis-agent/hosts/LouisAgent.CodingAcp/Properties/launchSettings.json`.
 
 ## Add a protocol method
 
@@ -59,8 +59,8 @@ transcript's golden file.
 ## Test it
 
 ```bash
-dotnet test src/tests/hosts/louis-agent.acp.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/louis-agent.acp.tests   # after a deliberate change, then read the diff
+dotnet test src/tests/hosts/LouisAgent.Acp.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/LouisAgent.Acp.Tests   # after a deliberate change, then read the diff
 ```
 
 The tests mirror the folders: `Paths/`, `Prompting/`, `Protocol/`, `Rider/`, `Turns/`, and the transcript at the root.

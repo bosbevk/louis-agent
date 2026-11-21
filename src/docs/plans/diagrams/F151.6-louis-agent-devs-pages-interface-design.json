@@ -7,7 +7,7 @@
       {
         "id": "word",
         "name": "Wordmark",
-        "kind": "component, step 3, louis-agent.web",
+        "kind": "component, step 3, LouisAgent.Web",
         "members": [
           "string Before",
           "string After",

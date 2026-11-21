@@ -22,8 +22,8 @@ A test can pass on a page that looks wrong, so a change a visitor sees is looked
 
 | Site | Command | Address |
 |---|---|---|
-| The framework's site | `dotnet run --project src/site/louis-agent.site-api --launch-profile site` | `http://127.0.0.1:5083` |
-| Code review | `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-api --launch-profile api` | `http://127.0.0.1:5081` |
+| The framework's site | `dotnet run --project src/site/LouisAgent.SiteApi --launch-profile site` | `http://127.0.0.1:5083` |
+| Code review | `dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingApi --launch-profile api` | `http://127.0.0.1:5081` |
 
 Start it in the background, with the two settings of stop 4 before the command, and wait for its `Now listening`
 line.

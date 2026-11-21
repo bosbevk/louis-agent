@@ -32,7 +32,7 @@ services:
       # puls, as its project is the API's (Louis's pick J1); the eval runner it starts is named by its own.
       OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       OTEL_SERVICE_NAME: puls
-      # Who this agent is (CL15): Puls, from demos/puls/identity/louis-agent.identity.puls; the code-review stack sets none.
+      # Who this agent is (CL15): Puls, from demos/puls/identity/LouisAgent.Identities.Puls; the code-review stack sets none.
       IDENTITIES: puls
       # The general tools the routing eval's baseline names; Puls itself needs none of them.
       PACKS: files,git,dotnet,shell

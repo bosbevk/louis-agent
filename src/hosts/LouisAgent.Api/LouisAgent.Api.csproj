@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <!-- A library, so ASP.NET comes as a framework reference, with the usings the web SDK gives an app. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Using Include="Microsoft.AspNetCore.Builder" />
+    <Using Include="Microsoft.AspNetCore.Hosting" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.AspNetCore.Routing" />
+    <Using Include="Microsoft.Extensions.Configuration" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Microsoft.Extensions.Hosting" />
+    <Using Include="Microsoft.Extensions.Logging" />
+    <Using Include="System.Net.Http.Json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+    <ProjectReference Include="..\LouisAgent.Api.Contracts\LouisAgent.Api.Contracts.csproj" />
+    <!-- F61.2: the claim names the sign-in cookie carries, so who opened a session is read by the accounts' name for
+         it; the contracts only, never the accounts library and its database. -->
+    <ProjectReference Include="..\LouisAgent.Accounts.Contracts\LouisAgent.Accounts.Contracts.csproj" />
+    <!-- FX26: a failed turn's kind (StreamErrorKind), written by the stream as its readers read it. -->
+    <ProjectReference Include="..\..\engine\LouisAgent.SessionStream\LouisAgent.SessionStream.csproj" />
+    <!-- F18 step 7c.3: the eval runner's protocol, read through the contract's own records (decision A). -->
+    <ProjectReference Include="..\..\evals\LouisAgent.Evals.Protocol\LouisAgent.Evals.Protocol.csproj" />
+    <!-- The kinds of reader the studio lists from the runner's catalogue; the check contract only, no check. -->
+    <ProjectReference Include="..\..\evals\LouisAgent.Evals.Checks\LouisAgent.Evals.Checks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Api.Tests" />
+    <InternalsVisibleTo Include="LouisAgent.Api.Evals" />
+    <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
+    <InternalsVisibleTo Include="LouisAgent.Api.IntegrationTests" />
+    <InternalsVisibleTo Include="LouisAgent.Api.Testing" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Api.md" Link="docs\LouisAgent.Api.md" />
+    <None Include="..\..\docs\guides\change-the-api.md" Link="docs\change-the-api.md" />
+  </ItemGroup>
+
+</Project>

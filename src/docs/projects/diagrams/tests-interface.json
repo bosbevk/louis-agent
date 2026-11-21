@@ -6,7 +6,7 @@
     "types": [
       {
         "id": "testing",
-        "name": "louis-agent.testing",
+        "name": "LouisAgent.Testing",
         "kind": "every test project's global using",
         "tone": "teal"
       },
@@ -54,7 +54,7 @@
       },
       {
         "id": "webtesting",
-        "name": "louis-agent.web.testing",
+        "name": "LouisAgent.Web.Testing",
         "kind": "the web tests' library",
         "tone": "teal"
       },

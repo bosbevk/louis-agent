@@ -50,7 +50,7 @@ completes it.
 
 ## Design
 
-New, in `louis-agent.core/usage/`:
+New, in `LouisAgent.Core/usage/`:
 
 | Type | Responsibility |
 |---|---|

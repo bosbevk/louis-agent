@@ -1,0 +1,66 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.CodeReview: the interface design",
+  "caption": "A site on the framework's web: its program names what it uses, its own few components sit in the shared frames, and the packs' views come in by name.",
+  "classes": {
+    "types": [
+      {
+        "id": "program",
+        "name": "Program",
+        "kind": "top-level, what the app is made of",
+        "members": [
+          "ChatStore, AgentApi, GitState, GitHistory, ChatText",
+          "AddLouisAgentAccounts(), AddLouisAgentEvals()",
+          "SiteFrames(Admin, Account), PackViews, ChatHandoff"
+        ]
+      },
+      {
+        "id": "chatpage",
+        "name": "ChatPage",
+        "kind": "the coding agent's chat, in the ChatShell"
+      },
+      {
+        "id": "empty",
+        "name": "EmptyChat",
+        "kind": "the first screen of a chat"
+      },
+      {
+        "id": "theme",
+        "name": "RetroTheme",
+        "kind": "the app's own theme, named among its areas"
+      },
+      {
+        "id": "web",
+        "name": "ChatShell, ChatRunner, ChatStore, AgentApi",
+        "kind": "LouisAgent.Web",
+        "tone": "violet"
+      },
+      {
+        "id": "views",
+        "name": "PackViews",
+        "kind": "LouisAgent.Web: a pack's own screens",
+        "tone": "violet"
+      },
+      {
+        "id": "packviews",
+        "name": "GitWebViews, FilesWebViews",
+        "kind": "the git and files packs' web views",
+        "tone": "violet"
+      },
+      {
+        "id": "studio",
+        "name": "AddLouisAgentEvals, AddLouisAgentAccounts",
+        "kind": "LouisAgent.Web.Evals and .web.accounts",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "program", "to": "web", "kind": "uses", "word": "registers" },
+      { "from": "program", "to": "studio", "kind": "uses", "word": "opts into" },
+      { "from": "program", "to": "views", "kind": "creates" },
+      { "from": "packviews", "to": "views", "kind": "uses", "word": "add to" },
+      { "from": "chatpage", "to": "empty", "kind": "holds" },
+      { "from": "program", "to": "theme", "kind": "uses", "word": "names" }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 # Register a sign-in provider
 
 > **How-to.** Let people sign in to a site with Google, Microsoft or LinkedIn: what to make at the provider, and
-> which settings to fill. **Elsewhere:** how the sign-in works in [louis-agent.accounts](../projects/louis-agent.accounts.md);
+> which settings to fill. **Elsewhere:** how the sign-in works in [LouisAgent.Accounts](../projects/LouisAgent.Accounts.md);
 > why these three and not Facebook or X in [F61 (history)](https://github.com/bosbevk/louis-agent/blob/20f28c9f/src/docs/plans/F61-accounts-and-azure.md).
 
 ![Signing in through Google, Microsoft or LinkedIn, each with its callback, and the keys in the secrets file](diagrams/register-a-sign-in-provider.svg)
@@ -46,4 +46,4 @@ free is unconfirmed. Both are already named in `ExternalProvider`, and adding a 
 `IExternalProvider`.
 
 ---
-[Docs index](../README.md) · Related: [louis-agent.accounts](../projects/louis-agent.accounts.md) · [Guides](README.md)
+[Docs index](../README.md) · Related: [LouisAgent.Accounts](../projects/LouisAgent.Accounts.md) · [Guides](README.md)

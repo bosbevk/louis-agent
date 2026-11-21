@@ -6,13 +6,13 @@
     "participants": [
       {
         "id": "R",
-        "label": "Control room (louis-agent.web)",
+        "label": "Control room (LouisAgent.Web)",
         "icon": "chart",
         "tone": "blue"
       },
       {
         "id": "A",
-        "label": "puls: louis-agent.api",
+        "label": "puls: LouisAgent.Api",
         "icon": "server",
         "tone": "violet"
       },

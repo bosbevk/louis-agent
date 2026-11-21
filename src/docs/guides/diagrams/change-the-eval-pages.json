@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "evals", "icon": "checks", "title": "The eval pages", "code": "louis-agent.web.evals", "look": "highlight",
+        { "id": "evals", "icon": "checks", "title": "The eval pages", "code": "LouisAgent.Web.Evals", "look": "highlight",
           "text": "The evals and their stored runs, for the builders." }
       ] },
       { "cards": [

@@ -1,0 +1,294 @@
+<svg viewBox="-24 -24 1712 1003" width="1712" height="1003" role="img" aria-label="AgentEngine: what it is made of" xmlns="http://www.w3.org/2000/svg">
+  <title>AgentEngine: what it is made of</title>
+  <style>svg {
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+[data-style="dark"] svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+[data-style="light"] svg { --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c; }
+.ground { fill: var(--ground); }
+.arrow { fill: var(--quiet); }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
+svg {
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+</style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+[data-style="dark"] svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+[data-style="light"] svg { --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95); }
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+[data-style="dark"] svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+[data-style="light"] svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
+.cmp-code { font: 500 11px var(--mono); }
+.cmp-ghost { fill: none; stroke-width: 1; stroke-dasharray: 4 4; stroke-opacity: .7; }
+.cmp-code-name { fill: var(--text); font: 600 12.5px var(--mono); }
+.cmp-chip-text, .cmp-pin-text { font: 500 10px var(--mono); }
+.cmp-pin { stroke-width: 1.25; }
+.cmp-pin.up { fill: var(--ground); }
+.cmp-pill { stroke-width: 1.5; }
+.cmp-pill-text { fill: var(--text); font: 600 12.5px var(--pic-sans); }
+.cmp-pulse { animation: cmp-pulse 2.4s ease-in-out infinite; }
+@keyframes cmp-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) {
+  .cmp-pulse { animation: none; }
+}
+.cps-wire {
+  fill: none; stroke: var(--quiet); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.cps-words { font: 500 11px var(--mono); }.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.2em; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1712" height="1003" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a856 190 0 1 0 1712 0a856 190 0 1 0 -1712 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">AgentEngine: what it is made of</text>
+    <text class="pic-group" x="1648" y="14" text-anchor="end">Composite structure diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="1664" height="1" rx="0" />
+    <g class="cps" transform="translate(0 44)">
+      <rect class="pic-panel" x="265.1" y="0" width="1194.7" height="770" rx="14" />
+      <text class="pic-name" x="287.1" y="23" text-anchor="start">AgentEngine</text>
+      <rect class="pic-tint tone-green" x="394.1" y="10" width="46.5" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="402.1" y="22.5" text-anchor="start">class</text>
+      <text class="pic-note" x="1443.8" y="23" text-anchor="end">LouisAgent.Core, Agent</text>
+      <path class="cps-wire" d="M599.3 290L705.4 290Q729.4 290 729.4 266L729.4 99Q729.4 78 750.4 78L771.4 78" />
+      <path class="cps-wire" d="M599.3 290L705.4 290Q729.4 290 729.4 266L729.4 196Q729.4 175 750.4 175L771.4 175L1065.4 175L1125.5 175" />
+      <path class="cps-wire" d="M1065.4 78L1080.4 78Q1095.5 78 1095.5 93L1095.5 142Q1095.5 157 1110.5 157L1125.5 157" />
+      <path class="cps-wire" d="M1065.4 290L1080.4 290Q1095.5 290 1095.5 275L1095.5 226Q1095.5 211 1110.5 211L1125.5 211" />
+      <path class="cps-wire" d="M599.3 502L687.4 502Q711.4 502 711.4 478L711.4 323Q711.4 299 735.4 299L771.4 299" />
+      <path class="cps-wire" d="M599.3 502L687.4 502Q711.4 502 711.4 526L711.4 681Q711.4 705 735.4 705L771.4 705" />
+      <path class="pic-line pic-edge tone-green" d="M301.4 290L313.6 290L373.7 290" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M301.4 290L313.6 290L373.7 290" />
+      <path class="pic-line pic-edge tone-green" d="M295.3 502L313.6 502L373.7 502" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M295.3 502L313.6 502L373.7 502" />
+      <path class="pic-line pic-edge tone-green" d="M307.5 184L313.6 184L373.7 184L599.3 184L723.4 184Q747.4 184 747.4 208L747.4 269Q747.4 281 759.4 281L771.4 281" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M307.5 184L313.6 184L373.7 184L599.3 184L723.4 184Q747.4 184 747.4 208L747.4 269Q747.4 281 759.4 281L771.4 281" />
+      <path class="pic-line pic-edge tone-green" d="M298.4 608L313.6 608L328.6 608Q343.7 608 343.7 623L343.7 708Q343.7 723 358.7 723L373.7 723L599.3 723L771.4 723" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M298.4 608L313.6 608L328.6 608Q343.7 608 343.7 623L343.7 708Q343.7 723 358.7 723L373.7 723L599.3 723L771.4 723" />
+      <path class="pic-line pic-edge tone-green" d="M313.6 396L313.6 396L328.6 396Q343.7 396 343.7 381L343.7 208Q343.7 193 358.7 193L373.7 193L599.3 193L771.4 193L1065.4 193L1125.5 193" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M313.6 396L313.6 396L328.6 396Q343.7 396 343.7 381L343.7 208Q343.7 193 358.7 193L373.7 193L599.3 193L771.4 193L1065.4 193L1125.5 193" />
+      <path class="pic-line pic-edge tone-teal" d="M599.3 290L705.4 290Q729.4 290 729.4 314L729.4 481Q729.4 502 750.4 502L771.4 502L1065.4 502L1125.5 502L1351.1 502L1411.2 502L1429.5 502" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M599.3 290L705.4 290Q729.4 290 729.4 314L729.4 481Q729.4 502 750.4 502L771.4 502L1065.4 502L1125.5 502L1351.1 502L1411.2 502L1429.5 502" />
+      <path class="pic-line pic-edge tone-teal" d="M599.3 290L705.4 290Q729.4 290 729.4 314L729.4 587Q729.4 608 750.4 608L771.4 608L1065.4 608L1125.5 608L1351.1 608L1411.2 608L1429.5 608" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M599.3 290L705.4 290Q729.4 290 729.4 314L729.4 587Q729.4 608 750.4 608L771.4 608L1065.4 608L1125.5 608L1351.1 608L1411.2 608L1429.5 608" />
+      <path class="pic-line pic-edge tone-teal" d="M1065.4 714L1125.5 714L1351.1 714L1411.2 714L1411.2 714" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M1065.4 714L1125.5 714L1351.1 714L1411.2 714L1411.2 714" />
+      <rect class="pic-pill pic-edge" x="618.3" y="281" width="92" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink" x="664.3" y="293" text-anchor="middle">the pipeline</text>
+      <rect class="pic-panel" x="373.7" y="258" width="225.6" height="64" rx="10" />
+      <text class="pic-name" x="389.7" y="286" text-anchor="start">TurnRunner</text>
+      <rect class="pic-tint tone-green" x="530.7" y="273" width="52.6" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="538.7" y="285.5" text-anchor="start">_turns</text>
+      <text class="pic-note" x="389.7" y="302" text-anchor="start">one turn on the pipeline</text>
+      <rect class="pic-panel" x="373.7" y="464" width="225.6" height="76" rx="10" />
+      <text class="pic-name" x="389.7" y="492" text-anchor="start">UserCommands</text>
+      <rect class="pic-tint tone-green" x="512.4" y="479" width="70.9" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="520.4" y="491.5" text-anchor="start">_commands</text>
+      <text class="pic-note" x="389.7" y="508" text-anchor="start">what the user types that</text>
+      <text class="pic-note" x="389.7" y="520" text-anchor="start">the model never sees</text>
+      <rect class="pic-panel" x="771.4" y="34" width="294" height="88" rx="10" />
+      <text class="pic-name" x="787.4" y="62" text-anchor="start">ToolCallGuards</text>
+      <rect class="pic-tint tone-green" x="990.7" y="49" width="58.7" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="998.7" y="61.5" text-anchor="start">_guards</text>
+      <text class="pic-note" x="787.4" y="78" text-anchor="start">stops a cut-off call,</text>
+      <text class="pic-note" x="787.4" y="90" text-anchor="start">sums up an oversized</text>
+      <text class="pic-note" x="787.4" y="102" text-anchor="start">result</text>
+      <rect class="pic-panel" x="771.4" y="252" width="294" height="76" rx="10" />
+      <text class="pic-name" x="787.4" y="280" text-anchor="start">AgentBuiltTools</text>
+      <rect class="pic-tint tone-green" x="935.8" y="267" width="113.6" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="943.8" y="279.5" text-anchor="start">_agentBuiltTools</text>
+      <text class="pic-note" x="787.4" y="296" text-anchor="start">the tools the agent wrote</text>
+      <text class="pic-note" x="787.4" y="308" text-anchor="start">itself</text>
+      <rect class="pic-panel" x="771.4" y="670" width="294" height="88" rx="10" />
+      <text class="pic-name" x="787.4" y="698" text-anchor="start">SkillTools</text>
+      <rect class="pic-tint tone-green" x="966.3" y="685" width="83.1" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="974.3" y="697.5" text-anchor="start">_skillTools</text>
+      <text class="pic-note" x="787.4" y="714" text-anchor="start">the system prompt,</text>
+      <text class="pic-note" x="787.4" y="726" text-anchor="start">running and writing</text>
+      <text class="pic-note" x="787.4" y="738" text-anchor="start">skills</text>
+      <rect class="pic-panel" x="1125.5" y="142" width="225.6" height="84" rx="10" />
+      <text class="pic-name" x="1141.5" y="170" text-anchor="start">ToolRegistry</text>
+      <rect class="pic-tint tone-green" x="1264.2" y="157" width="70.9" height="18" rx="9" />
+      <text class="cmp-chip-text pic-ink tone-green" x="1272.2" y="169.5" text-anchor="start">_registry</text>
+      <text class="pic-note" x="1141.5" y="186" text-anchor="start">the tools the model is</text>
+      <text class="pic-note" x="1141.5" y="198" text-anchor="start">offered</text>
+      <rect class="cmp-pin pic-edge pic-tint tone-green" x="228.7" y="281" width="72.7" height="18" rx="9" />
+      <path class="pic-fill tone-green" d="M236.7 287L240.7 293L244.7 287Z" />
+      <text class="cmp-pin-text pic-ink tone-green" x="249.7" y="293.5" text-anchor="start">prompts</text>
+      <text class="cps-words pic-ink tone-green" x="218.7" y="294" text-anchor="end">ProcessPromptAsync</text>
+      <rect class="cmp-pin pic-edge pic-tint tone-green" x="234.8" y="493" width="60.5" height="18" rx="9" />
+      <path class="pic-fill tone-green" d="M242.8 499L246.8 505L250.8 499Z" />
+      <text class="cmp-pin-text pic-ink tone-green" x="255.8" y="505.5" text-anchor="start">typed</text>
+      <text class="cps-words pic-ink tone-green" x="224.8" y="506" text-anchor="end">HandleUserCommand</text>
+      <rect class="cmp-pin pic-edge pic-tint tone-green" x="222.6" y="175" width="84.9" height="18" rx="9" />
+      <path class="pic-fill tone-green" d="M230.6 181L234.6 187L238.6 181Z" />
+      <text class="cmp-pin-text pic-ink tone-green" x="243.6" y="187.5" text-anchor="start">own tools</text>
+      <text class="cps-words pic-ink tone-green" x="212.6" y="188" text-anchor="end">CreateTool</text>
+      <rect class="cmp-pin pic-edge pic-tint tone-green" x="231.8" y="599" width="66.6" height="18" rx="9" />
+      <path class="pic-fill tone-green" d="M239.8 605L243.8 611L247.8 605Z" />
+      <text class="cmp-pin-text pic-ink tone-green" x="252.8" y="611.5" text-anchor="start">skills</text>
+      <text class="cps-words pic-ink tone-green" x="221.8" y="612" text-anchor="end">ExecuteSkill</text>
+      <rect class="cmp-pin pic-edge pic-tint tone-green" x="216.5" y="387" width="97.1" height="18" rx="9" />
+      <path class="pic-fill tone-green" d="M224.5 393L228.5 399L232.5 393Z" />
+      <text class="cmp-pin-text pic-ink tone-green" x="237.5" y="399.5" text-anchor="start">found tools</text>
+      <text class="cps-words pic-ink tone-green" x="206.5" y="400" text-anchor="end">RegisterDiscoveredTool</text>
+      <rect class="cmp-pin pic-edge tone-teal up" x="1429.5" y="493" width="60.5" height="18" rx="9" />
+      <path class="pic-fill tone-teal" d="M1437.5 504.5L1441.5 498.5L1445.5 504.5Z" />
+      <text class="cmp-pin-text pic-ink tone-teal" x="1450.5" y="505.5" text-anchor="start">model</text>
+      <text class="cps-words pic-ink tone-teal" x="1500" y="506" text-anchor="start">IChatClient</text>
+      <rect class="cmp-pin pic-edge tone-teal up" x="1429.5" y="599" width="60.5" height="18" rx="9" />
+      <path class="pic-fill tone-teal" d="M1437.5 610.5L1441.5 604.5L1445.5 610.5Z" />
+      <text class="cmp-pin-text pic-ink tone-teal" x="1450.5" y="611.5" text-anchor="start">usage</text>
+      <text class="cps-words pic-ink tone-teal" x="1500" y="612" text-anchor="start">IUsageSink, if given</text>
+      <rect class="cmp-pin pic-edge tone-teal up" x="1411.2" y="705" width="97.1" height="18" rx="9" />
+      <path class="pic-fill tone-teal" d="M1419.2 716.5L1423.2 710.5L1427.2 716.5Z" />
+      <text class="cmp-pin-text pic-ink tone-teal" x="1432.2" y="717.5" text-anchor="start">skill files</text>
+      <text class="cps-words pic-ink tone-teal" x="1518.3" y="718" text-anchor="start">ISkillProvider</text>
+    </g>
+    <rect class="mrq-rule" x="0" y="840" width="1664" height="1" rx="0" />
+    <text class="pic-group" x="0" y="862" text-anchor="start">How to read it</text>
+    <rect class="cmp-key cmp-pin pic-edge pic-tint tone-green" x="0" y="879" width="66.6" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M8 885L12 891L16 885Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="21" y="891.5" text-anchor="start">a port</text>
+    <text class="pic-means" x="76.6" y="892.5" text-anchor="start">asked of the class</text>
+    <rect class="cmp-key cmp-pin pic-edge tone-green up" x="225.4" y="879" width="66.6" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M233.4 890.5L237.4 884.5L241.4 890.5Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="246.4" y="891.5" text-anchor="start">a port</text>
+    <text class="pic-means" x="302" y="892.5" text-anchor="start">what the class needs</text>
+    <path class="cps-key cps-wire" d="M464 888H494" />
+    <text class="pic-means" x="504" y="892.5" text-anchor="start">two parts work together</text>
+    <path class="cps-key pic-line pic-edge" d="M685.8 888H715.8" marker-end="url(#arrow)" />
+    <text class="pic-means" x="725.8" y="892.5" text-anchor="start">passed on</text>
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="1648" y="862" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+    </g>
+  </g>
+  <rect class="notebar" x="0" y="918" width="1664" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 928) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="940">
+    <tspan class="note-head">One engine, six parts:</tspan>
+    <tspan class="note-rest">it builds them once, hands each what it needs, and passes what it is asked on to the part that does it.</tspan>
+  </text>
+</svg>

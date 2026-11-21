@@ -67,5 +67,5 @@ They are recordings of real runs, not mock-ups. The words on screen are what the
 to make, once, and nothing to watch.
 
 ---
-[Docs index](README.md) · Related: [the site's project doc](../../../src/docs/projects/louis-agent.site.md),
-[the showroom's identities](../../../src/docs/projects/louis-agent.identity.showroom.md)
+[Docs index](README.md) · Related: [the site's project doc](../../../src/docs/projects/LouisAgent.Site.md),
+[the showroom's identities](../../../src/docs/projects/LouisAgent.Identities.Showroom.md)

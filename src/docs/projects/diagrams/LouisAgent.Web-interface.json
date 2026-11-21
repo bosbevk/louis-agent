@@ -1,0 +1,176 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Web: the interface design",
+  "caption": "What every site shares: shells for its frames, one runner for a chat's turn over the agent API, the chats kept in the browser, and an address for every place.",
+  "classes": {
+    "types": [
+      {
+        "id": "shells",
+        "name": "SiteShell, ChatShell, AdminShell, ShowroomShell",
+        "kind": "the frames a site's pages sit in"
+      },
+      {
+        "id": "runner",
+        "name": "ChatRunner",
+        "kind": "one chat's life: draft, session, stream, save",
+        "members": [
+          "+StartTurnAsync(message, attachments, page?, title?)",
+          "+SendAsync(), StopAsync()",
+          "+DeleteChatAsync(chat)"
+        ]
+      },
+      {
+        "id": "api",
+        "name": "AgentApi",
+        "kind": "the agent API over HTTP",
+        "members": [
+          "+CreateSessionAsync(toolsets, role?) string",
+          "+StreamMessageAsync(...) IAsyncEnumerable<SessionEvent>",
+          "+CancelAsync, DeleteSessionAsync",
+          "+GetAsync<T>, PostAsync<T>, PutAsync<T>"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "ChatStore",
+        "kind": "the browser's storage",
+        "members": [
+          "+LoadAsync(), SaveAsync()",
+          "+Find(sessionId) Chat?",
+          "+SaveApiKeyAsync, SaveAdminKeyAsync"
+        ]
+      },
+      {
+        "id": "addresses",
+        "name": "SiteAddresses",
+        "kind": "ADR 0107: every place its own address",
+        "members": [
+          "+SiteAddresses(home, pages)"
+        ]
+      },
+      {
+        "id": "section",
+        "name": "SectionPage",
+        "kind": "LouisAgent.Web.Places: the catch-all that draws a place's page",
+        "tone": "violet"
+      },
+      {
+        "id": "graph",
+        "name": "GraphView",
+        "kind": "an animated diagram",
+        "members": [
+          "+GraphSpec Spec"
+        ]
+      },
+      {
+        "id": "menu",
+        "name": "IAccountMenu",
+        "kind": "interface, a site's account corner",
+        "members": [
+          "+Enabled, SignedIn, Name?, Email?",
+          "+LoadAsync(), SignOutAsync()"
+        ]
+      },
+      {
+        "id": "packviews",
+        "name": "IScreenView, IImportView",
+        "kind": "interfaces, a pack's own views",
+        "members": [
+          "+Screen ScreenReply; +Form ImportForm"
+        ]
+      },
+      {
+        "id": "calls",
+        "name": "CardCall, OfferCall, CardsLast",
+        "kind": "the calls the chat draws",
+        "members": [
+          "+SourceOf(Block) DiagramSource?",
+          "+Of(Block) Offered?"
+        ]
+      },
+      {
+        "id": "windows",
+        "name": "AgentWindows",
+        "kind": "an Observer: which window shows which agent",
+        "members": [
+          "+Show(identity), Take(Block)",
+          "+event Asked, Moved"
+        ]
+      },
+      {
+        "id": "editing",
+        "name": "InlineEdit, InlineForm, TextField, TagInput",
+        "kind": "pieces for a page a person edits",
+        "members": [
+          "+Value, ValueChanged: plain words with no listener",
+          "PartChanges: a part listens when the whole does"
+        ]
+      },
+      {
+        "id": "layout",
+        "name": "GraphLayout, TicketCard",
+        "kind": "LouisAgent.Diagrams",
+        "tone": "violet"
+      },
+      {
+        "id": "contracts",
+        "name": "LouisAgent.Api.Contracts",
+        "kind": "the requests and replies, shared",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "shells",
+        "to": "runner",
+        "kind": "holds",
+        "word": "the chat frame's"
+      },
+      {
+        "from": "shells",
+        "to": "menu",
+        "kind": "uses",
+        "word": "shows"
+      },
+      {
+        "from": "runner",
+        "to": "api",
+        "kind": "holds"
+      },
+      {
+        "from": "runner",
+        "to": "store",
+        "kind": "holds"
+      },
+      {
+        "from": "api",
+        "to": "contracts",
+        "kind": "uses",
+        "word": "reads and sends"
+      },
+      {
+        "from": "section",
+        "to": "addresses",
+        "kind": "uses"
+      },
+      {
+        "from": "graph",
+        "to": "layout",
+        "kind": "uses",
+        "word": "places"
+      },
+      {
+        "from": "calls",
+        "to": "layout",
+        "kind": "uses",
+        "word": "reads a ticket"
+      },
+      {
+        "from": "shells",
+        "to": "windows",
+        "kind": "uses",
+        "word": "hands an ask to"
+      }
+    ]
+  }
+}

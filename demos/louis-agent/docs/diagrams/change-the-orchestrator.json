@@ -4,7 +4,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "orch", "icon": "server", "title": "louis-agent.orchestrator", "code": "proof of concept",
+        { "id": "orch", "icon": "server", "title": "LouisAgent.Orchestrator", "code": "proof of concept",
           "look": "highlight",
           "text": "Reads a service's errors, triages each with its runbooks, asks for a fix and checks the claim." }
       ] },

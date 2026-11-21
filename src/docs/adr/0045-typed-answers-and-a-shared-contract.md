@@ -6,7 +6,7 @@ parse it? is this the standard?") · **Recorded:** 2026-10-27
 ## Context
 
 After the endpoint sweep's first file, every handler returned `Task<IResult>` through `Results.Json`, and the replies
-were records inside `louis-agent.api`. The return type said only "some HTTP answer", and the Puls admin pages read the
+were records inside `LouisAgent.Api`. The return type said only "some HTTP answer", and the Puls admin pages read the
 same replies as raw `JsonElement`, digging fields out by name in seven files: rename a field on the server and the page
 breaks in the browser, not in the build. Errors go out as `{"type":"error","error":{"type","message"}}` from an
 anonymous object in `ApiErrors`, a shape the web apps and the orchestrator read.
@@ -29,8 +29,8 @@ serializer can't read JSON into an interface, so a client needs the concrete rec
   (`using TrendAnswer = …;`) so the signature stays readable.
 - **Errors keep their shape as a record**, `ApiError` (`type` and `error { type, message }`), built by `ApiErrors`;
   no anonymous object is left there.
-- **The records are the contract and live in `louis-agent.api.contracts`**: replies, request bodies, `ApiError` and
-  each wire's options object (`AdminJson.SnakeCase`). It references nothing, like `louis-agent.choices`, so the API and
+- **The records are the contract and live in `LouisAgent.Api.Contracts`**: replies, request bodies, `ApiError` and
+  each wire's options object (`AdminJson.SnakeCase`). It references nothing, like `LouisAgent.Choices`, so the API and
   any client (Puls, the code-review web app, the orchestrator, a customer's app) can reference it.
 - **A client reads the record**, `GetFromJsonAsync<TrendReply>(url, AdminJson.SnakeCase)`, never a `JsonElement`
   picked apart by name ([0041](0041-json-through-records-by-hand-only-for-bytes.md) already keeps `JsonElement` for

@@ -63,7 +63,7 @@
       },
       {
         "id": "mcp",
-        "label": "louis-agent.mcp\ndoc:// resources (step 9)",
+        "label": "LouisAgent.Mcp\ndoc:// resources (step 9)",
         "icon": "server",
         "tone": "violet"
       },
@@ -145,7 +145,7 @@
     "groups": [
       {
         "id": "image",
-        "label": "the site's image (louis-agent.site-api)"
+        "label": "the site's image (LouisAgent.SiteApi)"
       }
     ],
     "direction": "down"

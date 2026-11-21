@@ -1,12 +1,12 @@
 # Change the eval pages
 
 > **How-to.** Change the framework's eval pages: the Evals page, one run's page, the Review page, the studio and the
-> prompts; and give a site the pages. **Elsewhere:** how they work in [The eval pages](../projects/louis-agent.web.evals.md);
+> prompts; and give a site the pages. **Elsewhere:** how they work in [The eval pages](../projects/LouisAgent.Web.Evals.md);
 > the rest of the framework's web in [Change the framework's web](change-the-web.md).
 
 ![The eval pages: a site turns them on with .Evals(), and they hold the Evals page, a run's page and the Review page, read through the API's admin routes](diagrams/change-the-eval-pages.svg)
 
-The eval pages are a library a site turns on, `src/web/louis-agent.web.evals`. They're in English, for the builders,
+The eval pages are a library a site turns on, `src/web/LouisAgent.Web.Evals`. They're in English, for the builders,
 and they show the evals and their stored runs through the API's admin routes, which need the admin key. They name no
 site, so whatever differs between sites comes in through the one call that turns them on.
 
@@ -29,7 +29,7 @@ the home ([ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)). 
 
 3. **Add `@using LouisAgent.Web.Evals`** to `_Imports.razor`.
 4. **Map the API side** in the site's program, with `MapLouisAgentEvals`
-   ([louis-agent.api.evals](../projects/louis-agent.api.evals.md)).
+   ([LouisAgent.Api.Evals](../projects/LouisAgent.Api.Evals.md)).
 
 A site that wants its sources chart sorted hands the call its kinds of website:
 
@@ -84,7 +84,7 @@ eval, version, commit and graders, and each conversation's grades and outcome. S
 shows its grades the way every other does, with `GraderList` above the explorer and `GradeChips` on each
 conversation's row (F18 step 4.5c).
 
-Don't read an eval's own score key in a view. `PortalReadsNoScoreKeyTests`, in `src/tests/web/louis-agent.web.evals.tests`,
+Don't read an eval's own score key in a view. `PortalReadsNoScoreKeyTests`, in `src/tests/web/LouisAgent.Web.Evals.Tests`,
 fails on a read of `scores` or a test on a task's name, and its list of files still allowed to do so is empty. The
 grades code lives in `Admin/Grades/` (the records and their words in `GradesText`, `Reading/` for the readers and the
 outcome parsed once, `Chips/` for the chip list and an outcome's chip class) and in `Components/Grades/`. A new class
@@ -93,8 +93,8 @@ there uses the theme's CSS variables and the existing `.chip` kinds.
 ## Test it
 
 ```bash
-dotnet test src/tests/web/louis-agent.web.evals.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.evals.tests    # after a deliberate markup change, then read the diff
+dotnet test src/tests/web/LouisAgent.Web.Evals.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/LouisAgent.Web.Evals.Tests    # after a deliberate markup change, then read the diff
 ```
 
 ---

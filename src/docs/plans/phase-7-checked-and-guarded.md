@@ -31,10 +31,10 @@ here). FX4's own doc cites the preserved-thinking page, which counts "Add, remov
 as an edit that invalidates later thinking (`docs/fixes/FX04-append-only-history.md:18-19`).
 
 - **Today in the code.** `BeginTurn` rewrites `history[0]` when the skill documentation changes
-  (`louis-agent.core/Agent/AgentEngine.cs:257-259`) and hands every request the engine's live list (`:268`,
-  `chatOptions.Tools = _registry.Live`; `louis-agent.core/Agent/ToolRegistry.cs:22-26`). FX1's final request sends the
-  live list too (`louis-agent.core/Agent/ToolCallGuards.cs:85`). Since F5 an engine is built per toolset list, and up
-  to 16 are cached and shared by every chat with that list (`louis-agent.core/Hosting/AgentEngineFactory.cs:34`), so
+  (`LouisAgent.Core/Agent/AgentEngine.cs:257-259`) and hands every request the engine's live list (`:268`,
+  `chatOptions.Tools = _registry.Live`; `LouisAgent.Core/Agent/ToolRegistry.cs:22-26`). FX1's final request sends the
+  live list too (`LouisAgent.Core/Agent/ToolCallGuards.cs:85`). Since F5 an engine is built per toolset list, and up
+  to 16 are cached and shared by every chat with that list (`LouisAgent.Core/Hosting/AgentEngineFactory.cs:34`), so
   one chat's new tool changes every open chat with the same toolsets (`TODO.md:403-404`). FX4's doc predates that: its
   cause table still says the API has "one engine for all sessions" (`docs/fixes/FX04-append-only-history.md:28`), so
   its plan starts by bringing the cause table up to date. From Phase 1's FX20, approving a skill file reloads the
@@ -42,7 +42,7 @@ as an edit that invalidates later thinking (`docs/fixes/FX04-append-only-history
   started after `/approve`.
 - **The fix, as its doc has it** (`:32-57`). A conversation keeps a copy of its tool list from its first request, and
   `CreateTool`'s reply says the tool is "available in your next chat" (`:38`) instead of today's "You can call it now"
-  (`louis-agent.core/Messages/ToolMessage.cs:711`). FX1's final-request middleware restores the conversation's list from
+  (`LouisAgent.Core/Messages/ToolMessage.cs:711`). FX1's final-request middleware restores the conversation's list from
   a key in `ChatOptions.AdditionalProperties`, removed from a copy of the options before the provider sees it.
   `history[0]` is kept, and after a skill reload a short system message is appended (`:52`). F9 is designed append-only
   too (`:56`).
@@ -68,10 +68,10 @@ as an edit that invalidates later thinking (`docs/fixes/FX04-append-only-history
 
 **Each tool declares its effect** (`ToolEffect`; skill 4's annotations, `docs/GOAL.md:25`, and skill 16). Read-only,
 destructive, idempotent and open-world, declared on each tool, in place of the per-toolset `ParallelSafe`
-(`louis-agent.core/Agent/ToolsetDefinition.cs:16-19,32`). It has four readers: parallel rounds (ADR 0026), F41's
+(`LouisAgent.Core/Agent/ToolsetDefinition.cs:16-19,32`). It has four readers: parallel rounds (ADR 0026), F41's
 approval per risk, F42's audit line, and the annotations our MCP server publishes (Phase 8). It lives in
-`louis-agent.core/Tools/`, because `ArchitectureTests` put `Tools` at layer 2, below `Agent` at 3, and fail any `Tools`
-file that uses `Agent/` (`tests/louis-agent.core.tests/ArchitectureTests.cs:12-20`); only the policy that reads it sits
+`LouisAgent.Core/Tools/`, because `ArchitectureTests` put `Tools` at layer 2, below `Agent` at 3, and fail any `Tools`
+file that uses `Agent/` (`tests/LouisAgent.Core.Tests/ArchitectureTests.cs:12-20`); only the policy that reads it sits
 in `Agent/`. Its ADR amends ADR 0026 (*Parallel tool calls for read-only toolsets*), whose status line then names it, as
 ADR 0022's names 0029. A tool that declares nothing counts as destructive and open-world, the MCP specification's
 defaults for a bare tool (Part 3, row 19). An MCP `ReadOnly` hint comes from `ToolEffect`, never from `ParallelSafe`. It
@@ -80,13 +80,13 @@ is the first part of F41's plan, because F41's policy is its first reader.
 **A timeout per tool, beside its effect** (from Existo's per-tool timeouts, ADR 0030). Each tool declares how long it
 may run next to the effect it declares, so a slow tool fails with its reason (ADR 0005) instead of holding the turn.
 Today `ToolCallGuards` sets no timeout of its own: it catches a failed call and summarises an oversized result
-(`louis-agent.core/Agent/ToolCallGuards.cs:38-69`). The timeouts that exist are written into each kind of call: a
-skill's shell command stops after 30 seconds (`ShellTimeoutMs`, `louis-agent.core/Agent/Tools/SkillTools.cs:22,242,282`);
+(`LouisAgent.Core/Agent/ToolCallGuards.cs:38-69`). The timeouts that exist are written into each kind of call: a
+skill's shell command stops after 30 seconds (`ShellTimeoutMs`, `LouisAgent.Core/Agent/Tools/SkillTools.cs:22,242,282`);
 an agent-built script tool after its own `TimeoutSeconds`, 60 by default
-(`louis-agent.core/Tools/Scripts/ScriptToolDefinition.cs:18-30`, `louis-agent.core/Agent/Tools/AgentBuiltTools.cs:200,210`);
+(`LouisAgent.Core/Tools/Scripts/ScriptToolDefinition.cs:18-30`, `LouisAgent.Core/Agent/Tools/AgentBuiltTools.cs:200,210`);
 the bash and PowerShell tools after a `timeoutSeconds` argument the model passes, 60 by default and at most 600
-(`louis-agent.core/Tools/Shell/BashTools.cs:39,54`, `PowerShellTools.cs:53,69`); git calls report their own timeout
-(`louis-agent.core/Tools/Git/GitTools.cs:333,367`); and some HTTP clients set theirs (Paymo 10 seconds, DevOps 30, Rider's
+(`LouisAgent.Core/Tools/Shell/BashTools.cs:39,54`, `PowerShellTools.cs:53,69`); git calls report their own timeout
+(`LouisAgent.Core/Tools/Git/GitTools.cs:333,367`); and some HTTP clients set theirs (Paymo 10 seconds, DevOps 30, Rider's
 MCP client 30: `PaymoTools.cs:24`, `DevOpsTools.cs:32`, `RiderMcpClient.cs:23,29`). Other tools have none. Whether the
 guard enforces the declared timeout for every tool, and what a tool that declares none gets, is F41's plan's to decide
 (*inferred*).
@@ -102,13 +102,13 @@ Nothing is applied until a person approves it in the control room.
   session's setting, and anything outside it asks. An ask goes through Microsoft.Extensions.AI's
   `ApprovalRequiredAIFunction` and `ToolApprovalRequestContent`, streamed to every host, the same content Phase 5's
   budgets that ask use, so nothing is hand-built for it. The shell toolsets, which run any code
-  (`louis-agent.core/Agent/ToolsetCatalog.cs:46-63`), get their effect and so their policy here too.
+  (`LouisAgent.Core/Agent/ToolsetCatalog.cs:46-63`), get their effect and so their policy here too.
 - **Orange packs ask by default.** Every tool of someone else's MCP server counts as an action outside the workspace, so
   it asks. Phase 8 feeds this policy: a server's annotations can only tighten it, except `readOnlyHint` from a server
   named as trusted in settings, which may relax it (Phase 8's *Trust*; the MCP specification: annotations are untrusted
   unless the server is trusted).
 - **One place to approve.** What waits for approval today moves to the control room: agent-built tools (`/approve`,
-  `/reject`, `louis-agent.core/Agent/Tools/AgentBuiltTools.cs:12-13`) and, from Phase 1's FX20, the skill files the
+  `/reject`, `LouisAgent.Core/Agent/Tools/AgentBuiltTools.cs:12-13`) and, from Phase 1's FX20, the skill files the
   agent writes. The control room also gains a skills page listing the agent's own skills (`Skills/agent/functions/`)
   and the built-in ones (core's and each pack's `Prompts/`), the other half of `TODO.md:245`.
 - **The invoice simulation's match becomes a draft**, and the simulation grades how often the first draft is valid.
@@ -118,7 +118,7 @@ Nothing is applied until a person approves it in the control room.
 
 - **One untrusted-content frame** (Part 3, row 21): a random boundary per call, the source, `as_of` and a length cap, in
   one `ToolMessage` member, around web pages, shops, sub-session answers and MCP results. Today the web fence is written
-  inline in C# (`louis-agent.core/Tools/Web/WebTools.cs:140,142`) and pinned by no golden, the shops' fence is already a
+  inline in C# (`LouisAgent.Core/Tools/Web/WebTools.cs:140,142`) and pinned by no golden, the shops' fence is already a
   message member (`ToolMessage.cs:285-286,289`), and a sub-session's answer goes back unfenced (`:768-769`). The inline
   fence becomes message members (ADR 0009), so the golden pins it. A fixed fence can be closed by a page that contains
   its end line, and a random boundary per call can't (*inferred*; OWASP LLM01:2025 asks for external content to be
@@ -136,7 +136,7 @@ Nothing is applied until a person approves it in the control room.
   https from a shop's image host, F33, `docs/GOAL.md:36`).
 - **The egress proxy for the browser**: a name resolved once and internal addresses refused, so DNS rebinding and a
   Worker's WebSocket can't reach our own services (all three are skill 15's *Missing* items, `docs/GOAL.md:36`). Today
-  the only rule is the one written by hand (`louis-agent.core/Guardrails/SsrfGuard.cs:29-34,67-70`), which Chrome
+  the only rule is the one written by hand (`LouisAgent.Core/Guardrails/SsrfGuard.cs:29-34,67-70`), which Chrome
   resolves again after it; whether the fetch tools also move behind the proxy is F42's plan's to decide (the MCP
   security best practices prefer a proxy to address checks written by hand, Part 3, row 22). Phase 8's HTTP MCP servers
   go through the proxy too.

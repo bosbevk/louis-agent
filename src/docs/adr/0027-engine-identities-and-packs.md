@@ -6,7 +6,7 @@
 ## Context
 
 Puls grew inside core: 10 of its 26 prompts, the shop tools and the South African time zone default live in
-`louis-agent.core`, so every product built on the engine carries Puls, and a change for Puls is a change to the engine.
+`LouisAgent.Core`, so every product built on the engine carries Puls, and a change for Puls is a change to the engine.
 Louis: "we have to make a clear cut off when it comes to which is the agent and which is Puls". The engine is also what
 we plan to sell, which a product-shaped core can't be.
 
@@ -24,7 +24,7 @@ Considered: a copy of the engine per product (two engines drift apart); packs lo
 - **A pack** (`IAgentPack`) is what an agent can do: toolsets, providers, guides, settings, and the packs it requires,
   by name. A pack never references another pack or an identity. An identity may hold workflow code that uses its own
   packs' public types (voorman's `TriageWorkflow`). `ArchitectureTests` holds both.
-- **One composition project**, `src/hosts/louis-agent.composition`, knows them all; a host chooses with `IDENTITIES` and
+- **One composition project**, `src/hosts/LouisAgent.Composition`, knows them all; a host chooses with `IDENTITIES` and
   `PACKS` at start-up, and an `AgentCatalog` object is passed down, not a static.
 
 ## Consequences

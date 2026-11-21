@@ -59,11 +59,11 @@ logs/
 __pycache__/
 
 # What the build makes from a web app's Styles/
-demos/puls/web/louis-agent.puls/wwwroot/css/
-demos/louis-agent/web/louis-agent.code-review/wwwroot/css/*.css
-demos/starter/web/louis-agent.starter/wwwroot/css/
-src/site/louis-agent.site/wwwroot/css/
-src/site/louis-agent.site-framework/wwwroot/css/
+demos/puls/web/LouisAgent.Puls/wwwroot/css/
+demos/louis-agent/web/LouisAgent.CodeReview/wwwroot/css/*.css
+demos/starter/web/LouisAgent.Starter/wwwroot/css/
+src/site/LouisAgent.Site/wwwroot/css/
+src/site/LouisAgent.SiteFramework/wwwroot/css/
 # What the build makes from a component's own X.razor.scss, beside it (CL58); Blazor bundles it from there
 **/*.razor.css
 demos/.spawn-*/

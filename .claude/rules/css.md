@@ -115,6 +115,6 @@ the step says so. Any change to the text itself is an edit.
 
 - **Every partial is on the list, and everything on the list is there.** `PulsStylesheetTests` checks it through
   `SassStylesheet`, and each other site's stylesheet tests do the same. `SassStylesheet` is in
-  `src/tests/web/louis-agent.web.testing`.
+  `src/tests/web/LouisAgent.Web.Testing`.
 - **A style test finds its rule through `.Read()`**, never by opening one file. On Sass, that is the CSS the build
   made: `app.css` and the components' bundle, with the scope marks off. So the site must have been built.

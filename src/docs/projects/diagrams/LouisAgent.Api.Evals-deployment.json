@@ -1,0 +1,84 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "LouisAgent.Api.Evals: where it runs",
+  "caption": "The eval studio runs inside the API's program and starts the eval runner as a child process in the same container; runs and grades are kept in MongoDB.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "browser",
+        "label": "A browser\nthe admin's Evals pages",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "program",
+        "label": "A demo's API program\nMapLouisAgentEvals",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "evals",
+        "label": "LouisAgent.Api.Evals\nthe studio's routes",
+        "icon": "server",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "runner",
+        "label": "The eval runner\n/app/evals, a child process",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "mongo",
+        "label": "MongoDB\nEVALS_MONGO_URL",
+        "icon": "database",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "models",
+        "label": "A model's server\nAnthropic over HTTPS, or Ollama\non 11434",
+        "icon": "cloud",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "browser",
+        "to": "program",
+        "word": "/admin, behind the key"
+      },
+      {
+        "from": "program",
+        "to": "evals",
+        "word": "adds"
+      },
+      {
+        "from": "evals",
+        "to": "runner",
+        "word": "starts, reads its lines"
+      },
+      {
+        "from": "runner",
+        "to": "models",
+        "word": "a run's requests"
+      },
+      {
+        "from": "evals",
+        "to": "mongo",
+        "word": "runs, grades, drafts"
+      }
+    ],
+    "groups": [
+      {
+        "id": "app",
+        "label": "Docker: the API's container"
+      }
+    ]
+  }
+}

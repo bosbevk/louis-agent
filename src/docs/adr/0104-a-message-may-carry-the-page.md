@@ -39,5 +39,5 @@ sees sent along with the message, or a hand-written line of context per page. Lo
 
 - [ADR 0008: history is append-only](0008-history-is-append-only.md)
 - [ADR 0080: a tool when it improves the prompt](0080-a-tool-when-it-improves-the-prompt.md)
-- `src/hosts/louis-agent.api/Sessions/TurnStream.cs`, `src/web/louis-agent.web/Components/Widget/ChatWidget.razor.cs`
+- `src/hosts/LouisAgent.Api/Sessions/TurnStream.cs`, `src/web/LouisAgent.Web/Components/Widget/ChatWidget.razor.cs`
 - F115 in the work log

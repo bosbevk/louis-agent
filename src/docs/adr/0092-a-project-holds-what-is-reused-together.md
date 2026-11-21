@@ -1,6 +1,6 @@
 # 0092. A project holds what is reused together, and its name says where it sits
 
-**Status:** Accepted · **Date:** 2026-11-07 (Louis, on `louis-agent.choices` and `louis-agent.session-stream`: "this
+**Status:** Accepted · **Date:** 2026-11-07 (Louis, on `LouisAgent.Choices` and `LouisAgent.SessionStream`: "this
 can move into composition?" and "and session-stream?"; of three options he picked **A**, keep them apart; then, on
 the six places that don't follow it: "we will fix all of it in one big CL now", "this must be an adr") · **Recorded:**
 2026-11-07
@@ -39,12 +39,12 @@ of it, so a package holds nothing a user of it would not want. Its three rules:
    model's SDK, MongoDB, Rider: each is a library on the thing it serves. Core knows a provider's *name* (a setting's
    value, `LLM_PROVIDER=anthropic`) but not its SDK.
 
-A project is named for what it is, not what it runs as: `louis-agent.acp` and `louis-agent.mcp`, not
+A project is named for what it is, not what it runs as: `LouisAgent.Acp` and `LouisAgent.Mcp`, not
 `-server` (Louis: "remove -server it is explanatory"); the docker service keeps the word.
 
 CL57 applies the rule to the six places: the API reads what the web is from the seam; the runner's programs hand in
 the telemetry; Rider's discovery becomes the ACP server's behind a discovery seam; the SDKs become three libraries
-on core behind a provider seam; the eval studio becomes `louis-agent.api.evals` and `louis-agent.web.evals`, a site
+on core behind a provider seam; the eval studio becomes `LouisAgent.Api.Evals` and `LouisAgent.Web.Evals`, a site
 opts in.
 
 Weighed and not taken: fold `choices` into `composition` (one project fewer; the browser and the contracts projects

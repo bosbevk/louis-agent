@@ -1,8 +1,8 @@
 # Change the usage probe
 
-> **How-to.** Use and change `src/tools/louis-agent.usage-probe`, the developer tool that shows what a provider
+> **How-to.** Use and change `src/tools/LouisAgent.UsageProbe`, the developer tool that shows what a provider
 > reports as token usage and what the ledger makes of it: check a new provider or model, fix a usage mapper, total a
-> ledger, add a command. **Elsewhere:** what it prints in [louis-agent.usage-probe](../projects/louis-agent.usage-probe.md);
+> ledger, add a command. **Elsewhere:** what it prints in [LouisAgent.UsageProbe](../projects/LouisAgent.UsageProbe.md);
 > why every request is measured in [ADR 0007](../adr/0007-measure-every-request.md).
 
 ![The usage probe: a few small real requests show the provider's raw counts beside the ledger line, and two commands read a ledger without a model call](diagrams/change-the-usage-probe.svg)
@@ -20,9 +20,9 @@ make no model call.
    but they're real, so they cost a little.
 
    ```bash
-   LLM_PROFILE=ollama dotnet run --project src/tools/louis-agent.usage-probe
-   LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project src/tools/louis-agent.usage-probe
-   dotnet run --project src/tools/louis-agent.usage-probe -- --think        # is thinking text returned?
+   LLM_PROFILE=ollama dotnet run --project src/tools/LouisAgent.UsageProbe
+   LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project src/tools/LouisAgent.UsageProbe
+   dotnet run --project src/tools/LouisAgent.UsageProbe -- --think        # is thinking text returned?
    ```
 
 2. **Compare each `ledger:` line with the raw counts above it**: input, output, cache reads and cache writes. They
@@ -37,9 +37,9 @@ Sometimes the standard mapping misreads a provider: cache writes under a key of 
 that leaves out cached tokens.
 
 1. **Write the failing case first** in the provider's usage mapper tests, with the raw counts the probe printed.
-   Anthropic's are `AnthropicUsageMapperTests` in `src/tests/engine/louis-agent.core.anthropic.tests`.
+   Anthropic's are `AnthropicUsageMapperTests` in `src/tests/engine/LouisAgent.Core.Anthropic.Tests`.
 2. **Add a mapper in the provider's own project**, and return it from that provider's `CreateUsageMapper()`.
-   Anthropic's is `src/engine/louis-agent.core.anthropic/AnthropicUsageMapper.cs`. `LlmClientFactory.CreateUsageMapper`
+   Anthropic's is `src/engine/LouisAgent.Core.Anthropic/AnthropicUsageMapper.cs`. `LlmClientFactory.CreateUsageMapper`
    asks the provider: that's the one place a provider is picked, never a check on its name anywhere else
    ([ADR 0003](../adr/0003-provider-strategies.md)).
 3. **Run the probe again.** The `ledger:` lines now match.
@@ -49,8 +49,8 @@ that leaves out cached tokens.
 ## Read a ledger
 
 ```bash
-dotnet run --project src/tools/louis-agent.usage-probe -- --ledger logs/usage-2026-10.jsonl       # price and total it
-dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL fits
+dotnet run --project src/tools/LouisAgent.UsageProbe -- --ledger logs/usage-2026-10.jsonl       # price and total it
+dotnet run --project src/tools/LouisAgent.UsageProbe -- --cache-gaps logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL fits
 ```
 
 Both use the same records and totals as every host (`UsageReport.Total`), so their numbers agree with what a chat

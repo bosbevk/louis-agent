@@ -41,4 +41,4 @@ arguments as data, ADR 0004), or a tool the API validates and the widget acts on
 - [ADR 0106: the landing is a business website from the framework](0106-the-landing-is-a-business-website-from-the-framework.md)
 - [ADR 0080: a tool when it improves the prompt](0080-a-tool-when-it-improves-the-prompt.md)
 - [ADR 0004: arguments as data](0004-arguments-as-data.md)
-- `packs/tools/louis-agent.pack.site/`, `src/web/louis-agent.web/Components/Widget/ChatWidget.razor.cs`
+- `packs/tools/LouisAgent.Packs.Site/`, `src/web/LouisAgent.Web/Components/Widget/ChatWidget.razor.cs`

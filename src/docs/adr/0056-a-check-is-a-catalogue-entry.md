@@ -5,7 +5,7 @@
 ## Context
 
 Today a check is a C# class (behind `IGrader`) built by hand in an eval's `BuildGraders()`, and its whole contract
-(`IGrader`, `Grade`, `Trial` and the turn types) lives inside the harness, `evals/louis-agent.evals`. Two things
+(`IGrader`, `Grade`, `Trial` and the turn types) lives inside the harness, `evals/LouisAgent.Evals`. Two things
 follow. A pack can't ship a check, because a pack may not reference the harness: the harness runs evals and names
 Puls's ([0027](0027-engine-identities-and-packs.md)). And no file can name a check, because every check is a
 constructor call. F49 wants an eval to be a JSON file that names its checks, and a pack to ship the checks beside its
@@ -19,7 +19,7 @@ enum with a switch in the harness (the harness would have to reference every pac
 
 ## Decision
 
-- **The contract lives in `evals/louis-agent.evals.checks`**, which references only what a pack already references:
+- **The contract lives in `evals/LouisAgent.Evals.Checks`**, which references only what a pack already references:
   core (`MessageText`), the session stream (a turn's events) and the eval protocol (the kinds a grade carries). Never
   the harness, a pack, an identity or a package; `ArchitectureTests` holds it. Pattern: *Separated Interface*
   (Fowler, PoEAA). The moved types keep their namespaces (`LouisAgent.Evals…`).
@@ -55,7 +55,7 @@ enum with a switch in the harness (the harness would have to reference every pac
 [Write-up 20: Extensibility](../learning/20-extensibility.md) (F49.1, with the plan's findings 2, 3, 6 to 9) ·
 [F49 Evals as content](../architecture/evals.md#where-f49-came-from) · [0027](0027-engine-identities-and-packs.md) ·
 [0041](0041-json-through-records-by-hand-only-for-bytes.md) · [0043](0043-repeated-names-are-enums.md) ·
-[0055](0055-keep-it-simple.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)
+[0055](0055-keep-it-simple.md) · [LouisAgent.Evals.Checks](../projects/LouisAgent.Evals.Checks.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

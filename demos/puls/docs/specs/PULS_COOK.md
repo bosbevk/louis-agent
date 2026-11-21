@@ -4,7 +4,7 @@
 > `puls-cook` the best home cook and the best teacher in South Africa: what the competition does, what
 > cooking-teaching research says works, what SA households need, and which AI techniques help. Each idea says why,
 > how it fits our engine and what it costs, and then the whole list is put in an order. **Elsewhere:** how the cook
-> works today in [louis-agent.identity.puls](../projects/louis-agent.identity.puls.md); the recipe library in
+> works today in [LouisAgent.Identities.Puls](../projects/LouisAgent.Identities.Puls.md); the recipe library in
 > [ADR 0082](../../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md).
 
 ![The cook, next: what the competition misses, what SA households need, and 18 ideas in three waves](../diagrams/PULS_COOK.svg)

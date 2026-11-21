@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1604 387" width="1604" height="387" role="img" aria-label="Change the Puls web app: run, change, test, look" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1596 387" width="1596" height="387" role="img" aria-label="Change the Puls web app: run, change, test, look" xmlns="http://www.w3.org/2000/svg">
   <title>Change the Puls web app: run, change, test, look</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -143,29 +143,29 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-edge-2" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1604" height="387" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1596" height="387" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a802 190 0 1 0 1604 0a802 190 0 1 0 -1604 0Z" />
+    <path class="mrq-light" d="M-24 74a798 190 0 1 0 1596 0a798 190 0 1 0 -1596 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">Change the Puls web app: run, change, test, look</text>
-    <text class="pic-group" x="1540" y="14" text-anchor="end">Activity diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1556" height="1" rx="0" />
+    <text class="pic-group" x="1532" y="14" text-anchor="end">Activity diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="1548" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M204 34L264.2 34" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M204 34L264.2 34" />
-      <path class="pic-line pic-edge tone-amber" d="M444.2 34L504.3 34" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M444.2 34L504.3 34" />
-      <path class="pic-line pic-edge tone-amber" d="M737.5 34L797.7 34" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M737.5 34L797.7 34" />
-      <path class="pic-line pic-edge tone-green" d="M992.1 34L1056.2 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M992.1 34L1056.2 34" />
-      <path class="pic-line pic-edge tone-green" d="M992.1 34L1004.1 34Q1016.2 34 1016.2 46L1016.2 66Q1016.2 86 1036.2 86L1056.2 86L1259 86L1274.1 86Q1289.1 86 1289.1 71L1289.1 69Q1289.1 52 1306.1 52L1324.4 52" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M992.1 34L1004.1 34Q1016.2 34 1016.2 46L1016.2 66Q1016.2 86 1036.2 86L1056.2 86L1259 86L1274.1 86Q1289.1 86 1289.1 71L1289.1 69Q1289.1 52 1306.1 52L1324.4 52" />
-      <path class="pic-line pic-edge tone-amber" d="M1259 34L1319.2 34" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M1259 34L1319.2 34" />
-      <rect class="pic-pill pic-edge tone-green" x="1021.7" y="25" width="29" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1036.2" y="37" text-anchor="middle">yes</text>
-      <rect class="pic-pill pic-edge tone-green" x="1025.2" y="77" width="22" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-green" x="1036.2" y="89" text-anchor="middle">no</text>
+      <path class="pic-line pic-edge tone-blue" d="M204 34L264.1 34" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M204 34L264.1 34" />
+      <path class="pic-line pic-edge tone-amber" d="M444.1 34L504.2 34" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M444.1 34L504.2 34" />
+      <path class="pic-line pic-edge tone-amber" d="M729.8 34L789.8 34" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M729.8 34L789.8 34" />
+      <path class="pic-line pic-edge tone-green" d="M984.2 34L1048.3 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M984.2 34L1048.3 34" />
+      <path class="pic-line pic-edge tone-green" d="M984.2 34L996.3 34Q1008.3 34 1008.3 46L1008.3 66Q1008.3 86 1028.3 86L1048.3 86L1251.1 86L1266.1 86Q1281.2 86 1281.2 71L1281.2 69Q1281.2 52 1298.2 52L1316.4 52" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M984.2 34L996.3 34Q1008.3 34 1008.3 46L1008.3 66Q1008.3 86 1028.3 86L1048.3 86L1251.1 86L1266.1 86Q1281.2 86 1281.2 71L1281.2 69Q1281.2 52 1298.2 52L1316.4 52" />
+      <path class="pic-line pic-edge tone-amber" d="M1251.1 34L1311.2 34" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M1251.1 34L1311.2 34" />
+      <rect class="pic-pill pic-edge tone-green" x="1013.8" y="25" width="29" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="1028.3" y="37" text-anchor="middle">yes</text>
+      <rect class="pic-pill pic-edge tone-green" x="1017.3" y="77" width="22" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-green" x="1028.3" y="89" text-anchor="middle">no</text>
       <rect class="pic-panel flow-shape pic-edge tone-blue" x="0" y="0" width="204" height="68" rx="34" />
       <rect class="pic-fill tone-blue" x="28" y="20" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(34 26) scale(0.6667)">
@@ -174,55 +174,55 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="64" y="31" text-anchor="start">Run it</text>
       <text class="pic-name" x="64" y="47" text-anchor="start">5070 or 5071</text>
-      <rect class="pic-panel" x="264.2" y="8" width="180" height="52" rx="10" />
-      <rect class="pic-fill tone-amber" x="280.2" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(286.2 26) scale(0.6667)">
+      <rect class="pic-panel" x="264.1" y="8" width="180" height="52" rx="10" />
+      <rect class="pic-fill tone-amber" x="280.1" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(286.1 26) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="pic-name" x="316.2" y="39" text-anchor="start">Make the change</text>
-      <rect class="pic-panel" x="504.3" y="0" width="233.2" height="68" rx="10" />
-      <rect class="pic-fill tone-amber" x="520.3" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(526.3 26) scale(0.6667)">
+      <text class="pic-name" x="316.1" y="39" text-anchor="start">Make the change</text>
+      <rect class="pic-panel" x="504.2" y="0" width="225.6" height="68" rx="10" />
+      <rect class="pic-fill tone-amber" x="520.2" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(526.2 26) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="pic-name" x="556.3" y="31" text-anchor="start">dotnet test</text>
-      <text class="pic-name" x="556.3" y="47" text-anchor="start">louis-agent.puls.tests</text>
-      <path class="pic-panel flow-shape pic-edge tone-green" d="M797.7 34L819.7 0L970.1 0L992.1 34L970.1 68L819.7 68Z" />
-      <rect class="pic-fill tone-green" x="883.9" y="7" width="22" height="4" rx="2" />
-      <text class="pic-name" x="894.9" y="31" text-anchor="middle">Golden file</text>
-      <text class="pic-name" x="894.9" y="47" text-anchor="middle">changed on purpose?</text>
-      <rect class="pic-panel" x="1056.2" y="0" width="202.8" height="68" rx="10" />
-      <rect class="pic-fill tone-amber" x="1072.2" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1078.2 26) scale(0.6667)">
+      <text class="pic-name" x="556.2" y="31" text-anchor="start">dotnet test</text>
+      <text class="pic-name" x="556.2" y="47" text-anchor="start">LouisAgent.Puls.Tests</text>
+      <path class="pic-panel flow-shape pic-edge tone-green" d="M789.8 34L811.8 0L962.2 0L984.2 34L962.2 68L811.8 68Z" />
+      <rect class="pic-fill tone-green" x="876" y="7" width="22" height="4" rx="2" />
+      <text class="pic-name" x="887" y="31" text-anchor="middle">Golden file</text>
+      <text class="pic-name" x="887" y="47" text-anchor="middle">changed on purpose?</text>
+      <rect class="pic-panel" x="1048.3" y="0" width="202.8" height="68" rx="10" />
+      <rect class="pic-fill tone-amber" x="1064.3" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1070.3 26) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="pic-name" x="1108.2" y="31" text-anchor="start">Regenerate it</text>
-      <text class="pic-name" x="1108.2" y="47" text-anchor="start">then read the diff</text>
-      <rect class="pic-panel flow-shape pic-edge tone-blue" x="1319.2" y="0" width="236.8" height="68" rx="34" />
-      <rect class="pic-fill tone-blue" x="1347.2" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(1353.2 26) scale(0.6667)">
+      <text class="pic-name" x="1100.3" y="31" text-anchor="start">Regenerate it</text>
+      <text class="pic-name" x="1100.3" y="47" text-anchor="start">then read the diff</text>
+      <rect class="pic-panel flow-shape pic-edge tone-blue" x="1311.2" y="0" width="236.8" height="68" rx="34" />
+      <rect class="pic-fill tone-blue" x="1339.2" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(1345.2 26) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="pic-name" x="1383.2" y="31" text-anchor="start">Look at it</text>
-      <text class="pic-name" x="1383.2" y="47" text-anchor="start">1440, 1100, 420 px</text>
+      <text class="pic-name" x="1375.2" y="31" text-anchor="start">Look at it</text>
+      <text class="pic-name" x="1375.2" y="47" text-anchor="start">1440, 1100, 420 px</text>
       <circle class="pic-port pic-edge tone-blue" cx="204" cy="34" r="4" />
-      <circle class="pic-port pic-edge tone-amber" cx="444.2" cy="34" r="4" />
-      <circle class="pic-port pic-edge tone-amber" cx="737.5" cy="34" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="992.1" cy="34" r="4" />
-      <circle class="pic-port pic-edge tone-amber" cx="1259" cy="34" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="444.1" cy="34" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="729.8" cy="34" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="984.2" cy="34" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="1251.1" cy="34" r="4" />
     </g>
-    <rect class="mrq-rule" x="0" y="224" width="1556" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="224" width="1548" height="1" rx="0" />
     <text class="pic-group" x="0" y="246" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="263" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="276.5" text-anchor="start">starts it</text>
@@ -237,10 +237,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <path class="flow-key pic-line pic-edge" d="M723.2 272H753.2" marker-end="url(#arrow)" />
     <text class="pic-means" x="763.2" y="276.5" text-anchor="start">a line has the colour of the box it leaves</text>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1540" y="246" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="1532" y="246" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="302" width="1556" height="37" rx="8" />
+  <rect class="notebar" x="0" y="302" width="1548" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 312) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />

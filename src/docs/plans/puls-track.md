@@ -24,14 +24,14 @@ they name.
 registry, the business registry with its two tiers, the municipality theme, and POPIA for location. Docs only, and
 first, because places, businesses and the theme all build on it (the thread put it before F35). The spec also says how
 the landing page's pitch is rewritten around place: today it sells reading files, the repository's history, search, cost
-and counting, and never mentions place (`src/louis-agent.puls/Pages/LandingPage.razor:275-292`; *Where this plan
+and counting, and never mentions place (`src/LouisAgent.Puls/Pages/LandingPage.razor:275-292`; *Where this plan
 challenges you*, row 10). The page itself changes in its own small step after the spec.
 
-**2. F35 Recipe sources**, in full (`packs/tools/louis-agent.pack.recipes`, namespace `LouisAgent.Packs.Recipes`, green: small
+**2. F35 Recipe sources**, in full (`packs/tools/LouisAgent.Packs.Recipes`, namespace `LouisAgent.Packs.Recipes`, green: small
 sites read in our process). After Phase 3, whose record and replay its simulation runs on.
 
 - **Why.** Today the cook never opens a recipe page: its role allows `WebSearch` for a recipe and `FetchUrl` only for
-  OpenStreetMap (`louis-agent.core/Prompts/specialists/puls-cook.md:65`), so its recipe is search snippets plus the
+  OpenStreetMap (`LouisAgent.Core/Prompts/specialists/puls-cook.md:65`), so its recipe is search snippets plus the
   model's memory, unsourced and unchecked.
 - **Free only.** Louis: "it has to be free". No paid recipe API: pages are found with SearXNG (F32) and read through our
   own Chrome, with no key and no quota.
@@ -63,7 +63,7 @@ sites read in our process). After Phase 3, whose record and replay its simulatio
 | # | Part | Done when |
 |---|---|---|
 | 0 | F35's feature doc, the rebased plan, the TODO line and indexes; the free check: 10 SA recipe pages from question 14's sites, through the guarded browser, for a `Recipe` block | docs only; the check's table in the feature doc |
-| 1 | **The JSON-LD reader, in core** (Part 3, row 30): `application/ld+json` read from the raw HTML before `HtmlToText` strips every script (`louis-agent.core/Tools/Web/WebTools.cs:413-417`, the script pattern at `:463-464`), measured on the 10 pages and on about 50 Swartland business sites from OpenStreetMap's `website` tags | recorded pages, trimmed: one block, a block in `@graph`, two blocks, broken JSON, none; the measured share in the feature doc |
+| 1 | **The JSON-LD reader, in core** (Part 3, row 30): `application/ld+json` read from the raw HTML before `HtmlToText` strips every script (`LouisAgent.Core/Tools/Web/WebTools.cs:413-417`, the script pattern at `:463-464`), measured on the 10 pages and on about 50 Swartland business sites from OpenStreetMap's `website` tags | recorded pages, trimmed: one block, a block in `@graph`, two blocks, broken JSON, none; the measured share in the feature doc |
 | 2 | `Recipe`, `RecipeStep` and the schema.org reading, in the pack (Schema.NET, MIT, tried first; Python's recipe-scrapers considered, but it is Python) | `@graph`, `HowToSection`, `PT1H15M` and the `recipeYield` forms read right; a page without a block gives none |
 | 3 | `IRecipeSource`, `RecipeSourceKind`, the factory and the first provider | the site's search page, recorded, gives hits; `RECIPE_SOURCES` parsed with `SettingChoice`; a site that doesn't answer gives its reason |
 | 4 | `RecipeTools` (`FindRecipes`, `ReadRecipe`), the `recipes` pack (`PackKind.Recipes`; `PulsIdentity` names `recipes`), its guide and its message texts | the table framed as untrusted, as the shop tools are (`ToolMessage.cs:285-286`) until Phase 7's frame takes both; a page with no block says so; an unknown source lists the ones turned on; the toolset unavailable without `BROWSER_URL`; the convertibility test green; the pack's golden reviewed |
@@ -83,11 +83,11 @@ measured CL16 under Puls and under a second identity; Louis: "we should be able 
 **4. Sources as data** (ADR 0032 *Sites are data*, an explicit exception to ADR 0024: a site directory's keys are rows,
 not enum members). `ShopKind` becomes the platform: `Checkers`, `Shopify` (`/products.json`), `WooCommerce` (its Store
 API, `/wp-json/wc/store/v1/products`), `SchemaOrg` and `PriceList`; today its one member is `Checkers`
-(`louis-agent.core/Tools/Shops/ShopKind.cs:7-10`). Shops and recipe sites become rows: name, town, URL, platform, a
+(`LouisAgent.Core/Tools/Shops/ShopKind.cs:7-10`). Shops and recipe sites become rows: name, town, URL, platform, a
 terms flag that defaults to off, and `as_of`. Checkers becomes the first descriptor-driven provider: a descriptor is a
 data file holding a search URL template, which response to capture, a field map and a ready selector. A visit already
 takes a URL, a rule for which responses to capture and a ready selector (`IWebBrowser.VisitAsync`,
-`louis-agent.core/Tools/Web/Browsing/IWebBrowser.cs:13-16`), so the next shop with a JSON catalogue is a reviewed data
+`LouisAgent.Core/Tools/Web/Browsing/IWebBrowser.cs:13-16`), so the next shop with a JSON catalogue is a reviewed data
 file, not a feature (the challenge's design). A site registry and its indexing are shared by shops and recipes: the
 collecting job reads `robots.txt` first (obeys it and its `Crawl-delay`, names itself with a user agent), then the
 sitemap (filtered by path, `lastmod` saying what changed), then the pages through the JSON-LD reader (Part 2,
@@ -120,13 +120,13 @@ instance Malmesbury is swartland municipality give it that municipality colours"
   here), and Phase 4's town-to-municipality table (the one its `MunicipalityRight` grader reads) holds their first rows.
   A step first confirms that Nominatim's reverse lookup returns the municipality for SA towns; Puls's web app already
   asks Nominatim at `zoom=10`, with the position rounded to 2 decimals, about 1 km, and falls back to
-  `address.municipality` for the town (`src/louis-agent.puls/wwwroot/js/chat.js:213-218`).
+  `address.municipality` for the town (`src/LouisAgent.Puls/wwwroot/js/chat.js:213-218`).
 - **The theme.** Puls's web app applies the municipality's colours as its theme: Puls has one theme today, its colours
-  as CSS variables (`src/louis-agent.puls/wwwroot/css/settings/tokens.css:1-4,8`). Colours only: a crest or a logo is official
+  as CSS variables (`src/LouisAgent.Puls/wwwroot/css/settings/tokens.css:1-4,8`). Colours only: a crest or a logo is official
   insignia and needs the municipality's permission. While the user drives, the theme changes when they stop or open the
   app, never mid-chat.
 - **Location under POPIA.** Location is personal information: the user is asked once (as today: the browser asks
-  once, and the town is kept in that browser only, `src/louis-agent.puls/wwwroot/js/chat.js:195-198,205`), only the
+  once, and the town is kept in that browser only, `src/LouisAgent.Puls/wwwroot/js/chat.js:195-198,205`), only the
   town is used, as today (F22), never a track of movements, and no movements are stored. Coarse coordinates (about 1
   km) only when a measured question needs "how far", recorded in an ADR when it comes.
 - **Places never changes the identity.** Louis asked "to find pulse identity?": no. Puls is the same identity in every
@@ -144,7 +144,7 @@ the business registry. **Listed:** name, category (shop, hairdresser and so on),
 beside an answer and always marked as an ad, never inside it; a Puls revenue line, sold from Phase 9's accounts.
 **Provider:** their prices or open times reach a pack through their platform, a price list or their MCP server (an
 orange pack, Phase 8), with a future bookings pack for hairdressers; categories map to packs. One rule, from the
-principles (`louis-agent.core/Prompts/shared/principles.md`: never cheat): paying never changes what Puls calls cheapest
+principles (`LouisAgent.Core/Prompts/shared/principles.md`: never cheat): paying never changes what Puls calls cheapest
 or nearest. Businesses joining is the best of Puls's sources (Part 2's ranking).
 
 **7. Vision** (GOAL skill 19, `docs/GOAL.md:40`; its own feature after F35, question 15, answered 2026-10-19). Louis: "okay so when

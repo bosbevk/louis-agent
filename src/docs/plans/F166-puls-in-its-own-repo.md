@@ -17,10 +17,10 @@ picks of that day, each of three options after research:
 
 **What was looked up.** `demos/puls` holds 787 tracked files and 20 projects in the solution; nothing outside it
 references it, and nothing in the framework references the three packs that move. But it also holds what is the
-framework's: the API's own tests (`louis-agent.api.tests`, `.api.evals.tests`, `.api.integration-tests`,
-`.api.standin`, `.api.testing`, which test `src/hosts/louis-agent.api`), the Azure deploy that releases the two sites
+framework's: the API's own tests (`LouisAgent.Api.Tests`, `.api.evals.tests`, `.api.integration-tests`,
+`.api.standin`, `.api.testing`, which test `src/hosts/LouisAgent.Api`), the Azure deploy that releases the two sites
 (`deploy/azure/deploy.ps1`, its README and architecture, the Bicep build under `config/azure`), the deploy's tests in
-`louis-agent.puls.tests`, and the workflow `deploy-puls.yml`, which releases only the two sites. `host-packs` is the
+`LouisAgent.Puls.Tests`, and the workflow `deploy-puls.yml`, which releases only the two sites. `host-packs` is the
 one project that knows every pack. The `puls` repository exists, empty but for an Apache 2.0 licence. The framework is
 not published as packages yet (the TODO's known limitations).
 
@@ -73,6 +73,13 @@ nothing in louis-agent references Puls.
 - **A product on a framework** (F166.3): Puls as the framework's first outside user. *Skill 20, extensibility.*
 
 ## Approved during the build
+
+- **2026-11-21, before F166.2: F167, every project named for its namespace.** Putting F166.2's findings, Louis chose
+  that a package, its DLL and its namespace read the same (`LouisAgent.Core`), and then that the projects, files and
+  folders are renamed too, as a feature of its own before F166.2. F167 did that. F166.2's other picks of that day
+  (GitHub Packages now and nuget.org at `1.0`; MinVer from git tags; the 31 projects Puls reaches, each on its own
+  version; one tag per package, related tags pushed together, a guard against an unpublished dependency) go into its
+  own plan when it starts.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [ADR 0127](../adr/0127-licence-polyform-noncommercial.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0076](../adr/0076-core-ships-no-agent.md)

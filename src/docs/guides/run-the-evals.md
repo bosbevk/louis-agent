@@ -14,9 +14,9 @@ one, and read the cost in the ledger afterwards, never from a grader. Listing th
 ## From the command line
 
 ```bash
-EVALS=puls dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --list     # free: Puls's evals (unset: every eval)
+EVALS=puls dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --list     # free: Puls's evals (unset: every eval)
 BENCHMARK_RUN=cook-1 AGENT_API=http://127.0.0.1:5070/ \
-  dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- run puls-cook --repeat 1 --web record
+  dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- run puls-cook --repeat 1 --web record
 ```
 
 | Flag | What it does |
@@ -33,7 +33,7 @@ The run's id is `BENCHMARK_RUN`, or else `local-` and the time it started. Set i
 The runner needs `AGENT_API_KEY` when the API wants one.
 
 The runner writes the protocol on stdout and its logs on stderr. The protocol is version 2: one JSON object per line
-with its `event` first, the records in `src/evals/louis-agent.evals.protocol` that the API reads too
+with its `event` first, the records in `src/evals/LouisAgent.Evals.Protocol` that the API reads too
 ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)). Any other line is a line for people.
 
 ## An eval's manual
@@ -186,7 +186,7 @@ in the dataset.
 
 ```bash
 # run.txt is GET /v1/admin/evals/runs/8f7802b9a72e/protocol (the same file a re-score reads)
-EVALS=puls dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Dataset/labels 10 < run.txt
+EVALS=puls dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Cook/Dataset/labels 10 < run.txt
 ```
 
 The sheet holds only scenarios that ask for a number of people, since a meal for four can't be labelled where no four
@@ -214,7 +214,7 @@ labelling changes neither.
 **3. Calibrate.** `dotnet run` builds first, which copies the labels beside the runner. Then:
 
 ```bash
-EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --calibrate puls-cook meal-for-people
+EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --calibrate puls-cook meal-for-people
 ```
 
 It prints the headline (`Agreement: 17 of 18`), then the agreement in each class of your labels, the result, and each
@@ -264,7 +264,7 @@ a class it says *few labels*, because a share of four is just four answers.
 
 **A judge that reads tool results can't be checked this way yet.** A label holds the questions and the answers, not
 what the tools gave back, so a judge with `sources` is asked with no page and fails every answer. Use a re-score for
-those, as the [recipes manual](../../../demos/puls/evals/louis-agent.identity.puls.evals/Evals/Recipes/manual.md) says.
+those, as the [recipes manual](../../../demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Recipes/manual.md) says.
 
 **Checking the judge against your grades, from the portal.** In the same card, press **Check the judge now**. The API
 writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs
@@ -280,7 +280,7 @@ is the reason. The reports are kept in the store (`calibrations`), beside your g
 The routes are `POST /v1/admin/evals/runs/{id}/calibrations/{grader}` and `GET /v1/admin/evals/runs/{id}/calibrations`.
 
 **Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into
-`demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Dataset/labels/`, and run the check from *Checking the
+`demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Cook/Dataset/labels/`, and run the check from *Checking the
 judge* (`--calibrate`). The dataset's labels are the ones a developer runs against without a store, while the portal's
 check reads the store.
 

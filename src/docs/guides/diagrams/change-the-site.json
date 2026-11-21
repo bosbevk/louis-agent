@@ -5,11 +5,11 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "site", "icon": "browser", "title": "The site", "code": "louis-agent.site", "look": "highlight",
+        { "id": "site", "icon": "browser", "title": "The site", "code": "LouisAgent.Site", "look": "highlight",
           "text": "Pages made of the framework's controls, given the site's words." }
       ] },
       { "cards": [
-        { "id": "host", "icon": "server", "title": "Its host", "code": "louis-agent.site-api", "text": "The pages as HTML, and the guide's API." },
+        { "id": "host", "icon": "server", "title": "Its host", "code": "LouisAgent.SiteApi", "text": "The pages as HTML, and the guide's API." },
         { "id": "guide", "icon": "message", "title": "The guide", "text": "Knows every page by its address." },
         { "id": "cv", "icon": "file", "title": "The CV", "code": "cv.json", "text": "Data, edited on its own page." },
         { "id": "card", "icon": "chart", "title": "The share card", "text": "The orb, photographed from the site." }

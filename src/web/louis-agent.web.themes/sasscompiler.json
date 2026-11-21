@@ -1,7 +1,0 @@
-{
-  "Source": "Styles",
-  "Target": "obj/css",
-  "Arguments": "--style=expanded --no-error-css --no-source-map",
-  "GenerateScopedCss": false,
-  "IncludePaths": [ "../louis-agent.web/Styles", "Styles" ]
-}

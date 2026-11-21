@@ -1,0 +1,77 @@
+using LouisAgent.Web.Components.Widget.Door;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace LouisAgent.Web.Tests.Components.Widget;
+
+/// <summary>
+/// A button anywhere on a site can ask the guide in the corner a question (F118, Louis: "we should advertise the agent
+/// can take you through the website", "a quick entry point to the walkthrough", "one you cannot miss"): it draws the
+/// site's words and, on a click, puts the site's question through the door the widget listens at.
+/// </summary>
+public class GuideButtonTests
+{
+    /// <summary>A click asks the guide the button's question, once.</summary>
+    [Test]
+    public void AClick_AsksTheGuide()
+    {
+        using var ctx = new BunitContext();
+        var door = new GuideDoor();
+        ctx.Services.AddSingleton(door);
+        var asked = new List<string?>();
+        door.Asked += asked.Add;
+
+        var cut = ctx.Render<GuideButton>(parameters => parameters
+            .Add(button => button.Question, "Walk me through this site.")
+            .AddChildContent("Take the tour"));
+        cut.Find("button").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(asked, Is.EqualTo(new string?[] { "Walk me through this site." }));
+            Assert.That(cut.Find("button.guide-button").TextContent, Does.Contain("Take the tour"));
+            Assert.That(cut.Find("button").GetAttribute("type"), Is.EqualTo("button"));
+        });
+    }
+
+    /// <summary>
+    /// The glow pulses on a layer of its own, by fading, which the browser only composites. A pulse that changed the
+    /// button's own shadow had the button painted again on every frame, and in the glass theme that is its drawing.
+    /// The sweeping light is clipped by a piece of its own, so the glow round the button is not cut off.
+    /// </summary>
+    [TestCase(".guide-button::before {")]
+    [TestCase("@keyframes guide-glow {\n    0%, 100% { opacity: 0; }\n    50% { opacity: 1; }\n}")]
+    [TestCase(".guide-shine::after {")]
+    public void TheGlow_PulsesOnItsOwnLayer(string rule)
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/LouisAgent.Web/Components/Widget/Door/GuideButton.razor.scss")).ReplaceLineEndings("\n");
+
+        Assert.That(rules, Does.Contain(rule));
+    }
+
+    /// <summary>
+    /// The piece that clips the sweeping light is in the button, and says nothing to a screen reader.
+    /// </summary>
+    [Test]
+    public void TheButton_HoldsThePieceThatClipsItsLight()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new GuideDoor());
+
+        var cut = ctx.Render<GuideButton>(parameters => parameters.AddChildContent("Take the tour"));
+
+        Assert.That(cut.Find("button.guide-button > span.guide-shine").GetAttribute("aria-hidden"), Is.EqualTo("true"));
+    }
+
+    /// <summary>The flash is the button's own, and stands still for a visitor who asked for less motion.</summary>
+    [TestCase("animation: guide-sweep")]
+    [TestCase("animation: guide-glow")]
+    [TestCase("@media (prefers-reduced-motion: reduce)")]
+    public void TheButton_IsOneYouCannotMiss(string rule)
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/LouisAgent.Web/Components/Widget/Door/GuideButton.razor.scss"));
+
+        Assert.That(rules, Does.Contain(rule));
+    }
+}

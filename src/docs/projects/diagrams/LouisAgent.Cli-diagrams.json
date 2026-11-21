@@ -1,0 +1,78 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "caption": "The host is one small call on top of core: all the agent's work is in the engine, and ConsoleChat only draws it.",
+  "title": "The terminal host: from your program through ConsoleChat to the engine and the output",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Your program\n(the coding agent\u0027s:\nLouisAgent.CodingCli)"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "green",
+        "label": "CliHost"
+      },
+      {
+        "id": "engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine (core)"
+      },
+      {
+        "id": "chat",
+        "icon": "message",
+        "tone": "green",
+        "label": "ConsoleChat"
+      },
+      {
+        "id": "out",
+        "shape": "data",
+        "icon": "terminal",
+        "tone": "amber",
+        "label": "stdout: the answer, thinking\nand tool lines"
+      },
+      {
+        "id": "err",
+        "shape": "data",
+        "icon": "file",
+        "tone": "amber",
+        "label": "stderr: the usage line"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "host",
+        "word": "args and AgentCatalog"
+      },
+      {
+        "from": "host",
+        "to": "engine",
+        "word": "AgentHost.Build"
+      },
+      {
+        "from": "host",
+        "to": "chat"
+      },
+      {
+        "from": "chat",
+        "to": "engine",
+        "word": "StreamPromptAsync,\nHandleUserCommand"
+      },
+      {
+        "from": "chat",
+        "to": "out"
+      },
+      {
+        "from": "chat",
+        "to": "err"
+      }
+    ],
+    "direction": "down"
+  }
+}

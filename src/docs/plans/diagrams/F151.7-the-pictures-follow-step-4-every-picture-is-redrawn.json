@@ -7,7 +7,7 @@
     "nodes": [
       {
         "id": "t",
-        "label": "dotnet run --project\nsrc/tools/louis-agent.doc-diagrams",
+        "label": "dotnet run --project\nsrc/tools/LouisAgent.DocDiagrams",
         "icon": "terminal",
         "tone": "blue"
       },

@@ -14,7 +14,7 @@
         { "id": "program", "icon": "server", "title": "Its program", "text": "Serves it, with its identities and packs." }
       ] },
       { "cards": [
-        { "id": "framework", "icon": "chip", "title": "The framework's web", "code": "louis-agent.web", "text": "Everything else." },
+        { "id": "framework", "icon": "chip", "title": "The framework's web", "code": "LouisAgent.Web", "text": "Everything else." },
         { "id": "check", "icon": "checks", "title": "The template's test", "text": "Makes and builds a site." }
       ] }
     ],

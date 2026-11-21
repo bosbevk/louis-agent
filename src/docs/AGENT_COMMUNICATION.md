@@ -20,17 +20,17 @@ exception: it has no model of its own and only hands out the tools.
 
 | You want… | Use | Why |
 |---|---|---|
-| To chat with the agent in a browser, review its changes, merge branches | Web app (served by **louis-agent.api**) | Chats, Files, Changes and Branches tabs on top of the API |
-| To chat inside Rider | **louis-agent.acp** | Rider's AI chat speaks the Agent Client Protocol |
-| A program (or another agent) to hand louis-agent a whole task and get the result back | **louis-agent.api** sessions | louis-agent runs its own tool loop server-side and streams what it does; the caller only reads the outcome |
-| Another agent to use louis-agent's *tools* with its own model, one call at a time | **louis-agent.mcp** | MCP hands out raw tools; the calling agent does all the reasoning |
-| Quick prompts in a terminal | **louis-agent.cli** | No network at all |
+| To chat with the agent in a browser, review its changes, merge branches | Web app (served by **LouisAgent.Api**) | Chats, Files, Changes and Branches tabs on top of the API |
+| To chat inside Rider | **LouisAgent.Acp** | Rider's AI chat speaks the Agent Client Protocol |
+| A program (or another agent) to hand louis-agent a whole task and get the result back | **LouisAgent.Api** sessions | louis-agent runs its own tool loop server-side and streams what it does; the caller only reads the outcome |
+| Another agent to use louis-agent's *tools* with its own model, one call at a time | **LouisAgent.Mcp** | MCP hands out raw tools; the calling agent does all the reasoning |
+| Quick prompts in a terminal | **LouisAgent.Cli** | No network at all |
 
 The difference between the last two matters for agent-to-agent setups. Through the **API**, the other agent delegates:
 "fix this", and louis-agent decides how. Through **MCP**, the other agent *is* the brain and louis-agent is a toolbox —
 no louis-agent judgement is involved. The orchestrator uses the API, because it wants louis-agent to do the whole fix.
 
-## The HTTP API (louis-agent.api)
+## The HTTP API (LouisAgent.Api)
 
 Base URL: `http://127.0.0.1:5080` for the main Docker setup, `http://127.0.0.1:5081` for the orchestrator demo. Bound
 to `127.0.0.1` only.
@@ -192,7 +192,7 @@ Nothing here pushes: pushing is always left to you.
 
 ## The web app and the API
 
-The web app is a Blazor WebAssembly app served by louis-agent.api from the same address, so it calls the API directly.
+The web app is a Blazor WebAssembly app served by LouisAgent.Api from the same address, so it calls the API directly.
 
 | Tab | Endpoints it uses |
 |---|---|
@@ -207,7 +207,7 @@ deletes are queued: every click is kept and they run one at a time, in order, wi
 
 ## Rider and the ACP server
 
-Rider starts `louis-agent.acp` (one container per chat) and talks [Agent Client Protocol](https://agentclientprotocol.com)
+Rider starts `LouisAgent.Acp` (one container per chat) and talks [Agent Client Protocol](https://agentclientprotocol.com)
 JSON-RPC over its stdin/stdout:
 
 | Direction | Message | Meaning |
@@ -227,7 +227,7 @@ Because stdout carries the protocol, all logging goes to stderr.
 
 ## MCP clients and the MCP server
 
-`louis-agent.mcp` publishes the engine's tools — files, git, `DotNet*`, scripts, web, skills, agent-built tools
+`LouisAgent.Mcp` publishes the engine's tools — files, git, `DotNet*`, scripts, web, skills, agent-built tools
 — plus `list_skills`, `get_skill_info` and `get_skill_documentation`. It has no model: the client's own model decides
 which tool to call (`tools/list`, `tools/call`), and the tool list updates live (`notifications/tools/list_changed`).
 It also publishes every pack's data feed as a resource, `feeds://{name}` (`resources/list`, `resources/read`): the same
@@ -243,12 +243,12 @@ Approving agent-built tools is never possible over MCP: that stays with the user
 
 ## Agent to agent: the orchestrator and louis-agent
 
-The orchestrator ([its project doc](../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md)) is a second agent built on `louis-agent.core`. It reads a
+The orchestrator ([its project doc](../../demos/louis-agent/docs/projects/LouisAgent.Orchestrator.md)) is a second agent built on `LouisAgent.Core`. It reads a
 service's error log, decides what each error needs from a runbook per API method ([the runbooks](../../demos/louis-agent/docs/projects/orchestrator-runbooks.md)), and has
 louis-agent fix the ones the runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
 
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
-louis-agent.api's `/v1/prices` and `/v1/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
+LouisAgent.Api's `/v1/prices` and `/v1/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
 (its own `LLM_PROFILE`; see [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)).
 
@@ -339,7 +339,7 @@ FIX-RESULT: status fixed · commit 6385680 · branch fix/order-total-f47c2696c6a
 ```
 
 The orchestrator also keeps machine-readable records next to it (`decisions.jsonl`, `fixes.jsonl`,
-`escalations.jsonl`, `acknowledged.jsonl`, with costs in USD), and louis-agent.api logs every tool call it ran. Both
+`escalations.jsonl`, `acknowledged.jsonl`, with costs in USD), and LouisAgent.Api logs every tool call it ran. Both
 agents write to the same usage ledger: the orchestrator's triage requests under `host: orchestrator`, louis-agent's
 under the session the orchestrator opened, tagged `task: fix:<error id>`, the run id and the service, so one run's
 cost can be totalled across both.
@@ -412,7 +412,7 @@ Planned features change parts of this page; each one's doc lists updating it in 
 | [F10 Route settings](features/F10-route-settings.md) | `POST /v1/sessions` takes a `profile` (`chat` or `task`, with its own tool rounds and thinking); the orchestrator asks for `task`, so most "continue" follow-ups go away |
 | [F7 Budgets](features/F07-budgets.md) | A turn can stop at a budget: a `budget` stop reason and a `budget_error` event, `POST /v1/sessions/{id}/budget` to raise the limit; the orchestrator defers a fix it can't afford |
 | [F11 Usage tab](features/F11-usage-tab-and-reconciliation.md) | New endpoints: `GET /v1/usage`, `GET /v1/usage/sessions/{id}`, `GET /v1/budgets`, `POST /v1/estimates` |
-| [F17 Orchestrator agent](../../demos/louis-agent/docs/features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |
+| [F17 Orchestrator agent](../../demos/louis-agent/docs/features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to LouisAgent.Api the same way, and the comms log names the path |
 
 ---
 [Docs index](README.md) · Previous: [How a turn works](architecture/06-runtime-view.md) · Next: [Architecture](architecture/README.md)

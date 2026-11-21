@@ -53,7 +53,7 @@ and where, is step 1.
 
 ## Implementation steps
 
-1. **Spike — what each adapter reports.** Extend `tools/louis-agent.usage-probe` to print time to first token and each
+1. **Spike — what each adapter reports.** Extend `tools/LouisAgent.UsageProbe` to print time to first token and each
    response's `AdditionalProperties` and `RawRepresentation` type, for Anthropic and Ollama. Record the findings in the
    optimisation spec next to *What the Ollama adapter reports*. *No production code.*
 2. **`ttft_ms` in the recorder.** *Test:* a fake stream with a delay before its first text update records `ttft_ms` ≥

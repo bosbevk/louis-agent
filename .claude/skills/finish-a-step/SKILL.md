@@ -26,7 +26,7 @@ The step's test passes. This takes it to a commit. Four stops come first.
    its design doc and its how-to (both show under `docs/` in the project in Rider) and change what the step made
    untrue: a renamed class, a moved folder, a new part, a new setting. If one of the doc's pictures no longer shows
    the code, change its JSON and redraw it with the tool, never the SVG by hand
-   (`/draw-a-diagram`); `dotnet run --project src/tools/louis-agent.doc-diagrams -- --check`
+   (`/draw-a-diagram`); `dotnet run --project src/tools/LouisAgent.DocDiagrams -- --check`
    names an SVG that wasn't redrawn after its JSON changed. On the last step, use `/finish-a-feature`, or
    `/fix-a-bug` for a fix. The plan changes only under *Approved during the build*. New text goes in
    the doc of its type.
@@ -52,7 +52,7 @@ The step's test passes. This takes it to a commit. Four stops come first.
 Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main must be merged and full
 suite unit tests passes".
 
-- **Before a commit: only the tests of what the step touched.** `louis-agent.core.tests` is among them when the
+- **Before a commit: only the tests of what the step touched.** `LouisAgent.Core.Tests` is among them when the
   step moves files or adds names. `/do-a-step` says which tests a step reaches.
 - **Before a pull request: `main` is merged in first, then the full suite of unit tests passes.** Fetch, merge
   `origin/main` into the branch, and run

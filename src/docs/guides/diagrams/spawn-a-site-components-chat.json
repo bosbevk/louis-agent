@@ -3,7 +3,7 @@
   "title": "A new site's chat page: what it is made of",
   "caption": "The site dotnet new makes is the framework's chat shell with the site's name in its logo slot: its views, its empty chat and its settings are the slots it can fill.",
   "nested": {
-    "subtitle": "louis-agent.starter, Pages / ChatPage",
+    "subtitle": "LouisAgent.Starter, Pages / ChatPage",
     "root": {
       "id": "page",
       "name": "ChatPage",

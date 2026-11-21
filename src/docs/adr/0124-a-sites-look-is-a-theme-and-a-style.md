@@ -38,7 +38,7 @@ look of its own: `tools/_themed.scss` reads a look "by setting values, never by 
 4. **A value no name says gets a name first.** The name is added in the framework with today's look as its
    value, and every theme then sets it. A theme is held to the full list by a test.
 5. **A theme is an area a site opts into.** The themes live together in one project above the framework's web,
-   `louis-agent.web.themes`. Each is its own class and its own sheets, in a folder of its own, and a site names
+   `LouisAgent.Web.Themes`. Each is its own class and its own sheets, in a folder of its own, and a site names
    the themes it offers where it names its other areas. The first one named is its default.
 6. **The visitor picks, and the browser remembers.** The theme and the style are chosen with a switch on the
    page and kept in the visitor's own browser. Nothing about the choice is sent to the host. A first visit gets

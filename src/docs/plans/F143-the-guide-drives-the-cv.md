@@ -70,7 +70,7 @@ packs/tools/louis-agent.pack.resume/     # new, step 1
   Messages/ResumeToolMessage.cs
   prompts/
 packs/tests/louis-agent.pack.resume.tests/   # new, step 1
-src/site/louis-agent.identity.guide/prompts/agent/louis-agent-guide/skills/
+src/site/LouisAgent.Identities.Guide/prompts/agent/louis-agent-guide/skills/
   focus-hiring.md                        # new, step 3
 ```
 
@@ -82,9 +82,9 @@ src/site/louis-agent.identity.guide/prompts/agent/louis-agent-guide/skills/
 | `GetResume` | `packs/tools/louis-agent.pack.resume/Tools` | `LouisAgent.Packs.Resume.Tools` | 1 |
 | `ResumeToolMessage` | `packs/tools/louis-agent.pack.resume/Messages` | `LouisAgent.Packs.Resume.Messages` | 1 |
 | `GetResumeTests` | `packs/tests/louis-agent.pack.resume.tests/Tools` | `LouisAgent.Packs.Resume.Tests.Tools` | 1 |
-| `GuidePack.Resume` | `src/site/louis-agent.identity.guide` | `LouisAgent.Identities.Guide` | 2 |
+| `GuidePack.Resume` | `src/site/LouisAgent.Identities.Guide` | `LouisAgent.Identities.Guide` | 2 |
 | `focus-hiring.md` | `.../louis-agent-guide/skills` | (prompt) | 3 |
-| the CV eval | `src/site/louis-agent.identity.guide` evals, F126's layout | (eval content) | 5 |
+| the CV eval | `src/site/LouisAgent.Identities.Guide` evals, F126's layout | (eval content) | 5 |
 
 The records' home follows open choice 1.
 

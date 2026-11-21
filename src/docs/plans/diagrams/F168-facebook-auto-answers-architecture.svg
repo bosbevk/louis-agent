@@ -159,7 +159,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="pic-panel" x="28" y="276" width="758.2" height="582" rx="14" />
       <text class="pic-group" x="42" y="295" text-anchor="start">louis-agent.api.messenger (new, framework)</text>
       <rect class="pic-panel" x="817.6" y="744" width="310.4" height="370" rx="14" />
-      <text class="pic-group" x="831.6" y="763" text-anchor="start">louis-agent.site-api (maps the library)</text>
+      <text class="pic-group" x="831.6" y="763" text-anchor="start">LouisAgent.SiteApi (maps the library)</text>
       <path class="pic-line pic-edge tone-blue" d="M198.4 68L198.4 134" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M198.4 68L198.4 134" />
       <path class="pic-line pic-edge tone-red" d="M198.4 202L198.4 214Q198.4 226 210.4 226L556.2 226Q580.2 226 580.2 250L580.2 310" marker-end="url(#arrow-red)" />

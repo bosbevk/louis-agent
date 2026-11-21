@@ -7,7 +7,7 @@
 
 The docs drew their diagrams in Mermaid: a code block GitHub turns into a picture its own way. The pictures came out
 grey, cramped and different on every screen, and a flowchart with thirty boxes had lines through its words. The site
-already drew its diagrams from data with our own engine (`louis-agent.diagrams`, [ADR 0103](0103-a-diagram-is-data-on-a-row-grid.md)),
+already drew its diagrams from data with our own engine (`LouisAgent.Diagrams`, [ADR 0103](0103-a-diagram-is-data-on-a-row-grid.md)),
 so the docs had two ways to draw the same kind of thing, and the worse one was the one people read most.
 
 Louis's picks for CL60 (2026-11-11): no Mermaid, our own renderer, the JSON beside each doc with its SVG beside it,
@@ -17,7 +17,7 @@ sequence, classes) and turned all 75 flows, 45 sequences and 11 class charts int
 ## Decision
 
 - **A diagram in a doc is a JSON file our renderer draws**, in a `diagrams/` folder beside the doc, its SVG beside the
-  JSON, shown with a plain image link. The docs' tool (`louis-agent.doc-diagrams`) redraws every picture whose JSON
+  JSON, shown with a plain image link. The docs' tool (`LouisAgent.DocDiagrams`) redraws every picture whose JSON
   changed.
 - **Four kinds cover the docs:** `flow` (boxes and arrows, the architecture and object diagrams), `cards`,
   `sequence` (who calls whom, in order) and `classes` (types, their members and how they relate; drawn as a flow).
@@ -34,12 +34,12 @@ sequence, classes) and turned all 75 flows, 45 sequences and 11 class charts int
   (the tool's `import`), and then the JSON is the source.
 - A diagram the renderer can't lay out well (thirty types with crossing arrows) is split into smaller pictures rather
   than drawn badly.
-- The renderer is ours to keep: a new kind of diagram is a change to `louis-agent.diagrams`, with its tests.
+- The renderer is ours to keep: a new kind of diagram is a change to `LouisAgent.Diagrams`, with its tests.
 
 ## Links
 
 [ADR 0103](0103-a-diagram-is-data-on-a-row-grid.md) (the site's diagrams from data) · [ADR 0013](0013-documentation-structure.md) ·
-[Draw a diagram](../guides/draw-a-diagram.md) · the [louis-agent.diagrams](../projects/louis-agent.diagrams.md)
+[Draw a diagram](../guides/draw-a-diagram.md) · the [LouisAgent.Diagrams](../projects/LouisAgent.Diagrams.md)
 design doc · CL60 in the [work log](../work-log.md)
 
 ---

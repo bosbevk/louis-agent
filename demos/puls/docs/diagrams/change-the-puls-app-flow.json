@@ -7,7 +7,7 @@
     "nodes": [
       { "id": "run", "label": "Run it\n5070 or 5071", "icon": "terminal", "tone": "blue", "shape": "terminal" },
       { "id": "change", "label": "Make the change", "icon": "file", "tone": "amber", "shape": "box" },
-      { "id": "test", "label": "dotnet test\nlouis-agent.puls.tests", "icon": "checks", "tone": "amber", "shape": "box" },
+      { "id": "test", "label": "dotnet test\nLouisAgent.Puls.Tests", "icon": "checks", "tone": "amber", "shape": "box" },
       { "id": "golden", "label": "Golden file\nchanged on purpose?", "tone": "green", "shape": "decision" },
       { "id": "update", "label": "Regenerate it\nthen read the diff", "icon": "file", "tone": "amber", "shape": "box" },
       { "id": "look", "label": "Look at it\n1440, 1100, 420 px", "icon": "browser", "tone": "blue", "shape": "terminal" }

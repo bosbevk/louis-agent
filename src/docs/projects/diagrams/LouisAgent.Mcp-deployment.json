@@ -1,0 +1,72 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "LouisAgent.Mcp: where it runs",
+  "caption": "The MCP server runs in its own container: a client starts it and talks over stdin and stdout, or, with MCP_TRANSPORT=http, reaches it on the PC's own address.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "client",
+        "label": "An MCP client\nClaude Desktop, Rider",
+        "icon": "code",
+        "tone": "blue"
+      },
+      {
+        "id": "program",
+        "label": "LouisAgent.CodingMcp\nthe demo's program, port 8080",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "box"
+      },
+      {
+        "id": "mcp",
+        "label": "LouisAgent.Mcp\nMcpHost.RunAsync",
+        "icon": "server",
+        "tone": "green",
+        "group": "box"
+      },
+      {
+        "id": "otel",
+        "label": "The telemetry collector\nOTLP on host.docker.internal:4317",
+        "icon": "chart",
+        "tone": "amber"
+      },
+      {
+        "id": "folders",
+        "label": "Mounted folders\nthe workspace, skills, logs,\nyour repositories",
+        "icon": "folder",
+        "tone": "amber",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "client",
+        "to": "program",
+        "word": "stdio, or 127.0.0.1:5090 → 8080"
+      },
+      {
+        "from": "program",
+        "to": "mcp",
+        "word": "runs"
+      },
+      {
+        "from": "mcp",
+        "to": "otel",
+        "word": "logs and traces"
+      },
+      {
+        "from": "mcp",
+        "to": "folders",
+        "word": "reads and writes"
+      }
+    ],
+    "groups": [
+      {
+        "id": "box",
+        "label": "Docker: container rider_mcp_server, .NET 10 SDK image"
+      }
+    ]
+  }
+}

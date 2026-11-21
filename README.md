@@ -114,7 +114,7 @@ docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/pul
 
 Open **http://127.0.0.1:5070**. Puls ran on Azure until 2026-11-09 and is paused there while the framework comes first
 ([Deploy the sites](src/docs/guides/deploy-the-sites.md)); `mypuls.co.za` shows a coming-soon page. Design:
-[Puls's identity](demos/puls/docs/projects/louis-agent.identity.puls.md), [Puls's web app](demos/puls/docs/projects/louis-agent.puls.md).
+[Puls's identity](demos/puls/docs/projects/LouisAgent.Identities.Puls.md), [Puls's web app](demos/puls/docs/projects/LouisAgent.Puls.md).
 
 ## The coding agent
 
@@ -124,12 +124,12 @@ write new skills and build its own tools, and those wait for your approval. (The
 
 | Host | Project | What it is |
 |---|---|---|
-| **Rider** | `src/hosts/louis-agent.acp` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat |
-| **Web app** | `demos/louis-agent/web/louis-agent.code-review` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
-| **HTTP API** | `src/hosts/louis-agent.api` | Sessions with answers streamed as Server-Sent Events; it also serves the web app |
-| **CLI** | `src/hosts/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
-| **MCP server** | `src/hosts/louis-agent.mcp` | Hands the tools to any MCP client, which brings its own model |
-| **Orchestrator** | `demos/louis-agent/hosts/louis-agent.orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
+| **Rider** | `src/hosts/LouisAgent.Acp` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat |
+| **Web app** | `demos/louis-agent/web/LouisAgent.CodeReview` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
+| **HTTP API** | `src/hosts/LouisAgent.Api` | Sessions with answers streamed as Server-Sent Events; it also serves the web app |
+| **CLI** | `src/hosts/LouisAgent.Cli` | Interactive or one-shot prompts in the terminal |
+| **MCP server** | `src/hosts/LouisAgent.Mcp` | Hands the tools to any MCP client, which brings its own model |
+| **Orchestrator** | `demos/louis-agent/hosts/LouisAgent.Orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
 
 Each host is a library; a small program in `demos/louis-agent/hosts` names what it loads and starts it. Pushing always stays
 with you.
@@ -155,7 +155,7 @@ and a review queue hands a person the answers still waiting for their grade.
 
 The first baseline: Puls's cook passed 23 of 24, its routing 72 of 72, for $0.37 together. How to:
 [run the evals](src/docs/guides/run-the-evals.md) · [add an eval](src/docs/guides/add-an-eval.md); design:
-[the evals design doc](src/docs/projects/louis-agent.evals.md).
+[the evals design doc](src/docs/projects/LouisAgent.Evals.md).
 
 ## Quick start
 
@@ -174,7 +174,7 @@ Open **http://127.0.0.1:5080**. Everything listens on `127.0.0.1` only.
 
 To use it from Rider, add an agent server in the AI Assistant settings, from
 [config/rider/rider-acp.example.json](demos/louis-agent/config/rider/rider-acp.example.json); each chat gets its own
-container. To use it in a terminal, run `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli` for an
+container. To use it in a terminal, run `dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingCli` for an
 interactive chat, or add `-- "your prompt"` for one shot.
 
 Every setting is in [src/docs/SETUP.md](src/docs/SETUP.md), and choosing a model is in [src/docs/MODELS.md](src/docs/MODELS.md). For

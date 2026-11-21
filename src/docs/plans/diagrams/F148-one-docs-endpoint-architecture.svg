@@ -154,7 +154,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <rect class="mrq-rule" x="0" y="26" width="1359" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="584" y="276" width="774.8" height="532" rx="14" />
-      <text class="pic-group" x="598" y="295" text-anchor="start">the site's image (louis-agent.site-api)</text>
+      <text class="pic-group" x="598" y="295" text-anchor="start">the site's image (LouisAgent.SiteApi)</text>
       <path class="pic-line pic-edge tone-red" d="M140 68L140 134" marker-end="url(#arrow-red)" />
       <path class="pic-march" d="M140 68L140 134" />
       <path class="pic-line pic-edge tone-red" d="M140 202L140 214Q140 226 152 226L762.2 226Q786.2 226 786.2 250L786.2 310" marker-end="url(#arrow-red)" />
@@ -242,7 +242,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="338" y="623" text-anchor="start">louis-agent.mcp</text>
+      <text class="pic-name" x="338" y="623" text-anchor="start">LouisAgent.Mcp</text>
       <text class="pic-name" x="338" y="639" text-anchor="start">doc:// resources (step 9)</text>
       <rect class="pic-panel" x="654.4" y="592" width="263.6" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="670.4" y="612" width="28" height="28" rx="9" />

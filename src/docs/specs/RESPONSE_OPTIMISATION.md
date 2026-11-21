@@ -125,7 +125,7 @@ non-streaming; `ToChatResponse()` carries it into `ChatResponse.Usage`. Non-stre
 `TextContent.WithCacheControl(new CacheControlEphemeral())` on the system message reaches the API: the second request
 read 10,227 cached tokens.
 
-**Claude Haiku 5.5** (measured 2026-10-10 with `tools/louis-agent.usage-probe`, `claude-haiku-5-5`, the same prompt and
+**Claude Haiku 5.5** (measured 2026-10-10 with `tools/LouisAgent.UsageProbe`, `claude-haiku-5-5`, the same prompt and
 adapter versions): reported exactly as Haiku 4.5 above, so `AnthropicUsageMapper` holds unchanged.
 
 | Request | `InputTokenCount` | `CachedInputTokenCount` | `AdditionalCounts` |
@@ -151,7 +151,7 @@ default doesn't apply to us.
 
 `ReasoningTokenCount` is still null; streaming usage still arrives in the last update.
 
-**What the Ollama adapter reports** (measured 2026-10-10 with `tools/louis-agent.usage-probe`: OllamaSharp's
+**What the Ollama adapter reports** (measured 2026-10-10 with `tools/LouisAgent.UsageProbe`: OllamaSharp's
 `OllamaApiClient`, `qwen2.5:0.5b`, a 686-token prompt sent twice, streaming and not):
 
 `InputTokenCount` = 686 and `OutputTokenCount` on every request, including the repeat: Ollama reports the whole prompt

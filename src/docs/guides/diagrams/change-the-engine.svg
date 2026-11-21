@@ -236,8 +236,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M10 21v-2" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">The engine</text>
-      <rect class="mrq-pill" x="381.6" y="108" width="132.8" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.core</text>
+      <rect class="mrq-pill" x="385" y="108" width="126" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">LouisAgent.Core</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">The tool loop, asking other agents, prompts, providers, usage, guards and start-up.</text>
       <rect class="mrq-glass" x="0" y="222" width="207.5" height="142" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />

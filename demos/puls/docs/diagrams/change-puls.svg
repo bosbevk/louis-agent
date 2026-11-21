@@ -248,7 +248,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="crd-headline" x="448" y="92" text-anchor="middle">louis-agent.identity.puls</text>
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">LouisAgent.Identities.Puls</text>
       <rect class="mrq-pill" x="395.2" y="108" width="105.6" height="24" rx="12" />
       <text class="mrq-code" x="448" y="124" text-anchor="middle">PulsIdentity</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">One small class and a folder of embedded prompts: its name, its packs, and the roles it may ask.</text>

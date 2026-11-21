@@ -8,7 +8,7 @@
         "id": "H",
         "icon": "terminal",
         "tone": "blue",
-        "label": "louis-agent.orchestrator (host)"
+        "label": "LouisAgent.Orchestrator (host)"
       },
       {
         "id": "F",
@@ -44,7 +44,7 @@
         "id": "P",
         "icon": "server",
         "tone": "red",
-        "label": "peer louis-agent.api (PACKS=fixing)"
+        "label": "peer LouisAgent.Api (PACKS=fixing)"
       },
       {
         "id": "X",

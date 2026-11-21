@@ -163,7 +163,7 @@
       },
       {
         "id": "core",
-        "label": "louis-agent.core"
+        "label": "LouisAgent.Core"
       },
       {
         "id": "dotted",
@@ -171,7 +171,7 @@
       },
       {
         "id": "api",
-        "label": "louis-agent.api (5)"
+        "label": "LouisAgent.Api (5)"
       },
       {
         "id": "packs",

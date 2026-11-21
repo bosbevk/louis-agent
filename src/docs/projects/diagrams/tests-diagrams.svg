@@ -214,16 +214,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="995.6" y="161" text-anchor="start">*.integration-tests: start a</text>
       <text class="pic-name" x="995.6" y="177" text-anchor="start">process, open Mongo, need a</text>
       <text class="pic-name" x="995.6" y="193" text-anchor="start">tool</text>
-      <rect class="pic-panel" x="334.8" y="280" width="248.4" height="84" rx="10" />
-      <rect class="pic-fill tone-teal" x="350.8" y="308" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(356.8 314) scale(0.6667)">
+      <rect class="pic-panel" x="338.6" y="280" width="240.8" height="84" rx="10" />
+      <rect class="pic-fill tone-teal" x="354.6" y="308" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(360.6 314) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="pic-name" x="386.8" y="311" text-anchor="start">louis-agent.web.testing:</text>
-      <text class="pic-name" x="386.8" y="327" text-anchor="start">FixtureApi, Snapshots,</text>
-      <text class="pic-name" x="386.8" y="343" text-anchor="start">SassStylesheet</text>
+      <text class="pic-name" x="390.6" y="311" text-anchor="start">LouisAgent.Web.Testing:</text>
+      <text class="pic-name" x="390.6" y="327" text-anchor="start">FixtureApi, Snapshots,</text>
+      <text class="pic-name" x="390.6" y="343" text-anchor="start">SassStylesheet</text>
       <rect class="pic-panel" x="631.6" y="280" width="278.8" height="84" rx="10" />
       <rect class="pic-fill tone-teal" x="647.6" y="308" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(653.6 314) scale(0.6667)">
@@ -232,7 +232,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="pic-name" x="683.6" y="311" text-anchor="start">louis-agent.testing:</text>
+      <text class="pic-name" x="683.6" y="311" text-anchor="start">LouisAgent.Testing:</text>
       <text class="pic-name" x="683.6" y="327" text-anchor="start">FakeChatClient, StubHandler,</text>
       <text class="pic-name" x="683.6" y="343" text-anchor="start">TestPaths</text>
       <circle class="pic-port pic-edge tone-green" cx="147" cy="214" r="4" />

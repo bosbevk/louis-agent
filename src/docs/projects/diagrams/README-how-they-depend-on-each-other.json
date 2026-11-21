@@ -27,7 +27,7 @@
         "id": "Core",
         "icon": "chip",
         "tone": "violet",
-        "label": "louis-agent.core\nthe engine"
+        "label": "LouisAgent.Core\nthe engine"
       },
       {
         "id": "OnCore",
@@ -51,7 +51,7 @@
         "id": "Comp",
         "icon": "code",
         "tone": "teal",
-        "label": "louis-agent.composition\nthe contracts"
+        "label": "LouisAgent.Composition\nthe contracts"
       }
     ],
     "edges": [

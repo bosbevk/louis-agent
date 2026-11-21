@@ -148,7 +148,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <rect class="mrq-rule" x="0" y="26" width="1906" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="0" y="0" width="1014.4" height="232" rx="14" />
-      <text class="pic-group" x="14" y="19" text-anchor="start">louis-agent.web</text>
+      <text class="pic-group" x="14" y="19" text-anchor="start">LouisAgent.Web</text>
       <rect class="pic-panel" x="643.2" y="240" width="868.8" height="130" rx="14" />
       <text class="pic-group" x="657.2" y="259" text-anchor="start">the tests</text>
       <rect class="pic-panel" x="1608" y="0" width="298" height="130" rx="14" />
@@ -223,7 +223,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="pic-name" x="707.2" y="305" text-anchor="start">louis-agent.web.testing</text>
+      <text class="pic-name" x="707.2" y="305" text-anchor="start">LouisAgent.Web.Testing</text>
       <text class="pic-name" x="707.2" y="321" text-anchor="start">ThemeSheet: does a theme set</text>
       <text class="pic-name" x="707.2" y="337" text-anchor="start">every name, in both styles? (4)</text>
       <rect class="pic-panel" x="1236.4" y="282" width="263.6" height="68" rx="10" />

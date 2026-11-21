@@ -1,0 +1,40 @@
+{
+  "kind": "nested",
+  "title": "The Overview page: what it is made of",
+  "caption": "The page holds only the framework's parts given words and data: its bands, each with a picture, the real program or its docs, and one band for each of the five families, read from FrameworkFamily.",
+  "nested": {
+    "subtitle": "LouisAgent.Web.Framework, Pages / OverviewPage",
+    "root": {
+      "id": "page", "name": "OverviewPage", "kind": "page", "tone": "green", "aside": "/",
+      "holds": [
+        { "id": "top", "name": "Band", "kind": "top", "tone": "violet",
+          "holds": [
+            { "id": "glance", "name": "DiagramFigure", "kind": "general part", "tone": "violet",
+              "note": "the framework at a glance", "in": [ "Source" ] }
+          ] },
+        { "id": "what", "name": "Band", "kind": "what-it-is", "tone": "violet",
+          "holds": [
+            { "id": "listing", "name": "CodeListing", "kind": "general part", "tone": "violet",
+              "note": "the coding agent's real call", "in": [ "Name", "Language", "Code" ] },
+            { "id": "links", "name": "DocLinks", "kind": "general part", "tone": "violet",
+              "note": "the docs it was written from" }
+          ] },
+        { "id": "families", "name": "Band", "kind": "one for each family", "tone": "violet",
+          "holds": [
+            { "id": "family", "name": "DiagramFigure", "kind": "general part", "tone": "violet",
+              "note": "the family and every project it ships", "in": [ "Source" ] }
+          ] },
+        { "id": "why", "name": "Band", "kind": "why-csharp, your-hardware", "tone": "violet",
+          "note": "each ends with its doc links" }
+      ]
+    },
+    "around": [
+      { "id": "data", "name": "FrameworkFamily.All", "side": "before", "to": "families", "tone": "teal",
+        "heading": "What it reads", "note": "the five families, their colours and projects", "reads": true },
+      { "id": "program", "name": "ProgramListings", "side": "before", "to": "what", "tone": "teal",
+        "note": "the program's lines, held to its file", "reads": true },
+      { "id": "layout", "name": "the site's docs layout", "side": "after", "tone": "blue",
+        "heading": "Drawn inside", "note": "the menu, On this page, and the page turns" }
+    ]
+  }
+}

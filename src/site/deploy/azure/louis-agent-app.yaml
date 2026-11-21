@@ -2,7 +2,7 @@
 # demo), on Azure Container Apps in the environment puls-env the Bicep build made (F109.2), deployed with
 # deploy.ps1 beside this file, -App louis-agent-app (the how-to is src/docs/guides/deploy-the-sites.md).
 #   deploy.ps1 update -App louis-agent-app -Tag 2026-11-08-1200 -Revision v001
-# One container: the site's host (src/site/louis-agent.site-api), on the image src/site/docker/Dockerfile builds, with
+# One container: the site's host (src/site/LouisAgent.SiteApi), on the image src/site/docker/Dockerfile builds, with
 # the guide and its three packs and nothing else: no coding agent, eval studio or accounts. It carries the docs the
 # guide reads and its price tables, so the share keeps only the logs. Since FX122 it runs alone. No secret value lives
 # here: every value is in the vault puls-keys, the app's secrets are references to it by URL, read with the identity

@@ -6,7 +6,7 @@
   "flow": {
     "nodes": [
       { "id": "you", "shape": "terminal", "icon": "user", "tone": "blue", "label": "a recruiter on /cv" },
-      { "id": "api", "icon": "server", "tone": "green", "label": "louis-agent.site-api\nRESUME_FILE (2)" },
+      { "id": "api", "icon": "server", "tone": "green", "label": "LouisAgent.SiteApi\nRESUME_FILE (2)" },
       { "id": "guide", "icon": "message", "tone": "green", "label": "the guide\nfocus-hiring (3)" },
       { "id": "pack", "icon": "box", "tone": "green", "label": "louis-agent.pack.resume\nGetResume (1)" },
       { "id": "json", "shape": "data", "icon": "file", "tone": "amber", "label": "cv.json\n(F142)" },

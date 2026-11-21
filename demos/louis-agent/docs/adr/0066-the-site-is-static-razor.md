@@ -17,7 +17,7 @@ ADR 0053). Everything is C# on purpose. The site is content: no accounts, no API
 
 ## Decision
 
-- The site is **`demos/louis-agent/web/louis-agent.site`, ASP.NET Core with static server-rendered Razor components**: no WebAssembly,
+- The site is **`demos/louis-agent/web/LouisAgent.Site`, ASP.NET Core with static server-rendered Razor components**: no WebAssembly,
   no interactivity, no script of our own. A page is HTML and CSS.
 - It **references no engine project**. It talks about the engine; it doesn't run it.
 - It **shows only what works today**, as Puls's landing page does; what's planned is at most one honest line.
@@ -40,7 +40,7 @@ ADR 0053). Everything is C# on purpose. The site is content: no accounts, no API
 
 ## Links
 
-- [louis-agent.code-review](../projects/louis-agent.code-review.md), [Change the code-review web app](../guides/change-the-web-app.md)
+- [LouisAgent.CodeReview](../projects/LouisAgent.CodeReview.md), [Change the code-review web app](../guides/change-the-web-app.md)
 - [ADR 0034](../../../../src/docs/adr/0034-code-a-person-can-maintain.md), [ADR 0053](../../../../src/docs/adr/0053-stylesheets-by-concern.md)
 
 ---

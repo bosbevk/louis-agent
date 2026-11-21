@@ -9,13 +9,13 @@
         "id": "shared",
         "icon": "box",
         "tone": "teal",
-        "label": "louis-agent.testing:\nFakeChatClient, StubHandler,\nTestPaths"
+        "label": "LouisAgent.Testing:\nFakeChatClient, StubHandler,\nTestPaths"
       },
       {
         "id": "web",
         "icon": "browser",
         "tone": "teal",
-        "label": "louis-agent.web.testing:\nFixtureApi, Snapshots,\nSassStylesheet"
+        "label": "LouisAgent.Web.Testing:\nFixtureApi, Snapshots,\nSassStylesheet"
       },
       {
         "id": "framework",

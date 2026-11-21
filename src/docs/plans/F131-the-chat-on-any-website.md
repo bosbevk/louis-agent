@@ -13,7 +13,7 @@ wordpress, static http etc. It needs to be generic without losing functionality"
 "we must not lose any functionality, we will need to plug into any web infrastructure". The likely first use is the
 clients of Swartland Digital, a web studio in the Swartland that Louis asked to partner with him.
 
-**What exists.** `ChatWidget` (F109.3, `src/web/louis-agent.web/Components/Widget/`) is a button and a panel built
+**What exists.** `ChatWidget` (F109.3, `src/web/LouisAgent.Web/Components/Widget/`) is a button and a panel built
 from the chat's own list, composer and runner, with the identity and its words as parameters. Each message may carry
 the page (ADR 0104, `pageText()` in `ChatWidget.razor.js`); `ShowPage` moves and lights up the page (ADR 0105); the
 open door lets a visitor open one identity without a key, under a cap per address (ADR 0099, `OpenDoorOptions`); the
@@ -83,11 +83,11 @@ directory's SVN; `wp-env` runs WordPress in Docker for tests.
 
 ```
 Today                                     After
-src/hosts/louis-agent.api/                src/hosts/louis-agent.api/
+src/hosts/LouisAgent.Api/                src/hosts/LouisAgent.Api/
   Config/OpenDoorOptions.cs                 Sites/            SiteDoor, ISiteStore, InMemorySiteStore, SiteRateLimits (F131.1)
   Sessions/                                 Sessions/Resume/  TurnBuffer, the stream route (F131.3)
-src/web/louis-agent.web/Components/Widget/  src/web/louis-agent.web/Components/Embed/  EmbedPage (F131.2)
-                                          src/web/louis-agent.web/wwwroot/embed/       embed.js and its modules (F131.2)
+src/web/LouisAgent.Web/Components/Widget/  src/web/LouisAgent.Web/Components/Embed/  EmbedPage (F131.2)
+                                          src/web/LouisAgent.Web/wwwroot/embed/       embed.js and its modules (F131.2)
 src/site/                                 src/site/louis-agent.identity.business/      BusinessIdentity (F131.1)
                                           src/integrations/wordpress/louis-agent-chat/ the plugin (F131.6)
 ```
@@ -96,12 +96,12 @@ src/site/                                 src/site/louis-agent.identity.business
 
 | Type | Folder | Namespace | Child |
 |---|---|---|---|
-| `SiteRecord`, `ISiteStore`, `InMemorySiteStore`, `SiteDoor`, `SiteRateLimits` | `src/hosts/louis-agent.api/Sites/` | `LouisAgent.Api.Sites` | F131.1 |
+| `SiteRecord`, `ISiteStore`, `InMemorySiteStore`, `SiteDoor`, `SiteRateLimits` | `src/hosts/LouisAgent.Api/Sites/` | `LouisAgent.Api.Sites` | F131.1 |
 | `BusinessIdentity` | `src/site/louis-agent.identity.business/` | `LouisAgent.Identities.Business` | F131.1 |
-| `EmbedPage` | `src/web/louis-agent.web/Components/Embed/` | `LouisAgent.Web.Components.Embed` | F131.2 |
-| `TurnBuffer` | `src/hosts/louis-agent.api/Sessions/Resume/` | `LouisAgent.Api.Sessions.Resume` | F131.3 |
-| `MongoSiteStore`, the sites screen | `src/hosts/louis-agent.api/Sites/` | `LouisAgent.Api.Sites` | F131.4 |
-| `SiteBudget` | `src/hosts/louis-agent.api/Sites/` | `LouisAgent.Api.Sites` | F131.5 |
+| `EmbedPage` | `src/web/LouisAgent.Web/Components/Embed/` | `LouisAgent.Web.Components.Embed` | F131.2 |
+| `TurnBuffer` | `src/hosts/LouisAgent.Api/Sessions/Resume/` | `LouisAgent.Api.Sessions.Resume` | F131.3 |
+| `MongoSiteStore`, the sites screen | `src/hosts/LouisAgent.Api/Sites/` | `LouisAgent.Api.Sites` | F131.4 |
+| `SiteBudget` | `src/hosts/LouisAgent.Api/Sites/` | `LouisAgent.Api.Sites` | F131.5 |
 | `WordPressPluginTests` | `src/tests/hosts/louis-agent.wordpress.integration-tests/` | `LouisAgent.WordPress.IntegrationTests` | F131.6 |
 
 ## The children, in build order

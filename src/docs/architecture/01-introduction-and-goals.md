@@ -8,7 +8,7 @@
 ## What it is
 
 louis-agent is an AI agent framework in C#, and the agents built on it. The framework is the engine
-(`louis-agent.core`: the tool-call loop, streaming, the usage ledger and the guards), the hosts that serve it, and
+(`LouisAgent.Core`: the tool-call loop, streaming, the usage ledger and the guards), the hosts that serve it, and
 packs of tools. Core itself ships no agent and no tool. A few lines of a program's own say who the agent is (an
 identity: its voice, its modes, its roles) and what it can do (its packs), and start a host.
 

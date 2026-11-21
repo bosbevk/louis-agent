@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- F151.2: the themes a site can opt into, glass and flat, each a package of values (ADR 0124). A folder per
+       theme, each with one class that adds an area carrying the theme, and its sheets of values for its dark and its
+       light style; nothing here names a component. A site's own build compiles the sheets, as it does the
+       framework's. F151.4: a Razor class library, though it holds no component, so its wwwroot is served at
+       _content/LouisAgent.Web.Themes/: the glass theme's drawings, one for each part and state (Louis's pick A of
+       three, a drawing is a value). -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Themes</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- A library has no page to watch, as the accounts library says (CL58). -->
+    <SassCompilerEnableWatcher>false</SassCompilerEnableWatcher>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Louis's pick A of three: the build compiles Styles/app.scss, the framework's names and every theme's
+         sheets, to obj/css/app.css, so the tests hold each theme to the names. No site loads that file, and it is
+         not served, being outside wwwroot. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: what a theme and an area are. -->
+    <ProjectReference Include="..\LouisAgent.Web\LouisAgent.Web.csproj" />
+
+    <!-- The Sass compiler's settings are read at build time only; published, the libraries' copies would land on one
+         path and dotnet publish refuses (FX62). -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
+
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Web.Themes.md" Link="docs\LouisAgent.Web.Themes.md" />
+  </ItemGroup>
+
+</Project>

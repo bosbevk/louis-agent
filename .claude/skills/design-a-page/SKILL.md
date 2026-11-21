@@ -1,6 +1,6 @@
 ---
 name: design-a-page
-description: Works as the web designer, always on louis-agent.web's controls (ADR 0125), never hand-made HTML. Use when a page or a section is planned, reordered or redesigned, when its flow, hook or next step changes, or when Louis asks how a page should work or what will catch visitors. Holds who the page is for, the order of its sections, the evidence behind it, and the checks on desktop and phone. Checking the built page is check-a-page.
+description: Works as the web designer, always on LouisAgent.Web's controls (ADR 0125), never hand-made HTML. Use when a page or a section is planned, reordered or redesigned, when its flow, hook or next step changes, or when Louis asks how a page should work or what will catch visitors. Holds who the page is for, the order of its sections, the evidence behind it, and the checks on desktop and phone. Checking the built page is check-a-page.
 ---
 
 # Design a page
@@ -8,7 +8,7 @@ description: Works as the web designer, always on louis-agent.web's controls (AD
 Four stops come first.
 
 1. **Built on our framework, always** (Louis, 2026-11-18). A site is configured framework components (ADR 0125):
-   a page holds no HTML, only `louis-agent.web`'s controls (`Band`, `TileRow`, `Tile`, `LinkButton`, `ProductWindow`
+   a page holds no HTML, only `LouisAgent.Web`'s controls (`Band`, `TileRow`, `Tile`, `LinkButton`, `ProductWindow`
    and the rest) given words and data. Before a section is planned, look up which control draws it. A shape the
    framework lacks is built there first, as a control any site could use, and then configured on the page. Styles
    belong to the theme; another thread may own them, so a redesign changes the order and the words, and asks

@@ -7,7 +7,7 @@
     "nodes": [
       {
         "id": "d",
-        "label": "projects/louis-agent.diagrams.md,\nguides/draw-a-diagram.md",
+        "label": "projects/LouisAgent.Diagrams.md,\nguides/draw-a-diagram.md",
         "icon": "book",
         "tone": "amber",
         "shape": "data"

@@ -51,14 +51,14 @@
         "id": "ids",
         "icon": "users",
         "tone": "teal",
-        "label": "louis-agent.identity.triage:\nmanager voice; sorter,\ninvestigator, reviewer roles\n(F106.3.2)",
+        "label": "LouisAgent.Identities.Triage:\nmanager voice; sorter,\ninvestigator, reviewer roles\n(F106.3.2)",
         "group": "app"
       },
       {
         "id": "pack",
         "icon": "box",
         "tone": "teal",
-        "label": "louis-agent.pack.triage: feed,\nrecorder, decision tools,\nRaiseToPerson, ReadTriageRun\n(F106.3.1)",
+        "label": "LouisAgent.Packs.Triage: feed,\nrecorder, decision tools,\nRaiseToPerson, ReadTriageRun\n(F106.3.1)",
         "group": "app"
       },
       {
@@ -72,7 +72,7 @@
         "id": "core",
         "icon": "chip",
         "tone": "violet",
-        "label": "louis-agent.core: Delegation\n(F39 A), checkpoints (F43)",
+        "label": "LouisAgent.Core: Delegation\n(F39 A), checkpoints (F43)",
         "group": "app"
       },
       {

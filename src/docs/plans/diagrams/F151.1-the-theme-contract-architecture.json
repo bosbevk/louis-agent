@@ -35,7 +35,7 @@
       },
       {
         "id": "check",
-        "label": "louis-agent.web.testing\nThemeSheet: does a theme set\nevery name, in both styles? (4)",
+        "label": "LouisAgent.Web.Testing\nThemeSheet: does a theme set\nevery name, in both styles? (4)",
         "icon": "chart",
         "tone": "teal",
         "group": "tests"
@@ -92,7 +92,7 @@
     "groups": [
       {
         "id": "web",
-        "label": "louis-agent.web"
+        "label": "LouisAgent.Web"
       },
       {
         "id": "tests",

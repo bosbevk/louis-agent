@@ -21,7 +21,7 @@ agent and triage demos when FX195 took them off the site.
 
 | | Before F49.1 | After F49.1 |
 |---|---|---|
-| Where the contract lives | Inside the harness (`evals/louis-agent.evals`): `IGrader`, `Grade`, `Trial` | Its own project, `evals/louis-agent.evals.checks`, which references only what a pack references |
+| Where the contract lives | Inside the harness (`evals/LouisAgent.Evals`): `IGrader`, `Grade`, `Trial` | Its own project, `evals/LouisAgent.Evals.Checks`, which references only what a pack references |
 | Who can write a check | The harness and an eval set | Also a pack (F49.3), without reaching the harness that runs Puls's evals |
 | How an eval gets a check | `new WithinTimeGrader(TimeSpan.FromSeconds(120))` in C# | That, or `within-time` with `{"seconds": 120}` from a file, through the catalogue |
 | The words | "Grader" everywhere | `ICheck` in C#; the wire still says `grader`, so stored runs read the same (ADR 0049) |
@@ -399,7 +399,7 @@ behind one tag with the identity as its setting, on a store of its own so a site
 conversations.
 
 ---
-[Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)
+[Docs index](../README.md) · Related: [Learning](README.md) · [LouisAgent.Evals.Checks](../projects/LouisAgent.Evals.Checks.md)
 
 ## Adapters over Identity's seams (F61.1, 2026-11-07)
 
@@ -553,7 +553,7 @@ It was built unattended, with Louis looking in and steering by screenshot, and g
 thirty commits as each look led to the next idea.
 
 Put the area in the framework, and let the site bring only data and words. The frame, the stage, the start and the
-mock website live in `louis-agent.web`. The site registers its demos as a list (`ShowroomDemos`) and fills slots. The
+mock website live in `LouisAgent.Web`. The site registers its demos as a list (`ShowroomDemos`) and fills slots. The
 rail, the phone's chips, the start's covers and the sitemap all read that one list, so a new demo is one line and one
 page. That is the same Bridge-and-slots idea as the site frame (F118), and it is why the guesthouse could replace the
 doctor's practice in an hour.
@@ -742,7 +742,7 @@ names only from F151.4.
 
 One project, a folder per theme. The plan had a project for each theme. When the glass project was built, Louis
 looked at it and said "we should only have one project called themes and add them there not seperately". So the
-glass project was renamed into `louis-agent.web.themes`, with a `Glass/` folder, and flat joined it in `Flat/`. A
+glass project was renamed into `LouisAgent.Web.Themes`, with a `Glass/` folder, and flat joined it in `Flat/`. A
 third theme is a new folder, not a new project. The ADR's rule changed with it, on his yes to the wording. The
 lesson is about where a plug-in's boundary sits: a theme is still its own unit, its class and its sheets, but the
 unit is a folder, and the package is the family.
@@ -913,16 +913,16 @@ Overview, Getting started, How it works, Features, Cost and evals, Examples and 
 their own, meant for framework.louis-agent.dev, so louis-agent.dev sells and the new site teaches.
 
 The lesson of this child is where the pages ended up. The first plan put them in the new site's project. Louis turned
-that round: "the framework must be a package like accounts". So the pages are `louis-agent.web.framework`, and a
+that round: "the framework must be a package like accounts". So the pages are `LouisAgent.Web.Framework`, and a
 site turns them on with `.Framework()` among its areas, the same door the account pages, the evals and the themes
 already use. The framework's site is then almost nothing: one line of areas, a sixteen-line layout, a stylesheet that
 lists the framework's Sass, and a host of a few lines. That is the test of a plug-in point we keep coming back to: if
 the site that ships the pages is thin, any site could ship them.
 
 Two more packages came out the same way. Where a page's doc links lead is `.Docs(address)`, from
-`louis-agent.web.docs`: a page names a doc by its path in the repo, and the site says once that paths lead to GitHub,
+`LouisAgent.Web.Docs`: a page names a doc by its path in the repo, and the site says once that paths lead to GitHub,
 so moving the docs later is one setting. And the catch-all route that opens a place's own address moved out of the
-framework's web into `louis-agent.web.places`, as `.Places(home, site)`, so a site that wants its places doesn't take
+framework's web into `LouisAgent.Web.Places`, as `.Places(home, site)`, so a site that wants its places doesn't take
 the admin's pages with them. That move closed a gap: the addresses were read from every fixed route, so the catch-all
 could have drawn a page behind a sign-in or the admin's key around the router's own check. Now only pages anyone may
 open have places, by the same rule the host draws pages for a search

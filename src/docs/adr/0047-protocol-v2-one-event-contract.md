@@ -18,11 +18,11 @@ calls), or names of our own.
 
 ## Decision
 
-- **One event model, in a project of its own** (pick A): `evals/louis-agent.evals.protocol` holds the events and
-  their parts as records and enums, references only `louis-agent.choices`, and is referenced by the harness, the
+- **One event model, in a project of its own** (pick A): `evals/LouisAgent.Evals.Protocol` holds the events and
+  their parts as records and enums, references only `LouisAgent.Choices`, and is referenced by the harness, the
   runner, the API and the web apps' shared library. The harness writes the events, the API reads them, and the
   portal's live view reads the same records; the contract is not the harness. A shared Data Transfer Object
-  contract (Fowler, PoEAA), as `louis-agent.api.contracts` is for the API's replies
+  contract (Fowler, PoEAA), as `LouisAgent.Api.Contracts` is for the API's replies
   ([ADR 0045](0045-typed-answers-and-a-shared-contract.md)).
 - **JSON Lines on stdout, `"event"` first** (pick B): one object per line, UTF-8, no `@` prefix. `"event"` is the
   type discriminator (`[JsonPolymorphic]`, one `[JsonDerivedType]` per event), written and read by

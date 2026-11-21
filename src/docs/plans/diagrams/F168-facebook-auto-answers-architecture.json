@@ -157,7 +157,7 @@
       },
       {
         "id": "host",
-        "label": "louis-agent.site-api (maps the library)"
+        "label": "LouisAgent.SiteApi (maps the library)"
       }
     ],
     "direction": "down"

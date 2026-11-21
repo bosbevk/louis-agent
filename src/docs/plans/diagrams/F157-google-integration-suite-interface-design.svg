@@ -255,7 +255,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-mark" x="28" y="259.5" text-anchor="middle">S</text>
       <text class="pic-name" x="52" y="245" text-anchor="start">ConnectHandlers</text>
       <text class="pic-note" x="52" y="261" text-anchor="start">static, F157.1, in</text>
-      <text class="pic-note" x="52" y="273" text-anchor="start">louis-agent.accounts</text>
+      <text class="pic-note" x="52" y="273" text-anchor="start">LouisAgent.Accounts</text>
       <path class="cls-divide" d="M14 293H385" />
       <text class="cls-member" x="14" y="311" text-anchor="start">StartAsync: to Google's consent, offline, one scope</text>
       <text class="cls-member" x="14" y="325" text-anchor="start">CallbackAsync: the code for tokens, the refresh token</text>
@@ -276,7 +276,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-mark" x="547" y="259.5" text-anchor="middle">C</text>
       <text class="pic-name" x="571" y="245" text-anchor="start">AccountConnections</text>
       <text class="pic-note" x="571" y="261" text-anchor="start">F157.1, in</text>
-      <text class="pic-note" x="571" y="273" text-anchor="start">louis-agent.accounts</text>
+      <text class="pic-note" x="571" y="273" text-anchor="start">LouisAgent.Accounts</text>
       <path class="cls-divide" d="M533 293H953" />
       <text class="cls-member" x="533" y="311" text-anchor="start">reads the tenant's refresh token from AspNetUserTokens</text>
       <text class="cls-member" x="533" y="325" text-anchor="start">unprotects it with Data Protection</text>

@@ -1,7 +1,7 @@
 # Change the CLI
 
-> **How-to.** Change the terminal host, `src/hosts/louis-agent.cli`: how a turn is shown, a chat command, its texts,
-> and trying it. **Elsewhere:** how it works in [louis-agent.cli](../projects/louis-agent.cli.md); the engine it runs
+> **How-to.** Change the terminal host, `src/hosts/LouisAgent.Cli`: how a turn is shown, a chat command, its texts,
+> and trying it. **Elsewhere:** how it works in [LouisAgent.Cli](../projects/LouisAgent.Cli.md); the engine it runs
 > in [Change the engine](change-the-engine.md).
 
 ![The CLI: CliHost runs a chat or one prompt, ConsoleChat writes the turn to the terminal, and its texts are CliUserText](diagrams/change-the-cli.svg)
@@ -14,8 +14,8 @@ every host belongs in core.
 ## Run it
 
 ```bash
-dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli                                # a chat; exit or Ctrl+D to quit
-dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli -- "What branch am I on?"   # one prompt, the answer alone on stdout
+dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingCli                                # a chat; exit or Ctrl+D to quit
+dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingCli -- "What branch am I on?"   # one prompt, the answer alone on stdout
 ```
 
 It finds `config/.env` and the repository root from any folder inside the repository. In Rider, the coding demo's run
@@ -40,7 +40,7 @@ Commands such as `/tools`, `/approve`, `/reject` and `/usage` belong to core, in
 Rider and the API get them too. The CLI passes every line to `AgentEngine.HandleUserCommand` before the model, so it
 needs no code of its own.
 
-1. Write the test first, in `src/tests/engine/louis-agent.core.tests/Agent/Commands/UserCommandsTests.cs`.
+1. Write the test first, in `src/tests/engine/LouisAgent.Core.Tests/Agent/Commands/UserCommandsTests.cs`.
 2. Add the command to `UserCommands`' `switch`, with its reply in core's `UserText`.
 3. Add it to the banner's list, `CliUserText.BannerCommands`, so people find it.
 
@@ -50,7 +50,7 @@ The CLI has no tests of its own: its loop and its commands are tested through `A
 
 ```bash
 dotnet build louis-agent-solution.sln
-dotnet test src/tests/engine/louis-agent.core.tests
+dotnet test src/tests/engine/LouisAgent.Core.Tests
 ```
 
 Then run it by hand, once as a chat and once with a prompt. Check a tool call, a stop with Ctrl+C, and the usage line.

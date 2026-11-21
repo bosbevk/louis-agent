@@ -1,16 +1,16 @@
 # Change the site
 
-> **How-to.** Change `src/site/louis-agent.site`, louis-agent.dev, the website that sells websites with agents: run
+> **How-to.** Change `src/site/LouisAgent.Site`, louis-agent.dev, the website that sells websites with agents: run
 > it, add a page, change its look, change the CV, draw the share card again, and test it. **Elsewhere:** how it works
-> in [louis-agent.site](../projects/louis-agent.site.md); what every site shares in
+> in [LouisAgent.Site](../projects/LouisAgent.Site.md); what every site shares in
 > [Change the framework's web](change-the-web.md); why it lives in `src/site/` in
 > [ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md).
 
-![The site at a glance: louis-agent.site is configured framework components, served by louis-agent.site-api with the guide in the corner, and its tests hold every page to the repo](diagrams/change-the-site.svg)
+![The site at a glance: LouisAgent.Site is configured framework components, served by LouisAgent.SiteApi with the guide in the corner, and its tests hold every page to the repo](diagrams/change-the-site.svg)
 
-The site is Blazor WebAssembly on the framework's web. Its host, `louis-agent.site-api`, serves the pages as HTML and
+The site is Blazor WebAssembly on the framework's web. Its host, `LouisAgent.SiteApi`, serves the pages as HTML and
 the API the guide's chat runs on, and its catalogue holds the guide and nothing else. The framework's own pages are not
-here any more: they are the framework's site, [louis-agent.site-framework](../projects/louis-agent.site-framework.md).
+here any more: they are the framework's site, [LouisAgent.SiteFramework](../projects/LouisAgent.SiteFramework.md).
 
 The thing to know before you change anything is that this site holds no HTML and no styles of its own. A page is the
 framework's controls given the site's words and data
@@ -21,7 +21,7 @@ here are words, and a new shape or a new look is built in the framework first.
 
 ```bash
 docker compose -f src/site/docker/docker-compose.yml up -d --build      # http://127.0.0.1:5080, the review copy
-dotnet run --project src/site/louis-agent.site-api                      # http://127.0.0.1:5083
+dotnet run --project src/site/LouisAgent.SiteApi                      # http://127.0.0.1:5083
 ```
 
 Its settings are in `src/site/config/` ([what each holds](../../site/config/README.md)). Copy `.env.secrets.example`
@@ -41,7 +41,7 @@ page, `Pages/About/PrivacyPage.razor`, is a good one to copy: a `Band` per secti
    ([Make a page move](change-the-web.md#make-a-page-move)). It draws in the site's frame by default.
 2. **Put it on the menu**, as a `NavLink` in `Layout/SiteLayout.razor`, or inside a `SiteMenu` when it belongs to a
    group, as the demos do.
-3. **Tell the guide.** Its voice and skills (`src/site/louis-agent.identity.guide`, the pages are in
+3. **Tell the guide.** Its voice and skills (`src/site/LouisAgent.Identities.Guide`, the pages are in
    `skills/site-pages.md`) get the page's address, what it says and the docs it came from.
    `GuideKnowsTheSiteTests` fails until they name every page.
 4. **Hold it with the tests.** Add a row to `SitePagesTests.APage_IsAtItsAddress_WithItsHeading` with the page, its
@@ -54,7 +54,7 @@ page, `Pages/About/PrivacyPage.razor`, is a good one to copy: a `Band` per secti
 
 The site decides no look of its own. `Styles/app.scss` lists only the framework's Sass and the two themes, glass and
 flat, and `StylesheetTests.TheSite_HasNoStylesOfItsOwn` fails if a partial of the site's or a sheet beside one of its
-components comes back. The colours are the framework's, in `src/web/louis-agent.web/Styles/web/settings/_colours.scss`,
+components comes back. The colours are the framework's, in `src/web/LouisAgent.Web/Styles/web/settings/_colours.scss`,
 so a change there reaches every site.
 
 So a change of look is a change to the framework or a theme, made in [Change the framework's web](change-the-web.md).
@@ -67,7 +67,7 @@ and their markup and stylesheets went with that move.
 
 ## Export the films
 
-`src/tools/louis-agent.film-export` and its exports in `src/docs/films/` still name the old pages and the films' files,
+`src/tools/LouisAgent.FilmExport` and its exports in `src/docs/films/` still name the old pages and the films' files,
 which are gone, so the tool can't make an export until it is fixed. Its other job, the share card, still works.
 
 ## Draw the share card again
@@ -76,7 +76,7 @@ The card a link to the site shows carries the glass orb, photographed from the s
 section at `/home/brand`. After the orb's look changes, draw it again and commit the pictures it writes:
 
 ```bash
-dotnet run --project src/tools/louis-agent.film-export -- social-card
+dotnet run --project src/tools/LouisAgent.FilmExport -- social-card
 ```
 
 It starts the site's host itself and needs no Docker. `CHROME_PATH` names the browser; without it, a Chrome for
@@ -108,12 +108,12 @@ A copy saved in the admin wins over the built-in one. To go back to the built-in
 ## Test it
 
 ```bash
-dotnet test src/tests/site/louis-agent.site.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/site/louis-agent.site.tests     # after a deliberate markup change: then read the diff
+dotnet test src/tests/site/LouisAgent.Site.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/site/LouisAgent.Site.Tests     # after a deliberate markup change: then read the diff
 ```
 
 The tests run in the invariant culture (`TestCulture`), so the golden files never depend on the machine. Then look at
 the changed page in Chrome at 1920×1080 and at phone width, paging through each section.
 
 ---
-[Guides](README.md) · [Docs index](../README.md) · Related: [louis-agent.site](../projects/louis-agent.site.md)
+[Guides](README.md) · [Docs index](../README.md) · Related: [LouisAgent.Site](../projects/LouisAgent.Site.md)

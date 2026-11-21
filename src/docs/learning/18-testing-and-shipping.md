@@ -24,7 +24,7 @@ rules, the old way went (CL65.4): `IArrowRule`, `IRowRule` and `FlowRules` are g
 | What pins the model's view | Two goldens: the coding agent's request and every `ToolMessage` | Four: those two, a Puls session (step 0, written from `main` before anything moved) and the shops pack's texts |
 | Who knows Puls | Core's prompts, `ToolMessage`, `MinionTools`, `GetToday`'s South African default: 20 places | Nothing in core; a ratchet listed each piece until it left, and is empty |
 | When a bad configuration shows | At the first chat, as a 400 or a missing guide | At start-up: an unknown `ROLES_ENABLED` name, a default mode with no file, an `IDENTITIES` name nothing provides, a tool name two toolsets share, a `Requires` cycle, an unknown `HOST_TIME_ZONE` |
-| Where the test fakes live | `core.tests`, with `InternalsVisibleTo` opened to three other test projects | `tests/louis-agent.testing`, a class library the test projects reference |
+| Where the test fakes live | `core.tests`, with `InternalsVisibleTo` opened to three other test projects | `tests/LouisAgent.Testing`, a class library the test projects reference |
 | Test projects | 3 | 6 and the library; 1,555 tests green at the end of step 5 |
 
 ## Three goldens as a refactor's proof
@@ -146,7 +146,7 @@ zip to add in a pull request. It's more work, but it still ends in git.
 
 ## A host that is only content (F54)
 
-The engine's website was the first host with no engine in it (until F109.1 folded it into the coding agent's web app): `louis-agent.site` referenced nothing of ours and
+The engine's website was the first host with no engine in it (until F109.1 folded it into the coding agent's web app): `LouisAgent.Site` referenced nothing of ours and
 runs no model. It is ASP.NET Core with **static server rendering**: a Razor component is rendered once on the server
 into plain HTML and sent, no WebAssembly, no interactivity, no script. A page is its markup and one stylesheet, and
 the two films of how the engine works are CSS keyframes over CSS 3D transforms. What that gave the tests:
@@ -782,8 +782,8 @@ plan rested on it, and a rule test that belongs to everything that reads a share
 ## One project cut in two along a line that was already there (CL65.1, 2026-11-14)
 
 **What it is.** The diagrams were one project. You said ".diagrams must be split into a diagrams --> and what
-builds the diagrams". Now `louis-agent.diagrams` says what a diagram is: its kinds, its records, its reader.
-`louis-agent.diagrams.engine` builds one: the layouts, the routing, the drawings, the looks, the writer. The
+builds the diagrams". Now `LouisAgent.Diagrams` says what a diagram is: its kinds, its records, its reader.
+`LouisAgent.Diagrams.Engine` builds one: the layouts, the routing, the drawings, the looks, the writer. The
 engine references the diagrams, never the other way.
 
 **The idea: nobody takes what they don't use.** That is the Common Reuse Principle, which the repo already
@@ -1616,7 +1616,7 @@ stand-in with the real thing's shape. The tests that only checked what the shop-
 sheet went back to that pack's own tests, which already held every one of those facts, and the API's upload and feed
 routes now prove themselves on the framework's `FakeImport` and `FakeFeed`. A test proves one thing at its own layer.
 
-The eval tests got data of their own. The integration tests start `louis-agent.api.test-runner`, the framework's
+The eval tests got data of their own. The integration tests start `LouisAgent.Api.TestRunner`, the framework's
 runner with the general checks, which copies the framework's template eval beside it. The scenario and draft tests
 needed more than the template has, a follow-up, a held-out split, an expected budget, so `SampleEvalWorkspace` writes
 a small eval into a temporary folder for each test class. That's a Fresh Fixture: the values a test checks sit beside
@@ -1646,6 +1646,43 @@ with the counts on both sides matching.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework's tests use fakes and data of their own, so a
 product can leave without taking them, and rule tests hold the line while the code moves.
 
+## Every project named for its namespace (F167, 2026-11-21)
+
+Before the framework can be published as packages (F166.2), its names had to settle. A project was called
+`louis-agent.core` on disk while its code said `LouisAgent.Core`, and a package would have taken the first. Louis chose
+one name for all of it, so the folder, the project file, the DLL, the namespace and later the package all read
+`LouisAgent.Core`. All 155 projects moved, with their docs and their pictures.
+
+The new names were read, not invented. Each project already declared its namespace, so 146 names came straight from
+it. Nine had to be listed by hand: seven that shared a namespace with a neighbour, and the coding catalog with its
+tests, whose name says more than their namespace. Because the names were read, the code moved and no namespace in
+it changed.
+
+The rename was planned as a tool of our own with tests, and two steps of it were built: a name map that refuses a
+clash before anything is touched, and a rewriter that changes a name only where the whole name stands, the longest
+first, so `louis-agent.core.web` is never half-changed by `louis-agent.core`. Then Louis dropped it, "just as a once off
+just too many to test", and the same rules ran as plain commands, kept in `src/tools/rename-projects` with their
+reports so anyone can see what ran. Writing the rewriter first still paid off: measuring which endings follow a
+project's name found `.styles.css`, the stylesheet .NET names after the assembly, which a site would have lost.
+
+The run itself was one command and 6,245 names in 1,286 files. What took the time was everything that found a project
+by its old spelling and not by its name: a test that knew a test project by `.tests`, a rule that read identities
+from `louis-agent.identity.*`, a regular expression with the name escaped, diagram labels whose name followed a
+`\n`, Puls's routing questions with their dataset hash. The suite found almost all of it, 35 failures across 11
+projects, and each fix was small. Two were in the product: the log's service name, kept exactly what it was by turning
+`SiteApi` back into `site-api`, and the eval studio's publish folder, which had pointed at a folder that no longer
+existed while its own tests, built on the old names, stayed green. That one is the lesson: a test that makes its own
+fixture can agree with a bug.
+
+What didn't go well. Rider stayed open through the run and kept writing build folders under the new names while they
+were being cleared, so the clean-up had to wait for the build servers to stop. The tool was half built before it was
+dropped, and its two steps were taken back out of the branch, kept only on a local branch. Nothing was measured in
+money: no model call and no eval run. The measure is the suite, green but for the five tests that fail on Windows only,
+and the site answering on :5080 with its renamed stylesheet.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a change too wide for hands, made by rules that are
+written down and kept, then proved by the build and the whole suite; and a name read from the code, not invented.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
-[Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
+[Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)

@@ -71,8 +71,8 @@ moves taught what scoping does to the cascade, which this record keeps.
   (stylesheets by concern), [ADR 0093](0093-a-script-is-a-module-beside-its-component.md) (the scripts' twin)
 - [CSS isolation in Blazor](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation), the Sass
   compiler's `GenerateScopedCss` (AspNetCore.SassCompiler 1.107.1)
-- The how: `.claude/rules/css.md`; the libraries: [louis-agent.web](../projects/louis-agent.web.md),
-  [louis-agent.web.accounts](../projects/louis-agent.web.accounts.md), [louis-agent.web.evals](../projects/louis-agent.web.evals.md)
+- The how: `.claude/rules/css.md`; the libraries: [LouisAgent.Web](../projects/LouisAgent.Web.md),
+  [LouisAgent.Web.Accounts](../projects/LouisAgent.Web.Accounts.md), [LouisAgent.Web.Evals](../projects/LouisAgent.Web.Evals.md)
 
 ---
 [Docs index](../README.md) · Related: [ADRs](README.md) · [ADR 0093](0093-a-script-is-a-module-beside-its-component.md)

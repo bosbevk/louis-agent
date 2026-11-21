@@ -13,7 +13,7 @@ guide calls.
 ## Decision
 
 A tool when it improves the prompt (ADR 0080): the guide gets one tool, `SendLead(name, contact, wants)`, in a pack
-of its own (`louis-agent.pack.leads`), and the rule that governs it lives in the voice.
+of its own (`LouisAgent.Packs.Leads`), and the rule that governs it lives in the voice.
 
 - **The tool checks what it is given.** It refuses a lead with a part missing and says which, so the guide asks for
   it instead of sending half a message. A failure of the mail service comes back as text with its reason, never a
@@ -41,7 +41,7 @@ of its own (`louis-agent.pack.leads`), and the rule that governs it lives in the
 - [ADR 0080: a tool when it improves the prompt](0080-a-tool-when-it-improves-the-prompt.md)
 - [ADR 0005: guard the context](0005-guard-the-context.md)
 - [ADR 0027: engine, identities and packs](0027-engine-identities-and-packs.md)
-- The pack's design: [louis-agent.pack.leads](../../../packs/docs/projects/louis-agent.pack.leads.md)
+- The pack's design: [LouisAgent.Packs.Leads](../../../packs/docs/projects/LouisAgent.Packs.Leads.md)
 
 ---
 [Docs index](../README.md) · [ADRs](README.md)

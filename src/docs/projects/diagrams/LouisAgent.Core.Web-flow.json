@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "LouisAgent.Core.Web: one fetch, step by step",
+  "caption": "robots.txt is asked first, live or in a replay. Only a live fetch passes the SSRF guard and goes out; a replay reads the recorded answer. Either way the page's own no-AI signals are checked last.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      { "id": "start", "label": "A tool asks\nfor a page", "icon": "chip", "tone": "blue", "shape": "terminal" },
+      { "id": "robots", "label": "robots.txt\nallows it?", "icon": "branch", "tone": "green", "shape": "decision" },
+      { "id": "refuse", "label": "Say the site\nsaid no", "icon": "shield", "tone": "red", "shape": "terminal" },
+      { "id": "replay", "label": "A replay?", "icon": "branch", "tone": "green", "shape": "decision" },
+      { "id": "recorded", "label": "Read the\nrecorded answer", "icon": "database", "tone": "amber", "shape": "data" },
+      { "id": "guard", "label": "The SSRF guard\nno private address", "icon": "shield", "tone": "green" },
+      { "id": "fetch", "label": "Fetch it, or visit it\nwith headless Chrome", "icon": "browser", "tone": "green" },
+      { "id": "record", "label": "Write it down\nwhere a store is kept", "icon": "database", "tone": "amber", "shape": "data" },
+      { "id": "signals", "label": "The page says\nno to AI?", "icon": "branch", "tone": "green", "shape": "decision" },
+      { "id": "end", "label": "The answer,\nto the tool", "icon": "file", "tone": "green", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "start", "to": "robots" },
+      { "from": "robots", "to": "refuse", "word": "no" },
+      { "from": "robots", "to": "replay", "word": "yes" },
+      { "from": "replay", "to": "recorded", "word": "yes" },
+      { "from": "replay", "to": "guard", "word": "no" },
+      { "from": "guard", "to": "fetch" },
+      { "from": "fetch", "to": "record" },
+      { "from": "record", "to": "signals" },
+      { "from": "recorded", "to": "signals" },
+      { "from": "signals", "to": "end", "word": "no" },
+      { "from": "signals", "to": "refuse", "word": "yes" }
+    ]
+  }
+}

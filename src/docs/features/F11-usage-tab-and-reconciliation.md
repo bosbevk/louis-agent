@@ -44,7 +44,7 @@ the tab says reconciliation is unavailable and why.
 
 `UsageQuery` (core): aggregates the ledger (via `UsageHistory`, F6) by period and grouping; used by the endpoints.
 
-Endpoints in a new `UsageEndpoints.cs` in `louis-agent.api`, following `HistoryEndpoints`' style; `POST /estimates`
+Endpoints in a new `UsageEndpoints.cs` in `LouisAgent.Api`, following `HistoryEndpoints`' style; `POST /estimates`
 calls `Estimator` (F6).
 
 **Web.** `UsagePanel` (sidebar tab, like Branches) and `UsageViewer` (main area), a `UsageState` service with `Changed`

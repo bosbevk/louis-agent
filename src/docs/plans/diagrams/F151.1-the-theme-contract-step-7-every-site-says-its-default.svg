@@ -190,7 +190,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="pic-name" x="837.6" y="31" text-anchor="start">louis-agent.site</text>
+      <text class="pic-name" x="837.6" y="31" text-anchor="start">LouisAgent.Site</text>
       <text class="pic-name" x="837.6" y="47" text-anchor="start">index.html</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M791.6 86L1116 86L1098 154L773.6 154Z" />
       <rect class="pic-fill tone-amber" x="801.6" y="106" width="28" height="28" rx="9" />

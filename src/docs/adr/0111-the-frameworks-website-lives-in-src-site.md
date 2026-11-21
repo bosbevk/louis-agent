@@ -17,9 +17,9 @@ the demo, which `src/` may not reference); and the guide renamed `louis-agent-gu
 
 ## Decision
 
-- **The framework's own website lives in `src/site/`:** `louis-agent.site` (the visitor area: pages, components,
-  graphs, films, styles, static files), `louis-agent.identity.guide` (the guide in its corner) and
-  `louis-agent.site-api` (its host), with its `config/`, `docker/` and `deploy/azure/`. Its tests are in
+- **The framework's own website lives in `src/site/`:** `LouisAgent.Site` (the visitor area: pages, components,
+  graphs, films, styles, static files), `LouisAgent.Identities.Guide` (the guide in its corner) and
+  `LouisAgent.SiteApi` (its host), with its `config/`, `docker/` and `deploy/azure/`. Its tests are in
   `src/tests/site/`.
 - **It is built on the framework like any customer's site.** It uses the framework's web, an identity and packs, the
   way a demo does, and the framework's site rules hold it as they hold every site.
@@ -46,5 +46,5 @@ the demo, which `src/` may not reference); and the guide renamed `louis-agent-gu
 - [ADR 0074: the folders say what ships](0074-the-folders-say-what-ships.md)
 - [ADR 0084: every site is built on the framework's web](0084-every-site-is-built-on-the-frameworks-web.md)
 - [ADR 0100: the site tells the whole architecture](0100-the-site-tells-the-whole-architecture.md)
-- [louis-agent.site](../projects/louis-agent.site.md), [louis-agent.identity.guide](../projects/louis-agent.identity.guide.md)
+- [LouisAgent.Site](../projects/LouisAgent.Site.md), [LouisAgent.Identities.Guide](../projects/LouisAgent.Identities.Guide.md)
 - F124 in the work log

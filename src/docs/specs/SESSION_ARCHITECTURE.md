@@ -5,7 +5,7 @@ is planned as feature [F9](../features/F09-context-management.md)
 
 ## Today
 
-`AgentSession` (`src/louis-agent.api/AgentSessions.cs`) is an in-memory `List<ChatMessage>` per session id, dropped on
+`AgentSession` (`src/LouisAgent.Api/AgentSessions.cs`) is an in-memory `List<ChatMessage>` per session id, dropped on
 idle timeout or restart. It mixes "conversation history" with "what the model sees", and has no durable storage, memory
 or retrieval. The ACP server keeps sessions the same way; the web app keeps a copy of each chat in the browser.
 

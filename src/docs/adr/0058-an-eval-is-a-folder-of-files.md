@@ -44,7 +44,7 @@ referencing the harness.
 - A new eval, a changed mode or a reordered check is a file change in the identity's folder, reviewed like any
   content; a stored run and its trend read the same, since a check keeps its name and version.
 - A check of an identity's own is still C#: a class with an `Entry`, listed by its owner. A judge on the harness's
-  judge needs a project beside the identity (`identities/louis-agent.identity.puls.judges`), one more project. The
+  judge needs a project beside the identity (`identities/LouisAgent.Identities.Puls.Judges`), one more project. The
   general `judge` (a rubric file, the scenario keys it is told, a yes or no with a reason) covers a new eval; the cook
   keeps its own, `meal-for-people`, because its rubric asks for `meal` and its ask is the people and the town, which is
   what its calibration measured.
@@ -64,7 +64,7 @@ referencing the harness.
 [0029](0029-simulations-in-csharp.md) · [0041](0041-json-through-records-by-hand-only-for-bytes.md) ·
 [0043](0043-repeated-names-are-enums.md) · [0055](0055-keep-it-simple.md) ·
 [0056](0056-a-check-is-a-catalogue-entry.md) · [Add an eval](../guides/add-an-eval.md) ·
-[louis-agent.identity.puls](../../../demos/puls/docs/projects/louis-agent.identity.puls.md)
+[LouisAgent.Identities.Puls](../../../demos/puls/docs/projects/LouisAgent.Identities.Puls.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

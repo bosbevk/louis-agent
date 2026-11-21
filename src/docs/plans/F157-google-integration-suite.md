@@ -51,7 +51,7 @@ restricted scope and isn't verified is held to 100 new users
 Sheets and Calendar scopes. F157.7 checks that before it plans the verification.
 
 The repo already holds most of the plumbing. The accounts library signs people in with Google on Microsoft's own
-handler (`src/hosts/louis-agent.accounts/External/Providers/GoogleProvider.cs`), but it asks Google for no API
+handler (`src/hosts/LouisAgent.Accounts/External/Providers/GoogleProvider.cs`), but it asks Google for no API
 permissions. Its database has Identity's `AspNetUserTokens` table, keyed by user, provider and name, and nothing
 writes to it yet. Every account has a tenant (ADR 0088). The host picks the tenant from its own name
 (`HostTenantResolver`), and a session records who opened it (`SessionOpener`: a user id and a tenant). A pack's tools
@@ -154,16 +154,16 @@ toolset's `MissingSettings` reports "not connected" when the turn's tenant has n
 
 | Type | Folder | Namespace | Child |
 |---|---|---|---|
-| `IConnections`, `ConnectionAsk`, `ConnectionToken`, `ConnectedService`, `NoConnections` | `src/engine/louis-agent.composition/Connections/` | `LouisAgent.Composition.Connections` | F157.1 |
-| `IPackContext` (changed: `Connections`, `Tenant`) | `src/engine/louis-agent.composition/Packs/` | `LouisAgent.Composition.Packs` | F157.1 |
-| `TurnTenant` (the `AsyncLocal`), `ToolsetContext` (changed) | `src/engine/louis-agent.core/Agent/Toolsets/` | `LouisAgent.Core.Agent.Toolsets` | F157.1 |
-| `AccountConnections`, `ConnectHandlers`, `ConnectionScopes` | `src/hosts/louis-agent.accounts/Connections/` | `LouisAgent.Accounts.Connections` | F157.1 |
-| The Connect Google page | `src/web/louis-agent.web.accounts/` | `LouisAgent.Web.Accounts` | F157.1 |
+| `IConnections`, `ConnectionAsk`, `ConnectionToken`, `ConnectedService`, `NoConnections` | `src/engine/LouisAgent.Composition/Connections/` | `LouisAgent.Composition.Connections` | F157.1 |
+| `IPackContext` (changed: `Connections`, `Tenant`) | `src/engine/LouisAgent.Composition/Packs/` | `LouisAgent.Composition.Packs` | F157.1 |
+| `TurnTenant` (the `AsyncLocal`), `ToolsetContext` (changed) | `src/engine/LouisAgent.Core/Agent/Toolsets/` | `LouisAgent.Core.Agent.Toolsets` | F157.1 |
+| `AccountConnections`, `ConnectHandlers`, `ConnectionScopes` | `src/hosts/LouisAgent.Accounts/Connections/` | `LouisAgent.Accounts.Connections` | F157.1 |
+| The Connect Google page | `src/web/LouisAgent.Web.Accounts/` | `LouisAgent.Web.Accounts` | F157.1 |
 | `GooglePack`, `GoogleToolset`, `GoogleClients` | `packs/tools/louis-agent.pack.google/` | `LouisAgent.Packs.Google` | F157.2 |
 | `SheetsTools` | `packs/tools/louis-agent.pack.google/Sheets/` | `LouisAgent.Packs.Google.Sheets` | F157.2 |
 | `CalendarTools` | `packs/tools/louis-agent.pack.google/Calendar/` | `LouisAgent.Packs.Google.Calendar` | F157.3 |
 | The pack's tests | `packs/tests/louis-agent.pack.google.tests/` | `LouisAgent.Packs.Google.Tests` | F157.2 |
-| The Integrations page and its cards | `src/site/louis-agent.site/Pages/` | `LouisAgent.Site.Pages` | F157.4 |
+| The Integrations page and its cards | `src/site/LouisAgent.Site/Pages/` | `LouisAgent.Site.Pages` | F157.4 |
 
 The names are proposals. Each child's plan reads the code again and settles them, and a shape the plan doesn't
 settle goes to Louis as a finding.
@@ -175,7 +175,7 @@ Today:
 ```
 packs/tools/   calculator  devops  docs  dotnet  files  git  leads  paymo  recipes  shell  shop-prices  site  triage  web  where-to-buy
 packs/tests/   (a test project per pack)
-src/hosts/louis-agent.accounts/   AccountsStartup.cs  Config/  Endpoints/  External/  Mail/  Messages/  Migrations/  Store/  Tenants/  Users/
+src/hosts/LouisAgent.Accounts/   AccountsStartup.cs  Config/  Endpoints/  External/  Mail/  Messages/  Migrations/  Store/  Tenants/  Users/
 ```
 
 After F157.3:
@@ -183,8 +183,8 @@ After F157.3:
 ```
 packs/tools/   ...  louis-agent.pack.google/     (new: GooglePack.cs, GoogleClients.cs, Sheets/, Calendar/, prompts/toolsets/)
 packs/tests/   ...  louis-agent.pack.google.tests/
-src/hosts/louis-agent.accounts/   ...  Connections/   (new: AccountConnections, ConnectHandlers, ConnectionScopes)
-src/engine/louis-agent.composition/   ...  Connections/   (new: the contract)
+src/hosts/LouisAgent.Accounts/   ...  Connections/   (new: AccountConnections, ConnectHandlers, ConnectionScopes)
+src/engine/LouisAgent.Composition/   ...  Connections/   (new: the contract)
 ```
 
 ### What is reused

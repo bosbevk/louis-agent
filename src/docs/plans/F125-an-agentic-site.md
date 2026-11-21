@@ -16,7 +16,7 @@ not have a setting or mode?", "and have both", and "this is all one feature".
 **What exists.** The guide in the corner of louis-agent.dev (the expert identity) has three packs: `docs` (`ListDocs`,
 `SearchDocs`, `ReadDoc`: a folder listing, an exact-substring grep that returns lines, and a whole file), `leads`
 (`SendLead`) and `site` (`ShowPage`, which the widget hears to move the browser, ADR 0105). Each message carries the
-page (ADR 0104) and every section has an address (ADR 0107). `louis-agent.mcp` serves the packs' tools and the feeds
+page (ADR 0104) and every section has an address (ADR 0107). `LouisAgent.Mcp` serves the packs' tools and the feeds
 as `feed://` resources (F56, ADR 0072), but no public address serves it. Packs load in process as DLLs; ADR 0028 only
 keeps them convertible to MCP. The MCP client is F36's draft (`F36-mcp-packs.md`), not built; the Rider discovery
 only logs (known limitation 1).
@@ -77,9 +77,9 @@ draws tool calls as components.
 
 | Type | Folder | Namespace | Child |
 |---|---|---|---|
-| `SectionIndex`, `SectionHit` | `packs/tools/louis-agent.pack.docs/Search/` | `LouisAgent.Packs.Docs.Search` | F125.1 |
-| `DocResources` | `src/hosts/louis-agent.mcp/Resources/` | `LouisAgent.Mcp.Resources` | F125.1 |
-| `Offer`, `ShowCard` | `packs/tools/louis-agent.pack.site/Tools/` | `LouisAgent.Packs.Site.Tools` | F125.3, F125.4 |
+| `SectionIndex`, `SectionHit` | `packs/tools/LouisAgent.Packs.Docs/Search/` | `LouisAgent.Packs.Docs.Search` | F125.1 |
+| `DocResources` | `src/hosts/LouisAgent.Mcp/Resources/` | `LouisAgent.Mcp.Resources` | F125.1 |
+| `Offer`, `ShowCard` | `packs/tools/LouisAgent.Packs.Site/Tools/` | `LouisAgent.Packs.Site.Tools` | F125.3, F125.4 |
 | `GapTools`, `Gap` | a new `packs/tools/louis-agent.pack.gaps/` | `LouisAgent.Packs.Gaps` | F125.6 |
 | `ToolTransport`, `McpToolProxy`, `McpDiscovery` | `src/engine/louis-agent.core.mcp/` (new, ADR 0092) | `LouisAgent.Core.Mcp` | F125.8 |
 
@@ -132,8 +132,8 @@ time. Free checks: the registry search, Claude Desktop against the public server
 ## Approved during the build
 
 - **F124 moved the site and renamed the guide (Louis's picks, 2026-11-09).** Read every path here against it: the
-  framework's website is `src/site/louis-agent.site`, its host `src/site/louis-agent.site-api` (the guide on the docs,
-  leads and site packs only), and the guide is `src/site/louis-agent.identity.guide` with the id `louis-agent-guide`
+  framework's website is `src/site/LouisAgent.Site`, its host `src/site/LouisAgent.SiteApi` (the guide on the docs,
+  leads and site packs only), and the guide is `src/site/LouisAgent.Identities.Guide` with the id `louis-agent-guide`
   (`GuideIdentity`), no longer the demo's expert ([ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md)).
 
 - **The docs' MCP scheme is `docs://`, and the feeds' is `feeds://` (Louis's picks, 2026-11-17).** Read every

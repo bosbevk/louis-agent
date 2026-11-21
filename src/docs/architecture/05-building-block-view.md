@@ -33,11 +33,11 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 
 | Host | Project | Bootstrap | Transport |
 |---|---|---|---|
-| CLI | `src/hosts/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
-| ACP server | `src/hosts/louis-agent.acp` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
-| HTTP API + a site | `src/hosts/louis-agent.api`, with a site: `louis-agent.code-review`, `louis-agent.puls`, `louis-agent.starter`, `louis-agent.site` or `louis-agent.site-framework` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves its program's Blazor WebAssembly site |
-| MCP server | `src/hosts/louis-agent.mcp` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
-| Orchestrator (POC) | `demos/louis-agent/hosts/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
+| CLI | `src/hosts/LouisAgent.Cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`LouisAgent.Cli [prompt]`) |
+| ACP server | `src/hosts/LouisAgent.Acp` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
+| HTTP API + a site | `src/hosts/LouisAgent.Api`, with a site: `LouisAgent.CodeReview`, `LouisAgent.Puls`, `LouisAgent.Starter`, `LouisAgent.Site` or `LouisAgent.SiteFramework` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves its program's Blazor WebAssembly site |
+| MCP server | `src/hosts/LouisAgent.Mcp` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
+| Orchestrator (POC) | `demos/louis-agent/hosts/LouisAgent.Orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls LouisAgent.Api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
 
 ### CLI
 
@@ -73,12 +73,12 @@ is available (never the tool definitions), and `GET /v1/sessions/{id}` returns a
 
 *Decided in:* F5.
 
-Every site shares the one API codebase and the framework's web, `louis-agent.web`, and each is served by its own
-program. The code-review app (`louis-agent.code-review`, served by `louis-agent.coding-api`) has every toolset. Puls
-(`louis-agent.puls`) is the general assistant: its chats load `agents` and `web`, ask `puls.cook` about cooking, and
-are served by Puls's own program, `louis-agent.puls-api`. The starter (`louis-agent.starter`) is the smallest site.
-And the framework's two sites, `louis-agent.site` for louis-agent.dev and `louis-agent.site-framework` for the
-framework's own pages, are served by `louis-agent.site-api` and `louis-agent.site-framework-api`.
+Every site shares the one API codebase and the framework's web, `LouisAgent.Web`, and each is served by its own
+program. The code-review app (`LouisAgent.CodeReview`, served by `LouisAgent.CodingApi`) has every toolset. Puls
+(`LouisAgent.Puls`) is the general assistant: its chats load `agents` and `web`, ask `puls.cook` about cooking, and
+are served by Puls's own program, `LouisAgent.PulsApi`. The starter (`LouisAgent.Starter`) is the smallest site.
+And the framework's two sites, `LouisAgent.Site` for louis-agent.dev and `LouisAgent.SiteFramework` for the
+framework's own pages, are served by `LouisAgent.SiteApi` and `LouisAgent.SiteFrameworkApi`.
 
 When the agent asks another agent with `AskAgent`, you see it happen. The asked agent's own events stream to the chat
 as `sub_session` events (from `SubSessionFeed` into the API's turn stream), and the delegation card shows its
@@ -176,10 +176,10 @@ Rider's MCP settings (`RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MC
 `ILlmProvider` that `LLM_PROVIDER` names, wraps its client for prompt caching, and asks it for its usage mapper and
 its cache markers. Each provider is a small library on core.
 
-`louis-agent.core.anthropic` makes its client with `AnthropicClient.AsIChatClient(model, 16000)`. Models before
+`LouisAgent.Core.Anthropic` makes its client with `AnthropicClient.AsIChatClient(model, 16000)`. Models before
 Claude 4.6, Haiku 4.5 among them, reject adaptive thinking, so for those `ThinkingBudget` turns the reasoning setting
-into a fixed thinking budget: 2,048 tokens for low, 4,096 for medium and 8,192 for high. `louis-agent.core.ollama`
-uses `OllamaApiClient` with a ten-minute timeout, and `louis-agent.core.openai` uses
+into a fixed thinking budget: 2,048 tokens for low, 4,096 for medium and 8,192 for high. `LouisAgent.Core.Ollama`
+uses `OllamaApiClient` with a ten-minute timeout, and `LouisAgent.Core.OpenAi` uses
 `OpenAIClient(...).GetChatClient(model).AsIChatClient()`.
 
 *Decided in:* CL57.
@@ -279,7 +279,7 @@ session doesn't have. With the `agents` toolset, the addresses the identity may 
 only with the `skills` toolset, every function skill the agent wrote itself is added
 (`agent/functions/*.md` in the skills folder).
 
-Core's own files are in `src/engine/louis-agent.core/prompts/` (the principles in `shared/`, the `agents` and
+Core's own files are in `src/engine/LouisAgent.Core/prompts/` (the principles in `shared/`, the `agents` and
 self-extension guides in `toolsets/`). Each identity and pack brings its own, registered with `SkillFileSource.Use`
 at start-up. All of these are read only from their assemblies, so what the model reads is fixed by the build. Only
 what the agent writes (its function skills and its tools) lives on disk, in the skills folder: `SKILLS_DIRECTORY`, or

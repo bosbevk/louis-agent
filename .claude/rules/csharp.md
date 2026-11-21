@@ -39,7 +39,7 @@ read waits. It is never a big refactor of its own.
 - **It returns `TypedResults`, with its answers declared**:
   `Results<JsonHttpResult<TrendReply>, JsonHttpResult<ApiError>>`, named once with a `using` alias. An error is the
   `ApiError` record.
-- **The records and each wire's options object live in `louis-agent.api.contracts`.** So a client reads
+- **The records and each wire's options object live in `LouisAgent.Api.Contracts`.** So a client reads
   `TrendReply`, never a `JsonElement` picked apart by name.
 
 *Decided in:* ADR 0051, ADR 0045.
@@ -79,7 +79,7 @@ input. An existing one is replaced as the code is touched, never in a sweep.
 ## Choices, texts and named types
 
 - **A choice is an enum.** A value from a fixed set is an enum. It is parsed once, where it enters, with
-  `SettingChoice.TryParse` (`louis-agent.choices`: case ignored, aliases, never a number). It is written with
+  `SettingChoice.TryParse` (`LouisAgent.Choices`: case ignored, aliases, never a number). It is written with
   `.Wire()`, the text on `[WireName]`, never `ToString()`. Code switches on the enum, and the "supported" list
   comes from it.
 - **A name that repeats is an enum too**: a toolset, a role, a mode. Each pluggable project (pack, identity, eval

@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "engine", "icon": "chip", "title": "Engine", "code": "louis-agent.core",
+        { "id": "engine", "icon": "chip", "title": "Engine", "code": "LouisAgent.Core",
           "text": "The runtime, tool loop, model integration, skills, and shared agent behaviour." }
       ] },
       { "cards": [

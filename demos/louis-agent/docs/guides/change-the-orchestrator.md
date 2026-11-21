@@ -1,8 +1,8 @@
 # Change the orchestrator
 
-> **How-to.** Change `demos/louis-agent/hosts/louis-agent.orchestrator`, the agent that watches a service's errors and has louis-agent fix
+> **How-to.** Change `demos/louis-agent/hosts/LouisAgent.Orchestrator`, the agent that watches a service's errors and has louis-agent fix
 > them: a runbook, a tool, a setting, its tests, and a run. **Elsewhere:** how it works in
-> [louis-agent.orchestrator](../projects/louis-agent.orchestrator.md); how it decides and how to write a runbook in
+> [LouisAgent.Orchestrator](../projects/LouisAgent.Orchestrator.md); how it decides and how to write a runbook in
 > [Runbooks](../projects/orchestrator-runbooks.md).
 
 ![Change the orchestrator: a runbook first, then a tool, a setting, its tests and a run](../diagrams/change-the-orchestrator.svg)
@@ -21,7 +21,7 @@ into the build, so rebuild after a change.
 
 ## Add a tool
 
-1. Write its test first in `demos/louis-agent/tests/louis-agent.orchestrator.tests`.
+1. Write its test first in `demos/louis-agent/tests/LouisAgent.Orchestrator.Tests`.
 2. Add a public method to `Tools/ServiceTools.cs` with a `[Description]` on it and on each parameter. Every public
    method there is a tool the model can call, so a helper stays `private` or `internal`.
 3. It returns text; a failure is text with its reason, from `Messages/OrchestratorToolMessage`
@@ -41,8 +41,8 @@ there with its default, a test, and a line in the design doc's *Configuration*.
 ## Test and run it
 
 ```bash
-dotnet test demos/louis-agent/tests/louis-agent.orchestrator.tests
-dotnet run --project demos/louis-agent/hosts/louis-agent.orchestrator -- --once     # one pass over the service's new errors
+dotnet test demos/louis-agent/tests/LouisAgent.Orchestrator.Tests
+dotnet run --project demos/louis-agent/hosts/LouisAgent.Orchestrator -- --once     # one pass over the service's new errors
 ```
 
 The tests cover the feed, the SSE client and `FIX-RESULT`, the decisions, loading the runbooks, the comms log, and the

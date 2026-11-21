@@ -9,7 +9,7 @@
         "id": "puls",
         "icon": "folder",
         "tone": "green",
-        "label": "louis-agent.core.tests (testprod)\nagents/testprod/voice.md\nagents/testprod/subagents/specialist/ (2)\nagents/testprod/subagents/lookup/ (3)",
+        "label": "LouisAgent.Core.Tests (testprod)\nagents/testprod/voice.md\nagents/testprod/subagents/specialist/ (2)\nagents/testprod/subagents/lookup/ (3)",
         "group": "identities",
         "shape": "data"
       },
@@ -17,7 +17,7 @@
         "id": "guide",
         "icon": "folder",
         "tone": "green",
-        "label": "louis-agent.identity.guide\nagents/louis-agent-guide/voice.md\n+ skills/ (1)",
+        "label": "LouisAgent.Identities.Guide\nagents/louis-agent-guide/voice.md\n+ skills/ (1)",
         "group": "identities",
         "shape": "data"
       },
@@ -25,7 +25,7 @@
         "id": "show",
         "icon": "folder",
         "tone": "green",
-        "label": "louis-agent.identity.showroom\nagents/{business}/voice.md ×3\none shared provider (1)",
+        "label": "LouisAgent.Identities.Showroom\nagents/{business}/voice.md ×3\none shared provider (1)",
         "group": "identities",
         "shape": "data"
       },
@@ -49,7 +49,7 @@
         "id": "core",
         "icon": "folder",
         "tone": "violet",
-        "label": "louis-agent.core\nshared/principles.md\ntoolsets/ (1)",
+        "label": "LouisAgent.Core\nshared/principles.md\ntoolsets/ (1)",
         "group": "engine",
         "shape": "data"
       },

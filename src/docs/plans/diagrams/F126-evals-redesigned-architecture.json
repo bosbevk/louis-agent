@@ -44,7 +44,7 @@
         "id": "pages",
         "icon": "browser",
         "tone": "green",
-        "label": "Six screens\n(louis-agent.web.evals)",
+        "label": "Six screens\n(LouisAgent.Web.Evals)",
         "group": "host"
       },
       {

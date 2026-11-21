@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "cli", "icon": "terminal", "title": "The CLI", "code": "louis-agent.cli", "look": "highlight",
+        { "id": "cli", "icon": "terminal", "title": "The CLI", "code": "LouisAgent.Cli", "look": "highlight",
           "text": "A chat with the agent in your terminal, or one prompt." }
       ] },
       { "cards": [

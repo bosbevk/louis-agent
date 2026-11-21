@@ -159,7 +159,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="pic-panel" x="0" y="215" width="1518.4" height="311" rx="14" />
       <text class="pic-group" x="14" y="234" text-anchor="start">the visitor's browser</text>
       <rect class="pic-panel" x="0" y="550" width="2436" height="130" rx="14" />
-      <text class="pic-group" x="14" y="569" text-anchor="start">louis-agent.web</text>
+      <text class="pic-group" x="14" y="569" text-anchor="start">LouisAgent.Web</text>
       <rect class="pic-panel" x="551.2" y="550" width="310.4" height="232" rx="14" />
       <text class="pic-group" x="565.2" y="569" text-anchor="start">the two theme packages</text>
       <rect class="pic-panel" x="1694.4" y="0" width="310.4" height="114" rx="14" />

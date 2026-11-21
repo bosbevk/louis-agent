@@ -62,7 +62,7 @@ instructions, so that there is one summariser, one place to tune it, and one eva
 
 ## Design
 
-`Summariser` (`louis-agent.core/context/`):
+`Summariser` (`LouisAgent.Core/context/`):
 `Task<string?> SummariseAsync(SummaryJob job, string text, string? request, CancellationToken)`, returning null on
 failure so the engine keeps today's fallback (truncation). `AgentEngine` takes it as a constructor argument and calls
 it where `ToolCallGuards` calls `SummariseToolResultAsync` today.

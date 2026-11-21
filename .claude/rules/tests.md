@@ -18,7 +18,7 @@ each.
 
 - **Written first, and seen failing** (ADR 0014). The how is in `/do-a-step`.
 - **Offline.** No network, no model and no Docker. `FakeChatClient` plays the model and `StubHandler` answers HTTP.
-  They are in `src/tests/shared/louis-agent.testing` (*Use the shared fakes*).
+  They are in `src/tests/shared/LouisAgent.Testing` (*Use the shared fakes*).
 - **Platform-neutral.** The agent runs the tests on Linux in its containers, and CI runs on Ubuntu. Build a path
   with `Path.Combine` or forward slashes, never a drive letter or a backslash. A test that needs a tool the machine
   may lack skips itself and says why (*Keep tests platform-neutral*).

@@ -19,7 +19,7 @@ it is, so the honest answer was "I don't know". The copy is also only as fresh a
 
 **What exists.**
 
-- `louis-agent.pack.docs` (F109.3): `ListDocs`, `ReadDoc`, `SearchDocs`, straight on the file system under
+- `LouisAgent.Packs.Docs` (F109.3): `ListDocs`, `ReadDoc`, `SearchDocs`, straight on the file system under
   `DOCS_ROOT`. A doc is a bare path and its text: no address, no version.
 - No HTTP route serves a doc. The API serves what packs publish as *feeds* (`IDataFeed`, `/v1/feeds/{name}`, open,
   ADR 0070) and the MCP host serves those as `feed://` resources (F56, ADR 0072).
@@ -95,7 +95,7 @@ lessons, so these four wait for his word:
 |---|---|---|
 | The skills' write-ups (`learning/`) | A section per feature in the skill's one doc: `20-extensibility.md` is 638 lines with 20 features in it, `18-testing-and-shipping.md` 396 with 11 | A write-up per feature, its skill in the header; the skill's page keeps the summary and lists its write-ups |
 | The fixes table (`fixes/README.md`) | 143 rows, a paragraph of symptom and cause in each cell (630 characters a row, up to 1,557) | The symptom and cause move into the fix's lesson file; the table is generated from the headers (F149) |
-| "What the build decided" in the project docs | 15 dated sections in 10 docs (six in `louis-agent.diagrams.md`), history inside a design doc | What still holds goes under *Design notes* or into an ADR; the date and the id are the work log's |
+| "What the build decided" in the project docs | 15 dated sections in 10 docs (six in `LouisAgent.Diagrams.md`), history inside a design doc | What still holds goes under *Design notes* or into an ADR; the date and the id are the work log's |
 | `AGENT_COMMUNICATION.md` | 414 lines: the HTTP API, the event stream, ACP and MCP in one doc | One page per protocol on layer 3 |
 
 **Alike, but right as they are:** the work log and the TODO (a log and a list are one table by nature), and the
@@ -215,7 +215,7 @@ written by hand either way.
    - **B. Both move to `src/site/docs/adr/`:** each is named for the site. The framework's guide then cites a rule
      kept in the site's folder.
    - **C. 0111 stays, 0108 moves:** 0111 is the repo's layout, which the development guide cites; 0108 opens with
-     the site's own door, and the player it names is already in `louis-agent.web`'s design doc. *Recommended.*
+     the site's own door, and the player it names is already in `LouisAgent.Web`'s design doc. *Recommended.*
 
 ### The standards the docs follow
 
@@ -294,7 +294,7 @@ What links to a spec today, so what F150 touches when the spec goes or moves (Lo
 
 | Spec | What happens | What links to it |
 |---|---|---|
-| `SESSION_ARCHITECTURE.md` | removed | The feature doc F09, the design docs of `louis-agent.acp` and `louis-agent.api`, a known limitation in the TODO, the docs index |
+| `SESSION_ARCHITECTURE.md` | removed | The feature doc F09, the design docs of `LouisAgent.Acp` and `LouisAgent.Api`, a known limitation in the TODO, the docs index |
 | `PDF_SEARCH.md` | removed | The TODO row F94, the docs index |
 | `RESPONSE_OPTIMISATION.md` | rewritten in `architecture/` | The feature docs F08, F09, F10, F12, F13, F15 and F16 and their index, write-up 13, the usage probe's design doc and how-to, the docs index |
 | `USAGE_AND_BUDGETS.md` | rewritten in `architecture/` | The feature docs F06, F07, F08, F11 and F12 and their index, the docs index |
@@ -329,7 +329,7 @@ framework's.
 | Owner | Its docs folder | Holds |
 |---|---|---|
 | The framework (engine, hosts, web, evals, tools) | `src/docs/` | Everything in the layers above |
-| The framework's own website (`louis-agent.site`, its guide, its showroom, its host) | `src/site/docs/`, **new** | `adr/`, `projects/`, `guides/`, `plans/`, and a `README.md` index |
+| The framework's own website (`LouisAgent.Site`, its guide, its showroom, its host) | `src/site/docs/`, **new** | `adr/`, `projects/`, `guides/`, `plans/`, and a `README.md` index |
 | The packs | `packs/docs/` | `adr/`, `projects/` |
 | Puls | `demos/puls/docs/` | As today |
 | Our own demo (the coding agent, the triage team) | `demos/louis-agent/docs/` | As today |
@@ -363,7 +363,7 @@ rule today). **References, not copies:** the framework's indexes (`src/docs/READ
 |---|---|---|
 | `src/docs/adr/0100` the site tells the whole architecture, `0112` the site sells first, `0113` the guide is Louis and says it is the AI, `0122` the site's CV is edited on its own page | `src/site/docs/adr/` | What louis-agent.dev says and sells; no other site inherits it |
 | `demos/louis-agent/docs/adr/0066` the site is static Razor, `0077` films on GitHub are rendered WebP | `src/site/docs/adr/` | The site left that demo for `src/site/` in F124; its ADRs stayed behind |
-| `src/docs/projects/louis-agent.site.md`, `louis-agent.identity.guide.md`, `louis-agent.identity.showroom.md`, with their diagrams | `src/site/docs/projects/` | The site's own projects |
+| `src/docs/projects/LouisAgent.Site.md`, `LouisAgent.Identities.Guide.md`, `LouisAgent.Identities.Showroom.md`, with their diagrams | `src/site/docs/projects/` | The site's own projects |
 | `src/docs/guides/change-the-site.md` | `src/site/docs/guides/` | A how-to for the site only |
 | `src/docs/plans/F143-the-guide-drives-the-cv.md` | `src/site/docs/plans/` | A feature of the site and its guide (the resume pack it adds is named in the packs' docs when built) |
 | `src/docs/adr/0101` a lead is a tool sent once on the visitor's yes | `packs/docs/adr/` | The leads pack's own decision |
@@ -487,7 +487,7 @@ The pictures show the recommended options and are redrawn if a pick changes them
 ![One library, three doors: the tools, the API's routes and the MCP resources read IDocLibrary, and only the docs pack knows the files](diagrams/F148-one-docs-endpoint-interface-design.svg)
 
 ```csharp
-public interface IDocLibrary                       // louis-agent.composition, step 5
+public interface IDocLibrary                       // LouisAgent.Composition, step 5
 {
     DocSource Source { get; }
     IReadOnlyList<DocInfo> List();
@@ -570,10 +570,10 @@ public sealed record DocSource(string? Commit, string? Repository)
 **Separated Interface with Plugin** (step 5): the contract sits where both sides can see it, and the pack plugs in.
 
 ```csharp
-// louis-agent.composition: all the API ever sees
+// LouisAgent.Composition: all the API ever sees
 public interface IAgentPack { IDocLibrary? Docs => null; /* ...as today */ }
 
-// louis-agent.pack.docs: the one implementation
+// LouisAgent.Packs.Docs: the one implementation
 public IDocLibrary? Docs => options.Root is null ? null : _library;
 ```
 
@@ -601,36 +601,36 @@ public void EveryDoc_SaysWhatItIs()
 
 | Type | Folder | Namespace | Step |
 |---|---|---|---|
-| `DocLibrary` | `packs/tools/louis-agent.pack.docs/Library/` | `LouisAgent.Packs.Docs.Library` | 1 |
-| `DocHeaderReader` | `packs/tools/louis-agent.pack.docs/Library/` | `LouisAgent.Packs.Docs.Library` | 2 |
-| `DocType`, `DocInfo` | `src/engine/louis-agent.composition/Packs/Docs/` | `LouisAgent.Composition.Packs.Docs` | 2 |
-| `DocSource` | `src/engine/louis-agent.composition/Packs/Docs/` | `LouisAgent.Composition.Packs.Docs` | 4 |
-| `IDocLibrary`, `DocPage` | `src/engine/louis-agent.composition/Packs/Docs/` | `LouisAgent.Composition.Packs.Docs` | 5 |
+| `DocLibrary` | `packs/tools/LouisAgent.Packs.Docs/Library/` | `LouisAgent.Packs.Docs.Library` | 1 |
+| `DocHeaderReader` | `packs/tools/LouisAgent.Packs.Docs/Library/` | `LouisAgent.Packs.Docs.Library` | 2 |
+| `DocType`, `DocInfo` | `src/engine/LouisAgent.Composition/Packs/Docs/` | `LouisAgent.Composition.Packs.Docs` | 2 |
+| `DocSource` | `src/engine/LouisAgent.Composition/Packs/Docs/` | `LouisAgent.Composition.Packs.Docs` | 4 |
+| `IDocLibrary`, `DocPage` | `src/engine/LouisAgent.Composition/Packs/Docs/` | `LouisAgent.Composition.Packs.Docs` | 5 |
 | `IAgentPack.Docs`, `AgentCatalog.Docs` (new members) | where they are | unchanged | 5 |
-| `DocsEndpoints`, `DocsHandlers`, `DocsReply`, `DocReply` | `src/hosts/louis-agent.api/Endpoints/Docs/` | `LouisAgent.Api.Endpoints.Docs` | 6 |
+| `DocsEndpoints`, `DocsHandlers`, `DocsReply`, `DocReply` | `src/hosts/LouisAgent.Api/Endpoints/Docs/` | `LouisAgent.Api.Endpoints.Docs` | 6 |
 | `DocHit`, `DocHitsReply` | the contract's folder; the API's `Endpoints/Docs/` | as their folders | 7 |
-| `DocResources` | `src/hosts/louis-agent.mcp/Resources/` | `LouisAgent.Mcp.Resources` | 9 |
-| `DocLibraryTests`, `DocHeaderReaderTests`, `DocSourceTests` | `packs/tests/louis-agent.pack.docs.tests/Library/` | `LouisAgent.Packs.Docs.Tests.Library` | 1, 2, 4 |
-| `EveryDocHasAHeaderTests` | `src/tests/engine/louis-agent.core.tests/Docs/` | `LouisAgent.Core.Tests.Docs` | 3 |
+| `DocResources` | `src/hosts/LouisAgent.Mcp/Resources/` | `LouisAgent.Mcp.Resources` | 9 |
+| `DocLibraryTests`, `DocHeaderReaderTests`, `DocSourceTests` | `packs/tests/LouisAgent.Packs.Docs.Tests/Library/` | `LouisAgent.Packs.Docs.Tests.Library` | 1, 2, 4 |
+| `EveryDocHasAHeaderTests` | `src/tests/engine/LouisAgent.Core.Tests/Docs/` | `LouisAgent.Core.Tests.Docs` | 3 |
 | `DocsEndpointsTests` | the API's tests, `Endpoints/Docs/` | mirrors the API's | 6, 7 |
-| `DocResourcesTests` | `src/tests/hosts/louis-agent.mcp.tests/Resources/` | mirrors the host's | 9 |
+| `DocResourcesTests` | `src/tests/hosts/LouisAgent.Mcp.Tests/Resources/` | mirrors the host's | 9 |
 
 ### Folder tree (after step 9)
 
 ```
-packs/tools/louis-agent.pack.docs/
+packs/tools/LouisAgent.Packs.Docs/
   DocsPack.cs  DocsOptions.cs  DocsToolset.cs
   Library/                                   # new
     DocLibrary.cs                            # step 1
     DocHeaderReader.cs                       # step 2
   Tools/DocsTools.cs                         # reads the library (1), names its source (8)
-src/engine/louis-agent.composition/Packs/
+src/engine/LouisAgent.Composition/Packs/
   Docs/                                      # new, the contract
     IDocLibrary.cs  DocInfo.cs  DocType.cs  DocSource.cs  DocPage.cs  DocHit.cs
-src/hosts/louis-agent.api/Endpoints/
+src/hosts/LouisAgent.Api/Endpoints/
   Docs/                                      # new, steps 6 and 7
     DocsEndpoints.cs  DocsHandlers.cs  DocsReply.cs
-src/hosts/louis-agent.mcp/Resources/
+src/hosts/LouisAgent.Mcp/Resources/
   DocResources.cs                            # step 9, beside FeedResources.cs
 src/site/docker/Dockerfile                   # step 4: writes the stamp beside the docs
 ```
@@ -735,7 +735,7 @@ then the code makes it pass.
 - **Test first.** A catalogue built with the docs pack gives its library through `AgentCatalog.Docs`; one built
   without it gives nothing; two packs that both offer docs are refused when the catalogue is built, with both
   names. `PackConvertibilityTests` still passes. They fail because the member doesn't exist.
-- **Then.** `IDocLibrary` and `DocPage` in `louis-agent.composition/Packs/Docs/`; `IAgentPack.Docs => null` by
+- **Then.** `IDocLibrary` and `DocPage` in `LouisAgent.Composition/Packs/Docs/`; `IAgentPack.Docs => null` by
   default, so no other pack changes; `DocLibrary` implements it; `AgentCatalog.Docs`.
 - **Look closely at.** No new project reference anywhere: `ArchitectureTests` proves the API still doesn't see the
   pack. This step hangs on open choice 5 (if Louis picks "a docs feed", this step becomes "plug in an `IDataFeed`"

@@ -115,7 +115,7 @@ than a flag that loosens the gate for everyone.
 
 ## A credential the page can't read (F61.1, 2026-11-07)
 
-**What was built.** The framework's accounts: ASP.NET Core Identity in `louis-agent.accounts`, signing in with a
+**What was built.** The framework's accounts: ASP.NET Core Identity in `LouisAgent.Accounts`, signing in with a
 cookie, a tenant on every account from the host name, SQL Server behind EF Core ([ADR 0087](../adr/0087-identity-is-the-identity-server.md),
 [ADR 0088](../adr/0088-a-tenant-on-every-account.md)). Skill 15, and skill 9's first half: who a session belongs to.
 
@@ -147,7 +147,7 @@ a signed-in person in place of `AGENT_API_KEY`.
 **The header is the whole trick.** A browser sends our cookie on any request to our address, a form on another site
 included. It adds a custom header only to a request the page's own script made, because a cross-site form can't set
 one and a cross-site script is stopped by the browser's same-origin rule. So the gate's rule is two things, not one:
-the cookie names the person, and `X-Requested-With: louis-agent.web` proves the call is ours. `HostAuth.IsSignedIn`
+the cookie names the person, and `X-Requested-With: LouisAgent.Web` proves the call is ours. `HostAuth.IsSignedIn`
 holds it as a pure function beside `HasKey`, and the test is three lines: cookie alone 401, header alone 401, both
 through.
 

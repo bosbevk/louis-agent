@@ -13,7 +13,7 @@ from core's toolsets and from packs. Like a pack, it never references a pack's c
 
 The steps below build a small example identity, `acme`: a hardware shop's assistant that talks plain English, answers
 questions itself, and hands "how much do I need?" jobs to one specialist, `acme-estimator`, which uses the `units` pack
-from [Build a pack](build-a-pack.md). The real identity in the repo, `demos/puls/identity/louis-agent.identity.puls`, follows the
+from [Build a pack](build-a-pack.md). The real identity in the repo, `demos/puls/identity/LouisAgent.Identities.Puls`, follows the
 same steps and adds two languages, five specialists and a minion. Read it beside this guide.
 
 ![Building an identity: create the project, write the class, write its mode, add a specialist when the work needs one, register it in the composition root, test it, then run it](diagrams/build-an-identity-flow.svg)
@@ -21,8 +21,8 @@ same steps and adds two languages, five specialists and a minion. Read it beside
 ## 1. Create the project
 
 ```bash
-dotnet new classlib -o demos/acme/identity/louis-agent.identity.acme
-dotnet sln louis-agent-solution.sln add demos/acme/identity/louis-agent.identity.acme/louis-agent.identity.acme.csproj
+dotnet new classlib -o demos/acme/identity/LouisAgent.Identities.Acme
+dotnet sln louis-agent-solution.sln add demos/acme/identity/LouisAgent.Identities.Acme/LouisAgent.Identities.Acme.csproj
 ```
 
 Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
@@ -38,25 +38,25 @@ Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Composition\LouisAgent.Composition.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\docs\projects\louis-agent.identity.acme.md" Link="docs\louis-agent.identity.acme.md" />
+    <None Include="..\..\docs\projects\LouisAgent.Identities.Acme.md" Link="docs\LouisAgent.Identities.Acme.md" />
   </ItemGroup>
 </Project>
 ```
 
-The only project reference is `louis-agent.composition`, the contracts everything agrees on, even though `acme` uses
+The only project reference is `LouisAgent.Composition`, the contracts everything agrees on, even though `acme` uses
 the `units` pack. An identity names its packs, and the composition root brings them. Reference a pack's project only
 when the identity holds workflow code that calls the pack's public types
 ([ADR 0027](../adr/0027-engine-identities-and-packs.md)). A pack may never reference an identity.
 
 The last group shows the identity's design doc under `docs/` in the IDE's solution explorer, as every project does.
-Nothing is built or copied. Write the doc (`demos/acme/docs/projects/louis-agent.identity.acme.md`) once the identity
+Nothing is built or copied. Write the doc (`demos/acme/docs/projects/LouisAgent.Identities.Acme.md`) once the identity
 works.
 
 ## 2. Write the identity class
@@ -227,11 +227,11 @@ and (`CrossBoundaryNamesTests`) that each pack an identity names exists. A mode 
 
 ## 5. Register it in the composition root
 
-Three edits in `demos/puls/hosts/louis-agent.host-packs`, as for a pack:
+Three edits in `demos/puls/hosts/LouisAgent.HostPacks`, as for a pack:
 
 1. A member in `IdentityKind.cs`: `Acme`.
 2. Its arm in `Plugins.Create(IdentityKind)`: `IdentityKind.Acme => new AcmeIdentity(),`.
-3. A project reference to the identity in `louis-agent.host-packs.csproj`.
+3. A project reference to the identity in `LouisAgent.HostPacks.csproj`.
 
 Every pack it names must be registered too (`PackKind.Units`, from [Build a pack](build-a-pack.md)). If one isn't, the
 catalogue stops start-up with the identity's name, the missing pack's and the ones it has. The setting is matched to
@@ -240,12 +240,12 @@ the enum member with the case ignored, so a name with a dash needs the member to
 ## 6. Test it
 
 ```bash
-dotnet new nunit -o demos/acme/tests/louis-agent.identity.acme.tests
-dotnet sln louis-agent-solution.sln add demos/acme/tests/louis-agent.identity.acme.tests/louis-agent.identity.acme.tests.csproj
+dotnet new nunit -o demos/acme/tests/LouisAgent.Identities.Acme.tests
+dotnet sln louis-agent-solution.sln add demos/acme/tests/LouisAgent.Identities.Acme.tests/LouisAgent.Identities.Acme.tests.csproj
 ```
 
 The test project references the identity, every pack it names (so its sessions build as the host builds them), and
-`src/tests/shared/louis-agent.testing` for the shared fakes; `demos/puls/tests/louis-agent.identity.puls.tests` is
+`src/tests/shared/LouisAgent.Testing` for the shared fakes; `demos/puls/tests/LouisAgent.Identities.Puls.Tests` is
 the model to copy. You write four kinds of test.
 
 The first is a prompts fixture. It registers the identity's prompts and its packs' before any test reads one, the way
@@ -296,7 +296,7 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 
 `GET /v1/roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session that names no mode
 runs the default, which is the first loaded identity's `DefaultVoice` (`acme/voice` here). A web app of its own (as
-Puls has in `demos/puls/web/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
+Puls has in `demos/puls/web/LouisAgent.Puls`) is a separate project and optional; any client that opens sessions this way works.
 
 ## Modes, roles and minions: the rules
 
@@ -351,11 +351,11 @@ is a 400 before any engine is built.
 
 ## Before you ask for a review
 
-- [ ] References `louis-agent.composition` only (a pack only for workflow code that uses its types); its packs are named in `Packs`.
+- [ ] References `LouisAgent.Composition` only (a pack only for workflow code that uses its types); its packs are named in `Packs`.
 - [ ] A one-word lowercase name, the same as its modes' folder.
 - [ ] The mode opens with its voice; the routing starts at the second `# ` heading and routes only this identity's work.
 - [ ] Every role is prefixed with the identity's name; a role's header names the toolsets it always needs.
-- [ ] `IdentityKind`, `Plugins` and the `louis-agent.host-packs.csproj` reference in the composition root; every named pack registered.
+- [ ] `IdentityKind`, `Plugins` and the `LouisAgent.HostPacks.csproj` reference in the composition root; every named pack registered.
 - [ ] A prompts fixture, an identity test, prompt tests and a session golden, reviewed.
 - [ ] `ROLES_ENABLED` lists only the roles that have passed their check.
 

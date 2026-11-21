@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "probe", "icon": "chart", "title": "The usage probe", "code": "louis-agent.usage-probe", "look": "highlight",
+        { "id": "probe", "icon": "chart", "title": "The usage probe", "code": "LouisAgent.UsageProbe", "look": "highlight",
           "text": "A provider's raw counts beside what the ledger makes of them." }
       ] },
       { "cards": [

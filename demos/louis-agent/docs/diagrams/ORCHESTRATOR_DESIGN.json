@@ -4,7 +4,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "orch", "icon": "server", "title": "An orchestrator per service", "code": "louis-agent.orchestrator",
+        { "id": "orch", "icon": "server", "title": "An orchestrator per service", "code": "LouisAgent.Orchestrator",
           "look": "highlight",
           "text": "Watches one service's errors, decides what each needs, and decides when to ship." }
       ] },
@@ -12,7 +12,7 @@
         { "id": "ack", "icon": "checks", "title": "Expected",
           "text": "The runbook lists it, so it is acknowledged and nothing runs." },
         { "id": "fix", "icon": "code", "title": "A code fix",
-          "text": "A session on louis-agent.api: it fixes, tests and hands back a branch." },
+          "text": "A session on LouisAgent.Api: it fixes, tests and hands back a branch." },
         { "id": "esc", "icon": "users", "title": "Escalate",
           "text": "A person on the runbook's team takes it." }
       ] },

@@ -36,7 +36,7 @@ himself, without the code open (B7).
 Louis asked for it in the thread: "that is correct we need our own plan for a proper orchestrator function". The
 orchestrator is both: the engine's delegation function (Part A), which every identity and every host uses, and the
 `voorman` identity on a thin host (Part B). Question 12 asks Louis's yes to that answer, question 6 to the name `voorman`, and
-question 8 to keeping it on `louis-agent.core` (ADR 0031, written in Phase 0, which closes ADR 0012's open Tool Runner
+question 8 to keeping it on `LouisAgent.Core` (ADR 0031, written in Phase 0, which closes ADR 0012's open Tool Runner
 question).
 
 The checks of this plan's first draft found it wrong in places, fixed here: the voorman identity took its packs as objects,
@@ -55,8 +55,8 @@ would have made a folder cycle.
 
 | | What it does | How it calls a child | How the answer comes back | Limits live in |
 |---|---|---|---|---|
-| **The POC host** `src/louis-agent.orchestrator` | Polls one service's `errors.jsonl` (`OrchestratorOptions.cs:18-19`), triages each error with runbooks, has louis-agent fix it, checks the fix itself | Its own `LouisAgentClient`: `POST /sessions`, reads the SSE stream, `DELETE`; up to 3 "continue" messages, sent by `ServiceTools` (`ServiceTools.cs:26,77-80`) | `FIX-RESULT:` and `DECISION:` text lines found by a regex (`LouisAgentClient.cs:213`, `Program.cs:192`) | `ServiceTools` (one fix per error, 3 follow-ups), a 30-minute `HttpClient` timeout (`Program.cs:30`) |
-| **Puls to specialists** (level 0 to 1) | Asks the cook on a peer by its address | `AskAgentTools.AskAgent("puls.cook", …)`, a follow-up the same address again (F5, F26, F127.3.1) | Prose shaped by the role's prompt, under a line built in code that says what it did | `AskAgentTools` (3 a turn, `MaxPerTurn`; 5 minutes, `PeerHttp.DefaultTimeout`), the asker's `Calls` (who may be asked), `SubSessionRegistry` (3 kept, `DefaultCap`), the API host's `AgentSessions.Create` (`AgentSessions.cs:153-188`), six per-turn values the API sets (`src/louis-agent.api/Program.cs:287-292`) |
+| **The POC host** `src/LouisAgent.Orchestrator` | Polls one service's `errors.jsonl` (`OrchestratorOptions.cs:18-19`), triages each error with runbooks, has louis-agent fix it, checks the fix itself | Its own `LouisAgentClient`: `POST /sessions`, reads the SSE stream, `DELETE`; up to 3 "continue" messages, sent by `ServiceTools` (`ServiceTools.cs:26,77-80`) | `FIX-RESULT:` and `DECISION:` text lines found by a regex (`LouisAgentClient.cs:213`, `Program.cs:192`) | `ServiceTools` (one fix per error, 3 follow-ups), a 30-minute `HttpClient` timeout (`Program.cs:30`) |
+| **Puls to specialists** (level 0 to 1) | Asks the cook on a peer by its address | `AskAgentTools.AskAgent("puls.cook", …)`, a follow-up the same address again (F5, F26, F127.3.1) | Prose shaped by the role's prompt, under a line built in code that says what it did | `AskAgentTools` (3 a turn, `MaxPerTurn`; 5 minutes, `PeerHttp.DefaultTimeout`), the asker's `Calls` (who may be asked), `SubSessionRegistry` (3 kept, `DefaultCap`), the API host's `AgentSessions.Create` (`AgentSessions.cs:153-188`), six per-turn values the API sets (`src/LouisAgent.Api/Program.cs:287-292`) |
 | **Specialist to minions** (level 1 to 2, F30) | Built, not in use yet (ADR 0021; `docs/features/F30-local-web-peer.md:3`). F30 stays (question 3: keep), and its minions are tested after this plan (*Later*) | `MinionTools`, the same child path as specialists at depth 2 | Prose | `MinionTools` (16 a turn, 2 minutes, `MinionTools.cs:31,34`), the API's `CheckMinion` (`AgentSessions.cs:196`) |
 
 All three run on `AgentEngine` and treat a child's answer as a claim. But the child call, the retry rule, the cost
@@ -137,7 +137,7 @@ where they go). Pull requests are CL17's. An error tracker behind `IErrorFeed` a
 
 **Hand-offs (added 2026-10-24, Louis: "say I want to do handoffs?"; `plans/one-agent-api.md`).** Beside delegation,
 where the caller keeps the user, a hand-off gives the conversation to another agent: a typed
-`HandOff(Peer, Role, Summary, Reason)` in `louis-agent.core/Delegation/`, and a `HandOffTo` tool checked against the
+`HandOff(Peer, Role, Summary, Reason)` in `LouisAgent.Core/Delegation/`, and a `HandOffTo` tool checked against the
 turn's `DelegationPolicy` (peer allowed, role offered there, summary within its cap) that ends the turn with a
 `hand_off` stream event (CL18's format). The agent only asks; the move is the gateway's (Phase 9), so a model never
 sends a person to a server of its choosing (OWASP Agentic ASI07). A simulation compares delegation and hand-off on the
@@ -160,16 +160,16 @@ role, a simulation's session a mode and a run tag).
 
 #### Where each part lives (Phase 2's split)
 
-- **The engine** (`louis-agent.core`) holds the mechanism, because every identity delegates: the child client and its
+- **The engine** (`LouisAgent.Core`) holds the mechanism, because every identity delegates: the child client and its
   transport, the policy and the limiter, the turn context, the result toolsets and checks, the classifier, and two
   provider strategies (forcing one tool; a note mid-chat, such as a change of town).
 - **Packs** hold tools, checks and the fixer's role: `triage` (the error feed, the recorder, the decision tools) and
   `fixing` (the `voorman-fixer` role, its `fix-result` toolset, `ConfirmFix`).
 - **The identity** `voorman` holds the voice and routing, and `TriageWorkflow` in plain C# over its two packs' public types
   (`IErrorFeed`, `ITriageRecorder`, `IResultCheck<FixResult>`), which ADR 0027 allows an identity and never a pack. It
-  names its packs by name, so `louis-agent.composition` builds each once (`PackKind.Triage`, `PackKind.Fixing`), and the
+  names its packs by name, so `LouisAgent.Composition` builds each once (`PackKind.Triage`, `PackKind.Fixing`), and the
   host hands the workflow the catalogue's instances.
-- **The host** `louis-agent.orchestrator` only triggers: it polls now; a webhook is *Later*.
+- **The host** `LouisAgent.Orchestrator` only triggers: it polls now; a webhook is *Later*.
 - **The peer** that runs the fixer loads the fixing pack (`PACKS=fixing`), or `voorman-fixer` is an unknown role there; the
   orchestrator checks that at start-up and stops if it doesn't.
 
@@ -180,7 +180,7 @@ role, a simulation's session a mode and a run tag).
 #### Interfaces
 
 ```csharp
-// louis-agent.core/Delegation (A2): the one way to call a child agent, beside AskAgentTools and MinionTools, which
+// LouisAgent.Core/Delegation (A2): the one way to call a child agent, beside AskAgentTools and MinionTools, which
 // call it (Delegation is a concern folder since CL15); it uses Sessions, Usage, Config and Messages.
 public sealed record AgentPeer(string Name, Uri Uri);                 // new: AGENT_PEERS is name=url pairs today, held as
                                                                       // a dictionary (AgentOptions.cs:117-120)
@@ -215,7 +215,7 @@ public sealed record ChildReply<T>(T? Result, string Text, ChildOutcome Outcome,
     // Usage: null when the peer reported none (UsageTotal, Usage/UsageTotal.cs:6; UsageReport is a static class)
 public enum ChildOutcome { Answered, AnsweredAfterFollowUp, OutOfRounds, TimedOut, Failed }
 
-// louis-agent.core/Delegation (A3): every limit in one place
+// LouisAgent.Core/Delegation (A3): every limit in one place
 public sealed record DelegationPolicy(int MaxDepth, int CallsPerTurn, int KeptPerChat, TimeSpan ChildTimeout,
     int PromptBudgetTokens, decimal? MoneyPerTree, FollowUpRule FollowUp, int MinionsPerTree, TimeSpan MinionTimeout)
 {
@@ -229,20 +229,20 @@ public enum FollowUpRule { AskOnce, ContinueUpTo3 }   // FX11's ask-once (SubSes
 public sealed class DelegationLimiter(DelegationPolicy policy) : IChildLimiter;   // one per turn tree, held by TurnContext;
                                                                                  // no count is cleared while its tree runs
 
-// louis-agent.core/Sessions (A3): what the turn holds, so Sessions never uses Delegation (ArchitectureTests says so)
+// LouisAgent.Core/Sessions (A3): what the turn holds, so Sessions never uses Delegation (ArchitectureTests says so)
 public enum ChildKind { Specialist, Minion }
 public interface IChildLimiter
 {
     bool TryTake(ChildKind kind, out string? refusal);                // refusal: a ToolMessage text, already formatted
 }
 
-// louis-agent.core/Sessions (A4): one per turn, for every host; one AsyncLocal in place of six today, seven after
+// LouisAgent.Core/Sessions (A4): one per turn, for every host; one AsyncLocal in place of six today, seven after
 // Phase 3's step 4a adds SessionReplay.Current
 public sealed class TurnContext
 {
     public static TurnContext? Current { get; }
     public static IDisposable Begin(TurnContext turn);
-    public UsageScope Usage { get; }                                  // usage.Activate() (src/louis-agent.api/Program.cs:287)
+    public UsageScope Usage { get; }                                  // usage.Activate() (src/LouisAgent.Api/Program.cs:287)
     public IReadOnlySet<string> Tools { get; }                        // today's AgentTools (:289); its one reader is the
                                                                       // minion rule (MinionTools.cs:90), which reads it here
     public IReadOnlyDictionary<string, string> Attachments { get; }   // today's SessionAttachments (:288), a static class
@@ -255,12 +255,12 @@ public sealed class TurnContext
     public IChildLimiter Limiter { get; }                             // A3: shared by the turn tree
 }
 
-// louis-agent.core/Llm (A4a): a provider strategy (ADR 0003), chosen once in LlmClientFactory
+// LouisAgent.Core/Llm (A4a): a provider strategy (ADR 0003), chosen once in LlmClientFactory
 public interface ISystemNoteStrategy { ChatMessage Note(string text); }   // a host's note mid-chat: a change of town
 // AnthropicSystemNote (Llm/AnthropicProvider/): ChatRole.System after the history, on models that accept one
 // PlainSystemNote (the default): a plain line in the user's turn. Never the system prompt or the tools (ADR 0008).
 
-// louis-agent.core/Agent (A5): a result is a toolset with one tool, so a role asks for it in its toolsets header
+// LouisAgent.Core/Agent (A5): a result is a toolset with one tool, so a role asks for it in its toolsets header
 // (ADR 0025): no new header key and no new member on IAgentPack. In Agent/, beside ToolsetDefinition.
 public static class ResultToolset
 {
@@ -272,7 +272,7 @@ public static class ResultToolset
     // (beside AgentEngine.cs:146, where it adds each toolset's public methods today).
     public static ToolsetDefinition Of<T>(string toolset);
 }
-// louis-agent.core/Delegation (A5)
+// LouisAgent.Core/Delegation (A5)
 public interface IResultCheck<in T>                                   // implemented in packs
 {
     Task<CheckReport> CheckAsync(T claim, CancellationToken ct);
@@ -280,7 +280,7 @@ public interface IResultCheck<in T>                                   // impleme
 public sealed record CheckReport(bool Confirmed, IReadOnlyList<CheckLine> Lines);
 public sealed record CheckLine(string Check, bool Passed, string Detail);
 
-// louis-agent.core/Agent (A6): one request, one decision tool, its own model (LLM_SESSION_PROFILES, AgentOptions.cs:130-134)
+// LouisAgent.Core/Agent (A6): one request, one decision tool, its own model (LLM_SESSION_PROFILES, AgentOptions.cs:130-134)
 public sealed class RouteClassifier(IChatClient client, IToolChoiceStrategy choice)
 {
     public Task<Classified<T>> ClassifyAsync<T>(string system, string input, CancellationToken ct);
@@ -288,14 +288,14 @@ public sealed class RouteClassifier(IChatClient client, IToolChoiceStrategy choi
 }
 public sealed record Classified<T>(T? Decision, ClassifiedBy By, UsageTotal? Usage);
 public enum ClassifiedBy { Tool, TextLine, None }                     // the tool call; the DECISION: line; nothing read
-// louis-agent.core/Llm (A6): forcing one tool is a per-model capability (F15's capability record takes it later)
+// LouisAgent.Core/Llm (A6): forcing one tool is a per-model capability (F15's capability record takes it later)
 public interface IToolChoiceStrategy { ChatOptions Force(ChatOptions options, AITool decision); }
 // Anthropic, models that accept forced tool use (Haiku 5.5): ChatToolMode.RequireSpecific(name)
 // Anthropic, Opus 5.5, Sonnet 5.5, Fable 5.1, Mythos 5.1 and the budget-thinking models (LlmClientFactory.cs:82-89):
 //   auto, the tool strict, the DECISION: line as the fallback
 // Ollama (Llm/OllamaProvider/): no tool_choice; the decision's JSON schema as the response format
 
-// packs/tools/louis-agent.pack.triage (B1; RecordDecision in B5)
+// packs/tools/LouisAgent.Packs.Triage (B1; RecordDecision in B5)
 public sealed class TriagePack(TriageOptions options) : IAgentPack    // TriageOptions: the error log and the state folder,
 {                                                                     // today's ORCHESTRATOR_* settings
     public string Name => "triage";
@@ -361,7 +361,7 @@ public sealed class TriageWorkflow(RouteClassifier classify, ChildAgentClient ch
         // Fixed only with CONFIRMED; Unknown and Deferred are recorded and never marked processed
 }
 
-// src/louis-agent.orchestrator/Program.cs (B1-B4): the host builds the workflow from the catalogue's instances
+// src/LouisAgent.Orchestrator/Program.cs (B1-B4): the host builds the workflow from the catalogue's instances
 var catalog = Plugins.FromEnvironment();                              // IDENTITIES=voorman: the triage and fixing packs, once each
 var host = AgentHost.Build(catalog);                                  // SkillFileSource.Use, once, with voorman's and its
                                                                       // packs' prompts (Phase 2); the engine stays the host's
@@ -393,11 +393,11 @@ comes back whole (the cook reports to a person, so its role names no result tool
 #### The recovery contract: what a workflow does when data goes bad mid-run
 
 Added on 2026-10-19, after an outside review, with Louis's yes. The plan already handles bad data in pieces: FX16's
-`VerifyQuote` checks a price against its page (`louis-agent.core/Tools/Web/WebTools.cs`), the cook leaves an item
+`VerifyQuote` checks a price against its page (`LouisAgent.Core/Tools/Web/WebTools.cs`), the cook leaves an item
 unpriced rather than guess (F34, `docs/features/F34-shop-deals.md:149-151`), this phase types and checks every child's
 result and records `Escalated` and `Deferred`, and Phase 9's F8 retries a failed model request. What it lacked is one
 rule for a workflow whose data goes bad in the middle of a run. Today the POC's feed drops a line it can't read without
-a word (`catch (JsonException) { continue; }`, `src/louis-agent.orchestrator/ErrorFeed.cs:36`), so nobody learns that an
+a word (`catch (JsonException) { continue; }`, `src/LouisAgent.Orchestrator/ErrorFeed.cs:36`), so nobody learns that an
 error was lost. The contract is that rule, in code, for every workflow; `TriageWorkflow` is its first user, and Puls's
 *Sources as data* its second.
 
@@ -421,7 +421,7 @@ and anything it refuses becomes `Escalate`. Data a source returns stays data ins
 7), so a row that carries instructions is at most `Malformed`, never an order.
 
 ```csharp
-// louis-agent.core/Delegation (B5a): the recovery contract, beside IResultCheck. Delegation/ is a proposed home; the
+// LouisAgent.Core/Delegation (B5a): the recovery contract, beside IResultCheck. Delegation/ is a proposed home; the
 // plan file may give it its own concern folder, with its row in ArchitectureTests.
 public enum DataFailure { Malformed, Stale, Conflicting, Partial, Repeated, AfterSideEffect, Uncertain }
 public enum RecoveryAction { Refetch, AlternativeSource, Quarantine, Compensate, Escalate, Stop }
@@ -444,7 +444,7 @@ public interface IRecoveryRecorder { Task RecordAsync(RecoveryRecord record, Can
 public sealed class JsonLinesRecoveryRecorder(string stateDirectory) : IRecoveryRecorder;   // recovery.jsonl, append-only
 public interface IReconcile<in T> { Task<ExternalState> ReadAsync(T attempt, CancellationToken ct); }
 
-// packs/tools/louis-agent.pack.triage (B5a): the feed reports what it set aside instead of dropping it
+// packs/tools/LouisAgent.Packs.Triage (B5a): the feed reports what it set aside instead of dropping it
 public sealed record FeedBatch(IReadOnlyList<ErrorEvent> Events, IReadOnlyList<QuarantinedLine> Quarantined);
 public sealed record QuarantinedLine(int LineNumber, string Reason);  // the line itself goes to quarantine.jsonl
 // IErrorFeed.ReadNewAsync returns a FeedBatch from B5a; a quarantined line is never read again
@@ -476,32 +476,32 @@ timed out after its commit gets its commit checked, never a second fixer on a se
 
 | Type | Folder | Namespace | Step |
 |---|---|---|---|
-| `SessionStreamReader`, `SessionEvent` | `louis-agent.session-stream/` (at the root, beside `louis-agent.core/`) | `LouisAgent.SessionStream` | Phase 3, steps 1a-1d |
-| `AgentPeer` (new), `IChildTransport`, `ChildRequest`, `ChildSession`, `HttpPeerTransport`, `ChildAgentClient`, `ChildHandle`, `ChildReply<T>`, `ChildOutcome` | `louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` (new concern folder, layer 2 in `ArchitectureTests`, a row in `louis-agent.core/CLAUDE.md`'s folder table) | A2 |
-| `FakeChildTransport`, `ChildAgentClientTests`, `HttpPeerTransportTests` | `tests/louis-agent.core.tests/Delegation/` | `LouisAgent.Core.Tests.Delegation` | A2, A2a |
-| `AskAgentTools` (a thin caller; `SubSessionKind` goes) | `louis-agent.core/Delegation/Agents/` | `LouisAgent.Core.Delegation.Agents` (unchanged) | A2 |
-| `AgentOptions` (a key per peer, the callers' list: setting names the plan file's) | `louis-agent.core/Config/` | `LouisAgent.Core.Config` (changed) | A2a |
-| The callers' check in `AgentSessions.Create`, a 403 text in `ApiUserText` | `src/louis-agent.api/` | `LouisAgent.Api` (changed) | A2a |
-| `DelegationPolicy`, `FollowUpRule`, `DelegationLimiter` | `louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` | A3 |
-| `ChildKind` (enum), `IChildLimiter` | `louis-agent.core/Sessions/` | `LouisAgent.Core.Sessions` | A3, new |
-| `TurnContext` | `louis-agent.core/Sessions/` | `LouisAgent.Core.Sessions` | A4 |
-| `ISystemNoteStrategy`, `PlainSystemNote`; `AnthropicSystemNote` | `louis-agent.core/Llm/`; `louis-agent.core/Llm/AnthropicProvider/` | `LouisAgent.Core.Llm`; `LouisAgent.Core.Llm.AnthropicProvider` | A4a |
-| `ResultToolset` | `louis-agent.core/Agent/` | `LouisAgent.Core.Agent` | A5 |
-| `ToolsetDefinition` (an optional list of ready tools), `AgentCatalog.NamesOf` (reads it), `AgentEngine` (adds a ready `AITool`) | `louis-agent.core/Agent/` | `LouisAgent.Core.Agent` (changed) | A5 |
-| `IResultCheck<T>`, `CheckReport`, `CheckLine` | `louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` | A5 |
-| `RouteClassifier`, `Classified<T>`, `ClassifiedBy` | `louis-agent.core/Agent/` | `LouisAgent.Core.Agent` | A6 |
-| `IToolChoiceStrategy` and its implementations | `louis-agent.core/Llm/`, `Llm/AnthropicProvider/`, `Llm/OllamaProvider/` (new provider folder) | `LouisAgent.Core.Llm` … | A6 |
-| `IdentityKind.Voorman`, `PackKind.Triage`, `PackKind.Fixing` | `src/louis-agent.composition/` | `LouisAgent.Composition` (changed) | B1 |
+| `SessionStreamReader`, `SessionEvent` | `LouisAgent.SessionStream/` (at the root, beside `LouisAgent.Core/`) | `LouisAgent.SessionStream` | Phase 3, steps 1a-1d |
+| `AgentPeer` (new), `IChildTransport`, `ChildRequest`, `ChildSession`, `HttpPeerTransport`, `ChildAgentClient`, `ChildHandle`, `ChildReply<T>`, `ChildOutcome` | `LouisAgent.Core/Delegation/` | `LouisAgent.Core.Delegation` (new concern folder, layer 2 in `ArchitectureTests`, a row in `LouisAgent.Core/CLAUDE.md`'s folder table) | A2 |
+| `FakeChildTransport`, `ChildAgentClientTests`, `HttpPeerTransportTests` | `tests/LouisAgent.Core.Tests/Delegation/` | `LouisAgent.Core.Tests.Delegation` | A2, A2a |
+| `AskAgentTools` (a thin caller; `SubSessionKind` goes) | `LouisAgent.Core/Delegation/Agents/` | `LouisAgent.Core.Delegation.Agents` (unchanged) | A2 |
+| `AgentOptions` (a key per peer, the callers' list: setting names the plan file's) | `LouisAgent.Core/Config/` | `LouisAgent.Core.Config` (changed) | A2a |
+| The callers' check in `AgentSessions.Create`, a 403 text in `ApiUserText` | `src/LouisAgent.Api/` | `LouisAgent.Api` (changed) | A2a |
+| `DelegationPolicy`, `FollowUpRule`, `DelegationLimiter` | `LouisAgent.Core/Delegation/` | `LouisAgent.Core.Delegation` | A3 |
+| `ChildKind` (enum), `IChildLimiter` | `LouisAgent.Core/Sessions/` | `LouisAgent.Core.Sessions` | A3, new |
+| `TurnContext` | `LouisAgent.Core/Sessions/` | `LouisAgent.Core.Sessions` | A4 |
+| `ISystemNoteStrategy`, `PlainSystemNote`; `AnthropicSystemNote` | `LouisAgent.Core/Llm/`; `LouisAgent.Core/Llm/AnthropicProvider/` | `LouisAgent.Core.Llm`; `LouisAgent.Core.Llm.AnthropicProvider` | A4a |
+| `ResultToolset` | `LouisAgent.Core/Agent/` | `LouisAgent.Core.Agent` | A5 |
+| `ToolsetDefinition` (an optional list of ready tools), `AgentCatalog.NamesOf` (reads it), `AgentEngine` (adds a ready `AITool`) | `LouisAgent.Core/Agent/` | `LouisAgent.Core.Agent` (changed) | A5 |
+| `IResultCheck<T>`, `CheckReport`, `CheckLine` | `LouisAgent.Core/Delegation/` | `LouisAgent.Core.Delegation` | A5 |
+| `RouteClassifier`, `Classified<T>`, `ClassifiedBy` | `LouisAgent.Core/Agent/` | `LouisAgent.Core.Agent` | A6 |
+| `IToolChoiceStrategy` and its implementations | `LouisAgent.Core/Llm/`, `Llm/AnthropicProvider/`, `Llm/OllamaProvider/` (new provider folder) | `LouisAgent.Core.Llm` … | A6 |
+| `IdentityKind.Voorman`, `PackKind.Triage`, `PackKind.Fixing` | `src/LouisAgent.Composition/` | `LouisAgent.Composition` (changed) | B1 |
 | `OpsIdentity`, `Prompts/agent/voorman/voice.md` | `identities/louis-agent.identity.voorman/` | `LouisAgent.Identities.Voorman` | B1 |
-| `TriagePack`, `TriageOptions`, `TriageTools`, `IErrorFeed`, `JsonLinesErrorFeed`, `ErrorEvent`, `ITriageRecorder`, `JsonLinesTriageRecorder`, `Decision`, `DecisionKind`, `TriageOutcome` | `packs/tools/louis-agent.pack.triage/` | `LouisAgent.Packs.Triage` | B1 (`RecordDecision` in B5) |
+| `TriagePack`, `TriageOptions`, `TriageTools`, `IErrorFeed`, `JsonLinesErrorFeed`, `ErrorEvent`, `ITriageRecorder`, `JsonLinesTriageRecorder`, `Decision`, `DecisionKind`, `TriageOutcome` | `packs/tools/LouisAgent.Packs.Triage/` | `LouisAgent.Packs.Triage` | B1 (`RecordDecision` in B5) |
 | `FixingPack`, `FixingOptions`, `FixResult`, `FixStatus`, `Prompts/specialists/voorman-fixer.md` | `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Fixing` | B1 |
 | `ConfirmFix`, `IReplay`, `CliReplay`, `ITestRunner`, `DotNetTestRunner` | `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Fixing` | B3 |
 | `TriageWorkflow` | `identities/louis-agent.identity.voorman/Workflows/` | `LouisAgent.Identities.Voorman.Workflows` | B4 |
-| `DataFailure`, `RecoveryAction`, `RecoveryResult`, `ExternalState`, `RecoveryPolicy`, `RecoveryRecord`, `IRecoveryRecorder`, `JsonLinesRecoveryRecorder`, `IReconcile<T>` | `louis-agent.core/Delegation/` (*proposed*; the plan file may give them their own folder) | `LouisAgent.Core.Delegation` | B5a |
-| `FeedBatch`, `QuarantinedLine`; `FixReconcile`, `FixAttempt` | `packs/tools/louis-agent.pack.triage/`; `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Triage`; `LouisAgent.Packs.Fixing` | B5a |
-| `Program`, `CommsLog`, `OrchestratorOptions` (thin host) | `src/louis-agent.orchestrator/` | `LouisAgent.Orchestrator` (changed); `LouisAgentClient` deleted in B2, `ServiceTools` in B4 | B1-B4 |
-| `TriageRequestSnapshotTests` and `TriageRequestSnapshot.json` | `tests/louis-agent.orchestrator.tests/` | `LouisAgent.Orchestrator.Tests` | B0, new |
-| tests for the packs, the identity and the simulation | `tests/louis-agent.pack.triage.tests/`, `tests/louis-agent.pack.fixing.tests/`, `tests/louis-agent.identity.voorman.tests/`, `tests/louis-agent.simulations.voorman.tests/` | `LouisAgent.Packs.Triage.Tests` and so on | B1-B6 |
+| `DataFailure`, `RecoveryAction`, `RecoveryResult`, `ExternalState`, `RecoveryPolicy`, `RecoveryRecord`, `IRecoveryRecorder`, `JsonLinesRecoveryRecorder`, `IReconcile<T>` | `LouisAgent.Core/Delegation/` (*proposed*; the plan file may give them their own folder) | `LouisAgent.Core.Delegation` | B5a |
+| `FeedBatch`, `QuarantinedLine`; `FixReconcile`, `FixAttempt` | `packs/tools/LouisAgent.Packs.Triage/`; `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Triage`; `LouisAgent.Packs.Fixing` | B5a |
+| `Program`, `CommsLog`, `OrchestratorOptions` (thin host) | `src/LouisAgent.Orchestrator/` | `LouisAgent.Orchestrator` (changed); `LouisAgentClient` deleted in B2, `ServiceTools` in B4 | B1-B4 |
+| `TriageRequestSnapshotTests` and `TriageRequestSnapshot.json` | `tests/LouisAgent.Orchestrator.Tests/` | `LouisAgent.Orchestrator.Tests` | B0, new |
+| tests for the packs, the identity and the simulation | `tests/LouisAgent.Packs.Triage.Tests/`, `tests/louis-agent.pack.fixing.tests/`, `tests/louis-agent.identity.voorman.tests/`, `tests/louis-agent.simulations.voorman.tests/` | `LouisAgent.Packs.Triage.Tests` and so on | B1-B6 |
 | The seeded service, its runbooks and its expected decisions | `simulations/louis-agent.simulations.voorman/Service/` | its own (a made-up service) | B6a |
 | `TriageSimulation` | `simulations/louis-agent.simulations.voorman/` | `LouisAgent.Simulations.Voorman` | B6 |
 
@@ -510,7 +510,7 @@ timed out after its commit gets its commit checked, never a second fixer on a se
 **Today** (`main` 7894953, the parts Phase 6 touches; Phases 2 and 3 change some of them first, as noted):
 
 ```text
-louis-agent.core/
+LouisAgent.Core/
 ├── Prompts/agent/louis-agent/voice-orchestrator.md   # the POC's mode, names the host's 6 tools
 ├── Agent/               AgentEngine, ToolCallGuards (FX14's prompt budget), ToolsetCatalog
 ├── Llm/                 LlmClientFactory, two strategies (IPromptCachingStrategy, IUsageMapper), AnthropicProvider/
@@ -518,20 +518,20 @@ louis-agent.core/
 │                        (Phase 3's step 4a adds WebReplayMode and SessionReplay)
 └── Delegation/          AgentTools, Agents/AskAgentTools, MinionTools (on the same child path), SubSessions/ (the child client)
 src/
-├── louis-agent.api/     AgentSessions.cs (the depth and minion rules), Program.cs (6 per-turn values, :287-292)
-└── louis-agent.orchestrator/
+├── LouisAgent.Api/     AgentSessions.cs (the depth and minion rules), Program.cs (6 per-turn values, :287-292)
+└── LouisAgent.Orchestrator/
     ├── Program.cs  CommsLog.cs  ErrorFeed.cs  LouisAgentClient.cs  OrchestratorOptions.cs
     ├── Messages/            OrchestratorErrorMessage, OrchestratorLogMessage, OrchestratorToolMessage
     ├── Tools/ServiceTools.cs   # the 6 tools and the fix prompt
     └── Skills/order-service/   service.md + 11 runbooks (copied into the build)
 docker/Dockerfile.orchestrator   # no compose file runs it since CL10
-tests/louis-agent.orchestrator.tests/   LouisAgentClientTests, OrchestratorTests, SessionTagsTests (no golden)
+tests/LouisAgent.Orchestrator.Tests/   LouisAgentClientTests, OrchestratorTests, SessionTagsTests (no golden)
 ```
 
 **After Part A** (core, and the API's wiring):
 
 ```text
-louis-agent.core/
+LouisAgent.Core/
 ├── Delegation/          AgentPeer, IChildTransport, HttpPeerTransport, ChildAgentClient, ChildReply, DelegationPolicy,
 │                        DelegationLimiter, IResultCheck, CheckReport     # new concern folder, layer 2
 ├── Agent/               … + ResultToolset (A5), RouteClassifier (A6); ToolsetDefinition lists ready tools, the
@@ -540,33 +540,33 @@ louis-agent.core/
 │                        hold their implementations
 ├── Sessions/            … + ChildKind, IChildLimiter (A3), TurnContext (A4)
 └── Delegation/Agents/   AskAgentTools, and Delegation/MinionTools, now thin callers
-src/louis-agent.api/     AgentSessions asks DelegationPolicy and checks the callers' list; Program.cs opens one
+src/LouisAgent.Api/     AgentSessions asks DelegationPolicy and checks the callers' list; Program.cs opens one
                          TurnContext instead of 6 values
-src/louis-agent.cli/, src/louis-agent.acp/   open a TurnContext with a registry per chat (A4)
-tests/louis-agent.core.tests/Delegation/   FakeChildTransport, ChildAgentClientTests, DelegationLimiterTests, …
+src/LouisAgent.Cli/, src/LouisAgent.Acp/   open a TurnContext with a registry per chat (A4)
+tests/LouisAgent.Core.Tests/Delegation/   FakeChildTransport, ChildAgentClientTests, DelegationLimiterTests, …
 ```
 
 **After Part B** (Phase 2's layout, voorman added):
 
 ```text
 identities/
-├── louis-agent.identity.puls/                   # Phase 2
+├── LouisAgent.Identities.Puls/                   # Phase 2
 └── louis-agent.identity.voorman/                    # new: OpsIdentity, Prompts/agent/voorman/voice.md, Workflows/TriageWorkflow
 packs/
 ├── louis-agent.pack.shops/                      # Phase 2
-├── louis-agent.pack.triage/                     # new: TriagePack, TriageTools, IErrorFeed, JsonLinesErrorFeed,
+├── LouisAgent.Packs.Triage/                     # new: TriagePack, TriageTools, IErrorFeed, JsonLinesErrorFeed,
 │                                                #      ITriageRecorder, JsonLinesTriageRecorder, Decision, TriageOutcome
 └── louis-agent.pack.fixing/                     # new: FixingPack, Prompts/specialists/voorman-fixer.md, FixResult,
                                                  #      ConfirmFix, IReplay, ITestRunner
-src/louis-agent.composition/                     # IdentityKind.Voorman, PackKind.Triage, PackKind.Fixing
-src/louis-agent.orchestrator/                    # thin: Program.cs (poll loop), CommsLog.cs, OrchestratorOptions.cs
+src/LouisAgent.Composition/                     # IdentityKind.Voorman, PackKind.Triage, PackKind.Fixing
+src/LouisAgent.Orchestrator/                    # thin: Program.cs (poll loop), CommsLog.cs, OrchestratorOptions.cs
 simulations/louis-agent.simulations.voorman/         # new: TriageSimulation, its graders
 └── Service/                                     # new (B6a): the seeded service, its runbooks, its expected decisions
 tests/
-├── louis-agent.identity.voorman.tests/  louis-agent.pack.triage.tests/  louis-agent.pack.fixing.tests/
+├── louis-agent.identity.voorman.tests/  LouisAgent.Packs.Triage.Tests/  louis-agent.pack.fixing.tests/
 ├── louis-agent.simulations.voorman.tests/
-└── louis-agent.orchestrator.tests/              # the host's loop and the triage golden (B0)
-louis-agent.core/Prompts/agent/louis-agent/voice-orchestrator.md   # gone: moved to the voorman identity
+└── LouisAgent.Orchestrator.Tests/              # the host's loop and the triage golden (B0)
+LouisAgent.Core/Prompts/agent/louis-agent/voice-orchestrator.md   # gone: moved to the voorman identity
 runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name), not compiled in
 ```
 
@@ -586,7 +586,7 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
 - **A2. `ChildAgentClient` behind `IChildTransport`.** `HttpPeerTransport` is made from today's `PeerSession` and
   `PeerHttp`; `AgentPeer` is new; today's `SubSessionKind` record goes, its labels moving into `ChildRequest`;
   `AskAgentTools` and `MinionTools` become thin callers (`Delegation/` already has its row in `ArchitectureTests` and
-  in `louis-agent.core/CLAUDE.md`). Test first: a `FakeChildTransport` scripts open, answer, an empty answer, a
+  in `LouisAgent.Core/CLAUDE.md`). Test first: a `FakeChildTransport` scripts open, answer, an empty answer, a
   404, a timeout and an error event. The `AskAgent` and `MinionTools` tests stay green unchanged; the golden
   files unchanged. Skill 10.
 - **A2a. Credentials per peer and a list of who may delegate.** Each peer gets its own key, sent only to it, never this
@@ -617,11 +617,11 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   one the model was last told, the engine appends one note through `ISystemNoteStrategy` before the user's text, never
   by editing the system prompt or the tools (ADR 0008; Part 2's place rule). On Anthropic models that accept a
   mid-conversation system message it is a `ChatRole.System` message; elsewhere a plain line. The first turn keeps
-  today's line (`src/louis-agent.api/Program.cs:214-216`). Test first, with a recording HTTP handler under the real
+  today's line (`src/LouisAgent.Api/Program.cs:214-216`). Test first, with a recording HTTP handler under the real
   Anthropic and Ollama clients: after a change of town the request as sent keeps `system` and `tools` byte-equal to the
   turn before, and the note sits after the history; a turn with the same town adds nothing. The golden files unchanged
   (they hold one turn). `UserPlace`'s doc comment marks it as personal information (POPIA s1; today it says nothing of
-  it, `louis-agent.core/Sessions/UserPlace.cs:3-10`), and the note's town is never logged in full: it is redacted or
+  it, `LouisAgent.Core/Sessions/UserPlace.cs:3-10`), and the note's town is never logged in full: it is redacted or
   hashed as the place is (Part 3, row 14, from Phase 3). Skills 7, 1.
 - **A5. Typed results** (F8's story F8-S4, its implementation step 6, merged here). `ResultToolset.Of<T>` makes a result
   toolset with one tool, `Report{T}`; its schema comes from the record through `JsonSchemaExporter`; its arguments are
@@ -629,7 +629,7 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   where the model supports it (ADR 0003); JsonSchema.Net only if a full validator proves necessary. A role asks for its
   result in its `toolsets:` header (ADR 0025), so `RoleHeader` and `IAgentPack` keep their shape. `Report{T}` is built
   from a record, not a public method on a `ToolType`, and the engine registers a toolset's objects only through
-  `AddPublicMethods` today (`louis-agent.core/Agent/AgentEngine.cs:146`), so A5 brings forward the two additive lines
+  `AddPublicMethods` today (`LouisAgent.Core/Agent/AgentEngine.cs:146`), so A5 brings forward the two additive lines
   Phase 8 names: `ResultToolset.Of<T>` gives its `ToolsetDefinition` an optional list of its ready tools, whose names
   `AgentCatalog.NamesOf` reads beside `ToolMethodsOf` (the one source of tool names, Phase 2 step 1), and the engine
   adds the ready `AIFunction` that `CreateTools` returns as it is, beside `AgentEngine.cs:146`. Phase 8's MCP pack then
@@ -663,7 +663,7 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
 
 - **B0. A golden for the triage request**, written from `main` (principles, `louis-agent/voice-orchestrator`,
   `service.md` and the runbooks, the six tools, and the triage prompt for one fixed error), in
-  `tests/louis-agent.orchestrator.tests/` as `TriageRequestSnapshotTests`, as Phase 2's step 0 does for Puls, so B1's
+  `tests/LouisAgent.Orchestrator.Tests/` as `TriageRequestSnapshotTests`, as Phase 2's step 0 does for Puls, so B1's
   move has a proof. Done when the golden is written and committed. Skill 12.
 - **B1. The voorman identity and its two packs.** `agent/louis-agent/voice-orchestrator.md` moves out of core to the voorman
   identity's `agent/voorman/voice.md`, and `docs/CLAUDE.md`'s mode rule names it there; `AcknowledgeError`,
@@ -672,23 +672,23 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   (`ServiceTools.cs:244-270`) splits into the role `specialists/voorman-fixer.md` in the fixing pack (the job, the steps and
   the report's shape, with `toolsets: fix-result, dotnet, files, git, skills`, today's `ServiceTools.cs:33`) and the
   brief the caller writes (the error, the expected behaviour, the branch); `IdentityKind.Voorman`, `PackKind.Triage` and
-  `PackKind.Fixing` join `louis-agent.composition`; the host builds its catalogue there (`Plugins.FromEnvironment`) and
+  `PackKind.Fixing` join `LouisAgent.Composition`; the host builds its catalogue there (`Plugins.FromEnvironment`) and
   passes it to `AgentHost.Build(catalog)`, which calls `SkillFileSource.Use` once with the voorman identity's and its packs'
   prompts (Phase 2: only `AgentHost.Build` and `BuildToolHost` call it) and gives the host its prices, rates and display
-  currency (`AgentHostContext`, `louis-agent.core/Hosting/AgentHostContext.cs:15-17`), which the host loads itself today
-  (`src/louis-agent.orchestrator/Program.cs:43-45`). The orchestrator keeps its own `new AgentEngine(...)`
+  currency (`AgentHostContext`, `LouisAgent.Core/Hosting/AgentHostContext.cs:15-17`), which the host loads itself today
+  (`src/LouisAgent.Orchestrator/Program.cs:43-45`). The orchestrator keeps its own `new AgentEngine(...)`
   (`Program.cs:51`, its usage sink from `AgentHost.CreateUsageSink` as today, `:52`), now with `ReservedToolNames` set
   from the catalogue (`catalog.ToolNames`, Phase 2 step 1's init input). It keeps its own engine because its system
   prompt is the principles, the voorman voice, `service.md` and one runbook per method (`OrchestratorSkills.Load`,
   `Program.cs:200-228`), which `AgentEngineFactory` can't build (it builds a prompt from a role and its toolsets'
-  guides, `louis-agent.core/Hosting/AgentEngineFactory.cs:140-147`), and because until B4 its tools are still
+  guides, `LouisAgent.Core/Hosting/AgentEngineFactory.cs:140-147`), and because until B4 its tools are still
   `ServiceTools`, which is no catalogue toolset. The host engine that `Build` also makes (`AgentHost.cs:175`) is never
   sent a request. The orchestrator runs with `RIDER_MCP_AUTO_DISCOVER=false` (B6a's compose sets it, and the
   orchestrator's project doc names it), because `Build` starts Rider's discovery, which is on by default
   (`AgentHost.cs:180-197`, `AgentOptions.cs:222`), until Phase 8 takes discovery out of every host.
-  `tests/louis-agent.orchestrator.tests` calls `SkillFileSource.Use` with the voorman identity's prompts in its own
+  `tests/LouisAgent.Orchestrator.Tests` calls `SkillFileSource.Use` with the voorman identity's prompts in its own
   `[SetUpFixture]`, as the API's tests do with Puls's (Phase 2 step 3), because `OrchestratorTests` reads the mode
-  through `OrchestratorSkills.Load` (`tests/louis-agent.orchestrator.tests/OrchestratorTests.cs:95,109`). Test first:
+  through `OrchestratorSkills.Load` (`tests/LouisAgent.Orchestrator.Tests/OrchestratorTests.cs:95,109`). Test first:
   core names no orchestrator tool (a ratchet test); the voorman voice is read through `SkillFileSource` from the voorman
   identity (core has no such file); `voorman-fixer` is listed by `GET /roles` only where the fixing pack is loaded; B0's
   golden is byte-equal, or differs only in the tools' order, which the diff review confirms; `PackConvertibilityTests`
@@ -704,7 +704,7 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   the result is a typed `FixResult`; a peer without the role stops the host with that message; the fixer's session
   request (the principles, `voorman-fixer`, its toolsets) is pinned in a golden in `tests/louis-agent.pack.fixing.tests/`,
   reviewed, since its model now reads the role and a brief in place of today's one long prompt. This is the TODO's
-  end-to-end test of the orchestrator against a scripted louis-agent.api (`TODO.md:157`). Skill 10.
+  end-to-end test of the orchestrator against a scripted LouisAgent.Api (`TODO.md:157`). Skill 10.
 - **B3. `ConfirmFix`** as an `IResultCheck<FixResult>` in the fixing pack, replacing the three check tools with one
   (F17-S3). Test first: each check passes and fails against a throwaway git repository; a branch the model names that
   differs from the one the workflow computed is refused; the replay goes through `IReplay`. B0's golden changes in the
@@ -764,7 +764,7 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   against an agent, measured) and new ones for skills 5 and 6 (`docs/learning/05-structured-outputs.md`,
   `06-agent-loop-and-planning.md`, each with its row in `docs/learning/README.md`): typed results, routing and the
   evaluator-optimizer loop. Then GOAL rows 5, 6 and 10 (build mode leaves row 10's *Planned*), the project doc
-  (`docs/projects/louis-agent.orchestrator.md`), the runbooks doc (`docs/projects/orchestrator-runbooks.md`),
+  (`docs/projects/LouisAgent.Orchestrator.md`), the runbooks doc (`docs/projects/orchestrator-runbooks.md`),
   `docs/specs/ORCHESTRATOR_DESIGN.md`, F39's feature doc with its results, and the work log. The phase is done only
   when Louis has written the write-ups; if he can't explain a step, that step goes back. Skill 10.
 

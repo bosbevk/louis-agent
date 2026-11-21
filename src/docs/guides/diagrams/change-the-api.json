@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "api", "icon": "server", "title": "The API", "code": "louis-agent.api", "look": "highlight",
+        { "id": "api", "icon": "server", "title": "The API", "code": "LouisAgent.Api", "look": "highlight",
           "text": "Sessions over HTTP, their answers streamed as Server-Sent Events." }
       ] },
       { "cards": [

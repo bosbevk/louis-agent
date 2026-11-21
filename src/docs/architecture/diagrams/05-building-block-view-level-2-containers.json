@@ -90,7 +90,7 @@
         "id": "core",
         "icon": "chip",
         "tone": "violet",
-        "label": "louis-agent.core\n[class library: the loop,\nskills, the provider seam]"
+        "label": "LouisAgent.Core\n[class library: the loop,\nskills, the provider seam]"
       },
       {
         "id": "llm",

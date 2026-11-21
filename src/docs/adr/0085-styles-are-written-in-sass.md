@@ -52,7 +52,7 @@ that both places use, and a site `@use`s the framework's Sass and never copies i
 
 - [ADR 0053](0053-stylesheets-by-concern.md): stylesheets by concern. [ADR 0084](0084-every-site-is-built-on-the-frameworks-web.md):
   every site is built on the framework's web. [ADR 0030](0030-build-or-adopt.md): build or adopt.
-- `AspNetCore.SassCompiler` (MIT), `.claude/rules/css.md`, `SassStylesheet` in `src/tests/web/louis-agent.web.testing`.
+- `AspNetCore.SassCompiler` (MIT), `.claude/rules/css.md`, `SassStylesheet` in `src/tests/web/LouisAgent.Web.Testing`.
 
 ---
 [ADR index](README.md)

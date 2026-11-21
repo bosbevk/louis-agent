@@ -144,7 +144,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="1079.6" height="564" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a539.8 190 0 1 0 1079.6 0a539.8 190 0 1 0 -1079.6 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">A new site's chat page: what it is made of: louis-agent.starter, Pages / ChatPage</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">A new site's chat page: what it is made of: LouisAgent.Starter, Pages / ChatPage</text>
     <text class="pic-group" x="1015.6" y="14" text-anchor="end">Composite structure diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="1031.6" height="1" rx="0" />
     <text class="pic-group" x="0" y="48" text-anchor="start">What the page reads</text>

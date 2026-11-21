@@ -43,7 +43,7 @@ toolsets of its own: the role brings them.
 - **The plumbing stays Puls's:** `PeerSession` opens, asks, keeps and deletes; the limits per turn, the timeout, the
   depth, the usage rolled up to the asker's turn, kept sessions, and the `sub_session` events that carry the callee's
   every event, live, to the browser.
-- **The session wire is shared records,** in `louis-agent.session-stream` beside the one stream reader (ADR 0047):
+- **The session wire is shared records,** in `LouisAgent.SessionStream` beside the one stream reader (ADR 0047):
   the requests and replies core, the API and the web send and read, never an anonymous object or a reply read by
   property name (ADR 0041, ADR 0045).
 - **Mentoring uses the same call.** The site's guide lists the three showroom businesses in its `Calls`; asking one

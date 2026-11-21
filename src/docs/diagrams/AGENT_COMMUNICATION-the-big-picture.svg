@@ -224,14 +224,14 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 19l7 0" />
       </g>
       <text class="pic-name" x="717.8" y="47" text-anchor="start">curl / your program</text>
-      <rect class="pic-panel" x="951.2" y="0" width="263.6" height="84" rx="10" />
-      <rect class="pic-fill tone-blue" x="967.2" y="28" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(973.2 34) scale(0.6667)">
+      <rect class="pic-panel" x="955" y="0" width="256" height="84" rx="10" />
+      <rect class="pic-fill tone-blue" x="971" y="28" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(977 34) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="pic-name" x="1003.2" y="39" text-anchor="start">Orchestrator agent</text>
-      <text class="pic-name" x="1003.2" y="55" text-anchor="start">(louis-agent.orchestrator)</text>
+      <text class="pic-name" x="1007" y="39" text-anchor="start">Orchestrator agent</text>
+      <text class="pic-name" x="1007" y="55" text-anchor="start">(LouisAgent.Orchestrator)</text>
       <rect class="pic-panel" x="1278.4" y="0" width="233.2" height="84" rx="10" />
       <rect class="pic-fill tone-blue" x="1294.4" y="28" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(1300.4 34) scale(0.6667)">
@@ -247,7 +247,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="pic-name" x="93.8" y="217" text-anchor="start">louis-agent.acp</text>
+      <text class="pic-name" x="93.8" y="217" text-anchor="start">LouisAgent.Acp</text>
       <text class="pic-name" x="93.8" y="233" text-anchor="start">JSON-RPC over stdio</text>
       <rect class="pic-panel" x="312" y="186" width="294" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="328" y="206" width="28" height="28" rx="9" />
@@ -257,22 +257,22 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="364" y="217" text-anchor="start">louis-agent.api</text>
+      <text class="pic-name" x="364" y="217" text-anchor="start">LouisAgent.Api</text>
       <text class="pic-name" x="364" y="233" text-anchor="start">HTTP + SSE, serves the web app</text>
-      <rect class="pic-panel" x="681" y="186" width="180" height="68" rx="10" />
-      <rect class="pic-fill tone-green" x="697" y="206" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(703 212) scale(0.6667)">
+      <rect class="pic-panel" x="684.8" y="186" width="172.4" height="68" rx="10" />
+      <rect class="pic-fill tone-green" x="700.8" y="206" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(706.8 212) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="pic-name" x="733" y="217" text-anchor="start">louis-agent.cli</text>
-      <text class="pic-name" x="733" y="233" text-anchor="start">terminal</text>
+      <text class="pic-name" x="736.8" y="217" text-anchor="start">LouisAgent.Cli</text>
+      <text class="pic-name" x="736.8" y="233" text-anchor="start">terminal</text>
       <rect class="pic-panel" x="966.4" y="186" width="233.2" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="982.4" y="206" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(988.4 212) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="pic-name" x="1018.4" y="217" text-anchor="start">louis-agent.mcp</text>
+      <text class="pic-name" x="1018.4" y="217" text-anchor="start">LouisAgent.Mcp</text>
       <text class="pic-name" x="1018.4" y="233" text-anchor="start">MCP over stdio or HTTP</text>
       <rect class="pic-panel" x="338.6" y="374" width="240.8" height="84" rx="10" />
       <rect class="pic-fill tone-red" x="354.6" y="402" width="28" height="28" rx="9" />
@@ -299,7 +299,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M10 21v-2" />
       </g>
       <text class="pic-name" x="691.2" y="405" text-anchor="start">AgentEngine</text>
-      <text class="pic-name" x="691.2" y="421" text-anchor="start">(louis-agent.core)</text>
+      <text class="pic-name" x="691.2" y="421" text-anchor="start">(LouisAgent.Core)</text>
       <text class="pic-name" x="691.2" y="437" text-anchor="start">tools + skills + tool loop</text>
       <rect class="pic-panel" x="669.6" y="524" width="202.8" height="84" rx="10" />
       <rect class="pic-fill tone-red" x="685.6" y="552" width="28" height="28" rx="9" />

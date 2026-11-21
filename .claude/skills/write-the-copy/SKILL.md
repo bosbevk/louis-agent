@@ -81,11 +81,11 @@ These are the habits of copywriters and screenwriters, used on a web page.
 
 | Words | File |
 |---|---|
-| A page's sections and tiles | `src/site/louis-agent.site/Pages/*.razor` and `Components/` (a page holds only framework controls, ADR 0125) |
+| A page's sections and tiles | `src/site/LouisAgent.Site/Pages/*.razor` and `Components/` (a page holds only framework controls, ADR 0125) |
 | A page's title and description | `<PageTitle>` and `<PageHead Description=…>` in the page |
-| The tab, the link preview and the social card | `src/site/louis-agent.site/wwwroot/index.html` |
-| The header tagline and the footer | `src/site/louis-agent.site/Layout/SiteLayout.razor` |
-| What the guide knows about the pages | `src/site/louis-agent.identity.guide/prompts/agent/louis-agent-guide/skills/site-pages.md` and `site-map.md` |
+| The tab, the link preview and the social card | `src/site/LouisAgent.Site/wwwroot/index.html` |
+| The header tagline and the footer | `src/site/LouisAgent.Site/Layout/SiteLayout.razor` |
+| What the guide knows about the pages | `src/site/LouisAgent.Identities.Guide/prompts/agent/louis-agent-guide/skills/site-pages.md` and `site-map.md` |
 | How the guide speaks | `…/louis-agent-guide/voice.md` |
 
 A change to what the guide reads regenerates its golden files (`LOUIS_UPDATE_GOLDEN=1`, `.claude/rules/prompts.md`),

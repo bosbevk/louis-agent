@@ -18,7 +18,7 @@ scripts from markdown. We measured the short film (36 s, 12 frames a second, 960
 ## Decision
 
 - **A film on GitHub is animated WebP,** at 24 frames a second, quality 75, 960 px wide. That makes the short film 6.28 MB and the long one 14.63 MB.
-- **The CSS stays the only source.** `louis-agent.film-export` renders it in a headless browser, setting each animation's time so
+- **The CSS stays the only source.** `LouisAgent.FilmExport` renders it in a headless browser, setting each animation's time so
   every frame lands exactly where it should, and encodes the frames.
 - **The encoder is libwebp's `img2webp`, with a keyframe every half second,** from a pinned Docker image, so nobody installs it and
   it never reaches a product. Between keyframes the encoder treats a small change as no change, so a slow fade on low-contrast text
@@ -41,7 +41,7 @@ scripts from markdown. We measured the short film (36 s, 12 frames a second, 960
 ## Links
 
 [ADR 0066](0066-the-site-is-static-razor.md) · [Change a film](../../../../src/docs/guides/change-the-site.md#change-a-film) ·
-[louis-agent.code-review](../projects/louis-agent.code-review.md) · [ADR 0004](../../../../src/docs/adr/0004-arguments-as-data.md)
+[LouisAgent.CodeReview](../projects/LouisAgent.CodeReview.md) · [ADR 0004](../../../../src/docs/adr/0004-arguments-as-data.md)
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [ADRs](../../../../src/docs/adr/README.md)

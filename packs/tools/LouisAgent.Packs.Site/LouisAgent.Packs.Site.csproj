@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The guide's way to take a visitor to a page of the site, and to an area of it (F117), and since F127.4.1 to show
+       a read-only card it draws and to offer choices: one toolset, site; the web's widget hears each call and acts on
+       it. References the composition's contracts only: a card is checked by its own small rules, held equal to the
+       diagrams library's by its tests (a pack references no web, ADR 0086). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Site</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, toolsets/site.md is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Packs.Site.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\engine\LouisAgent.Composition\LouisAgent.Composition.csproj" />    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Packs.Site.md" Link="docs\LouisAgent.Packs.Site.md" />
+    <None Include="..\..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+  </ItemGroup>
+
+</Project>

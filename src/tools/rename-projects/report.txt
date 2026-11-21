@@ -1,0 +1,245 @@
+F167 rename (write): 6245 names replaced in 1286 files.
+
+Each old name, and how many places it was replaced in:
+    83  louis-agent.accounts -> LouisAgent.Accounts
+    20  louis-agent.accounts.contracts -> LouisAgent.Accounts.Contracts
+     8  louis-agent.accounts.integration-tests -> LouisAgent.Accounts.IntegrationTests
+     7  louis-agent.accounts.tests -> LouisAgent.Accounts.Tests
+    67  louis-agent.acp -> LouisAgent.Acp
+     9  louis-agent.acp.tests -> LouisAgent.Acp.Tests
+   283  louis-agent.api -> LouisAgent.Api
+    34  louis-agent.api.contracts -> LouisAgent.Api.Contracts
+    83  louis-agent.api.evals -> LouisAgent.Api.Evals
+    24  louis-agent.api.evals.tests -> LouisAgent.Api.Evals.Tests
+    10  louis-agent.api.integration-tests -> LouisAgent.Api.IntegrationTests
+     9  louis-agent.api.standin -> LouisAgent.Api.StandIn
+    11  louis-agent.api.test-runner -> LouisAgent.Api.TestRunner
+    17  louis-agent.api.testing -> LouisAgent.Api.Testing
+    24  louis-agent.api.tests -> LouisAgent.Api.Tests
+    56  louis-agent.choices -> LouisAgent.Choices
+     6  louis-agent.choices.tests -> LouisAgent.Choices.Tests
+    73  louis-agent.cli -> LouisAgent.Cli
+    89  louis-agent.code-review -> LouisAgent.CodeReview
+    13  louis-agent.code-review.tests -> LouisAgent.CodeReview.Tests
+    11  louis-agent.coding-acp -> LouisAgent.CodingAcp
+    23  louis-agent.coding-api -> LouisAgent.CodingApi
+    21  louis-agent.coding-catalog -> LouisAgent.Coding.Catalog
+    21  louis-agent.coding-catalog.tests -> LouisAgent.Coding.Catalog.Tests
+    28  louis-agent.coding-cli -> LouisAgent.CodingCli
+    18  louis-agent.coding-eval-runner -> LouisAgent.CodingEvalRunner
+    10  louis-agent.coding-mcp -> LouisAgent.CodingMcp
+   161  louis-agent.composition -> LouisAgent.Composition
+   455  louis-agent.core -> LouisAgent.Core
+    84  louis-agent.core.anthropic -> LouisAgent.Core.Anthropic
+    12  louis-agent.core.anthropic.tests -> LouisAgent.Core.Anthropic.Tests
+     9  louis-agent.core.integration-tests -> LouisAgent.Core.IntegrationTests
+    75  louis-agent.core.ollama -> LouisAgent.Core.Ollama
+     9  louis-agent.core.ollama.tests -> LouisAgent.Core.Ollama.Tests
+    73  louis-agent.core.openai -> LouisAgent.Core.OpenAi
+     9  louis-agent.core.openai.tests -> LouisAgent.Core.OpenAi.Tests
+    85  louis-agent.core.telemetry -> LouisAgent.Core.Telemetry
+     8  louis-agent.core.telemetry.tests -> LouisAgent.Core.Telemetry.Tests
+    67  louis-agent.core.tests -> LouisAgent.Core.Tests
+    86  louis-agent.core.web -> LouisAgent.Core.Web
+    12  louis-agent.core.web.tests -> LouisAgent.Core.Web.Tests
+   101  louis-agent.diagrams -> LouisAgent.Diagrams
+    34  louis-agent.diagrams.engine -> LouisAgent.Diagrams.Engine
+     7  louis-agent.diagrams.tests -> LouisAgent.Diagrams.Tests
+    33  louis-agent.doc-diagrams -> LouisAgent.DocDiagrams
+    10  louis-agent.doc-diagrams.tests -> LouisAgent.DocDiagrams.Tests
+    99  louis-agent.evals -> LouisAgent.Evals
+    83  louis-agent.evals.checks -> LouisAgent.Evals.Checks
+     8  louis-agent.evals.checks.tests -> LouisAgent.Evals.Checks.Tests
+    67  louis-agent.evals.protocol -> LouisAgent.Evals.Protocol
+     7  louis-agent.evals.protocol.tests -> LouisAgent.Evals.Protocol.Tests
+    97  louis-agent.evals.runner -> LouisAgent.Evals.Runner
+     9  louis-agent.evals.runner.tests -> LouisAgent.Evals.Runner.Tests
+    14  louis-agent.evals.tests -> LouisAgent.Evals.Tests
+    26  louis-agent.film-export -> LouisAgent.FilmExport
+     7  louis-agent.film-export.tests -> LouisAgent.FilmExport.Tests
+    71  louis-agent.host-packs -> LouisAgent.HostPacks
+    10  louis-agent.host-packs.tests -> LouisAgent.HostPacks.Tests
+    15  louis-agent.identity.coding -> LouisAgent.Identities.Coding
+    40  louis-agent.identity.framework -> LouisAgent.Identities.Framework
+     6  louis-agent.identity.framework.tests -> LouisAgent.Identities.Framework.Tests
+    81  louis-agent.identity.guide -> LouisAgent.Identities.Guide
+    85  louis-agent.identity.puls -> LouisAgent.Identities.Puls
+    45  louis-agent.identity.puls.evals -> LouisAgent.Identities.Puls.Evals
+     8  louis-agent.identity.puls.evals.tests -> LouisAgent.Identities.Puls.Evals.Tests
+    49  louis-agent.identity.puls.judges -> LouisAgent.Identities.Puls.Judges
+     7  louis-agent.identity.puls.judges.tests -> LouisAgent.Identities.Puls.Judges.Tests
+     9  louis-agent.identity.puls.tests -> LouisAgent.Identities.Puls.Tests
+    61  louis-agent.identity.showroom -> LouisAgent.Identities.Showroom
+    49  louis-agent.identity.triage -> LouisAgent.Identities.Triage
+    16  louis-agent.identity.triage.evals -> LouisAgent.Identities.Triage.Evals
+     7  louis-agent.identity.triage.tests -> LouisAgent.Identities.Triage.Tests
+    81  louis-agent.mcp -> LouisAgent.Mcp
+     8  louis-agent.mcp.tests -> LouisAgent.Mcp.Tests
+    93  louis-agent.orchestrator -> LouisAgent.Orchestrator
+     7  louis-agent.orchestrator.integration-tests -> LouisAgent.Orchestrator.IntegrationTests
+    15  louis-agent.orchestrator.tests -> LouisAgent.Orchestrator.Tests
+    46  louis-agent.pack.calculator -> LouisAgent.Packs.Calculator
+     7  louis-agent.pack.calculator.tests -> LouisAgent.Packs.Calculator.Tests
+     9  louis-agent.pack.devops -> LouisAgent.Packs.DevOps
+     6  louis-agent.pack.devops.tests -> LouisAgent.Packs.DevOps.Tests
+    62  louis-agent.pack.docs -> LouisAgent.Packs.Docs
+     8  louis-agent.pack.docs.tests -> LouisAgent.Packs.Docs.Tests
+    16  louis-agent.pack.dotnet -> LouisAgent.Packs.DotNet
+     5  louis-agent.pack.dotnet.integration-tests -> LouisAgent.Packs.DotNet.IntegrationTests
+     5  louis-agent.pack.dotnet.tests -> LouisAgent.Packs.DotNet.Tests
+    19  louis-agent.pack.files -> LouisAgent.Packs.Files
+     5  louis-agent.pack.files.tests -> LouisAgent.Packs.Files.Tests
+    14  louis-agent.pack.files.web -> LouisAgent.Packs.Files.Web
+     5  louis-agent.pack.files.web.tests -> LouisAgent.Packs.Files.Web.Tests
+    19  louis-agent.pack.git -> LouisAgent.Packs.Git
+     5  louis-agent.pack.git.integration-tests -> LouisAgent.Packs.Git.IntegrationTests
+     5  louis-agent.pack.git.tests -> LouisAgent.Packs.Git.Tests
+    13  louis-agent.pack.git.web -> LouisAgent.Packs.Git.Web
+     5  louis-agent.pack.git.web.tests -> LouisAgent.Packs.Git.Web.Tests
+    59  louis-agent.pack.leads -> LouisAgent.Packs.Leads
+     6  louis-agent.pack.leads.tests -> LouisAgent.Packs.Leads.Tests
+     9  louis-agent.pack.paymo -> LouisAgent.Packs.Paymo
+     6  louis-agent.pack.paymo.tests -> LouisAgent.Packs.Paymo.Tests
+    73  louis-agent.pack.recipes -> LouisAgent.Packs.Recipes
+    16  louis-agent.pack.recipes.checks -> LouisAgent.Packs.Recipes.Checks
+     4  louis-agent.pack.recipes.checks.tests -> LouisAgent.Packs.Recipes.Checks.Tests
+     4  louis-agent.pack.recipes.integration-tests -> LouisAgent.Packs.Recipes.IntegrationTests
+     7  louis-agent.pack.recipes.tests -> LouisAgent.Packs.Recipes.Tests
+    13  louis-agent.pack.recipes.web -> LouisAgent.Packs.Recipes.Web
+     6  louis-agent.pack.recipes.web.tests -> LouisAgent.Packs.Recipes.Web.Tests
+    15  louis-agent.pack.shell -> LouisAgent.Packs.Shell
+     5  louis-agent.pack.shell.integration-tests -> LouisAgent.Packs.Shell.IntegrationTests
+     5  louis-agent.pack.shell.tests -> LouisAgent.Packs.Shell.Tests
+    64  louis-agent.pack.shop-prices -> LouisAgent.Packs.ShopPrices
+     5  louis-agent.pack.shop-prices.integration-tests -> LouisAgent.Packs.ShopPrices.IntegrationTests
+     8  louis-agent.pack.shop-prices.tests -> LouisAgent.Packs.ShopPrices.Tests
+    49  louis-agent.pack.site -> LouisAgent.Packs.Site
+     6  louis-agent.pack.site.tests -> LouisAgent.Packs.Site.Tests
+    65  louis-agent.pack.triage -> LouisAgent.Packs.Triage
+    11  louis-agent.pack.triage.tests -> LouisAgent.Packs.Triage.Tests
+    19  louis-agent.pack.web -> LouisAgent.Packs.Web
+     8  louis-agent.pack.web.tests -> LouisAgent.Packs.Web.Tests
+    71  louis-agent.pack.where-to-buy -> LouisAgent.Packs.WhereToBuy
+    20  louis-agent.pack.where-to-buy.checks -> LouisAgent.Packs.WhereToBuy.Checks
+     6  louis-agent.pack.where-to-buy.checks.tests -> LouisAgent.Packs.WhereToBuy.Checks.Tests
+     9  louis-agent.pack.where-to-buy.tests -> LouisAgent.Packs.WhereToBuy.Tests
+    98  louis-agent.puls -> LouisAgent.Puls
+    26  louis-agent.puls-api -> LouisAgent.PulsApi
+    32  louis-agent.puls-eval-runner -> LouisAgent.PulsEvalRunner
+    15  louis-agent.puls.tests -> LouisAgent.Puls.Tests
+    47  louis-agent.session-stream -> LouisAgent.SessionStream
+    11  louis-agent.session-stream.tests -> LouisAgent.SessionStream.Tests
+   154  louis-agent.site -> LouisAgent.Site
+    53  louis-agent.site-api -> LouisAgent.SiteApi
+    71  louis-agent.site-framework -> LouisAgent.SiteFramework
+    22  louis-agent.site-framework-api -> LouisAgent.SiteFrameworkApi
+     5  louis-agent.site-framework.tests -> LouisAgent.SiteFramework.Tests
+    11  louis-agent.site.tests -> LouisAgent.Site.Tests
+    31  louis-agent.starter -> LouisAgent.Starter
+     9  louis-agent.starter-api -> LouisAgent.Starter.Api
+     8  louis-agent.starter.integration-tests -> LouisAgent.Starter.IntegrationTests
+     5  louis-agent.starter.tests -> LouisAgent.Starter.Tests
+   159  louis-agent.testing -> LouisAgent.Testing
+    80  louis-agent.usage-probe -> LouisAgent.UsageProbe
+   471  louis-agent.web -> LouisAgent.Web
+    91  louis-agent.web.accounts -> LouisAgent.Web.Accounts
+     8  louis-agent.web.accounts.tests -> LouisAgent.Web.Accounts.Tests
+    45  louis-agent.web.docs -> LouisAgent.Web.Docs
+     6  louis-agent.web.docs.tests -> LouisAgent.Web.Docs.Tests
+   104  louis-agent.web.evals -> LouisAgent.Web.Evals
+    14  louis-agent.web.evals.tests -> LouisAgent.Web.Evals.Tests
+    58  louis-agent.web.framework -> LouisAgent.Web.Framework
+     7  louis-agent.web.framework.tests -> LouisAgent.Web.Framework.Tests
+    52  louis-agent.web.places -> LouisAgent.Web.Places
+     6  louis-agent.web.places.tests -> LouisAgent.Web.Places.Tests
+    43  louis-agent.web.testing -> LouisAgent.Web.Testing
+    39  louis-agent.web.tests -> LouisAgent.Web.Tests
+    67  louis-agent.web.themes -> LouisAgent.Web.Themes
+     6  louis-agent.web.themes.tests -> LouisAgent.Web.Themes.Tests
+
+louis-agent.* words left for a person, each with how many places and the first three:
+   488  louis-agent.dev  .claude/rules/repo-map.md:13 .claude/skills/check-a-page/SKILL.md:122 .claude/skills/design-a-graphic/SKILL.md:74
+    15  louis-agent.identity  src/docs/adr/0037-one-agent-api-products-get-a-front-door.md:37 src/docs/adr/0062-the-studio-writes-what-git-keeps.md:50 src/docs/adr/0073-packs-reference-no-evals.md:37
+    13  louis-agent.web.theme.flat  src/docs/plans/F151-themes-and-styles.md:29 src/docs/plans/F151-themes-and-styles.md:194 src/docs/plans/F151-themes-and-styles.md:214
+    13  louis-agent.web.theme.glass  src/docs/plans/F151-themes-and-styles.md:29 src/docs/plans/F151-themes-and-styles.md:193 src/docs/plans/F151-themes-and-styles.md:213
+     9  louis-agent.identity.demo  src/docs/plans/F40-sales-playground.md:97 src/docs/plans/F40-sales-playground.md:181 src/docs/plans/F40-sales-playground.md:190
+     9  louis-agent.identity.weather-agent.evals  src/tests/hosts/louis-agent.api.evals.tests/Studio/DraftFolderTests.cs:96 src/tests/hosts/louis-agent.api.evals.tests/Studio/DraftFolderTests.cs:160 src/tests/hosts/louis-agent.api.evals.tests/Studio/Publish/EvalHomesTests.cs:39
+     8  louis-agent.pack  src/docs/adr/0073-packs-reference-no-evals.md:37 src/docs/adr/0090-the-packs-are-one-area.md:29 src/docs/adr/0090-the-packs-are-one-area.md:29
+     8  louis-agent.pack.google  src/docs/plans/F157-google-integration-suite.md:148 src/docs/plans/F157-google-integration-suite.md:162 src/docs/plans/F157-google-integration-suite.md:163
+     7  louis-agent.pack.resume  src/docs/plans/F143-the-guide-drives-the-cv.md:19 src/docs/plans/F143-the-guide-drives-the-cv.md:67 src/docs/plans/F143-the-guide-drives-the-cv.md:81
+     6  louis-agent.pack.fixing  src/docs/plans/F39-orchestration.md:329 src/docs/plans/F39-orchestration.md:452 src/docs/plans/F39-orchestration.md:497
+     6  louis-agent.web.theme.flat.tests  src/docs/plans/F151-themes-and-styles.md:201 src/docs/plans/F151.2-the-two-packages.md:71 src/docs/plans/F151.2-the-two-packages.md:75
+     6  louis-agent.web.theme.glass.tests  src/docs/plans/F151-themes-and-styles.md:200 src/docs/plans/F151.2-the-two-packages.md:69 src/docs/plans/F151.2-the-two-packages.md:73
+     5  louis-agent.simulations.demo  src/docs/plans/F40-sales-playground.md:216 src/docs/plans/F40-sales-playground.md:262 src/docs/plans/F40-sales-playground.md:263
+     5  louis-agent.simulations.voorman  src/docs/plans/F39-orchestration.md:505 src/docs/plans/F39-orchestration.md:506 src/docs/plans/F39-orchestration.md:563
+     5  louis-agent.widget-chats  src/tests/web/louis-agent.web.tests/Components/Admin/Reset/SessionResetTests.cs:23 src/tests/web/louis-agent.web.tests/Components/Widget/Door/GuideResumeTests.cs:21 src/tests/web/louis-agent.web.tests/Pages/Admin/AdminHomeTests.cs:65
+     4  louis-agent.core.whisper  src/docs/plans/F92-voice-input.md:100 src/docs/plans/F92-voice-input.md:115 src/docs/plans/diagrams/F92-voice-input-diagrams.json:55
+     4  louis-agent.identity.demo.tests  src/docs/plans/F40-sales-playground.md:254 src/docs/plans/F40-sales-playground.md:259 src/docs/plans/F40-sales-playground.md:261
+     4  louis-agent.identity.voorman  src/docs/plans/F39-orchestration.md:349 src/docs/plans/F39-orchestration.md:495 src/docs/plans/F39-orchestration.md:499
+     3  louis-agent.chats  src/tests/web/louis-agent.web.tests/Components/Admin/Reset/SessionResetTests.cs:24 src/tests/web/louis-agent.web.tests/Storage/ChatStoreImageTests.cs:26 src/web/louis-agent.web/Storage/ChatStore.cs:10
+     3  louis-agent.identity.acme.md  src/docs/guides/build-an-identity.md:48 src/docs/guides/build-an-identity.md:48 src/docs/guides/build-an-identity.md:59
+     3  louis-agent.pack.fixing.tests  src/docs/plans/F39-orchestration.md:504 src/docs/plans/F39-orchestration.md:566 src/docs/plans/F39-orchestration.md:705
+     3  louis-agent.pack.resume.tests  src/docs/plans/F143-the-guide-drives-the-cv.md:72 src/docs/plans/F143-the-guide-drives-the-cv.md:84 src/docs/plans/F143-the-guide-drives-the-cv.md:112
+     3  louis-agent.pack.units.md  src/docs/guides/build-a-pack.md:53 src/docs/guides/build-a-pack.md:53 src/docs/guides/build-a-pack.md:63
+     3  louis-agent.pack.units.tests  src/docs/guides/build-a-pack.md:43 src/docs/guides/build-a-pack.md:283 src/docs/guides/build-a-pack.md:284
+     3  louis-agent.simulation.runner  src/docs/plans/F40-sales-playground.md:223 src/docs/plans/F40-sales-playground.md:264 src/docs/plans/F40-sales-playground.md:323
+     3  louis-agent.web.theme.flat.csproj  src/docs/plans/F151.2-the-two-packages.md:89 src/docs/plans/diagrams/F151.2-the-two-packages-step-3-the-flat-project.json:22 src/docs/plans/diagrams/F151.2-the-two-packages-step-3-the-flat-project.svg:185
+     3  louis-agent.web.theme.flat.md  src/docs/plans/F151.2-the-two-packages.md:95 src/docs/plans/diagrams/F151.2-the-two-packages-step-3-the-flat-project.json:28 src/docs/plans/diagrams/F151.2-the-two-packages-step-3-the-flat-project.svg:195
+     3  louis-agent.web.theme.glass.csproj  src/docs/plans/F151.2-the-two-packages.md:85 src/docs/plans/diagrams/F151.2-the-two-packages-step-2-the-glass-project.json:22 src/docs/plans/diagrams/F151.2-the-two-packages-step-2-the-glass-project.svg:185
+     3  louis-agent.web.theme.glass.md  src/docs/plans/F151.2-the-two-packages.md:94 src/docs/plans/diagrams/F151.2-the-two-packages-step-2-the-glass-project.json:28 src/docs/plans/diagrams/F151.2-the-two-packages-step-2-the-glass-project.svg:196
+     2  louis-agent.cook  src/docs/adr/0117-one-address-for-every-agent-call.md:16 src/docs/adr/0117-one-address-for-every-agent-call.md:31
+     2  louis-agent.eval-host  src/docs/plans/F126-evals-redesigned.md:153 src/docs/plans/F126-evals-redesigned.md:172
+     2  louis-agent.evals.puls  src/docs/adr/0058-an-eval-is-a-folder-of-files.md:9 src/docs/learning/20-extensibility.md:93
+     2  louis-agent.identity.acme  src/docs/guides/build-an-identity.md:24 src/docs/guides/build-an-identity.md:25
+     2  louis-agent.identity.acme.tests  src/docs/guides/build-an-identity.md:243 src/docs/guides/build-an-identity.md:244
+     2  louis-agent.identity.an  src/tests/engine/louis-agent.core.tests/ArchitectureTests.cs:206 src/tests/engine/louis-agent.core.tests/ArchitectureTests.cs:214
+     2  louis-agent.identity.an.csproj  src/tests/engine/louis-agent.core.tests/ArchitectureTests.cs:206 src/tests/engine/louis-agent.core.tests/ArchitectureTests.cs:214
+     2  louis-agent.identity.business  src/docs/plans/F131-the-chat-on-any-website.md:91 src/docs/plans/F131-the-chat-on-any-website.md:100
+     2  louis-agent.identity.voorman.tests  src/docs/plans/F39-orchestration.md:504 src/docs/plans/F39-orchestration.md:566
+     2  louis-agent.pack.google.tests  src/docs/plans/F157-google-integration-suite.md:165 src/docs/plans/F157-google-integration-suite.md:185
+     2  louis-agent.pack.units  src/docs/guides/build-a-pack.md:26 src/docs/guides/build-a-pack.md:27
+     2  louis-agent.puls.gateway  demos/puls/docs/specs/PULS_COOK.md:177 src/docs/plans/phase-9-what-a-sale-needs.md:101
+     2  louis-agent.simulation.runner.dll  src/docs/plans/diagrams/F40-sales-playground-communication-one-demo-invoice-batch-run-one-invoice-shown.json:61 src/docs/plans/diagrams/F40-sales-playground-communication-one-demo-invoice-batch-run-one-invoice-shown.svg:230
+     2  louis-agent.simulations.demo.tests  src/docs/plans/F40-sales-playground.md:265 src/docs/plans/F40-sales-playground.md:337
+     2  louis-agent.simulations.voorman.tests  src/docs/plans/F39-orchestration.md:504 src/docs/plans/F39-orchestration.md:567
+     2  louis-agent.stream-probe  TODO.md:30 src/docs/work-log.md:28
+     1  louis-agent.admin  src/web/louis-agent.web/Storage/ChatStore.cs:18
+     1  louis-agent.api  src/web/louis-agent.web/Storage/ChatStore.cs:15
+     1  louis-agent.core  src/docs/adr/0091-web-access-and-telemetry-are-libraries-on-core.md:25
+     1  louis-agent.core.mcp  src/docs/plans/F125-an-agentic-site.md:84
+     1  louis-agent.core.tests.chat-pipeline  src/tests/engine/louis-agent.core.tests/Agent/Turns/ChatPipelineTests.cs:25
+     1  louis-agent.core.tests.peer-trace  src/tests/engine/louis-agent.core.tests/Delegation/SubSessions/PeerTraceTests.cs:15
+     1  louis-agent.core.tests.turn-spans  src/tests/engine/louis-agent.core.tests/Telemetry/TurnSpansTests.cs:27
+     1  louis-agent.core.whisper.tests  src/docs/plans/F92-voice-input.md:118
+     1  louis-agent.currency  src/web/louis-agent.web/Usage/CurrencyState.cs:13
+     1  louis-agent.identity.acme.csproj  src/docs/guides/build-an-identity.md:25
+     1  louis-agent.identity.acme.evals  src/docs/guides/add-an-eval.md:29
+     1  louis-agent.identity.acme.evals.tests  src/docs/guides/add-an-eval.md:228
+     1  louis-agent.identity.acme.tests.csproj  src/docs/guides/build-an-identity.md:244
+     1  louis-agent.identity.demo.csproj  src/docs/plans/F40-sales-playground.md:307
+     1  louis-agent.identity.other-agent  src/tests/hosts/louis-agent.api.evals.tests/Studio/Publish/PublishTargetTests.cs:40
+     1  louis-agent.identity.weather-agent  src/tests/web/louis-agent.web.evals.tests/Components/Studio/StudioPageTests.cs:46
+     1  louis-agent.messages  src/docs/adr/0092-a-project-holds-what-is-reused-together.md:59
+     1  louis-agent.open-door  src/hosts/louis-agent.api/Endpoints/Routing/OpenDoor.cs:53
+     1  louis-agent.open-door.visitor  src/hosts/louis-agent.api/Endpoints/Routing/OpenDoor.cs:69
+     1  louis-agent.pack.cooking  src/docs/plans/puls-track.md:74
+     1  louis-agent.pack.customers  src/docs/plans/F40-sales-playground.md:191
+     1  louis-agent.pack.devops.integration-tests  packs/tools/louis-agent.pack.devops/louis-agent.pack.devops.csproj:15
+     1  louis-agent.pack.files.integration-tests  packs/tools/louis-agent.pack.files/louis-agent.pack.files.csproj:15
+     1  louis-agent.pack.gaps  src/docs/plans/F125-an-agentic-site.md:83
+     1  louis-agent.pack.paymo.integration-tests  packs/tools/louis-agent.pack.paymo/louis-agent.pack.paymo.csproj:15
+     1  louis-agent.pack.places  src/docs/plans/puls-track.md:107
+     1  louis-agent.pack.shops  src/docs/plans/F39-orchestration.md:556
+     1  louis-agent.pack.units.csproj  src/docs/guides/build-a-pack.md:27
+     1  louis-agent.pack.units.tests.csproj  src/docs/guides/build-a-pack.md:284
+     1  louis-agent.pack.web.integration-tests  packs/tools/louis-agent.pack.web/louis-agent.pack.web.csproj:15
+     1  louis-agent.project  src/tests/web/louis-agent.diagrams.tests/Cards/OverviewLayoutTests.cs:21
+     1  louis-agent.puls.core  src/docs/plans/puls-track.md:50
+     1  louis-agent.showroom-chats  src/web/louis-agent.web/Components/Site/Showroom/Mock/Live/MockLiveChat.razor.cs:32
+     1  louis-agent.simulation  src/docs/adr/0029-simulations-in-csharp.md:14
+     1  louis-agent.simulations  src/docs/adr/0029-simulations-in-csharp.md:15
+     1  louis-agent.web.core  src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md:16
+     1  louis-agent.web.k3x9z2m1qa.bundle.scp.css  src/tests/web/louis-agent.web.testing/Styles/SassStylesheet.cs:137
+     1  louis-agent.web.shared  src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md:11
+     1  louis-agent.wordpress.integration-tests  src/docs/plans/F131-the-chat-on-any-website.md:105
+     1  louis-agent.workflows  src/docs/plans/F106.3-triage-and-fix-a-service.md:198
