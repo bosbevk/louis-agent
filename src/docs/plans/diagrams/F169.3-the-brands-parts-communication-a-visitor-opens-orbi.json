@@ -1,0 +1,29 @@
+{
+  "kind": "sequence",
+  "title": "F169.3 the brand's parts: a visitor on a phone opens Orbi",
+  "caption": "The layout draws the name and the folded Orbi, each mark asks the theme for its drawing, and a tap opens the panel with the mark in its head.",
+  "sequence": {
+    "participants": [
+      { "id": "V", "icon": "user", "tone": "blue", "label": "A visitor, on a phone", "actor": true },
+      { "id": "L", "icon": "file", "tone": "blue", "label": "FrameworkLayout" },
+      { "id": "W", "icon": "box", "tone": "green", "label": "Wordmark" },
+      { "id": "C", "icon": "message", "tone": "green", "label": "ChatWidget, docked" },
+      { "id": "O", "icon": "chip", "tone": "violet", "label": "Orb" },
+      { "id": "T", "icon": "file", "tone": "amber", "label": "Flat's values" }
+    ],
+    "steps": [
+      { "step": "message", "from": "V", "to": "L", "text": "opens the framework's site" },
+      { "step": "message", "from": "L", "to": "W", "text": "Before \"l\", After \"uis-agent\", in the header and the footer" },
+      { "step": "message", "from": "W", "to": "O", "text": "Label \"louis-agent\", at the name's own font size  (step 2)" },
+      { "step": "message", "from": "O", "to": "T", "text": "--web-wordmark-o?" },
+      { "step": "reply", "from": "T", "to": "O", "text": ".41em: 8.5 in the header's letters, 6.9 in the footer's  (step 2)" },
+      { "step": "message", "from": "L", "to": "C", "text": "Title \"Orbi · AI\", ButtonText \"Ask Orbi\"  (step 4)" },
+      { "step": "message", "from": "C", "to": "O", "text": "folded: the mark, 28 across, before the words  (step 4)" },
+      { "step": "reply", "from": "C", "to": "V", "text": "a quiet pill at the foot of the page: the mark and \"Ask Orbi\"" },
+      { "step": "message", "from": "V", "to": "C", "text": "taps it" },
+      { "step": "message", "from": "C", "to": "O", "text": "open: the mark, 22 across, Mark \"O\", before the title  (step 3)" },
+      { "step": "note", "over": ["O"], "text": "no ring breathes: a mark on a button is not an agent at work" },
+      { "step": "reply", "from": "C", "to": "V", "text": "the panel, its head: the mark and \"Orbi · AI\"" }
+    ]
+  }
+}

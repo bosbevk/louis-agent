@@ -1,0 +1,396 @@
+<svg viewBox="-24 -24 1752 1319" width="1752" height="1319" role="img" aria-label="F169.3 the brand's parts: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F169.3 the brand's parts: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+[data-style="dark"] svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+[data-style="light"] svg { --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c; }
+.ground { fill: var(--ground); }
+.arrow { fill: var(--quiet); }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
+svg {
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+</style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+[data-style="dark"] svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+[data-style="light"] svg { --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95); }
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+[data-style="dark"] svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+[data-style="light"] svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.cls-cover { fill: var(--ground); }
+.cls-group { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-badge { fill: var(--quiet); }
+.cls-badge.tone-blue { fill: var(--blue-line); }
+.cls-badge.tone-green { fill: var(--green-line); }
+.cls-badge.tone-violet { fill: var(--violet-line); }
+.cls-badge.tone-teal { fill: var(--teal-line); }
+.cls-badge.tone-red { fill: var(--red-line); }
+.cls-badge.tone-amber { fill: var(--amber-line); }
+.cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
+.cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
+.cls-line { fill: none; stroke-linecap: round; }
+.cls-line.holds { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.inherits { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.implements { stroke: var(--violet-line); stroke-width: 1.8; stroke-dasharray: 6 5; }
+.cls-line.creates { stroke: var(--blue-line); stroke-width: 1.6; stroke-dasharray: 2 5; }
+.cls-line.uses {
+  stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
+}
+.cls-chip.holds { stroke: var(--violet-line); }
+.cls-chip.inherits { stroke: var(--violet-line); }
+.cls-chip.implements { stroke: var(--violet-line); }
+.cls-chip.creates { stroke: var(--blue-line); }
+.cls-chip.uses { stroke: var(--quiet); }
+.cls-word { fill: var(--text); }
+.cls-word.quiet { fill: var(--quiet); }
+.end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
+.end-triangle.tone-blue { stroke: var(--blue-line); }
+.end-triangle.tone-green { stroke: var(--green-line); }
+.end-triangle.tone-violet { stroke: var(--violet-line); }
+.end-triangle.tone-teal { stroke: var(--teal-line); }
+.end-triangle.tone-red { stroke: var(--red-line); }
+.end-triangle.tone-amber { stroke: var(--amber-line); }
+.end-diamond { fill: var(--quiet); }
+.end-diamond.tone-blue { fill: var(--blue-line); }
+.end-diamond.tone-green { fill: var(--green-line); }
+.end-diamond.tone-violet { fill: var(--violet-line); }
+.end-diamond.tone-teal { fill: var(--teal-line); }
+.end-diamond.tone-red { fill: var(--red-line); }
+.end-diamond.tone-amber { fill: var(--amber-line); }
+.end-open {
+  fill: none; stroke: var(--quiet); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.end-open.tone-blue { stroke: var(--blue-line); }
+.end-open.tone-green { stroke: var(--green-line); }
+.end-open.tone-violet { stroke: var(--violet-line); }
+.end-open.tone-teal { stroke: var(--teal-line); }
+.end-open.tone-red { stroke: var(--red-line); }
+.end-open.tone-amber { stroke: var(--amber-line); }
+.cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
+.cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.2em; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-open" d="M 1 1 L 9 5 L 1 9" />
+    </marker>
+    <marker id="diamond-violet" viewBox="0 0 14 10" refX="14" refY="5" markerWidth="14" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-diamond tone-violet" d="M 0 5 L 7 1 L 14 5 L 7 9 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1752" height="1319" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a876 190 0 1 0 1752 0a876 190 0 1 0 -1752 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F169.3 the brand's parts: the interface design</text>
+    <text class="pic-group" x="1688" y="14" text-anchor="end">Class diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="1704" height="1" rx="0" />
+    <g class="cls-drawing" transform="translate(0 44)">
+      <path class="cls-line uses" d="M1039 451L1263 451" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M441 635L481 635Q505 635 505 611L505 484Q505 460 529 460L633 460" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M441 267L481 267Q505 267 505 291L505 418Q505 442 529 442L633 442" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M441 267L481 267Q505 267 505 291L505 418Q505 442 529 442L633 442" />
+      <path class="cls-line creates" d="M441 83L633 83" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M441 83L633 83" />
+      <path class="cls-line creates" d="M441 83L481 83Q505 83 505 107L505 234Q505 258 529 258L633 258" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M441 83L481 83Q505 83 505 107L505 234Q505 258 529 258L633 258" />
+      <path class="cls-line holds" d="M1039 83L1079 83Q1103 83 1103 107L1103 225Q1103 249 1127 249L1263 249" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1039 83L1079 83Q1103 83 1103 107L1103 225Q1103 249 1127 249L1263 249" />
+      <path class="cls-line holds" d="M1039 267L1263 267" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1039 267L1263 267" />
+      <path class="cls-line holds" d="M1039 451L1079 451Q1103 451 1103 427L1103 309Q1103 285 1127 285L1263 285" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1039 451L1079 451Q1103 451 1103 427L1103 309Q1103 285 1127 285L1263 285" />
+      <rect class="pic-pill cls-chip holds" x="1057" y="74" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1078.5" y="86" text-anchor="middle">the o</text>
+      <rect class="pic-pill cls-chip holds" x="1057" y="258" width="50" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1082" y="270" text-anchor="middle">step 3</text>
+      <rect class="pic-pill cls-chip holds" x="1144" y="276" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1183" y="288" text-anchor="middle">steps 3, 4</text>
+      <rect class="pic-pill cls-chip uses" x="1116" y="442" width="134" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1183" y="454" text-anchor="middle">asks what it wears</text>
+      <rect class="pic-pill cls-chip creates" x="448" y="258" width="50" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="473" y="270" text-anchor="middle">docked</text>
+      <rect class="pic-pill cls-chip creates" x="516" y="74" width="106" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="569" y="86" text-anchor="middle">header, footer</text>
+      <rect class="pic-pill cls-chip creates" x="519.5" y="249" width="99" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="569" y="261" text-anchor="middle">in the header</text>
+      <rect class="pic-pill cls-chip uses" x="451.5" y="626" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="473" y="638" text-anchor="middle">holds</text>
+      <rect class="cls-cover" x="0" y="27" width="441" height="112" rx="14" />
+      <rect class="mrq-glass" x="0" y="27" width="441" height="112" rx="14" />
+      <rect class="cls-badge tone-blue" x="14" y="39" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="57.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="58" text-anchor="start">FrameworkLayout</text>
+      <path class="cls-divide" d="M14 79H427" />
+      <text class="cls-member" x="14" y="97" text-anchor="start">its footer: the name and the header's line (step 5)</text>
+      <text class="cls-member" x="14" y="111" text-anchor="start">its links: GitHub and louis-agent.dev (step 5)</text>
+      <text class="cls-member" x="14" y="125" text-anchor="start">the Licence link (step 9, the second card)</text>
+      <rect class="cls-cover" x="0" y="218" width="441" height="98" rx="14" />
+      <rect class="mrq-glass" x="0" y="218" width="441" height="98" rx="14" />
+      <rect class="cls-badge tone-blue" x="14" y="230" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="248.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="249" text-anchor="start">FrameworkOrbi</text>
+      <path class="cls-divide" d="M14 270H427" />
+      <text class="cls-member" x="14" y="288" text-anchor="start">Title "Orbi · AI"</text>
+      <text class="cls-member" x="14" y="302" text-anchor="start">ButtonText from OrbiAsks.Open (step 4)</text>
+      <rect class="cls-cover" x="0" y="381" width="441" height="140" rx="14" />
+      <rect class="mrq-glass" x="0" y="381" width="441" height="140" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="393" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="411.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="412" text-anchor="start">Band</text>
+      <path class="cls-divide" d="M14 433H427" />
+      <text class="cls-member" x="14" y="451" text-anchor="start">Topic string?</text>
+      <text class="cls-member" x="14" y="465" text-anchor="start">Title string?</text>
+      <text class="cls-member" x="14" y="479" text-anchor="start">Summary string?</text>
+      <text class="cls-member" x="14" y="493" text-anchor="start">PartOf string?</text>
+      <text class="cls-member" x="14" y="507" text-anchor="start">a place for a mark above its topic (step 7, the first card)</text>
+      <rect class="cls-cover" x="0" y="572" width="441" height="126" rx="14" />
+      <rect class="mrq-glass" x="0" y="572" width="441" height="126" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="584" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="602.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="603" text-anchor="start">LouisAgent.Web.Tests</text>
+      <path class="cls-divide" d="M14 624H427" />
+      <text class="cls-member" x="14" y="642" text-anchor="start">WordmarkTests (step 2)</text>
+      <text class="cls-member" x="14" y="656" text-anchor="start">OpenAgentButtonTests, ChatWidgetTests (step 3)</text>
+      <text class="cls-member" x="14" y="670" text-anchor="start">ChatWidgetDockedTests (step 4)</text>
+      <text class="cls-member" x="14" y="684" text-anchor="start">BandTests (step 7)</text>
+      <rect class="cls-cover" x="0" y="736" width="441" height="166" rx="14" />
+      <rect class="mrq-glass" x="0" y="736" width="441" height="166" rx="14" />
+      <rect class="cls-badge tone-amber" x="14" y="754" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="772.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="52" y="764" text-anchor="start">PictureBrand</text>
+      <text class="pic-note" x="52" y="780" text-anchor="start">static</text>
+      <path class="cls-divide" d="M14 800H427" />
+      <text class="cls-member" x="14" y="818" text-anchor="start">Mark string</text>
+      <text class="cls-member" x="14" y="832" text-anchor="start">Name string</text>
+      <text class="cls-member" x="14" y="846" text-anchor="start">Draw(writer, width, top)</text>
+      <text class="cls-member" x="14" y="860" text-anchor="start">Style string</text>
+      <text class="cls-member" x="14" y="874" text-anchor="start">the ball: 0.41 of the letters, on the line (step 6, the</text>
+      <text class="cls-member" x="14" y="888" text-anchor="start">  fourth card)</text>
+      <rect class="cls-cover" x="0" y="933" width="441" height="140" rx="14" />
+      <rect class="mrq-glass" x="0" y="933" width="441" height="140" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="945" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="963.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="964" text-anchor="start">The other tests</text>
+      <path class="cls-divide" d="M14 985H427" />
+      <text class="cls-member" x="14" y="1003" text-anchor="start">FlatFollowsItsDesignTests (step 2)</text>
+      <text class="cls-member" x="14" y="1017" text-anchor="start">FrameworkLayoutTests (steps 4, 5, 9)</text>
+      <text class="cls-member" x="14" y="1031" text-anchor="start">PictureBrandTests (step 6)</text>
+      <text class="cls-member" x="14" y="1045" text-anchor="start">OverviewPageTests (step 7)</text>
+      <text class="cls-member" x="14" y="1059" text-anchor="start">the glass and retro sheet tests (step 8)</text>
+      <rect class="cls-cover" x="633" y="20" width="406" height="126" rx="14" />
+      <rect class="mrq-glass" x="633" y="20" width="406" height="126" rx="14" />
+      <rect class="cls-badge tone-green" x="647" y="32" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="661" y="50.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="685" y="51" text-anchor="start">Wordmark</text>
+      <path class="cls-divide" d="M647 72H1025" />
+      <text class="cls-member" x="647" y="90" text-anchor="start">Before string</text>
+      <text class="cls-member" x="647" y="104" text-anchor="start">After string</text>
+      <text class="cls-member" x="647" y="118" text-anchor="start">Letter string</text>
+      <text class="cls-member" x="647" y="132" text-anchor="start">its sheet: the orb takes the name's font size (step 2)</text>
+      <rect class="cls-cover" x="633" y="211" width="406" height="112" rx="14" />
+      <rect class="mrq-glass" x="633" y="211" width="406" height="112" rx="14" />
+      <rect class="cls-badge tone-green" x="647" y="223" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="661" y="241.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="685" y="242" text-anchor="start">OpenAgentButton</text>
+      <path class="cls-divide" d="M647 263H1025" />
+      <text class="cls-member" x="647" y="281" text-anchor="start">Text string</text>
+      <text class="cls-member" x="647" y="295" text-anchor="start">-OpenChat()</text>
+      <text class="cls-member" x="647" y="309" text-anchor="start">draws an Orb before its words, 20 across (step 3)</text>
+      <rect class="cls-cover" x="633" y="374" width="406" height="154" rx="14" />
+      <rect class="mrq-glass" x="633" y="374" width="406" height="154" rx="14" />
+      <rect class="cls-badge tone-green" x="647" y="386" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="661" y="404.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="685" y="405" text-anchor="start">ChatWidget</text>
+      <path class="cls-divide" d="M647 426H1025" />
+      <text class="cls-member" x="647" y="444" text-anchor="start">Title string</text>
+      <text class="cls-member" x="647" y="458" text-anchor="start">ButtonText string</text>
+      <text class="cls-member" x="647" y="472" text-anchor="start">OpenLabel string</text>
+      <text class="cls-member" x="647" y="486" text-anchor="start">Layout WidgetLayout</text>
+      <text class="cls-member" x="647" y="500" text-anchor="start">its head draws an Orb before the title, 22 (step 3)</text>
+      <text class="cls-member" x="647" y="514" text-anchor="start">docked, its folded button draws an Orb, 28 (step 4)</text>
+      <rect class="cls-cover" x="1263" y="204" width="441" height="126" rx="14" />
+      <rect class="mrq-glass" x="1263" y="204" width="441" height="126" rx="14" />
+      <rect class="cls-badge tone-violet" x="1277" y="216" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1291" y="234.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1315" y="235" text-anchor="start">Orb</text>
+      <path class="cls-divide" d="M1277 256H1690" />
+      <text class="cls-member" x="1277" y="274" text-anchor="start">State OrbState</text>
+      <text class="cls-member" x="1277" y="288" text-anchor="start">Label string</text>
+      <text class="cls-member" x="1277" y="302" text-anchor="start">Mark string?</text>
+      <text class="cls-member" x="1277" y="316" text-anchor="start">unchanged: the theme draws it</text>
+      <rect class="cls-cover" x="1263" y="375" width="441" height="152" rx="14" />
+      <rect class="mrq-glass" x="1263" y="375" width="441" height="152" rx="14" />
+      <rect class="cls-badge tone-teal" x="1277" y="393" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1291" y="411.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="1315" y="403" text-anchor="start">WidgetLook</text>
+      <text class="pic-note" x="1315" y="419" text-anchor="start">static</text>
+      <path class="cls-divide" d="M1277 439H1690" />
+      <text class="cls-member" x="1277" y="457" text-anchor="start">StateOf(layout, open) string</text>
+      <text class="cls-member" x="1277" y="471" text-anchor="start">PanelOf(layout, size) string</text>
+      <text class="cls-member" x="1277" y="485" text-anchor="start">ButtonOf(layout) string</text>
+      <text class="cls-member" x="1277" y="499" text-anchor="start">HasWindowButtons(layout) bool</text>
+      <text class="cls-member" x="1277" y="513" text-anchor="start">says whether a layout's button wears the mark (step 4, new)</text>
+    </g>
+    <g class="cls-legend" transform="translate(0 1156)">
+      <rect class="mrq-rule" x="0" y="0" width="1704" height="1" rx="0" />
+      <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
+      <rect class="cls-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
+      <rect class="cls-badge tone-green" x="117.4" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="145.4" y="52.5" text-anchor="start">this project</text>
+      <rect class="cls-badge tone-violet" x="254.6" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="282.6" y="52.5" text-anchor="start">the framework</text>
+      <rect class="cls-badge tone-teal" x="398.4" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="426.4" y="52.5" text-anchor="start">contracts and state</text>
+      <rect class="cls-badge tone-amber" x="581.8" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="609.8" y="52.5" text-anchor="start">files and data</text>
+      <rect class="cls-key-mark" x="732.2" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="742.2" y="52" text-anchor="middle">S</text>
+      <text class="pic-means" x="762.2" y="52.5" text-anchor="start">static</text>
+      <rect class="cls-key-mark" x="831.8" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="841.8" y="52" text-anchor="middle">C</text>
+      <text class="pic-means" x="861.8" y="52.5" text-anchor="start">a class</text>
+      <path class="cls-line holds" d="M938 48H988" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <text class="pic-means" x="998" y="52.5" text-anchor="start">holds</text>
+      <path class="cls-line creates" d="M1061 48H1111" marker-end="url(#arrow-blue)" />
+      <text class="pic-means" x="1121" y="52.5" text-anchor="start">creates</text>
+      <path class="cls-line uses" d="M1197.2 48H1247.2" marker-end="url(#open)" />
+      <text class="pic-means" x="1257.2" y="52.5" text-anchor="start">uses</text>
+    </g>
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="1688" y="1178" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+    </g>
+  </g>
+  <rect class="notebar" x="0" y="1234" width="1704" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1244) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1256">
+    <tspan class="note-rest">No type is new before a card's pick asks for one. The mark is the Orb that is there, drawn in three more places, and each change is marked with its step.</tspan>
+  </text>
+</svg>

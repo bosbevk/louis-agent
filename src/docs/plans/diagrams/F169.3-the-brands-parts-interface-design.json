@@ -1,0 +1,30 @@
+{
+  "kind": "classes",
+  "title": "F169.3 the brand's parts: the interface design",
+  "caption": "No type is new before a card's pick asks for one. The mark is the Orb that is there, drawn in three more places, and each change is marked with its step.",
+  "classes": {
+    "types": [
+      { "id": "Orb", "name": "Orb", "tone": "violet", "members": ["+State OrbState", "+Label string", "+Mark string?", "unchanged: the theme draws it"] },
+      { "id": "Wordmark", "name": "Wordmark", "tone": "green", "members": ["+Before string", "+After string", "+Letter string", "its sheet: the orb takes the name's font size  (step 2)"] },
+      { "id": "OpenAgentButton", "name": "OpenAgentButton", "tone": "green", "members": ["+Text string", "-OpenChat()", "draws an Orb before its words, 20 across  (step 3)"] },
+      { "id": "ChatWidget", "name": "ChatWidget", "tone": "green", "members": ["+Title string", "+ButtonText string", "+OpenLabel string", "+Layout WidgetLayout", "its head draws an Orb before the title, 22  (step 3)", "docked, its folded button draws an Orb, 28  (step 4)"] },
+      { "id": "WidgetLook", "name": "WidgetLook", "kind": "static", "tone": "teal", "members": ["+StateOf(layout, open) string", "+PanelOf(layout, size) string", "+ButtonOf(layout) string", "+HasWindowButtons(layout) bool", "says whether a layout's button wears the mark  (step 4, new)"] },
+      { "id": "FrameworkOrbi", "name": "FrameworkOrbi", "tone": "blue", "members": ["Title \"Orbi · AI\"", "ButtonText from OrbiAsks.Open  (step 4)"] },
+      { "id": "FrameworkLayout", "name": "FrameworkLayout", "tone": "blue", "members": ["its footer: the name and the header's line  (step 5)", "its links: GitHub and louis-agent.dev  (step 5)", "the Licence link  (step 9, the second card)"] },
+      { "id": "Band", "name": "Band", "tone": "green", "members": ["+Topic string?", "+Title string?", "+Summary string?", "+PartOf string?", "a place for a mark above its topic  (step 7, the first card)"] },
+      { "id": "PictureBrand", "name": "PictureBrand", "kind": "static", "tone": "amber", "members": ["+Mark string", "+Name string", "+Draw(writer, width, top)", "+Style string", "the ball: 0.41 of the letters, on the line  (step 6, the fourth card)"] },
+      { "id": "WebTests", "name": "LouisAgent.Web.Tests", "members": ["WordmarkTests  (step 2)", "OpenAgentButtonTests, ChatWidgetTests  (step 3)", "ChatWidgetDockedTests  (step 4)", "BandTests  (step 7)"] },
+      { "id": "OtherTests", "name": "The other tests", "members": ["FlatFollowsItsDesignTests  (step 2)", "FrameworkLayoutTests  (steps 4, 5, 9)", "PictureBrandTests  (step 6)", "OverviewPageTests  (step 7)", "the glass and retro sheet tests  (step 8)"] }
+    ],
+    "relations": [
+      { "from": "Wordmark", "to": "Orb", "kind": "holds", "word": "the o" },
+      { "from": "OpenAgentButton", "to": "Orb", "kind": "holds", "word": "step 3" },
+      { "from": "ChatWidget", "to": "Orb", "kind": "holds", "word": "steps 3, 4" },
+      { "from": "ChatWidget", "to": "WidgetLook", "kind": "uses", "word": "asks what it wears" },
+      { "from": "FrameworkOrbi", "to": "ChatWidget", "kind": "creates", "word": "docked" },
+      { "from": "FrameworkLayout", "to": "Wordmark", "kind": "creates", "word": "header, footer" },
+      { "from": "FrameworkLayout", "to": "OpenAgentButton", "kind": "creates", "word": "in the header" },
+      { "from": "WebTests", "to": "ChatWidget", "kind": "uses", "word": "holds" }
+    ]
+  }
+}
