@@ -64,8 +64,24 @@ public class OverviewPageTests
     }
 
     /// <summary>
+    /// The page's heading leads its top band (F169.2): the h1 stands over the summary, as a section's heading stands
+    /// over its own, so the first thing read is what the page is.
+    /// </summary>
+    [Test]
+    public void TheTopBand_PutsItsHeadingBeforeItsSummary()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<OverviewPage>();
+
+        Assert.That(cut.Find("section#top").QuerySelectorAll("h1, p.summary").Select(element => element.LocalName),
+            Is.EqualTo(new[] { "h1", "p" }));
+    }
+
+    /// <summary>
     /// Each family stands under its own heading with its own overview picture (Louis: "instead of listing one big
-    /// overview do each under a subheading and then use overview diagrams"), every project it ships named in it.
+    /// overview do each under a subheading and then use overview diagrams"), every project it ships named in it. A
+    /// family is a part of the whole framework's section (F169.2), so its heading is an h3 under that one h2.
     /// </summary>
     [Test]
     public void EachFamily_HasItsHeadingAndItsPicture()
@@ -79,7 +95,8 @@ public class OverviewPageTests
             foreach (var family in FrameworkFamily.All)
             {
                 var section = cut.Find($"section#{family.Id}");
-                Assert.That(section.QuerySelector("h2")!.TextContent.Trim(), Is.EqualTo(family.Name));
+                Assert.That(section.QuerySelector("h3.part-title")?.TextContent.Trim(), Is.EqualTo(family.Name));
+                Assert.That(section.QuerySelector("h2"), Is.Null, $"{family.Name} is a part, not a section");
                 string picture = section.QuerySelector("figure.diagram-figure svg")!.InnerHtml;
                 Assert.That(family.Projects.Where(project => !picture.Contains(project.Name)), Is.Empty,
                     $"{family.Name} names every project it ships");

@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 145 | 73 |
-| Fixes (`FX`) | 209 | 4 |
+| Features (`F`) | 146 | 73 |
+| Fixes (`FX`) | 210 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -54,7 +54,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F168 | Facebook auto-answers (Louis, 2026-11-21: "plan integration into facebook to auto answer questions"): the guide answers the Page's Messenger in his voice through a framework library, `louis-agent.api.messenger`, over the sessions API with its own key and a daily cap per person, and steps back when Louis answers himself; a data-deletion callback; eleven steps, after F126 | Now, after F126 |
-| F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in six children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, every block ending on the page's edge, no step on a disc; F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links; F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass as it was; F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming; F169.6 a card for each page: a link to a page previews that page's own card | Now |
+| F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in six children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, 74, 40 and 28 (40, 32 and 24 at 390 wide), the Overview's families h3s under one h2, four corner names and a step's six set by every theme, Orbi's panel at 18, no step on a disc in flat, the rows of terms and the page turn ending on the page's edge (done 2026-11-21); F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links; F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass as it was; F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming; F169.6 a card for each page: a link to a page previews that page's own card | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | CL68 | Agents and their subagents | Now |
@@ -127,10 +127,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (145 done)
+## Features (146 done)
 
 | Id | When | What |
 |---|---|---|
+| F169.2 | 2026-11-21 | The docs page's type and edges, F169's second child: a band that is a part of a section draws an h3, the Overview's five families parts of one section; headings by rank in the docs layout, 74, 40 and 28 (40, 32 and 24 on a phone), louis-agent.dev's unchanged; four corner names and a step's six set by every theme, Orbi's panel at 18; flat's step a squared label, glass's circle kept; a list of terms as wide as a list of steps, the page turn in the gutter, the menu's line to the page's foot |
 | F166 | 2026-11-21 | Puls in its own repository, closed: its four children built (F166.1 the framework's parts out of `demos/puls`, F166.2 the framework as packages, F166.3 Puls moved to `github.com/bosbevk/puls`, F166.4 Puls gone from louis-agent); louis-agent is the framework and its own demos, and Puls the first product built on it from outside |
 | F166.4 | 2026-11-21 | Puls gone from louis-agent, F166's fourth child: `demos/puls` and the three packs leave with their 26 projects, the framework's pages show Puls as a product built elsewhere (an `ExampleHome`, a `RepositoryLink`, ADR 0100's narrow exception), the pack rules that left with Puls come back over every pack in `LouisAgent.Packs.Rules.Tests` (DevOps and Paymo listed under FX83), and every doc says what is here |
 | F169.1 | 2026-11-21 | Flat's lines and inks, F169's first child: flat's dark line one firmer grey, `#404048`, pictures on a flat page too; the faint grey and a listing's comments readable on a card, held by `FlatInksTests` on a shared `Contrast`; the keyboard's ring drawn once; a topic line in the theme's purple, glass light's now the deep violet; a quiet control on the chip's line; a code word drawn from three names every theme sets, on a page and in the agent's answer |
@@ -277,10 +278,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (209 done)
+## Fixes (210 done)
 
 | Id | When | What |
 |---|---|---|
+| FX221 | 2026-11-22 | Two leftovers out of Azure: the old VM's empty subnet and three image-pull rights of apps that are gone |
 | FX220 | 2026-11-22 | The parallel engine's test holds its round open until all three calls have started, so a busy machine can't make it count two |
 | FX83 | 2026-11-21 | The DevOps and Paymo packs retired: their waiting tools took no cancellation token, and nothing loaded them |
 | FX219 | 2026-11-21 | The re-score's 409 test keeps the runner busy with the stand-in's sleeper, not a stub run a fast machine finishes before the request arrives |

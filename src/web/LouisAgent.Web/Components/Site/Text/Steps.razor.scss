@@ -1,18 +1,21 @@
 @use "web/tools/surface";
 
-/* A few steps (ADR 0125; Louis: "a purple glass circle", "no bold"): each number in the theme's main button drawn as a
-   circle, then the step's words in one quiet sentence, its title only a shade stronger. The circle stands in the
-   middle of its words, so a step that wraps to two lines still has its number centred beside it. Where they stand is
-   Bootstrap's, in the markup; what is left here is their look and the reading width. */
+/* A few steps (ADR 0125; Louis: "no bold"): each number drawn as the theme says (F169.2, "A: the theme decides"), then
+   the step's words in one quiet sentence, its title only a shade stronger. Glass draws the number as its main button
+   at rest, "a purple glass circle" as Louis asked when the steps were built, and flat as a squared label, since its
+   only ball is the mark. The number stands in the middle of its words, so a step that wraps to two lines still has
+   it centred beside it. Where they stand is Bootstrap's, in the markup; what is left here is their look and the
+   reading width. */
 .steps { max-width: 64ch; }
 .step-number {
     display: grid;
     place-items: center;
     width: 34px;
     height: 34px;
-    border-radius: 50%;
-    font: 600 14px/1 var(--bs-font-sans-serif);
-    @include surface.press();
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    @include surface.step();
 }
 .step-words { font-size: 17px; line-height: 1.6; color: var(--bs-secondary-color); }
 .step-title { color: var(--bs-emphasis-color); }

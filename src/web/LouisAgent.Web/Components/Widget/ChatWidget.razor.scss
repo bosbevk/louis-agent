@@ -54,7 +54,8 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    @include surface.float($radius: 14px, $fill: var(--web-inset-fill));
+    /* The window's corner, the search window's too (F169.2, Louis's pick B of the design review's finding 8). */
+    @include surface.float($radius: var(--web-window-radius), $fill: var(--web-inset-fill));
 }
 
 /* Docked (F164.2): the panel stands in its page's place, never wider than it, and the widget is no corner's column.
@@ -126,7 +127,7 @@
         height: 50dvh;
         border: 0;
         @include surface.rule($side: top);
-        border-radius: 14px 14px 0 0;
+        border-radius: var(--web-window-radius) var(--web-window-radius) 0 0;
     }
     .widget-panel.is-min { height: auto; }
     .widget-panel.is-max { height: 100dvh; border-radius: 0; }

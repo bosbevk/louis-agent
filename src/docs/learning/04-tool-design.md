@@ -79,6 +79,45 @@ and what an MCP server would have to do for itself.
 Reuse before building held. The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
 hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
+## F169.2: a heading's rank is markup first, and its size second (2026-11-21)
+
+**What it was.** The design review found that a docs page of the framework's site shouts: every heading was 74 on a
+desktop, so a page's top, its sections and the parts inside a section all looked alike. The obvious fix is a
+stylesheet that makes some headings smaller. But which ones? The Overview drew its five families each as a band
+with an h2 of its own, so in the markup they were sections, the same rank as "Every project, in its family." above
+them. A size rule had nothing to tell them apart by.
+
+**What was built.** The rank went into the markup first. A band can now say it is a part of a section, and its title
+then draws an h3 where it drew an h2. The title already asked its band one question, whether it heads the page,
+which gives the page's one h1; this is a second question in the same place. Only then do the sizes follow, in the
+docs layout's own sheet: 74, 40 and 28 on a desktop, and 40, 32 and 24 on a phone. A screen reader now hears one
+section with five parts under it where it heard six sections, and a search engine reads the same outline.
+
+That is the same rule this write-up keeps for a model. A model reads a tool's typed result, not how the result
+looks on a screen, so what a result means is said in its shape. A screen reader and a search engine read a page's
+headings the same way, by rank and not by size. So the meaning is said where they read it, and the look only
+follows.
+
+**The trade-offs.** A band already held other h3s, a tile's, a panel's, a card's, so the part's title carries a class
+of the framework's, and the rules name that class rather than every h3 in a band. The plan said to add that class
+inside the base heading rule's `:is(h1, h2)`. That would have raised the rule's weight, since `:is()` weighs as much
+as its heaviest argument, and a site's own heading rule could then have lost. So the class stands beside the two
+in the selector, and louis-agent.dev's 114 headings were measured before and after, at 1920 and at 390 wide: every
+size, line height and letter spacing the same. The sizes live in the docs layout's sheet, not the base rule, so a
+page of slides keeps its one size.
+
+The rest of the child was the same idea applied to looks: a corner and a step's number became names a theme sets,
+so flat draws a step as a squared label and glass keeps its circle, and no component names a theme. Each change was
+measured on the nine running pages: heading sizes, every corner on a page (only Orbi's panel changed, 14 to 18), and
+where each block ends.
+
+**What didn't go well.** At 390 wide two pages still scroll sideways, Getting started and Build your own, because a
+long word of code in a step doesn't wrap. That was known, and it is F169.5's to fix, but the plan's measure for this
+step asked for no sideways scroll, so it is not met here. A first look at the step's number read wrong: the running
+site had already picked up the new rule from a test build, but not the theme's new names. A measure taken from a
+running site needs that site rebuilt and restarted, or it measures half of a change. Nothing was spent: no model
+call.
+
 ## F160: the guide's page tool becomes the remote control of a recording (2026-11-17)
 
 **What it was.** A showroom demo played a business's recorded conversation the moment its page opened. Louis wanted

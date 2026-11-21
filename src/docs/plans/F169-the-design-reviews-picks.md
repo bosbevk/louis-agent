@@ -136,7 +136,11 @@ as values for a list of names, which is extensibility, skill 20.
 
 ## Approved during the build
 
-Nothing yet.
+- **2026-11-21, F169.2's heading sizes on a phone.** Louis: "A: 40, 32, 24". At 390 wide the page's top heading
+  is 40, a section 32 and a part 24, three of Geist's own heading steps, so the top heading never stands under a
+  section's.
+- **2026-11-21, F169.2's step number in glass.** Louis: "A: the theme decides". A step's number gets names of its
+  own: flat sets the squared label, and glass and retro keep the circle they show today.
 
 ---
 [Docs index](../README.md) · Related: [the plans' index](README.md), [F151 Two themes, each light and dark](F151-themes-and-styles.md)

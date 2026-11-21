@@ -513,6 +513,15 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX221 · What leaves takes its traces with it, or someone has to
+
+When the VM and Puls's apps left Azure, the subnet the VM sat in and the right each app had to pull images stayed
+behind, since nothing that removed the apps knew about them. They cost nothing and harmed nothing, which is exactly
+why nobody saw them, until F170 tried to describe what the sites stand on and they had no place in it. The lesson
+is that removing a thing means removing what was made for it: its network, its rights, its secrets. A file that
+describes the whole of what stands is the cure, since what it doesn't name shows up as a difference to explain.
+Skill 18 (testing and shipping: infrastructure as code).
+
 ## FX220 · Count what overlaps by holding it open, not by hoping
 
 The test proves that a parallel engine runs a round's three tool calls at once, by counting how many run together.
