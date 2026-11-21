@@ -31,7 +31,9 @@ business behind it.
   tests the way *Build your own* holds its program (`BuildYourOwnTests`): the rand to the rates file
   (`ProofPageTests`), the packages named to the project files (`StandsOnTests`), the planned features to the TODO's
   open rows (`WhatsComingTests`), and the guide's voice to the pages (`GuideKnowsTheSiteTests`), with the docs each
-  page came from, so a question about a page goes to its source.
+  page came from, so a question about a page goes to its source. One narrow exception (added 2026-11-21, F166.4,
+  with Louis's yes): a product built on the framework in a repository of its own, as Puls is, can't be read by a
+  test here, so its claim is held by its link, a repository under `github.com/bosbevk` (`ExamplesPageTests`).
 - **What's planned is shown, labelled, and never as shipped.** A *What's coming* page lists the planned features by
   their TODO id, each marked planned and the list dated; an id with no open row fails the test, so what ships leaves
   the page. This replaces ADR 0066's "at most one honest line".

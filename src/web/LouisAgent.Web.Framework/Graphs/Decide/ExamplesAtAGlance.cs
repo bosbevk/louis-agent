@@ -26,8 +26,8 @@ public static class ExamplesAtAGlance
     {
         // The page says what they share, so the engine's card carries no line.
         var engine = new Card("engine", DiagramIcon.Chip, "One engine", "LouisAgent.Core", "", CardLook.Highlight);
-        var agents = FrameworkExamples.All.Select(example => new Card(Path.GetFileName(example.Identity), example.Icon,
-            example.Name, Path.GetFileName(example.Identity), example.Line, Tone: example.Tone)).ToList();
+        var agents = FrameworkExamples.All.Select(example => new Card(example.Identity.Name, example.Icon,
+            example.Name, example.Identity.Name, example.Line, Tone: example.Tone)).ToList();
         return new DiagramSource(DiagramKind.Cards, "Agents it already runs, at a glance", Cards: new CardsSpec(
             [new CardRow([engine]), new CardRow(agents)],
             [.. agents.Select(agent => new CardLink(engine.Id, agent.Id))]));

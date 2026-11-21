@@ -112,6 +112,24 @@ public class OverviewPageTests
         });
     }
 
+    /// <summary>
+    /// Puls lives in a repository of its own (F166.4, Louis's pick A of finding 1): the Overview names no folder of it
+    /// here, and links to it there.
+    /// </summary>
+    [Test]
+    public void Puls_IsLinkedInItsOwnRepository_NotAFolderHere()
+    {
+        using var ctx = Context();
+
+        string page = ctx.Render<OverviewPage>().Markup;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Not.Contain("demos/puls"));
+            Assert.That(page, Does.Contain("href=\"https://github.com/bosbevk/puls\""));
+        });
+    }
+
     /// <summary>A section ends with the docs it was written from, each a file in the repo.</summary>
     [Test]
     public void TheSections_EndWithTheirDocs()

@@ -3,7 +3,7 @@ using LouisAgent.Web.Components.Site.Text;
 namespace LouisAgent.Web.Framework.Content;
 
 /// <summary>
-/// What is built on the five families, each by its folder in the repo: the framework's own websites, the three demos
+/// What is built on the five families, each by its folder in the repo: the framework's own websites, the two demos
 /// and the packs, so the Overview shows where a project of your own would sit (the repo map says what each holds).
 /// </summary>
 /// <remarks>
@@ -22,9 +22,6 @@ public static class BuiltOnIt
         new(["src/site"],
             "The framework's own websites. louis-agent.dev with the guide in its corner, this site with Orbi beside " +
             "it, and the showroom's three made-up businesses."),
-        new(["demos/puls"],
-            "Puls, a South African assistant, laid out the way a project of your own would be. It holds its " +
-            "identity, its evals, its web app, its hosts and its settings."),
         new(["demos/louis-agent"],
             "The coding agent and the triage team, with the code-review web app and the programs that start them."),
         new(["demos/starter"],
