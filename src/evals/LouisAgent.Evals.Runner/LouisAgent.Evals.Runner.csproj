@@ -16,8 +16,10 @@
     <!-- An eval's files are beside it (Evals/{Folder}/: eval.json, Dataset/, Transcripts/, rubrics, its manual). One item, the same in every
          eval project, copies every one that isn't code to EvalFiles/{this project's path from the repository root}/Evals/{Folder}/..., so a copy's
          path below EvalFiles/ is where it sits in the repository (F49.2). TargetPath, not Link: Link would show the files a second time in the IDE
-         under a folder named like the project. -->
-    <None Update="Evals\**\*" TargetPath="EvalFiles\src\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+         under a folder named like the project. The package carries them too, as content a consumer's build copies to the same place, so a demo's
+         own runner offers the stub as this repository's does (F166.3, Louis's pick A of finding 11). -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\src\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"
+          Pack="true" PackagePath="contentFiles/any/any/EvalFiles/src/evals/$(MSBuildProjectName)/" PackageCopyToOutput="true" />
   </ItemGroup>
 
   <ItemGroup>
