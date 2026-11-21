@@ -1,12 +1,14 @@
 <#
 .SYNOPSIS
-Deploys the framework's two sites to Azure (rg-puls-za): their revisions, as verbs that are each a few az commands
-with the names filled in (CL19, F61.4). louis-agent.dev runs, sleeping when unused, with no VM and no database
-(FX122); since F164.3 the framework's own site, framework.louis-agent.dev, runs beside it the same way. The old
-Bicep build's verbs (infra, vm, sql-access) left with Puls (F166.1): the environment, the identity and the vault
-they made are read back from that deployment's recorded outputs.
+Deploys the framework's two sites to Azure (rg-puls-za): what they stand on, from the framework's own Bicep file
+beside this script (F170), and their revisions, as verbs that are each a few az commands with the names filled in
+(CL19, F61.4). louis-agent.dev runs, sleeping when unused, with no VM and no database (FX122); since F164.3 the
+framework's own site, framework.louis-agent.dev, runs beside it the same way. The environment, the identity and the
+vault the releases need are read back from the Bicep deployment's recorded outputs.
 
 .DESCRIPTION
+  deploy.ps1 infra                                shows Azure's what-if of main.bicep with main.bicepparam, and deploys it on
+                                                  a yes, as louis-agent-infra; run by a person, since it gives rights
   deploy.ps1 build   [-App ...] [-Tag 2026-11-08-1200]   builds the app's image (louis-agent-site, louis-agent-site-framework) in the registry
   deploy.ps1 workspace [-App ...]                 copies config/prices.json and rates.json from the app's config into its share
   deploy.ps1 secrets [-App ...]                   puts the app's secrets in the vault puls-keys, from its config/.env.secrets;
@@ -22,7 +24,7 @@ The how-to, and what each piece is, is src/docs/guides/deploy-the-sites.md. Run 
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('build', 'workspace', 'secrets', 'update', 'release', 'domain', 'logs')]
+    [ValidateSet('infra', 'build', 'workspace', 'secrets', 'update', 'release', 'domain', 'logs')]
     [string]$Verb,
     # Which app a verb works on: louis-agent.dev's, or the framework's site's (F164.3).
     [ValidateSet('louis-agent-app', 'louis-agent-framework-app')]
@@ -40,7 +42,7 @@ $ResourceGroup = 'rg-puls-za'
 $Registry = 'acrpulsza'
 $Environment = 'puls-env'
 $Vault = 'puls-keys'
-$Deployment = 'puls-build'
+$Deployment = 'louis-agent-infra'
 $Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $Providers = @('google', 'microsoft', 'linkedin')
 # What is each app's: its image and Dockerfile, its config folder and the secrets file in it, its yaml, the Bicep
@@ -101,7 +103,8 @@ function Read-Az {
 }
 
 function Get-Output([string]$Name) {
-    # One output Azure recorded for the old Bicep deployment: the environment's id and address, the vault, the identity.
+    # One output Azure recorded for main.bicep's deployment (infra): the environment's id and address, the vault, the
+    # identity.
     $value = Read-Az deployment group show -n $Deployment -g $ResourceGroup --query "properties.outputs.$Name.value" -o tsv
     if ($LASTEXITCODE -ne 0 -or -not $value) { throw "Azure has no output $Name recorded for the deployment $Deployment in $ResourceGroup." }
     return $value
@@ -134,6 +137,15 @@ function Get-Secrets {
 }
 
 switch ($Verb) {
+    'infra' {
+        # What the two sites stand on, from the framework's own Bicep file and our own names (F170). Azure shows its
+        # what-if first and deploys only on a yes. It gives rights, which the release identity can't, so a person
+        # runs it, signed in with az login.
+        Write-Host "What-if of main.bicep against $ResourceGroup, then a deploy as $Deployment on your yes..."
+        Invoke-Az deployment group create -g $ResourceGroup -n $Deployment `
+            -f (Join-Path $PSScriptRoot 'main.bicep') -p (Join-Path $PSScriptRoot 'main.bicepparam') `
+            --confirm-with-what-if --query 'properties.provisioningState' -o tsv
+    }
     'build' {
         # The commit the eval runner stamps on a run (F18): this checkout's, or "unknown" where git can't say.
         $ErrorActionPreference = 'Continue'
@@ -146,7 +158,7 @@ switch ($Verb) {
     }
     'workspace' {
         # The price tables the app reads from its share (README: the share's layout), copied from its config folder;
-        # the storage key is read once and never printed. The share is the Bicep build's (or CL19's, for Puls).
+        # the storage key is read once and never printed. The share is main.bicep's (infra).
         $key = Read-Az storage account keys list -n 'pulsstorage' -g $ResourceGroup --query '[0].value' -o tsv
         if ($LASTEXITCODE -ne 0 -or -not $key) { throw 'Could not read the storage key of pulsstorage.' }
         foreach ($file in @('prices.json', 'rates.json')) {
