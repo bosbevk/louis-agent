@@ -39,6 +39,30 @@ public class BandTitleTests
         Assert.That((cut.FindAll("h1").Count, cut.FindAll("h2").Count), Is.EqualTo((0, 1)));
     }
 
+    /// <summary>
+    /// A band that is a part of a section (F169.2) heads that part with an h3, which carries the framework's
+    /// <c>part-title</c> before the site's class, so the docs layout can size it apart from the other h3s a band holds.
+    /// </summary>
+    [Test]
+    public void ABandThatIsAPart_HasAnH3WithThePartsClass()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "agents")
+            .Add(band => band.PartOf, "the-whole")
+            .AddChildContent<BandTitle>(title => title
+                .Add(t => t.Class, "chrome")
+                .AddChildContent("Agents")));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("h2"), Is.Empty);
+            Assert.That(cut.Find("section h3").GetAttribute("class"), Is.EqualTo("part-title chrome"));
+            Assert.That(cut.Find("section h3").TextContent, Is.EqualTo("Agents"));
+        });
+    }
+
     /// <summary>A title drawn outside a band is a section's heading too, never a second h1.</summary>
     [Test]
     public void ATitleOutsideABand_IsAnH2()

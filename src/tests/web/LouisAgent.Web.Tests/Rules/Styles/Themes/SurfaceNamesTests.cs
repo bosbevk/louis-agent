@@ -31,6 +31,7 @@ public class SurfaceNamesTests
     [
         "--web-pane-fill", "--web-pane-edge", "--web-pane-rim", "--web-pane-light", "--web-pane-shadow",
         "--web-pane-blur", "--web-pane-radius",
+        "--web-small-radius", "--web-block-radius", "--web-window-radius", "--web-pill-radius",
         "--web-pane-hover-lift", "--web-pane-hover-edge", "--web-pane-hover-shadow",
         "--web-lens-wall", "--web-lens-rise", "--web-lens-frost", "--web-lens-water",
         "--web-glass-white", "--web-glass-grey", "--web-tilt",
@@ -49,6 +50,8 @@ public class SurfaceNamesTests
         "--web-you", "--web-agent",
         "--web-violet-0", "--web-violet-1", "--web-violet-2", "--web-violet-3", "--web-violet-4",
         "--web-code-word-fill", "--web-code-word-ink", "--web-code-word-edge",
+        "--web-step-fill", "--web-step-ink", "--web-step-edge", "--web-step-shadow", "--web-step-radius",
+        "--web-step-face",
         .. Art.Select(drawing => $"--web-art-{drawing}")
     ];
 

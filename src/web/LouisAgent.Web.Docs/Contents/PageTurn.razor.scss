@@ -1,12 +1,14 @@
 @use "web/tools/surface";
 
 /* A docs page's foot (F164.1): previous on the left, next on the right, each a box with the theme's line round it that
-   takes the firmer grey under the pointer, drawn by the framework's surface tool; on a phone they stack. */
+   takes the firmer grey under the pointer, drawn by the framework's surface tool; on a phone they stack. The two keep
+   the site's gutter at their sides, so they start and end where a band's words do (F169.2). */
 .page-turn {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-top: 56px;
+    padding-inline: var(--site-gutter, 48px);
 }
 
 .page-turn a {
@@ -15,7 +17,7 @@
     gap: 2px;
     padding: 16px;
     @include surface.lined(var(--bs-border-color));
-    border-radius: 10px;
+    border-radius: var(--web-block-radius);
     color: var(--bs-body-color);
     text-decoration: none;
     transition: border-color .15s var(--web-ease);

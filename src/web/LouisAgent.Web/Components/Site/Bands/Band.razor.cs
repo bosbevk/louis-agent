@@ -49,6 +49,12 @@ public partial class Band : IDisposable
     [Parameter] public string? Note { get; set; }
 
     /// <summary>
+    /// The id of the section this band is a part of (F169.2), such as one family of the Overview's whole; none for a
+    /// band that is a section of its own. A part's title is the section's h3, not an h2 of its own.
+    /// </summary>
+    [Parameter] public string? PartOf { get; set; }
+
+    /// <summary>
     /// Whether the frame may page the band sideways when it holds more than a screen (F118); a band whose content is
     /// one piece, such as a demo that plays, says false and stays whole (F122).
     /// </summary>
