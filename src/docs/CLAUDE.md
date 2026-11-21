@@ -109,6 +109,7 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | Job | Skill |
 |---|---|
 | A plan is written, changed or finished | `/plan-a-feature` |
+| A plan is reviewed, proofread or checked for what it misses | `/review-a-plan` |
 | A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
 | A step starts | `/do-a-step` |
 | A step's test passes, and it is to be shown and committed | `/finish-a-step` |

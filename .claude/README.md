@@ -46,6 +46,7 @@ Two rules follow from the last row.
 | Skill | Its job |
 |---|---|
 | `plan-a-feature` | A plan is written, changed or finished |
+| `review-a-plan` | A plan is reviewed, proofread or checked for what it misses |
 | `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
 | `do-a-step` | A step starts |
 | `finish-a-step` | A step's test passes, and it is to be shown and committed |
