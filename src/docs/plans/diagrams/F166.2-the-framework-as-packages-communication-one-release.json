@@ -1,0 +1,28 @@
+{
+  "kind": "sequence",
+  "title": "F166.2: one package released",
+  "caption": "One tag releases one package; tags for packages that belong together are pushed together and published in the order they depend on each other.",
+  "sequence": {
+    "participants": [
+      { "id": "louis", "label": "Louis", "actor": true, "tone": "blue" },
+      { "id": "github", "label": "GitHub", "icon": "server", "tone": "violet" },
+      { "id": "workflow", "label": "publish-packages", "icon": "terminal", "tone": "green" },
+      { "id": "minver", "label": "MinVer", "icon": "chip", "tone": "teal" },
+      { "id": "feed", "label": "GitHub Packages", "icon": "box", "tone": "amber" }
+    ],
+    "steps": [
+      { "step": "message", "from": "louis", "to": "github", "text": "git push LouisAgent.Core-0.1.0" },
+      { "step": "message", "from": "github", "to": "workflow", "text": "a tag was pushed" },
+      { "step": "message", "from": "workflow", "to": "minver", "text": "dotnet pack, the tag's project" },
+      { "step": "reply", "from": "minver", "to": "workflow", "text": "LouisAgent.Core 0.1.0" },
+      { "step": "block", "block": "loop", "label": "each LouisAgent.* dependency in the package",
+        "steps": [
+          { "step": "message", "from": "workflow", "to": "feed", "text": "is this version there?" },
+          { "step": "reply", "from": "feed", "to": "workflow", "text": "yes, or the run stops" }
+        ] },
+      { "step": "message", "from": "workflow", "to": "feed", "text": "dotnet nuget push, GITHUB_TOKEN" },
+      { "step": "reply", "from": "feed", "to": "workflow", "text": "published" }
+    ],
+    "numbered": false
+  }
+}

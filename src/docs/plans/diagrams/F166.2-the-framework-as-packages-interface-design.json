@@ -1,0 +1,25 @@
+{
+  "kind": "classes",
+  "title": "F166.2: what a package is made of",
+  "caption": "No new C# type: a package is a project's settings. The shared props say what every package carries, each package says its own tag prefix, and a rule test holds the list of 31.",
+  "classes": {
+    "types": [
+      { "id": "props", "name": "Directory.Build.props", "kind": "step 2",
+        "members": [ "IsPackable = false by default", "PackageLicenseExpression PolyForm-Noncommercial-1.0.0", "RepositoryUrl, Authors, Source Link", "MinVer, where IsPackable" ] },
+      { "id": "project", "name": "LouisAgent.Core.csproj", "kind": "one of the 31, step 2",
+        "members": [ "IsPackable = true", "MinVerTagPrefix LouisAgent.Core-", "MinVerIgnoreHeight = true" ] },
+      { "id": "rule", "name": "PackagesTests", "kind": "step 2",
+        "members": [ "the 31, and no other, are packable", "each prefix is its own name and a dash" ] },
+      { "id": "consumer", "name": "LouisAgent.Packages.IntegrationTests", "kind": "step 3",
+        "members": [ "packs the 31 into a folder", "a clean project restores them and builds an agent" ] },
+      { "id": "workflow", "name": "publish-packages.yml", "kind": "steps 4 and 5",
+        "members": [ "on a LouisAgent.*-* tag", "pack, guard the dependencies, push" ] }
+    ],
+    "relations": [
+      { "from": "project", "to": "props", "kind": "uses", "word": "imports" },
+      { "from": "rule", "to": "project", "kind": "uses", "word": "reads" },
+      { "from": "consumer", "to": "project", "kind": "uses", "word": "packs" },
+      { "from": "workflow", "to": "project", "kind": "uses", "word": "packs" }
+    ]
+  }
+}
