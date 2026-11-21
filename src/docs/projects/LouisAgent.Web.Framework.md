@@ -62,7 +62,7 @@ address under its page.
 | Build | Build your own | `/build-your-own` | An identity, a pack and a site of your own, each in a few steps, handed on to the guide that walks it through |
 | Build | Run it | `/run-it` | The Docker stacks of your own machine with the commands that start them, the dashboard that watches them, and the two sites released to Azure on every merge |
 | Decide | Cost and evals | `/cost-and-evals` | The ledger and the price table, one request worked through to rand, and the evals' places, each saying what the evals' redesign plans, with its plan linked |
-| Decide | Examples | `/examples` | Puls, the coding agent and the guide, by their identities, and what's coming |
+| Decide | Examples | `/examples` | Puls (built elsewhere, linked to its repository), the coding agent and the guide, by their identities, and what's coming |
 | Decide | Comparison | `/comparison` | louis-agent beside Microsoft Agent Framework and Semantic Kernel |
 
 `FrameworkContents.All` is that table's first three columns, as the docs' `DocsContents`, so the menu groups the pages
@@ -101,7 +101,7 @@ the repo:
 | Each stack on Run it is a compose file with the services it names, and each release file is in the repo (`RunIt`, `ComposeStack`) | `RunItPageTests` |
 | Each feature names code that exists and a doc that exists (`FrameworkFeature`) | `FeaturesPageTests` |
 | The worked request's numbers are read from the coding demo's price table and rates (`CostExample`) | `CostAndEvalsPageTests` |
-| Each example names its identity's folder on the disk (`FrameworkExample`) | `ExamplesPageTests` |
+| Each example names where its identity lives (`FrameworkExample`, its `ExampleHome`): a folder here is on the disk, and a product built elsewhere, as Puls is, is a repository of ours on GitHub, its link the proof (ADR 0100) | `ExamplesPageTests`, `ExampleHomeTests` |
 | Each of our claims names the file that proves it, and the others' pages are linked with the day they were read (`ComparisonClaim`) | `ComparisonPageTests` |
 | Every doc a page links to is a file in the repo | `DocPathsTests` |
 | No page holds a tag of HTML | `NoMarkupTests` |
