@@ -1,5 +1,28 @@
 {
   "enabledPlugins": {
     "code-simplifier@anthropic-plugin-directory": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/set-the-author.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/refuse-claude-lines.sh"
+          }
+        ]
+      }
+    ]
   }
 }
