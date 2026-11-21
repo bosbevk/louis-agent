@@ -1,0 +1,220 @@
+{
+  "kind": "classes",
+  "title": "F168 Facebook auto-answers: the interface design",
+  "caption": "Meta's JSON comes in and goes out as records; two seams, one to the agent and one to Meta, so every test runs with no network.",
+  "classes": {
+    "types": [
+      {
+        "id": "Endpoints",
+        "name": "MessengerEndpoints",
+        "kind": "static",
+        "members": [
+          "+MapLouisAgentMessenger(routes, options) (1)",
+          "-Verify(mode, token, challenge) Results<Ok, ForbidHttpResult> (1)",
+          "-Receive(HttpRequest) Results<Ok, UnauthorizedHttpResult> (2, 4)",
+          "-Delete(signed_request) Results<Ok<DeletionReply>, UnauthorizedHttpResult> (9)"
+        ]
+      },
+      {
+        "id": "Options",
+        "name": "MessengerOptions",
+        "kind": "record",
+        "members": [
+          "+VerifyToken string (1)",
+          "+AppSecret string (2)",
+          "+PageToken string (6)",
+          "+PageId string (3)",
+          "+AgentUrl Uri (5)",
+          "+FromEnvironment() MessengerOptions? (1)",
+          "+AgentKey string (5)",
+          "+TurnsPerDay int (5)"
+        ]
+      },
+      {
+        "id": "Signature",
+        "name": "WebhookSignature",
+        "kind": "static",
+        "members": [
+          "+IsValid(body byte[], header string?, secret string) bool (2)"
+        ]
+      },
+      {
+        "id": "Payload",
+        "name": "WebhookPayload",
+        "kind": "record",
+        "members": [
+          "+Object string",
+          "+Entry IReadOnlyList<WebhookEntry>",
+          "+TurnsOf(pageId) IEnumerable<IncomingTurn> (3)"
+        ]
+      },
+      {
+        "id": "Event",
+        "name": "MessagingEvent",
+        "kind": "record",
+        "members": [
+          "+Sender MessengerUser",
+          "+Recipient MessengerUser",
+          "+Timestamp long",
+          "+Message IncomingMessage?",
+          "+Postback Postback? (3)"
+        ]
+      },
+      {
+        "id": "Turn",
+        "name": "IncomingTurn",
+        "kind": "record",
+        "members": [
+          "+Psid string",
+          "+Mid string",
+          "+Text string",
+          "+Kind TurnKind (3: Ask, PersonReplied, NotText)"
+        ]
+      },
+      {
+        "id": "Worker",
+        "name": "MessengerWorker",
+        "kind": "class",
+        "members": [
+          "+ExecuteAsync(ct) (4)",
+          "-AnswerAsync(IncomingTurn, ct) (5, 6, 8)"
+        ]
+      },
+      {
+        "id": "Convs",
+        "name": "PageConversations",
+        "kind": "class",
+        "members": [
+          "+For(psid) PageConversation (5)",
+          "+Allows(psid) bool (5: the daily cap)",
+          "+Quiet(psid, until) (8)"
+        ]
+      },
+      {
+        "id": "ITurns",
+        "name": "IAgentTurns",
+        "kind": "interface",
+        "members": [
+          "+OpenAsync(ct) Task<string> (5)",
+          "+AskAsync(sessionId, text, ct) Task<AgentAnswer> (5)"
+        ]
+      },
+      {
+        "id": "TurnClient",
+        "name": "AgentTurnClient",
+        "kind": "class",
+        "members": [
+          "uses CreateSessionRequest, SendMessageRequest, SessionStreamReader (5)"
+        ]
+      },
+      {
+        "id": "Answer",
+        "name": "AgentAnswer",
+        "kind": "record",
+        "members": [
+          "+Text string",
+          "+Choices IReadOnlyList<string> (5: the Offer's labels)"
+        ]
+      },
+      {
+        "id": "ISender",
+        "name": "IMessengerSender",
+        "kind": "interface",
+        "members": [
+          "+TypingAsync(psid, ct) (6)",
+          "+SendAsync(psid, OutgoingMessage, ct) Task<SendOutcome> (6)"
+        ]
+      },
+      {
+        "id": "Graph",
+        "name": "GraphMessengerSender",
+        "kind": "class",
+        "members": [
+          "+GraphVersion const (6)",
+          "uses SendRequest, QuickReply records (6)"
+        ]
+      },
+      {
+        "id": "Reply",
+        "name": "OutgoingMessage",
+        "kind": "record",
+        "members": [
+          "+Text string",
+          "+QuickReplies IReadOnlyList<QuickReply>",
+          "+Of(AgentAnswer) IReadOnlyList<OutgoingMessage> (6: under 2,000 characters, up to 13 quick replies)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "Endpoints",
+        "to": "Signature",
+        "kind": "uses",
+        "word": "checks"
+      },
+      {
+        "from": "Endpoints",
+        "to": "Payload",
+        "kind": "uses",
+        "word": "reads"
+      },
+      {
+        "from": "Payload",
+        "to": "Event",
+        "kind": "holds"
+      },
+      {
+        "from": "Payload",
+        "to": "Turn",
+        "kind": "creates"
+      },
+      {
+        "from": "Endpoints",
+        "to": "Worker",
+        "kind": "uses",
+        "word": "queues"
+      },
+      {
+        "from": "Worker",
+        "to": "Convs",
+        "kind": "uses"
+      },
+      {
+        "from": "Worker",
+        "to": "ITurns",
+        "kind": "uses"
+      },
+      {
+        "from": "Worker",
+        "to": "ISender",
+        "kind": "uses"
+      },
+      {
+        "from": "TurnClient",
+        "to": "ITurns",
+        "kind": "implements"
+      },
+      {
+        "from": "TurnClient",
+        "to": "Answer",
+        "kind": "creates"
+      },
+      {
+        "from": "Graph",
+        "to": "ISender",
+        "kind": "implements"
+      },
+      {
+        "from": "Reply",
+        "to": "Answer",
+        "kind": "uses",
+        "word": "Of"
+      },
+      {
+        "from": "Endpoints",
+        "to": "Options",
+        "kind": "uses"
+      }
+    ]
+  }
+}

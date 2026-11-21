@@ -1,0 +1,34 @@
+{
+  "kind": "sequence",
+  "title": "F168: a question on Messenger, answered",
+  "caption": "Meta gets its 200 straight away; the answer goes back on its own call a few seconds later, inside the 24-hour window and the 30-second rule.",
+  "sequence": {
+    "participants": [
+      { "id": "person", "label": "Lindiwe on Messenger", "actor": true, "tone": "blue" },
+      { "id": "meta", "label": "Meta", "icon": "cloud", "tone": "red" },
+      { "id": "door", "label": "MessengerEndpoints", "icon": "shield", "tone": "violet" },
+      { "id": "worker", "label": "MessengerWorker", "icon": "stack", "tone": "violet" },
+      { "id": "api", "label": "/v1/sessions", "icon": "server", "tone": "violet" },
+      { "id": "guide", "label": "the guide", "icon": "chip", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "person", "to": "meta", "text": "Can I customise my website's design?" },
+      { "step": "message", "from": "meta", "to": "door", "text": "POST, X-Hub-Signature-256, entry[].messaging[]" },
+      { "step": "note", "over": ["door"], "text": "signature checked, mid not seen before" },
+      { "step": "message", "from": "door", "to": "worker", "text": "IncomingTurn(psid, mid, text) on the queue" },
+      { "step": "reply", "from": "door", "to": "meta", "text": "200 OK, in milliseconds" },
+      { "step": "message", "from": "worker", "to": "meta", "text": "sender_action typing_on" },
+      { "step": "block", "block": "opt", "label": "first message from this person", "steps": [
+        { "step": "message", "from": "worker", "to": "api", "text": "POST /v1/sessions, identity louis-agent-guide" },
+        { "step": "reply", "from": "api", "to": "worker", "text": "session_id, kept for this psid" }
+      ] },
+      { "step": "message", "from": "worker", "to": "api", "text": "POST /sessions/{id}/messages, page.focus messenger" },
+      { "step": "message", "from": "api", "to": "guide", "text": "the turn" },
+      { "step": "reply", "from": "guide", "to": "api", "text": "text, then Offer(question, choices)" },
+      { "step": "reply", "from": "api", "to": "worker", "text": "the stream, read to its end" },
+      { "step": "message", "from": "worker", "to": "meta", "text": "POST /{page}/messages, RESPONSE, text + quick replies" },
+      { "step": "reply", "from": "meta", "to": "person", "text": "Hi Lindiwe, yes. ... What kind of business is it for?" }
+    ],
+    "numbered": true
+  }
+}

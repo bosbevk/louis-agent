@@ -1,0 +1,448 @@
+<svg viewBox="-24 -24 1655 1699" width="1655" height="1699" role="img" aria-label="F168 Facebook auto-answers: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F168 Facebook auto-answers: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+[data-style="dark"] svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+[data-style="light"] svg { --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c; }
+.ground { fill: var(--ground); }
+.arrow { fill: var(--quiet); }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
+svg {
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+</style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+[data-style="dark"] svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+[data-style="light"] svg { --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95); }
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+[data-style="dark"] svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+[data-style="light"] svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.cls-cover { fill: var(--ground); }
+.cls-group { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-badge { fill: var(--quiet); }
+.cls-badge.tone-blue { fill: var(--blue-line); }
+.cls-badge.tone-green { fill: var(--green-line); }
+.cls-badge.tone-violet { fill: var(--violet-line); }
+.cls-badge.tone-teal { fill: var(--teal-line); }
+.cls-badge.tone-red { fill: var(--red-line); }
+.cls-badge.tone-amber { fill: var(--amber-line); }
+.cls-mark { fill: var(--ground); font: 700 13px var(--mono); }
+.cls-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
+.cls-member { fill: var(--text); fill-opacity: .82; font: 11px var(--mono); }
+.cls-line { fill: none; stroke-linecap: round; }
+.cls-line.holds { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.inherits { stroke: var(--violet-line); stroke-width: 2; }
+.cls-line.implements { stroke: var(--violet-line); stroke-width: 1.8; stroke-dasharray: 6 5; }
+.cls-line.creates { stroke: var(--blue-line); stroke-width: 1.6; stroke-dasharray: 2 5; }
+.cls-line.uses {
+  stroke: var(--quiet); stroke-opacity: .75; stroke-width: 1.3; stroke-dasharray: 3 6;
+}
+.cls-chip.holds { stroke: var(--violet-line); }
+.cls-chip.inherits { stroke: var(--violet-line); }
+.cls-chip.implements { stroke: var(--violet-line); }
+.cls-chip.creates { stroke: var(--blue-line); }
+.cls-chip.uses { stroke: var(--quiet); }
+.cls-word { fill: var(--text); }
+.cls-word.quiet { fill: var(--quiet); }
+.end-triangle { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.6; stroke-linejoin: round; }
+.end-triangle.tone-blue { stroke: var(--blue-line); }
+.end-triangle.tone-green { stroke: var(--green-line); }
+.end-triangle.tone-violet { stroke: var(--violet-line); }
+.end-triangle.tone-teal { stroke: var(--teal-line); }
+.end-triangle.tone-red { stroke: var(--red-line); }
+.end-triangle.tone-amber { stroke: var(--amber-line); }
+.end-diamond { fill: var(--quiet); }
+.end-diamond.tone-blue { fill: var(--blue-line); }
+.end-diamond.tone-green { fill: var(--green-line); }
+.end-diamond.tone-violet { fill: var(--violet-line); }
+.end-diamond.tone-teal { fill: var(--teal-line); }
+.end-diamond.tone-red { fill: var(--red-line); }
+.end-diamond.tone-amber { fill: var(--amber-line); }
+.end-open {
+  fill: none; stroke: var(--quiet); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.end-open.tone-blue { stroke: var(--blue-line); }
+.end-open.tone-green { stroke: var(--green-line); }
+.end-open.tone-violet { stroke: var(--violet-line); }
+.end-open.tone-teal { stroke: var(--teal-line); }
+.end-open.tone-red { stroke: var(--red-line); }
+.end-open.tone-amber { stroke: var(--amber-line); }
+.cls-key-mark { fill: none; stroke: var(--quiet); stroke-width: 1; stroke-opacity: .6; }
+.cls-key-letter { fill: var(--text); font: 700 11px var(--mono); }.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.2em; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-open" d="M 1 1 L 9 5 L 1 9" />
+    </marker>
+    <marker id="triangle-violet" viewBox="0 0 14 12" refX="13" refY="6" markerWidth="14" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-triangle tone-violet" d="M 1 1 L 13 6 L 1 11 z" />
+    </marker>
+    <marker id="diamond-violet" viewBox="0 0 14 10" refX="14" refY="5" markerWidth="14" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="end-diamond tone-violet" d="M 0 5 L 7 1 L 14 5 L 7 9 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1655" height="1699" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a827.5 190 0 1 0 1655 0a827.5 190 0 1 0 -1655 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F168 Facebook auto-answers: the interface design</text>
+    <text class="pic-group" x="1591" y="14" text-anchor="end">Class diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="1607" height="1" rx="0" />
+    <g class="cls-drawing" transform="translate(0 44)">
+      <path class="cls-line uses" d="M427 309L619 309" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M427 309L499 309Q523 309 523 333L523 497Q523 521 547 521L619 521" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M427 309L499 309Q523 309 523 333L523 709Q523 733 547 733L619 733" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1046 733L1166 733" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1046 733L1070 733Q1094 733 1094 757L1094 903Q1094 927 1118 927L1166 927" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M1046 733L1070 733Q1094 733 1094 757L1094 1124Q1094 1148 1118 1148L1166 1148" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M427 1157L619 1157" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M427 309L499 309Q523 309 523 285L523 121Q523 97 547 97L619 97" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M1046 521L1166 521" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M1046 521L1166 521" />
+      <path class="cls-line creates" d="M427 945L499 945Q523 945 523 969L523 1115Q523 1139 547 1139L619 1139" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M427 945L499 945Q523 945 523 969L523 1115Q523 1139 547 1139L619 1139" />
+      <path class="cls-line implements" d="M427 945L619 945L1046 945L1166 945" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M427 1369L619 1369L1046 1369L1070 1369Q1094 1369 1094 1345L1094 1190Q1094 1166 1118 1166L1166 1166" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M1046 521L1070 521Q1094 521 1094 497L1094 333Q1094 309 1118 309L1166 309" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1046 521L1070 521Q1094 521 1094 497L1094 333Q1094 309 1118 309L1166 309" />
+      <rect class="pic-pill cls-chip uses" x="546" y="300" width="50" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="571" y="312" text-anchor="middle">checks</text>
+      <rect class="pic-pill cls-chip uses" x="549.5" y="512" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="571" y="524" text-anchor="middle">reads</text>
+      <rect class="pic-pill cls-chip holds" x="1108.5" y="300" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1130" y="312" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="1101.5" y="512" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1130" y="524" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="546" y="724" width="50" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="571" y="736" text-anchor="middle">queues</text>
+      <rect class="pic-pill cls-chip uses" x="1052" y="724" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="1070" y="736" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip implements" x="532" y="936" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="571" y="948" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip creates" x="542.5" y="1130" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="571" y="1142" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip implements" x="436" y="1360" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="475" y="1372" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="464" y="1148" width="22" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="475" y="1160" text-anchor="middle">Of</text>
+      <rect class="pic-pill cls-chip uses" x="553" y="88" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="571" y="100" text-anchor="middle">uses</text>
+      <rect class="cls-cover" x="0" y="219" width="427" height="180" rx="14" />
+      <rect class="mrq-glass" x="0" y="219" width="427" height="180" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="237" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="255.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="52" y="247" text-anchor="start">MessengerEndpoints</text>
+      <text class="pic-note" x="52" y="263" text-anchor="start">static</text>
+      <path class="cls-divide" d="M14 283H413" />
+      <text class="cls-member" x="14" y="301" text-anchor="start">MapLouisAgentMessenger(routes, options) (1)</text>
+      <text class="cls-member" x="14" y="315" text-anchor="start">-Verify(mode, token, challenge) Results&lt;Ok,</text>
+      <text class="cls-member" x="14" y="329" text-anchor="start">  ForbidHttpResult&gt; (1)</text>
+      <text class="cls-member" x="14" y="343" text-anchor="start">-Receive(HttpRequest) Results&lt;Ok, UnauthorizedHttpResult&gt;</text>
+      <text class="cls-member" x="14" y="357" text-anchor="start">  (2, 4)</text>
+      <text class="cls-member" x="14" y="371" text-anchor="start">-Delete(signed_request) Results&lt;Ok&lt;DeletionReply&gt;,</text>
+      <text class="cls-member" x="14" y="385" text-anchor="start">  UnauthorizedHttpResult&gt; (9)</text>
+      <rect class="cls-cover" x="0" y="890" width="427" height="110" rx="14" />
+      <rect class="mrq-glass" x="0" y="890" width="427" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="908" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="926.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="918" text-anchor="start">AgentTurnClient</text>
+      <text class="pic-note" x="52" y="934" text-anchor="start">class</text>
+      <path class="cls-divide" d="M14 954H413" />
+      <text class="cls-member" x="14" y="972" text-anchor="start">uses CreateSessionRequest, SendMessageRequest,</text>
+      <text class="cls-member" x="14" y="986" text-anchor="start">  SessionStreamReader (5)</text>
+      <rect class="cls-cover" x="0" y="1088" width="427" height="138" rx="14" />
+      <rect class="mrq-glass" x="0" y="1088" width="427" height="138" rx="14" />
+      <rect class="mrq-edge" x="24" y="1087.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="14" y="1106" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="1124.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="52" y="1116" text-anchor="start">OutgoingMessage</text>
+      <text class="pic-note" x="52" y="1132" text-anchor="start">record</text>
+      <path class="cls-divide" d="M14 1152H413" />
+      <text class="cls-member" x="14" y="1170" text-anchor="start">Text string</text>
+      <text class="cls-member" x="14" y="1184" text-anchor="start">QuickReplies IReadOnlyList&lt;QuickReply&gt;</text>
+      <text class="cls-member" x="14" y="1198" text-anchor="start">Of(AgentAnswer) IReadOnlyList&lt;OutgoingMessage&gt; (6: under</text>
+      <text class="cls-member" x="14" y="1212" text-anchor="start">  2,000 characters, up to 13 quick replies)</text>
+      <rect class="cls-cover" x="0" y="1314" width="427" height="110" rx="14" />
+      <rect class="mrq-glass" x="0" y="1314" width="427" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="1332" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="1350.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="1342" text-anchor="start">GraphMessengerSender</text>
+      <text class="pic-note" x="52" y="1358" text-anchor="start">class</text>
+      <path class="cls-divide" d="M14 1378H413" />
+      <text class="cls-member" x="14" y="1396" text-anchor="start">GraphVersion const (6)</text>
+      <text class="cls-member" x="14" y="1410" text-anchor="start">uses SendRequest, QuickReply records (6)</text>
+      <rect class="cls-cover" x="619" y="0" width="427" height="194" rx="14" />
+      <rect class="mrq-glass" x="619" y="0" width="427" height="194" rx="14" />
+      <rect class="mrq-edge" x="643" y="-0.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="633" y="18" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="647" y="36.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="671" y="28" text-anchor="start">MessengerOptions</text>
+      <text class="pic-note" x="671" y="44" text-anchor="start">record</text>
+      <path class="cls-divide" d="M633 64H1032" />
+      <text class="cls-member" x="633" y="82" text-anchor="start">VerifyToken string (1)</text>
+      <text class="cls-member" x="633" y="96" text-anchor="start">AppSecret string (2)</text>
+      <text class="cls-member" x="633" y="110" text-anchor="start">PageToken string (6)</text>
+      <text class="cls-member" x="633" y="124" text-anchor="start">PageId string (3)</text>
+      <text class="cls-member" x="633" y="138" text-anchor="start">AgentUrl Uri (5)</text>
+      <text class="cls-member" x="633" y="152" text-anchor="start">FromEnvironment() MessengerOptions? (1)</text>
+      <text class="cls-member" x="633" y="166" text-anchor="start">AgentKey string (5)</text>
+      <text class="cls-member" x="633" y="180" text-anchor="start">TurnsPerDay int (5)</text>
+      <rect class="cls-cover" x="619" y="254" width="427" height="110" rx="14" />
+      <rect class="mrq-glass" x="619" y="254" width="427" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="633" y="272" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="647" y="290.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="671" y="282" text-anchor="start">WebhookSignature</text>
+      <text class="pic-note" x="671" y="298" text-anchor="start">static</text>
+      <path class="cls-divide" d="M633 318H1032" />
+      <text class="cls-member" x="633" y="336" text-anchor="start">IsValid(body byte[], header string?, secret string) bool</text>
+      <text class="cls-member" x="633" y="350" text-anchor="start">  (2)</text>
+      <rect class="cls-cover" x="619" y="459" width="427" height="124" rx="14" />
+      <rect class="mrq-glass" x="619" y="459" width="427" height="124" rx="14" />
+      <rect class="mrq-edge" x="643" y="458.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="633" y="477" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="647" y="495.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="671" y="487" text-anchor="start">WebhookPayload</text>
+      <text class="pic-note" x="671" y="503" text-anchor="start">record</text>
+      <path class="cls-divide" d="M633 523H1032" />
+      <text class="cls-member" x="633" y="541" text-anchor="start">Object string</text>
+      <text class="cls-member" x="633" y="555" text-anchor="start">Entry IReadOnlyList&lt;WebhookEntry&gt;</text>
+      <text class="cls-member" x="633" y="569" text-anchor="start">TurnsOf(pageId) IEnumerable&lt;IncomingTurn&gt; (3)</text>
+      <rect class="cls-cover" x="619" y="678" width="427" height="110" rx="14" />
+      <rect class="mrq-glass" x="619" y="678" width="427" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="633" y="696" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="647" y="714.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="671" y="706" text-anchor="start">MessengerWorker</text>
+      <text class="pic-note" x="671" y="722" text-anchor="start">class</text>
+      <path class="cls-divide" d="M633 742H1032" />
+      <text class="cls-member" x="633" y="760" text-anchor="start">ExecuteAsync(ct) (4)</text>
+      <text class="cls-member" x="633" y="774" text-anchor="start">-AnswerAsync(IncomingTurn, ct) (5, 6, 8)</text>
+      <rect class="cls-cover" x="619" y="1102" width="427" height="110" rx="14" />
+      <rect class="mrq-glass" x="619" y="1102" width="427" height="110" rx="14" />
+      <rect class="mrq-edge" x="643" y="1101.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="633" y="1120" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="647" y="1138.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="671" y="1130" text-anchor="start">AgentAnswer</text>
+      <text class="pic-note" x="671" y="1146" text-anchor="start">record</text>
+      <path class="cls-divide" d="M633 1166H1032" />
+      <text class="cls-member" x="633" y="1184" text-anchor="start">Text string</text>
+      <text class="cls-member" x="633" y="1198" text-anchor="start">Choices IReadOnlyList&lt;string&gt; (5: the Offer's labels)</text>
+      <rect class="cls-cover" x="1166" y="233" width="441" height="152" rx="14" />
+      <rect class="mrq-glass" x="1166" y="233" width="441" height="152" rx="14" />
+      <rect class="mrq-edge" x="1190" y="232.5" width="393" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1180" y="251" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1194" y="269.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="1218" y="261" text-anchor="start">MessagingEvent</text>
+      <text class="pic-note" x="1218" y="277" text-anchor="start">record</text>
+      <path class="cls-divide" d="M1180 297H1593" />
+      <text class="cls-member" x="1180" y="315" text-anchor="start">Sender MessengerUser</text>
+      <text class="cls-member" x="1180" y="329" text-anchor="start">Recipient MessengerUser</text>
+      <text class="cls-member" x="1180" y="343" text-anchor="start">Timestamp long</text>
+      <text class="cls-member" x="1180" y="357" text-anchor="start">Message IncomingMessage?</text>
+      <text class="cls-member" x="1180" y="371" text-anchor="start">Postback Postback? (3)</text>
+      <rect class="cls-cover" x="1166" y="452" width="441" height="138" rx="14" />
+      <rect class="mrq-glass" x="1166" y="452" width="441" height="138" rx="14" />
+      <rect class="mrq-edge" x="1190" y="451.5" width="393" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1180" y="470" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1194" y="488.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="1218" y="480" text-anchor="start">IncomingTurn</text>
+      <text class="pic-note" x="1218" y="496" text-anchor="start">record</text>
+      <path class="cls-divide" d="M1180 516H1593" />
+      <text class="cls-member" x="1180" y="534" text-anchor="start">Psid string</text>
+      <text class="cls-member" x="1180" y="548" text-anchor="start">Mid string</text>
+      <text class="cls-member" x="1180" y="562" text-anchor="start">Text string</text>
+      <text class="cls-member" x="1180" y="576" text-anchor="start">Kind TurnKind (3: Ask, PersonReplied, NotText)</text>
+      <rect class="cls-cover" x="1166" y="671" width="441" height="124" rx="14" />
+      <rect class="mrq-glass" x="1166" y="671" width="441" height="124" rx="14" />
+      <rect class="cls-badge tone-green" x="1180" y="689" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1194" y="707.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1218" y="699" text-anchor="start">PageConversations</text>
+      <text class="pic-note" x="1218" y="715" text-anchor="start">class</text>
+      <path class="cls-divide" d="M1180 735H1593" />
+      <text class="cls-member" x="1180" y="753" text-anchor="start">For(psid) PageConversation (5)</text>
+      <text class="cls-member" x="1180" y="767" text-anchor="start">Allows(psid) bool (5: the daily cap)</text>
+      <text class="cls-member" x="1180" y="781" text-anchor="start">Quiet(psid, until) (8)</text>
+      <rect class="cls-cover" x="1166" y="890" width="441" height="110" rx="14" />
+      <rect class="mrq-glass" x="1166" y="890" width="441" height="110" rx="14" />
+      <rect class="mrq-edge" x="1190" y="889.5" width="393" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1180" y="908" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1194" y="926.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="1218" y="918" text-anchor="start">IAgentTurns</text>
+      <text class="pic-note" x="1218" y="934" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M1180 954H1593" />
+      <text class="cls-member" x="1180" y="972" text-anchor="start">OpenAsync(ct) Task&lt;string&gt; (5)</text>
+      <text class="cls-member" x="1180" y="986" text-anchor="start">AskAsync(sessionId, text, ct) Task&lt;AgentAnswer&gt; (5)</text>
+      <rect class="cls-cover" x="1166" y="1102" width="441" height="110" rx="14" />
+      <rect class="mrq-glass" x="1166" y="1102" width="441" height="110" rx="14" />
+      <rect class="mrq-edge" x="1190" y="1101.5" width="393" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1180" y="1120" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1194" y="1138.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="1218" y="1130" text-anchor="start">IMessengerSender</text>
+      <text class="pic-note" x="1218" y="1146" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M1180 1166H1593" />
+      <text class="cls-member" x="1180" y="1184" text-anchor="start">TypingAsync(psid, ct) (6)</text>
+      <text class="cls-member" x="1180" y="1198" text-anchor="start">SendAsync(psid, OutgoingMessage, ct) Task&lt;SendOutcome&gt; (6)</text>
+    </g>
+    <g class="cls-legend" transform="translate(0 1536)">
+      <rect class="mrq-rule" x="0" y="0" width="1607" height="1" rx="0" />
+      <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
+      <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
+      <rect class="cls-badge tone-teal" x="137.2" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="165.2" y="52.5" text-anchor="start">contracts and state</text>
+      <rect class="cls-key-mark" x="320.6" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="330.6" y="52" text-anchor="middle">I</text>
+      <text class="pic-means" x="350.6" y="52.5" text-anchor="start">an interface</text>
+      <rect class="cls-key-mark" x="459.8" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="469.8" y="52" text-anchor="middle">R</text>
+      <text class="pic-means" x="489.8" y="52.5" text-anchor="start">a record</text>
+      <rect class="cls-key-mark" x="572.6" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="582.6" y="52" text-anchor="middle">S</text>
+      <text class="pic-means" x="602.6" y="52.5" text-anchor="start">static</text>
+      <rect class="cls-key-mark" x="672.2" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="682.2" y="52" text-anchor="middle">C</text>
+      <text class="pic-means" x="702.2" y="52.5" text-anchor="start">a class</text>
+      <path class="cls-line holds" d="M778.4 48H828.4" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <text class="pic-means" x="838.4" y="52.5" text-anchor="start">holds</text>
+      <path class="cls-line implements" d="M901.4 48H951.4" marker-end="url(#triangle-violet)" />
+      <text class="pic-means" x="961.4" y="52.5" text-anchor="start">implements</text>
+      <path class="cls-line creates" d="M1057.4 48H1107.4" marker-end="url(#arrow-blue)" />
+      <text class="pic-means" x="1117.4" y="52.5" text-anchor="start">creates</text>
+      <path class="cls-line uses" d="M1193.6 48H1243.6" marker-end="url(#open)" />
+      <text class="pic-means" x="1253.6" y="52.5" text-anchor="start">uses</text>
+    </g>
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="1591" y="1558" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+    </g>
+  </g>
+  <rect class="notebar" x="0" y="1614" width="1607" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1624) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1636">
+    <tspan class="note-rest">Meta's JSON comes in and goes out as records; two seams, one to the agent and one to Meta, so every test runs with no network.</tspan>
+  </text>
+</svg>

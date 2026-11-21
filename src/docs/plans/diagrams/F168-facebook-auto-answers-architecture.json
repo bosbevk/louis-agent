@@ -1,0 +1,165 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F168 Facebook auto-answers: the architecture",
+  "caption": "Meta calls one new door on louis-agent.dev's host; the Messenger library answers at once, asks the guide through the same sessions API the widget uses, and sends the answer back through Meta's Send API.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "person",
+        "label": "Someone on Facebook\nwrites to the Page",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "meta",
+        "label": "Meta's Messenger Platform\nwebhooks + Send API",
+        "icon": "cloud",
+        "tone": "red"
+      },
+      {
+        "id": "inbox",
+        "label": "Louis in the Page's inbox\n(Meta Business Suite)",
+        "icon": "user",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "door",
+        "label": "/messenger/webhook\nGET handshake (1), POST signed (2)",
+        "icon": "shield",
+        "tone": "violet",
+        "group": "messenger"
+      },
+      {
+        "id": "queue",
+        "label": "the inbox queue\nanswers 200 at once (4)",
+        "icon": "stack",
+        "tone": "violet",
+        "group": "messenger"
+      },
+      {
+        "id": "talk",
+        "label": "PageConversations\none session per person, a daily cap (5),\nsteps back (8)",
+        "icon": "message",
+        "tone": "violet",
+        "group": "messenger"
+      },
+      {
+        "id": "send",
+        "label": "GraphMessengerSender\ntyping, text, quick replies (6)",
+        "icon": "exchange",
+        "tone": "violet",
+        "group": "messenger"
+      },
+      {
+        "id": "del",
+        "label": "/messenger/deletion\nMeta's data-deletion callback (9)",
+        "icon": "shield",
+        "tone": "violet",
+        "group": "messenger"
+      },
+      {
+        "id": "api",
+        "label": "/v1/sessions\nthe one agent API (unchanged)",
+        "icon": "server",
+        "tone": "violet",
+        "group": "host"
+      },
+      {
+        "id": "guide",
+        "label": "the guide, Orbi\n+ focus-messenger skill (7)",
+        "icon": "chip",
+        "tone": "green",
+        "group": "host"
+      },
+      {
+        "id": "packs",
+        "label": "docs, leads, site packs\n(unchanged)",
+        "icon": "box",
+        "tone": "green",
+        "group": "host"
+      },
+      {
+        "id": "vault",
+        "label": "Key Vault\napp secret, Page token, agent key (11)",
+        "icon": "database",
+        "tone": "teal",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "person",
+        "to": "meta",
+        "word": "a message"
+      },
+      {
+        "from": "meta",
+        "to": "door",
+        "word": "webhook"
+      },
+      {
+        "from": "meta",
+        "to": "del",
+        "style": "dashed",
+        "word": "delete my data"
+      },
+      {
+        "from": "door",
+        "to": "queue"
+      },
+      {
+        "from": "queue",
+        "to": "talk"
+      },
+      {
+        "from": "talk",
+        "to": "api",
+        "word": "HTTP, its own key"
+      },
+      {
+        "from": "api",
+        "to": "guide"
+      },
+      {
+        "from": "guide",
+        "to": "packs"
+      },
+      {
+        "from": "talk",
+        "to": "send",
+        "word": "the answer"
+      },
+      {
+        "from": "send",
+        "to": "meta",
+        "word": "Send API"
+      },
+      {
+        "from": "inbox",
+        "to": "meta",
+        "style": "dashed",
+        "word": "takes over"
+      },
+      {
+        "from": "vault",
+        "to": "door",
+        "style": "dashed",
+        "word": "settings"
+      }
+    ],
+    "groups": [
+      {
+        "id": "messenger",
+        "label": "louis-agent.api.messenger (new, framework)"
+      },
+      {
+        "id": "host",
+        "label": "LouisAgent.SiteApi (maps the library)"
+      }
+    ],
+    "direction": "down"
+  }
+}

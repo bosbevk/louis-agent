@@ -46,6 +46,7 @@ Two rules follow from the last row.
 | Skill | Its job |
 |---|---|
 | `plan-a-feature` | A plan is written, changed or finished |
+| `review-a-plan` | A plan is reviewed, proofread or checked for what it misses |
 | `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
 | `do-a-step` | A step starts |
 | `finish-a-step` | A step's test passes, and it is to be shown and committed |
@@ -61,6 +62,7 @@ Two rules follow from the last row.
 | `write-the-copy` | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) |
 | `write-the-docs` | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) |
 | `write-the-framework` | A framework doc or page is checked against the code, or a framework page changes (the framework writer) |
+| `answer-a-message` | A customer or a prospect sent a message, and a reply is drafted |
 | `write-a-skill` | A skill is written or changed |
 
 ## Changing an instruction

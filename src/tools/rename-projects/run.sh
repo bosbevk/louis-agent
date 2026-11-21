@@ -16,6 +16,9 @@
 #   git grep -z -l -F '\nlouis-agent.' -- . ':!src/tools/rename-projects' ':!src/docs/plans/*F167-*' \
 #       | perl src/tools/rename-projects/rename.pl src/tools/rename-projects/names.tsv write \
 #       > src/tools/rename-projects/report-escapes.txt
+#
+# A third, before the pull request: main had gained files written with the old names (a skill and F168's plan), so
+# the same rule ran over the files main brought in, its report in report-main.txt.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 here=src/tools/rename-projects

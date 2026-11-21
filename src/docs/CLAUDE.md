@@ -109,6 +109,7 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | Job | Skill |
 |---|---|
 | A plan is written, changed or finished | `/plan-a-feature` |
+| A plan is reviewed, proofread or checked for what it misses | `/review-a-plan` |
 | A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
 | A step starts | `/do-a-step` |
 | A step's test passes, and it is to be shown and committed | `/finish-a-step` |
@@ -124,6 +125,7 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) | `/write-the-copy` |
 | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) | `/write-the-docs` |
 | A framework doc or page is checked against the code, or a framework page changes (the framework writer) | `/write-the-framework` |
+| A customer or a prospect sent a message, on Facebook, WhatsApp, a comment or a mail, and a reply is drafted | `/answer-a-message` |
 | A skill is written or changed | `/write-a-skill` |
 
 ## Where the rest is
