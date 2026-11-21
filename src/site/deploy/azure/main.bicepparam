@@ -26,3 +26,7 @@ param vaultAdminAssignmentName = '3a2229ca-c39f-4001-84ed-16d24b6ccc6c'
 param releasePrincipalId = '293d31f9-e8a6-408f-ab09-7a01a9c31e16'
 param releaseVaultReadAssignmentName = '3e128fb0-5a4f-42d7-b3ce-87d85d4fdd0a'
 param releaseGroupAssignmentName = 'd16c7301-259f-4696-b0b1-31fe8f7fc142'
+
+param storageName = 'pulsstorage'
+param shareName = 'louis-agent-workspace'
+param shareQuotaGiB = 5

@@ -54,6 +54,15 @@ param releaseVaultReadAssignmentName string
 @description('The name of the release identity\'s right to update the apps in the resource group.')
 param releaseGroupAssignmentName string
 
+@description('The storage account that holds the apps\' file share.')
+param storageName string
+
+@description('The file share the apps keep their logs and saved content on, a folder each.')
+param shareName string
+
+@description('The share\'s size, in GiB.')
+param shareQuotaGiB int
+
 // Azure's own ids for the roles the file gives, the same in every subscription.
 var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var vaultSecretsUserRole = '4633458b-17de-408a-b874-0445c86b69e6'
@@ -194,6 +203,64 @@ module releaseGroupRight 'br/public:avm/res/authorization/role-assignment/rg-sco
     principalId: releasePrincipalId
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: contributorRole
+    enableTelemetry: false
+  }
+}
+
+// The storage account and the apps' share. The environment mounts the share with the account's key, so key access
+// stays on and no address is denied; the module's defaults would deny every address, turn on infrastructure
+// encryption (which can't change on an account that stands) and replicate to a second region.
+module storage 'br/public:avm/res/storage/storage-account:0.33.2' = {
+  name: 'storage'
+  params: {
+    name: storageName
+    location: location
+    kind: 'StorageV2'
+    skuName: 'Standard_LRS'
+    accessTier: 'Hot'
+    allowSharedKeyAccess: true
+    defaultToOAuthAuthentication: false
+    requireInfrastructureEncryption: false
+    allowBlobPublicAccess: false
+    allowCrossTenantReplication: false
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: true
+    dnsEndpointType: 'Standard'
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
+    blobServices: {
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
+      deleteRetentionPolicyAllowPermanentDelete: false
+    }
+    fileServices: {
+      // The share's traffic stays encrypted in transit, as it is today; left out, the setting would be cleared.
+      protocolSettings: {
+        smb: {
+          // The module's types are an older API version's, which doesn't list this setting; Azure takes it.
+          #disable-next-line BCP037
+          encryptionInTransit: {
+            required: true
+          }
+        }
+      }
+      shareDeleteRetentionPolicy: {
+        enabled: false
+      }
+      shares: [
+        {
+          name: shareName
+          shareQuota: shareQuotaGiB
+          accessTier: 'TransactionOptimized'
+          enabledProtocols: 'SMB'
+        }
+      ]
+    }
     enableTelemetry: false
   }
 }

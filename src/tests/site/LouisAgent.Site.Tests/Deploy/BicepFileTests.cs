@@ -106,4 +106,12 @@ public class BicepFileTests
     [Test]
     public void TheRegistry_LetsTheEnvironmentPull() =>
         Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("networkRuleSetDefaultAction: 'Allow'"));
+
+    /// <summary>
+    /// The storage account keeps its key access: the environment mounts the apps' share with the account's key, so
+    /// without it the sites could no longer write their logs.
+    /// </summary>
+    [Test]
+    public void TheStorage_KeepsTheKeyTheShareIsMountedWith() =>
+        Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("allowSharedKeyAccess: true"));
 }
