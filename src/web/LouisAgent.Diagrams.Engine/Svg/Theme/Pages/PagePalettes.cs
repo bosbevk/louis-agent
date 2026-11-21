@@ -26,13 +26,19 @@ internal static class PagePalettes
     /// <summary>A card's fill on a light page, in both themes (Louis: "light is smoke white").</summary>
     private const string SmokeWhite = "--pic-body: #f5f5f5;";
 
-    /// <summary>A flat card on a light page: smoke white, and flat's firm grey line.</summary>
-    private const string FlatCardsLight =
-        SmokeWhite + " --pic-hair: #a7aaba; --mrq-hair: #a7aaba; --pic-march: rgba(255, 255, 255, .95);";
+    /// <summary>A flat card on a light page: smoke white, and flat's own line, the one its palette draws.</summary>
+    private static string FlatCardsLight =>
+        SmokeWhite + $" {CardLines(SvgTheme.Flat.Light)} --pic-march: rgba(255, 255, 255, .95);";
 
-    /// <summary>A flat card on a dark page: flat's near-black pane, and its dark grey line.</summary>
-    private const string FlatCardsDark =
-        "--pic-body: #141418; --pic-hair: #2b2b33; --mrq-hair: #2b2b33; --pic-march: rgba(255, 255, 255, .75);";
+    /// <summary>A flat card on a dark page: flat's near-black pane, and flat's own line, as in the light.</summary>
+    private static string FlatCardsDark =>
+        $"--pic-body: #141418; {CardLines(SvgTheme.Flat.Dark)} --pic-march: rgba(255, 255, 255, .75);";
+
+    /// <summary>
+    /// A card's two lines take the palette's own line, so a card never drifts from the picture it sits in (F169.1).
+    /// </summary>
+    private static string CardLines(SvgPalette palette) =>
+        $"--pic-hair: {palette.Line}; --mrq-hair: {palette.Line};";
 
     /// <summary>
     /// A card on a page, in every theme: glass's sheened card and the quiet card's faint wash are both the card's own
@@ -43,7 +49,9 @@ internal static class PagePalettes
         ":scope .mrq-glass, :scope .crd-quiet " +
         "{ fill: var(--pic-body); fill-opacity: 1; stroke: var(--pic-hair); stroke-opacity: 1; }";
 
-    /// <summary>The rules a page's copy of a picture carries: each theme's colours, light and dark, and its cards.</summary>
+    /// <summary>
+    /// The rules a page's copy of a picture carries: each theme's colours, light and dark, and its cards.
+    /// </summary>
     public static string Rules =>
         PageScheme.ThemeRules(PageScheme.Flat,
             SvgStyle.Variables(SvgTheme.Flat.Light) + " " + FlatCardsLight + " " + Transparent,

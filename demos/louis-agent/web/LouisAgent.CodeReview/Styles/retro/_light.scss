@@ -158,6 +158,11 @@
     --web-violet-3: #155a32;
     --web-violet-4: #10261a;
 
+    // A code word: the chip a chat has always drawn it in, with no line (F169.1).
+    --web-code-word-fill: var(--bs-primary-bg-subtle);
+    --web-code-word-ink: var(--bs-primary-text-emphasis);
+    --web-code-word-edge: 0 solid transparent;
+
     // Retro lays no drawing on any piece.
     @include theme-art.none();
 

@@ -717,7 +717,8 @@ it trims the empty ground round the drawing.
 
 **A page's copy wears the page's theme too** (`Svg/Theme/Pages/PagePalettes`). Our pages say their theme on their
 `<html>`, `data-theme="flat"` or `"glass"`, beside their style. The page's copy carries a palette for each theme,
-light and dark: on a flat page flat's own, solid grey panels with flat's firmer line, and on a glass page the
+light and dark: on a flat page flat's own, solid grey panels with flat's firmer line (a card's hairlines are read
+from the palette's own line, so they are the line flat's sheet draws round a card on the page), and on a glass page the
 engine's own palette, made for that look. On a page the picture's own background is transparent in every theme, and
 only the cards are filled, so every card can be seen. Each rule names the theme and the style together, so it wins
 over the style alone. `PageScheme` names the theme's attribute and its two words, as it names the style's. These

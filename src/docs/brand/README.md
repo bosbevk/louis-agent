@@ -66,7 +66,7 @@ disc and the main button. Both themes set the five as the framework's violet nam
 | 0 | `#e2dfff` | The lightest touch: a glint, a soft ring |
 | 1 | `#9282ff` | Hover on the main button; the purple on a dark page |
 | 2 | `#6b4dff` | The mark's disc, the main button, what is the brand's to press |
-| 3 | `#3a22c4` | Pressed, and the deep side of the ball |
+| 3 | `#3a22c4` | Pressed, the deep side of the ball, and the purple on glass's light page |
 | 4 | `#110a40` | The darkest: shade inside the ball |
 
 Everything else is the page's own: black or near black with white words in the dark, a pale page with black

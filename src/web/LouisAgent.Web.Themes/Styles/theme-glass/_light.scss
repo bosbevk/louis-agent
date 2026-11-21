@@ -23,7 +23,7 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     @include colours.both(bs-warning, #8a6200);
     @include colours.both(bs-info, #2563c9);
     @include colours.both(web-ok, #1d7a4c);
-    @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
+    @include colours.both(web-purple, #3a22c4);          // the purple accent, the brand's deep violet, to read on the violet page
     @include colours.both(bs-body-bg, $page);            // the page
     @include colours.both(bs-secondary-bg, #ffffff);     // a panel
     @include colours.both(bs-tertiary-bg, #ffffff);      // the menu
@@ -182,6 +182,11 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-violet-2: #6b4dff;
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
+
+    // A code word: the brand's pale violet chip with its deep violet words, as a chat draws it, with no line (F169.1).
+    --web-code-word-fill: var(--bs-primary-bg-subtle);
+    --web-code-word-ink: var(--bs-primary-text-emphasis);
+    --web-code-word-edge: 0 solid transparent;
 
     // Each part's drawing, and each of its states, served by this project (F151.4), at their version, raised whenever
     // a drawing or the silk changes so no browser keeps the old one (FX189).
