@@ -185,6 +185,14 @@
     --web-code-word-ink: var(--bs-primary-text-emphasis);
     --web-code-word-edge: 0 solid transparent;
 
+    // A step's number: the main button's drawing at rest, as a circle, "a purple glass circle" (F169.2).
+    --web-step-fill: var(--web-art-press-rest) center / 100% 100% no-repeat, var(--web-press-fill);
+    --web-step-ink: var(--web-press-ink);
+    --web-step-edge: 0 solid transparent;
+    --web-step-shadow: var(--web-press-shadow);
+    --web-step-radius: 50%;
+    --web-step-face: var(--bs-font-sans-serif);
+
     // Each part's drawing, and each of its states, served by this project (F151.4), at their version, raised whenever
     // a drawing or the silk changes so no browser keeps the old one (FX189).
     @include theme-art.drawn(glass, dark, 1);

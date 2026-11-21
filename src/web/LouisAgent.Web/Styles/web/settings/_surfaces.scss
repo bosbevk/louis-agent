@@ -39,6 +39,8 @@
    Beside a pane's corner stand four more, by what wears them (F169.2): small, a menu's row or a label; a block, such
    as a listing of code or a card of the page turn; a window, such as the search window or the agent's panel; and a
    pill, round at its ends, such as a link or a small button.
+   A step's number (F169.2) has a fill, an ink, an edge, a shadow, a corner and a face. Today it is the main button at
+   rest, drawn as a circle, the number in the sans face: a theme may make it a label instead.
    The art is a drawing a theme may lay on a piece (F151.4), one name for each part and state, named for the
    drawing: a pane, the main button and the second, a field, a switch, the focus ring, a slider, a well, a tag, the
    live label, a switch's group, the header, the cut stone on a picked piece, and the mark three ways: as it
@@ -129,6 +131,12 @@
     --web-code-word-fill: var(--bs-primary-bg-subtle);
     --web-code-word-ink: var(--bs-primary-text-emphasis);
     --web-code-word-edge: 0 solid transparent;
+    --web-step-fill: var(--web-art-press-rest) center / 100% 100% no-repeat, var(--web-press-fill);
+    --web-step-ink: var(--web-press-ink);
+    --web-step-edge: 0 solid transparent;
+    --web-step-shadow: var(--web-press-shadow);
+    --web-step-radius: 50%;
+    --web-step-face: var(--bs-font-sans-serif);
 
     --web-art-field-focus: none;
     --web-art-field-rest: none;

@@ -50,6 +50,8 @@ public class SurfaceNamesTests
         "--web-you", "--web-agent",
         "--web-violet-0", "--web-violet-1", "--web-violet-2", "--web-violet-3", "--web-violet-4",
         "--web-code-word-fill", "--web-code-word-ink", "--web-code-word-edge",
+        "--web-step-fill", "--web-step-ink", "--web-step-edge", "--web-step-shadow", "--web-step-radius",
+        "--web-step-face",
         .. Art.Select(drawing => $"--web-art-{drawing}")
     ];
 

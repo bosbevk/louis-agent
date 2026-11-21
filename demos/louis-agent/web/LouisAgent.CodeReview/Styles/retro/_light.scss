@@ -168,6 +168,14 @@
     --web-code-word-ink: var(--bs-primary-text-emphasis);
     --web-code-word-edge: 0 solid transparent;
 
+    // A step's number: the main button at rest, as a circle, as it has always been drawn (F169.2).
+    --web-step-fill: var(--web-art-press-rest) center / 100% 100% no-repeat, var(--web-press-fill);
+    --web-step-ink: var(--web-press-ink);
+    --web-step-edge: 0 solid transparent;
+    --web-step-shadow: var(--web-press-shadow);
+    --web-step-radius: 50%;
+    --web-step-face: var(--bs-font-sans-serif);
+
     // Retro lays no drawing on any piece.
     @include theme-art.none();
 

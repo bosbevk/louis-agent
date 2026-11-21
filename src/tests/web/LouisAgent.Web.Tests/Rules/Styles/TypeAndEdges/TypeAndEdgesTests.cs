@@ -78,7 +78,9 @@ public class TypeAndEdgesTests
         return File.ReadLines(sheet).SkipWhile(line => line != opening).TakeWhile(line => line != closing);
     }
 
-    /// <summary>A line that gives a corner a number, such as <c>border-radius: 14px</c> or <c>$radius: 14px</c>.</summary>
+    /// <summary>
+    /// A line that gives a corner a number, such as <c>border-radius: 14px</c> or <c>$radius: 14px</c>.
+    /// </summary>
     private static bool WritesANumberForItsCorner(string line)
     {
         int at = line.IndexOf("radius: ", StringComparison.Ordinal);
