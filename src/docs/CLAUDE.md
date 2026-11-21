@@ -91,7 +91,7 @@ covers the stop after each step, the commit, the push, the pull request and the 
 a new package, a paid run or a design choice. Each of those goes to him on a card, and the work that doesn't
 depend on it carries on.
 
-Four more ways of working, in his words:
+Five more ways of working, in his words:
 
 - **Research first.** Louis, 2026-11-13: "do research first", and of planning, "the research also applies".
   Before an answer, a finding, a plan or a doc: read the code for what is there, and read a tool's own docs when
@@ -108,6 +108,10 @@ Four more ways of working, in his words:
   to be able to see live when you use a custom skill". The line that says what you are busy with names the skill
   as it starts ("Following write-the-copy for the hero's words"), and every reply about work ends with one line
   naming each skill it followed and what for, or "no skill" when none fit.
+- **Say where a skill fell short.** Louis, 2026-11-21: "if you execute a task and you find the skill lacking then
+  you must suugest an improvement or a new skill". A skill that was wrong, out of date or silent on the case, or
+  a job that no skill fit, is said in the reply that hands the work over: which skill, what it lacked, and the
+  change or the new skill proposed. The skill itself changes only on his word, through `/write-a-skill`.
 
 ## What is loaded with this file
 
