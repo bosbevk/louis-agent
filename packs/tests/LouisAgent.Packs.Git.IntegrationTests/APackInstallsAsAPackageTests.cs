@@ -17,13 +17,15 @@ public class APackInstallsAsAPackageTests
         string root = Directory.CreateTempSubdirectory("pack-proof-").FullName;
         try
         {
-            // The three packages, into a feed of their own.
+            // The three packages, into a feed of their own, at the 1.0.0 the app asks for: MinVer versions every package
+            // from its tags (F166.2), so the version is said here, as a release's tag would say it (FX218).
             string feed = Directory.CreateDirectory(Path.Combine(root, "feed")).FullName;
             foreach (string project in new[]
                      {
                          "src/engine/LouisAgent.Choices", "src/engine/LouisAgent.Composition", "packs/tools/LouisAgent.Packs.Git",
                      })
-                Assert.That(Run(TestPaths.RepoRoot, "pack", project, "-c", "Release", "-o", feed, "--nologo").ExitCode, Is.Zero);
+                Assert.That(Run(TestPaths.RepoRoot, "pack", project, "-c", "Release", "-o", feed, "--nologo",
+                    "-p:MinVerVersionOverride=1.0.0").ExitCode, Is.Zero);
 
             // An app that knows only the feed.
             string app = Directory.CreateDirectory(Path.Combine(root, "app")).FullName;

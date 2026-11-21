@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX218 · A default someone relied on is a contract nobody wrote down
+
+F166.2 gave every package a version from its tags. One older test packed a pack with no version at all and asked for
+1.0.0, the number .NET gives when nothing says otherwise. Once MinVer said otherwise, the pack came out as
+`0.0.0-alpha.0` and the restore failed on CI, after the merge, since the integration tests run only there. The cure
+was for the test to say the version it means when it packs. The lesson has two halves: a default that code leans on is
+a promise no file records, so changing who decides it means searching for whoever leaned; and a change to how
+everything builds runs the integration tests before it merges, not only the unit suite. Skill 18 (testing and
+shipping: the tests that leave their process are part of the change).
+
 ## FX217 · What a browser shows is not what a search engine reads
 
 The framework's site went live with the brand's mark as an SVG, and every browser tab showed it, so it looked done.
