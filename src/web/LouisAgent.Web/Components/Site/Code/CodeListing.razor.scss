@@ -17,7 +17,7 @@
 .code-ask {
     @include surface.chip();
     padding: 3px 10px;
-    border-radius: 999px;
+    border-radius: var(--web-pill-radius);
     font: inherit;
     cursor: pointer;
 }
@@ -27,7 +27,7 @@
     padding: 16px 18px;
     @include surface.panel(var(--web-code-bg));
     @include surface.lined();
-    border-radius: 10px;
+    border-radius: var(--web-block-radius);
     overflow-x: auto;
     font: 13.5px/1.6 var(--bs-font-monospace);
     color: var(--bs-body-color);

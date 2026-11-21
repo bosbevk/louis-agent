@@ -1,8 +1,13 @@
-@* A band's heading (FX125): the page's one h1 in the band at its top, an h2 in any other. The class is the site's look,
-   as the h2 a page used to write had. *@
+@* A band's heading (FX125): the page's one h1 in the band at its top, an h3 in a band that is a part of a section
+   (F169.2), an h2 in any other. The class is the site's look, as the h2 a page used to write had; a part's title
+   carries the framework's part-title before it. *@
 @if (HeadsThePage)
 {
     <h1 class="@Class">@ChildContent</h1>
+}
+else if (IsAPart)
+{
+    <h3 class="@PartClasses">@ChildContent</h3>
 }
 else
 {

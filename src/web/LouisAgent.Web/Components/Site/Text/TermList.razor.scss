@@ -1,11 +1,12 @@
 @use "web/tools/surface";
 
 /* A list of named entries (ADR 0125): one entry a row between hairlines, its names in the code face and the words'
-   strongest colour, its sentence after them in the second. */
-.terms { display: flex; flex-direction: column; max-width: 80ch; margin: 0; padding: 0; list-style: none; }
+   strongest colour, its sentence after them in the second. It reads as a list of steps does, as wide and in words as
+   large, so the two end at one edge (F169.2, Louis's pick B of the design review's finding 9). */
+.terms { display: flex; flex-direction: column; max-width: 64ch; margin: 0; padding: 0; list-style: none; }
 .terms li {
     padding: 14px 0;
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.6;
     color: var(--bs-secondary-color);
     @include surface.rule(bottom, 1px solid var(--bs-border-color));

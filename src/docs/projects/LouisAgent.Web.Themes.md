@@ -136,6 +136,17 @@ fill, its ink and its edge. Flat makes it a plain chip, the listing's grey with 
 hairline round it. Glass makes it the brand's pale violet with deep violet words and no line, the look a chat has
 always given it.
 
+A step's number, in a list of steps, is drawn from six names: its fill, its ink, its edge, its shadow, its corner
+and its face. Flat makes it a squared label, the pane's grey in a hairline with the number in the code face and the
+small corner, since flat's only ball is its mark. Glass draws it as its main button at rest, the drawing over the
+press's fill, as a circle with the number in the sans face: a purple glass circle. Code review's retro does the same
+as glass, so its steps look as they always did.
+
+Every theme sets four corners beside a card's, by what wears them, and today all three themes give them the same
+values: small 6, such as a menu's row, a code word or flat's step number; a block 10, such as a listing of code or a
+card of the page turn; a window 18, such as the search window or the agent's panel; and a pill 999, round at its
+ends, such as a doc link. A card's own corner is where the themes differ: 22 in glass and flat, 4 in retro.
+
 Glass in the light keeps the brand's deep violet, `#3a22c4`, as its purple, where flat in the light keeps the
 middle one, `#6b4dff`. Glass's light page is itself a violet wash, and the middle violet on it read at less than
 3 to 1, so a page's small topic line, written in the theme's purple, could barely be read. The deep one reads at
