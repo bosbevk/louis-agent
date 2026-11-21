@@ -75,7 +75,7 @@ public class FlatFollowsItsDesignTests
     /// only its colour changes, as the design's card does (Louis: "make sure our flat hover effects is like the
     /// design"). What floats over the page wears the same line.
     /// </summary>
-    [TestCase(SiteStyle.Dark, "#2b2b33", "#55555f")]
+    [TestCase(SiteStyle.Dark, "#404048", "#55555f")]
     [TestCase(SiteStyle.Light, "#a7aaba", "#5d6072")]
     public void APane_UnderThePointer_OnlyChangesItsLinesColour(SiteStyle style, string line, string hoverLine)
     {
@@ -86,6 +86,30 @@ public class FlatFollowsItsDesignTests
             Assert.That(Value(style, "--web-float-shadow"), Is.EqualTo($"inset 0 0 0 1px {line}"));
             Assert.That(Value(style, "--web-pane-hover-edge"), Is.EqualTo($"inset 0 0 0 1px {hoverLine}"));
             Assert.That(Value(style, "--web-chip-edge"), Is.EqualTo($"1px solid {line}"));
+        });
+    }
+
+    /// <summary>
+    /// F169.1: in the dark every line is one grey, firm enough to see on the near-black page (Louis's pick B of the
+    /// design review's finding 7, "only dark's line firms up"). Your own messages are filled with the old grey, which
+    /// is a fill and not a line, so it is left as it was on purpose.
+    /// </summary>
+    [Test]
+    public void InTheDark_EveryLine_IsTheFirmerGrey()
+    {
+        const string line = "#404048";
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Value(SiteStyle.Dark, "--bs-border-color"), Is.EqualTo(line));
+            Assert.That(Value(SiteStyle.Dark, "--web-scrollbar"), Is.EqualTo(line));
+            Assert.That(Value(SiteStyle.Dark, "--web-pane-shadow"), Is.EqualTo($"inset 0 0 0 1px {line}"));
+            Assert.That(Value(SiteStyle.Dark, "--web-float-shadow"), Is.EqualTo($"inset 0 0 0 1px {line}"));
+            Assert.That(Value(SiteStyle.Dark, "--web-veil-edge"), Is.EqualTo($"1px solid {line}"));
+            Assert.That(Value(SiteStyle.Dark, "--web-inset-edge"), Is.EqualTo($"1px solid {line}"));
+            Assert.That(Value(SiteStyle.Dark, "--web-bar-edge"), Is.EqualTo($"1px solid {line}"));
+            Assert.That(Value(SiteStyle.Dark, "--web-chip-edge"), Is.EqualTo($"1px solid {line}"));
+            Assert.That(Value(SiteStyle.Dark, "--bs-success"), Is.EqualTo("#2b2b33"));
         });
     }
 

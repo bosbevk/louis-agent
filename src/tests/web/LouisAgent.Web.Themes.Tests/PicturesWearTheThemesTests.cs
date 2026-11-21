@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Web.Components.Areas.Themes;
+using LouisAgent.Web.Testing.Styles;
 using LouisAgent.Web.Themes.Flat;
 using LouisAgent.Web.Themes.Glass;
 
@@ -24,4 +25,19 @@ public class PicturesWearTheThemesTests
         Assert.That(FlatTheme.Theme.Id, Is.EqualTo(PageScheme.Flat));
         Assert.That(GlassTheme.Theme.Id, Is.EqualTo(PageScheme.Glass));
     });
+
+    /// <summary>
+    /// F169.1: a picture on a flat page draws flat's own line, so its cards stand out from the page as much as the
+    /// page's own panes do (Louis's pick: pictures on a flat dark page take the firmer line too). The engine keeps a
+    /// copy of flat's values, and this holds the copy to the sheet.
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void APictureOnAFlatPage_DrawsFlatsOwnLine(SiteStyle style)
+    {
+        SvgPalette palette = style == SiteStyle.Dark ? SvgTheme.Flat.Dark : SvgTheme.Flat.Light;
+        string line = ThemeSheet.Values(CompiledThemes.Css(), FlatTheme.Theme, style)["--bs-border-color"];
+
+        Assert.That(palette.Line, Is.EqualTo(line));
+    }
 }

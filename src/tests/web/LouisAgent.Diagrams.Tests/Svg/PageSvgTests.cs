@@ -153,6 +153,23 @@ public class PageSvgTests
         });
     }
 
+    /// <summary>
+    /// F169.1: on a flat page a card's line is flat's own line, the firmer grey in the dark, so a picture's cards stand
+    /// out from the page as much as the page's own panes do (Louis's pick: pictures take the firmer line too).
+    /// </summary>
+    [Test]
+    public void OnAFlatPage_ACardsLine_IsFlatsOwnLine()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain("--line: #404048"), "the dark picture's own line");
+            Assert.That(page, Does.Contain("--pic-hair: #404048; --mrq-hair: #404048"), "a card's line in the dark");
+            Assert.That(page, Does.Contain("--pic-hair: #a7aaba; --mrq-hair: #a7aaba"), "a card's line in the light");
+        });
+    }
+
     /// <summary>A file names no site's theme: the docs' pictures stay byte for byte as they were.</summary>
     [Test]
     public void TheFile_WearsNoSitesTheme() =>
