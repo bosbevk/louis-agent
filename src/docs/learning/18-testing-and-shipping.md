@@ -1715,6 +1715,39 @@ them with only its own token and gets an agent's answer back.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework shipped as packages, proved from outside the
 repository before and after it is published, with a guard where a mistake would be permanent.
 
+## Puls in its own repository (F166.3, 2026-11-21)
+
+Puls left. It now lives at [github.com/bosbevk/puls](https://github.com/bosbevk/puls), with its three packs, under
+names of its own (`Puls.Identity`, `Puls.Packs.Recipes`) in the usual `src/` and `tests/`, and it reaches the framework
+only through the packages F166.2 published. Its history stays here, at the tag `puls-moved-out`, and the move was made
+by commands run once and kept in that repository as the record, the way F167's rename was: a table of 26 names, a
+script that reads Puls's files from a commit of louis-agent and writes them in the new layout, and a second that
+mended the doc links. A rerun from a later commit gave the same tree again, which is what let the move be redone each
+time the framework changed under it.
+
+The lesson is in the first run. Packed from `main` and built outside, Puls compiled, and 199 of its tests failed. Not
+one was a fault in Puls. Each was a place where the framework had quietly assumed it was in its own repository: the web
+packages carried compiled CSS but not the Sass a site forwards, four test helpers looked under `demos/` and read
+recordings and partials from louis-agent's source, the runner's package left out its stub eval's transcripts, and one
+page reader a pack needed was internal, which was why the pack kept a copy. Every one had been invisible here, because
+here every path exists. A product outside the repository is the only test that can find them, and the packages'
+integration tests now hold each one, so the next product doesn't find them again.
+
+Each fix was its own small step in this repository, tested first, released by a tag, and picked by Louis from three
+options. The same pick came four times, on the same principle: a package carries what it needs to work outside, rather
+than the product copying it. Copying was the cheaper option every time, and every time it would have left two versions
+to drift. The packaging itself taught one thing the docs were quiet on: NuGet adds an item's own folders to its
+`PackagePath`, so naming them as well doubles them. A test that opened the package caught it on the first try.
+
+What didn't go well. Twice an option was put to Louis before its premise was checked: dropping the pack's copies of the
+readers assumed all three were public, and one wasn't, so the choice had to be put again. And a full suite caught what
+the touched tests hadn't, a repeated name written as a string, more than once. Nothing was spent: no model call. The
+measure is the first CI run in `puls`: the framework restored from the feed with that repository's own token, 1,665
+unit tests and 22 integration tests on a throwaway MongoDB, all green, and the coming-soon page published from there.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework's first outside user as its truest test, with
+every assumption it finds fixed in the framework and held by a test there.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)
