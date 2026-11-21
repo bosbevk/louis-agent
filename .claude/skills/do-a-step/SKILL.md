@@ -20,6 +20,9 @@ A step is one commit with its test, small enough for Louis to review in about te
 - **The step in the plan**: what it builds, its test, and the types its namespace map names.
 - **The code the step touches**, and how the repo solved the nearest problem.
 - **The tests that will run against it.** *Which tests to run while you build*, below, says how to find them.
+- **The docs of what the step rests on, on the web.** A library call, an API, a platform's limit or a tool's flag
+  that the step uses is read in its own documentation that day, never recalled. The step's explanation says what
+  was read, with the link.
 
 ## Test first
 
@@ -56,8 +59,7 @@ suite".
   of the film's own files (`LouisAgent.FilmExport.Tests`). Before you change a shared file, search for who
   reads it, and run their tests.
 - **The full suite of unit tests runs before the pull request**, after `main` is merged into the branch, and it
-  must pass. Louis, 2026-11-13: "before doing a PR main must be merged and full suite unit tests passes". It is
-  not run while a step is built (ADR 0075).
+  must pass (`/ship-it`). It is not run while a step is built (ADR 0075).
 
 ## Look at the real thing
 

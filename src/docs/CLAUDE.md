@@ -67,7 +67,9 @@ does; *Brave mode* stays off. The tool-to-job table per Rider version is in [the
 
 Never without Louis's word, each time. His yes for one is not a yes for the next.
 
-- **A push or a merge.** He merges, unless he says "merge" (rule 7).
+- **A push or a merge.** He merges, unless he says "merge" (rule 7). A pull request that changes code merges
+  only on green checks; one that changes only docs may merge once the Docs tests pass locally (his pick,
+  2026-11-21, in `/ship-it`).
 - **A run that spends real money.** A test call of the guide or an agent is the exception: Louis, 2026-11-09, "I have
   250$ of credit do not worry about spending". Run it, and report what it cost after. Still ask before anything much
   larger, such as a long eval series.
@@ -77,11 +79,24 @@ Never without Louis's word, each time. His yes for one is not a yes for the next
 - **A commit.** Show the step first, and wait for his ok.
 - **The next step.** Stop after each one (rule 5).
 
+**Every commit is Louis's, and no line names Claude** (Louis, 2026-10-19 and 2026-11-17). The author is
+`Louis Marais <84603591+bosbevk@users.noreply.github.com>`, a merge of `main` too, and no commit or pull request
+carries a `Co-Authored-By` or any other line that names Claude. The how is in `/ship-it`, and two hooks in
+`.claude/hooks/` hold it where Claude Code runs them.
+
+**"Finish unattended" lifts the shipping stops only** (Louis's pick, 2026-11-21). For the work he named, it
+covers the stop after each step, the commit, the push, the pull request and the merge. It never covers a new ADR,
+a new package, a paid run or a design choice. Each of those goes to him on a card, and the work that doesn't
+depend on it carries on.
+
 Four more ways of working, in his words:
 
 - **Research first.** Louis, 2026-11-13: "do research first", and of planning, "the research also applies".
   Before an answer, a finding, a plan or a doc: read the code for what is there, and read a tool's own docs when
-  the work rests on it. Nothing is said from memory. What could not be confirmed is said plainly.
+  the work rests on it. Louis, 2026-11-21: "it is important that all these skills do research on the internet
+  first on the subject where needed". So a subject that lives outside the repo (a tool, a platform, a law, a
+  market, a craft) is read at its source on the web that day, and the source is named. Nothing is said from
+  memory. What could not be confirmed is said plainly.
 - **Say what you are busy with.** Louis, 2026-11-08: "i need to always see what you are busy with?". One plain line
   before every batch of work, saying what it does. He follows the work as it happens and can't tell a stall from
   thinking.
@@ -104,29 +119,29 @@ How all of Claude's instructions are laid out is in [.claude/README.md](../../.c
 
 ## Skills
 
-A skill is a procedure that loads for its job. Use the one that fits.
+A skill is a procedure that loads for its job. Use the one that fits. They are grouped by the order the work runs.
 
-| Job | Skill |
-|---|---|
-| A plan is written, changed or finished | `/plan-a-feature` |
-| A plan is reviewed, proofread or checked for what it misses | `/review-a-plan` |
-| A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
-| A step starts | `/do-a-step` |
-| A step's test passes, and it is to be shown and committed | `/finish-a-step` |
-| Something a visitor sees changed, or was deployed | `/check-a-page` |
-| Something broke, and a fix starts | `/fix-a-bug` |
-| A commit, a push or a merge | `/ship-it` |
-| A pull request is opened, or its body written | `/open-a-pull-request` |
-| The last step of a feature or a cleanup | `/finish-a-feature` |
-| A picture in the docs is added or changed | `/draw-a-diagram` |
-| A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written | `/research-the-market` |
-| A page or a section is planned, reordered or redesigned, always on our framework | `/design-a-page` |
-| A mark, a card, an image, a mockup or a palette is made or changed | `/design-a-graphic` |
-| Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) | `/write-the-copy` |
-| A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) | `/write-the-docs` |
-| A framework doc or page is checked against the code, or a framework page changes (the framework writer) | `/write-the-framework` |
-| A customer or a prospect sent a message, on Facebook, WhatsApp, a comment or a mail, and a reply is drafted | `/answer-a-message` |
-| A skill is written or changed | `/write-a-skill` |
+| Group | Job | Skill |
+|---|---|---|
+| Plan | A plan is written, changed or finished | `/plan-a-feature` |
+| Plan | A plan is reviewed, proofread or checked for what it misses | `/review-a-plan` |
+| Plan | A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
+| Build | A step starts | `/do-a-step` |
+| Build | A step's test passes, and it is to be shown and committed | `/finish-a-step` |
+| Build | Something broke, and a fix starts | `/fix-a-bug` |
+| Build | The last step of a feature or a cleanup | `/finish-a-feature` |
+| Ship | A commit, a push or a merge | `/ship-it` |
+| Ship | A pull request is opened, or its body written | `/open-a-pull-request` |
+| Write | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) | `/write-the-docs` |
+| Write | A framework doc or page is checked against the code, or a framework page changes (the framework writer) | `/write-the-framework` |
+| Write | A picture in the docs is added or changed | `/draw-a-diagram` |
+| Site and brand | A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written | `/research-the-market` |
+| Site and brand | A page or a section is planned, reordered or redesigned, always on our framework | `/design-a-page` |
+| Site and brand | A mark, a card, an image, a mockup or a palette is made or changed | `/design-a-graphic` |
+| Site and brand | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) | `/write-the-copy` |
+| Site and brand | Something a visitor sees changed, or was deployed | `/check-a-page` |
+| Sell | A customer or a prospect sent a message, on Facebook, WhatsApp, a comment or a mail, and a reply is drafted | `/answer-a-message` |
+| Maintain | A skill is written or changed | `/write-a-skill` |
 
 ## Where the rest is
 

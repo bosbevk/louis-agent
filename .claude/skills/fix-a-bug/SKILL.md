@@ -9,9 +9,12 @@ A fix repairs something that didn't work, and leaves a record that the next pers
 Four stops come first.
 
 1. **A fix is on its own branch from its first commit**: `fix/FXnn-short-name`. Louis, 2026-10-29: "this fix
-   should have been on branch fx26". Make the branch before the plan or the first step is committed.
+   should have been on branch fx26". Make the branch before the plan or the first step is committed. A cloud
+   thread works on the one branch it was given (`/ship-it`).
 2. **The test that reproduces the bug comes first, and you see it fail** (ADR 0014). Then the fix.
-3. **The cause is proved, not guessed.** The record says how it was found.
+3. **The cause is proved, not guessed.** Search the web first: the exact error, the issue tracker of the library
+   or the tool it comes from, and its docs, since someone may have met it before. What you find is a lead, and
+   the test still proves it. The record says how it was found, with the link.
 4. **Never rewrite pushed history to move a fix.** If its first commits went onto the wrong branch, ask Louis where
    it goes from here.
 

@@ -21,7 +21,14 @@ Two rules follow from the last row.
 
 1. **A hard stop is never in a skill.** A skill's body loads on Claude's judgement, so what must hold on every turn,
    such as "never push without Louis's word", stays in `CLAUDE.md`.
-2. **A skill puts its must-dos first.** When a long session is compacted, only the start of a loaded skill is kept.
+2. **A skill puts its must-dos first.** When a long session is compacted, Claude Code puts back the first 5,000
+   tokens of each skill it used, newest first, and 25,000 in all. So an older skill can be dropped whole, and is
+   loaded again when its job comes back.
+
+A rule a program can check is held by a hook as well, since a hook runs whether or not a skill loaded. Two are in
+`hooks/`, named in `settings.json`: `set-the-author.sh` runs when a session starts and makes Louis the author
+where none is set or Claude is, and `refuse-claude-lines.sh` runs before every shell command and refuses a commit
+as Claude, or a commit or a pull request with a line that names Claude.
 
 ## One step, and what is loaded when
 
@@ -43,27 +50,31 @@ Two rules follow from the last row.
 
 ## The skills
 
-| Skill | Its job |
-|---|---|
-| `plan-a-feature` | A plan is written, changed or finished |
-| `review-a-plan` | A plan is reviewed, proofread or checked for what it misses |
-| `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
-| `do-a-step` | A step starts |
-| `finish-a-step` | A step's test passes, and it is to be shown and committed |
-| `check-a-page` | Something a visitor sees changed, or was deployed |
-| `fix-a-bug` | Something broke, and a fix starts |
-| `ship-it` | A commit, a push or a merge |
-| `open-a-pull-request` | A pull request is opened, or its body written |
-| `finish-a-feature` | The last step of a feature or a cleanup |
-| `draw-a-diagram` | A picture in the docs is added or changed |
-| `research-the-market` | A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written |
-| `design-a-page` | A page or a section is planned, reordered or redesigned, always on our framework |
-| `design-a-graphic` | A mark, a card, an image, a mockup or a palette is made or changed |
-| `write-the-copy` | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) |
-| `write-the-docs` | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) |
-| `write-the-framework` | A framework doc or page is checked against the code, or a framework page changes (the framework writer) |
-| `answer-a-message` | A customer or a prospect sent a message, and a reply is drafted |
-| `write-a-skill` | A skill is written or changed |
+The skills are grouped by the order the work runs. A group is a heading in this table and in `CLAUDE.md`'s, not
+a folder: Claude Code finds a skill only as `skills/{name}/SKILL.md`. A file beside a `SKILL.md` is the skill's
+own: its test jobs in `tests.md`, or detail it reads only when needed, as `answer-a-message` keeps `questions.md`.
+
+| Group | Skill | Its job |
+|---|---|---|
+| Plan | `plan-a-feature` | A plan is written, changed or finished |
+| Plan | `review-a-plan` | A plan is reviewed, proofread or checked for what it misses |
+| Plan | `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
+| Build | `do-a-step` | A step starts |
+| Build | `finish-a-step` | A step's test passes, and it is to be shown and committed |
+| Build | `fix-a-bug` | Something broke, and a fix starts |
+| Build | `finish-a-feature` | The last step of a feature or a cleanup |
+| Ship | `ship-it` | A commit, a push or a merge |
+| Ship | `open-a-pull-request` | A pull request is opened, or its body written |
+| Write | `write-the-docs` | A doc, a guide, a README, an ADR or a write-up is written or rewritten (the technical writer) |
+| Write | `write-the-framework` | A framework doc or page is checked against the code, or a framework page changes (the framework writer) |
+| Write | `draw-a-diagram` | A picture in the docs is added or changed |
+| Site and brand | `research-the-market` | A slogan, a heading, positioning or a brand audit is asked for, or copy is to be written |
+| Site and brand | `design-a-page` | A page or a section is planned, reordered or redesigned, always on our framework |
+| Site and brand | `design-a-graphic` | A mark, a card, an image, a mockup or a palette is made or changed |
+| Site and brand | `write-the-copy` | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) |
+| Site and brand | `check-a-page` | Something a visitor sees changed, or was deployed |
+| Sell | `answer-a-message` | A customer or a prospect sent a message, and a reply is drafted |
+| Maintain | `write-a-skill` | A skill is written or changed |
 
 ## Changing an instruction
 

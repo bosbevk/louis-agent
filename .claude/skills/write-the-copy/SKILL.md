@@ -7,7 +7,7 @@ description: Works as the story and web writer, a copywriter with a screenwriter
 
 The story and web writer turns a picked message into the words on the page, as a copywriter and a screenwriter
 would (Louis, 2026-11-18: "people that know how to write"). A doc, a guide or a README a developer reads is the
-technical writer's (`/write-the-docs`). Four stops come first.
+technical writer's (`/write-the-docs`). Five stops come first.
 
 1. **Say only what is true today.** A claim the code, a test or the ledger doesn't back stays out. No number
    nobody measured, no price (Louis, 2026-11-17: "this is remove"), and nothing the brand guide's voice rules
@@ -18,6 +18,9 @@ technical writer's (`/write-the-docs`). Four stops come first.
    metadata and the guide's own prompts. A new name is a finding for Louis.
 4. **The test changes first.** Most words on the site are pinned by a test. Change the test to the new words,
    see it fail, then change the page (`/do-a-step`).
+5. **Look it up when the words rest on it.** How the reader names the thing, what a word means to them, or a rule
+   of the craft this file doesn't hold is read on the web that day: reviews and forums for the reader's own
+   words, the style guide itself for a rule. Say what was read.
 
 ## How people read a page, and what follows
 
@@ -78,6 +81,8 @@ These are the habits of copywriters and screenwriters, used on a web page.
 - **Requirements** use "must" only for law, "need" for a step, "can" for an option (GOV.UK).
 
 ## Where the words live
+
+These are louis-agent.dev's files. Another site's words are in its own project.
 
 | Words | File |
 |---|---|

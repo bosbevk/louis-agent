@@ -10,10 +10,11 @@ the code is, and says what is wrong and what is missing. Five stops come first.
 
 1. **The review never edits the plan.** It is a file of its own beside the plan. Louis decides what changes, and an
    approved plan changes only under *Approved during the build* (`/plan-a-feature`).
-2. **Nothing from memory.** A name of code is opened in the code, a fact about a tool in its own docs, a pick in
-   Louis's words. What could not be checked is said plainly, with what would check it.
+2. **Nothing from memory.** A name of code is opened in the code, a fact about a tool in its own docs on the web
+   that day, a pick in Louis's words. What could not be checked is said plainly, with what would check it.
 3. **Not your own plan, alone.** A plan reviewed by the thread that wrote it misses what that thread assumed. When
-   it is your own, say so at the top, and run the pre-mortem twice as hard.
+   the plan is this thread's own, say so before you start, and ask Louis for a fresh thread to review it. If he
+   wants it reviewed here anyway, say so in the file's first paragraph, and run the pre-mortem twice as hard.
 4. **A gap is not a decision.** Each gap gets its research and three ways to close it, and goes to Louis on its own
    card through `/put-a-finding`. A gap that changes the scope is never closed in the review.
 5. **Proofreading comes before gaps.** A plan that contradicts itself has to be read right before you can say what
@@ -88,8 +89,11 @@ names were checked in the code, and whether it reviews its own thread's plan.
 
 Then two sections, in this order. *A. Out of step* is pass one's findings, numbered, each with where it is and the
 fix, most of them mechanical. *B. Gaps* is pass two's, numbered, each with what we found and its source, the three
-ways with the pattern each follows, the recommended one and why, and whether it changes the scope. It ends with
-*Could not check*: each thing the review could not confirm, and the step or person that would.
+ways with the pattern each follows, the recommended one and why, and whether it changes the scope. Then *The
+pre-mortem*, and *Could not check*: each thing the review could not confirm, and the step or person that would.
+
+As Louis picks, each pick is added under *Louis's picks*, with its date and his words, so the one file stays the
+record a later thread reads.
 
 ## Checks before it is shown
 
@@ -108,14 +112,14 @@ approved takes each pick under *Approved during the build*, with the date and hi
 
 ## An example
 
-On 2026-11-21 the bill checker's plan (F167) was reviewed after Louis's picks that day. Pass one found nine things
-out of step: it still said two municipalities and seven children where his picks made three and eight, a settled
-package was still called open, the overview picture missed the new child, and two sentences read badly. Pass two,
-walking a homeowner from their first bill to the monthly report, found that the 14-day reminder, the jump alert
-and the report all needed push notifications that no child held, and that homes on prepaid electricity have no
-electricity line on their account. Each gap was researched with its sources (Firebase's pricing page, Overstrand's
-tariffs) and put with three ways and a recommendation, in `F167-proofread-2026-11-21.md` and
-`F167-gaps-research-2026-11-21.md` in the project's files.
+On 2026-11-21 the plan for Facebook auto-answers (F168) was reviewed before Louis approved it. The review's first
+paragraph says it was written by the plan's own thread, and names what it checked in `origin/main`. Pass one found
+seven things out of step: a pick not yet drawn through the opening, the records in the wrong step, a test helper
+named for a job it doesn't do, and a last step too big to review in ten minutes. Pass two, walking a person from
+their first Messenger message to an answer, found seven gaps: the guide's open door caps sessions per address, and
+every Messenger session comes from one address, so it would shut on the second person. Each gap got three ways and
+a recommendation. The pre-mortem named six ways it could fail, each tied to a gap or to a guard the plan already
+had. Louis's picks went under *Louis's picks* as they came, in `F168-review-2026-11-21.md` in the project's files.
 
 ## References
 

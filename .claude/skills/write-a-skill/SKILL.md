@@ -6,7 +6,7 @@ description: Writes a new Claude Code skill for this repo, or reworks one that i
 # Write a skill
 
 A skill is a procedure Claude loads for one job. Only its description is in view all the time, and its body loads
-when the job comes up. Four stops come first.
+when the job comes up. Five stops come first.
 
 1. **A hard stop is never in a skill.** The body loads on Claude's judgement, so a rule that must hold on every
    turn, such as "never push without Louis's word", goes in `src/docs/CLAUDE.md` (`.claude/README.md`).
@@ -17,6 +17,8 @@ when the job comes up. Four stops come first.
    skills that both fit one job make Claude guess.
 4. **Show it before it is committed.** The whole file, its sources, and what it was tried on. A new skill is
    committed only on Louis's word, like any step.
+5. **Never "not tried".** A new or changed skill is run on its test jobs in a fresh session before it merges
+   (Louis's pick, 2026-11-21). A thread can't start that session itself, so it asks for one.
 
 ## Is it a skill?
 
@@ -44,18 +46,25 @@ once, or when getting it wrong costs a lot.
    - For a job with its own craft (writing, design, research), the sources of that craft, as `write-the-copy`
      cites GOV.UK and NN/g and `write-the-docs` cites Diátaxis and Google. A skill's rules come from somewhere a
      reader can check.
-2. **Name it** as a verb and what it acts on, lowercase with hyphens, as the others are: `fix-a-bug`,
+2. **Write its three test jobs first**, in `tests.md` beside the skill, as `ship-it` has. Each is an ask in
+   Louis's own words, what must happen, and what must not. Anthropic's guide asks for them before the skill's
+   text, so the text is written to pass them. A skill that is changed gets a job for what the change is for.
+3. **Name it** as a verb and what it acts on, lowercase with hyphens, as the others are: `fix-a-bug`,
    `draw-a-diagram`. At most 64 characters, never `claude` or `anthropic` in it, and never a vague word such as
    `helper` or `tools`. The folder and the `name` are the same (`SkillFilesTests`).
-3. **Write the description.** It is all Claude sees when it decides whether to load the skill, so it says what
+4. **Write the description.** It is all Claude sees when it decides whether to load the skill, so it says what
    the skill does and when to use it, with the words a person would use for that job. Write it in the third
    person, as Anthropic's guide asks (Louis's pick, 2026-11-18): what it does ("Draws, changes or fixes a picture
    in the docs"), then "Use when…", then "Holds…". Keep the use case first, since the listing cuts a long
    description, and stay under 1,024 characters. No colon followed by a space, which breaks the YAML header.
-4. **Write the body** in this order (the shape every skill here has):
-   - One or two lines on what the job is, then **the stops first**, numbered, at most seven. After a long
-     session is compacted only the start of a loaded skill is kept, so what must never be missed is at the top.
-   - The **steps**, numbered, one action each, in the order they are done.
+5. **Write the body** in this order (the shape every skill here has):
+   - One or two lines on what the job is, then **the stops first**, numbered, at most seven. When a long session
+     is compacted, Claude Code puts back only the first 5,000 tokens of each skill it used, newest first, and
+     25,000 in all, so an older one can be dropped whole. What must never be missed is at the top.
+   - The **steps**, numbered, one action each, in the order they are done. A job with a subject outside the repo
+     (a tool, a platform, a law, a market, a craft) has a step that says what to read on the web first, and where
+     (Louis, 2026-11-21: "it is important that all these skills do research on the internet first on the subject
+     where needed").
    - The **detail** after the steps, under headings that say what each part is for: a table to look things up,
      the rules of the craft with their sources, an example.
    - **Checks**, then **Handing it over**: what is shown to Louis, and where the work goes next.
@@ -64,15 +73,17 @@ once, or when getting it wrong costs a lot.
    - **`## References`**, last: the ADRs, guides and outside sources its rules rest on, linked, so a reader can
      check where a rule came from. Louis, 2026-11-18: "a skill should always include references and an example".
      `SkillFilesTests` holds both headings.
-5. **Wire it in.**
-   - A row in the *Skills* table of `src/docs/CLAUDE.md`, as `` `/name` ``, and a row in `.claude/README.md`'s
-     table. `SkillFilesTests` holds that `CLAUDE.md` names exactly the skills there are.
-   - The file in the solution's `.claude\skills` folder, as the others are (`SolutionLayoutTests`).
+6. **Wire it in.**
+   - A row in the *Skills* table of `src/docs/CLAUDE.md`, as `` `/name` ``, under its group, and a row in
+     `.claude/README.md`'s table. `SkillFilesTests` holds that `CLAUDE.md` names exactly the skills there are.
+   - Every file of the skill in the solution's `.claude\skills` folder, as the others are
+     (`SolutionLayoutTests`).
    - A rules file or a guide that should send Claude to it gets one line with the link.
-6. **Try it.** Start a fresh session, which knows nothing of this one, and give it two or three real jobs the
-   skill is for, said the way Louis would say them. Watch two things: does the skill load from its description
-   alone, and does the work follow its steps? Each miss goes back into the file, then try again.
-7. **Run the tests** of what it touched:
+7. **Try it.** In a fresh session, which knows nothing of this one, give it each job in `tests.md`, said as it
+   is written there. Watch two things: does the skill load from its description alone, and does the work follow
+   its steps? Each miss goes back into the file, then try again. In Rider that is a new session. A cloud thread
+   asks for a fresh thread to run them, and passes on what it found.
+8. **Run the tests** of what it touched:
    `dotnet test src/tests/engine/LouisAgent.Core.Tests --filter "FullyQualifiedName~Docs"`.
 
 ## How the body is written
@@ -152,7 +163,7 @@ Claude Code reads more fields than `name` and `description`. Use one only when t
 
 | Field | Use it when |
 |---|---|
-| `paths` | The skill is only for some files, as `draw-a-diagram` is for `**/diagrams/*.json` |
+| `paths` | The skill is wanted only once a matching file is open. It stays out of the list of skills until then, so never use it for a job that starts before its file exists, as a picture's does |
 | `disable-model-invocation: true` | Only a person should start it, with `/name`, never Claude on its own |
 | `argument-hint` | It takes what it works on after the command, as `[pull request number]` |
 
@@ -164,6 +175,7 @@ Claude Code reads more fields than `name` and `description`. Use one only when t
 - Every command in it was run once, and every path in it exists.
 - Every rule names where it comes from: Louis's words, an ADR, a test, or a source on the web.
 - It has `## An example` from real work, and `## References` with every source linked.
+- It has its three jobs in `tests.md`, and each was run in a fresh session, with what happened written down.
 - At most 200 lines, and the Docs tests pass.
 
 ## Handing it over
