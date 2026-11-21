@@ -1,0 +1,20 @@
+{
+  "kind": "sequence",
+  "title": "F166.4: the order",
+  "caption": "The ADRs land in puls first, so nothing here points at a file that isn't there yet; then the pages, the folders, what built them, and the docs.",
+  "sequence": {
+    "participants": [
+      { "id": "louis", "label": "Louis", "actor": true, "tone": "blue" },
+      { "id": "puls", "label": "puls", "icon": "chip", "tone": "green" },
+      { "id": "here", "label": "louis-agent", "icon": "stack", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "louis", "to": "puls", "text": "merge: ADRs 0069, 0078, 0082 beside 0081" },
+      { "step": "message", "from": "here", "to": "here", "text": "the pages show Puls from outside" },
+      { "step": "message", "from": "here", "to": "here", "text": "Puls's folders and the three packs go" },
+      { "step": "message", "from": "here", "to": "here", "text": "what built or served them, the prompts, the docs" },
+      { "step": "reply", "from": "here", "to": "louis", "text": "no file under demos/puls, the full suite green" }
+    ],
+    "numbered": false
+  }
+}
