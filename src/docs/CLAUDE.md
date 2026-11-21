@@ -55,6 +55,8 @@ whether or not a skill is loaded.
 **Which tests, and when.** Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main
 must be merged and full suite unit tests passes". Before a commit, run only the tests of what the step touched.
 Before a pull request, merge `main` into the branch first, and then the full suite of unit tests must pass.
+A cloud thread runs the full suite on GitHub, in the pull request's checks, and waits for green (his pick,
+2026-11-21, in `/ship-it`).
 
 **In Rider, Rider's tools come first** ([ADR 0052](adr/0052-edit-never-script.md)). A session starts with `/mcp` to see
 what Rider offers, and for any job a Rider tool covers (format, inspect, build, test, rename, find usages, symbol

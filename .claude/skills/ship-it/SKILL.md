@@ -72,6 +72,11 @@ Run `git fetch origin main` and look at `origin/main`. The local `main` can be h
    `dotnet test louis-agent-solution.sln --filter "Category!=Integration"`.
 4. **Ask Louis for the push.**
 
+**A cloud thread runs the full suite on GitHub** (Louis's pick, 2026-11-21). It merges `main` in, runs the tests
+of what the branch touched, and on his word pushes and opens the pull request. CI then runs the full suite there,
+and nothing merges until it is green. The whole solution doesn't build in a cloud container, so the full suite
+can't run there.
+
 ## The pull request
 
 Its title, its body's sections in their order and what is never in it are in `/open-a-pull-request`, and GitHub's
