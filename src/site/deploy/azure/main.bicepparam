@@ -10,3 +10,8 @@ param workspaceRetentionDays = 30
 
 param insightsName = 'puls-insights'
 param insightsRetentionDays = 90
+
+param environmentName = 'puls-env'
+
+param registryName = 'acrpulsza'
+param registryPullAssignmentName = '3b785df2-c303-5865-adb0-94ee624325e1'

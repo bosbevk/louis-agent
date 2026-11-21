@@ -90,4 +90,12 @@ public class BicepFileTests
     [Test]
     public void TheInsights_KeepMaskingIpAddresses() =>
         Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("disableIpMasking: false"));
+
+    /// <summary>
+    /// The registry denies no address: the module's default rule set would deny every one, and the environment's
+    /// pulls of the apps' images with them.
+    /// </summary>
+    [Test]
+    public void TheRegistry_LetsTheEnvironmentPull() =>
+        Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("networkRuleSetDefaultAction: 'Allow'"));
 }
