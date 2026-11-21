@@ -264,3 +264,10 @@ module storage 'br/public:avm/res/storage/storage-account:0.33.2' = {
     enableTelemetry: false
   }
 }
+
+// What deploy.ps1 reads for every release, by the names it has always read them by: the environment the apps run in
+// and its address for the apex's DNS record, the identity the apps read the vault with, and the vault's address.
+output environmentId string = environment.id
+output environmentStaticIp string = environment.properties.staticIp
+output codingAppIdentityId string = appIdentity.outputs.resourceId
+output vaultUri string = vault.outputs.uri

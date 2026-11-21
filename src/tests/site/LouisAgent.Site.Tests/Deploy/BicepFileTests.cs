@@ -114,4 +114,31 @@ public class BicepFileTests
     [Test]
     public void TheStorage_KeepsTheKeyTheShareIsMountedWith() =>
         Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("allowSharedKeyAccess: true"));
+
+    /// <summary>
+    /// Every output the deploy script reads is one the file declares, so a release finds the environment, the
+    /// identity and the vault it was deployed with.
+    /// </summary>
+    [Test]
+    public void EveryOutputTheScriptReads_IsDeclared()
+    {
+        var read = ScriptReads("Get-Output '").Concat(ScriptReads("IdentityOutput = '")).Distinct().ToList();
+        var declared = Bicep.Where(line => line.StartsWith("output ", StringComparison.Ordinal))
+            .Select(line => line.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1]);
+
+        Assert.That(read, Is.Not.Empty, "the script reads outputs");
+        Assert.That(read.Except(declared), Is.Empty);
+    }
+
+    /// <summary>The names the script quotes after a marker, such as <c>Get-Output 'vaultUri'</c>.</summary>
+    private static IEnumerable<string> ScriptReads(string marker)
+    {
+        string script = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, Folder, "deploy.ps1"));
+        for (int at = script.IndexOf(marker, StringComparison.Ordinal); at >= 0;
+             at = script.IndexOf(marker, at + marker.Length, StringComparison.Ordinal))
+        {
+            int start = at + marker.Length;
+            yield return script[start..script.IndexOf('\'', start)];
+        }
+    }
 }
