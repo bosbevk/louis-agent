@@ -202,7 +202,7 @@ public partial class ArchitectureTests
             <Project Sdk="Microsoft.NET.Sdk">
               <ItemGroup>
                 <ProjectReference Include="..\..\LouisAgent.Core\LouisAgent.Core.csproj" />
-                <ProjectReference Include="..\LouisAgent.Packs.Recipes\LouisAgent.Packs.Recipes.csproj" />
+                <ProjectReference Include="..\LouisAgent.Packs.Files\LouisAgent.Packs.Files.csproj" />
                 <ProjectReference Include="..\..\identities\LouisAgent.Identities.An\LouisAgent.Identities.An.csproj" />
               </ItemGroup>
             </Project>
@@ -210,7 +210,7 @@ public partial class ArchitectureTests
         Assert.That(ForbiddenReferences(offending),
             Is.EqualTo(new[]
             {
-                @"..\LouisAgent.Packs.Recipes\LouisAgent.Packs.Recipes.csproj",
+                @"..\LouisAgent.Packs.Files\LouisAgent.Packs.Files.csproj",
                 @"..\..\identities\LouisAgent.Identities.An\LouisAgent.Identities.An.csproj"
             }));
 
@@ -238,19 +238,19 @@ public partial class ArchitectureTests
         Assert.That(found, Is.Empty);
     }
 
-    /// <summary>A pack's checks project leans on its own pack and the check contract, and on nothing else.</summary>
+    /// <summary>
+    /// A pack's checks project leans on its own pack and the check contract, and on nothing else. None is here since
+    /// the packs that had one left with Puls (F166.4); the rule holds for the next.
+    /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
     {
-        var projects = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs/evals"), "*.Checks.csproj",
-            SearchOption.AllDirectories).ToList();
+        string evals = Path.Combine(TestPaths.RepoRoot, "packs/evals");
+        var projects = Directory.Exists(evals)
+            ? Directory.EnumerateFiles(evals, "*.Checks.csproj", SearchOption.AllDirectories).ToList()
+            : [];
 
-        Assert.That(projects.Select(Path.GetFileName),
-            Is.EquivalentTo(new[]
-            {
-                "LouisAgent.Packs.Recipes.Checks.csproj", "LouisAgent.Packs.WhereToBuy.Checks.csproj"
-            }));
         foreach (string project in projects)
         {
             string pack = Path.GetFileName(project).Replace(".Checks.csproj", ".csproj");
@@ -265,10 +265,10 @@ public partial class ArchitectureTests
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
-    public void TheHostPacks_ReferenceNoChecksOrEvalsProject()
+    public void TheCatalogue_ReferencesNoChecksOrEvalsProject()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/hosts",
-            "LouisAgent.HostPacks", "LouisAgent.HostPacks.csproj"));
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/hosts",
+            "LouisAgent.Coding.Catalog", "LouisAgent.Coding.Catalog.csproj"));
 
         Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".Checks.") || r.Contains(".Evals")), Is.Empty);
     }
@@ -342,16 +342,17 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
-    /// Puls's identity, which every host loads, leans only on the engine. Its evals are a project of their own, which
-    /// only the runner references, so the identity can follow the engine into a package without them.
+    /// A demo's identity, which its hosts load, leans only on the contracts. Its evals are a project of their own,
+    /// which only the runner references, so the identity can follow the engine into a package without them.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
-    [Test]
-    public void TheIdentity_ReferencesOnlyTheContracts()
+    [TestCase("LouisAgent.Identities.Coding")]
+    [TestCase("LouisAgent.Identities.Triage")]
+    public void ADemosIdentity_ReferencesOnlyTheContracts(string identity)
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/identity",
-            "LouisAgent.Identities.Puls", "LouisAgent.Identities.Puls.csproj"));
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/identity", identity,
+            $"{identity}.csproj"));
 
         Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "LouisAgent.Composition.csproj" }));
     }

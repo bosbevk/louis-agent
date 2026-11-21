@@ -17,8 +17,8 @@ public static class BuiltOnIt
     public static readonly IReadOnlyList<Term> Folders =
     [
         new(["packs/tools"],
-            "The ready-made packs, from files and git to recipes and shop prices. Their evals, tests and web views " +
-            "sit beside them in folders of their own, so you can take the tools alone."),
+            "The ready-made packs, from files and git to the web, the docs and a calculator. Their tests and web " +
+            "views sit beside them in folders of their own, so you can take the tools alone."),
         new(["src/site"],
             "The framework's own websites. louis-agent.dev with the guide in its corner, this site with Orbi beside " +
             "it, and the showroom's three made-up businesses."),

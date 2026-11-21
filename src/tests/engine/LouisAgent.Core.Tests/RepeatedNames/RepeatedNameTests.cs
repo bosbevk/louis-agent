@@ -27,25 +27,12 @@ public class RepeatedNameTests
     [
         "src/engine/LouisAgent.Core/Agent/Toolsets/CoreToolset.cs",
         "src/engine/LouisAgent.Core/Skills/Languages/ScriptLanguage.cs",
-        "packs/tools/LouisAgent.Packs.WhereToBuy/WhereToBuyToolset.cs",
-        "packs/tools/LouisAgent.Packs.ShopPrices/ShopPricesToolset.cs",
-        "packs/tools/LouisAgent.Packs.Recipes/RecipesToolset.cs",
         "packs/tools/LouisAgent.Packs.Calculator/CalculatorToolset.cs",
-        "demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Checks/Shared/PulsToolset.cs",
         "src/evals/LouisAgent.Evals.Runner/Evals/Stub/StubToolset.cs",
         "src/web/LouisAgent.Web/Api/AskedToolset.cs",
         "src/web/LouisAgent.Web/Api/ScriptLanguage.cs",
-        "demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Checks/Cook/CookMode.cs",
-        "demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Checks/Shared/PulsEvalName.cs",
-        "demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Checks/Shared/PulsEvalRole.cs",
         "src/evals/LouisAgent.Evals.Runner/Evals/Stub/StubMode.cs",
         "src/evals/LouisAgent.Evals.Runner/Evals/Stub/StubRole.cs",
-        "demos/puls/identity/LouisAgent.Identities.Puls/PulsRole.cs",
-        "demos/puls/web/LouisAgent.Puls/Text/PulsWebRole.cs",
-        "demos/puls/identity/LouisAgent.Identities.Puls/PulsIdentity.cs",
-        "demos/puls/hosts/LouisAgent.HostPacks/IdentityKind.cs",
-        "demos/puls/identity/LouisAgent.Identities.Puls/PulsPack.cs",
-        "demos/puls/hosts/LouisAgent.HostPacks/PackKind.cs",
         "src/hosts/LouisAgent.Api/Endpoints/ApiErrorKind.cs",
         "src/engine/LouisAgent.SessionStream/StreamErrorKind.cs"
     ];
@@ -57,28 +44,14 @@ public class RepeatedNameTests
     /// project that owns them.
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
-    [
-        ("demos/puls/tests/LouisAgent.Identities.Puls.Evals.Tests/Evals/Checks/PulsCookScenarioIds.cs",
-            "PulsCookScenarioIds")
-    ];
+    [];
 
     /// <summary>
     /// A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its
     /// line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).
     /// </summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
-    [
-        ("demos/puls/web/LouisAgent.Puls/Components/Landing/", "",
-            "the landing page's display content: a mock of a chat, with the toolsets it pretends to use"),
-        ("src/tests/evals/LouisAgent.Evals.Tests/Protocol/ProtocolWriterTests.cs", "",
-            "the writer's lines are compared with the Python-recorded fixture, which holds these names: "
-            + "recorded data stays as recorded"),
-        ("src/tests/web/LouisAgent.Web.Testing/SessionStreamFixture.cs", "public const string Cook",
-            "the address and the role of the recorded turn, named once: the goldens and the replay tests read them"),
-        ("src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGoldenTests.cs", "call_sub",
-            "the sub-session event is written into the recorded stream golden, which holds the peer's name: "
-            + "recorded data stays as recorded")
-    ];
+    [];
 
     /// <summary>Every source file the scan looks at.</summary>
     private static IEnumerable<string> SourceFiles() => SourceTree.Files();
@@ -146,7 +119,7 @@ public class RepeatedNameTests
         foreach (string file in EnumFiles)
             Assert.That(WireNames(file).ToList(), Is.Not.Empty, file);
         Assert.That(EnumFiles.SelectMany(WireNames),
-            Does.Contain("web").And.Contain("where-to-buy").And.Contain("powershell"),
+            Does.Contain("web").And.Contain("calculator").And.Contain("powershell"),
             "the scan guards the toolsets and the languages");
     }
 

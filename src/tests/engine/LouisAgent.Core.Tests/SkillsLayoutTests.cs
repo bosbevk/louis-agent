@@ -90,7 +90,6 @@ public class SkillsLayoutTests
     }
 
     /// <summary>What the running agent writes belongs to its demo, and only that sits in the demo's folder.</summary>
-    [TestCase("demos/puls/skills")]
     [TestCase("demos/louis-agent/skills")]
     public void ADemosSkillsFolder_HoldsOnlyWhatTheAgentWrites(string folder)
     {

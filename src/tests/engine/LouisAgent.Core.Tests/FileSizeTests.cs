@@ -137,7 +137,7 @@ public class FileSizeTests
     /// aren't sized; a file merely under a folder named samples elsewhere still is.
     /// </summary>
     [TestCase("demos/louis-agent/samples/order-service/src/OrderService/Program.cs", true)]
-    [TestCase("demos/puls/web/LouisAgent.Puls/Program.cs", false)]
+    [TestCase("demos/louis-agent/web/LouisAgent.CodeReview/Program.cs", false)]
     [TestCase("src/web/LouisAgent.Web/Components/Samples/Sample.razor", false)]
     public void ADemosSample_IsntOurs(string file, bool skipped) =>
         Assert.That(InBuildOutput(Path.Combine(TestPaths.RepoRoot, file)), Is.EqualTo(skipped));

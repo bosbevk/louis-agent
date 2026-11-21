@@ -35,7 +35,7 @@ public class SampleBodyShapeTests
 
     /// <summary>There are scenario files to read, so the next test can't pass on none.</summary>
     [Test]
-    public void TheRepoHasScenarioFiles() => Assert.That(ScenarioFiles().Count(), Is.GreaterThan(20));
+    public void TheRepoHasScenarioFiles() => Assert.That(ScenarioFiles(), Is.Not.Empty);
 
     /// <summary>
     /// Each scenario file reads as a body, and the body writes the same JSON the harness's record does.

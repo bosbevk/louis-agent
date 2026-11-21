@@ -30,7 +30,7 @@ public class HowItWorksPageTests
     /// </summary>
     private static List<string> Identities() =>
     [
-        .. new[] { "demos/louis-agent/identity", "demos/puls/identity", "src/site" }.SelectMany(Folders)
+        .. new[] { "demos/louis-agent/identity", "src/site" }.SelectMany(Folders)
             .Where(name => name.StartsWith(ProjectNames.IdentityPrefix, StringComparison.Ordinal))
     ];
 
@@ -81,7 +81,7 @@ public class HowItWorksPageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(packs, Has.Count.GreaterThanOrEqualTo(15));
+            Assert.That(packs, Has.Count.GreaterThanOrEqualTo(12));
             Assert.That(packs.Where(name => !page.Contains(name)), Is.Empty);
         });
     }
