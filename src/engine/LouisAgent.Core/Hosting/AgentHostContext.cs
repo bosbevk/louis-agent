@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Hosting;
 
+namespace LouisAgent.Core.Hosting;
 /// <summary>Everything an entry point needs after bootstrap.</summary>
 /// <param name="Prices">The price table the usage ledger prices with (LouisAgent.Api also serves it at GET /v1/prices).</param>
 /// <param name="Rates">Exchange rates from the price table's currency, for showing costs in another currency (F14).</param>
