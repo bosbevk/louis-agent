@@ -1,0 +1,19 @@
+{
+  "kind": "classes",
+  "title": "F166.3: the one framework change",
+  "caption": "TestPaths finds a repository's root by its solution file, whatever it is called, so a product's tests find their own repository.",
+  "classes": {
+    "types": [
+      { "id": "paths", "name": "TestPaths", "kind": "static, changed in step 2", "tone": "violet",
+        "members": [ "string RepoRoot", "nearest folder above holding *.sln or *.slnx" ] },
+      { "id": "framework", "name": "LouisAgent.*.Tests", "kind": "the framework's tests",
+        "members": [ "louis-agent-solution.sln" ] },
+      { "id": "puls", "name": "Puls.*.Tests", "kind": "Puls's tests, step 4",
+        "members": [ "Puls.sln" ] }
+    ],
+    "relations": [
+      { "from": "framework", "to": "paths", "kind": "uses" },
+      { "from": "puls", "to": "paths", "kind": "uses", "word": "from the 0.2.0 package" }
+    ]
+  }
+}

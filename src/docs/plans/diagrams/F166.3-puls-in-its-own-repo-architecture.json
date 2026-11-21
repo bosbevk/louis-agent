@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "package",
+  "title": "F166.3: Puls in its own repository",
+  "caption": "Puls and its three packs move to the puls repository under names of their own, and reach the framework only through its published packages.",
+  "flow": {
+    "nodes": [
+      { "id": "testing", "icon": "checks", "tone": "violet", "label": "LouisAgent.Testing 0.2.0\nfinds any solution (step 2)", "group": "here" },
+      { "id": "framework", "icon": "stack", "tone": "violet", "label": "the other 30 packages\n0.1.0", "group": "here" },
+      { "id": "feed", "shape": "data", "icon": "box", "tone": "amber", "label": "GitHub Packages" },
+      { "id": "src", "icon": "chip", "tone": "green", "label": "src/\nPuls.Identity, Puls.Web, Puls.Api, Puls.Packs.* (steps 3, 4)", "group": "there" },
+      { "id": "tests", "icon": "checks", "tone": "green", "label": "tests/\nPuls.*.Tests (step 4)", "group": "there" },
+      { "id": "ci", "icon": "server", "tone": "green", "label": "CI and the coming-soon page\n(steps 5, 6)", "group": "there" }
+    ],
+    "edges": [
+      { "from": "testing", "to": "feed", "word": "published" },
+      { "from": "framework", "to": "feed", "word": "published" },
+      { "from": "src", "to": "feed", "word": "restores", "style": "dashed" },
+      { "from": "tests", "to": "feed", "word": "restores", "style": "dashed" },
+      { "from": "ci", "to": "tests", "word": "runs" }
+    ],
+    "groups": [
+      { "id": "here", "label": "github.com/bosbevk/louis-agent" },
+      { "id": "there", "label": "github.com/bosbevk/puls" }
+    ]
+  }
+}
