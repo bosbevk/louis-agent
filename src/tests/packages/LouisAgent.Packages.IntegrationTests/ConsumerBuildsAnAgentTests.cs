@@ -68,14 +68,14 @@ public class ConsumerBuildsAnAgentTests
     {
         using var archive = ZipFile.OpenRead(Path.Combine(_feed, $"LouisAgent.Web.Testing.{_version}.nupkg"));
         using var nuspec = archive.GetEntry("LouisAgent.Web.Testing.nuspec")!.Open();
-        var contentFiles = XDocument.Load(nuspec).Descendants().Where(element => element.Name.LocalName == "files")
+        var copiedToOutput = XDocument.Load(nuspec).Descendants()
             .Select(element => (string?)element.Attribute("copyToOutput")).ToList();
 
         Assert.Multiple(() =>
         {
             Assert.That(archive.GetEntry("contentFiles/any/any/Fixtures/session-stream.sse"), Is.Not.Null);
             Assert.That(archive.GetEntry("contentFiles/any/any/Fixtures/ask-agent.sse"), Is.Not.Null);
-            Assert.That(contentFiles, Has.Some.EqualTo("true"));
+            Assert.That(copiedToOutput, Has.Some.EqualTo("true"));
         });
     }
 
