@@ -217,5 +217,32 @@ sensitive. No paid run.
 
 ## Approved during the build
 
+- **2026-11-21, step 4: the mover runs `git mv`, and step 4 has no tests.** The tests rules put a test that starts a
+  process in an `integration-tests` project, which the plan had missed for step 4's git repositories. Of three
+  options (the mover on plain folders with `TrackedFiles` tested in a new integration project; the same with no test
+  for `TrackedFiles`; or `git mv` with every test in an integration project), Louis picked the last, saying "C with no
+  tests". So `TrackedFiles` and `FileMover` run git with their arguments as data and carry no tests of their own;
+  they are proved by step 6's run, the build and the whole unit suite.
+- **2026-11-21, after step 3: no tool; the rename is git and shell commands, once, with no tests.** While step 4 was
+  built, Louis said "yes everything can just be rider and git commands with no tests", and asked which he meant, he
+  picked "Drop the tool". Asked who then rewrites the old names in the text (he in Rider's *Replace in Files*,
+  Claude file by file with `Edit`, or git and shell commands), he answered "3 just as a once off just too many to
+  test". So steps 2 and 3 were taken back out of the branch (kept on the local branch `backup/F167-rename-tool`),
+  and this once-only exception to ADR 0052 replaces the tool. Every rule of *What the tool does* above still holds,
+  now as commands: the new names from each project's `RootNamespace` and the eight listed; a name replaced only
+  where the whole name stands, longest first, followed by the end of the word, a picture's dash, a full stop or a
+  measured file ending (`.csproj`, `.md`, `.svg`, `.dll`, `.json`, and `.styles.css`, the scoped stylesheet .NET
+  names after the assembly, found while step 3 was built); `louis-agent.dev` never matched; folders and files moved
+  with `git mv`, the deepest first. A whole-word rule needs to look at the character before and after a name without
+  taking it, which `sed` can't do, so the text is rewritten with `perl -pi`, its one-line form. The steps from here:
+  - **Step 2, the commands, shown.** Every `git mv` and every replacement is written out as a list of commands from
+    the names the projects declare, with how many places each name stands in, and shown to Louis. Nothing runs.
+  - **Step 3, the run, one commit.** On Louis's word the commands run. Then the build, the whole unit suite, the
+    diagrams redrawn, the golden files if what the model reads named a path, and the site's containers rebuilt.
+  - **Step 4, the leftovers, by hand.** `git grep` lists every `louis-agent.…` word still there, and the ones a
+    reader follows today are fixed with `Edit`.
+  - **Step 5, the docs, and the close.** The repo map, `.claude/README.md`, the write-up, the records, and this plan
+    deleted.
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [F166](F166-puls-in-its-own-repo.md) · [ADR 0052](../adr/0052-edit-never-script.md) · [ADR 0010](../adr/0010-folders-by-concern.md)
