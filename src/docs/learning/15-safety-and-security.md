@@ -65,7 +65,7 @@ hosted one is ever open by accident.
 
 Approval adds a step, and a pending skill file is active in every chat on the engine that wrote it, since chats with
 the same toolsets share one engine (F5). Until FX4 (Phase 7), approving or rejecting changes that engine's prompt, so
-start a new chat afterwards (known limitation 9).
+start a new chat afterwards (known limitation 8).
 
 ## What didn't work (and what it taught)
 

@@ -73,7 +73,9 @@ public class AgentEngineTests
     {
         async Task<int> MostAtOnce(bool concurrent)
         {
-            var tools = new SlowTools();
+            // In parallel, each call is held until all three have started, so a busy machine can't let one finish
+            // before the last begins (FX220); in order, each just takes a moment.
+            var tools = new SlowTools(concurrent ? TimeSpan.FromSeconds(5) : TimeSpan.FromMilliseconds(150));
             var client = new FakeChatClient(
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
                 [
@@ -91,17 +93,31 @@ public class AgentEngineTests
         Assert.That(await MostAtOnce(concurrent: false), Is.EqualTo(1));
     }
 
-    private sealed class SlowTools
+    /// <summary>
+    /// A tool that counts how many of its calls run at once. Each call waits until a round's three calls have all
+    /// started, or until its hold runs out, so a parallel round is counted whole however slow the machine is.
+    /// </summary>
+    private sealed class SlowTools(TimeSpan hold)
     {
+        /// <summary>The calls a round makes, which the gate waits for.</summary>
+        private const int RoundsCalls = 3;
+
+        private readonly TaskCompletionSource _allStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private int _running;
         public int MostAtOnce;
 
+        /// <summary>Counts itself in, waits for the round or its hold, then counts itself out.</summary>
         [System.ComponentModel.Description("Takes a moment")]
         public async Task<string> Slow()
         {
             int now = Interlocked.Increment(ref _running);
             lock (this) MostAtOnce = Math.Max(MostAtOnce, now);
-            await Task.Delay(150);
+
+            // The last of the round to start opens the gate for all of them.
+            if (now == RoundsCalls)
+                _allStarted.TrySetResult();
+            await Task.WhenAny(_allStarted.Task, Task.Delay(hold));
+
             Interlocked.Decrement(ref _running);
             return "done";
         }

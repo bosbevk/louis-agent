@@ -120,7 +120,7 @@ offers them.
 ### MCP server
 
 The MCP server publishes every toolset this instance can load: the packs' tools (files, git, .NET, the shells, the
-web, and Paymo, DevOps and agents when their settings are set), the skills and the agent-built tools, plus three read-only ones,
+web, and agents when their settings are set), the skills and the agent-built tools, plus three read-only ones,
 `list_skills`, `get_skill_info` and `get_skill_documentation`. It stays in step with the engine: when
 `AgentEngine.ToolsChanged` fires, it sends `notifications/tools/list_changed`. Approving an agent-built tool is for
 the user only, so it isn't offered over MCP. The packs' read-only feeds are published too, as resources at
@@ -164,7 +164,7 @@ skills and tools, and `LOG_DIRECTORY` is where logs go. The web search settings 
 (`name=url` pairs), `AGENT_PEER_KEYS` (each peer's own key, by the same names) and `AGENT_API_KEY`, which is sent to a
 peer that has no key of its own. `AGENT_MAX_DEPTH` says how deep a chain of asks may go.
 
-A pack's own settings are the pack's, not core's: Paymo's and Azure DevOps's keys are read by their packs, and
+A pack's own settings are the pack's, not core's: the docs pack's `DOCS_ROOT` is read by the docs pack, and
 Rider's MCP settings (`RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MCP_PROJECT_PATH`) by the ACP server.
 
 *Decided in:* F5, CL57.
@@ -231,7 +231,7 @@ the orchestrator's `ServiceTools` are. `selfExtension:` adds `CreateSkillFile`, 
 Every toolset is a `ToolsetDefinition`: a name, a one-line description, the settings it needs, its tool classes and
 their factory, and its guide. Core itself offers just two, in `ToolsetCatalog` (`Agent/Toolsets/`): `agents`, for
 asking another agent (it needs `AGENT_PEERS`), and `skills`, which the engine provides. Every other toolset (`files`,
-`git`, `dotnet`, the shells, `web`, `paymo`, `devops` and the rest) comes with its pack.
+`git`, `dotnet`, the shells, `web` and the rest) comes with its pack.
 
 `AgentCatalog` (`Agent/Catalog/`) is built once, by the program that composes the host. It lists core's toolsets
 first and then each pack's, and it owns every tool name. An agent-built tool can't take one of those names, and a
@@ -314,8 +314,6 @@ exactly as written. These are the tool classes, and the pack each lives in:
 | `DotNetTools` | The dotnet pack: `DotNetBuild`, `DotNetTest`, `DotNetRun`, restore, clean, packages, project and SDK info |
 | `PythonTools`, `PowerShellTools`, `BashTools` | The shell pack: run code or scripts (bash is Git Bash on Windows, never WSL) |
 | `WebTools`, `QuoteTools`, `CurrencyTools` | The web pack: `WebSearch` (via `IWebSearchProvider`), `FetchUrl` and `ReadRenderedPage` (through the SSRF-guarded `PageFetcher`); `VerifyQuote`; `ConvertCurrency` |
-| `PaymoTools` | The paymo pack: time entries, tasks, projects, summaries, when `PAYMO_API_KEY` is set |
-| `DevOpsTools` | The devops pack: Azure DevOps work items and sprints (an empty sprint is the team's current one), when `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION` and `DEVOPS_PROJECT` are set |
 | `AgentEngine` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` |
 
 The agent can also build a tool for itself (`ScriptTool`). With `CreateTool` it writes

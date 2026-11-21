@@ -68,8 +68,6 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `PAGE_RENDERER` | `chrome` or `tavily`, for `ReadRenderedPage` (default: Chrome when `BROWSER_URL` is set, else Tavily when its key is) |
 | `BROWSER_URL` | The headless Chrome we run (F32): `http://puls-browser:9222` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:9222` |
 | `BROWSER_USER_AGENT` | What that browser tells every site it reads for a user (FX21): who reads and why, with a public page to learn more, such as `YourAgent/1.0 (+https://example.com/about-the-agent; reads a page on a user's behalf)`. Unset, Chrome's own. Never a person's name or place |
-| `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
-| `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
 | `PRICES_FILE` | The price table for those costs (default `config/prices.json`, found like `config/.env`; compose sets it for the containers). Without one, costs are recorded as unknown (`null`); a malformed one stops the host |
 | `HOST_CULTURE` | The PC's Windows culture (e.g. `en-ZA`): costs are shown in its region's currency (ZAR, `R0.11`). Containers can't see the PC's region, so write it once with `dotnet run --project src/tools/LouisAgent.UsageProbe -- --host-culture`. Outside a container, the process's own culture is used when it's unset |
@@ -112,8 +110,7 @@ environment by the tools themselves:
 | `EVAL_JUDGE_API_KEY` | A secret, in `.env.secrets`: the judge's key. An Anthropic judge without it uses `ANTHROPIC_API_KEY` |
 | `AGENT_API`, `BENCHMARK_RUN` | The API sets both for a run it starts; by hand only for a command-line run. The agent API the run talks to (default `http://127.0.0.1:5070/`; `PULS_API`, its old name, is still read), and the run's name, which is its tag in the ledger |
 
-**The packs' own settings**; each pack's doc has the detail, and the recipe, Paymo and DevOps ones are in the tables
-above and below:
+**The packs' own settings**; each pack's doc has the detail:
 
 | Setting | Meaning |
 |---|---|
@@ -138,8 +135,6 @@ without it, a Chrome for Testing is downloaded once.
 | `AGENT_API_KEY` | The HTTP API's key, required (FX18): every call but `/health`, `/v1/prices`, `/v1/rates` and `/v1/rates/display` sends it as `x-api-key` or `Authorization: Bearer`. Without it the API refuses to start, unless `AGENT_AUTH=off` |
 | `MCP_API_KEY` | Key for the MCP server in HTTP mode, same header rules; falls back to `AGENT_API_KEY`. With neither set, HTTP mode refuses to start, unless `AGENT_AUTH=off` |
 | `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, `GIT_COMMITTER_EMAIL` | Identity for commits made from the web app's Changes view |
-| `PAYMO_API_KEY` | Enables the Paymo tools |
-| `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |
 | `ADMIN_API_KEY` | The admin portal's key (`/v1/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
 | `OPEN_IDENTITIES` | The guide's door (F109.3, ADR 0099; a list since F127.2): the identities, by commas, a visitor may open a session as with no key and no sign-in, with that identity's own toolsets only, under one daily cap across them all; unset, the door is shut |
 | `SITE_ADDRESS` | A site's one address, a whole https address such as `https://louis-agent.dev` (ADR 0128): every page's canonical link is on it, and a page asked for on another host, such as www, answers a 301 there; unset, a page answers on whatever address it was asked at |
