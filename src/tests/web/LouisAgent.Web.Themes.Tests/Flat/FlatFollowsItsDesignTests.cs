@@ -152,11 +152,11 @@ public class FlatFollowsItsDesignTests
         Assert.That(Value(SiteStyle.Dark, "--web-chip-fill"), Is.EqualTo("#1a1a1f"));
 
     /// <summary>
-    /// FX184: the wordmark's o is the size of glass's ball without its bubble (Louis: "the blue dot must be smaller on
-    /// flat cause we do not have another bubble"): glass's ball is 37 of 60 across, scaled by 1.055, in a .76em o.
+    /// F169.3: the wordmark's o is the header's share of the letters wherever the name stands (Louis's pick 12a,
+    /// "B: the header's size, everywhere"), 0.41 of the letters now that the orb inside a name takes the name's size.
     /// </summary>
     [TestCase(SiteStyle.Dark)]
     [TestCase(SiteStyle.Light)]
-    public void TheWordmarksO_IsGlasssBallWithoutItsBubble(SiteStyle style) =>
-        Assert.That(Value(style, "--web-wordmark-o"), Is.EqualTo(".5em"));
+    public void TheWordmarksO_IsTheHeadersShareOfTheLetters(SiteStyle style) =>
+        Assert.That(Value(style, "--web-wordmark-o"), Is.EqualTo(".41em"));
 }

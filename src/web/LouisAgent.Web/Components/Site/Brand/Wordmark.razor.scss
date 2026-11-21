@@ -22,8 +22,11 @@
     white-space: nowrap;
 }
 /* The mark's size as a letter is the theme's (FX184), and it drops the more it stands above the small letters, so
-   at any size it stands on the line: .76em drops .085em, the small letters' own .54em not at all. */
+   at any size it stands on the line: .76em drops .085em, the small letters' own .54em not at all. The orb sets 17
+   pixels for a letter of its own, so here it takes the name's size, and the theme's share in em is a share of the
+   letters it stands among (F169.3). */
 .wordmark-seen ::deep .orb {
+    font-size: inherit;
     width: var(--web-wordmark-o);
     height: var(--web-wordmark-o);
     margin: 0 .035em 0 .03em;
