@@ -146,6 +146,7 @@ A skill is a procedure that loads for its job. Use the one that fits. They are g
 | Site and brand | A mark, a card, an image, a mockup or a palette is made or changed | `/design-a-graphic` |
 | Site and brand | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) | `/write-the-copy` |
 | Site and brand | Something a visitor sees changed, or was deployed | `/check-a-page` |
+| Site and brand | A built site's or a theme's design, look and feel is reviewed | `/review-a-design` |
 | Sell | A customer or a prospect sent a message, on Facebook, WhatsApp, a comment or a mail, and a reply is drafted | `/answer-a-message` |
 | Maintain | A skill is written or changed | `/write-a-skill` |
 

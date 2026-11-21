@@ -332,6 +332,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "check-a-page", "check-a-pag
 		.claude\skills\check-a-page\tests.md = .claude\skills\check-a-page\tests.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "review-a-design", "review-a-design", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C7A}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\review-a-design\SKILL.md = .claude\skills\review-a-design\SKILL.md
+		.claude\skills\review-a-design\tests.md = .claude\skills\review-a-design\tests.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "research-the-market", "research-the-market", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C70}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\skills\research-the-market\SKILL.md = .claude\skills\research-the-market\SKILL.md
@@ -2926,6 +2932,7 @@ Global
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6F} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6E} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C7A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C70} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C71} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C72} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
