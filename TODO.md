@@ -98,7 +98,6 @@ known limitations below are facts about today, not tasks.
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
 | FX66 | Both Azure apps keep their data-protection keys (which sign the sign-in cookie) in the container, so every cold start after scaling to zero makes new keys and signs everyone out (the start-up log warns); the keys go to each app's share, one setting (found 2026-11-08, F109.2) | Now | — |
-| FX83 | The paymo and devops packs' async tools take no CancellationToken (20 tools), which ADR 0028's convertibility check showed when the coding catalogue loaded them (F106.3.2 step 6); since 2026-11-11 the coding agent loads neither (Louis: "we do not use them"). The packs' own check, `LouisAgent.Packs.Rules.Tests` (F166.4), now holds them and lists them as known breaches, so the fix takes each off that list | Next | — |
 | F21 | Louis's corrections to the Afrikaans | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md) |
 | F28 | Team talk, the rest | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/features/F28-team-talk.md) |
 | F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after (F127.3.1 moved it with no run, since Puls is paused), and its stored replays recorded again, since they name the old tools | Puls | [ADR 0117](src/docs/adr/0117-one-address-for-every-agent-call.md) |
@@ -174,19 +173,18 @@ above that removes it.
    [session architecture](src/docs/specs/SESSION_ARCHITECTURE.md)).
 3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
    → [**F15** Model limits and local models](src/docs/features/F15-model-limits.md) (the capability check per model).
-4. **Paymo task lookup takes the first match** for a name; an ambiguous name can hit the wrong task.
-5. **No rate limiting or audit log** beyond the file logs. → **F42** Safety and audit (*Next*, Phase 7).
-6. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
+4. **No rate limiting or audit log** beyond the file logs. → **F42** Safety and audit (*Next*, Phase 7).
+5. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
    message to continue. The orchestrator does this automatically ("Continue the fix…"); most demo fixes take 2-3
    messages. → [**F10** Settings per role and per session](src/docs/features/F10-route-settings.md) (*Later*).
-7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
+6. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
    (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
-8. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
+7. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
    Ollama the window, so Ollama uses its own default (2,048 on the version measured here; newer ones pick 4k–256k by
    memory) and drops the rest without an error: the ledger showed `input: 2050`. The `ollama-nvidia` and `ollama-amd`
    containers default to 32k, which covers it; the CPU `ollama` service still uses Ollama's default.
    → [**F15** Model limits and local models](src/docs/features/F15-model-limits.md) (sends `num_ctx`; takes in F13).
-9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
+8. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
    changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
    after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
    the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open

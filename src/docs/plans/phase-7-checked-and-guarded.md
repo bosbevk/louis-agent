@@ -38,7 +38,7 @@ as an edit that invalidates later thinking (`docs/fixes/FX04-append-only-history
   one chat's new tool changes every open chat with the same toolsets (`TODO.md:403-404`). FX4's doc predates that: its
   cause table still says the API has "one engine for all sessions" (`docs/fixes/FX04-append-only-history.md:28`), so
   its plan starts by bringing the cause table up to date. From Phase 1's FX20, approving a skill file reloads the
-  skills too, one more way to change `history[0]` mid-chat; until FX4, known limitation 9 holds, and a new chat is
+  skills too, one more way to change `history[0]` mid-chat; until FX4, known limitation 8 holds, and a new chat is
   started after `/approve`.
 - **The fix, as its doc has it** (`:32-57`). A conversation keeps a copy of its tool list from its first request, and
   `CreateTool`'s reply says the tool is "available in your next chat" (`:38`) instead of today's "You can call it now"

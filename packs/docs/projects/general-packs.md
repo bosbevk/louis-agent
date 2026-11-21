@@ -4,10 +4,10 @@
 > **Elsewhere:** why they aren't in core in [ADR 0076](../../../src/docs/adr/0076-core-ships-no-agent.md), how to write one in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 > **Kind:** library (`net10.0`, one a pack)
-> · **Paths:** `packs/tools/LouisAgent.Packs.Files/`, `.git`, `.dotnet`, `.shell`, `.web`, `.paymo` and `.devops`
+> · **Paths:** `packs/tools/LouisAgent.Packs.Files/`, `.git`, `.dotnet`, `.shell` and `.web`
 > **Also shows:** `composite-structure`, `component`
 
-![The general packs: files, git, .NET, shell, web, Paymo and Azure DevOps](diagrams/general-packs.svg)
+![The general packs: files, git, .NET, shell and web](diagrams/general-packs.svg)
 
 | Pack | Toolsets | Holds | Needs from the engine |
 |---|---|---|---|
@@ -16,8 +16,6 @@
 | `LouisAgent.Packs.DotNet` | `dotnet` | Build, test, run, restore, list packages | The workspace root |
 | `LouisAgent.Packs.Shell` | `python`, `powershell`, `bash` | The tools the model calls, on the composition's script runners | The workspace root |
 | `LouisAgent.Packs.Web` | `web` | Search, fetch, read a drawn page, check a quote, convert money | Search, a guarded fetcher, the renderer, the rates |
-| `LouisAgent.Packs.Paymo` | `paymo` | Time entries, tasks, projects and summaries | Nothing: its own `PAYMO_API_KEY` |
-| `LouisAgent.Packs.DevOps` | `devops` | Work items, sprints and team queries | Nothing: its own `DEVOPS_*` settings |
 
 Each says `ComesBeforeTheEngine`, so a session's tools keep their order: these, then the engine's, then a product's.
 

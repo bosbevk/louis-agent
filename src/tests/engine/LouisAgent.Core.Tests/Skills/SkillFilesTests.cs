@@ -85,9 +85,9 @@ public class SkillFilesTests
     }
 
     [Test]
-    public void TimeLogging_IsGone_ThePaymoToolsDoItsWork()
+    public void TimeLogging_IsGone()
     {
-        // CL8 step 6: its three skills only echoed a message; the paymo toolset logs real time.
+        // CL8 step 6: its three skills only echoed a message, so they went; no skill pretends to log time.
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("time-logging")), Is.Null);

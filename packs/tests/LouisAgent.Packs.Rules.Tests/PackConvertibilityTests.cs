@@ -34,33 +34,10 @@ public class PackConvertibilityTests
             .Select(name => ProjectNames.ShortName(name, ProjectNames.IdentityPrefix))
     ];
 
-    /// <summary>
-    /// The packs whose waiting tools take no cancellation token yet, found when this check first held every pack
-    /// (F166.4): FX83 gives them one. The list only shrinks: a pack leaves it when its tools are fixed.
-    /// </summary>
-    private static readonly HashSet<string> WaitWithoutAToken = ["devops", "paymo"];
-
-    /// <summary>What a tool that waits without a cancellation token is reported as.</summary>
-    private const string NoToken = "waits but takes no CancellationToken";
-
-    /// <summary>
-    /// A pack's tools come through the MCP SDK whole, and name no identity; a pack on the list above is excused only
-    /// its missing tokens.
-    /// </summary>
+    /// <summary>A pack's tools come through the MCP SDK whole, and name no identity.</summary>
     [TestCaseSource(nameof(EveryPackName))]
-    public void EveryPack_IsConvertibleToAnMcpServer(string name)
-    {
-        var problems = PackConvertibility.Problems(EveryPack.Named(name), Identities());
-        var excused = WaitWithoutAToken.Contains(name) ? problems.Where(p => !p.EndsWith(NoToken)) : problems;
-
-        Assert.That(excused, Is.Empty);
-    }
-
-    /// <summary>Every pack on the list still has a tool without a token, so the list can't go stale.</summary>
-    [TestCaseSource(nameof(WaitWithoutAToken))]
-    public void AnExcusedPack_StillWaitsWithoutAToken(string name) =>
-        Assert.That(PackConvertibility.Problems(EveryPack.Named(name), Identities()),
-            Has.Some.EndsWith(NoToken), $"{name} is fixed: take it off the list");
+    public void EveryPack_IsConvertibleToAnMcpServer(string name) =>
+        Assert.That(PackConvertibility.Problems(EveryPack.Named(name), Identities()), Is.Empty);
 
     /// <summary>The identities were found, so the check above has names to refuse.</summary>
     [Test]

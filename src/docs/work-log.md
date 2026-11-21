@@ -13,12 +13,12 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 145 | 99 |
-| Fixes (`FX`) | 207 | 6 |
+| Fixes (`FX`) | 208 | 5 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (135 in the TODO)
+## Open (134 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -96,7 +96,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
-| FX83 | The paymo and devops packs' async tools take no CancellationToken; the packs' own check (`LouisAgent.Packs.Rules.Tests`) lists them as known breaches until they're fixed | Next |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after, and its replays recorded again (ADR 0117) | Puls |
@@ -308,10 +307,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (207 done)
+## Fixes (208 done)
 
 | Id | When | What |
 |---|---|---|
+| FX83 | 2026-11-21 | The DevOps and Paymo packs retired: their waiting tools took no cancellation token, and nothing loaded them |
 | FX219 | 2026-11-21 | The re-score's 409 test keeps the runner busy with the stand-in's sleeper, not a stub run a fast machine finishes before the request arrives |
 | FX218 | 2026-11-21 | The pack-as-a-package integration test packs at the version it asks for, since MinVer versions every package from its tags after F166.2 and an untagged pack is no longer 1.0.0 |
 | FX217 | 2026-11-21 | framework.louis-agent.dev names a PNG icon and an Apple touch icon beside its SVG, since Google Search shows no SVG favicon and put a grey globe by every result |

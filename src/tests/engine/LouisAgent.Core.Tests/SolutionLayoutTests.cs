@@ -25,8 +25,7 @@ public class SolutionLayoutTests
     [TestCase("src/evals", "LouisAgent.Evals", "LouisAgent.Evals.Checks", "LouisAgent.Evals.Protocol",
         "LouisAgent.Evals.Runner")]
     [TestCase("packs/tools", "LouisAgent.Packs.Web", "LouisAgent.Packs.Shell", "LouisAgent.Packs.Files",
-        "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.DevOps", "LouisAgent.Packs.Paymo",
-        "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs", "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
+        "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs", "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
         "LouisAgent.Packs.Site")]
     [TestCase("packs/web", "LouisAgent.Packs.Files.Web", "LouisAgent.Packs.Git.Web")]
     [TestCase("demos/louis-agent/evals", "LouisAgent.Identities.Triage.Evals")]
@@ -66,8 +65,7 @@ public class SolutionLayoutTests
     [TestCase("packs/tests", "LouisAgent.Packs.Web.Tests", "LouisAgent.Packs.Shell.Tests",
         "LouisAgent.Packs.Shell.IntegrationTests", "LouisAgent.Packs.Files.Tests", "LouisAgent.Packs.Git.Tests",
         "LouisAgent.Packs.Git.IntegrationTests", "LouisAgent.Packs.DotNet.Tests",
-        "LouisAgent.Packs.DotNet.IntegrationTests", "LouisAgent.Packs.DevOps.Tests", "LouisAgent.Packs.Paymo.Tests",
-        "LouisAgent.Packs.Calculator.Tests", "LouisAgent.Packs.Docs.Tests", "LouisAgent.Packs.Triage.Tests",
+        "LouisAgent.Packs.DotNet.IntegrationTests", "LouisAgent.Packs.Calculator.Tests", "LouisAgent.Packs.Docs.Tests", "LouisAgent.Packs.Triage.Tests",
         "LouisAgent.Packs.Leads.Tests", "LouisAgent.Packs.Site.Tests",
         "LouisAgent.Packs.Files.Web.Tests", "LouisAgent.Packs.Git.Web.Tests", "LouisAgent.Packs.Rules.Tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)

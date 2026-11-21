@@ -22,13 +22,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Calculator\LouisAgent.Packs.Calculator.csproj" />
-    <ProjectReference Include="..\..\tools\LouisAgent.Packs.DevOps\LouisAgent.Packs.DevOps.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Docs\LouisAgent.Packs.Docs.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.DotNet\LouisAgent.Packs.DotNet.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Files\LouisAgent.Packs.Files.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Git\LouisAgent.Packs.Git.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Leads\LouisAgent.Packs.Leads.csproj" />
-    <ProjectReference Include="..\..\tools\LouisAgent.Packs.Paymo\LouisAgent.Packs.Paymo.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Shell\LouisAgent.Packs.Shell.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Site\LouisAgent.Packs.Site.csproj" />
     <ProjectReference Include="..\..\tools\LouisAgent.Packs.Triage\LouisAgent.Packs.Triage.csproj" />

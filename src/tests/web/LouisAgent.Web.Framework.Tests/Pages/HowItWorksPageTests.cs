@@ -81,7 +81,7 @@ public class HowItWorksPageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(packs, Has.Count.GreaterThanOrEqualTo(12));
+            Assert.That(packs, Has.Count.GreaterThanOrEqualTo(10));
             Assert.That(packs.Where(name => !page.Contains(name)), Is.Empty);
         });
     }
