@@ -60,6 +60,26 @@ public class ConsumerBuildsAnAgentTests
     }
 
     /// <summary>
+    /// The web test helpers' package carries the recorded turns as content a consumer's build copies beside its
+    /// tests, where SessionStreamFixture reads them (F166.3's finding 8).
+    /// </summary>
+    [Test]
+    public void TheWebTestHelpers_CarryTheirRecordings_IntoAConsumersOutput()
+    {
+        using var archive = ZipFile.OpenRead(Path.Combine(_feed, $"LouisAgent.Web.Testing.{_version}.nupkg"));
+        using var nuspec = archive.GetEntry("LouisAgent.Web.Testing.nuspec")!.Open();
+        var contentFiles = XDocument.Load(nuspec).Descendants().Where(element => element.Name.LocalName == "files")
+            .Select(element => (string?)element.Attribute("copyToOutput")).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(archive.GetEntry("contentFiles/any/any/Fixtures/session-stream.sse"), Is.Not.Null);
+            Assert.That(archive.GetEntry("contentFiles/any/any/Fixtures/ask-agent.sse"), Is.Not.Null);
+            Assert.That(contentFiles, Has.Some.EqualTo("true"));
+        });
+    }
+
+    /// <summary>
     /// A site outside compiles the framework's own Sass from the package, as Puls's styles do: the package unpacks it
     /// into the site's <c>obj/framework-sass/</c>, which the site names as its include path (F166.3's finding 6).
     /// </summary>
