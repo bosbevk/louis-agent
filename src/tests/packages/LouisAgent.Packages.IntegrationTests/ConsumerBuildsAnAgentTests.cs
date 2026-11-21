@@ -80,6 +80,21 @@ public class ConsumerBuildsAnAgentTests
     }
 
     /// <summary>
+    /// The runner's package carries its stub eval's transcripts as content a consumer's build copies to where
+    /// EvalFiles looks for them, so a demo's own runner offers the stub as louis-agent's does (F166.3's finding 11).
+    /// </summary>
+    [Test]
+    public void TheRunner_CarriesItsStubsTranscripts_IntoAConsumersOutput()
+    {
+        using var archive = ZipFile.OpenRead(Path.Combine(_feed, $"LouisAgent.Evals.Runner.{_version}.nupkg"));
+
+        Assert.That(
+            archive.GetEntry(
+                "contentFiles/any/any/EvalFiles/src/evals/LouisAgent.Evals.Runner/Evals/Stub/Transcripts/bobotie.reference.txt"),
+            Is.Not.Null);
+    }
+
+    /// <summary>
     /// A site outside compiles the framework's own Sass from the package, as Puls's styles do: the package unpacks it
     /// into the site's <c>obj/framework-sass/</c>, which the site names as its include path (F166.3's finding 6).
     /// </summary>
