@@ -34,7 +34,8 @@ page, listed in the page block when they are on it. Open one with `ShowPage` whe
 - `/cost-and-evals`: what a turn costs to the cent, the ledger, the price table and one request worked to rand, then
   the evals' places, which say what their redesign plans: one file of conversations a judge marks, and one page
   per run.
-- `/examples`: the agents it already runs, Puls, the coding agent and the guide, and what's coming.
+- `/examples`: the agents it already runs, Puls (built on the packages, in a repository of its own), the coding agent
+  and the guide, and what's coming.
 - `/comparison`: louis-agent beside Microsoft Agent Framework and Semantic Kernel, and where each cell comes from.
 
 ## An example
