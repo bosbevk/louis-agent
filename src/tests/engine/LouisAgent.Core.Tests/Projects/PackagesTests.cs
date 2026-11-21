@@ -19,6 +19,9 @@ public class PackagesTests
         "LouisAgent.Packs.Web", "LouisAgent.Testing", "LouisAgent.Web.Testing"
     ];
 
+    /// <summary>The shared build file a package that holds Sass carries, beside the web projects it serves.</summary>
+    private const string FrameworkSassFile = "src/web/FrameworkSass.targets";
+
     /// <summary>
     /// Every project file under the repository's three roots, by its name and its text; a sample the coding agent
     /// works on may stand twice, so a name is not a key.
@@ -95,7 +98,7 @@ public class PackagesTests
         {
             Assert.That(targets, Does.Contain("Include=\"Styles/**/*.scss\" Pack=\"true\" PackagePath=\"sass/"));
             Assert.That(targets, Does.Contain("PackagePath=\"buildTransitive/$(PackageId).targets\""));
-            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, "build", "FrameworkSass.targets")), Is.True);
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, FrameworkSassFile)), Is.True);
         });
     }
 
@@ -106,7 +109,7 @@ public class PackagesTests
     [Test]
     public void TheUnpacking_GathersEveryPackagesSass_BeforeTheCompilerRuns()
     {
-        string path = Path.Combine(TestPaths.RepoRoot, "build", "FrameworkSass.targets");
+        string path = Path.Combine(TestPaths.RepoRoot, FrameworkSassFile);
         string unpack = File.Exists(path) ? File.ReadAllText(path) : "";
 
         Assert.Multiple(() =>
