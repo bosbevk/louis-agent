@@ -47,7 +47,15 @@
     padding: 0 24px 80px;
 }
 
-.site-docs ::deep .site-main .band { max-width: none; }
+.site-docs ::deep .site-main .band { max-width: none; padding-top: 56px; }
+
+/* A docs page's headings by their rank (F169.2, Louis's pick A of the design review's finding 1): the page's top, a
+   section and a part, so a reader tells them apart. Each has its phone size as a floor ("A: 40, 32, 24") and its
+   desktop size as a ceiling, and grows with the width between. Here and not in the base rule, so a page of slides
+   keeps its one size. */
+.site-docs ::deep .band h1 { font-size: clamp(40px, 4.8vw, 74px); }
+.site-docs ::deep .band h2 { font-size: clamp(32px, 3.3vw, 40px); line-height: 1.08; letter-spacing: -.03em; }
+.site-docs ::deep .band .part-title { font-size: clamp(24px, 2.3vw, 28px); line-height: 1.15; letter-spacing: -.02em; }
 
 .site-docs-sections-label {
     display: block;
