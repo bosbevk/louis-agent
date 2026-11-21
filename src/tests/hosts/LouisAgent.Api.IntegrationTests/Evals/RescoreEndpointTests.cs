@@ -49,14 +49,20 @@ public class RescoreEndpointTests
         public async ValueTask DisposeAsync() => await App.DisposeAsync();
     }
 
-    /// <summary>Starts the API over the real runner, with the stub eval and an in-memory store that records.</summary>
-    private async Task<Host> StartAsync()
+    /// <summary>
+    /// Starts the API over the real runner, with the stub eval and an in-memory store that records; or, asked for,
+    /// over the stand-in runner, whose <c>sleeper</c> stays busy for seconds whatever the machine's speed.
+    /// </summary>
+    private async Task<Host> StartAsync(bool standIn = false)
     {
-        // The store, its recorder, and a runner that knows only the stub.
+        // The store, its recorder, and a runner that knows the stub (and, for the stand-in, its sleeper).
         var store = new InMemoryEvalStore();
         var recorder = new EvalRecorder(store);
-        var catalog = new EvalList([new EvalEntry("stub", "Stub")]);
-        var runner = new EvalProcess(catalog, _workspace, "http://127.0.0.1:1/", RunnerBuild.Dll);
+        var catalog = new EvalList(standIn
+            ? [new EvalEntry("stub", "Stub"), new EvalEntry("sleeper", "Sleeper")]
+            : [new EvalEntry("stub", "Stub")]);
+        var runner = new EvalProcess(catalog, _workspace, "http://127.0.0.1:1/",
+            standIn ? StandInBuild.Dll : RunnerBuild.Dll);
 
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, runner: runner, recorder: recorder,
             catalog: catalog);
@@ -130,17 +136,20 @@ public class RescoreEndpointTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-    /// <summary>A re-score while another run runs is a 409, as starting a run would be.</summary>
+    /// <summary>
+    /// A re-score while another run runs is a 409, as starting a run would be. The run that keeps the runner busy is
+    /// the stand-in's sleeper, held open for seconds, not a run of the stub, which a fast machine can finish before
+    /// the request arrives (FX219: CI once answered 201).
+    /// </summary>
     [Test]
     public async Task WhileAnotherRunRuns_Is409_AsAStartIs()
     {
-        await using var host = await StartAsync();
-        string stored = await StoredStubRunAsync(host);
-        // A run of the stub with every repeat: the runner takes longer to start and finish than this request takes to
-        // arrive.
-        var busy = host.Runner.Start("stub", EvalProcess.MaxRepeat)!;
+        await using var host = await StartAsync(standIn: true);
+        await host.Store.SaveRunAsync(new EvalDocuments.Run("stored-run", "stub", 1, EvalRunStatus.Done,
+            DateTimeOffset.UnixEpoch));
+        var busy = host.Runner.Start("sleeper", 1)!;
 
-        using var response = await Post(host.Client, stored);
+        using var response = await Post(host.Client, "stored-run");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
         // Let the busy run finish before the test ends.
