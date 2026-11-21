@@ -5,8 +5,9 @@ namespace LouisAgent.Web.Components.Site.Bands;
 
 /// <summary>
 /// A band's heading (FX125). In the band at the top of a page it is the page's one h1, the main heading a search engine
-/// and a screen reader look for; in any other band, or outside one, it is a section's h2. A page writes it where its
-/// heading stands, so the layout around it stays the page's own.
+/// and a screen reader look for; in a band that is a part of a section it is that part's h3 (F169.2); in any other
+/// band, or outside one, it is a section's h2. A page writes it where its heading stands, so the layout around it
+/// stays the page's own.
 /// </summary>
 /// <remarks>
 /// The band hands itself down by cascade and the title asks it where it is, the same Registry shape as the page's
@@ -32,4 +33,17 @@ public partial class BandTitle
 
     /// <summary>Whether this heads the page: it stands in the band at the page's top.</summary>
     private bool HeadsThePage => Band?.Id == SiteAddresses.Top;
+
+    /// <summary>Whether this heads a part of a section: its band says which section it belongs to (F169.2).</summary>
+    private bool IsAPart => !string.IsNullOrWhiteSpace(Band?.PartOf);
+
+    /// <summary>
+    /// A part's classes: the framework's <c>part-title</c> first, which the docs layout sizes, then the site's own.
+    /// </summary>
+    private string PartClasses => string.IsNullOrWhiteSpace(Class) ? PartTitle : $"{PartTitle} {Class.Trim()}";
+
+    /// <summary>
+    /// The framework's class on a part's title, so a rule can tell it from the other h3s a band holds.
+    /// </summary>
+    private const string PartTitle = "part-title";
 }
