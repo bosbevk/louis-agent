@@ -27,6 +27,8 @@ come first.
 2. **List its claims.** One row for each sentence that says the framework does, has or needs something: a
    setting, a type, a call, a number, a limit, an order, what a failure does. Leave out the doc's own framing.
 3. **Find each in the code.** Open the type or setting it names and read what it does. Write the file and line.
+   A claim about another framework, as on the Comparison page, is checked on that framework's own pages on the
+   web that day, and says "Not stated" where they don't say.
 4. **Find the test that holds it.** Search the tests for the type, the setting or the behaviour. Name the test.
 5. **Find it on the pages.** Look in the records in `src/web/LouisAgent.Web.Framework/Content/` (the table below).
    Does a page say it, the same way, and link this doc?

@@ -29,10 +29,12 @@ The order matters. The research comes before anything is said, so the recommenda
 
 1. **Research first.** Before you write a word to Louis:
    - Read the code for what is there already, and how the repo solved the nearest problem.
-   - Look up the patterns that fit: Refactoring.Guru, the Gang of Four, Fowler, Microsoft's .NET guidance. Never
-     the first pattern that comes to mind.
-   - For a package, find its licence (MIT, Apache or BSD preferred), how it is maintained, its size, and how well
-     it fits.
+   - Look up the patterns that fit, on the web that day: Refactoring.Guru, the Gang of Four, Fowler, Microsoft's
+     .NET guidance. Never the first pattern that comes to mind.
+   - For a package, read its own page and its repository that day: its licence (MIT, Apache or BSD preferred),
+     how it is maintained, its size, and how well it fits.
+   - For anything else outside the repo, such as a platform's rule, a price or how others do it, read the source
+     itself that day.
 
    Nothing in a finding comes from memory. What you could not find out, say so.
 2. **Say what you found**, in plain words: what it means first, then what in the code makes it a choice.

@@ -29,7 +29,9 @@ Five stops come first.
 2. **Check the facts** the answer rests on in `origin/main` after `git fetch origin main`: the guide's
    `src/site/LouisAgent.Identities.Guide/prompts/agent/louis-agent-guide/skills/what-we-sell.md` and `voice.md`,
    and `/mnt/project-files/brand/facebook/page-text.md` for what the Page itself says. An offer such as the two
-   free websites is checked before it is mentioned, since it can close.
+   free websites is checked before it is mentioned, since it can close. A fact outside our own product, such as
+   a platform's rule, a law or what another builder offers, is read at its source on the web that day before the
+   reply states it.
 3. **Write the reply in four parts**, most often four to six short sentences in all:
    - **Their name and the answer first.** "Hi Lindiwe, yes." or "Hi Lindiwe, not like Wix, no." The answer they
      asked for is in the first line.
@@ -39,8 +41,8 @@ Five stops come first.
      do today, never "would you use…?" (*Think like a startup*). One question, never a list.
 4. **Read it aloud**, as `write-the-copy` asks. Cut every word that adds nothing, and any word they wouldn't use
    ("agent" may need "a chat assistant on your site that answers your customers" the first time).
-5. **Hand it over** as below, with what the message taught us. Add the question to *The questions people keep
-   asking*, or count it again there.
+5. **Hand it over** as below, with what the message taught us. Add the question to `questions.md`, beside this
+   file, or count it again there.
 
 ## Think like a startup
 
@@ -58,7 +60,7 @@ possible customer and a free lesson in what the market wants. Three sources shap
   question back aims at the next real step.
 
 A question asked often is a signal for what to build. "Can I change it myself?" asked again and again is the case
-for the self-serve sites in the TODO (F133). Count it in the table below, and give Louis the count when he plans.
+for the self-serve sites in the TODO (F133). Count it in `questions.md`, and give Louis the count when he plans.
 
 ## Where the reply goes
 
@@ -92,17 +94,9 @@ From Help Scout's and Intercom's advice on telling a customer no, kept to what f
 
 ## The questions people keep asking
 
-Each answer is the truth today, checked in step 2. *Times* counts how often a question came in since 2026-11-21:
-add one each time, and a new row the first time.
-
-| They ask | Times | The honest answer |
-|---|---|---|
-| Can I customise my website's design? | 1 | Yes: Louis builds it to the design they want, their colours, logo, photos and pages. No: they don't edit the pages themselves like on Wix. A change later is a message to Louis. What the agent knows (hours, prices, services) is kept in files they can change |
-| What does it cost? | 0 | Every quote is made after a short call, since it depends on the business. Offer the call |
-| What is the agent? | 0 | A chat assistant on their site that answers their customers day and night from what it knows about the business, and passes enquiries on to them |
-| Can it take bookings or payments? | 0 | Not as part of a website. Reaching a diary or a till is a custom agent, quoted on its own |
-| Is my data safe? | 0 | Each agent runs in its own closed container, sees only what it is given, and can run in Azure's South African region |
-| Can I get one for free? | 0 | Only while the two free websites are open: enter at louis-agent.dev/free-websites, and Louis picks two |
+The questions that came before, how often each came, and the honest answer to each are in
+[questions.md](questions.md), beside this file. Read it before you draft. An answer there is still checked in
+step 2, since what we sell changes. Count the question there each time it comes, and add a row the first time.
 
 ## Checks before it is shown
 
@@ -114,8 +108,9 @@ add one each time, and a new row the first time.
 ## Handing it over
 
 Give Louis the reply ready to paste, then one line on why it is shaped that way, and a second version only when a
-real choice sits between them (a shorter one, or one that mentions the free websites). A new FAQ row, or a rule
-here that turned out wrong, is a change to this file, committed through `/ship-it` on his word.
+real choice sits between them (a shorter one, or one that mentions the free websites). A new row or a count in
+`questions.md`, or a rule here that turned out wrong, is a change to the repo, committed through `/ship-it` on
+his word.
 
 ## An example
 

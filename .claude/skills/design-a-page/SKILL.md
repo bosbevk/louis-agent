@@ -5,7 +5,7 @@ description: Works as the web designer, always on LouisAgent.Web's controls (ADR
 
 # Design a page
 
-Four stops come first.
+Five stops come first.
 
 1. **Built on our framework, always** (Louis, 2026-11-18). A site is configured framework components (ADR 0125):
    a page holds no HTML, only `LouisAgent.Web`'s controls (`Band`, `TileRow`, `Tile`, `LinkButton`, `ProductWindow`
@@ -19,6 +19,9 @@ Four stops come first.
    never made up here.
 4. **Plan, then build.** The flow is drawn and agreed with Louis before a section moves, and the plan names the
    framework control for every section.
+5. **Look at real pages first.** Before the flow is drawn, open two or three strong pages of the kind on the web
+   that day, and note the order of their sections and their one next step. The evidence below is the baseline. A
+   number from it is checked at its source before it is quoted to Louis.
 
 ## What the evidence says
 
@@ -28,10 +31,8 @@ Four stops come first.
   hook goes there.
 - **Try beats watch.** Interactive demos convert better than video, and the best sit above the fold or in the
   menu, with no sign-up in front (Navattic, vendor data). On our sites the guide and the demos are the hook.
-- **People scan.** They read the first lines and the first words down the left (the F-pattern). Headings and
-  tiles start with the word that matters.
-- **Plain words convert.** Pages at a grade 5 to 7 reading level convert at about twice the rate of
-  professional-level writing (Unbounce 2024).
+- **People scan, and plain words convert.** The numbers, and the rules for the words that follow from them, are
+  in `/write-the-copy`.
 - **Proof with a face.** Photos are remembered, and numbers and logos alone are not (CXL).
 - **Reassure where doubt comes.** A short line at the moment of hesitation, such as privacy beside a form,
   lifts the next step (NN/g).
@@ -55,7 +56,7 @@ Anything about us rather than the reader (the brand, the framework) goes lower, 
 ## Copy on the page
 
 - One idea a section, under a heading that says it.
-- Active voice; a button says what happens ("Leave your details", not "Submit").
+- The words themselves are written by `/write-the-copy`'s rules.
 - No claim the code doesn't back, and no number the ledger or an eval didn't give.
 - Every place on a page has its own address (ADR 0107).
 - The page's title and description are written for the search a reader makes (`get-a-site-found.md`).
@@ -84,8 +85,7 @@ businesses get a free website.". The look stayed the theme's, plain and not glas
 ## References
 
 - [ADR 0125: a site is configured framework components](../../../src/docs/adr/0125-a-site-is-configured-framework-components.md)
-- NN/g on [the fold](https://www.nngroup.com/articles/scrolling-and-attention/) and
-  [the F-pattern](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/)
-- Unbounce's [Conversion Benchmark Report](https://unbounce.com/conversion-benchmark-report/), on reading level
+- NN/g on [the fold](https://www.nngroup.com/articles/scrolling-and-attention/)
+- `/write-the-copy`, for how people read a page and the rules for its words
 - Navattic's [State of the Interactive Product Demo](https://www.navattic.com/report/state-of-the-interactive-product-demo-2025),
   vendor data
