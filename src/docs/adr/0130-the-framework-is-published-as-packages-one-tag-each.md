@@ -36,6 +36,10 @@ We publish the framework as NuGet packages, one tag each.
   batch, since GitHub starts one run per tag in no set order, and pushes with the run's own token.
 - **Nothing is published that can't be restored.** Before the push, a guard finds each package's framework
   dependency in the batch or on the feed at the version it names; one that is neither stops the run.
+- **A package carries everything a product needs to use it outside this repository** (added 2026-11-21, F166.3): its
+  Sass, the files its code reads at run time, and public access to what a pack calls. Inside this repository every
+  path exists, so a gap shows only from outside: `LouisAgent.Packages.IntegrationTests` proves each one from a
+  project outside it, and a product never copies a framework file to fill one.
 
 ## Consequences
 
@@ -47,6 +51,9 @@ We publish the framework as NuGet packages, one tag each.
   its run publishes the whole batch. [Publish the framework](../guides/publish-the-framework.md) says how.
 - A version is never published twice: a broken release is followed by the next version.
 - A test that packs a project says the version it means, since a project's version now comes from its tags (FX218).
+- Puls's first build on its own found four such gaps, each fixed in the framework and held by a test there: the web
+  packages' Sass, the test helpers' and the runner's files, and `LeadImage`. How each is packed is in
+  [Publish the framework](../guides/publish-the-framework.md#what-a-package-carries-besides-its-code).
 
 ## Links
 
