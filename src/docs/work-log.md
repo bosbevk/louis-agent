@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 139 | 98 |
+| Features (`F`) | 139 | 99 |
 | Fixes (`FX`) | 204 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (133 in the TODO)
+## Open (134 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -57,6 +57,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F73 | Check the 47 new own-prices rows | Now |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
+| F168 | Facebook auto-answers (Louis, 2026-11-21: "plan integration into facebook to auto answer questions"): the guide answers the Page's Messenger in his voice through a framework library, `louis-agent.api.messenger`, over the sessions API with its own key and a daily cap per person, and steps back when Louis answers himself; a data-deletion callback; eleven steps, after F126 | Now, after F126 |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | CL68 | Agents and their subagents | Now |

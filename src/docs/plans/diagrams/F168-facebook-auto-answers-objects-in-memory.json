@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F168 Facebook auto-answers: objects in memory",
+  "caption": "One worker reads one queue; each person on Messenger has one conversation, holding the guide's session id and whether Louis has taken over.",
+  "flow": {
+    "nodes": [
+      { "id": "opts", "label": "MessengerOptions\nfrom the environment, once", "icon": "settings", "tone": "teal" },
+      { "id": "seen", "label": "SeenMessages\nmids of the last hour", "icon": "checks", "tone": "violet" },
+      { "id": "queue", "label": "Channel<IncomingTurn>\nbounded", "icon": "stack", "tone": "violet" },
+      { "id": "worker", "label": "MessengerWorker\nBackgroundService", "icon": "chip", "tone": "violet" },
+      { "id": "convs", "label": "PageConversations\npsid → PageConversation", "icon": "users", "tone": "violet" },
+      { "id": "conv", "label": "PageConversation\nsession id, one turn at a time,\nquiet until (Louis took over)", "icon": "message", "tone": "green" },
+      { "id": "turns", "label": "AgentTurnClient\nHttpClient to /v1/sessions", "icon": "server", "tone": "violet" },
+      { "id": "sender", "label": "GraphMessengerSender\nHttpClient to graph.facebook.com", "icon": "exchange", "tone": "violet" }
+    ],
+    "edges": [
+      { "from": "worker", "to": "queue", "word": "reads" },
+      { "from": "worker", "to": "convs" },
+      { "from": "convs", "to": "conv", "word": "one per person" },
+      { "from": "worker", "to": "turns" },
+      { "from": "worker", "to": "sender" },
+      { "from": "seen", "to": "queue", "style": "dashed", "word": "lets a mid in once" },
+      { "from": "opts", "to": "sender", "style": "dashed", "word": "Page token" }
+    ],
+    "direction": "down"
+  }
+}

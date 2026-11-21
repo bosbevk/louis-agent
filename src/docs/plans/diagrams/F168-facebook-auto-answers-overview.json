@@ -1,0 +1,103 @@
+{
+  "kind": "cards",
+  "title": "F168 Facebook auto-answers: the overview",
+  "caption": "Orbi answers the Page's Messenger in Louis's voice: a door Meta calls, a conversation per person, the guide with a Messenger focus, and Louis able to take over any time. It starts after F126.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f167",
+            "icon": "message",
+            "title": "F168 Facebook auto-answers",
+            "code": "louis-agent.api.messenger",
+            "look": "highlight",
+            "text": "Someone writes to the Page, and the guide answers inside 30 seconds."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "door",
+            "icon": "shield",
+            "title": "Meta's door",
+            "code": "steps 1 to 4",
+            "text": "The handshake, the signature, the message as records, and a 200 at once."
+          },
+          {
+            "id": "talk",
+            "icon": "exchange",
+            "title": "The conversation",
+            "code": "steps 5 and 6",
+            "text": "One guide session per person with a daily cap, the answer sent back with quick replies."
+          },
+          {
+            "id": "voice",
+            "icon": "chip",
+            "title": "The guide on Messenger",
+            "code": "step 7",
+            "text": "One more focus skill, written from answer-a-message."
+          },
+          {
+            "id": "louis",
+            "icon": "user",
+            "title": "Louis takes over",
+            "code": "step 8",
+            "text": "When he answers from the inbox, the guide steps back for 24 hours."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "del",
+            "icon": "shield",
+            "title": "Deleting a person's data",
+            "code": "step 9",
+            "text": "Meta's deletion callback, proved live first."
+          },
+          {
+            "id": "eval",
+            "icon": "checks",
+            "title": "Measured",
+            "code": "step 10",
+            "text": "A judged eval of Messenger conversations, in F126's format, paid, on Louis's go."
+          },
+          {
+            "id": "ship",
+            "icon": "cloud",
+            "title": "Shipped",
+            "code": "step 11",
+            "text": "Key Vault settings, the docs and the write-up."
+          },
+          {
+            "id": "meta",
+            "icon": "settings",
+            "title": "At Meta, by Louis",
+            "code": "free",
+            "text": "The app, the Page token, Business Verification and App Review."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "f167",
+        "to": "door"
+      },
+      {
+        "from": "f167",
+        "to": "talk"
+      },
+      {
+        "from": "f167",
+        "to": "voice"
+      },
+      {
+        "from": "f167",
+        "to": "louis"
+      }
+    ]
+  }
+}
