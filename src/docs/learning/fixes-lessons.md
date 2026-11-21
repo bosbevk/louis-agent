@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX219 · A test that races the machine loses on a faster one
+
+The test for "a re-score while another run runs is a 409" started a real stub run to keep the runner busy, and said
+so in its own comment: the runner "takes longer to start and finish than this request takes to arrive". On this PC it
+always did. On a CI runner the stub sometimes finished first, the endpoint saw nothing running, and answered 201. The
+cure was to stop racing: the busy run is now the stand-in runner's `sleeper`, which holds four seconds on purpose,
+and the run to re-score is written to the store directly. The lesson is that a test which depends on one thing being
+slower than another holds only on the machines it was tried on; hold the slow thing open on purpose, or wait for the
+state you need, never for a speed. Skill 18 (testing and shipping: a test passes for its reason, not its timing).
+
 ## FX218 · A default someone relied on is a contract nobody wrote down
 
 F166.2 gave every package a version from its tags. One older test packed a pack with no version at all and asked for

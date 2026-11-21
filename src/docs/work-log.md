@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 140 | 99 |
-| Fixes (`FX`) | 206 | 6 |
+| Fixes (`FX`) | 207 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -303,10 +303,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (206 done)
+## Fixes (207 done)
 
 | Id | When | What |
 |---|---|---|
+| FX219 | 2026-11-21 | The re-score's 409 test keeps the runner busy with the stand-in's sleeper, not a stub run a fast machine finishes before the request arrives |
 | FX218 | 2026-11-21 | The pack-as-a-package integration test packs at the version it asks for, since MinVer versions every package from its tags after F166.2 and an untagged pack is no longer 1.0.0 |
 | FX217 | 2026-11-21 | framework.louis-agent.dev names a PNG icon and an Apple touch icon beside its SVG, since Google Search shows no SVG favicon and put a grey globe by every result |
 | FX216 | 2026-11-20 | One address per page, for Google: a section's canonical names its page, both sitemaps list pages only, and with `SITE_ADDRESS` a page on www or any other host is sent to the site's address (ADR 0128) |
