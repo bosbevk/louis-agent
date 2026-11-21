@@ -35,8 +35,12 @@ line.
 - **At 1920 by 1080**: every page and every section. Louis, 2026-11-09: "the agent should page through each step
   remember that when checking 1080p". A section that pages sideways is gone through page by page, 1 of 3, 2 of 3,
   3 of 3, and not only its first.
+- **A section further down, at its own address.** A picture is the first screen of an address, in headless
+  Chrome and in Playwright alike, and every section has its own address, so each is shot at its own.
 - **Nothing cut off, and nothing on top of something else.**
 - **No error in the browser's console.**
+- **In dark, a colour that looks made for a light page.** No page sets `data-bs-theme`, so a Bootstrap value the
+  theme doesn't set stays Bootstrap's light one, as a code word's pink did. Measure it.
 
 ## Three ways to look, and one in a cloud session
 
@@ -54,7 +58,7 @@ paged section too. It runs the guide, which is a model call: run it, and report 
 ### Headless Chrome, for an exact size
 
 A second Chrome with no window, which touches nobody's browser. It takes a picture of the first screen of an
-address. Every section has its own address, so a section further down is shot at its own.
+address.
 
 The site is shown inside a frame of exactly the size wanted, held by `frame.html` beside this file. The frame is
 what makes the size exact, so the same line serves the desktop and the phone.
@@ -97,9 +101,10 @@ A cloud container has no Louis's Chrome and no Windows Chrome, but Playwright an
 `require('playwright')` works from any folder and `chromium.launch()` needs no options. Open a page with
 `viewport: { width: 1920, height: 1080 }` or `{ width: 390, height: 844 }`, which is the page's own size, so no
 frame is needed. Check `document.documentElement.scrollWidth` against the width for a sideways scroll, and read
-each picture. Start the site with made-up keys before the run command, as
-`ANTHROPIC_API_KEY=not-used-for-a-page-look AGENT_API_KEY=local-look-only AGENT_AUTH=off`. The guide then can't
-answer, so a look at the guide's own answers waits for Louis's Chrome.
+each picture. Start the site with made-up keys before the run command, the two of stop 4 among them, as
+`ANTHROPIC_API_KEY=not-used-for-a-page-look AGENT_API_KEY=local-look-only AGENT_AUTH=off
+RESEND_API_KEY=not-a-real-key ADMIN_API_KEY=local-look-only`. The guide then can't answer, so a look at the
+guide's own answers waits for Louis's Chrome.
 
 A container reaches only the hosts its network allows, and that changes what a page shows.
 
