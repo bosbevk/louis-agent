@@ -106,3 +106,26 @@ jobs:
         with:
           name: test-results
           path: ${{ runner.temp }}/TestResults
+
+  bicep:
+    # The framework's own Bicep file for what the two sites stand on (F170), built and linted on every pull request.
+    # Offline: the Azure CLI on the runner fetches the Bicep tool and the pinned modules, and signs in to nothing. A
+    # deploy is Louis's, by hand, since it makes role assignments CI's identity can't (F170, his pick 4).
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/site/deploy/azure
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the file and its parameters
+        run: |
+          az bicep install
+          az bicep build -f main.bicep --stdout > /dev/null
+          az bicep build-params -f main.bicepparam --stdout > /dev/null
+
+      - name: Lint, where any warning fails
+        # The linter's rules are bicepconfig.json's, beside the file; it says nothing when the file is clean.
+        run: |
+          out=$(az bicep lint -f main.bicep 2>&1)
+          if [ -n "$out" ]; then echo "$out"; exit 1; fi
