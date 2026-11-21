@@ -329,6 +329,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "check-a-page", "check-a-pag
 	ProjectSection(SolutionItems) = preProject
 		.claude\skills\check-a-page\frame.html = .claude\skills\check-a-page\frame.html
 		.claude\skills\check-a-page\SKILL.md = .claude\skills\check-a-page\SKILL.md
+		.claude\skills\check-a-page\tests.md = .claude\skills\check-a-page\tests.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "research-the-market", "research-the-market", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C70}"
