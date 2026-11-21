@@ -177,19 +177,19 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="364" y="47" text-anchor="start">puls-api, coding-api,</text>
       <text class="pic-name" x="364" y="63" text-anchor="start">starter-api, site-api,</text>
       <text class="pic-name" x="364" y="79" text-anchor="start">site-framework-api</text>
-      <rect class="pic-panel" x="15.2" y="160" width="263.6" height="132" rx="10" />
-      <rect class="pic-fill tone-green" x="31.2" y="212" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(37.2 218) scale(0.6667)">
+      <rect class="pic-panel" x="22.8" y="160" width="248.4" height="132" rx="10" />
+      <rect class="pic-fill tone-green" x="38.8" y="212" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(44.8 218) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="pic-name" x="67.2" y="191" text-anchor="start">The sites</text>
-      <text class="pic-name" x="67.2" y="207" text-anchor="start">louis-agent.puls,</text>
-      <text class="pic-name" x="67.2" y="223" text-anchor="start">louis-agent.code-review,</text>
-      <text class="pic-name" x="67.2" y="239" text-anchor="start">louis-agent.starter,</text>
-      <text class="pic-name" x="67.2" y="255" text-anchor="start">louis-agent.site,</text>
-      <text class="pic-name" x="67.2" y="271" text-anchor="start">louis-agent.site-framework</text>
+      <text class="pic-name" x="74.8" y="191" text-anchor="start">The sites</text>
+      <text class="pic-name" x="74.8" y="207" text-anchor="start">LouisAgent.Puls,</text>
+      <text class="pic-name" x="74.8" y="223" text-anchor="start">LouisAgent.CodeReview,</text>
+      <text class="pic-name" x="74.8" y="239" text-anchor="start">LouisAgent.Starter,</text>
+      <text class="pic-name" x="74.8" y="255" text-anchor="start">LouisAgent.Site,</text>
+      <text class="pic-name" x="74.8" y="271" text-anchor="start">LouisAgent.SiteFramework</text>
       <rect class="pic-panel" x="11.4" y="352" width="271.2" height="84" rx="10" />
       <rect class="pic-fill tone-teal" x="27.4" y="380" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(33.4 386) scale(0.6667)">

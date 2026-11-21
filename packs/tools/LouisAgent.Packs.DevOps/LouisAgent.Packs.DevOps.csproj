@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="LouisAgent.Packs.DevOps.Tests" />
-    <InternalsVisibleTo Include="louis-agent.pack.devops.integration-tests" />
+    <InternalsVisibleTo Include="LouisAgent.Packs.DevOps.IntegrationTests" />
     <InternalsVisibleTo Include="LouisAgent.Coding.Catalog.Tests" />
   </ItemGroup>
 

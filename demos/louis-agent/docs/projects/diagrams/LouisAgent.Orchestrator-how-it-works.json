@@ -34,7 +34,7 @@
         "id": "Fix",
         "icon": "cloud",
         "tone": "red",
-        "label": "CallLouisAgentFix\n(main checked out \u2192 session on\nlouis-agent.api \u2192 FIX-RESULT)"
+        "label": "CallLouisAgentFix\n(main checked out \u2192 session on\nLouisAgent.Api \u2192 FIX-RESULT)"
       },
       {
         "id": "Verify",

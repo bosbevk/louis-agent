@@ -9,6 +9,13 @@
 #
 # The text is rewritten before anything moves, so every path is still where git says it is. This folder and F167's
 # own plan are left out of the rewrite, since they name the old projects on purpose.
+#
+# A second pass followed in step 4: the run had left names that stood right after a \n escape in a diagram's JSON
+# label. Names.pm then took that escape as a word's start too, and only those files were rewritten:
+#
+#   git grep -z -l -F '\nlouis-agent.' -- . ':!src/tools/rename-projects' ':!src/docs/plans/*F167-*' \
+#       | perl src/tools/rename-projects/rename.pl src/tools/rename-projects/names.tsv write \
+#       > src/tools/rename-projects/report-escapes.txt
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 here=src/tools/rename-projects

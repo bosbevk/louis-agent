@@ -26,7 +26,7 @@ reference with its known-bad. It loads and conforms (`TemplateFolderTests`), and
 shows in a run. Copy it under your identity's `Evals/`, named for the task:
 
 ```bash
-cp -r src/evals/template/Example demos/acme/evals/louis-agent.identity.acme.evals/Evals/Quotes
+cp -r src/evals/template/Example demos/acme/evals/LouisAgent.Identities.Acme.Evals/Evals/Quotes
 ```
 
 The identity's evals project copies every file under `Evals/` beside the build, which is how the runner finds it. A new
@@ -225,7 +225,7 @@ own gets a pass and a fail on made-up transcripts.
 
 ```bash
 dotnet test src/tests/evals/LouisAgent.Evals.Runner.Tests --filter "FullyQualifiedName~EvalConformance"
-dotnet test demos/acme/tests/louis-agent.identity.acme.evals.tests
+dotnet test demos/acme/tests/LouisAgent.Identities.Acme.Evals.Tests
 ```
 
 ## 8. List it, and run it
@@ -259,7 +259,7 @@ Publish), and each one saves the draft first:
    you like, a few samples (commas between). A try is always a replay, so it costs nothing; the link opens its run
    page. A fresh run stays the Run button's, and spends money.
 5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
-   checkout, the folder is committed to `demos/{identity}/evals/louis-agent.identity.{identity}.evals/Evals/{Name}/` on the branch
+   checkout, the folder is committed to `demos/{identity}/evals/LouisAgent.Identities.{Identity}.Evals/Evals/{Name}/` on the branch
    `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.
    Where the API has no git workspace (Azure), the folder comes as a zip to add in a pull request.
 

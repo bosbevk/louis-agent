@@ -47,8 +47,8 @@ write first.
 A test's folder mirrors the source, and its namespace is the folder. So a test of
 `src/engine/LouisAgent.Core.Web/Robots/RobotsPolicy.cs` is
 `src/tests/engine/LouisAgent.Core.Web.Tests/Robots/RobotsPolicyTests.cs`, in `LouisAgent.Core.Web.Tests.Robots`. The
-project mirrors the project, too. A pack's tests are in `packs/tests/louis-agent.pack.{name}.tests`, and an identity's
-in `demos/{name}/tests/louis-agent.identity.{name}.tests`. No test project references another, and a test file holds
+project mirrors the project, too. A pack's tests are in `packs/tests/LouisAgent.Packs.{Name}.Tests`, and an identity's
+in `demos/{name}/tests/LouisAgent.Identities.{Name}.Tests`. No test project references another, and a test file holds
 at most 400 lines, so split a long one by what it tests.
 
 A test that leaves its process is an integration test. That's one that starts a real process (git, bash, an

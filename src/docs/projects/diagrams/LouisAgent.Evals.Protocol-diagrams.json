@@ -9,7 +9,7 @@
         "id": "writer",
         "icon": "file",
         "tone": "green",
-        "label": "ProtocolWriter, in\nlouis-agent.evals"
+        "label": "ProtocolWriter, in\nLouisAgent.Evals"
       },
       {
         "id": "out",

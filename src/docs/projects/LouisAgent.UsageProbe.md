@@ -1,7 +1,7 @@
 # LouisAgent.UsageProbe — design
 
 > **Kind:** console tool (a console app) · **Path:** `src/tools/LouisAgent.UsageProbe/` · **References:** LouisAgent.Core,
-> and the three model providers (`LouisAgent.Core.Anthropic`, `.core.ollama`, `.core.openai`) · **Docker service:** none
+> and the three model providers (`LouisAgent.Core.Anthropic`, `.Core.Ollama`, `.Core.OpenAi`) · **Docker service:** none
 > **Also shows:** `component`, `sequence`
 
 ![The usage probe, and what it shows: the raw report, the ledger's line, and a ledger priced](diagrams/LouisAgent.UsageProbe.svg)

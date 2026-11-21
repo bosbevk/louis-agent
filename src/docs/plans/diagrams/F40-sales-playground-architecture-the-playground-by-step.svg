@@ -207,7 +207,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 20h14" />
       </g>
       <text class="pic-name" x="64" y="97" text-anchor="start">Control room (steps 5-6)</text>
-      <text class="pic-name" x="64" y="113" text-anchor="start">louis-agent.web: runs live,</text>
+      <text class="pic-name" x="64" y="113" text-anchor="start">LouisAgent.Web: runs live,</text>
       <text class="pic-name" x="64" y="129" text-anchor="start">grades, cost</text>
       <rect class="pic-panel" x="12" y="240" width="286.4" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="28" y="260" width="28" height="28" rx="9" />

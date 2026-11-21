@@ -23,7 +23,7 @@ site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demo
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in the `prompts/` of core, an identity or a pack, and the function skills the agent wrote |
+| What | Public C# methods on a pack's tool classes in `packs/tools/LouisAgent.Packs.{Name}/` | Markdown in the `prompts/` of core, an identity or a pack, and the function skills the agent wrote |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md` (the dotnet pack's guide), a function skill in the skills folder's `agent/functions/` |

@@ -186,7 +186,7 @@ It is configuration only: see [MODELS.md](../../docs/MODELS.md). `LLM_PROFILE` p
   unknown.
 - **Run `src/tools/LouisAgent.UsageProbe`** before trusting a new provider's usage numbers.
 - **Provider differences belong in the provider's own library on core**: `LouisAgent.Core.Anthropic`,
-  `.core.ollama`, `.core.openai`. Each is an `ILlmProvider` with the client, the usage mapper and the prompt
+  `.Core.Ollama`, `.Core.OpenAi`. Each is an `ILlmProvider` with the client, the usage mapper and the prompt
   caching. Never in core, `AgentEngine` or the tools. A program composes the providers it wants in its
   `HostServices`.
 - **Where providers need different logic for the same concern, write it as a strategy**: an interface, one

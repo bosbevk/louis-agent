@@ -9,7 +9,7 @@
         "id": "program",
         "icon": "terminal",
         "tone": "blue",
-        "label": "Your program\n(the coding agent\u0027s:\nlouis-agent.coding-cli)"
+        "label": "Your program\n(the coding agent\u0027s:\nLouisAgent.CodingCli)"
       },
       {
         "id": "host",

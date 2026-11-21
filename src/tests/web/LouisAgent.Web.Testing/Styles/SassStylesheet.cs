@@ -134,7 +134,7 @@ public sealed partial record SassStylesheet(string Project)
 
     /// <summary>
     /// One import in the site's bundle, and the library's name in it:
-    /// <c>@import '_content/LouisAgent.Web/louis-agent.web.k3x9z2m1qa.bundle.scp.css';</c>.
+    /// <c>@import '_content/LouisAgent.Web/LouisAgent.Web.k3x9z2m1qa.bundle.scp.css';</c>.
     /// </summary>
     [GeneratedRegex("""@import '_content/([^/']+)/[^']+';""")]
     private static partial Regex BundleImport();

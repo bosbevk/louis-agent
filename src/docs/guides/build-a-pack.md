@@ -23,8 +23,8 @@ need: settings (`RecipesOptions`) and a core service (the guarded browser). Read
 ## 1. Create the project
 
 ```bash
-dotnet new classlib -o packs/tools/louis-agent.pack.units
-dotnet sln louis-agent-solution.sln add packs/tools/louis-agent.pack.units/louis-agent.pack.units.csproj
+dotnet new classlib -o packs/tools/LouisAgent.Packs.Units
+dotnet sln louis-agent-solution.sln add packs/tools/LouisAgent.Packs.Units/LouisAgent.Packs.Units.csproj
 ```
 
 Delete the template's `Class1.cs`, and make the csproj look like the packs':
@@ -40,7 +40,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="louis-agent.pack.units.tests" />
+    <InternalsVisibleTo Include="LouisAgent.Packs.Units.tests" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\engine\LouisAgent.Composition\LouisAgent.Composition.csproj" />
@@ -50,7 +50,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\docs\projects\louis-agent.pack.units.md" Link="docs\louis-agent.pack.units.md" />
+    <None Include="..\..\docs\projects\LouisAgent.Packs.Units.md" Link="docs\LouisAgent.Packs.Units.md" />
   </ItemGroup>
 </Project>
 ```
@@ -60,7 +60,7 @@ The only project reference is `LouisAgent.Composition`
 anything under `src/evals/` fails `ArchitectureTests`.
 
 The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does.
-Nothing is built or copied. Write the doc (`packs/docs/projects/louis-agent.pack.units.md`) once the pack works.
+Nothing is built or copied. Write the doc (`packs/docs/projects/LouisAgent.Packs.Units.md`) once the pack works.
 
 ## 2. Write the tools
 
@@ -280,8 +280,8 @@ catalogue refuses it as unknown.
 ## 7. Test it
 
 ```bash
-dotnet new nunit -o packs/tests/louis-agent.pack.units.tests
-dotnet sln louis-agent-solution.sln add packs/tests/louis-agent.pack.units.tests/louis-agent.pack.units.tests.csproj
+dotnet new nunit -o packs/tests/LouisAgent.Packs.Units.tests
+dotnet sln louis-agent-solution.sln add packs/tests/LouisAgent.Packs.Units.tests/LouisAgent.Packs.Units.tests.csproj
 ```
 
 Give the test project the packs' tests' references (the pack, and `src/tests/shared/LouisAgent.Testing` for the shared fakes), mirror
@@ -336,7 +336,7 @@ To prove what your tools do, first try a general check in your eval file, naming
 ([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
 mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
 
-A rule no general check can say goes in its own project, `packs/evals/louis-agent.pack.{name}.checks`,
+A rule no general check can say goes in its own project, `packs/evals/LouisAgent.Packs.{Name}.Checks`,
 which only the runner references, so someone can use your tools without the evals:
 
 1. **Its csproj** references the check contract, `..\..\..\src\evals\LouisAgent.Evals.Checks\LouisAgent.Evals.Checks.csproj`,
@@ -347,7 +347,7 @@ which only the runner references, so someone can use your tools without the eval
 3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
    `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
 4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the catalogues the demo's eval program hands to the runner (`PulsCatalogs`).
-5. **Test it** in `packs/tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
+5. **Test it** in `packs/tests/LouisAgent.Packs.{Name}.Checks.Tests`, on trials built from canned events (`ShopTrials`), test
    first. The where-to-buy project is the model.
 
 A contract your pack and the eval share lives in a shared project, or is duplicated. A duplicate is held equal by a test

@@ -21,8 +21,8 @@ same steps and adds two languages, five specialists and a minion. Read it beside
 ## 1. Create the project
 
 ```bash
-dotnet new classlib -o demos/acme/identity/louis-agent.identity.acme
-dotnet sln louis-agent-solution.sln add demos/acme/identity/louis-agent.identity.acme/louis-agent.identity.acme.csproj
+dotnet new classlib -o demos/acme/identity/LouisAgent.Identities.Acme
+dotnet sln louis-agent-solution.sln add demos/acme/identity/LouisAgent.Identities.Acme/LouisAgent.Identities.Acme.csproj
 ```
 
 Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
@@ -45,7 +45,7 @@ Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
     <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\docs\projects\louis-agent.identity.acme.md" Link="docs\louis-agent.identity.acme.md" />
+    <None Include="..\..\docs\projects\LouisAgent.Identities.Acme.md" Link="docs\LouisAgent.Identities.Acme.md" />
   </ItemGroup>
 </Project>
 ```
@@ -56,7 +56,7 @@ when the identity holds workflow code that calls the pack's public types
 ([ADR 0027](../adr/0027-engine-identities-and-packs.md)). A pack may never reference an identity.
 
 The last group shows the identity's design doc under `docs/` in the IDE's solution explorer, as every project does.
-Nothing is built or copied. Write the doc (`demos/acme/docs/projects/louis-agent.identity.acme.md`) once the identity
+Nothing is built or copied. Write the doc (`demos/acme/docs/projects/LouisAgent.Identities.Acme.md`) once the identity
 works.
 
 ## 2. Write the identity class
@@ -240,8 +240,8 @@ the enum member with the case ignored, so a name with a dash needs the member to
 ## 6. Test it
 
 ```bash
-dotnet new nunit -o demos/acme/tests/louis-agent.identity.acme.tests
-dotnet sln louis-agent-solution.sln add demos/acme/tests/louis-agent.identity.acme.tests/louis-agent.identity.acme.tests.csproj
+dotnet new nunit -o demos/acme/tests/LouisAgent.Identities.Acme.tests
+dotnet sln louis-agent-solution.sln add demos/acme/tests/LouisAgent.Identities.Acme.tests/LouisAgent.Identities.Acme.tests.csproj
 ```
 
 The test project references the identity, every pack it names (so its sessions build as the host builds them), and

@@ -34,7 +34,7 @@ two products to carry, not one).
   (`EVALS_MONGO_DATABASE: puls_benchmarks`), its peers and its voice; the API reads them as settings.
 - **Renames keep what is stored and linked** (expand, then contract): a new name answers beside the old one, stored
   data is read under either name, and a TODO line removes each alias once nothing uses it.
-- **A test holds it.** `ApiNamesNoProductTests` reads the products from `identities/louis-agent.identity.*` and fails
+- **A test holds it.** `ApiNamesNoProductTests` reads the products from `demos/*/identity/LouisAgent.Identities.*` and fails
   on any of their names in the API, with two exceptions listed in the test: the project file's choice of web app
   (until Phase 9 gives each product its own host), and `puls_calls`, read from turns stored before the rename and
   still the eval protocol's field until CL22 versions it.

@@ -15,7 +15,7 @@
         "id": "Sites",
         "icon": "browser",
         "tone": "green",
-        "label": "The sites\nlouis-agent.puls,\nlouis-agent.code-review,\nlouis-agent.starter,\nlouis-agent.site,\nlouis-agent.site-framework"
+        "label": "The sites\nLouisAgent.Puls,\nLouisAgent.CodeReview,\nLouisAgent.Starter,\nLouisAgent.Site,\nLouisAgent.SiteFramework"
       },
       {
         "id": "PacksWeb",

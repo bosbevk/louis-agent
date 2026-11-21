@@ -9,7 +9,7 @@
         "id": "plugins",
         "icon": "settings",
         "tone": "blue",
-        "label": "Plugins, in\nlouis-agent.host-packs"
+        "label": "Plugins, in\nLouisAgent.HostPacks"
       },
       {
         "id": "identity",

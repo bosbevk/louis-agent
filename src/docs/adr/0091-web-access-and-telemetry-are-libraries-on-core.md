@@ -22,7 +22,7 @@ handed to `AgentHost.Build`, the way it hands in its catalogue of identities and
 no web itself and core's bootstrap starts no tracer itself. Core keeps its own span source (`TurnSpans`, on
 `System.Diagnostics`), the crash handler, and the logging, whose collector sink the telemetry adds through the seam.
 PuppeteerSharp, OpenTelemetry, its OTLP exporter and Serilog's OpenTelemetry sink leave core's project file
-(`CorePackagesTests` holds it). The name `louis-agent.core.X` says "sits on core"; what sits below core keeps a plain
+(`CorePackagesTests` holds it). The name `LouisAgent.Core.X` says "sits on core"; what sits below core keeps a plain
 name.
 
 Weighed and not taken: both beside core, depending on the contracts only (more seams for the same shipping result,

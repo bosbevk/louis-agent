@@ -9,7 +9,7 @@
         "id": "room",
         "icon": "chart",
         "tone": "green",
-        "label": "Control room (steps 5-6)\nlouis-agent.web: runs live,\ngrades, cost",
+        "label": "Control room (steps 5-6)\nLouisAgent.Web: runs live,\ngrades, cost",
         "group": "screen"
       },
       {

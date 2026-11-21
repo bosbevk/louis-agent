@@ -183,7 +183,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 17l6 0" />
       </g>
       <text class="pic-name" x="116.6" y="175" text-anchor="start">ProtocolWriter, in</text>
-      <text class="pic-name" x="116.6" y="191" text-anchor="start">louis-agent.evals</text>
+      <text class="pic-name" x="116.6" y="191" text-anchor="start">LouisAgent.Evals</text>
       <path class="pic-panel flow-shape pic-edge tone-amber" d="M73.6 278L276.4 278L258.4 330L55.6 330Z" />
       <rect class="pic-fill tone-amber" x="83.6" y="290" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(89.6 296) scale(0.6667)">

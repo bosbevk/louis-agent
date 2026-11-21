@@ -166,15 +166,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="pic-pill pic-edge tone-green" x="154.4" y="324" width="134" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-green" x="221.4" y="336" text-anchor="middle">StreamPromptAsync,</text>
       <text class="pic-pill-word pic-ink tone-green" x="221.4" y="348" text-anchor="middle">HandleUserCommand</text>
-      <rect class="pic-panel" x="342.8" y="0" width="240.8" height="84" rx="10" />
-      <rect class="pic-fill tone-blue" x="358.8" y="28" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(364.8 34) scale(0.6667)">
+      <rect class="pic-panel" x="350.4" y="0" width="225.6" height="84" rx="10" />
+      <rect class="pic-fill tone-blue" x="366.4" y="28" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(372.4 34) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="pic-name" x="394.8" y="31" text-anchor="start">Your program</text>
-      <text class="pic-name" x="394.8" y="47" text-anchor="start">(the coding agent's:</text>
-      <text class="pic-name" x="394.8" y="63" text-anchor="start">louis-agent.coding-cli)</text>
+      <text class="pic-name" x="402.4" y="31" text-anchor="start">Your program</text>
+      <text class="pic-name" x="402.4" y="47" text-anchor="start">(the coding agent's:</text>
+      <text class="pic-name" x="402.4" y="63" text-anchor="start">LouisAgent.CodingCli)</text>
       <rect class="pic-panel" x="378.2" y="150" width="170" height="52" rx="10" />
       <rect class="pic-fill tone-green" x="394.2" y="162" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(400.2 168) scale(0.6667)">

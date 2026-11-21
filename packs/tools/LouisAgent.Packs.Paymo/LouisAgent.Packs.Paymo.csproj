@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="LouisAgent.Packs.Paymo.Tests" />
-    <InternalsVisibleTo Include="louis-agent.pack.paymo.integration-tests" />
+    <InternalsVisibleTo Include="LouisAgent.Packs.Paymo.IntegrationTests" />
     <InternalsVisibleTo Include="LouisAgent.Coding.Catalog.Tests" />
   </ItemGroup>
 

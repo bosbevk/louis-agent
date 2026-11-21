@@ -25,7 +25,8 @@ sub read_names {
     }
     my $names = join '|', map { quotemeta } sort { length($b) <=> length($a) || $a cmp $b } keys %new;
     my $endings = qr/\.(?:csproj|md|svg|dll|json|styles\.css)(?![A-Za-z0-9._-])/;
-    my $whole = qr/(?<![A-Za-z0-9._-])($names)(?=\z|[^A-Za-z0-9._-]|-|$endings|\.(?![A-Za-z0-9]))/;
+    # A name may also start right after a JSON label's \n escape, whose n would otherwise read as part of a word.
+    my $whole = qr/(?:(?<![A-Za-z0-9._-])|(?<=\\n))($names)(?=\z|[^A-Za-z0-9._-]|-|$endings|\.(?![A-Za-z0-9]))/;
     return (\%new, $whole);
 }
 
