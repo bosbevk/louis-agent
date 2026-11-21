@@ -1,0 +1,18 @@
+<Project>
+
+  <!-- F166.3: what a framework package that holds Sass brings to a site that uses it. Packed as the package's own
+       buildTransitive file, so NuGet runs it in any project that takes the package. Every such package adds its Sass
+       to one list, and one target copies the whole list into the site's obj/framework-sass/ before the Sass compiler
+       runs; a site names that folder once in its sasscompiler.json IncludePaths, as "obj/framework-sass". Each package
+       carries this same file, so the target is defined the same way by each, and the list holds them all. -->
+  <ItemGroup>
+    <FrameworkSass Include="$(MSBuildThisFileDirectory)../sass/**/*.scss" />
+  </ItemGroup>
+
+  <Target Name="UnpackFrameworkSass" BeforeTargets="Compile Sass">
+    <Copy SourceFiles="@(FrameworkSass)"
+          DestinationFiles="@(FrameworkSass->'$(BaseIntermediateOutputPath)framework-sass/%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

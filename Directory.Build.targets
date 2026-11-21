@@ -11,4 +11,12 @@
     <PackageReference Include="MinVer" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- F166.3: a package that holds Sass carries it, for a site outside this repository to compile as one inside does
+       (Louis's pick A of finding 6), with the shared build file that unpacks it into the site's obj/framework-sass/. -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and Exists('$(MSBuildProjectDirectory)/Styles')">
+    <None Include="Styles/**/*.scss" Pack="true" PackagePath="sass/" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)build/FrameworkSass.targets" Pack="true"
+          PackagePath="buildTransitive/$(PackageId).targets" Visible="false" />
+  </ItemGroup>
+
 </Project>

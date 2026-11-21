@@ -81,4 +81,39 @@ public class PackagesTests
             Assert.That(targets, Does.Contain("<PackageReference Include=\"MinVer\""));
         });
     }
+
+    /// <summary>
+    /// A package that holds Sass carries it, under <c>sass/</c>, with the shared build file a site's build runs, so a site
+    /// outside this repository compiles the framework's Sass as one inside does (Louis's pick A of F166.3's finding 6).
+    /// </summary>
+    [Test]
+    public void APackageWithSass_CarriesIt_AndTheFileThatUnpacksIt()
+    {
+        string targets = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "Directory.Build.targets"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(targets, Does.Contain("Include=\"Styles/**/*.scss\" Pack=\"true\" PackagePath=\"sass/"));
+            Assert.That(targets, Does.Contain("PackagePath=\"buildTransitive/$(PackageId).targets\""));
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, "build", "FrameworkSass.targets")), Is.True);
+        });
+    }
+
+    /// <summary>
+    /// The shared build file gathers every framework package's Sass in one list and copies it into the site's
+    /// <c>obj/framework-sass/</c> before the Sass compiler runs, so two packages never fight over one target.
+    /// </summary>
+    [Test]
+    public void TheUnpacking_GathersEveryPackagesSass_BeforeTheCompilerRuns()
+    {
+        string path = Path.Combine(TestPaths.RepoRoot, "build", "FrameworkSass.targets");
+        string unpack = File.Exists(path) ? File.ReadAllText(path) : "";
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(unpack, Does.Contain("<FrameworkSass Include=\"$(MSBuildThisFileDirectory)../sass/**/*.scss\""));
+            Assert.That(unpack, Does.Contain("BeforeTargets=\"Compile Sass\""));
+            Assert.That(unpack, Does.Contain("$(BaseIntermediateOutputPath)framework-sass/%(RecursiveDir)"));
+        });
+    }
 }
