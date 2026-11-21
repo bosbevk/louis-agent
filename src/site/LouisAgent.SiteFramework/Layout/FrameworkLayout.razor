@@ -8,7 +8,7 @@
 
 <SiteShell Layout="PageLayout.Docs" ShowWayUp="false" AskAboutPage="OrbiAsks.ThisPage">
     <Brand><Wordmark Before="l" After="uis-agent" /></Brand>
-    <Tagline>The C# AI agent framework</Tagline>
+    <Tagline>@FrameworkWords.Tagline</Tagline>
     <Actions>
         <SiteSearch Text="@OrbiAsks.Search" Placeholder="@OrbiAsks.SearchPlaceholder" AskAbout="@OrbiAsks.SearchAsk" />
         <OpenAgentButton Text="@OrbiAsks.Open" />
@@ -16,7 +16,11 @@
     <Sidebar><DocsMenu /></Sidebar>
     <Beside><FrameworkOrbi /></Beside>
     <Footer>
-        <span><Wordmark Before="l" After="uis-agent" /> · an AI agent framework in C#</span>
+        <span><Wordmark Before="l" After="uis-agent" /> · @FrameworkWords.Tagline</span>
+        <span class="framework-footer-links d-flex flex-wrap gap-4">
+            <a href="@FrameworkAreas.RepositoryAddress" target="_blank" rel="noopener">@FrameworkWords.GitHub</a>
+            <a href="@FrameworkWords.LouisAgentDevAddress" target="_blank" rel="noopener">@FrameworkWords.LouisAgentDev</a>
+        </span>
     </Footer>
     <ChildContent>
         @Body

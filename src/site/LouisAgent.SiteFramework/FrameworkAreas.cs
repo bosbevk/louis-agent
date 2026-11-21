@@ -23,12 +23,18 @@ public static class FrameworkAreas
     /// <summary>The word the Overview's places sit under, as in <c>/overview/the-engine</c>.</summary>
     public const string Home = "overview";
 
+    /// <summary>The framework's repository on GitHub, where the doc links lead and the footer's GitHub link goes.</summary>
+    public const string Repository = "bosbevk/louis-agent";
+
+    /// <summary>The repository's page on GitHub.</summary>
+    public const string RepositoryAddress = "https://github.com/" + Repository;
+
     /// <summary>
     /// Names the site's areas: flat, the framework's pages, where their doc links lead, the repo on GitHub
     /// until the docs have a site of their own, and every place on the pages with its own address, the Overview's
     /// under its home word.
     /// </summary>
     public static void Name(SiteAreasBuilder areas) =>
-        areas.Flat().Framework().Docs(DocsAddress.GitHub("bosbevk/louis-agent", "main"))
+        areas.Flat().Framework().Docs(DocsAddress.GitHub(Repository, "main"))
             .Places(Home, typeof(App).Assembly);
 }

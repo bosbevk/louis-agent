@@ -91,6 +91,36 @@ public class FrameworkLayoutTests
         Assert.That(cut.Find(".site-docs-beside button.widget-button").TextContent.Trim(), Is.EqualTo("Ask Orbi"));
     }
 
+    /// <summary>
+    /// F169.3: the footer is one row (Louis's pick 12c, "A: one row, with three links"): on the left the name and the
+    /// header's own line, on the right the links, GitHub to the repository and louis-agent.dev, each in a new tab.
+    /// </summary>
+    [Test]
+    public void TheFooter_IsTheNameAndTheHeadersLine_ThenItsLinks()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new HttpClient { BaseAddress = new Uri("http://localhost/") });
+        ctx.Services.AddSiteAreas(FrameworkAreas.Name);
+
+        var cut = ctx.Render<FrameworkLayout>(layout => layout.Add(l => l.Body, "<section id=\"top\">Page</section>"));
+        var groups = cut.Find(".site-footer").Children;
+        var header = cut.Find(".site-header .site-tagline").TextContent.Trim();
+        var links = cut.FindAll(".site-footer > :nth-child(2) a");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(groups, Has.Length.EqualTo(2), "two groups, which the footer's row pushes to its ends");
+            Assert.That(groups[0].QuerySelector(".wordmark"), Is.Not.Null);
+            Assert.That(groups[0].TextContent, Does.Contain(header), "the header's own line");
+            Assert.That(links.Select(link => link.TextContent.Trim()), Is.EqualTo(new[] { "GitHub", "louis-agent.dev" }));
+            Assert.That(links.Select(link => link.GetAttribute("href")),
+                Is.EqualTo(new[] { "https://github.com/bosbevk/louis-agent", "https://louis-agent.dev" }));
+            Assert.That(links.Select(link => link.GetAttribute("target")), Is.All.EqualTo("_blank"));
+            Assert.That(links.Select(link => link.GetAttribute("rel")), Is.All.EqualTo("noopener"));
+        });
+    }
+
     /// <summary>F164.2 step 8: the site's search stands in the header, before Ask Orbi.</summary>
     [Test]
     public void TheSearch_IsInTheHeader()

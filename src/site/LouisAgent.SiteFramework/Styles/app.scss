@@ -1,7 +1,8 @@
 /* The framework's site's styles (F164.1): the framework's rules and the flat theme alone, the site's only one, and
-   nothing of the site's own. A name under web/ is the framework's Sass and one under theme- a theme's, each found
-   through sasscompiler.json, so nothing is copied. The chat's rules draw the framework Orbi (F164.2) as the chat is
-   drawn on every site. The build makes wwwroot/css/app.css from this. */
+   of the site's own only its footer's links (F169.3), last. A name under web/ is the framework's Sass and one under
+   theme- a theme's, each found through sasscompiler.json, so nothing is copied; layout/footer is the site's own. The
+   chat's rules draw the framework Orbi (F164.2) as the chat is drawn on every site. The build makes
+   wwwroot/css/app.css from this. */
 @forward "web/settings/colours";
 @forward "web/settings/surfaces";
 @forward "web/base/elements";
@@ -17,3 +18,4 @@
 @forward "web/chat/bars";
 @forward "web/chat/pages";
 @forward "web/showroom/fonts";
+@forward "layout/footer";
