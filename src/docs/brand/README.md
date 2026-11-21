@@ -79,6 +79,17 @@ Geist, at 400 to 700, is for the words people read: headings at 600 and above, s
 Geist Mono, at 400 and 600, is for numbers, code, the address and the small uppercase labels above headings. It is
 never used for body text.
 
+A docs page has three ranks of heading, so a reader tells the page's top from a section and a section from a part:
+74, 40 and 28 on a desktop, and 40, 32 and 24 on a phone, three of Geist's own heading steps. A page of slides keeps
+one size for its headings, up to 74.
+
+## Corners
+
+A card's corner is the theme's own, 22 in the framework's two themes. Everything else takes one of four corners,
+by what it is: small, 6, for a menu's row, a word of code or a label; a block, 10, for a listing of code; a window,
+18, for what opens over the page, such as the search or the agent's panel; and a pill, round at its ends, for a link
+or a small button.
+
 ## Voice
 
 The slogan is "The website that answers." It stands under the name in the header, in the footer and on the

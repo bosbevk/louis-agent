@@ -77,6 +77,10 @@ Two parts read it. `DocsMenu` is the left column: every group's label with its p
 marked with `aria-current="page"`, for the eye and for a screen reader. `PageTurn` is a page's foot: the page before
 and the page after in reading order, each named, so someone reading straight through never needs the menu.
 
+Their corners and edges come from the framework's names. A menu's row wears the theme's small corner, and the page
+turn's two cards the block corner. The page turn keeps the site's gutter at its sides, so its cards start and end
+where a band's words do.
+
 Both ask the contents which page an address is on, and the contents answer with `FindEntry`. A page holds its own
 address and every address under it, so a section's own address, such as `/how-it-works/the-web`, still marks How it
 works in the menu. The root page holds only itself, since every address sits under it. The longest match wins.

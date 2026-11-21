@@ -486,6 +486,23 @@ draws no style of its own. The id is required so that every area on every site i
 visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"`, and the frame
 then never pages it sideways.
 
+A band's heading, `BandTitle`, takes its rank from where the band stands, so a page never says it by hand. The band
+hands itself down to its title, and the title asks it two questions. If the band is the page's own, the one whose id
+is the page's top, the title is the page's one h1, the heading a search engine and a screen reader look for first.
+If the band says it is a part of a section, with `PartOf` and that section's id, the title is an h3, a part's
+heading under the section's h2. Otherwise it is an h2. A part's h3 carries the framework's class `part-title` before
+the site's own, since a band already holds other h3s, a tile's, a panel's or a card's, and a rule for every h3 in a
+band would size those as headings of the page. The Overview of the framework's site is where parts are used today:
+its five families are parts of one section. A band's heading has one shape wherever it is drawn, its weight, its
+balance and its width, and a part's title shares it. That rule sits beside the h1 and h2 in its selector, not
+inside their `:is()`, so it weighs one class and a tag and a site's own heading rule still wins.
+
+Two controls lay out words a page lists. `Steps` is a few numbered steps, each a number then one quiet sentence. A
+step's number is drawn by the surface tool's `step()` from six names the theme sets, its fill, its ink, its edge,
+its shadow, its corner and its face, so one theme makes it a squared label and another a circle. It is drawn at
+rest only, since a number is not a button. `TermList` is a list of named entries, one a row between hairlines. Both
+read 64 characters wide in 17px words, so on a page they end at the same edge.
+
 A `CardDeck` is a row of short cards that open. Each `Card` inside gives a title, a one-line summary, an optional
 tag and, as its content, the story. The cards register with the deck through a cascading value (the tab-set
 pattern) and draw nothing themselves. The deck draws the summaries as buttons in a row and, under the row, the open
@@ -536,6 +553,14 @@ readable middle column. From an extra-large screen, the page's sections stand on
 the frame's section index docked, reading the same list of the page's bands, so a page says its sections once. Docked,
 it is a plain list with the theme's line down its left, and the section in view is marked on that line by a thicker
 bar in the theme's violet, drawn by the surface tool's `marked`. On a narrow screen the menu stands above the page.
+On a wide screen the line between the menu and the page is drawn down the page's column, which is as tall as the
+page, so it reaches the footer; the menu's own column is held in view and is only as tall as the menu.
+
+A docs page sizes its headings by their rank, in the docs layout's own sheet, so a page of slides keeps its one
+size. The page's top is 74 on a desktop, a section 40 and a part 28, and on a phone, 390 wide, 40, 32 and 24. Each
+has its phone size as a floor and its desktop size as a ceiling and grows with the width between, the top heading
+reaching 74 at about 1540 wide and the other two their desktop sizes by about 1220. A band in the docs layout has 56
+of room over it, where a page of slides gives 88.
 
 The right column holds more than "On this page". What a site gives the frame's `Beside` slot stands there first,
 such as its chat docked. And a site may give the frame an ask about the page, `AskAboutPage`, a `PageAsk` with the
@@ -864,8 +889,11 @@ pane's until a theme says otherwise. The main button has a fill and the ink on i
 both the shadow a button stands on. The mark has its disc,
 its gloss and its letter. Then come the colour of you and of the agent, and five steps of violet. A code word, a
 word of code in running words, has a fill, an ink and an edge, the brand's pale violet chip with deep violet words
-and no line until a theme says otherwise. Last come the
-drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
+and no line until a theme says otherwise. Beside a pane's corner stand four more corners, by what wears them: small
+(6), such as a menu's row or a code word; a block (10), such as a listing of code; a window (18), such as the search
+window or the agent's panel; and a pill (999), round at its ends, such as a doc link or a listing's Ask and Copy. A
+step's number has its six names, the main button at rest drawn as a circle until a theme says otherwise. Last come
+the drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
 `--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.
 Each name is set to the look the framework draws with no theme, so a site that names none looks as it always has.
 Every site lists the sheet straight after the colours, so its own values still come after both. A theme sets
@@ -1102,7 +1130,10 @@ one, and ask the agent from the last row.
 A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests` and
 `SurfaceNamesTests` in `Rules/Styles/Themes/`, and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
 `Rules/Sites/`. The first-paint test reads the script, taking its words from `SiteLook`, so the script and the C#
-can't drift apart. The switch has `LookSwitchTests`, which draws it with no, one and two themes, presses it and pins
+can't drift apart. `TypeAndEdgesTests`, in `Rules/Styles/TypeAndEdges/`, holds a docs page's type and edges as the
+sheets write them: the three heading sizes and the part's title in the base rule, each corner reading its name and
+writing no number, a step's number drawn by `step()`, a list of terms as wide as a list of steps, the page turn in
+the gutter and the menu's line on the page's column. `BandTitleTests` holds a part's h3. The switch has `LookSwitchTests`, which draws it with no, one and two themes, presses it and pins
 its markup, and `LookSwitchScriptTests`, which holds its module to `SiteLook` the same way; `SiteShellTests`,
 `ChatShellTests` and `AdminShellTests` hold where each frame puts it.
 

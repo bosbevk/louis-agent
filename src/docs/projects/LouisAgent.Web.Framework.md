@@ -80,7 +80,10 @@ in a `CodeListing`, the real lines from its program. Then come the five families
 evals and the tools, each a band of its own with a picture of the family and every project it ships. They are drawn
 from `FrameworkFamily.All`, the one list of families, where each family names its folder, its icon, its colour and
 its projects. Every page and picture that talks of a family asks that record, so a family wears one colour wherever
-it is named.
+it is named. The five are parts of one section, the whole framework's, so each family's band says it is a part of
+that section and its heading is an h3 under the section's h2. A screen reader then hears one section with five parts
+under it, and the docs layout draws a family's heading a size smaller than a section's. The first band takes its
+heading as its title, as every other band does, so the page's h1 stands over its summary.
 
 The other pages are built the same way. Features opens on its areas at a glance and gives each area a section of
 its own. Comparison sets three columns side by side in a `ComparisonTable`. Cost and evals opens on a request's path
