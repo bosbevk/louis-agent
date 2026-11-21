@@ -1,0 +1,76 @@
+# Proves the framework works from its published packages (F166.2, its done-when): a project outside this repository
+# knows only GitHub Packages and nuget.org, restores the engine and the test helpers with nothing but this run's own
+# token, and runs an agent on the fake chat client. It is what a product on the framework, such as Puls in its own
+# repository, does to get it. Run it by hand from the Actions tab after a release; it also runs on a pull request that
+# changes this file, so a change to it is proved before it merges.
+name: Consume packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The framework's version to restore
+        default: 0.1.0
+  pull_request:
+    paths:
+      - '.github/workflows/consume-packages.yml'
+
+# Reading packages, nothing else: no write, and no secret but the run's own token.
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  consume:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # A folder outside any checkout: the project sees no Directory.Build.props and no project of the framework's.
+      - name: Write a project that knows only the feed
+        env:
+          VERSION: ${{ inputs.version || '0.1.0' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/consumer" && cd "$RUNNER_TEMP/consumer"
+          cat > Consumer.csproj <<EOF
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <OutputType>Exe</OutputType>
+              <TargetFramework>net10.0</TargetFramework>
+              <ImplicitUsings>enable</ImplicitUsings>
+              <Nullable>enable</Nullable>
+            </PropertyGroup>
+            <ItemGroup>
+              <PackageReference Include="LouisAgent.Core" Version="$VERSION" />
+              <PackageReference Include="LouisAgent.Testing" Version="$VERSION" />
+            </ItemGroup>
+          </Project>
+          EOF
+          cat > Program.cs <<'EOF'
+          using LouisAgent.Core.Agent;
+          using LouisAgent.Core.Config;
+          using LouisAgent.Core.Skills.Providers;
+          using LouisAgent.Testing;
+          using Microsoft.Extensions.AI;
+
+          var answer = new ChatMessage(ChatRole.Assistant, "hello from the packages");
+          var model = new FakeChatClient(_ => new ChatResponse(answer));
+          var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
+          var agent = new AgentEngine(new CompositeSkillProvider(), model, options, supportsTools: false);
+          Console.WriteLine(await agent.ProcessPromptAsync([], "hello"));
+          EOF
+
+      # GitHub Packages asks for a token even for a public package; the run's own is enough.
+      - name: Restore from GitHub Packages and run the agent
+        working-directory: ${{ runner.temp }}/consumer
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          dotnet new nugetconfig
+          dotnet nuget add source https://nuget.pkg.github.com/bosbevk/index.json --name framework \
+            --username "$ACTOR" --password "$TOKEN" --store-password-in-clear-text --configfile nuget.config
+          dotnet run | tee answer.txt
+          grep -q "hello from the packages" answer.txt
