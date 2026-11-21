@@ -1,0 +1,36 @@
+{
+  "kind": "sequence",
+  "title": "F167: one run of the rename",
+  "caption": "The names are read first, every tracked text file is rewritten in place, and only then are the folders and files moved; a check run does all the reading and writes nothing.",
+  "sequence": {
+    "participants": [
+      { "id": "louis", "label": "Louis", "actor": true, "tone": "blue" },
+      { "id": "run", "label": "RenameRun", "icon": "terminal", "tone": "violet" },
+      { "id": "map", "label": "NameMap", "icon": "box", "tone": "teal" },
+      { "id": "git", "label": "git", "icon": "box", "tone": "amber" },
+      { "id": "rewriter", "label": "NameRewriter", "icon": "chip", "tone": "green" },
+      { "id": "mover", "label": "FileMover", "icon": "folder", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "louis", "to": "run", "text": "Run(check)" },
+      { "step": "message", "from": "run", "to": "map", "text": "Read(repoRoot)" },
+      { "step": "reply", "from": "map", "to": "run", "text": "155 renames, or a clash it refuses" },
+      { "step": "message", "from": "run", "to": "git", "text": "ls-files, arguments as data" },
+      { "step": "reply", "from": "git", "to": "run", "text": "the tracked files" },
+      { "step": "block", "block": "loop", "label": "each tracked text file",
+        "steps": [
+          { "step": "message", "from": "run", "to": "rewriter", "text": "Rewrite(text)" },
+          { "step": "reply", "from": "rewriter", "to": "run", "text": "the new text, how many replaced" },
+          { "step": "note", "over": ["run"], "text": "words it can't be sure of go to the report" }
+        ] },
+      { "step": "block", "block": "opt", "label": "not a check",
+        "steps": [
+          { "step": "note", "over": ["run"], "text": "each changed file written" },
+          { "step": "message", "from": "run", "to": "mover", "text": "Move(repoRoot, rewriter)" },
+          { "step": "reply", "from": "mover", "to": "run", "text": "folders and files moved" }
+        ] },
+      { "step": "reply", "from": "run", "to": "louis", "text": "RenameReport" }
+    ],
+    "numbered": false
+  }
+}

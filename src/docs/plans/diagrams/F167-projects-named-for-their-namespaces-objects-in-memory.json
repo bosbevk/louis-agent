@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F167: what one run holds",
+  "caption": "One run holds the name map of 155 renames, read from the projects themselves, and the rewriter built over it with the longest names first.",
+  "flow": {
+    "nodes": [
+      { "id": "run", "icon": "terminal", "tone": "violet", "label": "run : RenameRun\ncheck = true" },
+      { "id": "map", "icon": "box", "tone": "teal", "label": "map : NameMap\n155 renames" },
+      { "id": "core", "icon": "box", "tone": "teal", "label": "louis-agent.core\n→ LouisAgent.Core, its RootNamespace", "group": "renames" },
+      { "id": "web", "icon": "box", "tone": "teal", "label": "louis-agent.pack.web\n→ LouisAgent.Packs.Web, its RootNamespace", "group": "renames" },
+      { "id": "checks", "icon": "box", "tone": "teal", "label": "louis-agent.evals.checks\n→ LouisAgent.Evals.Checks, listed", "group": "renames" },
+      { "id": "rewriter", "icon": "chip", "tone": "green", "label": "rewriter : NameRewriter\nthe 155 names, longest first" },
+      { "id": "report", "icon": "box", "tone": "amber", "label": "report : RenameReport\nthe leftover words" }
+    ],
+    "edges": [
+      { "from": "run", "to": "map" },
+      { "from": "map", "to": "core" },
+      { "from": "map", "to": "web" },
+      { "from": "map", "to": "checks" },
+      { "from": "run", "to": "rewriter" },
+      { "from": "rewriter", "to": "map", "style": "dashed", "word": "reads" },
+      { "from": "run", "to": "report" }
+    ],
+    "groups": [
+      { "id": "renames", "label": "three of the 155 ProjectRename records" }
+    ]
+  }
+}
