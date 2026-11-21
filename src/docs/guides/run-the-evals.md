@@ -14,9 +14,9 @@ one, and read the cost in the ledger afterwards, never from a grader. Listing th
 ## From the command line
 
 ```bash
-EVALS=puls dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --list     # free: Puls's evals (unset: every eval)
-BENCHMARK_RUN=cook-1 AGENT_API=http://127.0.0.1:5070/ \
-  dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- run puls-cook --repeat 1 --web record
+EVALS=triage dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingEvalRunner -- --list     # free: the triage team's evals (unset: every eval)
+BENCHMARK_RUN=sorter-1 AGENT_API=http://127.0.0.1:5082/ \
+  dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingEvalRunner -- run triage-sorter --repeat 1 --web record
 ```
 
 | Flag | What it does |
@@ -38,18 +38,18 @@ with its `event` first, the records in `src/evals/LouisAgent.Evals.Protocol` tha
 
 ## An eval's manual
 
-Each eval has a manual beside it, a `manual.md` in its folder (Puls's are in `Evals/Cook/`, `Evals/Routing/`,
-`Evals/Recipes/` and `Evals/RecipesLong/`, and the stub's is `stub.md` in the runner's `Manuals/`). It says what the
+Each eval has a manual beside it, a `manual.md` in its folder (the triage team's are in `Evals/Sorter/`,
+`Evals/Investigator/` and `Evals/Reviewer/`, and the stub's is `stub.md` in the runner's `Manuals/`). It says what the
 eval measures, its modes, every grader it declares, what it costs and how to run it by hand. The portal opens it from
 the eval's details, and the runner's `--list` gives its path (`manual`). A test holds each one to its eval: it opens
 with a title and names every grader in backticks.
 
 ## From the portal
 
-A run records the commit the runner was built from, and both images' builds take it as `EVAL_COMMIT`. For Puls:
+A run records the commit the runner was built from, and the image's build takes it as `EVAL_COMMIT`:
 
 ```bash
-EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
+EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
 ```
 
 For the code-review API, it's the same with `demos/louis-agent/docker/docker-compose.yml … up -d --build api`. In
@@ -174,19 +174,21 @@ not trusting it anyway. Until a judge passes, its grade is shown and counted but
 trial doesn't wait on it.
 
 The check costs nothing on a local model (Ollama), and it **never runs in CI**, because it asks a model. Set the judge
-first: `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, and `EVAL_JUDGE_ENDPOINT` for a local server (see
-`demos/puls/config/.env.example`). **Without a judge model set, every answer is "can't tell"**, and the report says so:
+first: `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, and `EVAL_JUDGE_ENDPOINT` for a local server (see [Setup](../SETUP.md)). **Without a judge model set, every answer is "can't tell"**, and the report says so:
 a check that agrees on nothing is the sign.
 
 **The short way is the portal.** Grade answers in a run's explorer, then press *Check the judge now* in the *Judge
 against people* card, as *Reviewing answers yourself* below says. The steps here are the long way, for labels you keep
 in the dataset.
 
+The worked example is Puls's cook and its judge `meal-for-people`, the one judge with labels, so the commands below
+run in [Puls's own repository](https://github.com/bosbevk/puls), on its runner. Yours run the same way on your demo's.
+
 **1. Make a sheet.** From a stored run, write ten files to label. The export is the same text a re-score reads:
 
 ```bash
 # run.txt is GET /v1/admin/evals/runs/8f7802b9a72e/protocol (the same file a re-score reads)
-EVALS=puls dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Cook/Dataset/labels 10 < run.txt
+EVALS=puls dotnet run --project src/Puls.Evals.Runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   src/Puls.Evals/Evals/Cook/Dataset/labels 10 < run.txt
 ```
 
 The sheet holds only scenarios that ask for a number of people, since a meal for four can't be labelled where no four
@@ -214,7 +216,7 @@ labelling changes neither.
 **3. Calibrate.** `dotnet run` builds first, which copies the labels beside the runner. Then:
 
 ```bash
-EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --calibrate puls-cook meal-for-people
+EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project src/Puls.Evals.Runner -- --calibrate puls-cook meal-for-people
 ```
 
 It prints the headline (`Agreement: 17 of 18`), then the agreement in each class of your labels, the result, and each
@@ -264,7 +266,7 @@ a class it says *few labels*, because a share of four is just four answers.
 
 **A judge that reads tool results can't be checked this way yet.** A label holds the questions and the answers, not
 what the tools gave back, so a judge with `sources` is asked with no page and fails every answer. Use a re-score for
-those, as the [recipes manual](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Recipes/manual.md) says.
+those, as the [recipes manual](https://github.com/bosbevk/puls/blob/main/src/Puls.Evals/Evals/Recipes/manual.md) says.
 
 **Checking the judge against your grades, from the portal.** In the same card, press **Check the judge now**. The API
 writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs
@@ -279,8 +281,8 @@ you can see a prompt change move the number. A check that ended without a report
 is the reason. The reports are kept in the store (`calibrations`), beside your grades, and go when the run is deleted.
 The routes are `POST /v1/admin/evals/runs/{id}/calibrations/{grader}` and `GET /v1/admin/evals/runs/{id}/calibrations`.
 
-**Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into
-`demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Cook/Dataset/labels/`, and run the check from *Checking the
+**Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into the eval's
+`Dataset/labels/` (Puls's cook's is `src/Puls.Evals/Evals/Cook/Dataset/labels/`), and run the check from *Checking the
 judge* (`--calibrate`). The dataset's labels are the ones a developer runs against without a store, while the portal's
 check reads the store.
 

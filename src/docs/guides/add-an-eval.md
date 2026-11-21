@@ -13,9 +13,10 @@ transcript. It is a folder of files: `eval.json` says what it is and which check
 transcripts sit beside it. An eval that uses the harness's checks needs no C# at all.
 
 The example is `acme`, the hardware shop's assistant [Build an identity](build-an-identity.md) makes, with an eval that
-asks how many square metres of tile a room needs. `acme` is not in the repo. Puls's two evals are the working
-examples to open beside this guide: `demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Routing/` (one general check) and
-`Evals/Cook/` (Puls's own checks, a judge and a person's review).
+asks how many square metres of tile a room needs. `acme` is not in the repo. The triage team's three evals are the working examples to open beside this guide:
+`demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals/Evals/Sorter/`, `Investigator/` and `Reviewer/`, each on
+the general checks alone. An eval with an identity's own checks, readers, a judge and a person's review is Puls's
+cook, in [Puls's own repository](https://github.com/bosbevk/puls) (`src/Puls.Evals/Evals/Cook/`).
 
 ![Adding an eval: copy the template, write eval.json and the dataset, choose the checks, write the manual and the transcripts, test it, then list it](diagrams/add-an-eval-flow.svg)
 
@@ -30,10 +31,11 @@ cp -r src/evals/template/Example demos/acme/evals/LouisAgent.Identities.Acme.Eva
 ```
 
 The identity's evals project copies every file under `Evals/` beside the build, which is how the runner finds it. A new
-identity needs this item once in its csproj. This is Puls's, so put your demo's name where it says `puls`:
+identity needs this item once in its csproj. This is the triage team's, so put your demo's name where it says
+`louis-agent`:
 
 ```xml
-<None Update="Evals\**\*" TargetPath="EvalFiles\demos\puls\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+<None Update="Evals\**\*" TargetPath="EvalFiles\demos\louis-agent\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
 ```
 
 The runner reaches the identity's files through the composition, so a new identity must be registered there too
@@ -72,7 +74,7 @@ agent on its own with the agent handing the work to a specialist.
 
 `checks` grade each conversation, in the order the portal shows them. A check's `parameters` hold its settings, in
 snake case, and you leave them out when the defaults do. A check's `name` keeps the old name a stored run already
-carries when the check's type changes under it (none of Puls's do today), and a new eval leaves it out.
+carries when the check's type changes under it (none of the triage team's do today), and a new eval leaves it out.
 
 The file is read strictly: a field it doesn't know, one missing, a null, a mode or a check twice, or a check type the
 catalogue doesn't have is refused, naming the file and the field.
@@ -147,25 +149,25 @@ required check that asks no model (a fixed rule), so a run always has a check th
 **A reader** is what a compare reads the value with, named beside its key: `{"type": "amount-under", "name":
 "within-budget", "parameters": {"key": "budget", "reader": "rand-total"}}`. The harness ships `currency-amount`,
 `digits` and `markdown-images`; an identity ships its own when the value is written its way (Puls's `rand-total`,
-`rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
+`rand-prices`, `servings` and `recipe-photos`, in its evals project's `Evals/Readers/`, in its own repository). A reader is a small class that implements
 `IMoneyReader`, `INumberReader`, `IImageReader`, `IPriceReader` or `ILinkReader` (from the check contract,
 `src/evals/LouisAgent.Evals.Checks`), listed in your
-evals project's list (`PulsReaders.All`), which the demo's program hands to the runner (`PulsCatalogs`). `name` keeps the
+evals project's list (Puls's is `PulsReaders.All`), which the demo's program hands to the runner in its
+`RunnerCatalogs`. `name` keeps the
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
 that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record. It's listed in its
-project's list, as the where-to-buy rules are in `WhereToBuyChecks.All`
-(`packs/evals/LouisAgent.Packs.WhereToBuy.Checks/Checks/`), which the demo's program hands to the runner
-(`PulsCatalogs`). It lives in a project of its own, which only the runner references, never in the pack or the
+project's list, as Puls's where-to-buy rules are in `WhereToBuyChecks.All`
+(`src/Puls.Packs.WhereToBuy.Checks/Checks/`, in Puls's own repository), which the demo's program hands to the runner
+in its `RunnerCatalogs`. It lives in a project of its own, which only the runner references, never in the pack or the
 identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
-[ADR 0073](../adr/0073-packs-reference-no-evals.md)). The worked example is `EstimatesAtShop` and its tests. Its reasons
+[ADR 0073](../adr/0073-packs-reference-no-evals.md)). The worked example is Puls's `EstimatesAtShop` and its tests, in its own repository. Its reasons
 are message enum members ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)), and a turn that failed for the
 infrastructure is `Unknown` (`Verdict.InfrastructureFailure`).
 
 A model judge of your own needs the harness, which an identity never references. So it goes in a project of its own in
-your `demos/{name}/evals/` that only the runner references, as `demos/puls/evals/LouisAgent.Identities.Puls.Judges`
-does. The general `judge` with a rubric file usually does the job instead.
+your `demos/{name}/evals/` that only the runner references, as Puls's `Puls.Judges` does in its own repository. The general `judge` with a rubric file usually does the job instead.
 
 **A judge that must see a page** (`sources`) is for a rubric that compares the answer with what a tool read, such as
 "the amounts are the page's". `"sources": ["ReadRecipe"]` adds every result of that tool in the trial to the judge's
@@ -218,8 +220,8 @@ it ([section 9](#9-or-compose-it-in-the-studio)).
 ## 7. Test it
 
 `EvalConformanceTests` (in the runner's tests) runs every eval folder it finds, so your references and known-bads are
-checked with no edit. Then add one test file for the eval in the identity's evals tests, as Puls's
-`demos/puls/tests/LouisAgent.Identities.Puls.Evals.Tests/Evals/Routing/RoutingEvalTests.cs` does. It loads the folder
+checked with no edit. Then add one test file for the eval in the identity's tests, as the triage team's
+`demos/louis-agent/tests/LouisAgent.Identities.Triage.Tests/TriageEvalsTests.cs` does. It loads the folder
 with the runner's catalogue and holds its name, version, modes, checks and the shape of its dataset. A check of your
 own gets a pass and a fail on made-up transcripts.
 
@@ -233,7 +235,7 @@ dotnet test demos/acme/tests/LouisAgent.Identities.Acme.Evals.Tests
 Listing is free and calls no model; the stub is always listed too:
 
 ```bash
-EVALS=acme dotnet run --project demos/puls/hosts/LouisAgent.PulsEvalRunner -- --list
+EVALS=acme dotnet run --project demos/louis-agent/hosts/LouisAgent.CodingEvalRunner -- --list
 ```
 
 Running one talks to the API and spends money, so ask first. The flags, recording and replaying, the dev and held-out

@@ -1,11 +1,11 @@
 # Build an identity
 
 > **How-to.** Make a new agent: a project in `demos/{name}/identity/` with its voice, its routing, its own specialists and the
-> packs it uses, loaded by a host with `IDENTITIES`. **Elsewhere:** why identities exist in
+> packs it uses, loaded by a program that lists it in its catalogue. **Elsewhere:** why identities exist in
 > [ADR 0027](../adr/0027-engine-identities-and-packs.md), modes in [ADR 0019](../adr/0019-modes-one-file-per-product.md),
 > the role levels in [ADR 0017](../adr/0017-skills-by-level.md); giving an agent tools in [Build a pack](build-a-pack.md).
 
-![An identity at a glance: who an agent is, with its mode (voice and routing), its specialists and minions, the packs it names and the agents it may call, registered in the composition root and loaded by IDENTITIES](diagrams/build-an-identity.svg)
+![An identity at a glance: who an agent is, with its mode (voice and routing), its specialists and minions, the packs it names and the agents it may call, registered in a program's catalogue](diagrams/build-an-identity.svg)
 
 An **identity** is who an agent is: its name, how it talks (its voice), which work goes where (its routing), the
 specialists it can hand work to, and the packs it uses, by name. It has no tools of its own: everything it can do comes
@@ -13,8 +13,9 @@ from core's toolsets and from packs. Like a pack, it never references a pack's c
 
 The steps below build a small example identity, `acme`: a hardware shop's assistant that talks plain English, answers
 questions itself, and hands "how much do I need?" jobs to one specialist, `acme-estimator`, which uses the `units` pack
-from [Build a pack](build-a-pack.md). The real identity in the repo, `demos/puls/identity/LouisAgent.Identities.Puls`, follows the
-same steps and adds two languages, five specialists and a minion. Read it beside this guide.
+from [Build a pack](build-a-pack.md). The triage team in the repo, `demos/louis-agent/identity/LouisAgent.Identities.Triage`,
+follows the same steps with three specialists. Read it beside this guide. Puls, built on the same packages in
+[its own repository](https://github.com/bosbevk/puls), adds two languages and a minion.
 
 ![Building an identity: create the project, write the class, write its mode, add a specialist when the work needs one, register it in the composition root, test it, then run it](diagrams/build-an-identity-flow.svg)
 
@@ -82,7 +83,7 @@ public sealed class AcmeIdentity : IAgentIdentity
 }
 ```
 
-`Name` is what `IDENTITIES` loads it by, and the folder of its modes (`agent/acme/`). Keep it lowercase. A name with a
+`Name` is what the catalogue knows it by, and the folder of its modes (`agent/acme/`). Keep it lowercase. A name with a
 dash needs a `[WireName]`, as a pack's does (step 5).
 
 `DefaultVoice` is the mode a session runs when it names none. `Prompts` reads the prompts the project embeds under
@@ -144,7 +145,7 @@ agent can't do yet, it says so in one honest line. It never invents an answer.
 
 If the agent speaks more than one language, split the file. `voice-en.md` and `voice-af.md` hold only the voice, each
 in its own language, and `voice.md` holds only the routing they share. A session then names `acme/voice-en`, which
-loads that voice and then `voice.md`, and `acme/voice` on its own is no longer a mode. Puls is laid out this way.
+loads that voice and then `voice.md`, and `acme/voice` on its own is no longer a mode. Puls is laid out this way, in its own repository.
 
 If the file grows too long, split off skills. Whatever the agent doesn't need on every turn goes in a skill beside the
 voice, `prompts/agent/acme/skills/{name}.md`, with the same header plus `metadata.load`. A skill marked `always` goes
@@ -194,7 +195,7 @@ identities or packs share, so a plain `specialists/estimator.md` would clash wit
 
 The mode also needs a way to hand the work over. Its session needs the `agents` toolset, the identity's `Calls` must
 list the role's address (`acme.estimator`, as in step 2), and `AGENT_PEERS` must name an instance that has the role. Usually that's
-the instance itself, as Puls's compose file does (`AGENT_PEERS: puls=http://puls:8080`).
+the instance itself, named by its own service in its compose file, as `AGENT_PEERS: acme=http://acme:8080`.
 
 *Decided in:* [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md), [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md),
 [ADR 0117](../adr/0117-one-address-for-every-agent-call.md).
@@ -202,9 +203,9 @@ the instance itself, as Puls's compose file does (`AGENT_PEERS: puls=http://puls
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
 `prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
 `prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
-(`minions/puls-minion-find-recipe.md`, which a specialist would start with `FindRecipes` as its tool; the cook no longer does, ADR 0081) and its price lookup
-(`minions/puls-minion-web-price-lookup.md`) are the worked examples when you need one; a role that lists `minions` in
-its header is refused where `MINION_LLMS` isn't set.
+(`minions/puls-minion-find-recipe.md`) and its price lookup (`minions/puls-minion-web-price-lookup.md`), in
+[its own repository](https://github.com/bosbevk/puls), are the worked examples when you need one; a role that lists
+`minions` in its header is refused where `MINION_LLMS` isn't set.
 
 ### Your names are an enum
 
@@ -220,22 +221,20 @@ public enum AcmeRole
 ```
 
 Write a role out with `.Wire()`, read one in with `SettingChoice.TryParse`, and have a test check that each member is a file of the identity
-(`PulsRoleTests` is the model). The packs the identity names are its own enum too (`public enum AcmePack { [WireName("units")] Units }`, `Packs => [AcmePack.Units.Wire()]`), never the pack's
-own enum, which the identity cannot reference; the composition root's `PackKind` is the host's copy, and its tests check that every `PackKind` is the name of the pack built for it
-and (`CrossBoundaryNamesTests`) that each pack an identity names exists. A mode (`acme/voice`) is still its file's name. Tests that only store or show a role use a sample
+(`TriageRolesTests` is the model). The packs the identity names are its own enum too (`public enum AcmePack { [WireName("units")] Units }`, `Packs => [AcmePack.Units.Wire()]`), never the pack's
+own enum, which the identity cannot reference. A mode (`acme/voice`) is still its file's name. Tests that only store or show a role use a sample
 (`SampleRole`); a test that opens a session on a real role uses your enum member. Add your enum's file to the list in `RepeatedNameTests`.
 
 ## 5. Register it in the composition root
 
-Three edits in `demos/puls/hosts/LouisAgent.HostPacks`, as for a pack:
+A program's own catalogue names its identities, as it names its packs. The coding agent's, `CodingCatalog`
+(`demos/louis-agent/hosts/LouisAgent.Coding.Catalog`), lists them where it builds the catalogue:
+`new([new CodingIdentity(), new GuideIdentity(), new TriageIdentity()], Packs())`. So registering `acme` is two edits:
+one more `new AcmeIdentity()` in that list, and a project reference to the identity. The first identity in the list is
+the default.
 
-1. A member in `IdentityKind.cs`: `Acme`.
-2. Its arm in `Plugins.Create(IdentityKind)`: `IdentityKind.Acme => new AcmeIdentity(),`.
-3. A project reference to the identity in `LouisAgent.HostPacks.csproj`.
-
-Every pack it names must be registered too (`PackKind.Units`, from [Build a pack](build-a-pack.md)). If one isn't, the
-catalogue stops start-up with the identity's name, the missing pack's and the ones it has. The setting is matched to
-the enum member with the case ignored, so a name with a dash needs the member to say so: `[WireName("acme-shop")] AcmeShop`.
+Every pack it names must be in the same catalogue too (`new UnitsPack()`, from [Build a pack](build-a-pack.md)). If
+one isn't, the catalogue stops start-up with the identity's name, the missing pack's and the ones it has.
 
 ## 6. Test it
 
@@ -245,27 +244,29 @@ dotnet sln louis-agent-solution.sln add demos/acme/tests/LouisAgent.Identities.A
 ```
 
 The test project references the identity, every pack it names (so its sessions build as the host builds them), and
-`src/tests/shared/LouisAgent.Testing` for the shared fakes; `demos/puls/tests/LouisAgent.Identities.Puls.Tests` is
-the model to copy. You write four kinds of test.
+`src/tests/shared/LouisAgent.Testing` for the shared fakes. The triage team's
+(`demos/louis-agent/tests/LouisAgent.Identities.Triage.Tests`) and the coding catalogue's
+(`demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests`) are the models to copy. You write four kinds of test.
 
 The first is a prompts fixture. It registers the identity's prompts and its packs' before any test reads one, the way
-a host does at start-up (`PulsPrompts.cs`):
+a host does at start-up (the coding catalogue's `CodingPrompts.cs`):
 `[SetUpFixture] … SkillFileSource.Use([new AcmeIdentity().Prompts, new UnitsPack().Prompts]);`
 
-The second is an identity test (`PulsIdentityTests`). It checks the identity's name and packs, finds one prompt per
+The second is an identity test. It checks the identity's name and packs (`TriageIdentityTests` does that), finds one prompt per
 folder through `Prompts` (which proves the csproj's embedding lines work), and checks that the catalogue refuses the
 identity without its pack and takes it with it.
 
-The third is the prompt tests (`PulsPromptsTests`). They check that `RoleCatalog.Available(RoleLevel.Agent)` lists
+The third is the role tests (`TriageRolesTests`). They check that `RoleCatalog.Available(RoleLevel.Agent)` lists
 `acme/voice`, that `SkillLoader.Load(new AgentOptions(), [], "acme/voice")` holds the voice, and that
 `SkillLoader.ToolsetsOf("acme-estimator", RoleLevel.Specialist)` is `["units"]`.
 
-The last is a session golden (`PulsSessionSnapshotTests` and its JSON). It builds the sessions the identity runs, the
-chat and each specialist, with a fake model, and pins exactly what the model would be sent. A changed word in a prompt
-then shows up as a diff you review: regenerate with `LOUIS_UPDATE_GOLDEN=1`, read the diff, and commit it.
+The last is a session golden (the coding catalogue's `ModelRequestSnapshotTests` and its JSON). It builds the sessions
+the identity runs with a fake model, and pins exactly what the model would be sent. A changed word in a prompt then
+shows up as a diff you review: regenerate with `LOUIS_UPDATE_GOLDEN=1`, read the diff, and commit it.
 
-Two checks come for free once it is in `IdentityKind`: `PackConvertibilityTests` checks that no pack's tool
-description names your identity, and `ArchitectureTests` checks that no pack references it. Run everything:
+Two checks come for free: `PackConvertibilityTests` (`packs/tests/LouisAgent.Packs.Rules.Tests`) checks that no pack's
+tool description names your identity, and its `EveryPromptHasAHeaderTests` that every prompt of yours opens with its
+header at its folder's level. `ArchitectureTests` checks that no pack references it. Run everything:
 
 ```bash
 dotnet build louis-agent-solution.sln
@@ -274,19 +275,18 @@ dotnet test louis-agent-solution.sln
 
 ## 7. Run it
 
-You don't need a new host: the API serves whichever identities it is given. A stack for `acme` sets, in its compose
-file or `config/.env`:
+You don't need a new host: the API serves whichever identities its program's catalogue gives it (step 5). A stack for
+`acme` sets, in its compose file or `config/.env`:
 
 | Setting | For `acme` | Why |
 |---|---|---|
-| `IDENTITIES` | `acme` | Loads the identity and the packs it names |
-| `ROLES_ENABLED` | `acme/voice,acme-estimator` | Only roles that have passed their check are on; empty turns every role on (Puls's list holds its two minion roles too) |
+| `ROLES_ENABLED` | `acme/voice,acme-estimator` | Only roles that have passed their check are on; empty turns every role on |
 | `AGENT_PEERS` | `acme=http://acme:8080` | Where the mode hands work to its specialists (itself) |
 | `HOST_TIME_ZONE` | the shop's zone | The time the agent tells when the user shares none; core names no country |
 | `BROWSER_USER_AGENT` | `Acme/1.0 (+link; reads a page on a user's behalf)` | Only if it reads the web: says who reads and why, never a person ([ADR 0038](../adr/0038-the-browser-says-what-it-is.md)) |
 
-Then check it is there, and open a chat in its mode. `$API` is your stack's address (Puls's is
-`http://127.0.0.1:5070`):
+Then check it is there, and open a chat in its mode. `$API` is your stack's address (the coding demo's is
+`http://127.0.0.1:5082`):
 
 ```bash
 curl -s -H "x-api-key: $AGENT_API_KEY" $API/v1/roles
@@ -296,7 +296,7 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 
 `GET /v1/roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session that names no mode
 runs the default, which is the first loaded identity's `DefaultVoice` (`acme/voice` here). A web app of its own (as
-Puls has in `demos/puls/web/LouisAgent.Puls`) is a separate project and optional; any client that opens sessions this way works.
+the coding agent has in `demos/louis-agent/web/LouisAgent.CodeReview`) is a separate project and optional; any client that opens sessions this way works.
 
 ## Modes, roles and minions: the rules
 
@@ -311,7 +311,7 @@ word means rebuilding the images that use the identity.
 A mode (level 0) is one file in a product's folder. It holds the voice (the first `# ` section) and then the routing
 (from the second `# ` heading on), and it's named `{product}/{mode}`, as in `louis-agent/voice`. A language is
 `{product}/voice-{xx}.md` with only the voice in it. It loads the product's shared `voice.md`, the routing, after
-itself, and Puls's *Taal* menu offers it as soon as `GET /v1/roles` does. Each product routes only what it does.
+itself, and a site's language menu (Puls's *Taal*) can offer it as soon as `GET /v1/roles` does. Each product routes only what it does.
 
 *Decided in:* [ADR 0019](../adr/0019-modes-one-file-per-product.md).
 
@@ -343,7 +343,7 @@ one tool of its own, so no file lists tools per role.
 *Decided in:* F30.
 
 Names are lowercase letters, digits and dashes (a mode adds one `/`), and each is used at one level only: a name from
-another level is refused as unknown. `ROLES_ENABLED` turns on only the roles it lists, so a test can run Puls with just
+another level is refused as unknown. `ROLES_ENABLED` turns on only the roles it lists, so a test can run an identity with just
 the one role it's testing. `GET /v1/roles` lists them all by level, with the default, and an unknown or invalid name
 is a 400 before any engine is built.
 
@@ -355,7 +355,7 @@ is a 400 before any engine is built.
 - [ ] A one-word lowercase name, the same as its modes' folder.
 - [ ] The mode opens with its voice; the routing starts at the second `# ` heading and routes only this identity's work.
 - [ ] Every role is prefixed with the identity's name; a role's header names the toolsets it always needs.
-- [ ] `IdentityKind`, `Plugins` and the `LouisAgent.HostPacks.csproj` reference in the composition root; every named pack registered.
+- [ ] Registered in the program's catalogue with its project reference; every pack it names in the same catalogue.
 - [ ] A prompts fixture, an identity test, prompt tests and a session golden, reviewed.
 - [ ] `ROLES_ENABLED` lists only the roles that have passed their check.
 

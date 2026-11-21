@@ -5,7 +5,7 @@
 > the stream, add a component, and test it. **Elsewhere:** how it works in
 > [LouisAgent.Web](../projects/LouisAgent.Web.md); the eval pages in [Change the eval pages](change-the-eval-pages.md);
 > the apps in [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) and
-> [Change the Puls web app](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/guides/change-the-puls-app.md).
+> [Change the Puls web app](https://github.com/bosbevk/puls/blob/main/docs/guides/change-the-puls-app.md), in Puls's own repository.
 
 ![The framework's web at a glance: LouisAgent.Web holds the API client, the chat and a turn's life, the components, the text rules and the styles, and every site fills it with its own words and data](diagrams/change-the-web.svg)
 
