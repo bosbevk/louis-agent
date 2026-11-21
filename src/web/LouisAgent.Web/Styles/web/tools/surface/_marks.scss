@@ -120,3 +120,15 @@
     border-radius: var(--web-small-radius);
     padding: 1px 6px;
 }
+
+/* A step's number (F169.2): drawn from the six names a theme sets for it, so one theme makes it a squared label and
+   another a circle ("A: the theme decides"). Drawn at rest only: a number does not answer the pointer as a button
+   does. Its size and its weight are the steps' own. */
+@mixin step() {
+    color: var(--web-step-ink);
+    border: var(--web-step-edge);
+    border-radius: var(--web-step-radius);
+    background: var(--web-step-fill);
+    box-shadow: var(--web-step-shadow);
+    font-family: var(--web-step-face);
+}

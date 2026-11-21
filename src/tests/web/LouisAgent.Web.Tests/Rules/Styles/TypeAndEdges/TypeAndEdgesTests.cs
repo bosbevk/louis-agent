@@ -69,6 +69,28 @@ public class TypeAndEdgesTests
     }
 
     /// <summary>
+    /// A step's number is drawn by the surface tool's <c>step()</c> from the six names each theme sets, so flat draws
+    /// a squared label and glass its circle ("A: the theme decides"); it no longer wears the main button, so it does
+    /// not answer the pointer as a button does.
+    /// </summary>
+    [Test]
+    public void AStepsNumber_IsDrawnByTheStepTool_NotAsAButton()
+    {
+        var rule = RuleOpenedBy(Path.Combine(Web, "Components/Site/Text/Steps.razor.scss"), ".step-number {").ToList();
+        string tool = string.Join('\n',
+            RuleOpenedBy(Path.Combine(Web, "Styles/web/tools/surface/_marks.scss"), "@mixin step() {"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rule, Does.Contain("    @include surface.step();"));
+            Assert.That(rule, Has.None.Contains("surface.press()"));
+            Assert.That(rule, Has.None.Contains("border-radius"), "the corner is the theme's");
+            foreach (string name in new[] { "fill", "ink", "edge", "shadow", "radius", "face" })
+                Assert.That(tool, Does.Contain($"var(--web-step-{name})"), $"the tool reads the step's {name}");
+        });
+    }
+
+    /// <summary>
     /// The lines of the rule a sheet opens with that exact line, up to the brace at the same indent that closes it.
     /// </summary>
     private static IEnumerable<string> RuleOpenedBy(string sheet, string opening)
