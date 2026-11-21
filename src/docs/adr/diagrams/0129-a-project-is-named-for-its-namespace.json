@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "0129 at a glance: a project is named for its namespace",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "name", "icon": "box", "title": "One name", "code": "LouisAgent.Packs.Web",
+          "look": "highlight",
+          "text": "A project's folder, project file, DLL, namespace and package all carry the name its code's RootNamespace says." }
+      ] },
+      { "cards": [
+        { "id": "new", "icon": "folder", "title": "A new project",
+          "text": "Is created under that name from the start: LouisAgent.Packs.Units, its tests LouisAgent.Packs.Units.Tests." },
+        { "id": "shared", "icon": "chip", "title": "A shared namespace",
+          "text": "The project that doesn't own it adds its own part: LouisAgent.Evals.Checks beside LouisAgent.Evals." },
+        { "id": "code", "icon": "checks", "title": "Code that reads names",
+          "text": "Matches the PascalCase name, never the old lower-case spelling, and asks the shared helper for a short name." }
+      ] }
+    ],
+    "links": [
+      { "from": "name", "to": "new" },
+      { "from": "name", "to": "shared" },
+      { "from": "name", "to": "code" }
+    ]
+  }
+}
