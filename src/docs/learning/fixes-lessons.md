@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX217 · What a browser shows is not what a search engine reads
+
+The framework's site went live with the brand's mark as an SVG, and every browser tab showed it, so it looked done.
+Google Search still put a grey globe beside each of its results. Google reads only bitmap icons, PNG, ICO and the
+like, and never an SVG, and it takes one icon per host name, so the framework's subdomain could not borrow
+louis-agent.dev's. The cure was to name the same PNGs louis-agent.dev already serves, with a test that the files stay
+the same on both sites. The lesson is that a crawler has its own list of what it accepts, so checking a page in a
+browser doesn't prove what a search engine will show; the search engine's own guide is the thing to check against.
+Skill 18 (testing and shipping: what a crawler is told is part of what ships).
+
 ## FX216 · A copy that says it's the original is still a copy
 
 Search Console left 160 of louis-agent.dev's pages out, 95 of them as "Duplicate, Google chose different canonical
