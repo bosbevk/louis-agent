@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 142 | 100 |
+| Features (`F`) | 143 | 100 |
 | Fixes (`FX`) | 207 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F166 | Puls in its own repository (Louis, 2026-11-19: "we need to move it"), on the framework as published packages (his pick C): F166.1 the framework's parts out of `demos/puls` (done 2026-11-20); F166.2 the framework as NuGet packages (done 2026-11-21, 0.1.0 on GitHub Packages); F166.3 Puls with `recipes`, `shop-prices` and `where-to-buy` in the `puls` repo, `calculator` staying (his pick C), as `Puls.*` in `src/` and `tests/` on the packages; F166.4 Puls gone from louis-agent | Now |
+| F166 | Puls in its own repository (Louis, 2026-11-19: "we need to move it"), on the framework as published packages (his pick C): F166.1 the framework's parts out of `demos/puls` (done 2026-11-20); F166.2 the framework as NuGet packages (done 2026-11-21, 0.1.0 on GitHub Packages); F166.3 Puls with `recipes`, `shop-prices` and `where-to-buy` in the `puls` repo, `calculator` staying (his pick C), as `Puls.*` in `src/` and `tests/` on the packages (done 2026-11-21); F166.4 Puls gone from louis-agent | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
@@ -159,11 +159,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (142 done)
+## Features (143 done)
 
 | Id | When | What |
 |---|---|---|
 | F169.1 | 2026-11-21 | Flat's lines and inks, F169's first child: flat's dark line one firmer grey, `#404048`, pictures on a flat page too; the faint grey and a listing's comments readable on a card, held by `FlatInksTests` on a shared `Contrast`; the keyboard's ring drawn once; a topic line in the theme's purple, glass light's now the deep violet; a quiet control on the chip's line; a code word drawn from three names every theme sets, on a page and in the agent's answer |
+| F166.3 | 2026-11-21 | Puls in its own repository, F166's third child: Puls and its three packs moved to `github.com/bosbevk/puls` as `Puls.*` in `src/` and `tests/`, by once-off commands kept there, its history left here at the tag `puls-moved-out`; on the framework's packages alone, which learned to work outside this repository on the way (the web packages carry their Sass, the test helpers and the runner's stub their files, `LeadImage` public); its CI green from the feed with its own token, the coming-soon page published from there |
 | F166.2 | 2026-11-21 | The framework as packages, F166's second child: the 31 projects a product reaches published to GitHub Packages at 0.1.0, each versioned by MinVer from a tag of its own name, a commit's tags published as one batch with a guard against a dependency nobody can restore, and a project outside the repository that restores them with only a workflow's token and runs an agent (ADR 0130) |
 | F167 | 2026-11-21 | Every project named for its namespace, before F166.2: all 155 projects, their folders, docs and pictures renamed to their `RootNamespace` (`louis-agent.pack.web` to `LouisAgent.Packs.Web`), nine names listed by hand, by git and shell commands run once and kept in `src/tools/rename-projects`; what found projects by the old spelling follows them, the log's service name unchanged, the eval studio's publish folder fixed |
 | F166.1 | 2026-11-20 | The framework's parts out of `demos/puls`, F166's first child: the API's tests run on a made-up `TestAgent` and the framework's fakes, a test runner on the general checks and the template eval, and a sample eval each test writes for itself, moved to `src/tests/hosts`; `deploy.ps1` beside the sites' yaml without `infra`, `vm` and `sql-access`; its guide and architecture in `src/docs`; its tests in the site's; the workflow `deploy-sites.yml` |

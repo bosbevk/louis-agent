@@ -22,7 +22,8 @@ works, then the jobs you do by hand: the first time an app goes live, its domain
 
 Everything is in one resource group, `rg-puls-za`, in South Africa North. The names start with *puls* because Puls
 was deployed here first. Since FX122 Puls isn't deployed: `mypuls.co.za` is a "coming soon" page on a free Static
-Web App, published by its own workflow, `deploy-coming-soon.yml`. The VM, the Azure SQL server and Puls's app went
+Web App, published by a workflow of Puls's own repository, [`puls`](https://github.com/bosbevk/puls), which holds the
+page. The VM, the Azure SQL server and Puls's app went
 then, and their story is in git, FX122 and ADRs 0095 and 0098.
 
 | Resource | Name | What it does today |

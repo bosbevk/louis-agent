@@ -83,7 +83,35 @@ GitHub Packages asks for a token even for a public package. In a workflow, the r
 `packages: read` is enough. On a PC, a personal access token with `read:packages` goes in the project's `nuget.config`.
 
 The repository's own tests make the same check without the feed: `LouisAgent.Packages.IntegrationTests` packs the 31
-into a folder at a version of its own and runs an agent from them, on every pull request.
+into a folder at a version of its own and runs an agent from them, on every pull request. The same tests check that
+the packages carry what a product needs besides their code, which the next part is about.
+
+## What a package carries besides its code
+
+A product outside this repository has only the packages, so whatever a project's code reads from beside it, or a
+site's build reads from the framework, has to travel in the package. Puls, the first product on its own, found four
+such things when it moved out, and each is now packed the same way wherever it applies.
+
+A web package with Sass carries it. A packable project with a `Styles/` folder packs its `.scss` files under `sass/`,
+and with them `src/web/FrameworkSass.targets`, packed as the package's `buildTransitive` file, which NuGet runs in any
+project that takes the package. It copies the framework's Sass into the site's `obj/framework-sass/` before the Sass
+compiler runs, so a site names that one folder in its `sasscompiler.json` `IncludePaths` and forwards the framework's
+partials as a site in this repository does. `Directory.Build.targets` holds the packing rule, so a new web package with
+Sass gets it by having the folder.
+
+Files a project's code reads at run time travel as content that NuGet copies into the consumer's output, at the path
+the code already reads: an item with `Pack="true"`, a `PackagePath` under `contentFiles/any/any/` that ends at the
+folder (NuGet adds the item's own folders itself, so naming `%(RecursiveDir)` there doubles them) and
+`PackageCopyToOutput="true"`. The runner's stub eval carries its transcripts this way, and the web test helpers the
+recorded turns they replay.
+
+The test helpers ask what is there instead of knowing louis-agent's folders. A site's project is found anywhere in its
+repository, leaving out build output, and a site's styles are read from what its own build made: the partials its
+packages unpacked, and each library's bundle where the build's `staticwebassets.build.json` says it is, in NuGet's
+folder or a referenced project's `obj`.
+
+And what a pack calls has to be public. A pack reads a page's words with `HtmlText.ToText` and its photo with
+`LeadImage.Of`, both public for that alone, so a pack in another repository needs no copy of them.
 
 ## Later: nuget.org at 1.0
 
