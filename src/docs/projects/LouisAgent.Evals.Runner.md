@@ -1,7 +1,7 @@
 # LouisAgent.Evals.Runner — design
 
 > **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals.Runner/` · **References:** LouisAgent.Evals,
-> YamlDotNet · **Used by:** each demo's runner program, `demos/puls/hosts/LouisAgent.PulsEvalRunner` and
+> YamlDotNet · **Used by:** each demo's runner program, such as
 > `demos/louis-agent/hosts/LouisAgent.CodingEvalRunner`, which the API starts as a child process (published to
 > `/app/evals` in each demo's API image), and the API's tests' `src/tests/hosts/LouisAgent.Api.TestRunner`
 > **Also shows:** `component`, `deployment`
@@ -15,14 +15,14 @@ sheet, and checks a judge.
 
 It's a library, and the program around it is each demo's own. A demo's runner program is a few lines: it calls
 `EvalRunnerHost.RunAsync` with the checks and readers its evals can name, its model providers and its telemetry.
-Puls's, `LouisAgent.PulsEvalRunner`, hands in `PulsCatalogs.All`, with the packs' checks, Puls's judges and Puls's
-readers. The coding demo's hands in `RunnerCatalogs.GeneralOnly`, since its evals need only the general checks, and
-so does the API's test runner, which copies the framework's template eval beside it as its one file eval. The
+The coding demo's, `LouisAgent.CodingEvalRunner`, hands in `RunnerCatalogs.GeneralOnly`, since its evals need only
+the general checks. A product with checks of its own, such as Puls in its own repository, hands in a catalogue with
+them. So does the API's test runner, which copies the framework's template eval beside it as its one file eval. The
 library never names a pack or an identity, because a package can't reference someone's project. So what proves an
 identity or a pack is referenced only by that demo's runner program, and no host carries it
 ([ADR 0073](../adr/0073-packs-reference-no-evals.md), [ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
 
-You run it as `dotnet LouisAgent.PulsEvalRunner.dll run {eval}`, or the coding demo's in the same way. The API
+You run it as `dotnet LouisAgent.CodingEvalRunner.dll run {eval}`, and any demo's in the same way. The API
 never references an eval project itself. It starts the runner program and reads what it writes on stdout. That's why
 a new eval is just a folder of files, with nothing to change in the API.
 
@@ -41,9 +41,9 @@ Every eval is a folder of files. `Catalog/EvalFolders` finds them: every `eval.j
 runner. A folder's path in there is where it sits in the repository.
 
 The runner builds each eval's checks from the catalogues its program handed in, as a `RunnerCatalogs`. The general
-checks always come first, then the program's own: for Puls, each pack's checks project and then Puls's judges. A
+checks always come first, then the program's own, such as a pack's checks project or a product's judges. A
 check's reader comes from the reader catalogue, held in the same record: the general readers first, then the
-program's own, such as Puls's readers. A check type or reader named twice stops the runner as it starts. The judges
+program's own. A check type or reader named twice stops the runner as it starts. The judges
 build their model clients through the providers the program composed.
 
 `EVALS=` keeps only the evals of the identities it names, or all of them when it's not set. If you name something no
@@ -142,10 +142,10 @@ The API starts it inside its container, or you start it by hand from a terminal.
 
 | Setting | What it does |
 |---|---|
-| `EVALS` | The identities whose evals the catalogue lists, by commas, case ignored (`puls` today); an unknown one is refused; unset: all |
+| `EVALS` | The identities whose evals the catalogue lists, by commas, case ignored (`triage` in the coding demo); an unknown one is refused; unset: all |
 | `BENCHMARK_RUN` | The run's id, so the API can tie the lines to its run |
 | `AGENT_API`, `AGENT_API_KEY`, `EVAL_JUDGE_*` | Read by the harness ([LouisAgent.Evals](LouisAgent.Evals.md)) |
-| `EVAL_RUNNER` (the API's) | Where the API finds the demo's runner program: `/app/evals/LouisAgent.CodingEvalRunner.dll` in the coding demo's API image, Puls's in its own |
+| `EVAL_RUNNER` (the API's) | Where the API finds the demo's runner program: `/app/evals/LouisAgent.CodingEvalRunner.dll` in the coding demo's API image |
 
 ## Extending it
 
@@ -161,7 +161,7 @@ an unknown name is refused) and the catalogue (an eval with no grader is refused
 every eval folder is checked for conformance, and the data files are checked to be copied beside the assembly.
 
 The studio's commands (`--checks`, `--check`, `--folder`, `--samples`) have tests too, and
-`PromptfooRoundTripTests` takes a promptfoo file all the way round. `StubCheckTests`, in the Puls demo's API
+`PromptfooRoundTripTests` takes a promptfoo file all the way round. `StubCheckTests`, in the API's
 integration tests, runs the real runner through the API.
 
 ## Limits and plans
@@ -172,7 +172,7 @@ transcripts.
 ## Related docs
 
 [Run the evals](../guides/run-the-evals.md) · [Add an eval](../guides/add-an-eval.md) ·
-[LouisAgent.Evals](LouisAgent.Evals.md) · [LouisAgent.Identities.Puls](../../../demos/puls/docs/projects/LouisAgent.Identities.Puls.md)
+[LouisAgent.Evals](LouisAgent.Evals.md) · [LouisAgent.Identities.Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Identities.Puls.md)
 
 ---
 [Projects](README.md) · Previous: [LouisAgent.Evals.Protocol](LouisAgent.Evals.Protocol.md) · Next: [tests](tests.md)

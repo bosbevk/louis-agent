@@ -54,14 +54,17 @@ public class ExamplesPageTests
             foreach (var example in FrameworkExamples.All)
             {
                 Assert.That(picture, Does.Contain(example.Name));
-                Assert.That(picture, Does.Contain(Path.GetFileName(example.Identity)));
+                Assert.That(picture, Does.Contain(example.Identity.Name));
             }
         });
     }
 
-    /// <summary>Every example names the identity that makes it, a folder on the disk, and the page shows it.</summary>
+    /// <summary>
+    /// Every example names the identity that makes it, and the page shows it: one here is a folder on the disk, one
+    /// built elsewhere a repository of ours on GitHub, which is its proof (ADR 0100, F166.4).
+    /// </summary>
     [Test]
-    public void EveryExample_NamesItsIdentity_OnTheDisk()
+    public void EveryExample_NamesItsIdentity_WhereItLives()
     {
         using var ctx = Context();
 
@@ -69,11 +72,38 @@ public class ExamplesPageTests
 
         Assert.Multiple(() =>
         {
-            foreach (var example in FrameworkExamples.All)
+            foreach (var home in FrameworkExamples.All.Select(example => example.Identity))
             {
-                Assert.That(Directory.Exists(Path.Combine(TestPaths.RepoRoot, example.Identity)), example.Identity);
-                Assert.That(page, Does.Contain(Path.GetFileName(example.Identity)), $"{example.Identity} on the page");
+                if (home.IsHere)
+                    Assert.That(Directory.Exists(Path.Combine(TestPaths.RepoRoot, home.Path)), home.Path);
+                else
+                    Assert.That(home.Repository, Does.StartWith(OurRepositories), home.Repository);
+                Assert.That(page, Does.Contain(home.Name), $"{home.Name} on the page");
             }
         });
     }
+
+    /// <summary>
+    /// Puls is the product built on the framework from outside (Louis's pick A of F166.4's finding 1): its band links
+    /// to its repository and names its parts as they are called there.
+    /// </summary>
+    [Test]
+    public void Puls_IsShownFromItsOwnRepository()
+    {
+        using var ctx = Context();
+
+        string band = ctx.Render<ExamplesPage>().Find("#puls-assistant").OuterHtml;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(FrameworkExamples.Puls.Identity.IsHere, Is.False);
+            Assert.That(band, Does.Contain("href=\"https://github.com/bosbevk/puls\""));
+            Assert.That(band, Does.Contain("Puls.Packs.Recipes"));
+            Assert.That(band, Does.Not.Contain("LouisAgent.Packs.Recipes"));
+            Assert.That(band, Does.Not.Contain("LouisAgent.Identities.Puls"));
+        });
+    }
+
+    /// <summary>The account our repositories are under.</summary>
+    private const string OurRepositories = "https://github.com/bosbevk/";
 }

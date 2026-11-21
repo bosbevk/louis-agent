@@ -23,8 +23,7 @@ The docs root is laid out as the repository is, so a path in one doc leads to th
 - `src/docs/projects/`: one design doc per project, what it holds and how it works; its `README.md` lists them.
 - `src/docs/guides/`: how to do a thing, such as build a pack, build an identity, spawn a site or run the tests.
 - `src/docs/learning/`: the write-ups of what each feature taught.
-- `demos/louis-agent/docs/`, `demos/puls/docs/` and `packs/docs/`: each demo's own docs, and the packs', laid out
-  the same way.
+- `demos/louis-agent/docs/` and `packs/docs/`: the demo's own docs, and the packs', laid out the same way.
 
 A question about why goes to an ADR, about how it works to a project doc or the architecture, about how to do
 something to a guide.

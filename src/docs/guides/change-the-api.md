@@ -15,7 +15,6 @@ in `Sessions/`. Behaviour that every host needs belongs in core.
 
 ```bash
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # http://127.0.0.1:5082
-dotnet run --project demos/puls/hosts/LouisAgent.PulsApi  # Puls's settings and web app
 ```
 
 Every route is under `/v1` except `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)). Every `/v1` call needs
@@ -177,13 +176,14 @@ The admin's eval pages are served by the eval studio's API, `LouisAgent.Api.Eval
 `--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
 title. The eval's name is its check's id.
 
-1. Write the eval as a folder of files in its demo's evals project (for Puls,
-   `demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/`), with its scenarios, checks and reference transcripts.
+1. Write the eval as a folder of files in its demo's evals project (for the triage team,
+   `demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals/Evals/`), with its scenarios, checks and reference
+   transcripts.
    [Add an eval](add-an-eval.md) walks through it.
 2. Check the runner lists it: `dotnet src/evals/LouisAgent.Evals.Runner/bin/Debug/net10.0/LouisAgent.Evals.Runner.dll --list`
    prints one line for it (build the runner first).
 3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
-   `docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build`.
+   `docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api`.
 4. Open the admin's eval pages: the check is listed with its `proves` as its title. Its manual is the markdown file the
    eval's `Manual` names, beside the eval, which the runner's listing hands to the API. A manual outside the eval
    folders is never read.

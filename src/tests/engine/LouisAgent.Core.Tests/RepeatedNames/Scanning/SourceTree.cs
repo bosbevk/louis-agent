@@ -25,7 +25,6 @@ public static class SourceTree
         foreach (string group in new[]
                  {
                      "src/engine", "src/hosts", "src/web", "src/evals", "src/tools", "packs/tools", "packs/evals", "packs/web",
-                     "demos/puls/identity", "demos/puls/evals", "demos/puls/web", "demos/puls/hosts",
                      "demos/louis-agent/web", "demos/louis-agent/hosts"
                  })
         {

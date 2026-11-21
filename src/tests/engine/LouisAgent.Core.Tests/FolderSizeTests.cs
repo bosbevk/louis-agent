@@ -35,7 +35,6 @@ public class FolderSizeTests
         "src/hosts/LouisAgent.Api.Evals/Replies",
         "src/web/LouisAgent.Web.Evals/Admin/Grades",
         "src/web/LouisAgent.Web.Evals/Admin/Reviews",
-        "demos/puls/web/LouisAgent.Puls/Components/Landing",
         "src/web/LouisAgent.Web/Chats",
         "src/tests/hosts/LouisAgent.Api.Tests",
         "src/tests/hosts/LouisAgent.Api.Tests/Endpoints",
@@ -45,7 +44,6 @@ public class FolderSizeTests
         "src/tests/engine/LouisAgent.Core.Tests/Agent",
         "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning",
         "src/tests/evals/LouisAgent.Evals.Tests/Running",
-        "demos/puls/tests/LouisAgent.Identities.Puls.Evals.Tests/Evals/Checks",
         "src/tests/web/LouisAgent.Web.Evals.Tests/Admin/Reviews",
         "src/tests/shared/LouisAgent.Testing",
         "src/tests/web/LouisAgent.Web.Tests/Chats",
@@ -84,7 +82,7 @@ public class FolderSizeTests
     /// aren't counted; a folder merely named samples elsewhere still is.
     /// </summary>
     [TestCase("demos/louis-agent/samples/order-service/src/OrderService/Api", true)]
-    [TestCase("demos/puls/web/LouisAgent.Puls/Components/Landing", false)]
+    [TestCase("demos/louis-agent/web/LouisAgent.CodeReview/Components", false)]
     [TestCase("src/web/LouisAgent.Web/Components/Samples", false)]
     public void ADemosSample_IsntOurs(string folder, bool skipped) =>
         Assert.That(InBuildOutput(Path.Combine(TestPaths.RepoRoot, folder)), Is.EqualTo(skipped));

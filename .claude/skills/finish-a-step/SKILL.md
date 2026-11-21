@@ -109,7 +109,6 @@ A change to the engine reaches every image in use.
 |---|---|
 | The framework's site | `docker compose -f src/site/docker/docker-compose.yml up -d --build` |
 | The code-review API or its web app | `docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api` |
-| Puls | `docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build` |
 
 **Never while an eval run is going.** A run started from the eval studio runs inside the container. A rebuild makes
 the container again, and that ends the run. `GET /v1/admin/evals/runs/current` says whether one is going. Wait for

@@ -2,7 +2,7 @@
 
 > **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/LouisAgent.Api/` · **References:** LouisAgent.Core, and no web
 > app: a demo's program references the one it serves ·
-> **Docker services:** `api` in the coding demo (http://127.0.0.1:5082, `API_PORT`); `puls` in the Puls demo (5070)
+> **Docker services:** `api` in the coding demo (http://127.0.0.1:5082, `API_PORT`)
 > **Also shows:** `component`
 
 ![The agent over HTTP, and its parts: sessions, the routes, the site's pages, the workspace and the admin key](diagrams/LouisAgent.Api.svg)
@@ -24,8 +24,8 @@ library on top of it that a program opts into: [LouisAgent.Api.Evals](LouisAgent
 
 ### 1. Starting up
 
-The API is a library, and a program puts it together in three calls, the way ASP.NET itself is put together. Five
-programs do: the coding demo's `LouisAgent.CodingApi`, Puls's `LouisAgent.PulsApi`, the starter's
+The API is a library, and a program puts it together in three calls, the way ASP.NET itself is put together. Four
+programs here do: the coding demo's `LouisAgent.CodingApi`, the starter's
 `LouisAgent.Starter.Api`, and the two sites' `LouisAgent.SiteApi` and `LouisAgent.SiteFrameworkApi`.
 
 First the program builds its agent with `AgentHost.Build(...)`, from its own catalogue and services. It hands the
@@ -126,7 +126,7 @@ feed's shape. A name no pack publishes, or an item a feed doesn't have, is a `40
 and `recipes` gives each item an address.
 
 *Decided in:* [ADR 0070](../adr/0070-packs-publish-data-feeds.md),
-[ADR 0082](../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md).
+[ADR 0082](https://github.com/bosbevk/puls/blob/main/docs/adr/0082-the-recipe-library-is-an-open-feed.md).
 
 ### 6. Screens
 
@@ -162,8 +162,7 @@ other than 0 or 1, or `specialists` at depth 1, is a `400`. `parent` tags a sub-
 that opened it.
 
 `GET /v1/toolsets` lists the names, descriptions and whether each is available, but never the tool definitions. The
-code-review web app opens chats with every available toolset. Puls opens them with `agents` and `web`, and asks its
-cook on its peer by address.
+code-review web app opens chats with every available toolset.
 
 Engines are shared by every session with the same toolsets, role and level. The least recently used of 16 is dropped,
 though a session keeps its own.
@@ -172,8 +171,8 @@ though a session keeps its own.
 
 ### 10. Roles
 
-`POST /v1/sessions` takes a `role`: a built-in one at the session's level. That's a mode such as `puls/voice-af` at
-depth 0, or a specialist's role such as `puls-cook` at depth 1. With none, you get the default mode,
+`POST /v1/sessions` takes a `role`: a built-in one at the session's level. That's a mode such as `triage/voice` at
+depth 0, or a specialist's role such as `triage-sorter` at depth 1. With none, you get the default mode,
 `louis-agent/voice`. An invalid or unknown name is a `400`, before any engine is built. `GET /v1/roles` lists them by
 level, with the default.
 
@@ -355,10 +354,9 @@ as. Outside Docker,
 The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. The eval studio's settings are in
 [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md). [SETUP](../SETUP.md) has the full list.
 
-The images carry the eval runner. Both Dockerfiles (`demos/louis-agent/docker/images/Dockerfile.api` and
-`demos/puls/docker/images/Dockerfile.puls`) publish it in the build stage and copy it to `/app/evals`, its own folder
-beside the API's. Each image sets `EVAL_RUNNER` to its runner there, such as
-`/app/evals/LouisAgent.CodingEvalRunner.dll`, and compose sets none of its own.
+The image carries the eval runner. The Dockerfile (`demos/louis-agent/docker/images/Dockerfile.api`) publishes it in
+the build stage and copies it to `/app/evals`, its own folder beside the API's. The image sets `EVAL_RUNNER` to its
+runner there, `/app/evals/LouisAgent.CodingEvalRunner.dll`, and compose sets none of its own.
 
 *Decided in:* FX18, F18 step 4.3b.
 

@@ -52,14 +52,14 @@ in `demos/{name}/tests/LouisAgent.Identities.{Name}.Tests`. No test project refe
 at most 400 lines, so split a long one by what it tests.
 
 A test that leaves its process is an integration test. That's one that starts a real process (git, bash, an
-interpreter, `dotnet`, the eval runner), opens Mongo, or needs the Puls stack. It lives in a sibling project named
+interpreter, `dotnet`, the eval runner), opens Mongo, or needs a running stack. It lives in a sibling project named
 `{name}.integration-tests`, such as `src/tests/engine/LouisAgent.Core.IntegrationTests`, the API's in
-`demos/puls/tests/`, the orchestrator's in `demos/louis-agent/tests/`, and the packs' in `packs/tests/`. Its class is
+`src/tests/hosts/`, the orchestrator's in `demos/louis-agent/tests/`, and the packs' in `packs/tests/`. Its class is
 `[Category("Integration")]`.
 
 It asks for what it needs from outside in one of two ways. `Outside.Tool` asks for a program, and a missing one skips
-the test on your machine but fails it on CI. `Outside.Stack` asks for the Puls stack's browser or SearXNG, and always
-skips when its address isn't set. Whatever a unit project and an integration project share goes in a library beside
+the test on your machine but fails it on CI. `Outside.Stack` asks for a running stack's service, such as a browser or a
+search engine, and always skips when its address isn't set. Whatever a unit project and an integration project share goes in a library beside
 them, such as `LouisAgent.Api.Testing`, which holds the in-memory API host, the built runner dlls, and the store
 contracts that run against both memory and Mongo. `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests`
 hold all this, and in the solution the projects sit in the folders `unit`, `integration` and `shared`.
@@ -99,12 +99,8 @@ markup, can't happen by accident:
 | `Golden/ModelRequestSnapshot.json` (the coding catalog's tests) | `ModelRequestSnapshotTests` | The tools, their descriptions, the system prompt and the engine's fixed texts |
 | `Golden/ToolMessageSnapshot.json` (the coding catalog's tests) | `ToolMessageSnapshotTests` | Every `*ToolMessage` enum's template, the shared one and each area's |
 | `CalculatorToolMessageSnapshot.json` (calculator pack) | `CalculatorToolMessageSnapshotTests` | The calculator's texts |
-| `WhereToBuyToolMessageSnapshot.json` (where-to-buy pack) | `WhereToBuyToolMessageSnapshotTests` | The branch tool's texts |
-| `ShopPriceToolMessageSnapshot.json` (shop-prices pack) | `ShopPriceToolMessageSnapshotTests` | The price tool's texts |
 | `DocsToolMessageSnapshot.json` (docs pack) | `DocsToolMessageSnapshotTests` | The docs tools' texts |
-| `RecipeToolMessageSnapshot.json` (recipes pack) | `RecipeToolMessageSnapshotTests` | The recipe tools' texts |
 | `TriageToolMessageSnapshot.json` (triage pack) | `TriageToolMessageSnapshotTests` | The triage tools' texts |
-| `PulsSessionSnapshot.json` (Puls identity) | `PulsSessionSnapshotTests` | What the model is sent in Puls's chat and its cook |
 | `FrameworkSessionSnapshot.json` (framework Orbi) | `FrameworkSessionSnapshotTests` | What the model is sent in a session of the framework's guide |
 | `AcpTranscript.json` (ACP server) | `AcpTranscriptTests` | Everything the server writes to Rider |
 | `ApiRoutesSnapshot.json` (API) | `ApiRoutesSnapshotTests` | Every route of the API, with who may call it |
@@ -134,15 +130,12 @@ regenerated file can show as modified in `git status` with no `git diff`: only i
 **The web's components are pinned the same way.** `src/tests/web/LouisAgent.Web.Tests` renders `TurnView`,
 `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
 (`src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.sse`), and compares each one's markup with
-the `.html` golden beside its test (`Components/TurnView.html`). `demos/puls/tests/LouisAgent.Puls.Tests` does the
-same for `WorkPanel`, `PulsTile`, `TemplateCard`, the landing page and the chat page, empty and with the turn
-(`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and `demos/louis-agent/tests/LouisAgent.CodeReview.Tests` for
-the code-review app's chat page. Each runs against the stub API, `FixtureApi`, from the shared web testing library.
+the `.html` golden beside its test (`Components/TurnView.html`). `demos/louis-agent/tests/LouisAgent.CodeReview.Tests`
+does the same for the code-review app's chat page. Each runs against the stub API, `FixtureApi`, from the shared web testing library.
 The same switch regenerates them:
 
 ```bash
 LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/LouisAgent.Web.Tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/LouisAgent.Puls.Tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/LouisAgent.CodeReview.Tests
 ```
 
@@ -178,7 +171,7 @@ normalised. A test that needs a tool the machine may lack (git, Python, the Mong
 
 ## Add a test project
 
-Copy an existing one's `.csproj` (`packs/tests/LouisAgent.Packs.ShopPrices.Tests` is a small one): `net10.0`, NUnit 4.3.2 with its
+Copy an existing one's `.csproj` (`packs/tests/LouisAgent.Packs.Calculator.Tests` is a small one): `net10.0`, NUnit 4.3.2 with its
 analyzers and adapter, `Microsoft.NET.Test.Sdk`, `IsPackable` false, a reference to the project under test and to
 `LouisAgent.Testing`, and both as global usings:
 

@@ -3,8 +3,8 @@ using System.Text;
 namespace LouisAgent.Testing;
 
 /// <summary>
-/// The short name a project's folder stands for, as the tests read it: <c>LouisAgent.Identities.Puls</c> is
-/// <c>puls</c> and <c>LouisAgent.CodeReview</c> is <c>code-review</c>, the names identities and sites go by.
+/// The short name a project's folder stands for, as the tests read it: <c>LouisAgent.Identities.Coding</c> is
+/// <c>coding</c> and <c>LouisAgent.CodeReview</c> is <c>code-review</c>, the names identities and sites go by.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
 public static class ProjectNames

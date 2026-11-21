@@ -15,7 +15,7 @@ portal, and the check closed on 2026-11-03 (run `cf37574d0f23`). The harness's g
 And the gap a replay couldn't cross, a hand-off to a sub-session, was closed by FX27: a sub-session's answer no
 longer carries its usage, so it reads the same in a replay. The cook and recipes evals run live only now for another
 reason: the recipe search draws its sites at random
-([ADR 0078](../../../packs/docs/adr/0078-a-recipe-search-asks-several-sites.md)).
+([ADR 0078](https://github.com/bosbevk/puls/blob/main/docs/adr/0078-a-recipe-search-asks-several-sites.md)).
 
 ## Why a judge needs checking
 

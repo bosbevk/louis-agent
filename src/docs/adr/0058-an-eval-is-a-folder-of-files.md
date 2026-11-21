@@ -64,7 +64,7 @@ referencing the harness.
 [0029](0029-simulations-in-csharp.md) · [0041](0041-json-through-records-by-hand-only-for-bytes.md) ·
 [0043](0043-repeated-names-are-enums.md) · [0055](0055-keep-it-simple.md) ·
 [0056](0056-a-check-is-a-catalogue-entry.md) · [Add an eval](../guides/add-an-eval.md) ·
-[LouisAgent.Identities.Puls](../../../demos/puls/docs/projects/LouisAgent.Identities.Puls.md)
+[LouisAgent.Identities.Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Identities.Puls.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

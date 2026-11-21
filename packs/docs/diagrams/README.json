@@ -11,21 +11,21 @@
       { "cards": [
         { "id": "general", "icon": "code", "title": "The general packs",
           "text": "files, git, dotnet, shell, web, paymo, devops: one shape, one doc." },
-        { "id": "cook", "icon": "search", "title": "What Puls's cook uses",
-          "text": "recipes, shop-prices, where-to-buy, calculator." },
+        { "id": "sums", "icon": "chart", "title": "A pack for sums",
+          "text": "calculator: a sum worked out in code." },
         { "id": "site", "icon": "browser", "title": "What the site and demos use",
           "text": "docs, leads, site, triage." }
       ] },
       { "cards": [
-        { "id": "adrs", "icon": "book", "title": "Their decisions",
-          "text": "ADR 0069 prices as Stats SA estimates, 0078 a search asks several sites, 0082 the recipe library as an open feed." }
+        { "id": "moved", "icon": "home", "title": "Moved with Puls",
+          "text": "recipes, shop-prices and where-to-buy, with ADRs 0069, 0078 and 0082, in Puls's own repository." }
       ] }
     ],
     "links": [
       { "from": "packs", "to": "general" },
-      { "from": "packs", "to": "cook" },
+      { "from": "packs", "to": "sums" },
       { "from": "packs", "to": "site" },
-      { "from": "cook", "to": "adrs" }
+      { "from": "general", "to": "moved" }
     ]
   }
 }

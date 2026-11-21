@@ -4,7 +4,7 @@
 > [LICENSE](LICENSE) (PolyForm Noncommercial 1.0.0) covers only what the copyright holder wrote; everything below stays under
 > its own licence, and its notice goes with it.
 
-Why this file exists: Puls and the review web app run as Blazor WebAssembly, so their DLLs are downloaded into every
+Why this file exists: the sites and the review web app run as Blazor WebAssembly, so their DLLs are downloaded into every
 visitor's browser. That counts as handing the code out, and MIT, BSD and Apache all ask that their notice travels with
 it ([ADR 0016](src/docs/adr/0016-licence-all-rights-reserved.md)). The exact version of each package is in the `.csproj`
 that references it; the full licence texts are at the links.
@@ -43,8 +43,8 @@ The pages fetch these from a CDN at run time, so no copy is in the repo; their n
 
 | What | Licence | Where |
 |---|---|---|
-| Bootstrap 5.3 (Puls) | [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE) | `demos/puls/web/LouisAgent.Puls/wwwroot/index.html` |
-| highlight.js 11.11 (Puls, review web app) | [BSD-3-Clause](https://github.com/highlightjs/highlight.js/blob/main/LICENSE) | both apps' `wwwroot/index.html` |
+| Bootstrap 5.3 (every web app) | [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE) | each app's `wwwroot/index.html` |
+| highlight.js 11.11 (the review web app, the starter and louis-agent.dev) | [BSD-3-Clause](https://github.com/highlightjs/highlight.js/blob/main/LICENSE) | those apps' `wwwroot/index.html` |
 | Fonts: Montserrat, JetBrains Mono, IBM Plex Mono, VT323, Geist, Geist Mono | [SIL OFL 1.1](https://openfontlicense.org) | Google Fonts, linked from the pages' CSS |
 
 ## Copied into the code

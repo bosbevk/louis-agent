@@ -17,9 +17,9 @@ public static class BuildYourOwn
     /// <summary>The folders the steps name, each one the test finds on the disk.</summary>
     public static readonly IReadOnlyList<string> Folders =
     [
-        "demos/puls/identity/LouisAgent.Identities.Puls",
-        "demos/puls/hosts/LouisAgent.HostPacks",
-        "packs/tools/LouisAgent.Packs.WhereToBuy",
+        "demos/louis-agent/identity/LouisAgent.Identities.Coding",
+        "demos/louis-agent/hosts/LouisAgent.Coding.Catalog",
+        "packs/tools/LouisAgent.Packs.Calculator",
         "demos/starter/web/LouisAgent.Starter",
         "demos/louis-agent/hosts/LouisAgent.CodingApi"
     ];
@@ -35,8 +35,9 @@ public static class BuildYourOwn
         new("Add a specialist, if the work needs one.",
             "A role of its own that the agent can ask by its address, with the packs that role uses."),
         new("Register it, test it and run it.",
-            "Name it in the composition root, `demos/puls/hosts/LouisAgent.HostPacks`, then load it with " +
-            "`IDENTITIES`. `demos/puls/identity/LouisAgent.Identities.Puls` is a real one to read beside the guide.")
+            "Name it in your program's catalogue, as `demos/louis-agent/hosts/LouisAgent.Coding.Catalog` names the " +
+            "coding agent's. `demos/louis-agent/identity/LouisAgent.Identities.Coding` is a real one to read beside " +
+            "the guide.")
     ];
 
     /// <summary>A pack, from a new project to a tool the model calls.</summary>
@@ -51,7 +52,7 @@ public static class BuildYourOwn
             "that has the toolset."),
         new("Register it, test it and try it.",
             "Name it in your program's catalogue, as the coding agent's `CodingCatalog` does, then try it in a chat. " +
-            "`packs/tools/LouisAgent.Packs.WhereToBuy` is the closest real one, with one tool and no settings.")
+            "`packs/tools/LouisAgent.Packs.Calculator` is the closest real one, with one tool and no settings.")
     ];
 
     /// <summary>A site, from the template to a page with the chat in it.</summary>

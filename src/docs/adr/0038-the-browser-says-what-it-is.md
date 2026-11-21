@@ -24,7 +24,7 @@ cheat ([0020](0020-principles-for-every-agent.md)); the code around the model is
   later, as the shop tools already pass it; a name or an address never.
 - A site that refuses automated readers refuses this one, and that is its call. The fallbacks stay what they are: the
   catalogue tools, and estimates that say so. Access a site grants is asked for through the page in
-  [SITE_OWNERS.md](../../../demos/puls/docs/SITE_OWNERS.md), never taken by pretending.
+  [SITE_OWNERS.md](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SITE_OWNERS.md), never taken by pretending.
 
 ## Consequences
 

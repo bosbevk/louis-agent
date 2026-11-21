@@ -9,7 +9,7 @@
 ## On a developer's machine
 
 Everything runs in Docker, in a few separate stacks, each with its own compose file. The code-review stack is the
-coding agent in all its doors. Puls has its own stack beside it. The framework's two websites have a third. And one
+coding agent in all its doors. The framework's two websites have a second. And one
 dashboard collects the logs and traces of all of them. Every port is bound to `127.0.0.1` only, because these agents
 can run shell commands and write files.
 
@@ -46,13 +46,9 @@ runs the watched service's tests and checks commits with git. No compose file st
 
 ### Puls's stack
 
-Puls runs in its own stack, `demos/puls/docker/docker-compose.puls.yml`, on `127.0.0.1:${PULS_PORT:-5070}`. It is one
-container: a chat answers from the web itself, and hands cooking to a specialist on the same instance. It mounts its
-own `logs/` and `data/puls`, and waits for its stores to be healthy before it starts.
-
-Beside it run what it needs: `puls-sql` for the accounts, `puls-mongo` for its stores, `puls-searxng` for web search
-and `puls-browser` for rendering pages. Each is on `127.0.0.1` only. The browser's DevTools port has no
-authentication, so it is never opened wider.
+Puls runs in a stack of its own too, but it lives in its own repository now,
+[bosbevk/puls](https://github.com/bosbevk/puls), built on the framework's packages, and its compose file and images
+are there.
 
 ### The framework's two sites
 
@@ -64,7 +60,7 @@ host. The `framework` service is the framework's own site on `127.0.0.1:${FRAMEW
 ### The dashboard
 
 `demos/louis-agent/docker/docker-compose.observability.yml` starts the Aspire dashboard, once, beside the other
-stacks. The code-review stack, Puls and the two sites send their logs and traces to it over OTLP on port 4317, and so do Rider's
+stacks. The code-review stack and the two sites send their logs and traces to it over OTLP on port 4317, and so do Rider's
 runs when `config/.env` sets `OTEL_EXPORTER_OTLP_ENDPOINT`. Its page is at
 `http://127.0.0.1:18888`. It keeps everything in memory, so a restart forgets it.
 

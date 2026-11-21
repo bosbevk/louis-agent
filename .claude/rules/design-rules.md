@@ -16,7 +16,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Framework and implementation are split, and this comes first** — `src/` is framework only, a demo holds its own
   config, docker, skills, deploy and tests; the solution tree is the disk; core ships no agent and every tool the model asks for is a pack. [ADR 0074](../../src/docs/adr/0074-the-folders-say-what-ships.md), [0076](../../src/docs/adr/0076-core-ships-no-agent.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
-  references no other pack, identity or eval; only `demos/puls/hosts/LouisAgent.HostPacks` knows them all. Weigh every reference against
+  references no other pack, identity or eval; only a program's catalogue (`LouisAgent.Coding.Catalog`) knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](../../src/docs/adr/0027-engine-identities-and-packs.md), [0073](../../src/docs/adr/0073-packs-reference-no-evals.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
   model**: `LouisAgent.Mcp` hands an external client the raw tools; to have the agent do a whole task, call

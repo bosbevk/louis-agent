@@ -7,7 +7,7 @@ every month", "we need to pick up the corrections"; picked *Packs declare import
 
 ## Context
 
-The shop-prices pack estimates from Stats SA's average prices (P0141, [ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)),
+The shop-prices pack estimates from Stats SA's average prices (P0141, [ADR 0069](https://github.com/bosbevk/puls/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md)),
 kept in MongoDB one document per source and month. A new month was a JSON file made by hand and shipped in a build.
 Stats SA doesn't release every month, and each release repeats every month back to January 2017, sometimes with an
 earlier month corrected. So a scheduled refresh would run for nothing most months and miss the corrections, and a
@@ -56,6 +56,6 @@ person saw.*
 
 ## Links
 
-[ADR 0027](0027-engine-identities-and-packs.md) · [ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md) ·
-[ADR 0070](0070-packs-publish-data-feeds.md) · [LouisAgent.Packs.ShopPrices](../../../packs/docs/projects/LouisAgent.Packs.ShopPrices.md) ·
+[ADR 0027](0027-engine-identities-and-packs.md) · [ADR 0069](https://github.com/bosbevk/puls/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md) ·
+[ADR 0070](0070-packs-publish-data-feeds.md) · [LouisAgent.Packs.ShopPrices](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/packs/docs/projects/LouisAgent.Packs.ShopPrices.md) ·
 [Write-up 16](../learning/16-human-in-the-loop.md#f55-the-preview-is-the-check-2026-11-04)

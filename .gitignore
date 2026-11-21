@@ -59,7 +59,6 @@ logs/
 __pycache__/
 
 # What the build makes from a web app's Styles/
-demos/puls/web/LouisAgent.Puls/wwwroot/css/
 demos/louis-agent/web/LouisAgent.CodeReview/wwwroot/css/*.css
 demos/starter/web/LouisAgent.Starter/wwwroot/css/
 src/site/LouisAgent.Site/wwwroot/css/

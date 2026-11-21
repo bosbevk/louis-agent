@@ -26,16 +26,10 @@ public class SolutionLayoutTests
         "LouisAgent.Evals.Runner")]
     [TestCase("packs/tools", "LouisAgent.Packs.Web", "LouisAgent.Packs.Shell", "LouisAgent.Packs.Files",
         "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.DevOps", "LouisAgent.Packs.Paymo",
-        "LouisAgent.Packs.Recipes", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.ShopPrices",
-        "LouisAgent.Packs.WhereToBuy", "LouisAgent.Packs.Docs", "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
+        "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs", "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
         "LouisAgent.Packs.Site")]
-    [TestCase("packs/evals", "LouisAgent.Packs.Recipes.Checks", "LouisAgent.Packs.WhereToBuy.Checks")]
-    [TestCase("packs/web", "LouisAgent.Packs.Recipes.Web", "LouisAgent.Packs.Files.Web", "LouisAgent.Packs.Git.Web")]
-    [TestCase("demos/puls/identity", "LouisAgent.Identities.Puls")]
-    [TestCase("demos/puls/evals", "LouisAgent.Identities.Puls.Evals", "LouisAgent.Identities.Puls.Judges")]
+    [TestCase("packs/web", "LouisAgent.Packs.Files.Web", "LouisAgent.Packs.Git.Web")]
     [TestCase("demos/louis-agent/evals", "LouisAgent.Identities.Triage.Evals")]
-    [TestCase("demos/puls/web", "LouisAgent.Puls")]
-    [TestCase("demos/puls/hosts", "LouisAgent.HostPacks", "LouisAgent.PulsEvalRunner", "LouisAgent.PulsApi")]
     [TestCase("demos/starter/web", "LouisAgent.Starter")]
     [TestCase("demos/starter/hosts", "LouisAgent.Starter.Api")]
     [TestCase("demos/starter/tests", "LouisAgent.Starter.Tests", "LouisAgent.Starter.IntegrationTests")]
@@ -66,9 +60,6 @@ public class SolutionLayoutTests
     [TestCase("src/tools", "LouisAgent.UsageProbe", "LouisAgent.FilmExport", "LouisAgent.DocDiagrams")]
     [TestCase("src/tests/tools", "LouisAgent.FilmExport.Tests", "LouisAgent.DocDiagrams.Tests")]
     [TestCase("src/tests/packages", "LouisAgent.Packages.IntegrationTests")]
-    [TestCase("demos/puls/tests", "LouisAgent.Identities.Puls.Tests",
-        "LouisAgent.Identities.Puls.Evals.Tests",
-        "LouisAgent.Identities.Puls.Judges.Tests", "LouisAgent.Puls.Tests", "LouisAgent.HostPacks.Tests")]
     [TestCase("demos/louis-agent/tests", "LouisAgent.Coding.Catalog.Tests",
         "LouisAgent.CodeReview.Tests", "LouisAgent.Identities.Triage.Tests",
         "LouisAgent.Orchestrator.Tests", "LouisAgent.Orchestrator.IntegrationTests")]
@@ -76,13 +67,9 @@ public class SolutionLayoutTests
         "LouisAgent.Packs.Shell.IntegrationTests", "LouisAgent.Packs.Files.Tests", "LouisAgent.Packs.Git.Tests",
         "LouisAgent.Packs.Git.IntegrationTests", "LouisAgent.Packs.DotNet.Tests",
         "LouisAgent.Packs.DotNet.IntegrationTests", "LouisAgent.Packs.DevOps.Tests", "LouisAgent.Packs.Paymo.Tests",
-        "LouisAgent.Packs.Recipes.Tests", "LouisAgent.Packs.Recipes.IntegrationTests",
         "LouisAgent.Packs.Calculator.Tests", "LouisAgent.Packs.Docs.Tests", "LouisAgent.Packs.Triage.Tests",
         "LouisAgent.Packs.Leads.Tests", "LouisAgent.Packs.Site.Tests",
-        "LouisAgent.Packs.ShopPrices.Tests",
-        "LouisAgent.Packs.ShopPrices.IntegrationTests", "LouisAgent.Packs.WhereToBuy.Tests",
-        "LouisAgent.Packs.Recipes.Checks.Tests", "LouisAgent.Packs.WhereToBuy.Checks.Tests",
-        "LouisAgent.Packs.Recipes.Web.Tests", "LouisAgent.Packs.Files.Web.Tests", "LouisAgent.Packs.Git.Web.Tests")]
+        "LouisAgent.Packs.Files.Web.Tests", "LouisAgent.Packs.Git.Web.Tests", "LouisAgent.Packs.Rules.Tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)
     {
         var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
@@ -137,9 +124,6 @@ public class SolutionLayoutTests
     }
 
     /// <summary>A demo carries its own settings and images, so someone can read it as one whole project.</summary>
-    [TestCase("demos/puls", "config/.env.example", "config/prices.json", "config/rates.json",
-        "docker/docker-compose.puls.yml", "docker/images/Dockerfile.puls", "docker/searxng/settings.yml",
-        "skills/README.md", "deploy/README.md", "docs/SETUP.md", "docs/README.md")]
     [TestCase("demos/louis-agent", "config/.env.example", "config/prices.json", "config/rates.json",
         "docker/docker-compose.yml", "docker/images/Dockerfile.api", "docker/images/ollama/Dockerfile.ollama",
         "skills/README.md", "docs/SETUP.md", "docs/README.md")]
@@ -151,16 +135,17 @@ public class SolutionLayoutTests
     }
 
     /// <summary>
-    /// Each demo keeps its own copy, and until one has a reason to differ they can't drift apart by accident.
+    /// The framework's site and the demo each keep their own copy, and until one has a reason to differ they can't
+    /// drift apart by accident.
     /// </summary>
     [TestCase("prices.json")]
     [TestCase("rates.json")]
-    public void TheDemos_ShipTheSameFile(string file)
+    public void TheSiteAndTheDemo_ShipTheSameFile(string file)
     {
-        string puls = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/config", file));
+        string site = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/site/config", file));
         string coding = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config", file));
 
-        Assert.That(puls.ReplaceLineEndings(), Is.EqualTo(coding.ReplaceLineEndings()));
+        Assert.That(site.ReplaceLineEndings(), Is.EqualTo(coding.ReplaceLineEndings()));
     }
 
     /// <summary>

@@ -12,17 +12,16 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 143 | 100 |
+| Features (`F`) | 145 | 99 |
 | Fixes (`FX`) | 207 | 6 |
 | Cleanups (`CL`) | 41 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (136 in the TODO)
+## Open (135 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F166 | Puls in its own repository (Louis, 2026-11-19: "we need to move it"), on the framework as published packages (his pick C): F166.1 the framework's parts out of `demos/puls` (done 2026-11-20); F166.2 the framework as NuGet packages (done 2026-11-21, 0.1.0 on GitHub Packages); F166.3 Puls with `recipes`, `shop-prices` and `where-to-buy` in the `puls` repo, `calculator` staying (his pick C), as `Puls.*` in `src/` and `tests/` on the packages (done 2026-11-21); F166.4 Puls gone from louis-agent | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
@@ -97,7 +96,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
-| FX83 | The paymo and devops packs' async tools take no CancellationToken; the coding agent no longer loads them, so no catalogue's check reaches them | Next |
+| FX83 | The paymo and devops packs' async tools take no CancellationToken; the packs' own check (`LouisAgent.Packs.Rules.Tests`) lists them as known breaches until they're fixed | Next |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after, and its replays recorded again (ADR 0117) | Puls |
@@ -159,10 +158,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (143 done)
+## Features (145 done)
 
 | Id | When | What |
 |---|---|---|
+| F166 | 2026-11-21 | Puls in its own repository, closed: its four children built (F166.1 the framework's parts out of `demos/puls`, F166.2 the framework as packages, F166.3 Puls moved to `github.com/bosbevk/puls`, F166.4 Puls gone from louis-agent); louis-agent is the framework and its own demos, and Puls the first product built on it from outside |
+| F166.4 | 2026-11-21 | Puls gone from louis-agent, F166's fourth child: `demos/puls` and the three packs leave with their 26 projects, the framework's pages show Puls as a product built elsewhere (an `ExampleHome`, a `RepositoryLink`, ADR 0100's narrow exception), the pack rules that left with Puls come back over every pack in `LouisAgent.Packs.Rules.Tests` (DevOps and Paymo listed under FX83), and every doc says what is here |
 | F169.1 | 2026-11-21 | Flat's lines and inks, F169's first child: flat's dark line one firmer grey, `#404048`, pictures on a flat page too; the faint grey and a listing's comments readable on a card, held by `FlatInksTests` on a shared `Contrast`; the keyboard's ring drawn once; a topic line in the theme's purple, glass light's now the deep violet; a quiet control on the chip's line; a code word drawn from three names every theme sets, on a page and in the agent's answer |
 | F166.3 | 2026-11-21 | Puls in its own repository, F166's third child: Puls and its three packs moved to `github.com/bosbevk/puls` as `Puls.*` in `src/` and `tests/`, by once-off commands kept there, its history left here at the tag `puls-moved-out`; on the framework's packages alone, which learned to work outside this repository on the way (the web packages carry their Sass, the test helpers and the runner's stub their files, `LeadImage` public); its CI green from the feed with its own token, the coming-soon page published from there |
 | F166.2 | 2026-11-21 | The framework as packages, F166's second child: the 31 projects a product reaches published to GitHub Packages at 0.1.0, each versioned by MinVer from a tag of its own name, a commit's tags published as one batch with a guard against a dependency nobody can restore, and a project outside the repository that restores them with only a workflow's token and runs an agent (ADR 0130) |

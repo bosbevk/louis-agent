@@ -24,7 +24,6 @@ known limitations below are facts about today, not tasks.
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
-| F166 | Puls in its own repository (Louis, 2026-11-19: "we need to move it"), on the framework as published packages (his pick C): F166.1 the framework's parts out of `demos/puls` (done 2026-11-20); F166.2 the framework as NuGet packages (done 2026-11-21, 0.1.0 on GitHub Packages); F166.3 Puls with `recipes`, `shop-prices` and `where-to-buy` in the `puls` repo, `calculator` staying (his pick C), as `Puls.*` in `src/` and `tests/` on the packages (done 2026-11-21, [bosbevk/puls](https://github.com/bosbevk/puls)); F166.4 Puls gone from louis-agent | Now | [plan](src/docs/plans/F166-puls-in-its-own-repo.md) |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next | — |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next | — |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next | [plan](src/docs/plans/F151-themes-and-styles.md) |
@@ -69,7 +68,7 @@ known limitations below are facts about today, not tasks.
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next | — |
 | F157 | The Google integration suite (Louis, 2026-11-17: "let's go for full google integration suite"): a business connects its Google once (OAuth, offline token in Identity's table, per tenant), then its agent reads its sheets (F157.2) and books into its calendar (F157.3); an Integrations section on louis-agent.dev with the showroom's guesthouse (F157.4); Drive, Gmail and visitors' own Google later; after FX66; seven children | Next, after FX66 | [plan](src/docs/plans/F157-google-integration-suite.md) |
 | F143 | The guide drives Louis's CV (Louis, 2026-11-13: "the agent should also drive my CV", "split it in 2 features"): a generic resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill (facts only from the tool, the honest no, an interview through the leads pack, no salary or puffery), an eval of eight conversations; two open choices asked when it starts; after F142 | Next, after F142 | [plan](src/docs/plans/F143-the-guide-drives-the-cv.md) |
-| F48 | Recipe maths and a teaching cook | Next | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
+| F48 | Recipe maths and a teaching cook | Next | [plan](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/plans/F48-cook-and-teacher.md) |
 | F46 | Localisation | Next | — |
 | F50 | Puls's local specialists | Next | — |
 | F40 | The sales playground | Next | — |
@@ -84,9 +83,9 @@ known limitations below are facts about today, not tasks.
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
 | F51 | Hosting for public traffic | Next | — |
 | F75 | Puls local spec | Puls | — |
-| F76 | Cook for the week | Puls | [spec](demos/puls/docs/specs/PULS_COOK.md) |
+| F76 | Cook for the week | Puls | [spec](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/specs/PULS_COOK.md) |
 | CL16 | Reusable roles | Puls | — |
-| F77 | A domain stop-list for the browser | Puls | [doc](demos/puls/docs/SITE_OWNERS.md) |
+| F77 | A domain stop-list for the browser | Puls | [doc](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SITE_OWNERS.md) |
 | F78 | Sources as data | Puls | — |
 | F79 | Places | Puls | — |
 | F80 | Local businesses | Puls | — |
@@ -99,15 +98,15 @@ known limitations below are facts about today, not tasks.
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
 | FX66 | Both Azure apps keep their data-protection keys (which sign the sign-in cookie) in the container, so every cold start after scaling to zero makes new keys and signs everyone out (the start-up log warns); the keys go to each app's share, one setting (found 2026-11-08, F109.2) | Now | — |
-| FX83 | The paymo and devops packs' async tools take no CancellationToken (20 tools), which ADR 0028's convertibility check showed when the coding catalogue loaded them (F106.3.2 step 6); since 2026-11-11 the coding agent loads neither (Louis: "we do not use them"), so no catalogue's check reaches them: fix it, with a check of the packs' own, before anyone builds on them | Next | — |
+| FX83 | The paymo and devops packs' async tools take no CancellationToken (20 tools), which ADR 0028's convertibility check showed when the coding catalogue loaded them (F106.3.2 step 6); since 2026-11-11 the coding agent loads neither (Louis: "we do not use them"). The packs' own check, `LouisAgent.Packs.Rules.Tests` (F166.4), now holds them and lists them as known breaches, so the fix takes each off that list | Next | — |
 | F21 | Louis's corrections to the Afrikaans | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md) |
-| F28 | Team talk, the rest | Puls | [feature doc](demos/puls/docs/features/F28-team-talk.md) |
+| F28 | Team talk, the rest | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/features/F28-team-talk.md) |
 | F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after (F127.3.1 moved it with no run, since Puls is paused), and its stored replays recorded again, since they name the old tools | Puls | [ADR 0117](src/docs/adr/0117-one-address-for-every-agent-call.md) |
 | F85 | A retailer's own prices, only with its permission or feed | Puls | — |
 | F86 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls | — |
 | F87 | The open feeds have no key and no limit | Puls | — |
 | F60 | Search by meaning | Puls, later | — |
-| F88 | The cook's wave 3 | Puls, later | [spec](demos/puls/docs/specs/PULS_COOK.md) |
+| F88 | The cook's wave 3 | Puls, later | [spec](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/specs/PULS_COOK.md) |
 | F89 | A Puls-owned set of a few hundred South African recipes | Puls, later | — |
 | F90 | WhatsApp as a host | Puls, later | — |
 | F91 | The eleven official languages, measured | Puls, later | — |

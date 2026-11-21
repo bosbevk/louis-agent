@@ -42,13 +42,11 @@ project, for when you change that project's code.
 | [Change the usage probe](change-the-usage-probe.md) | `src/tools/LouisAgent.UsageProbe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
 | [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) | `demos/louis-agent/web/LouisAgent.CodeReview` | Add a tab, call a new endpoint, add a theme, test the page |
 | [Change the site](change-the-site.md) | `src/site/LouisAgent.Site` | Run it, add a page, change its look, change the CV, draw the share card again, test it |
-| [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md) | `demos/puls/web/LouisAgent.Puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
 | [Change the framework's web](change-the-web.md) | `src/web/LouisAgent.Web` | Decide what is shared, add an API call, follow a new event, add a component |
 | [Register a sign-in provider](register-a-sign-in-provider.md) | `src/hosts/LouisAgent.Accounts` | What to do at Google, Microsoft and LinkedIn, the callback each wants, the keys to set |
 | [Change the eval pages](change-the-eval-pages.md) | `src/web/LouisAgent.Web.Evals` | Give a site the pages, sort its sources chart, change a page |
 | [Change the engine](change-the-engine.md) | `src/engine/LouisAgent.Core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
-| [Change Puls](../../../demos/puls/docs/guides/change-puls.md) | `demos/puls/identity/LouisAgent.Identities.Puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |
-| [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `demos/puls/hosts/LouisAgent.HostPacks` | Register a new pack or identity: its enum member, its arm, its reference |
+| [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `demos/louis-agent/hosts/LouisAgent.Coding.Catalog` | Register a new pack or identity: one more entry in a program's catalogue, and its reference |
 | [Write and run tests](write-tests.md) | `tests/` | Everything about the test projects |
 
 Each project also links its guide and design doc in its `.csproj`, so they show under `src/docs/` in the IDE's solution

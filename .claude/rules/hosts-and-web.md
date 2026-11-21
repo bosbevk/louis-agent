@@ -28,14 +28,14 @@ host from Rider.
 
 ## A web app's folders
 
-A web app is a site such as `LouisAgent.CodeReview` or `LouisAgent.Puls`. The framework's web, `LouisAgent.Web`,
+A web app is a site such as `LouisAgent.CodeReview` or `LouisAgent.Site`. The framework's web, `LouisAgent.Web`,
 is the library they are built on, and it follows the same rules.
 
 - **Blazor's three folders stay**: `Pages/`, `Layout/` and `Components/`. Inside `Components/` there are
-  subfolders by concern. Puls has `Brand/`, `Landing/` and `Chat/`.
+  subfolders by concern. The site has `Cv/`, `Guide/`, `Landing/`, `Showroom/` and `Trust/`.
 - **C# goes in a folder per concern**, one type per file, with the namespace equal to the folder path. The
-  framework's web has `Api/`, `Chats/`, `Usage/`, `Storage/` and `Text/` among its folders. Puls has `Text/` and
-  `Content/`.
+  framework's web has `Api/`, `Chats/`, `Usage/`, `Storage/` and `Text/` among its folders. The site has `Content/`
+  and `Resumes/`.
 - **No `Services/` and no `Models/`.** Each names a kind of thing, not a concern.
 - **`_Imports.razor` carries a `@using` per folder the pages use.**
 - **The framework's chat types are in `Chats/`, not `Chat/`.** A namespace named like a type shadows the type for
@@ -56,8 +56,7 @@ is the library they are built on, and it follows the same rules.
 
 - **Each host's `Properties/launchSettings.json` holds its run profiles.**
 - **A profile holds the settings the host's compose service gets**, as paths relative to the project folder, such
-  as `../../logs`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`, and the price and rates files. The Puls
-  API's `puls` profile adds Puls's own.
+  as `../../logs`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`, and the price and rates files.
 - **It listens on a port beside the container's**: 5071, 5081, 5091.
 - **A new setting that a compose file passes to a container goes in the host's profile too.** So a debug run sees
   what the container sees ([Setup](../../src/docs/SETUP.md#how-settings-are-loaded)).

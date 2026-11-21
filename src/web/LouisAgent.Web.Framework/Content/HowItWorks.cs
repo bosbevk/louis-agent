@@ -46,8 +46,6 @@ public static class HowItWorks
     [
         new(["LouisAgent.Identities.Coding"], "The coding agent, in Rider and the terminal."),
         new(["LouisAgent.Identities.Triage"], "A team that triages a service's errors."),
-        new(["LouisAgent.Identities.Puls"],
-            "Puls, a South African general assistant, with its recipes and shop prices."),
         new(["LouisAgent.Identities.Guide"], "The guide on louis-agent.dev, who answers visitors and shows them round."),
         new(["LouisAgent.Identities.Framework"],
             "The framework's Orbi, who answers developers on this site from the docs."),
@@ -68,10 +66,7 @@ public static class HowItWorks
         new(["LouisAgent.Packs.Paymo"], "Paymo time tracking. Time entries, tasks, projects and summaries."),
         new(["LouisAgent.Packs.Leads"], "Tells a site's owner that someone is interested."),
         new(["LouisAgent.Packs.Site"], "Takes a visitor to a page of the site, and to a place on it."),
-        new(["LouisAgent.Packs.Triage"], "What a team triages a service's errors with, starting from the error feed."),
-        new(["LouisAgent.Packs.Recipes"], "A recipe, read from a page's own schema.org data."),
-        new(["LouisAgent.Packs.ShopPrices"], "A shopping list's cost, estimated from Stats SA's average prices."),
-        new(["LouisAgent.Packs.WhereToBuy"], "A shop's branches near a town, from OpenStreetMap.")
+        new(["LouisAgent.Packs.Triage"], "What a team triages a service's errors with, starting from the error feed.")
     ];
 
     /// <summary>The rules every turn keeps, each held in code.</summary>

@@ -103,8 +103,9 @@ public static partial class PackConvertibility
         string tool = $"{toolset}/{method.Name}";
         foreach (string identity in identities)
         {
-            // A whole word, case ignored: "demonstrate" is not "Demo".
-            var names = new Regex($@"\b{Regex.Escape(identity)}\b", RegexOptions.IgnoreCase);
+            // A whole word, case ignored: "demonstrate" is not "Demo". A part of a web address, between slashes, is a
+            // page and not the agent: "/framework/packs" doesn't name the identity framework (F166.4).
+            var names = new Regex($@"(?<!/)\b{Regex.Escape(identity)}\b(?!/)", RegexOptions.IgnoreCase);
             if (names.IsMatch(method.GetCustomAttribute<DescriptionAttribute>()?.Description ?? ""))
                 yield return $"{tool}: its description names the identity '{identity}'";
             foreach (ParameterInfo parameter in method.GetParameters())

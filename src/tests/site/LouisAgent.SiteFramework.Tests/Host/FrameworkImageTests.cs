@@ -16,7 +16,6 @@ public class FrameworkImageTests
     [TestCase("COPY --from=build /src/README.md /src/ROADMAP.md /src/TODO.md /app/docs/")]
     [TestCase("COPY --from=build /src/src/docs/ /app/docs/src/docs/")]
     [TestCase("COPY --from=build /src/demos/louis-agent/docs/ /app/docs/demos/louis-agent/docs/")]
-    [TestCase("COPY --from=build /src/demos/puls/docs/ /app/docs/demos/puls/docs/")]
     [TestCase("COPY --from=build /src/packs/docs/ /app/docs/packs/docs/")]
     [TestCase("RUN rm -rf /app/docs/src/docs/films")]
     [TestCase("ENV DOCS_ROOT=/app/docs")]

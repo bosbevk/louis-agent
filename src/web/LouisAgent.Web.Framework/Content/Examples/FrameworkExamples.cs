@@ -14,19 +14,24 @@ namespace LouisAgent.Web.Framework.Content.Examples;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0125-a-site-is-configured-framework-components.md">ADR 0125: a site is configured framework components</seealso>
 public static class FrameworkExamples
 {
-    /// <summary>Puls, a South African general assistant.</summary>
-    public static readonly FrameworkExample Puls = new("Puls", "demos/puls/identity/LouisAgent.Identities.Puls",
+    /// <summary>
+    /// Puls, a South African general assistant, the first product built on the framework from outside: in a
+    /// repository of its own, on the packages (F166.4, Louis's pick A of finding 1).
+    /// </summary>
+    public static readonly FrameworkExample Puls = new("Puls",
+        ExampleHome.Elsewhere("bosbevk/puls", "src/Puls.Identity"),
         DiagramIcon.Dining, DiagramTone.Green, "A South African general assistant, its recipes and shop prices.",
     [
-        new(["LouisAgent.Packs.Recipes"], "Finds a recipe, read from a page's own schema.org data."),
-        new(["LouisAgent.Packs.ShopPrices"], "Works out what a shopping list costs, from Stats SA's average prices."),
-        new(["LouisAgent.Packs.WhereToBuy"], "Finds a shop's branches near your town, from OpenStreetMap."),
+        new(["Puls.Packs.Recipes"], "Finds a recipe, read from a page's own schema.org data."),
+        new(["Puls.Packs.ShopPrices"], "Works out what a shopping list costs, from Stats SA's average prices."),
+        new(["Puls.Packs.WhereToBuy"], "Finds a shop's branches near your town, from OpenStreetMap."),
         new(["specialists"], "Five specialists, each with an address of its own that Puls can ask.")
     ]);
 
     /// <summary>The coding agent, in Rider and the terminal.</summary>
     public static readonly FrameworkExample Coding = new("The coding agent",
-        "demos/louis-agent/identity/LouisAgent.Identities.Coding", DiagramIcon.Terminal, DiagramTone.Violet,
+        ExampleHome.Here("demos/louis-agent/identity/LouisAgent.Identities.Coding"), DiagramIcon.Terminal,
+        DiagramTone.Violet,
         "Works on code with you, in Rider and the terminal.",
     [
         new(["LouisAgent.Acp", "LouisAgent.Cli"], "Works in Rider's AI chat and in the terminal, from the same catalogue."),
@@ -38,7 +43,8 @@ public static class FrameworkExamples
     ]);
 
     /// <summary>The guide on louis-agent.dev.</summary>
-    public static readonly FrameworkExample Guide = new("The guide", "src/site/LouisAgent.Identities.Guide",
+    public static readonly FrameworkExample Guide = new("The guide",
+        ExampleHome.Here("src/site/LouisAgent.Identities.Guide"),
         DiagramIcon.Browser, DiagramTone.Teal, "Answers visitors in louis-agent.dev's corner, and shows them round.",
     [
         new(["louis-agent.dev"], "The guide in the site's corner, who answers about the framework from its docs."),

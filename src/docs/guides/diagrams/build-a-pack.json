@@ -15,7 +15,7 @@
         { "id": "data", "icon": "database", "title": "Feeds, screens, imports", "text": "Data it publishes, shows and takes in." }
       ] },
       { "cards": [
-        { "id": "root", "icon": "stack", "title": "Named by a demo", "text": "CodingCatalog lists it; Puls picks it with PackKind and PACKS." }
+        { "id": "root", "icon": "stack", "title": "Named by a demo", "text": "A program's catalogue, such as CodingCatalog, lists it." }
       ] }
     ],
     "links": [

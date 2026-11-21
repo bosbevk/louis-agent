@@ -1,7 +1,7 @@
 # Configuration: how a host reads its settings
 
 > **Reference.** How the framework finds and loads settings, and every setting its code reads. **Elsewhere:** a demo's own
-> files, commands and settings in [Puls's Setup](../../demos/puls/docs/SETUP.md) and
+> files, commands and settings in [Puls's Setup](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SETUP.md) and
 > [the coding agent's Setup](../../demos/louis-agent/docs/SETUP.md); choosing a model in [Models](MODELS.md).
 
 The framework assumes nothing about your folders. Whoever runs a host keeps a `config/` folder of their own, and on this page
@@ -53,7 +53,7 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `AGENT_PEER_KEYS` | A secret, in `.env.secrets`: each other server's own key, `name=key` pairs by commas, the names those of `AGENT_PEERS` (F127.3.2). A server with none is sent `AGENT_API_KEY` |
 | `AGENT_MAX_DEPTH` | The deepest an agent may be asked (F127.5), 0 being the agent a person talks to. Any agent but a minion may ask the ones its identity's `Calls` allow, never one already in its chain of asks. Default `4` |
 | `ROLES_ENABLED` | The roles this instance may use (F29), comma separated (`puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe`); another name is refused as an unknown one, and `GET /v1/roles` lists only these. Empty: every built-in one (`src/engine/LouisAgent.Core/prompts/`). `PERSONALITIES_ENABLED`, its name before CL14, is read when it's unset, with a warning. Puls's compose sets it, so only a role that has passed its check is reachable |
-| `MINION_LLMS` | The model a minion runs on (F30): `role=profile` entries, comma separated, `*` for every role not named, `instance` for this instance's own model, `>` for a cascade cheapest first (`*=ollama-puls>instance`). Every profile must be in `LLM_SESSION_PROFILES` (`instance` needs none), else start-up stops; unset: no `minions` toolset. Puls's compose leaves it unset, since the cook uses no minion ([ADR 0081](../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)); a minion always runs a local model |
+| `MINION_LLMS` | The model a minion runs on (F30): `role=profile` entries, comma separated, `*` for every role not named, `instance` for this instance's own model, `>` for a cascade cheapest first (`*=ollama-puls>instance`). Every profile must be in `LLM_SESSION_PROFILES` (`instance` needs none), else start-up stops; unset: no `minions` toolset. Puls's compose leaves it unset, since the cook uses no minion ([ADR 0081](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)); a minion always runs a local model |
 | `RECIPES_MONGO_URL` | The MongoDB the recipe library keeps each new read in, for good (ADR 0082); a secret. Unset: nothing is kept and no feed is published |
 | `RECIPES_MONGO_DATABASE` | The database on that server. Default `recipe_library` |
 | `RECIPE_LIBRARY_URL` | The API whose open feed the cook reads the library from, this instance's own in Puls's compose. Unset: the cook reads no library |
@@ -67,7 +67,7 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `WEB_SEARCH_PROVIDER` | `tavily`, `google`, `searxng` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else SearXNG when `SEARXNG_URL` is, else DuckDuckGo). SearXNG is for development and benchmarks only (ADR 0023) |
 | `PAGE_RENDERER` | `chrome` or `tavily`, for `ReadRenderedPage` (default: Chrome when `BROWSER_URL` is set, else Tavily when its key is) |
 | `BROWSER_URL` | The headless Chrome we run (F32): `http://puls-browser:9222` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:9222` |
-| `BROWSER_USER_AGENT` | What that browser tells every site it reads for a user (FX21): the Puls stack and the Azure app set `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/demos/puls/docs/SITE_OWNERS.md; reads a page on a user's behalf)`, who reads and why, with a public page to learn more. Unset, Chrome's own. Never a person's name or place |
+| `BROWSER_USER_AGENT` | What that browser tells every site it reads for a user (FX21): who reads and why, with a public page to learn more, such as `YourAgent/1.0 (+https://example.com/about-the-agent; reads a page on a user's behalf)`. Unset, Chrome's own. Never a person's name or place |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
@@ -101,11 +101,11 @@ environment by the tools themselves:
 | `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
 
 **The eval studio and the eval runner**, read by `LouisAgent.Api.Evals` and by the runner; the store's
-`EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE` are in [Puls's Setup](../../demos/puls/docs/SETUP.md#pulss-own-settings):
+`EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE` are in [Puls's Setup](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SETUP.md#pulss-own-settings):
 
 | Setting | Meaning |
 |---|---|
-| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/LouisAgent.PulsEvalRunner.dll` in Puls's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
+| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/LouisAgent.CodingEvalRunner.dll` in the code-review API's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
 | `BENCHMARK_API_URL` | Where a run started from the admin portal reaches this API back. Default: the container's own port, `http://127.0.0.1:8080/` |
 | `EVALS` | Which identities' evals the runner lists and runs, comma separated (`EVALS=puls`). Unset: every eval; a name no eval proves is refused |
 | `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT` | The judge of the evals' model graders. No model: no judge, a model grader's grade is unknown and the run goes on. No provider: a `claude*` model is Anthropic's (paid, so only on purpose), any other is Ollama's; the endpoint is a local server's URL ([Run the evals](guides/run-the-evals.md)) |
@@ -122,7 +122,7 @@ above and below:
 | `DOCS_ROOT` | The docs pack: the folder the docs are under, which its tools never leave. Unset, the `docs` toolset is off; the images set it to the copy they carry ([its doc](../../packs/docs/projects/LouisAgent.Packs.Docs.md#the-setting)) |
 
 **A demo's own settings** are in that demo's Setup: Puls's `IDENTITIES` and `PACKS` in
-[Puls's Setup](../../demos/puls/docs/SETUP.md#pulss-own-settings); the orchestrator's `ORCHESTRATOR_*`,
+[Puls's Setup](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SETUP.md#pulss-own-settings); the orchestrator's `ORCHESTRATOR_*`,
 `LOUIS_AGENT_URL` and `LOUIS_AGENT_API_KEY` in
 [the coding agent's Setup](../../demos/louis-agent/docs/SETUP.md#the-coding-agents-own-settings).
 

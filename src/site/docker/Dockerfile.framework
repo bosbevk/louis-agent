@@ -14,7 +14,6 @@ COPY --from=build /app/publish/ .
 COPY --from=build /src/README.md /src/ROADMAP.md /src/TODO.md /app/docs/
 COPY --from=build /src/src/docs/ /app/docs/src/docs/
 COPY --from=build /src/demos/louis-agent/docs/ /app/docs/demos/louis-agent/docs/
-COPY --from=build /src/demos/puls/docs/ /app/docs/demos/puls/docs/
 COPY --from=build /src/packs/docs/ /app/docs/packs/docs/
 RUN rm -rf /app/docs/src/docs/films
 ENV DOCS_ROOT=/app/docs

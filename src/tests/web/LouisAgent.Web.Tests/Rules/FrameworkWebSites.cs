@@ -20,7 +20,7 @@ internal static class FrameworkWebSites
             .Order()
     ];
 
-    /// <summary>A site's own name, from its folder: <c>LouisAgent.Puls</c> is <c>puls</c>.</summary>
+    /// <summary>A site's own name, from its folder: <c>LouisAgent.Starter</c> is <c>starter</c>.</summary>
     public static string NameOf(string folder) => ProjectNames.ShortName(Path.GetFileName(folder), ProjectNames.Prefix);
 
     /// <summary>A project is on the framework if its project file points at the framework's.</summary>

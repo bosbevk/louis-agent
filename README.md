@@ -62,9 +62,8 @@ never the engine, and never knows about another pack or an identity. Only a demo
 ```
 src/                 the framework: the engine, the hosts as libraries, the framework's web, the eval harness, its tools, tests and docs
 src/site/            the framework's own website and its guide: the one place in src/ that uses packs and an identity
-packs/               what an agent can do, tools only; packs/evals/ proves them, packs/tests/ tests them, packs/web/ holds their screens
+packs/               what an agent can do, tools only; packs/tests/ tests them, packs/web/ holds their screens
 demos/louis-agent/   the coding agent and the triage team, as your own project would be: identities, programs, a web app, settings, images, tests
-demos/puls/          Puls, the same way
 demos/starter/       the smallest site, and what `dotnet new louis-site` makes
 ```
 
@@ -108,13 +107,12 @@ it.
 
 It's checked. The cook and the routing are evals, so a prompt change shows up as a score.
 
-```bash
-docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
-```
-
-Open **http://127.0.0.1:5070**. Puls ran on Azure until 2026-11-09 and is paused there while the framework comes first
-([Deploy the sites](src/docs/guides/deploy-the-sites.md)); `mypuls.co.za` shows a coming-soon page. Design:
-[Puls's identity](demos/puls/docs/projects/LouisAgent.Identities.Puls.md), [Puls's web app](demos/puls/docs/projects/LouisAgent.Puls.md).
+Puls is the first product built on this framework from outside. It lives in a repository of its own,
+[bosbevk/puls](https://github.com/bosbevk/puls), and takes the framework only as the packages published from here, so
+it is also the proof that someone else's project can do the same. Its README says how to build and run it. It is paused
+while the framework comes first, and `mypuls.co.za` shows a coming-soon page published from there. Design:
+[Puls's identity](https://github.com/bosbevk/puls/blob/main/docs/projects/Puls.Identity.md),
+[Puls's web app](https://github.com/bosbevk/puls/blob/main/docs/projects/Puls.Web.md).
 
 ## The coding agent
 

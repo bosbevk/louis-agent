@@ -1795,6 +1795,46 @@ unit tests and 22 integration tests on a throwaway MongoDB, all green, and the c
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework's first outside user as its truest test, with
 every assumption it finds fixed in the framework and held by a test there.
 
+## Puls gone from louis-agent, and F166 closed (F166.4, 2026-11-21)
+
+The last child took Puls out. `demos/puls` and the recipes, shop-prices and where-to-buy packs left, with their 26
+projects and the 17 solution folders around them, and the three packs' ADRs went home to `puls` beside the one Puls
+already had. That closes F166: louis-agent is the framework and its own demos now, and Puls is the first product
+built on it from outside, in a repository of its own, on the packages.
+
+Deleting was the small part. Most of the work was what a deletion leaves behind, and the order mattered. The ADRs
+landed in `puls` first, so nothing here ever pointed at a file that wasn't there yet. The framework's pages changed
+next, while the folders still existed, so their tests could be seen failing for the right reason. Puls stays on those
+pages as the site's best evidence, a product on the packages in its own repository. A small record, `ExampleHome`,
+says whether an example's identity is a folder here or a path in a repository of ours, and ADR 0100 gained one narrow
+exception: a claim about a product built elsewhere is held by its link, since no test here can read another repository.
+
+The lesson is what left with Puls without anyone deciding it. Puls's composition root had been the one project that
+referenced every pack, so the framework's own rules about packs lived in its tests: every pack convertible to an MCP
+server, and every prompt with its header. They moved to `puls` with it, and then guarded only Puls's three packs. The
+docs sweep found it, in a doc that described those tests. They came back as `LouisAgent.Packs.Rules.Tests`, the one
+project that sees every pack here, with a test that its list is every pack so the next one can't slip past. Holding
+all twelve at once caught at its first run what no single catalogue ever had: DevOps's and Paymo's waiting tools take
+no cancellation token, and the site pack's example addresses read as naming the framework's identity. The first went
+on a list that only shrinks, under FX83, which already named that breach. The second was a false alarm, fixed in the
+shared check: a name between slashes is a page's address, not the agent.
+
+Then the docs. About a hundred lines in 60-odd docs described Puls as if it were here. Links were mended by one small
+rule: to the file in `puls` when it moved there, otherwise to louis-agent at the tag `puls-moved-out`, where history is
+true. Words were mended by hand. The records of what happened kept their history, and the docs that describe today were
+made true. Two guides needed more than a word swap. *Build a pack* and *Build an identity* had taught registering
+through Puls's composition root and its `PACKS` and `IDENTITIES` settings, which nothing reads any more. They teach a
+program's catalogue now, with the calculator, the docs pack and the triage team as their examples. Where only Puls had
+the example, a feed, a judge or a pack's checks, they point at its own repository.
+
+What didn't go well. A few small edits went through a shell substitution where the rule is to edit, never script, and
+were checked after. A commit went ahead before it was shown, at Louis's "just get it done", and the next was stopped
+for his explicit word. Nothing was spent: no model call. The measure is a repository with no file under `demos/puls`,
+every pack held to the rules, and the full suite green.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a rule held by the one project that sees everything goes
+wherever that project goes, so splitting a repository means asking which guards leave with each part.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)

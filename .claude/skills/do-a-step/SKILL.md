@@ -54,8 +54,8 @@ suite".
   the repeated names.
 - **Every project that reads a shared file.** What you touch is every project that reads the file, not the folder
   the file is in. A name added to the framework's colour list,
-  `src/web/LouisAgent.Web/Styles/web/settings/_colours.scss`, is tested twice outside the framework. Puls must set
-  every name on that list (`SiteColoursTests` in `LouisAgent.Puls.Tests`). And each film's export records a hash
+  `src/web/LouisAgent.Web/Styles/web/settings/_colours.scss`, is tested twice outside the framework. Each theme must
+  set every name on that list (`EachStyle_SetsEveryNameTheFrameworkDoes` in `LouisAgent.Web.Themes.Tests`). And each film's export records a hash
   of the film's own files (`LouisAgent.FilmExport.Tests`). Before you change a shared file, search for who
   reads it, and run their tests.
 - **The full suite of unit tests runs before the pull request**, after `main` is merged into the branch, and it

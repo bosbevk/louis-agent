@@ -54,6 +54,10 @@ A section of a page ends with the docs it was written from. `DocLinks` is that l
 The link asks the site's `DocsAddress` for the doc's whole web address, with `For(path)`, which joins the start and
 the path with exactly one slash between them. It opens beside the page, in a new tab, so the reader keeps their place.
 
+Beside them a `RepositoryLink` can sit, a link to another repository, such as a product built on the framework
+elsewhere. It looks the same and opens the same way, but it is given its whole address, `Href`, since a doc link knows
+its doc by its path here and this knows its address itself.
+
 A site that puts a doc link on a page but names no docs' address is set up wrong. The link says so the first time it
 is drawn, with an exception that tells the developer to add `.Docs(...)` to the site's areas, so the mistake is seen
 at once and never ships as a link to nowhere.

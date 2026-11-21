@@ -290,7 +290,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 16l8 4l8 -4" />
       </g>
       <text class="crd-name quiet" x="50" y="438" text-anchor="start">Named by a demo</text>
-      <text class="pic-text" x="20" y="464" text-anchor="start">CodingCatalog lists it; Puls picks it with PackKind and PACKS.</text>
+      <text class="pic-text" x="20" y="464" text-anchor="start">A program's catalogue, such as CodingCatalog, lists it.</text>
     </g>
     <rect class="mrq-rule" x="0" y="542" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
