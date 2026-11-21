@@ -15,7 +15,7 @@
     gap: 2px;
     padding: 16px;
     @include surface.lined(var(--bs-border-color));
-    border-radius: 10px;
+    border-radius: var(--web-block-radius);
     color: var(--bs-body-color);
     text-decoration: none;
     transition: border-color .15s var(--web-ease);

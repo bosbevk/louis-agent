@@ -117,6 +117,6 @@
     color: var(--web-code-word-ink);
     border: var(--web-code-word-edge);
     background: var(--web-code-word-fill);
-    border-radius: 6px;
+    border-radius: var(--web-small-radius);
     padding: 1px 6px;
 }

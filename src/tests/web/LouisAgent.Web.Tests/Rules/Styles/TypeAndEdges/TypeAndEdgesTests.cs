@@ -42,4 +42,47 @@ public class TypeAndEdgesTests
     [TestCase(".site-docs ::deep .site-main .band { max-width: none; padding-top: 56px; }")]
     public void TheDocsLayout_SizesAHeadingByItsRank(string rule) =>
         Assert.That(File.ReadLines(DocsLayout), Does.Contain(rule));
+
+    /// <summary>
+    /// Each corner on a docs page reads the name for what wears it and writes no number of its own (Louis's pick B of
+    /// finding 8, and "A: names each theme sets"). Orbi's panel takes the window's corner, the search window's, on a
+    /// desktop and at the top of its sheet on a phone. The rule is found by its opening line, indent and all.
+    /// </summary>
+    [TestCase("src/web/LouisAgent.Web.Docs/Contents/DocsMenu.razor.scss", ".docs-menu a {", "small")]
+    [TestCase("src/web/LouisAgent.Web/Styles/web/tools/surface/_marks.scss", "@mixin code-word() {", "small")]
+    [TestCase("src/web/LouisAgent.Web/Components/Site/Code/CodeListing.razor.scss", ".code-listing pre {", "block")]
+    [TestCase("src/web/LouisAgent.Web.Docs/Contents/PageTurn.razor.scss", ".page-turn a {", "block")]
+    [TestCase("src/web/LouisAgent.Web/Styles/web/layout/_panels.scss", ".search-dialog {", "window")]
+    [TestCase("src/web/LouisAgent.Web/Components/Widget/ChatWidget.razor.scss", ".widget-panel {", "window")]
+    [TestCase("src/web/LouisAgent.Web/Components/Widget/ChatWidget.razor.scss", "    .widget-panel {", "window")]
+    [TestCase("src/web/LouisAgent.Web.Docs/Links/DocLink.razor.scss", ".doc-link {", "pill")]
+    [TestCase("src/web/LouisAgent.Web/Components/Site/Code/CodeListing.razor.scss", ".code-ask {", "pill")]
+    public void ACorner_ReadsItsName(string sheet, string opening, string corner)
+    {
+        var rule = RuleOpenedBy(Path.Combine(TestPaths.RepoRoot, sheet), opening).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rule, Has.Some.Contains($"var(--web-{corner}-radius)"));
+            Assert.That(rule.Where(WritesANumberForItsCorner), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// The lines of the rule a sheet opens with that exact line, up to the brace at the same indent that closes it.
+    /// </summary>
+    private static IEnumerable<string> RuleOpenedBy(string sheet, string opening)
+    {
+        string closing = opening[..^opening.TrimStart().Length] + "}";
+
+        return File.ReadLines(sheet).SkipWhile(line => line != opening).TakeWhile(line => line != closing);
+    }
+
+    /// <summary>A line that gives a corner a number, such as <c>border-radius: 14px</c> or <c>$radius: 14px</c>.</summary>
+    private static bool WritesANumberForItsCorner(string line)
+    {
+        int at = line.IndexOf("radius: ", StringComparison.Ordinal);
+
+        return at >= 0 && char.IsDigit(line[at + "radius: ".Length]);
+    }
 }
