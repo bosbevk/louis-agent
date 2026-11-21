@@ -65,7 +65,10 @@ button:disabled { cursor: default; opacity: .4; }
     margin: 0 auto;
     padding: 88px var(--site-gutter, 48px) 40px;
 }
-.topic { font: 500 13.5px/1 var(--bs-font-monospace); text-transform: lowercase; color: var(--bs-primary); }
+.topic { font: 500 13.5px/1 var(--bs-font-monospace); text-transform: lowercase; color: var(--web-purple); }
+/* A word of code in running words, never Bootstrap's pink: the theme's chip for it (F169.1). A listing's code, inside
+   its pre, is not a code word. */
+:not(pre) > code { @include surface.code-word(); }
 .band :is(h1, h2) {
     max-width: 16ch;
     margin: 0;

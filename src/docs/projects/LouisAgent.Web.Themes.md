@@ -123,6 +123,24 @@ step lighter (`#141418`). In the light the page is a tad darker than white and a
 it, with a firmer grey line, since a card on a white page must be darker than the page. The press is the same solid violet in both, the second button
 an outline in the words' colour.
 
+Flat has no shadow to set a piece apart, so its lines and its quiet words have to carry that on their own. In the
+dark every line is one firmer grey, `#404048`: a pane's, a card's, a field's, the bar's, a chip's and the
+scrollbar's, so a card on the near black page shows its edge. In the light the line stays `#a7aaba`. Flat's
+faintest words, a note under a band or a hint in a field, are a grey dark enough to read on a pane and not only on
+the page: `#5f5f6c` in the light and `#8c8c98` in the dark, and a listing's comments take the same grey. Each of
+the three inks, the words, the quieter words and the faint ones, reads at 4.5 to 1 or more on the page, on a pane
+and on a dialog, which is what WCAG asks of text.
+
+A word of code in running words, such as `dotnet run` in a sentence, is drawn from three names a theme sets: its
+fill, its ink and its edge. Flat makes it a plain chip, the listing's grey with the words' own colour and the
+hairline round it. Glass makes it the brand's pale violet with deep violet words and no line, the look a chat has
+always given it.
+
+Glass in the light keeps the brand's deep violet, `#3a22c4`, as its purple, where flat in the light keeps the
+middle one, `#6b4dff`. Glass's light page is itself a violet wash, and the middle violet on it read at less than
+3 to 1, so a page's small topic line, written in the theme's purple, could barely be read. The deep one reads at
+about 5.4 to 1 on that page and 9.5 on white.
+
 A big heading reads the same in every theme. Its words are their strongest colour, painted solid as any text is, so
 their edges stay crisp. No theme sets a colour for headings of its own.
 
@@ -203,11 +221,14 @@ framework's names their theme leaves unset, in each style; the answer must be no
 values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none
 but its mark's three, which are there too. `FlatFollowsItsDesignTests` holds flat to its design: the mark, no lights
 and no glow, the solid headline, the smaller o, the pane's line that only changes colour under the pointer, the
-presses' hovers, and the icon's plate. `GlassValuesTests` holds glass to its design page in the same way: a pane and a
+presses' hovers, the icon's plate, and in the dark every line the firmer grey. `FlatInksTests` measures flat's
+three inks against the page, a pane and a dialog, the two firmer inks on the menu too, and a listing's comment against its grey, at 4.5 to 1
+or more, and the theme's purple on the page in every theme and style; the sum is the W3C's, in the web tests'
+shared `Contrast`. `GlassValuesTests` holds glass to its design page in the same way: a pane and a
 button their drawing alone, nothing blurred, the silk behind, and the header's band. `GlassMarkDrawingTests` holds
 the mark's drifting lights inside its blur, so none is cut. `LightAccentsTests` holds the light accents' contrast,
 and `PicturesWearTheThemesTests` holds the theme names a picture on a page wears equal to the ids the themes give
-themselves.
+themselves, and a picture on a flat page drawing flat's own line.
 
 ## Limits
 

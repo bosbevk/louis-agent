@@ -55,13 +55,13 @@
     --web-scrollbar: #a7aaba;
     --web-dialog-bg: #ffffff;
     --web-code-number: #3c3c50;
-    --web-code-comment: #6c6c7a;
+    --web-code-comment: #5f5f6c;
     --web-live-dot: #6b4dff;
 
     --bs-emphasis-color: #0b0b0e;
     --bs-body-color: #0b0b0e;
     --bs-secondary-color: #44444f;
-    --bs-tertiary-color: #6c6c7a;
+    --bs-tertiary-color: #5f5f6c;                         // the faint words, firm enough to read on a pane (F169.1)
     --bs-border-color: #a7aaba;
     --web-code-bg: #dcdee8;
     --web-cta: #6b4dff;
@@ -165,6 +165,11 @@
     --web-violet-2: #6b4dff;
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
+
+    // A code word: the page's words on the code grey with flat's hairline (F169.1, Louis's pick A of finding 4).
+    --web-code-word-fill: var(--web-code-bg);
+    --web-code-word-ink: var(--bs-body-color);
+    --web-code-word-edge: 1px solid var(--bs-border-color);
 
     // Flat lays no drawing on any piece (F151.4) but its mark (FX181).
     // Its version goes up whenever one of its drawings changes, so no browser keeps the old one.

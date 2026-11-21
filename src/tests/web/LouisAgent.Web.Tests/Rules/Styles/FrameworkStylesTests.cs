@@ -29,7 +29,7 @@ public partial class FrameworkStylesTests
     /// beside it (the account library has only the latter since CL58), without the colours, which are where the
     /// values belong.
     /// </summary>
-    private static IEnumerable<string> Rules() =>
+    internal static IEnumerable<string> Rules() =>
         Directory.EnumerateFiles(Styles, "_*.scss", SearchOption.AllDirectories)
             .Where(file => !Path.GetRelativePath(Styles, file).Replace('\\', '/')
                 .StartsWith("settings/", StringComparison.Ordinal))

@@ -44,13 +44,18 @@
     &:disabled { cursor: default; @include drawn(quiet-press-disabled, transparent); }
 }
 
-/* A chip: drawn as the second button, and picked when it says it is pressed. */
+/* A chip: drawn as the second button, but with the chip's own line, the hairline in flat (F169.1, Louis's pick A of
+   the design review's finding 6: a small quiet control takes the hairline, and only the second button the outline),
+   and picked when it says it is pressed. */
 @mixin chip() {
     @include quiet-press();
+    border: var(--web-chip-edge);
 
-    // A chip does not fill under the pointer as the second button may: it keeps its words and only the drawing shows.
+    // A chip does not fill under the pointer as the second button may: it keeps its words, and its line takes the
+    // theme's hover line, as a floating chip's does.
     &:hover:not(:disabled) {
         color: var(--bs-body-color);
+        border: var(--web-chip-hover-edge);
         @include drawn(quiet-press-hover, transparent);
     }
     &[aria-pressed="true"] { @include drawn(quiet-press-picked, transparent); }

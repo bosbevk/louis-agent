@@ -46,17 +46,17 @@
     --web-error-text: #e8a39c;
     --web-photo-text: #333333;
     --web-border-hover: #55555f;
-    --web-scrollbar: #2b2b33;
+    --web-scrollbar: #404048;
     --web-dialog-bg: #141418;
     --web-code-number: #c9c9d1;
-    --web-code-comment: #7c7c88;
+    --web-code-comment: #8c8c98;
     --web-live-dot: #9282ff;
 
     --bs-emphasis-color: #ffffff;
     --bs-body-color: #f4f4f6;
     --bs-secondary-color: #a3a3ad;
-    --bs-tertiary-color: #7c7c88;
-    --bs-border-color: #2b2b33;
+    --bs-tertiary-color: #8c8c98;                         // the faint words, firm enough to read on a pane (F169.1)
+    --bs-border-color: #404048;
     --web-code-bg: #1a1a1f;
     --web-cta: #6b4dff;
     --bs-box-shadow-sm: none;
@@ -73,7 +73,7 @@
     --web-pane-edge: none;
     --web-pane-rim: none;
     --web-pane-light: none;
-    --web-pane-shadow: inset 0 0 0 1px #2b2b33;
+    --web-pane-shadow: inset 0 0 0 1px #404048;
     --web-pane-blur: none;
     --web-pane-radius: 22px;
     // Under the pointer it stays where it is: flat has no shading, so no shadow.
@@ -90,21 +90,21 @@
     --web-tilt: 0;
 
     // What floats over the page throws no shadow either: its line, the pane's, sets it apart.
-    --web-float-shadow: inset 0 0 0 1px #2b2b33;
+    --web-float-shadow: inset 0 0 0 1px #404048;
     --web-frost-fill: var(--web-pane-fill);
     --web-frost-blur: var(--web-pane-blur);
 
     // A veil, a panel on the stage: solid in flat, as a pane is.
     --web-veil-fill: var(--web-pane-fill);
-    --web-veil-edge: 1px solid #2b2b33;
+    --web-veil-edge: 1px solid #404048;
     --web-veil-blur: none;
 
     // An inset, set into the page: the page's own grey and a hairline.
     --web-inset-fill: #0c0c0e;
-    --web-inset-edge: 1px solid #2b2b33;
+    --web-inset-edge: 1px solid #404048;
     // A bar: the page's own grey, one hairline towards it.
     --web-bar-fill: #0c0c0e;
-    --web-bar-edge: 1px solid #2b2b33;
+    --web-bar-edge: 1px solid #404048;
     --web-bar-blur: none;
 
     // A press: solid violet, white words; the second a white outline.
@@ -122,7 +122,7 @@
     --web-sunk-shadow: none;
     --web-sunk-lit: inset 0 0 0 1.5px rgba(var(--web-overlay-rgb), .85);
     --web-chip-fill: #1a1a1f;
-    --web-chip-edge: 1px solid #2b2b33;
+    --web-chip-edge: 1px solid #404048;
     --web-chip-blur: var(--web-pane-blur);
 
     // The page: one solid colour, no lines and no lights (FX182).
@@ -159,6 +159,11 @@
     --web-violet-2: #6b4dff;
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
+
+    // A code word: the page's words on the code grey with flat's hairline (F169.1, Louis's pick A of finding 4).
+    --web-code-word-fill: var(--web-code-bg);
+    --web-code-word-ink: var(--bs-body-color);
+    --web-code-word-edge: 1px solid var(--bs-border-color);
 
     // Flat lays no drawing on any piece (F151.4) but its mark (FX181).
     // Its version goes up whenever one of its drawings changes, so no browser keeps the old one.
