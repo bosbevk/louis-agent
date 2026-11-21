@@ -23,7 +23,7 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     @include colours.both(bs-warning, #8a6200);
     @include colours.both(bs-info, #2563c9);
     @include colours.both(web-ok, #1d7a4c);
-    @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
+    @include colours.both(web-purple, #3a22c4);          // the purple accent, the brand's deep violet, to read on the violet page
     @include colours.both(bs-body-bg, $page);            // the page
     @include colours.both(bs-secondary-bg, #ffffff);     // a panel
     @include colours.both(bs-tertiary-bg, #ffffff);      // the menu

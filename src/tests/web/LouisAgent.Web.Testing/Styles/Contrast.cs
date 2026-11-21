@@ -40,17 +40,34 @@ public static class Contrast
     /// <summary>Below this a channel's light grows in a straight line, above it on the curve (G18's cut-off).</summary>
     private const double CurveStart = 0.04045;
 
-    /// <summary>How much light a colour such as <c>#6b4dff</c> gives, from 0 for black to 1 for white.</summary>
-    private static double Lightness(string hex)
+    /// <summary>What opens a colour Sass wrote in percentages, such as <c>rgb(76.9%, 73.5%, 100%)</c>.</summary>
+    private const string InPercentages = "rgb(";
+
+    /// <summary>
+    /// How much light a colour gives, from 0 for black to 1 for white. It reads <c>#6b4dff</c>, and the
+    /// <c>rgb(76.9%, 73.5%, 100%)</c> Sass writes for a mixed colour.
+    /// </summary>
+    private static double Lightness(string colour)
     {
-        double red = Channel(hex, 0), green = Channel(hex, 1), blue = Channel(hex, 2);
-        return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+        double[] light = [.. Channels(colour).Select(Light)];
+        return 0.2126 * light[0] + 0.7152 * light[1] + 0.0722 * light[2];
     }
 
-    /// <summary>One channel of a colour, red, green or blue, as the light it gives.</summary>
-    private static double Channel(string hex, int at)
-    {
-        double value = int.Parse(hex.AsSpan(1 + at * 2, 2), NumberStyles.HexNumber) / 255.0;
-        return value <= CurveStart ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
-    }
+    /// <summary>A colour's red, green and blue, each from 0 to 1.</summary>
+    private static IEnumerable<double> Channels(string colour) =>
+        colour.StartsWith(InPercentages, StringComparison.Ordinal)
+            ? colour[InPercentages.Length..].TrimEnd(')').Split(',').Select(Percentage)
+            : Enumerable.Range(0, 3).Select(at => Hex(colour, at));
+
+    /// <summary>One channel of a colour written as <c>#rrggbb</c>, from 0 to 1.</summary>
+    private static double Hex(string colour, int at) =>
+        int.Parse(colour.AsSpan(1 + at * 2, 2), NumberStyles.HexNumber) / 255.0;
+
+    /// <summary>One channel written as a percentage, such as <c>76.9%</c>, from 0 to 1.</summary>
+    private static double Percentage(string channel) =>
+        double.Parse(channel.Trim().TrimEnd('%'), CultureInfo.InvariantCulture) / 100;
+
+    /// <summary>One channel, from 0 to 1, as the light it gives: a screen's curve, by G18's sum.</summary>
+    private static double Light(double value) =>
+        value <= CurveStart ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
 }

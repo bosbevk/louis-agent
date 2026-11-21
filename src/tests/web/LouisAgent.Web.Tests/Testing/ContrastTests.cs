@@ -18,6 +18,14 @@ public class ContrastTests
     public void AColourOnItself_IsOneToOne() =>
         Assert.That(Contrast.Between("#6b4dff", "#6b4dff"), Is.EqualTo(1).Within(0.001));
 
+    /// <summary>
+    /// A colour Sass wrote from a mix, such as glass's light page, comes as <c>rgb()</c> in percentages, and reads the
+    /// same as its <c>#rrggbb</c> form.
+    /// </summary>
+    [Test]
+    public void AColourInPercentages_ReadsAsItsHexForm() =>
+        Assert.That(Contrast.Between("rgb(100%, 100%, 100%)", "rgb(0%, 0%, 0%)"), Is.EqualTo(21).Within(0.001));
+
     /// <summary>Which colour is the words and which the ground makes no difference.</summary>
     [Test]
     public void TheOrder_MakesNoDifference() =>

@@ -47,22 +47,16 @@ public class FlatInksTests
     /// <summary>The purple a page's topic line is written in.</summary>
     private const string Purple = "--web-purple";
 
-    /// <summary>
-    /// The looks whose page the purple is held to: flat in both styles, and glass in the dark. Glass's light page is
-    /// a pale violet the purple reads 2.9 to 1 on, as the brand's violet did before; that is glass's own look.
-    /// </summary>
+    /// <summary>Both themes a framework site can wear, in both styles.</summary>
     private static IEnumerable<TestCaseData> Looks() =>
-        from look in new[]
-        {
-            (Theme: FlatTheme.Theme, Style: SiteStyle.Light),
-            (Theme: FlatTheme.Theme, Style: SiteStyle.Dark),
-            (Theme: GlassTheme.Theme, Style: SiteStyle.Dark),
-        }
-        select new TestCaseData(look.Theme, look.Style).SetArgDisplayNames(look.Theme.Id, look.Style.Wire());
+        from theme in new[] { FlatTheme.Theme, GlassTheme.Theme }
+        from style in new[] { SiteStyle.Light, SiteStyle.Dark }
+        select new TestCaseData(theme, style).SetArgDisplayNames(theme.Id, style.Wire());
 
     /// <summary>
-    /// A page's topic line reads on the page: the purple each theme lightens for the dark (Louis's pick B of finding
-    /// 11 brought it: dark's topic line was the brand's violet, 3.84 to 1).
+    /// A page's topic line reads on the page, in both styles of both themes: the purple each theme lightens for the
+    /// dark (Louis's pick B of finding 11 brought it: dark's topic line was the brand's violet, 3.84 to 1), and
+    /// deepens on glass's pale violet page (his pick, where it read 2.9 to 1).
     /// </summary>
     [TestCaseSource(nameof(Looks))]
     public void ThePurple_ReadsOnThePage(SiteTheme theme, SiteStyle style)
