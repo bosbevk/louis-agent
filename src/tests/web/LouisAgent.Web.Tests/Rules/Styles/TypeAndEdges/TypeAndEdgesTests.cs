@@ -91,6 +91,50 @@ public class TypeAndEdgesTests
     }
 
     /// <summary>
+    /// A list of terms reads as a list of steps does, 64 characters wide in 17px words, so the two end at one edge
+    /// (Louis's pick B of finding 9).
+    /// </summary>
+    [Test]
+    public void AListOfTerms_IsAsWideAsAListOfSteps()
+    {
+        string sheet = Path.Combine(Web, "Components/Site/Text/TermList.razor.scss");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(File.ReadLines(sheet).Single(line => line.StartsWith(".terms {", StringComparison.Ordinal)),
+                Does.Contain("max-width: 64ch;"));
+            Assert.That(RuleOpenedBy(sheet, ".terms li {"), Does.Contain("    font-size: 17px;"));
+        });
+    }
+
+    /// <summary>
+    /// The page turn's cards keep the site's gutter at their sides, so they start and end where a band's words do,
+    /// not 48 wider on each side.
+    /// </summary>
+    [Test]
+    public void ThePageTurn_KeepsTheSitesGutter() =>
+        Assert.That(RuleOpenedBy(Path.Combine(TestPaths.RepoRoot,
+                "src/web/LouisAgent.Web.Docs/Contents/PageTurn.razor.scss"), ".page-turn {"),
+            Does.Contain("    padding-inline: var(--site-gutter, 48px);"));
+
+    /// <summary>
+    /// On a wide screen the line beside the menu is drawn on the page's column, which is as tall as the page, and no
+    /// longer on the menu's, which is held in view and only as tall as the menu, so it reaches the page's foot.
+    /// </summary>
+    [Test]
+    public void TheMenusLine_IsDrawnOnThePagesColumn()
+    {
+        var menu = RuleOpenedBy(DocsLayout, "    .site-docs-menu {").ToList();
+        var page = RuleOpenedBy(DocsLayout, "    .site-docs-page {").ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(menu, Has.None.Contains("surface.rule("));
+            Assert.That(page, Does.Contain("        @include surface.rule(left);"));
+        });
+    }
+
+    /// <summary>
     /// The lines of the rule a sheet opens with that exact line, up to the brace at the same indent that closes it.
     /// </summary>
     private static IEnumerable<string> RuleOpenedBy(string sheet, string opening)

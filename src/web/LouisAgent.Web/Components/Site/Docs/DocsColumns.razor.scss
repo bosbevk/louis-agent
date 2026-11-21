@@ -12,12 +12,16 @@
     padding-bottom: 40px;
 }
 
+/* The line beside the menu is drawn on the page's column, which is as tall as the page, so it reaches the page's foot;
+   the menu's own column is held in view and only as tall as the menu (F169.2). */
 @media (min-width: 992px) {
     .site-docs-menu {
         position: sticky;
         top: var(--site-header-room, 72px);
         align-self: flex-start;
-        @include surface.rule(right);
+    }
+    .site-docs-page {
+        @include surface.rule(left);
     }
 }
 
