@@ -74,6 +74,23 @@ public class FrameworkLayoutTests
         });
     }
 
+    /// <summary>
+    /// F169.3: where the page has no room beside it, the docked Orbi's button says "Ask Orbi", the header button's
+    /// words (Louis's pick 5).
+    /// </summary>
+    [Test]
+    public void TheDockedOrbisButton_SaysAskOrbi()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new HttpClient { BaseAddress = new Uri("http://localhost/") });
+        ctx.Services.AddSiteAreas(FrameworkAreas.Name);
+
+        var cut = ctx.Render<FrameworkLayout>(layout => layout.Add(l => l.Body, "<section id=\"top\">Page</section>"));
+
+        Assert.That(cut.Find(".site-docs-beside button.widget-button").TextContent.Trim(), Is.EqualTo("Ask Orbi"));
+    }
+
     /// <summary>F164.2 step 8: the site's search stands in the header, before Ask Orbi.</summary>
     [Test]
     public void TheSearch_IsInTheHeader()

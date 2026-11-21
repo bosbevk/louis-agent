@@ -78,6 +78,13 @@
                 {
                     <span aria-hidden="true">×</span>
                 }
+                else if (WidgetLook.ButtonWearsMark(Layout))
+                {
+                    @* Docked, the folded button is the agent's mark and its words (F169.3), the mark with no letter
+                       since the words beside it name the agent. *@
+                    <span class="widget-mark" aria-hidden="true"><Orb Label="@Title"/></span>
+                    <span aria-hidden="true">@ButtonText</span>
+                }
                 else
                 {
                     <span class="widget-icon" aria-hidden="true">

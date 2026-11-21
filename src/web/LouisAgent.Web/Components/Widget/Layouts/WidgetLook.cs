@@ -35,6 +35,12 @@ public static class WidgetLook
         ? "d-xl-none position-fixed bottom-0 end-0 m-3"
         : "";
 
+    /// <summary>
+    /// Whether the folded button wears the agent's mark instead of the chat glyph: docked, it is the agent's own way in
+    /// on a narrow screen, so it shows who it is; the corner keeps the glyph other sites fold their chat to.
+    /// </summary>
+    public static bool ButtonWearsMark(WidgetLayout layout) => layout == WidgetLayout.Docked;
+
     /// <summary>Whether the panel offers minimise and maximise: docked, its size is its place's.</summary>
     public static bool HasWindowButtons(WidgetLayout layout) => layout != WidgetLayout.Docked;
 }

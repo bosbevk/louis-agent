@@ -143,3 +143,18 @@
     .widget-panel.is-min { height: auto; }
     .widget-panel.is-max { height: 100dvh; border-radius: 0; }
 }
+
+/* Docked, the folded button is the agent's own way in where the page has no room beside it (F169.3, Louis's pick 5):
+   a quiet pill on the page's ground with the theme's line, the mark 28 across and the words, still, with none of
+   the corner's glow. After the phone's bar above, so its size holds there too. */
+.chat-widget.is-docked .widget-button {
+    height: 48px;
+    padding: 0 18px 0 10px;
+    font: 600 15px/1 var(--bs-font-sans-serif);
+    @include surface.quiet-press();
+    @include surface.ground(var(--bs-body-bg));
+}
+.chat-widget.is-docked .widget-button::before { display: none; }
+.chat-widget.is-docked .widget-button:hover { transform: none; }
+.chat-widget.is-docked .widget-button ::deep .orb { width: 28px; height: 28px; font-size: calc(28px * 17 / 46); }
+.chat-widget.is-docked .widget-button .widget-mark { margin-right: 0; }
