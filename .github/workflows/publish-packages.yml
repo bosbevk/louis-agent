@@ -1,0 +1,84 @@
+# Publishes the framework's packages to GitHub Packages (F166.2): a version tag of a package's own name, as
+# LouisAgent.Core-0.1.0, releases that package and no other (Louis's pick: one tag per package, as OpenTelemetry .NET
+# contrib does). MinVer reads the version from the tag; the 31 packages and their settings are in Directory.Build.props
+# and PackagesTests. Tags of packages that belong together are pushed together: GitHub starts one run per tag, in no
+# set order, so each run publishes every package tagged on its commit as one batch, and a package already on the feed
+# is skipped, which leaves the later runs for the same commit nothing to do. The how-to is
+# src/docs/guides/publish-the-framework.md.
+name: Publish packages
+
+on:
+  push:
+    tags: [ 'LouisAgent.*-*' ]
+
+# Reading the code and writing packages, nothing else: the run's own token is the key, and no secret is stored.
+permissions:
+  contents: read
+  packages: write
+
+# One publish at a time, and never one stopped half-way through its pushes.
+concurrency:
+  group: publish-packages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      # The whole history, since MinVer finds a package's version in its tags.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # Each tag on this commit names its package: the name is everything before the first dash, since a project's
+      # name has none (ADR 0129) and a version may (0.2.0-beta.1). A tag that names no package stops the run.
+      - name: Pack the packages tagged on this commit
+        run: |
+          mkdir -p out
+          for tag in $(git tag --points-at HEAD --list 'LouisAgent.*-*'); do
+            name="${tag%%-*}"
+            project=$(git ls-files "*/$name/$name.csproj")
+            if [ -z "$project" ] || ! grep -q "<IsPackable>true</IsPackable>" "$project"; then
+              echo "::error::The tag $tag names no package: $name is not one of the framework's packages."
+              exit 1
+            fi
+            dotnet pack "$project" -c Release -o out
+          done
+
+      # The guard: every framework package a packed one depends on is in this batch, or already on the feed at the
+      # version it names (a project reference becomes "this version or higher"). One that is neither stops the run
+      # before anything is pushed, naming it, since a package pointing at a version nobody can restore helps no one.
+      - name: Check every framework package they need is published
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          missing=""
+          for package in out/*.nupkg; do
+            nuspec=$(unzip -p "$package" '*.nuspec')
+            id=$(echo "$nuspec" | grep -o '<id>[^<]*' | head -1 | cut -c5-)
+            for dependency in $(echo "$nuspec" | grep -o '<dependency id="LouisAgent\.[^"]*" version="[^"]*"' \
+                | sed -E 's/<dependency id="([^"]*)" version="([^"]*)"/\1@\2/'); do
+              name="${dependency%@*}"
+              version="${dependency#*@}"
+              [ -f "out/$name.$version.nupkg" ] && continue
+              if ! gh api "users/bosbevk/packages/nuget/$name/versions" --jq '.[].name' 2>/dev/null | grep -qx "$version"; then
+                missing="$missing $name $version (for $id);"
+              fi
+            done
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Not on the feed and not in this batch:$missing tag them too, and push the tags together."
+            exit 1
+          fi
+
+      # To this account's feed with the run's own token. The symbols stay out: GitHub Packages takes the package only.
+      - name: Push them to GitHub Packages
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dotnet nuget push "out/*.nupkg" --source https://nuget.pkg.github.com/bosbevk/index.json \
+            --api-key "$TOKEN" --skip-duplicate --no-symbols

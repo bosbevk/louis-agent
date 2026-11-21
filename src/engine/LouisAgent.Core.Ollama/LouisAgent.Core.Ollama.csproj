@@ -4,6 +4,7 @@
        timeout a small GPU needs. A program hands OllamaProvider.Instance to AgentHost.Build in its HostServices. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Core.Ollama</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

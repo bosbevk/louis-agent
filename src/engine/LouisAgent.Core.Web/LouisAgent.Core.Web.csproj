@@ -6,6 +6,7 @@
        handing AgentHost.Build WebAccess.Create in its HostServices; core alone runs on NoWebAccess. -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Core.Web</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

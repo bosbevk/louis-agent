@@ -65,6 +65,7 @@ public class SolutionLayoutTests
     [TestCase("src/tests/shared", "LouisAgent.Testing")]
     [TestCase("src/tools", "LouisAgent.UsageProbe", "LouisAgent.FilmExport", "LouisAgent.DocDiagrams")]
     [TestCase("src/tests/tools", "LouisAgent.FilmExport.Tests", "LouisAgent.DocDiagrams.Tests")]
+    [TestCase("src/tests/packages", "LouisAgent.Packages.IntegrationTests")]
     [TestCase("demos/puls/tests", "LouisAgent.Identities.Puls.Tests",
         "LouisAgent.Identities.Puls.Evals.Tests",
         "LouisAgent.Identities.Puls.Judges.Tests", "LouisAgent.Puls.Tests", "LouisAgent.HostPacks.Tests")]

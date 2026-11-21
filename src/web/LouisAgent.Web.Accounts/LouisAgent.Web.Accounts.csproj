@@ -6,6 +6,7 @@
        LouisAgent.Web, which knows accounts only through the chat header's seam (IAccountMenu). -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Web.Accounts</RootNamespace>
+    <IsPackable>true</IsPackable>
     <TargetFramework>net10.0</TargetFramework>
     <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
     <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
