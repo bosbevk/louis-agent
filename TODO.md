@@ -21,7 +21,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (103)
+## Open (104)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -77,6 +77,7 @@ known limitations below are facts about today, not tasks.
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
 | F51 | Hosting for public traffic | Next | — |
+| F170 | The framework's own Bicep: what the two sites stand on in Azure, on Microsoft's verified modules, names as parameters, checked in CI, deployed by hand, so the trust page's *Rebuilt from code* is in place (FX221 first) | Next | [plan](src/docs/plans/F170-the-frameworks-bicep.md) |
 | FX59 | binary attachments sent as files, not text | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |

@@ -1,0 +1,59 @@
+{
+  "kind": "cards",
+  "title": "F170 The framework's own Bicep: the overview",
+  "caption": "One Bicep file, on Microsoft's verified modules, describes what the two sites stand on in Azure; our own names sit in a parameters file, CI checks it on every pull request, what-if proves it against what stands, and the trust page says it's in place.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f170",
+            "icon": "cloud",
+            "title": "F170 The framework's own Bicep",
+            "code": "src/site/deploy/azure/main.bicep",
+            "look": "highlight",
+            "text": "The environment the sites run in, made again from code."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "fx221",
+            "icon": "shield",
+            "title": "Leftovers out first",
+            "code": "FX221",
+            "text": "The empty subnet and three rights of identities that are gone."
+          },
+          {
+            "id": "file",
+            "icon": "code",
+            "title": "The file and its names",
+            "code": "steps 1 to 6",
+            "text": "Verified modules, pinned; today's names in main.bicepparam; what-if shows no change."
+          },
+          {
+            "id": "script",
+            "icon": "terminal",
+            "title": "deploy.ps1 infra",
+            "code": "step 7",
+            "text": "what-if, then a deploy on Louis's yes; the releases read its outputs."
+          },
+          {
+            "id": "trust",
+            "icon": "checks",
+            "title": "Rebuilt from code",
+            "code": "steps 8 and 9",
+            "text": "In place on the trust page, and the guide says how to rebuild from nothing."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "f170", "to": "fx221" },
+      { "from": "f170", "to": "file" },
+      { "from": "f170", "to": "script" },
+      { "from": "f170", "to": "trust" }
+    ]
+  }
+}

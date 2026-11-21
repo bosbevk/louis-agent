@@ -1,0 +1,75 @@
+{
+  "kind": "classes",
+  "title": "F170 The framework's own Bicep: the interface design",
+  "caption": "The file's parameters come from one parameters file, each module takes what it needs, and its outputs are the contract deploy.ps1 reads.",
+  "classes": {
+    "types": [
+      {
+        "id": "Params",
+        "name": "main.bicepparam",
+        "kind": "record",
+        "members": [
+          "+location 'southafricanorth' (1)",
+          "+workspaceName, insightsName (1)",
+          "+networkName, environmentName (2)",
+          "+registryName (3)",
+          "+vaultName, appIdentityName (4)",
+          "+storageName, shareName, shareLinkName (5)"
+        ]
+      },
+      {
+        "id": "File",
+        "name": "main.bicep",
+        "kind": "static",
+        "members": [
+          "+param every name, none naming a product (1)",
+          "-module workspace, insights (1)",
+          "-module network, environment (2)",
+          "-module registry + AcrPull (3)",
+          "-module vault, identity + Key Vault Secrets User (4)",
+          "-module storage, share, link (5)"
+        ]
+      },
+      {
+        "id": "Outputs",
+        "name": "the outputs",
+        "kind": "record",
+        "members": [
+          "+environmentId string (6)",
+          "+environmentStaticIp string (6)",
+          "+codingAppIdentityId string (6)",
+          "+vaultUri string (6)"
+        ]
+      },
+      {
+        "id": "Script",
+        "name": "deploy.ps1",
+        "kind": "static",
+        "members": [
+          "+infra: what-if, then create on yes (7)",
+          "-Get-Output(name): from louis-agent-infra (7)",
+          "+update, release, domain: as today"
+        ]
+      },
+      {
+        "id": "Tests",
+        "name": "BicepFileTests",
+        "kind": "static",
+        "members": [
+          "+TheFile_NamesNoProduct (1)",
+          "+EveryParameter_HasItsValue (1)",
+          "+EveryModule_IsPinned (1)",
+          "+TheVault_HasNoPurgeProtection (4)",
+          "+EveryOutputTheScriptReads_IsDeclared (6)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "Params", "to": "File", "kind": "uses" },
+      { "from": "File", "to": "Outputs", "kind": "creates" },
+      { "from": "Script", "to": "File", "kind": "uses" },
+      { "from": "Script", "to": "Outputs", "kind": "uses" },
+      { "from": "Tests", "to": "File", "kind": "uses" }
+    ]
+  }
+}

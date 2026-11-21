@@ -1,0 +1,28 @@
+{
+  "kind": "sequence",
+  "title": "F170: a deploy, then a release",
+  "caption": "Louis runs infra and sees what-if before anything changes; Azure records the outputs under louis-agent-infra; a release reads them as it reads puls-build's today.",
+  "sequence": {
+    "participants": [
+      { "id": "louis", "label": "Louis", "actor": true, "tone": "blue" },
+      { "id": "script", "label": "deploy.ps1", "icon": "terminal", "tone": "violet" },
+      { "id": "arm", "label": "Azure Resource Manager", "icon": "cloud", "tone": "red" },
+      { "id": "avm", "label": "the verified modules", "icon": "box", "tone": "teal" },
+      { "id": "rg", "label": "rg-puls-za", "icon": "server", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "louis", "to": "script", "text": "deploy.ps1 infra" },
+      { "step": "message", "from": "script", "to": "arm", "text": "what-if: main.bicep with main.bicepparam" },
+      { "step": "message", "from": "arm", "to": "avm", "text": "each module at its pinned version" },
+      { "step": "reply", "from": "arm", "to": "script", "text": "create 0, delete 0, modify 0" },
+      { "step": "message", "from": "script", "to": "louis", "text": "the what-if, and deploy? [y/N]" },
+      { "step": "reply", "from": "louis", "to": "script", "text": "y" },
+      { "step": "message", "from": "script", "to": "arm", "text": "deployment group create -n louis-agent-infra" },
+      { "step": "message", "from": "arm", "to": "rg", "text": "each resource, incremental: what the file doesn't name stays" },
+      { "step": "reply", "from": "arm", "to": "script", "text": "environmentId, environmentStaticIp, codingAppIdentityId, vaultUri" },
+      { "step": "note", "over": ["script"], "text": "later, on a merge: release" },
+      { "step": "message", "from": "script", "to": "arm", "text": "deployment group show louis-agent-infra" },
+      { "step": "message", "from": "script", "to": "rg", "text": "containerapp update with the filled YAML" }
+    ]
+  }
+}

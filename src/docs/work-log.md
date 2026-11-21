@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 145 | 72 |
+| Features (`F`) | 145 | 73 |
 | Fixes (`FX`) | 209 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (103 in the TODO)
+## Open (104 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -74,6 +74,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F15 | Model limits and local models | Next |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next |
 | F51 | Hosting for public traffic | Next |
+| F170 | The framework's own Bicep for what the two sites stand on in Azure | Next |
 | FX59 | binary attachments sent as files, not text | Later |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
