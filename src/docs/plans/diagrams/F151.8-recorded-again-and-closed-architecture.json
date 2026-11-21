@@ -39,7 +39,7 @@
       },
       {
         "id": "fx",
-        "label": "louis-agent.film-export",
+        "label": "LouisAgent.FilmExport",
         "icon": "terminal",
         "tone": "blue"
       },

@@ -23,12 +23,12 @@ host from Rider.
 - **`HostMessageEnumTests` checks them from source.** Every member has a `[Description]` template, and its braces
   are well-formed named holes.
 - The message rule itself is in core's guide, under
-  [Messages and logging](../../src/engine/louis-agent.core/CLAUDE.md#messages-and-logging). Hosts staying thin is
-  under its [Project layout](../../src/engine/louis-agent.core/CLAUDE.md#project-layout).
+  [Messages and logging](../../src/engine/LouisAgent.Core/CLAUDE.md#messages-and-logging). Hosts staying thin is
+  under its [Project layout](../../src/engine/LouisAgent.Core/CLAUDE.md#project-layout).
 
 ## A web app's folders
 
-A web app is a site such as `louis-agent.code-review` or `louis-agent.puls`. The framework's web, `louis-agent.web`,
+A web app is a site such as `LouisAgent.CodeReview` or `LouisAgent.Puls`. The framework's web, `LouisAgent.Web`,
 is the library they are built on, and it follows the same rules.
 
 - **Blazor's three folders stay**: `Pages/`, `Layout/` and `Components/`. Inside `Components/` there are
@@ -64,6 +64,6 @@ is the library they are built on, and it follows the same rules.
 
 ## Themes
 
-The framework's themes are in `louis-agent.web.themes`. A site adds one of its own as the code-review app adds
+The framework's themes are in `LouisAgent.Web.Themes`. A site adds one of its own as the code-review app adds
 retro. Adding one there is in that app's guide, under
 [Add a theme](../../demos/louis-agent/docs/guides/change-the-web-app.md#add-a-theme).

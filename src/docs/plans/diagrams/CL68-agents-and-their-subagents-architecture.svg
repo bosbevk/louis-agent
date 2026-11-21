@@ -183,7 +183,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <g class="pic-badge-icon" transform="translate(46 76) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="pic-name" x="76" y="65" text-anchor="start">louis-agent.core.tests (testprod)</text>
+      <text class="pic-name" x="76" y="65" text-anchor="start">LouisAgent.Core.Tests (testprod)</text>
       <text class="pic-name" x="76" y="81" text-anchor="start">agents/testprod/voice.md</text>
       <text class="pic-name" x="76" y="97" text-anchor="start">agents/testprod/subagents/specialist/ (2)</text>
       <text class="pic-name" x="76" y="113" text-anchor="start">agents/testprod/subagents/lookup/ (3)</text>
@@ -192,7 +192,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <g class="pic-badge-icon" transform="translate(46 194) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="pic-name" x="76" y="191" text-anchor="start">louis-agent.identity.guide</text>
+      <text class="pic-name" x="76" y="191" text-anchor="start">LouisAgent.Identities.Guide</text>
       <text class="pic-name" x="76" y="207" text-anchor="start">agents/louis-agent-guide/voice.md</text>
       <text class="pic-name" x="76" y="223" text-anchor="start">+ skills/ (1)</text>
       <path class="pic-panel flow-shape pic-edge tone-green" d="M30 278L407.6 278L389.6 362L12 362Z" />
@@ -200,7 +200,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <g class="pic-badge-icon" transform="translate(46 312) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="pic-name" x="76" y="309" text-anchor="start">louis-agent.identity.showroom</text>
+      <text class="pic-name" x="76" y="309" text-anchor="start">LouisAgent.Identities.Showroom</text>
       <text class="pic-name" x="76" y="325" text-anchor="start">agents/{business}/voice.md ×3</text>
       <text class="pic-name" x="76" y="341" text-anchor="start">one shared provider (1)</text>
       <path class="pic-panel flow-shape pic-edge tone-blue" d="M30 396L407.6 396L389.6 480L12 480Z" />
@@ -223,7 +223,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <g class="pic-badge-icon" transform="translate(46 698) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="pic-name" x="76" y="695" text-anchor="start">louis-agent.core</text>
+      <text class="pic-name" x="76" y="695" text-anchor="start">LouisAgent.Core</text>
       <text class="pic-name" x="76" y="711" text-anchor="start">shared/principles.md</text>
       <text class="pic-name" x="76" y="727" text-anchor="start">toolsets/ (1)</text>
       <rect class="pic-panel" x="12" y="782" width="395.6" height="52" rx="10" />

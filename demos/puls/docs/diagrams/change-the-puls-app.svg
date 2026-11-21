@@ -241,10 +241,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="crd-headline" x="448" y="92" text-anchor="middle">louis-agent.puls</text>
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">LouisAgent.Puls</text>
       <rect class="mrq-pill" x="374.8" y="108" width="146.4" height="24" rx="12" />
       <text class="mrq-code" x="448" y="124" text-anchor="middle">Blazor WebAssembly</text>
-      <text class="crd-summary" x="448" y="160" text-anchor="middle">Served by louis-agent.puls-api: the landing page, the chat at /gesels, and the admin portal.</text>
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">Served by LouisAgent.PulsApi: the landing page, the chat at /gesels, and the admin portal.</text>
       <rect class="mrq-glass" x="0" y="222" width="284" height="132" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
@@ -266,7 +266,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="crd-name" x="370" y="263" text-anchor="start">Change the chat</text>
       <text class="pic-text" x="324" y="298" text-anchor="start">ChatPage fills the framework's</text>
       <text class="pic-text" x="324" y="316" text-anchor="start">ChatShell; the frame itself is</text>
-      <text class="pic-text" x="324" y="334" text-anchor="start">louis-agent.web's.</text>
+      <text class="pic-text" x="324" y="334" text-anchor="start">LouisAgent.Web's.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="132" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />

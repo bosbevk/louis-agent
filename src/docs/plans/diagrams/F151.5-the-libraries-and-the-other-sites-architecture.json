@@ -7,20 +7,20 @@
     "nodes": [
       {
         "id": "tool",
-        "label": "louis-agent.web\nthe surface tool",
+        "label": "LouisAgent.Web\nthe surface tool",
         "icon": "settings",
         "tone": "violet"
       },
       {
         "id": "acc",
-        "label": "louis-agent.web.accounts\n6 sheets (2)",
+        "label": "LouisAgent.Web.Accounts\n6 sheets (2)",
         "icon": "chip",
         "tone": "green",
         "group": "lib"
       },
       {
         "id": "ev",
-        "label": "louis-agent.web.evals\n71 sheets (3, 4, 5)",
+        "label": "LouisAgent.Web.Evals\n71 sheets (3, 4, 5)",
         "icon": "chip",
         "tone": "green",
         "group": "lib"

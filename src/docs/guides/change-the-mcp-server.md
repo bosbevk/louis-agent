@@ -1,8 +1,8 @@
 # Change the MCP server
 
-> **How-to.** Change `src/hosts/louis-agent.mcp`, which hands the agent's tools to any MCP client: publish a tool or a
+> **How-to.** Change `src/hosts/LouisAgent.Mcp`, which hands the agent's tools to any MCP client: publish a tool or a
 > feed, add an MCP-only tool, choose the transport, and check it with a client. **Elsewhere:** how it works in
-> [louis-agent.mcp](../projects/louis-agent.mcp.md); why it has no model in
+> [LouisAgent.Mcp](../projects/LouisAgent.Mcp.md); why it has no model in
 > [MCP exposes tools, not a model](../../../.claude/rules/design-rules.md).
 
 ![The MCP server at a glance: an outside client's model calls the engine's tools one at a time, over stdio or HTTP, and reads the packs' feeds as resources](diagrams/change-the-mcp-server.svg)
@@ -68,7 +68,7 @@ to list the tools. To try stdio by hand, pipe `initialize`, `notifications/initi
 `resources/read` (with `{"uri":"feeds://shop-prices"}`) as JSON-RPC lines into the built server with
 `PACKS=shop-prices`.
 
-In code, `src/tests/hosts/louis-agent.mcp.tests` runs a real client against the server over in-memory pipes
+In code, `src/tests/hosts/LouisAgent.Mcp.Tests` runs a real client against the server over in-memory pipes
 (`InMemoryMcp`). Its auth is core's `HostAuth`, tested in `HostAuthTests`, and the tools are tested where they live.
 
 ## Before you ask for a review

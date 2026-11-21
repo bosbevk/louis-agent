@@ -28,7 +28,7 @@ still text (ADR 0008), the cost of the turn is still the ledger's (ADR 0007).
 | `ISpeechToTextClient`, Microsoft.Extensions.AI's speech twin of `IChatClient`, with logging and OpenTelemetry wrappers | In the package we use, marked experimental (`MEAI001`) | `Microsoft.Extensions.AI.Abstractions` 10.10.1 ([docs](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.ai.ispeechtotextclient)) |
 | An OpenAI implementation of it | In a package core.openai already references | `Microsoft.Extensions.AI.OpenAI` 10.10.1 (`OpenAISpeechToTextClient`) |
 | Providers picked by name from a registry the host hands in | Built | `ILlmProvider`, `LlmClientFactory`, `HostServices.Providers` (ADR 0092) |
-| The message box and its buttons | Built | `louis-agent.web` `Components/Chat/Composer`, `ComposerButtons` |
+| The message box and its buttons | Built | `LouisAgent.Web` `Components/Chat/Composer`, `ComposerButtons` |
 | A script as a module beside its component | Built | ADR 0093 |
 | Voice | A TODO row only | `F92 Voice`, Puls, later |
 
@@ -70,7 +70,7 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 | C1 | Where the words come from first | (a) Whisper in our own process (Whisper.net, MIT, whisper.cpp underneath): free, private, CPU and a model file in the image; (b) the OpenAI-shaped client we already reference, pointed at OpenAI's cloud: least code, paid per minute, audio leaves us; (c) Azure Speech: `af-ZA`/`zu-ZA` listed, 5 free hours a month, its own SDK and an adapter we write | **Picked (a)** (Louis, 2026-11-11: "whisper then"; free only, no account): free evals, audio never leaves our box, the seam lets (b) or (c) join in one step later |
 | C2 | What happens after the person stops talking | (a) the text goes in the box to check; (b) it is sent at once; (c) a setting per site | **Picked (c)** (Louis, 2026-11-11: "if it is small just add it and it is fun"); where the setting lives is C2b |
 | C2b | Where "check or send" is set (Louis's demos share one page) | (a) once per site in its config; (b) on each chat box, the component's parameter, so each demo picks; (c) per chat box with a site default | **Picked (b)** (Louis, 2026-11-11): a demo page holds several agents, and one parameter covers a one-chat site too |
-| C3 | Where the mic shows | (a) every site on the framework's web, off unless `SPEECH_PROVIDER` is set; (b) Puls only; (c) (a) plus F131's widget now | **Picked (c)** (Louis, 2026-11-11: "it must be a built in feature in the framework"): in `louis-agent.web` for every site, off unless `SPEECH_PROVIDER` is set, and in F131's widget (step 7) |
+| C3 | Where the mic shows | (a) every site on the framework's web, off unless `SPEECH_PROVIDER` is set; (b) Puls only; (c) (a) plus F131's widget now | **Picked (c)** (Louis, 2026-11-11: "it must be a built in feature in the framework"): in `LouisAgent.Web` for every site, off unless `SPEECH_PROVIDER` is set, and in F131's widget (step 7) |
 
 ### Diagrams
 
@@ -94,14 +94,14 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 
 | Type | Folder | Namespace | Step |
 |---|---|---|---|
-| `SpeechProviderName` (enum) | `src/engine/louis-agent.core/Speech/` | `LouisAgent.Core.Speech` | 1 |
+| `SpeechProviderName` (enum) | `src/engine/LouisAgent.Core/Speech/` | `LouisAgent.Core.Speech` | 1 |
 | `ISpeechProvider`, `SpeechClientFactory`, `SpeechOptions` | the same | the same | 1 |
-| `HostServices.SpeechProviders` | `src/engine/louis-agent.core/Hosting/` | `LouisAgent.Core.Hosting` | 1 |
+| `HostServices.SpeechProviders` | `src/engine/LouisAgent.Core/Hosting/` | `LouisAgent.Core.Hosting` | 1 |
 | `WhisperSpeechProvider` | `src/engine/louis-agent.core.whisper/` | `LouisAgent.Core.Whisper` | 2 |
-| `TranscriptionEndpoints` | `src/hosts/louis-agent.api/Endpoints/Sessions/Transcriptions/` | `LouisAgent.Api.Endpoints.Sessions.Transcriptions` | 3 |
-| `TranscriptionResult` | `src/hosts/louis-agent.api.contracts/Sessions/` | `LouisAgent.Api.Contracts.Sessions` | 3 |
-| `SpeechUsage` | `src/engine/louis-agent.core/Usage/` | `LouisAgent.Core.Usage` | 4 |
-| `MicButton` (+ `.razor.js`, `.razor.scss`) | `src/web/louis-agent.web/Components/Chat/Composing/` | `LouisAgent.Web.Components.Chat.Composing` | 5 |
+| `TranscriptionEndpoints` | `src/hosts/LouisAgent.Api/Endpoints/Sessions/Transcriptions/` | `LouisAgent.Api.Endpoints.Sessions.Transcriptions` | 3 |
+| `TranscriptionResult` | `src/hosts/LouisAgent.Api.Contracts/Sessions/` | `LouisAgent.Api.Contracts.Sessions` | 3 |
+| `SpeechUsage` | `src/engine/LouisAgent.Core/Usage/` | `LouisAgent.Core.Usage` | 4 |
+| `MicButton` (+ `.razor.js`, `.razor.scss`) | `src/web/LouisAgent.Web/Components/Chat/Composing/` | `LouisAgent.Web.Components.Chat.Composing` | 5 |
 | `WordErrorRate` check | `src/evals/` checks catalogue | its catalogue's namespace | 6 |
 | Tests, one project per project above | mirrored under `src/tests/` | `….Tests` | each |
 
@@ -111,10 +111,10 @@ Names are checked against the code when the plan is approved.
 
 ```
 src/engine/
-  louis-agent.core/Speech/            # step 1: the seam
+  LouisAgent.Core/Speech/            # step 1: the seam
   louis-agent.core.whisper/           # step 2: new project, if C1 = a
-src/hosts/louis-agent.api/Endpoints/Sessions/Transcriptions/   # step 3
-src/web/louis-agent.web/Components/Chat/Composing/MicButton.*  # step 5
+src/hosts/LouisAgent.Api/Endpoints/Sessions/Transcriptions/   # step 3
+src/web/LouisAgent.Web/Components/Chat/Composing/MicButton.*  # step 5
 src/tests/engine/louis-agent.core.whisper.tests/               # step 2
 ```
 

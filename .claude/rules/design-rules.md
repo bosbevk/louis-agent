@@ -16,10 +16,10 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Framework and implementation are split, and this comes first** — `src/` is framework only, a demo holds its own
   config, docker, skills, deploy and tests; the solution tree is the disk; core ships no agent and every tool the model asks for is a pack. [ADR 0074](../../src/docs/adr/0074-the-folders-say-what-ships.md), [0076](../../src/docs/adr/0076-core-ships-no-agent.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
-  references no other pack, identity or eval; only `demos/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
+  references no other pack, identity or eval; only `demos/puls/hosts/LouisAgent.HostPacks` knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](../../src/docs/adr/0027-engine-identities-and-packs.md), [0073](../../src/docs/adr/0073-packs-reference-no-evals.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
-  model**: `louis-agent.mcp` hands an external client the raw tools; to have the agent do a whole task, call
+  model**: `LouisAgent.Mcp` hands an external client the raw tools; to have the agent do a whole task, call
   the API's sessions. [ADR 0028](../../src/docs/adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](../../src/docs/AGENT_COMMUNICATION.md).
 - **Provider strategies** — where providers differ, one interface with an implementation per provider, picked in
   `LlmClientFactory`; never branch on the provider's name elsewhere. [ADR 0003](../../src/docs/adr/0003-provider-strategies.md).
@@ -84,7 +84,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 
 **The web and the docs** (the how in `.claude/rules/razor.md` and `docs.md`)
 
-- **Every site is built on the framework's web:** what would be the same on every site is in `louis-agent.web`, which names no
+- **Every site is built on the framework's web:** what would be the same on every site is in `LouisAgent.Web`, which names no
   site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses, and names its areas with `AddSiteAreas`, **nothing wired by hand from the framework**; every
   place on a page has its own address, `/proof/rand`, never a `#`. [ADR 0084](../../src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md), [0107](../../src/docs/adr/0107-every-section-has-an-address.md), [0120](../../src/docs/adr/0120-nothing-is-hand-wired-from-the-framework.md).
 - **Layout is Bootstrap's, in the whole solution** (Louis, 2026-11-17: "bootstrap is a universal rule for this
@@ -100,8 +100,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   to .site only". And the same day, of the showroom's parts: "things that can be shared, must go to framework",
   "like cool components we could reuse later in other projects". So ask whose it is. A page, its content and
   its data are one site's, and go in that site's project with their tests. A part that knows nothing of the
-  site, such as a deck of cards or a framed window, goes in `louis-agent.web`. Not clear which: ask Louis.
-- **A site is configured framework components**: its pages hold no HTML, only `louis-agent.web`'s controls given its
+  site, such as a deck of cards or a framed window, goes in `LouisAgent.Web`. Not clear which: ask Louis.
+- **A site is configured framework components**: its pages hold no HTML, only `LouisAgent.Web`'s controls given its
   words and data; a shape any site repeats is one control built in the framework first; a site's one-off look is a
   component of its own. [ADR 0125](../../src/docs/adr/0125-a-site-is-configured-framework-components.md).
 - **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.

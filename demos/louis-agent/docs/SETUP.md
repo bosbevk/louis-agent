@@ -56,7 +56,7 @@ These are read only by this stack's compose file.
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
 | `API_PORT` | Host port for the API and web app (default `5082`, always bound to `127.0.0.1`; the framework's site has 5080) |
 
-The orchestrator reads its own from the environment when it is run by hand ([its doc](projects/louis-agent.orchestrator.md)):
+The orchestrator reads its own from the environment when it is run by hand ([its doc](projects/LouisAgent.Orchestrator.md)):
 
 | Setting | Meaning |
 |---|---|

@@ -1,0 +1,37 @@
+{
+  "kind": "composite",
+  "title": "AgentEngine: what it is made of",
+  "caption": "One engine, six parts: it builds them once, hands each what it needs, and passes what it is asked on to the part that does it.",
+  "composite": {
+    "name": "AgentEngine",
+    "kind": "class",
+    "aside": "LouisAgent.Core, Agent",
+    "tone": "green",
+    "parts": [
+      { "id": "turns", "type": "TurnRunner", "role": "_turns", "note": "one turn on the pipeline" },
+      { "id": "commands", "type": "UserCommands", "role": "_commands", "note": "what the user types that the model never sees" },
+      { "id": "guards", "type": "ToolCallGuards", "role": "_guards", "note": "stops a cut-off call, sums up an oversized result" },
+      { "id": "built", "type": "AgentBuiltTools", "role": "_agentBuiltTools", "note": "the tools the agent wrote itself" },
+      { "id": "skills", "type": "SkillTools", "role": "_skillTools", "note": "the system prompt, running and writing skills" },
+      { "id": "registry", "type": "ToolRegistry", "role": "_registry", "note": "the tools the model is offered" }
+    ],
+    "ports": [
+      { "name": "prompts", "side": "in", "part": "turns", "label": "ProcessPromptAsync" },
+      { "name": "typed", "side": "in", "part": "commands", "label": "HandleUserCommand" },
+      { "name": "own tools", "side": "in", "part": "built", "label": "CreateTool" },
+      { "name": "skills", "side": "in", "part": "skills", "label": "ExecuteSkill" },
+      { "name": "found tools", "side": "in", "part": "registry", "label": "RegisterDiscoveredTool" },
+      { "name": "model", "side": "out", "part": "turns", "label": "IChatClient", "tone": "teal" },
+      { "name": "usage", "side": "out", "part": "turns", "label": "IUsageSink, if given", "tone": "teal" },
+      { "name": "skill files", "side": "out", "part": "skills", "label": "ISkillProvider", "tone": "teal" }
+    ],
+    "connectors": [
+      { "from": "turns", "to": "guards", "word": "the pipeline" },
+      { "from": "turns", "to": "registry" },
+      { "from": "guards", "to": "registry" },
+      { "from": "built", "to": "registry" },
+      { "from": "commands", "to": "built" },
+      { "from": "commands", "to": "skills" }
+    ]
+  }
+}

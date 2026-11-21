@@ -1,8 +1,8 @@
 # Change Puls
 
-> **How-to.** Change `demos/puls/identity/louis-agent.identity.puls`, who Puls is: its voice and routing, a new language, a new
+> **How-to.** Change `demos/puls/identity/LouisAgent.Identities.Puls`, who Puls is: its voice and routing, a new language, a new
 > specialist or minion, the packs it names, and how to test and try a change. **Elsewhere:** how the identity works in
-> [louis-agent.identity.puls](../projects/louis-agent.identity.puls.md); a new identity from scratch in
+> [LouisAgent.Identities.Puls](../projects/LouisAgent.Identities.Puls.md); a new identity from scratch in
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md); the web app in [Change the Puls web app](change-the-puls-app.md).
 
 ![Change Puls: its prompts, a language, a specialist, a minion, its packs, and the tests that pin what the model reads](../diagrams/change-puls.svg)
@@ -42,7 +42,7 @@ What a specialist does is its own file in `specialists/`.
 1. Copy `voice-af.md` to `voice-{xx}.md` and translate it. Keep every section, and keep the heading's form
    (`# Puls - Voice` in English). The routing stays in `voice.md`, which every language shares.
 2. Add `puls/voice-{xx}` to `ROLES_ENABLED` everywhere it's set: `demos/puls/docker/docker-compose.puls.yml`, the
-   `puls` launch profile of `louis-agent.puls-api`, and `config/.env` if you set it there.
+   `puls` launch profile of `LouisAgent.PulsApi`, and `config/.env` if you set it there.
 3. Start the API. `GET /v1/roles` now lists the new voice. The web app's language menu offers every role that starts
    with `puls/voice-`, so it shows the new one with no change to the app.
 
@@ -74,7 +74,7 @@ A specialist is measured before Puls hands it any work, so the order of these st
    its address (`puls.{name}`). `PulsRoleTests` fails while a role file has no member, and
    `Puls_CallsItsFiveSpecialists_AndRelaysTheirAnswersWhole` lists the specialists Puls may ask, so add yours there.
 3. Measure it before users see it. Give it an eval folder in
-   `demos/puls/evals/louis-agent.identity.puls.evals/Evals/` ([Add an eval](../../../../src/docs/guides/add-an-eval.md)),
+   `demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/` ([Add an eval](../../../../src/docs/guides/add-an-eval.md)),
    with a mode where Puls answers alone to compare against. The cook's eval does this with its `puls-tools` mode, in
    which Puls has the shop tools itself, beside its `puls-cook` mode, in which it asks the cook.
 4. Once it has passed, route to it. Add its rows to `voice.md`: one in *Where the answer is*, and one in *Choosing the
@@ -101,8 +101,8 @@ has no address. Then add the role to `ROLES_ENABLED`.
 ## Test it
 
 ```bash
-dotnet test demos/puls/tests/louis-agent.identity.puls.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.identity.puls.tests    # after a deliberate prompt change: then read the diff
+dotnet test demos/puls/tests/LouisAgent.Identities.Puls.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/LouisAgent.Identities.Puls.Tests    # after a deliberate prompt change: then read the diff
 ```
 
 `PulsIdentityTests` checks Puls's name and packs, one prompt in each folder, the catalogue refusing Puls without its

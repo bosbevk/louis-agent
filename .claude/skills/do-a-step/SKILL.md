@@ -26,8 +26,8 @@ A step is one commit with its test, small enough for Louis to review in about te
 A step that changes behaviour starts with its test (ADR 0014).
 
 1. **Write the test** for the behaviour the step adds, in the folder that mirrors the source.
-   `src/tests/engine/louis-agent.core.web.tests/Robots/RobotsPolicyTests.cs` tests
-   `src/engine/louis-agent.core.web/Robots/RobotsPolicy.cs`. A fix starts with a test that reproduces the bug.
+   `src/tests/engine/LouisAgent.Core.Web.Tests/Robots/RobotsPolicyTests.cs` tests
+   `src/engine/LouisAgent.Core.Web/Robots/RobotsPolicy.cs`. A fix starts with a test that reproduces the bug.
 2. **See it fail for the right reason.** Run just that test, with
    `dotnet test <project> --filter "FullyQualifiedName~MyTests"`. Give a new member a stub,
    `throw new NotImplementedException()`, so the test compiles and fails on its assertion. Keep the output.
@@ -46,14 +46,14 @@ suite".
 
 - **The projects the step touches.** That is the step's own test project, and the project that tests anything it
   changed.
-- **`louis-agent.core.tests` too, when the step moves files, adds a project or adds a repeated name.** It holds
+- **`LouisAgent.Core.Tests` too, when the step moves files, adds a project or adds a repeated name.** It holds
   the rules that read the whole repo: `SolutionLayoutTests`, the file and folder sizes, `ArchitectureTests` and
   the repeated names.
 - **Every project that reads a shared file.** What you touch is every project that reads the file, not the folder
   the file is in. A name added to the framework's colour list,
-  `src/web/louis-agent.web/Styles/web/settings/_colours.scss`, is tested twice outside the framework. Puls must set
-  every name on that list (`SiteColoursTests` in `louis-agent.puls.tests`). And each film's export records a hash
-  of the film's own files (`louis-agent.film-export.tests`). Before you change a shared file, search for who
+  `src/web/LouisAgent.Web/Styles/web/settings/_colours.scss`, is tested twice outside the framework. Puls must set
+  every name on that list (`SiteColoursTests` in `LouisAgent.Puls.Tests`). And each film's export records a hash
+  of the film's own files (`LouisAgent.FilmExport.Tests`). Before you change a shared file, search for who
   reads it, and run their tests.
 - **The full suite of unit tests runs before the pull request**, after `main` is merged into the branch, and it
   must pass. Louis, 2026-11-13: "before doing a PR main must be merged and full suite unit tests passes". It is

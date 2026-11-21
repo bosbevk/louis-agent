@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- What the coding agent loads, in one place, so its four programs don't each repeat the list. -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>LouisAgent.Coding</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+    <ProjectReference Include="..\..\identity\LouisAgent.Identities.Coding\LouisAgent.Identities.Coding.csproj" />
+    <ProjectReference Include="..\..\..\..\src\site\LouisAgent.Identities.Guide\LouisAgent.Identities.Guide.csproj" />
+    <ProjectReference Include="..\..\identity\LouisAgent.Identities.Triage\LouisAgent.Identities.Triage.csproj" />
+    <!-- packs -->
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Triage\LouisAgent.Packs.Triage.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Web\LouisAgent.Packs.Web.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Shell\LouisAgent.Packs.Shell.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Files\LouisAgent.Packs.Files.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Git\LouisAgent.Packs.Git.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.DotNet\LouisAgent.Packs.DotNet.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Docs\LouisAgent.Packs.Docs.csproj" />
+    <!-- F112: the guide's way to mail Louis a lead. -->
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Leads\LouisAgent.Packs.Leads.csproj" />
+    <!-- F117: the guide's way to take a visitor to a page of the site, or an area of it. -->
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Site\LouisAgent.Packs.Site.csproj" />
+    </ItemGroup>
+
+</Project>

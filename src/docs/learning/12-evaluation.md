@@ -165,7 +165,7 @@ found. And the logs no longer hold what you typed: the arguments, results and a 
 hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so a log says what ran and how it ended. The same text always gets the
 same hash, so you can still match two lines. `LOG_CONTENT=full` shows the values, on your own machine only.
 
-The stream format is a seam (skill 4). The agent's stream is read by one small library (`louis-agent.session-stream`)
+The stream format is a seam (skill 4). The agent's stream is read by one small library (`LouisAgent.SessionStream`)
 that turns each server-sent event into a record. Every host, the harness and the portal read those records, never the
 raw text. When the format changes, one reader changes. Protocol v2 is the same idea for evals: one contract the runner
 writes and the API reads (ADR 0047).
@@ -289,4 +289,4 @@ The button hasn't been pressed in anger on a new prompt yet. Its first real use 
 prompt we had already tuned.
 
 ---
-[Learning](README.md) · [Docs index](../README.md) · Related: [the evals design](../projects/louis-agent.evals.md#limits-and-plans) · [FX25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md)
+[Learning](README.md) · [Docs index](../README.md) · Related: [the evals design](../projects/LouisAgent.Evals.md#limits-and-plans) · [FX25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md)

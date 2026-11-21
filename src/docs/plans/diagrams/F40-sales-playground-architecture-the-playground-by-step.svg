@@ -226,7 +226,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="438.5" y="263" text-anchor="start">puls: louis-agent.api</text>
+      <text class="pic-name" x="438.5" y="263" text-anchor="start">puls: LouisAgent.Api</text>
       <text class="pic-name" x="438.5" y="279" text-anchor="start">IDENTITIES=demo,puls; the</text>
       <text class="pic-name" x="438.5" y="295" text-anchor="start">portal's endpoints</text>
       <rect class="pic-panel" x="766.6" y="50" width="294" height="116" rx="10" />
@@ -315,7 +315,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="pic-name" x="1236.6" y="931" text-anchor="start">louis-agent.composition</text>
+      <text class="pic-name" x="1236.6" y="931" text-anchor="start">LouisAgent.Composition</text>
       <text class="pic-name" x="1236.6" y="947" text-anchor="start">IdentityKind.Demo (1),</text>
       <text class="pic-name" x="1236.6" y="963" text-anchor="start">PackKind.Customers (2)</text>
       <rect class="pic-panel" x="1184.6" y="1140" width="278.8" height="84" rx="10" />

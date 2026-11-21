@@ -1,8 +1,8 @@
-# 0122. louis-agent.site: the CV is one record, edited on its own page
+# 0122. LouisAgent.Site: the CV is one record, edited on its own page
 
 **Status:** Accepted · **Date:** 2026-11-13 (Louis, F142: "can we have a resume area for the admin section where I
 can edit my resume in a userfriendly manner?", then, having seen the forms, "can we not just edit it inline?") ·
-**Recorded:** 2026-11-13 · **Scope:** `louis-agent.site` only (Louis: "it is only for .Site") · Builds on
+**Recorded:** 2026-11-13 · **Scope:** `LouisAgent.Site` only (Louis: "it is only for .Site") · Builds on
 [0111](0111-the-frameworks-website-lives-in-src-site.md)
 
 ## Context
@@ -45,7 +45,7 @@ its pages.
 
 ## Links
 
-[The site's design doc](../projects/louis-agent.site.md) ·
+[The site's design doc](../projects/LouisAgent.Site.md) ·
 [Inline edit (Atlassian)](https://atlassian.design/components/inline-edit) ·
 [Presentation Model (Fowler)](https://martinfowler.com/eaaDev/PresentationModel.html)
 

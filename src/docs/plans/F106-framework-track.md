@@ -76,8 +76,8 @@ The triage workflow, drawn (the page: <https://claude.ai/artifact/46LjmREMUbUWrf
 ## Where we are and where the API should get to
 
 Today a host composes by hand: it builds an `AgentCatalog` and `HostServices`, calls `AgentHost.Build`, and hands the
-result to `AddLouisAgentApi` (see `demos/starter/hosts/louis-agent.starter-api/Program.cs`). The packs a demo uses are
-named in one place (`demos/puls/hosts/louis-agent.host-packs`). It works, but a newcomer has to know four types before
+result to `AddLouisAgentApi` (see `demos/starter/hosts/LouisAgent.Starter.Api/Program.cs`). The packs a demo uses are
+named in one place (`demos/puls/hosts/LouisAgent.HostPacks`). It works, but a newcomer has to know four types before
 their first agent answers.
 
 The direction ChatGPT sketched, as an illustration only (no such API exists yet):

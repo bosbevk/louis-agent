@@ -157,7 +157,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="pic-panel" x="38" y="686" width="862.2" height="178" rx="14" />
       <text class="pic-group" x="52" y="705" text-anchor="start">Packs: what they can do</text>
       <rect class="pic-panel" x="1616.8" y="0" width="302.8" height="1090" rx="14" />
-      <text class="pic-group" x="1630.8" y="19" text-anchor="start">louis-agent.core: the engine</text>
+      <text class="pic-group" x="1630.8" y="19" text-anchor="start">LouisAgent.Core: the engine</text>
       <path class="pic-line pic-edge tone-green" d="M471 134L471 262" marker-end="url(#arrow-green)" />
       <path class="pic-march" d="M471 134L471 262" />
       <path class="pic-line pic-edge tone-green" d="M159 134L159 156Q159 178 181 178L429 178Q453 178 453 202L453 262" marker-end="url(#arrow-green)" />
@@ -206,7 +206,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="pic-name" x="79.2" y="73" text-anchor="start">louis-agent.orchestrator</text>
+      <text class="pic-name" x="79.2" y="73" text-anchor="start">LouisAgent.Orchestrator</text>
       <text class="pic-name" x="79.2" y="89" text-anchor="start">thin: polls the error feed</text>
       <text class="pic-name" x="79.2" y="105" text-anchor="start">(B1-B4)</text>
       <rect class="pic-panel" x="339.2" y="34" width="263.6" height="100" rx="10" />
@@ -217,7 +217,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="391.2" y="73" text-anchor="start">louis-agent.api</text>
+      <text class="pic-name" x="391.2" y="73" text-anchor="start">LouisAgent.Api</text>
       <text class="pic-name" x="391.2" y="89" text-anchor="start">Puls, the demo, the coding</text>
       <text class="pic-name" x="391.2" y="105" text-anchor="start">agent</text>
       <rect class="pic-panel" x="651.2" y="34" width="263.6" height="100" rx="10" />
@@ -247,17 +247,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="1707.4" y="81" text-anchor="start">the loop, the guards,</text>
       <text class="pic-name" x="1707.4" y="97" text-anchor="start">ResultToolset (A5),</text>
       <text class="pic-name" x="1707.4" y="113" text-anchor="start">RouteClassifier (A6)</text>
-      <rect class="pic-panel" x="350.6" y="262" width="240.8" height="100" rx="10" />
-      <rect class="pic-fill tone-teal" x="366.6" y="298" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(372.6 304) scale(0.6667)">
+      <rect class="pic-panel" x="354.4" y="262" width="233.2" height="100" rx="10" />
+      <rect class="pic-fill tone-teal" x="370.4" y="298" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(376.4 304) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="pic-name" x="402.6" y="293" text-anchor="start">louis-agent.composition</text>
-      <text class="pic-name" x="402.6" y="309" text-anchor="start">IdentityKind.Voorman,</text>
-      <text class="pic-name" x="402.6" y="325" text-anchor="start">PackKind.Triage,</text>
-      <text class="pic-name" x="402.6" y="341" text-anchor="start">PackKind.Fixing (B1)</text>
+      <text class="pic-name" x="406.4" y="293" text-anchor="start">LouisAgent.Composition</text>
+      <text class="pic-name" x="406.4" y="309" text-anchor="start">IdentityKind.Voorman,</text>
+      <text class="pic-name" x="406.4" y="325" text-anchor="start">PackKind.Triage,</text>
+      <text class="pic-name" x="406.4" y="341" text-anchor="start">PackKind.Fixing (B1)</text>
       <rect class="pic-panel" x="1029.6" y="262" width="195.2" height="100" rx="10" />
       <rect class="pic-fill tone-teal" x="1045.6" y="298" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(1051.6 304) scale(0.6667)">
@@ -356,17 +356,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="86.8" y="1017" text-anchor="start">the seeded service (B6a)</text>
       <text class="pic-name" x="86.8" y="1033" text-anchor="start">writes logs/errors.jsonl</text>
-      <rect class="pic-panel" x="339.2" y="962" width="263.6" height="116" rx="10" />
-      <rect class="pic-fill tone-violet" x="355.2" y="1006" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(361.2 1012) scale(0.6667)">
+      <rect class="pic-panel" x="346.8" y="962" width="248.4" height="116" rx="10" />
+      <rect class="pic-fill tone-violet" x="362.8" y="1006" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(368.8 1012) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="pic-name" x="391.2" y="1017" text-anchor="start">louis-agent.session-stream</text>
-      <text class="pic-name" x="391.2" y="1033" text-anchor="start">the one reader (Phase 3)</text>
+      <text class="pic-name" x="398.8" y="1017" text-anchor="start">LouisAgent.SessionStream</text>
+      <text class="pic-name" x="398.8" y="1033" text-anchor="start">the one reader (Phase 3)</text>
       <rect class="pic-panel" x="643.6" y="962" width="278.8" height="116" rx="10" />
       <rect class="pic-fill tone-red" x="659.6" y="1006" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(665.6 1012) scale(0.6667)">
@@ -375,7 +375,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="695.6" y="1009" text-anchor="start">a peer louis-agent.api</text>
+      <text class="pic-name" x="695.6" y="1009" text-anchor="start">a peer LouisAgent.Api</text>
       <text class="pic-name" x="695.6" y="1025" text-anchor="start">runs the child: the cook, or</text>
       <text class="pic-name" x="695.6" y="1041" text-anchor="start">the fixer with PACKS=fixing</text>
       <rect class="pic-panel" x="1628.8" y="962" width="278.8" height="116" rx="10" />

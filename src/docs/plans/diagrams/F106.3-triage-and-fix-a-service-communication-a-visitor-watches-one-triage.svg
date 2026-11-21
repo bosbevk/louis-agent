@@ -348,7 +348,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="seq-name" x="560.9" y="68" text-anchor="middle">louis-agent.api</text>
+      <text class="seq-name" x="560.9" y="68" text-anchor="middle">LouisAgent.Api</text>
       <circle class="mrq-node" cx="560.9" cy="124" r="4.5" />
       <rect class="seq-badge tone-violet" x="823.9" y="0" width="44" height="44" rx="13" />
       <g class="pic-badge-icon" transform="translate(834.9 11) scale(0.9167)">

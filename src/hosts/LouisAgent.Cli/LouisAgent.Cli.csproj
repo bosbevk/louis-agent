@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>LouisAgent.Cli</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+             built or copied. -->
+        <None Include="..\..\docs\projects\LouisAgent.Cli.md" Link="docs\LouisAgent.Cli.md" />
+        <None Include="..\..\docs\guides\change-the-cli.md" Link="docs\change-the-cli.md" />
+    </ItemGroup>
+
+</Project>

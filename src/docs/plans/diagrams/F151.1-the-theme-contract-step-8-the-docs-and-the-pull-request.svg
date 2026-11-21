@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 942 432" width="942" height="432" role="img" aria-label="F151.1 the theme contract: step 8, the docs and the pull request" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 935 432" width="935" height="432" role="img" aria-label="F151.1 the theme contract: step 8, the docs and the pull request" xmlns="http://www.w3.org/2000/svg">
   <title>F151.1 the theme contract: step 8, the docs and the pull request</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -140,20 +140,20 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-edge-2" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="942" height="432" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="935" height="432" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a471 190 0 1 0 942 0a471 190 0 1 0 -942 0Z" />
+    <path class="mrq-light" d="M-24 74a467.5 190 0 1 0 935 0a467.5 190 0 1 0 -935 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">F151.1 the theme contract: step 8, the docs and the pull request</text>
-    <text class="pic-group" x="878" y="14" text-anchor="end">Activity diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="894" height="1" rx="0" />
+    <text class="pic-group" x="871" y="14" text-anchor="end">Activity diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="887" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-green" d="M280.2 34L349.2 34" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M280.2 34L349.2 34" />
-      <path class="pic-line pic-edge tone-green" d="M280.2 120L299.7 120Q319.2 120 319.2 100.5L319.2 67Q319.2 52 334.2 52L349.2 52" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M280.2 120L299.7 120Q319.2 120 319.2 100.5L319.2 67Q319.2 52 334.2 52L349.2 52" />
-      <path class="pic-line pic-edge tone-teal" d="M559.6 34L619.6 34" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M559.6 34L619.6 34" />
-      <path class="pic-panel flow-shape pic-edge tone-green" d="M18 0L289.2 0L271.2 68L0 68Z" />
+      <path class="pic-line pic-edge tone-green" d="M272.6 34L341.9 34" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M272.6 34L341.9 34" />
+      <path class="pic-line pic-edge tone-green" d="M272.6 120L292.2 120Q311.8 120 311.8 100.4L311.8 67.1Q311.8 52 326.8 52L341.9 52" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M272.6 120L292.2 120Q311.8 120 311.8 100.4L311.8 67.1Q311.8 52 326.8 52L341.9 52" />
+      <path class="pic-line pic-edge tone-teal" d="M552.3 34L612.6 34" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M552.3 34L612.6 34" />
+      <path class="pic-panel flow-shape pic-edge tone-green" d="M18 0L281.6 0L263.6 68L0 68Z" />
       <rect class="pic-fill tone-green" x="28" y="20" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(34 26) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -162,9 +162,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="pic-name" x="64" y="31" text-anchor="start">projects/louis-agent.web.md</text>
+      <text class="pic-name" x="64" y="31" text-anchor="start">projects/LouisAgent.Web.md</text>
       <text class="pic-name" x="64" y="47" text-anchor="start">and its pictures</text>
-      <path class="pic-panel flow-shape pic-edge tone-green" d="M18 94L289.2 94L271.2 146L0 146Z" />
+      <path class="pic-panel flow-shape pic-edge tone-green" d="M18 94L281.6 94L263.6 146L0 146Z" />
       <rect class="pic-fill tone-green" x="28" y="106" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(34 112) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -174,31 +174,31 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M21 6l0 13" />
       </g>
       <text class="pic-name" x="64" y="125" text-anchor="start">learning/: the write-up</text>
-      <rect class="pic-panel" x="349.2" y="0" width="210.4" height="68" rx="10" />
-      <rect class="pic-fill tone-teal" x="365.2" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(371.2 26) scale(0.6667)">
+      <rect class="pic-panel" x="341.9" y="0" width="210.4" height="68" rx="10" />
+      <rect class="pic-fill tone-teal" x="357.9" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(363.9 26) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="pic-name" x="401.2" y="31" text-anchor="start">merge main, then</text>
-      <text class="pic-name" x="401.2" y="47" text-anchor="start">the full unit suite</text>
-      <rect class="pic-panel flow-shape pic-edge tone-blue" x="619.6" y="8" width="274.4" height="52" rx="26" />
-      <rect class="pic-fill tone-blue" x="647.6" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(653.6 26) scale(0.6667)">
+      <text class="pic-name" x="393.9" y="31" text-anchor="start">merge main, then</text>
+      <text class="pic-name" x="393.9" y="47" text-anchor="start">the full unit suite</text>
+      <rect class="pic-panel flow-shape pic-edge tone-blue" x="612.6" y="8" width="274.4" height="52" rx="26" />
+      <rect class="pic-fill tone-blue" x="640.6" y="20" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(646.6 26) scale(0.6667)">
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
         <path d="M3.6 9h16.8" />
         <path d="M3.6 15h16.8" />
         <path d="M11.5 3a17 17 0 0 0 0 18" />
         <path d="M12.5 3a17 17 0 0 1 0 18" />
       </g>
-      <text class="pic-name" x="683.6" y="39" text-anchor="start">one pull request to main</text>
-      <circle class="pic-port pic-edge tone-green" cx="280.2" cy="34" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="280.2" cy="120" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="559.6" cy="34" r="4" />
+      <text class="pic-name" x="676.6" y="39" text-anchor="start">one pull request to main</text>
+      <circle class="pic-port pic-edge tone-green" cx="272.6" cy="34" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="272.6" cy="120" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="552.3" cy="34" r="4" />
     </g>
-    <rect class="mrq-rule" x="0" y="224" width="894" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="224" width="887" height="1" rx="0" />
     <text class="pic-group" x="0" y="246" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="263" width="18" height="18" rx="6" />
     <text class="pic-means" x="28" y="276.5" text-anchor="start">starts it</text>
@@ -213,10 +213,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <path class="flow-key pic-line pic-edge" d="M0 300H30" marker-end="url(#arrow)" />
     <text class="pic-means" x="40" y="304.5" text-anchor="start">a line has the colour of the box it leaves</text>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="878" y="246" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="871" y="246" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="330" width="894" height="54" rx="8" />
+  <rect class="notebar" x="0" y="330" width="887" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 340) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />

@@ -7,13 +7,13 @@
     "nodes": [
       {
         "id": "eng",
-        "label": "louis-agent.diagrams.engine\nSvgStyle (2), SvgTheme (3)",
+        "label": "LouisAgent.Diagrams.Engine\nSvgStyle (2), SvgTheme (3)",
         "icon": "chip",
         "tone": "violet"
       },
       {
         "id": "tool",
-        "label": "louis-agent.doc-diagrams\nredraws every picture (4)",
+        "label": "LouisAgent.DocDiagrams\nredraws every picture (4)",
         "icon": "terminal",
         "tone": "blue"
       },

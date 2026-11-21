@@ -52,7 +52,7 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `AGENT_PEERS` | Other louis-agent APIs this one may ask agents on (`AskAgent`, the `agents` toolset; the addresses an identity may ask are in its code, `Calls`): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to itself (`puls=http://puls:8080`): one container, its specialists on the same instance (CL19). With more than one, this instance is `self`, and an address names another server before a colon (`partner:shop`, F127.3.2). A peer is called with its own key from `AGENT_PEER_KEYS`, else this deployment's `AGENT_API_KEY` |
 | `AGENT_PEER_KEYS` | A secret, in `.env.secrets`: each other server's own key, `name=key` pairs by commas, the names those of `AGENT_PEERS` (F127.3.2). A server with none is sent `AGENT_API_KEY` |
 | `AGENT_MAX_DEPTH` | The deepest an agent may be asked (F127.5), 0 being the agent a person talks to. Any agent but a minion may ask the ones its identity's `Calls` allow, never one already in its chain of asks. Default `4` |
-| `ROLES_ENABLED` | The roles this instance may use (F29), comma separated (`puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe`); another name is refused as an unknown one, and `GET /v1/roles` lists only these. Empty: every built-in one (`src/engine/louis-agent.core/prompts/`). `PERSONALITIES_ENABLED`, its name before CL14, is read when it's unset, with a warning. Puls's compose sets it, so only a role that has passed its check is reachable |
+| `ROLES_ENABLED` | The roles this instance may use (F29), comma separated (`puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe`); another name is refused as an unknown one, and `GET /v1/roles` lists only these. Empty: every built-in one (`src/engine/LouisAgent.Core/prompts/`). `PERSONALITIES_ENABLED`, its name before CL14, is read when it's unset, with a warning. Puls's compose sets it, so only a role that has passed its check is reachable |
 | `MINION_LLMS` | The model a minion runs on (F30): `role=profile` entries, comma separated, `*` for every role not named, `instance` for this instance's own model, `>` for a cascade cheapest first (`*=ollama-puls>instance`). Every profile must be in `LLM_SESSION_PROFILES` (`instance` needs none), else start-up stops; unset: no `minions` toolset. Puls's compose leaves it unset, since the cook uses no minion ([ADR 0081](../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md)); a minion always runs a local model |
 | `RECIPES_MONGO_URL` | The MongoDB the recipe library keeps each new read in, for good (ADR 0082); a secret. Unset: nothing is kept and no feed is published |
 | `RECIPES_MONGO_DATABASE` | The database on that server. Default `recipe_library` |
@@ -72,12 +72,12 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
 | `PRICES_FILE` | The price table for those costs (default `config/prices.json`, found like `config/.env`; compose sets it for the containers). Without one, costs are recorded as unknown (`null`); a malformed one stops the host |
-| `HOST_CULTURE` | The PC's Windows culture (e.g. `en-ZA`): costs are shown in its region's currency (ZAR, `R0.11`). Containers can't see the PC's region, so write it once with `dotnet run --project src/tools/louis-agent.usage-probe -- --host-culture`. Outside a container, the process's own culture is used when it's unset |
+| `HOST_CULTURE` | The PC's Windows culture (e.g. `en-ZA`): costs are shown in its region's currency (ZAR, `R0.11`). Containers can't see the PC's region, so write it once with `dotnet run --project src/tools/LouisAgent.UsageProbe -- --host-culture`. Outside a container, the process's own culture is used when it's unset |
 | `DISPLAY_CURRENCY` | Show costs in this currency instead (an ISO code, e.g. `EUR`); the web app can also pick one per browser |
 | `RATES_URL` | Where exchange rates come from (default `https://api.frankfurter.dev/v1/latest?base=USD`, the ECB's reference rates); `off` uses `RATES_FILE` only. If it can't be reached, or answers with rates from another currency, the file is used. The demo's orchestrator reads demo-api's `GET /v1/rates` |
 | `RATES_FORMAT` | The format of `RATES_URL`'s reply, turned into ours by its mapper: `frankfurter` (default) or `rates-json` (another louis-agent's `GET /v1/rates`) |
 | `RATES_FILE` | The fallback rates (default `config/rates.json`; compose sets it). Costs are only converted for display: the ledger always keeps what was charged |
-| `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /v1/prices` (the demo's orchestrator uses `http://demo-api:8080/v1/prices`). If it can't be reached at start-up, the host warns and uses the file above |
+| `PRICES_URL` | Fetch the price table over HTTP instead, e.g. LouisAgent.Api's public `GET /v1/prices` (the demo's orchestrator uses `http://demo-api:8080/v1/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `USAGE_IN_CHAT` | `true` adds each turn's usage line to the chat in Rider (ACP), after the answer; off by default. The CLI and web app always show it beside the answer |
 | `STREAM_PACE` | `on` paces a turn's text on its way out of the engine: a steady pace, in whole words, instead of the model's bursts, for every reader of that host (the API, Rider, the CLI); off by default. The model call, the tool loop, the usage records and the history run as fast as without it. With it on, the API answers each turn with `Stream-Paced: on`, and the framework's web leaves its own pacer off for that turn, so the words are paced once. louis-agent.dev has it on, on the PC and in Azure |
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
@@ -100,12 +100,12 @@ environment by the tools themselves:
 | `PYTHON_VENV` | Where `PythonRun` keeps the virtual environment for packages it installs. Default: a per-user folder (`%LOCALAPPDATA%/louis-agent/python-venv`, `~/.local/share/louis-agent/python-venv` on Linux) |
 | `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
 
-**The eval studio and the eval runner**, read by `louis-agent.api.evals` and by the runner; the store's
+**The eval studio and the eval runner**, read by `LouisAgent.Api.Evals` and by the runner; the store's
 `EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE` are in [Puls's Setup](../../demos/puls/docs/SETUP.md#pulss-own-settings):
 
 | Setting | Meaning |
 |---|---|
-| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/louis-agent.puls-eval-runner.dll` in Puls's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
+| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/LouisAgent.PulsEvalRunner.dll` in Puls's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
 | `BENCHMARK_API_URL` | Where a run started from the admin portal reaches this API back. Default: the container's own port, `http://127.0.0.1:8080/` |
 | `EVALS` | Which identities' evals the runner lists and runs, comma separated (`EVALS=puls`). Unset: every eval; a name no eval proves is refused |
 | `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT` | The judge of the evals' model graders. No model: no judge, a model grader's grade is unknown and the run goes on. No provider: a `claude*` model is Anthropic's (paid, so only on purpose), any other is Ollama's; the endpoint is a local server's URL ([Run the evals](guides/run-the-evals.md)) |
@@ -117,16 +117,16 @@ above and below:
 
 | Setting | Meaning |
 |---|---|
-| `TRIAGE_RUNS`, `TRIAGE_PEOPLE`, `TRIAGE_DEPARTMENTS` | The triage pack: the folder a run's steps are written under, the folder a case raised to a person is written in, and the departments file. Without all three the `triage` toolset is off ([its doc](../../packs/docs/projects/louis-agent.pack.triage.md#the-settings)) |
-| `LEADS_TO`, `LEADS_FROM` | The leads pack: where a visitor's lead is mailed (unset, the `leads` toolset is off) and the verified sender (default `guide@louis-agent.dev`). `RESEND_API_KEY`, a secret, sends the mail; without it the lead goes to the log ([its doc](../../packs/docs/projects/louis-agent.pack.leads.md#settings)) |
-| `DOCS_ROOT` | The docs pack: the folder the docs are under, which its tools never leave. Unset, the `docs` toolset is off; the images set it to the copy they carry ([its doc](../../packs/docs/projects/louis-agent.pack.docs.md#the-setting)) |
+| `TRIAGE_RUNS`, `TRIAGE_PEOPLE`, `TRIAGE_DEPARTMENTS` | The triage pack: the folder a run's steps are written under, the folder a case raised to a person is written in, and the departments file. Without all three the `triage` toolset is off ([its doc](../../packs/docs/projects/LouisAgent.Packs.Triage.md#the-settings)) |
+| `LEADS_TO`, `LEADS_FROM` | The leads pack: where a visitor's lead is mailed (unset, the `leads` toolset is off) and the verified sender (default `guide@louis-agent.dev`). `RESEND_API_KEY`, a secret, sends the mail; without it the lead goes to the log ([its doc](../../packs/docs/projects/LouisAgent.Packs.Leads.md#settings)) |
+| `DOCS_ROOT` | The docs pack: the folder the docs are under, which its tools never leave. Unset, the `docs` toolset is off; the images set it to the copy they carry ([its doc](../../packs/docs/projects/LouisAgent.Packs.Docs.md#the-setting)) |
 
 **A demo's own settings** are in that demo's Setup: Puls's `IDENTITIES` and `PACKS` in
 [Puls's Setup](../../demos/puls/docs/SETUP.md#pulss-own-settings); the orchestrator's `ORCHESTRATOR_*`,
 `LOUIS_AGENT_URL` and `LOUIS_AGENT_API_KEY` in
 [the coding agent's Setup](../../demos/louis-agent/docs/SETUP.md#the-coding-agents-own-settings).
 
-**One tool's setting:** `CHROME_PATH` names the browser the film export drives (`src/tools/louis-agent.film-export`);
+**One tool's setting:** `CHROME_PATH` names the browser the film export drives (`src/tools/LouisAgent.FilmExport`);
 without it, a Chrome for Testing is downloaded once.
 
 ### `config/.env.secrets`

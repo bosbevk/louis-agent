@@ -13,7 +13,7 @@ measured, and what the build taught.
 
 ![Observability: logs and spans on one wire, a turn as a tree of spans, the library's counter, a recorded stream, and what the agents did without what was said](diagrams/17-observability.svg)
 
-Two things moved since. The exporters live in their own project, `louis-agent.core.telemetry` (`OtlpTelemetry`),
+Two things moved since. The exporters live in their own project, `LouisAgent.Core.Telemetry` (`OtlpTelemetry`),
 which a host opts into, so core keeps only the spans. And Azure's part is no longer a `deploy.ps1 telemetry`
 command: `puls-insights` and the environment's OpenTelemetry agent are declared in the Bicep file
 (`demos/puls/config/azure/main.bicep`).
@@ -253,4 +253,4 @@ Boy Scout Rule* · [ADR 0064](../adr/0064-observability-through-opentelemetry.md
 (`research/reports/logging-and-error-tracking.md` in the Claude project)
 
 ---
-[Docs index](../README.md) · Related: [Learning](README.md) · [Debug and logs](../guides/debug-and-logs.md) · [louis-agent.core](../projects/louis-agent.core.md)
+[Docs index](../README.md) · Related: [Learning](README.md) · [Debug and logs](../guides/debug-and-logs.md) · [LouisAgent.Core](../projects/LouisAgent.Core.md)

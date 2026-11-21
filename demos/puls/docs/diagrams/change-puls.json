@@ -4,7 +4,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "identity", "icon": "chip", "title": "louis-agent.identity.puls", "code": "PulsIdentity",
+        { "id": "identity", "icon": "chip", "title": "LouisAgent.Identities.Puls", "code": "PulsIdentity",
           "look": "highlight",
           "text": "One small class and a folder of embedded prompts: its name, its packs, and the roles it may ask." }
       ] },

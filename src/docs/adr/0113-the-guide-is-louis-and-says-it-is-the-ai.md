@@ -44,5 +44,5 @@ Orbi tells his story as his.
 - [ADR 0020: principles for every agent](0020-principles-for-every-agent.md)
 - [ADR 0099: the guide answers without a sign-in within a cap](0099-the-guide-answers-without-a-sign-in-within-a-cap.md)
 - [ADR 0112: the site sells first](0112-the-site-sells-first.md)
-- [louis-agent.identity.guide](../projects/louis-agent.identity.guide.md)
+- [LouisAgent.Identities.Guide](../projects/LouisAgent.Identities.Guide.md)
 - F128.1 in the work log

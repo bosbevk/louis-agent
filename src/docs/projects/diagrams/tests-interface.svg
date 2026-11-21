@@ -202,40 +202,40 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="pic-group" x="864" y="14" text-anchor="end">Class diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="880" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line holds" d="M240.8 432L380.9 432Q404.9 432 404.9 408L404.9 78Q404.9 54 428.9 54L537 54" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 432L380.9 432Q404.9 432 404.9 408L404.9 78Q404.9 54 428.9 54L537 54" />
-      <path class="cls-line holds" d="M240.8 432L380.9 432Q404.9 432 404.9 408L404.9 204Q404.9 180 428.9 180L537 180" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 432L380.9 432Q404.9 432 404.9 408L404.9 204Q404.9 180 428.9 180L537 180" />
-      <path class="cls-line holds" d="M240.8 432L380.9 432Q404.9 432 404.9 408L404.9 330Q404.9 306 428.9 306L537 306" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 432L380.9 432Q404.9 432 404.9 408L404.9 330Q404.9 306 428.9 306L537 306" />
-      <path class="cls-line holds" d="M240.8 432L537 432" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 432L537 432" />
-      <path class="cls-line holds" d="M240.8 432L380.9 432Q404.9 432 404.9 456L404.9 534Q404.9 558 428.9 558L537 558" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 432L380.9 432Q404.9 432 404.9 456L404.9 534Q404.9 558 428.9 558L537 558" />
-      <path class="cls-line holds" d="M240.8 432L380.9 432Q404.9 432 404.9 456L404.9 660Q404.9 684 428.9 684L537 684" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 432L380.9 432Q404.9 432 404.9 456L404.9 660Q404.9 684 428.9 684L537 684" />
-      <path class="cls-line holds" d="M240.8 936L380.9 936Q404.9 936 404.9 912L404.9 834Q404.9 810 428.9 810L537 810" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 936L380.9 936Q404.9 936 404.9 912L404.9 834Q404.9 810 428.9 810L537 810" />
-      <path class="cls-line holds" d="M240.8 936L537 936" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 936L537 936" />
-      <path class="cls-line holds" d="M240.8 936L380.9 936Q404.9 936 404.9 960L404.9 1038Q404.9 1062 428.9 1062L537 1062" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M240.8 936L380.9 936Q404.9 936 404.9 960L404.9 1038Q404.9 1062 428.9 1062L537 1062" />
-      <rect class="pic-pill cls-chip holds" x="301.4" y="423" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="322.9" y="435" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip holds" x="301.4" y="927" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="322.9" y="939" text-anchor="middle">holds</text>
-      <rect class="cls-cover" x="0" y="394" width="240.8" height="76" rx="14" />
-      <rect class="mrq-glass" x="0" y="394" width="240.8" height="76" rx="14" />
+      <path class="cls-line holds" d="M233.2 432L377.1 432Q401.1 432 401.1 408L401.1 78Q401.1 54 425.1 54L537 54" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 432L377.1 432Q401.1 432 401.1 408L401.1 78Q401.1 54 425.1 54L537 54" />
+      <path class="cls-line holds" d="M233.2 432L377.1 432Q401.1 432 401.1 408L401.1 204Q401.1 180 425.1 180L537 180" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 432L377.1 432Q401.1 432 401.1 408L401.1 204Q401.1 180 425.1 180L537 180" />
+      <path class="cls-line holds" d="M233.2 432L377.1 432Q401.1 432 401.1 408L401.1 330Q401.1 306 425.1 306L537 306" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 432L377.1 432Q401.1 432 401.1 408L401.1 330Q401.1 306 425.1 306L537 306" />
+      <path class="cls-line holds" d="M233.2 432L537 432" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 432L537 432" />
+      <path class="cls-line holds" d="M233.2 432L377.1 432Q401.1 432 401.1 456L401.1 534Q401.1 558 425.1 558L537 558" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 432L377.1 432Q401.1 432 401.1 456L401.1 534Q401.1 558 425.1 558L537 558" />
+      <path class="cls-line holds" d="M233.2 432L377.1 432Q401.1 432 401.1 456L401.1 660Q401.1 684 425.1 684L537 684" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 432L377.1 432Q401.1 432 401.1 456L401.1 660Q401.1 684 425.1 684L537 684" />
+      <path class="cls-line holds" d="M233.2 936L377.1 936Q401.1 936 401.1 912L401.1 834Q401.1 810 425.1 810L537 810" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 936L377.1 936Q401.1 936 401.1 912L401.1 834Q401.1 810 425.1 810L537 810" />
+      <path class="cls-line holds" d="M233.2 936L537 936" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 936L537 936" />
+      <path class="cls-line holds" d="M233.2 936L377.1 936Q401.1 936 401.1 960L401.1 1038Q401.1 1062 425.1 1062L537 1062" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M233.2 936L377.1 936Q401.1 936 401.1 960L401.1 1038Q401.1 1062 425.1 1062L537 1062" />
+      <rect class="pic-pill cls-chip holds" x="295.7" y="423" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="317.2" y="435" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="295.7" y="927" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="317.2" y="939" text-anchor="middle">holds</text>
+      <rect class="cls-cover" x="0" y="394" width="233.2" height="76" rx="14" />
+      <rect class="mrq-glass" x="0" y="394" width="233.2" height="76" rx="14" />
       <rect class="cls-badge tone-teal" x="14" y="418" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="436.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="422" text-anchor="start">louis-agent.testing</text>
+      <text class="pic-name" x="52" y="422" text-anchor="start">LouisAgent.Testing</text>
       <text class="pic-note" x="52" y="438" text-anchor="start">every test project's</text>
       <text class="pic-note" x="52" y="450" text-anchor="start">global using</text>
-      <rect class="cls-cover" x="0" y="904" width="240.8" height="64" rx="14" />
-      <rect class="mrq-glass" x="0" y="904" width="240.8" height="64" rx="14" />
+      <rect class="cls-cover" x="0" y="904" width="233.2" height="64" rx="14" />
+      <rect class="mrq-glass" x="0" y="904" width="233.2" height="64" rx="14" />
       <rect class="cls-badge tone-teal" x="14" y="922" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="940.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="932" text-anchor="start">louis-agent.web.testing</text>
+      <text class="pic-name" x="52" y="932" text-anchor="start">LouisAgent.Web.Testing</text>
       <text class="pic-note" x="52" y="948" text-anchor="start">the web tests' library</text>
       <rect class="cls-cover" x="537" y="0" width="343" height="108" rx="14" />
       <rect class="mrq-glass" x="537" y="0" width="343" height="108" rx="14" />

@@ -28,17 +28,17 @@ is the only thing they share.
 
 | Part | Project | Its one job |
 |---|---|---|
-| The check contract | `src/evals/louis-agent.evals.checks` | What a check reads and returns (`Trial`, `ICheck`, `Grade`), and the catalogue a file names a check from (`ICheckType`, `CheckCatalog`). What a pack can reference to ship a check ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). |
-| The harness | `src/evals/louis-agent.evals` | How an eval runs: `IEval`, `FileEval` (an eval read from its folder), the datasets, the general checks and their entries, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
-| An identity's evals | `demos/puls/evals/louis-agent.identity.puls.evals` (`Evals/`), `demos/louis-agent/evals/louis-agent.identity.triage.evals` (`Evals/`) | What proves an identity, as folders of files. Puls's are `puls-cook`, `puls-routing` and the recipes evals, with Puls's readers and expectations (`Evals/Readers/`, `Evals/Checks/`). The triage team's are one eval for each of its roles: the sorter, the investigator and the reviewer. A project under a demo's `evals/` that only its runner program references ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md), [ADR 0073](../adr/0073-packs-reference-no-evals.md)). |
+| The check contract | `src/evals/LouisAgent.Evals.Checks` | What a check reads and returns (`Trial`, `ICheck`, `Grade`), and the catalogue a file names a check from (`ICheckType`, `CheckCatalog`). What a pack can reference to ship a check ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). |
+| The harness | `src/evals/LouisAgent.Evals` | How an eval runs: `IEval`, `FileEval` (an eval read from its folder), the datasets, the general checks and their entries, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
+| An identity's evals | `demos/puls/evals/LouisAgent.Identities.Puls.Evals` (`Evals/`), `demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals` (`Evals/`) | What proves an identity, as folders of files. Puls's are `puls-cook`, `puls-routing` and the recipes evals, with Puls's readers and expectations (`Evals/Readers/`, `Evals/Checks/`). The triage team's are one eval for each of its roles: the sorter, the investigator and the reviewer. A project under a demo's `evals/` that only its runner program references ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md), [ADR 0073](../adr/0073-packs-reference-no-evals.md)). |
 | A pack's checks | `packs/evals/louis-agent.pack.{name}.checks` | The rules no general check can say, apart from the pack; only the runner references them ([ADR 0073](../adr/0073-packs-reference-no-evals.md)). |
-| An identity's judges | `demos/puls/evals/louis-agent.identity.puls.judges` | Puls's model judge, `meal-for-people`, apart from the identity because it needs the harness; only the runner references it. |
-| The runner | `src/evals/louis-agent.evals.runner`, run by a demo's program: `louis-agent.puls-eval-runner` or `louis-agent.coding-eval-runner` | The command (`EvalRunnerHost.RunAsync`), handed the program's own checks and readers (`RunnerCatalogs`), so the library names no pack or identity: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge; for the studio, lists the catalogue (`--checks`), judges a folder (`--check`), runs a folder's samples (`--folder`, `--samples`) and converts promptfoo files. |
-| The protocol | `src/evals/louis-agent.evals.protocol` | The eight line records both sides share, and their reader and writer. Records only. |
-| The API | `src/hosts/louis-agent.api.evals`, on `src/hosts/louis-agent.api` | Starts the runner `EVAL_RUNNER` names, records its lines, prices them from the ledger, serves the portal; the API itself runs the sessions the runner opens. |
-| The portal | `src/web/louis-agent.web.evals`, in a site that adds it | Start a run, watch it live, read runs and trends, grade the answers that wait (one at a time on the Review page, F53.3), calibrate a judge, write notes; read every built-in prompt (`/admin/prompts`); make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
-| The drafts | `src/hosts/louis-agent.api.evals` (`Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
-| The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`) and `louis-agent.core.web` (`Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
+| An identity's judges | `demos/puls/evals/LouisAgent.Identities.Puls.Judges` | Puls's model judge, `meal-for-people`, apart from the identity because it needs the harness; only the runner references it. |
+| The runner | `src/evals/LouisAgent.Evals.Runner`, run by a demo's program: `LouisAgent.PulsEvalRunner` or `LouisAgent.CodingEvalRunner` | The command (`EvalRunnerHost.RunAsync`), handed the program's own checks and readers (`RunnerCatalogs`), so the library names no pack or identity: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge; for the studio, lists the catalogue (`--checks`), judges a folder (`--check`), runs a folder's samples (`--folder`, `--samples`) and converts promptfoo files. |
+| The protocol | `src/evals/LouisAgent.Evals.Protocol` | The eight line records both sides share, and their reader and writer. Records only. |
+| The API | `src/hosts/LouisAgent.Api.Evals`, on `src/hosts/LouisAgent.Api` | Starts the runner `EVAL_RUNNER` names, records its lines, prices them from the ledger, serves the portal; the API itself runs the sessions the runner opens. |
+| The portal | `src/web/LouisAgent.Web.Evals`, in a site that adds it | Start a run, watch it live, read runs and trends, grade the answers that wait (one at a time on the Review page, F53.3), calibrate a judge, write notes; read every built-in prompt (`/admin/prompts`); make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
+| The drafts | `src/hosts/LouisAgent.Api.Evals` (`Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
+| The replay store | `LouisAgent.Core` (`Sessions/Replay/`, `Llm/Replay/`) and `LouisAgent.Core.Web` (`Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
 
 ## The types
 
@@ -73,7 +73,7 @@ checks, and its eval file keeps its stored names with `name` (`{"type": "amount-
 
 **A pack or an identity references no evals** ([ADR 0073](../adr/0073-packs-reference-no-evals.md), which supersedes
 [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)): what proves one is a project under `evals/` that only a runner program references
-(`louis-agent.pack.where-to-buy.checks`, `louis-agent.identity.puls.evals`), and a new check is a general one in the harness
+(`LouisAgent.Packs.WhereToBuy.Checks`, `LouisAgent.Identities.Puls.Evals`), and a new check is a general one in the harness
 when it can be. What an identity knows comes in through a reader the file names: the where-to-buy rule `estimates-at-shop` reads
 whether a price is given as fact through Puls's `rand-prices`. Plain markdown reading (tables, links, a site's host)
 is the contract's (`Markdown/`), so an identity, a pack and the harness read them the same way.
@@ -101,7 +101,7 @@ answers (`ModelReplayChatClient`), so the agent gives the same answers without p
 
 When the agent asks for something the recording doesn't have, that's a replay miss. The engine throws
 `ModelReplayMissException`, the API streams it as an error of kind `replay_miss_error` (`StreamErrorKind` in
-`louis-agent.session-stream`), and the runner marks the turn `TurnFailure.ReplayMiss`. So it counts as a failure of
+`LouisAgent.SessionStream`), and the runner marks the turn `TurnFailure.ReplayMiss`. So it counts as a failure of
 the infrastructure, never as the agent getting an answer wrong.
 
 A replay only matches when every request reads exactly as it did when it was recorded. That's why nothing that changes
@@ -189,7 +189,7 @@ check.
 
 ```
 src/evals/
-├── louis-agent.evals/              # the harness
+├── LouisAgent.Evals/              # the harness
 │   ├── Api/                        # ISessionClient, HttpSessionClient, CannedSessionClient, the session request
 │   ├── Conformance/                # references must pass, known-bads must fail
 │   ├── Datasets/                   # dataset.json + scenarios/{dev,held-out}/ (Inspect's Sample shape), the loader
@@ -200,22 +200,22 @@ src/evals/
 │   ├── Reports/                    # RunSummary
 │   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialChecking, Rescoring/
 │   └── Trials/                     # ConversationMetrics
-├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/; Datasets/; Trials/; Grading/ (ICheck, Grade, Verdict); Markdown/; Readers/; Messages/
-├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
-├── louis-agent.evals.runner/       # EvalRunnerHost, Arguments/, Catalog/ (RunnerCatalogs, EvalCatalog), Calibration/, Evals/, Manuals/, Refusal/,
+├── LouisAgent.Evals.Checks/       # the check contract: EvalMode, EvalJson; Catalog/; Datasets/; Trials/; Grading/ (ICheck, Grade, Verdict); Markdown/; Readers/; Messages/
+├── LouisAgent.Evals.Protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
+├── LouisAgent.Evals.Runner/       # EvalRunnerHost, Arguments/, Catalog/ (RunnerCatalogs, EvalCatalog), Calibration/, Evals/, Manuals/, Refusal/,
 │                                   # Studio/, Promptfoo/ (the table, import, export)
 └── template/Example/               # the folder a new eval starts as a copy of (never listed)
-demos/puls/evals/louis-agent.identity.puls.evals/Evals/  # Cook/, Recipes/, RecipesLong/ and Routing/, Checks/, Readers/ (Puls's readers)
-demos/puls/evals/louis-agent.identity.puls.judges/       # meal-for-people, PulsJudges
-demos/puls/hosts/louis-agent.puls-eval-runner/           # Puls's runner program: PulsCatalogs
-demos/louis-agent/evals/louis-agent.identity.triage.evals/Evals/  # Sorter/, Investigator/, Reviewer/
-demos/louis-agent/hosts/louis-agent.coding-eval-runner/  # the coding demo's runner program, the general checks only
-packs/evals/louis-agent.pack.where-to-buy.checks/        # the where-to-buy rules
-packs/evals/louis-agent.pack.recipes.checks/             # recipe-from-source
-src/hosts/louis-agent.api.evals/    # List/, Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/, Replies/,
+demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/  # Cook/, Recipes/, RecipesLong/ and Routing/, Checks/, Readers/ (Puls's readers)
+demos/puls/evals/LouisAgent.Identities.Puls.Judges/       # meal-for-people, PulsJudges
+demos/puls/hosts/LouisAgent.PulsEvalRunner/           # Puls's runner program: PulsCatalogs
+demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals/Evals/  # Sorter/, Investigator/, Reviewer/
+demos/louis-agent/hosts/LouisAgent.CodingEvalRunner/  # the coding demo's runner program, the general checks only
+packs/evals/LouisAgent.Packs.WhereToBuy.Checks/        # the where-to-buy rules
+packs/evals/LouisAgent.Packs.Recipes.Checks/             # recipe-from-source
+src/hosts/LouisAgent.Api.Evals/    # List/, Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/, Replies/,
 │                                   # Drafts/ (Samples/, Transcripts/, Composed/, Store/), Studio/ (DraftFolder, the runner's parts, Publish/),
 │                                   # Endpoints/ (Evals/, Runs/, Reviews/, Drafts/, Studio/ with Promptfoo/)
-src/web/louis-agent.web.evals/      # Pages/ (Building/ with EvalStudio and Prompts, Running/, Reviewing/), Components/ (the portal's pages; Studio/),
+src/web/LouisAgent.Web.Evals/      # Pages/ (Building/ with EvalStudio and Prompts, Running/, Reviewing/), Components/ (the portal's pages; Studio/),
                                     # Admin/ (the plain classes; Studio/ with Compose/ and Schema/)
 ```
 

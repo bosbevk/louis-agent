@@ -17,10 +17,10 @@ picks of that day, each of three options after research:
 
 **What was looked up.** `demos/puls` holds 787 tracked files and 20 projects in the solution; nothing outside it
 references it, and nothing in the framework references the three packs that move. But it also holds what is the
-framework's: the API's own tests (`louis-agent.api.tests`, `.api.evals.tests`, `.api.integration-tests`,
-`.api.standin`, `.api.testing`, which test `src/hosts/louis-agent.api`), the Azure deploy that releases the two sites
+framework's: the API's own tests (`LouisAgent.Api.Tests`, `.api.evals.tests`, `.api.integration-tests`,
+`.api.standin`, `.api.testing`, which test `src/hosts/LouisAgent.Api`), the Azure deploy that releases the two sites
 (`deploy/azure/deploy.ps1`, its README and architecture, the Bicep build under `config/azure`), the deploy's tests in
-`louis-agent.puls.tests`, and the workflow `deploy-puls.yml`, which releases only the two sites. `host-packs` is the
+`LouisAgent.Puls.Tests`, and the workflow `deploy-puls.yml`, which releases only the two sites. `host-packs` is the
 one project that knows every pack. The `puls` repository exists, empty but for an Apache 2.0 licence. The framework is
 not published as packages yet (the TODO's known limitations).
 

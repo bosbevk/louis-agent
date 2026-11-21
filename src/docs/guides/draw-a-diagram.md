@@ -1,7 +1,7 @@
 # Draw a diagram
 
 > **How-to.** Put a picture in a doc: write its JSON beside the doc, draw it with the tool, link it, and let the test
-> hold it. **Elsewhere:** how the drawing works in [louis-agent.diagrams](../projects/louis-agent.diagrams.md); why a
+> hold it. **Elsewhere:** how the drawing works in [LouisAgent.Diagrams](../projects/LouisAgent.Diagrams.md); why a
 > diagram is data in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) and
 > [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
@@ -29,7 +29,7 @@ draws, byte for byte, so a hand edit fails it.
 ### Where the file goes, and what every file has
 
 Put the file in `diagrams/` next to the doc, and name it for what it shows. The overview of core's design doc is
-`src/docs/projects/diagrams/louis-agent.core.json`.
+`src/docs/projects/diagrams/LouisAgent.Core.json`.
 
 Every file has the same things at the top.
 
@@ -92,11 +92,11 @@ The seven parts below take one kind each. Each starts with a whole example, then
 ```json
 {
   "kind": "cards",
-  "title": "louis-agent.core at a glance",
+  "title": "LouisAgent.Core at a glance",
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "core", "icon": "chip", "title": "The engine", "code": "louis-agent.core", "look": "highlight",
+        { "id": "core", "icon": "chip", "title": "The engine", "code": "LouisAgent.Core", "look": "highlight",
           "text": "Everything that makes an agent an agent." }
       ] },
       { "cards": [
@@ -179,7 +179,7 @@ A flow is boxes and arrows on the row grid of [ADR 0103](../adr/0103-a-diagram-i
       { "from": "chat", "to": "engine", "word": "StreamPromptAsync", "style": "dashed" }
     ],
     "direction": "down",
-    "groups": [ { "id": "cli", "label": "louis-agent.cli" } ]
+    "groups": [ { "id": "cli", "label": "LouisAgent.Cli" } ]
   }
 }
 ```
@@ -245,7 +245,7 @@ A sequence names its participants first, then its steps.
 ```json
 {
   "kind": "sequence",
-  "title": "louis-agent.cli: one line typed",
+  "title": "LouisAgent.Cli: one line typed",
   "caption": "One line, two ways: a command is answered with no model, a message streams from the engine.",
   "sequence": {
     "participants": [
@@ -379,7 +379,7 @@ thing, parts and the calls between them, and is a `flow` whose type is `componen
   "title": "The showroom's start: what it is made of",
   "caption": "One thing held: which demo is forward. The deck and the dock are told it, and each says back what a visitor asked for.",
   "nested": {
-    "subtitle": "louis-agent.web, Components / Site / Showroom / Start",
+    "subtitle": "LouisAgent.Web, Components / Site / Showroom / Start",
     "root": {
       "id": "start", "name": "ShowroomStart", "kind": "component", "tone": "green",
       "state": {
@@ -485,7 +485,7 @@ question is what a single class is made of, and how what it is asked reaches the
   "composite": {
     "name": "AgentEngine",
     "kind": "class",
-    "aside": "louis-agent.core, Agent",
+    "aside": "LouisAgent.Core, Agent",
     "tone": "green",
     "parts": [
       { "id": "turns", "type": "TurnRunner", "role": "turns", "note": "one turn on the pipeline" },
@@ -602,7 +602,7 @@ a part the class doesn't have.
 ## Step 2: draw it
 
 ```bash
-dotnet run --project src/tools/louis-agent.doc-diagrams
+dotnet run --project src/tools/LouisAgent.DocDiagrams
 ```
 
 The tool draws every `diagrams/*.json` under `src/docs`, `packs/docs` and each demo's folder. It writes only the
@@ -622,7 +622,7 @@ Swap the block by hand. Then give the JSON its title, caption, icons and tones.
 In the doc, link the SVG as a markdown image. Its alt text says what the picture shows:
 
 ```markdown
-![The engine, and its parts: the loop and the guards](diagrams/louis-agent.core.svg)
+![The engine, and its parts: the loop and the guards](diagrams/LouisAgent.Core.svg)
 ```
 
 **Which pictures a project doc shows.** A project's kind decides the least its doc shows, and the doc names what
@@ -630,7 +630,7 @@ it shows beyond that. The doc's opening quote says both: its kind as the first w
 what it adds in a line of its own, by the names a picture's `type` has:
 
 ```markdown
-> **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/louis-agent.api/` · …
+> **Kind:** host (a library, ASP.NET Core minimal API) · **Path:** `src/hosts/LouisAgent.Api/` · …
 > **Also shows:** `component`
 ```
 
@@ -665,13 +665,13 @@ Each picture stands beside the text it explains, inside *How it works* or the pa
 have an component diagram in their documentation", and of one picture for a whole project: "of it's main
 components? plural"). Each of its main components gets a `nested` picture of its own, since one picture is
 of one component: a frame, a page that is put together from parts, a part others are built on. Name each
-`{project}-components-{what}`, such as `louis-agent.web-components-showroom-start`, and put it beside the part
+`{project}-components-{what}`, such as `LouisAgent.Web-components-showroom-start`, and put it beside the part
 of *How it works* that tells of that component.
 
 ## Step 4: check it
 
 ```bash
-dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
+dotnet test src/tests/tools/LouisAgent.DocDiagrams.Tests
 ```
 
 `DocsDiagramsTests` fails when a picture isn't what its JSON draws, when no doc shows a picture, or when a doc shows
@@ -691,4 +691,4 @@ Dark and Light switch instead, since the tool writes a rule for each. A chart wi
 Commit the JSON and the SVG together.
 
 ---
-[Docs index](../README.md) · Related: [Guides](README.md) · [louis-agent.diagrams](../projects/louis-agent.diagrams.md)
+[Docs index](../README.md) · Related: [Guides](README.md) · [LouisAgent.Diagrams](../projects/LouisAgent.Diagrams.md)

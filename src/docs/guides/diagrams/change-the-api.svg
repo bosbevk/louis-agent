@@ -230,8 +230,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 16l0 .01" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">The API</text>
-      <rect class="mrq-pill" x="385" y="108" width="126" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">louis-agent.api</text>
+      <rect class="mrq-pill" x="388.4" y="108" width="119.2" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">LouisAgent.Api</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">Sessions over HTTP, their answers streamed as Server-Sent Events.</text>
       <rect class="mrq-glass" x="0" y="222" width="207.5" height="142" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />

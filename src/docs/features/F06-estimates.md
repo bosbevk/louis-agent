@@ -47,7 +47,7 @@ budgets (F7) can stop a fix before it starts rather than halfway.
 
 ## Design
 
-New, in `louis-agent.core/usage/`:
+New, in `LouisAgent.Core/usage/`:
 
 | Type | Responsibility |
 |---|---|

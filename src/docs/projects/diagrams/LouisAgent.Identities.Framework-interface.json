@@ -1,0 +1,60 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Identities.Framework: the interface design",
+  "caption": "One class and two lists: who it is and the packs it may use, each list an enum so a name can't be misspelt, and its prompts as embedded files.",
+  "classes": {
+    "types": [
+      {
+        "id": "identity",
+        "name": "FrameworkIdentity",
+        "members": [
+          "+Name \"louis-agent-framework\"",
+          "+DefaultVoice \"louis-agent-framework/voice\"",
+          "+Prompts (embedded)",
+          "+Packs",
+          "+EndsEachAnswerWith \"Offer\"",
+          "+StopsOn \"Stop here\""
+        ]
+      },
+      {
+        "id": "iidentity",
+        "name": "IAgentIdentity",
+        "kind": "interface, LouisAgent.Composition",
+        "tone": "violet"
+      },
+      {
+        "id": "name",
+        "name": "FrameworkIdentityName",
+        "kind": "enum",
+        "members": [
+          "LouisAgentFramework"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "FrameworkPack",
+        "kind": "enum",
+        "members": [
+          "Docs Site"
+        ]
+      },
+      {
+        "id": "prompts",
+        "name": "prompts/agent/louis-agent-framework/",
+        "kind": "embedded content",
+        "tone": "amber",
+        "members": [
+          "voice.md",
+          "skills/site-pages.md, writing.md (always)",
+          "skills/walk-a-page.md, explain-code.md, docs-map.md"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "identity", "to": "iidentity", "kind": "implements" },
+      { "from": "identity", "to": "name", "kind": "uses" },
+      { "from": "identity", "to": "packs", "kind": "uses" },
+      { "from": "identity", "to": "prompts", "kind": "holds" }
+    ]
+  }
+}

@@ -26,7 +26,7 @@ Before the plan was written, seven choices were put to Louis, and one was change
 | How a theme reaches every component | A theme is only values. Components keep one set of rules and read named values. |
 | Who picks, and where it is kept | The visitor picks both the theme and the style, and the browser remembers ("we should just have the user pick, I mean we are running framework we also advertise", "the user picks and the browser rememebrs"). This replaced an admin switch with a file on the host. |
 | What a first visit gets | Glass, light, whatever the device's own setting is. |
-| What the packages are | `src/web/louis-agent.web.theme.glass` and `src/web/louis-agent.web.theme.flat`, areas a site opts into. The contract is in `louis-agent.web`, which is what "core.web" meant. |
+| What the packages are | `src/web/louis-agent.web.theme.glass` and `src/web/louis-agent.web.theme.flat`, areas a site opts into. The contract is in `LouisAgent.Web`, which is what "core.web" meant. |
 | The mark | It follows the theme: the glass ball in glass, the flat disc in flat. The flat disc always for the tab icon, the app icon and the share card, which change in F151.6 with the site. |
 | The purple | Ultraviolet for both themes, and the diagrams' violet follows. |
 | The other sites | Every site on the framework gets the themes. Code-review's own picker is replaced by the framework's, with retro kept as that demo's third theme. Puls keeps its brand colours on top and only has to build and stay green. |
@@ -49,7 +49,7 @@ visitor and an admin get the same two switches and nothing more.
 ### 2. A theme is only values
 
 Today the framework's web has one look. Its colours are named once, in `Styles/web/settings/_colours.scss`, and
-almost every component already reads those names: of the 115 stylesheets in `louis-agent.web` only two name a raw
+almost every component already reads those names: of the 115 stylesheets in `LouisAgent.Web` only two name a raw
 colour, and none of the 77 in the accounts and evals libraries do. The shared tools in `Styles/web/tools/` draw a
 frame, a card and a field from the same names. The repo already says how a site makes a look of its own, in
 `tools/_themed.scss`: by setting values, never by copying a rule.
@@ -131,7 +131,7 @@ Every route we have today is in this plan. There are 40.
 | louis-agent.dev, the showroom | `/demos`, `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`, `/triage-demo`, `/coding-agent` | F151.6, recorded again in F151.8 |
 | louis-agent.dev, the framework | the eight under `/framework/`, and `/csharp-ai-agent-framework` | F151.6, their pictures in F151.7 |
 | louis-agent.dev, the CV | `/cv`, `/admin/resume` | F151.6 |
-| The admin, in `louis-agent.web` | `/admin`, `/admin/overview`, `/admin/packs`, `/admin/imports`, `/admin/screens/{Name}`, `/admin/screens/{Name}/rows/{Id}`, and the page for an address nothing answers | F151.4 |
+| The admin, in `LouisAgent.Web` | `/admin`, `/admin/overview`, `/admin/packs`, `/admin/imports`, `/admin/screens/{Name}`, `/admin/screens/{Name}/rows/{Id}`, and the page for an address nothing answers | F151.4 |
 | The account pages | `/login`, `/register`, `/profile`, `/confirm-email`, `/forgot-password`, `/reset-password` | F151.5 |
 | The eval studio | `/admin/evals`, `/admin/review`, `/admin/studio`, `/admin/prompts`, `/admin/runs/{RunId}` | F151.5 |
 
@@ -139,11 +139,11 @@ And every component. The counts are components and stylesheets, as they are on `
 
 | Project | Its families | Components / stylesheets | Child |
 |---|---|---|---|
-| `louis-agent.web` | Site 34/26, Chat 24/18, Admin 8/7, Widget 8/7, Screens 7/5, Staging 7/7, Editing 7/7, Blocks 4/4, Paper 2/1, Graphs, Icons, Imports and Recorded one each, Layout and Pages 7/3 | 117 / 115 | F151.4 |
-| `louis-agent.web.accounts` | the account pages and their parts | 24 / 6 | F151.5 |
-| `louis-agent.web.evals` | the eval studio | 82 / 71 | F151.5 |
+| `LouisAgent.Web` | Site 34/26, Chat 24/18, Admin 8/7, Widget 8/7, Screens 7/5, Staging 7/7, Editing 7/7, Blocks 4/4, Paper 2/1, Graphs, Icons, Imports and Recorded one each, Layout and Pages 7/3 | 117 / 115 | F151.4 |
+| `LouisAgent.Web.Accounts` | the account pages and their parts | 24 / 6 | F151.5 |
+| `LouisAgent.Web.Evals` | the eval studio | 82 / 71 | F151.5 |
 | the packs' views, `packs/web` | a pack's own screens | 19 / 3 | F151.5 |
-| `louis-agent.site` | Components 41/11, Pages 20/1, Admin 5/3, Layout 3, Errors 1 | 72 / 29 | F151.6 |
+| `LouisAgent.Site` | Components 41/11, Pages 20/1, Admin 5/3, Layout 3, Errors 1 | 72 / 29 | F151.6 |
 | code-review, Puls, the starter | each site's own few | 9/4, 31/13, 8/2 | F151.5 |
 
 ### 7. The names a theme sets
@@ -174,28 +174,28 @@ Today `src/web` holds five projects.
 
 ```
 src/web/
-  louis-agent.web/             the framework's web
-  louis-agent.web.accounts/    the account pages, a site opts in
-  louis-agent.web.evals/       the eval studio's pages, a site opts in
-  louis-agent.diagrams/
-  louis-agent.diagrams.engine/
+  LouisAgent.Web/             the framework's web
+  LouisAgent.Web.Accounts/    the account pages, a site opts in
+  LouisAgent.Web.Evals/       the eval studio's pages, a site opts in
+  LouisAgent.Diagrams/
+  LouisAgent.Diagrams.Engine/
 ```
 
 After F151.2 it holds seven, and `src/tests/web` two more test projects beside the three it has.
 
 ```
 src/web/
-  louis-agent.web/
+  LouisAgent.Web/
     Components/Areas/Themes/   SiteTheme, SiteStyle, SiteLook            (F151.1)
     Components/Site/Looks/     LookSwitch, in every site's header        (F151.3)
     Styles/web/settings/       _colours.scss, _surfaces.scss             (F151.1)
     Styles/web/tools/          _surface.scss, read by every pane         (F151.4)
   louis-agent.web.theme.glass/ GlassTheme.cs, Styles/theme-glass/        (F151.2)
   louis-agent.web.theme.flat/  FlatTheme.cs, Styles/theme-flat/          (F151.2)
-  louis-agent.web.accounts/
-  louis-agent.web.evals/
-  louis-agent.diagrams/
-  louis-agent.diagrams.engine/
+  LouisAgent.Web.Accounts/
+  LouisAgent.Web.Evals/
+  LouisAgent.Diagrams/
+  LouisAgent.Diagrams.Engine/
 src/tests/web/
   louis-agent.web.theme.glass.tests/                                     (F151.2)
   louis-agent.web.theme.flat.tests/                                      (F151.2)
@@ -207,12 +207,12 @@ This is the parent's map, of the types the children share. Each child's plan has
 
 | Type | Folder | Namespace | Child |
 |---|---|---|---|
-| `SiteTheme`, `SiteStyle`, `SiteLook` | `src/web/louis-agent.web/Components/Areas/Themes/` | `LouisAgent.Web.Components.Areas.Themes` | F151.1 |
-| `SiteArea.Theme`, `SiteAreas.Themes`, `SiteAreas.DefaultTheme` | `src/web/louis-agent.web/Components/Areas/` | `LouisAgent.Web.Components.Areas` | F151.1 |
-| `ThemeSheet` | `src/tests/web/louis-agent.web.testing/Styles/` | `LouisAgent.Web.Testing.Styles` | F151.1 |
+| `SiteTheme`, `SiteStyle`, `SiteLook` | `src/web/LouisAgent.Web/Components/Areas/Themes/` | `LouisAgent.Web.Components.Areas.Themes` | F151.1 |
+| `SiteArea.Theme`, `SiteAreas.Themes`, `SiteAreas.DefaultTheme` | `src/web/LouisAgent.Web/Components/Areas/` | `LouisAgent.Web.Components.Areas` | F151.1 |
+| `ThemeSheet` | `src/tests/web/LouisAgent.Web.Testing/Styles/` | `LouisAgent.Web.Testing.Styles` | F151.1 |
 | `GlassTheme` | `src/web/louis-agent.web.theme.glass/` | `LouisAgent.Web.Theme.Glass` | F151.2 |
 | `FlatTheme` | `src/web/louis-agent.web.theme.flat/` | `LouisAgent.Web.Theme.Flat` | F151.2 |
-| `LookSwitch` | `src/web/louis-agent.web/Components/Site/Looks/` | `LouisAgent.Web.Components.Site.Looks` | F151.3 |
+| `LookSwitch` | `src/web/LouisAgent.Web/Components/Site/Looks/` | `LouisAgent.Web.Components.Site.Looks` | F151.3 |
 
 ### 10. What is reused
 
@@ -231,14 +231,14 @@ Nothing here needs a new package from outside.
 
 ### 11. The rules and tests that reach this work
 
-These run against what the children change, so no step should be surprised by one. In `louis-agent.web.tests`:
+These run against what the children change, so no step should be surprised by one. In `LouisAgent.Web.Tests`:
 `BaseColoursTests` holds the framework's own colours to greys and five accents, which is why the themes' colours
 live in their own packages and not in `_colours.scss`; `FrameworkStylesTests` and `ScopedStylesTests` hold the
 shared sheets and the scoped ones; `SitesNameTheirAreasTests` and `SiteLinkCardTests` hold each site's program
 and its `index.html`. Puls's `SiteColoursTests` makes Puls set every name the framework does, so every new name
 needs a Puls value in the same step. Code-review's `ThemeTests` holds its two themes until F151.5 replaces them.
 The film export keeps a hash of each film's own files, so a film whose styles change is exported again, in
-F151.8. In `louis-agent.core.tests`, `SolutionLayoutTests`, `ArchitectureTests` and the size rules hold the two
+F151.8. In `LouisAgent.Core.Tests`, `SolutionLayoutTests`, `ArchitectureTests` and the size rules hold the two
 new projects. A demo's website must say what its recording was sent, so the three businesses' pages are not
 reworded here, only restyled, and their recordings are made again at the end.
 
@@ -257,10 +257,10 @@ admin, the overview, the packs, the accounts and the evals, so every page the fr
 
 | Child | What it delivers | Done when |
 |---|---|---|
-| [F151.1 The theme contract](F151.1-the-theme-contract.md) | `louis-agent.web` knows what a theme and a style are: the types, the slot on an area, the surface names, the script that applies what the browser remembers, and a helper that holds a theme to the names. | A site can name a theme, a page's `<html>` says its style, a test can say which names a theme leaves unset, and no page looks different. |
+| [F151.1 The theme contract](F151.1-the-theme-contract.md) | `LouisAgent.Web` knows what a theme and a style are: the types, the slot on an area, the surface names, the script that applies what the browser remembers, and a helper that holds a theme to the names. | A site can name a theme, a page's `<html>` says its style, a test can say which names a theme leaves unset, and no page looks different. |
 | [F151.2 The two packages](F151.2-the-two-packages.md) | The two projects, each with its dark and its light values taken from the mockups, and the mark's values. The starter names both. | Setting the two attributes by hand turns the starter into each of the four looks, as far as today's components read the names, each theme's test finds no name unset, and louis-agent.dev is unchanged. |
 | [F151.3 The two switches](F151.3-the-two-switches.md) | `LookSwitch` in the header of every site, drawn by the frame itself, with the choice remembered and other tabs following. | On the starter a visitor switches theme and style on any page with no reload, and a new visit opens the same way before the first paint. A site that names no theme shows no switch. |
-| [F151.4 The framework's components](F151.4-the-frameworks-components.md) | The shared tools draw every pane, bar and button from the surface names, and each family in `louis-agent.web` uses them: the site's parts, the widget and the mark, the chat, the admin and its screens, the staging and the rest. | Every component of `louis-agent.web` is right in all four looks, a rule test finds no surface drawn by hand, and the admin's seven routes are checked by eye. |
+| [F151.4 The framework's components](F151.4-the-frameworks-components.md) | The shared tools draw every pane, bar and button from the surface names, and each family in `LouisAgent.Web` uses them: the site's parts, the widget and the mark, the chat, the admin and its screens, the staging and the rest. | Every component of `LouisAgent.Web` is right in all four looks, a rule test finds no surface drawn by hand, and the admin's seven routes are checked by eye. |
 | [F151.5 The libraries and the other sites](F151.5-the-libraries-and-the-other-sites.md) | The account pages, the eval studio and the packs' views. The starter, which is also the template `dotnet new` makes a site from, code-review with retro as a third theme and its own picker gone, and Puls with its brand on top. | The eleven account and eval routes are right in all four looks, and the three other sites build and their tests pass. |
 | [F151.6 louis-agent.dev's pages](F151.6-louis-agent-devs-pages.md) | The site names its themes and its 22 routes take the new design: the name with the mark as its o, the header and footer across the window, the pages in five groups, the phone layouts, and the flat disc as the tab icon, app icon and share card with the brand guide rewritten. Its pull request turns the live site over. | Each of the 22 routes is checked beside its mockup, in all four looks, at 1920 by 1080 and at a phone's width. |
 | [F151.7 The pictures follow](F151.7-the-pictures-follow.md) | The docs' diagrams and the cards the agent draws follow the page's style where they follow the device's setting today, and their violet becomes Ultraviolet. | A picture on a page turns with the Dark and Light switch, and every drawn picture in the docs is redrawn by the tool. |
@@ -308,7 +308,7 @@ may grow in F151.4, where a name is always added in the framework first.
 
 **The themes share one project** (Louis, 2026-11-15, during F151.2: "we should only have one project called themes
 and add them there not seperately"). In place of `louis-agent.web.theme.glass` and `louis-agent.web.theme.flat`,
-both themes live in `src/web/louis-agent.web.themes`, a folder each, with one test project beside the others in
+both themes live in `src/web/LouisAgent.Web.Themes`, a folder each, with one test project beside the others in
 `src/tests/web`. F151.2's plan has the layout, and rule 5 of ADR 0124 says so.
 
 **Glass becomes crystal, and every state is light** (Louis, 2026-11-15, of the glass theme drawn again as SVG:

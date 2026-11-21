@@ -1,0 +1,69 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Packs.Site: the interface design",
+  "caption": "Tools that move and draw nothing: they check what the agent wrote and say it is shown, and the widget that reads the call does the moving and the drawing.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "SitePack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+Toolsets: site, always on"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "SiteTools",
+        "kind": "the tool that moves the page",
+        "members": [
+          "+ShowPage(path) string"
+        ]
+      },
+      {
+        "id": "cards",
+        "name": "CardTools",
+        "kind": "the tools that draw",
+        "members": [
+          "+ShowCard(kicker, title, rows, subtitle?, status?, note?) string",
+          "+Offer(question, choices) string, ends the turn",
+          "+AskFor(question, fields) string, ends the turn"
+        ]
+      },
+      {
+        "id": "checks",
+        "name": "CardCheck, OfferCheck, FormCheck",
+        "kind": "the library's rules, a tested duplicate",
+        "members": [
+          "+Problem(...) string?"
+        ]
+      },
+      {
+        "id": "messages",
+        "name": "SiteToolMessage",
+        "kind": "enum, shown, or Error with the reason"
+      },
+      {
+        "id": "guide",
+        "name": "prompts/toolsets/site.md",
+        "kind": "when to move, show a card or offer",
+        "tone": "amber"
+      },
+      {
+        "id": "web",
+        "name": "CardCall, OfferCall, AskForCall",
+        "kind": "LouisAgent.Web, the widget draws",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "pack", "to": "cards", "kind": "creates" },
+      { "from": "pack", "to": "guide", "kind": "holds" },
+      { "from": "cards", "to": "checks", "kind": "uses" },
+      { "from": "tools", "to": "messages", "kind": "uses" },
+      { "from": "cards", "to": "messages", "kind": "uses" },
+      { "from": "web", "to": "cards", "kind": "uses", "word": "reads each call" }
+    ]
+  }
+}

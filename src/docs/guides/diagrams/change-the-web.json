@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "web", "icon": "stack", "title": "The framework's web", "code": "louis-agent.web", "look": "highlight",
+        { "id": "web", "icon": "stack", "title": "The framework's web", "code": "LouisAgent.Web", "look": "highlight",
           "text": "The Razor class library every site is built on." }
       ] },
       { "cards": [
@@ -16,7 +16,7 @@
       ] },
       { "cards": [
         { "id": "styles", "icon": "settings", "title": "Styles and scripts", "text": "Beside their component, or shared under Styles/web/ and wwwroot/js/." },
-        { "id": "accounts", "icon": "users", "title": "The account pages", "code": "louis-agent.web.accounts", "text": "An area a site names." }
+        { "id": "accounts", "icon": "users", "title": "The account pages", "code": "LouisAgent.Web.Accounts", "text": "An area a site names." }
       ] }
     ],
     "links": [

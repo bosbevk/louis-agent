@@ -81,7 +81,7 @@ The routes, behind the admin key:
   its own ADR.
 - A promptfoo file with JavaScript or Python asserts loses them on import, by name: .NET has no in-process sandbox, so
   a script is never run (F49's parent plan); a new check is a reviewed catalogue entry (ADR 0056).
-- The runner's command line grew five commands; each is tested in `louis-agent.evals.runner.tests`, and the API's
+- The runner's command line grew five commands; each is tested in `LouisAgent.Evals.Runner.Tests`, and the API's
   side with a stand-in runner function.
 
 ## Links

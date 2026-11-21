@@ -3,7 +3,7 @@
 > **Kind:** test projects (NUnit, with bUnit for components) · **Paths:** the framework's in `src/tests/`, grouped
 > like `src/` (`engine/`, `hosts/`, `evals/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
 > (`demos/puls/tests/`, `demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
-> shared fakes in `src/tests/shared/louis-agent.testing/` and, for the web apps, `src/tests/web/louis-agent.web.testing/`
+> shared fakes in `src/tests/shared/LouisAgent.Testing/` and, for the web apps, `src/tests/web/LouisAgent.Web.Testing/`
 > (class libraries) · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 > **Also shows:** `package`, `sequence`
 
@@ -50,7 +50,7 @@ when they match, and fails when they differ. When a change is meant, you write t
 
 ### 3. What the test projects share
 
-`src/tests/shared/louis-agent.testing` is a class library, not a test project. It holds the fakes and paths every test
+`src/tests/shared/LouisAgent.Testing` is a class library, not a test project. It holds the fakes and paths every test
 project shares: `FakeChatClient`, `FailingStreamClient`, `StubHandler`, `ListUsageSink`, `FakePrompts`,
 `FakeIdentity`, `FakePack`, `TestPaths` and more, and under `Replay/` the web's fakes, `FakeBrowser` and
 `CountingSearch`. Each test project that uses them has a global using for it.
@@ -58,7 +58,7 @@ project shares: `FakeChatClient`, `FailingStreamClient`, `StubHandler`, `ListUsa
 No test project references another test project. `ArchitectureTests` holds that (`NoTestProject_LeansOnCoresTests`).
 `InternalsVisibleTo` gives the test projects access to the `internal` types in core and the orchestrator.
 
-`louis-agent.testing` also has neutral sample names (`SampleToolset`, `SampleMode`, `SampleEval`, `SampleRole`,
+`LouisAgent.Testing` also has neutral sample names (`SampleToolset`, `SampleMode`, `SampleEval`, `SampleRole`,
 `SampleIdentity`, `SampleScenario`, with `Fill` for a test's JSON), for a test that only stores, shows or parses a
 name. A test that needs the real name uses its owner's enum member.
 
@@ -66,7 +66,7 @@ And it has `Outside`, which is how an integration test asks for the outside worl
 your own machine, but fails it where `INTEGRATION_REQUIRED` is set, which is CI. `Stack` always skips a missing
 Puls-stack address.
 
-`src/tests/hosts/louis-agent.api.testing` is a library too. It holds the in-memory API host, the built runner, the
+`src/tests/hosts/LouisAgent.Api.Testing` is a library too. It holds the in-memory API host, the built runner, the
 stand-in dlls and the store contracts. Each is written once, and runs against memory in the unit tests and against
 Mongo in the integration tests.
 
@@ -82,9 +82,9 @@ few tests skip themselves when an outside tool, such as git or a live network, i
 
 ### 5. Core's own tests
 
-Core's tests mirror `louis-agent.core`'s folders, and each test's namespace is its folder, such as
+Core's tests mirror `LouisAgent.Core`'s folders, and each test's namespace is its folder, such as
 `LouisAgent.Core.Tests.Agent.Turns`. The tools' tests aren't here: each pack has its own, in `packs/tests/`. And each
-model provider has its own project, such as `louis-agent.core.anthropic.tests`. *Structure* lists the folders.
+model provider has its own project, such as `LouisAgent.Core.Anthropic.Tests`. *Structure* lists the folders.
 
 Core's tests also hold the ratchets that keep the whole repo in shape. A ratchet is a test with a list of today's
 exceptions that may only shrink: a new offender fails it, and so does a listed one that's fixed and not taken off.
@@ -110,7 +110,7 @@ The API's tests prove the framework's API, so they run on the framework alone. N
 in them. They sit in `src/tests/hosts/` beside the other hosts' tests, and a rule test, `TestsNameNoProductTests`,
 reads each of their project files and fails on a reference to a demo or to a pack that belongs to one.
 
-The agent they talk to is made up. `TestAgent`, in `louis-agent.api.testing`, is an identity called `testagent`
+The agent they talk to is made up. `TestAgent`, in `LouisAgent.Api.Testing`, is an identity called `testagent`
 with the shape a real one has: two language voices that share a routing voice, a specialist whose role adds the web
 and the calculator, a reader that adds nothing of its own, and two minions on a shared base. Its prompts are held in
 memory, each with the header the engine reads from a real file. Its packs are fakes under the real packs' names,
@@ -124,14 +124,14 @@ it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a sp
 under the specialist it asked, is refused.
 
 Some API tests start a real child process where the eval runner would be. Two programs are built for that, each with
-a project reference that brings no assembly. `src/tests/hosts/louis-agent.api.standin` stands in for the runner. It's
+a project reference that brings no assembly. `src/tests/hosts/LouisAgent.Api.StandIn` stands in for the runner. It's
 a small console app, not a test project, and the check's id picks what it does: print its arguments, dump the names
-in its environment, stream lines, fail, sleep, or never read its stdin. `louis-agent.api.test-runner` is the real
+in its environment, stream lines, fail, sleep, or never read its stdin. `LouisAgent.Api.TestRunner` is the real
 runner with the harness's general checks only. It copies the framework's template eval beside it, so its listing
 gives the built-in `stub` and `template-example`, and the integration tests read a file eval's identity, dataset and
 graders from it.
 
-The eval studio's API has its own project, `louis-agent.api.evals.tests`. Its scenario and draft tests need an eval
+The eval studio's API has its own project, `LouisAgent.Api.Evals.Tests`. Its scenario and draft tests need an eval
 with more in it than the template has. `SampleEvalWorkspace` writes one into a temporary workspace for each test
 class: a dev scenario with a follow-up, an expected budget and shop, and its categories, a held-out scenario, and the
 name of one that isn't there. It writes the files through the same records the API reads them with.
@@ -147,7 +147,7 @@ records. `OrchestratorTests` covers the built-in workflow and the runbooks on di
 for a method with no runbook, the tools' logs on stderr, and a run that only the user's stop ends. `Comms/`, `Tools/`
 and `Triage/` hold the comms log and its usage line, the service repository and state files, and the decisions.
 
-The checks against a real git repository are in `louis-agent.orchestrator.integration-tests`: a fix's commit
+The checks against a real git repository are in `LouisAgent.Orchestrator.IntegrationTests`: a fix's commit
 verified on its branch, and a run that returns to main whatever a fix left behind. They need git, and skip without
 it.
 
@@ -172,9 +172,9 @@ the Puls golden `PulsSessionSnapshot.json`). Its evals and their checks have tes
 `Evals/Checks/`, with each check run on hand-cut answers, plus the cook's dataset, ids and conformance. The cook
 scenarios' ids are test constants in `PulsCookScenarioIds`, because an id is data, not an enum. `PulsIdsTests` holds
 each one to its dataset, and `RepeatedNameTests` lists that file and skips only that class. The judge's tests are in
-`louis-agent.identity.puls.judges.tests`. The coding agent's catalogue has `louis-agent.coding-catalog.tests`, which
+`LouisAgent.Identities.Puls.Judges.Tests`. The coding agent's catalogue has `LouisAgent.Coding.Catalog.Tests`, which
 holds the golden of every text its tools return to the model (`ToolMessageSnapshotTests`), and the triage team has
-`louis-agent.identity.triage.tests`.
+`LouisAgent.Identities.Triage.Tests`.
 
 The where-to-buy pack's tests read Nominatim's answers from hand-written fixtures in its `jsonv2` shape, and keep the
 shop rules' tests, with their golden (`WhereToBuyToolMessageSnapshot.json`). The shop-prices pack's tests check the
@@ -184,7 +184,7 @@ against a real Mongo in its integration tests.
 The recipes pack's tests read a `Recipe` from recorded pages of sites that allow us (`Recipes/Fixtures/`, trimmed
 copies under 30 KB, never served), and from small inline blocks for the shapes no page shows.
 
-The composition root's tests (`louis-agent.host-packs.tests`) prove that `IDENTITIES` and `PACKS` pick what they
+The composition root's tests (`LouisAgent.HostPacks.Tests`) prove that `IDENTITIES` and `PACKS` pick what they
 should (`PluginsTests`), and that every pack stays convertible to an MCP server (`PackConvertibilityTests`, through
 the MCP SDK's own `McpServerTool.Create`, a test-only package). They also check that every built-in prompt of every
 identity and pack opens with its header, and that its level is its folder's (`EveryPromptHasAHeaderTests`).
@@ -195,8 +195,8 @@ Each of these registers the prompts its identity or pack brings in a `[SetUpFixt
 
 ### 10. The web's and the sites' tests
 
-`louis-agent.web.tests` tests the framework's web. Its plain logic runs on NUnit, in folders that mirror the library:
-`TurnStream` (the recorded turn, kept in `louis-agent.session-stream.tests/Fixtures/`, with a case per event it
+`LouisAgent.Web.Tests` tests the framework's web. Its plain logic runs on NUnit, in folders that mirror the library:
+`TurnStream` (the recorded turn, kept in `LouisAgent.SessionStream.Tests/Fixtures/`, with a case per event it
 folds), `Delegation` and `WorkStatus` (the states a card goes through), `UsageFormat` (priced, unpriced, the display
 currency) and `Markdown` (a table, links, images, raw HTML). Its components run on bUnit, each rendered from the
 recorded turn and held to the `.html` golden beside its test.
@@ -204,16 +204,16 @@ recorded turn and held to the `.html` golden beside its test.
 It also holds the web's rule that a `.razor` file holds markup only. `RazorHasNoCodeTests` scans every `.razor` under
 `src/` for an `@code` block. And under `Rules/` it holds every site to the framework's site rules.
 
-Puls's tests (`louis-agent.puls.tests`) cover only what's Puls's own: its pages, its layout, its words and its styles.
+Puls's tests (`LouisAgent.Puls.Tests`) cover only what's Puls's own: its pages, its layout, its words and its styles.
 They pin `WorkPanel`, `PulsTile` and `TemplateCard`, and render `ChatPage` end to end against a stub API that opens a
 session and streams the recorded turn. The empty page and the page with the turn are each a golden, and the JS calls
 the page makes are listed. Its landing page is a golden too.
 
-The code-review app's tests (`louis-agent.code-review.tests`) pin its chat page the same way, empty and with the turn.
-The starter has its own (`louis-agent.starter.tests`), and `louis-agent.starter.integration-tests` spawns a site the
+The code-review app's tests (`LouisAgent.CodeReview.Tests`) pin its chat page the same way, empty and with the turn.
+The starter has its own (`LouisAgent.Starter.Tests`), and `LouisAgent.Starter.IntegrationTests` spawns a site the
 way `dotnet new louis-site` does.
 
-`src/tests/web/louis-agent.web.testing` holds what they share: the fixture replay, the stub API (`FixtureApi`: fixed
+`src/tests/web/LouisAgent.Web.Testing` holds what they share: the fixture replay, the stub API (`FixtureApi`: fixed
 JSON for what the apps read at start-up, one session, the recorded turn streamed, and the workspace and git reads
 empty), `RecordingJSRuntime`, which lists every JS call, the snapshot helper and `SassStylesheet`. The eval pages, the
 account pages, the docs, the framework's pages, the places, the themes and the diagrams each have a test project of
@@ -239,29 +239,29 @@ the drive letter. And there are `GitRoots` and `JsonRpcWriter`.
 
 ### 12. The eval projects' tests
 
-`louis-agent.evals.tests` tests the harness: the dataset loader (Inspect's Sample shape read strictly, the hash, an
+`LouisAgent.Evals.Tests` tests the harness: the dataset loader (Inspect's Sample shape read strictly, the hash, an
 expected key no grader reads), the common graders, the model grader over Microsoft.Extensions.AI.Evaluation, the
 roll-up, the conformance cases, the label sheet and the calibration, and the protocol writer against its golden.
-`louis-agent.evals.checks.tests` tests the check contract.
+`LouisAgent.Evals.Checks.Tests` tests the check contract.
 
-`louis-agent.evals.protocol.tests` checks that every event round-trips through `EvalProtocolJson`, with `event` first
+`LouisAgent.Evals.Protocol.Tests` checks that every event round-trips through `EvalProtocolJson`, with `event` first
 and the time written with a `Z`, and that a person's line or an unknown event reads as none.
 
-`louis-agent.evals.runner.tests` covers the arguments, the catalogue, the stub eval's run against its golden, the
+`LouisAgent.Evals.Runner.Tests` covers the arguments, the catalogue, the stub eval's run against its golden, the
 conformance of every eval folder, the data files copied beside the assembly, and the template folder
 (`src/evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
 
-`louis-agent.identity.puls.judges.tests` runs Puls's judge `meal-for-people` on a scripted client, and checks the
+`LouisAgent.Identities.Puls.Judges.Tests` runs Puls's judge `meal-for-people` on a scripted client, and checks the
 prompt it sends against its golden, its rubric's hash, its entry and its list.
 
-The runner end to end through the API is `StubCheckTests`, in `louis-agent.api.integration-tests`. A run that costs
+The runner end to end through the API is `StubCheckTests`, in `LouisAgent.Api.IntegrationTests`. A run that costs
 money is never a test: CI grades only recorded transcripts.
 
 *Decided in:* F18.
 
 ## Structure
 
-The folders of `src/tests/engine/louis-agent.core.tests`, to look things up.
+The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 
 | Folder | Covers |
 |---|---|
@@ -289,17 +289,17 @@ The folders of `src/tests/engine/louis-agent.core.tests`, to look things up.
 ## Extending it
 
 The steps are in [Write and run tests](../guides/write-tests.md). In short: the test goes in the folder that mirrors
-the class it tests, with the matching namespace, and it uses the fakes in `src/tests/shared/louis-agent.testing`. A
+the class it tests, with the matching namespace, and it uses the fakes in `src/tests/shared/LouisAgent.Testing`. A
 test that leaves its process goes in an `.integration-tests` project, with the mark. Every step of a plan
 ([src/docs/plans/](../plans/README.md)) names its test.
 
 ## Limits and plans
 
-The orchestrator's whole loop, run against a scripted louis-agent.api, has no test yet.
+The orchestrator's whole loop, run against a scripted LouisAgent.Api, has no test yet.
 
 ## Related docs
 
 [Write and run tests](../guides/write-tests.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.evals.runner](louis-agent.evals.runner.md)
+[Projects](README.md) · Previous: [LouisAgent.Evals.Runner](LouisAgent.Evals.Runner.md)

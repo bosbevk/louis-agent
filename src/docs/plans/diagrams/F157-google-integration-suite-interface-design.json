@@ -55,7 +55,7 @@
       {
         "id": "store",
         "name": "AccountConnections",
-        "kind": "F157.1, in louis-agent.accounts",
+        "kind": "F157.1, in LouisAgent.Accounts",
         "members": [
           "reads the tenant's refresh token from AspNetUserTokens",
           "unprotects it with Data Protection",
@@ -65,7 +65,7 @@
       {
         "id": "connect",
         "name": "ConnectHandlers",
-        "kind": "static, F157.1, in louis-agent.accounts",
+        "kind": "static, F157.1, in LouisAgent.Accounts",
         "members": [
           "StartAsync: to Google's consent, offline, one scope",
           "CallbackAsync: the code for tokens, the refresh token protected and saved"

@@ -79,7 +79,7 @@ other optional keys allowed and ours strict (keys nothing reads).
 TODO's *CL27 Prompt headers* · [0017](0017-skills-by-level.md) · [0018](0018-built-in-prompts-embedded.md) ·
 [0025](0025-a-role-declares-its-toolsets.md) · [0030](0030-build-or-adopt.md) ·
 [0049](0049-nothing-is-compatible-before-a-sale.md) · [write-up 07](../learning/07-context-engineering.md#a-prompt-says-what-it-is-cl27) ·
-[louis-agent.core](../projects/louis-agent.core.md) · the Agent Skills specification · YamlDotNet
+[LouisAgent.Core](../projects/LouisAgent.Core.md) · the Agent Skills specification · YamlDotNet
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

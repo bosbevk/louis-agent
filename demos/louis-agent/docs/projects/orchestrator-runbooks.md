@@ -4,7 +4,7 @@
 > the demo's last run at the [`pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md) (removed in CL10), the design in
 > [the orchestrator spec](../specs/ORCHESTRATOR_DESIGN.md).
 > **Kind:** content (the orchestrator's skill files)
-> · **Path:** `demos/louis-agent/hosts/louis-agent.orchestrator/Skills/`
+> · **Path:** `demos/louis-agent/hosts/LouisAgent.Orchestrator/Skills/`
 > **Also shows:** `class`, `activity`, `sequence`
 
 ![A runbook, and what it can decide: nothing, a fix, or a hand-off](diagrams/orchestrator-runbooks.svg)
@@ -27,10 +27,10 @@ run. "Skill" names the mechanism; "runbook" names what these skills are for.
 ## Where they live
 
 ```
-demos/louis-agent/identity/louis-agent.identity.coding/prompts/agent/louis-agent/
+demos/louis-agent/identity/LouisAgent.Identities.Coding/prompts/agent/louis-agent/
 └── voice-orchestrator.md      the workflow every error goes through (the same for all services; the coding identity's)
 
-demos/louis-agent/hosts/louis-agent.orchestrator/Skills/
+demos/louis-agent/hosts/LouisAgent.Orchestrator/Skills/
 └── order-service/             one folder per watched service, selected with ORCHESTRATOR_SERVICE
     ├── service.md             the service: what it does, owning teams, deploy and payments policy
     ├── order-total.md         one runbook per API method …
@@ -175,11 +175,11 @@ A new method: add `Skills/<service>/<method>.md` from the template. Its file nam
 events carry.
 
 A new service: add `Skills/<service>/service.md` and the method runbooks, and run an orchestrator with
-`ORCHESTRATOR_SERVICE=<service>`, pointed at that service's own louis-agent.api.
+`ORCHESTRATOR_SERVICE=<service>`, pointed at that service's own LouisAgent.Api.
 
 After a change: runbooks are copied into the orchestrator's build, so rebuild it (its image too, if you run it in
 Docker). The next triage uses the new text. `agent-comms.md` shows what the orchestrator decided and what it sent
 louis-agent, which is the quickest way to check a runbook says what you meant.
 
 ---
-[Docs index](../../../../src/docs/README.md) · Previous: [Development guide](../../../../src/docs/CLAUDE.md) · Next: [Puls's web app](../../../puls/docs/projects/louis-agent.puls.md)
+[Docs index](../../../../src/docs/README.md) · Previous: [Development guide](../../../../src/docs/CLAUDE.md) · Next: [Puls's web app](../../../puls/docs/projects/LouisAgent.Puls.md)

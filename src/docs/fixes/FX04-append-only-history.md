@@ -25,7 +25,7 @@ is the `system` prompt, the set of `tools`, and every message before the block; 
 | `/approve <Name>` | The tool's description drops ", pending user approval" (`ScriptTool.Description`) | The next message |
 | `/reject <Name>` | The pending tool is removed from `_tools` | The next message |
 | `ReloadSkills` | `BeginTurn` rewrites `history[0]`, the system prompt | The next message |
-| **Any of the above in another session** | `_tools` belongs to the engine, and louis-agent.api has **one engine for all sessions** (`AddSingleton(host.Engine)`), so one chat's new tool changes every open chat's tool list | Every other open conversation's next request |
+| **Any of the above in another session** | `_tools` belongs to the engine, and LouisAgent.Api has **one engine for all sessions** (`AddSingleton(host.Engine)`), so one chat's new tool changes every open chat's tool list | Every other open conversation's next request |
 
 The first and last rows were found by reading the code (the first from a PR review); none has been seen in a run yet.
 

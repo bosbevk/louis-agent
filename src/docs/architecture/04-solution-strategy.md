@@ -12,7 +12,7 @@ limits), the difference is a strategy behind one interface, `ILlmProvider`. Each
 library, which a program hands in, and `LlmClientFactory` picks the one `LLM_PROVIDER` names
 ([0003](../adr/0003-provider-strategies.md)).
 
-**One core, thin hosts.** All behaviour lives in `louis-agent.core`. Each host (CLI, Rider, web and API, MCP) only maps
+**One core, thin hosts.** All behaviour lives in `LouisAgent.Core`. Each host (CLI, Rider, web and API, MCP) only maps
 the agent's stream to its protocol. Core's folders split by concern, and a test holds the layout
 ([0010](../adr/0010-folders-by-concern.md)).
 

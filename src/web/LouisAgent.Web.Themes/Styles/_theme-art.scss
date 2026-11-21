@@ -1,0 +1,45 @@
+/* The drawings a theme may lay on a piece (F151.4, Louis's pick A of three: a drawing is a value), one for each part
+   and state, as the framework names them --web-art-{drawing}. Written once here, and each theme's sheet sets a value
+   for every one: glass a drawing this project serves, flat none. */
+
+$drawings: (
+    field-focus, field-rest, focus-pane, focus-pill, gem, group, knob,
+    mark, mark-ball, mark-o,
+    pane-hover, pane-picked, pane-rest, pane-showing,
+    press-disabled, press-hover, press-pressed, press-rest,
+    quiet-press-disabled, quiet-press-hover, quiet-press-picked, quiet-press-pressed, quiet-press-rest,
+    slider-fill, slider-track, status, tag-agent, tag-you, tag,
+    toggle-off-disabled, toggle-off, toggle-on-disabled, toggle-on, well
+);
+
+/* Where a page finds this project's files, written from the site's root. A drawing is a value, and a browser reads
+   its address from the sheet of the rule that uses the value: a component's rules are in its library's own sheet,
+   under _content, so an address written from the site's css folder led nowhere from there. */
+$served: "/_content/LouisAgent.Web.Themes/";
+
+/* Every drawing named, each to the file of this theme and style. A browser keeps a drawing for an hour by its
+   address, so the address carries the drawings' version, raised whenever one changes, and every browser fetches the
+   new one (FX189). */
+@mixin drawn($theme, $style, $version) {
+    @each $drawing in $drawings {
+        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg?v=#{$version}");
+    }
+}
+
+/* Every drawing named none: a theme that lays no drawing on any piece. */
+@mixin none() {
+    @each $drawing in $drawings {
+        --web-art-#{$drawing}: none;
+    }
+}
+
+/* Only the marks drawn, the mark, the bar's ball and the name's o, each to the file of this theme and style, and
+   every other drawing none: a theme that lays nothing on its pieces but draws its own mark (FX181, flat). The
+   drawings are kept by a browser for an hour by their address, so the address carries their version: a drawing that
+   changes takes the next one, and every browser fetches it again. */
+@mixin marks-only($theme, $style, $version) {
+    @include none();
+    @each $drawing in (mark, mark-ball, mark-o) {
+        --web-art-#{$drawing}: url("#{$served}#{$theme}/#{$style}/#{$drawing}.svg?v=#{$version}");
+    }
+}

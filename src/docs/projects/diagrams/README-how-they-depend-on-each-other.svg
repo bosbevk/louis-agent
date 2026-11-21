@@ -215,9 +215,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="691.2" y="223" text-anchor="start">What picks the packs</text>
       <text class="pic-name" x="691.2" y="239" text-anchor="start">coding-catalog, host-packs</text>
-      <rect class="pic-panel" x="53.2" y="342" width="187.6" height="68" rx="10" />
-      <rect class="pic-fill tone-violet" x="69.2" y="362" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(75.2 368) scale(0.6667)">
+      <rect class="pic-panel" x="57" y="342" width="180" height="68" rx="10" />
+      <rect class="pic-fill tone-violet" x="73" y="362" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(79 368) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -229,8 +229,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="pic-name" x="105.2" y="373" text-anchor="start">louis-agent.core</text>
-      <text class="pic-name" x="105.2" y="389" text-anchor="start">the engine</text>
+      <text class="pic-name" x="109" y="373" text-anchor="start">LouisAgent.Core</text>
+      <text class="pic-name" x="109" y="389" text-anchor="start">the engine</text>
       <rect class="pic-panel" x="369" y="342" width="180" height="68" rx="10" />
       <rect class="pic-fill tone-green" x="385" y="362" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(391 368) scale(0.6667)">
@@ -251,15 +251,15 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="714" y="373" text-anchor="start">Every pack</text>
       <text class="pic-name" x="714" y="389" text-anchor="start">what an agent can do</text>
-      <rect class="pic-panel" x="338.6" y="470" width="240.8" height="68" rx="10" />
-      <rect class="pic-fill tone-teal" x="354.6" y="490" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(360.6 496) scale(0.6667)">
+      <rect class="pic-panel" x="342.4" y="470" width="233.2" height="68" rx="10" />
+      <rect class="pic-fill tone-teal" x="358.4" y="490" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(364.4 496) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="pic-name" x="390.6" y="501" text-anchor="start">louis-agent.composition</text>
-      <text class="pic-name" x="390.6" y="517" text-anchor="start">the contracts</text>
+      <text class="pic-name" x="394.4" y="501" text-anchor="start">LouisAgent.Composition</text>
+      <text class="pic-name" x="394.4" y="517" text-anchor="start">the contracts</text>
       <circle class="pic-port pic-edge tone-blue" cx="459" cy="116" r="4" />
       <circle class="pic-port pic-edge tone-violet" cx="459" cy="276" r="4" />
       <circle class="pic-port pic-edge tone-blue" cx="147" cy="276" r="4" />

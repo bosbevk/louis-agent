@@ -1,6 +1,6 @@
 # The framework's site's settings
 
-> **Reference.** What `src/site/config/` holds for the framework's website (F124) and its host, `louis-agent.site-api`.
+> **Reference.** What `src/site/config/` holds for the framework's website (F124) and its host, `LouisAgent.SiteApi`.
 > **Elsewhere:** running it in [the site's compose file](../docker/docker-compose.yml), the coding agent's settings in
 > [its demo's config](../../../demos/louis-agent/config/README.md).
 

@@ -1,0 +1,136 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Web.Accounts: the interface design",
+  "caption": "The account pages a site opts into: one area adds them, a client for the accounts API, the state every page reads, and the framework's account corner filled in.",
+  "classes": {
+    "types": [
+      {
+        "id": "area",
+        "name": "AccountArea",
+        "kind": "static, what a site calls",
+        "members": [
+          "+Accounts(areas, layout) SiteAreasBuilder"
+        ]
+      },
+      {
+        "id": "services",
+        "name": "AccountServices",
+        "kind": "static, what the area calls",
+        "members": [
+          "+AddLouisAgentAccounts(services)"
+        ]
+      },
+      {
+        "id": "api",
+        "name": "AccountApi",
+        "kind": "the accounts API over HTTP, with its cookie",
+        "members": [
+          "+MeAsync() AccountInfo?",
+          "+RegisterAsync, LoginAsync, LogoutAsync",
+          "+ConfirmEmailAsync, ForgotPasswordAsync, ResetPasswordAsync",
+          "+UpdateProfileAsync, DeleteAccountAsync, passkeys"
+        ]
+      },
+      {
+        "id": "state",
+        "name": "AccountState",
+        "kind": "who is signed in, for every page"
+      },
+      {
+        "id": "auth",
+        "name": "CookieAuthenticationStateProvider",
+        "kind": "an AuthenticationStateProvider"
+      },
+      {
+        "id": "menu",
+        "name": "AccountMenu"
+      },
+      {
+        "id": "imenu",
+        "name": "IAccountMenu",
+        "kind": "interface, LouisAgent.Web",
+        "tone": "violet"
+      },
+      {
+        "id": "pages",
+        "name": "LoginPage, RegisterPage, ProfilePage, ResetPasswordPage...",
+        "kind": "the pages, in the AccountFrame"
+      },
+      {
+        "id": "text",
+        "name": "AccountText",
+        "kind": "record, a site's own words"
+      },
+      {
+        "id": "contracts",
+        "name": "LouisAgent.Accounts.Contracts",
+        "kind": "the bodies and replies, shared",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "area",
+        "to": "services",
+        "kind": "uses",
+        "word": "calls"
+      },
+      {
+        "from": "services",
+        "to": "api",
+        "kind": "creates"
+      },
+      {
+        "from": "services",
+        "to": "state",
+        "kind": "creates"
+      },
+      {
+        "from": "services",
+        "to": "auth",
+        "kind": "creates"
+      },
+      {
+        "from": "services",
+        "to": "menu",
+        "kind": "creates"
+      },
+      {
+        "from": "state",
+        "to": "api",
+        "kind": "holds"
+      },
+      {
+        "from": "auth",
+        "to": "state",
+        "kind": "holds"
+      },
+      {
+        "from": "menu",
+        "to": "imenu",
+        "kind": "implements"
+      },
+      {
+        "from": "menu",
+        "to": "state",
+        "kind": "holds"
+      },
+      {
+        "from": "pages",
+        "to": "api",
+        "kind": "uses"
+      },
+      {
+        "from": "pages",
+        "to": "text",
+        "kind": "uses",
+        "word": "words from"
+      },
+      {
+        "from": "api",
+        "to": "contracts",
+        "kind": "uses"
+      }
+    ]
+  }
+}

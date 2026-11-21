@@ -16,11 +16,11 @@ open.
 
 - **F43 Accounts, tenants and durable sessions** (skills 9 and 15). Sign-in; a tenant on every session, ledger and audit
   row; a sandbox per tenant for the tools that run code. **Durable sessions:** the session store is built with its
-  MongoDB store (the API already runs one, `src/louis-agent.api/Services/Benchmarks/MongoBenchmarkStore.cs`, with
+  MongoDB store (the API already runs one, `src/LouisAgent.Api/Services/Benchmarks/MongoBenchmarkStore.cs`, with
   `MongoDB.Driver` 3.12.0): a core `SessionRecord` holds the identity, the toolsets, the role, the frozen prompt and
   tools (FX4, Phase 7) and the transcript with its thinking blocks, and `ISessionStore` and a lifecycle enum live in
   core. A restart ends nothing (removes known limitation 2; today sessions live in a dictionary and are dropped after 4
-  hours idle, `src/louis-agent.api/AgentSessions.cs:136,224`); the CLI and Rider resume a session after a restart
+  hours idle, `src/LouisAgent.Api/AgentSessions.cs:136,224`); the CLI and Rider resume a session after a restart
   (`TODO.md:252`), and a user's chats follow them across devices instead of living only in the browser's `localStorage`
   (`TODO.md:244`). Phase 6 B4's spike looks at Microsoft Agent Framework's checkpoints first. **POPIA:** a lawful ground
   for each purpose (s11, consent one of six), purpose (s13), retention (s14), security safeguards (s19), our duties as
@@ -31,7 +31,7 @@ open.
   standards check read them at popia.co.za; not re-read here.)
 - **F8 Reliability** (skill 14; and skill 1's fallback model). Each provider's own retry and timeout settings, as a
   provider strategy (ADR 0003): for example Anthropic's `ClientOptions.MaxRetries` and `Timeout`, which
-  `louis-agent.core/Llm/LlmClientFactory.cs:67-72` sets to neither today, so the SDK retries twice by default (the
+  `LouisAgent.Core/Llm/LlmClientFactory.cs:67-72` sets to neither today, so the SDK retries twice by default (the
   package's docs, as the standards check read them). A fallback model per provider and the stop at the first
   account-limit refusal as `IChatClient` middleware on Microsoft.Extensions.Resilience (Polly v8); because the SDK
   retries a 429 by default, that stop needs its retry setting changed. Microsoft.Extensions.Http.Resilience only on our
@@ -51,7 +51,7 @@ open.
   limitation 8). Each model's capabilities (real tool calls, thinking, whether forcing one tool works, Phase 6 A6)
   measured by a simulation, run free on the local models, and kept as a capability record per model in place of
   name-prefix lists (`ThinkingBudgetModelPrefixes`, `LlmClientFactory.cs:82,88-89`; `KnownNoToolsPrefixes`,
-  `louis-agent.core/Config/LlmOptions.cs:16`), which removes known limitation 3. Takes in F13. **Changed on 2026-10-20
+  `LouisAgent.Core/Config/LlmOptions.cs:16`), which removes known limitation 3. Takes in F13. **Changed on 2026-10-20
   (Louis):** core knows no facts ("the core knows nothing, just to do calcs and when"). The limits and capabilities are
   a model table beside the price table, both loaded only from the file or URL the host names (`PricesUrl`/`PricesFile`,
   `ModelsUrl`/`ModelsFile`), in a JSON layout we define (`prices.schema.json`, `models.schema.json`, each with a
@@ -65,7 +65,7 @@ open.
 - **F44 The engine as a product** (skills 18 and 17). Its first step is F12-S1: `ttft_ms` and tokens per second on every
   ledger record (`docs/features/F12-response-speed.md:15-18`), so speed sits with the cost views that read the same
   records (ADR 0007); the ledger has `DurationMs` today but no time to the first token
-  (`louis-agent.core/Usage/UsageRecord.cs:40`). Then: traces leave the process, through an OTLP exporter and latency and
+  (`LouisAgent.Core/Usage/UsageRecord.cs:40`). Then: traces leave the process, through an OTLP exporter and latency and
   error dashboards (Phase 3 put Microsoft.Extensions.AI's `UseOpenTelemetry()` in the pipeline, sensitive data off),
   with W3C `traceparent` passed through `HttpPeerTransport` and MCP's `_meta`; this takes in F12 and the TODO's
   observability line (`TODO.md:373`). Beside the traces come OpenTelemetry metrics, as Existo's OpenTelemetry package

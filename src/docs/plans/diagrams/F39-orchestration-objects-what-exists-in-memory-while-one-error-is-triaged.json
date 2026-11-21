@@ -9,7 +9,7 @@
         "id": "host",
         "icon": "terminal",
         "tone": "blue",
-        "label": "host loop\n: Program\n(louis-agent.orchestrator)"
+        "label": "host loop\n: Program\n(LouisAgent.Orchestrator)"
       },
       {
         "id": "cat",

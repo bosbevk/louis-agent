@@ -153,9 +153,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="pic-panel" x="0" y="0" width="318" height="522" rx="14" />
       <text class="pic-group" x="14" y="19" text-anchor="start">Browser</text>
       <rect class="pic-panel" x="348" y="196" width="336" height="538" rx="14" />
-      <text class="pic-group" x="362" y="215" text-anchor="start">louis-agent.api</text>
+      <text class="pic-group" x="362" y="215" text-anchor="start">LouisAgent.Api</text>
       <rect class="pic-panel" x="714" y="408" width="302.8" height="114" rx="14" />
-      <text class="pic-group" x="728" y="427" text-anchor="start">louis-agent.core</text>
+      <text class="pic-group" x="728" y="427" text-anchor="start">LouisAgent.Core</text>
       <path class="pic-line pic-edge tone-blue" d="M159 102L159 140Q159 164 183 164L492 164Q516 164 516 188L516 230" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M159 102L159 140Q159 164 183 164L492 164Q516 164 516 188L516 230" />
       <path class="pic-line pic-edge tone-green" d="M516 314L516 352Q516 376 540 376L832.4 376Q856.4 376 856.4 400L856.4 442" marker-end="url(#arrow-green)" />

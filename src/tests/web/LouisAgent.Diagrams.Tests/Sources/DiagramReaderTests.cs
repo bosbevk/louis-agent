@@ -1,0 +1,262 @@
+using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Cards.Links;
+using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Icons;
+using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Sources.Types;
+
+namespace LouisAgent.Diagrams.Tests.Sources;
+
+/// <summary>
+/// A diagram's source is a JSON file beside its doc (CL60.1, Louis's pick): the reader turns it into records, and
+/// refuses a file it can't draw, saying what is wrong, so a typo never becomes a picture with a hole in it.
+/// </summary>
+public class DiagramReaderTests
+{
+    /// <summary>A flow: boxes in columns and the arrows between them, as the site's diagrams are.</summary>
+    private const string Flow = """
+                                {
+                                  "kind": "flow",
+                                  "type": "component",
+                                  "title": "A turn",
+                                  "flow": {
+                                    "nodes": [
+                                      { "id": "host", "label": "A host", "column": 0 },
+                                      { "id": "engine", "label": "The engine", "note": "the loop", "column": 1 }
+                                    ],
+                                    "edges": [ { "from": "host", "to": "engine", "word": "runs" } ]
+                                  }
+                                }
+                                """;
+
+    /// <summary>Cards: Louis's figure, the engine on top and the identities and packs under it.</summary>
+    private const string Cards = """
+                                 {
+                                   "kind": "cards",
+                                   "title": "Engine, identities and packs",
+                                   "caption": "The separation ADR 0027 and ADR 0028 document.",
+                                   "cards": {
+                                     "rows": [
+                                       { "cards": [
+                                         { "id": "engine", "icon": "chip", "title": "Engine",
+                                           "code": "LouisAgent.Core", "text": "The runtime and the tool loop." }
+                                       ] },
+                                       { "cards": [
+                                         { "id": "identities", "icon": "user", "title": "Identities",
+                                           "text": "Who the agent is." },
+                                         { "id": "packs", "icon": "box", "title": "Packs",
+                                           "text": "What the agent can do." }
+                                       ] }
+                                     ],
+                                     "links": [
+                                       { "from": "engine", "to": "identities", "kind": "both" },
+                                       { "from": "engine", "to": "packs", "kind": "both" }
+                                     ]
+                                   }
+                                 }
+                                 """;
+
+    /// <summary>
+    /// A cards picture whose file says nothing of links has none: there is one thing no links can mean, so the
+    /// reader fills it in and refuses nothing (CL65.4). It failed with .NET's own error, which named nothing the
+    /// file's writer wrote.
+    /// </summary>
+    [Test]
+    public void CardsWithNoLinksWritten_HaveNone()
+    {
+        const string noLinks = """
+                               {
+                                 "kind": "cards",
+                                 "title": "Two cards",
+                                 "cards": { "rows": [ { "cards": [
+                                   { "id": "one", "icon": "chip", "title": "One", "text": "The first." },
+                                   { "id": "two", "icon": "box", "title": "Two", "text": "The second." }
+                                 ] } ] }
+                               }
+                               """;
+
+        var cards = DiagramReader.Read(noLinks).Cards!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cards.Links, Is.Empty);
+            Assert.That(cards.Rows.Single().Cards.Select(card => card.Id), Is.EqualTo(new[] { "one", "two" }));
+        });
+    }
+
+    /// <summary>A flow file reads into its boxes and arrows.</summary>
+    [Test]
+    public void AFlow_ReadsIntoItsBoxesAndArrows()
+    {
+        var source = DiagramReader.Read(Flow);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((source.Kind, source.Title), Is.EqualTo((DiagramKind.Flow, "A turn")));
+            Assert.That(source.Flow!.Nodes.Select(node => (node.Id, node.Column)),
+                Is.EqualTo(new[] { ("host", 0), ("engine", 1) }));
+            Assert.That(source.Flow.Nodes[1].Note, Is.EqualTo("the loop"));
+            Assert.That(source.Flow.Edges.Single().Word, Is.EqualTo("runs"));
+        });
+    }
+
+    /// <summary>A cards file reads into its rows, its cards with their icons, and its links.</summary>
+    [Test]
+    public void Cards_ReadIntoRowsCardsAndLinks()
+    {
+        var source = DiagramReader.Read(Cards);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(source.Kind, Is.EqualTo(DiagramKind.Cards));
+            Assert.That(source.Caption, Does.StartWith("The separation"));
+            Assert.That(source.Cards!.Rows.Select(row => row.Cards.Count), Is.EqualTo(new[] { 1, 2 }));
+            Assert.That(source.Cards.Rows[0].Cards[0], Is.EqualTo(new Card("engine", DiagramIcon.Chip, "Engine",
+                "LouisAgent.Core", "The runtime and the tool loop.")));
+            Assert.That(source.Cards.Links.Select(link => link.Kind), Has.All.EqualTo(CardLinkKind.Both));
+        });
+    }
+
+    /// <summary>A flow runs right unless it says down, and a box needs no column.</summary>
+    [Test]
+    public void AFlow_ReadsItsDirection_AndNeedsNoColumn()
+    {
+        var source = DiagramReader.Read(Flow.Replace("\"flow\": {", "\"flow\": { \"direction\": \"down\",")
+            .Replace(", \"column\": 0", "").Replace(", \"column\": 1", ""));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(source.Flow!.Direction, Is.EqualTo(FlowDirection.Down));
+            Assert.That(source.Flow.Nodes.Select(node => node.Column), Has.All.Null);
+            Assert.That(DiagramReader.Read(Flow).Flow!.Direction, Is.EqualTo(FlowDirection.Right));
+        });
+    }
+
+    /// <summary>
+    /// A diagram written as JSON reads back the same, its choices by their wire names and nothing left at its
+    /// default written.
+    /// </summary>
+    [Test]
+    public void AWrittenDiagram_ReadsBackTheSame()
+    {
+        var flow = new GraphSpec(
+            [new GraphNode("a", "A\nfirst", Group: "g"), new GraphNode("b", "B")],
+            [new GraphEdge("a", "b", "calls", EdgeStyle.Dashed)], FlowDirection.Down, [new GraphGroup("g", "A group")]);
+        var written = new DiagramSource(DiagramKind.Flow, "Written", Flow: flow, Type: DiagramType.Component);
+        string json = DiagramWriter.Write(written);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(DiagramWriter.Write(DiagramReader.Read(json)), Is.EqualTo(json));
+            Assert.That(json, Does.Contain("\"direction\": \"down\"").And.Contain("\"style\": \"dashed\""));
+            Assert.That(json, Does.Not.Contain("null").And.Not.Contain("\"column\""));
+        });
+    }
+
+    /// <summary>A box in a group the diagram doesn't declare is refused, naming the box and the group.</summary>
+    [Test]
+    public void ABoxInAnUndeclaredGroup_IsRefused() =>
+        Assert.That(
+            () => DiagramReader.Read(Flow.Replace("\"label\": \"A host\",",
+                "\"label\": \"A host\", \"group\": \"sys\",")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'host'").And.Message.Contain("'sys'"));
+
+    /// <summary>A card is plain unless it names its look, and reads the look it names.</summary>
+    [Test]
+    public void ACard_ReadsItsLook_PlainWhenItNamesNone()
+    {
+        var source = DiagramReader.Read(Cards.Replace("\"title\": \"Engine\",",
+            "\"title\": \"Engine\", \"look\": \"highlight\","));
+
+        var cards = source.Cards!.Rows.SelectMany(row => row.Cards).ToList();
+        Assert.That(cards.Select(card => card.Look),
+            Is.EqualTo(new[] { CardLook.Highlight, CardLook.Plain, CardLook.Plain }));
+    }
+
+    /// <summary>A kind the renderer doesn't draw is refused, naming the kinds it does.</summary>
+    [Test]
+    public void AnUnknownKind_IsRefused_NamingTheKinds() =>
+        Assert.That(() => DiagramReader.Read(Flow.Replace("\"flow\",", "\"pie\",")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("pie").And.Message.Contain("flow, cards"));
+
+    /// <summary>An arrow to a box the diagram doesn't have is refused, naming it.</summary>
+    [Test]
+    public void AnArrowToAMissingBox_IsRefused_NamingIt() =>
+        Assert.That(() => DiagramReader.Read(Flow.Replace("\"to\": \"engine\"", "\"to\": \"engin\"")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("engin"));
+
+    /// <summary>A link to a card the diagram doesn't have is refused, naming it.</summary>
+    [Test]
+    public void ALinkToAMissingCard_IsRefused_NamingIt() =>
+        Assert.That(() => DiagramReader.Read(Cards.Replace("\"to\": \"packs\"", "\"to\": \"pack\"")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("pack"));
+
+    /// <summary>
+    /// Three rows of cards, a over b and c over d, with the one link a test gives it: the least that has a row to
+    /// skip and a row with two cards.
+    /// </summary>
+    private static string ThreeRows(string from, string to) =>
+        $$"""
+          {
+            "kind": "cards",
+            "title": "Three rows",
+            "cards": {
+              "rows": [
+                { "cards": [ { "id": "a", "icon": "chip", "title": "A", "text": "On top." } ] },
+                { "cards": [
+                  { "id": "b", "icon": "box", "title": "B", "text": "In the middle." },
+                  { "id": "c", "icon": "box", "title": "C", "text": "In the middle." }
+                ] },
+                { "cards": [ { "id": "d", "icon": "box", "title": "D", "text": "At the bottom." } ] }
+              ],
+              "links": [ { "from": "{{from}}", "to": "{{to}}" } ]
+            }
+          }
+          """;
+
+    /// <summary>
+    /// A link joins a card to one in the row just above or just under it (F134.9), whichever way it is written:
+    /// that is the gap its rail stands in.
+    /// </summary>
+    [TestCase("a", "b")]
+    [TestCase("c", "a")]
+    [TestCase("b", "d")]
+    public void ALinkBetweenNeighbouringRows_Reads(string from, string to) =>
+        Assert.That(DiagramReader.Read(ThreeRows(from, to)).Cards!.Links, Has.Count.EqualTo(1));
+
+    /// <summary>A link that skips a row is refused, naming its two cards: no rail can draw it.</summary>
+    [Test]
+    public void ALinkThatSkipsARow_IsRefused_NamingItsCards() =>
+        Assert.That(() => DiagramReader.Read(ThreeRows("a", "d")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'a' to 'd'").And.Message
+                .Contain("neighbouring rows"));
+
+    /// <summary>A link between two cards of one row is refused the same way.</summary>
+    [Test]
+    public void ALinkInsideARow_IsRefused_NamingItsCards() =>
+        Assert.That(() => DiagramReader.Read(ThreeRows("b", "c")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'b' to 'c'").And.Message
+                .Contain("neighbouring rows"));
+
+    /// <summary>A kind without its own part (a cards diagram with no cards) is refused.</summary>
+    [Test]
+    public void AKindWithoutItsPart_IsRefused() =>
+        Assert.That(() => DiagramReader.Read("""{ "kind": "cards", "title": "Empty" }"""),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("cards"));
+
+    /// <summary>
+    /// A diagram without a title is refused, since the title is what a reader of the picture is told.
+    /// </summary>
+    [Test]
+    public void ADiagramWithoutATitle_IsRefused() =>
+        Assert.That(() => DiagramReader.Read(Flow.Replace("\"title\": \"A turn\",", "")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("title"));
+
+    /// <summary>
+    /// A misspelt field is refused rather than dropped, so a typo can't leave a box without its note.
+    /// </summary>
+    [Test]
+    public void AMisspeltField_IsRefused() =>
+        Assert.That(() => DiagramReader.Read(Flow.Replace("\"note\"", "\"nte\"")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("nte"));
+}

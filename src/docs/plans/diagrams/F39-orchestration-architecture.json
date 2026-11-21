@@ -9,14 +9,14 @@
         "id": "api",
         "icon": "server",
         "tone": "green",
-        "label": "louis-agent.api\nPuls, the demo, the coding\nagent",
+        "label": "LouisAgent.Api\nPuls, the demo, the coding\nagent",
         "group": "hosts"
       },
       {
         "id": "orch",
         "icon": "settings",
         "tone": "green",
-        "label": "louis-agent.orchestrator\nthin: polls the error feed\n(B1-B4)",
+        "label": "LouisAgent.Orchestrator\nthin: polls the error feed\n(B1-B4)",
         "group": "hosts"
       },
       {
@@ -30,7 +30,7 @@
         "id": "comp",
         "icon": "code",
         "tone": "teal",
-        "label": "louis-agent.composition\nIdentityKind.Voorman,\nPackKind.Triage,\nPackKind.Fixing (B1)"
+        "label": "LouisAgent.Composition\nIdentityKind.Voorman,\nPackKind.Triage,\nPackKind.Fixing (B1)"
       },
       {
         "id": "puls",
@@ -106,13 +106,13 @@
         "id": "reader",
         "icon": "file",
         "tone": "violet",
-        "label": "louis-agent.session-stream\nthe one reader (Phase 3)"
+        "label": "LouisAgent.SessionStream\nthe one reader (Phase 3)"
       },
       {
         "id": "peer",
         "icon": "server",
         "tone": "red",
-        "label": "a peer louis-agent.api\nruns the child: the cook, or\nthe fixer with PACKS=fixing"
+        "label": "a peer LouisAgent.Api\nruns the child: the cook, or\nthe fixer with PACKS=fixing"
       },
       {
         "id": "svc",
@@ -219,7 +219,7 @@
       },
       {
         "id": "core",
-        "label": "louis-agent.core: the engine"
+        "label": "LouisAgent.Core: the engine"
       }
     ]
   }

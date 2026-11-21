@@ -7,7 +7,7 @@
       {
         "id": "ipack",
         "name": "IAgentPack",
-        "kind": "interface, louis-agent.composition",
+        "kind": "interface, LouisAgent.Composition",
         "tone": "violet",
         "members": [
           "+Name, Toolsets, Prompts, Requires",
@@ -26,7 +26,7 @@
       {
         "id": "toolset",
         "name": "PackToolset",
-        "kind": "record, louis-agent.composition",
+        "kind": "record, LouisAgent.Composition",
         "tone": "violet",
         "members": [
           "+Name, Description, GuideFile?",
@@ -38,7 +38,7 @@
       {
         "id": "context",
         "name": "IPackContext",
-        "kind": "interface, louis-agent.composition",
+        "kind": "interface, LouisAgent.Composition",
         "tone": "violet",
         "members": [
           "+WorkspaceRoot",

@@ -28,7 +28,7 @@
       },
       {
         "id": "film",
-        "name": "louis-agent.film-export",
+        "name": "LouisAgent.FilmExport",
         "kind": "static, the tool, unchanged",
         "members": [
           "FilmHash",

@@ -57,5 +57,5 @@ person saw.*
 ## Links
 
 [ADR 0027](0027-engine-identities-and-packs.md) · [ADR 0069](../../../packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md) ·
-[ADR 0070](0070-packs-publish-data-feeds.md) · [louis-agent.pack.shop-prices](../../../packs/docs/projects/louis-agent.pack.shop-prices.md) ·
+[ADR 0070](0070-packs-publish-data-feeds.md) · [LouisAgent.Packs.ShopPrices](../../../packs/docs/projects/LouisAgent.Packs.ShopPrices.md) ·
 [Write-up 16](../learning/16-human-in-the-loop.md#f55-the-preview-is-the-check-2026-11-04)

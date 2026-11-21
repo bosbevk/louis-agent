@@ -1,0 +1,112 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Site: the interface design",
+  "caption": "The site holds only its words, demos and CV: the pages sit on the framework's shell, every place on them has its own address through the places package. Its CV is one record, drawn by one view that the admin edits where it stands.",
+  "classes": {
+    "types": [
+      {
+        "id": "places",
+        "name": "PlacesArea, SectionPage",
+        "kind": "LouisAgent.Web.Places, every page's places",
+        "tone": "violet"
+      },
+      {
+        "id": "pages",
+        "name": "The pages",
+        "kind": "Razor, a Band per section",
+        "members": [
+          "/, /demos, /contact, /privacy, /cv",
+          "/framework/theme, the three businesses' demos"
+        ]
+      },
+      {
+        "id": "facts",
+        "name": "SiteFacts",
+        "kind": "static, for search engines",
+        "members": [
+          "+Organization, WebSite, Software",
+          "+All IReadOnlyList<object>"
+        ]
+      },
+      {
+        "id": "demos",
+        "name": "SiteDemos",
+        "kind": "static, the showroom's list",
+        "members": [
+          "+All ShowroomDemos"
+        ]
+      },
+      {
+        "id": "business",
+        "name": "BusinessDemo",
+        "kind": "a recorded conversation on a mock website",
+        "members": [
+          "+Accent, Kicker, the recording, the website"
+        ]
+      },
+      {
+        "id": "cv",
+        "name": "Resume",
+        "kind": "record, cv.json read strictly",
+        "members": [
+          "+Basics, Facts, Now, Work, Skills...",
+          "IResumeSource: the API, or the host's file"
+        ]
+      },
+      {
+        "id": "cvview",
+        "name": "ResumeView",
+        "kind": "the CV drawn, a band per part",
+        "members": [
+          "+Resume",
+          "+ResumeChanged: listened for, it is edited in place"
+        ]
+      },
+      {
+        "id": "cveditor",
+        "name": "ResumeEditor",
+        "kind": "the admin's page, /admin/resume",
+        "members": [
+          "a ResumeDraft, sent on Save",
+          "OffPageForm: what the page doesn't draw"
+        ]
+      },
+      {
+        "id": "editing",
+        "name": "InlineEdit, InlineForm, ItemTools",
+        "kind": "LouisAgent.Web",
+        "tone": "violet"
+      },
+      {
+        "id": "chat",
+        "name": "ExpertChat",
+        "kind": "the guide, as the bar at the foot of the page"
+      },
+      {
+        "id": "shell",
+        "name": "SiteShell",
+        "kind": "LouisAgent.Web",
+        "tone": "violet"
+      },
+      {
+        "id": "showroom",
+        "name": "ShowroomDemo",
+        "kind": "record, LouisAgent.Web",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "pages", "to": "shell", "kind": "uses", "word": "sit on" },
+      { "from": "pages", "to": "facts", "kind": "uses", "word": "PageHead" },
+      { "from": "places", "to": "pages", "kind": "uses", "word": "opens a place of" },
+      { "from": "pages", "to": "demos", "kind": "uses" },
+      { "from": "pages", "to": "business", "kind": "holds" },
+      { "from": "demos", "to": "showroom", "kind": "holds" },
+      { "from": "pages", "to": "chat", "kind": "holds" },
+      { "from": "pages", "to": "cvview", "kind": "holds", "word": "/cv" },
+      { "from": "cveditor", "to": "cvview", "kind": "holds", "word": "edits" },
+      { "from": "cvview", "to": "cv", "kind": "uses", "word": "draws" },
+      { "from": "cvview", "to": "editing", "kind": "uses" }
+    ]
+  }
+}

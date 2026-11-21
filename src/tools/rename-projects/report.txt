@@ -1,4 +1,4 @@
-F167 rename (dry): 6245 names replaced in 1286 files.
+F167 rename (write): 6245 names replaced in 1286 files.
 
 Each old name, and how many places it was replaced in:
     83  louis-agent.accounts -> LouisAgent.Accounts

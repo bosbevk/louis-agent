@@ -7,13 +7,13 @@
     "nodes": [
       {
         "id": "x",
-        "label": "louis-agent.film-export.tests\nthe hashes",
+        "label": "LouisAgent.FilmExport.Tests\nthe hashes",
         "icon": "chart",
         "tone": "teal"
       },
       {
         "id": "t",
-        "label": "louis-agent.film-export",
+        "label": "LouisAgent.FilmExport",
         "icon": "terminal",
         "tone": "blue"
       },

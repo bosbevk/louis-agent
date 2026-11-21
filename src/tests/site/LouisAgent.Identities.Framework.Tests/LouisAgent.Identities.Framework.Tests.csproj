@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The framework Orbi's tests (F164.2): who it is, the packs it names, and what its model is sent, pinned. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Identities.Framework.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\site\LouisAgent.Identities.Framework\LouisAgent.Identities.Framework.csproj" />
+    <!-- The two packs it names, so its golden builds the session as its host does. -->
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Docs\LouisAgent.Packs.Docs.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Site\LouisAgent.Packs.Site.csproj" />
+    <!-- The engine its golden builds, and the fakes every test project shares. -->
+    <ProjectReference Include="..\..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+    <ProjectReference Include="..\..\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+  </ItemGroup>
+
+</Project>

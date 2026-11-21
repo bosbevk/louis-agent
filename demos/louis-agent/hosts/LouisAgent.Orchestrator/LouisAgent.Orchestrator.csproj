@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>LouisAgent.Orchestrator</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <InternalsVisibleTo Include="LouisAgent.Orchestrator.Tests" />
+      <InternalsVisibleTo Include="LouisAgent.Orchestrator.IntegrationTests" />
+          <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Telemetry\LouisAgent.Core.Telemetry.csproj" />
+        <!-- CL57: the model providers this program composes; core ships no SDK. -->
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Ollama\LouisAgent.Core.Ollama.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.OpenAi\LouisAgent.Core.OpenAi.csproj" />
+<ProjectReference Include="..\..\identity\LouisAgent.Identities.Coding\LouisAgent.Identities.Coding.csproj" />
+      <!-- F106.3.1: the error feed is the triage pack's, read by every department's workflow. -->
+      <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Triage\LouisAgent.Packs.Triage.csproj" />
+      <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+      <!-- F18 step 1d: the orchestrator reads a session's stream through the reader itself, so it references it directly. -->
+      <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.SessionStream\LouisAgent.SessionStream.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Skills\**\*.md" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+             built or copied. -->
+        <None Include="..\..\docs\projects\LouisAgent.Orchestrator.md" Link="docs\LouisAgent.Orchestrator.md" />
+        <None Include="..\..\docs\projects\orchestrator-runbooks.md" Link="docs\orchestrator-runbooks.md" />
+        <None Include="..\..\docs\guides\change-the-orchestrator.md" Link="docs\change-the-orchestrator.md" />
+    </ItemGroup>
+
+</Project>

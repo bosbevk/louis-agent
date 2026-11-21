@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1235.6 1568" width="1235.6" height="1568" role="img" aria-label="Agent to agent: the orchestrator and louis-agent" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1230.9 1568" width="1230.9" height="1568" role="img" aria-label="Agent to agent: the orchestrator and louis-agent" xmlns="http://www.w3.org/2000/svg">
   <title>Agent to agent: the orchestrator and louis-agent</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -193,32 +193,32 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1235.6" height="1568" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1230.9" height="1568" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 84a617.8 170 0 1 0 1235.6 0a617.8 170 0 1 0 -1235.6 0Z" />
+    <path class="mrq-light" d="M-24 84a615.5 170 0 1 0 1230.9 0a615.5 170 0 1 0 -1230.9 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">Agent to agent: the orchestrator and louis-agent</text>
-    <text class="pic-group" x="1171.6" y="14" text-anchor="end">Sequence diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1187.6" height="1" rx="0" />
+    <text class="pic-group" x="1166.9" y="14" text-anchor="end">Sequence diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="1182.9" height="1" rx="0" />
     <g class="seq-drawing" transform="translate(0 48)">
-      <rect class="seq-cover" x="169.8" y="279" width="955.2" height="987" rx="14" />
-      <rect class="mrq-glass" x="169.8" y="279" width="955.2" height="987" rx="14" />
-      <rect class="mrq-edge" x="197.8" y="278.5" width="899.2" height="1.6" rx="0" />
+      <rect class="seq-cover" x="169.8" y="279" width="950.5" height="987" rx="14" />
+      <rect class="mrq-glass" x="169.8" y="279" width="950.5" height="987" rx="14" />
+      <rect class="mrq-edge" x="197.8" y="278.5" width="894.5" height="1.6" rx="0" />
       <rect class="seq-cover" x="231.8" y="668" width="413" height="163" rx="14" />
       <rect class="mrq-glass" x="231.8" y="668" width="413" height="163" rx="14" />
       <rect class="mrq-edge" x="259.8" y="667.5" width="357" height="1.6" rx="0" />
       <rect class="seq-life" x="88.6" y="124" width="1.5" height="1221" rx="0" />
       <rect class="seq-life" x="293.1" y="124" width="1.5" height="1221" rx="0" />
       <rect class="seq-life" x="622.1" y="124" width="1.5" height="1221" rx="0" />
-      <rect class="seq-life" x="831.3" y="124" width="1.5" height="1221" rx="0" />
-      <rect class="seq-life" x="1102.3" y="124" width="1.5" height="1221" rx="0" />
+      <rect class="seq-life" x="826.6" y="124" width="1.5" height="1221" rx="0" />
+      <rect class="seq-life" x="1097.6" y="124" width="1.5" height="1221" rx="0" />
       <rect class="seq-kind" x="183.8" y="289" width="37" height="20" rx="10" />
       <text class="mrq-code" x="202.3" y="303" text-anchor="middle">alt</text>
       <text class="seq-tab" x="230.8" y="303.5" text-anchor="start">auto-fixable</text>
-      <path class="seq-divide" d="M169.8 1044H1125" />
+      <path class="seq-divide" d="M169.8 1044H1120.3" />
       <rect class="seq-else" x="183.8" y="1054" width="44" height="20" rx="10" />
       <text class="seq-else-word" x="205.8" y="1068" text-anchor="middle">else</text>
       <text class="seq-tab" x="237.8" y="1068.5" text-anchor="start">expected</text>
-      <path class="seq-divide" d="M169.8 1151H1125" />
+      <path class="seq-divide" d="M169.8 1151H1120.3" />
       <rect class="seq-else" x="183.8" y="1161" width="44" height="20" rx="10" />
       <text class="seq-else-word" x="205.8" y="1175" text-anchor="middle">else</text>
       <text class="seq-tab" x="237.8" y="1175.5" text-anchor="start">escalate</text>
@@ -236,12 +236,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="mrq-node" cx="293.8" cy="239" r="4.5" />
       <text class="seq-call-words" x="339.8" y="244.5" text-anchor="start">triage with the method's runbook:</text>
       <text class="seq-call-words" x="339.8" y="259.5" text-anchor="start">expected / auto-fixable / escalate</text>
-      <rect class="seq-beam seq-beam-glow" x="293.8" y="342" width="809.2" height="8" rx="0" />
-      <rect class="seq-beam" x="293.8" y="345" width="801.2" height="2" rx="0" />
-      <path class="pic-march" d="M293.8 346H1095" />
-      <path class="seq-tip" d="M1095 346H1103" marker-end="url(#arrow-blue)" />
+      <rect class="seq-beam seq-beam-glow" x="293.8" y="342" width="804.5" height="8" rx="0" />
+      <rect class="seq-beam" x="293.8" y="345" width="796.5" height="2" rx="0" />
+      <path class="pic-march" d="M293.8 346H1090.3" />
+      <path class="seq-tip" d="M1090.3 346H1098.3" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="293.8" cy="346" r="4.5" />
-      <text class="seq-call-words" x="698.4" y="337" text-anchor="middle">check out main (stash any leftovers)</text>
+      <text class="seq-call-words" x="696.1" y="337" text-anchor="middle">check out main (stash any leftovers)</text>
       <rect class="seq-beam seq-beam-glow" x="293.8" y="408" width="329" height="8" rx="0" />
       <rect class="seq-beam" x="293.8" y="411" width="321" height="2" rx="0" />
       <path class="pic-march" d="M293.8 412H614.8" />
@@ -256,18 +256,18 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <circle class="mrq-node" cx="293.8" cy="478" r="4.5" />
       <text class="seq-call-words" x="458.3" y="454" text-anchor="middle">POST /v1/sessions/{id}/messages (the fix</text>
       <text class="seq-call-words" x="458.3" y="469" text-anchor="middle">request)</text>
-      <rect class="seq-beam seq-beam-glow" x="622.8" y="525" width="209.2" height="8" rx="0" />
-      <rect class="seq-beam" x="622.8" y="528" width="201.2" height="2" rx="0" />
-      <path class="pic-march" d="M622.8 529H824" />
-      <path class="seq-tip" d="M824 529H832" marker-end="url(#arrow-blue)" />
+      <rect class="seq-beam seq-beam-glow" x="622.8" y="525" width="204.5" height="8" rx="0" />
+      <rect class="seq-beam" x="622.8" y="528" width="196.5" height="2" rx="0" />
+      <path class="pic-march" d="M622.8 529H819.3" />
+      <path class="seq-tip" d="M819.3 529H827.3" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="622.8" cy="529" r="4.5" />
-      <text class="seq-call-words" x="727.4" y="520" text-anchor="middle">run the task</text>
-      <rect class="seq-beam seq-beam-glow" x="832" y="576" width="271" height="8" rx="0" />
-      <rect class="seq-beam" x="832" y="579" width="263" height="2" rx="0" />
-      <path class="pic-march" d="M832 580H1095" />
-      <path class="seq-tip" d="M1095 580H1103" marker-end="url(#arrow-blue)" />
-      <circle class="mrq-node" cx="832" cy="580" r="4.5" />
-      <text class="seq-call-words" x="967.5" y="571" text-anchor="middle">branch, edit, test, build, commit</text>
+      <text class="seq-call-words" x="725.1" y="520" text-anchor="middle">run the task</text>
+      <rect class="seq-beam seq-beam-glow" x="827.3" y="576" width="271" height="8" rx="0" />
+      <rect class="seq-beam" x="827.3" y="579" width="263" height="2" rx="0" />
+      <path class="pic-march" d="M827.3 580H1090.3" />
+      <path class="seq-tip" d="M1090.3 580H1098.3" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="827.3" cy="580" r="4.5" />
+      <text class="seq-call-words" x="962.8" y="571" text-anchor="middle">branch, edit, test, build, commit</text>
       <path class="seq-answer" d="M622.8 646H293.8" marker-end="url(#arrow)" />
       <circle class="seq-quiet-node" cx="622.8" cy="646" r="4.5" />
       <text class="seq-answer-words" x="458.3" y="622" text-anchor="middle">SSE: every tool call, then text ending</text>
@@ -288,13 +288,13 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="seq-tip" d="M614.8 872H622.8" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="293.8" cy="872" r="4.5" />
       <text class="seq-call-words" x="458.3" y="863" text-anchor="middle">DELETE /v1/sessions/{id}</text>
-      <rect class="seq-beam seq-beam-glow" x="293.8" y="934" width="809.2" height="8" rx="0" />
-      <rect class="seq-beam" x="293.8" y="937" width="801.2" height="2" rx="0" />
-      <path class="pic-march" d="M293.8 938H1095" />
-      <path class="seq-tip" d="M1095 938H1103" marker-end="url(#arrow-blue)" />
+      <rect class="seq-beam seq-beam-glow" x="293.8" y="934" width="804.5" height="8" rx="0" />
+      <rect class="seq-beam" x="293.8" y="937" width="796.5" height="2" rx="0" />
+      <path class="pic-march" d="M293.8 938H1090.3" />
+      <path class="seq-tip" d="M1090.3 938H1098.3" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="293.8" cy="938" r="4.5" />
-      <text class="seq-call-words" x="698.4" y="914" text-anchor="middle">VerifyFixCommit (git), ReplayRequest,</text>
-      <text class="seq-call-words" x="698.4" y="929" text-anchor="middle">RunServiceTests</text>
+      <text class="seq-call-words" x="696.1" y="914" text-anchor="middle">VerifyFixCommit (git), ReplayRequest,</text>
+      <text class="seq-call-words" x="696.1" y="929" text-anchor="middle">RunServiceTests</text>
       <path class="seq-turn" d="M293.8 1004H319.8Q327.8 1004 327.8 1012V1014Q327.8 1022 319.8 1022H293.8" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M293.8 1004H319.8Q327.8 1004 327.8 1012V1014Q327.8 1022 319.8 1022H293.8" />
       <circle class="mrq-node" cx="293.8" cy="1004" r="4.5" />
@@ -308,12 +308,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M293.8 1218H319.8Q327.8 1218 327.8 1226V1228Q327.8 1236 319.8 1236H293.8" />
       <circle class="mrq-node" cx="293.8" cy="1218" r="4.5" />
       <text class="seq-call-words" x="339.8" y="1231" text-anchor="start">EscalateToHuman → DECISION: escalated</text>
-      <rect class="seq-beam seq-beam-glow" x="293.8" y="1303" width="809.2" height="8" rx="0" />
-      <rect class="seq-beam" x="293.8" y="1306" width="801.2" height="2" rx="0" />
-      <path class="pic-march" d="M293.8 1307H1095" />
-      <path class="seq-tip" d="M1095 1307H1103" marker-end="url(#arrow-blue)" />
+      <rect class="seq-beam seq-beam-glow" x="293.8" y="1303" width="804.5" height="8" rx="0" />
+      <rect class="seq-beam" x="293.8" y="1306" width="796.5" height="2" rx="0" />
+      <path class="pic-march" d="M293.8 1307H1090.3" />
+      <path class="seq-tip" d="M1090.3 1307H1098.3" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="293.8" cy="1307" r="4.5" />
-      <text class="seq-call-words" x="698.4" y="1298" text-anchor="middle">check out main again for the next error</text>
+      <text class="seq-call-words" x="696.1" y="1298" text-anchor="middle">check out main again for the next error</text>
       <rect class="seq-badge tone-amber" x="67.3" y="0" width="44" height="44" rx="13" />
       <g class="pic-badge-icon" transform="translate(78.3 11) scale(0.9167)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -349,10 +349,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="seq-name" x="622.8" y="68" text-anchor="middle">louis-agent.api</text>
+      <text class="seq-name" x="622.8" y="68" text-anchor="middle">LouisAgent.Api</text>
       <circle class="mrq-node" cx="622.8" cy="124" r="4.5" />
-      <rect class="seq-badge tone-violet" x="810" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(821 11) scale(0.9167)">
+      <rect class="seq-badge tone-violet" x="805.3" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(816.3 11) scale(0.9167)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -364,12 +364,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="seq-name" x="832" y="68" text-anchor="middle">louis-agent</text>
-      <text class="seq-name" x="832" y="88" text-anchor="middle">(AgentEngine + coding</text>
-      <text class="seq-name" x="832" y="108" text-anchor="middle">tools)</text>
-      <circle class="mrq-node" cx="832" cy="124" r="4.5" />
-      <rect class="seq-badge tone-amber" x="1081" y="0" width="44" height="44" rx="13" />
-      <g class="pic-badge-icon" transform="translate(1092 11) scale(0.9167)">
+      <text class="seq-name" x="827.3" y="68" text-anchor="middle">louis-agent</text>
+      <text class="seq-name" x="827.3" y="88" text-anchor="middle">(AgentEngine + coding</text>
+      <text class="seq-name" x="827.3" y="108" text-anchor="middle">tools)</text>
+      <circle class="mrq-node" cx="827.3" cy="124" r="4.5" />
+      <rect class="seq-badge tone-amber" x="1076.3" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(1087.3 11) scale(0.9167)">
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -377,11 +377,11 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
         <path d="M14 14l3 -3l3 3" />
       </g>
-      <text class="seq-name" x="1103" y="68" text-anchor="middle">Service repository</text>
-      <circle class="mrq-node" cx="1103" cy="124" r="4.5" />
+      <text class="seq-name" x="1098.3" y="68" text-anchor="middle">Service repository</text>
+      <circle class="mrq-node" cx="1098.3" cy="124" r="4.5" />
     </g>
     <g class="seq-legend" transform="translate(0 1405)">
-      <rect class="mrq-rule" x="0" y="0" width="1187.6" height="1" rx="0" />
+      <rect class="mrq-rule" x="0" y="0" width="1182.9" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="seq-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
@@ -405,10 +405,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="856.8" y="52.5" text-anchor="start">one case or the other</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1171.6" y="1427" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
+      <text class="pic-name" x="1166.9" y="1427" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark">●</tspan>uis-agent</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="1483" width="1187.6" height="37" rx="8" />
+  <rect class="notebar" x="0" y="1483" width="1182.9" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 1493) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />

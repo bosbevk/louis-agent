@@ -5,7 +5,7 @@
 
 ## Context
 
-`louis-agent.api` is the one host every agent runs behind: the coding agent, Puls, the orchestrator's peer, and any
+`LouisAgent.Api` is the one host every agent runs behind: the coding agent, Puls, the orchestrator's peer, and any
 product a customer builds on the engine ([0027](0027-engine-identities-and-packs.md)). Core already names no product;
 the API did. Its eval code said `Benchmarks/` and `PulsCalls`, it started the eval runner with `PULS_API`, and its store
 defaulted to the database `puls_benchmarks`. Each was harmless alone, but together they meant a second product would
@@ -25,11 +25,11 @@ two products to carry, not one).
 
 ## Decision
 
-- **The API is the one agent API.** Its code, its project files and its contract (`louis-agent.api.contracts`) name
+- **The API is the one agent API.** Its code, its project files and its contract (`LouisAgent.Api.Contracts`) name
   no product: no identity's name in a type, a setting, a route, a stored field, a default or a comment. What it says
   about an agent, it says for every agent (`AgentCalls`, `AGENT_API`, `/admin/evals`, the database `evals`).
 - **A product gets a front door.** What is only a product's lives where that product is put together and reached:
-  its web app (`louis-agent.puls`), its compose file and cloud app (`docker/docker-compose.puls.yml`,
+  its web app (`LouisAgent.Puls`), its compose file and cloud app (`docker/docker-compose.puls.yml`,
   `deploy/azure/`), its run profile, its identity and packs. That is where Puls names its database
   (`EVALS_MONGO_DATABASE: puls_benchmarks`), its peers and its voice; the API reads them as settings.
 - **Renames keep what is stored and linked** (expand, then contract): a new name answers beside the old one, stored

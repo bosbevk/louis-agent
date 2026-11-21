@@ -1,7 +1,7 @@
 # 0091. Web access and telemetry are libraries on core, behind a seam each
 
 **Status:** Accepted · **Date:** 2026-11-07 (Louis, pointing at `Telemetry` and `Web` in core: "those two should also
-move"; the names "louis-agent.core.web louis-agent.core.telemetry"; "A", both on top of core) · **Recorded:**
+move"; the names "LouisAgent.Core.Web LouisAgent.Core.Telemetry"; "A", both on top of core) · **Recorded:**
 2026-11-07
 
 ## Context
@@ -14,7 +14,7 @@ names (Louis: "those are like at a lower level than .core, it can be shared by m
 
 ## Decision
 
-`louis-agent.core.web` and `louis-agent.core.telemetry` are libraries **on top of** core, which keeps one seam and one
+`LouisAgent.Core.Web` and `LouisAgent.Core.Telemetry` are libraries **on top of** core, which keeps one seam and one
 Null Object for each: `IWebAccess` with `NoWebAccess` (every part says web access isn't set up, so a tool answers
 why) and `WebParts` (web access from parts given); `IHostTelemetry` with `NoTelemetry` (nothing listens; a crash is
 still logged once). A host's program composes them through `HostServices(WebAccess.Create, OtlpTelemetry.Instance)`
@@ -40,7 +40,7 @@ and the names would have to drop `core`); below core (nothing leaves core's pack
 
 ## Links
 
-[louis-agent.core.web](../projects/louis-agent.core.web.md) · [louis-agent.core.telemetry](../projects/louis-agent.core.telemetry.md) ·
+[LouisAgent.Core.Web](../projects/LouisAgent.Core.Web.md) · [LouisAgent.Core.Telemetry](../projects/LouisAgent.Core.Telemetry.md) ·
 [ADR 0076](0076-core-ships-no-agent.md) · [ADR 0089](0089-the-account-client-is-a-library-a-site-opts-into.md) ·
 [ADR 0064](0064-observability-through-opentelemetry.md)
 

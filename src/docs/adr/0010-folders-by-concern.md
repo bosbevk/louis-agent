@@ -26,4 +26,4 @@ or a dependency against the arrow.
 
 ## Links
 
-[CL1 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL1-project-layout.md) · [Project layout](../../engine/louis-agent.core/CLAUDE.md#project-layout)
+[CL1 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL1-project-layout.md) · [Project layout](../../engine/LouisAgent.Core/CLAUDE.md#project-layout)

@@ -133,7 +133,7 @@ own rows have it).
 ### 4.2 Prices
 
 A price table in `config/prices.json`, **tracked** (prices aren't secret, so every clone and container prices the same
-way; `PRICES_FILE` points elsewhere). A host can also fetch it over HTTP with `PRICES_URL`, e.g. from louis-agent.api's
+way; `PRICES_FILE` points elsewhere). A host can also fetch it over HTTP with `PRICES_URL`, e.g. from LouisAgent.Api's
 public `GET /v1/prices`, so several hosts price with one table; if the URL can't be reached at start-up it falls back to the
 file. Comments are allowed in the file:
 
@@ -297,7 +297,7 @@ budgets' remaining amounts.
 |---|---|---|
 | `USAGE_LEDGER` | `on` | Write `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (needs `LOG_DIRECTORY`; off with a warning without it) |
 | `PRICES_FILE` | `config/prices.json` | Price table (missing file → tokens only, with a warning; a malformed one stops the host) |
-| `PRICES_URL` | unset | Fetch the price table over HTTP, e.g. louis-agent.api's `GET /v1/prices`; unreachable → `PRICES_FILE` |
+| `PRICES_URL` | unset | Fetch the price table over HTTP, e.g. LouisAgent.Api's `GET /v1/prices`; unreachable → `PRICES_FILE` |
 | `BUDGETS_FILE` | `config/budgets.json` | Budgets (missing file → no louis-agent budgets; the account's limits still apply) |
 | `USAGE_IN_CHAT` | `true` web/CLI, `false` Rider | Show the per-answer usage line |
 | `ADMIN_API_KEY` *(secret)* | unset | Enables daily reconciliation with Anthropic's Usage and Cost reports (4.4) |

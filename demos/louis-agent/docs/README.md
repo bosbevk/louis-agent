@@ -12,12 +12,12 @@ place to look things up.
 
 
 - [Setup](SETUP.md), [Quick start](QUICK_START_AGENT.md)
-- Its programs, each naming what the framework's host loads: `hosts/louis-agent.coding-cli`, `hosts/louis-agent.coding-acp`, `hosts/louis-agent.coding-mcp`, `hosts/louis-agent.coding-eval-runner`, `hosts/louis-agent.coding-api`
+- Its programs, each naming what the framework's host loads: `hosts/LouisAgent.CodingCli`, `hosts/LouisAgent.CodingAcp`, `hosts/LouisAgent.CodingMcp`, `hosts/LouisAgent.CodingEvalRunner`, `hosts/LouisAgent.CodingApi`
 - Change it: [the web app and its site](guides/change-the-web-app.md),
   [the orchestrator](guides/change-the-orchestrator.md)
 - [The demos](demos.md): what each demo on the site shows, how it was made, and what it would mean for a business
-- How it works: [the coding agent's chat and admin](projects/louis-agent.code-review.md), [the framework's site](../../../src/docs/projects/louis-agent.site.md) and [the guide in its corner](../../../src/docs/projects/louis-agent.identity.guide.md),
-  [the triage team](projects/louis-agent.identity.triage.md), [orchestrator](projects/louis-agent.orchestrator.md), [its runbooks](projects/orchestrator-runbooks.md)
+- How it works: [the coding agent's chat and admin](projects/LouisAgent.CodeReview.md), [the framework's site](../../../src/docs/projects/LouisAgent.Site.md) and [the guide in its corner](../../../src/docs/projects/LouisAgent.Identities.Guide.md),
+  [the triage team](projects/LouisAgent.Identities.Triage.md), [orchestrator](projects/LouisAgent.Orchestrator.md), [its runbooks](projects/orchestrator-runbooks.md)
 - Decisions: [ADR 0012](adr/0012-one-orchestrator-per-microservice.md), [ADR 0066](adr/0066-the-site-is-static-razor.md) (superseded in part),
   [ADR 0077](adr/0077-films-on-github-are-rendered-webp.md). ADR
   numbers are shared with the framework's, so a number is never used twice.

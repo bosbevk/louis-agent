@@ -6,7 +6,7 @@ description: Works as the framework writer, who holds the docs, the framework's 
 # Write the framework
 
 The framework writer reads a doc one claim at a time and asks three things of each: does the code do it, does a
-test hold it, and do the framework's own pages (`louis-agent.web.framework`) explain it, linking back to the doc?
+test hold it, and do the framework's own pages (`LouisAgent.Web.Framework`) explain it, linking back to the doc?
 How a doc reads is `/write-the-docs`; how a page's words read is below, under *How a page reads*. Five stops
 come first.
 
@@ -28,7 +28,7 @@ come first.
    setting, a type, a call, a number, a limit, an order, what a failure does. Leave out the doc's own framing.
 3. **Find each in the code.** Open the type or setting it names and read what it does. Write the file and line.
 4. **Find the test that holds it.** Search the tests for the type, the setting or the behaviour. Name the test.
-5. **Find it on the pages.** Look in the records in `src/web/louis-agent.web.framework/Content/` (the table below).
+5. **Find it on the pages.** Look in the records in `src/web/LouisAgent.Web.Framework/Content/` (the table below).
    Does a page say it, the same way, and link this doc?
 6. **Give each row its verdict** (the table below), and write the claims table.
 7. **Send each row on**: a wrong doc to `/write-the-docs`, a wrong or missing page line to a step with its test
@@ -48,7 +48,7 @@ come first.
 ## Where the pages' words live
 
 Every framework page says what its records in `Content/` say, and a test holds each to the repo
-([louis-agent.web.framework](../../../src/docs/projects/louis-agent.web.framework.md#4-what-a-page-says-is-held-to-the-repo)).
+([LouisAgent.Web.Framework](../../../src/docs/projects/LouisAgent.Web.Framework.md#4-what-a-page-says-is-held-to-the-repo)).
 
 | Page | Its records | Held by |
 |---|---|---|
@@ -60,7 +60,7 @@ Every framework page says what its records in `Content/` say, and a test holds e
 | Comparison | `Comparison/` (`ComparisonClaim`) | `ComparisonPageTests` (each of our claims names its proof) |
 | Every page | Its doc links | `DocPathsTests`, `NoMarkupTests` |
 
-The tests run with `dotnet test src/tests/web/louis-agent.web.framework.tests`.
+The tests run with `dotnet test src/tests/web/LouisAgent.Web.Framework.Tests`.
 
 ## How a page reads
 
@@ -110,7 +110,7 @@ area or one page to a pull request, through `/ship-it`.
 
 | Claim | Code | Test | Page | Verdict |
 |---|---|---|---|---|
-| `LOG_CONTENT=full` shows the values | `louis-agent.core/Config/AgentOptions.cs:57`, `Logging/ToolCallRecords.cs:12` | `LogContentTests` | none: no feature names it, no page links the guide | Not on the pages |
+| `LOG_CONTENT=full` shows the values | `LouisAgent.Core/Config/AgentOptions.cs:57`, `Logging/ToolCallRecords.cs:12` | `LogContentTests` | none: no feature names it, no page links the guide | Not on the pages |
 
 The code and the test hold it, so the doc is right. The Features page's guards have no line for logs that hide what
 the user typed, so this goes to Louis as a finding: add a `FrameworkFeature` under the guards, linked to the guide,
@@ -126,5 +126,5 @@ or leave it to the doc.
   Elastic's [overviews](https://www.elastic.co/docs/contribute-docs/content-types/overviews) and Tom Johnson,
   [API product overviews](https://idratherbewriting.com/learnapidoc/docapis_doc_overview.html): what an overview page holds
 - [ADR 0100](../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md), the site tells the whole architecture
-- [louis-agent.web.framework](../../../src/docs/projects/louis-agent.web.framework.md), the pages and their tests
+- [LouisAgent.Web.Framework](../../../src/docs/projects/LouisAgent.Web.Framework.md), the pages and their tests
 - [The docs rules](../../rules/docs.md#what-every-doc-is), true to the code

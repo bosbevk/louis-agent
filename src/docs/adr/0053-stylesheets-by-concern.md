@@ -33,7 +33,7 @@ Considered (Louis's picks, three options each):
   would move rules past each other is done only where it can be checked in the browser.
 - **A new rule goes in the file of its concern**; a file that grows past 200 lines is split, and its new file is
   imported where its lines were. A theme stays a file of its own in `themes/`, loaded by the page.
-- `Stylesheet` (`tests/louis-agent.web.testing`) reads a stylesheet as the browser does; each app's tests check
+- `Stylesheet` (`tests/LouisAgent.Web.Testing`) reads a stylesheet as the browser does; each app's tests check
   that every area file is imported and every import is there, and style tests find their rules through it.
 
 ## Consequences

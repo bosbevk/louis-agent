@@ -10,9 +10,9 @@ both would hold the deploy and tracker credentials and the write access to the c
 
 ## Decision
 
-The orchestrator (`louis-agent.orchestrator`, built on core with its own `toolsets:`) is configured per microservice:
+The orchestrator (`LouisAgent.Orchestrator`, built on core with its own `toolsets:`) is configured per microservice:
 a folder of runbooks, one per API method, selected with `ORCHESTRATOR_SERVICE`. It runs in its own container, not inside
-the service it watches. It asks for a fix by opening a session on that service's louis-agent.api, and verifies the
+the service it watches. It asks for a fix by opening a session on that service's LouisAgent.Api, and verifies the
 result itself. Credentials follow the split: the orchestrator holds the tracker, deploy and business credentials;
 louis-agent holds only git and build access to its one repository.
 

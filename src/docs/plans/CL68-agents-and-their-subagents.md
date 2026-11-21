@@ -40,7 +40,7 @@ What was read before this plan: `EmbeddedPrompts`, `SkillFileSource`, `SkillFile
 uniqueness check, `PromptHeader` (the header already carries `metadata.level`, ADR 0063), ADRs 0017, 0019, 0021,
 0063, 0114 and 0117, and every project's csproj. Two things matter for the build. The recipes and shop-prices packs
 embed files that aren't prompts (`recipe-sites.md`, the price JSON), so a provider at the project root has to show
-only the prompt folders. And `louis-agent.site` links core's `prompts/shared/principles.md` by path, so it moves
+only the prompt folders. And `LouisAgent.Site` links core's `prompts/shared/principles.md` by path, so it moves
 too.
 
 **The scope: the engine, not Puls.** Louis, when the plan was first shown: "no we are not fixing pulse we only fix
@@ -60,28 +60,28 @@ deploy workflow, which waits for green CI and also ships the framework's site, d
 Today (the core tests' `testprod`, the guide, the showroom, a pack and core):
 
 ```
-louis-agent.core.tests/prompts/
+LouisAgent.Core.Tests/prompts/
   agent/testprod/voice.md, voice-af.md, voice-en.md, skills/
   specialists/testprod-specialist.md
   minions/testprod-minion.md, testprod-minion-lookup.md
-louis-agent.identity.guide/prompts/agent/louis-agent-guide/voice.md + skills/
-louis-agent.identity.showroom/prompts/koringland-attorneys/agent/koringland-attorneys/voice.md   (and two more)
-louis-agent.pack.web/prompts/toolsets/web.md
-louis-agent.core/prompts/shared/principles.md, toolsets/agents.md, toolsets/self-extension.md
+LouisAgent.Identities.Guide/prompts/agent/louis-agent-guide/voice.md + skills/
+LouisAgent.Identities.Showroom/prompts/koringland-attorneys/agent/koringland-attorneys/voice.md   (and two more)
+LouisAgent.Packs.Web/prompts/toolsets/web.md
+LouisAgent.Core/prompts/shared/principles.md, toolsets/agents.md, toolsets/self-extension.md
 ```
 
 After CL68:
 
 ```
-louis-agent.core.tests/agents/testprod/
+LouisAgent.Core.Tests/agents/testprod/
   voice.md, voice-af.md, voice-en.md, skills/
   lookup.md                                  (what every lookup agent loads first, was testprod-minion.md)
   subagents/specialist/voice.md              (level: subagent)
   subagents/lookup/voice.md                  (level: lookup)
-louis-agent.identity.guide/agents/louis-agent-guide/voice.md + skills/
-louis-agent.identity.showroom/agents/koringland-attorneys/voice.md   (and two more, each name once)
-louis-agent.pack.web/toolsets/web.md
-louis-agent.core/shared/principles.md, toolsets/agents.md, toolsets/self-extension.md
+LouisAgent.Identities.Guide/agents/louis-agent-guide/voice.md + skills/
+LouisAgent.Identities.Showroom/agents/koringland-attorneys/voice.md   (and two more, each name once)
+LouisAgent.Packs.Web/toolsets/web.md
+LouisAgent.Core/shared/principles.md, toolsets/agents.md, toolsets/self-extension.md
 ```
 
 The framework Orbi moves like the guide. Puls, the coding agent and the triage team stay in `prompts/` as they
@@ -133,17 +133,17 @@ What is in memory while the cook answers.
 
 | Type or file | Folder | Namespace | Child |
 |---|---|---|---|
-| `EmbeddedPrompts` (the prompt folders from the root; the subfolder overload goes) | `src/engine/louis-agent.composition/Packs/` | `LouisAgent.Composition.Packs` | CL68.1 |
-| A provider that shows only the prompt folders (its pattern put to Louis when CL68.1 starts) | `src/engine/louis-agent.composition/Packs/` | `LouisAgent.Composition.Packs` | CL68.1 |
-| `AgentCatalog` (a shared provider counted once) | `src/engine/louis-agent.core/Agent/Catalog/` | `LouisAgent.Core.Agent.Catalog` | CL68.1 |
-| `ShowroomIdentity` (one shared provider) | `src/site/louis-agent.identity.showroom/` | `LouisAgent.Identities.Showroom` | CL68.1 |
-| `RoleCatalog.AgentsFolder`, `SkillFiles` (`agents/`) | `src/engine/louis-agent.core/Skills/`, `Skills/Roles/` | `LouisAgent.Core.Skills`, `.Roles` | CL68.1 |
-| `PromptFolderTests`, `SkillsLayoutTests` | `src/tests/engine/louis-agent.core.tests/` | `LouisAgent.Core.Tests` | CL68.1 |
-| `RoleLevel.Subagent`, `RoleCatalog.SubagentsFolder`, `RoleCatalog.LevelOf` from the header | `src/engine/louis-agent.core/Skills/` | `LouisAgent.Core.Skills` | CL68.2 |
-| `AgentAddresses` (an address to its subagent's folder) | `src/engine/louis-agent.core/Delegation/Addresses/` | `LouisAgent.Core.Delegation.Addresses` | CL68.2 |
-| A layout test: a subagent's level matches where it sits | `src/tests/engine/louis-agent.core.tests/` | `LouisAgent.Core.Tests` | CL68.2 |
-| `RoleLevel.Lookup`, `LookupAsk` (was `MinionAsk`), its messages | `src/engine/louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` | CL68.3 |
-| `LOOKUP_LLMS` (was `MINION_LLMS`) in the options and `src/site/config/` | `src/engine/louis-agent.core/Config/`, `src/site/config/` | `LouisAgent.Core.Config` | CL68.3 |
+| `EmbeddedPrompts` (the prompt folders from the root; the subfolder overload goes) | `src/engine/LouisAgent.Composition/Packs/` | `LouisAgent.Composition.Packs` | CL68.1 |
+| A provider that shows only the prompt folders (its pattern put to Louis when CL68.1 starts) | `src/engine/LouisAgent.Composition/Packs/` | `LouisAgent.Composition.Packs` | CL68.1 |
+| `AgentCatalog` (a shared provider counted once) | `src/engine/LouisAgent.Core/Agent/Catalog/` | `LouisAgent.Core.Agent.Catalog` | CL68.1 |
+| `ShowroomIdentity` (one shared provider) | `src/site/LouisAgent.Identities.Showroom/` | `LouisAgent.Identities.Showroom` | CL68.1 |
+| `RoleCatalog.AgentsFolder`, `SkillFiles` (`agents/`) | `src/engine/LouisAgent.Core/Skills/`, `Skills/Roles/` | `LouisAgent.Core.Skills`, `.Roles` | CL68.1 |
+| `PromptFolderTests`, `SkillsLayoutTests` | `src/tests/engine/LouisAgent.Core.Tests/` | `LouisAgent.Core.Tests` | CL68.1 |
+| `RoleLevel.Subagent`, `RoleCatalog.SubagentsFolder`, `RoleCatalog.LevelOf` from the header | `src/engine/LouisAgent.Core/Skills/` | `LouisAgent.Core.Skills` | CL68.2 |
+| `AgentAddresses` (an address to its subagent's folder) | `src/engine/LouisAgent.Core/Delegation/Addresses/` | `LouisAgent.Core.Delegation.Addresses` | CL68.2 |
+| A layout test: a subagent's level matches where it sits | `src/tests/engine/LouisAgent.Core.Tests/` | `LouisAgent.Core.Tests` | CL68.2 |
+| `RoleLevel.Lookup`, `LookupAsk` (was `MinionAsk`), its messages | `src/engine/LouisAgent.Core/Delegation/` | `LouisAgent.Core.Delegation` | CL68.3 |
+| `LOOKUP_LLMS` (was `MINION_LLMS`) in the options and `src/site/config/` | `src/engine/LouisAgent.Core/Config/`, `src/site/config/` | `LouisAgent.Core.Config` | CL68.3 |
 
 ### 5. What is reused
 

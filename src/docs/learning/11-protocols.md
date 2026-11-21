@@ -10,7 +10,7 @@ on them, what the rule is, and how a change to a public surface is proved.
 ![Protocols: routes under /v1 and closed by default, feeds as MCP resources, an agent on another server, and a header that says what the server did](diagrams/11-protocols.svg)
 
 Two places moved since. The route table's golden and the tests that hold the rule (`ApiRoutesSnapshot.json`,
-`ApiRouteRuleTests`, `AgentKeyGateTests`) are in `demos/puls/tests/louis-agent.api.tests` now. And a site's host no
+`ApiRouteRuleTests`, `AgentKeyGateTests`) are in `demos/puls/tests/LouisAgent.Api.Tests` now. And a site's host no
 longer calls `MapFallbackToFile`: since F121 it serves each page's own HTML through `SitePages`.
 
 ## API versioning and the route rule

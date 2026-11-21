@@ -102,11 +102,11 @@
       },
       {
         "id": "API",
-        "label": "louis-agent.api"
+        "label": "LouisAgent.Api"
       },
       {
         "id": "Core",
-        "label": "louis-agent.core"
+        "label": "LouisAgent.Core"
       }
     ]
   }

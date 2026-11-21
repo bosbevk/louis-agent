@@ -37,13 +37,13 @@
       {
         "id": "provider",
         "name": "MarkdownSkillProvider",
-        "kind": "louis-agent.core, an ISkillProvider",
+        "kind": "LouisAgent.Core, an ISkillProvider",
         "tone": "violet"
       },
       {
         "id": "voice",
         "name": "voice-orchestrator.md",
-        "kind": "louis-agent.core: the workflow every error goes through",
+        "kind": "LouisAgent.Core: the workflow every error goes through",
         "tone": "violet"
       },
       {

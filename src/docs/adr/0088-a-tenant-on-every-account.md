@@ -36,7 +36,7 @@ a maintenance fee for revenue use, and Louis wants nothing paid.
 ## Links
 
 [F61 (history)](https://github.com/bosbevk/louis-agent/blob/20f28c9f/src/docs/plans/F61-accounts-and-azure.md) · [0087](0087-identity-is-the-identity-server.md) · [0043](0043-repeated-names-are-enums.md) ·
-[louis-agent.accounts](../projects/louis-agent.accounts.md)
+[LouisAgent.Accounts](../projects/LouisAgent.Accounts.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

@@ -4,7 +4,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "app", "icon": "browser", "title": "louis-agent.code-review", "code": "Blazor WebAssembly",
+        { "id": "app", "icon": "browser", "title": "LouisAgent.CodeReview", "code": "Blazor WebAssembly",
           "look": "highlight",
           "text": "A small site on the framework's web, served by the coding agent's API on the same origin." }
       ] },

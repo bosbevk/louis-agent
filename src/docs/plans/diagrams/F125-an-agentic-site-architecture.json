@@ -16,13 +16,13 @@
         "id": "API",
         "icon": "server",
         "tone": "green",
-        "label": "louis-agent.api\nthe guide, rate limit F125.5"
+        "label": "LouisAgent.Api\nthe guide, rate limit F125.5"
       },
       {
         "id": "MCP",
         "icon": "cloud",
         "tone": "green",
-        "label": "louis-agent.mcp\ndocs, site, leads, gaps"
+        "label": "LouisAgent.Mcp\ndocs, site, leads, gaps"
       },
       {
         "id": "Packs",

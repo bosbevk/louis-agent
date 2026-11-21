@@ -14,7 +14,7 @@ shows, the words on it, and its styles, scripts and themes.
 
 ## Where a file goes
 
-- **A file that would be the same on every site belongs in `louis-agent.web`**, even if one site uses it today.
+- **A file that would be the same on every site belongs in `LouisAgent.Web`**, even if one site uses it today.
   What differs comes in from the site through a slot, a parameter or a setting. Never a branch on which site this
   is.
 - **The framework names no site**, in comments too, and everything in it is in English. Another language is a

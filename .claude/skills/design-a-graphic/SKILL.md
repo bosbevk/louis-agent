@@ -74,7 +74,7 @@ brand guide's table of files brought along.
 Redrawing the site's share card, the picture a link to louis-agent.dev shows. The plan names where it is seen (a
 link preview, a LinkedIn post), its size, the colours by name, Geist for the words, and the one thing to remember
 it by: the glass ball, the only ball on it. It is drawn by a script,
-`dotnet run --project src/tools/louis-agent.film-export social-card`, which photographs the site's own glass ball,
+`dotnet run --project src/tools/LouisAgent.FilmExport social-card`, which photographs the site's own glass ball,
 so it can be drawn again when the look changes. It is checked as a link preview, and its text's contrast is worked
 out and said.
 

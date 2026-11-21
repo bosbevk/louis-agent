@@ -27,7 +27,7 @@
         "id": "Orch",
         "icon": "settings",
         "tone": "blue",
-        "label": "Orchestrator agent\n(louis-agent.orchestrator)"
+        "label": "Orchestrator agent\n(LouisAgent.Orchestrator)"
       },
       {
         "id": "McpClient",
@@ -39,32 +39,32 @@
         "id": "Acp",
         "icon": "code",
         "tone": "green",
-        "label": "louis-agent.acp\nJSON-RPC over stdio"
+        "label": "LouisAgent.Acp\nJSON-RPC over stdio"
       },
       {
         "id": "Api",
         "icon": "server",
         "tone": "green",
-        "label": "louis-agent.api\nHTTP + SSE, serves the web app"
+        "label": "LouisAgent.Api\nHTTP + SSE, serves the web app"
       },
       {
         "id": "Mcp",
         "icon": "cloud",
         "tone": "green",
-        "label": "louis-agent.mcp\nMCP over stdio or HTTP"
+        "label": "LouisAgent.Mcp\nMCP over stdio or HTTP"
       },
       {
         "id": "Cli",
         "icon": "terminal",
         "tone": "green",
-        "label": "louis-agent.cli\nterminal",
+        "label": "LouisAgent.Cli\nterminal",
         "column": 1
       },
       {
         "id": "Engine",
         "icon": "chip",
         "tone": "violet",
-        "label": "AgentEngine\n(louis-agent.core)\ntools + skills + tool loop"
+        "label": "AgentEngine\n(LouisAgent.Core)\ntools + skills + tool loop"
       },
       {
         "id": "Peer",

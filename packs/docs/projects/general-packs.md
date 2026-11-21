@@ -4,20 +4,20 @@
 > **Elsewhere:** why they aren't in core in [ADR 0076](../../../src/docs/adr/0076-core-ships-no-agent.md), how to write one in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 > **Kind:** library (`net10.0`, one a pack)
-> · **Paths:** `packs/tools/louis-agent.pack.files/`, `.git`, `.dotnet`, `.shell`, `.web`, `.paymo` and `.devops`
+> · **Paths:** `packs/tools/LouisAgent.Packs.Files/`, `.git`, `.dotnet`, `.shell`, `.web`, `.paymo` and `.devops`
 > **Also shows:** `composite-structure`, `component`
 
 ![The general packs: files, git, .NET, shell, web, Paymo and Azure DevOps](diagrams/general-packs.svg)
 
 | Pack | Toolsets | Holds | Needs from the engine |
 |---|---|---|---|
-| `louis-agent.pack.files` | `files` | Read, write, search, copy, rename and delete in the workspace; PDF, Word and Excel as text | The workspace root |
-| `louis-agent.pack.git` | `git` | Status, diffs, branches, commits, merges, history; one runner shared by five classes | The workspace root |
-| `louis-agent.pack.dotnet` | `dotnet` | Build, test, run, restore, list packages | The workspace root |
-| `louis-agent.pack.shell` | `python`, `powershell`, `bash` | The tools the model calls, on the composition's script runners | The workspace root |
-| `louis-agent.pack.web` | `web` | Search, fetch, read a drawn page, check a quote, convert money | Search, a guarded fetcher, the renderer, the rates |
-| `louis-agent.pack.paymo` | `paymo` | Time entries, tasks, projects and summaries | Nothing: its own `PAYMO_API_KEY` |
-| `louis-agent.pack.devops` | `devops` | Work items, sprints and team queries | Nothing: its own `DEVOPS_*` settings |
+| `LouisAgent.Packs.Files` | `files` | Read, write, search, copy, rename and delete in the workspace; PDF, Word and Excel as text | The workspace root |
+| `LouisAgent.Packs.Git` | `git` | Status, diffs, branches, commits, merges, history; one runner shared by five classes | The workspace root |
+| `LouisAgent.Packs.DotNet` | `dotnet` | Build, test, run, restore, list packages | The workspace root |
+| `LouisAgent.Packs.Shell` | `python`, `powershell`, `bash` | The tools the model calls, on the composition's script runners | The workspace root |
+| `LouisAgent.Packs.Web` | `web` | Search, fetch, read a drawn page, check a quote, convert money | Search, a guarded fetcher, the renderer, the rates |
+| `LouisAgent.Packs.Paymo` | `paymo` | Time entries, tasks, projects and summaries | Nothing: its own `PAYMO_API_KEY` |
+| `LouisAgent.Packs.DevOps` | `devops` | Work items, sprints and team queries | Nothing: its own `DEVOPS_*` settings |
 
 Each says `ComesBeforeTheEngine`, so a session's tools keep their order: these, then the engine's, then a product's.
 
@@ -39,11 +39,11 @@ A toolset opened, then a call, step by step.
 
 Two of the packs bring screens of their own to the admin. The files pack's is the workspace's tree beside the open file:
 
-![The files view holds the workspace's tree beside the open file, reads them from the API and hands a question to the chat](diagrams/louis-agent.pack.files.web-components-files.svg)
+![The files view holds the workspace's tree beside the open file, reads them from the API and hands a question to the chat](diagrams/LouisAgent.Packs.Files.Web-components-files.svg)
 
 The git pack's is what changed, beside the diff that's open:
 
-![The changes view holds the staged and unstaged groups beside the open diff, and hands a review to the chat](diagrams/louis-agent.pack.git.web-components-changes.svg)
+![The changes view holds the staged and unstaged groups beside the open diff, and hands a review to the chat](diagrams/LouisAgent.Packs.Git.Web-components-changes.svg)
 
 **Tests** are in `packs/tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
 `APackInstallsAsAPackageTests` proves a pack runs from a NuGet package with no engine in its dependencies.

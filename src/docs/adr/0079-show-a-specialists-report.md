@@ -47,7 +47,7 @@ agent did. The why above is unchanged.
 
 - [ADR 0031: orchestration is an engine function](0031-orchestration-is-an-engine-function.md)
 - [ADR 0008: history is append-only](0008-history-is-append-only.md)
-- `src/engine/louis-agent.core/Delegation/ShownReport.cs`, `src/tests/engine/louis-agent.core.tests/Agent/Turns/ShowTheAskedAnswerTests.cs`
+- `src/engine/LouisAgent.Core/Delegation/ShownReport.cs`, `src/tests/engine/LouisAgent.Core.Tests/Agent/Turns/ShowTheAskedAnswerTests.cs`
 - [ADR 0117: one address for every agent call](0117-one-address-for-every-agent-call.md) (amends this one)
 
 ---

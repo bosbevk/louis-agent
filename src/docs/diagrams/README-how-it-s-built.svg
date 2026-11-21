@@ -206,9 +206,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-name" x="676" y="175" text-anchor="start">Packs</text>
       <text class="pic-name" x="676" y="191" text-anchor="start">what it can do: files, git,</text>
       <text class="pic-name" x="676" y="207" text-anchor="start">dotnet, shell, web, recipes, …</text>
-      <rect class="pic-panel" x="7.6" y="288" width="278.8" height="100" rx="10" />
-      <rect class="pic-fill tone-violet" x="23.6" y="324" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(29.6 330) scale(0.6667)">
+      <rect class="pic-panel" x="11.4" y="288" width="271.2" height="100" rx="10" />
+      <rect class="pic-fill tone-violet" x="27.4" y="324" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(33.4 330) scale(0.6667)">
         <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
         <path d="M9 9h6v6h-6z" />
         <path d="M3 10h2" />
@@ -220,10 +220,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="pic-name" x="59.6" y="319" text-anchor="start">louis-agent.core: the engine</text>
-      <text class="pic-name" x="59.6" y="335" text-anchor="start">tool loop · streaming ·</text>
-      <text class="pic-name" x="59.6" y="351" text-anchor="start">providers · usage ledger ·</text>
-      <text class="pic-name" x="59.6" y="367" text-anchor="start">guards</text>
+      <text class="pic-name" x="63.4" y="319" text-anchor="start">LouisAgent.Core: the engine</text>
+      <text class="pic-name" x="63.4" y="335" text-anchor="start">tool loop · streaming ·</text>
+      <text class="pic-name" x="63.4" y="351" text-anchor="start">providers · usage ledger ·</text>
+      <text class="pic-name" x="63.4" y="367" text-anchor="start">guards</text>
       <rect class="pic-panel" x="49.4" y="448" width="195.2" height="84" rx="10" />
       <rect class="pic-fill tone-red" x="65.4" y="476" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(71.4 482) scale(0.6667)">
@@ -238,7 +238,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="pic-name" x="364" y="479" text-anchor="start">louis-agent.composition</text>
+      <text class="pic-name" x="364" y="479" text-anchor="start">LouisAgent.Composition</text>
       <text class="pic-name" x="364" y="495" text-anchor="start">the contracts an identity or a</text>
       <text class="pic-name" x="364" y="511" text-anchor="start">pack needs</text>
       <circle class="pic-port pic-edge tone-blue" cx="459" cy="84" r="4" />

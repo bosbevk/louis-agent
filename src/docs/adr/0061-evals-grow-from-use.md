@@ -52,7 +52,7 @@ host would carry it); free JSON typed by the person, checked only when the runne
 [F49 Evals as content](../architecture/evals.md#where-f49-came-from) · [0033](0033-what-the-agent-writes-has-a-scope.md) ·
 [0048](0048-mongo-through-records.md) · [0057](0057-regex-is-the-last-option.md) ·
 [0058](0058-an-eval-is-a-folder-of-files.md) · [write-up 12](../learning/12-evaluation.md#evals-grow-from-use-f494) ·
-[louis-agent.api](../projects/louis-agent.api.md) · Anthropic, *Develop test cases*
+[LouisAgent.Api](../projects/LouisAgent.Api.md) · Anthropic, *Develop test cases*
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

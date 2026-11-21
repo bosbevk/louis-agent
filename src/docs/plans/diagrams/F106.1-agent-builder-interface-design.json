@@ -109,19 +109,19 @@
         "from": "AnthropicBuilderExtensions",
         "to": "LouisAgentBuilder",
         "kind": "uses",
-        "word": "step 4, in louis-agent.core.anthropic"
+        "word": "step 4, in LouisAgent.Core.Anthropic"
       },
       {
         "from": "WebBuilderExtensions",
         "to": "LouisAgentBuilder",
         "kind": "uses",
-        "word": "step 4, in louis-agent.core.web"
+        "word": "step 4, in LouisAgent.Core.Web"
       },
       {
         "from": "TelemetryBuilderExtensions",
         "to": "LouisAgentBuilder",
         "kind": "uses",
-        "word": "step 4, in louis-agent.core.telemetry"
+        "word": "step 4, in LouisAgent.Core.Telemetry"
       }
     ]
   }

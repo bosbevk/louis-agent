@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Anthropic on core (CL57): the provider strategy that builds the Claude client from the settings, the usage mapper
+       that reads its cache writes, and its two prompt-cache markers. A program hands AnthropicProvider.Instance to
+       AgentHost.Build in its HostServices; a host on another provider ships none of this. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Core.Anthropic</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LouisAgent.Core\LouisAgent.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Core.Anthropic.Tests" />
+    <PackageReference Include="Anthropic" Version="12.53.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Core.Anthropic.md" Link="docs\LouisAgent.Core.Anthropic.md" />
+  </ItemGroup>
+
+</Project>

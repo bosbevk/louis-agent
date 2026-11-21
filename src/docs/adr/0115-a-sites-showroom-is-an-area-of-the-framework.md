@@ -15,7 +15,7 @@ point"), and notes of what a custom agent could add ("we could integrate with th
 
 ## Decision
 
-- **The showroom is an area of the framework, in `louis-agent.web`,** as the site's frame is (ADR 0084): the frame
+- **The showroom is an area of the framework, in `LouisAgent.Web`,** as the site's frame is (ADR 0084): the frame
   (`ShowroomShell`: a slim bar, the rail of demos grouped by what a visitor comes for, chips on a phone, the corner),
   a demo's stage (`DemoStage`: the kicker, the page's one h1, the lede, the player, the cues, the notes and the
   offer, each a section with its own address, ADR 0107), its start (`ShowroomStart`: a big start for the main demo,
@@ -39,7 +39,7 @@ point"), and notes of what a custom agent could add ("we could integrate with th
   as a window in the light, the others behind it in depth, and a dock under it. Its parts know nothing of demos and
   each has its own test, so any site or later project uses one alone: `LineIconView`, `LitStage`, `Deck` with its
   rule `DeckPlace`, `FramedWindow` with its bodies `SiteBody`, `WorkBody` and `PlainBody`, and `Dock`, all in
-  `louis-agent.web` under `Components/Icons` and `Components/Staging`. A site fills a demo's window by naming a
+  `LouisAgent.Web` under `Components/Icons` and `Components/Staging`. A site fills a demo's window by naming a
   component's type, `ShowroomDemo.Window`, as a site names its admin card; a demo with none gets `PlainBody`.
 
 ## Consequences

@@ -1,7 +1,7 @@
 # 8. Crosscutting concepts
 
 > **Explanation.** The rules every part follows: security, messages, logging, testing, configuration. **Elsewhere:**
-> how to apply them when changing core in the [core guide](../../engine/louis-agent.core/CLAUDE.md); tests in the
+> how to apply them when changing core in the [core guide](../../engine/LouisAgent.Core/CLAUDE.md); tests in the
 > [tests guide](../guides/write-tests.md).
 
 ![The crosscutting concepts: security, messages, logging and tracing, testing and configuration](diagrams/08-crosscutting-concepts.svg)
@@ -46,7 +46,7 @@ the web app never pushes (its commits and merges stay local), and the agent push
 No message text is written inline in C#. Every exception, log line, tool result and text a user reads is a member of
 a message enum, and its `[Description]` is the template, with named holes the code fills from a record. That way the texts the model reads can be reviewed in one place.
 They are pinned by a golden file, so a change to one can't slip through unnoticed: it shows in the file's diff. The rules are in
-[Messages and logging](../../engine/louis-agent.core/CLAUDE.md#messages-and-logging).
+[Messages and logging](../../engine/LouisAgent.Core/CLAUDE.md#messages-and-logging).
 
 *Decided in:* [ADR 0009](../adr/0009-message-text-as-enum-templates.md).
 
@@ -68,7 +68,7 @@ which tools need narrower output.
 The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format, and it is the only source of what a
 request cost.
 
-A host can also send its spans and log lines to an OpenTelemetry collector, through `louis-agent.core.telemetry`, when
+A host can also send its spans and log lines to an OpenTelemetry collector, through `LouisAgent.Core.Telemetry`, when
 `OTEL_EXPORTER_OTLP_ENDPOINT` names one. That covers every model request and tool call, every request the host serves
 or sends, and core's own turn spans. With no endpoint nothing listens, so a host without a collector pays nothing.
 On a developer's machine the collector is the Aspire dashboard (the [deployment view](07-deployment-view.md#the-dashboard)).

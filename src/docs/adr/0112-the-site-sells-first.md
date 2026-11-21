@@ -38,5 +38,5 @@ will make a framework focused version at framework.louis-agent.dev" (F130).
 - [ADR 0100: the site tells the whole architecture](0100-the-site-tells-the-whole-architecture.md)
 - [ADR 0107: every section has an address](0107-every-section-has-an-address.md)
 - [ADR 0113: the guide is Louis, and says it is the AI](0113-the-guide-is-louis-and-says-it-is-the-ai.md)
-- [louis-agent.site](../projects/louis-agent.site.md)
+- [LouisAgent.Site](../projects/LouisAgent.Site.md)
 - F128.1 in the work log

@@ -65,7 +65,7 @@
         "id": "Harness",
         "icon": "chip",
         "tone": "violet",
-        "label": "EvalRunner\n(louis-agent.evals)",
+        "label": "EvalRunner\n(LouisAgent.Evals)",
         "group": "Runner"
       },
       {
@@ -210,15 +210,15 @@
     "groups": [
       {
         "id": "Portal",
-        "label": "Portal (louis-agent.web.evals, in a site)"
+        "label": "Portal (LouisAgent.Web.Evals, in a site)"
       },
       {
         "id": "API",
-        "label": "louis-agent.api"
+        "label": "LouisAgent.Api"
       },
       {
         "id": "Runner",
-        "label": "A demo's eval runner on louis-agent.evals.runner (child process)"
+        "label": "A demo's eval runner on LouisAgent.Evals.Runner (child process)"
       }
     ]
   }

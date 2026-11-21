@@ -21,7 +21,7 @@ real world [task]".
   only by a run.
 - **A replay cache** serves recorded simulations only, never a live chat.
 - **It amends 0022:** the harness is C#, and the protocol's fixture moves to
-  `tests/louis-agent.session-stream.tests/Fixtures/`; the stdout protocol and the store stand.
+  `tests/LouisAgent.SessionStream.Tests/Fixtures/`; the stdout protocol and the store stand.
 
 ## Consequences
 
@@ -31,8 +31,8 @@ real world [task]".
 
 ## Amendment (2026-10-24): the word is *eval*
 
-Louis chose *eval* for the harness, its folders and the portal's pages (`evals/louis-agent.evals/`,
-`evals/louis-agent.evals.{puls,demo,voorman}/`, `/admin/evals`), on 2026-10-20 for the portal and on 2026-10-24 for the
+Louis chose *eval* for the harness, its folders and the portal's pages (`evals/LouisAgent.Evals/`,
+`evals/LouisAgent.Evals.{puls,demo,voorman}/`, `/admin/evals`), on 2026-10-20 for the portal and on 2026-10-24 for the
 code. The decision above keeps its substance: one C# harness, each eval beside what it proves, cost from the ledger,
 and the stream and the store unchanged. A C# eval still *simulates a real task* in the field's sense. The title and the
 file name keep the first word, because the record of the decision keeps its name.

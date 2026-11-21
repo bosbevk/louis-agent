@@ -22,14 +22,14 @@ storage does. The cost of a cookie is that a cross-site form could send it.
 
 ## Decision
 
-**We use ASP.NET Core Identity as the identity server, in `louis-agent.accounts`, and we sign in with a cookie.**
+**We use ASP.NET Core Identity as the identity server, in `LouisAgent.Accounts`, and we sign in with a cookie.**
 
 - Identity's own routes are mapped under `/account` as they are; what it lacks is ours beside them, each a named
-  method answering a record from `louis-agent.accounts.contracts` (ADR 0045). A body the browser sends to one of
+  method answering a record from `LouisAgent.Accounts.Contracts` (ADR 0045). A body the browser sends to one of
   Identity's routes is a record of ours that a test pins to Identity's request type.
 - The cookie is HttpOnly, SameSite Lax, secure where the request is, and a call without it gets a 401, never a
   redirect to a page: the API answers JSON and the browser app draws the page.
-- A cookie counts on the agent's `/v1` routes only with the header `X-Requested-With: louis-agent.web`, which a
+- A cookie counts on the agent's `/v1` routes only with the header `X-Requested-With: LouisAgent.Web`, which a
   cross-site form can't send (F61.2); the admin routes keep the admin key.
 - Mail goes through Identity's own `IEmailSender<TUser>`; until a sender is picked, the log is the mail, with the
   link in full only where `LOG_CONTENT=full`.
@@ -49,7 +49,7 @@ storage does. The cost of a cookie is that a cross-site form could send it.
 ## Links
 
 [F61 (history)](https://github.com/bosbevk/louis-agent/blob/20f28c9f/src/docs/plans/F61-accounts-and-azure.md) · [0088](0088-a-tenant-on-every-account.md) · [0045](0045-typed-answers-and-a-shared-contract.md) ·
-[louis-agent.accounts](../projects/louis-agent.accounts.md) · [Identity API endpoints](https://learn.microsoft.com/aspnet/core/security/authentication/identity-api-authorization)
+[LouisAgent.Accounts](../projects/LouisAgent.Accounts.md) · [Identity API endpoints](https://learn.microsoft.com/aspnet/core/security/authentication/identity-api-authorization)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

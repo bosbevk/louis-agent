@@ -147,23 +147,23 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="pic-group" x="864" y="14" text-anchor="end">Component diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="880" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-blue" d="M324.4 34L653 34" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M324.4 34L653 34" />
-      <path class="pic-line pic-edge tone-teal" d="M324.4 120L480.2 120Q504.2 120 504.2 96L504.2 76Q504.2 52 528.2 52L646.8 52" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M324.4 120L480.2 120Q504.2 120 504.2 96L504.2 76Q504.2 52 528.2 52L646.8 52" />
-      <rect class="pic-pill pic-edge tone-blue" x="389.3" y="25" width="50" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-blue" x="414.3" y="37" text-anchor="middle">writes</text>
-      <rect class="pic-pill pic-edge tone-teal" x="392.8" y="111" width="43" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-teal" x="414.3" y="123" text-anchor="middle">holds</text>
-      <rect class="pic-panel" x="0" y="0" width="324.4" height="68" rx="10" />
+      <path class="pic-line pic-edge tone-blue" d="M309.2 34L653 34" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M309.2 34L653 34" />
+      <path class="pic-line pic-edge tone-teal" d="M309.2 120L472.6 120Q496.6 120 496.6 96L496.6 76Q496.6 52 520.6 52L646.8 52" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M309.2 120L472.6 120Q496.6 120 496.6 96L496.6 76Q496.6 52 520.6 52L646.8 52" />
+      <rect class="pic-pill pic-edge tone-blue" x="377.9" y="25" width="50" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="402.9" y="37" text-anchor="middle">writes</text>
+      <rect class="pic-pill pic-edge tone-teal" x="381.4" y="111" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="402.9" y="123" text-anchor="middle">holds</text>
+      <rect class="pic-panel" x="0" y="0" width="309.2" height="68" rx="10" />
       <rect class="pic-fill tone-blue" x="16" y="20" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(22 26) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
       <text class="pic-name" x="52" y="31" text-anchor="start">dotnet run --project</text>
-      <text class="pic-name" x="52" y="47" text-anchor="start">src/tools/louis-agent.doc-diagrams</text>
-      <rect class="pic-panel" x="0" y="86" width="324.4" height="68" rx="10" />
+      <text class="pic-name" x="52" y="47" text-anchor="start">src/tools/LouisAgent.DocDiagrams</text>
+      <rect class="pic-panel" x="0" y="86" width="309.2" height="68" rx="10" />
       <rect class="pic-fill tone-teal" x="16" y="106" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(22 112) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
@@ -183,8 +183,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M21 6l0 13" />
       </g>
       <text class="pic-name" x="708" y="39" text-anchor="start">every diagrams/*.svg</text>
-      <circle class="pic-port pic-edge tone-blue" cx="324.4" cy="34" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="324.4" cy="120" r="4" />
+      <circle class="pic-port pic-edge tone-blue" cx="309.2" cy="34" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="309.2" cy="120" r="4" />
     </g>
     <rect class="mrq-rule" x="0" y="224" width="880" height="1" rx="0" />
     <text class="pic-group" x="0" y="246" text-anchor="start">How to read it</text>

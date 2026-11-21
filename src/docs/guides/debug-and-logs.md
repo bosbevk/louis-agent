@@ -2,7 +2,7 @@
 
 > **How-to.** Find what the agent did: the tool log, the run files, the usage ledger, and the Docker habits that keep
 > a rebuild honest. **Elsewhere:** how the messages and logs are built in
-> [core's guide](../../engine/louis-agent.core/CLAUDE.md#messages-and-logging); the ledger's design in
+> [core's guide](../../engine/LouisAgent.Core/CLAUDE.md#messages-and-logging); the ledger's design in
 > [ADR 0007](../adr/0007-measure-every-request.md).
 
 ![Finding what the agent did: the tool log on stderr, the run files, the traces and the dashboard, the usage ledger, and the Docker habits](diagrams/debug-and-logs.svg)
@@ -67,7 +67,7 @@ Every model request is in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, h
 prompt text). Total one with:
 
 ```bash
-dotnet run --project src/tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl
+dotnet run --project src/tools/LouisAgent.UsageProbe -- --ledger logs/usage-YYYY-MM.jsonl
 ```
 
 ## Docker

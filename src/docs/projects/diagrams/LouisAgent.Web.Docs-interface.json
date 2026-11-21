@@ -1,0 +1,33 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Web.Docs: the interface design",
+  "caption": "A site names where its docs live once, with Docs(address); every link asks that one address, and the menu and the page turns read one list of the pages.",
+  "classes": {
+    "types": [
+      { "id": "area", "name": "DocsArea", "kind": "static, what a site calls",
+        "members": [ "+Docs(areas, DocsAddress) SiteAreasBuilder" ] },
+      { "id": "builder", "name": "SiteAreasBuilder", "kind": "LouisAgent.Web", "tone": "violet" },
+      { "id": "address", "name": "DocsAddress", "kind": "record, where the docs live",
+        "members": [ "+Base string", "+GitHub(repository, branch) DocsAddress", "+For(path) string" ] },
+      { "id": "link", "name": "DocLink", "kind": "a link to one doc",
+        "members": [ "+Path string", "+ChildContent RenderFragment" ] },
+      { "id": "links", "name": "DocLinks", "kind": "the line a section ends with" },
+      { "id": "contents", "name": "DocsContents", "kind": "record, the pages in reading order",
+        "members": [ "+Groups, Pages", "+FindEntry(address) DocsEntry?", "+FindBefore, FindAfter" ] },
+      { "id": "group", "name": "DocsGroup", "kind": "record, a group of the menu" },
+      { "id": "entry", "name": "DocsEntry", "kind": "record, one page", "members": [ "+Title, Address", "+Holds(path) bool" ] },
+      { "id": "menu", "name": "DocsMenu", "kind": "the left column" },
+      { "id": "turn", "name": "PageTurn", "kind": "a page's foot" }
+    ],
+    "relations": [
+      { "from": "area", "to": "builder", "kind": "uses", "word": "adds an area to" },
+      { "from": "area", "to": "address", "kind": "uses", "word": "registers" },
+      { "from": "links", "to": "link", "kind": "holds" },
+      { "from": "link", "to": "address", "kind": "uses", "word": "asks For(path)" },
+      { "from": "contents", "to": "group", "kind": "holds" },
+      { "from": "group", "to": "entry", "kind": "holds" },
+      { "from": "menu", "to": "contents", "kind": "uses", "word": "reads" },
+      { "from": "turn", "to": "contents", "kind": "uses", "word": "reads" }
+    ]
+  }
+}

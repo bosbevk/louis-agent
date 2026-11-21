@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "mcp", "icon": "server", "title": "The MCP server", "code": "louis-agent.mcp", "look": "highlight",
+        { "id": "mcp", "icon": "server", "title": "The MCP server", "code": "LouisAgent.Mcp", "look": "highlight",
           "text": "The engine's tools and the packs' feeds, handed to any MCP client." }
       ] },
       { "cards": [

@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "core", "icon": "chip", "title": "The engine", "code": "louis-agent.core", "look": "highlight",
+        { "id": "core", "icon": "chip", "title": "The engine", "code": "LouisAgent.Core", "look": "highlight",
           "text": "The tool loop, asking other agents, prompts, providers, usage, guards and start-up." }
       ] },
       { "cards": [

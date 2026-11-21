@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.SessionStream</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.SessionStream.Tests" />
+  </ItemGroup>
+
+  <!-- FX26: a failed turn's kind is an enum, read once with SettingChoice (ADR 0024). -->
+  <ItemGroup>
+    <ProjectReference Include="..\LouisAgent.Choices\LouisAgent.Choices.csproj" />
+  </ItemGroup>
+
+  <!-- F18 step 1a: the one reader of a session's stream. No package: SseParser is in the BCL (System.Net.ServerSentEvents). -->
+
+</Project>

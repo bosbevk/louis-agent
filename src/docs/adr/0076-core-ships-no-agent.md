@@ -3,7 +3,7 @@
 **Status:** Accepted · **Date:** 2026-11-05 (Louis: "the coding agent is also just a demo, so it should
 be a pack identity", then pick C, every tool in core becomes a pack) · **Recorded:** 2026-11-05
 
-**Updated (CL33, 2026-11-07):** the web split this ADR left open is done: `louis-agent.core.web` and `louis-agent.core.telemetry` sit on core behind a seam each ([ADR 0091](0091-web-access-and-telemetry-are-libraries-on-core.md)).
+**Updated (CL33, 2026-11-07):** the web split this ADR left open is done: `LouisAgent.Core.Web` and `LouisAgent.Core.Telemetry` sit on core behind a seam each ([ADR 0091](0091-web-access-and-telemetry-are-libraries-on-core.md)).
 
 ## Context
 

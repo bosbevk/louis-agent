@@ -23,7 +23,7 @@
         "id": "api",
         "icon": "server",
         "tone": "green",
-        "label": "puls: louis-agent.api\nIDENTITIES=demo,puls; the\nportal\u0027s endpoints",
+        "label": "puls: LouisAgent.Api\nIDENTITIES=demo,puls; the\nportal\u0027s endpoints",
         "group": "stack"
       },
       {
@@ -74,7 +74,7 @@
         "id": "comp",
         "icon": "code",
         "tone": "teal",
-        "label": "louis-agent.composition\nIdentityKind.Demo (1),\nPackKind.Customers (2)",
+        "label": "LouisAgent.Composition\nIdentityKind.Demo (1),\nPackKind.Customers (2)",
         "group": "code"
       },
       {

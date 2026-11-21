@@ -25,7 +25,7 @@ theme's, and the site never draws it.
 
 1. **A site's pages hold no HTML elements.** A page is the framework's components, given the site's words and data
    as parameters and records.
-2. **Each repeated shape is one control in `louis-agent.web`, drawn by the theme.** A heading with its lede is one
+2. **Each repeated shape is one control in `LouisAgent.Web`, drawn by the theme.** A heading with its lede is one
    control, and a list of named entries is another. When a page needs a shape any site could use and the framework
    has no control for it, that control is built in the framework first.
 3. **A site may still add a one-off look of its own**, for something only it has: as a component of its own in the

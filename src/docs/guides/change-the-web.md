@@ -1,13 +1,13 @@
 # Change the framework's web
 
-> **How-to.** Change `src/web/louis-agent.web`, the Razor class library every site is built on: decide what belongs
+> **How-to.** Change `src/web/LouisAgent.Web`, the Razor class library every site is built on: decide what belongs
 > here, change the chat's frame or the account pages, add a style or a script, add an API call, follow a new event in
 > the stream, add a component, and test it. **Elsewhere:** how it works in
-> [louis-agent.web](../projects/louis-agent.web.md); the eval pages in [Change the eval pages](change-the-eval-pages.md);
+> [LouisAgent.Web](../projects/LouisAgent.Web.md); the eval pages in [Change the eval pages](change-the-eval-pages.md);
 > the apps in [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) and
 > [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md).
 
-![The framework's web at a glance: louis-agent.web holds the API client, the chat and a turn's life, the components, the text rules and the styles, and every site fills it with its own words and data](diagrams/change-the-web.svg)
+![The framework's web at a glance: LouisAgent.Web holds the API client, the chat and a turn's life, the components, the text rules and the styles, and every site fills it with its own words and data](diagrams/change-the-web.svg)
 
 This library is what makes a site on the framework work the same everywhere. It holds the API client (`Api/`), the
 chat as data and a turn's life (`Chats/`), the components, from the chat's frame to a site's bands (`Components/`),
@@ -36,7 +36,7 @@ One trap: a site's page redraws for its own reasons, and that sets the frame's p
 ## Change the account pages
 
 The sign-in, registration, confirmation, reset and profile pages belong to the account library,
-`src/web/louis-agent.web.accounts` ([its doc](../projects/louis-agent.web.accounts.md)), and they're the same on every
+`src/web/LouisAgent.Web.Accounts` ([its doc](../projects/LouisAgent.Web.Accounts.md)), and they're the same on every
 site that has accounts.
 
 A site opts in by naming the area, `.Accounts(typeof(AccountLayout))`, among its areas, beside a project reference and
@@ -51,9 +51,9 @@ before `AddSiteAreas`, as Puls registers `PulsAccountText.Afrikaans`. Its frame 
 site's: without it, every account call is a quiet no.
 
 A new field or section goes in the library: a component under `Components/` with its bUnit test in
-`louis-agent.web.accounts.tests`, its call in `Client/AccountApi`, and its words in `Text/AccountText`. The chat learns
-about accounts only through `IAccountMenu` in the framework's web. The server side is `louis-agent.accounts`
-([its doc](../projects/louis-agent.accounts.md)).
+`LouisAgent.Web.Accounts.Tests`, its call in `Client/AccountApi`, and its words in `Text/AccountText`. The chat learns
+about accounts only through `IAccountMenu` in the framework's web. The server side is `LouisAgent.Accounts`
+([its doc](../projects/LouisAgent.Accounts.md)).
 
 ## Change the styles or scripts
 
@@ -93,10 +93,10 @@ A reply that isn't JSON comes back as the same error as a failed call, so a page
 The API streams a turn as events, and the web folds them into a `Turn` the views draw. A new event has to exist in
 the reader before the web can see it.
 
-1. **Map it** to its record in `src/engine/louis-agent.session-stream/SessionEventMapper.cs`, with the record in
-   `SessionEvents.cs` and a test in `src/tests/engine/louis-agent.session-stream.tests`. The reader hands the web
+1. **Map it** to its record in `src/engine/LouisAgent.SessionStream/SessionEventMapper.cs`, with the record in
+   `SessionEvents.cs` and a test in `src/tests/engine/LouisAgent.SessionStream.Tests`. The reader hands the web
    `SessionEvent`s, so the event exists there first.
-2. **Write the test first** in `src/tests/web/louis-agent.web.tests/Chats/TurnStreamTests.cs`, with the event as the
+2. **Write the test first** in `src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamTests.cs`, with the event as the
    API sends it ([the event stream](../AGENT_COMMUNICATION.md#the-event-stream)).
 3. **Fold it** in `Chats/TurnStream.cs`, which builds the `Turn` and its `Block`s. A specialist's events arrive wrapped
    in `sub_session` and go to that call's `Delegation`. Keep an unknown event harmless: it's ignored, never an error.
@@ -109,7 +109,7 @@ the reader before the web can see it.
    concern. Logic that needs no component goes in a plain class with NUnit tests. `RazorHasNoCodeTests` fails on an
    `@code` block.
 2. **Its words** go in `Text/ChatText.cs`, as a property whose default is English. Puls sets its Afrikaans in
-   `demos/puls/web/louis-agent.puls/Text/PulsText.cs`, so add the property there too, or Puls shows English.
+   `demos/puls/web/LouisAgent.Puls/Text/PulsText.cs`, so add the property there too, or Puls shows English.
 3. **Slots** (`RenderFragment` parameters) go where a site adds its own parts, as `Composer` and `MessageList` have.
 
 ## Drop a chat into a page
@@ -156,15 +156,15 @@ copy, never a link into the framework's docs ([ADR 0074](../adr/0074-the-folders
 ## Test it
 
 ```bash
-dotnet test src/tests/web/louis-agent.web.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.tests   # after a deliberate markup change
-dotnet test demos/louis-agent/tests/louis-agent.code-review.tests demos/puls/tests/louis-agent.puls.tests  # both apps render through it
+dotnet test src/tests/web/LouisAgent.Web.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/LouisAgent.Web.Tests   # after a deliberate markup change
+dotnet test demos/louis-agent/tests/LouisAgent.CodeReview.Tests demos/puls/tests/LouisAgent.Puls.Tests  # both apps render through it
 ```
 
 The tests mirror the folders. `Chats/` holds the stream, the runner, delegations and a specialist's status and answer.
 `Components/` holds the bUnit tests, each pinned to an `.html` golden beside it, drawn from the recorded Puls turn in
-`src/tests/engine/louis-agent.session-stream.tests/Fixtures/session-stream.sse`. Then there are `Text/` and `Usage/`.
-What the web test projects share is in `src/tests/web/louis-agent.web.testing`: `FixtureApi`, `SessionStreamFixture`,
+`src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.sse`. Then there are `Text/` and `Usage/`.
+What the web test projects share is in `src/tests/web/LouisAgent.Web.Testing`: `FixtureApi`, `SessionStreamFixture`,
 `Snapshots` and `RecordingJSRuntime`.
 
 `Usage/UsageFormat` repeats core's `UsageText` number rules, because the web doesn't reference core, so a change to

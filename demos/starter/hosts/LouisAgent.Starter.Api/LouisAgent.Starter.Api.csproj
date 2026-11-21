@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <!-- The starter's API (CL57): the smallest program that serves a site on the framework's API, with the accounts
+         and the eval studio opted in. A new site copies this beside its web project and names its identity and packs. -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>LouisAgent.Starter.Api</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- The framework's API; this program says what it loads, and serves what this project references. -->
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Web\LouisAgent.Core.Web.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Telemetry\LouisAgent.Core.Telemetry.csproj" />
+        <!-- CL57: the model providers this program composes; core ships no SDK. -->
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Ollama\LouisAgent.Core.Ollama.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.OpenAi\LouisAgent.Core.OpenAi.csproj" />
+        <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Api\LouisAgent.Api.csproj" />
+        <!-- CL57: the eval studio, a library on the API a program opts into. -->
+        <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Api.Evals\LouisAgent.Api.Evals.csproj" />
+        <!-- The framework's accounts (F61): sign-in, registration and profiles, on when ACCOUNTS_SQL_URL is set. -->
+        <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Accounts\LouisAgent.Accounts.csproj" />
+        <!-- The web app this program serves. Its files reach this project's output through this reference. -->
+        <ProjectReference Include="..\..\web\LouisAgent.Starter\LouisAgent.Starter.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.15" />
+    </ItemGroup>
+
+</Project>

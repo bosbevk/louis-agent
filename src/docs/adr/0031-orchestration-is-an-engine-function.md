@@ -15,7 +15,7 @@ a regex. ADR 0012 left open whether the real orchestrator keeps core or moves to
 - **Delegation is one function in the engine:** agents as tools, results typed from a C# record's schema and checked
   in code, one policy per turn tree (depth, limits, who may delegate to whom).
 - **The orchestrator is an identity on it**, voorman, with its own voice, runbooks and fixer role.
-- **The tier stays `louis-agent.core`**, which closes 0012's open question: the Tool Runner is Anthropic only (against
+- **The tier stays `LouisAgent.Core`**, which closes 0012's open question: the Tool Runner is Anthropic only (against
   [0002](0002-messages-api-tier-with-our-own-loop.md) and [0003](0003-provider-strategies.md)), and would lose the free
   local triage and the shared ledger. Louis answered *yes* (question 8, 2026-10-19).
 - **MCP is for tools**; A2A comes later at the edge, as an adapter behind `IChildTransport`.

@@ -1,11 +1,11 @@
 # Change the engine
 
-> **How-to.** Change `louis-agent.core`, the engine every agent runs on: add a tool or a toolset, change a built-in
+> **How-to.** Change `LouisAgent.Core`, the engine every agent runs on: add a tool or a toolset, change a built-in
 > prompt, add a setting or a message, handle a provider difference, add a model, and test it. **Elsewhere:** how it
-> works in [louis-agent.core](../projects/louis-agent.core.md); the rules these steps follow in
-> [core's development guide](../../engine/louis-agent.core/CLAUDE.md); a capability of its own in [Build a pack](build-a-pack.md).
+> works in [LouisAgent.Core](../projects/LouisAgent.Core.md); the rules these steps follow in
+> [core's development guide](../../engine/LouisAgent.Core/CLAUDE.md); a capability of its own in [Build a pack](build-a-pack.md).
 
-![The engine at a glance: louis-agent.core holds the tool loop, prompts, settings, providers and guards, and the golden files pin what the model reads](diagrams/change-the-engine.svg)
+![The engine at a glance: LouisAgent.Core holds the tool loop, prompts, settings, providers and guards, and the golden files pin what the model reads](diagrams/change-the-engine.svg)
 
 Core is the engine. It holds the tool loop (`Agent/`), asking other agents (`Delegation/`), skills and prompts
 (`Skills/`, `prompts/`), the model providers' seam (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards
@@ -27,7 +27,7 @@ wherever it lives.
 Every public method on a tool class becomes a tool, so helpers stay `private` or `internal`. A tool's name must be
 unique across every toolset, because a duplicate stops the start-up. It returns text the model can act on: what went
 wrong, and what to do instead. Every one of those texts is a member of its area's `{Area}ToolMessage`, and a text two
-areas return stays in the shared `ToolMessage` in `louis-agent.composition`. Keep the output bounded, too. A result over
+areas return stays in the shared `ToolMessage` in `LouisAgent.Composition`. Keep the output bounded, too. A result over
 50,000 characters gets summarised, and most toolsets cap their own at 12,000.
 
 If the tool touches the outside world, it goes through the guards. A path goes through `WorkspaceBoundary` and
@@ -43,7 +43,7 @@ Every toolset follows one pattern: guide, then tools, then guide. A mode's routi
 toolset's guide names its tools and when to use them, and each tool's description stays short. A pack's toolset is a
 `ToolsetDefinition` the pack declares (its name, description, the settings it needs, its tool classes and its guide
 file), with the guide in the pack's `prompts/toolsets/` and a routing row in each mode that uses it.
-[Build a pack](build-a-pack.md) has the steps, and [Adding a tool](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool)
+[Build a pack](build-a-pack.md) has the steps, and [Adding a tool](../../engine/LouisAgent.Core/CLAUDE.md#adding-a-tool)
 has the rules.
 
 Core's own two are in `Agent/Toolsets/ToolsetCatalog.cs`. `agents` lives in `Delegation/`, and `skills` in
@@ -69,7 +69,7 @@ that uses them. A running chat keeps the prompt it opened with, so start a new c
 A setting is read once, where it enters, and everything after that asks the options class for it.
 
 1. Read it once where it enters: a property in `Config/AgentOptions.cs` (or `LlmOptions` for an `LLM_*` setting),
-   filled in `FromEnvironment`, with a test in `src/tests/engine/louis-agent.core.tests/Config/`. `AgentOptions.cs` is
+   filled in `FromEnvironment`, with a test in `src/tests/engine/LouisAgent.Core.Tests/Config/`. `AgentOptions.cs` is
    already long, so a group of new settings is the moment to give them a class of their own, as a pack has
    (`RecipesOptions`). A pack's settings are always in the pack's own options class.
 2. A choice from a fixed set is an enum, parsed with `SettingChoice` (case ignored, aliases allowed, never a number;
@@ -81,7 +81,7 @@ A setting is read once, where it enters, and everything after that asks the opti
 
 Pick the enum by what the text is and which area says it: `{Area}ErrorMessage`, `{Area}LogMessage` or
 `{Area}ToolMessage`, in that area's own `Messages/` folder (for settings, `Config/Messages/`). A text two areas use goes
-in a shared one: core's `Messages/` holds `ErrorMessage` and `UserText`, and `louis-agent.composition` holds
+in a shared one: core's `Messages/` holds `ErrorMessage` and `UserText`, and `LouisAgent.Composition` holds
 `ToolMessage`. Name the member for what happened, not for its wording. Its `[Description]` is the text, with named
 holes. The holes are a record named after the member, `{Member}Holes`, in a `Holes/` folder beside the enum, and the
 member names it with `[Holes(typeof(…))]`. Build the record as a named local, then hand it over:
@@ -89,14 +89,14 @@ member names it with `[Holes(typeof(…))]`. Build the record as a named local, 
 own texts live in that host's `Messages/` folder.
 
 Log through `ILogger` (`AgentLogging.For<T>()`), which writes to stderr only, because stdout carries the ACP and MCP
-protocols. The rules are in [Messages and logging](../../engine/louis-agent.core/CLAUDE.md#messages-and-logging).
+protocols. The rules are in [Messages and logging](../../engine/LouisAgent.Core/CLAUDE.md#messages-and-logging).
 
 ## Handle a provider difference
 
 Sometimes Anthropic, OpenAI-compatible servers and Ollama differ on the same job: usage, caching, thinking, limits.
 Then write a strategy: an interface in core for that job, one implementation for each provider that differs, and a
 default. The provider `Llm/LlmClientFactory.cs` finds is where the choice is made, once. A provider's own classes live
-in its own library on core, as `AnthropicUsageMapper` and `AnthropicPromptCaching` do in `louis-agent.core.anthropic`.
+in its own library on core, as `AnthropicUsageMapper` and `AnthropicPromptCaching` do in `LouisAgent.Core.Anthropic`.
 Never check the provider's name anywhere else. For usage, the steps are in
 [Change the usage probe](change-the-usage-probe.md#fix-a-usage-mapper).
 
@@ -115,12 +115,12 @@ the [usage probe](change-the-usage-probe.md) before you trust a new provider's n
 ## Test it
 
 ```bash
-dotnet test src/tests/engine/louis-agent.core.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.coding-catalog.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
+dotnet test src/tests/engine/LouisAgent.Core.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
 ```
 
 Two golden files pin what the model reads, and both live with the coding agent's catalogue, in
-`demos/louis-agent/tests/louis-agent.coding-catalog.tests/Golden/`.
+`demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/`.
 `ModelRequestSnapshot.json` holds the tools, their descriptions, the system prompt and the engine's fixed texts, and
 `ToolMessageSnapshot.json` holds every text a tool returns. A new tool, text or prompt changes them on purpose:
 regenerate them and read the diff before you commit. The PowerShell form, and the rest of the rules for tests, are in

@@ -60,7 +60,7 @@ is never affected.
 The size is measured from the last request's `input + cache_read + cache_write` tokens for this session, from F1.
 Those are real counts, so no tokenizer is needed.
 
-A `ContextManager` (in `louis-agent.core/tools/` or `context/`) is called from `AgentEngine.BeginTurn` with the stored
+A `ContextManager` (in `LouisAgent.Core/tools/` or `context/`) is called from `AgentEngine.BeginTurn` with the stored
 history, and does two things in turn. First, `ClearStaleToolResults(history, keepRounds)` rebuilds old
 `FunctionResultContent` items as stub results: the tool's name and a summary of its arguments from the matching
 `FunctionCallContent`, and the original size. Then `CompactAsync(history, keepTurns)` summarises the older part with
@@ -69,7 +69,7 @@ labelled as a summary of the earlier conversation. Thinking blocks in the replac
 
 Before each rewrite, the old history is archived as a record, like `ToolCallRecords`: a JSON-lines file under
 `LOG_DIRECTORY` (S3). And a benchmark chat (`samples/benchmarks/long-chat.ps1`, or a test harness) drives 30 turns
-against louis-agent.api on the demo repository. Its recall questions, with known answers, are an F18 suite (`recall`),
+against LouisAgent.Api on the demo repository. Its recall questions, with known answers, are an F18 suite (`recall`),
 so they're scored, priced and compared with a baseline like any other eval.
 - **Provider-native alternatives** (Anthropic context editing / compaction) stay out: they need the beta client and work
   only on Anthropic (server-side compaction supports Haiku 5.5, not Haiku 4.5).

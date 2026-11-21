@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Diagrams</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Diagrams.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- A diagram's kind, a card's icon and a link's direction are enums read by their wire names (ADR 0024). -->
+    <ProjectReference Include="..\..\engine\LouisAgent.Choices\LouisAgent.Choices.csproj" />
+  </ItemGroup>
+
+  <!-- CL60.1 (Louis's pick P1 A): the framework's diagrams as plain C#, with no Blazor and no ASP.NET. Since
+       CL65.1 this project is what a diagram is: its kinds, its records, its reader. What builds one is
+       LouisAgent.Diagrams.Engine, which references this (ADR 0092: nobody takes what they don't use). It
+       references only LouisAgent.Choices, which references nothing, and no package. -->
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is built or
+         copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Diagrams.md" Link="docs\LouisAgent.Diagrams.md" />
+    <None Include="..\..\docs\guides\draw-a-diagram.md" Link="docs\draw-a-diagram.md" />
+  </ItemGroup>
+
+</Project>

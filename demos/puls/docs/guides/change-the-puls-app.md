@@ -1,14 +1,14 @@
 # Change the Puls web app
 
-> **How-to.** Change `demos/puls/web/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
+> **How-to.** Change `demos/puls/web/LouisAgent.Puls`, the general assistant's web app: run it, change the chat, the landing page
 > or the admin portal, add a starter, place its words, and test it. **Elsewhere:** how it works in
-> [louis-agent.puls](../projects/louis-agent.puls.md); what it shares with the code-review app in
+> [LouisAgent.Puls](../projects/LouisAgent.Puls.md); what it shares with the code-review app in
 > [Change the framework's web](../../../../src/docs/guides/change-the-web.md); Puls's voice, roles and packs in
 > [Change Puls](change-puls.md), and identities in general in [Build an identity](../../../../src/docs/guides/build-an-identity.md).
 
 ![Change the Puls web app: run it, change the chat, add a starter, change the landing page or the admin portal, place its words, and test it](../diagrams/change-the-puls-app.svg)
 
-Puls is a Blazor WebAssembly app, served by Puls's program, `louis-agent.puls-api`, which references it. It has three
+Puls is a Blazor WebAssembly app, served by Puls's program, `LouisAgent.PulsApi`, which references it. It has three
 parts: the landing page at `/`, the chat at `/gesels` (with its Verken and Studio views), and the admin portal at
 `/admin` for the builders. What Puls says and which specialists it calls are the Puls identity's prompts, not this
 app. The app shows the chat, the specialists' work in the Werk panel, and what each answer cost.
@@ -21,7 +21,7 @@ Every change here follows the same loop: run the app, make the change, run its t
 
 ```bash
 docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build          # http://127.0.0.1:5070
-dotnet run --project demos/puls/hosts/louis-agent.puls-api         # http://127.0.0.1:5071
+dotnet run --project demos/puls/hosts/LouisAgent.PulsApi         # http://127.0.0.1:5071
 ```
 
 The compose stack runs Puls itself on port 5070, beside the stores and tools it uses: the accounts' database
@@ -37,7 +37,7 @@ profile, the water, the empty chat and the cost line's words. Its code-behind, `
 shows and which toolsets a session asks for.
 
 A change to the frame itself (the sidebar, the top bar, the message box, the work panel, renaming, search) goes in
-`louis-agent.web`, since every site gets it
+`LouisAgent.Web`, since every site gets it
 ([Change the framework's web](../../../../src/docs/guides/change-the-web.md)). Only what's Puls's own is a component
 under `Components/Chat/`, with its C# in its `.razor.cs`
 ([hosts-and-web.md](../../../../.claude/rules/hosts-and-web.md)). Logic that needs no component goes in a plain class
@@ -85,8 +85,8 @@ property of `ChatText` in English, and its Afrikaans goes in `PulsText`.
 ## Test it
 
 ```bash
-dotnet test demos/puls/tests/louis-agent.puls.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.puls.tests    # after a deliberate markup change: then read the diff
+dotnet test demos/puls/tests/LouisAgent.Puls.Tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/LouisAgent.Puls.Tests    # after a deliberate markup change: then read the diff
 ```
 
 `Pages/ChatPageTests` renders the chat page with bUnit against `FixtureApi`, a stand-in for the API, and streams a

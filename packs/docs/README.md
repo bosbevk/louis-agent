@@ -23,19 +23,19 @@ The tools any agent may want, one pack each. They share one doc, because they sh
 
 | Pack | What it does | Its doc |
 |---|---|---|
-| `louis-agent.pack.recipes` | Finds and reads recipe pages from South African sites, and keeps what it reads in its own library | [Recipes](projects/louis-agent.pack.recipes.md) |
-| `louis-agent.pack.shop-prices` | Estimates what the ingredients cost, from Stats SA's average prices | [Shop prices](projects/louis-agent.pack.shop-prices.md) |
-| `louis-agent.pack.where-to-buy` | Names the nearest branch of a shop, from OpenStreetMap | [Where to buy](projects/louis-agent.pack.where-to-buy.md) |
-| `louis-agent.pack.calculator` | Hands a sum to code, so the model doesn't do arithmetic in its head | [Calculator](projects/louis-agent.pack.calculator.md) |
+| `LouisAgent.Packs.Recipes` | Finds and reads recipe pages from South African sites, and keeps what it reads in its own library | [Recipes](projects/LouisAgent.Packs.Recipes.md) |
+| `LouisAgent.Packs.ShopPrices` | Estimates what the ingredients cost, from Stats SA's average prices | [Shop prices](projects/LouisAgent.Packs.ShopPrices.md) |
+| `LouisAgent.Packs.WhereToBuy` | Names the nearest branch of a shop, from OpenStreetMap | [Where to buy](projects/LouisAgent.Packs.WhereToBuy.md) |
+| `LouisAgent.Packs.Calculator` | Hands a sum to code, so the model doesn't do arithmetic in its head | [Calculator](projects/LouisAgent.Packs.Calculator.md) |
 
 ## The packs the framework's site and its demos use
 
 | Pack | What it does | Its doc |
 |---|---|---|
-| `louis-agent.pack.docs` | Lets the guide read a project's docs before it answers | [Docs](projects/louis-agent.pack.docs.md) |
-| `louis-agent.pack.leads` | Tells the owner when someone is interested | [Leads](projects/louis-agent.pack.leads.md) |
-| `louis-agent.pack.site` | Takes a visitor to a place on the site, and shows them cards and forms | [Site](projects/louis-agent.pack.site.md) |
-| `louis-agent.pack.triage` | Gives a team that triages a service's errors the feed, the run's steps and a person to raise a case to | [Triage](projects/louis-agent.pack.triage.md) |
+| `LouisAgent.Packs.Docs` | Lets the guide read a project's docs before it answers | [Docs](projects/LouisAgent.Packs.Docs.md) |
+| `LouisAgent.Packs.Leads` | Tells the owner when someone is interested | [Leads](projects/LouisAgent.Packs.Leads.md) |
+| `LouisAgent.Packs.Site` | Takes a visitor to a place on the site, and shows them cards and forms | [Site](projects/LouisAgent.Packs.Site.md) |
+| `LouisAgent.Packs.Triage` | Gives a team that triages a service's errors the feed, the run's steps and a person to raise a case to | [Triage](projects/LouisAgent.Packs.Triage.md) |
 
 ## The decisions only the packs need
 

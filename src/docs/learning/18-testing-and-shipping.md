@@ -24,7 +24,7 @@ rules, the old way went (CL65.4): `IArrowRule`, `IRowRule` and `FlowRules` are g
 | What pins the model's view | Two goldens: the coding agent's request and every `ToolMessage` | Four: those two, a Puls session (step 0, written from `main` before anything moved) and the shops pack's texts |
 | Who knows Puls | Core's prompts, `ToolMessage`, `MinionTools`, `GetToday`'s South African default: 20 places | Nothing in core; a ratchet listed each piece until it left, and is empty |
 | When a bad configuration shows | At the first chat, as a 400 or a missing guide | At start-up: an unknown `ROLES_ENABLED` name, a default mode with no file, an `IDENTITIES` name nothing provides, a tool name two toolsets share, a `Requires` cycle, an unknown `HOST_TIME_ZONE` |
-| Where the test fakes live | `core.tests`, with `InternalsVisibleTo` opened to three other test projects | `tests/louis-agent.testing`, a class library the test projects reference |
+| Where the test fakes live | `core.tests`, with `InternalsVisibleTo` opened to three other test projects | `tests/LouisAgent.Testing`, a class library the test projects reference |
 | Test projects | 3 | 6 and the library; 1,555 tests green at the end of step 5 |
 
 ## Three goldens as a refactor's proof
@@ -146,7 +146,7 @@ zip to add in a pull request. It's more work, but it still ends in git.
 
 ## A host that is only content (F54)
 
-The engine's website was the first host with no engine in it (until F109.1 folded it into the coding agent's web app): `louis-agent.site` referenced nothing of ours and
+The engine's website was the first host with no engine in it (until F109.1 folded it into the coding agent's web app): `LouisAgent.Site` referenced nothing of ours and
 runs no model. It is ASP.NET Core with **static server rendering**: a Razor component is rendered once on the server
 into plain HTML and sent, no WebAssembly, no interactivity, no script. A page is its markup and one stylesheet, and
 the two films of how the engine works are CSS keyframes over CSS 3D transforms. What that gave the tests:
@@ -782,8 +782,8 @@ plan rested on it, and a rule test that belongs to everything that reads a share
 ## One project cut in two along a line that was already there (CL65.1, 2026-11-14)
 
 **What it is.** The diagrams were one project. You said ".diagrams must be split into a diagrams --> and what
-builds the diagrams". Now `louis-agent.diagrams` says what a diagram is: its kinds, its records, its reader.
-`louis-agent.diagrams.engine` builds one: the layouts, the routing, the drawings, the looks, the writer. The
+builds the diagrams". Now `LouisAgent.Diagrams` says what a diagram is: its kinds, its records, its reader.
+`LouisAgent.Diagrams.Engine` builds one: the layouts, the routing, the drawings, the looks, the writer. The
 engine references the diagrams, never the other way.
 
 **The idea: nobody takes what they don't use.** That is the Common Reuse Principle, which the repo already
@@ -1616,7 +1616,7 @@ stand-in with the real thing's shape. The tests that only checked what the shop-
 sheet went back to that pack's own tests, which already held every one of those facts, and the API's upload and feed
 routes now prove themselves on the framework's `FakeImport` and `FakeFeed`. A test proves one thing at its own layer.
 
-The eval tests got data of their own. The integration tests start `louis-agent.api.test-runner`, the framework's
+The eval tests got data of their own. The integration tests start `LouisAgent.Api.TestRunner`, the framework's
 runner with the general checks, which copies the framework's template eval beside it. The scenario and draft tests
 needed more than the template has, a follow-up, a held-out split, an expected budget, so `SampleEvalWorkspace` writes
 a small eval into a temporary folder for each test class. That's a Fresh Fixture: the values a test checks sit beside
@@ -1648,4 +1648,4 @@ product can leave without taking them, and rule tests hold the line while the co
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
-[Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
+[Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)

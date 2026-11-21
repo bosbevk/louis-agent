@@ -27,7 +27,7 @@ the settings that hold them, the tools allowlist, the prefix, whether it is trus
 and its guide, `config/mcp/pricerules.md`). These names are proposals for F36's plan to settle; Part 3's *Row 23 in
 detail* holds the corrections they need. The two additive lines in core that an MCP pack needs are already there,
 because Phase 6's A5 brought them forward for its result tools: the engine adds a ready `AITool` as it is (beside
-`louis-agent.core/Agent/AgentEngine.cs:146`, where it adds each toolset's public methods today), and
+`LouisAgent.Core/Agent/AgentEngine.cs:146`, where it adds each toolset's public methods today), and
 `ToolsetDefinition` has an optional list of a toolset's ready tools, which `AgentCatalog.NamesOf` reads for its tool
 names. F36 fills that list with the tools a server listed and changes no core contract. Each tool is wrapped in our
 guard, `McpToolGuard` (over Microsoft.Extensions.AI's `DelegatingAIFunction`): results framed as untrusted (Phase 7's
@@ -38,19 +38,19 @@ call, because the SDK has no timeout per request.
 await yet). F36 adds a second, async source of packs, `Plugins.LoadAsync(IDENTITIES, PACKS, MCP_PACKS)`, which connects
 every named server before the catalogue is built and owns the connections. Each host holds what it returns with
 `await using`, so a stdio child ends when the host stops. The CLI, ACP and MCP hosts already await
-(`src/louis-agent.cli/Program.cs:9,13`, `src/louis-agent.acp/Program.cs:11`,
-`src/louis-agent.mcp/Program.cs:28,32`), and the API calls `app.Run()` (`src/louis-agent.api/Program.cs:221`),
+(`src/LouisAgent.Cli/Program.cs:9,13`, `src/LouisAgent.Acp/Program.cs:11`,
+`src/LouisAgent.Mcp/Program.cs:28,32`), and the API calls `app.Run()` (`src/LouisAgent.Api/Program.cs:221`),
 so the API either awaits `app.RunAsync()` or disposes the packs when it stops (*inferred*; the plan picks). A name that
 is both a `PackKind` and an `MCP_PACKS` entry stops start-up. The pack's guide is ours (`config/mcp/{name}.md`),
 reviewed like any prompt; only a trusted server's own instructions may stand in for it. The guide reaches
 `SkillFileSource` through a small in-memory `IFileProvider` (F36's own, or a maintained one if one fits), added before
 the first read, because a new pack's prompts after the first read throw `AgentCatalogException` (Phase 2). A server
 that can't be reached gets its own *unavailable* message, distinct from `ToolsetSettingsMissing` ("Toolset '{Name}'
-needs {Settings} to be set on this instance.", `louis-agent.core/Messages/ErrorMessage.cs:111-112`).
+needs {Settings} to be set on this instance.", `LouisAgent.Core/Messages/ErrorMessage.cs:111-112`).
 
 **When its tools are listed.** Once, when the host starts, before the catalogue is built; never when a session opens.
 A chat keeps the tool list it opened with (ADR 0006 and 0008; FX4), and engines are built per toolset list and cached
-(`louis-agent.core/Hosting/AgentEngineFactory.cs:34`), so a list that could change after start would change open chats.
+(`LouisAgent.Core/Hosting/AgentEngineFactory.cs:34`), so a list that could change after start would change open chats.
 `tools/list_changed` is ignored until a restart. That costs nothing: under the 2026-07-28 protocol revision it arrives
 only after the client opens `subscriptions/listen`, and the 2.2.0 client never does (the MCP check's reading of the
 SDK's source). The price is a snapshot: a server that is down when the host starts stays unavailable until a restart
@@ -105,12 +105,12 @@ source at the commit its package names; nothing was run; the details are Part 3'
   clients must treat annotations as untrusted unless they come from trusted servers, and the SDK's `ToolAnnotations`
   docs say the same (OWASP LLM06:2025).
 - **Named, never discovered.** `RiderMcpClient`'s discovery runs in every host that calls `AgentHost.Build` today, the
-  CLI, ACP and the API (`louis-agent.core/Hosting/AgentHost.cs:179-197`, on by default,
-  `louis-agent.core/Config/AgentOptions.cs:222`; the MCP server's `BuildToolHost` and the orchestrator's own engine have
-  none), and only logs what it finds (`louis-agent.core/Agent/ToolRegistry.cs:71-83`). With F36 a server is named by an
+  CLI, ACP and the API (`LouisAgent.Core/Hosting/AgentHost.cs:179-197`, on by default,
+  `LouisAgent.Core/Config/AgentOptions.cs:222`; the MCP server's `BuildToolHost` and the orchestrator's own engine have
+  none), and only logs what it finds (`LouisAgent.Core/Agent/ToolRegistry.cs:71-83`). With F36 a server is named by an
   identity or `MCP_PACKS`, never discovered, and the hand-written 199-line `RiderMcpClient`
-  (`louis-agent.core/Protocols/Mcp/RiderMcpClient.cs`) is replaced; a Rider server named in settings keeps today's
-  `rider_` names (`louis-agent.core/Hosting/RiderMcpToolDiscovery.cs:48`).
+  (`LouisAgent.Core/Protocols/Mcp/RiderMcpClient.cs`) is replaced; a Rider server named in settings keeps today's
+  `rider_` names (`LouisAgent.Core/Hosting/RiderMcpToolDiscovery.cs:48`).
 
 **Our guards on every path, and one pack published alone** (Part 3, row 24). Today the guards run only as the loop's
 invoker (`AgentEngine.cs:123`, `ToolCallGuards.cs:38-70`), so a call served over our MCP server skips them, and Phase 2
@@ -148,7 +148,7 @@ decisions; one commit each, test first, stop after each):
 | 1 | A guarded function over `DelegatingAIFunction`: the log line, a timeout, an oversized result cut (with no model, it cuts instead of summarising) | a fake function that returns 60,000 characters comes back cut and marked; a slow one times out with its reason |
 | 2 | The loop wraps each function, and its invoker keeps only the cut-off check | one log line per call, not two; the golden files byte-equal |
 | 3 | The MCP export publishes guarded functions, failures as `ErrorContent`, annotations from `ToolEffect` and an output schema per tool | through a test MCP client on in-memory streams (`ModelContextProtocol.Protocol.StreamClientTransport` and `ModelContextProtocol.Server.StreamServerTransport`), an oversized result arrives cut, a failure arrives with `isError` true, and a read-only tool is marked read-only; through the same test client, our server answers `server/discover`, and two `tools/list` calls return the tools in the same order (the 2026-07-28 server duties, *unverified* in Part 3's standards check until this test) |
-| 4 | `BuildToolHost(catalog, toolsets)`; the guide as the server's instructions; a convention test that anything taken from the session also has a parameter (the MCP rule, Part 2's rule 3) | `PACKS=shops`, `SHOP_CATALOGUES=checkers` and a test `BROWSER_URL` (as `tests/louis-agent.core.tests/Agent/ModelRequestSnapshotTests.cs:45-46` sets them at `main`; building the tools connects to nothing) with `MCP_TOOLSETS=shops` publish the shop tools and nothing else, and without `BROWSER_URL` the toolset is listed as missing it (`louis-agent.core/Agent/ToolsetCatalog.cs:75-77`) and nothing is published; the instructions equal `shops.md`; the convention test fails on a fake tool that reads the user's place (`UserPlace.Current`, or from Phase 6 `TurnContext`) with no parameter for it, and every tool in core and every pack passes it or is named in the test with its reason (today `GetToday` reads the shared time zone with no parameter, `louis-agent.core/Tools/Clock/ClockTools.cs:24-26`; the plan decides whether it gains one) |
+| 4 | `BuildToolHost(catalog, toolsets)`; the guide as the server's instructions; a convention test that anything taken from the session also has a parameter (the MCP rule, Part 2's rule 3) | `PACKS=shops`, `SHOP_CATALOGUES=checkers` and a test `BROWSER_URL` (as `tests/LouisAgent.Core.Tests/Agent/ModelRequestSnapshotTests.cs:45-46` sets them at `main`; building the tools connects to nothing) with `MCP_TOOLSETS=shops` publish the shop tools and nothing else, and without `BROWSER_URL` the toolset is listed as missing it (`LouisAgent.Core/Agent/ToolsetCatalog.cs:75-77`) and nothing is published; the instructions equal `shops.md`; the convention test fails on a fake tool that reads the user's place (`UserPlace.Current`, or from Phase 6 `TurnContext`) with no parameter for it, and every tool in core and every pack passes it or is named in the test with its reason (today `GetToday` reads the shared time zone with no parameter, `LouisAgent.Core/Tools/Clock/ClockTools.cs:24-26`; the plan decides whether it gains one) |
 | 5 | `McpPack` over stdio against our own MCP server, listed when the host starts, its tools added through the ready-tool lines Phase 6's A5 brought; `Plugins.LoadAsync`, and `await using` in each host | its tools are listed with our prefix and reach the engine as ready functions, not as methods; a call goes through the guard; the host's exit ends the stdio child |
 | 6 | Names: our rule after the prefix, a clash refusing one tool | a test server whose tool, once prefixed, takes a compiled tool's name (the prefix `Find` and a tool `Products` give `FindProducts`) loads all its tools but that one, with a log line, and the catalogue still builds; a name with a dot is refused |
 | 7 | The start-up boundary: one timeout, every failure caught, the client disposed, drift and the pin | a server that never answers, one whose listing fails and one whose pin differs each leave the pack unavailable with its reason, and no child process behind |

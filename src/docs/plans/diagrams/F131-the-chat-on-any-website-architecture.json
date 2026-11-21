@@ -21,7 +21,7 @@
         "id": "API",
         "icon": "server",
         "tone": "green",
-        "label": "louis-agent.api\na door per site F131.1\nrate limits F131.1, budget\nF131.5"
+        "label": "LouisAgent.Api\na door per site F131.1\nrate limits F131.1, budget\nF131.5"
       },
       {
         "id": "Store",

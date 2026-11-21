@@ -1,0 +1,100 @@
+{
+  "kind": "nested",
+  "title": "The landing page: what it is made of",
+  "caption": "Puls's front page lists its sections in order, each a component of its own over the moving water, and starts its script once it is drawn.",
+  "nested": {
+    "subtitle": "LouisAgent.Puls, Pages / LandingPage",
+    "root": {
+      "id": "page",
+      "name": "LandingPage",
+      "kind": "page",
+      "tone": "blue",
+      "aside": "/",
+      "holds": [
+        {
+          "id": "water",
+          "name": "Water",
+          "kind": "the brand's",
+          "tone": "blue",
+          "note": "the moving water behind the page"
+        },
+        {
+          "id": "landing",
+          "name": "the sections",
+          "kind": "in order",
+          "tone": "blue",
+          "note": "each a component in Components/Landing",
+          "holds": [
+            {
+              "id": "nav",
+              "name": "LandingNav",
+              "kind": "a section",
+              "tone": "blue",
+              "note": "the floating pill nav"
+            },
+            {
+              "id": "hero",
+              "name": "Hero",
+              "kind": "a section",
+              "tone": "blue",
+              "note": "the tagline"
+            },
+            {
+              "id": "showcase",
+              "name": "Showcase",
+              "kind": "a section",
+              "tone": "blue",
+              "note": "a picture of the app"
+            },
+            {
+              "id": "how",
+              "name": "HowItWorks",
+              "kind": "a section",
+              "tone": "blue"
+            },
+            {
+              "id": "inside",
+              "name": "InsideTheApp",
+              "kind": "a section",
+              "tone": "blue",
+              "note": "demo panels, each a MiniChat"
+            },
+            {
+              "id": "rest",
+              "name": "Features, Numbers, Pricing, About, Faq",
+              "kind": "sections",
+              "tone": "blue"
+            },
+            {
+              "id": "cta",
+              "name": "CallToAction, LandingFooter",
+              "kind": "sections",
+              "tone": "blue",
+              "note": "the way in"
+            }
+          ]
+        }
+      ]
+    },
+    "around": [
+      {
+        "id": "head",
+        "name": "PageHead",
+        "side": "before",
+        "tone": "green",
+        "heading": "What it uses of the framework",
+        "note": "the page's description for a search engine"
+      },
+      {
+        "id": "js",
+        "name": "landing.js",
+        "side": "after",
+        "tone": "blue",
+        "heading": "Runs in the browser",
+        "note": "the section index, the progress line, the water's motion",
+        "code": "start, stop",
+        "calls": "starts after the first render"
+      }
+    ]
+  }
+}

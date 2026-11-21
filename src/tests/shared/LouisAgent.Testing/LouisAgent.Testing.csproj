@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The fakes and paths every test project shares (CL15 step 5, Louis's review of step 4): a scripted chat client, an
+       HTTP stub, in-memory prompts, a fake identity and pack, the repo's paths. A class library, not a test project: it
+       holds no tests, and no test project references another test project for its helpers. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Testing</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- TestPaths reads the test directory from NUnit's TestContext. -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.10.0" />
+    <!-- F106.3.2: the convertibility check wraps a tool the way the MCP SDK does, so every demo can hold its packs to ADR 0028. -->
+    <PackageReference Include="ModelContextProtocol.Core" Version="2.2.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\engine\LouisAgent.Core.Web\LouisAgent.Core.Web.csproj" />
+    <ProjectReference Include="..\..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+  </ItemGroup>
+
+</Project>

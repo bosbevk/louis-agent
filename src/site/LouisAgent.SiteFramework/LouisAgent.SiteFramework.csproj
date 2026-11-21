@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!-- The framework's own site (F164.1), framework.louis-agent.dev: the framework told to a developer, page by page,
+       built on the framework's web like any site. It holds its words, its pages and which parts it uses. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.SiteFramework</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compiles Styles/ into wwwroot/css on every build. Build time only: nothing of it reaches the browser. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.12" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\web\LouisAgent.Web\LouisAgent.Web.csproj" />
+    <ProjectReference Include="..\..\web\LouisAgent.Web.Themes\LouisAgent.Web.Themes.csproj" />
+    <!-- The framework's pages, the package this site turns on with .Framework(). -->
+    <ProjectReference Include="..\..\web\LouisAgent.Web.Framework\LouisAgent.Web.Framework.csproj" />
+    <!-- Every place's own address, the area it names with .Places(). -->
+    <ProjectReference Include="..\..\web\LouisAgent.Web.Places\LouisAgent.Web.Places.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The Sass compiler's settings are for the build, so they stay out of what's published. -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+</Project>

@@ -72,7 +72,7 @@
       {
         "id": "check",
         "name": "ThemeSheet",
-        "kind": "static, step 4, louis-agent.web.testing",
+        "kind": "static, step 4, LouisAgent.Web.Testing",
         "members": [
           "IReadOnlyList<string> NamesToSet(string frameworkCss)",
           "IReadOnlyList<string> Missing(string css, SiteTheme theme, SiteStyle style, IReadOnlyList<string> names)"

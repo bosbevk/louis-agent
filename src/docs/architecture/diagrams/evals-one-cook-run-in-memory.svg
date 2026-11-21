@@ -294,9 +294,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <tspan class="note-rest">an eval's folder becomes trials, and each trial's checks grade it into events. The folder is</tspan>
   </text>
   <text class="notes" x="38" y="1089">
-    <tspan class="note-rest">demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its ten checks are cook-no-error, routed-to, within-budget,</tspan>
+    <tspan class="note-rest">demos/puls/evals/LouisAgent.Identities.Puls.Evals/Evals/Cook, and its ten checks are cook-no-error, routed-to,</tspan>
   </text>
   <text class="notes" x="38" y="1106">
-    <tspan class="note-rest">estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, unpriced-items, meal-for-people and human.</tspan>
+    <tspan class="note-rest">within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, unpriced-items, meal-for-people and human.</tspan>
   </text>
 </svg>

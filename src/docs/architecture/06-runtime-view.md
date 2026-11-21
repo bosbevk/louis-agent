@@ -3,9 +3,9 @@
 > **Explanation.** How the parts work together at run time: what the model can use (tools and skills), one chat turn
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
-> [a C# tool](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool), [a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool),
+> [a C# tool](../../engine/LouisAgent.Core/CLAUDE.md#adding-a-tool), [a toolset](../../engine/LouisAgent.Core/CLAUDE.md#adding-a-tool),
 > [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
-> [another agent on core](../../engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
+> [another agent on core](../../engine/LouisAgent.Core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
 ![The runtime view: tools and skills, one chat turn, and the work across agents](diagrams/06-runtime-view.svg)
 
@@ -57,7 +57,7 @@ documentation. Keep helpers `internal` or `private`. `ToolRegistry` keeps every 
 every request is the same bytes and the prompt cache holds (F4). A toolset whose settings are missing (Paymo or DevOps
 without its API key, or `agents` without `AGENT_PEERS`) can't be loaded. When an identity has skills to read on
 demand, its session also gets `ReadSkill`, which reads only those. An agent built on core, like the orchestrator, passes its own tool objects as
-`toolsets:` the same way (the guide's [Building another agent on core](../../engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core)).
+`toolsets:` the same way (the guide's [Building another agent on core](../../engine/LouisAgent.Core/CLAUDE.md#building-another-agent-on-core)).
 
 ### How skills are loaded
 
@@ -77,7 +77,7 @@ guide, because its role says what to do with its one tool. A session with the `a
 the agents it may ask, its identity's `Calls`, the same list `AskAgent` checks. Last, and only with the `skills`
 toolset, comes every function skill the agent wrote.
 
-The combined text is the system prompt. Core's own files are in `src/engine/louis-agent.core/prompts/`, and each
+The combined text is the system prompt. Core's own files are in `src/engine/LouisAgent.Core/prompts/`, and each
 identity and pack embeds its own. All of them are read only from their assemblies, so changing a word means a rebuild.
 
 *Decided in:* F5, [ADR 0018](../adr/0018-built-in-prompts-embedded.md), [ADR 0019](../adr/0019-modes-one-file-per-product.md),
@@ -194,4 +194,4 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 |---|---|---|
 | **Puls delegates** | Puls asks its specialist by its address (`AskAgent("puls.cook", …)`), and the specialist's session loads the toolsets its role names; its steps stream into the chat's work panel; Puls answers in its own voice | [Agent to agent: one address for every call](../AGENT_COMMUNICATION.md#agent-to-agent-one-address-for-every-call) |
 | **An eval runs** | The runner, started by the API, opens real sessions on the API, grades each conversation and writes the protocol's lines; the API records them and joins the cost from the ledger | [The evals](evals.md) |
-| **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on louis-agent.api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../../../demos/louis-agent/docs/projects/orchestrator-runbooks.md) |
+| **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on LouisAgent.Api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../../../demos/louis-agent/docs/projects/orchestrator-runbooks.md) |

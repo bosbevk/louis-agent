@@ -15,7 +15,7 @@
         { "id": "packs", "icon": "box", "title": "Its packs", "text": "Named, never referenced." }
       ] },
       { "cards": [
-        { "id": "root", "icon": "stack", "title": "The composition root", "code": "louis-agent.host-packs", "text": "IdentityKind and Plugins bring it in; IDENTITIES loads it." }
+        { "id": "root", "icon": "stack", "title": "The composition root", "code": "LouisAgent.HostPacks", "text": "IdentityKind and Plugins bring it in; IDENTITIES loads it." }
       ] }
     ],
     "links": [

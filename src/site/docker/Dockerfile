@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet publish "src/site/louis-agent.site-api/louis-agent.site-api.csproj" -c Release -o /app/publish
+RUN dotnet publish "src/site/LouisAgent.SiteApi/LouisAgent.SiteApi.csproj" -c Release -o /app/publish
 
 # The framework's site's host (F124) needs only the runtime: the guide reads docs and sends mail, it runs no build.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
@@ -25,4 +25,4 @@ ENV RATES_FILE=/app/config/rates.json
 ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD curl -fs http://localhost:8080/health || exit 1
-ENTRYPOINT ["dotnet", "louis-agent.site-api.dll"]
+ENTRYPOINT ["dotnet", "LouisAgent.SiteApi.dll"]

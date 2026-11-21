@@ -329,7 +329,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="pic-name" x="736.2" y="761" text-anchor="start">louis-agent.core</text>
+      <text class="pic-name" x="736.2" y="761" text-anchor="start">LouisAgent.Core</text>
       <text class="pic-name" x="736.2" y="777" text-anchor="start">[class library: the loop,</text>
       <text class="pic-name" x="736.2" y="793" text-anchor="start">skills, the provider seam]</text>
       <rect class="pic-panel" x="399.8" y="874" width="172.4" height="52" rx="10" />

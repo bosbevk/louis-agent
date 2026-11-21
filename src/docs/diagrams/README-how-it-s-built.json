@@ -33,13 +33,13 @@
         "id": "contracts",
         "icon": "code",
         "tone": "teal",
-        "label": "louis-agent.composition\nthe contracts an identity or a\npack needs"
+        "label": "LouisAgent.Composition\nthe contracts an identity or a\npack needs"
       },
       {
         "id": "core",
         "icon": "chip",
         "tone": "violet",
-        "label": "louis-agent.core: the engine\ntool loop \u00B7 streaming \u00B7\nproviders \u00B7 usage ledger \u00B7\nguards"
+        "label": "LouisAgent.Core: the engine\ntool loop \u00B7 streaming \u00B7\nproviders \u00B7 usage ledger \u00B7\nguards"
       },
       {
         "id": "llm",

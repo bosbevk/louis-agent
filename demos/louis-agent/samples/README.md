@@ -4,7 +4,7 @@
 > and the one the site's recorded coding session (F120) fixes. A sample is a customer's
 > repository, not the framework's code: the coder edits it, the reviewer reads it, and the repo's own size and folder
 > rules leave it alone. **Elsewhere:** the workflow in [the F106.3 plan](../../../src/docs/plans/F106.3-triage-and-fix-a-service.md);
-> the orchestrator that first watched this service in [its doc](../docs/projects/louis-agent.orchestrator.md).
+> the orchestrator that first watched this service in [its doc](../docs/projects/LouisAgent.Orchestrator.md).
 
 ## order-service
 

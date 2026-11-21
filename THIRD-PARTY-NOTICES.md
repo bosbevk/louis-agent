@@ -43,7 +43,7 @@ The pages fetch these from a CDN at run time, so no copy is in the repo; their n
 
 | What | Licence | Where |
 |---|---|---|
-| Bootstrap 5.3 (Puls) | [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE) | `demos/puls/web/louis-agent.puls/wwwroot/index.html` |
+| Bootstrap 5.3 (Puls) | [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE) | `demos/puls/web/LouisAgent.Puls/wwwroot/index.html` |
 | highlight.js 11.11 (Puls, review web app) | [BSD-3-Clause](https://github.com/highlightjs/highlight.js/blob/main/LICENSE) | both apps' `wwwroot/index.html` |
 | Fonts: Montserrat, JetBrains Mono, IBM Plex Mono, VT323, Geist, Geist Mono | [SIL OFL 1.1](https://openfontlicense.org) | Google Fonts, linked from the pages' CSS |
 
@@ -53,7 +53,7 @@ A few pieces of someone else's work are kept in the repo as data, with their not
 
 | What | Licence | Where |
 |---|---|---|
-| Tabler Icons: the path data of the icons the docs' diagrams draw on their cards (CL60.1) and a page draws as its line icons (F134.1) | [MIT](src/web/louis-agent.diagrams.engine/Icons/LICENSE-tabler-icons.txt) · Paweł Kuna | `src/web/louis-agent.diagrams/Icons/IconPaths.cs` |
+| Tabler Icons: the path data of the icons the docs' diagrams draw on their cards (CL60.1) and a page draws as its line icons (F134.1) | [MIT](src/web/LouisAgent.Diagrams.Engine/Icons/LICENSE-tabler-icons.txt) · Paweł Kuna | `src/web/LouisAgent.Diagrams/Icons/IconPaths.cs` |
 
 ## Container images
 

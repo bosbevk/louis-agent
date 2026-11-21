@@ -1,0 +1,191 @@
+/* Glass, in the light (F151.2, ADR 0124): the design page's light values. White and black swap places and the
+   purple stays: the words are black, a visitor's mark is black, and the page is a wash of the violet, mixed from
+   its second step so it follows the purple and deep enough for a white rim to stand on. A pane is its drawing
+   alone, which holds its rim and its lights: nothing is painted under it, nothing blurs the page seen through
+   it, and it throws a soft shadow. The page behind is a picture of silk ribbons of light. A bar is white glass
+   over a white edge, and a press is its drawing with white words. The red, amber, blue and green are deeper
+   than the dark look's, so a demo's button holds white words and its icon stands out on the violet. The caption on a
+   photo's mat and the hover grey are the framework's own, since the mockup does not show them, and the error words a
+   darker red to read on white. The faces and the easing are the framework's. */
+
+@use "sass:color";
+@use "web/tools/colours";
+@use "theme-art";
+
+// The page: the second violet step, a little over half way into white, deep enough for a white rim to stand on.
+$page: color.mix(#9282ff, #ffffff, 54%);
+
+:root[data-theme="glass"][data-style="light"] {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #6b4dff);          // the violet: what is the brand's to press
+    // The accents, each deep enough for white words on it and to stand out on the violet page.
+    @include colours.both(bs-danger, #c23b31);
+    @include colours.both(bs-warning, #8a6200);
+    @include colours.both(bs-info, #2563c9);
+    @include colours.both(web-ok, #1d7a4c);
+    @include colours.both(web-purple, #6b4dff);          // the purple accent, dark enough to read on white
+    @include colours.both(bs-body-bg, $page);            // the page
+    @include colours.both(bs-secondary-bg, #ffffff);     // a panel
+    @include colours.both(bs-tertiary-bg, #ffffff);      // the menu
+    @include colours.both(bs-success-text-emphasis, #3a3650, web-success-text);
+    @include colours.both(web-menu-bg, #ffffff);
+
+    // Only ever see-through: in the light, what lifts a surface is dark, and so is a shadow.
+    @include colours.numbers(web-overlay, #1e105a);
+    @include colours.numbers(web-shadow, #1e1064);
+    @include colours.numbers(web-failed, #d9675f);
+    @include colours.numbers(web-backdrop, #eeeef5);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #3a22c4;
+    --bs-primary-bg-subtle: #{color.mix(#6b4dff, #ffffff, 13%)};
+    --bs-primary-text-emphasis: #3a22c4;
+    --bs-success: #0b0b0e;                                // your messages: a visitor is black in the light
+    --web-success-deep: #000000;
+    --bs-success-bg-subtle: #{color.mix(#9282ff, #ffffff, 16%)};
+    --web-sidebar-foot: #ffffff;
+    --web-sidebar-foot-deep: #{$page};
+    --bs-link-color: #0b0b0e;
+
+    --web-on-primary: #ffffff;
+    --web-bright: #0b0b0e;                                // the strongest words, black on the light
+    --web-soft-text: #3a3650;
+    --web-settings-text: #3a3650;
+    --web-error-text: #b3413a;
+    --web-photo-text: #333333;
+    --web-border-hover: #a9a2d6;
+    --web-scrollbar: #c3bde6;
+    --web-dialog-bg: #ffffff;
+    --web-code-number: #3a3650;
+    --web-code-comment: #6c6c7a;
+    --web-live-dot: #6b4dff;
+
+    --bs-emphasis-color: #0b0b0e;
+    --bs-body-color: #0b0b0e;
+    --bs-secondary-color: #37324e;
+    --bs-tertiary-color: #6c6c7a;
+    --bs-border-color: rgba(30, 16, 90, .2);
+    --web-code-bg: #{color.mix(#9282ff, #ffffff, 16%)};
+    --web-cta: #6b4dff;
+    --bs-box-shadow-sm: 0 2px 5px rgba(30, 16, 90, .12);
+    --bs-box-shadow: 0 24px 50px -22px rgba(30, 16, 100, .55);
+    --web-glow: 0 0 0 4px rgba(107, 77, 255, .18), 0 10px 30px -10px rgba(107, 77, 255, .3);
+    --bs-font-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+    // A pane is its drawing alone: nothing painted under it, the page seen through it sharp, and the
+    // shadow of something that stands off the page.
+    --web-pane-fill: transparent;
+    --web-pane-edge: none;
+    --web-pane-rim: none;
+    // At rest it carries a painted still bend: the light the lens would gather at its thick rim, the far side a
+    // little violet, drawn once as its light and its inside shadows.
+    --web-pane-light:
+        radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, .28), transparent 42%),
+        radial-gradient(90% 60% at 100% 100%, rgba(226, 223, 255, .18), transparent 45%),
+        linear-gradient(118deg, transparent 46%, rgba(255, 255, 255, .1) 50%, transparent 56%);
+    --web-pane-shadow:
+        0 14px 22px -14px rgba(22, 12, 70, .55),
+        inset 0 0 0 1px rgba(255, 255, 255, .55), inset 14px 16px 18px -14px rgba(255, 255, 255, .75),
+        inset -16px -18px 22px -16px rgba(107, 77, 255, .45), inset 0 0 26px -10px rgba(146, 130, 255, .35);
+    --web-pane-blur: saturate(1.5);
+    --web-pane-radius: 22px;
+    // Under the pointer it lifts, and its light is in the hover drawing: no edge, and the shadow it always throws.
+    --web-pane-hover-lift: -3px;
+    --web-pane-hover-edge: 0 0 transparent;
+    --web-pane-hover-shadow: var(--web-pane-shadow);
+    // The lens: the card under the pointer, or picked or shown, bends what is behind it as the design's cards.
+    --web-lens-wall: 52;
+    --web-lens-rise: 70;
+    // What is behind a panel's middle, by the panel's glass type: frosted two pixels, or rippled like water sixteen,
+    // its edge clear and bending sharply.
+    --web-lens-frost: 2;
+    --web-lens-water: 16;
+    // The colours a panel's glass may take, white and the grey of the second button, as much as the panel says.
+    --web-glass-white: #ffffff;
+    --web-glass-grey: #8a8a98;
+    // And it leans towards the pointer, seven degrees across, as the design's cards.
+    --web-tilt: 7;
+
+    // What floats over the page throws a pane's own shadow.
+    --web-float-shadow: var(--web-pane-shadow);
+    // The agent's answer over the page's words is clear glass with its drawn edges and no blur, over the soft body
+    // a quiet press has, thick enough to read on.
+    --web-frost-fill: rgba(204, 203, 218, .9);
+    --web-frost-blur: none;
+
+    // A veil, a panel the stage shows through: glass as a pane is.
+    --web-veil-fill: transparent;
+    --web-veil-edge: none;
+    --web-veil-blur: var(--web-pane-blur);
+
+    // An inset, set into the page: as see-through as a pane, its edge drawn by its drawing.
+    --web-inset-fill: transparent;
+    --web-inset-edge: none;
+    // A bar is white glass (FX159, Louis: "make this top part white glass"): white the page shows through, brightest
+    // at its top, over a white edge, with no blur, as nothing in glass blurs.
+    --web-bar-fill: linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .56));
+    --web-bar-edge: 1px solid rgba(255, 255, 255, .9);
+    --web-bar-blur: none;
+
+    // A press is its drawing alone, with white words, and it stands on a short dark shadow; the second has no line.
+    --web-press-fill: transparent;
+    --web-press-ink: #ffffff;
+    --web-press-edge: 0 solid transparent;
+    --web-press-shadow: 0 5px 9px -3px rgba(12, 6, 48, .45);
+
+    // The agent's bar is glass with a body, since it floats over running words: a milky white under
+    // its drawing, nothing blurred behind it, and no line. The box is sunk into it: a shadow under its upper
+    // edge and a lit lip along its lower one, the same while it is typed in. A chip floats over anything, so it
+    // has a milky body under its drawing.
+    --web-dock-fill: rgba(246, 244, 255, .8);
+    --web-dock-edge: none;
+    --web-dock-blur: saturate(1.4);
+    --web-sunk-fill: rgba(24, 12, 80, .07);
+    --web-sunk-shadow:
+        inset 0 3px 6px -1px rgba(22, 12, 70, .42), inset 0 0 0 1px rgba(22, 12, 70, .1),
+        inset 0 -1.5px 0 rgba(255, 255, 255, .85), 0 1.5px 0 rgba(255, 255, 255, .45);
+    --web-sunk-lit: var(--web-sunk-shadow);
+    --web-chip-fill: rgba(255, 255, 255, .82);
+    --web-chip-edge: 0 solid transparent;
+    --web-chip-blur: saturate(1.4);
+
+    // The page behind the glass: a picture of silk ribbons of light over the whole screen, which holds still, and no
+    // lines of its own.
+    --web-page-lines: none;
+    --web-page-lights: url("/_content/LouisAgent.Web.Themes/glass/light/silk.webp?v=1") center / cover no-repeat;
+    // The mark as a letter of the name: a full disc a little above the small letters.
+    --web-wordmark-o: .76em;
+    // Under the pointer the drawings show the hover, over the presses' own colours; a tile's icon stands on the
+    // panel's white glass with a soft shadow.
+    --web-press-hover-fill: var(--web-press-fill);
+    --web-quiet-hover-fill: transparent;
+    --web-quiet-hover-ink: var(--bs-body-color);
+    --web-chip-hover-edge: var(--web-chip-edge);
+    --web-icon-fill: var(--bs-secondary-bg);
+    --web-icon-shadow: 0 6px 14px -8px rgba(var(--web-shadow-rgb), .35);
+
+    // The mark is its drawing alone, which holds the l: no disc under it, no gloss, and no ink for a letter.
+    --web-mark-fill: transparent;
+    --web-mark-gloss: none;
+    --web-mark-ink: transparent;
+
+    // You, and the agent.
+    --web-you: #0b0b0e;
+    --web-agent: #6b4dff;
+
+    // Ultraviolet, light to dark.
+    --web-violet-0: #e2dfff;
+    --web-violet-1: #9282ff;
+    --web-violet-2: #6b4dff;
+    --web-violet-3: #3a22c4;
+    --web-violet-4: #110a40;
+
+    // Each part's drawing, and each of its states, served by this project (F151.4), at their version, raised whenever
+    // a drawing or the silk changes so no browser keeps the old one (FX189).
+    @include theme-art.drawn(glass, light, 1);
+
+    color-scheme: light;
+}

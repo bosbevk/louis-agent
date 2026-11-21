@@ -14,7 +14,7 @@ Supersedes [ADR 0060](0060-a-pack-ships-its-checks.md).
 ## Context
 
 ADR 0060 said a pack ships the checks that prove its tools, so a pack may reference the check contract
-(`evals/louis-agent.evals.checks`), and Puls's identity did the same for its evals. When a measure of unpriced items was
+(`evals/LouisAgent.Evals.Checks`), and Puls's identity did the same for its evals. When a measure of unpriced items was
 built that way, the shop-prices pack, until then on core alone, gained that reference, and Louis stopped it.
 
 The split is the engine as its own repo and package (Phase 10 in the [TODO](../../../TODO.md): F44.2 split packages, F44.3
@@ -28,7 +28,7 @@ Weighed for where the existing checks go: a checks project per pack (taken), in 
 them, which would know every named product and grow with each pack; and
 rewriting them as general checks with the particulars in the eval file, which is a rewrite of about 550 lines that
 could change pinned grades. The pattern is Separated Interface (Fowler, *Patterns of Enterprise Application
-Architecture*), as `louis-agent.identity.puls.judges` already did.
+Architecture*), as `LouisAgent.Identities.Puls.Judges` already did.
 
 ## Decision
 

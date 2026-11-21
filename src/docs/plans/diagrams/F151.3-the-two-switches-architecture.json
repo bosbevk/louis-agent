@@ -100,7 +100,7 @@
     "groups": [
       {
         "id": "web",
-        "label": "louis-agent.web"
+        "label": "LouisAgent.Web"
       }
     ]
   }

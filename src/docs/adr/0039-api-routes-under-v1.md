@@ -5,7 +5,7 @@
 
 ## Context
 
-`louis-agent.api` grew a route at a time: sessions (F5), rates (F14), the admin portal (F27, F31), the LLM profiles
+`LouisAgent.Api` grew a route at a time: sessions (F5), rates (F14), the admin portal (F27, F31), the LLM profiles
 (F30). A survey of `main` on 2026-10-25 counted 37 routes and found these gaps:
 
 - none was versioned;
@@ -27,7 +27,7 @@ it separates the API from the pages.
 
 ## Decision
 
-- **We put every route of `louis-agent.api` under `/v1`, except `/health`.** `/health` is the probe Docker and Azure
+- **We put every route of `LouisAgent.Api` under `/v1`, except `/health`.** `/health` is the probe Docker and Azure
   call, for any version. A breaking change to a route's shape gets a new version beside the old one, never a change
   in place.
 - **Resources are nouns, and a collection and its items share one plural name** (`GET /v1/git/branches`,

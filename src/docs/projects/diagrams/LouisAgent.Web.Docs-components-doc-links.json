@@ -1,0 +1,24 @@
+{
+  "kind": "nested",
+  "title": "A section's doc links: what they are made of",
+  "caption": "The page hands each link a path in the repo and its words; every link asks the one address the site named, so the docs can move and no page changes.",
+  "nested": {
+    "subtitle": "LouisAgent.Web.Docs, Links / DocLinks",
+    "root": {
+      "id": "links", "name": "DocLinks", "kind": "general part", "tone": "green",
+      "note": "the line a section ends with, named for a screen reader",
+      "holds": [
+        { "id": "first", "name": "DocLink", "kind": "general part", "tone": "green",
+          "note": "opens the doc beside the page", "in": [ "Path", "ChildContent" ] },
+        { "id": "second", "name": "DocLink", "kind": "general part", "tone": "green",
+          "note": "one for each doc the section was written from", "in": [ "Path", "ChildContent" ] }
+      ]
+    },
+    "around": [
+      { "id": "page", "name": "a framework page's Band", "side": "before", "kind": "page", "tone": "blue",
+        "heading": "The site's page", "gives": [ "Path", "ChildContent" ] },
+      { "id": "address", "name": "DocsAddress", "side": "after", "to": "first", "tone": "teal",
+        "heading": "What it reads", "note": "the one address the site named with Docs()", "reads": true }
+    ]
+  }
+}

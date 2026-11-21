@@ -8,7 +8,7 @@
 
 A few names moved since this was written. The price table is a demo's `config/prices.json` now (each demo and the
 site keep one), the priced ledger opens in core's `UsageLedger.Open`, and the web's number rules are
-`louis-agent.web`'s `UsageFormat`.
+`LouisAgent.Web`'s `UsageFormat`.
 
 ## Before and after
 

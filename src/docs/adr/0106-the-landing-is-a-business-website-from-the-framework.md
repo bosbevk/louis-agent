@@ -20,7 +20,7 @@ people will have a public facing AI on a page and not the rest".
   explains, and the agent in the corner. The framework's explaining pages (how it works, packs, identities, proof)
   are this demo's own content, not the product's: a customer never gets them.
 - **Every generic part is the framework's.** A part that would be the same on every business's site lives in
-  `louis-agent.web` (ADR 0084), and a site brings only its words, brand, colours, addresses and which parts it uses:
+  `LouisAgent.Web` (ADR 0084), and a site brings only its words, brand, colours, addresses and which parts it uses:
   the shell and the menu (F110), the card deck (F113), the diagram (F111, ADR 0103), the chat widget with its page
   knowledge (F115, ADR 0104) and its ability to show a page (F117, the `site` pack), and, from F117 on, the **band**:
   a section with a required id, a kicker and a heading, so every area of every page is named because the framework

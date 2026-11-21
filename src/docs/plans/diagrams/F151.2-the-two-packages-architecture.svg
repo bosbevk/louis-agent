@@ -253,7 +253,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="pic-name" x="1189" y="323" text-anchor="start">louis-agent.web</text>
+      <text class="pic-name" x="1189" y="323" text-anchor="start">LouisAgent.Web</text>
       <text class="pic-name" x="1189" y="339" text-anchor="start">the contract, from F151.1</text>
       <circle class="pic-port pic-edge tone-green" cx="1002.9" cy="464" r="4" />
       <circle class="pic-port pic-edge tone-green" cx="1002.9" cy="582" r="4" />

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Picks the identities and packs a host runs (CL15, ADR 0027): a host calls Plugins.FromEnvironment() once at start-up
+       and hands the catalogue to AgentHost. Core and the composition name no identity or pack; this project does, so it
+       is the host's side of the framework and never ships with a pack. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.HostPacks</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.HostPacks.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+    <ProjectReference Include="..\..\identity\LouisAgent.Identities.Puls\LouisAgent.Identities.Puls.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.DotNet\LouisAgent.Packs.DotNet.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Git\LouisAgent.Packs.Git.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Files\LouisAgent.Packs.Files.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Shell\LouisAgent.Packs.Shell.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Web\LouisAgent.Packs.Web.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Recipes\LouisAgent.Packs.Recipes.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.WhereToBuy\LouisAgent.Packs.WhereToBuy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.Calculator\LouisAgent.Packs.Calculator.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\LouisAgent.Packs.ShopPrices\LouisAgent.Packs.ShopPrices.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.HostPacks.md" Link="docs\LouisAgent.HostPacks.md" />
+    <None Include="..\..\..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+    <None Include="..\..\..\..\src\docs\guides\build-an-identity.md" Link="docs\build-an-identity.md" />
+  </ItemGroup>
+
+</Project>

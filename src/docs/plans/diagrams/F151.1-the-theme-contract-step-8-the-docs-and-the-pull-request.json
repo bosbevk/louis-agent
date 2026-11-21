@@ -7,7 +7,7 @@
     "nodes": [
       {
         "id": "doc",
-        "label": "projects/louis-agent.web.md\nand its pictures",
+        "label": "projects/LouisAgent.Web.md\nand its pictures",
         "icon": "book",
         "tone": "green",
         "shape": "data"
