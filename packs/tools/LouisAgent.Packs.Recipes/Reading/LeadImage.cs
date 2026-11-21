@@ -14,16 +14,17 @@ namespace LouisAgent.Packs.Recipes.Reading;
 /// Chain of fallbacks. The page's JSON-LD (the <c>image</c> of its main item, read through
 /// <see cref="JsonLdBlocks"/>) is tried first because it names the photo of the page's subject; the <c>og:image</c>
 /// meta tag comes second because every page that shares a link has one. Without the chain a page that declares only
-/// one of them would show no photo.
+/// one of them would show no photo. Public only for <see cref="Of"/>, which a pack reads a page's photo with, as
+/// <see cref="HtmlText"/> is for its words (F166.3); the rest stays the framework's.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
-internal static partial class LeadImage
+public static partial class LeadImage
 {
     /// <summary>
     /// Gives you the page's lead image as markdown, or nothing when the page declares none the text can show.
     /// </summary>
-    internal static string? Of(string html, Uri baseUri, string? title)
+    public static string? Of(string html, Uri baseUri, string? title)
     {
         string? file = MainEntityImage(html) ?? OpenGraphImage(html);
         if (file is null || !Uri.TryCreate(baseUri, file.Trim(), out var target)
