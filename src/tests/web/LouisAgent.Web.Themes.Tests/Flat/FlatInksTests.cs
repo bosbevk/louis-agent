@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Testing.Styles;
 using LouisAgent.Web.Themes.Flat;
+using LouisAgent.Web.Themes.Glass;
 
 namespace LouisAgent.Web.Themes.Tests.Flat;
 
@@ -39,6 +40,38 @@ public class FlatInksTests
             .Concat(MenuInks.Select(ink => (ink, ground: MenuGround)))
             .Append((ink: CommentInk, ground: CodeGround))
         select new TestCaseData(style, pair.ink, pair.ground);
+
+    /// <summary>The page's ground.</summary>
+    private const string Page = "--bs-body-bg";
+
+    /// <summary>The purple a page's topic line is written in.</summary>
+    private const string Purple = "--web-purple";
+
+    /// <summary>
+    /// The looks whose page the purple is held to: flat in both styles, and glass in the dark. Glass's light page is
+    /// a pale violet the purple reads 2.9 to 1 on, as the brand's violet did before; that is glass's own look.
+    /// </summary>
+    private static IEnumerable<TestCaseData> Looks() =>
+        from look in new[]
+        {
+            (Theme: FlatTheme.Theme, Style: SiteStyle.Light),
+            (Theme: FlatTheme.Theme, Style: SiteStyle.Dark),
+            (Theme: GlassTheme.Theme, Style: SiteStyle.Dark),
+        }
+        select new TestCaseData(look.Theme, look.Style).SetArgDisplayNames(look.Theme.Id, look.Style.Wire());
+
+    /// <summary>
+    /// A page's topic line reads on the page: the purple each theme lightens for the dark (Louis's pick B of finding
+    /// 11 brought it: dark's topic line was the brand's violet, 3.84 to 1).
+    /// </summary>
+    [TestCaseSource(nameof(Looks))]
+    public void ThePurple_ReadsOnThePage(SiteTheme theme, SiteStyle style)
+    {
+        var values = ThemeSheet.Values(CompiledThemes.Css(), theme, style);
+
+        Assert.That(Contrast.Between(values[Purple], values[Page]), Is.GreaterThanOrEqualTo(Contrast.ForWords),
+            $"{Purple} {values[Purple]} on {values[Page]}");
+    }
 
     /// <summary>An ink reads on a ground it stands on.</summary>
     [TestCaseSource(nameof(Pairs))]
