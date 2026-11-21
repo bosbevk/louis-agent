@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 145 | 99 |
-| Fixes (`FX`) | 208 | 5 |
-| Cleanups (`CL`) | 41 | 30 |
+| Features (`F`) | 145 | 72 |
+| Fixes (`FX`) | 208 | 4 |
+| Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (134 in the TODO)
+## Open (103 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -45,14 +45,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F62 | Validate demand | Now |
 | F63 | The reference transcripts in git | Now |
 | F64 | The judge check can't see pages | Now |
-| F65 | After F35, the cook's answer | Now |
 | F66 | Each pack declares what it needs | Now |
 | F67 | A whole menu | Now |
-| F68 | The cook scales wrongly | Now |
 | F69 | The framework's `_Imports.razor` is about 90 lines | Now |
 | F70 | Long comment lines in the eval pages | Now |
 | F71 | At the next run, read the hand-off lines | Now |
-| F72 | Open from the recipes evals | Now |
 | F73 | Check the 47 new own-prices rows | Now |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
@@ -66,9 +63,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
 | F157 | The Google integration suite: connect Google per tenant, read a sheet, book a time, an Integrations section; seven children | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
-| F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
-| F50 | Puls's local specialists | Next |
 | F40 | The sales playground | Next |
 | F7 | Cost you can see and stop | Next |
 | FX4 | Append-only history | Next |
@@ -77,37 +72,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F36 | MCP servers as packs | Next |
 | F8 | Reliability | Next |
 | F15 | Model limits and local models | Next |
-| F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then | Next |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next |
 | F51 | Hosting for public traffic | Next |
-| F75 | Puls local spec | Puls |
-| F76 | Cook for the week | Puls |
-| CL16 | Reusable roles | Puls |
-| F77 | A domain stop-list for the browser | Puls |
-| F78 | Sources as data | Puls |
-| F79 | Places | Puls |
-| F80 | Local businesses | Puls |
-| F81 | Vision: `ScreenshotPage(url)` and images as input | Puls |
-| F82 | Local lookups | Puls |
-| F23 | Credits | Puls |
-| F83 | The cook's unconfirmed prices | Puls |
-| F84 | A shorter cook report | Puls |
-| FX59 | binary attachments sent as files, not text | Puls |
-| FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
+| FX59 | binary attachments sent as files, not text | Later |
+| FX60 | a continued specialist's ledger rows name the turn that continued it | Later |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
-| FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
-| F21 | Louis's corrections to the Afrikaans | Puls |
-| F28 | Team talk, the rest | Puls |
-| F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after, and its replays recorded again (ADR 0117) | Puls |
-| F85 | A retailer's own prices, only with its permission or feed | Puls |
-| F86 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls |
-| F87 | The open feeds have no key and no limit | Puls |
-| F60 | Search by meaning | Puls, later |
-| F88 | The cook's wave 3 | Puls, later |
-| F89 | A Puls-owned set of a few hundred South African recipes | Puls, later |
-| F90 | WhatsApp as a host | Puls, later |
-| F91 | The eleven official languages, measured | Puls, later |
-| F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Puls, later |
+| F90 | WhatsApp as a host | Later |
+| F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later |
 | F93 | The `similar` check, when an eval asks for closeness of meaning | Later |
 | F45 | Knowledge and retrieval | Later |
 | F94 | Searching PDFs, investigate much later | Later |
@@ -148,12 +119,10 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL47 | The portal's old benchmark routes and words removed, after Phase 3 | Cleanups |
 | CL48 | Remove the `/v1/admin/benchmarks/…` route aliases | Cleanups |
 | CL49 | Remove the eval store's old setting names | Cleanups |
-| CL50 | Remove `PULS_API`, the eval runner's old name for the API's address | Cleanups |
 | CL52 | The rest of the size list | Cleanups |
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
-| CL62 | A site's own words win only when registered before `AddSiteAreas`: a `Words(…)` builder method so order never matters | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
