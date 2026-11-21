@@ -65,4 +65,25 @@ public class PublishWorkflowTests
                 .And.Some.Contains("secrets.GITHUB_TOKEN").And.Some.Contains("--skip-duplicate"));
         });
     }
+
+    /// <summary>
+    /// Before anything is pushed, every framework package a packed one depends on is in the same batch or already on
+    /// the feed at the version it names; one that is neither stops the run (Louis's updated pick A, the guard).
+    /// </summary>
+    [Test]
+    public void TheGuard_ChecksEachFrameworkDependency_BeforeThePush()
+    {
+        var lines = Lines();
+        int guard = lines.FindIndex(line => line == "- name: Check every framework package they need is published");
+        int push = lines.FindIndex(line => line == "- name: Push them to GitHub Packages");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(guard, Is.GreaterThanOrEqualTo(0).And.LessThan(push), "the guard runs before the push");
+            Assert.That(lines, Has.Some.Contains("unzip -p").And.Some.Contains("<dependency id=\"LouisAgent\\."));
+            Assert.That(lines, Has.Some.Contains("out/$name.$version.nupkg"), "a package of the same batch counts");
+            Assert.That(lines, Has.Some.Contains("users/bosbevk/packages/nuget/$name/versions"), "so does the feed");
+            Assert.That(lines, Has.Some.Contains("exit 1"));
+        });
+    }
 }

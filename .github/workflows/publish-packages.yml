@@ -49,6 +49,32 @@ jobs:
             dotnet pack "$project" -c Release -o out
           done
 
+      # The guard: every framework package a packed one depends on is in this batch, or already on the feed at the
+      # version it names (a project reference becomes "this version or higher"). One that is neither stops the run
+      # before anything is pushed, naming it, since a package pointing at a version nobody can restore helps no one.
+      - name: Check every framework package they need is published
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          missing=""
+          for package in out/*.nupkg; do
+            nuspec=$(unzip -p "$package" '*.nuspec')
+            id=$(echo "$nuspec" | grep -o '<id>[^<]*' | head -1 | cut -c5-)
+            for dependency in $(echo "$nuspec" | grep -o '<dependency id="LouisAgent\.[^"]*" version="[^"]*"' \
+                | sed -E 's/<dependency id="([^"]*)" version="([^"]*)"/\1@\2/'); do
+              name="${dependency%@*}"
+              version="${dependency#*@}"
+              [ -f "out/$name.$version.nupkg" ] && continue
+              if ! gh api "users/bosbevk/packages/nuget/$name/versions" --jq '.[].name' 2>/dev/null | grep -qx "$version"; then
+                missing="$missing $name $version (for $id);"
+              fi
+            done
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Not on the feed and not in this batch:$missing tag them too, and push the tags together."
+            exit 1
+          fi
+
       # To this account's feed with the run's own token. The symbols stay out: GitHub Packages takes the package only.
       - name: Push them to GitHub Packages
         env:
