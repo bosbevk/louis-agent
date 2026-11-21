@@ -49,15 +49,10 @@ The step's test passes. This takes it to a commit. Four stops come first.
 
 ## Which tests, and when
 
-Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main must be merged and full
-suite unit tests passes".
-
 - **Before a commit: only the tests of what the step touched.** `LouisAgent.Core.Tests` is among them when the
   step moves files or adds names. `/do-a-step` says which tests a step reaches.
-- **Before a pull request: `main` is merged in first, then the full suite of unit tests passes.** Fetch, merge
-  `origin/main` into the branch, and run
-  `dotnet test louis-agent-solution.sln --filter "Category!=Integration"`. A pull request is not opened on a
-  branch that is behind `main`, or on a suite with a failing test.
+- **Before a pull request: `main` is merged in first, then the full suite of unit tests passes.** The commands
+  are in `/ship-it`, *Before a pull request*.
 
 ## What Louis is shown
 
@@ -119,6 +114,14 @@ A change to the engine reaches every image in use.
 **Never while an eval run is going.** A run started from the eval studio runs inside the container. A rebuild makes
 the container again, and that ends the run. `GET /v1/admin/evals/runs/current` says whether one is going. Wait for
 it to end, then rebuild.
+
+## In a cloud thread
+
+No Rider runs there, and the app Louis tests by hand is on his PC, out of reach. So two parts change.
+
+- **Format** with `dotnet format louis-agent-solution.sln --include <its .cs files>` alone, and wrap every long
+  line by hand (item 4).
+- **No rebuild.** When the step is shown, say which image the change reaches, so Louis can rebuild it.
 
 ## An example
 

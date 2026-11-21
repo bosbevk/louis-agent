@@ -23,8 +23,8 @@ A cleanup (`CL`) finishes by the same list, and so does each child of a parent (
    words) under *Features* (or *Cleanups* for a `CL`) in the [work log](../../../src/docs/work-log.md), newest first, with the
    count above (`WorkLogTests` holds the counts and that nothing open is listed as done).
 2. **The features folder** (`src/docs/features/`): if the feature has a doc there, it is folded and its row leaves that folder's table (step 10).
-3. **Spec:** in the spec's *Implementation* map, mark the feature done; change anything the build proved different
-   (for example F4's two cache markers instead of three).
+3. **Spec:** if a spec in `src/docs/specs/` lists the feature in its *Implementation* map, mark it done there, and
+   change anything the build proved different (for example F4's two cache markers instead of three).
 4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from the
    TODO's [Known limitations](../../../TODO.md#known-limitations) (the one list).
 5. **Measure:** for a feature that changes cost or quality, run its eval ([Run the evals](../../../src/docs/guides/run-the-evals.md);

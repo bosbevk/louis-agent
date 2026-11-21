@@ -10,7 +10,8 @@ The site's words are the other writer's (`/write-the-copy`). Five stops come fir
 
 1. **Every fact comes from the code.** Read the code, the test or the ADR before a sentence says what it does. A
    reason ("so that…") is written only when the code's summary, an ADR or Louis's words give it
-   ([the docs rules](../../rules/docs.md#what-every-doc-is)).
+   ([the docs rules](../../rules/docs.md#what-every-doc-is)). A fact about something we don't own, such as Azure,
+   GitHub, a package or a protocol, comes from its own docs, read on the web that day and linked.
 2. **A rewrite keeps every fact.** List the facts of the old text first, and tick each one off in the new.
    Plainer words never change what is said.
 3. **One kind per doc.** Know whether it is a tutorial, a how-to, a reference or an explanation before the first

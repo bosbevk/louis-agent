@@ -7,17 +7,23 @@ description: Works as the graphic designer for anything looked at rather than re
 
 Four stops come first.
 
-1. **The brand guide is the brief.** `src/docs/brand/README.md` holds the mark, the name, the colour and the type,
-   and `src/docs/plans/F151-themes-and-styles.md` section 5 holds what glass and flat look like. Read both before
-   drawing. What they fix is not up for a new idea; a change to them is a finding with three options.
+1. **The product's own brand guide is the brief.** For louis-agent.dev that is `src/docs/brand/README.md`, which
+   holds the mark, the name, the colour and the type, with section 5 of
+   `src/docs/plans/F151-themes-and-styles.md` for what glass and flat look like. Another product has its own
+   guide, and nothing of louis-agent.dev's is carried over to it. A product with no guide yet gets its brief
+   first, as a finding with three options. Read the guide before drawing. What it fixes is not up for a new idea;
+   a change to it is a finding with three options.
 2. **Plan, then draw.** Before any file, write the plan in a few lines: what it is for and where it is seen, its
    size, the colours by name, the type, the one thing it should be remembered by. Check the plan against the brief,
    then draw.
-3. **Research first.** For anything new, look at how two or three strong brands of the kind solved it, and say
-   which and why. Never copy one.
+3. **Research first, on the web.** For anything new, look at how two or three strong brands of the kind solved
+   it, on their own pages that day, and say which and why. Never copy one. A size or a rule a platform sets, such
+   as a link preview's, is read in that platform's own docs.
 4. **Look at it.** A picture is checked by seeing it at the size it is seen, never by reading its code.
 
-## What is fixed
+## What is fixed for louis-agent.dev
+
+These are louis-agent.dev's fixed parts, from its guide. Another product's are in its own.
 
 - **The mark** is the ball with the l: a flat violet disc `#6b4dff` with Geist's l at weight 650, or the glass
   ball on the site. It is never recoloured, tilted, stretched, or set beside the name as well as inside it. Never

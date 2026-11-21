@@ -22,7 +22,8 @@ about something research it", and "be a researcher then". Four stops come first.
 
 1. **Inventory.** List what the brand holds today: the name, mark, colours, type, voice, every slogan in use and
    where, the page's sections in order, the metadata a link shows (`index.html`, `PageHead`, the social card),
-   contact, privacy and proof. The brand guide is `src/docs/brand/README.md`; the site is `src/site/`.
+   contact, privacy and proof. For louis-agent.dev the brand guide is `src/docs/brand/README.md` and the site is
+   `src/site/`. Another product's inventory comes from its own guide and its own site.
 2. **Who it is for.** April Dunford's five parts, in her order: the alternatives a customer would use instead
    (often doing nothing), what only we have, the value that brings, who cares most, the category. A part we
    can't answer is a gap, not a guess.
@@ -63,7 +64,8 @@ point is research, not advice: say plainly that it should be checked.
 
 ## What is handed over
 
-An HTML page published as an Artifact, in the brand's own look (Geist, Ultraviolet), with the inventory, the
+An HTML page published as an Artifact, in the look of the brand it is about (for louis-agent.dev, Geist and
+Ultraviolet), with the inventory, the
 rivals, the technique, the gaps and the sources, and a second page for the proposals. Each claim is linked to its
 source. The reply in the thread gives the picks in one line each and links the pages.
 

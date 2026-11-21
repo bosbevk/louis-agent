@@ -1,6 +1,6 @@
 ---
 name: plan-a-feature
-description: Writes, changes or finishes a plan. Use before the first step of a feature, a cleanup or a fix of more than one step, when Louis asks for a plan, when a plan grows past ten steps, or when he approves a change during the build. Holds the research first, where the plan goes, its sections and four pictures, and its records.
+description: Writes, changes or finishes a plan. Use before the first step of a feature, a cleanup or a fix of more than one step, when Louis asks for a plan, when a plan grows past ten steps, or when he approves a change during the build. Holds the research first, where the plan goes, its sections and pictures, and its records.
 ---
 
 # Plan a feature
@@ -27,10 +27,14 @@ Do this first, and write the plan from what you found.
   repo may hold the thing the plan was about to build, and then the plan uses it.
 - **Which rules reach it.** A change to a shared file is tested by everything that reads it. Find the tests
   and the rules that will run against the work, so no step is stopped by one it didn't expect.
-- **The patterns that fit**: Refactoring.Guru, the Gang of Four, Fowler, Microsoft's .NET guidance. Where there
-  is a choice among them, it goes to Louis with `/put-a-finding` before the plan is written.
-- **How a tool really behaves**, when the plan rests on one. Read its documentation. Then plan a first step
-  that proves it, and say the plan stops there if it doesn't hold.
+- **The patterns that fit**, read on the web that day: Refactoring.Guru, the Gang of Four, Fowler, Microsoft's
+  .NET guidance. Where there is a choice among them, it goes to Louis with `/put-a-finding` before the plan is
+  written.
+- **How a tool really behaves**, when the plan rests on one: a package, a platform, an API, a price, a limit.
+  Read its own documentation on the web that day, and link the page. Then plan a first step that proves it, and
+  say the plan stops there if it doesn't hold.
+- **How others solved it**, for anything new to this repo. Look for two or three who built the same thing, and
+  say what each did and what it cost them.
 - **What a mockup or a brief leaves open.** Each gap is a finding for Louis, not a detail for the build.
 
 The plan's *Context* says what was looked up. What could not be confirmed is said plainly, with the step that
@@ -41,8 +45,11 @@ will confirm it.
 One file in `src/docs/plans/`, named for what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix,
 `CLn-name.md` for a cleanup. A one-step fix has no plan.
 
-Its branch is off `main` and carries the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
-`refactor/CL3-messages-and-logging`, `feature/F49.1-checks-contract`.
+Its id is the next free number of its kind. Take it from `TODO.md` and `src/docs/work-log.md` on `origin/main`,
+after `git fetch origin main`, since another branch may have taken one since this clone was made. A plan drafted
+in the project's files takes its id the same way, so two plans never share one.
+
+Its branch is off `main` and carries the plan's id. The names are in `/ship-it`.
 
 The plan is saved and committed on that branch before step 1, so it is in the same pull request as the work.
 
@@ -52,8 +59,10 @@ In this order.
 
 1. **Context.** Why now, and what Louis asked for, in his own words.
 2. **Design.** What changes and why. It always has these:
-   - **Four pictures**, each a JSON in `diagrams/` beside the plan, drawn by our tool. Use `/draw-a-diagram`. No
-     doc holds Mermaid. A picture too big to read is split in two.
+   - **An overview and four pictures**, each a JSON in `diagrams/` beside the plan, drawn by our tool. Use
+     `/draw-a-diagram`. No doc holds Mermaid. A picture too big to read is split in two.
+     - *Overview*, a `cards` picture under the plan's opening line, as every doc opens
+       (`.claude/rules/docs.md`): what the plan builds and its main parts.
      - *Interface design*, a `classes` picture: the interfaces and records the change uses or adds, every
        implementation behind them, old and new, each new one marked with the step that builds it, and who creates,
        reads and calls whom.
@@ -67,7 +76,8 @@ In this order.
    - **What is reused.** For each piece, the existing component or the package it uses. A new package is put to
      Louis first, with `/put-a-finding`.
 3. **Steps.** One commit each, with its test, written first and seen failing. A review stop after each.
-4. **Verification.** The tests, the free checks by hand, and any paid run, which needs his approval first.
+4. **Verification.** The tests, the free checks by hand, any paid run, which needs his approval first, and the
+   **Done when**: what must be true before `/finish-a-feature` closes the work.
 5. **Concepts.** What each step teaches, and its skill in `src/docs/GOAL.md`.
 6. **Approved during the build.** Empty at first.
 
@@ -87,7 +97,7 @@ project's design doc or the write-up.
 
 ## An example
 
-CL64, our prompts in the skill shape. Its plan opened with its context in Louis's words, drew its four pictures
+CL64, our prompts in the skill shape. Its plan opened with its context in Louis's words, drew its pictures
 from JSON in `diagrams/`, had a namespace map and numbered steps, and kept a change he made during the build under
 *Approved during the build*: on 2026-11-18 he narrowed it to the guide alone, since the cook and Puls move to their
 own repos. When the work was done, what lasted went into the guide's design doc and the context-engineering
@@ -96,7 +106,7 @@ write-up, and the plan and its pictures were deleted.
 ## References
 
 - [The plans' README](../../../src/docs/plans/README.md), the sections and the index
-- `/draw-a-diagram`, for the four pictures
+- `/draw-a-diagram`, for the pictures, and `/ship-it`, for the branch's name
 - The patterns: [Refactoring.Guru](https://refactoring.guru/design-patterns), Fowler's
   [catalog of patterns](https://martinfowler.com/eaaCatalog/), and Microsoft's
   [.NET design guidelines](https://learn.microsoft.com/dotnet/standard/design-guidelines/)
