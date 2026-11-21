@@ -213,6 +213,13 @@ The code-review app's tests (`LouisAgent.CodeReview.Tests`) pin its chat page th
 The starter has its own (`LouisAgent.Starter.Tests`), and `LouisAgent.Starter.IntegrationTests` spawns a site the
 way `dotnet new louis-site` does.
 
+The framework as a product installs it is tested from outside the repository. `LouisAgent.Packages.IntegrationTests`,
+in `src/tests/packages/`, packs the 31 packages into a folder at a version of its own, checks that a package names its
+framework dependencies at the versions it was packed with, and writes a console project in a temporary folder that
+knows only that folder and nuget.org, then runs an agent from it. `PackagesTests` in `core.tests` holds which projects
+are packages, and `PublishWorkflowTests` and `ConsumeWorkflowTests` hold the two workflows that publish them and
+restore them from GitHub Packages ([Publish the framework](../guides/publish-the-framework.md)).
+
 `src/tests/web/LouisAgent.Web.Testing` holds what they share: the fixture replay, the stub API (`FixtureApi`: fixed
 JSON for what the apps read at start-up, one session, the recorded turn streamed, and the workspace and git reads
 empty), `RecordingJSRuntime`, which lists every JS call, the snapshot helper and `SassStylesheet`. The eval pages, the

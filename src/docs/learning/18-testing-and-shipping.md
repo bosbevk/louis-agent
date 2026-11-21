@@ -1683,6 +1683,38 @@ and the site answering on :5080 with its renamed stylesheet.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a change too wide for hands, made by rules that are
 written down and kept, then proved by the build and the whole suite; and a name read from the code, not invented.
 
+## The framework as packages (F166.2, 2026-11-21)
+
+Puls is moving to a repository of its own, and from there it can't point at the framework's project files. So the
+framework became something a product installs: 31 NuGet packages on GitHub Packages, the projects a product reaches,
+each with a version of its own read by MinVer from a tag of its own name, `LouisAgent.Core-0.1.0`.
+
+Almost nothing of it is code. A package is a project's settings: one shared file makes every project no package unless
+it says so and gives every package the licence and Source Link, and a second, read after the project, adds MinVer only
+where the project said yes. A rule test holds which 31 say it. The proof was written before anything was published:
+an integration test packs the 31 into a folder and runs an agent from a project outside the repository that knows
+only that folder.
+
+Two questions the docs didn't settle were answered by trying. A project reference becomes "this version or higher" of
+what it referenced. And a scratch repository of two projects showed what MinVer does across prefixes: with
+`MinVerIgnoreHeight`, a package with no tag on the release commit keeps its last tag's version, so a package released
+later depends on a published neighbour, not a pre-release nobody can restore. That made one tag per package safe, with
+a guard before the push for the one thing left, a dependency whose tag was never pushed.
+
+The release taught two things on the way. A tag runs the workflow its commit holds, so the release waited for the
+merge and was tagged on `main`. And GitHub makes no event at all when more than three tags are pushed at once: 31 tags
+arrived and nothing ran. The workflow already published every package tagged on its commit as one batch, since GitHub
+starts tag runs in no set order, so deleting one tag and pushing it again made one run that published all 31.
+
+What didn't go well. The local unit suite ran green while an older integration test, which packed a pack at .NET's
+default 1.0.0, broke on CI after the merge (FX218); a change to how everything builds needs the integration tests
+before it merges. A timing race in another integration test surfaced in the same runs and was fixed on its own (FX219).
+Nothing was spent: no model call. The measure is the release run, 31 packages pushed, and a workflow that restores
+them with only its own token and gets an agent's answer back.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a framework shipped as packages, proved from outside the
+repository before and after it is published, with a guard where a mistake would be permanent.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)
