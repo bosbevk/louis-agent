@@ -34,6 +34,8 @@
    You and the agent are each one's mark: the brightest words for you, the framework's purple for the agent.
    The violet is the brand's purple in five steps, light to dark; until a theme sets them, all five are the
    framework's one purple.
+   A code word is a word of code in running words (F169.1): its fill, its ink and its edge. Today it is the brand's
+   pale violet chip with its deep violet words, as a chat draws it, with no line.
    The art is a drawing a theme may lay on a piece (F151.4), one name for each part and state, named for the
    drawing: a pane, the main button and the second, a field, a switch, the focus ring, a slider, a well, a tag, the
    live label, a switch's group, the header, the cut stone on a picked piece, and the mark three ways: as it
@@ -116,6 +118,10 @@
     --web-violet-2: var(--web-purple);
     --web-violet-3: var(--web-purple);
     --web-violet-4: var(--web-purple);
+
+    --web-code-word-fill: var(--bs-primary-bg-subtle);
+    --web-code-word-ink: var(--bs-primary-text-emphasis);
+    --web-code-word-edge: 0 solid transparent;
 
     --web-art-field-focus: none;
     --web-art-field-rest: none;

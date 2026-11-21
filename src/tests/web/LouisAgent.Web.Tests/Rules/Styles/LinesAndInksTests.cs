@@ -56,7 +56,7 @@ public class LinesAndInksTests
         });
     }
 
-    /// <summary>A mixin's body in a sheet, from its opening line to the brace that closes it at the line's start.</summary>
+    /// <summary>A mixin's body in a sheet, from its opening line to the brace that closes it.</summary>
     private static string MixinBody(string sheet, string name) =>
         string.Join('\n', File.ReadLines(sheet)
             .SkipWhile(line => !line.StartsWith($"@mixin {name}() {{", StringComparison.Ordinal))

@@ -160,6 +160,11 @@
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
 
+    // A code word: the page's words on the code grey with flat's hairline (F169.1, Louis's pick A of finding 4).
+    --web-code-word-fill: var(--web-code-bg);
+    --web-code-word-ink: var(--bs-body-color);
+    --web-code-word-edge: 1px solid var(--bs-border-color);
+
     // Flat lays no drawing on any piece (F151.4) but its mark (FX181).
     // Its version goes up whenever one of its drawings changes, so no browser keeps the old one.
     @include theme-art.marks-only(flat, dark, 3);

@@ -183,6 +183,11 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-violet-3: #3a22c4;
     --web-violet-4: #110a40;
 
+    // A code word: the brand's pale violet chip with its deep violet words, as a chat draws it, with no line (F169.1).
+    --web-code-word-fill: var(--bs-primary-bg-subtle);
+    --web-code-word-ink: var(--bs-primary-text-emphasis);
+    --web-code-word-edge: 0 solid transparent;
+
     // Each part's drawing, and each of its states, served by this project (F151.4), at their version, raised whenever
     // a drawing or the silk changes so no browser keeps the old one (FX189).
     @include theme-art.drawn(glass, light, 1);
