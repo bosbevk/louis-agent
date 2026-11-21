@@ -1,6 +1,5 @@
 using System.Text.Json;
 using LouisAgent.SessionStream;
-using LouisAgent.Testing;
 using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Web.Testing;
@@ -28,9 +27,11 @@ public static class SessionStreamFixture
     public const string Question =
         "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
 
-    /// <summary>Where the recording lives: the session-stream tests' fixtures, read from the source tree.</summary>
-    public static string Folder =>
-        Path.Combine(TestPaths.RepoRoot, "src/tests/engine/LouisAgent.SessionStream.Tests", "Fixtures");
+    /// <summary>
+    /// Where the recordings are read: beside the test's own output, where this project copies the session-stream
+    /// tests' fixtures and its package brings them, so a site in a repository of its own replays them too (F166.3).
+    /// </summary>
+    public static string Folder => Path.Combine(AppContext.BaseDirectory, "Fixtures");
 
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 
@@ -86,7 +87,9 @@ public static class SessionStreamFixture
         }
     }
 
+    /// <summary>Where what both readers of the stream must read from it is written down.</summary>
+    public static string ExpectedFile => Path.Combine(Folder, "session-stream.expected.json");
+
     /// <summary>What both readers of the stream must read from it (session-stream.expected.json).</summary>
-    public static JsonElement Expected() =>
-        JsonDocument.Parse(File.ReadAllText(Path.Combine(Folder, "session-stream.expected.json"))).RootElement;
+    public static JsonElement Expected() => JsonDocument.Parse(File.ReadAllText(ExpectedFile)).RootElement;
 }

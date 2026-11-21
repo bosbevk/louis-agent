@@ -25,6 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- F166.3: the recordings the session-stream tests own, copied beside every test that takes these helpers, and
+         carried in the package as content that lands in a consumer's output the same way (Louis's pick A of finding
+         8), so SessionStreamFixture reads them from beside the DLL in any repository. -->
+    <None Include="..\..\engine\LouisAgent.SessionStream.Tests\Fixtures\*.sse;..\..\engine\LouisAgent.SessionStream.Tests\Fixtures\session-stream.expected.json"
+          Link="Fixtures\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Pack="true"
+          PackagePath="contentFiles/any/any/Fixtures/" PackageCopyToOutput="true" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
     <None Include="..\..\..\docs\projects\tests.md" Link="docs\tests.md" />
