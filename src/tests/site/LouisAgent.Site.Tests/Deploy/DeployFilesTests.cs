@@ -28,6 +28,20 @@ public class DeployFilesTests
     public void TheScript_KnowsBothApps(string text) => Assert.That(Script, Does.Contain(text));
 
     /// <summary>
+    /// update writes the filled yaml with no byte-order mark (FX224): Windows PowerShell 5.1's Set-Content -Encoding
+    /// utf8 always writes one, and with it in front az's yaml reader takes the first comment for a key and refuses
+    /// the file. PowerShell 7, on the release runner, writes none, so only a run on Windows showed it.
+    /// </summary>
+    [Test]
+    public void TheUpdate_WritesTheYaml_WithNoByteOrderMark()
+    {
+        const string withNoMark =
+            "[System.IO.File]::WriteAllText($resolved, $filled, [System.Text.UTF8Encoding]::new($false))";
+
+        Assert.That(Script, Does.Contain(withNoMark).And.Not.Contain("Set-Content $resolved"));
+    }
+
+    /// <summary>
     /// The script offers only what releases the two sites (F166.1, Louis's pick A of three): the old Bicep build's
     /// infra, vm and sql-access, which would make the VM, Mongo and SQL again, are gone with Puls.
     /// </summary>
@@ -97,8 +111,8 @@ public class DeployFilesTests
     /// </summary>
     [TestCase("if ($AppInfo.Folders.Count -gt 0) {")]
     [TestCase("foreach ($folder in $AppInfo.Folders) {")]
-    [TestCase(
-        "Invoke-Az storage directory create --account-name 'pulsstorage' --account-key $key --share-name $AppInfo.Share -n $folder -o none")]
+    [TestCase("Invoke-Az storage directory create --account-name 'pulsstorage' --account-key $key " +
+              "--share-name $AppInfo.Share -n $folder -o none")]
     public void TheRelease_MakesTheFoldersItsAppNames(string text)
     {
         int release = Script.IndexOf("    'release' {", StringComparison.Ordinal);
