@@ -1,0 +1,76 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F171 the bill checker: objects in memory",
+  "caption": "Anna's session holds her uploads and the conversation; the reading, the tariff book and the check hang from the tool calls, and only the record, never the photo, is in the conversation.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "s",
+        "icon": "message",
+        "tone": "blue",
+        "label": "Anna's session\nhistory (text only)"
+      },
+      {
+        "id": "f",
+        "icon": "folder",
+        "tone": "violet",
+        "label": "ISessionFiles\nbill-1.jpg, meter-1.jpg",
+        "shape": "data"
+      },
+      {
+        "id": "r",
+        "icon": "chip",
+        "tone": "teal",
+        "label": "BillReading\nSwartland · 2026-07 · 6 lines"
+      },
+      {
+        "id": "b",
+        "icon": "book",
+        "tone": "teal",
+        "label": "TariffBook\nSwartland 2026/27\n(from MongoDB)"
+      },
+      {
+        "id": "c",
+        "icon": "search",
+        "tone": "teal",
+        "label": "BillCheck\n1 finding: water"
+      },
+      {
+        "id": "l",
+        "icon": "message",
+        "tone": "green",
+        "label": "DisputeLetter\na draft"
+      }
+    ],
+    "edges": [
+      {
+        "from": "s",
+        "to": "f"
+      },
+      {
+        "from": "s",
+        "to": "r",
+        "word": "ReadBill",
+        "style": "dashed"
+      },
+      {
+        "from": "r",
+        "to": "c"
+      },
+      {
+        "from": "c",
+        "to": "b",
+        "word": "priced by",
+        "style": "dashed"
+      },
+      {
+        "from": "c",
+        "to": "l",
+        "word": "DraftDispute",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

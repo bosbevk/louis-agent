@@ -1,0 +1,31 @@
+{
+  "kind": "classes",
+  "title": "F171 the bill checker: the interface design",
+  "caption": "F171.1 adds two seams to the pack context; the bills pack's tools use them to read a bill into a record, check it with a dated tariff book, and draft the letter.",
+  "classes": {
+    "types": [
+      { "id": "ctx", "name": "IPackContext", "kind": "interface", "members": ["+Files ISessionFiles  (F171.1)", "+Reader IDocumentReader  (F171.1)", "+InATrial bool"] },
+      { "id": "files", "name": "ISessionFiles", "kind": "interface", "members": ["+Get(id) SessionFile?  (F171.1)", "+Forget(id)  (F171.1)"] },
+      { "id": "file", "name": "SessionFile", "kind": "record", "members": ["+Id string", "+Name string", "+MediaType string", "+Bytes ReadOnlyMemory<byte>"] },
+      { "id": "reader", "name": "IDocumentReader", "kind": "interface", "members": ["+ReadAsync<T>(SessionFile, instructions) T?  (F171.1)"] },
+      { "id": "mdr", "name": "ModelDocumentReader", "members": ["IChatClient + DataContent", "structured output to T", "a ledger row per reading  (F171.1)"] },
+      { "id": "readbill", "name": "ReadBillTool", "members": ["+ReadBill(fileId) BillReading  (F171.2)"] },
+      { "id": "reading", "name": "BillReading", "kind": "record", "members": ["+Municipality", "+Account string", "+Period from..to", "+Lines BillLine[]", "+Readings MeterReading[]"] },
+      { "id": "book", "name": "TariffBook", "kind": "record", "members": ["+Municipality", "+Year TariffYear", "+Water, Sanitation, Electricity, Refuse, Rates", "For(municipality, date)  (F171.2)"] },
+      { "id": "checkbill", "name": "CheckBillTool", "members": ["+CheckBill(reading) BillCheck  (F171.2)"] },
+      { "id": "check", "name": "BillCheck", "kind": "record", "members": ["+Findings Finding[]", "billed vs expected per line"] },
+      { "id": "draft", "name": "DraftDisputeTool", "members": ["+DraftDispute(check, findings) DisputeLetter  (F171.3)"] }
+    ],
+    "relations": [
+      { "from": "ctx", "to": "files", "kind": "holds" },
+      { "from": "ctx", "to": "reader", "kind": "holds" },
+      { "from": "mdr", "to": "reader", "kind": "implements" },
+      { "from": "files", "to": "file", "kind": "holds" },
+      { "from": "readbill", "to": "reader", "kind": "uses" },
+      { "from": "readbill", "to": "reading", "kind": "creates" },
+      { "from": "checkbill", "to": "book", "kind": "uses" },
+      { "from": "checkbill", "to": "check", "kind": "creates" },
+      { "from": "draft", "to": "check", "kind": "uses" }
+    ]
+  }
+}

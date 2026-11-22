@@ -1,23 +1,20 @@
 /* The surface tool's conversation (F151.4): what a chat draws that nothing else does. What you said, the helper
    an agent hands work to, the line that says it is working, and the light and the links of an answer. */
 
-/* What you said: a bubble in the second colour of the brand, run into its deeper shade, with a shadow under it. */
+/* What you said: a bubble in the second colour of the brand, run into its deeper shade, with the theme's small
+   shadow under it. A theme with no depth gives no shadow, and sets the deeper shade to the bubble's own colour, so
+   the bubble is one colour (F169.4, Louis's pick "A: the names there are"). */
 @mixin spoken() {
     background: linear-gradient(135deg, var(--bs-success), var(--web-success-deep));
-    box-shadow: 0 8px 22px -10px rgba(var(--web-shadow-rgb), .7);
+    box-shadow: var(--bs-box-shadow-sm);
 }
 
-/* The same bubble's depth: a line of light inside its top and a darker shadow under it. */
-@mixin spoken-deep() {
-    box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .08) inset, 0 12px 28px -12px rgba(var(--bs-black-rgb), .7);
-}
-
-/* The row you type in, while you type: its line toward the brand's colour, a soft ring of it and a shadow. */
+/* The row you type in, while you type: its line toward the brand's colour, a soft ring of it, and beside the ring
+   the shadow a theme gives what floats, so a theme with no depth keeps the line and the ring alone (F169.4, Louis's
+   pick "A: the names there are"). */
 @mixin typed-in() {
     border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg));
-    box-shadow:
-        0 0 0 4px color-mix(in srgb, var(--bs-primary) 12%, transparent),
-        0 18px 40px -18px rgba(var(--web-shadow-rgb), .3);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--bs-primary) 12%, transparent), var(--web-float-shadow);
 }
 
 /* The edge of a card whose helper is at work: the brand's colour going round it through the colours given, at
@@ -34,10 +31,12 @@
     box-shadow: 0 6px 16px -6px rgba(var(--web-shadow-rgb), .6);
 }
 
-/* The words that say the agent is working: a band of light that the sheet moves along them. */
+/* The words that say the agent is working: a band of the theme's working light that the sheet moves along them. A
+   theme whose light is the words' own grey shows plain words, and the ring beside them says the agent is at work
+   (F169.4, Louis's pick "A: plain words in flat"). */
 @mixin shimmer() {
     background:
-        linear-gradient(90deg, var(--bs-secondary-color) 0%, var(--bs-emphasis-color) 50%, var(--bs-secondary-color) 100%);
+        linear-gradient(90deg, var(--bs-secondary-color) 0%, var(--web-working-light) 50%, var(--bs-secondary-color) 100%);
 }
 
 /* A soft light in the brand's colour where the pointer is, at the --mx and --my the page sets. */

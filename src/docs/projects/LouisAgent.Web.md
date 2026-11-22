@@ -421,6 +421,13 @@ words. It stays open while the visitor opens a list in it, such as the demos, an
 a page. On a wider screen the sheet is no box of its own, so the links and the actions stand in the header's row
 as before, and the button is not drawn.
 
+In the docs layout the sheet holds the site's pages too. The site gives the frame its menu once, in the `Sidebar`
+slot, and the frame draws it in two places: first in the sheet, above the links, and in the docs layout's left
+column. The frame's own rules pick which is shown, beside the rule that turns the header into a sheet, so the
+three change at one width: at 720 and below the sheet's copy shows and the column's is not drawn, and above it the
+other way round. A copy that is not drawn is `display: none`, so a screen reader meets one menu. A site with a
+sidebar and nothing else in its header still gets the menu button, since the sheet has the pages to hold.
+
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
 menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. A site may hide a group
 for now with `Hidden`, which keeps it in the page with the browser's own `hidden` attribute, out of sight and out of
@@ -546,6 +553,16 @@ styles kept to it, so it wears the page's theme and style, flat or glass, light 
 each ([LouisAgent.Diagrams](LouisAgent.Diagrams.md)). It is as wide as the column it stands in. A kind a page needs
 that the engine lacks is added to the engine, never drawn in the figure.
 
+A picture drawn for a wide screen and shrunk into a phone's column would have words a quarter of their size, so the
+figure asks the engine whether the picture has a narrow form. If it has, a flow or a cards picture running down,
+the figure holds both drawings under its one caption: the narrow one in Bootstrap's `d-md-none` and the wide one in
+`d-none d-md-block`, so below 768 the phone's is shown. The narrow drawing is shown at its own size, never
+stretched, and shrinks only if the column is narrower than it. If the picture has no narrow form, such as a
+sequence, the figure holds it once in a frame that, below 768, keeps the drawing at its own size and slides
+sideways with a slim bar under it. The frame can take the keyboard's focus and is named by the picture's title, so
+it can be scrolled without a pointer. Both drawings are in the page from its first paint, and that is paid for in
+bytes: a page's pictures come to about twice their size.
+
 **Code and comparisons.** `CodeListing` shows code as text, never as markup, so a page that shows a program can
 never run it or break on it. It is named for its file, such as `Program.cs`, or its language when it has none, and a
 button copies the code exactly as shown, through the listing's own module; the button's words, Copy and Copied, are
@@ -565,7 +582,11 @@ Bootstrap's grid. The site's menu, which it gives the frame in its `Sidebar` slo
 readable middle column. From an extra-large screen, the page's sections stand on the right as "On this page", which is
 the frame's section index docked, reading the same list of the page's bands, so a page says its sections once. Docked,
 it is a plain list with the theme's line down its left, and the section in view is marked on that line by a thicker
-bar in the theme's violet, drawn by the surface tool's `marked`. On a narrow screen the menu stands above the page.
+bar in the theme's violet, drawn by the surface tool's `marked`. Below 992 the columns fold, and the menu stands
+above the page, until at 720 the frame moves it into the header's sheet, as told above. On a phone the docs layout
+also takes two of its three side paddings away: the page's own goes from 24 to 12, which with the grid's 12 makes
+24, and a section's, the frame's `--site-gutter`, goes to none. A band's room above is 48 there and below 32. So the
+words are 342 wide of a 390 screen.
 On a wide screen the line between the menu and the page is drawn down the page's column, which is as tall as the
 page, so it reaches the footer; the menu's own column is held in view and is only as tall as the menu.
 
@@ -625,13 +646,14 @@ records (an organisation, a website, a piece of software, a breadcrumb), written
 page as HTML with its own head and words, for crawlers that run no script.
 
 *Held by:* `SiteShellTests`, `SiteShellDocsTests`, `CardDeckTests`, `GraphLayoutTests`, `GraphViewTests`,
-`DiagramFigureTests`, `CodeListingTests`, `SiteSearchTests`, `ComparisonTableTests`, `FrameworkModulesTests`.
+`DiagramFigureTests`, `CodeListingTests`, `SiteSearchTests`, `ComparisonTableTests`, `FrameworkModulesTests`,
+`SiteShellMenuTests`.
 
 *Decided in:* F110 (the frame's motion), F111 and ADR 0103 (diagrams), F113 (the deck), F117 and ADR 0105 (going to
 a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 0106,
 [ADR 0107](../adr/0107-every-section-has-an-address.md), ADR 0109,
 [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md),
-[ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md).
+[ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md), F169.5 (a phone).
 
 ### 4. Someone watches a demo: the showroom
 
@@ -905,7 +927,8 @@ word of code in running words, has a fill, an ink and an edge, the brand's pale 
 and no line until a theme says otherwise. Beside a pane's corner stand four more corners, by what wears them: small
 (6), such as a menu's row or a code word; a block (10), such as a listing of code; a window (18), such as the search
 window or the agent's panel; and a pill (999), round at its ends, such as a doc link or a listing's Ask and Copy. A
-step's number has its six names, the main button at rest drawn as a circle until a theme says otherwise. Last come
+step's number has its six names, the main button at rest drawn as a circle until a theme says otherwise. The line
+that says the agent is working has its light, the strongest ink until a theme says otherwise. Last come
 the drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
 `--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.
 Each name is set to the look the framework draws with no theme, so a site that names none looks as it always has.
@@ -922,6 +945,19 @@ hairline. Others are plain, such as a wash of a colour or a shadow thrown in it,
 sheet, so they follow a theme through its colours. A kind writes its lines where it is included, so the tool adds
 nothing to a stylesheet by itself.
 
+**Depth is always the theme's.** A shadow under a piece and a blur behind it are read from a theme's names, never
+written as numbers, since a theme can only switch off what asks it. A dialog over the whole page, such as the
+search window, floats by the theme's floating shadow (`hovering`), and what is behind a piece is blurred by the
+pane's blur, or by another of the theme's blurs it names, such as the veil's behind the search window (`frosted`).
+The row a chat is typed in floats the same way, and while it is typed in it keeps a pale ring in the brand's colour
+beside that shadow (`typed-in`, which the chat's other box wears through `lit` too). The send throws the press's
+shadow (`press-shadow`), the same at rest and under the pointer. A visitor's message and a code block take the
+small shadow, `--bs-box-shadow-sm`, and a tool row and a helper's card the raised piece's. So flat, which sets
+those names to none or to its hairline, draws a line or nothing, and glass draws its own soft shadows. The line
+that says the agent is working is a band of light that runs along its words, and its colour is the theme's
+`--web-working-light`: a theme that sets it to the words' own grey shows plain words. And the framework lays
+nothing over a page, so its ground is exactly the colour its theme says.
+
 A few things every page shows are drawn once, in the base sheet, so the value a theme sets is the one a visitor
 sees. The ring round whatever the keyboard is on is written in `base/_elements.scss` and nowhere else: a later
 sheet that drew it again would win on every page. A page's small topic line above a heading is written in the
@@ -929,7 +965,9 @@ theme's purple, which each theme makes dark enough for its light page and light 
 control such as the search button or a listing's Ask and Copy is a chip, and a chip is drawn with the theme's chip
 line and, under the pointer, its hover line, so only the second button wears the press's outline. And a word of
 code in running words, on a site's page or in one of the agent's answers, is drawn by the tool's code word from
-the theme's three names for it, never in Bootstrap's pink; the code inside a listing is not a code word.
+the theme's three names for it, never in Bootstrap's pink; the code inside a listing is not a code word. A code
+word that would not fit its line may break anywhere, so a long path never pushes a narrow page wider than its
+screen; one that fits is drawn as it was.
 `LinesAndInksTests` holds the four.
 
 A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of this library, and of the
@@ -1140,8 +1178,10 @@ extra-large screen. The door's
 header button has `OpenAgentButtonTests`, and the site's search `SiteSearchTests`, which draw the places found, open
 one, and ask the agent from the last row.
 
-A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests` and
-`SurfaceNamesTests` in `Rules/Styles/Themes/`, and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
+A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests`,
+`SurfaceNamesTests` and `ThePagesGroundTests` (nothing laid over a page) in `Rules/Styles/Themes/`,
+`DepthIsTheThemesTests` in `Rules/Styles/Surfaces/Depth/` (every shadow and blur of the windows and a talk read from
+a theme's name, and the working line's light), and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
 `Rules/Sites/`. The first-paint test reads the script, taking its words from `SiteLook`, so the script and the C#
 can't drift apart. `TypeAndEdgesTests`, in `Rules/Styles/TypeAndEdges/`, holds a docs page's type and edges as the
 sheets write them: the three heading sizes and the part's title in the base rule, each corner reading its name and

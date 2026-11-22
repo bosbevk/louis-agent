@@ -42,6 +42,15 @@ internal static class PageSvg
     /// <summary>Room for the drawing's outline, the only margin the page's copy keeps.</summary>
     private const double Edge = 2;
 
+    /// <summary>How wide a phone's words are (F169.5): a 390 screen less 24 at each side.</summary>
+    public const int PhoneWords = 342;
+
+    /// <summary>
+    /// How wide a drawing for a phone is laid out, so that its page copy, with its edge on each side, is as wide as
+    /// a phone's words and is shown at its own size.
+    /// </summary>
+    public const int NarrowLayout = PhoneWords - 2 * (int)Edge;
+
     /// <summary>
     /// Cuts the empty ground from round the drawing: the chat around it is the ground, and on a phone every pixel
     /// of the width goes to the words.

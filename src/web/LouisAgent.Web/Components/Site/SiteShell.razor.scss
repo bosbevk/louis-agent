@@ -76,6 +76,8 @@
 .site-menu-button { display: none; }
 /* The sheet's copy of the settings is a phone's (FX208): on a wide screen they keep their own button and panel. */
 .site-menu-settings { display: none; }
+/* So is the sheet's copy of a docs page's menu (F169.5): on a wide screen the pages stand in their column. */
+.site-menu-pages { display: none; }
 /* The settings' three-line button at the header's end (FX163): a round glass button, the theme's second, round as
    every button is (Louis: "this should be round", "the same way we do our buttons"). */
 .site-settings-button {
@@ -179,6 +181,11 @@
        past a 390 screen. */
     .site-settings-button, .site-settings { display: none; }
     .site-menu-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    /* A docs page's menu moves into the sheet, first (F169.5, Louis's pick "A: the frame draws it in both places"),
+       so the pages no longer stand in a block above every page; the column's copy is not drawn, and a screen reader
+       meets one menu. */
+    .site-menu-pages { display: block; }
+    .layout-docs ::deep .site-docs-menu { display: none; }
     .site-menu-button {
         display: grid;
         place-items: center;

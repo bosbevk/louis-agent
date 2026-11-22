@@ -53,4 +53,11 @@ public static class PageScheme
           [{{ThemeAttribute}}="{{theme}}"][{{Attribute}}="{{Light}}"] :scope { {{light}} }
           [{{ThemeAttribute}}="{{theme}}"][{{Attribute}}="{{Dark}}"] :scope { {{dark}} }
           """;
+
+    /// <summary>
+    /// A rule a page of one theme gives some parts of a picture, the same in light and dark (F169.4): it names the
+    /// theme alone, and the parts inside one <c>:is()</c>, so every part stays under that theme.
+    /// </summary>
+    internal static string PartRule(string theme, string parts, string declarations) =>
+        $"[{ThemeAttribute}=\"{theme}\"] :scope :is({parts}) {{ {declarations} }}";
 }

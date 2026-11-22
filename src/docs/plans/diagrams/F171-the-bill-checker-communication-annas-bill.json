@@ -1,0 +1,28 @@
+{
+  "kind": "sequence",
+  "title": "F171 the bill checker: Anna's bill",
+  "caption": "The photo is kept with the session; ReadBill has the model read it once into a record, CheckBill recomputes with Swartland's 2026/27 tariff in C#, and DraftDispute writes the letter Anna sends herself.",
+  "sequence": {
+    "participants": [
+      { "id": "A", "icon": "user", "tone": "blue", "label": "Anna's app" },
+      { "id": "P", "icon": "server", "tone": "green", "label": "The API" },
+      { "id": "G", "icon": "user", "tone": "green", "label": "The bill checker" },
+      { "id": "T", "icon": "book", "tone": "teal", "label": "The bills pack" },
+      { "id": "M", "icon": "message", "tone": "violet", "label": "The model" }
+    ],
+    "steps": [
+      { "step": "message", "from": "A", "to": "P", "text": "photo of the bill + meter photo (consent recorded)" },
+      { "step": "message", "from": "P", "to": "G", "text": "\"check my bill\" + file ids" },
+      { "step": "message", "from": "G", "to": "T", "text": "ReadBill(bill-1)" },
+      { "step": "message", "from": "T", "to": "M", "text": "the image + the BillReading schema" },
+      { "step": "reply", "from": "M", "to": "T", "text": "BillReading: Swartland, 2026-07, water 38 kL estimated" },
+      { "step": "reply", "from": "T", "to": "G", "text": "the reading" },
+      { "step": "message", "from": "G", "to": "T", "text": "CheckBill(reading, meter 14 kL)" },
+      { "step": "note", "over": ["T"], "text": "TariffBook.For(Swartland, 2026-07) = 2026/27; water steps in C#" },
+      { "step": "reply", "from": "T", "to": "G", "text": "Finding: water billed R… expected R…, estimated reading" },
+      { "step": "message", "from": "G", "to": "T", "text": "DraftDispute(check, the water finding)" },
+      { "step": "reply", "from": "T", "to": "G", "text": "the letter: s102(2), account, period, line, ask" },
+      { "step": "reply", "from": "G", "to": "A", "text": "two sentences, the sum, the draft to check and send" }
+    ]
+  }
+}

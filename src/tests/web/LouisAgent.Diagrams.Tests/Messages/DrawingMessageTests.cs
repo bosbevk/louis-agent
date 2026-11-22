@@ -17,7 +17,8 @@ public class DrawingMessageTests
 
     /// <summary>
     /// The refusals hold no word a drawing writes, and no name is in both: the reader's enum is the 29 things it
-    /// refuses with, and the key's heading and the missing renderer are the drawing's.
+    /// refuses with, and the key's heading, the missing renderer and a cards picture that can't run down are the
+    /// drawing's.
     /// </summary>
     [Test]
     public void TheRefusalsAndTheDrawingsWords_AreTwoEnums()
@@ -29,7 +30,7 @@ public class DrawingMessageTests
             Assert.That(refusals, Has.Length.EqualTo(29));
             Assert.That(refusals.Intersect(words), Is.Empty);
             Assert.That(words, Does.Contain("KeyHeading").And.Contain("NoRenderer").And.Contain("LegendGreen"));
-            Assert.That(words, Has.Length.EqualTo(56));
+            Assert.That(words, Has.Length.EqualTo(57));
         });
     }
 

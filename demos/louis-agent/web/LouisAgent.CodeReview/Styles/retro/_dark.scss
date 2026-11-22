@@ -175,6 +175,7 @@
     --web-step-shadow: var(--web-press-shadow);
     --web-step-radius: 50%;
     --web-step-face: var(--bs-font-sans-serif);
+    --web-working-light: var(--bs-emphasis-color);
 
     // Retro lays no drawing on any piece.
     @include theme-art.none();

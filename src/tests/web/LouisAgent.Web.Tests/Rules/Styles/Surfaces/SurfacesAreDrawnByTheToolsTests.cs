@@ -72,7 +72,9 @@ public class SurfacesAreDrawnByTheToolsTests
         return Drawing.Contains(property) && Paints.Any(mark => value.Contains(mark, StringComparison.Ordinal));
     }
 
-    /// <summary>No sheet draws a surface by hand, so a theme reaches every piece and a new sheet can't slip one in.</summary>
+    /// <summary>
+    /// No sheet draws a surface by hand, so a theme reaches every piece and a new sheet can't slip one in.
+    /// </summary>
     [Test]
     public void NoSheet_DrawsASurfaceByHand()
     {
@@ -135,6 +137,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("brand-line")]
     [TestCase("lit")]
     [TestCase("cast")]
+    [TestCase("press-shadow")]
     [TestCase("raised")]
     [TestCase("glowing")]
     [TestCase("focus-ring")]
@@ -143,7 +146,6 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("glint")]
     [TestCase("frosted-float")]
     [TestCase("spoken")]
-    [TestCase("spoken-deep")]
     [TestCase("typed-in")]
     [TestCase("working-rim")]
     [TestCase("helper")]
@@ -153,7 +155,6 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("ground")]
     [TestCase("hovering")]
     [TestCase("grip")]
-    [TestCase("depth")]
     [TestCase("minion")]
     [TestCase("page-light")]
     [TestCase("outline-colour")]

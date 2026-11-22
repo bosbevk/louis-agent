@@ -590,6 +590,18 @@ since dots say one way. So the direction never rests on motion alone.
 **A link the rail cannot draw.** A rail stands in the gap between two rows. So a link that skips a row, or joins
 two cards of one row, is refused when the JSON is read, with the two cards it names.
 
+**Running down, for a phone.** A cards picture's data may say which way it runs, as a flow's does: `right`, the
+default, or `down`. Running down, `DownwardLayout` puts every card under the one before, in the rows' order. The
+card a rail leaves, the headline, is the picture's full width. The cards it feeds, and the quiet ones after them,
+stand 24 in from the left (`OverviewLayout.TrunkRoom`), and in that room a trunk runs down: from the bottom edge of
+the headline to the middle of the last card it feeds, with a branch across to each fed card's left side and an
+arrowhead on it. Two cards of one kind are 12 apart, and where one kind gives way to the next, the headline to the
+fed cards or the fed cards to the quiet ones, the room is the rows' gap, 26. The trunk is a `PlacedTrunk` beside the rails, and `OverviewTrunks` draws it in the rail's own
+classes, so a theme's rules for a rail reach it with nothing added. One trunk can only show who feeds whom while a
+single card feeds them all, so `OverviewLayout.CanRunDown` says yes only to a picture with no rail, or one rail
+that leaves one card. Asked to place any other running down, the layout refuses it by name
+(`DrawingMessage.CardsCantRunDown`).
+
 **The drawing** (`Svg/Renderers/Parts/Overview/`). `OverviewDrawing` draws what the layout placed and decides no
 place itself: the picture's own small title, the light behind each highlighted card, the rails and the cards. The
 look is `PictureLook`, then `MarqueeLook`, then `CardsStyle`. A card has no tone, so the colour is the look's own, one accent:
@@ -728,7 +740,35 @@ over the style alone. `PageScheme` names the theme's attribute and its two words
 rules are only in a page's copy, so a picture as a file, in the docs, stays byte for byte as it was. The web's
 `DiagramFigure` is what draws such a copy on a page ([LouisAgent.Web](LouisAgent.Web.md)).
 
-*Decided in:* F127.4.1, F164.1.
+**On a flat page a picture has no shading at all**, since flat draws one solid colour for each surface and nothing
+else. The page's copy gives a flat page a few rules of its own, the same in light and dark, each naming the theme
+alone and its parts inside one `:is()` so every part stays under flat (`PageScheme.PartRule`). The glow behind a
+rail and behind a sequence's beam, the light behind the picture's top, a panel's edge of light and a ticket's light
+are hidden. A rail, a beam going or coming back, and a badge with no tone of its own are filled with the picture's
+violet line in place of their fades. A lifeline and the rule under a title take the picture's hairline at full
+strength, and a key's swatch is filled as a card is. A badge that has a tone keeps it: the six tones say what each
+box is, so they stay. A test reads the page's copy of every kind of picture, finds each part its own style fills
+with a fade or passes through a filter, and fails if flat's rules or the cards' rule say nothing of it, so a fade
+added later has to say what it becomes on a flat page.
+
+**A page's copy can be drawn for a phone.** A picture drawn about 900 wide and shrunk into a phone's column has
+words a quarter of their size. So a page can ask for a picture in a fit, `PictureFit`, `wide` or `narrow`, as the
+second argument of `RenderForPage`. Wide, the default, is the drawing as it always was. Narrow asks `NarrowFit`,
+which answers one question for any picture: its narrow form, or none. A flow's narrow form is the same flow running
+down, with the columns and the row gap its author set for the wide drawing dropped, so each box sits in the rank its
+arrows give it. A cards picture's is the same cards running down, when `CanRunDown` allows it. A sequence, a class
+chart, a nested or a composite picture and a ticket have none today, and neither has a cards picture whose links
+leave more than one card; for those the page gets the wide drawing. `NarrowFit.Has` says which is which, so the page
+that holds a picture asks the engine and never works it out for itself.
+
+A narrow drawing is laid out 338 wide (`PageSvg.NarrowLayout`), so with the page copy's 2 pixels of edge on each
+side it is 342, the width of the words on a 390 screen (`PageSvg.PhoneWords`). Its head changes too. Wide, the
+picture's type stands at the right of its title's line. Narrow, the two would not fit side by side under a long
+title, so the type stands on its own line under the title, both at the inset, and the head is 14 pixels taller.
+The picture's width then counts the body, the title alone and the type alone (`PictureBuilder.Fit`). Only a page's
+copy is ever drawn narrow, so a picture as a file, in the docs, is byte for byte as it was.
+
+*Decided in:* F127.4.1, F164.1, F169.4, F169.5.
 
 ### 5. The types, in two pictures
 
@@ -762,7 +802,7 @@ src/web/LouisAgent.Diagrams/
 ├── Tones/      # DiagramTone
 └── DiagramText.cs, TextWrap.cs
 src/web/LouisAgent.Diagrams.Engine/
-├── Cards/      # OverviewLayout; Placed/ (PlacedCard, PlacedOverview, PlacedRail, RailEnd); Rails/ (CardRails, Rail, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes)
+├── Cards/      # DownwardLayout, OverviewLayout; Placed/ (PlacedCard, PlacedOverview, PlacedRail, PlacedTrunk, RailEnd); Rails/ (CardRails, Rail, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes)
 ├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
 ├── Composite/  # CompositeFlow
 ├── Flow/       # Bands, FlowText, GraphLayout, LongLines, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, BesideArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
@@ -772,7 +812,7 @@ src/web/LouisAgent.Diagrams.Engine/
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Nested/     # KeyLayout, NeighbourLayout, NestedLayout, NestedSizes; Placed/ (PlacedBox, PlacedNeighbour, PlacedNested, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBrand, PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureFonts, PictureLook); Theme/Pages/ (PagePalettes); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Fits/ (NarrowFit, PictureFit); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBrand, PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails, OverviewTrunks); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureFonts, PictureLook); Theme/Pages/ (PagePalettes); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames
@@ -821,7 +861,8 @@ chart's boxes, arrows and refusals in `Classes/`.
 
 It also covers the tones and the frame, the reader's refusals, a card's looks, and every icon drawn. `Tickets/` covers
 a ticket's refusals, its layout, and how it's made from a call. `Sources/Types/` checks a picture's type is filled in,
-kept or refused, and `Types/` what it's called. `Svg/PageSvgTests` checks a page's copy is scoped, rooted and trimmed.
+kept or refused, and `Types/` what it's called. `Svg/PageSvgTests` checks a page's copy is scoped, rooted and trimmed,
+and that on a flat page it has no glow, no light and no fade, every shaded part of every kind named for flat.
 `Geometry/` runs each sum a box and a point have over both families, and our own in `float` against Microsoft's.
 `Words/` checks a face's widths, `Svg/Paths/` a path's text, and `Svg/DiagramRenderersTests` that a picture is drawn
 with the geometry it's told.

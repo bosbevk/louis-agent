@@ -1042,3 +1042,120 @@ picture of them.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a unit inside a shared control decides what every theme's
 value means, and a slot lets one page hand a part something the part need not know.
+
+## F169.4: a theme can only reach a piece that asks it (2026-11-22)
+
+Flat's design says one solid colour for each surface and a hairline round it, with no shadow, blur or fade
+anywhere. The nine pages of the framework's site already kept that. The two windows that open over them did not:
+the search window threw a shadow 80 pixels deep and blurred the page behind it, Orbi's typing row had three shadows
+and a 14 pixel blur, and its send glowed violet and breathed. A talk added more: a deep shadow under the visitor's
+message and under a code block. And flat already said none for every one of those things. The fault was that these
+places never asked. They called mixins of the surface tool that wrote the depth as numbers, and from the sheet
+that called them such a mixin looked exactly like one that read a theme's name.
+
+Louis picked "the names there are": each place reads a name the themes already set, and no new name is added for
+them. So the change was small and in the right place. `hovering()` reads the floating shadow, `frosted()` takes a
+theme's blur, `typed-in()` keeps its pale ring beside the floating shadow, a new `press-shadow()` gives the send the
+press's shadow alone, and `spoken()` reads the small shadow. Two mixins that only wrote numbers, `depth()` and
+`spoken-deep()`, lost their last caller and went, with the send's breathing. One line in each mixin made three
+themes right at once, which is why the plan weighed who else each change reached before a line was written. Glass
+moved a little where it draws a talk: a message and a code block now wear glass's own small shadow in place of the
+deep ones, which is what the sheets Louis picked from showed. Retro says none for these names as flat does, so code
+review's chat lost the same shadows, its send stopped glowing and its top bar on a phone lost its blur. That was
+measured on the running app before and after, since it was not on the sheets he saw.
+
+One fade was not a shadow at all. The visitor's bubble runs from the theme's `--bs-success` into its
+`--web-success-deep`, and flat set the two a shade apart. A theme is values, so flat now sets the second to the
+first and the bubble is one colour. The same thinking settled the line that says Orbi is working: its band of light
+is a fade between two colours, so the light became a theme value of its own, `--web-working-light`, which glass and
+retro set to today's colour and flat to the words' own grey. Nothing moves visibly in flat, and the ring beside the
+words still turns.
+
+A picture is the same idea across a boundary. The diagrams' engine can't read the web's names, since the docs' tool
+draws pictures without the web, so a page's copy carries a palette for each theme. Flat's side gained rules that
+hide a picture's glows and lights and fill its rails, beams and badges with the violet line. They are written with
+`:is()`, because the first draft of the test showed a list of selectors after one theme attribute keeps only the
+first one under the theme: `[data-theme="flat"] :scope .a, :scope .b` would have hidden `.b` in glass too. And one
+detail the pick's own sheet got wrong would have broken a promise: the sheet filled every card badge violet, but a
+badge with a tone keeps its tone, and the plan says the six tones stay. So the badge rule names only a badge with no
+tone. A test reads the page's copy of every kind of picture, finds every part its own style fills with a fade or
+passes through a filter, and fails if flat says nothing of it. It found the title's rule before the rules were
+written, so a fade added next year will have to say what it is on a flat page.
+
+The grain was the last thing on a flat page that was not its theme's colour: a fixed layer at 5 percent over every
+page of every site. Louis picked it out everywhere. Two things made the change smaller than the card said. The print
+rule hides both of the page's layers, and the second is the theme's lights, so it stayed word for word. And retro's
+scanlines were drawn on the same layer and took their opacity and blend from the grain's rule without saying so.
+With that rule gone they would have been twenty times stronger, so retro's own rule now says both. The ground of a
+flat dark page now measures `#0c0c0e`, exactly flat's colour.
+
+What was measured, all on the local sites with Playwright. On the framework's site in flat, light and dark, at 1920
+and at 390 wide, on its nine pages, with the search window open and with every part of a talk put into Orbi's panel
+by hand, there is no shadow that is offset or soft, no blur and no fade between two colours; what is left are lines,
+rings and a link's underline. Eleven pictures count no fade and no blur, and all six tones still show. A phone's
+measure reported a glow on the folded button, but that layer computes `display: none` on the docked button, so it
+is drawn nowhere. On louis-agent.dev in glass a message and a code block wear glass's small shadow.
+
+What didn't go well. A comment line added to the framework's sheet of surface names hid the new name from the test
+that reads that sheet, exactly as it did in F169.3. The reader splits declarations on semicolons, so a comment
+swallows the line after it. The comment came out again; the reader itself is worth teaching to skip comments.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a theme can only reach a piece that asks it, so a tool that
+writes its own numbers is a hole in the contract even when every theme is right. And *18 Testing and shipping*: a
+unit test reads what a sheet says, and only a browser shows what a page draws, so the rule is held by both.
+
+## F169.5: a picture that is data can be drawn again for a phone (2026-11-22)
+
+On a phone the framework's site was a desktop page squeezed into 390 pixels. The nine pages stood in a block 175
+pixels tall above every page's first words. The words had 222 of the 390, because three side paddings stacked up.
+A long path in a code word pushed Getting started 40 pixels wider than the screen, so it slid sideways. And every
+picture was drawn about 900 wide and shrunk to fit, so its words came out at 2 to 4 pixels: there, but unreadable.
+
+The menu was the easy part, and it shows a slot paying off. The docs layout already handed the frame its menu once,
+as `Sidebar`, and the frame already had a sheet behind its menu button on a phone. So the frame now draws that same
+slot twice, first in the sheet and in the left column, and its own rules show one by width, right beside the rule
+that turns the header into a sheet, so the three can never change at different widths. The site wrote nothing new.
+The paddings were the same kind of fix: on a phone the docs layout sets the frame's own gutter name to none and the
+page's padding to 12, so the words are 342 wide, 24 from each edge. A code word may now break anywhere, but only
+when it would not fit, so every code word that fits is drawn exactly as before on every site.
+
+The pictures were the real work, and the lesson is in why they were possible at all. A picture here is data: a JSON
+file says the boxes and how they join, and our engine decides where each goes. So a phone's drawing is the same data
+told one more thing. A flow already knew how to run down. A cards picture learned it: running down, the headline is
+the full width, and the cards it feeds hang from a trunk down the left side, with a short branch to each. The page
+asks the engine for a fit, wide or narrow, an enum of two, and the engine answers with the picture's narrow form or
+none. The figure on the page then holds both drawings and lets Bootstrap's display classes show one. Twelve pictures
+on nine pages got a phone drawing, and not one page and not one picture file was touched for it. The sequence on How
+it works is the one with no narrow form yet: five lifelines need width, so it slides at its own size in a frame that
+takes the keyboard, and drawing it as steps down the page is F169.7.
+
+Two things the plan did not see came out in the measuring. The plan's test for the downward cards said every card
+is the picture's full width with the trunk at their left, but the sketch Louis picked draws the fed cards 24 in from
+the trunk. The sketch is what he chose, so the code follows it and the plan's *Approved during the build* says so.
+The bigger one: with the boxes laid out at 338, two pictures were still wider than a phone, because the head line,
+a picture's title with its type at the right, needs 354 for the cost flow and 370 for the Examples overview. A phone
+would have shrunk those to words of 9.7 and 9.2 pixels, under the 10 the done-when asks. That went to Louis as a
+finding with three options, and he picked the type under the title: on a phone the type gets a line of its own under
+the title, so the width counts each alone. The wide drawing did not change, which is why the docs' pictures stayed
+byte for byte the same.
+
+What was measured, on the local framework site with Playwright. At 390 and at 360 wide no page of the nine slides
+sideways, in light and dark. The pages are in the header's sheet, and at 768 and 1920 they stand where they did.
+The words are 342 wide on every page. The ten cards pictures and the cost flow are drawn for a phone, the cards 342
+wide and the flow 268, with no word under 10 pixels. The sequence slides at 1009 wide with its words at 10 to 16. Two drawings in
+a page are right from the first paint, and they are paid for in bytes: the Overview went from 151 KB to 283 KB, or
+11.3 to 17.1 KB compressed, and each other page with one picture grew by about 20 KB, under 1 KB compressed. How it
+works, with only the sequence, did not grow at all.
+
+What didn't go well. Some edits in this child were made with small scripts where the rules say to edit the file,
+and the plan's test for the trunk was written against the words of the plan rather than its sketch. Both were caught
+in the build, but the second would have been cheaper to catch when the plan was reviewed.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): when a thing is data, a new way to show it is one more word in
+the data and one more argument to the call that draws it, so twelve pictures gained a phone drawing with no page
+touched. The frame's slot is the same idea: filled once, drawn in two places. And *18 Testing and shipping*: a unit
+test can read a rule, but only a browser at 390 wide shows a page that slides sideways, so the done-when is a measure.
