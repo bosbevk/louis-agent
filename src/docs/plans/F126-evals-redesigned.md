@@ -213,7 +213,21 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
 
 ## Approved during the build
 
-Nothing yet.
+- **2026-11-22, the delete comes first.** Louis reviewed this plan and picked "1. Delete first": today's evals are
+  deleted before anything new is built, in a first child of its own,
+  [F126.1 Delete the old evals](F126.1-delete-the-old-evals.md). The four children above keep their work and move
+  down one: F126.2 the file and the grading, F126.3 runs and the run page, F126.4 flips, re-grade and
+  better-or-worse, F126.5 new evals. For that first child he picked two more things the same day. "1. Delete
+  everything": the session client and the two judge helpers this plan kept go with the rest, and a later child
+  copies back from git what it needs, with its test first. "1. In F126.1, from your picks": the ADR that
+  supersedes the old eval ADRs is written in F126.1, not in the last child. His other picks of that day are not in
+  this entry. They wait for the change that brings this plan along.
+- **2026-11-22, the first security eval is one of F126's new evals** (Louis's pick on a card, of three: here, keep it
+  in F42, or pull all of F42 up). The new evals gain one prompt-injection case: the guide reads a page with
+  instructions hidden in it, and facts in code check that it called no tool it was told to and that nothing private
+  is in its answer or in an image's address. It is GOAL.md's skill 15 met with skill 12's tools: red-teaming, OWASP's
+  LLM01 prompt injection. The rest of F42 (the untrusted-content frame, the audit log, rate limits, the full
+  red-team suite) stays in Phase 7.
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

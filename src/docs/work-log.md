@@ -22,7 +22,17 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Next |
+| CL69 | The old words left in code: "specialist" in the framework's web library (`SpecialistAnswer` and its tests, about 20 files' summaries) and "minion" in about 30 files' comments and 25 test methods' names (`AMinion_OpensAtDepthTwo…`): rename them to subagent and lookup agent through Rider (found in CL68.2 and CL68.3, ADR 0133, ADR 0021) | Now |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (plan approved 2026-11-22); F126.2 the file and the grading; F126.3 runs and the run page; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now, after CL69 |
+| F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
+| F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
+| FX4 | Append-only history | Now, after F43's first child |
+| F8 | Reliability | Now, after FX4 |
+| F7 | Cost you can see and stop | Now, after F8 |
+| F41 | Drafts and approvals | Now, after F7 |
+| F42 | Safety and audit | Now, after F41 |
+| F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F42 |
+| F157 | The Google integration suite: connect Google per tenant, read a sheet, a booking request, an Integrations section; four children | Next, after F171 |
 | F172 | What we are building, and what just landed: a `/now` page on both sites, read live from GitHub's TODO, work log and commit scopes; ten steps | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
@@ -34,7 +44,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
 | F145 | Who a talk was with: the visitor's IP on the overview, a retention rule, the privacy page told about both (the page itself came in F145.1); its own plan | Now, after F147 |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now |
-| F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
 | F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now |
 | F138 | The guide explains with drawings: a tool gives the model a docs diagram's JSON and the widget draws it in the chat with `LouisAgent.Diagrams`; its own plan, after F127.4 | Now |
 | F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
@@ -43,7 +52,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
 | F39 | Orchestration | Now |
-| F43 | Accounts, tenants and durable sessions | Now |
 | F62 | Validate demand | Now |
 | F63 | The reference transcripts in git | Now |
 | F64 | The judge check can't see pages | Now |
@@ -54,7 +62,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F71 | At the next run, read the hand-off lines | Now |
 | F73 | Check the 47 new own-prices rows | Now |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F168 | Facebook auto-answers (Louis, 2026-11-21: "plan integration into facebook to auto answer questions"): the guide answers the Page's Messenger in his voice through a framework library, `louis-agent.api.messenger`, over the sessions API with its own key and a daily cap per person, and steps back when Louis answers himself; a data-deletion callback; eleven steps, after F126 | Now, after F126 |
 | F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in seven children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, 74, 40 and 28 (40, 32 and 24 at 390 wide), the Overview's families h3s under one h2, four corner names and a step's six set by every theme, Orbi's panel at 18, no step on a disc in flat, the rows of terms and the page turn ending on the page's edge (done 2026-11-21); F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links (done 2026-11-22); F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass's talk on its own small shadow (done 2026-11-22); F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming (done 2026-11-22); F169.6 a card for each page: a link to a page previews that page's own card (done 2026-11-22); F169.7 the sequence drawn for a phone: on a 390 screen the sequence on How it works reads without sliding (done 2026-11-22) | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
@@ -62,16 +69,10 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
-| F157 | The Google integration suite: connect Google per tenant, read a sheet, a booking request, an Integrations section; four children | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F46 | Localisation | Next |
 | F40 | The sales playground | Next |
-| F7 | Cost you can see and stop | Next |
-| FX4 | Append-only history | Next |
-| F41 | Drafts and approvals | Next |
-| F42 | Safety and audit | Next |
 | F36 | MCP servers as packs | Next |
-| F8 | Reliability | Next |
 | F15 | Model limits and local models | Next |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next |
 | F51 | Hosting for public traffic | Next |
