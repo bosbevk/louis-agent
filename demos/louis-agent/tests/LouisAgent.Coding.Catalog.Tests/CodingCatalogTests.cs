@@ -51,7 +51,7 @@ public class CodingCatalogTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(reached.Select(agent => agent?.Kind), Has.All.EqualTo(AddressKind.Specialist));
+            Assert.That(reached.Select(agent => agent?.Kind), Has.All.EqualTo(AddressKind.Subagent));
             Assert.That(reached.Select(agent => agent?.Role), Is.EqualTo(triage.Calls));
         });
     }

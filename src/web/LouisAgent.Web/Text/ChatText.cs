@@ -15,7 +15,7 @@ public sealed record ChatText
     public string Result { get; init; } = "Result";
     public string Processing { get; init; } = "PROCESSING";
 
-    /// <summary>What a running specialist is doing, per role (F34), in place of processing; none by default.</summary>
+    /// <summary>What a running subagent is doing, per role (F34), in place of processing; none by default.</summary>
     public IReadOnlyDictionary<string, RolePhases> RolePhases { get; init; } = new Dictionary<string, RolePhases>();
 
     public string Stopped { get; init; } = "Stopped";
@@ -76,13 +76,13 @@ public sealed record ChatText
 
     public string DelegatedTo { get; init; } = "Delegated to";
 
-    /// <summary>A minion's card and Werk line (F30): the specialist handed one page to a minion.</summary>
+    /// <summary>A minion's card and Werk line (F30): the subagent handed one page to a minion.</summary>
     public string MinionLabel { get; init; } = "Minion";
 
     /// <summary>Between a minion's role and its model: "web-price-lookup on ollama".</summary>
     public string OnModel { get; init; } = "on";
 
-    public string Specialist { get; init; } = "specialist";
+    public string Subagent { get; init; } = "subagent";
     public string Task { get; init; } = "Task";
     public string Working { get; init; } = "Working";
     public string Work { get; init; } = "Work";
@@ -176,7 +176,7 @@ public sealed record ChatText
     public string ChatMany { get; init; } = "chats";
 
     public string CreditsNote { get; init; } =
-        "No subscription: you pay only for the questions you ask, specialists included. From the chats in this " +
+        "No subscription: you pay only for the questions you ask, subagents included. From the chats in this " +
         "browser.";
 
     public string BuyCredits { get; init; } = "Buy credits";
@@ -293,14 +293,14 @@ public sealed record ChatText
     public string NoWorkYet { get; init; } = "No work yet";
 
     public string WorkEmpty { get; init; } =
-        "When a task is handed over, you see the specialist's steps, tools and cost here, as it happens.";
+        "When a task is handed over, you see the subagent's steps, tools and cost here, as it happens.";
 
     public string StepsLabel { get; init; } = "Steps";
     public string Requests { get; init; } = "requests";
     public string Cost { get; init; } = "Cost";
     public string Sources { get; init; } = "Sources";
     public string OwnCost { get; init; } = "This chat";
-    public string Specialists { get; init; } = "Specialists";
+    public string Subagents { get; init; } = "Subagents";
 
 
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>

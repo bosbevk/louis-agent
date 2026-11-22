@@ -36,7 +36,7 @@ public class InfoReplyJsonTests
     {
         using var json = JsonDocument.Parse(await BodyAsync("/v1/roles"));
 
-        Assert.That(Names(json.RootElement), Is.EqualTo("default,agent,specialists,minions"));
+        Assert.That(Names(json.RootElement), Is.EqualTo("default,agent,subagents,minions"));
     }
 
     /// <summary>The LLM profiles: no default (the instance's own model), then the profiles' names.</summary>

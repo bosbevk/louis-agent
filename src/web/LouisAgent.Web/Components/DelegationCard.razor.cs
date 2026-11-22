@@ -34,7 +34,7 @@ public partial class DelegationCard
     /// <summary>The peer actually used: named in the call, else reported by its stream or its result.</summary>
     private string Agent => Delegation.Agent is { Length: > 0 } named
         ? named
-        : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Specialist;
+        : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Subagent;
 
     /// <summary>Who the work went to, as the user sees it: a minion's address, else the agent.</summary>
     private string Who => Delegation.Role ?? Agent;

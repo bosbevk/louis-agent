@@ -36,7 +36,7 @@ public class AgentAddressesTests
     [Test]
     public void ARole_ReachesItsSubagent_NamedByTheAddress() =>
         Assert.That(Resolve("testprod", "specialist").Agent,
-            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "specialist"), AddressKind.Specialist,
+            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "specialist"), AddressKind.Subagent,
                 "testprod.specialist")));
 
     /// <summary>

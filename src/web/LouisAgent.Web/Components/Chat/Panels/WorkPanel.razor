@@ -54,7 +54,7 @@
         <span title="@UsageFormat.Detail(own, Currency)">@Text.OwnCost <strong data-count="@UsageFormat.Cost(own, Currency)">@UsageFormat.Cost(own, Currency)</strong></span>
         @if (SpecialistUsage is { } specialists)
         {
-            <span title="@UsageFormat.Detail(specialists, Currency)">@Text.Specialists <strong data-count="@UsageFormat.Cost(specialists, Currency)">@UsageFormat.Cost(specialists, Currency)</strong></span>
+            <span title="@UsageFormat.Detail(specialists, Currency)">@Text.Subagents <strong data-count="@UsageFormat.Cost(specialists, Currency)">@UsageFormat.Cost(specialists, Currency)</strong></span>
         }
     </div>
 }

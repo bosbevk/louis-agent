@@ -47,7 +47,7 @@ public partial class WorkPanel : IAsyncDisposable
                     if (Delegation.From(block) is not { } delegation) continue;
                     string agent = delegation.Agent is { Length: > 0 } named
                         ? named
-                        : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
+                        : block.SubAgent ?? delegation.ResultAgent ?? Text.Subagent;
                     string who = delegation.Role ?? agent;
                     items.Add(new Item(delegation, block, who, StatusOf(live, block, delegation)));
                 }

@@ -43,7 +43,9 @@ public static class FixtureApi
         request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages"
             ? new HttpResponseMessage(HttpStatusCode.NotFound)
             {
-                Content = new StringContent("""{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_fixture'."}}""", Encoding.UTF8, "application/json"),
+                Content = new StringContent(
+                    """{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_fixture'."}}""",
+                    Encoding.UTF8, "application/json"),
             }
             : Answer(request);
 
@@ -54,12 +56,22 @@ public static class FixtureApi
         bool get = request.Method == HttpMethod.Get, post = request.Method == HttpMethod.Post;
         return (path, get, post) switch
         {
-            ($"/v1/sessions/{SessionId}/cancel", _, true) => Json($$"""{"session_id":"{{SessionId}}","cancelled":true}"""),
-            ($"/v1/sessions/{SessionId}", _, _) when request.Method == HttpMethod.Delete => Json($$"""{"session_id":"{{SessionId}}","deleted":true}"""),
+            ($"/v1/sessions/{SessionId}/cancel", _, true) =>
+                Json($$"""{"session_id":"{{SessionId}}","cancelled":true}"""),
+            ($"/v1/sessions/{SessionId}", _, _) when request.Method == HttpMethod.Delete =>
+                Json($$"""{"session_id":"{{SessionId}}","deleted":true}"""),
             ("/v1/model", true, _) => Json("""{"provider":"anthropic","model":"claude-haiku-5-5"}"""),
-            ("/v1/roles", true, _) => Json("""{"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],"specialist":["puls-cook"],"minion":[]}"""),
-            ("/v1/toolsets", true, _) => Json("""{"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},{"name":"web","available":true},{"name":"specialists","available":true},{"name":"shops","available":true}]}"""),
-            ("/v1/sessions", _, true) => Json($$"""{"session_id":"{{SessionId}}","toolsets":["specialists","web"]}"""),
+            ("/v1/roles", true, _) => Json("""
+                {"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],
+                 "subagents":["puls.cook"],"minion":[]}
+                """),
+            ("/v1/toolsets", true, _) => Json("""
+                {"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},
+                 {"name":"web","available":true},{"name":"specialists","available":true},
+                 {"name":"shops","available":true}]}
+                """),
+            ("/v1/sessions", _, true) =>
+                Json($$"""{"session_id":"{{SessionId}}","toolsets":["specialists","web"]}"""),
             ($"/v1/sessions/{SessionId}/messages", _, true) => Stream(),
             ("/v1/git/status", true, _) => Json("""{"branch":"main","files":[],"committed":null}"""),
             ("/v1/git/branches", true, _) => Json("""{"current":"main","branches":[],"message":null}"""),
@@ -67,7 +79,9 @@ public static class FixtureApi
             ("/v1/workspace/entries", true, _) => Json("""{"path":"","entries":[]}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)
             {
-                Content = new StringContent("""{"type":"error","error":{"type":"not_found_error","message":"not in the fixture"}}""", Encoding.UTF8, "application/json"),
+                Content = new StringContent(
+                    """{"type":"error","error":{"type":"not_found_error","message":"not in the fixture"}}""",
+                    Encoding.UTF8, "application/json"),
             },
         };
     }

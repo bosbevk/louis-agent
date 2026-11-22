@@ -51,7 +51,7 @@ public static class AgentAddresses
     /// </summary>
     public static AddressedAgent OnAnotherServer(AgentAddress address) => address.Role is null
         ? new AddressedAgent(address, AddressKind.Identity, null)
-        : new AddressedAgent(address, AddressKind.Specialist, $"{address.Identity}.{address.Role}");
+        : new AddressedAgent(address, AddressKind.Subagent, $"{address.Identity}.{address.Role}");
 
     /// <summary>
     /// The minion an address reaches (F127.5): <c>acme.lookup</c> is the file <c>minions/acme-minion-lookup.md</c>, its
@@ -100,7 +100,7 @@ public static class AgentAddresses
 
     /// <summary>One of this instance's subagents, by its address; a minion's is no role to ask (F127.5).</summary>
     private static AddressKind? KindOf(string subagent) =>
-        RoleCatalog.Available(RoleLevel.Subagent).Contains(subagent) ? AddressKind.Specialist : null;
+        RoleCatalog.Available(RoleLevel.Subagent).Contains(subagent) ? AddressKind.Subagent : null;
 
     /// <summary>The identity's subagents as the model writes them, <c>acme.cook</c>, or "(none)".</summary>
     private static string RolesOf(IAgentIdentity identity) =>

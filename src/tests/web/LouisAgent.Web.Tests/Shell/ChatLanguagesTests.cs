@@ -15,7 +15,7 @@ namespace LouisAgent.Web.Tests.Shell;
 public class ChatLanguagesTests
 {
     private const string TwoVoices =
-        """{"default":"site/voice-af","agent":["site/voice-af","site/voice-en","other/voice-de"],"specialist":[]}""";
+        """{"default":"site/voice-af","agent":["site/voice-af","site/voice-en","other/voice-de"],"subagents":[]}""";
 
     /// <summary>The languages are the API's voices under the site's prefix, and no others.</summary>
     /// <summary>The planned module, one per test context, so each test plans what the browser would answer.</summary>
@@ -74,7 +74,7 @@ public class ChatLanguagesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var languages = Make(ctx, """{"default":"x","agent":["site/voice-en"],"specialist":[]}""");
+        var languages = Make(ctx, """{"default":"x","agent":["site/voice-en"],"subagents":[]}""");
 
         await languages.LoadAsync();
 
@@ -116,7 +116,8 @@ public class ChatLanguagesTests
         {
             Content = new StringContent(roles, Encoding.UTF8, "application/json")
         });
-        var api = new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings());
+        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") };
+        var api = new AgentApi(client, new ChatSettings());
         return new ChatLanguages(api, Preferences(ctx), "site/voice-", "af");
     }
 }
