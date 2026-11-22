@@ -12,6 +12,9 @@ public static class FrameworkWords
     /// <summary>The footer's link to the repository.</summary>
     public const string GitHub = "GitHub";
 
+    /// <summary>The footer's link to the licence's plain words, spelt as the README and ADR 0127 spell it.</summary>
+    public const string Licence = "Licence";
+
     /// <summary>The footer's link to the framework's other site, which sells what is built on it.</summary>
     public const string LouisAgentDev = "louis-agent.dev";
 

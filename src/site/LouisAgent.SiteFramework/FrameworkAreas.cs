@@ -29,6 +29,9 @@ public static class FrameworkAreas
     /// <summary>The repository's page on GitHub.</summary>
     public const string RepositoryAddress = "https://github.com/" + Repository;
 
+    /// <summary>The README's Licence section, the licence in plain words, where the footer's Licence link goes.</summary>
+    public const string LicenceAddress = RepositoryAddress + "#licence";
+
     /// <summary>
     /// Names the site's areas: flat, the framework's pages, where their doc links lead, the repo on GitHub
     /// until the docs have a site of their own, and every place on the pages with its own address, the Overview's

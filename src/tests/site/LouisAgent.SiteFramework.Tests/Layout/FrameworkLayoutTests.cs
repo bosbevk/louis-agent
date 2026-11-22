@@ -113,9 +113,14 @@ public class FrameworkLayoutTests
             Assert.That(groups, Has.Length.EqualTo(2), "two groups, which the footer's row pushes to its ends");
             Assert.That(groups[0].QuerySelector(".wordmark"), Is.Not.Null);
             Assert.That(groups[0].TextContent, Does.Contain(header), "the header's own line");
-            Assert.That(links.Select(link => link.TextContent.Trim()), Is.EqualTo(new[] { "GitHub", "louis-agent.dev" }));
+            Assert.That(links.Select(link => link.TextContent.Trim()),
+                Is.EqualTo(new[] { "GitHub", "Licence", "louis-agent.dev" }));
             Assert.That(links.Select(link => link.GetAttribute("href")),
-                Is.EqualTo(new[] { "https://github.com/bosbevk/louis-agent", "https://louis-agent.dev" }));
+                Is.EqualTo(new[]
+                {
+                    "https://github.com/bosbevk/louis-agent", "https://github.com/bosbevk/louis-agent#licence",
+                    "https://louis-agent.dev"
+                }));
             Assert.That(links.Select(link => link.GetAttribute("target")), Is.All.EqualTo("_blank"));
             Assert.That(links.Select(link => link.GetAttribute("rel")), Is.All.EqualTo("noopener"));
         });
