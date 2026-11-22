@@ -1,0 +1,32 @@
+{
+  "kind": "classes",
+  "title": "F169.5 the phone: the interface design",
+  "caption": "Two new types, both in the engine: the fit a drawing is asked for, and what answers a picture's narrow form. A trunk is the one new placed record. Everything else is there and changes, each change marked with its step.",
+  "classes": {
+    "types": [
+      { "id": "SiteShell", "name": "SiteShell", "tone": "green", "members": ["+Sidebar RenderFragment?", "+Links, Actions, Settings", "-HasMenu bool: a sidebar counts too  (step 2)", "-ShutMenu(): on every new address", "the sheet draws the sidebar first  (step 2)"] },
+      { "id": "DocsColumns", "name": "DocsColumns", "tone": "green", "members": ["+Menu RenderFragment?", "+Beside RenderFragment?", "+Ask PageAsk?", "its sheet: the phone's paddings  (step 3)"] },
+      { "id": "DiagramFigure", "name": "DiagramFigure", "tone": "green", "members": ["+Source DiagramSource", "+Caption string?", "-Wide, Narrow MarkupString  (step 8)", "-Slides bool: no narrow form  (step 9)"] },
+      { "id": "DiagramRenderers", "name": "DiagramRenderers", "kind": "static", "tone": "teal", "members": ["+Render(source, geometry) string", "+RenderForPage(source, fit) string  (step 7)", "+RenderTitled(source, geometry) string"] },
+      { "id": "PictureFit", "name": "PictureFit", "kind": "enum", "tone": "teal", "members": ["Wide", "Narrow", "new  (step 7)"] },
+      { "id": "NarrowFit", "name": "NarrowFit", "kind": "static", "tone": "teal", "members": ["+Width 342", "+TryOf(source, out narrow) bool", "a flow: down, no columns, no row gap", "cards: down, when one card feeds the rail", "every other kind: none", "new  (step 7)"] },
+      { "id": "CardsSpec", "name": "CardsSpec", "kind": "record", "tone": "amber", "members": ["+Rows IReadOnlyList<CardRow>", "+Links IReadOnlyList<CardLink>", "+Direction FlowDirection  (step 5)"] },
+      { "id": "FlowDirection", "name": "FlowDirection", "kind": "enum", "tone": "amber", "members": ["Right", "Down", "unchanged"] },
+      { "id": "OverviewLayout", "name": "OverviewLayout", "kind": "static", "tone": "teal", "members": ["+Place(spec, width, geometry) PlacedOverview", "running down: a card a row, one trunk  (step 5)"] },
+      { "id": "PlacedOverview", "name": "PlacedOverview", "kind": "record", "tone": "teal", "members": ["+Width, Height double", "+Cards IReadOnlyList<PlacedCard>", "+Rails IReadOnlyList<PlacedRail>", "+Trunks IReadOnlyList<PlacedTrunk>  (step 5)"] },
+      { "id": "OverviewTrunks", "name": "OverviewTrunks", "kind": "static", "tone": "teal", "members": ["+Draw(writer, trunk, geometry)", "the rail's own classes", "new  (step 6)"] },
+      { "id": "Tests", "name": "The tests", "members": ["SiteShellMenuTests, SiteShellDocsTests  (step 2)", "TypeAndEdgesTests  (steps 3, 4)", "OverviewLayoutTests  (step 5)", "CardsRendererTests, a golden picture  (step 6)", "NarrowFitTests  (step 7, new)", "DiagramFigureTests  (steps 8, 9)"] }
+    ],
+    "relations": [
+      { "from": "SiteShell", "to": "DocsColumns", "kind": "creates", "word": "its Sidebar as Menu" },
+      { "from": "DiagramFigure", "to": "DiagramRenderers", "kind": "uses", "word": "both fits" },
+      { "from": "DiagramRenderers", "to": "NarrowFit", "kind": "uses", "word": "the narrow form" },
+      { "from": "DiagramRenderers", "to": "PictureFit", "kind": "uses" },
+      { "from": "NarrowFit", "to": "CardsSpec", "kind": "creates", "word": "turned down" },
+      { "from": "CardsSpec", "to": "FlowDirection", "kind": "holds" },
+      { "from": "OverviewLayout", "to": "PlacedOverview", "kind": "creates" },
+      { "from": "OverviewTrunks", "to": "PlacedOverview", "kind": "uses", "word": "its trunks" },
+      { "from": "Tests", "to": "NarrowFit", "kind": "uses", "word": "holds" }
+    ]
+  }
+}

@@ -62,6 +62,7 @@ needs a hole in the host's page shell.
 | F169.4 Flat has no depth | The search window set apart by its hairline and a dimmed page, the typing box and the send button with no shadow, blur or glow, and a picture on a flat page drawn with no fade and no blur | 3, 13 | No element on a flat page computes a shadow, a blur or a gradient, pictures included, and glass looks as it did |
 | F169.5 The phone | The nine pages in the header's menu sheet, the words 24 from the edge, a long code word wrapping, and a picture drawn again for a phone | 2 | At 390 wide no page scrolls sideways, the words take 342 of the 390, and every picture reads without zooming |
 | F169.6 A card for each page | A share card per page in flat, the Overview wearing the framework's own card, each with its description | 10 | A link to any of the nine pages previews that page's own card, on its own address, with alt text |
+| F169.7 The sequence drawn for a phone | The sequence on How it works drawn again for a narrow screen, its calls as steps down the page | 2 | On a 390 screen the sequence reads without sliding |
 
 One piece is left out on purpose. Pick 8 found fourteen raw corner sizes across the framework. F169.2 names the
 four sizes and moves the docs page onto them, and the rest is a cleanup of its own with its own id and plan,
@@ -145,6 +146,13 @@ as values for a list of names, which is extensibility, skill 20.
   read the names the themes already set, and no name is added for them. So F169.4's done-when changes in one
   place: glass does move where it draws these pieces, a visitor's message and a code block taking glass's small
   shadow in place of the deep ones, as the sheets showed.
+- **2026-11-22, F169.5's flow and sequence on a phone.** Louis: "A: both drawn for a phone". The flow runs down
+  in F169.5. The sequence needs a drawing of its own, its calls as steps down the page, so it becomes a seventh
+  child, F169.7, and slides sideways at its own size until that merges.
+- **2026-11-22, F169.5's docs menu in the header's sheet.** Louis: "A: the frame draws it in both places". The
+  frame shows the menu a site hands it in the sheet on a phone and in the left column above that.
+- **2026-11-22, F169.5's two drawings in a page.** Louis: "A: both in the page, CSS shows one". The figure holds
+  a wide and a narrow drawing, and Bootstrap's display classes show the narrow one below 768 pixels.
 
 ---
 [Docs index](../README.md) · Related: [the plans' index](README.md), [F151 Two themes, each light and dark](F151-themes-and-styles.md)

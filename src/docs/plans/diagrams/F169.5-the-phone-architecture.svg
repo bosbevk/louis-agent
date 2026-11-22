@@ -1,0 +1,331 @@
+<svg viewBox="-24 -24 992 1308" width="992" height="1308" role="img" aria-label="F169.5 the phone: the architecture" xmlns="http://www.w3.org/2000/svg">
+  <title>F169.5 the phone: the architecture</title>
+  <style>svg {
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+[data-style="dark"] svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+[data-style="light"] svg { --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c; }
+.ground { fill: var(--ground); }
+.arrow { fill: var(--quiet); }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
+svg {
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+</style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+[data-style="dark"] svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+[data-style="light"] svg { --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95); }
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+[data-style="dark"] svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+[data-style="light"] svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.41em; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="992" height="1308" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 74a496 190 0 1 0 992 0a496 190 0 1 0 -992 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F169.5 the phone: the architecture</text>
+    <text class="pic-group" x="928" y="14" text-anchor="end">Component diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="944" height="1" rx="0" />
+    <g class="flow" transform="translate(0 44)">
+      <rect class="pic-panel" x="401.2" y="0" width="542.6" height="514" rx="14" />
+      <text class="pic-group" x="415.2" y="19" text-anchor="start">The framework's web: LouisAgent.Web</text>
+      <rect class="pic-panel" x="401.2" y="596" width="310.4" height="434" rx="14" />
+      <text class="pic-group" x="415.2" y="615" text-anchor="start">LouisAgent.Diagrams.Engine</text>
+      <path class="pic-line pic-edge tone-blue" d="M185.6 118L185.6 130Q185.6 142 197.6 142L517.2 142Q541.2 142 541.2 166L541.2 226" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M185.6 118L185.6 130Q185.6 142 197.6 142L517.2 142Q541.2 142 541.2 166L541.2 226" />
+      <path class="pic-line pic-edge tone-violet" d="M541.2 310L541.2 418" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M541.2 310L541.2 418" />
+      <path class="pic-line pic-edge tone-blue" d="M185.6 118L185.6 226" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M185.6 118L185.6 226" />
+      <path class="pic-line pic-edge tone-blue" d="M185.6 310L185.6 331Q185.6 352 206.6 352L791.2 352Q815.2 352 815.2 376L815.2 418" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M185.6 310L185.6 331Q185.6 352 206.6 352L791.2 352Q815.2 352 815.2 376L815.2 418" />
+      <path class="pic-line pic-edge tone-violet" d="M815.2 502L815.2 540Q815.2 564 791.2 564L580.4 564Q556.4 564 556.4 588L556.4 630" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M815.2 502L815.2 540Q815.2 564 791.2 564L580.4 564Q556.4 564 556.4 588L556.4 630" />
+      <path class="pic-line pic-edge tone-teal reads" d="M556.4 714L556.4 736Q556.4 758 534.4 758L206.6 758Q185.6 758 185.6 779L185.6 800" marker-end="url(#arrow-teal)" />
+      <path class="pic-line pic-edge tone-teal" d="M556.4 714L556.4 800" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M556.4 714L556.4 800" />
+      <path class="pic-line pic-edge tone-teal" d="M556.4 884L556.4 950" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M556.4 884L556.4 950" />
+      <rect class="pic-pill pic-edge tone-blue" x="547.2" y="146" width="71" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="582.7" y="158" text-anchor="middle">its frame</text>
+      <rect class="pic-pill pic-edge tone-violet" x="547.2" y="314" width="43" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-violet" x="568.7" y="326" text-anchor="middle">holds</text>
+      <rect class="pic-pill pic-edge tone-blue" x="191.6" y="146" width="71" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="227.1" y="158" text-anchor="middle">its pages</text>
+      <rect class="pic-pill pic-edge tone-blue" x="191.6" y="314" width="71" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-blue" x="227.1" y="326" text-anchor="middle">draw with</text>
+      <rect class="pic-pill pic-edge tone-violet" x="821.2" y="506" width="113" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-violet" x="877.7" y="518" text-anchor="middle">wide and narrow</text>
+      <rect class="pic-pill pic-edge tone-teal" x="191.6" y="762" width="78" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="230.6" y="774" text-anchor="middle">turns down</text>
+      <rect class="pic-pill pic-edge tone-teal" x="562.4" y="762" width="64" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="594.4" y="774" text-anchor="middle">lays out</text>
+      <rect class="pic-pill pic-edge tone-teal" x="562.4" y="888" width="50" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="587.4" y="900" text-anchor="middle">placed</text>
+      <rect class="pic-panel" x="12" y="34" width="347.2" height="84" rx="10" />
+      <rect class="pic-fill tone-blue" x="28" y="62" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(34 68) scale(0.6667)">
+        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+        <path d="M4 8h16" />
+        <path d="M8 4v4" />
+      </g>
+      <text class="pic-name" x="64" y="65" text-anchor="start">The framework's site</text>
+      <text class="pic-name" x="64" y="81" text-anchor="start">FrameworkLayout: Sidebar is DocsMenu,</text>
+      <text class="pic-name" x="64" y="97" text-anchor="start">unchanged</text>
+      <rect class="pic-panel" x="413.2" y="34" width="256" height="84" rx="10" />
+      <rect class="pic-fill tone-violet" x="429.2" y="62" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(435.2 68) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="pic-name" x="465.2" y="73" text-anchor="start">base/_elements.scss</text>
+      <text class="pic-name" x="465.2" y="89" text-anchor="start">a code word may break (4)</text>
+      <rect class="pic-panel" x="34.8" y="226" width="301.6" height="84" rx="10" />
+      <rect class="pic-fill tone-blue" x="50.8" y="254" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(56.8 260) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="pic-name" x="86.8" y="257" text-anchor="start">LouisAgent.Web.Framework</text>
+      <text class="pic-name" x="86.8" y="273" text-anchor="start">the nine pages and their twelve</text>
+      <text class="pic-name" x="86.8" y="289" text-anchor="start">pictures' sources, unchanged</text>
+      <rect class="pic-panel" x="417" y="226" width="248.4" height="84" rx="10" />
+      <rect class="pic-fill tone-violet" x="433" y="254" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(439 260) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="pic-name" x="469" y="257" text-anchor="start">SiteShell</text>
+      <text class="pic-name" x="469" y="273" text-anchor="start">the sidebar in the sheet</text>
+      <text class="pic-name" x="469" y="289" text-anchor="start">and in the column (2)</text>
+      <rect class="pic-panel" x="417" y="418" width="248.4" height="84" rx="10" />
+      <rect class="pic-fill tone-violet" x="433" y="446" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(439 452) scale(0.6667)">
+        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+        <path d="M12 12l8 -4.5" />
+        <path d="M12 12l0 9" />
+        <path d="M12 12l-8 -4.5" />
+      </g>
+      <text class="pic-name" x="469" y="457" text-anchor="start">DocsColumns</text>
+      <text class="pic-name" x="469" y="473" text-anchor="start">the phone's paddings (3)</text>
+      <rect class="pic-panel" x="698.6" y="418" width="233.2" height="84" rx="10" />
+      <rect class="pic-fill tone-violet" x="714.6" y="446" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(720.6 452) scale(0.6667)">
+        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+        <path d="M12 12l8 -4.5" />
+        <path d="M12 12l0 9" />
+        <path d="M12 12l-8 -4.5" />
+      </g>
+      <text class="pic-name" x="750.6" y="449" text-anchor="start">DiagramFigure</text>
+      <text class="pic-name" x="750.6" y="465" text-anchor="start">both drawings (8),</text>
+      <text class="pic-name" x="750.6" y="481" text-anchor="start">or one that slides (9)</text>
+      <rect class="pic-panel" x="413.2" y="630" width="286.4" height="84" rx="10" />
+      <rect class="pic-fill tone-teal" x="429.2" y="658" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(435.2 664) scale(0.6667)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="pic-name" x="465.2" y="661" text-anchor="start">Svg/Fits</text>
+      <text class="pic-name" x="465.2" y="677" text-anchor="start">PictureFit, NarrowFit (7)</text>
+      <text class="pic-name" x="465.2" y="693" text-anchor="start">RenderForPage takes a fit (7)</text>
+      <path class="pic-panel flow-shape pic-edge tone-amber" d="M55.2 800L334 800L316 884L37.2 884Z" />
+      <rect class="pic-fill tone-amber" x="65.2" y="828" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(71.2 834) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="pic-name" x="101.2" y="839" text-anchor="start">LouisAgent.Diagrams</text>
+      <text class="pic-name" x="101.2" y="855" text-anchor="start">CardsSpec: its direction (5)</text>
+      <rect class="pic-panel" x="428.4" y="800" width="256" height="84" rx="10" />
+      <rect class="pic-fill tone-teal" x="444.4" y="828" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(450.4 834) scale(0.6667)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="pic-name" x="480.4" y="831" text-anchor="start">Cards</text>
+      <text class="pic-name" x="480.4" y="847" text-anchor="start">OverviewLayout runs down,</text>
+      <text class="pic-name" x="480.4" y="863" text-anchor="start">PlacedTrunk (5)</text>
+      <rect class="pic-panel" x="417" y="950" width="278.8" height="68" rx="10" />
+      <rect class="pic-fill tone-teal" x="433" y="970" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(439 976) scale(0.6667)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="pic-name" x="469" y="981" text-anchor="start">Svg/Renderers/Parts/Overview</text>
+      <text class="pic-name" x="469" y="997" text-anchor="start">OverviewTrunks (6)</text>
+      <circle class="pic-port pic-edge tone-blue" cx="185.6" cy="118" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="541.2" cy="310" r="4" />
+      <circle class="pic-port pic-edge tone-blue" cx="185.6" cy="310" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="815.2" cy="502" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="556.4" cy="714" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="556.4" cy="884" r="4" />
+    </g>
+    <rect class="mrq-rule" x="0" y="1100" width="944" height="1" rx="0" />
+    <text class="pic-group" x="0" y="1122" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-blue" x="0" y="1139" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="1152.5" text-anchor="start">starts it</text>
+    <rect class="pic-fill tone-violet" x="117.4" y="1139" width="18" height="18" rx="6" />
+    <text class="pic-means" x="145.4" y="1152.5" text-anchor="start">the framework</text>
+    <rect class="pic-fill tone-teal" x="261.2" y="1139" width="18" height="18" rx="6" />
+    <text class="pic-means" x="289.2" y="1152.5" text-anchor="start">contracts and state</text>
+    <rect class="pic-fill tone-amber" x="444.6" y="1139" width="18" height="18" rx="6" />
+    <text class="pic-means" x="472.6" y="1152.5" text-anchor="start">files and data</text>
+    <path class="pic-panel flow-shape pic-edge" d="M613 1140L625 1140L607 1156L595 1156Z" />
+    <text class="pic-means" x="635" y="1152.5" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M0 1176H30" marker-end="url(#arrow)" />
+    <text class="pic-means" x="40" y="1180.5" text-anchor="start">a line has the colour of the box it leaves</text>
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="928" y="1122" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+    </g>
+  </g>
+  <rect class="notebar" x="0" y="1206" width="944" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 1216) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1228">
+    <tspan class="note-rest">The frame, the docs columns and the figure are the framework's web, a picture's data is the diagrams' contract, and the</tspan>
+  </text>
+  <text class="notes" x="38" y="1245">
+    <tspan class="note-rest">layouts and the fit are the diagrams' engine. The number in brackets is the step that changes the part.</tspan>
+  </text>
+</svg>
