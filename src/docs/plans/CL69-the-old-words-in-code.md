@@ -142,6 +142,12 @@ Each of steps 3 to 8 is a pure rename and adds no test: it is held by the tests 
   cleanup of its own and fixing only the quote part): `QuoteTools`' messages are `WebToolMessage`'s, whose 37
   members with holes have no records, built in 26 files. They are step 2, before core's rename, so the steps run
   1 the guard and the texts, 2 the web texts' holes, then 3 to 9 as planned.
+- **2026-11-22, a long tool description is a raw string** (Louis: "how can we get rid of the + sign?", his pick A of
+  three, over keeping `+` with full lines and a line over 120): a tool's or a parameter's `[Description]` is one
+  `"""` literal, and a message template keeps its `+`. The rule is in `.claude/rules/csharp.md`, for touched files.
+- **2026-11-22, C# keeps LF on every checkout** (his pick A of three, over normalising descriptions in code and
+  dropping raw strings): a raw string's line breaks are its file's, and git turned them into CRLF on Windows, so
+  `.gitattributes` says `*.cs text eol=lf` and the model reads the same text on every machine.
 
 ## The records
 

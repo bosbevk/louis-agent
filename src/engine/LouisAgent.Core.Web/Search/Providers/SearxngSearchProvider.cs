@@ -1,10 +1,11 @@
+using LouisAgent.Core.Web.Messages.Holes.Search;
+using LouisAgent.Composition.Web.Messages.Holes.Searxng;
 using LouisAgent.Composition.Web.Reading;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
-
 using LouisAgent.Core.Web.Fetching;
 using System.Net;
 using System.Text.Json;
@@ -16,6 +17,7 @@ using LouisAgent.Core.Web.Search;
 using LouisAgent.Core.Web.Messages;
 
 namespace LouisAgent.Core.Web.Search.Providers;
+
 /// <summary>
 /// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in a compose stack, for development,
 /// tests and benchmarks; the sold endpoint keeps a licensed API, since the engines SearXNG asks don't license their
@@ -41,15 +43,24 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
         string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Forbidden)
-            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngJsonOff, new { Url = baseUrl }));
+        {
+            var jsonOff = new SearxngJsonOffHoles(baseUrl.ToString());
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngJsonOff, jsonOff));
+        }
+
         if (!response.IsSuccessStatusCode)
-            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngFailed,
-                new { Status = (int)response.StatusCode, Detail = response.ReasonPhrase ?? "" }));
+        {
+            var failed = new SearxngFailedHoles((int)response.StatusCode, response.ReasonPhrase ?? "");
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngFailed, failed));
+        }
 
         var answer = Parse(json, query.MaxResults);
         if (answer.SilentEngines.Count > 0)
-            Log.Log(LogLevel.Warning, WebLogMessage.SearxngEnginesSilent,
-                new { Engines = string.Join("; ", answer.SilentEngines) });
+        {
+            var silent = new SearxngEnginesSilentHoles(string.Join("; ", answer.SilentEngines));
+            Log.Log(LogLevel.Warning, WebLogMessage.SearxngEnginesSilent, silent);
+        }
+
         return answer.Results;
     }
 
@@ -57,13 +68,18 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
     internal static Uri RequestUri(Uri baseUrl, WebSearchQuery query)
     {
         string text = string.IsNullOrWhiteSpace(query.Site) ? query.Text : $"{query.Text} site:{query.Site.Trim()}";
-        var parameters = new List<string> { "q=" + Uri.EscapeDataString(text), "format=json" };
+        var parameters = new List<string>
+        {
+            "q=" + Uri.EscapeDataString(text),
+            "format=json"
+        };
         if (query.Recency is { } recency) parameters.Add("time_range=" + recency.Wire());
         string root = baseUrl.ToString().TrimEnd('/');
         return new Uri($"{root}/search?{string.Join("&", parameters)}");
     }
 
-    /// <summary>The results, cleaned and cut to <paramref name="maxResults"/>, and the engines that didn't answer.</summary>
+    /// <summary>The results, cleaned and cut to <paramref name="maxResults"/>, and the engines that didn't
+    /// answer.</summary>
     internal static SearxngAnswer Parse(string json, int maxResults)
     {
         using var doc = JsonDocument.Parse(json);
@@ -91,8 +107,11 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
             : [];
 
         if (results.Count == 0 && silent.Count > 0)
-            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngNoEngineAnswered,
-                new { Reasons = string.Join("; ", silent) }));
+        {
+            var noneAnswered = new SearxngNoEngineAnsweredHoles(string.Join("; ", silent));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngNoEngineAnswered, noneAnswered));
+        }
+
         return new SearxngAnswer(results, silent);
     }
 }

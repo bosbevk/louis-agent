@@ -1,9 +1,9 @@
+using LouisAgent.Composition.Web.Messages.Holes.Tavily;
 using LouisAgent.Composition.Web.Reading;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
-
 using LouisAgent.Core.Web.Fetching;
 using System.Net;
 using System.Net.Http.Headers;
@@ -15,6 +15,7 @@ using LouisAgent.Core.Web.Search;
 using LouisAgent.Core.Web.Messages;
 
 namespace LouisAgent.Core.Web.Search.Providers;
+
 /// <summary>
 /// Tavily's search API (F25 step 6; Louis's choice over Google, whose Custom Search API ends on 2027-01-01): a search
 /// built for agents, 1,000 free searches a month. <c>POST https://api.tavily.com/search</c> with the key as a bearer
@@ -51,15 +52,17 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
         if (!response.IsSuccessStatusCode)
         {
             string detail = TryReadError(json) ?? response.ReasonPhrase ?? "";
+            var rejected = new TavilyRejectedHoles(detail);
+            var limit = new TavilyLimitHoles(detail);
+            var failed = new TavilyFailedHoles((int)response.StatusCode, detail);
             throw new WebSearchException(response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(
-                    WebToolMessage.TavilyRejected, new { Detail = detail }),
+                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden =>
+                    MessageText.Format(WebToolMessage.TavilyRejected, rejected),
                 // 429 is the rate limit; 432 and 433 are Tavily's own codes for a plan's usage limit.
                 HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 =>
-                    MessageText.Format(WebToolMessage.TavilyLimit, new { Detail = detail }),
-                _ => MessageText.Format(WebToolMessage.TavilyFailed,
-                    new { Status = (int)response.StatusCode, Detail = detail }),
+                    MessageText.Format(WebToolMessage.TavilyLimit, limit),
+                _ => MessageText.Format(WebToolMessage.TavilyFailed, failed),
             });
         }
 
@@ -82,7 +85,8 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
             .ToList();
     }
 
-    /// <summary>Tavily's error body: <c>{"detail": {"error": "…"}}</c>, or <c>{"detail": "…"}</c> from its framework.</summary>
+    /// <summary>Tavily's error body: <c>{"detail": {"error": "…"}}</c>, or <c>{"detail": "…"}</c> from its
+    /// framework.</summary>
     private static string? TryReadError(string json)
     {
         try

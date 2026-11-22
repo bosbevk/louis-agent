@@ -1,3 +1,5 @@
+using LouisAgent.Core.Web.Replay.Keys;
+using LouisAgent.Composition.Web.Messages.Holes.Replay;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Browsing;
@@ -11,11 +13,11 @@ using LouisAgent.Core.Sessions.Replay.Store;
 namespace LouisAgent.Core.Web.Replay;
 
 /// <summary>
-/// The guarded browser, recorded or replayed (F18 step 4a), by the session's <see cref="SessionReplay.Current"/> on each call:
-/// none or Off passes through and saves nothing; Record saves the visit under <c>Of</c> and returns it unchanged, a
-/// <see cref="WebBrowserException"/> as its text (and rethrown), a cancel not at all; Replay never calls the inner browser, answers
-/// from the first recording of the ask, throws a recorded failure's own text, and a miss as a text that names the URL (ADR 0005).
-/// Nothing here changes what the inner browser sends or reports (FX21).
+/// The guarded browser, recorded or replayed (F18 step 4a), by the session's <see cref="SessionReplay.Current"/> on
+/// each call: none or Off passes through and saves nothing; Record saves the visit under <c>Of</c> and returns it
+/// unchanged, a <see cref="WebBrowserException"/> as its text (and rethrown), a cancel not at all; Replay never calls
+/// the inner browser, answers from the first recording of the ask, throws a recorded failure's own text, and a miss as
+/// a text that names the URL (ADR 0005). Nothing here changes what the inner browser sends or reports (FX21).
 /// </summary>
 public sealed class RecordedWebBrowser(IWebBrowser inner, ReplayStore store) : IWebBrowser
 {
@@ -26,8 +28,8 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, ReplayStore store) : I
         if (ReplayTrial.Current is not { } trial)
             return await inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken);
 
-        var ask = ReplayAsk.Of(ReplayKind.Visit,
-            new { Url = url.AbsoluteUri, Script = script, ReadySelector = readySelector });
+        var key = new VisitKey(url.AbsoluteUri, script, readySelector);
+        var ask = ReplayAsk.Of(ReplayKind.Visit, key);
         return trial.Replaying
             ? await ReplayAsync(trial.Of, ask, url, cancellationToken)
             : await RecordAsync(trial.Of, ask,
@@ -57,7 +59,11 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, ReplayStore store) : I
         CancellationToken cancellationToken)
     {
         if (await store.FindAsync<ReplayPage>(trial, ask, cancellationToken) is not { } recorded)
-            throw new WebBrowserException(MessageText.Format(WebToolMessage.ReplayMiss, new { Url = url.AbsoluteUri }));
+        {
+            var miss = new ReplayMissHoles(url.AbsoluteUri);
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.ReplayMiss, miss));
+        }
+
         return recorded.OrThrow(error => new WebBrowserException(error)).ToVisit();
     }
 }

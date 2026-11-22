@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages.Holes.Rendering;
 using LouisAgent.Composition.Web.Rendering;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
@@ -13,11 +14,13 @@ using LouisAgent.Choices;
 namespace LouisAgent.Core.Web.Rendering;
 
 /// <summary>
-/// Picks the page renderer you configured, or else the first one that's set up: our own Chrome, then Tavily's Extract. A missing setting never stops start-up; a call just tells the model what to set.
+/// Picks the page renderer you configured, or else the first one that's set up: our own Chrome, then Tavily's Extract.
+/// A missing setting never stops start-up; a call just tells the model what to set.
 /// </summary>
 /// <remarks>
-/// Strategy, with a Null Object. The renderers are a list of setups instead of a switch on the name, so adding a renderer is one new class.
-/// A renderer that isn't set up gives one that explains what's missing, so nothing has to check for null.
+/// Strategy, with a Null Object. The renderers are a list of setups instead of a switch on the name, so adding a
+/// renderer is one new class. A renderer that isn't set up gives one that explains what's missing, so nothing has to
+/// check for null.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class PageRendererFactory
@@ -28,7 +31,8 @@ public static class PageRendererFactory
     /// <summary>The renderers, in the order we fall back to them.</summary>
     internal static IReadOnlyList<IPageRendererSetup> Setups { get; } = [new ChromeSetup(), new TavilyRenderSetup()];
 
-    /// <summary>Tells you which renderer these settings pick: the one named, or else the first that's set up. Nothing if the name is unknown or none is set up.</summary>
+    /// <summary>Tells you which renderer these settings pick: the one named, or else the first that's set up. Nothing
+    /// if the name is unknown or none is set up.</summary>
     public static PageRendererKind? Resolve(AgentOptions options) => Pick(options)?.Kind;
 
     /// <summary>Whether the renderer these settings pick is actually set up.</summary>
@@ -40,20 +44,23 @@ public static class PageRendererFactory
         // A name we don't know picks nothing.
         if (!SettingChoice.TryParse(options.PageRenderer, out PageRendererKind? named)) return null;
 
-        // A name we know gets that renderer, set up or not. No name gets the first that is set up, and nothing if none is.
+        // A name we know gets that renderer, set up or not. No name gets the first that is set up, and nothing if none
+        // is.
         return named is { } kind ? Setups.Single(s => s.Kind == kind) : Setups.FirstOrDefault(s => s.IsReady(options));
     }
 
-    /// <summary>Gives you the renderer these settings pick. If it isn't set up, the name is unknown, or nothing is set, you get one that tells the model what to do.</summary>
-    /// <param name="browser">The process's one guarded browser, so a recorded run holds every page the shops read too. Chrome builds its own only if none is given.</param>
+    /// <summary>Gives you the renderer these settings pick. If it isn't set up, the name is unknown, or nothing is set,
+    /// you get one that tells the model what to do.</summary>
+    /// <param name="browser">The process's one guarded browser, so a recorded run holds every page the shops read too.
+    /// Chrome builds its own only if none is given.</param>
     public static IPageRenderer Create(AgentOptions options, HttpClient? http = null, IWebBrowser? browser = null)
     {
         // A name we don't know: say what was given and which names we do support.
         if (!SettingChoice.TryParse(options.PageRenderer, out PageRendererKind? _))
         {
             string named = options.PageRenderer!.Trim();
-            return new UnavailablePageRenderer(MessageText.Format(WebToolMessage.UnknownPageRenderer,
-                new { Renderer = named, Supported = string.Join(", ", SupportedRenderers) }));
+            var unknown = new UnknownPageRendererHoles(named, string.Join(", ", SupportedRenderers));
+            return new UnavailablePageRenderer(MessageText.Format(WebToolMessage.UnknownPageRenderer, unknown));
         }
 
         // The picked renderer builds itself, or its "not set up" stand-in. With none picked at all, say what to set.

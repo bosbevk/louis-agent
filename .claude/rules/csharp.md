@@ -172,13 +172,14 @@ line: could a type answer this? These shapes say none was asked.
 
 The layout rules are the root `.editorconfig`:
 
-- four spaces, and a 120-character line
-- one file-scoped namespace line, with the usings above it
+- four spaces, a 120-character line, and one file-scoped namespace line with the usings above it
 - each brace on its own line, and no trailing spaces
 - an initializer (`new { … }`, `new Foo { … }`) with two or more properties puts each on its own line, and one
   property stays on one line
 
-A line that is long only because of a web address, such as a `<seealso href>`, may run past 120.
+A line that is long only because of a web address, such as a `<seealso href>`, may run past 120. A tool's or a
+parameter's long `[Description]` is a raw string (`"""`), never `+` joins: C# keeps LF (`.gitattributes`), so the
+model reads one text everywhere. A message template keeps `+`, each line full (Louis, 2026-11-22, touched files).
 
 ## How a file is changed
 

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages.Holes.Robots;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
@@ -49,20 +50,12 @@ public sealed class RobotsPolicy(Func<Uri, CancellationToken, Task<RobotsFile>> 
         if (IsRobotsTxt(url)) return null;
 
         var entry = await EntryAsync(url, cancellationToken);
+        var disallows = new RobotsDisallowsHoles(url.Host, url.PathAndQuery);
+        var unreachable = new RobotsUnreachableHoles(url.Host, entry.File.Reason);
         return entry.VerdictFor(url.PathAndQuery) switch
         {
-            RobotsVerdict.Disallowed => MessageText.Format(WebToolMessage.RobotsDisallows,
-                new
-                {
-                    url.Host,
-                    Path = url.PathAndQuery
-                }),
-            RobotsVerdict.Unreachable => MessageText.Format(WebToolMessage.RobotsUnreachable,
-                new
-                {
-                    url.Host,
-                    entry.File.Reason
-                }),
+            RobotsVerdict.Disallowed => MessageText.Format(WebToolMessage.RobotsDisallows, disallows),
+            RobotsVerdict.Unreachable => MessageText.Format(WebToolMessage.RobotsUnreachable, unreachable),
             _ => null,
         };
     }
@@ -70,14 +63,12 @@ public sealed class RobotsPolicy(Func<Uri, CancellationToken, Task<RobotsFile>> 
     /// <summary>
     /// The text to give the model when the page itself says no to AI readers (a header or a meta tag), or null.
     /// </summary>
-    public string? PageRefusal(Uri url, IReadOnlyDictionary<string, string>? headers, string? html) =>
-        PageSignals.Read(headers ?? new Dictionary<string, string>(), html) is { } signal
-            ? MessageText.Format(WebToolMessage.PageRefusesAiReaders, new
-            {
-                url.Host,
-                Signal = signal.Wire()
-            })
-            : null;
+    public string? PageRefusal(Uri url, IReadOnlyDictionary<string, string>? headers, string? html)
+    {
+        if (PageSignals.Read(headers ?? new Dictionary<string, string>(), html) is not { } signal) return null;
+        var refuses = new PageRefusesAiReadersHoles(url.Host, signal.Wire());
+        return MessageText.Format(WebToolMessage.PageRefusesAiReaders, refuses);
+    }
 
     /// <summary>Whether this is the robots.txt itself, which is always read and never checked.</summary>
     private static bool IsRobotsTxt(Uri url) => url.AbsolutePath.Equals("/robots.txt", StringComparison.Ordinal);

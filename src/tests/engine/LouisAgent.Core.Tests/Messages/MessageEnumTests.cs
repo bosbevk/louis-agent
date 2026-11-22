@@ -7,6 +7,9 @@ using LouisAgent.Composition.Messages;
 using System.Reflection;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Testing.Messages;
+using LouisAgent.Core.Skills.Messages;
+using LouisAgent.Composition.Web.Messages;
+using LouisAgent.Core.Web.Messages;
 
 namespace LouisAgent.Core.Tests.Messages;
 
@@ -108,6 +111,33 @@ public class MessageEnumTests
     [Test]
     public void EveryHolesRecord_MatchesItsTemplate() =>
         Assert.That(MessageHoles.Problems(MessageEnums), Is.Empty);
+
+    /// <summary>
+    /// The enums whose every member with holes names its record (ADR 0119); an enum joins when it is touched, and
+    /// never leaves.
+    /// </summary>
+    private static readonly Type[] EnumsWithAllTheirHoles =
+    [
+        typeof(SkillErrorMessage),
+        typeof(WebToolMessage),
+        typeof(ToolMessage),
+        typeof(WebLogMessage),
+    ];
+
+    /// <summary>In an enum that has its holes, a member with holes in its template names the record for them.</summary>
+    [Test]
+    public void InAnEnumWithItsHoles_EveryMemberWithHoles_NamesItsRecord()
+    {
+        var missing = EnumsWithAllTheirHoles
+            .SelectMany(type => Enum.GetValues(type).Cast<Enum>())
+            .Where(member => MessageText.Holes(MessageText.Template(member)).Any())
+            .Where(member => member.GetType().GetField(member.ToString())!.GetCustomAttribute<HolesAttribute>() is null)
+            .Select(member => $"{member.GetType().Name}.{member}")
+            .ToList();
+
+        Assert.That(missing, Is.Empty, "Name its holes record with [Holes(typeof(…Holes))]:\n  " +
+                                       string.Join("\n  ", missing));
+    }
 
     /// <summary>A message's holes are filled by name.</summary>
     [Test]

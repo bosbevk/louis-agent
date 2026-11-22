@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages.Holes.Redirects;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Composition.Messages;
@@ -90,14 +91,20 @@ public sealed class PageFetcher : IPageFetcher
 
             response.Dispose();
             if (hop == MaxRedirects)
-                throw new HttpRequestException(MessageText.Format(WebToolMessage.FetchTooManyRedirects,
-                    new { Count = MaxRedirects }));
+            {
+                var tooMany = new FetchTooManyRedirectsHoles(MaxRedirects);
+                throw new HttpRequestException(MessageText.Format(WebToolMessage.FetchTooManyRedirects, tooMany));
+            }
+
             var next = response.Headers.Location.IsAbsoluteUri
                 ? response.Headers.Location
                 : new Uri(uri, response.Headers.Location);
             if (next.Scheme is not ("http" or "https"))
-                throw new BlockedAddressException(MessageText.Format(WebToolMessage.FetchRedirectScheme,
-                    new { next.Scheme }));
+            {
+                var scheme = new FetchRedirectSchemeHoles(next.Scheme);
+                throw new BlockedAddressException(MessageText.Format(WebToolMessage.FetchRedirectScheme, scheme));
+            }
+
             uri = next;
         }
     }

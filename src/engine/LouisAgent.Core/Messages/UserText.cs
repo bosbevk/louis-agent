@@ -1,17 +1,15 @@
-
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
-// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
-// as code is written or moved; the refactor after F4 moves the existing messages here.
+// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are
+// added as code is written or moved; the refactor after F4 moves the existing messages here.
 
 /// <summary>Text people read: /usage, the usage line, CLI help, comms log headings.</summary>
 public enum UserText
 {
-    [Description("turn: {Usage}")]
-    UsageTurn,
+    [Description("turn: {Usage}")] UsageTurn,
 
     [Description("{Line} · session {Cost}")]
     UsageWithSession,
@@ -22,8 +20,7 @@ public enum UserText
     [Description("Session usage: {Usage}")]
     UsageSessionHeading,
 
-    [Description("- {Purpose}: {Usage}")]
-    UsagePurpose,
+    [Description("- {Purpose}: {Usage}")] UsagePurpose,
 
     [Description("- tokens: {Input} input · {CacheWrite} cache write · {CacheRead} cache read · {Output} output")]
     UsageTokensByKind,
@@ -37,20 +34,16 @@ public enum UserText
     [Description("{Requests} · {Tokens} tokens{Cached} · {Cost}")]
     UsageTotal,
 
-    [Description(" ({Tokens} cached)")]
-    UsageCached,
+    [Description(" ({Tokens} cached)")] UsageCached,
 
-    [Description("price unknown")]
-    UsagePriceUnknown,
+    [Description("price unknown")] UsagePriceUnknown,
 
     [Description("{Amount} + {Unpriced} unpriced")]
     UsagePartlyPriced,
 
-    [Description("1 request")]
-    UsageOneRequest,
+    [Description("1 request")] UsageOneRequest,
 
-    [Description("{Count} requests")]
-    UsageRequests,
+    [Description("{Count} requests")] UsageRequests,
 
     [Description(" and removed it from this session")]
     ToolRejectedFromSession,
@@ -61,8 +54,7 @@ public enum UserText
     [Description("Usage: /approve <Name>")]
     ApproveUsage,
 
-    [Description("Usage: /reject <Name>")]
-    RejectUsage,
+    [Description("Usage: /reject <Name>")] RejectUsage,
 
     [Description("No pending tool or skill file named '{Name}'. Use /tools to see what is pending.")]
     NoPendingToolSeeTools,
@@ -85,7 +77,8 @@ public enum UserText
     [Description("\n\nApprove with /approve <Name>, discard with /reject <Name>.")]
     ToolsHint,
 
-    [Description("Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it.")]
+    [Description(
+        "Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it.")]
     SkillFileApproved,
 
     [Description("Rejected skill file '{Name}': deleted {Path}{Removed}.")]
@@ -100,7 +93,9 @@ public enum UserText
     [Description("- {Name} [skill file pending from an earlier session, not loaded]")]
     PendingSkillFileNotLoaded,
 
-    [Description("'{Name}' is both a pending tool ({Tool}) and a pending skill file ({File}); nothing was done. Reject one of them first, then approve the other.")]
+    [Description(
+        "'{Name}' is both a pending tool ({Tool}) and a pending skill file ({File}); nothing was done. Reject one of " +
+        "them first, then approve the other.")]
     PendingToolAndSkillFile,
 
     [Description("Usage isn't tracked in this session.")]

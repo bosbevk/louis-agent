@@ -1,4 +1,5 @@
-
+using LouisAgent.Core.Web.Messages.Holes.Rendering;
+using LouisAgent.Composition.Web.Messages.Holes.Rendering;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Logging;
@@ -14,17 +15,18 @@ using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
 
 namespace LouisAgent.Core.Web.Browsing;
+
 /// <summary>
-/// The headless Chrome we run (F32; a seam of its own since F33 step 1, so a shop's catalogue uses the same guards as the
-/// renderer), driven over the DevTools protocol by PuppeteerSharp, which connects and downloads no browser. Per visit:
-/// connect, a new page with every request it makes put to <see cref="RenderPolicy"/> and no WebSockets, the page loaded
-/// (30 s at most) and given up to 10 s more for its scripts to fetch what they draw, the responses a caller asked for
-/// kept, the page closed and the connection dropped. No connection is kept, so a browser restart costs nothing; at most
-/// <see cref="MaxPages"/> pages are open at once across the process, so a cook's minions don't open a tab each. Chrome
-/// answers its DevTools address only by IP or as localhost, so a service name (a compose stack's browser) is resolved first.
-/// A visit with a session (the cookies it starts with) or a script (one of ours, run once the page has loaded) has a
-/// browser context of its own, dropped after, and hands back the cookies the site set (F34): one area's store never
-/// reaches another visit. A plain visit shares the browser's default context, as before.
+/// The headless Chrome we run (F32; a seam of its own since F33 step 1, so a shop's catalogue uses the same guards as
+/// the renderer), driven over the DevTools protocol by PuppeteerSharp, which connects and downloads no browser. Per
+/// visit: connect, a new page with every request it makes put to <see cref="RenderPolicy"/> and no WebSockets, the page
+/// loaded (30 s at most) and given up to 10 s more for its scripts to fetch what they draw, the responses a caller
+/// asked for kept, the page closed and the connection dropped. No connection is kept, so a browser restart costs
+/// nothing; at most <see cref="MaxPages"/> pages are open at once across the process, so a cook's minions don't open a
+/// tab each. Chrome answers its DevTools address only by IP or as localhost, so a service name (a compose stack's
+/// browser) is resolved first. A visit with a session (the cookies it starts with) or a script (one of ours, run once
+/// the page has loaded) has a browser context of its own, dropped after, and hands back the cookies the site set (F34):
+/// one area's store never reaches another visit. A plain visit shares the browser's default context, as before.
 /// </summary>
 public sealed class ChromeWebBrowser(
     Uri browserUrl,
@@ -32,7 +34,8 @@ public sealed class ChromeWebBrowser(
     TimeSpan? budget = null,
     string? userAgent = null) : IWebBrowser
 {
-    /// <summary>The one failure the library loses on every page that goes early (FX57): no error for that one.</summary>
+    /// <summary>The one failure the library loses on every page that goes early (FX57): no error for that
+    /// one.</summary>
     static ChromeWebBrowser() => LastChance.Expect(LostContexts.Are);
 
     /// <summary>What every page this browser opens tells the site it is (FX21); null leaves Chrome's own.</summary>
@@ -53,7 +56,8 @@ public sealed class ChromeWebBrowser(
 
     /// <summary>Runs before a page's scripts in every frame: a WebSocket can't be made.</summary>
     private const string NoWebSockets =
-        "Object.defineProperty(globalThis, 'WebSocket', { value: function () { throw new Error('WebSocket is blocked'); }, " +
+        "Object.defineProperty(globalThis, 'WebSocket', { value: function () { throw new Error('WebSocket is " +
+        "blocked'); }, " +
         "writable: false, configurable: false });";
 
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve =
@@ -73,11 +77,9 @@ public sealed class ChromeWebBrowser(
         if (visit.IsCompletedSuccessfully) return visit.Result;
         cancellationToken.ThrowIfCancellationRequested();
         _ = visit.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
-        throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed, new
-        {
-            Url = url,
-            Reason = MessageText.Format(WebToolMessage.RenderTimedOut, new { Seconds = (int)_budget.TotalSeconds }),
-        }));
+        var budget = new RenderTimedOutHoles((int)_budget.TotalSeconds);
+        var timedOut = new RenderFailedHoles(url.ToString(), MessageText.Format(WebToolMessage.RenderTimedOut, budget));
+        throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed, timedOut));
     }
 
     private async Task<BrowserVisit> VisitWithinAsync(Uri url, Func<Uri, bool>? capture, BrowserSession? session,
@@ -129,8 +131,8 @@ public sealed class ChromeWebBrowser(
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not OutOfMemoryException)
         {
-            throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserUnreachable,
-                new { Url = browserUrl, Reason = ex.Message }));
+            var unreachable = new BrowserUnreachableHoles(browserUrl.ToString(), ex.Message);
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserUnreachable, unreachable));
         }
     }
 
@@ -170,15 +172,24 @@ public sealed class ChromeWebBrowser(
         // Chrome's own; the automation marker is left as Chrome reports it. A site that refuses automated readers
         // refuses this one (Louis, 2026-10-24). A normal screen size, so a page lays out as it would for a person.
         if (userAgent is not null) await page.SetUserAgentAsync(userAgent);
-        await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
+        await page.SetViewportAsync(new ViewPortOptions
+        {
+            Width = 1920,
+            Height = 1080
+        });
 
         if (session is { Cookies.Count: > 0 })
             await page.SetCookieAsync([
                 .. session.Cookies.Select(c => new CookieParam
-                    { Name = c.Name, Value = c.Value, Domain = c.Domain, Path = "/" })
+                {
+                    Name = c.Name,
+                    Value = c.Value,
+                    Domain = c.Domain,
+                    Path = "/"
+                })
             ]);
-        // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR #56:
-        // PuppeteerSharp's waits take no token, so a cancelled render held a page for up to 40 s).
+        // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR
+        // #56: PuppeteerSharp's waits take no token, so a cancelled render held a page for up to 40 s).
         using var closeOnCancel = cancellationToken.Register(() => _ = CloseQuietlyAsync(page));
         try
         {
@@ -221,9 +232,9 @@ public sealed class ChromeWebBrowser(
         string? readySelector, bool ownContext)
     {
         string? refusedPage = null;
-        // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
-        // with a product's app (F32 step 4), so a page could open one to an internal address. No shop needs one for its prices:
-        // before any of the page's own scripts, in every frame, WebSocket refuses to be made.
+        // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a
+        // network with a product's app (F32 step 4), so a page could open one to an internal address. No shop needs one
+        // for its prices: before any of the page's own scripts, in every frame, WebSocket refuses to be made.
         await page.EvaluateExpressionOnNewDocumentAsync(NoWebSockets);
         await page.SetRequestInterceptionAsync(true);
         // An event handler is async void: an exception escaping it would end the process, every open chat with it
@@ -247,8 +258,8 @@ public sealed class ChromeWebBrowser(
                 if (verdict == RenderVerdict.Refuse)
                 {
                     if (request.IsNavigationRequest && request.Frame == page.MainFrame) refusedPage = request.Url;
-                    Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestRefused,
-                        new { Request = request.Url, Page = url });
+                    var refused = new RenderRequestRefusedHoles(request.Url, url.ToString());
+                    Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestRefused, refused);
                 }
 
                 await request.AbortAsync(RequestAbortErrorCode.BlockedByClient);
@@ -256,9 +267,10 @@ public sealed class ChromeWebBrowser(
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled,
-                    new { Request = request.Url, Page = url, Reason = ex.Message });
-                // Not answered yet: ended now, not left until the page's timeout (re-review of PR #56). Not made either.
+                var unhandled = new RenderRequestUnhandledHoles(request.Url, url.ToString(), ex.Message);
+                Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled, unhandled);
+                // Not answered yet: ended now, not left until the page's timeout (re-review of PR #56). Not made
+                // either.
                 if (!answered)
                     try
                     {
@@ -301,11 +313,15 @@ public sealed class ChromeWebBrowser(
         }
         catch (Exception ex) when (ex is NavigationException or TimeoutException)
         {
-            string reason = refusedPage is { } address
-                ? MessageText.Format(WebToolMessage.RenderBlockedAddress, new { Address = address })
-                : ex.Message;
-            throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed,
-                new { Url = url, Reason = reason }));
+            string reason = ex.Message;
+            if (refusedPage is { } address)
+            {
+                var blockedAt = new RenderBlockedAddressHoles(address);
+                reason = MessageText.Format(WebToolMessage.RenderBlockedAddress, blockedAt);
+            }
+
+            var failed = new RenderFailedHoles(url.ToString(), reason);
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed, failed));
         }
 
         if (capture is not null)
@@ -314,7 +330,10 @@ public sealed class ChromeWebBrowser(
             try
             {
                 await page.WaitForNetworkIdleAsync(new WaitForNetworkIdleOptions
-                { Timeout = (int)Settle.TotalMilliseconds, IdleTime = 500 });
+                {
+                    Timeout = (int)Settle.TotalMilliseconds,
+                    IdleTime = 500
+                });
             }
             catch (TimeoutException)
             {
@@ -331,8 +350,8 @@ public sealed class ChromeWebBrowser(
             }
             catch (EvaluationFailedException ex)
             {
-                throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserScriptFailed,
-                    new { Url = url, Reason = ex.Message }));
+                var scriptFailed = new BrowserScriptFailedHoles(url.ToString(), ex.Message);
+                throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserScriptFailed, scriptFailed));
             }
 
         Task[] pending;
@@ -378,8 +397,8 @@ public sealed class ChromeWebBrowser(
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
-            Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled,
-                new { Request = response.Url, Page = response.Url, Reason = ex.Message });
+            var unhandled = new RenderRequestUnhandledHoles(response.Url, response.Url, ex.Message);
+            Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled, unhandled);
         }
     }
 }

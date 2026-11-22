@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages.Holes.Robots;
 using LouisAgent.Testing.Replay;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
@@ -35,12 +36,8 @@ public class RobotsWebBrowserTests
         var failure =
             Assert.ThrowsAsync<WebBrowserException>(() => browser.VisitAsync(new Uri("https://a.com/private/x")));
 
-        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsDisallows,
-            new
-            {
-                Host = "a.com",
-                Path = "/private/x"
-            })));
+        var disallows = new RobotsDisallowsHoles("a.com", "/private/x");
+        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsDisallows, disallows)));
         Assert.That(inner.Calls, Is.Zero);
     }
 
@@ -55,12 +52,8 @@ public class RobotsWebBrowserTests
 
         var failure = Assert.ThrowsAsync<WebBrowserException>(() => browser.VisitAsync(Allowed));
 
-        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsUnreachable,
-            new
-            {
-                Host = "a.com",
-                Reason = "503"
-            })));
+        var unreachable = new RobotsUnreachableHoles("a.com", "503");
+        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsUnreachable, unreachable)));
         Assert.That(inner.Calls, Is.Zero);
     }
 
@@ -88,12 +81,8 @@ public class RobotsWebBrowserTests
 
         var failure = Assert.ThrowsAsync<WebBrowserException>(() => browser.VisitAsync(Allowed));
 
-        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders,
-            new
-            {
-                Host = "a.com",
-                Signal = "meta robots noai"
-            })));
+        var refuses = new PageRefusesAiReadersHoles("a.com", "meta robots noai");
+        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders, refuses)));
         Assert.That(inner.Calls, Is.EqualTo(1));
     }
 }

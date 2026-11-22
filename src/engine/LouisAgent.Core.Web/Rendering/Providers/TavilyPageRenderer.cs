@@ -1,4 +1,5 @@
-
+using LouisAgent.Composition.Web.Messages.Holes.Tavily;
+using LouisAgent.Composition.Web.Messages.Holes.Rendering;
 using LouisAgent.Composition.Web.Rendering;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
@@ -11,6 +12,7 @@ using LouisAgent.Core.Web.Messages;
 using LouisAgent.Core.Web.Rendering;
 
 namespace LouisAgent.Core.Web.Rendering.Providers;
+
 /// <summary>
 /// Tavily's Extract endpoint as the page renderer (F25 step 7; Louis's choice over a hosted reader and a headless
 /// browser in the container): <c>POST https://api.tavily.com/extract</c> with the key as a bearer header, one URL per
@@ -43,14 +45,16 @@ public sealed class TavilyPageRenderer(string apiKey, HttpClient? http = null) :
         if (!response.IsSuccessStatusCode)
         {
             string detail = TavilyError(json) ?? response.ReasonPhrase ?? "";
+            var rejected = new TavilyRejectedHoles(detail);
+            var limit = new TavilyLimitHoles(detail);
+            var httpFailed = new RenderFailedHoles(url.ToString(), $"HTTP {(int)response.StatusCode} {detail}");
             throw new PageRenderException(response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(
-                    WebToolMessage.TavilyRejected, new { Detail = detail }),
-                HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 => MessageText.Format(
-                    WebToolMessage.TavilyLimit, new { Detail = detail }),
-                _ => MessageText.Format(WebToolMessage.RenderFailed,
-                    new { Url = url, Reason = $"HTTP {(int)response.StatusCode} {detail}" }),
+                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden =>
+                    MessageText.Format(WebToolMessage.TavilyRejected, rejected),
+                HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 =>
+                    MessageText.Format(WebToolMessage.TavilyLimit, limit),
+                _ => MessageText.Format(WebToolMessage.RenderFailed, httpFailed),
             });
         }
 
@@ -70,11 +74,12 @@ public sealed class TavilyPageRenderer(string apiKey, HttpClient? http = null) :
                         && failed[0].TryGetProperty("error", out var e)
             ? e.GetString() ?? ""
             : MessageText.Format(WebToolMessage.RenderNoResult);
-        throw new PageRenderException(MessageText.Format(WebToolMessage.RenderFailed,
-            new { Url = url, Reason = reason }));
+        var unread = new RenderFailedHoles(url.ToString(), reason);
+        throw new PageRenderException(MessageText.Format(WebToolMessage.RenderFailed, unread));
     }
 
-    /// <summary>Tavily's error body: <c>{"detail": {"error": "…"}}</c>, or <c>{"detail": "…"}</c> from its framework.</summary>
+    /// <summary>Tavily's error body: <c>{"detail": {"error": "…"}}</c>, or <c>{"detail": "…"}</c> from its
+    /// framework.</summary>
     internal static string? TavilyError(string json)
     {
         try
