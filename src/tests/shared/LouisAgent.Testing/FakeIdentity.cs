@@ -20,7 +20,7 @@ public sealed class FakeIdentity(
 
     public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string>
     {
-        [$"agent/{name}/voice.md"] = $"# {name}\n\nA voice.\n"
+        [$"agents/{name}/voice.md"] = $"# {name}\n\nA voice.\n"
     });
 
     public IReadOnlyList<string> Packs => packs ?? [];

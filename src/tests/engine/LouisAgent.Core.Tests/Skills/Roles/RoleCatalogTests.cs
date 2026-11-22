@@ -55,7 +55,7 @@ public class RoleCatalogTests
 
         Assert.That(docs.IndexOf("# Testprod - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
-        Assert.That(Body("agent/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
+        Assert.That(Body("agents/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
             "the product's shared part");
     }
 

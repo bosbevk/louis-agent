@@ -13,10 +13,10 @@ namespace LouisAgent.Site.Tests.Guide;
 /// </summary>
 public class GuideSkillsTests
 {
-    private const string Folder = "agent/louis-agent-guide/";
+    private const string Folder = "agents/louis-agent-guide/";
 
     /// <summary>Where the guide's skills are, beside its voice.</summary>
-    private const string SkillsFolder = "agent/louis-agent-guide/skills";
+    private const string SkillsFolder = "agents/louis-agent-guide/skills";
 
     /// <summary>A prompt file of the guide's, split into its header and the body the model reads.</summary>
     private static PromptFile Read(string path)

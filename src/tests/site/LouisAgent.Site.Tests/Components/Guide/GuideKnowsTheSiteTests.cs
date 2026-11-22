@@ -19,7 +19,7 @@ public class GuideKnowsTheSiteTests
     private static string WhatTheGuideReads()
     {
         var identity = new GuideIdentity();
-        string folder = $"agent/{identity.Name}";
+        string folder = $"agents/{identity.Name}";
         var files = new[] { $"{folder}/voice.md" }.Concat(identity.Prompts.GetDirectoryContents($"{folder}/skills")
             .Select(skill => $"{folder}/skills/{skill.Name}"));
         return string.Join('\n', files.Select(path =>

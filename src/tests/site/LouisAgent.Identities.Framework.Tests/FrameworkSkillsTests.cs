@@ -8,7 +8,7 @@ namespace LouisAgent.Identities.Framework.Tests;
 public class FrameworkSkillsTests
 {
     /// <summary>Where the skills are among the identity's prompts.</summary>
-    private const string SkillsFolder = "agent/louis-agent-framework/skills";
+    private const string SkillsFolder = "agents/louis-agent-framework/skills";
 
     /// <summary>The most rules a skill's Never holds.</summary>
     private const int MostNevers = 7;
@@ -16,7 +16,7 @@ public class FrameworkSkillsTests
     /// <summary>A prompt's text, its line breaks made one kind, so a checkout on any machine reads the same.</summary>
     private static string Read(string path)
     {
-        using var stream = new FrameworkIdentity().Prompts.GetFileInfo($"agent/louis-agent-framework/{path}")
+        using var stream = new FrameworkIdentity().Prompts.GetFileInfo($"agents/louis-agent-framework/{path}")
             .CreateReadStream();
         return new StreamReader(stream).ReadToEnd().ReplaceLineEndings("\n");
     }

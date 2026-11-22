@@ -95,7 +95,7 @@ public class PromptHeadersTests
     [TestCase("on-demand", SkillLoad.OnDemand)]
     public void ASkillsHeader_SaysHowItLoads(string load, SkillLoad expected)
     {
-        var file = PromptHeaders.Split("agent/acme/skills/menu.md",
+        var file = PromptHeaders.Split("agents/acme/skills/menu.md",
             $"---\nname: menu\ndescription: The menu.\nmetadata:\n  level: agent\n  load: {load}\n---\n# Menu\n");
 
         Assert.That(file.Header!.Load, Is.EqualTo(expected));

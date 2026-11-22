@@ -32,11 +32,11 @@ public static class SkillFiles
     internal const string ToolsetsFolder = "toolsets";
 
     /// <summary>
-    /// The folder of the function skills, the procedures ExecuteSkill runs: level 0's, under <c>agent/</c>. Written
+    /// The folder of the function skills, the procedures ExecuteSkill runs: level 0's, under <c>agents/</c>. Written
     /// out, not built from <c>RoleCatalog.AgentFolder</c>, so the top of <c>Skills/</c> uses nothing below it (CL13);
     /// <c>SkillFilesTests</c> holds the two together.
     /// </summary>
-    internal const string FunctionsFolder = "agent/functions";
+    internal const string FunctionsFolder = "agents/functions";
 
     /// <summary>
     /// Where a function skill the agent writes waits for the user's <c>/approve</c> (FX20), as agent-built tools wait
@@ -46,18 +46,18 @@ public static class SkillFiles
     internal const string PendingFunctionsFolder = FunctionsFolder + "/pending";
 
     /// <summary>
-    /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agent/{identity}/skills/</c>. Written
+    /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agents/{identity}/skills/</c>. Written
     /// out, as <see cref="FunctionsFolder"/> is.
     /// </summary>
-    internal static string SkillsOf(string identity) => $"agent/{identity}/skills/";
+    internal static string SkillsOf(string identity) => $"agents/{identity}/skills/";
 
-    /// <summary>A pending function skill's file: <c>agent/functions/pending/{name}.md</c>.</summary>
+    /// <summary>A pending function skill's file: <c>agents/functions/pending/{name}.md</c>.</summary>
     internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";
 
     /// <summary>A toolset guide's file: <c>toolsets/{name}.md</c>.</summary>
     public static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";
 
-    /// <summary>A function skill's file: <c>agent/functions/{name}.md</c>.</summary>
+    /// <summary>A function skill's file: <c>agents/functions/{name}.md</c>.</summary>
     internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";
 
     /// <summary>

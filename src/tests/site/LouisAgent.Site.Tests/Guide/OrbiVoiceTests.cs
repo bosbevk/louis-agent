@@ -22,7 +22,7 @@ public class OrbiVoiceTests
     private static string Flat(string path)
     {
         using var reader = new StreamReader(new GuideIdentity().Prompts
-            .GetFileInfo($"agent/louis-agent-guide/{path}").CreateReadStream());
+            .GetFileInfo($"agents/louis-agent-guide/{path}").CreateReadStream());
         return string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
     }
@@ -215,7 +215,7 @@ public class OrbiVoiceTests
     public void TheVoice_NamesEverySkillItReadsOnDemand()
     {
         var identity = new GuideIdentity();
-        var onDemand = identity.Prompts.GetDirectoryContents("agent/louis-agent-guide/skills")
+        var onDemand = identity.Prompts.GetDirectoryContents("agents/louis-agent-guide/skills")
             .Select(file => Path.GetFileNameWithoutExtension(file.Name))
             .Where(name => Skill(name).Contains("load: on-demand"));
 

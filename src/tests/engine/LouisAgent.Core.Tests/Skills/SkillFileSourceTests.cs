@@ -65,10 +65,10 @@ public class SkillFileSourceTests
     public void AFunctionTheAgentWrote_IsReadFromDisk()
     {
         // What the agent writes (CreateSkillFile) lives in the skills folder, not the assembly.
-        Directory.CreateDirectory(Path.Combine(_dir, "agent", "functions"));
-        File.WriteAllText(Path.Combine(_dir, "agent", "functions", "greeting.md"), "# Greeting Skills");
+        Directory.CreateDirectory(Path.Combine(_dir, RoleCatalog.AgentFolder, "functions"));
+        File.WriteAllText(Path.Combine(_dir, RoleCatalog.AgentFolder, "functions", "greeting.md"), "# Greeting Skills");
 
-        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agent/functions/greeting.md");
+        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agents/functions/greeting.md");
 
         Assert.That(file!.Value.FromDisk, Is.True);
         Assert.That(file.Value.Text, Does.Contain("# Greeting Skills"));

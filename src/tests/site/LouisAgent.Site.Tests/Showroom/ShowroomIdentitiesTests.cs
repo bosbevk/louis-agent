@@ -19,7 +19,7 @@ public class ShowroomIdentitiesTests
     /// <summary>A voice, its lines joined, as the engine reads it.</summary>
     private static string Voice(IAgentIdentity identity)
     {
-        using var reader = new StreamReader(identity.Prompts.GetFileInfo($"agent/{identity.DefaultVoice}.md")
+        using var reader = new StreamReader(identity.Prompts.GetFileInfo($"agents/{identity.DefaultVoice}.md")
             .CreateReadStream());
         return string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
@@ -40,7 +40,7 @@ public class ShowroomIdentitiesTests
         {
             Assert.That(business.Name, Is.EqualTo(name));
             Assert.That(business.DefaultVoice, Is.EqualTo($"{name}/voice"));
-            Assert.That(business.Prompts.GetFileInfo($"agent/{name}/voice.md").Exists, Is.True);
+            Assert.That(business.Prompts.GetFileInfo($"agents/{name}/voice.md").Exists, Is.True);
             Assert.That(business.Packs, Is.EqualTo(new[] { "leads", "site" }));
         });
     }

@@ -207,10 +207,10 @@ public class AgentCatalogTests
         Assert.That(Assert.Throws<AgentCatalogException>(() => Catalog(packs: [TestTools.WebPack, pack]))!.Message,
             Does.Contain("toolsets/web.md"));
 
-        var voice = new Dictionary<string, string> { ["agent/shared/voice.md"] = "# shared" };
+        var voice = new Dictionary<string, string> { ["agents/shared/voice.md"] = "# shared" };
         var error = Assert.Throws<AgentCatalogException>(() =>
             Catalog([new FakeIdentity("one", prompts: voice), new FakeIdentity("two", prompts: voice)]))!;
-        Assert.That(error.Message, Does.Contain("agent/shared/voice.md"));
+        Assert.That(error.Message, Does.Contain("agents/shared/voice.md"));
     }
 
     /// <summary>A pack an identity or a pack asks for that nobody registered is refused, naming what is.</summary>

@@ -311,7 +311,7 @@ public class ShowroomPagesTests
     {
         using var ctx = new BunitContext();
         string voice = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            $"src/site/LouisAgent.Identities.Showroom/prompts/{business}/agent/{business}/voice.md"));
+            $"src/site/LouisAgent.Identities.Showroom/prompts/{business}/agents/{business}/voice.md"));
 
         // Each innermost element's words apart, so a fact never runs into the next one's.
         var texts = Render(ctx, page).Find(".site-mock .mock-page").QuerySelectorAll("*")
