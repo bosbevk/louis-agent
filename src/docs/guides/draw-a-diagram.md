@@ -325,6 +325,10 @@ steps it has a key, *How to read it*: each tone its badges wear, a call, an answ
 each kind of block it has, with what the kind does (`loop` repeats, `opt` only if, `alt` one case or the other).
 You write none of that.
 
+**On a phone.** A sequence a page shows is drawn a second way for a phone, as its steps down the page: each call or
+answer names its sender and its receiver with the same beam or dashes between them, and its words under them. You
+write nothing for that either, and the picture's file in the docs is always the wide drawing.
+
 ### Classes: an interface design
 
 A class chart shows types, their members and how they relate. A type is drawn as a card and a relation as a line

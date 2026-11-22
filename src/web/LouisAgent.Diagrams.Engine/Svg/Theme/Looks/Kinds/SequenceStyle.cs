@@ -79,8 +79,38 @@ internal static class SequenceStyle
           .seq-swatch { fill: url(#{{MarqueeLook.GlassPaint}}); stroke: var(--mrq-sheet); stroke-opacity: .3; }
           """;
 
+    /// <summary>
+    /// What a sequence drawn as steps for a phone adds to the rules above (F169.7): a call's bar in the accent and an
+    /// answer's dashed and quiet, a participant's square in its tone, its name, and a step's words, an answer's quiet.
+    /// </summary>
+    /// <remarks>
+    /// Only the phone's drawing asks for these, so a sequence drawn wide, a picture in the docs among them, carries
+    /// none of them. They live here, not in a style of their own: Louis's pick "C: inside the sequence's own style"
+    /// (2026-11-22), Fowler's <i>Inline Class</i>, over a subfolder of the kinds' styles for a sequence's two and over
+    /// a style beside its drawing. The step list is a sequence drawn another way, and the kinds' folder holds one
+    /// style per kind of picture. The tones are on the squares only, as on the badges, so a bar has the accent and not
+    /// its sender's colour. Every part is a plain colour, so a flat page has nothing of it to hide (F169.4).
+    /// </remarks>
+    /// <seealso href="https://refactoring.com/catalog/inlineClass.html">Fowler: Inline Class</seealso>
+    public static string StepList(SvgTheme theme) =>
+        $$"""
+
+          .stl-bar { fill: var(--violet-line); }
+          .stl-bar.quiet {
+            fill: none; stroke: var(--quiet); stroke-opacity: .8; stroke-width: 2; stroke-dasharray: 3 4;
+          }
+          .stl-dot { fill: var(--quiet); }
+          {{Toned(theme, "stl-dot")}}
+          .stl-name { fill: var(--text); font: 600 12.5px var(--pic-sans); }
+          .stl-words { fill: var(--text); font: 12.5px var(--pic-sans); }
+          .stl-words.quiet { fill: var(--quiet); }
+          """;
+
     /// <summary>A rule a tone: a badge is filled with its participant's tone.</summary>
-    private static string Badges(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
+    private static string Badges(SvgTheme theme) => Toned(theme, "seq-badge");
+
+    /// <summary>A rule a tone for a part filled with its participant's tone: a badge, or a step's square.</summary>
+    private static string Toned(SvgTheme theme, string part) => string.Join("\n", theme.Light.Tones.Keys
         .Select(tone => tone.Wire())
-        .Select(name => $".seq-badge.tone-{name} {{ fill: var(--{name}-line); }}"));
+        .Select(name => $".{part}.tone-{name} {{ fill: var(--{name}-line); }}"));
 }

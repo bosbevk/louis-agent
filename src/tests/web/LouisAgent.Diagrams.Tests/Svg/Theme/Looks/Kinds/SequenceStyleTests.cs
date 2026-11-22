@@ -94,4 +94,46 @@ public class SequenceStyleTests
         Assert.That(Style, Does.Not.Contain("--seq-"), "its variables are the shared look's");
         Assert.That(CardsStyle.Rules, Does.Not.Contain(".seq-"));
     });
+
+    /// <summary>What a sequence drawn as steps for a phone adds (F169.7), asked for by that drawing alone.</summary>
+    private static readonly string StepList = SequenceStyle.StepList(SvgTheme.Site);
+
+    /// <summary>The step list has a rule for every part of its own, and the wide style none of them.</summary>
+    [TestCase(".stl-bar")]
+    [TestCase(".stl-bar.quiet")]
+    [TestCase(".stl-dot")]
+    [TestCase(".stl-name")]
+    [TestCase(".stl-words")]
+    [TestCase(".stl-words.quiet")]
+    public void TheStepList_HasARuleForEveryPartOfItsOwn(string rule) => Assert.Multiple(() =>
+    {
+        Assert.That(StepList, Does.Contain(rule + " "));
+        Assert.That(Style, Does.Not.Contain(".stl-"), "so a picture in the docs is byte for byte as it was");
+    });
+
+    /// <summary>A step's square is filled with its participant's tone; with no tone, it is quiet.</summary>
+    [TestCase("blue")]
+    [TestCase("green")]
+    [TestCase("violet")]
+    [TestCase("teal")]
+    [TestCase("red")]
+    [TestCase("amber")]
+    public void AStepsSquare_IsFilledWithItsTone(string tone) => Assert.Multiple(() =>
+    {
+        Assert.That(StepList, Does.Contain($".stl-dot.tone-{tone} {{ fill: var(--{tone}-line); }}"));
+        Assert.That(StepList, Does.Contain(".stl-dot { fill: var(--quiet); }"), "with no tone, quiet");
+    });
+
+    /// <summary>
+    /// No part of the step list is filled with a fade or passed through a filter, so the flat page's rules need none
+    /// for it, and its words are 10 pixels or more.
+    /// </summary>
+    [Test]
+    public void NoPartOfTheStepList_IsShaded_AndNoWordsAreSmall() => Assert.Multiple(() =>
+    {
+        Assert.That(StepList, Does.Not.Contain("url(#"));
+        Assert.That(StepList, Does.Not.Contain("filter:"));
+        Assert.That(StepList, Does.Contain("12.5px"));
+        Assert.That(StepList, Does.Not.Match(@"(?<![\d.])[1-9](\.\d+)?px var"));
+    });
 }
