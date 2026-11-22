@@ -1,31 +1,31 @@
-@* One step of a specialist's work: a tool call, or a minion it handed one page to, with the minion's role, tool and model, its
-   own steps and what it cost, nested under the specialist's steps. *@
-@if (Delegation.From(Step) is { Minion: true } minion)
+@* One step of a subagent's work: a tool call, or a lookup agent it handed one page to, with the lookup agent's
+   address, tool and model, its own steps and what it cost, nested under the subagent's steps. *@
+@if (Delegation.From(Step) is { Lookup: true } lookup)
 {
-    var minionSteps = Step.SubTurn?.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList() ?? [];
-    <li class="work-step minion @StepMarks.StateOf(Step)">
+    var lookupSteps = Step.SubTurn?.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList() ?? [];
+    <li class="work-step lookup @StepMarks.StateOf(Step)">
         <span class="work-step-mark">@StepMarks.MarkOf(Step)</span>
-        <div class="work-minion">
-            <div class="work-minion-head">
-                <span class="work-step-name">@Text.MinionLabel</span>
-                <span class="work-minion-role">@(minion.Role ?? Step.ToolName)</span>
-                @foreach (string tool in minion.Toolsets)
+        <div class="work-lookup">
+            <div class="work-lookup-head">
+                <span class="work-step-name">@Text.LookupLabel</span>
+                <span class="work-lookup-role">@(lookup.Role ?? Step.ToolName)</span>
+                @foreach (string tool in lookup.Toolsets)
                 {
                     <span class="toolset-chip">@tool</span>
                 }
-                @if (minion.Llm is { } llm)
+                @if (lookup.Llm is { } llm)
                 {
                     <span class="toolset-chip model">@Text.OnModel @llm</span>
                 }
             </div>
-            @if (minion.Task is { Length: > 0 } minionTask)
+            @if (lookup.Task is { Length: > 0 } lookupTask)
             {
-                <div class="work-minion-task" title="@minionTask">@minionTask</div>
+                <div class="work-lookup-task" title="@lookupTask">@lookupTask</div>
             }
-            @if (minionSteps.Count > 0)
+            @if (lookupSteps.Count > 0)
             {
                 <ol class="work-steps nested">
-                    @foreach (var inner in minionSteps)
+                    @foreach (var inner in lookupSteps)
                     {
                         <li class="work-step @StepMarks.StateOf(inner)">
                             <span class="work-step-mark">@StepMarks.MarkOf(inner)</span>
@@ -38,9 +38,9 @@
                     }
                 </ol>
             }
-            @if (Step.SubTurn?.Usage is { } minionUsage)
+            @if (Step.SubTurn?.Usage is { } lookupUsage)
             {
-                <div class="work-minion-cost" title="@UsageFormat.Detail(minionUsage, Currency)">@UsageFormat.Cost(minionUsage, Currency) · @minionUsage.Requests @Text.Requests</div>
+                <div class="work-lookup-cost" title="@UsageFormat.Detail(lookupUsage, Currency)">@UsageFormat.Cost(lookupUsage, Currency) · @lookupUsage.Requests @Text.Requests</div>
             }
         </div>
     </li>

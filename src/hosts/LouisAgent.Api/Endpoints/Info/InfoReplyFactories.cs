@@ -32,7 +32,7 @@ internal static class InfoReplyFactories
             engines.DefaultVoice ?? "",
             engines.AvailableRoles(RoleLevel.Agent),
             engines.AvailableRoles(RoleLevel.Subagent),
-            engines.AvailableRoles(RoleLevel.Minion));
+            engines.AvailableRoles(RoleLevel.Lookup));
     }
 
     /// <summary>A toolset's row says whether it can load here, from the settings it lacks.</summary>

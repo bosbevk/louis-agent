@@ -78,9 +78,9 @@ public class AgentSessionsTests
             SkillsDirectory = SkillsFolder,
             RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { [TestAgent.Name] = new("http://testagent:8080/") },
-            MinionLlms = new Dictionary<string, IReadOnlyList<string>>
+            LookupLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                [TestAgent.OtherMinion] = [MinionAsk.InstanceLlm]
+                [TestAgent.OtherLookup] = [LookupAsk.InstanceLlm]
             }
         };
 
@@ -476,13 +476,13 @@ public class AgentSessionsTests
         var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist);
 
         var minion = sessions.Create([TestToolset.Web.Wire()], ParentOf(cook), depth: 2,
-            role: TestAgent.Minion, tool: "FetchUrl");
+            role: TestAgent.Lookup, tool: "FetchUrl");
 
         Assert.That(minion.Depth, Is.EqualTo(2));
         Assert.That(minion.Tool, Is.EqualTo("FetchUrl"));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
         Assert.That(minion.Engine.SkillDocumentation,
-            Does.Contain(TestAgent.MinionHeading).And.Not.Contain("# Web Skills"));
+            Does.Contain(TestAgent.LookupHeading).And.Not.Contain("# Web Skills"));
         Assert.That(cook.Tool, Is.Null, "a specialist has toolsets, not one tool");
     }
 
@@ -503,15 +503,15 @@ public class AgentSessionsTests
 
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], ParentOf(withFiles), depth: 2,
-                role: TestAgent.Minion, tool: "FetchUrl"),
+                role: TestAgent.Lookup, tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
         Assert.That(
             sessions.Create([TestToolset.Files.Wire()], ParentOf(withWeb), depth: 2,
-                role: TestAgent.Minion, tool: "ReadWorkspaceFile").Tool,
+                role: TestAgent.Lookup, tool: "ReadWorkspaceFile").Tool,
             Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the specialist's call");
         Assert.That(
             () => sessions.Create([CoreToolset.Skills.Wire()], ParentOf(withWeb), depth: 2,
-                role: TestAgent.Minion, tool: "ExecuteSkill"),
+                role: TestAgent.Lookup, tool: "ExecuteSkill"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }
 
@@ -527,12 +527,12 @@ public class AgentSessionsTests
         var parent = ParentOf(cook);
 
         Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], depth: 2, role: TestAgent.Minion,
+            () => sessions.Create([TestToolset.Web.Wire()], depth: 2, role: TestAgent.Lookup,
                 tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent"), "no parent");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], new UsageTags(null, null, null, "sess_gone#1"), depth: 2,
-                role: TestAgent.Minion, tool: "FetchUrl"),
+                role: TestAgent.Lookup, tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: TestAgent.Specialist,
@@ -540,14 +540,14 @@ public class AgentSessionsTests
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a specialist's role is no minion role, at any depth");
         Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: TestAgent.MinionBase,
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: TestAgent.LookupBase,
                 tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "the base is no role");
         Assert.That(() => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "a minion always has a role");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2,
-                role: TestAgent.Minion),
+                role: TestAgent.Lookup),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a minion always has its one tool");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist, tool: "FetchUrl"),
@@ -566,7 +566,7 @@ public class AgentSessionsTests
         var sessions = Sessions();
         var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: TestAgent.Specialist);
 
-        var minion = sessions.Create(null, ParentOf(cook), depth: 2, role: TestAgent.Minion,
+        var minion = sessions.Create(null, ParentOf(cook), depth: 2, role: TestAgent.Lookup,
             tool: "FetchUrl");
         Assert.That(minion.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));

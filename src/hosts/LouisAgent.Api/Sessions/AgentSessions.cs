@@ -51,7 +51,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), all before anything is
     /// created. A minion names its one <paramref name="tool"/>, which must be its parent session's
     /// (<paramref name="tags"/>' parent, found here: minions run on their asker's own instance) and never one of
-    /// <see cref="MinionAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
+    /// <see cref="LookupAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
     /// Every other role refuses a tool.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
@@ -69,12 +69,12 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         // The prompt's level: a voice at the top, below it the role's own folder.
         var level = LevelOf(role, depth, tool);
-        if (level == RoleLevel.Minion) CheckMinion(tags, tool, role);
+        if (level == RoleLevel.Lookup) CheckLookup(tags, tool, role);
         else if (tool is not null)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForLookups,
                 new { Role = role ?? "the default voice" }));
         // A minion names its tool; the toolset that builds it is implied (AskAgent sends none for a minion).
-        var names = ToolsetCatalog.Normalise(level == RoleLevel.Minion && toolsets is null
+        var names = ToolsetCatalog.Normalise(level == RoleLevel.Lookup && toolsets is null
             ?
             [
                 engines.Catalog.ToolsetOf(tool!)
@@ -85,8 +85,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // its parent passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, level)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
-        if (level == RoleLevel.Minion && plain.Contains(AgentsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionCannotAsk,
+        if (level == RoleLevel.Lookup && plain.Contains(AgentsToolset))
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupCannotAsk,
                 new { Toolset = AgentsToolset }));
         if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
@@ -117,7 +117,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     {
         if (depth == 0) return RoleLevel.Agent;
         if (RoleCatalog.LevelOf(role) is { } level) return level;
-        return tool is null ? RoleLevel.Subagent : RoleLevel.Minion;
+        return tool is null ? RoleLevel.Subagent : RoleLevel.Lookup;
     }
 
     /// <summary>
@@ -173,19 +173,19 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// specialist's toolbox is the only one). The role itself (a minion role, not a specialist's or the base) is the
     /// factory's check, as for every role.
     /// </summary>
-    private void CheckMinion(UsageTags? tags, string? tool, string? role)
+    private void CheckLookup(UsageTags? tags, string? tool, string? role)
     {
         if (tool is null)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool,
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupNeedsTool,
                 new { Role = role ?? "(none)" }));
         if (string.IsNullOrWhiteSpace(tags?.Parent))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsParent,
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupNeedsParent,
                 new { Example = "sess_…#3" }));
         string parentId = tags.Parent.Split('#')[0];
         if (Get(parentId) is not { } parent)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown,
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupParentUnknown,
                 new { Session = parentId }));
-        if (MinionAsk.NeverHandedDown.Contains(tool))
+        if (LookupAsk.NeverHandedDown.Contains(tool))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, new { Tool = tool }));

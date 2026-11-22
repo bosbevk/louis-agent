@@ -47,7 +47,7 @@ public class AskDepthTests
             Assert.That(reader.Toolsets, Does.Contain(agents));
             foreach (string asked in new[] { agents, agents + ToolsetCatalog.OptionalMark })
                 Assert.That(
-                    () => sessions.Create([asked], ParentOf(specialist), depth: 2, role: TestAgent.Minion,
+                    () => sessions.Create([asked], ParentOf(specialist), depth: 2, role: TestAgent.Lookup,
                         tool: "FetchUrl"),
                     Throws.TypeOf<ToolsetException>().With.Message.Contain("asks no one"));
         });
@@ -63,13 +63,13 @@ public class AskDepthTests
         var sessions = Fresh();
         var voice = sessions.Create([TestToolset.Web.Wire()], role: TestAgent.Voice);
 
-        var minion = sessions.Create(null, ParentOf(voice), depth: 1, role: TestAgent.Minion, tool: "FetchUrl");
+        var minion = sessions.Create(null, ParentOf(voice), depth: 1, role: TestAgent.Lookup, tool: "FetchUrl");
         var specialist = sessions.Create([TestToolset.Web.Wire()], depth: 2, role: Specialist);
 
         Assert.Multiple(() =>
         {
             Assert.That((minion.Depth, minion.Tool), Is.EqualTo((1, "FetchUrl")));
-            Assert.That(minion.Engine.SkillDocumentation, Does.Contain(TestAgent.MinionHeading));
+            Assert.That(minion.Engine.SkillDocumentation, Does.Contain(TestAgent.LookupHeading));
             Assert.That((specialist.Depth, specialist.Role, specialist.Tool),
                 Is.EqualTo((2, Specialist, (string?)null)));
         });

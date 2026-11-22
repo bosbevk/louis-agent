@@ -27,7 +27,7 @@
         "id": "deleg",
         "icon": "users",
         "tone": "green",
-        "label": "Delegation\nAskAgent, sub-sessions,\nminions"
+        "label": "Delegation\nAskAgent, sub-sessions,\nlookup agents"
       },
       {
         "id": "web",

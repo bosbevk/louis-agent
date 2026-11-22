@@ -61,9 +61,9 @@ public static class SkillLoader
         // for a mode, how it routes) frames everything after it
         AddBuiltIn(agent, composite, SkillFiles.Principles);
         string? roleFile = RoleFiles.FileOf(agent, role, level);
-        // A minion's base ({product}-minion.md) frames its role (F30): what every minion is, then what this one does
-        if (level == RoleLevel.Minion && role is not null && RoleCatalog.MinionBaseOf(role) is { } minionBase)
-            AddBuiltIn(agent, composite, RoleCatalog.FileName(minionBase, RoleLevel.Minion));
+        // A lookup agent's base frames its role (F30): what every lookup agent is, then what this one does
+        if (level == RoleLevel.Lookup && role is not null && RoleCatalog.LookupBaseOf(role) is { } lookupBase)
+            AddBuiltIn(agent, composite, lookupBase);
         if (roleFile is null)
         {
             // No role and no identity's default: only the principles and the guides.
@@ -87,7 +87,7 @@ public static class SkillLoader
         // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ;
         // its minions are no agents to ask, and the roles that hand them work name them (F127.5).
         calls = calls
-            ?.Where(call => !(AgentAddress.TryParse(call, out var address) && AgentAddresses.IsMinion(address)))
+            ?.Where(call => !(AgentAddress.TryParse(call, out var address) && AgentAddresses.IsLookup(address)))
             .ToList();
         if (calls is { Count: > 0 } && profile.Any(t => t.Name == CoreToolset.Agents.Wire()))
             composite.AddProvider(MarkdownSkillProvider.FromText(string.Join("\n",

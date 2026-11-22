@@ -96,10 +96,12 @@ public class EveryPromptHasAHeaderTests
 
     /// <summary>
     /// The level a prompt's folders stand for, the deepest on its path (ADR 0133): an agent's voice is under
-    /// <c>agents/</c>, and its subagent's a few folders deeper, under <c>subagents/</c>; none outside them.
+    /// <c>agents/</c>, its subagent's a few folders deeper, under <c>subagents/</c>, and its lookup agent's under
+    /// <c>lookups/</c>; the lookup agents' base, <c>lookup.md</c>, is theirs too (CL68.3); none outside them.
     /// </summary>
-    private static RoleLevel? LevelOf(string path) =>
-        path.Split('/').SkipLast(1).Select(LevelOfFolder).LastOrDefault(level => level is not null);
+    private static RoleLevel? LevelOf(string path) => Path.GetFileName(path) == PromptFileName.Lookup.Wire()
+        ? RoleLevel.Lookup
+        : path.Split('/').SkipLast(1).Select(LevelOfFolder).LastOrDefault(level => level is not null);
 
     /// <summary>The level one folder stands for, or none: a folder's name is parsed once, then switched on.</summary>
     /// <remarks>A switch on the folder, one arm per level, read like a table (ADR 0051, ADR 0043).</remarks>
@@ -111,7 +113,7 @@ public class EveryPromptHasAHeaderTests
     {
         PromptFolder.Agents => RoleLevel.Agent,
         PromptFolder.Subagents => RoleLevel.Subagent,
-        PromptFolder.Minions => RoleLevel.Minion,
+        PromptFolder.Lookups => RoleLevel.Lookup,
         _ => null
     };
 }

@@ -10,5 +10,5 @@ public enum AddressKind
     Subagent,
 
     /// <summary>One of its minion roles (<c>minions/</c>).</summary>
-    Minion,
+    Lookup,
 }

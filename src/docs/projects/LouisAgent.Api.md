@@ -172,7 +172,7 @@ are dropped after 4 hours.
 
 `POST /v1/sessions` takes `toolsets`; with none, the session gets `skills` only. It gets that profile's engine from
 core's `AgentEngineFactory`, and keeps it for the session's whole life. An unknown or unavailable name, a `depth`
-below 0 or past `AGENT_MAX_DEPTH`, or a minion asking for the `agents` toolset, is a `400`. `parent` tags a
+below 0 or past `AGENT_MAX_DEPTH`, or a lookup agent asking for the `agents` toolset, is a `400`. `parent` tags a
 sub-session's usage records with the turn that opened it.
 
 `GET /v1/toolsets` lists the names, descriptions and whether each is available, but never the tool definitions. The
@@ -188,7 +188,7 @@ though a session keeps its own.
 `POST /v1/sessions` takes a `role`: a built-in one at the session's level. That's a mode such as `triage/voice` at
 depth 0, or a subagent named by its address, such as `triage.sorter`, below it (ADR 0133). With none, you get the
 default mode, `louis-agent/voice`. An invalid or unknown name is a `400`, before any engine is built. `GET /v1/roles`
-lists them by level, `agent`, `subagents` and `minions`, with the default.
+lists them by level, `agent`, `subagents` and `lookups`, with the default.
 
 A sub-session (depth 1) gets no routing, and takes the role its parent names. With none, it gets the default mode's
 voice. A role is never worked out from the toolsets.
@@ -388,7 +388,7 @@ changed. And anything that changes how the agent behaves belongs in core, not he
 ## Tests
 
 The tests are in `src/tests/hosts/LouisAgent.Api.Tests`. They cover the sessions' toolsets, the default, unknown
-names, the depth and the minion's toolsets, shared engines with separate histories, roles, a role opening only at its own
+names, the depth and the lookup agent's toolsets, shared engines with separate histories, roles, a role opening only at its own
 level, and a sub-session with no role getting none. The model client in these tests is never called. The eval
 studio's tests are in `LouisAgent.Api.Evals.Tests`.
 

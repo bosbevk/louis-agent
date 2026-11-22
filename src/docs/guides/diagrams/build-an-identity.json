@@ -11,7 +11,7 @@
       { "cards": [
         { "id": "mode", "icon": "message", "title": "Its mode", "code": "agents/{name}/voice.md", "text": "The voice, then the routing." },
         { "id": "subagents", "icon": "users", "title": "Subagents", "code": "agents/{name}/subagents/", "text": "Work handed over, with their toolsets." },
-        { "id": "minions", "icon": "chip", "title": "Minions", "code": "minions/", "text": "One task with one tool." },
+        { "id": "lookups", "icon": "chip", "title": "Lookup agents", "code": "agents/{name}/lookups/", "text": "One task with one tool." },
         { "id": "packs", "icon": "box", "title": "Its packs", "text": "Named, never referenced." }
       ] },
       { "cards": [
@@ -21,7 +21,7 @@
     "links": [
       { "from": "identity", "to": "mode" },
       { "from": "identity", "to": "subagents" },
-      { "from": "identity", "to": "minions" },
+      { "from": "identity", "to": "lookups" },
       { "from": "identity", "to": "packs" }
     ]
   }

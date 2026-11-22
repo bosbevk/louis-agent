@@ -151,9 +151,9 @@ public class RoleCatalogTests
     [Test]
     public void EachLevel_ListsOnlyItsOwnRoles()
     {
-        // CL8: the folders follow the levels; F30 step 4 fills minions/ (level 2) with its first role.
+        // CL8: each level lists only its own; a lookup agent (level 2) lives in its agent's lookups/ (CL68.3).
         Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.specialist" }));
-        Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { "testprod-minion-lookup" }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod.lookup" }));
     }
 
     /// <summary>

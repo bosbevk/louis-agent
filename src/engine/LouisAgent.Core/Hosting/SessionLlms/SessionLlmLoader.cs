@@ -82,17 +82,17 @@ public static class SessionLlmLoader
     }
 
     /// <summary>
-    /// Every model <c>MINION_LLMS</c> names is a profile in <c>LLM_SESSION_PROFILES</c> or <c>instance</c> (F30);
+    /// Every model <c>LOOKUP_LLMS</c> names is a profile in <c>LLM_SESSION_PROFILES</c> or <c>instance</c> (F30);
     /// another stops start-up (<see cref="SessionLlmException"/>), so a typo never leaves a minion with no model at run
     /// time.
     /// </summary>
-    internal static void CheckMinionLlms(AgentOptions agent)
+    internal static void CheckLookupLlms(AgentOptions agent)
     {
-        foreach (var (role, models) in agent.MinionLlms)
+        foreach (var (role, models) in agent.LookupLlms)
             foreach (string model in models)
-                if (model != MinionAsk.InstanceLlm &&
+                if (model != LookupAsk.InstanceLlm &&
                     !agent.SessionLlmProfiles.Contains(model, StringComparer.Ordinal))
-                    throw new SessionLlmException(MessageText.Format(HostingErrorMessage.MinionLlmUnknown, new
+                    throw new SessionLlmException(MessageText.Format(HostingErrorMessage.LookupLlmUnknown, new
                     {
                         Name = model,
                         Role = role,

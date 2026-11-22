@@ -63,7 +63,7 @@ public static class FixtureApi
             ("/v1/model", true, _) => Json("""{"provider":"anthropic","model":"claude-haiku-5-5"}"""),
             ("/v1/roles", true, _) => Json("""
                 {"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],
-                 "subagents":["puls.cook"],"minion":[]}
+                 "subagents":["puls.cook"],"lookups":[]}
                 """),
             ("/v1/toolsets", true, _) => Json("""
                 {"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},

@@ -34,7 +34,7 @@ own agents.
 | The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Orchestration: one agent delegating to another, with typed results checked in code |
 | Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Conversations that survive a restart, and a tenant on every ledger row |
 | A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt`; its own recipe library, and the maths to scale a recipe in code | Evals redesigned around whole conversations |
-| **One address for every agent call:** `AskAgent("puls.cook", …)` asks a subagent, a cheap one-task minion, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
+| **One address for every agent call:** `AskAgent("puls.cook", …)` asks a subagent, a cheap one-task lookup agent, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
 | A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Budgets that warn, ask or stop; drafts a person approves; an audit log |
 | **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
 | An admin that is a frame its areas plug into: an overview of the talks and what they cost, the packs' pages, the eval studio with its queue of answers waiting for a person's grade | |

@@ -64,7 +64,7 @@ public class ToolsetCatalogTests
             SkillsDirectory = Path.GetTempPath(),
             RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
-            MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
+            LookupLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
             BrowserUrl = "http://browser.test:9222"
         };
         var context = new ToolsetContext(options, new WebParts(new NoSearch()));

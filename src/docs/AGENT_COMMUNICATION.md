@@ -77,7 +77,7 @@ after 4 hours idle. One message is answered at a time per session.
 | `GET /v1/sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "role", "llm", "tools", "task", "run", "service", "sub_sessions", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
 | `DELETE /v1/sessions/{id}` | — | `{ "deleted": true }` |
 | `GET /v1/toolsets` | — | `{ "default", "toolsets": [{ "name", "description", "available", "missing_settings" }] }`: what a session can load here, never the tool definitions |
-| `GET /v1/roles` | — | `{ "default", "agent": [...], "subagents": [...], "minions": [...] }`: the roles a session can choose, by level |
+| `GET /v1/roles` | — | `{ "default", "agent": [...], "subagents": [...], "lookups": [...] }`: the roles a session can choose, by level |
 | `GET /v1/llm-profiles` | — | `{ "default": null, "profiles": [...] }`: the profiles a session may name besides the instance's model (F30) |
 | `GET /v1/model` | — | `{ "provider", "model" }` |
 
@@ -386,16 +386,16 @@ thinking), from its server's `GET /v1/sessions/{id}/work`, the latest 12,000 cha
 chat's session deletes its kept agents on the peer when it is deleted or dropped as idle; `GET /v1/sessions/{id}`
 lists them. Outside a chat (an MCP call) the session is deleted at once.
 
-A minion is asked the same way (F127.5): `AskAgent(address, message, tool: "FetchUrl")` with its identity's
-minion, `puls.find-recipe` for the file `minions/puls-minion-find-recipe.md`, and one of the asker's own tools. The
-address must be in the identity's `Calls` and name no server, since a minion runs on this instance on a local model
-(ADR 0081); its model is `MINION_LLMS`'s, at most 16 a user turn, never kept. A mode's prompt lists only the agents
+A lookup agent is asked the same way (F127.5): `AskAgent(address, message, tool: "FetchUrl")` with its identity's
+lookup agent, `puls.find-recipe` for `agents/puls/lookups/find-recipe/voice.md`, and one of the asker's own tools.
+The address must be in the identity's `Calls` and name no server, since a lookup agent runs on this instance on a
+local model (ADR 0081); its model is `LOOKUP_LLMS`'s, at most 16 a user turn, never kept. A mode's prompt lists only the agents
 among its `Calls`.
 
-Any agent but a minion may ask further, the ones its `Calls` allow (Louis: "only minions can't"): a minion loading
+Any agent but a lookup agent may ask further, the ones its `Calls` allow: a lookup agent loading
 `agents` is a `400`. Below the top a session's level is its role's folder, at any depth. An ask to an agent already in
 its chain of asks is refused, so the cook can't ask the cook nor the voice that asked it; and no session opens deeper
-than `AGENT_MAX_DEPTH` (default 4). A turn may make at most 3 asks (first asks and follow-ups alike, minions apart),
+than `AGENT_MAX_DEPTH` (default 4). A turn may make at most 3 asks (first asks and follow-ups alike, lookup agents apart),
 each stops after 5 minutes, and an asked agent's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`,
 FX14). Its usage records carry `parent`, so a ledger can total a chat with the agents it asked. An asker that relays
 answers whole (`IAgentIdentity.RelaysAnswersWhole`, Puls) shows the answer as it is and ends its turn there

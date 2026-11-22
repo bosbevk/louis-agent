@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Evals.Reports.Prompts;
 /// <remarks>
 /// A composite key (the unattended run's finding 14, PoEAA's Identity Field over several columns): a prompt belongs to
 /// a mode, an agent and the reason it asked. The agent is the row's task tag (<c>sub-session:{peer}</c>,
-/// <c>minion:{role}</c>), and any other task is the main session; a judge or a summary asks with a prompt of its own,
+/// <c>lookup:{role}</c>), and any other task is the main session; a judge or a summary asks with a prompt of its own,
 /// so it gets its purpose after the agent's name and is only ever compared with itself.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
@@ -20,7 +20,7 @@ public static class AgentPrompts
     public const string Main = "main";
 
     /// <summary>The task tags a sub-session's rows carry, before the peer's or the role's name.</summary>
-    private static readonly string[] ChildTags = ["sub-session:", "minion:"];
+    private static readonly string[] ChildTags = ["sub-session:", "lookup:"];
 
     /// <summary>
     /// Each agent's prompts in each mode of the run, its hashes sorted so two runs on the same prompts read the same.

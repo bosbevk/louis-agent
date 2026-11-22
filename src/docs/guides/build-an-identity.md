@@ -6,7 +6,7 @@
 > subagents inside their agent in [ADR 0133](../adr/0133-subagents-live-inside-their-agent.md); giving an agent tools
 > in [Build a pack](build-a-pack.md).
 
-![An identity at a glance: who an agent is, with its mode (voice and routing), its subagents and minions, the packs it names and the agents it may call, registered in a program's catalogue](diagrams/build-an-identity.svg)
+![An identity at a glance: who an agent is, with its mode (voice and routing), its subagents and lookup agents, the packs it names and the agents it may call, registered in a program's catalogue](diagrams/build-an-identity.svg)
 
 An **identity** is who an agent is: its name, how it talks (its voice), which work goes where (its routing), the
 subagents it can hand work to, and the packs it uses, by name. It has no tools of its own: everything it can do comes
@@ -16,7 +16,7 @@ The steps below build a small example identity, `acme`: a hardware shop's assist
 questions itself, and hands "how much do I need?" jobs to one subagent, `acme.estimator`, which uses the `units` pack
 from [Build a pack](build-a-pack.md). The triage team in the repo, `demos/louis-agent/identity/LouisAgent.Identities.Triage`,
 follows the same steps with three subagents. Read it beside this guide. Puls, built on the same packages in
-[its own repository](https://github.com/bosbevk/puls), adds two languages and a minion.
+[its own repository](https://github.com/bosbevk/puls), adds two languages and a lookup agent.
 
 ![Building an identity: create the project, write the class, write its mode, add a subagent when the work needs one, register it in the composition root, test it, then run it](diagrams/build-an-identity-flow.svg)
 
@@ -44,7 +44,7 @@ Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="agents\**\*.md;minions\**\*.md" />
+    <EmbeddedResource Include="agents\**\*.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\docs\projects\LouisAgent.Identities.Acme.md" Link="docs\LouisAgent.Identities.Acme.md" />
@@ -133,7 +133,7 @@ A few things are worth knowing when you write one.
 Open with the header. Every prompt starts with the same front matter, between two `---` lines. `name` is the file's
 name without `.md` (a skill's `SKILL.md` takes its folder's name). `description` says in a sentence or two what the
 file is and when it's loaded; it can be at most 1024 characters, and mustn't hold a `: `, which YAML would read as a
-new key. Under `metadata` goes the `level` (`agent` for a mode, `subagent` or `minion`) and, for a subagent, the
+new key. Under `metadata` goes the `level` (`agent` for a mode, `subagent` or `lookup`) and, for a subagent, the
 `toolsets` it always loads. The loader reads the header once and strips it, so the model never sees it, and the admin
 portal's *Prompts* page lists it. A key the loader doesn't know, a name that isn't the file's, or a level it doesn't
 know stops the host at its start, naming the file. `EveryPromptHasAHeaderTests` holds every prompt to this, and refuses
@@ -205,12 +205,12 @@ Usually that's the instance itself, named by its own service in its compose file
 *Decided in:* [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md), [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md),
 [ADR 0117](../adr/0117-one-address-for-every-agent-call.md), [ADR 0133](../adr/0133-subagents-live-inside-their-agent.md).
 
-A **minion** (level 2) is smaller still: one task with one tool, which a subagent hands out. It needs a base file
-`minions/acme-minion.md` (what every Acme minion is) and one file per function,
-`minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
-(`minions/puls-minion-find-recipe.md`) and its price lookup (`minions/puls-minion-web-price-lookup.md`), in
-[its own repository](https://github.com/bosbevk/puls), are the worked examples when you need one; a role that lists
-`minions` in its header is refused where `MINION_LLMS` isn't set.
+A **lookup agent** (level 2) is smaller still: one task with one tool, which a subagent hands out, on the cheap
+model `LOOKUP_LLMS` names. It lives inside its agent too, in a folder of its own beside the subagents,
+`agents/acme/lookups/{name}/voice.md` with `level: lookup`, and it loads its agent's `agents/acme/lookup.md` first,
+which says what every Acme lookup agent is. Its one name is its address, `acme.{name}`. Start without one. Puls's
+recipe search and price lookup, in [its own repository](https://github.com/bosbevk/puls), are the worked examples
+when you need one.
 
 ### Your names are an enum
 
@@ -304,7 +304,7 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 runs the default, which is the first loaded identity's `DefaultVoice` (`acme/voice` here). A web app of its own (as
 the coding agent has in `demos/louis-agent/web/LouisAgent.CodeReview`) is a separate project and optional; any client that opens sessions this way works.
 
-## Modes, roles and minions: the rules
+## Modes, subagents and lookup agents: the rules
 
 A session names its role when it opens, with `"role": "{name}"` on `POST /v1/sessions`, and keeps it, just as it
 keeps its toolsets. A sub-session's role is the address `AskAgent` was given, `acme.estimator`, with no second name
@@ -344,11 +344,12 @@ needs `RECIPE_SOURCES` and `BROWSER_URL`), and skips it elsewhere with a line in
 *Decided in:* F33, CL27, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md),
 [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md).
 
-A minion's function (level 2) is `minions/{product}-minion-{function}.md`. It's loaded after its product's base,
-`minions/{product}-minion.md`, which says what every minion is and isn't a role itself. The subagent hands the minion
-one tool of its own, so no file lists tools per role.
+A lookup agent (level 2) is `agents/{identity}/lookups/{name}/voice.md`, in a folder of its own beside the
+subagents, so a big identity reads well. It's loaded after its agent's base, `agents/{identity}/lookup.md`, which
+says what every lookup agent is and isn't a role itself. The subagent hands the lookup agent one tool of its own,
+so no file lists tools per role.
 
-*Decided in:* F30.
+*Decided in:* F30, [ADR 0021](../adr/0021-minions-one-task-one-tool.md) as amended.
 
 Names are lowercase letters, digits and dashes (a mode adds one `/`, a subagent one `.`), and each is used at one
 level only: a name from another level is refused as unknown. A prompt's level is the one its header names, and

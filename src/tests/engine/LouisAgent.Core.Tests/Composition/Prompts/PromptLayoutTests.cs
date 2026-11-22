@@ -31,5 +31,5 @@ public class PromptLayoutTests
     /// <summary>A known file's wire name is the file's own name, as a folder holds it.</summary>
     [Test]
     public void AKnownFile_IsNamedAsItsFolderHoldsIt() =>
-        Assert.That(SettingChoice.Names<PromptFileName>(), Is.EqualTo(new[] { "voice.md", "SKILL.md" }));
+        Assert.That(SettingChoice.Names<PromptFileName>(), Is.EqualTo(new[] { "voice.md", "SKILL.md", "lookup.md" }));
 }
