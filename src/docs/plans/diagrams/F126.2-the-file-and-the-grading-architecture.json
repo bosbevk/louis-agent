@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F126.2 the file and the grading: the architecture",
+  "caption": "One new library, with its two test projects. It stands on the engine for the model client, the address and the usage ledger's scope, and the framework's site names it. Nothing serves it yet: no host and no page until F126.3. The number in brackets is the step.",
+  "flow": {
+    "nodes": [
+      { "id": "person", "icon": "user", "tone": "blue", "label": "A person in Rider\nwrites an eval file", "shape": "terminal" },
+      { "id": "schema", "icon": "code", "tone": "teal", "label": "eval.schema.json\nmade from the records (7)", "shape": "data" },
+      { "id": "files", "icon": "file", "tone": "green", "label": "LouisAgent.Evals, Files\nthe records and the reader (4, 5, 6)" },
+      { "id": "grading", "icon": "checks", "tone": "green", "label": "LouisAgent.Evals, Grading\nFacts (8, 9) and Judge (10)" },
+      { "id": "tests", "icon": "terminal", "tone": "plain", "label": "LouisAgent.Evals.Tests\nand .IntegrationTests (2)" },
+      { "id": "core", "icon": "chip", "tone": "violet", "label": "LouisAgent.Core\nIChatClient, AgentAddress, UsageScope" },
+      { "id": "model", "icon": "message", "tone": "violet", "label": "Claude\nthrough LouisAgent.Core.Anthropic (3)" },
+      { "id": "site", "icon": "browser", "tone": "blue", "label": "The framework's site\nnames the new project (2)" }
+    ],
+    "edges": [
+      { "from": "person", "to": "schema", "word": "Rider reads" },
+      { "from": "files", "to": "schema", "word": "makes" },
+      { "from": "tests", "to": "files", "word": "a file's text" },
+      { "from": "tests", "to": "grading", "word": "a transcript by hand" },
+      { "from": "files", "to": "core", "word": "the address" },
+      { "from": "grading", "to": "core", "word": "the model client" },
+      { "from": "core", "to": "model", "word": "a criterion + a schema" },
+      { "from": "site", "to": "files", "word": "names", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}

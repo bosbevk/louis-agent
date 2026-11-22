@@ -1,0 +1,27 @@
+{
+  "kind": "classes",
+  "title": "F126.2 the file and the grading: the interface design of the file",
+  "caption": "An eval file is three records, one inside the other, and a fact is its kind and its one argument. The reader makes them from the file's text, and the schema is made from the same records. The number is the step that builds each.",
+  "classes": {
+    "types": [
+      { "id": "file", "name": "EvalFile", "kind": "record, step 5", "members": ["AgentAddress Agent", "IReadOnlyList<Conversation> Conversations", "string? Schema"] },
+      { "id": "conv", "name": "Conversation", "kind": "record, step 5", "members": ["string Id", "IReadOnlyList<Turn> Turns", "string? Page"] },
+      { "id": "turn", "name": "Turn", "kind": "record, step 5", "members": ["string Ask", "IReadOnlyList<Fact> Facts", "IReadOnlyList<string> Criteria"] },
+      { "id": "fact", "name": "Fact", "kind": "record, step 4", "members": ["FactKind Kind", "string Argument", "static Fact Parse(string words)"] },
+      { "id": "kind", "name": "FactKind", "kind": "enum, step 4", "members": ["NoError, Used, NotUsed, Under,", "NeverSays, RoutedTo, Continued"] },
+      { "id": "address", "name": "AgentAddress", "kind": "record, as it is", "tone": "violet", "members": ["static bool TryParse(text, out address)"] },
+      { "id": "reader", "name": "EvalFileReader", "kind": "static, steps 5 and 6", "members": ["EvalFile Read(string json)", "throws EvalFileException"] },
+      { "id": "schema", "name": "EvalSchema", "kind": "static, step 7", "members": ["JsonNode Of()"] }
+    ],
+    "relations": [
+      { "from": "file", "to": "conv", "kind": "holds" },
+      { "from": "conv", "to": "turn", "kind": "holds" },
+      { "from": "turn", "to": "fact", "kind": "holds" },
+      { "from": "fact", "to": "kind", "kind": "holds" },
+      { "from": "file", "to": "address", "kind": "holds" },
+      { "from": "reader", "to": "file", "kind": "creates" },
+      { "from": "schema", "to": "file", "kind": "uses", "word": "reads its shape" }
+    ],
+    "direction": "down"
+  }
+}
