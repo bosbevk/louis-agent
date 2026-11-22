@@ -1105,3 +1105,57 @@ What it cost: nothing was paid for.
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a theme can only reach a piece that asks it, so a tool that
 writes its own numbers is a hole in the contract even when every theme is right. And *18 Testing and shipping*: a
 unit test reads what a sheet says, and only a browser shows what a page draws, so the rule is held by both.
+
+## F169.5: a picture that is data can be drawn again for a phone (2026-11-22)
+
+On a phone the framework's site was a desktop page squeezed into 390 pixels. The nine pages stood in a block 175
+pixels tall above every page's first words. The words had 222 of the 390, because three side paddings stacked up.
+A long path in a code word pushed Getting started 40 pixels wider than the screen, so it slid sideways. And every
+picture was drawn about 900 wide and shrunk to fit, so its words came out at 2 to 4 pixels: there, but unreadable.
+
+The menu was the easy part, and it shows a slot paying off. The docs layout already handed the frame its menu once,
+as `Sidebar`, and the frame already had a sheet behind its menu button on a phone. So the frame now draws that same
+slot twice, first in the sheet and in the left column, and its own rules show one by width, right beside the rule
+that turns the header into a sheet, so the three can never change at different widths. The site wrote nothing new.
+The paddings were the same kind of fix: on a phone the docs layout sets the frame's own gutter name to none and the
+page's padding to 12, so the words are 342 wide, 24 from each edge. A code word may now break anywhere, but only
+when it would not fit, so every code word that fits is drawn exactly as before on every site.
+
+The pictures were the real work, and the lesson is in why they were possible at all. A picture here is data: a JSON
+file says the boxes and how they join, and our engine decides where each goes. So a phone's drawing is the same data
+told one more thing. A flow already knew how to run down. A cards picture learned it: running down, the headline is
+the full width, and the cards it feeds hang from a trunk down the left side, with a short branch to each. The page
+asks the engine for a fit, wide or narrow, an enum of two, and the engine answers with the picture's narrow form or
+none. The figure on the page then holds both drawings and lets Bootstrap's display classes show one. Twelve pictures
+on nine pages got a phone drawing, and not one page and not one picture file was touched for it. The sequence on How
+it works is the one with no narrow form yet: five lifelines need width, so it slides at its own size in a frame that
+takes the keyboard, and drawing it as steps down the page is F169.7.
+
+Two things the plan did not see came out in the measuring. The plan's test for the downward cards said every card
+is the picture's full width with the trunk at their left, but the sketch Louis picked draws the fed cards 24 in from
+the trunk. The sketch is what he chose, so the code follows it and the plan's *Approved during the build* says so.
+The bigger one: with the boxes laid out at 338, two pictures were still wider than a phone, because the head line,
+a picture's title with its type at the right, needs 354 for the cost flow and 370 for the Examples overview. A phone
+would have shrunk those to words of 9.7 and 9.2 pixels, under the 10 the done-when asks. That went to Louis as a
+finding with three options, and he picked the type under the title: on a phone the type gets a line of its own under
+the title, so the width counts each alone. The wide drawing did not change, which is why the docs' pictures stayed
+byte for byte the same.
+
+What was measured, on the local framework site with Playwright. At 390 and at 360 wide no page of the nine slides
+sideways, in light and dark. The pages are in the header's sheet, and at 768 and 1920 they stand where they did.
+The words are 342 wide on every page. The ten cards pictures and the cost flow are drawn for a phone, the cards 342
+wide and the flow 268, with no word under 10 pixels. The sequence slides at 1009 wide with its words at 10 to 16. Two drawings in
+a page are right from the first paint, and they are paid for in bytes: the Overview went from 151 KB to 283 KB, or
+11.3 to 17.1 KB compressed, and each other page with one picture grew by about 20 KB, under 1 KB compressed. How it
+works, with only the sequence, did not grow at all.
+
+What didn't go well. Some edits in this child were made with small scripts where the rules say to edit the file,
+and the plan's test for the trunk was written against the words of the plan rather than its sketch. Both were caught
+in the build, but the second would have been cheaper to catch when the plan was reviewed.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): when a thing is data, a new way to show it is one more word in
+the data and one more argument to the call that draws it, so twelve pictures gained a phone drawing with no page
+touched. The frame's slot is the same idea: filled once, drawn in two places. And *18 Testing and shipping*: a unit
+test can read a rule, but only a browser at 390 wide shows a page that slides sideways, so the done-when is a measure.

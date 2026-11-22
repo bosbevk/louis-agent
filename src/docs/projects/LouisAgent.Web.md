@@ -421,6 +421,13 @@ words. It stays open while the visitor opens a list in it, such as the demos, an
 a page. On a wider screen the sheet is no box of its own, so the links and the actions stand in the header's row
 as before, and the button is not drawn.
 
+In the docs layout the sheet holds the site's pages too. The site gives the frame its menu once, in the `Sidebar`
+slot, and the frame draws it in two places: first in the sheet, above the links, and in the docs layout's left
+column. The frame's own rules pick which is shown, beside the rule that turns the header into a sheet, so the
+three change at one width: at 720 and below the sheet's copy shows and the column's is not drawn, and above it the
+other way round. A copy that is not drawn is `display: none`, so a screen reader meets one menu. A site with a
+sidebar and nothing else in its header still gets the menu button, since the sheet has the pages to hold.
+
 The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
 menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. A site may hide a group
 for now with `Hidden`, which keeps it in the page with the browser's own `hidden` attribute, out of sight and out of
@@ -546,6 +553,16 @@ styles kept to it, so it wears the page's theme and style, flat or glass, light 
 each ([LouisAgent.Diagrams](LouisAgent.Diagrams.md)). It is as wide as the column it stands in. A kind a page needs
 that the engine lacks is added to the engine, never drawn in the figure.
 
+A picture drawn for a wide screen and shrunk into a phone's column would have words a quarter of their size, so the
+figure asks the engine whether the picture has a narrow form. If it has, a flow or a cards picture running down,
+the figure holds both drawings under its one caption: the narrow one in Bootstrap's `d-md-none` and the wide one in
+`d-none d-md-block`, so below 768 the phone's is shown. The narrow drawing is shown at its own size, never
+stretched, and shrinks only if the column is narrower than it. If the picture has no narrow form, such as a
+sequence, the figure holds it once in a frame that, below 768, keeps the drawing at its own size and slides
+sideways with a slim bar under it. The frame can take the keyboard's focus and is named by the picture's title, so
+it can be scrolled without a pointer. Both drawings are in the page from its first paint, and that is paid for in
+bytes: a page's pictures come to about twice their size.
+
 **Code and comparisons.** `CodeListing` shows code as text, never as markup, so a page that shows a program can
 never run it or break on it. It is named for its file, such as `Program.cs`, or its language when it has none, and a
 button copies the code exactly as shown, through the listing's own module; the button's words, Copy and Copied, are
@@ -565,7 +582,11 @@ Bootstrap's grid. The site's menu, which it gives the frame in its `Sidebar` slo
 readable middle column. From an extra-large screen, the page's sections stand on the right as "On this page", which is
 the frame's section index docked, reading the same list of the page's bands, so a page says its sections once. Docked,
 it is a plain list with the theme's line down its left, and the section in view is marked on that line by a thicker
-bar in the theme's violet, drawn by the surface tool's `marked`. On a narrow screen the menu stands above the page.
+bar in the theme's violet, drawn by the surface tool's `marked`. Below 992 the columns fold, and the menu stands
+above the page, until at 720 the frame moves it into the header's sheet, as told above. On a phone the docs layout
+also takes two of its three side paddings away: the page's own goes from 24 to 12, which with the grid's 12 makes
+24, and a section's, the frame's `--site-gutter`, goes to none. A band's room above is 48 there and below 32. So the
+words are 342 wide of a 390 screen.
 On a wide screen the line between the menu and the page is drawn down the page's column, which is as tall as the
 page, so it reaches the footer; the menu's own column is held in view and is only as tall as the menu.
 
@@ -625,13 +646,14 @@ records (an organisation, a website, a piece of software, a breadcrumb), written
 page as HTML with its own head and words, for crawlers that run no script.
 
 *Held by:* `SiteShellTests`, `SiteShellDocsTests`, `CardDeckTests`, `GraphLayoutTests`, `GraphViewTests`,
-`DiagramFigureTests`, `CodeListingTests`, `SiteSearchTests`, `ComparisonTableTests`, `FrameworkModulesTests`.
+`DiagramFigureTests`, `CodeListingTests`, `SiteSearchTests`, `ComparisonTableTests`, `FrameworkModulesTests`,
+`SiteShellMenuTests`.
 
 *Decided in:* F110 (the frame's motion), F111 and ADR 0103 (diagrams), F113 (the deck), F117 and ADR 0105 (going to
 a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 0106,
 [ADR 0107](../adr/0107-every-section-has-an-address.md), ADR 0109,
 [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md),
-[ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md).
+[ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md), F169.5 (a phone).
 
 ### 4. Someone watches a demo: the showroom
 
@@ -943,7 +965,9 @@ theme's purple, which each theme makes dark enough for its light page and light 
 control such as the search button or a listing's Ask and Copy is a chip, and a chip is drawn with the theme's chip
 line and, under the pointer, its hover line, so only the second button wears the press's outline. And a word of
 code in running words, on a site's page or in one of the agent's answers, is drawn by the tool's code word from
-the theme's three names for it, never in Bootstrap's pink; the code inside a listing is not a code word.
+the theme's three names for it, never in Bootstrap's pink; the code inside a listing is not a code word. A code
+word that would not fit its line may break anywhere, so a long path never pushes a narrow page wider than its
+screen; one that fits is drawn as it was.
 `LinesAndInksTests` holds the four.
 
 A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of this library, and of the

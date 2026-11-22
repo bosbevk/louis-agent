@@ -154,6 +154,38 @@ from its rail. A further row, with no links, holds what else the project has, an
 above that are linked to exactly the same cards below share one rail, and every other card above has a rail of
 its own. So two cards that both feed one card share a rail, and two that feed different cards have one each.
 
+**Which way it runs.** A cards picture runs across by default, its rows side by side. Give `cards` a `direction`
+of `down` and it is laid out for a phone's width instead, 338 wide with one card to a line:
+
+```json
+{
+  "kind": "cards",
+  "title": "LouisAgent.Core at a glance",
+  "cards": {
+    "direction": "down",
+    "rows": [
+      { "cards": [
+        { "id": "core", "icon": "chip", "title": "The engine", "look": "highlight", "text": "An agent's loop." }
+      ] },
+      { "cards": [
+        { "id": "loop", "icon": "message", "title": "The loop", "text": "Runs the model's tool calls." },
+        { "id": "guards", "icon": "shield", "title": "Guards", "text": "Keep the context safe." }
+      ] },
+      { "cards": [ { "id": "usage", "icon": "chart", "title": "Usage", "text": "Counts what each turn cost." } ] }
+    ],
+    "links": [ { "from": "core", "to": "loop" }, { "from": "core", "to": "guards" } ]
+  }
+}
+```
+
+Running down, the engine is the full width at the top. Under it a trunk, a lit line down the picture's left side,
+runs from the engine to the last card it links, and a short branch with an arrowhead joins each of them. Those two
+cards and the quiet usage card stand 24 in from the left, so the trunk has room beside them. Only a picture whose
+links all leave one card can run down, since one trunk can't show who is joined to whom when two cards feed
+others. The engine won't draw any other one running down, and says why. You will rarely write `down` yourself:
+a framework page asks the engine for this form on its own, as [LouisAgent.Diagrams](../projects/LouisAgent.Diagrams.md)
+tells.
+
 **What the picture says about itself.** A cards picture writes its `title` small in its top left corner. Keep a
 card's title and its text short: a row of three gives a card about 40 characters a line, and a row of four about
 28.
