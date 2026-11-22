@@ -169,7 +169,9 @@ public class ConsumerBuildsAnAgentTests
     }
 
     /// <summary>
-    /// Runs dotnet with its arguments as a list and hands back what it printed, failing with it if it failed.
+    /// Runs dotnet with its arguments as a list and hands back what it printed, failing with it if it failed. No
+    /// build helper is left behind: MSBuild otherwise keeps a worker alive for 15 minutes, and that worker holds our
+    /// output pipes open, so reading them doesn't end until the worker does.
     /// </summary>
     private static string Dotnet(string folder, params string[] arguments)
     {
@@ -180,6 +182,7 @@ public class ConsumerBuildsAnAgentTests
             RedirectStandardError = true
         };
         foreach (string argument in arguments) start.ArgumentList.Add(argument);
+        start.ArgumentList.Add("-nodeReuse:false");
 
         using var process = Process.Start(start)!;
         var output = process.StandardOutput.ReadToEndAsync();
