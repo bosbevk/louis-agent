@@ -1,6 +1,7 @@
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Themes;
 using LouisAgent.Web.Components.Site;
+using LouisAgent.Web.Components.Site.Slides;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -113,6 +114,78 @@ public class SiteShellMenuTests
             .Add(shell => shell.Settings, "<a class=\"cv\" href=\"/cv\">CV</a>"));
 
         Assert.That(cut.FindAll(".site-header .site-menu-button"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// F169.5 (Louis's pick "A: the frame draws it in both places"): in the docs layout the sheet holds the site's
+    /// pages first, in a part of their own, and the column still holds them.
+    /// </summary>
+    [Test]
+    public void InDocs_TheSheetHoldsThePagesFirst_AndTheColumnStillDoes()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Layout, PageLayout.Docs)
+            .Add(shell => shell.Sidebar, "<nav class=\"the-pages\">Pages</nav>")
+            .Add(shell => shell.Links, "<a class=\"my-link\" href=\"x\">X</a>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-menu").FirstElementChild?.ClassList, Does.Contain("site-menu-pages"));
+            Assert.That(cut.FindAll(".site-menu .site-menu-pages .the-pages"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".site-docs-menu .the-pages"), Has.Count.EqualTo(1));
+        });
+    }
+
+    /// <summary>A docs frame with its pages and nothing else still has the menu button, the pages' way in.</summary>
+    [Test]
+    public void InDocs_WithThePagesAlone_TheMenuButtonIsDrawn()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Layout, PageLayout.Docs)
+            .Add(shell => shell.Sidebar, "<nav class=\"the-pages\">Pages</nav>"));
+
+        Assert.That(cut.FindAll(".site-header .site-menu-button"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>A frame in another layout draws no sidebar, so its sheet has no part for the pages.</summary>
+    [Test]
+    public void AFlowingFrame_HasNoPagesInTheSheet()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters
+            .Add(shell => shell.Sidebar, "<nav class=\"the-pages\">Pages</nav>")
+            .Add(shell => shell.Links, "<a class=\"my-link\" href=\"x\">X</a>"));
+
+        Assert.That(cut.FindAll(".site-menu-pages"), Is.Empty);
+    }
+
+    /// <summary>
+    /// F169.5: at the frame's phone width the pages show in the sheet and the column's copy isn't drawn; above it the
+    /// sheet's copy isn't drawn, so a screen reader meets one menu on any screen.
+    /// </summary>
+    [Test]
+    public void OnAPhone_ThePagesStandInTheSheet_AndAboveItInTheColumn()
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/LouisAgent.Web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+        int phoneAt = rules.IndexOf("@media (max-width: 720px)", StringComparison.Ordinal);
+        string wide = rules[..phoneAt];
+        string phone = rules[phoneAt..];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(wide, Does.Contain(".site-menu-pages { display: none; }"));
+            Assert.That(phone, Does.Contain(".site-menu-pages { display: block; }"));
+            Assert.That(phone, Does.Contain(".layout-docs ::deep .site-docs-menu { display: none; }"));
+        });
     }
 
     /// <summary>
