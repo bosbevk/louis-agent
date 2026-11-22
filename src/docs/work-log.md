@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 146 | 73 |
-| Fixes (`FX`) | 210 | 4 |
+| Fixes (`FX`) | 213 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -278,10 +278,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (210 done)
+## Fixes (213 done)
 
 | Id | When | What |
 |---|---|---|
+| FX224 | 2026-11-22 | deploy.ps1 update writes its yaml with no byte-order mark, so it runs from Windows too |
+| FX223 | 2026-11-22 | Two of the vault's rights out, given to Puls's apps that are gone |
+| FX222 | 2026-11-22 | The band test's id is no longer the core toolset's wire name, so main's repeated-names rule passes again |
 | FX221 | 2026-11-22 | Two leftovers out of Azure: the old VM's empty subnet and three image-pull rights of apps that are gone |
 | FX220 | 2026-11-22 | The parallel engine's test holds its round open until all three calls have started, so a busy machine can't make it count two |
 | FX83 | 2026-11-21 | The DevOps and Paymo packs retired: their waiting tools took no cancellation token, and nothing loaded them |

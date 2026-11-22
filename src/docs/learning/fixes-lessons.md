@@ -513,6 +513,33 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX224 · The same script, two PowerShells, two files
+
+`deploy.ps1 update` wrote its filled yaml with `Set-Content -Encoding utf8`. On the release runner that is
+PowerShell 7, which writes plain UTF-8. On Windows it is PowerShell 5.1, which puts a byte-order mark in front, and
+the three invisible bytes turned the first line, a comment, into text the yaml reader took for a key. The error
+pointed at column 69 of line 1, where the comment's second colon sits, nowhere near the cause. Two lessons. When a
+script runs in more than one shell, an encoding is something to say exactly, here with .NET's UTF-8 that writes no
+mark, never the shell's word for it. And a confusing parse error at the very start of a file is worth reading as
+bytes before as text. Skill 18 (testing and shipping).
+
+## FX223 · A right outlives the one it was given to
+
+The vault still gave two rights to identities that no longer existed. Azure keeps a role assignment after its
+identity is deleted, and shows it as an unknown principal, so nothing breaks and nothing warns. It is the same lesson
+as FX221 from another side: when something leaves, the rights it was given have to be taken away too, since no
+one else will. F170's file now lists every right the sites need by name, so any right beside them is a difference to
+explain. Skill 15 (safety and security: least privilege).
+
+## FX222 · A red check is a stop, whoever merges
+
+F169.2 merged with CI red: one test gave a band the id `agents`, and the rule that keeps repeated names in enums
+read it as the core toolset written by hand. The test was right about bands, and the word was only a bad pick for
+an example, so the fix was one word. The lesson is about the merge, not the word. A check that fails on a pull
+request is the suite telling you `main` is about to be red, and every branch after it inherits the failure: F170's
+pull request couldn't open until this was fixed. Merge on green, however small the failure looks. Skill 18
+(testing and shipping).
+
 ## FX221 · What leaves takes its traces with it, or someone has to
 
 When the VM and Puls's apps left Azure, the subnet the VM sat in and the right each app had to pull images stayed
