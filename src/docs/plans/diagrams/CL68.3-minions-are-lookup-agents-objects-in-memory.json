@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "CL68.3: objects in memory",
+  "caption": "The asker's session holds a lookup sub-session at depth 2, its engine built from the base, its voice and the one tool.",
+  "flow": {
+    "nodes": [
+      { "id": "asker", "label": "the asker's session\nrole testprod.specialist, depth 1", "icon": "users", "tone": "green" },
+      { "id": "sub", "label": "a lookup sub-session\nrole testprod.lookup, depth 2", "icon": "search", "tone": "green" },
+      { "id": "engine", "label": "its engine\none tool, the small model", "icon": "chip", "tone": "violet" },
+      { "id": "base", "label": "PromptFile\nagents/testprod/lookup.md", "icon": "file", "tone": "teal" },
+      { "id": "voice", "label": "PromptFile\nagents/testprod/subagents/lookup/voice.md", "icon": "file", "tone": "teal" }
+    ],
+    "edges": [
+      { "from": "asker", "to": "sub", "word": "asks" },
+      { "from": "sub", "to": "engine" },
+      { "from": "engine", "to": "base", "word": "built from" },
+      { "from": "engine", "to": "voice" }
+    ],
+    "direction": "down"
+  }
+}

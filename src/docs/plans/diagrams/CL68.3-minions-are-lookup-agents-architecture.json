@@ -1,0 +1,31 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "CL68.3: the architecture",
+  "caption": "An identity's folder holds its voice, its lookup base and its subagents; each subagent's header says whether it is a subagent or a lookup agent.",
+  "flow": {
+    "nodes": [
+      { "id": "voice", "label": "agents/testprod/voice.md\nlevel: agent", "icon": "message", "tone": "green", "group": "testprod" },
+      { "id": "base", "label": "agents/testprod/lookup.md\nevery lookup agent's base (4)", "icon": "file", "tone": "green", "group": "testprod" },
+      { "id": "specialist", "label": "subagents/specialist/voice.md\nlevel: subagent", "icon": "users", "tone": "green", "group": "testprod" },
+      { "id": "lookup", "label": "subagents/lookup/voice.md\nlevel: lookup (2, 4)", "icon": "search", "tone": "green", "group": "testprod" },
+      { "id": "catalog", "label": "the prompt catalogue\nevery header read once", "icon": "stack", "tone": "teal" },
+      { "id": "roles", "label": "RoleCatalog\nthe kind from the header (4)", "icon": "folder", "tone": "teal" },
+      { "id": "ask", "label": "LookupAsk\none task, one tool (5)", "icon": "chip", "tone": "violet" },
+      { "id": "llms", "label": "LOOKUP_LLMS\nthe small model (5)", "icon": "tag", "tone": "amber" }
+    ],
+    "edges": [
+      { "from": "voice", "to": "catalog" },
+      { "from": "base", "to": "catalog" },
+      { "from": "specialist", "to": "catalog" },
+      { "from": "lookup", "to": "catalog" },
+      { "from": "catalog", "to": "roles" },
+      { "from": "roles", "to": "ask", "word": "by address" },
+      { "from": "llms", "to": "ask", "style": "dashed", "word": "which model" }
+    ],
+    "groups": [
+      { "id": "testprod", "label": "LouisAgent.Core.Tests/agents/testprod" }
+    ],
+    "direction": "down"
+  }
+}

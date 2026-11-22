@@ -1,0 +1,73 @@
+{
+  "kind": "classes",
+  "title": "CL68.3: the interface design",
+  "caption": "A lookup agent is found by its header's level, named by its address, run by LookupAsk on the model LookupLlms names.",
+  "classes": {
+    "types": [
+      {
+        "id": "Level",
+        "name": "RoleLevel",
+        "kind": "enum",
+        "members": [
+          "Agent",
+          "Subagent",
+          "Lookup: was Minion (2)"
+        ]
+      },
+      {
+        "id": "Roles",
+        "name": "RoleCatalog",
+        "kind": "static",
+        "members": [
+          "+FileName(\"testprod.lookup\", Lookup): agents/testprod/subagents/lookup/voice.md (4)",
+          "+Available(Lookup): by the header's level (4)",
+          "+LookupBaseOf(identity): agents/{identity}/lookup.md (4)",
+          "-MinionBaseOf, IsMinionBase: gone (4)"
+        ]
+      },
+      {
+        "id": "Addresses",
+        "name": "AgentAddresses",
+        "kind": "static",
+        "members": [
+          "+ResolveLookup(address, identities): the address as the role (3)"
+        ]
+      },
+      {
+        "id": "Ask",
+        "name": "LookupAsk",
+        "kind": "class",
+        "members": [
+          "+MaxPerTurn 16",
+          "+NeverHandedDown",
+          "~AskAsync(lookup, tool, task, ...): was MinionAsk (5)"
+        ]
+      },
+      {
+        "id": "Options",
+        "name": "AgentOptions",
+        "kind": "class",
+        "members": [
+          "+LookupLlms: LOOKUP_LLMS, was MinionLlms (5)"
+        ]
+      },
+      {
+        "id": "Names",
+        "name": "PromptFileName",
+        "kind": "enum",
+        "members": [
+          "Voice",
+          "Skill",
+          "Lookup: lookup.md (4)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "Addresses", "to": "Roles", "kind": "uses" },
+      { "from": "Roles", "to": "Level", "kind": "uses" },
+      { "from": "Roles", "to": "Names", "kind": "uses" },
+      { "from": "Ask", "to": "Options", "kind": "uses" },
+      { "from": "Ask", "to": "Addresses", "kind": "uses" }
+    ]
+  }
+}
