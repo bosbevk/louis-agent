@@ -1,0 +1,30 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F171.1 a photo or a PDF reaches a tool: objects in memory",
+  "caption": "One session holds the conversation as text and the upload as bytes. The host's one pack context reaches this turn's files through the flow, and its reader holds the model client and the ledger.",
+  "flow": {
+    "nodes": [
+      { "id": "s", "icon": "message", "tone": "blue", "label": "AgentSession\nhistory (text only)" },
+      { "id": "f", "icon": "folder", "tone": "violet", "label": "SessionFile\naccount.jpg · Jpeg · 2.1 MB", "shape": "data" },
+      { "id": "amb", "icon": "settings", "tone": "green", "label": "SessionFiles.Current\nset for this turn" },
+      { "id": "ctx", "icon": "chip", "tone": "violet", "label": "ToolsetContext\none per host" },
+      { "id": "tf", "icon": "folder", "tone": "violet", "label": "TurnSessionFiles\nthe context's Files" },
+      { "id": "r", "icon": "search", "tone": "violet", "label": "ModelDocumentReader\nthe context's Reader" },
+      { "id": "c", "icon": "message", "tone": "violet", "label": "IChatClient\nthe reading model" },
+      { "id": "l", "icon": "book", "tone": "green", "label": "IUsageSink\nthe ledger", "shape": "data" },
+      { "id": "rec", "icon": "book", "tone": "teal", "label": "SampleAccount\nthe pack's record" }
+    ],
+    "edges": [
+      { "from": "s", "to": "f" },
+      { "from": "s", "to": "amb", "word": "each turn", "style": "dashed" },
+      { "from": "ctx", "to": "tf" },
+      { "from": "ctx", "to": "r" },
+      { "from": "tf", "to": "amb", "word": "reads", "style": "dashed" },
+      { "from": "r", "to": "c" },
+      { "from": "r", "to": "l" },
+      { "from": "r", "to": "rec", "word": "creates", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
