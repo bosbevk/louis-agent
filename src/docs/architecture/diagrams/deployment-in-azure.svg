@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 944 617" width="944" height="617" role="img" aria-label="The sites in Azure at a glance" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 944 635" width="944" height="635" role="img" aria-label="The sites in Azure at a glance" xmlns="http://www.w3.org/2000/svg">
   <title>The sites in Azure at a glance</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -198,27 +198,27 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="944" height="617" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="635" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">The sites in Azure at a glance</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
     <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
     <g class="crd-cards" transform="translate(0 38)">
-      <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
-      <rect class="crd-rail" x="58" y="189.3" width="780" height="1.5" rx="0" />
+      <rect class="crd-rail-glow" x="19.8" y="186" width="856.5" height="8" rx="0" />
+      <rect class="crd-rail" x="19.8" y="189.3" width="856.5" height="1.5" rx="0" />
       <path class="crd-line" d="M448 174V190" />
       <path class="pic-march" d="M448 174V190" />
-      <path class="crd-line" d="M142 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M142 190V222" />
-      <path class="crd-line" d="M448 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M448 190V222" />
-      <path class="crd-line" d="M754 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M754 190V222" />
+      <path class="crd-line" d="M103.8 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M103.8 190V222" />
+      <path class="crd-line" d="M562.8 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M562.8 190V222" />
+      <path class="crd-line" d="M792.3 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M792.3 190V222" />
       <circle class="mrq-node" cx="448" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="142" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="754" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="103.8" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="562.8" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="792.3" cy="190" r="4.5" />
       <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
       <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
@@ -230,8 +230,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="mrq-pill" x="402" y="108" width="92" height="24" rx="12" />
       <text class="mrq-code" x="448" y="124" text-anchor="middle">rg-puls-za</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">louis-agent.dev and framework.louis-agent.dev, two Container Apps in one environment.</text>
-      <rect class="mrq-glass" x="0" y="222" width="284" height="132" rx="14" />
-      <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="mrq-glass" x="0" y="222" width="207.5" height="150" rx="14" />
+      <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 248) scale(0.75)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
@@ -239,12 +239,24 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M8 4v4" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">What runs where</text>
-      <text class="pic-text" x="18" y="298" text-anchor="start">Two apps that sleep until someone</text>
-      <text class="pic-text" x="18" y="316" text-anchor="start">visits, sharing an identity and a share.</text>
-      <rect class="mrq-glass" x="306" y="222" width="284" height="132" rx="14" />
-      <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
-      <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(332 248) scale(0.75)">
+      <text class="pic-text" x="18" y="298" text-anchor="start">Two apps that sleep until</text>
+      <text class="pic-text" x="18" y="316" text-anchor="start">someone visits, sharing an</text>
+      <text class="pic-text" x="18" y="334" text-anchor="start">identity and a share.</text>
+      <rect class="crd-quiet" x="229.5" y="222" width="207.5" height="150" rx="14" />
+      <g class="crd-icon quiet" transform="translate(249.5 242) scale(0.75)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="crd-name quiet" x="279.5" y="256" text-anchor="start">Made from code</text>
+      <text class="pic-text" x="249.5" y="282" text-anchor="start">Everything the apps stand</text>
+      <text class="pic-text" x="249.5" y="299" text-anchor="start">on is one Bicep file,</text>
+      <text class="pic-text" x="249.5" y="316" text-anchor="start">deployed by a person on a</text>
+      <text class="pic-text" x="249.5" y="333" text-anchor="start">yes.</text>
+      <rect class="mrq-glass" x="459" y="222" width="207.5" height="150" rx="14" />
+      <rect class="mrq-edge" x="487" y="221.5" width="151.5" height="1.6" rx="0" />
+      <rect class="crd-tint" x="477" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(485 248) scale(0.75)">
         <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
         <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -252,45 +264,47 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
         <path d="M14 14l3 -3l3 3" />
       </g>
-      <text class="crd-name" x="370" y="263" text-anchor="start">A release</text>
-      <text class="pic-text" x="324" y="298" text-anchor="start">A merge signs in without a password and</text>
-      <text class="pic-text" x="324" y="316" text-anchor="start">releases louis-agent.dev, then the</text>
-      <text class="pic-text" x="324" y="334" text-anchor="start">framework's site.</text>
-      <rect class="mrq-glass" x="612" y="222" width="284" height="132" rx="14" />
-      <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
-      <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(638 248) scale(0.75)">
+      <text class="crd-name" x="523" y="263" text-anchor="start">A release</text>
+      <text class="pic-text" x="477" y="298" text-anchor="start">A merge signs in without a</text>
+      <text class="pic-text" x="477" y="316" text-anchor="start">password and releases</text>
+      <text class="pic-text" x="477" y="334" text-anchor="start">louis-agent.dev, then the</text>
+      <text class="pic-text" x="477" y="352" text-anchor="start">framework's site.</text>
+      <rect class="mrq-glass" x="688.5" y="222" width="207.5" height="150" rx="14" />
+      <rect class="mrq-edge" x="716.5" y="221.5" width="151.5" height="1.6" rx="0" />
+      <rect class="crd-tint" x="706.5" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(714.5 248) scale(0.75)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="crd-name" x="676" y="263" text-anchor="start">A secret's path</text>
-      <text class="pic-text" x="630" y="298" text-anchor="start">From a git-ignored file into the vault;</text>
-      <text class="pic-text" x="630" y="316" text-anchor="start">the release writes only references.</text>
-      <rect class="crd-quiet" x="0" y="380" width="437" height="91" rx="14" />
-      <g class="crd-icon quiet" transform="translate(20 400) scale(0.75)">
+      <text class="crd-name" x="752.5" y="263" text-anchor="start">A secret's path</text>
+      <text class="pic-text" x="706.5" y="298" text-anchor="start">From a git-ignored file into</text>
+      <text class="pic-text" x="706.5" y="316" text-anchor="start">the vault; the release</text>
+      <text class="pic-text" x="706.5" y="334" text-anchor="start">writes only references.</text>
+      <rect class="crd-quiet" x="0" y="398" width="437" height="91" rx="14" />
+      <g class="crd-icon quiet" transform="translate(20 418) scale(0.75)">
         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
         <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
-      <text class="crd-name quiet" x="50" y="414" text-anchor="start">A chat</text>
-      <text class="pic-text" x="20" y="440" text-anchor="start">DNS points at the app, it wakes, and the visitor talks to its</text>
-      <text class="pic-text" x="20" y="457" text-anchor="start">Orbi through the open door.</text>
-      <rect class="crd-quiet" x="459" y="380" width="437" height="91" rx="14" />
-      <g class="crd-icon quiet" transform="translate(479 400) scale(0.75)">
+      <text class="crd-name quiet" x="50" y="432" text-anchor="start">A chat</text>
+      <text class="pic-text" x="20" y="458" text-anchor="start">DNS points at the app, it wakes, and the visitor talks to its</text>
+      <text class="pic-text" x="20" y="475" text-anchor="start">Orbi through the open door.</text>
+      <rect class="crd-quiet" x="459" y="398" width="437" height="91" rx="14" />
+      <g class="crd-icon quiet" transform="translate(479 418) scale(0.75)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="crd-name quiet" x="509" y="414" text-anchor="start">The network</text>
-      <text class="pic-text" x="479" y="440" text-anchor="start">Only the two apps have a public address, on 443, with a managed</text>
-      <text class="pic-text" x="479" y="457" text-anchor="start">certificate each.</text>
+      <text class="crd-name quiet" x="509" y="432" text-anchor="start">The network</text>
+      <text class="pic-text" x="479" y="458" text-anchor="start">Only the two apps have a public address, on 443, with a managed</text>
+      <text class="pic-text" x="479" y="475" text-anchor="start">certificate each.</text>
     </g>
-    <rect class="mrq-rule" x="0" y="535" width="896" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="553" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="880" y="557" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="880" y="575" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
 </svg>

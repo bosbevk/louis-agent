@@ -112,9 +112,10 @@ public static class TrustFacts
         new(TileStatus.Done, "Tested, then released",
             "A merge runs the tests, then releases the site as a new revision from an image with its own tag. " +
             "Earlier images stay in the registry.", ".github/workflows/deploy-sites.yml"),
-        new(TileStatus.Open, "Rebuilt from code",
-            "One script releases this site and the framework's own from code. The environment they run in was built " +
-            "once from code that is being retired, so rebuilding it from nothing isn't one command yet.", AzureHowTo),
+        new(TileStatus.Done, "Rebuilt from code",
+            "Everything the site stands on in Azure, its network, environment, registry, vault and storage, is " +
+            "described in one file of code. Rebuilding it from nothing is that file, then the script that releases " +
+            "the site.", "src/site/deploy/azure/main.bicep"),
         new(TileStatus.Done, "Your site is yours",
             "A site is its own project. Its words, brand, pages and data sit apart from the framework, in code that " +
             "can be handed over.", "src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md"),

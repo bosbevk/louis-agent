@@ -1,9 +1,10 @@
 namespace LouisAgent.Site.Tests.Deploy;
 
 /// <summary>
-/// Holds what releases the framework's two sites: the deploy script beside their yaml, which knows both apps and
-/// offers only the verbs that release them, and each app's yaml, which names what is its own and what it shares
-/// (F164.3, F166.1). The old VM and Bicep build stay with Puls, and Puls's tests hold them.
+/// Holds what makes and releases the framework's two sites: the deploy script beside their yaml and the framework's
+/// own Bicep file, which knows both apps and offers only the verbs that make and release them, and each app's yaml,
+/// which names what is its own and what it shares (F164.3, F166.1, F170). The old VM stays with Puls, and Puls's tests
+/// hold it.
 /// </summary>
 /// <remarks>Plain string checks on the files' lines, no regex (ADR 0057).</remarks>
 public class DeployFilesTests
@@ -42,14 +43,29 @@ public class DeployFilesTests
     }
 
     /// <summary>
-    /// The script offers only what releases the two sites (F166.1, Louis's pick A of three): the old Bicep build's
-    /// infra, vm and sql-access, which would make the VM, Mongo and SQL again, are gone with Puls.
+    /// The script offers only what makes and releases the two sites: the framework's own Bicep file through infra
+    /// (F170), then the verbs that release them. The old Bicep build's vm and sql-access, which would make the VM,
+    /// Mongo and SQL again, are gone with Puls (F166.1).
     /// </summary>
     [Test]
     public void TheScript_OffersOnlyTheSitesVerbs() =>
         Assert.That(Script,
-            Does.Contain("[ValidateSet('build', 'workspace', 'secrets', 'update', 'release', 'domain', 'logs')]")
-                .And.Not.Contain("'infra' {").And.Not.Contain("'vm' {").And.Not.Contain("'sql-access' {"));
+            Does.Contain(
+                    "[ValidateSet('infra', 'build', 'workspace', 'secrets', 'update', 'release', 'domain', 'logs')]")
+                .And.Not.Contain("'vm' {").And.Not.Contain("'sql-access' {"));
+
+    /// <summary>
+    /// infra shows Azure's what-if of the framework's Bicep file and deploys it only on a yes, under the name the
+    /// other verbs read their outputs from (F170, Louis's pick 4: a person deploys it, never CI).
+    /// </summary>
+    [TestCase("--confirm-with-what-if")]
+    [TestCase("-f (Join-Path $PSScriptRoot 'main.bicep') -p (Join-Path $PSScriptRoot 'main.bicepparam')")]
+    [TestCase("$Deployment = 'louis-agent-infra'")]
+    public void TheInfraVerb_DeploysTheFileOnAYes(string text) => Assert.That(Script, Does.Contain(text));
+
+    /// <summary>Nothing reads the old Bicep build's outputs any more: its file left with Puls (F166.1, F170).</summary>
+    [Test]
+    public void TheScript_NoLongerReadsPulssBuild() => Assert.That(Script, Does.Not.Contain("puls-build"));
 
     /// <summary>
     /// The framework's site's entry in the script's table of apps (F164.3), from its own line to the brace that closes

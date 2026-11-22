@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 147 | 72 |
+| Features (`F`) | 148 | 72 |
 | Fixes (`FX`) | 213 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
@@ -126,10 +126,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (147 done)
+## Features (148 done)
 
 | Id | When | What |
 |---|---|---|
+| F170 | 2026-11-22 | The framework's own Bicep for what the two sites stand on in Azure, proved by what-if and deployed as louis-agent-infra; Rebuilt from code in place |
 | F169.3 | 2026-11-22 | The brand's parts, F169's third child: the name's ball takes the name's size, 0.41 of the letters in flat and 0.62 in glass, retro and the default; Orbi wears the mark on its header button, its panel's head and its phone button, a quiet pill with "Ask Orbi"; a `Mark` slot on `Band`, the Overview opening with the mark; the framework site's footer in one row, GitHub, Licence and louis-agent.dev; a picture's ball Geist's own bullet on the line, every picture drawn again |
 | F169.2 | 2026-11-21 | The docs page's type and edges, F169's second child: a band that is a part of a section draws an h3, the Overview's five families parts of one section; headings by rank in the docs layout, 74, 40 and 28 (40, 32 and 24 on a phone), louis-agent.dev's unchanged; four corner names and a step's six set by every theme, Orbi's panel at 18; flat's step a squared label, glass's circle kept; a list of terms as wide as a list of steps, the page turn in the gutter, the menu's line to the page's foot |
 | F166 | 2026-11-21 | Puls in its own repository, closed: its four children built (F166.1 the framework's parts out of `demos/puls`, F166.2 the framework as packages, F166.3 Puls moved to `github.com/bosbevk/puls`, F166.4 Puls gone from louis-agent); louis-agent is the framework and its own demos, and Puls the first product built on it from outside |

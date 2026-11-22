@@ -21,6 +21,8 @@
           "text": "Fill the app's secrets file and put it in the vault; the next merge creates the app." },
         { "id": "domain", "icon": "browser", "title": "A domain",
           "text": "The records Cloudflare needs, DNS-only, then a managed certificate." },
+        { "id": "rebuild", "icon": "code", "title": "From nothing",
+          "text": "main.bicep through infra, on a person's yes, then secrets, release and domain." },
         { "id": "back", "icon": "folder", "title": "Rolling back",
           "text": "Activate the revision before by its name, or re-run an older Deploy the apps run." }
       ] }
