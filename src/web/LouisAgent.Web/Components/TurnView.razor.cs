@@ -50,7 +50,9 @@ public partial class TurnView : IAsyncDisposable
     [Parameter]
     public EventCallback<string> Chosen { get; set; }
 
-    /// <summary>Whether the visitor's message is a bubble; not when a card before it already shows it (FX142).</summary>
+    /// <summary>
+    /// Whether the visitor's message is a bubble; not when a card before it already shows it (FX142).
+    /// </summary>
     [Parameter]
     public bool ShowUserText { get; set; } = true;
 
@@ -88,7 +90,7 @@ public partial class TurnView : IAsyncDisposable
     protected override bool ShouldRender() => _shouldRender;
 
     /// <summary>
-    /// The images the turn's tools gave, its specialists' included (FX22): drawn as images wherever the turn's text or
+    /// The images the turn's tools gave, its subagents' included (FX22): drawn as images wherever the turn's text or
     /// a delegation card's answer shows them.
     /// </summary>
     private IReadOnlySet<string> Shown => ImageSources.Of(Turn);

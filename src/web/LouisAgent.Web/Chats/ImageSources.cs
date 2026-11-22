@@ -2,8 +2,8 @@ namespace LouisAgent.Web.Chats;
 
 /// <summary>
 /// The images a turn may show (FX22): the union of what its blocks' tool results gave and what every sub-turn's did,
-/// recursively (a minion inside a specialist too). Per turn, not per chat: a later turn's answer can't reuse an image
-/// an earlier turn read.
+/// recursively (a lookup agent inside a subagent too). Per turn, not per chat: a later turn's answer can't reuse an
+/// image an earlier turn read.
 /// </summary>
 public static class ImageSources
 {

@@ -4,17 +4,17 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Chats;
 
 /// <summary>
-/// An asked agent's or a minion's call as its card shows it: who it went to, its toolsets and task, and once it
+/// An asked agent's or a lookup agent's call as its card shows it: who it went to, its toolsets and task, and once it
 /// returned, the answer and what the line under it says about the child (<c>[Answered by acme, did: …]</c> for an
-/// <c>AskAgent</c>, <c>[Minion {role} on {llm} with {tool}]</c> for a minion). What the child cost isn't read here:
-/// the card takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the model's text
-/// (FX27).
+/// <c>AskAgent</c>, <c>[Lookup {role} on {llm} with {tool}]</c> for a lookup agent). What the child cost isn't
+/// read here: the card takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the
+/// model's text (FX27).
 /// </summary>
-/// <param name="Role">A minion's address; none for an ask, whose address says who it is.</param>
+/// <param name="Role">A lookup agent's address; none for an ask, whose address says who it is.</param>
 /// <param name="ResultAgent">The address the line under an ask's answer names: who actually answered.</param>
-/// <param name="Minion">True for an ask that hands a tool (F30, F127.5): an agent handing one page and one of its
-/// tools to a minion. <paramref name="Toolsets"/> then holds that one tool, <paramref name="Role"/> the minion's
-/// address and <paramref name="Llm"/> the model it ran on.</param>
+/// <param name="Lookup">True for an ask that hands a tool (F30, F127.5): an agent handing one page and one of its
+/// tools to a lookup agent. <paramref name="Toolsets"/> then holds that one tool, <paramref name="Role"/> the lookup
+/// agent's address and <paramref name="Llm"/> the model it ran on.</param>
 public sealed partial record Delegation(
     string Agent,
     IReadOnlyList<string> Toolsets,
@@ -26,18 +26,20 @@ public sealed partial record Delegation(
     bool Lookup = false,
     string? Llm = null)
 {
-    /// <summary>The tool that asks another agent, or a minion, by its address (F127.3.1, F127.5).</summary>
+    /// <summary>The tool that asks another agent, or a lookup agent, by its address (F127.3.1, F127.5).</summary>
     public const string AskToolName = "AskAgent";
 
-    /// <summary>Whether a tool call opens or continues a child: an asked agent or a minion, both by AskAgent.</summary>
+    /// <summary>
+    /// Whether a tool call opens or continues a child: an asked agent or a lookup agent, both by AskAgent.
+    /// </summary>
     public static bool IsDelegationTool(string? toolName) => toolName is AskToolName;
 
     /// <summary>Where the line under an asked agent's answer starts (core's AgentAnswer).</summary>
     private const string AnsweredBy = "\n\n[Answered by ";
 
     /// <summary>
-    /// The delegation in a block, or none when the block isn't an ask: a minion's card when the ask hands a tool,
-    /// since only a minion takes one.
+    /// The delegation in a block, or none when the block isn't an ask: a lookup agent's card when the ask hands a tool,
+    /// since only a lookup agent takes one.
     /// </summary>
     public static Delegation? From(Block block)
     {
@@ -45,7 +47,7 @@ public sealed partial record Delegation(
         return HandsATool(block) ? FromLookup(block) : FromAsk(block);
     }
 
-    /// <summary>Whether the ask's input names a tool, which makes it a minion's.</summary>
+    /// <summary>Whether the ask's input names a tool, which makes it a lookup agent's.</summary>
     private static bool HandsATool(Block block)
     {
         try
@@ -62,7 +64,7 @@ public sealed partial record Delegation(
     }
 
     /// <summary>
-    /// A minion's ask (F30, F127.5): its address, the one tool and the task, and once it returned, its answer and
+    /// A lookup agent's ask (F30, F127.5): its address, the one tool and the task, and once it returned, its answer and
     /// the model the footer names.
     /// </summary>
     private static Delegation FromLookup(Block block)
@@ -72,7 +74,7 @@ public sealed partial record Delegation(
         using (var input = JsonDocument.Parse(block.ToolInput ?? "{}"))
         {
             var root = input.RootElement;
-            // A minion is asked by its address; the footer's role file is the fallback.
+            // A lookup agent is asked by its address; the footer's role file is the fallback.
             if (root.TryGetProperty("address", out var r) && r.ValueKind == JsonValueKind.String)
                 role = Blank(r.GetString());
             if (root.TryGetProperty("tool", out var t) && t.ValueKind == JsonValueKind.String)

@@ -75,8 +75,8 @@ public partial class WorkPanel : IAsyncDisposable
     private List<Source> ChatSources =>
         Chat is null ? [] : Chat.Turns.AsEnumerable().Reverse().SelectMany(Sources.Of).DistinctBy(s => s.Url).ToList();
 
-    /// <summary>The specialists' usage in this chat: every delegation's sub-turn, added up.</summary>
-    private TurnUsage? SpecialistUsage =>
+    /// <summary>The subagents' usage in this chat: every delegation's sub-turn, added up.</summary>
+    private TurnUsage? SubagentUsage =>
         Items.Select(i => i.Block.SubTurn?.Usage).OfType<TurnUsage>()
             .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
 

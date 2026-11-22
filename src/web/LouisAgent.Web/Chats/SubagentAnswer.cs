@@ -1,10 +1,10 @@
 namespace LouisAgent.Web.Chats;
 
-/// <summary>A specialist's sub-turn as its card shows it (F5): its work, then its answer.</summary>
-public static class SpecialistAnswer
+/// <summary>A subagent's sub-turn as its card shows it (F5): its work, then its answer.</summary>
+public static class SubagentAnswer
 {
     /// <summary>
-    /// The specialist's answer is its text after its last thinking or tool call; the notes it wrote between tool calls
+    /// The subagent's answer is its text after its last thinking or tool call; the notes it wrote between tool calls
     /// belong to its work.
     /// </summary>
     public static (List<Block> Work, string Answer) Split(Turn sub)

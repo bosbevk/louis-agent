@@ -49,41 +49,7 @@ public class OldWordsTests
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshotTests.cs",
         "packs/tests/LouisAgent.Packs.Web.Tests/Quotes/VerifyQuoteTests.cs",
         "src/tests/shared/LouisAgent.Testing/TestTools.cs",
-        "src/tests/web/LouisAgent.Diagrams.Tests/Flow/GraphLayoutTests.cs",
-        "src/tests/web/LouisAgent.Web.Testing/FixtureApi.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/ChatRunnerTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/DelegationTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/ImageSourcesTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/SpecialistAnswerTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamImageTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/WorkStatusTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Components/DelegationCardTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Components/Site/CardDeckTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Shell/ChatCostsTests.cs",
         "src/tools/LouisAgent.UsageProbe/Program.cs",
-        "src/web/LouisAgent.Web/Api/AgentApi.cs",
-        "src/web/LouisAgent.Web/Chats/Block.cs",
-        "src/web/LouisAgent.Web/Chats/Delegation.cs",
-        "src/web/LouisAgent.Web/Chats/ImageSources.cs",
-        "src/web/LouisAgent.Web/Chats/RolePhases.cs",
-        "src/web/LouisAgent.Web/Chats/SpecialistAnswer.cs",
-        "src/web/LouisAgent.Web/Chats/Turn.cs",
-        "src/web/LouisAgent.Web/Chats/TurnStream.cs",
-        "src/web/LouisAgent.Web/Chats/WorkStatus.cs",
-        "src/web/LouisAgent.Web/Components/Chat/Header/CreditsMenu.razor.cs",
-        "src/web/LouisAgent.Web/Components/Chat/Panels/WorkItem.razor.cs",
-        "src/web/LouisAgent.Web/Components/Chat/Panels/WorkPanel.razor",
-        "src/web/LouisAgent.Web/Components/Chat/Panels/WorkPanel.razor.cs",
-        "src/web/LouisAgent.Web/Components/Chat/Shell/ChatShell.razor",
-        "src/web/LouisAgent.Web/Components/Chat/Turns/AnswerActions.razor.cs",
-        "src/web/LouisAgent.Web/Components/DelegationCard.razor",
-        "src/web/LouisAgent.Web/Components/DelegationCard.razor.cs",
-        "src/web/LouisAgent.Web/Components/DelegationCard.razor.scss",
-        "src/web/LouisAgent.Web/Components/TurnView.razor.cs",
-        "src/web/LouisAgent.Web/Content/Sources.cs",
-        "src/web/LouisAgent.Web/Shell/ChatCosts.cs",
-        "src/web/LouisAgent.Web/Styles/web/tools/surface/_marks.scss",
-        "src/web/LouisAgent.Web/Text/StepMarks.cs",
     ];
 
     /// <summary>No <c>[Description]</c> says the old words: what a tool, a message or a setting tells.</summary>
@@ -182,9 +148,11 @@ public class OldWordsTests
 
     /// <summary>
     /// Names that keep an old word and are no word anyone reads: <c>MINION_LLMS</c>, which a test writes to prove it
-    /// sets nothing since CL68.3 (ADR 0049), and ADR 0021's file name, which links to it.
+    /// sets nothing since CL68.3 (ADR 0049); the tools <c>StartMinion</c> and <c>ContinueMinion</c>, which a test
+    /// proves are no longer asked through; and ADR 0021's file name, which links to it.
     /// </summary>
-    private static readonly string[] NamesThatStay = ["MINION_LLMS", "0021-minions-one-task-one-tool.md"];
+    private static readonly string[] NamesThatStay =
+        ["MINION_LLMS", "StartMinion", "ContinueMinion", "0021-minions-one-task-one-tool.md"];
 
     /// <summary>
     /// The text with each quote of Louis's taken out: from <c>Louis</c> to the next opening quote within a few words

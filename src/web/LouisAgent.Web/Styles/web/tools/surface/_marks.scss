@@ -77,7 +77,7 @@
     border-top: 2px solid var(--accent);
 }
 
-/* A line in the brand's two colours, such as the one down the side of a specialist's work. */
+/* A line in the brand's two colours, such as the one down the side of a subagent's work. */
 @mixin brand-line($angle: 180deg) {
     background: linear-gradient($angle, var(--bs-primary), var(--bs-success));
 }

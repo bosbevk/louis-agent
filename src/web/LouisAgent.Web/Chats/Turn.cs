@@ -15,7 +15,7 @@ public sealed class Turn
     public List<string>? Toolsets { get; set; }
 
     /// <summary>
-    /// The session's role, from <c>message_start</c> (FX17): on a specialist's sub-turn its role, on the chat's own
+    /// The session's role, from <c>message_start</c> (FX17): on a subagent's sub-turn its role, on the chat's own
     /// turn its mode; null without one, or from an older API.
     /// </summary>
     public string? Role { get; set; }

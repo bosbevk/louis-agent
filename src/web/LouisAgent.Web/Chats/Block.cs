@@ -30,7 +30,7 @@ public sealed class Block
     /// <summary>
     /// The images the tool result gave, as <c>![alt](url)</c> URLs, taken when the result arrived (FX22), so the saved
     /// chat's cut of a long result keeps them. None for a failed result and for a delegation call's (that text is a
-    /// specialist's answer, not what a tool read).
+    /// subagent's answer, not what a tool read).
     /// </summary>
     public List<string> Images { get; set; } = [];
 

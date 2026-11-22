@@ -76,7 +76,7 @@ public class ChatRunnerTests
 
     /// <summary>
     /// The runner tells its listeners of each tool call once, as its block arrives (F117), so a widget can act on a
-    /// call while the turn still streams; the recorded turn has one call, to a specialist.
+    /// call while the turn still streams; the recorded turn has one call, to a subagent.
     /// </summary>
     [Test]
     public async Task EachToolCall_IsToldOnce_AsItArrives()
@@ -198,8 +198,16 @@ public class ChatRunnerTests
     public async Task Resuming_TakesUpTheNewestSavedTalk()
     {
         var h = new Harness();
-        var older = new ChatModel { SessionId = "sess_older", UpdatedAt = h.Clock.GetUtcNow().AddHours(-3) };
-        var newest = new ChatModel { SessionId = "sess_newest", UpdatedAt = h.Clock.GetUtcNow().AddHours(-1) };
+        var older = new ChatModel
+        {
+            SessionId = "sess_older",
+            UpdatedAt = h.Clock.GetUtcNow().AddHours(-3)
+        };
+        var newest = new ChatModel
+        {
+            SessionId = "sess_newest",
+            UpdatedAt = h.Clock.GetUtcNow().AddHours(-1)
+        };
         await h.Store.LoadAsync();
         h.Store.Chats.AddRange([older, newest]);
 
@@ -238,8 +246,17 @@ public class ChatRunnerTests
         var ended = new Harness();
         await ended.Store.LoadAsync();
         ended.Store.Chats.AddRange([
-            new ChatModel { SessionId = "sess_older", UpdatedAt = ended.Clock.GetUtcNow().AddHours(-3) },
-            new ChatModel { SessionId = "sess_gone", UpdatedAt = ended.Clock.GetUtcNow().AddHours(-1), Ended = true }
+            new ChatModel
+            {
+                SessionId = "sess_older",
+                UpdatedAt = ended.Clock.GetUtcNow().AddHours(-3)
+            },
+            new ChatModel
+            {
+                SessionId = "sess_gone",
+                UpdatedAt = ended.Clock.GetUtcNow().AddHours(-1),
+                Ended = true
+            }
         ]);
         var held = new ChatModel { SessionId = "sess_held" };
         var holding = new Harness { Runner = { Chat = held } };

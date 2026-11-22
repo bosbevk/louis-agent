@@ -99,7 +99,7 @@ public class DelegationCardTests
     }
 
     /// <summary>
-    /// A lookup agent's card (CL68.3, ADR 0021: was the minion's) is marked and labelled as one, with "l" in its
+    /// A lookup agent's card (CL68.3, ADR 0021: was the lookup agent's) is marked and labelled as one, with "l" in its
     /// avatar.
     /// </summary>
     [Test]
@@ -110,7 +110,12 @@ public class DelegationCardTests
         var lookup = new Delegation("sample", ["WebSearch"], "The price of rice", "R24,99", false, null,
             "sample.lookup", Lookup: true, Llm: "ollama-puls");
 
-        var call = new Block { Kind = BlockKind.Tool, ToolName = Delegation.AskToolName, ToolResult = "R24,99" };
+        var call = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = Delegation.AskToolName,
+            ToolResult = "R24,99"
+        };
 
         var cut = ctx.Render<DelegationCard>(p => p.Add(x => x.Delegation, lookup).Add(x => x.Block, call));
 
