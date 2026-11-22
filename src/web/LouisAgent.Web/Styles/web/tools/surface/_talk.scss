@@ -31,10 +31,12 @@
     box-shadow: 0 6px 16px -6px rgba(var(--web-shadow-rgb), .6);
 }
 
-/* The words that say the agent is working: a band of light that the sheet moves along them. */
+/* The words that say the agent is working: a band of the theme's working light that the sheet moves along them. A
+   theme whose light is the words' own grey shows plain words, and the ring beside them says the agent is at work
+   (F169.4, Louis's pick "A: plain words in flat"). */
 @mixin shimmer() {
     background:
-        linear-gradient(90deg, var(--bs-secondary-color) 0%, var(--bs-emphasis-color) 50%, var(--bs-secondary-color) 100%);
+        linear-gradient(90deg, var(--bs-secondary-color) 0%, var(--web-working-light) 50%, var(--bs-secondary-color) 100%);
 }
 
 /* A soft light in the brand's colour where the pointer is, at the --mx and --my the page sets. */

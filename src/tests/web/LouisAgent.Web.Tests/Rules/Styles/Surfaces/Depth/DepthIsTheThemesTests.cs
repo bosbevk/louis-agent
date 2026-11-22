@@ -189,4 +189,22 @@ public class DepthIsTheThemesTests
                 Is.Zero, "no sheet includes surface.spoken-deep(");
         });
     }
+
+    /// <summary>
+    /// The line that says the agent is working runs from the words' grey to the theme's working light and back, and
+    /// names no other colour, so a theme that sets the light to the words' own grey shows plain words (Louis's pick
+    /// "A: plain words in flat", 2026-11-22).
+    /// </summary>
+    [Test]
+    public void TheWorkingLine_RunsToTheThemesWorkingLight()
+    {
+        string shimmer = Mixin("_talk.scss", "shimmer");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shimmer, Does.Contain("var(--bs-secondary-color) 0%, var(--web-working-light) 50%, " +
+                                              "var(--bs-secondary-color) 100%"));
+            Assert.That(shimmer.Split("var(--").Length, Is.EqualTo(4), "three names and no other colour");
+        });
+    }
 }
