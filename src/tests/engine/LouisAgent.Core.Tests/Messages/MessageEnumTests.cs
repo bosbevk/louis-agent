@@ -46,7 +46,7 @@ public class MessageEnumTests
                 "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage", "SkillLogMessage",
                 "SkillReadToolMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage",
                 "ToolMessage", "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage",
-                "WebToolMessage",
+                "WebToolMessage", "WordsErrorMessage",
             }));
     }
 
