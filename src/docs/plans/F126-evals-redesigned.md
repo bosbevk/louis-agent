@@ -236,8 +236,8 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   with its place. The child also carries three of his picks of the same day's review: the file names its agent as
   one address with no toolsets (`"agent": "louis-agent-guide"`), there is one judge with one call per criterion and
   no `judge` key, and the judge reads each tool result as the agent got it. `place` leaves the file with Puls, and
-  `used {tool} with {field}={value}` waits with the triage evals. The plan is
-  [F126.2 The file and the grading](F126.2-the-file-and-the-grading.md).
+  `used {tool} with {field}={value}` waits with the triage evals. It is done, its design in
+  [LouisAgent.Evals](../projects/LouisAgent.Evals.md).
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

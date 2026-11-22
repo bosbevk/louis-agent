@@ -38,6 +38,9 @@ An eval is one file of conversations, and the old evals are gone.
 - **An eval file is read through the same file providers as the prompts.**
 - **Two rules carry over.** A pack and an identity reference no eval project, as 0073 said, so either can follow
   the engine into a package alone. And a live run waits for Louis's go, as 0029 said, since it spends money.
+- **The file's shape is said once, in its records:** the schema is generated from them, and the reader refuses a
+  wrong file at its first fault. What code can't tell for certain is a criterion, so closeness of meaning is never a
+  fact.
 
 ## Consequences
 

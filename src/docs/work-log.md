@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 153 | 75 |
+| Features (`F`) | 154 | 75 |
 | Fixes (`FX`) | 215 | 4 |
 | Cleanups (`CL`) | 47 | 24 |
 
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (started 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -126,10 +126,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 
-## Features (153 done)
+## Features (154 done)
 
 | Id | When | What |
 |---|---|---|
+| F126.2 | 2026-11-22 | The file and the grading, F126's second child: `LouisAgent.Evals` reads an eval file of conversations into records and refuses a wrong one at its first fault with its place, makes its schema from the records, tells seven facts from a turn's transcript, and has a judge mark one criterion with one model call, proved on Claude; ADR 0134 gains its line |
 | F126.1 | 2026-11-22 | The old evals deleted, F126's first child: the harness, its protocol, check contract and runner, the studio's API, the eval pages, their stores and tests, from the outside in, nothing ported; 32,892 lines of code and 35,466 of tests; ADR 0134 supersedes nine; the trust page shows one open eval tile; F70, F93, CL49 and CL59 closed with it |
 | F169.7 | 2026-11-22 | The sequence drawn for a phone, F169's seventh child: on a phone a sequence is its steps down the page (`StepListLayout`, `StepListDrawing`), each call or answer naming both ends with the wide drawing's own beam or dashes between them, its words under them, blocks as the wide drawing's frames a level in; `NarrowFit` says every sequence has a narrow form, so no picture on the framework's nine pages slides |
 | F169.6 | 2026-11-22 | A card for each page, F169's sixth child: every site's head says what its picture shows (`og:image:alt`); the host gives a page its own share card by where its file is (`social-cards/{route}.png` and `.txt`, `PageCards`); the card tool's `framework-cards` draws the framework's site's card and its eight pages' cards in flat from the running site, refusing one whose type didn't load or whose words pass the middle; `SiteCardsTests` holds each card's words to its page |

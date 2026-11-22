@@ -1,0 +1,123 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Evals: the interface design of the file",
+  "caption": "An eval file is three records, one inside the other, and a fact is its kind and its one argument. The reader makes them from the file's text, and the schema is made from the same records.",
+  "classes": {
+    "types": [
+      {
+        "id": "file",
+        "name": "EvalFile",
+        "kind": "record",
+        "members": [
+          "AgentAddress Agent",
+          "IReadOnlyList<Conversation> Conversations",
+          "string? Schema"
+        ]
+      },
+      {
+        "id": "conv",
+        "name": "Conversation",
+        "kind": "record",
+        "members": [
+          "string Id",
+          "IReadOnlyList<Turn> Turns",
+          "string? Page"
+        ]
+      },
+      {
+        "id": "turn",
+        "name": "Turn",
+        "kind": "record",
+        "members": [
+          "string Ask",
+          "IReadOnlyList<Fact> Facts",
+          "IReadOnlyList<string> Criteria"
+        ]
+      },
+      {
+        "id": "fact",
+        "name": "Fact",
+        "kind": "record",
+        "members": [
+          "FactKind Kind",
+          "string Argument",
+          "static Fact Parse(string words)"
+        ]
+      },
+      {
+        "id": "kind",
+        "name": "FactKind",
+        "kind": "enum",
+        "members": [
+          "NoError, Used, NotUsed, Under,",
+          "NeverSays, RoutedTo, Continued"
+        ]
+      },
+      {
+        "id": "address",
+        "name": "AgentAddress",
+        "kind": "record, the engine's",
+        "tone": "violet",
+        "members": [
+          "static bool TryParse(text, out address)"
+        ]
+      },
+      {
+        "id": "reader",
+        "name": "EvalFileReader",
+        "kind": "static",
+        "members": [
+          "EvalFile Read(string json)",
+          "throws EvalFileException"
+        ]
+      },
+      {
+        "id": "schema",
+        "name": "EvalSchema",
+        "kind": "static",
+        "members": [
+          "string Write()"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "file",
+        "to": "conv",
+        "kind": "holds"
+      },
+      {
+        "from": "conv",
+        "to": "turn",
+        "kind": "holds"
+      },
+      {
+        "from": "turn",
+        "to": "fact",
+        "kind": "holds"
+      },
+      {
+        "from": "fact",
+        "to": "kind",
+        "kind": "holds"
+      },
+      {
+        "from": "file",
+        "to": "address",
+        "kind": "holds"
+      },
+      {
+        "from": "reader",
+        "to": "file",
+        "kind": "creates"
+      },
+      {
+        "from": "schema",
+        "to": "file",
+        "kind": "uses",
+        "word": "reads its shape"
+      }
+    ],
+    "direction": "down"
+  }
+}

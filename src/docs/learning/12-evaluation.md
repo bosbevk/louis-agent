@@ -2,7 +2,7 @@
 
 > **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
 > lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
-> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted (2026-11-22)
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22)
 > · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29, 2026-10-31 and 2026-11-22)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
@@ -303,6 +303,37 @@ supersedes the nine ADRs this write-up's earlier parts rest on.
 
 **In the field's words:** a *preparatory refactoring* comes before the change it makes easy (Fowler), and an
 *Architecture Decision Record* that is replaced stays, marked *superseded* (Nygard).
+
+## The file and the grading (F126.2)
+
+With the old evals gone, F126.2 is the first new code, and it builds the two things every later eval stands on:
+what an eval file may hold, and how one turn gets its marks. You wanted it kept simple, and it came out as four
+parts and nothing else: a reader, a schema, the facts, and a judge.
+
+The file is one `{name}.eval.json` of conversations, each turn with its own facts and criteria. The reader is
+strict and stops at the first fault, with the fault's JSON path at the front of the message, such as
+`$.conversations[0].turns[0].facts[1] (line 5)`. That place costs no code: the serializer knows where it is, even
+when our own converter is what refused the words. The schema an editor reads is made from the same records by
+.NET's exporter, so the two can't drift apart, and it's a golden file, so a change to a record shows in review.
+
+Grading splits in two, the way Anthropic's evals guidance splits it. What code can tell for certain is a fact, seven
+of them, read from a turn's transcript: free, instant and the same every time. `never-says` reads the answer as
+sent, markdown addresses included, which is the check a prompt-injection eval needs. Everything else is a criterion,
+which one judge marks with one model call, the reason first and then yes or no, as a typed record. A judge that
+can't mark says so and never answers "not met", since that would blame the agent for the judge's trouble.
+
+The one thing reading couldn't confirm was whether the model would answer in a schema through our Anthropic
+adapter, so a live proof came first: two calls on Haiku 5.5, one plainly met and one plainly not, for about a
+hundredth of a US cent. It held, and the judge then marked two of the guide's criteria live, rightly both times.
+
+Three names changed on the way, each on your word after research. A refused value is in single quotes, as the
+diagrams' texts quote one, so no template needs an escape. The reader's exception builder is `Refused`, Microsoft's
+*exception builder method* named as the repo's others are. And the schema's method is `Write()`, a verb, since ADR
+0126 keeps `Of` for a record built from another of our types. One old fault turned up too: a backspace character in
+the integration-marking rule's pattern, there since it was written, had kept half the rule from ever matching.
+
+**In the field's words:** *code-based graders* and *model-based graders* (Anthropic), *structured outputs* with a
+schema on the request, *fail fast*, and a *golden file* for what a model reads.
 
 ## The limits, said plainly
 

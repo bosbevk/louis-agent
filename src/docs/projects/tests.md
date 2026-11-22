@@ -1,7 +1,7 @@
 # Test projects — design
 
 > **Kind:** test projects (NUnit, with bUnit for components) · **Paths:** the framework's in `src/tests/`, grouped
-> like `src/` (`engine/`, `hosts/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
+> like `src/` (`engine/`, `hosts/`, `evals/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
 > (`demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
 > shared fakes in `src/tests/shared/LouisAgent.Testing/` and, for the web apps, `src/tests/web/LouisAgent.Web.Testing/`
 > (class libraries) · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -221,6 +221,15 @@ preview. `PromptBuilder` checks text, an embedded resource, an attached file rea
 and an unmounted one reported. `ContainerPaths` checks a mapping, a root searched by the last parts of the path, and
 the drive letter. And there are `GitRoots` and `JsonRpcWriter`.
 
+### 12. The evals' tests
+
+`LouisAgent.Evals.Tests` holds the evals' unit tests, over transcripts written by hand and a fake judge's model.
+They read each fact and refuse a wrong one, read the guide's file of seven conversations, refuse every fault of a
+file at its place, hold the schema to its golden file, tell the seven facts, and pin what the judge's model is told to
+`Grading/Golden/JudgeRequest.txt`. `LouisAgent.Evals.IntegrationTests` calls a real Claude model, to prove it answers
+as a typed record and to have the judge mark two criteria. It asks for the key with `Outside.Key`, so it skips without
+one, in CI too. The design is in [LouisAgent.Evals](LouisAgent.Evals.md).
+
 ## Structure
 
 The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
@@ -264,4 +273,4 @@ The orchestrator's whole loop, run against a scripted LouisAgent.Api, has no tes
 [Write and run tests](../guides/write-tests.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.UsageProbe](LouisAgent.UsageProbe.md)
+[Projects](README.md) · Previous: [LouisAgent.Evals](LouisAgent.Evals.md)
