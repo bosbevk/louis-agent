@@ -82,13 +82,13 @@ public class DiagramFigureTests
         Assert.That(rules, Does.Contain(".diagram-narrow ::deep svg {\n    width: auto;\n    max-width: 100%;\n"));
     }
 
-    /// <summary>A short sequence, a kind with no narrow form yet.</summary>
-    private static DiagramSource Sequence() => DiagramReader.Read("""
+    /// <summary>A short class chart, a kind with no narrow form yet.</summary>
+    private static DiagramSource Classes() => DiagramReader.Read("""
         {
-          "kind": "sequence", "title": "Short",
-          "sequence": {
-            "participants": [ { "id": "a", "label": "A" }, { "id": "b", "label": "B" } ],
-            "steps": [ { "step": "message", "from": "a", "to": "b", "text": "ask" } ]
+          "kind": "classes", "title": "Short",
+          "classes": {
+            "types": [ { "id": "a", "name": "A" }, { "id": "b", "name": "B" } ],
+            "relations": [ { "from": "a", "to": "b", "kind": "uses" } ]
           }
         }
         """);
@@ -102,7 +102,7 @@ public class DiagramFigureTests
     {
         using var ctx = new BunitContext();
 
-        var cut = ctx.Render<DiagramFigure>(figure => figure.Add(f => f.Source, Sequence()));
+        var cut = ctx.Render<DiagramFigure>(figure => figure.Add(f => f.Source, Classes()));
         var frame = cut.Find("figure.diagram-figure .diagram-slides");
 
         Assert.Multiple(() =>

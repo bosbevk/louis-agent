@@ -7,6 +7,8 @@ using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
+using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tickets.Spec;
 
@@ -47,6 +49,11 @@ public class NarrowFitTests
           }
         }
         """);
+
+    /// <summary>One call and its answer between two participants.</summary>
+    private static readonly DiagramSource OneCall = new(DiagramKind.Sequence, "One call", Sequence: new SequenceSpec(
+        [new Participant("P", "Program"), new Participant("S", "Store")],
+        [new MessageStep("P", "S", "Read()"), new ReplyStep("S", "P", "rows")]));
 
     /// <summary>A headline and the two cards it feeds.</summary>
     private static DiagramSource Cards(params CardLink[] links) => new(DiagramKind.Cards, "At a glance",
@@ -96,8 +103,40 @@ public class NarrowFitTests
         });
     }
 
-    /// <summary>A sequence, a class chart and a ticket have no narrow form yet.</summary>
-    [TestCase(DiagramKind.Sequence)]
+    /// <summary>
+    /// F169.7: a sequence has a narrow form, and it is the source itself, since its phone drawing is a drawing of its
+    /// own and the data needs telling nothing.
+    /// </summary>
+    [Test]
+    public void ASequence_HasANarrowForm_TheSourceItself() => Assert.Multiple(() =>
+    {
+        Assert.That(NarrowFit.Has(OneCall), Is.True);
+        Assert.That(NarrowFit.Of(OneCall), Is.SameAs(OneCall));
+    });
+
+    /// <summary>
+    /// F169.7: drawn for a page in the narrow fit, a sequence is its steps down a phone's words, 342 wide with no
+    /// lifeline; in the wide fit it is drawn as it is today.
+    /// </summary>
+    [Test]
+    public void ASequencesPageCopy_IsItsStepsOnAPhone_AndAsItWasWide()
+    {
+        var narrow = XElement.Parse(DiagramRenderers.RenderForPage(OneCall, PictureFit.Narrow));
+        bool Has(XElement svg, string cls) => svg.Descendants()
+            .Any(shape => ((string?)shape.Attribute("class") ?? "").Split(' ').Contains(cls));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(double.Parse((string)narrow.Attribute("width")!, CultureInfo.InvariantCulture),
+                Is.EqualTo(PageSvg.PhoneWords));
+            Assert.That(Has(narrow, "seq-life"), Is.False);
+            Assert.That(Has(narrow, "stl-name"), Is.True);
+            Assert.That(DiagramRenderers.RenderForPage(OneCall, PictureFit.Wide),
+                Is.EqualTo(PageSvg.Of(DiagramRenderers.Render(OneCall))));
+        });
+    }
+
+    /// <summary>A class chart and a ticket have no narrow form yet.</summary>
     [TestCase(DiagramKind.Classes)]
     [TestCase(DiagramKind.Ticket)]
     public void OtherKinds_HaveNoNarrowForm(DiagramKind kind) =>
