@@ -4,17 +4,17 @@ namespace LouisAgent.Core.Skills.Roles;
 
 /// <summary>
 /// The roles a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
-/// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
-/// <c>minions/{name}.md</c> (level 2, F30), under core's <c>prompts/</c> and read only from the assembly (CL8
+/// <c>agents/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
+/// <c>minions/{name}.md</c> (level 2, F30), at their project's root and read only from the assembly (CL8
 /// step 4). At level 0 a role is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
-/// product (<c>agent/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; an identity's default is the mode of a
+/// product (<c>agents/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; an identity's default is the mode of a
 /// session that names none. A name is lowercase letters, digits and dashes, with one <c>/</c> between a product and its
 /// mode, so it never reaches outside its folder.
 /// </summary>
 public static partial class RoleCatalog
 {
     /// <summary>Level 0's folder, under the skills folder: the voices of the agent the user talks to.</summary>
-    public const string AgentFolder = "agent";
+    public const string AgentFolder = "agents";
 
     /// <summary>Level 1's folder: one role per specialist, named by the parent (CL10: none is derived).</summary>
     public const string SpecialistsFolder = "specialists";
@@ -55,7 +55,7 @@ public static partial class RoleCatalog
 
     /// <summary>
     /// The named roles at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
-    /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at
+    /// <c>agents/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at
     /// level 2 the minion roles, never a base (F30: <c>acme-minion</c> frames every minion, it is no role itself).
     /// </summary>
     public static IReadOnlyList<string> Available(RoleLevel level) =>
@@ -106,7 +106,7 @@ public static partial class RoleCatalog
     public static string SharedOf(string mode) => mode[..mode.IndexOf('/')] + "/voice";
 
     /// <summary>
-    /// The modes in <c>agent/</c>, one per <c>{product}/{mode}.md</c>: not the function skills, not a product's shared
+    /// The modes in <c>agents/</c>, one per <c>{product}/{mode}.md</c>: not the function skills, not a product's shared
     /// <c>voice.md</c> when it has language modes.
     /// </summary>
     private static IEnumerable<string> Modes()

@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="prompts\**\*.md" />
+    <EmbeddedResource Include="agents\**\*.md;specialists\**\*.md;minions\**\*.md" />
   </ItemGroup>
 
   <ItemGroup>

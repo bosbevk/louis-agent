@@ -97,7 +97,7 @@ public class AgentEngine
     }
 
     /// <summary>
-    /// The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill
+    /// The skills folder; <see cref="CreateSkillFile"/> writes into its agents/functions/; null disables skill
     /// authoring.
     /// </summary>
     public string? SkillsDirectory

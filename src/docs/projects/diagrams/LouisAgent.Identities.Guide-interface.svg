@@ -208,19 +208,19 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="pic-group" x="864" y="14" text-anchor="end">Class diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="880" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M301 421L324.5 421Q348 421 348 397.5L348 273Q348 249 372 249L467 249" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M301 421L467 421" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M301 421L324.5 421Q348 421 348 444.5L348 569Q348 593 372 593L467 593" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M301 421L324.5 421Q348 421 348 444.5L348 741Q348 765 372 765L467 765" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M301 421L324.5 421Q348 421 348 397.5L348 101Q348 77 372 77L467 77" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M301 421L324.5 421Q348 421 348 444.5L348 913Q348 937 372 937L467 937" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M301 421L324.5 421Q348 421 348 444.5L348 913Q348 937 372 937L467 937" />
-      <rect class="pic-pill cls-chip implements" x="368.5" y="68" width="78" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="407.5" y="80" text-anchor="middle">implements</text>
-      <rect class="pic-pill cls-chip uses" x="389.5" y="240" width="36" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="407.5" y="252" text-anchor="middle">uses</text>
-      <rect class="pic-pill cls-chip holds" x="386" y="928" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="407.5" y="940" text-anchor="middle">holds</text>
+      <path class="cls-line uses" d="M301 421L321 421Q341 421 341 401L341 273Q341 249 365 249L453 249" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M301 421L453 421" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M301 421L321 421Q341 421 341 441L341 569Q341 593 365 593L453 593" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M301 421L321 421Q341 421 341 441L341 741Q341 765 365 765L453 765" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M301 421L321 421Q341 421 341 401L341 101Q341 77 365 77L453 77" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M301 421L321 421Q341 421 341 441L341 913Q341 937 365 937L453 937" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M301 421L321 421Q341 421 341 441L341 913Q341 937 365 937L453 937" />
+      <rect class="pic-pill cls-chip implements" x="358" y="68" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="397" y="80" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="379" y="240" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="397" y="252" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip holds" x="375.5" y="928" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="397" y="940" text-anchor="middle">holds</text>
       <rect class="cls-cover" x="0" y="344" width="301" height="154" rx="14" />
       <rect class="mrq-glass" x="0" y="344" width="301" height="154" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="356" width="28" height="28" rx="9" />
@@ -233,60 +233,61 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-member" x="14" y="456" text-anchor="start">Packs, Calls</text>
       <text class="cls-member" x="14" y="470" text-anchor="start">EndsEachAnswerWith "Offer"</text>
       <text class="cls-member" x="14" y="484" text-anchor="start">StopsOn "Stop here"</text>
-      <rect class="cls-cover" x="467" y="39" width="413" height="76" rx="14" />
-      <rect class="mrq-glass" x="467" y="39" width="413" height="76" rx="14" />
-      <rect class="mrq-edge" x="491" y="38.5" width="365" height="1.6" rx="0" />
-      <rect class="cls-badge tone-violet" x="481" y="63" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="495" y="81.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="519" y="67" text-anchor="start">IAgentIdentity</text>
-      <text class="pic-note" x="519" y="83" text-anchor="start">interface,</text>
-      <text class="pic-note" x="519" y="95" text-anchor="start">LouisAgent.Composition</text>
-      <rect class="cls-cover" x="467" y="201" width="413" height="96" rx="14" />
-      <rect class="mrq-glass" x="467" y="201" width="413" height="96" rx="14" />
-      <rect class="mrq-edge" x="491" y="200.5" width="365" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="481" y="219" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="495" y="237.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="519" y="229" text-anchor="start">GuideIdentityName</text>
-      <text class="pic-note" x="519" y="245" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M481 265H866" />
-      <text class="cls-member" x="481" y="283" text-anchor="start">LouisAgentGuide</text>
-      <rect class="cls-cover" x="467" y="373" width="413" height="96" rx="14" />
-      <rect class="mrq-glass" x="467" y="373" width="413" height="96" rx="14" />
-      <rect class="mrq-edge" x="491" y="372.5" width="365" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="481" y="391" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="495" y="409.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="519" y="401" text-anchor="start">GuidePack</text>
-      <text class="pic-note" x="519" y="417" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M481 437H866" />
-      <text class="cls-member" x="481" y="455" text-anchor="start">Docs Leads Site</text>
-      <rect class="cls-cover" x="467" y="545" width="413" height="96" rx="14" />
-      <rect class="mrq-glass" x="467" y="545" width="413" height="96" rx="14" />
-      <rect class="mrq-edge" x="491" y="544.5" width="365" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="481" y="563" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="495" y="581.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="519" y="573" text-anchor="start">GuideCall</text>
-      <text class="pic-note" x="519" y="589" text-anchor="start">enum, ADR 0117</text>
-      <path class="cls-divide" d="M481 609H866" />
-      <text class="cls-member" x="481" y="627" text-anchor="start">SeemeeuGuesthouse WheatfieldKitchen KoringlandAttorneys</text>
-      <rect class="cls-cover" x="467" y="717" width="413" height="96" rx="14" />
-      <rect class="mrq-glass" x="467" y="717" width="413" height="96" rx="14" />
-      <rect class="mrq-edge" x="491" y="716.5" width="365" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="481" y="735" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="495" y="753.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="519" y="745" text-anchor="start">GuideFocus</text>
-      <text class="pic-note" x="519" y="761" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M481 781H866" />
-      <text class="cls-member" x="481" y="799" text-anchor="start">Selling Demos</text>
-      <rect class="cls-cover" x="467" y="875" width="413" height="124" rx="14" />
-      <rect class="mrq-glass" x="467" y="875" width="413" height="124" rx="14" />
-      <rect class="cls-badge tone-amber" x="481" y="893" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="495" y="911.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="519" y="903" text-anchor="start">prompts/agent/louis-agent-guide/</text>
-      <text class="pic-note" x="519" y="919" text-anchor="start">embedded content</text>
-      <path class="cls-divide" d="M481 939H866" />
-      <text class="cls-member" x="481" y="957" text-anchor="start">voice.md</text>
-      <text class="cls-member" x="481" y="971" text-anchor="start">skills/site-pages.md, writing.md, live-demo.md (always)</text>
-      <text class="cls-member" x="481" y="985" text-anchor="start">skills/: seven more, on demand</text>
+      <rect class="cls-cover" x="453" y="39" width="427" height="76" rx="14" />
+      <rect class="mrq-glass" x="453" y="39" width="427" height="76" rx="14" />
+      <rect class="mrq-edge" x="477" y="38.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-violet" x="467" y="63" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="81.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="505" y="67" text-anchor="start">IAgentIdentity</text>
+      <text class="pic-note" x="505" y="83" text-anchor="start">interface,</text>
+      <text class="pic-note" x="505" y="95" text-anchor="start">LouisAgent.Composition</text>
+      <rect class="cls-cover" x="453" y="201" width="427" height="96" rx="14" />
+      <rect class="mrq-glass" x="453" y="201" width="427" height="96" rx="14" />
+      <rect class="mrq-edge" x="477" y="200.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="467" y="219" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="237.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="505" y="229" text-anchor="start">GuideIdentityName</text>
+      <text class="pic-note" x="505" y="245" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M467 265H866" />
+      <text class="cls-member" x="467" y="283" text-anchor="start">LouisAgentGuide</text>
+      <rect class="cls-cover" x="453" y="373" width="427" height="96" rx="14" />
+      <rect class="mrq-glass" x="453" y="373" width="427" height="96" rx="14" />
+      <rect class="mrq-edge" x="477" y="372.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="467" y="391" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="409.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="505" y="401" text-anchor="start">GuidePack</text>
+      <text class="pic-note" x="505" y="417" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M467 437H866" />
+      <text class="cls-member" x="467" y="455" text-anchor="start">Docs Leads Site</text>
+      <rect class="cls-cover" x="453" y="545" width="427" height="96" rx="14" />
+      <rect class="mrq-glass" x="453" y="545" width="427" height="96" rx="14" />
+      <rect class="mrq-edge" x="477" y="544.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="467" y="563" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="581.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="505" y="573" text-anchor="start">GuideCall</text>
+      <text class="pic-note" x="505" y="589" text-anchor="start">enum, ADR 0117</text>
+      <path class="cls-divide" d="M467 609H866" />
+      <text class="cls-member" x="467" y="627" text-anchor="start">SeemeeuGuesthouse WheatfieldKitchen KoringlandAttorneys</text>
+      <rect class="cls-cover" x="453" y="717" width="427" height="96" rx="14" />
+      <rect class="mrq-glass" x="453" y="717" width="427" height="96" rx="14" />
+      <rect class="mrq-edge" x="477" y="716.5" width="379" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="467" y="735" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="753.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="505" y="745" text-anchor="start">GuideFocus</text>
+      <text class="pic-note" x="505" y="761" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M467 781H866" />
+      <text class="cls-member" x="467" y="799" text-anchor="start">Selling Demos</text>
+      <rect class="cls-cover" x="453" y="868" width="427" height="138" rx="14" />
+      <rect class="mrq-glass" x="453" y="868" width="427" height="138" rx="14" />
+      <rect class="cls-badge tone-amber" x="467" y="886" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="904.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="505" y="896" text-anchor="start">agents/louis-agent-guide/</text>
+      <text class="pic-note" x="505" y="912" text-anchor="start">embedded content</text>
+      <path class="cls-divide" d="M467 932H866" />
+      <text class="cls-member" x="467" y="950" text-anchor="start">voice.md</text>
+      <text class="cls-member" x="467" y="964" text-anchor="start">skills/site-pages/, writing/, live-demo/ (always), each a</text>
+      <text class="cls-member" x="467" y="978" text-anchor="start">  SKILL.md</text>
+      <text class="cls-member" x="467" y="992" text-anchor="start">skills/: seven more, on demand</text>
     </g>
     <g class="cls-legend" transform="translate(0 1084)">
       <rect class="mrq-rule" x="0" y="0" width="880" height="1" rx="0" />

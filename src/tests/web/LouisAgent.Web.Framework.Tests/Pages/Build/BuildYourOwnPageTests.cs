@@ -24,7 +24,9 @@ public class BuildYourOwnPageTests
         return ctx;
     }
 
-    /// <summary>It answers at its address with its heading, then a section for each thing you build, in the menu.</summary>
+    /// <summary>
+    /// It answers at its address with its heading, then a section for each thing you build, in the menu.
+    /// </summary>
     [Test]
     public void ThePage_HasItsHeading_AndASectionForEachThing()
     {
@@ -62,7 +64,7 @@ public class BuildYourOwnPageTests
     [Test]
     public void EveryFolderTheStepsName_IsInTheRepo()
     {
-        var named = BuildYourOwn.Folders;
+        var named = BuildYourOwn.Folders.InOrder;
 
         Assert.Multiple(() =>
         {

@@ -1,19 +1,23 @@
 using System.Globalization;
 using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
+using LouisAgent.FilmExport;
 using LouisAgent.FilmExport.Cards;
 using LouisAgent.FilmExport.Films;
 using LouisAgent.FilmExport.Messages;
 using LouisAgent.FilmExport.Messages.Holes;
+using LouisAgent.FilmExport.Messages.Holes.Cards;
 using LouisAgent.FilmExport.Rendering;
 using PuppeteerSharp;
 
 // Renders the site's films to animated WebP for the README, with a still of each for people who asked for less motion,
 // and records a hash of what each was made of. Run it after changing a film, and commit what it writes (Change the
 // site). With social-card, it draws the site's share card instead, the glass orb photographed from the site (FX174).
+// With framework-cards, it draws a share card for each of the framework's site's pages (F169.6).
 //
 //   dotnet run --project src/tools/LouisAgent.FilmExport [short] [detail] [--out <folder>]
 //   dotnet run --project src/tools/LouisAgent.FilmExport social-card
+//   dotnet run --project src/tools/LouisAgent.FilmExport framework-cards
 //
 // It needs Docker running, for the encoder. CHROME_PATH names the browser; without it, a Chrome for Testing is
 // downloaded once.
@@ -32,11 +36,18 @@ string output = Path.GetFullPath(outAt >= 0
     : Path.Combine(repoRoot, "src/docs/films"));
 var names = args.Where((_, at) => outAt < 0 || (at != outAt && at != outAt + 1)).ToList();
 
+// A card for each of the framework's site's pages, written into its web root.
+if (names.Contains(FrameworkCards.Command))
+{
+    await FrameworkCards.RunAsync(repoRoot, await ChromeAsync());
+    return 0;
+}
+
 // The share card: the site's own glass orb, photographed, laid into the card's page, written where the site serves it
 // and where the brand's files are kept.
 if (names.Contains(socialCard))
 {
-    using var cardSite = await SiteProcess.StartAsync(repoRoot);
+    using var cardSite = await SiteProcess.StartAsync(repoRoot, SiteProcess.BusinessSite);
     await using var cardBrowser = await Puppeteer.LaunchAsync(new LaunchOptions
     {
         Headless = true,
@@ -82,7 +93,7 @@ if (films.Count == 0) films.AddRange(FilmSource.All);
 Directory.CreateDirectory(output);
 string hashFile = Path.Combine(output, "films.sha256");
 
-using var site = await SiteProcess.StartAsync(repoRoot);
+using var site = await SiteProcess.StartAsync(repoRoot, SiteProcess.BusinessSite);
 await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
 {
     Headless = true,

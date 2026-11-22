@@ -42,7 +42,7 @@ page, `Pages/About/PrivacyPage.razor`, is a good one to copy: a `Band` per secti
 2. **Put it on the menu**, as a `NavLink` in `Layout/SiteLayout.razor`, or inside a `SiteMenu` when it belongs to a
    group, as the demos do.
 3. **Tell the guide.** Its voice and skills (`src/site/LouisAgent.Identities.Guide`, the pages are in
-   `skills/site-pages.md`) get the page's address, what it says and the docs it came from.
+   `skills/site-pages/SKILL.md`) get the page's address, what it says and the docs it came from.
    `GuideKnowsTheSiteTests` fails until they name every page.
 4. **Hold it with the tests.** Add a row to `SitePagesTests.APage_IsAtItsAddress_WithItsHeading` with the page, its
    route and its heading, and one to `SiteLayoutTests.TheMenu_LeadsToThePage`. `PageDescriptionsTests`,
@@ -84,6 +84,29 @@ Testing is downloaded once. It writes the site's `wwwroot/social-card.png` and t
 light and dark. A site that shares a link caches the card, so after it is live, ask Facebook's Sharing Debugger to
 scrape the address again. [ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md)
 says why the tool works this way.
+
+## Draw the framework site's page cards
+
+framework.louis-agent.dev has a share card for each page: the site's name, the page's own name, its first heading
+and its address. Since the card is a picture of those words, draw the cards again whenever a page's name or heading
+changes, a page is added, or the site's name is drawn another way. `SiteCardsTests` fails when a card's words no
+longer match its page, and its message names this command:
+
+```bash
+dotnet run --project src/tools/LouisAgent.FilmExport -- framework-cards
+```
+
+It starts the framework's host itself, reads the pages from the site's `sitemap.xml`, and writes
+`wwwroot/social-card.png` and, for every other page, a picture and a text file in `wwwroot/social-cards/`. Commit all
+of them. It stops and writes nothing for a card whose type didn't load or whose words run past the middle a cut to 3
+to 2 keeps, and says which page. `CHROME_PATH` names the browser, as for the share card above. In a cloud container,
+where Chrome runs as root behind a proxy, it can name a short script that starts Chrome with `--no-sandbox` and
+`--proxy-server`, and the host the tool starts needs made-up keys in the environment (`ANTHROPIC_API_KEY`,
+`AGENT_API_KEY`, `RESEND_API_KEY`, `ADMIN_API_KEY`, and `AGENT_AUTH=off`). Two machines never draw quite the same
+bytes, so drawing the cards again always shows a change in git.
+
+A platform keeps the card it read before, so after the deploy ask Facebook's Sharing Debugger or LinkedIn's Post
+Inspector to read a page's address again.
 
 ## Change the CV
 

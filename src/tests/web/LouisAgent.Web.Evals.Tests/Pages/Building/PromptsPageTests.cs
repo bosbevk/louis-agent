@@ -18,7 +18,7 @@ public class PromptsPageTests
     /// <summary>A mode, a role that always loads a toolset, and the principles, which name no level.</summary>
     private const string List = """
         {"prompts":[
-          {"path":"agent/acme/voice.md","name":"voice","description":"Acme's voice.","level":"agent","toolsets":[]},
+          {"path":"agents/acme/voice.md","name":"voice","description":"Acme's voice.","level":"agent","toolsets":[]},
           {"path":"shared/principles.md","name":"principles","description":"What holds for every agent.","level":null,"toolsets":[]},
           {"path":"specialists/acme-cook.md","name":"acme-cook","description":"Acme's cook.","level":"specialist","toolsets":["shops?"]}
         ]}

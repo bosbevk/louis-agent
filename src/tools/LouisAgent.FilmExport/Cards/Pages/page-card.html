@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- A page's share card (F169.6): the site's name small, the page's own name large, its first heading under it, and
+     its address on a grey band along the foot, at 1200 by 630, the size a link preview asks for. In flat's light look,
+     the look the framework's site opens in: each colour is one flat's light sheet sets (PageCardPageTests holds it).
+     The name is a photograph of the site's own header, put in at its size in points. Every word starts 128
+     from the left and stays on one line, so the tool can measure where it ends before it writes the card. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@500;650&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { position: relative; font-family: "Geist", system-ui, sans-serif; background: #f7f7f8; color: #0b0b0e; }
+  .at { position: absolute; left: 128px; margin: 0; white-space: nowrap; }
+  .name { display: block; top: 84px; width: {name-width}px; height: {name-height}px; }
+  .page { top: 196px; font-weight: 650; font-size: 112px; letter-spacing: -.035em; line-height: 1; }
+  .line { top: 346px; font-weight: 500; font-size: 44px; letter-spacing: -.02em; color: #44444f; }
+  .band { position: absolute; inset: auto 0 0 0; height: 118px; background: #dcdee8; border-top: 2px solid #a7aaba; }
+  .foot { top: 40px; font-family: "Geist Mono", monospace; font-weight: 500; font-size: 28px; line-height: 1.3;
+    color: #44444f; }
+</style>
+</head>
+<body>
+  <img class="at name" src="{name}" alt="">
+  <p class="at page">{page}</p>
+  <p class="at line">{heading}</p>
+  <div class="band"><p class="at foot">{address}</p></div>
+</body>
+</html>

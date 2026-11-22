@@ -32,12 +32,14 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 
 ### Skill files we control are plain markdown, always
 
-- **That covers every file in `prompts/`**, and the function skills the agent writes into a demo's
-  `skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
-- **Every file in `prompts/` opens with its front matter**: `name`, `description`, `metadata.level` and `toolsets`
+- **That covers every file in a project's prompt folders** (`agents/`, `specialists/`, `minions/`, `toolsets/`,
+  `shared/`, at the project's root), and the function skills the agent writes into a demo's
+  `skills/agents/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
+- **Every prompt opens with its front matter**: `name`, `description`, `metadata.level` and `toolsets`
   (ADR 0063). `PromptCatalog` reads it once and strips it before the model sees the file.
   `EveryPromptHasAHeaderTests` holds it.
-- **An identity's skills sit beside its voice**, in `agent/{identity}/skills/`, each with `metadata.load`, which is
+- **An identity's skills sit beside its voice**, in `agents/{identity}/skills/`, each a folder holding its
+  `SKILL.md`, named for the folder, with `metadata.load`, which is
   `always` or `on-demand` (ADR 0114). `SkillLoader` puts the always ones after the voice and lists the others,
   which the engine's `ReadSkill` reads.
 - **The exception is a skill format we don't control.** A provider class of its own is only for reading someone
@@ -57,10 +59,10 @@ a change to one (a new provider, a new tool, a new guard) touches one folder.
    `Pricing`, `Guardrails` → `Config`, `Messages`, `Logging`. Delegation and web access never reference the agent
    loop or a model. `Agent` never references a provider's SDK: provider differences stay in the
    provider's own library, as in *Changing the LLM*.
-3. **Prompts are content, not code.** The system prompt's text and procedures stay in `prompts/`, in the folder
-   of the level that reads them: `agent/`, `specialists/`, `minions/`, and `toolsets/` for what every level
-   shares. They are embedded and read only from the assembly, and C# only loads them. `SkillsLayoutTests` fails on
-   a misplaced file.
+3. **Prompts are content, not code.** The system prompt's text and procedures stay in the prompt folders at a
+   project's root, the folder of the level that reads them: `agents/`, `specialists/`, `minions/`, and `toolsets/`
+   for what every level shares. They are embedded and read only from the assembly, and C# only loads them.
+   `SkillsLayoutTests` fails on a misplaced file.
 4. **Hosts stay thin.** A host project maps the agent's stream to its protocol and holds no agent behaviour. Its
    `Program.cs` is start-up only. Its routes are in `Endpoints/`, one file per group. The rest sits in a folder
    per concern (the API: `Sessions/`, `Admin/`, `Evals/`, `Config/`, `Messages/`), never a `Services/` folder,
@@ -125,8 +127,8 @@ console's label: `tag: "MCP"` gives `[MCP] …`.
   shared. Each member is named for what happened, not for its wording.
 - **Each host keeps its own texts** in its own `Messages/` folder
   ([hosts-and-web.md](../../../.claude/rules/hosts-and-web.md#each-hosts-own-texts)).
-- **Not messages:** prompts (the system prompt and procedures in `prompts/`, and the orchestrator's triage and fix
-  prompts), keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms
+- **Not messages:** prompts (the system prompt and procedures in the prompt folders, and the orchestrator's triage
+  and fix prompts), keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms
   log's Markdown layout, and key=value or table formatting.
 - **Text the model reads is pinned.** `ToolMessageSnapshotTests` renders every `*ToolMessage` enum's template, the
   shared one and each area's, into `ToolMessageSnapshot.json`, keyed by member name, as the model-request snapshot

@@ -9,7 +9,7 @@
           "text": "Its name, its prompts, the packs it names and the agents it may call." }
       ] },
       { "cards": [
-        { "id": "mode", "icon": "message", "title": "Its mode", "code": "agent/{name}/voice.md", "text": "The voice, then the routing." },
+        { "id": "mode", "icon": "message", "title": "Its mode", "code": "agents/{name}/voice.md", "text": "The voice, then the routing." },
         { "id": "specialists", "icon": "users", "title": "Specialists", "code": "specialists/", "text": "Work handed over, with their toolsets." },
         { "id": "minions", "icon": "chip", "title": "Minions", "code": "minions/", "text": "One task with one tool." },
         { "id": "packs", "icon": "box", "title": "Its packs", "text": "Named, never referenced." }

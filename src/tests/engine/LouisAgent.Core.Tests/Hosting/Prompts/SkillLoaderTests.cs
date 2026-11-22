@@ -131,8 +131,8 @@ public class SkillLoaderTests
         string skills = Directory.CreateTempSubdirectory("function-skills-").FullName;
         try
         {
-            Directory.CreateDirectory(Path.Combine(skills, "agent", "functions"));
-            File.WriteAllText(Path.Combine(skills, "agent", "functions", "greeting.md"),
+            Directory.CreateDirectory(Path.Combine(skills, RoleCatalog.AgentFolder, "functions"));
+            File.WriteAllText(Path.Combine(skills, RoleCatalog.AgentFolder, "functions", "greeting.md"),
                 "# Greeting Skills\n\nGreets people.");
             var options = new AgentOptions { SkillsDirectory = skills };
 

@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Identities.Showroom;
 using LouisAgent.SiteApi;
 
@@ -19,10 +20,31 @@ public class ShowroomIdentitiesTests
     /// <summary>A voice, its lines joined, as the engine reads it.</summary>
     private static string Voice(IAgentIdentity identity)
     {
-        using var reader = new StreamReader(identity.Prompts.GetFileInfo($"agent/{identity.DefaultVoice}.md")
+        using var reader = new StreamReader(identity.Prompts.GetFileInfo($"agents/{identity.DefaultVoice}.md")
             .CreateReadStream());
         return string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    /// <summary>
+    /// The three share one provider over the project, and each business is named once, its voice at
+    /// <c>agents/{business}/voice.md</c> (CL68.1, Louis: "why does the showroom have this structure").
+    /// </summary>
+    [Test]
+    public void TheThree_ShareOneProvider_AndNameEachBusinessOnce()
+    {
+        string project = Path.Combine(TestPaths.RepoRoot, "src/site/LouisAgent.Identities.Showroom");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Businesses.Select(business => business.Prompts).Distinct().Count(), Is.EqualTo(1));
+            foreach (var business in Businesses)
+            {
+                string voice = Path.Combine(project, RoleCatalog.AgentFolder, business.Name, "voice.md");
+                Assert.That(File.Exists(voice), business.Name);
+                Assert.That(Directory.Exists(Path.Combine(project, business.Name)), Is.False, business.Name);
+            }
+        });
     }
 
     /// <summary>
@@ -40,7 +62,7 @@ public class ShowroomIdentitiesTests
         {
             Assert.That(business.Name, Is.EqualTo(name));
             Assert.That(business.DefaultVoice, Is.EqualTo($"{name}/voice"));
-            Assert.That(business.Prompts.GetFileInfo($"agent/{name}/voice.md").Exists, Is.True);
+            Assert.That(business.Prompts.GetFileInfo($"agents/{name}/voice.md").Exists, Is.True);
             Assert.That(business.Packs, Is.EqualTo(new[] { "leads", "site" }));
         });
     }

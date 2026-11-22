@@ -17,7 +17,7 @@ public class FrameworkIdentityTests
         {
             Assert.That(orbi.Name, Is.EqualTo("louis-agent-framework"));
             Assert.That(orbi.DefaultVoice, Is.EqualTo("louis-agent-framework/voice"));
-            Assert.That(orbi.Prompts.GetFileInfo("agent/louis-agent-framework/voice.md").Exists, Is.True);
+            Assert.That(orbi.Prompts.GetFileInfo("agents/louis-agent-framework/voice.md").Exists, Is.True);
         });
     }
 
@@ -51,7 +51,7 @@ public class FrameworkIdentityTests
     public void ItsVoice_SaysItIsTheFrameworksOrbi_AndAnAI()
     {
         var orbi = new FrameworkIdentity();
-        using var stream = orbi.Prompts.GetFileInfo("agent/louis-agent-framework/voice.md").CreateReadStream();
+        using var stream = orbi.Prompts.GetFileInfo("agents/louis-agent-framework/voice.md").CreateReadStream();
         string voice = new StreamReader(stream).ReadToEnd();
 
         Assert.Multiple(() =>

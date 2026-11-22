@@ -207,10 +207,28 @@ public class AgentCatalogTests
         Assert.That(Assert.Throws<AgentCatalogException>(() => Catalog(packs: [TestTools.WebPack, pack]))!.Message,
             Does.Contain("toolsets/web.md"));
 
-        var voice = new Dictionary<string, string> { ["agent/shared/voice.md"] = "# shared" };
+        var voice = new Dictionary<string, string> { ["agents/shared/voice.md"] = "# shared" };
         var error = Assert.Throws<AgentCatalogException>(() =>
             Catalog([new FakeIdentity("one", prompts: voice), new FakeIdentity("two", prompts: voice)]))!;
-        Assert.That(error.Message, Does.Contain("agent/shared/voice.md"));
+        Assert.That(error.Message, Does.Contain("agents/shared/voice.md"));
+    }
+
+    /// <summary>
+    /// One provider several identities share, as the showroom's three businesses do (CL68.1), is read once: each
+    /// voice appears once, and the catalogue holds the provider once.
+    /// </summary>
+    [Test]
+    public void AProviderTwoIdentitiesShare_IsReadOnce()
+    {
+        var shared = new FakePrompts(new Dictionary<string, string>
+        {
+            ["agents/one/voice.md"] = "# one",
+            ["agents/two/voice.md"] = "# two",
+        });
+
+        var catalog = Catalog([new FakeIdentity("one", provider: shared), new FakeIdentity("two", provider: shared)]);
+
+        Assert.That(catalog.Prompts.Count(prompts => ReferenceEquals(prompts, shared)), Is.EqualTo(1));
     }
 
     /// <summary>A pack an identity or a pack asks for that nobody registered is refused, naming what is.</summary>

@@ -28,8 +28,8 @@ are sent, so the prefix stays small and cacheable ([0006](../adr/0006-toolsets-p
 ([0008](../adr/0008-history-is-append-only.md)), and the guards keep any one result from flooding it
 ([0005](../adr/0005-guard-the-context.md)).
 
-**Prompts are content.** The system prompt and procedures are markdown in `prompts/`, embedded by level and read only
-from the assembly. The texts tools return are enum templates. Both are pinned by golden files
+**Prompts are content.** The system prompt and procedures are markdown in each project's prompt folders (`agents/`,
+`toolsets/`, `shared/`), embedded by level and read only from the assembly. The texts tools return are enum templates. Both are pinned by golden files
 ([0011](../adr/0011-prompts-are-content.md), [0009](../adr/0009-message-text-as-enum-templates.md)).
 
 **Measure everything.** Every model request lands in a priced ledger, and every host shows what an answer cost. A

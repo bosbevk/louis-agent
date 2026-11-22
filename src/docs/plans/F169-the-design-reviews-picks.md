@@ -153,6 +153,13 @@ as values for a list of names, which is extensibility, skill 20.
   frame shows the menu a site hands it in the sheet on a phone and in the left column above that.
 - **2026-11-22, F169.5's two drawings in a page.** Louis: "A: both in the page, CSS shows one". The figure holds
   a wide and a narrow drawing, and Bootstrap's display classes show the narrow one below 768 pixels.
+- **2026-11-22, F169.6's share cards, where they are drawn and kept.** Louis: "A: our tool draws them, kept as
+  files". The card tool draws the nine cards on a developer's machine, and they are committed in the site's web
+  root.
+- **2026-11-22, F169.6's way the host learns a page's picture.** Louis: "A: by where the file is". A picture
+  named for the page's address, with a text file beside it for its description, is that page's card.
+- **2026-11-22, F169.6's way a card is kept true to its page.** Louis: "A: a test checks the card's words". The
+  text file beside a card holds its words, and a test draws each page and fails when the two differ.
 - **2026-11-22, F169.7's step on a phone.** Louis: "A: an arrow between the two". A step of the sequence's phone
   drawing shows both names with the wide drawing's own line between them, a beam for a call and dashes for an
   answer.

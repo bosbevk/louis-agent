@@ -7,7 +7,7 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Core.Skills;
 
 /// <summary>
-/// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's <c>prompts/</c>, embedded with a manifest so
+/// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's prompt folders, embedded with a manifest so
 /// they keep their folder paths (<c>toolsets/web.md</c>), and from CL15 the identities' and packs' prompts the host
 /// registers with <see cref="Use"/> before the first read, all read only from their assemblies. A copy on disk never
 /// overrides one, so a wording change is a rebuild. Files the agent writes stay on disk (<c>AgentHost</c>). Static, so
@@ -16,7 +16,7 @@ namespace LouisAgent.Core.Skills;
 /// </summary>
 public static class SkillFileSource
 {
-    // The csproj embeds prompts/**; the provider serves them from that folder, by their paths under it.
+    // The csproj embeds core's prompt folders by name; the provider serves them by their paths in the project.
     private static readonly IFileProvider Core = EmbeddedPrompts.Of(typeof(SkillFileSource).Assembly);
     private static readonly List<IFileProvider> Extra = [];
     private static readonly Lock Gate = new();
@@ -56,7 +56,7 @@ public static class SkillFileSource
     }
 
     /// <summary>
-    /// Every built-in prompt's path under <c>prompts/</c>, with forward slashes, sorted: core's and the registered
+    /// Every built-in prompt's path in its project, with forward slashes, sorted: core's and the registered
     /// ones'.
     /// </summary>
     public static IReadOnlyList<string> EmbeddedFiles
@@ -88,8 +88,12 @@ public static class SkillFileSource
         return reader.ReadToEnd();
     }
 
-    /// <summary>Every file a provider holds, at any depth, with forward slashes.</summary>
-    internal static IEnumerable<string> FilesOf(IFileProvider provider) => AllFiles(provider, "");
+    /// <summary>
+    /// Every prompt a provider holds, at any depth, with forward slashes. Only markdown is a prompt (ADR 0011): read
+    /// from a project's root (CL68.1), the embedded provider also lists its own manifest, which is never one.
+    /// </summary>
+    internal static IEnumerable<string> FilesOf(IFileProvider provider) =>
+        AllFiles(provider, "").Where(path => path.EndsWith(".md", StringComparison.Ordinal));
 
     private static IEnumerable<string> AllFiles(IFileProvider provider, string folder) =>
         // The manifest's root is "/" ("" lists nothing).

@@ -3,6 +3,7 @@ using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
+using LouisAgent.Core.Agent.Messages.Holes.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
 using System.Reflection;
@@ -72,28 +73,28 @@ public sealed class AgentCatalog
         Screens = packs.SelectMany(p => p.Screens).ToList();
         CheckUnique(Screens.Select(s => s.Spec.Name), "screen");
 
-        Prompts = identities.Select(i => i.Prompts).Concat(packs.Select(p => p.Prompts)).ToList();
+        // A provider several identities share (the showroom's three businesses, CL68.1) is one source, read once.
+        Prompts = identities.Select(i => i.Prompts).Concat(packs.Select(p => p.Prompts)).Distinct().ToList();
         CheckUnique(SkillFileSource.CoreFiles.Concat(Prompts.SelectMany(SkillFileSource.FilesOf)), "prompt path");
 
         foreach (var toolset in Toolsets)
             foreach (string name in NamesOf(toolset))
             {
                 if (EngineToolNames.Contains(name))
-                    throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameIsTheEngines,
-                        new
-                        {
-                            Tool = name,
-                            Toolset = toolset.Name
-                        }));
-                if (_toolsetOfTool.Keys.FirstOrDefault(k => string.Equals(k, name, StringComparison.OrdinalIgnoreCase)) is
-                    { } taken)
-                    throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameTwice,
-                        new
-                        {
-                            Tool = name,
-                            First = _toolsetOfTool[taken].Name,
-                            Second = toolset.Name
-                        }));
+                {
+                    var enginesName = new CatalogToolNameIsTheEnginesHoles(name, toolset.Name);
+                    throw new AgentCatalogException(
+                        MessageText.Format(AgentErrorMessage.CatalogToolNameIsTheEngines, enginesName));
+                }
+
+                string? taken = _toolsetOfTool.Keys.FirstOrDefault(k =>
+                    string.Equals(k, name, StringComparison.OrdinalIgnoreCase));
+                if (taken is not null)
+                {
+                    var twice = new CatalogToolNameTwiceHoles(name, _toolsetOfTool[taken].Name, toolset.Name);
+                    throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameTwice, twice));
+                }
+
                 _toolsetOfTool[name] = toolset;
             }
 
@@ -154,7 +155,8 @@ public sealed class AgentCatalog
         Screens.FirstOrDefault(screen => string.Equals(screen.Spec.Name, name, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
-    /// The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).
+    /// The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>), each provider
+    /// once.
     /// </summary>
     public IReadOnlyList<IFileProvider> Prompts { get; }
 
@@ -220,29 +222,27 @@ public sealed class AgentCatalog
     {
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (string name in names)
-            if (!seen.Add(name))
-                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogNameTwice,
-                    new
-                    {
-                        Name = name,
-                        Kind = kind
-                    }));
+        {
+            if (seen.Add(name)) continue;
+
+            var twice = new CatalogNameTwiceHoles(name, kind);
+            throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogNameTwice, twice));
+        }
     }
 
     /// <summary>Stops start-up when an identity or a pack names a pack the catalogue doesn't hold.</summary>
     private static void CheckNamed(string owner, IEnumerable<string> named, IReadOnlySet<string> registered)
     {
         foreach (string name in named)
-            if (!registered.Contains(name))
-                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogPackUnknown,
-                    new
-                    {
-                        Owner = owner,
-                        Name = name,
-                        Registered = registered.Count == 0
-                            ? "none"
-                            : string.Join(", ", registered.Order(StringComparer.Ordinal))
-                    }));
+        {
+            if (registered.Contains(name)) continue;
+
+            string listed = registered.Count == 0
+                ? "none"
+                : string.Join(", ", registered.Order(StringComparer.Ordinal));
+            var unknown = new CatalogPackUnknownHoles(owner, name, listed);
+            throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogPackUnknown, unknown));
+        }
     }
 
     /// <summary>Stops start-up when packs require each other in a ring, naming the ring.</summary>
@@ -257,8 +257,10 @@ public sealed class AgentCatalog
             if (done.Contains(pack.Name)) return;
             int at = path.FindIndex(p => string.Equals(p, pack.Name, StringComparison.OrdinalIgnoreCase));
             if (at >= 0)
-                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogRequiresCycle,
-                    new { Cycle = string.Join(" -> ", path.Skip(at).Append(pack.Name)) }));
+            {
+                var ring = new CatalogRequiresCycleHoles(string.Join(" -> ", path.Skip(at).Append(pack.Name)));
+                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogRequiresCycle, ring));
+            }
             path.Add(pack.Name);
             foreach (string required in pack.Requires) Visit(byName[required], path);
             path.RemoveAt(path.Count - 1);

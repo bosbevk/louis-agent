@@ -5,7 +5,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "skill", "icon": "file", "title": "A function skill", "code": "skills/agent/functions", "look": "highlight",
+        { "id": "skill", "icon": "file", "title": "A function skill", "code": "skills/agents/functions", "look": "highlight",
           "text": "A markdown file the agent runs with ExecuteSkill." }
       ] },
       { "cards": [

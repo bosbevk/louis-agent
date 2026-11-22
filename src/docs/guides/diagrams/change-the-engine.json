@@ -10,7 +10,7 @@
       ] },
       { "cards": [
         { "id": "tools", "icon": "code", "title": "Tools and toolsets", "text": "A pack's, except agents and skills." },
-        { "id": "prompts", "icon": "file", "title": "Built-in prompts", "code": "prompts/", "text": "Principles and core's two guides." },
+        { "id": "prompts", "icon": "file", "title": "Built-in prompts", "code": "shared/, toolsets/", "text": "Principles and core's two guides." },
         { "id": "settings", "icon": "settings", "title": "Settings and messages", "text": "Read once, texts as enums." },
         { "id": "providers", "icon": "cloud", "title": "Providers and prices", "text": "A strategy per difference, five prices a model." }
       ] },

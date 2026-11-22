@@ -35,7 +35,7 @@ Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
     <RootNamespace>LouisAgent.Identities.Acme</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Keeps the prompts' folder paths: without it, agent/acme/voice.md is never found. -->
+    <!-- Keeps the prompts' folder paths: without it, agents/acme/voice.md is never found. -->
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
   <ItemGroup>
@@ -43,7 +43,7 @@ Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="prompts\**\*.md" />
+    <EmbeddedResource Include="agents\**\*.md;specialists\**\*.md;minions\**\*.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\docs\projects\LouisAgent.Identities.Acme.md" Link="docs\LouisAgent.Identities.Acme.md" />
@@ -68,7 +68,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Identities.Acme;
 
-/// <summary>Acme, a hardware shop's assistant: its mode (agent/acme/), its estimator (specialists/acme-*), and the units pack.</summary>
+/// <summary>Acme, a hardware shop's assistant: its mode (agents/acme/), its estimator (specialists/acme-*), and the units pack.</summary>
 public sealed class AcmeIdentity : IAgentIdentity
 {
     public string Name => "acme";
@@ -83,11 +83,11 @@ public sealed class AcmeIdentity : IAgentIdentity
 }
 ```
 
-`Name` is what the catalogue knows it by, and the folder of its modes (`agent/acme/`). Keep it lowercase. A name with a
+`Name` is what the catalogue knows it by, and the folder of its modes (`agents/acme/`). Keep it lowercase. A name with a
 dash needs a `[WireName]`, as a pack's does (step 5).
 
-`DefaultVoice` is the mode a session runs when it names none. `Prompts` reads the prompts the project embeds under
-`prompts/`. `Packs` holds names, not types: whatever the catalogue holds under that name serves it, our compiled pack
+`DefaultVoice` is the mode a session runs when it names none. `Prompts` reads the prompts the project embeds, from
+the prompt folders at its root that its project file names. `Packs` holds names, not types: whatever the catalogue holds under that name serves it, our compiled pack
 today or an MCP server one day. An identity that needs no pack returns `[]`. `Calls` lists the agents it may ask, by
 their addresses (step 4). An identity calls only whom it names, so one with no specialist leaves it out.
 
@@ -96,11 +96,11 @@ enum* below shows.
 
 ## 3. Write its mode
 
-A mode is what the agent the user talks to (level 0) reads: one markdown file under `prompts/agent/acme/`. Its first
+A mode is what the agent the user talks to (level 0) reads: one markdown file under `agents/acme/`. Its first
 `# ` section is the **voice**: who the agent is and how it talks. Everything from the second `# ` heading on is the
 **routing**: which work goes to which toolset or specialist.
 
-`prompts/agent/acme/voice.md`:
+`agents/acme/voice.md`:
 
 ```markdown
 ---
@@ -148,7 +148,7 @@ in its own language, and `voice.md` holds only the routing they share. A session
 loads that voice and then `voice.md`, and `acme/voice` on its own is no longer a mode. Puls is laid out this way, in its own repository.
 
 If the file grows too long, split off skills. Whatever the agent doesn't need on every turn goes in a skill beside the
-voice, `prompts/agent/acme/skills/{name}.md`, with the same header plus `metadata.load`. A skill marked `always` goes
+voice, `agents/acme/skills/{name}/SKILL.md`, with the same header plus `metadata.load`. A skill marked `always` goes
 in the prompt right after the voice. One marked `on-demand` is only listed, by its name (`acme/{name}`) and its
 description, and the agent reads it with `ReadSkill`, a tool a session gets only when its identity has such a skill.
 The description is all the model sees until it reads the skill, so make it say when to read it. If the model has to
@@ -162,7 +162,7 @@ always has, and the docs map and what each page says on demand.
 ## 4. Add a specialist (when the work needs one)
 
 A specialist (level 1) is a sub-session the mode hands a piece of work to, with only the toolsets that work needs.
-Its role file is `prompts/specialists/acme-estimator.md`: what it does, and how it reports back to the agent that
+Its role file is `specialists/acme-estimator.md`: what it does, and how it reports back to the agent that
 called it.
 
 ```markdown
@@ -201,8 +201,8 @@ the instance itself, named by its own service in its compose file, as `AGENT_PEE
 [ADR 0117](../adr/0117-one-address-for-every-agent-call.md).
 
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
-`prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
-`prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
+`minions/acme-minion.md` (what every Acme minion is) and one file per function,
+`minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
 (`minions/puls-minion-find-recipe.md`) and its price lookup (`minions/puls-minion-web-price-lookup.md`), in
 [its own repository](https://github.com/bosbevk/puls), are the worked examples when you need one; a role that lists
 `minions` in its header is refused where `MINION_LLMS` isn't set.

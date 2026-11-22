@@ -1159,3 +1159,53 @@ Concept: *20 Extensibility* in the [goal](../GOAL.md): when a thing is data, a n
 the data and one more argument to the call that draws it, so twelve pictures gained a phone drawing with no page
 touched. The frame's slot is the same idea: filled once, drawn in two places. And *18 Testing and shipping*: a unit
 test can read a rule, but only a browser at 390 wide shows a page that slides sideways, so the done-when is a measure.
+
+## F169.6: a file where the rule says is the whole configuration (2026-11-22)
+
+When someone shared a link to the framework's site, the chat showed louis-agent.dev's card: the glass ball, "The
+website that answers." and the other site's address. All nine pages named that one picture, and no picture on any of
+the four sites said what it showed. Louis picked a card for each page, and three smaller things on 2026-11-22: our
+tool draws the cards and they are kept as files, the host learns a page's card by where its file is, and a test checks
+the card's words.
+
+The middle pick is the lesson. The host could have learned a page's picture from a page's own code, or from the
+menu. Instead `/getting-started` wears `social-cards/getting-started.png` because that file is there, and the text
+file beside it says what it shows. That is convention over configuration: no line of code names a card, so a site
+gets one by adding two files. Its price is a rule a person has to know, so it is written in the host's design doc. Two
+small guards make it safe. A picture with no words beside it is no card, so a picture never shows with another
+picture's words. And the host looks with the route of the page it matched, never the address that was typed, so a
+section's address gets its page's card and nothing a visitor types reaches the file system.
+
+The tool shows how to put a browser to work without letting it into the tests. Everything that can be decided
+without one is a small type with a test: the pages from the sitemap, a page's words from its title, the card's page
+filled in, and whether a card may be written at all. The part that drives Chrome is thin. It photographs the site's
+own name from its header, as the old card photographs the glass ball, because the name changed under the review: in
+flat the o became smaller in F169.3, and a card that drew its own name would already have been wrong. It reads each
+page's title and first heading with scripts off, as a crawler does, and it refuses to write a card whose type didn't
+load or whose words run past the middle that a cut to 3 to 2 keeps.
+
+Three things the plan did not see came out in the run. The type check first asked for Geist at weight 650, which
+the site's own card never uses, so the browser never loaded it and the check refused a good card. It now asks for the
+face each word on the card uses. The header's name sits in a tight line, so at 132 points the g's tail was cut off;
+the name now gets room below while it is photographed. And the site has a page at `/not-found`, which has no place in
+a share card, so the test takes its pages from the site's contents, as the sitemap does, rather than from every route.
+
+The test that keeps the cards true is the sitemap's test again, on a picture. A card goes stale when a heading
+changes, and two machines never draw the same bytes, so no test compares pictures. Instead the words are written
+beside each card, and `SiteCardsTests` draws each page as the host does and holds the two to each other. It asks the
+host's own `PageCards`, which is what binds the tool and the host to one rule, since neither references the other.
+
+What was measured. The nine cards, drawn in a cloud container in about 40 seconds, are 58 to 95 KB each, 724 KB in
+all, every one 2400 by 1260 and well under WhatsApp's 600 KB. The widest words, on Getting started, end at 903 of
+the 1072 allowed, as the proof drawn while planning measured. What can only be asked live, after the deploy, is
+whether each address names its own card; how a platform shows it needs Louis's own sign-in to its checker.
+
+What didn't go well. Two edits in this child, a parameter added at several calls and a host named at two calls, were
+made with a one-line script where the rules say to edit the file. The result is the same text, but the rule is
+there so every change is seen as it is made.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): convention over configuration, where a file in the right place
+is the whole configuration. And *18 Testing and shipping*: a file drawn from a source goes stale, and a test that
+reads both is what notices.

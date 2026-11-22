@@ -56,12 +56,12 @@
       },
       {
         "id": "prompts",
-        "name": "prompts/agent/louis-agent-guide/",
+        "name": "agents/louis-agent-guide/",
         "kind": "embedded content",
         "tone": "amber",
         "members": [
           "voice.md",
-          "skills/site-pages.md, writing.md, live-demo.md (always)",
+          "skills/site-pages/, writing/, live-demo/ (always), each a SKILL.md",
           "skills/: seven more, on demand"
         ]
       }

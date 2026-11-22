@@ -18,7 +18,7 @@ public class GuideIdentityTests
         {
             Assert.That(guide.Name, Is.EqualTo("louis-agent-guide"));
             Assert.That(guide.DefaultVoice, Is.EqualTo("louis-agent-guide/voice"));
-            Assert.That(guide.Prompts.GetFileInfo("agent/louis-agent-guide/voice.md").Exists, Is.True);
+            Assert.That(guide.Prompts.GetFileInfo("agents/louis-agent-guide/voice.md").Exists, Is.True);
             Assert.That(guide.Packs, Is.EqualTo(new[] { "docs", "leads", "site" }));
         });
     }

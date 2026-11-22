@@ -12,9 +12,9 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 150 | 73 |
+| Features (`F`) | 151 | 73 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 41 | 27 |
+| Cleanups (`CL`) | 42 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -55,7 +55,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F168 | Facebook auto-answers (Louis, 2026-11-21: "plan integration into facebook to auto answer questions"): the guide answers the Page's Messenger in his voice through a framework library, `louis-agent.api.messenger`, over the sessions API with its own key and a daily cap per person, and steps back when Louis answers himself; a data-deletion callback; eleven steps, after F126 | Now, after F126 |
-| F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in seven children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, 74, 40 and 28 (40, 32 and 24 at 390 wide), the Overview's families h3s under one h2, four corner names and a step's six set by every theme, Orbi's panel at 18, no step on a disc in flat, the rows of terms and the page turn ending on the page's edge (done 2026-11-21); F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links (done 2026-11-22); F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass's talk on its own small shadow (done 2026-11-22); F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming (done 2026-11-22); F169.6 a card for each page: a link to a page previews that page's own card; F169.7 the sequence drawn for a phone: on a 390 screen the sequence on How it works reads without sliding (being built) | Now |
+| F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in seven children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, 74, 40 and 28 (40, 32 and 24 at 390 wide), the Overview's families h3s under one h2, four corner names and a step's six set by every theme, Orbi's panel at 18, no step on a disc in flat, the rows of terms and the page turn ending on the page's edge (done 2026-11-21); F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links (done 2026-11-22); F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass's talk on its own small shadow (done 2026-11-22); F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming (done 2026-11-22); F169.6 a card for each page: a link to a page previews that page's own card (done 2026-11-22); F169.7 the sequence drawn for a phone: on a 390 screen the sequence on How it works reads without sliding (being built) | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | CL68 | Agents and their subagents | Now |
@@ -127,10 +127,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (150 done)
+## Features (151 done)
 
 | Id | When | What |
 |---|---|---|
+| F169.6 | 2026-11-22 | A card for each page, F169's sixth child: every site's head says what its picture shows (`og:image:alt`); the host gives a page its own share card by where its file is (`social-cards/{route}.png` and `.txt`, `PageCards`); the card tool's `framework-cards` draws the framework's site's card and its eight pages' cards in flat from the running site, refusing one whose type didn't load or whose words pass the middle; `SiteCardsTests` holds each card's words to its page |
 | F169.5 | 2026-11-22 | The phone, F169's fifth child: in the docs layout the frame draws the site's pages in the header's sheet as well as in the column, one shown by width; the words 342 of a 390 screen; a long code word breaks; a cards picture can run down from a trunk, and the engine draws a flow or a cards picture for a phone on asking (`PictureFit`), its type under its title; a figure holds both drawings, Bootstrap showing one, and slides a picture with no narrow form, the sequence until F169.7 |
 | F169.4 | 2026-11-22 | Flat has no depth, F169's fourth child: the search window, the typing row, the send and a talk's pieces read the shadow and blur names every theme sets, so flat draws a line or nothing and glass's talk takes its small shadow; a picture on a flat page with no glow and no fade, its six tones kept; the working line plain words in flat by `--web-working-light`; the grain over every page gone, retro's scanlines keeping their strength |
 | F170 | 2026-11-22 | The framework's own Bicep for what the two sites stand on in Azure, proved by what-if and deployed as louis-agent-infra; Rebuilt from code in place |
@@ -500,10 +501,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (41 done)
+## Cleanups (42 done)
 
 | Id | When | What |
 |---|---|---|
+| CL68.1 | 2026-11-22 | No prompts/ folder: every project's prompt folders at its root, agent/ is agents/, the showroom's businesses named once on one provider, each skill a folder with its SKILL.md; a page's words from a dictionary factory, PartWords (ADR 0132) |
 | CL64 | 2026-11-18 | Orbi's prompts in the skill shape (narrowed by Louis to the guide alone): the voice is an index, its seven rules first and a table of on-demand skills, 4,356 words to about 3,100; five procedures became skills; every skill, Orbi's and Claude Code's, has its rules first, an example and its references, held by tests |
 | CL67 | 2026-11-17 | The feeds' MCP scheme is `feeds://` (Louis: "A feed must change to Feeds"), plural like `/v1/feeds` and the docs' coming `docs://`; no alias for `feed://` (ADR 0049); ADR 0072's line changed with it |
 | CL65.5 | 2026-11-15 | The pictures a project needs, and CL65 done (Louis: "the project type and requirements must drive which diagrams is required", "placed where it is used ort needed not a section"; his pick of three): every project doc states its kind from a list of nine and what it shows beyond the kind's floor, a test holds it to exactly that and the guide's table to the floor; 27 missing pictures drawn from the code, 8 deployment, 5 nested, 14 activity; no Diagrams section, each picture in its story; the `components` kind is `nested`; the `ticket` kind's name left open as CL66 |

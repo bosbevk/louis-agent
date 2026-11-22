@@ -51,7 +51,7 @@ internal sealed partial class SkillTools
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skills.Values;
 
-    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/pending/; null disables skill authoring.</summary>
+    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agents/functions/pending/; null disables skill authoring.</summary>
     public string? SkillsDirectory { get; set; }
 
     /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
@@ -146,7 +146,7 @@ internal sealed partial class SkillTools
     }
 
     [Description("""
-                 Creates (or updates, with overwrite=true) a reusable skill file, saved as agent/functions/pending/<name>.md in the Skills
+                 Creates (or updates, with overwrite=true) a reusable skill file, saved as agents/functions/pending/<name>.md in the Skills
                  folder and loaded at once, so its skills are callable via ExecuteSkill in this same session. It is only kept for later
                  sessions once the user approves it: ask them to type '/approve <name>' (or '/reject <name>' to discard it). With
                  overwrite, the new version waits for approval while the approved one stays for other sessions. Use this when the user
@@ -169,7 +169,7 @@ internal sealed partial class SkillTools
                  """)]
     public string CreateSkillFile(
         [Description(
-            "Short kebab-case name; the file is saved as agent/functions/pending/<name>.md until approved (e.g. 'csv-reports')")]
+            "Short kebab-case name; the file is saved as agents/functions/pending/<name>.md until approved (e.g. 'csv-reports')")]
         string name,
         [Description("Full markdown content of the skills file")]
         string markdown,

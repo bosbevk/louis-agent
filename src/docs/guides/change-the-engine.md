@@ -8,7 +8,7 @@
 ![The engine at a glance: LouisAgent.Core holds the tool loop, prompts, settings, providers and guards, and the golden files pin what the model reads](diagrams/change-the-engine.svg)
 
 Core is the engine. It holds the tool loop (`Agent/`), asking other agents (`Delegation/`), skills and prompts
-(`Skills/`, `prompts/`), the model providers' seam (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards
+(`Skills/`, and the prompts in `shared/` and `toolsets/`), the model providers' seam (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards
 (`Guardrails/`) and the start-up every host shares (`Hosting/`). It names no product, shop or country. Who an agent is
 lives in an identity, and what it can do lives in a pack. `ArchitectureTests` holds that, in the code and in the
 comments.
@@ -42,7 +42,7 @@ it, and regenerate the golden files and read their diff (below).
 Every toolset follows one pattern: guide, then tools, then guide. A mode's routing sends a task to the toolset, the
 toolset's guide names its tools and when to use them, and each tool's description stays short. A pack's toolset is a
 `ToolsetDefinition` the pack declares (its name, description, the settings it needs, its tool classes and its guide
-file), with the guide in the pack's `prompts/toolsets/` and a routing row in each mode that uses it.
+file), with the guide in the pack's `toolsets/` and a routing row in each mode that uses it.
 [Build a pack](build-a-pack.md) has the steps, and [Adding a tool](../../engine/LouisAgent.Core/CLAUDE.md#adding-a-tool)
 has the rules.
 
@@ -55,8 +55,8 @@ cacheable.
 
 ## Change a built-in prompt
 
-Core's own prompts are markdown in `prompts/`: `shared/principles.md`, which opens every prompt, and the guides of
-core's two toolsets in `toolsets/` (`agents.md` and `self-extension.md`). A product's modes and roles live in its
+Core's own prompts are markdown in two folders at its root: `shared/principles.md`, which opens every prompt, and
+the guides of core's two toolsets in `toolsets/` (`agents.md` and `self-extension.md`). A product's modes and roles live in its
 identity, and a pack's guides in its pack. All of them are embedded, so changing a word means rebuilding every image
 that uses them. A running chat keeps the prompt it opened with, so start a new chat to see the change.
 

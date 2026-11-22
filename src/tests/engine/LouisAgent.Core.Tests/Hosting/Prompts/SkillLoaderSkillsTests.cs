@@ -60,11 +60,11 @@ public class SkillLoaderSkillsTests
     [Test]
     public void ASkillWithoutItsLoad_Refuses()
     {
-        var file = new PromptFile("agent/acme/skills/menu.md",
+        var file = new PromptFile("agents/acme/skills/menu/SKILL.md",
             new PromptHeader("menu", "The menu.", RoleLevel.Agent, []), "# Menu\n");
 
         var refused = Assert.Throws<PromptHeaderException>(() => IdentitySkill.Of("acme", file));
 
-        Assert.That(refused!.Message, Does.Contain("agent/acme/skills/menu.md").And.Contain("load"));
+        Assert.That(refused!.Message, Does.Contain("agents/acme/skills/menu/SKILL.md").And.Contain("load"));
     }
 }

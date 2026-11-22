@@ -32,13 +32,13 @@
       },
       {
         "id": "voice",
-        "name": "prompts/agent/triage/voice.md",
+        "name": "agents/triage/voice.md",
         "kind": "the manager, the hub",
         "tone": "amber"
       },
       {
         "id": "roles",
-        "name": "prompts/specialists/triage-*.md",
+        "name": "specialists/triage-*.md",
         "kind": "the roles",
         "tone": "amber",
         "members": [

@@ -8,8 +8,8 @@ namespace LouisAgent.Core.Tests.Skills.Roles;
 
 // F21 step 1: a session names its role (its personality before CL13); the prompt starts with that one instead of
 // personality.md, and a name never reaches outside its level's folder (CL8: Skills/agent/, Skills/specialists/).
-// CL15 step 3: the mechanism is tested on the tests' own roles (prompts/: testprod); Puls's content is tested with
-// Puls, in its identity's tests.
+// CL15 step 3: the mechanism is tested on the tests' own roles (agents/testprod and the rest); Puls's content is
+// tested with Puls, in its identity's tests.
 public class RoleCatalogTests
 {
     private const string Modes =
@@ -55,7 +55,7 @@ public class RoleCatalogTests
 
         Assert.That(docs.IndexOf("# Testprod - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
-        Assert.That(Body("agent/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
+        Assert.That(Body("agents/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
             "the product's shared part");
     }
 

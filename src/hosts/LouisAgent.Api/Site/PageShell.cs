@@ -1,12 +1,14 @@
+using LouisAgent.Api.Site.Cards;
 using LouisAgent.Api.Site.Rendering;
 
 namespace LouisAgent.Api.Site;
 
 /// <summary>
-/// Puts a rendered page into the site's own index.html (F121): its title, its description, its link card and its
-/// canonical address (the page's own, whichever of its sections was asked for: FX216) in the head, its structured data and a breadcrumb (F123), and its words inside the app's element,
-/// hidden behind the loading screen (F128.1). The app replaces both when it starts, so a visitor sees the loader, never
-/// a bare page, and a crawler that runs no script reads the words.
+/// Puts a rendered page into the site's own index.html (F121): its title, its description, its link card with the
+/// page's own picture when it has one (F169.6) and its canonical address (the page's own, whichever of its sections
+/// was asked for: FX216) in the head, its structured data and a breadcrumb (F123), and its words inside the app's
+/// element, hidden behind the loading screen (F128.1). The app replaces both when it starts, so a visitor sees the
+/// loader, never a bare page, and a crawler that runs no script reads the words.
 /// </summary>
 /// <remarks>
 /// Plain string reading over the site's own file, which the framework's sites share the shape of (ADR 0057: a regular
@@ -21,8 +23,9 @@ public static class PageShell
     /// <summary>
     /// The site's index.html with the page in it, named by its own route on the site's public URL. A section's address
     /// answers this same page, so the page is the one original Google is told about, and its breadcrumb names it too.
+    /// A page with a card of its own shows that picture when its link is shared; one with none shows the site's.
     /// </summary>
-    public static string Fill(string indexHtml, RenderedPage page, Uri publicUrl, string route)
+    public static string Fill(string indexHtml, RenderedPage page, Uri publicUrl, string route, PageCard? card)
     {
         indexHtml = WithSchemas(indexHtml, page, publicUrl, route);
         string canonical = Escaped(new Uri(publicUrl, route).ToString());
@@ -42,10 +45,29 @@ public static class PageShell
             html = Replace(html, "<meta property=\"og:description\" content=\"", "\"", description);
         }
 
+        html = WithCard(html, card, publicUrl);
         html = Replace(html, "<meta property=\"og:url\" content=\"", "\"", canonical);
         html = html.Replace("</head>", $"    <link rel=\"canonical\" href=\"{canonical}\" />\n</head>",
             StringComparison.Ordinal);
         return InApp(html, page.Body);
+    }
+
+    /// <summary>
+    /// A page with a card of its own names that picture, on the site's own address, and says what it shows. With no
+    /// card, the site's own picture and its words stay as the file has them.
+    /// </summary>
+    /// <remarks>
+    /// The card is handed in, found by where its file is (Louis's pick, 2026-11-22, over a page or a menu entry that
+    /// names its picture). The two size tags are left alone: every card of a site is the size of the site's own
+    /// picture, and a test holds each picture to the size its <c>index.html</c> says.
+    /// </remarks>
+    private static string WithCard(string html, PageCard? card, Uri publicUrl)
+    {
+        if (card is null) return html;
+
+        string picture = Escaped(new Uri(publicUrl, card.Picture).ToString());
+        html = Replace(html, "<meta property=\"og:image\" content=\"", "\"", picture);
+        return Replace(html, "<meta property=\"og:image:alt\" content=\"", "\"", Escaped(card.Description));
     }
 
     /// <summary>

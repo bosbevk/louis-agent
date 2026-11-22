@@ -4,27 +4,21 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Composition.Packs;
 
 /// <summary>
-/// An identity's or a pack's prompts, as its project embeds them (F129): the folder they sit in is named here, once,
-/// and every identity, pack and the engine read them through this.
+/// An identity's or a pack's prompts, as its project embeds them: the prompt folders at the project's root
+/// (<c>agents/</c>, <c>toolsets/</c>, <c>shared/</c>), which its project file names, so a path in the project is the
+/// path the engine reads (CL68.1). Every identity, pack and the engine read them through this.
 /// </summary>
 /// <remarks>
-/// A Factory Method over the framework's embedded provider (Gang of Four): the folder's name was typed out in 21
-/// places, so renaming it took 21 edits (Louis: "if there was an enum we would not have had this problem"). One value,
-/// not a set to choose from, so a constant beside the factory rather than an enum; <c>PromptFolderTests</c> fails on
-/// any other source that names the folder or builds the provider.
+/// A Factory Method over the framework's embedded provider (Gang of Four): one place builds it, and
+/// <c>PromptFolderTests</c> fails on any other source that builds the provider or wraps a project's prompts in a
+/// folder. No filter around it (Louis's pick A of three for CL68.1): a project embeds nothing but its prompts.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class EmbeddedPrompts
 {
-    /// <summary>The folder a project's prompts sit in, as the project embeds it.</summary>
-    public const string Folder = "prompts";
-
-    /// <summary>Every prompt the assembly embeds, by its path under the folder.</summary>
-    public static IFileProvider Of(Assembly assembly) => new ManifestEmbeddedFileProvider(assembly, Folder);
-
     /// <summary>
-    /// The prompts under one subfolder, for a project that holds several identities' (the showroom's).
+    /// Every prompt the assembly embeds, by its path in the project. A project that holds several identities (the
+    /// showroom) hands each the same provider, and the catalogue reads it once.
     /// </summary>
-    public static IFileProvider Of(Assembly assembly, string subfolder) =>
-        new ManifestEmbeddedFileProvider(assembly, $"{Folder}/{subfolder}");
+    public static IFileProvider Of(Assembly assembly) => new ManifestEmbeddedFileProvider(assembly);
 }
