@@ -1,11 +1,15 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
+using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tickets.Spec;
 
@@ -174,4 +178,104 @@ public class PageSvgTests
     [Test]
     public void TheFile_WearsNoSitesTheme() =>
         Assert.That(DiagramRenderers.Render(Flow()), Does.Not.Contain("data-theme"));
+
+    /// <summary>The parts of a picture that are a glow or a light, which a flat page hides.</summary>
+    private const string Lights =
+        ":is(.crd-rail-glow, .seq-beam-glow, .mrq-light, .mrq-edge, .ticket-light) { display: none; }";
+
+    /// <summary>
+    /// F169.4: on a flat page a picture has no glow and no light (Louis's pick 3, "A: no fade, no blur, the six colours
+    /// kept"): the glow behind a rail and a beam, the light behind the top, a panel's edge of light and a ticket's
+    /// light are hidden, in light and dark alike, and only on a flat page. The file for the docs holds none of it.
+    /// </summary>
+    [Test]
+    public void OnAFlatPage_APicture_HasNoGlowAndNoLight()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain($"[data-theme=\"flat\"] :scope {Lights}"));
+            Assert.That(page, Does.Not.Contain($"[data-theme=\"glass\"] :scope {Lights}"));
+            Assert.That(DiagramRenderers.Render(Flow()), Does.Not.Contain(Lights));
+        });
+    }
+
+    /// <summary>
+    /// F169.4: on a flat page a picture is filled with colours only (Louis's pick 3): a rail, a beam going or coming
+    /// back and an untoned badge in the picture's violet line, a lifeline and a title's rule in its hairline at full
+    /// strength, and a key's swatch as a card is. A toned badge keeps its tone, one of the six colours kept.
+    /// </summary>
+    [Test]
+    public void OnAFlatPage_APicture_IsFilledWithColoursOnly()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+        const string flat = "[data-theme=\"flat\"] :scope :is(";
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain(flat +
+                ".crd-rail, .seq-beam, .crd-badge:not([class*=\"tone-\"])) { fill: var(--violet-line); }"));
+            Assert.That(page, Does.Contain(flat + ".seq-life, .mrq-rule) { fill: var(--pic-hair); opacity: 1; }"));
+            Assert.That(page, Does.Contain(flat +
+                ".seq-swatch) { fill: var(--pic-body); fill-opacity: 1; " +
+                "stroke: var(--pic-hair); stroke-opacity: 1; }"));
+        });
+    }
+
+    /// <summary>
+    /// One picture of each kind that draws a fade or a blur of its own, the smallest that still draws.
+    /// </summary>
+    private static IEnumerable<DiagramSource> EveryKind()
+    {
+        yield return Flow();
+        yield return Ticket();
+        yield return new DiagramSource(DiagramKind.Cards, "A project", Cards: new CardsSpec(
+            [new CardRow([new Card("project", DiagramIcon.Chip, "The project", null, "What it is.")])], []));
+        yield return new DiagramSource(DiagramKind.Sequence, "One call", Sequence: new SequenceSpec(
+            [new Participant("P", "Program"), new Participant("S", "Store")],
+            [new MessageStep("P", "S", "Read()"), new ReplyStep("S", "P", "rows")]));
+        yield return new DiagramSource(DiagramKind.Classes, "Two types", Classes: new ClassesSpec(
+            [new ClassType("browser", "Browser app"), new ClassType("store", "Store")],
+            [new ClassRelation("browser", "store", RelationKind.Uses)], FlowDirection.Down));
+    }
+
+    /// <summary>
+    /// The first class of each rule in a page's copy that fills with a paint or passes through a filter: the parts a
+    /// picture shades.
+    /// </summary>
+    private static IEnumerable<string> ShadedParts(string page) =>
+        page.Split('\n').Select(line => line.Trim())
+            .Where(line => line.StartsWith('.') && line.Contains('{', StringComparison.Ordinal))
+            .Where(line => line.Contains("url(#", StringComparison.Ordinal) ||
+                           line.Contains("filter:", StringComparison.Ordinal))
+            .Select(line => line[1..].Split('.', ' ', '{', ',', ':')[0]);
+
+    /// <summary>
+    /// A fade or a blur added to a picture later must say what flat does with it: every part a picture's own style
+    /// shades, in each kind, is named by flat's rules or by the cards' rule.
+    /// </summary>
+    [Test]
+    public void EveryPartAPictureShades_IsNamedForAFlatPage()
+    {
+        // The reading finds the shading there is today, so it can't pass by finding nothing.
+        var shaded = EveryKind().SelectMany(source => ShadedParts(DiagramRenderers.RenderForPage(source))).ToHashSet();
+        Assert.That(shaded, Is.SupersetOf(new[] { "crd-rail", "seq-beam", "seq-life", "mrq-rule", "ticket-light" }));
+
+        foreach (var source in EveryKind())
+        {
+            string page = DiagramRenderers.RenderForPage(source);
+            string named = string.Join("\n", page.Split('\n').Where(line =>
+                line.Contains("[data-theme=\"flat\"] :scope :is(", StringComparison.Ordinal) ||
+                line.Contains(":scope .mrq-glass, :scope .crd-quiet", StringComparison.Ordinal)));
+
+            var unnamed = ShadedParts(page).Distinct()
+                .Where(part => !named.Contains($".{part},", StringComparison.Ordinal) &&
+                               !named.Contains($".{part})", StringComparison.Ordinal) &&
+                               !named.Contains($".{part} ", StringComparison.Ordinal) &&
+                               !named.Contains($".{part}:", StringComparison.Ordinal)).ToList();
+
+            Assert.That(unnamed, Is.Empty, $"a {source.Kind} picture shades parts flat says nothing of");
+        }
+    }
 }

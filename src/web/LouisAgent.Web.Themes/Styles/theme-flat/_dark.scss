@@ -33,7 +33,7 @@
     --bs-primary-bg-subtle: #110a40;
     --bs-primary-text-emphasis: #e2dfff;
     --bs-success: #2b2b33;                                // your messages, under the same white ink as a press
-    --web-success-deep: #1a1a1f;
+    --web-success-deep: var(--bs-success);                // one solid colour: your message has no fade
     --bs-success-bg-subtle: #1a1a1f;
     --web-sidebar-foot: #141418;
     --web-sidebar-foot-deep: #000000;
@@ -178,6 +178,7 @@
     --web-step-shadow: none;
     --web-step-radius: var(--web-small-radius);
     --web-step-face: var(--bs-font-monospace);
+    --web-working-light: var(--bs-secondary-color);        // the working line is plain words: no band of light
 
     // Flat lays no drawing on any piece (F151.4) but its mark (FX181).
     // Its version goes up whenever one of its drawings changes, so no browser keeps the old one.

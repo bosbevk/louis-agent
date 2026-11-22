@@ -13,7 +13,12 @@
         pointer-events: none;
         z-index: 2000;
     }
-    body::before { background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .07) 0 1px, transparent 1px 3px); }
+    /* The scanlines are faint and blend into what is under them, said here since no other rule draws on this layer. */
+    body::before {
+        background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .07) 0 1px, transparent 1px 3px);
+        opacity: .05;
+        mix-blend-mode: overlay;
+    }
     body::after { background: radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, .3) 100%); }
 
     /* The switch-on runs once and lets go: an animation that keeps hold of the app after its end makes the app the

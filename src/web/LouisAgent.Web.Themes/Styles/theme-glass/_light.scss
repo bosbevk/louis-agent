@@ -200,6 +200,7 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     --web-step-shadow: var(--web-press-shadow);
     --web-step-radius: 50%;
     --web-step-face: var(--bs-font-sans-serif);
+    --web-working-light: var(--bs-emphasis-color);         // a band of light runs along the working line
 
     // Each part's drawing, and each of its states, served by this project (F151.4), at their version, raised whenever
     // a drawing or the silk changes so no browser keeps the old one (FX189).

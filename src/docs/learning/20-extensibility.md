@@ -1042,3 +1042,66 @@ picture of them.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a unit inside a shared control decides what every theme's
 value means, and a slot lets one page hand a part something the part need not know.
+
+## F169.4: a theme can only reach a piece that asks it (2026-11-22)
+
+Flat's design says one solid colour for each surface and a hairline round it, with no shadow, blur or fade
+anywhere. The nine pages of the framework's site already kept that. The two windows that open over them did not:
+the search window threw a shadow 80 pixels deep and blurred the page behind it, Orbi's typing row had three shadows
+and a 14 pixel blur, and its send glowed violet and breathed. A talk added more: a deep shadow under the visitor's
+message and under a code block. And flat already said none for every one of those things. The fault was that these
+places never asked. They called mixins of the surface tool that wrote the depth as numbers, and from the sheet
+that called them such a mixin looked exactly like one that read a theme's name.
+
+Louis picked "the names there are": each place reads a name the themes already set, and no new name is added for
+them. So the change was small and in the right place. `hovering()` reads the floating shadow, `frosted()` takes a
+theme's blur, `typed-in()` keeps its pale ring beside the floating shadow, a new `press-shadow()` gives the send the
+press's shadow alone, and `spoken()` reads the small shadow. Two mixins that only wrote numbers, `depth()` and
+`spoken-deep()`, lost their last caller and went, with the send's breathing. One line in each mixin made three
+themes right at once, which is why the plan weighed who else each change reached before a line was written. Glass
+moved a little where it draws a talk: a message and a code block now wear glass's own small shadow in place of the
+deep ones, which is what the sheets Louis picked from showed. Retro says none for these names as flat does, so code
+review's chat lost the same shadows, its send stopped glowing and its top bar on a phone lost its blur. That was
+measured on the running app before and after, since it was not on the sheets he saw.
+
+One fade was not a shadow at all. The visitor's bubble runs from the theme's `--bs-success` into its
+`--web-success-deep`, and flat set the two a shade apart. A theme is values, so flat now sets the second to the
+first and the bubble is one colour. The same thinking settled the line that says Orbi is working: its band of light
+is a fade between two colours, so the light became a theme value of its own, `--web-working-light`, which glass and
+retro set to today's colour and flat to the words' own grey. Nothing moves visibly in flat, and the ring beside the
+words still turns.
+
+A picture is the same idea across a boundary. The diagrams' engine can't read the web's names, since the docs' tool
+draws pictures without the web, so a page's copy carries a palette for each theme. Flat's side gained rules that
+hide a picture's glows and lights and fill its rails, beams and badges with the violet line. They are written with
+`:is()`, because the first draft of the test showed a list of selectors after one theme attribute keeps only the
+first one under the theme: `[data-theme="flat"] :scope .a, :scope .b` would have hidden `.b` in glass too. And one
+detail the pick's own sheet got wrong would have broken a promise: the sheet filled every card badge violet, but a
+badge with a tone keeps its tone, and the plan says the six tones stay. So the badge rule names only a badge with no
+tone. A test reads the page's copy of every kind of picture, finds every part its own style fills with a fade or
+passes through a filter, and fails if flat says nothing of it. It found the title's rule before the rules were
+written, so a fade added next year will have to say what it is on a flat page.
+
+The grain was the last thing on a flat page that was not its theme's colour: a fixed layer at 5 percent over every
+page of every site. Louis picked it out everywhere. Two things made the change smaller than the card said. The print
+rule hides both of the page's layers, and the second is the theme's lights, so it stayed word for word. And retro's
+scanlines were drawn on the same layer and took their opacity and blend from the grain's rule without saying so.
+With that rule gone they would have been twenty times stronger, so retro's own rule now says both. The ground of a
+flat dark page now measures `#0c0c0e`, exactly flat's colour.
+
+What was measured, all on the local sites with Playwright. On the framework's site in flat, light and dark, at 1920
+and at 390 wide, on its nine pages, with the search window open and with every part of a talk put into Orbi's panel
+by hand, there is no shadow that is offset or soft, no blur and no fade between two colours; what is left are lines,
+rings and a link's underline. Eleven pictures count no fade and no blur, and all six tones still show. A phone's
+measure reported a glow on the folded button, but that layer computes `display: none` on the docked button, so it
+is drawn nowhere. On louis-agent.dev in glass a message and a code block wear glass's small shadow.
+
+What didn't go well. A comment line added to the framework's sheet of surface names hid the new name from the test
+that reads that sheet, exactly as it did in F169.3. The reader splits declarations on semicolons, so a comment
+swallows the line after it. The comment came out again; the reader itself is worth teaching to skip comments.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a theme can only reach a piece that asks it, so a tool that
+writes its own numbers is a hole in the contract even when every theme is right. And *18 Testing and shipping*: a
+unit test reads what a sheet says, and only a browser shows what a page draws, so the rule is held by both.

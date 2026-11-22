@@ -18,6 +18,12 @@
     &:disabled { cursor: default; @include drawn(press-disabled, var(--web-press-fill)); }
 }
 
+/* Only the shadow a theme gives a press, for a press that keeps its own fill, such as the chat's send: none in a
+   theme with no depth (F169.4, Louis's pick "A: the names there are"). */
+@mixin press-shadow() {
+    box-shadow: var(--web-press-shadow);
+}
+
 /* A press that waits, as the design's send does: with nothing to press yet it stands drawn at rest, at full strength,
    never greyed, and only the pointer says it waits. */
 @mixin press-at-rest() {

@@ -905,7 +905,8 @@ word of code in running words, has a fill, an ink and an edge, the brand's pale 
 and no line until a theme says otherwise. Beside a pane's corner stand four more corners, by what wears them: small
 (6), such as a menu's row or a code word; a block (10), such as a listing of code; a window (18), such as the search
 window or the agent's panel; and a pill (999), round at its ends, such as a doc link or a listing's Ask and Copy. A
-step's number has its six names, the main button at rest drawn as a circle until a theme says otherwise. Last come
+step's number has its six names, the main button at rest drawn as a circle until a theme says otherwise. The line
+that says the agent is working has its light, the strongest ink until a theme says otherwise. Last come
 the drawings a theme may lay on a piece, one name for each part and state, such as `--web-art-pane-rest` and
 `--web-art-press-hover`, which a theme sets to a drawing's address; the framework draws none, so each is `none`.
 Each name is set to the look the framework draws with no theme, so a site that names none looks as it always has.
@@ -921,6 +922,19 @@ only a conversation draws. Some kinds read a theme's own names, such as a pane, 
 hairline. Others are plain, such as a wash of a colour or a shadow thrown in it, and take the colour from the
 sheet, so they follow a theme through its colours. A kind writes its lines where it is included, so the tool adds
 nothing to a stylesheet by itself.
+
+**Depth is always the theme's.** A shadow under a piece and a blur behind it are read from a theme's names, never
+written as numbers, since a theme can only switch off what asks it. A dialog over the whole page, such as the
+search window, floats by the theme's floating shadow (`hovering`), and what is behind a piece is blurred by the
+pane's blur, or by another of the theme's blurs it names, such as the veil's behind the search window (`frosted`).
+The row a chat is typed in floats the same way, and while it is typed in it keeps a pale ring in the brand's colour
+beside that shadow (`typed-in`, which the chat's other box wears through `lit` too). The send throws the press's
+shadow (`press-shadow`), the same at rest and under the pointer. A visitor's message and a code block take the
+small shadow, `--bs-box-shadow-sm`, and a tool row and a helper's card the raised piece's. So flat, which sets
+those names to none or to its hairline, draws a line or nothing, and glass draws its own soft shadows. The line
+that says the agent is working is a band of light that runs along its words, and its colour is the theme's
+`--web-working-light`: a theme that sets it to the words' own grey shows plain words. And the framework lays
+nothing over a page, so its ground is exactly the colour its theme says.
 
 A few things every page shows are drawn once, in the base sheet, so the value a theme sets is the one a visitor
 sees. The ring round whatever the keyboard is on is written in `base/_elements.scss` and nowhere else: a later
@@ -1140,8 +1154,10 @@ extra-large screen. The door's
 header button has `OpenAgentButtonTests`, and the site's search `SiteSearchTests`, which draw the places found, open
 one, and ask the agent from the last row.
 
-A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests` and
-`SurfaceNamesTests` in `Rules/Styles/Themes/`, and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
+A look's contract has `SiteThemeTests` and `SiteStyleTests` in `Components/Areas/Themes/`, `ThemeSheetTests`,
+`SurfaceNamesTests` and `ThePagesGroundTests` (nothing laid over a page) in `Rules/Styles/Themes/`,
+`DepthIsTheThemesTests` in `Rules/Styles/Surfaces/Depth/` (every shadow and blur of the windows and a talk read from
+a theme's name, and the working line's light), and `FirstPaintLookTests` and `SitesSayTheirLookTests` in
 `Rules/Sites/`. The first-paint test reads the script, taking its words from `SiteLook`, so the script and the C#
 can't drift apart. `TypeAndEdgesTests`, in `Rules/Styles/TypeAndEdges/`, holds a docs page's type and edges as the
 sheets write them: the three heading sizes and the part's title in the base rule, each corner reading its name and
