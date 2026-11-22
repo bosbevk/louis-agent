@@ -211,8 +211,18 @@ adds to the widget's classes is known in one place, `Widget/Layouts/WidgetLook`,
 Docked, the widget is a panel in a place its page gives it, such as the docs layout's right column. It stays closed
 until something asks, through the door, and its close button gives the place back. It has no minimise or maximise
 buttons, since its size is its place's. It is Bootstrap's responsive offcanvas: from an extra-large screen it stands
-in its place, and below that it slides in from the side, with a round button in the lower-right corner to open it
-that is drawn only there. A header can open it too, with `OpenAgentButton`, through the door part 1 tells of.
+in its place, and below that it slides in from the side, with a button in the lower-right corner to open it that is
+drawn only there. That button is the agent's own way in on a narrow screen, so it shows who it is: a quiet pill on
+the page's ground with the theme's line, 48 high, the agent's orb 28 across and the words the site gives it as
+`ButtonText`. Whether a layout's folded button wears the orb is a question `WidgetLook.ButtonWearsMark` answers, and
+only docked does; the corner's button keeps its chat glyph and its glow. A header can open the widget too, with
+`OpenAgentButton`, through the door part 1 tells of. That button wears the orb before its words, 20 across, in the
+button's own gap.
+
+In the corner and docked, the open panel's head wears the agent's orb before its title, 22 across, with the title's
+first letter on it, as the bar's orb has. `Orb.InitialOf` gives both that letter, so the bar and the head agree.
+These orbs on a button and in a head stand still, with their rings hidden, since they are a mark and not an agent
+at work, and a screen reader skips them, since it already hears the words and the panel's label.
 
 The bar (`Widget/Bar/AgentBar`) is
 centred at the page's foot, at most 960 wide and a full pill round a ball of 68 with 14 of room, the ball setting its
@@ -484,7 +494,10 @@ another to a screen reader.
 A `Band` is one named area of a page: a section with a required id, an optional kicker and the site's classes. It
 draws no style of its own. The id is required so that every area on every site is named, and the guide can send a
 visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"`, and the frame
-then never pages it sideways.
+then never pages it sideways. A band may also take a mark over its topic, in its named `Mark` slot, as `CornerLink`
+takes one before its words. The band knows nothing of what the mark is; it draws it as drawing only, hidden from a
+screen reader, the band's own gap between its parts as its room above the topic, and sizes an orb in it to grow with the screen's width from 48 to 64, so no
+breakpoint is written. The framework's Overview is where it is used: its first section opens with the orb.
 
 A band's heading, `BandTitle`, takes its rank from where the band stands, so a page never says it by hand. The band
 hands itself down to its title, and the title asks it two questions. If the band is the page's own, the one whose id

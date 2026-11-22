@@ -271,7 +271,7 @@ public partial class AgentBar : IAsyncDisposable
     }
 
     /// <summary>The guide's mark on its orb: the first letter of its name, as the design drew it.</summary>
-    private string? Initial => Title.Length > 0 ? Title[..1] : null;
+    private string? Initial => Orb.Orb.InitialOf(Title);
 
     /// <summary>The line over the box: what the guide is doing, or its name while it waits.</summary>
     private string Doing => State switch

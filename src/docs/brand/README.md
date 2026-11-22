@@ -20,10 +20,18 @@ There is a one-ink version for paper and for anything that can only print one co
 ## The name, with the mark as its o
 
 The name is `louis-agent`, always lowercase and always with its hyphen. Where there is room, it is written in
-Geist at weight 650, set tight, with the mark standing in for its o: `l`, the ball, then `uis-agent`. The ball is
-about three quarters of a letter's height and sits on the line, like a letter. The site's header draws it that way
-with the framework's `Wordmark`, which takes the letters before the mark and after it, and tells a screen reader
-the whole name once.
+Geist at weight 650, set tight, with the mark standing in for its o: `l`, the ball, then `uis-agent`. The ball
+sits on the line, like a letter, and it has one size wherever the name stands, in the header, the footer or a
+slide: a share of the name's own letters that each look says. Flat's ball is 0.41 of the letters, about the
+height of a small letter, and glass's and retro's is 0.62. The site's header draws it that way with the framework's
+`Wordmark`, which takes the letters before the mark and after it, and tells a screen reader the whole name once.
+The name under every picture in the docs is one line of Geist, its ball Geist's own bullet at 0.41 of the
+letters, the same share as flat's, sitting on the line.
+
+The mark on its own stands where the agent is. On the framework's site it opens the Overview, 64 pixels across
+on a desktop and 48 on a phone. Orbi wears it too: 20 across on its button in the header, 22 in its panel's head,
+and 28 on the button that opens it on a phone. Each of them stands still, with none of the rings the agent's orb
+wears while it works.
 
 Give the name or the mark clear space of half the mark's height on every side. The mark on its own is never smaller
 than 16 pixels. Don't recolour the disc, tilt or stretch it, set the name in another font ("Louis Agent"), or put

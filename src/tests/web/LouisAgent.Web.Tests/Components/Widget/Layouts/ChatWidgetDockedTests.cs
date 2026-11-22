@@ -116,6 +116,33 @@ public class ChatWidgetDockedTests
         });
     }
 
+    /// <summary>
+    /// F169.3: docked and folded, its button is the agent's mark and the words it was given (Louis's pick 5), with no
+    /// chat glyph; the corner's button, the one other sites fold to, keeps its glyph.
+    /// </summary>
+    [Test]
+    public void DockedAndFolded_ItsButtonIsTheMarkAndItsWords_AndTheCornersKeepsItsGlyph()
+    {
+        using var ctx = Context(new GuideDoor());
+
+        var docked = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(widget => widget.Title, "Orbi · AI")
+            .Add(widget => widget.ButtonText, "Ask Orbi")
+            .Add(widget => widget.Layout, WidgetLayout.Docked)).Find("button.widget-button");
+        var corner = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(widget => widget.Title, "Orbi · AI")
+            .Add(widget => widget.ButtonText, "Ask Orbi")).Find("button.widget-button");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(docked.QuerySelectorAll(".orb"), Has.Length.EqualTo(1));
+            Assert.That(docked.TextContent, Does.Contain("Ask Orbi"));
+            Assert.That(docked.QuerySelector("svg"), Is.Null, "no chat glyph");
+            Assert.That(corner.QuerySelector(".widget-icon svg"), Is.Not.Null, "the corner keeps its glyph");
+            Assert.That(corner.QuerySelector(".orb"), Is.Null);
+        });
+    }
+
     /// <summary>Docked, it has no minimise or maximise: its size is its place's.</summary>
     [Test]
     public void Docked_ItHasNoWindowButtons()

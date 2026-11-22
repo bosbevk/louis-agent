@@ -6,9 +6,11 @@
 @* The Overview (F164.1): its heading over the framework at a glance, the important parts highlighted, since (Louis)
    "do one like this highlight the important ones", then what it is with its real program, its whole map, what is
    built on it, and why C#. Each section ends with the docs it was written from. The five families are parts of the
-   whole framework's section (F169.2), so each heads itself with an h3 under that section's h2. *@
+   whole framework's section (F169.2), so each heads itself with an h3 under that section's h2. The mark opens the
+   page, over the first section's topic (F169.3). *@
 <Band Id="top" Topic="The C# AI agent framework" Title="Build agents, not infrastructure." Summary="louis-agent runs the loop, guards every tool call, measures every request and puts your agent in front of people. You write who the agent is and what it can do.">
-    <DiagramFigure Source="FrameworkAtAGlance.Source" />
+    <Mark><Orb Label="louis-agent" /></Mark>
+    <ChildContent><DiagramFigure Source="FrameworkAtAGlance.Source" /></ChildContent>
 </Band>
 
 <Band Id="what-it-is" Topic="What it is" Title="A few lines of your own." Summary="Three ideas make an agent here. The engine runs its loop, an identity says who it is, and a pack says what it can do. Your program names the identities and packs it wants, then starts a host that puts the agent in front of people. This is the line that starts the coding agent, from its real program.">

@@ -36,6 +36,35 @@ public class BandTests
     }
 
     /// <summary>
+    /// F169.3: a band given a mark draws it before its topic, hidden from a screen reader since the page's name is said
+    /// elsewhere (Louis's pick A, "a Mark slot on the section"); a band given none draws nothing there.
+    /// </summary>
+    [Test]
+    public void ABandGivenAMark_DrawsItBeforeItsTopic_AndOneGivenNoneDrawsNothing()
+    {
+        using var ctx = new BunitContext();
+
+        var marked = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "top")
+            .Add(band => band.Topic, "The framework")
+            .Add(band => band.Mark, "<span class=\"orb\"></span>")
+            .Add(band => band.ChildContent, "<p>Content</p>"));
+        var plain = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "next")
+            .Add(band => band.Topic, "The next"));
+        var first = marked.Find("section > .band-body").FirstElementChild!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(first.ClassName, Is.EqualTo("band-mark"));
+            Assert.That(first.GetAttribute("aria-hidden"), Is.EqualTo("true"));
+            Assert.That(first.QuerySelector(".orb"), Is.Not.Null);
+            Assert.That(first.NextElementSibling!.ClassName, Is.EqualTo("topic"));
+            Assert.That(plain.FindAll(".band-mark"), Is.Empty);
+        });
+    }
+
+    /// <summary>
     /// A band's head runs straight into its content, with no line under it (Louis: "remove all these header lines").
     /// </summary>
     [Test]

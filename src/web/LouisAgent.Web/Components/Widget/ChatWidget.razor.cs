@@ -76,6 +76,9 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public string Title { get; set; } = "Ask";
 
+    /// <summary>The mark on the panel head's orb: the title's first letter, as the agent's bar wears it.</summary>
+    private string? Initial => Orb.Orb.InitialOf(Title);
+
     /// <summary>What the panel says before the first question.</summary>
     [Parameter]
     public string Greeting { get; set; } = "Ask me anything.";

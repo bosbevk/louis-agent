@@ -77,4 +77,17 @@ public class WordmarkTests
             Assert.That(styles, Does.Contain("translate: 0 calc((var(--web-wordmark-o) - .54em) * .385);"));
         });
     }
+
+    /// <summary>
+    /// F169.3: the orb sets 17 pixels for its own letter, so inside a name it takes the name's size instead, and the
+    /// theme's share in em is a share of the letters it stands among, in the header and the footer alike.
+    /// </summary>
+    [Test]
+    public void TheMarkInAName_TakesTheNamesSize()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/LouisAgent.Web/Components/Site/Brand/Wordmark.razor.scss"));
+
+        Assert.That(styles, Does.Contain("font-size: inherit;"));
+    }
 }

@@ -7,6 +7,11 @@
    sideways and shows the pager beside it (F118). *@
 <section id="@Id" class="@Classes" data-whole="@Whole">
     <div class="band-body">
+        @* A mark over the topic (F169.3), drawing only. *@
+        @if (Mark is not null)
+        {
+            <div class="band-mark" aria-hidden="true">@Mark</div>
+        }
         @if (Topic is not null)
         {
             <span class="topic">@Topic</span>

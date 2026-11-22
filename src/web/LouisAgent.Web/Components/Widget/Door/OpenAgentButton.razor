@@ -1,4 +1,8 @@
+@using LouisAgent.Web.Components.Widget.Orb
 @* A button that opens the site's agent (F164.2): one of the theme's quiet buttons, the chat opened through the door
-   with nothing asked, and its keys, Ctrl+I or Cmd+I, said to a screen reader and held by the shortcut module. *@
-<button type="button" class="btn btn-line" aria-keyshortcuts="Control+I Meta+I" @ref="_button"
-        @onclick="OpenChat">@Text</button>
+   with nothing asked, and its keys, Ctrl+I or Cmd+I, said to a screen reader and held by the shortcut module. It
+   wears the agent's mark before its words (F169.3), which a screen reader skips, since it hears the words. *@
+<button type="button" class="btn btn-line" aria-keyshortcuts="Control+I Meta+I"
+        @ref="_button" @onclick="OpenChat">
+    <span class="open-agent-mark" aria-hidden="true"><Orb Label="@Text"/></span>@Text
+</button>
