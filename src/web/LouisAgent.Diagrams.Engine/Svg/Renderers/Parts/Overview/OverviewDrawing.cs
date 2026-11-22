@@ -7,6 +7,7 @@ using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
@@ -36,7 +37,11 @@ internal static class OverviewDrawing
     /// <summary>The cards picture a source holds, as one SVG file's text, drawn with a geometry.</summary>
     public static string Of(DiagramSource source, IGeometry geometry)
     {
-        var placed = OverviewLayout.Place(source.Cards!, geometry: geometry);
+        // A picture that runs down is laid out for a phone, so a page's copy of it is as wide as a phone's words.
+        var cards = source.Cards!;
+        var placed = cards.Direction == FlowDirection.Down
+            ? OverviewLayout.Place(cards, PageSvg.NarrowLayout, geometry)
+            : OverviewLayout.Place(cards, geometry: geometry);
 
         // A light behind each highlighted card, where another kind has one behind its top. The picture has no
         // key. Four fades are its own to ask for: the rail, the badge, a card's top edge, and the glass.
@@ -64,6 +69,7 @@ internal static class OverviewDrawing
     {
         var writer = new SvgWriter();
         foreach (var rail in placed.Rails) OverviewRails.Draw(writer, rail, placed.Width, geometry);
+        foreach (var trunk in placed.Trunks) OverviewTrunks.Draw(writer, trunk, geometry);
         foreach (var card in placed.Cards) OverviewCards.Draw(writer, card, geometry);
         return writer;
     }

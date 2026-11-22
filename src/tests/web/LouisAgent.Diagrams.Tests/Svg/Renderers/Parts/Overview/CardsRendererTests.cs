@@ -1,5 +1,7 @@
+using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
@@ -30,6 +32,42 @@ public class CardsRendererTests
                 ])
             ],
             [new CardLink("project", "one"), new CardLink("project", "two")]));
+
+    /// <summary>The same project and its parts, running down for a narrow screen (F169.5).</summary>
+    private static readonly DiagramSource Down = Overview with
+    {
+        Cards = Overview.Cards! with { Direction = FlowDirection.Down }
+    };
+
+    /// <summary>
+    /// F169.5: a picture that runs down hangs its parts from one trunk drawn with the rail's own classes, its glow
+    /// behind it as a rail has, a branch with an arrowhead and a node at each part, and its headline as the picture
+    /// running across has it; drawn the width of a phone's words.
+    /// </summary>
+    [Test]
+    public void ACardsPictureRunningDown_HangsItsPartsFromATrunk()
+    {
+        string drawn = DiagramRenderers.Render(Down);
+        var shapes = XElement.Parse(drawn).Descendants().ToList();
+        List<XElement> In(string cls) =>
+            [.. shapes.Where(shape => ((string?)shape.Attribute("class"))?.Split(' ').Contains(cls) == true)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(In("crd-rail"), Has.Count.EqualTo(1), "one trunk");
+            Assert.That(In("crd-rail-glow"), Has.Count.EqualTo(1), "its glow");
+            Assert.That(In("crd-line").Count(line => line.Attribute("marker-end") is not null), Is.EqualTo(2));
+            Assert.That(In("mrq-node"), Has.Count.EqualTo(2));
+            Assert.That(In("crd-headline"), Is.Not.Empty);
+            Assert.That(DiagramRenderers.RenderForPage(Down), Does.Contain(" width=\"342\" "),
+                "a page's copy as wide as a phone's words");
+        });
+    }
+
+    /// <summary>The whole picture running down, byte for byte, so a change to how it is drawn is read.</summary>
+    [Test]
+    public void ACardsPictureRunningDown_IsDrawnAsItsGolden() => Golden.Match("overview-down.svg",
+        DiagramRenderers.Render(Down));
 
     /// <summary>
     /// The renderer hands the picture to the new drawing: a headline, glass cards on a rail, the picture's own
