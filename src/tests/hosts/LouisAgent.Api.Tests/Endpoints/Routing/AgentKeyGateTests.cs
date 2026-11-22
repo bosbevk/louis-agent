@@ -26,7 +26,8 @@ public partial class AgentKeyGateTests
         RouteEndpoint route, bool withKey)
     {
         string? method = route.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods.FirstOrDefault();
-        using var request = new HttpRequestMessage(new HttpMethod(method ?? "GET"), Sample(ApiTestHost.ReadPattern(route)));
+        using var request =
+            new HttpRequestMessage(new HttpMethod(method ?? "GET"), Sample(ApiTestHost.ReadPattern(route)));
         if (withKey) request.Headers.Add("x-api-key", Key);
         return await ReadAsync(await client.SendAsync(request));
     }
@@ -122,7 +123,7 @@ public partial class AgentKeyGateTests
 
         foreach (bool withKey in new[] { false, true })
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, "/v1/admin/benchmarks");
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/v1/admin/overview");
             if (withKey) request.Headers.Add("x-api-key", Key);
             var (status, errorType) = await ReadAsync(await client.SendAsync(request));
 
@@ -139,8 +140,8 @@ public partial class AgentKeyGateTests
     public async Task AnUnknownV1Path_IsAJson404_WithTheKey_AndA401Without()
     {
         await using var app = ApiTestHost.Build(Key);
-        // As a demo's program maps the web app: its fallback and /v1's are both fallbacks of the same order, so only route
-        // precedence keeps the JSON 404 in front of the web app's page, and this test is what holds that.
+        // As a demo's program maps the web app: its fallback and /v1's are both fallbacks of the same order, so only
+        // route precedence keeps the JSON 404 in front of the web app's page, and this test is what holds that.
         app.MapFallbackToFile("index.html");
         await app.StartAsync();
         var client = app.GetTestClient();

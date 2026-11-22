@@ -32,7 +32,6 @@ public class TestsNameNoProductTests
     [TestCase("LouisAgent.Api.Testing")]
     [TestCase("LouisAgent.Api.Tests")]
     [TestCase("LouisAgent.Api.IntegrationTests")]
-    [TestCase("LouisAgent.Api.TestRunner")]
     public void ATestProject_ReferencesNoProduct(string project)
     {
         var named = References(project)

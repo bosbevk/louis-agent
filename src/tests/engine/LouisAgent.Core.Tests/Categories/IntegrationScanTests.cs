@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Tests.Categories;
 
-// The scan of IntegrationTestsAreMarkedTests, fed small texts: a check that the outside is there sits in a test, a SetUp or a helper, and each has its own rule about what must carry the mark.
+// The scan of IntegrationTestsAreMarkedTests, fed small texts: a check that the outside is there sits in a test, a
+// SetUp or a helper, and each has its own rule about what must carry the mark.
 public class IntegrationScanTests
 {
     private static string Class(string body, string attributes = "") =>
@@ -67,15 +68,14 @@ public class IntegrationScanTests
         Assert.That(IntegrationTestsAreMarkedTests.Scan("a.cs", text), Is.Empty);
     }
 
-    // The second signal (Louis's pick, "both signals"): a class that uses a real process, Mongo or the stand-in build leaves the test process, whether or not it checks first.
+    // The second signal (Louis's pick, "both signals"): a class that uses a real process or Mongo leaves the test
+    // process, whether or not it checks first.
     private static string TestClass(string body, string attributes = "") =>
         $"{attributes}\npublic class Sample\n{{\n    [Test]\n    public void Runs()\n    {{\n        {body}\n    }}\n}}";
 
     [TestCase("var info = new ProcessStartInfo(\"git\");")]
     [TestCase("var process = Process.Start(\"git\");")]
     [TestCase("var client = new MongoClient(url);")]
-    [TestCase("var dll = StandInBuild.Dll;")]
-    [TestCase("var dll = RunnerBuild.Dll;")]
     public void AClassThatUsesTheOutside_WithNoMark_IsReported(string body)
     {
         var unmarked = IntegrationTestsAreMarkedTests.ScanUses("a.cs", TestClass(body), []);
@@ -87,13 +87,13 @@ public class IntegrationScanTests
     public void TheSameClassMarkedIntegration_IsNotReported() =>
         Assert.That(
             IntegrationTestsAreMarkedTests.ScanUses("a.cs",
-                TestClass("var dll = StandInBuild.Dll;", "[Category(\"Integration\")]"), []), Is.Empty);
+                TestClass("var process = Process.Start(\"git\");", "[Category(\"Integration\")]"), []), Is.Empty);
 
     [Test]
     public void AMentionInAStringOrAComment_IsNotAUse() =>
         Assert.That(
             IntegrationTestsAreMarkedTests.ScanUses("a.cs",
-                TestClass("var text = \"ProcessStartInfo(\"; // Process.Start( and StandInBuild"), []), Is.Empty);
+                TestClass("var text = \"ProcessStartInfo(\"; // Process.Start( and MongoClient"), []), Is.Empty);
 
     [Test]
     public void AClassThatCallsAHelperThatStartsAProcess_IsReported() =>
@@ -105,5 +105,6 @@ public class IntegrationScanTests
     public void AClassWithNoTest_IsNotReported() =>
         Assert.That(
             IntegrationTestsAreMarkedTests.ScanUses("a.cs",
-                "public static class Build\n{\n    public static string Dll => StandInBuild.Dll;\n}", []), Is.Empty);
+                "public static class Build\n{\n    public static Process Start() => Process.Start(\"git\")!;\n}", []),
+            Is.Empty);
 }

@@ -19,12 +19,14 @@ public class SolutionLayoutTests
         "LouisAgent.Core.Ollama", "LouisAgent.Core.OpenAi")]
     [TestCase("src/hosts", "LouisAgent.Acp", "LouisAgent.Api", "LouisAgent.Api.Contracts", "LouisAgent.Cli",
         "LouisAgent.Mcp", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api.Evals")]
-    [TestCase("src/web", "LouisAgent.Web", "LouisAgent.Web.Accounts", "LouisAgent.Web.Themes", "LouisAgent.Web.Framework", "LouisAgent.Web.Docs", "LouisAgent.Web.Places",
+    [TestCase("src/web", "LouisAgent.Web", "LouisAgent.Web.Accounts", "LouisAgent.Web.Themes",
+        "LouisAgent.Web.Framework", "LouisAgent.Web.Docs", "LouisAgent.Web.Places",
         "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine")]
     [TestCase("src/evals", "LouisAgent.Evals", "LouisAgent.Evals.Checks", "LouisAgent.Evals.Protocol",
         "LouisAgent.Evals.Runner")]
     [TestCase("packs/tools", "LouisAgent.Packs.Web", "LouisAgent.Packs.Shell", "LouisAgent.Packs.Files",
-        "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs", "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
+        "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs",
+        "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
         "LouisAgent.Packs.Site")]
     [TestCase("packs/web", "LouisAgent.Packs.Files.Web", "LouisAgent.Packs.Git.Web")]
     [TestCase("demos/starter/web", "LouisAgent.Starter")]
@@ -45,8 +47,7 @@ public class SolutionLayoutTests
         "LouisAgent.Core.OpenAi.Tests")]
     [TestCase("src/tests/hosts", "LouisAgent.Acp.Tests", "LouisAgent.Mcp.Tests",
         "LouisAgent.Accounts.Tests", "LouisAgent.Accounts.IntegrationTests", "LouisAgent.Api.Tests",
-        "LouisAgent.Api.IntegrationTests", "LouisAgent.Api.Testing",
-        "LouisAgent.Api.StandIn", "LouisAgent.Api.TestRunner")]
+        "LouisAgent.Api.IntegrationTests", "LouisAgent.Api.Testing")]
     [TestCase("src/tests/web", "LouisAgent.Web.Tests", "LouisAgent.Web.Testing", "LouisAgent.Web.Accounts.Tests",
         "LouisAgent.Web.Themes.Tests", "LouisAgent.Web.Framework.Tests",
         "LouisAgent.Web.Docs.Tests", "LouisAgent.Web.Places.Tests", "LouisAgent.Diagrams.Tests")]
@@ -62,7 +63,8 @@ public class SolutionLayoutTests
     [TestCase("packs/tests", "LouisAgent.Packs.Web.Tests", "LouisAgent.Packs.Shell.Tests",
         "LouisAgent.Packs.Shell.IntegrationTests", "LouisAgent.Packs.Files.Tests", "LouisAgent.Packs.Git.Tests",
         "LouisAgent.Packs.Git.IntegrationTests", "LouisAgent.Packs.DotNet.Tests",
-        "LouisAgent.Packs.DotNet.IntegrationTests", "LouisAgent.Packs.Calculator.Tests", "LouisAgent.Packs.Docs.Tests", "LouisAgent.Packs.Triage.Tests",
+        "LouisAgent.Packs.DotNet.IntegrationTests", "LouisAgent.Packs.Calculator.Tests", "LouisAgent.Packs.Docs.Tests",
+        "LouisAgent.Packs.Triage.Tests",
         "LouisAgent.Packs.Leads.Tests", "LouisAgent.Packs.Site.Tests",
         "LouisAgent.Packs.Files.Web.Tests", "LouisAgent.Packs.Git.Web.Tests", "LouisAgent.Packs.Rules.Tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)

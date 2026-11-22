@@ -66,9 +66,9 @@ And it has `Outside`, which is how an integration test asks for the outside worl
 your own machine, but fails it where `INTEGRATION_REQUIRED` is set, which is CI. `Stack` always skips a missing
 stack's address.
 
-`src/tests/hosts/LouisAgent.Api.Testing` is a library too. It holds the in-memory API host, the built runner, the
-stand-in dlls and the store contracts. Each is written once, and runs against memory in the unit tests and against
-Mongo in the integration tests.
+`src/tests/hosts/LouisAgent.Api.Testing` is a library too. It holds the in-memory API host, `ApiTestHost`, and the
+test agent every API test opens its sessions on, `TestAgent`. Both are written once, for the unit and the
+integration tests alike.
 
 *Decided in:* F18 step 7.6.2.
 
@@ -124,14 +124,6 @@ names, the depth and the lookup agent's toolsets, and sessions that share an eng
 host, no network and no model. The sessions are built on an `AgentEngineFactory` with a chat client that throws if
 it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a subagent under itself, or the agent
 under the subagent it asked, is refused.
-
-Some API tests start a real child process where the eval runner would be. Two programs are built for that, each with
-a project reference that brings no assembly. `src/tests/hosts/LouisAgent.Api.StandIn` stands in for the runner. It's
-a small console app, not a test project, and the check's id picks what it does: print its arguments, dump the names
-in its environment, stream lines, fail, sleep, or never read its stdin. `LouisAgent.Api.TestRunner` is the real
-runner with the harness's general checks only. It copies the framework's template eval beside it, so its listing
-gives the built-in `stub` and `template-example`, and the integration tests read a file eval's identity, dataset and
-graders from it.
 
 *Decided in:* F5, F18 step 7.4, F166.1, [ADR 0076](../adr/0076-core-ships-no-agent.md).
 
@@ -208,8 +200,7 @@ restore them from GitHub Packages ([Publish the framework](../guides/publish-the
 
 `src/tests/web/LouisAgent.Web.Testing` holds what they share: the fixture replay, the stub API (`FixtureApi`: fixed
 JSON for what the apps read at start-up, one session, the recorded turn streamed, and the workspace and git reads
-empty), `RecordingJSRuntime`, which lists every JS call, the snapshot helper and `SassStylesheet`. The eval pages, the
-account pages, the docs, the framework's pages, the places, the themes and the diagrams each have a test project of
+empty), `RecordingJSRuntime`, which lists every JS call, the snapshot helper and `SassStylesheet`. The account pages, the docs, the framework's pages, the places, the themes and the diagrams each have a test project of
 their own in `src/tests/web/`. The framework's sites have theirs in `src/tests/site/`.
 
 *Decided in:* F18 step 7.2, F59.10.
