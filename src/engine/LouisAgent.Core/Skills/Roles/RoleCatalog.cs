@@ -47,7 +47,7 @@ public static partial class RoleCatalog
     private static string FolderOf(RoleLevel level) => level switch
     {
         RoleLevel.Agent => Agents,
-        RoleLevel.Minion => PromptFolder.Minions.Wire(),
+        RoleLevel.Lookup => PromptFolder.Minions.Wire(),
         _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
     };
 
@@ -78,7 +78,7 @@ public static partial class RoleCatalog
                 .Select(f => f[..^".md".Length])
         })
         .Where(IsValidName)
-        .Where(n => level != RoleLevel.Minion || !IsMinionBase(n))
+        .Where(n => level != RoleLevel.Lookup || !IsMinionBase(n))
         .Order(StringComparer.Ordinal)
         .ToList();
 

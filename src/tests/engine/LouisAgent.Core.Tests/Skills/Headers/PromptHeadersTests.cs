@@ -63,6 +63,18 @@ public class PromptHeadersTests
         Assert.That(PromptHeaders.Split(Path, header).Header!.Level, Is.EqualTo((RoleLevel)1));
     }
 
+    /// <summary>
+    /// The level below a subagent is a lookup agent's (CL68.3, ADR 0021, Louis: "Minions --> lookup-agents
+    /// sub-agents"): a header says <c>lookup</c>, and the old word <c>minion</c> is refused.
+    /// </summary>
+    [Test]
+    public void ALevelTwoHeader_SaysLookup()
+    {
+        const string header = "---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: lookup\n---\n# Cook\n";
+
+        Assert.That(PromptHeaders.Split(Path, header).Header!.Level, Is.EqualTo((RoleLevel)2));
+    }
+
     /// <summary>A guide or the principles name no level and no toolsets of their own.</summary>
     [Test]
     public void NoMetadata_IsNoLevel_AndNoToolsets()
@@ -90,6 +102,7 @@ public class PromptHeadersTests
     [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: chef\n---\n# Cook\n", "chef")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: specialist\n---\n# Cook\n",
         "specialist")]
+    [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: minion\n---\n# Cook\n", "minion")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  load: sometimes\n---\n# Cook\n", "sometimes")]
     [TestCase("---\nname: acme-cook\n---\n# Cook\n", "description")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\n# Cook\n", "---")]

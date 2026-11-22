@@ -111,7 +111,7 @@ public class EveryPromptHasAHeaderTests
     {
         PromptFolder.Agents => RoleLevel.Agent,
         PromptFolder.Subagents => RoleLevel.Subagent,
-        PromptFolder.Minions => RoleLevel.Minion,
+        PromptFolder.Minions => RoleLevel.Lookup,
         _ => null
     };
 }

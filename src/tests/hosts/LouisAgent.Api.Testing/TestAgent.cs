@@ -80,10 +80,10 @@ public static class TestAgent
             [RoleCatalog.FileName(Reader, RoleLevel.Subagent)] = Prompt("voice", "subagent", "# Test agent reader",
                 "Works with the toolsets it is handed."),
             [$"minions/{MinionBase}.md"] =
-                Prompt(MinionBase, "minion", "# Test agent minion", "One task, one tool, one answer."),
-            [$"minions/{Minion}.md"] = Prompt(Minion, "minion", MinionHeading, "Looks one thing up."),
+                Prompt(MinionBase, "lookup", "# Test agent minion", "One task, one tool, one answer."),
+            [$"minions/{Minion}.md"] = Prompt(Minion, "lookup", MinionHeading, "Looks one thing up."),
             [$"minions/{OtherMinion}.md"] =
-                Prompt(OtherMinion, "minion", "# Test agent minion: find", "Finds one thing.")
+                Prompt(OtherMinion, "lookup", "# Test agent minion: find", "Finds one thing.")
         },
         voice: Voice,
         calls: [Specialist],

@@ -2,7 +2,7 @@
 name: testprod-minion
 description: What every minion of the test product is.
 metadata:
-  level: minion
+  level: lookup
 ---
 # Testprod minion
 

@@ -69,12 +69,12 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         // The prompt's level: a voice at the top, below it the role's own folder.
         var level = LevelOf(role, depth, tool);
-        if (level == RoleLevel.Minion) CheckMinion(tags, tool, role);
+        if (level == RoleLevel.Lookup) CheckMinion(tags, tool, role);
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
                 new { Role = role ?? "the default voice" }));
         // A minion names its tool; the toolset that builds it is implied (AskAgent sends none for a minion).
-        var names = ToolsetCatalog.Normalise(level == RoleLevel.Minion && toolsets is null
+        var names = ToolsetCatalog.Normalise(level == RoleLevel.Lookup && toolsets is null
             ?
             [
                 engines.Catalog.ToolsetOf(tool!)
@@ -85,7 +85,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // its parent passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, level)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
-        if (level == RoleLevel.Minion && plain.Contains(AgentsToolset))
+        if (level == RoleLevel.Lookup && plain.Contains(AgentsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionCannotAsk,
                 new { Toolset = AgentsToolset }));
         if (string.IsNullOrEmpty(role)) role = null;
@@ -117,7 +117,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     {
         if (depth == 0) return RoleLevel.Agent;
         if (RoleCatalog.LevelOf(role) is { } level) return level;
-        return tool is null ? RoleLevel.Subagent : RoleLevel.Minion;
+        return tool is null ? RoleLevel.Subagent : RoleLevel.Lookup;
     }
 
     /// <summary>

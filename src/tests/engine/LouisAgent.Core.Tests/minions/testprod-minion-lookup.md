@@ -2,7 +2,7 @@
 name: testprod-minion-lookup
 description: The test product's minion that looks one thing up.
 metadata:
-  level: minion
+  level: lookup
 ---
 # Testprod minion: Lookup
 

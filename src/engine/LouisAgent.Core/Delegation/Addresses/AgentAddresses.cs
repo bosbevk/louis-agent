@@ -93,7 +93,7 @@ public static class AgentAddresses
     /// <summary>Whether the address names one of this instance's minions.</summary>
     public static bool IsMinion(AgentAddress address) =>
         address is { Role: not null, Peer: null } &&
-        RoleCatalog.Available(RoleLevel.Minion).Contains(MinionFile(address));
+        RoleCatalog.Available(RoleLevel.Lookup).Contains(MinionFile(address));
 
     /// <summary>A minion's file: its identity, <c>minion</c>, and its function.</summary>
     private static string MinionFile(AgentAddress address) => $"{address.Identity}-minion-{address.Role}";
@@ -108,7 +108,7 @@ public static class AgentAddresses
 
     /// <summary>The identity's minions as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
     private static string MinionsOf(IAgentIdentity identity) =>
-        Addresses(RoleLevel.Minion, $"{identity.Name}-minion-", identity.Name);
+        Addresses(RoleLevel.Lookup, $"{identity.Name}-minion-", identity.Name);
 
     /// <summary>The files of a level that start with a prefix, as addresses on the identity, or "(none)".</summary>
     private static string Addresses(RoleLevel level, string prefix, string identity)
