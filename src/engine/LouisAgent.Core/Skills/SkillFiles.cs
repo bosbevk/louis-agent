@@ -1,7 +1,7 @@
 namespace LouisAgent.Core.Skills;
 
 /// <summary>
-/// The skill files core knows by name, by their path under core's prompts/ (CL8: in the folder of the level that reads
+/// The skill files core knows by name, by their path in core's project (CL8: in the folder of the level that reads
 /// them). Public since CL15, so a pack names its guide the way core does (<see cref="Guide"/>).
 /// </summary>
 public static class SkillFiles

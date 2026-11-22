@@ -8,7 +8,7 @@ namespace LouisAgent.Packs.Rules.Tests;
 /// <summary>
 /// Every built-in prompt of every pack and every identity in this repository opens with its header: its name (the
 /// file's own) and its description, and the level of the folder it is in (ADR 0017, ADR 0063). Read from the disk,
-/// each under its project's <c>prompts/</c>, so a prompt added without one fails here, not when a chat opens.
+/// each in its project's prompt folders, so a prompt added without one fails here, not when a chat opens.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0063-a-prompt-says-what-it-is.md">ADR 0063: a prompt says what it is</seealso>
 public class EveryPromptHasAHeaderTests
@@ -20,19 +20,21 @@ public class EveryPromptHasAHeaderTests
             .Where(Directory.Exists)
             .SelectMany(Directory.EnumerateDirectories);
 
-    /// <summary>Every prompt, by its path under its project's <c>prompts/</c>, the folders' READMEs aside.</summary>
+    /// <summary>
+    /// Every prompt, by its path in its project, from the prompt folders its project file embeds (CL68.1), the
+    /// folders' READMEs aside.
+    /// </summary>
     private static List<(string Path, string Text)> Prompts() =>
     [
         .. ProjectFolders()
-            .Select(project => Path.Combine(project, EmbeddedPrompts.Folder))
-            .Where(Directory.Exists)
-            .SelectMany(prompts => Directory.EnumerateFiles(prompts, "*.md", SearchOption.AllDirectories)
-                .Select(file => (Path: Path.GetRelativePath(prompts, file).Replace('\\', '/'),
-                    Text: File.ReadAllText(file))))
+            .SelectMany(project => TestPaths.PromptFiles(project)
+                .Select(file => (Path: file, Text: File.ReadAllText(Path.Combine(project, file)))))
             .Where(prompt => !prompt.Path.EndsWith("README.md", StringComparison.Ordinal))
     ];
 
-    /// <summary>Each prompt has a header, which the reader takes: its name is its file's, with its description.</summary>
+    /// <summary>
+    /// Each prompt has a header, which the reader takes: its name is its file's, with its description.
+    /// </summary>
     [Test]
     public void EveryBuiltInPrompt_OpensWithAHeader()
     {

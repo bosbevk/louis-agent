@@ -23,8 +23,8 @@ namespace LouisAgent.Site.Tests.Showroom;
 public class ShowroomPagesTests
 {
     /// <summary>
-    /// The site's three demos, the businesses', in the rail's order, each in its own colour (FX195, Louis: "delete these
-    /// 2", the coding agent and the triage team).
+    /// The site's three demos, the businesses', in the rail's order, each in its own colour (FX195, Louis: "delete
+    /// these 2", the coding agent and the triage team).
     /// </summary>
     [Test]
     public void TheSite_RegistersItsThreeDemos_EachInItsColour()
@@ -311,7 +311,7 @@ public class ShowroomPagesTests
     {
         using var ctx = new BunitContext();
         string voice = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            $"src/site/LouisAgent.Identities.Showroom/prompts/{business}/agents/{business}/voice.md"));
+            $"src/site/LouisAgent.Identities.Showroom/{business}/agents/{business}/voice.md"));
 
         // Each innermost element's words apart, so a fact never runs into the next one's.
         var texts = Render(ctx, page).Find(".site-mock .mock-page").QuerySelectorAll("*")

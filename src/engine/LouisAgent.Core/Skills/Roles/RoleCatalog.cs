@@ -5,7 +5,7 @@ namespace LouisAgent.Core.Skills.Roles;
 /// <summary>
 /// The roles a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
 /// <c>agents/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
-/// <c>minions/{name}.md</c> (level 2, F30), under core's <c>prompts/</c> and read only from the assembly (CL8
+/// <c>minions/{name}.md</c> (level 2, F30), at their project's root and read only from the assembly (CL8
 /// step 4). At level 0 a role is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
 /// product (<c>agents/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; an identity's default is the mode of a
 /// session that names none. A name is lowercase letters, digits and dashes, with one <c>/</c> between a product and its
