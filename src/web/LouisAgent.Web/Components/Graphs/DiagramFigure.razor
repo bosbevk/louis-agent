@@ -1,7 +1,17 @@
 @* A page's picture (F164.1): the diagram engine's own SVG, inline so it wears the page's theme and style, and its
-   caption under it when it has one. *@
+   caption under it when it has one. A picture with a narrow form is held twice (F169.5), and Bootstrap's display
+   classes show the narrow drawing below a medium screen and the wide one from it; one without slides there, in a
+   frame the keyboard can reach and scroll. *@
 <figure class="diagram-figure">
-    @Svg
+    @if (HasNarrow)
+    {
+        <div class="diagram-narrow d-md-none">@NarrowSvg</div>
+        <div class="diagram-wide d-none d-md-block">@Svg</div>
+    }
+    else
+    {
+        <div class="diagram-slides" tabindex="0" role="region" aria-label="@Source.Title">@Svg</div>
+    }
     @if (Caption is not null)
     {
         <figcaption>@Caption</figcaption>

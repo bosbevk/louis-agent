@@ -2,11 +2,13 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Engine.Cards;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
 using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
@@ -33,15 +35,23 @@ internal static class OverviewDrawing
     /// </summary>
     private const double LightDrop = 88, LightAcross = 470, LightDown = 210;
 
-    /// <summary>The cards picture a source holds, as one SVG file's text, drawn with a geometry.</summary>
-    public static string Of(DiagramSource source, IGeometry geometry)
+    /// <summary>
+    /// The cards picture a source holds, as one SVG file's text, drawn with a geometry for a screen, wide unless it
+    /// says a phone's (F169.5).
+    /// </summary>
+    public static string Of(DiagramSource source, IGeometry geometry, PictureFit fit = PictureFit.Wide)
     {
-        var placed = OverviewLayout.Place(source.Cards!, geometry: geometry);
+        // A picture that runs down is laid out for a phone, so a page's copy of it is as wide as a phone's words.
+        var cards = source.Cards!;
+        var placed = cards.Direction == FlowDirection.Down
+            ? OverviewLayout.Place(cards, PageSvg.NarrowLayout, geometry)
+            : OverviewLayout.Place(cards, geometry: geometry);
 
         // A light behind each highlighted card, where another kind has one behind its top. The picture has no
         // key. Four fades are its own to ask for: the rail, the badge, a card's top edge, and the glass.
         return PictureBuilder.Titled(source.Title, geometry, Measures)
             .Type(TypeNames.Of(source))
+            .Fit(fit)
             .Paint(CardsStyle.RailFade)
             .Paint(CardsStyle.BadgeFade)
             .Paint(MarqueeLook.EdgeFade)
@@ -64,6 +74,7 @@ internal static class OverviewDrawing
     {
         var writer = new SvgWriter();
         foreach (var rail in placed.Rails) OverviewRails.Draw(writer, rail, placed.Width, geometry);
+        foreach (var trunk in placed.Trunks) OverviewTrunks.Draw(writer, trunk, geometry);
         foreach (var card in placed.Cards) OverviewCards.Draw(writer, card, geometry);
         return writer;
     }

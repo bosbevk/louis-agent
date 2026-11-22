@@ -34,6 +34,12 @@
                         </svg>
                     </button>
                     <div class="site-menu" id="site-menu" data-open="@_menuOpen">
+                        @* In the docs layout the site's pages stand first in the sheet too (F169.5); the frame's
+                           rules show this copy on a phone and the column's above it. *@
+                        @if (PagesInSheet)
+                        {
+                            <div class="site-menu-pages">@Sidebar</div>
+                        }
                         @if (Links is not null)
                         {
                             <nav class="site-nav">@Links</nav>

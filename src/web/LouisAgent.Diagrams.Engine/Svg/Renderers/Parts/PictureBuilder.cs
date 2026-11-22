@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Diagrams.Engine.Svg.Paints;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
@@ -18,7 +19,10 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 /// all six. Here they are written once, and a kind's drawing is the director: it places with its own layout and
 /// hands over its body and its key. The numbers a kind differs in are <see cref="PictureMeasures"/>, so nothing
 /// here asks which kind it is building. Nothing is written before <see cref="Build"/>, because a key's rows
-/// wrap at the picture's width, and that is only known once the title and the type are measured.
+/// wrap at the picture's width, and that is only known once the title and the type are measured. Drawn for a phone
+/// (F169.5), the type stands on its own line under the title: Louis's pick "C: the type under the title", over
+/// leaving the head as it is, which shrank two pictures' words under 10 pixels, and over dropping the type, which
+/// his rule that the type always shows forbids.
 /// </remarks>
 /// <seealso href="https://refactoring.guru/design-patterns/builder">Builder (Refactoring.Guru)</seealso>
 internal sealed class PictureBuilder
@@ -48,13 +52,21 @@ internal sealed class PictureBuilder
     /// <summary>The type's name, in its spaced capitals.</summary>
     private static readonly Face TypeFace = new(7.6);
 
+    /// <summary>
+    /// How far under the title's words the type's own line stands on a phone (F169.5), and so how much taller the
+    /// head is there.
+    /// </summary>
+    private const double TypeLine = 14;
+
     private readonly string _title;
     private readonly IGeometry _geometry;
     private readonly PictureMeasures _measures;
     private readonly List<Fade> _paints = [];
     private readonly List<string> _styles = [];
     private string? _heading, _type, _caption;
-    private Action<SvgWriter>? _lights, _body;
+    private Action<SvgWriter>? _lights;
+    private Action<SvgWriter, double>? _body;
+    private PictureFit _fit = PictureFit.Wide;
     private Func<double, (double Height, Action<SvgWriter, double> Draw)>? _key;
     private double _width, _height;
 
@@ -85,6 +97,16 @@ internal sealed class PictureBuilder
         return this;
     }
 
+    /// <summary>
+    /// Which screen the picture is drawn for (F169.5). Drawn for a phone, its type stands on a line of its own under
+    /// the title, so the head is never wider than the body; wide, it stands beside the title, as always.
+    /// </summary>
+    public PictureBuilder Fit(PictureFit fit)
+    {
+        _fit = fit;
+        return this;
+    }
+
     /// <summary>One of the kind's own fades, defined after the light's, in the order called.</summary>
     public PictureBuilder Paint(Fade fade)
     {
@@ -100,8 +122,12 @@ internal sealed class PictureBuilder
     }
 
     /// <summary>The body as one group, under the room the title takes, with how wide and tall it is.</summary>
-    public PictureBuilder Body(string cls, SvgWriter drawn, double width, double height) =>
-        Draw(writer => writer.Group(cls, 0, _measures.Head, drawn), width, height);
+    public PictureBuilder Body(string cls, SvgWriter drawn, double width, double height)
+    {
+        (_body, _width, _height) = ((writer, drop) => writer.Group(cls, 0, _measures.Head + drop, drawn), width,
+            height);
+        return this;
+    }
 
     /// <summary>
     /// A body drawn straight into the picture, by a kind whose layout already stands it under the title, with how
@@ -109,9 +135,12 @@ internal sealed class PictureBuilder
     /// </summary>
     public PictureBuilder Draw(Action<SvgWriter> draw, double width, double height)
     {
-        (_body, _width, _height) = (draw, width, height);
+        (_body, _width, _height) = ((writer, _) => draw(writer), width, height);
         return this;
     }
+
+    /// <summary>Whether the type stands on its own line under the title: on a phone, when there is a type.</summary>
+    private bool TypeUnder => _fit == PictureFit.Narrow && _type is not null;
 
     /// <summary>
     /// The key, as what lays it out for the picture's width: how tall it is, and how to draw it with its top at a
@@ -150,13 +179,18 @@ internal sealed class PictureBuilder
     {
         string heading = _heading ?? _title;
 
-        // As wide as the body, or as the title's line when that is wider, so a type never stands over a title.
+        // As wide as the body, or as the title's line when that is wider, so a type never stands over a title. On a
+        // phone the type has a line of its own, which moves the hairline and everything under it down by that line.
         // The key is laid out for that width.
-        double width = Math.Max(_width, HeadWidth(heading, _type));
+        double drop = TypeUnder ? TypeLine : 0;
+        double head = TypeUnder
+            ? Math.Max(HeadWidth(heading, null), 2 * Inset + TypeFace.Width(_type!))
+            : HeadWidth(heading, _type);
+        double width = Math.Max(_width, head);
         var key = _key?.Invoke(width);
 
         // The footer always follows the body: the key, its own rule its hairline, or the brand's row alone.
-        double footerTop = _measures.Head + _height + _measures.KeyGap;
+        double footerTop = _measures.Head + drop + _height + _measures.KeyGap;
         double under = footerTop + (key?.Height ?? PictureBrand.Room);
         double height = under + (_caption is null ? 0 : CaptionRoom);
 
@@ -167,9 +201,10 @@ internal sealed class PictureBuilder
         if (_lights is null) Light(writer, width);
         _lights?.Invoke(writer);
         writer.Text(Inset, TitleLine, heading, "mrq-title", "start");
-        if (_type is not null) writer.Text(width - Inset, TitleLine, _type, "pic-group", "end");
-        Hairline(writer, _geometry, TitleLine + HeaderRule, width);
-        _body?.Invoke(writer);
+        if (TypeUnder) writer.Text(Inset, TitleLine + TypeLine, _type!, "pic-group", "start");
+        else if (_type is not null) writer.Text(width - Inset, TitleLine, _type, "pic-group", "end");
+        Hairline(writer, _geometry, TitleLine + HeaderRule + drop, width);
+        _body?.Invoke(writer, drop);
         if (key is null) Hairline(writer, _geometry, footerTop, width);
         key?.Draw(writer, footerTop);
         PictureBrand.Draw(writer, width - Inset, footerTop);

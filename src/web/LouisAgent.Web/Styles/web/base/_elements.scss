@@ -67,8 +67,9 @@ button:disabled { cursor: default; opacity: .4; }
 }
 .topic { font: 500 13.5px/1 var(--bs-font-monospace); text-transform: lowercase; color: var(--web-purple); }
 /* A word of code in running words, never Bootstrap's pink: the theme's chip for it (F169.1). A listing's code, inside
-   its pre, is not a code word. */
-:not(pre) > code { @include surface.code-word(); }
+   its pre, is not a code word. It may break anywhere when it would not fit (F169.5), so a long path never pushes a
+   narrow page wider than its screen; a code word that fits is drawn as it was. */
+:not(pre) > code { @include surface.code-word(); overflow-wrap: anywhere; }
 /* A part's title (F169.2) has a band heading's shape too, and no other h3 in a band does. It stands beside the two,
    not inside their :is(), so the rule weighs one class and a tag as it always has and a site's heading rule still
    wins. */
