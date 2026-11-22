@@ -23,6 +23,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | Id | What | Phase |
 |---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Next |
+| F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now |
 | F172 | What we are building, and what just landed: a `/now` page on both sites, read live from GitHub's TODO, work log and commit scopes; ten steps | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
@@ -43,7 +44,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
 | F39 | Orchestration | Now |
-| F43 | Accounts, tenants and durable sessions | Now |
 | F62 | Validate demand | Now |
 | F63 | The reference transcripts in git | Now |
 | F64 | The judge check can't see pages | Now |

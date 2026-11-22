@@ -213,7 +213,12 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
 
 ## Approved during the build
 
-Nothing yet.
+- **2026-11-22, the first security eval is one of F126's new evals** (Louis's pick on a card, of three: here, keep it
+  in F42, or pull all of F42 up). The new evals gain one prompt-injection case: the guide reads a page with
+  instructions hidden in it, and facts in code check that it called no tool it was told to and that nothing private
+  is in its answer or in an image's address. It is GOAL.md's skill 15 met with skill 12's tools: red-teaming, OWASP's
+  LLM01 prompt injection. The rest of F42 (the untrusted-content frame, the audit log, rate limits, the full
+  red-team suite) stays in Phase 7.
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

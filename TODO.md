@@ -26,6 +26,7 @@ known limitations below are facts about today, not tasks.
 | Id | What | Phase | Detail |
 |---|---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Next | [plan](src/docs/plans/F171-the-bill-checker.md) · [F171.1](src/docs/plans/F171.1-a-photo-or-a-pdf-reaches-a-tool.md) |
+| F43 | Accounts, tenants and durable sessions; its first child is durable sessions (a session store behind one seam, with an in-memory and a MongoDB provider, and a session that resumes after a restart), built after F171.1 and before F157 (Louis's pick, 2026-11-22, after an outside comparison with Microsoft Agent Framework, LangGraph and OpenAI's Agents SDK found sessions lost on a restart the biggest gap) | Now | — |
 | F172 | What we are building, and what just landed (Louis, 2026-11-22: "a section on the framework and public site which displays what we are actually busy working on and what was implemented new recently"): a `/now` page on both sites, busy with as status tiles and shipped lately by day, read live from GitHub's TODO, work log and commit scopes by each site's host and kept 15 minutes, the framework's Overview showing a band; ten steps | Now | [plan](src/docs/plans/F172-what-we-are-building.md) |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next | — |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next | — |
@@ -46,7 +47,6 @@ known limitations below are facts about today, not tasks.
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
 | F44 | The engine as a product | Now | [feature doc](src/docs/features/F12-response-speed.md) |
 | F39 | Orchestration | Now | [feature doc](demos/louis-agent/docs/features/F17-orchestrator-agent.md) |
-| F43 | Accounts, tenants and durable sessions | Now | — |
 | F62 | Validate demand | Now | — |
 | F63 | The reference transcripts in git | Now | — |
 | F64 | The judge check can't see pages | Now | — |
@@ -144,7 +144,7 @@ above that removes it.
    → **F36** MCP servers as packs (*Next*, Phase 8); its MCP client is built first, for the guide, in F125.8
    ([plan](src/docs/plans/F125-an-agentic-site.md)).
 2. **Sessions are in memory** in the API and ACP server; a restart ends them (the web app keeps the transcript).
-   → **F43** Accounts, tenants and durable sessions (*Next*, Phase 9;
+   → **F43** Accounts, tenants and durable sessions (*Now*, its first child after F171.1;
    [session architecture](src/docs/specs/SESSION_ARCHITECTURE.md)).
 3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
    → [**F15** Model limits and local models](src/docs/features/F15-model-limits.md) (the capability check per model).
