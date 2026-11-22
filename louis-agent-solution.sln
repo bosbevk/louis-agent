@@ -188,6 +188,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "do-a-step", "do-a-step", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C69}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\skills\do-a-step\SKILL.md = .claude\skills\do-a-step\SKILL.md
+		.claude\skills\do-a-step\tests.md = .claude\skills\do-a-step\tests.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "finish-a-step", "finish-a-step", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6A}"
