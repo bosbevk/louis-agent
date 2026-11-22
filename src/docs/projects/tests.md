@@ -1,7 +1,7 @@
 # Test projects — design
 
 > **Kind:** test projects (NUnit, with bUnit for components) · **Paths:** the framework's in `src/tests/`, grouped
-> like `src/` (`engine/`, `hosts/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
+> like `src/` (`engine/`, `hosts/`, `evals/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
 > (`demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
 > shared fakes in `src/tests/shared/LouisAgent.Testing/` and, for the web apps, `src/tests/web/LouisAgent.Web.Testing/`
 > (class libraries) · **Run:** `dotnet test louis-agent-solution.sln` (or each project)

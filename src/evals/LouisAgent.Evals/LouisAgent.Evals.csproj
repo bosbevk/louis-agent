@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals</RootNamespace>
+    <!-- Not a package yet (ADR 0130): no product outside this repository reads an eval before F171.4. -->
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Evals.Tests" />
+    <InternalsVisibleTo Include="LouisAgent.Evals.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F126.2: the evals stand on the engine alone, for the model client, an agent's address and the ledger's
+         scope; no pack and no identity knows them (ADR 0134). -->
+    <ProjectReference Include="..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+  </ItemGroup>
+
+</Project>
