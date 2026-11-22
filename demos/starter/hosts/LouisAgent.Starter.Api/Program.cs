@@ -2,7 +2,6 @@ using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
 using LouisAgent.Api.Site;
-using LouisAgent.Api.Evals;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
@@ -11,9 +10,9 @@ using LouisAgent.Core.OpenAi;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Web;
 
-// The starter's API: the framework's API serving the starter site, with the framework's accounts (when
-// ACCOUNTS_SQL_URL is set) and the eval studio opted in. A site names its identity and packs in the catalogue; the
-// starter has none yet, so its agent is core alone.
+// The starter's API: the framework's API serving the starter site, with the framework's accounts opted in (when
+// ACCOUNTS_SQL_URL is set). A site names its identity and packs in the catalogue; the starter has none yet, so its
+// agent is core alone.
 var host = AgentHost.Build(AgentCatalog.CoreOnly, new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
     Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));
 var builder = WebApplication.CreateBuilder(args);
@@ -37,5 +36,4 @@ app.MapLouisAgentSite(typeof(LouisAgent.Starter.App).Assembly, services =>
 
 app.MapLouisAgentAccounts();
 app.MapLouisAgentApi(host);
-app.MapLouisAgentEvals(host);
 app.Run();

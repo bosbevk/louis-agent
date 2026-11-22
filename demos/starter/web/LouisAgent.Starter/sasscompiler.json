@@ -3,5 +3,5 @@
   "Target": "wwwroot/css",
   "Arguments": "--style=expanded --no-error-css --no-source-map",
   "GenerateScopedCss": true,
-  "IncludePaths": [ "../../../../src/web/LouisAgent.Web/Styles", "../../../../src/web/LouisAgent.Web.Accounts/Styles", "../../../../src/web/LouisAgent.Web.Evals/Styles", "../../../../src/web/LouisAgent.Web.Themes/Styles" ]
+  "IncludePaths": [ "../../../../src/web/LouisAgent.Web/Styles", "../../../../src/web/LouisAgent.Web.Accounts/Styles", "../../../../src/web/LouisAgent.Web.Themes/Styles" ]
 }

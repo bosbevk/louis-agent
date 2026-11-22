@@ -57,7 +57,7 @@ public class StarterSiteTests
 
     /// <summary>
     /// A screen's address opens the framework's page, in this site's admin frame, through its router: the areas the
-    /// program names (F127.6), with the eval studio's links in the admin's sidebar.
+    /// program names (F127.6), and no eval studio in the admin's sidebar since its old evals were deleted (F126.1).
     /// </summary>
     [Test]
     public void AScreensAddress_OpensInTheAdminFrame()
@@ -75,13 +75,13 @@ public class StarterSiteTests
         {
             Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage"));
             Assert.That(app.FindAll(".sidebar a.side-link").Select(link => link.TextContent),
-                Has.Some.EqualTo("Evals"));
+                Has.None.EqualTo("Evals"));
         }, TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
-    /// F144: the admin's home draws a card for each of the starter's admin areas, the overview, the packs and the
-    /// evals, in the order it names them, so a site made from it starts with the home.
+    /// F144: the admin's home draws a card for each of the starter's admin areas, the overview and the packs, in the
+    /// order it names them, so a site made from it starts with the home.
     /// </summary>
     [Test]
     public void TheAdminsHome_DrawsACardPerArea_InOrder()
@@ -97,7 +97,7 @@ public class StarterSiteTests
 
         app.WaitForAssertion(() =>
             Assert.That(app.FindAll(".admin-card-title").Select(title => title.TextContent),
-                Is.EqualTo(new[] { "Overview", "Packs", "Evals" })), TimeSpan.FromSeconds(10));
+                Is.EqualTo(new[] { "Overview", "Packs" })), TimeSpan.FromSeconds(10));
     }
 
     /// <summary>

@@ -56,8 +56,7 @@ yours to fill:
 | Your own links, settings or empty chat | Fill the slots on `ChatShell` in `Pages/ChatPage.razor`, as the code-review app does with its theme picker |
 | The words in your language | Register your own `ChatText`, and your own `AccountText`, in `Program.cs` before `AddSiteAreas`. The builder only adds its English where nothing is set |
 | No accounts | Drop `.Accounts(…)` from your `WebsiteAreas.Name`, the `LouisAgent.Web.Accounts` reference, `AccountLayout` and the two `@using LouisAgent.Web.Accounts…` lines in `_Imports.razor`. The chat's menu then draws the guest's ([Change the web](change-the-web.md#change-the-account-pages)) |
-| No eval studio | Drop `.Evals()` from your `WebsiteAreas.Name`, the `LouisAgent.Web.Evals` reference, the `evals/pages` line and the `@using LouisAgent.Web.Evals`, and `MapLouisAgentEvals` from your API program |
-| Your admin | `.Admin(typeof(AdminLayout))` is the frame and its home at `/admin`. Each part inside is an area you name after it, which brings its pages, its sidebar links and its card on the home: `.Overview(count => count.Tool("SendLead", "leads"))`, `.Packs()`, `.Evals()`. Drop one and its card and links go with it. An admin area without `.Admin(…)` stops the site at start-up, and says so |
+| Your admin | `.Admin(typeof(AdminLayout))` is the frame and its home at `/admin`. Each part inside is an area you name after it, which brings its pages, its sidebar links and its card on the home: `.Overview(count => count.Tool("SendLead", "leads"))` and `.Packs()`. Drop one and its card and links go with it. An admin area without `.Admin(…)` stops the site at start-up, and says so |
 | A pack's screens | Nothing, for a described screen: the packs' menu and page list it. For a pack's own view, reference its project under `packs/web/`, add `XWebViews.AddTo(views)` in the packs' lambda, `.Packs(views => XWebViews.AddTo(views))`, and list its Sass |
 
 ## Name your areas in one place
