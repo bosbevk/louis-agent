@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "An eval file: the agent it proves, and the conversations a person has with it",
+  "type": "object",
+  "properties": {
+    "agent": {
+      "type": "string",
+      "description": "The agent this eval proves, by its address: an identity, or one of its roles."
+    },
+    "conversations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The conversation's name, used once in the file."
+          },
+          "turns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ask": {
+                  "type": "string",
+                  "description": "What the person asks in this turn."
+                },
+                "facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^(no-error|used|not-used|under|never-says|routed-to|continued)( .+)?$"
+                  },
+                  "description": "What code checks about the turn: no-error, used {tool}, not-used {tool}, under {n}s, never-says {text}, routed-to {address} or continued {address}."
+                },
+                "criteria": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "What the judge marks about the answer, each a plain sentence."
+                }
+              },
+              "required": [
+                "ask"
+              ],
+              "additionalProperties": false
+            },
+            "description": "The turns the person takes, in order."
+          },
+          "page": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "The page the person is on when the agent is a site's guide, starting with /."
+          }
+        },
+        "required": [
+          "id",
+          "turns"
+        ],
+        "additionalProperties": false
+      },
+      "description": "The conversations a person has with the agent."
+    },
+    "$schema": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null,
+      "description": "The path to this file's schema, for the editor."
+    }
+  },
+  "required": [
+    "agent",
+    "conversations"
+  ],
+  "additionalProperties": false
+}
