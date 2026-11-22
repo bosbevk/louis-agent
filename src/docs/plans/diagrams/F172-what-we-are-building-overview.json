@@ -1,0 +1,71 @@
+{
+  "kind": "cards",
+  "title": "F172 what we are building: the overview",
+  "caption": "Each site's host reads the TODO, the work log and the commits from GitHub, keeps the answer for 15 minutes, and both sites draw it with one framework control.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f172",
+            "icon": "browser",
+            "title": "F172 What we are building, and what just landed",
+            "code": "/now on both sites",
+            "look": "highlight",
+            "text": "Busy with on the left, shipped by day on the right, read live from GitHub, with nobody writing it by hand."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "board",
+            "icon": "box",
+            "title": "The now board",
+            "code": "LouisAgent.Web: NowBoard",
+            "text": "Two columns from records: status tiles with a parts bar, and the Timeline by day."
+          },
+          {
+            "id": "reader",
+            "icon": "settings",
+            "title": "The reader",
+            "code": "LouisAgent.SiteNow",
+            "text": "The work log's headlines, the TODO's open rows and the commit scopes, made into one report."
+          },
+          {
+            "id": "cache",
+            "icon": "server",
+            "title": "Read live, kept 15 minutes",
+            "code": "GET /v1/now",
+            "text": "Each host asks GitHub at most every 15 minutes and keeps the last good answer if GitHub fails."
+          },
+          {
+            "id": "pages",
+            "icon": "book",
+            "title": "Two /now pages and a band",
+            "code": "SiteFramework, Site",
+            "text": "Each site's own page from its menu; the framework's Overview shows the first three."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "f172",
+        "to": "board"
+      },
+      {
+        "from": "f172",
+        "to": "reader"
+      },
+      {
+        "from": "f172",
+        "to": "cache"
+      },
+      {
+        "from": "f172",
+        "to": "pages"
+      }
+    ]
+  }
+}

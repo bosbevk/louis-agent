@@ -1,0 +1,217 @@
+{
+  "kind": "classes",
+  "title": "F172 what we are building: the interface design",
+  "caption": "The framework draws a report; our own project reads GitHub into it. Tile and Timeline are there today. The step that builds each new piece is in brackets.",
+  "classes": {
+    "types": [
+      {
+        "id": "NowReport",
+        "name": "NowReport",
+        "kind": "record",
+        "members": [
+          "+Made DateTimeOffset  (1)",
+          "+Busy IReadOnlyList<BusyItem>  (1)",
+          "+Shipped IReadOnlyList<ShippedDay>  (1)"
+        ]
+      },
+      {
+        "id": "BusyItem",
+        "name": "BusyItem",
+        "kind": "record",
+        "members": [
+          "+Id, +Headline string  (1)",
+          "+LastWorked DateOnly  (1)",
+          "+Parts PartsProgress?  (1)"
+        ]
+      },
+      {
+        "id": "ShippedDay",
+        "name": "ShippedDay",
+        "kind": "record",
+        "members": [
+          "+Day DateOnly  (1)",
+          "+Items IReadOnlyList<ShippedItem>  (1)",
+          "+Fixes int  (1)"
+        ]
+      },
+      {
+        "id": "ShippedItem",
+        "name": "ShippedItem",
+        "kind": "record",
+        "members": [
+          "+Id, +Headline string  (1)"
+        ]
+      },
+      {
+        "id": "PartsProgress",
+        "name": "PartsProgress",
+        "kind": "record",
+        "members": [
+          "+Done int, +InAll int  (2)",
+          "+Share double  (2)"
+        ]
+      },
+      {
+        "id": "Tile",
+        "name": "Tile",
+        "members": [
+          "+Status TileStatus, +StatusText string?",
+          "+Progress PartsProgress?  (2)"
+        ]
+      },
+      {
+        "id": "Timeline",
+        "name": "Timeline / TimelineEntry",
+        "members": [
+          "+When, +Title, +ChildContent"
+        ]
+      },
+      {
+        "id": "NowBoard",
+        "name": "NowBoard",
+        "members": [
+          "+Report NowReport?  (3)",
+          "+Shown int?  (3: the band shows 3)",
+          "+Words PartWords<NowPart, string>  (3)"
+        ]
+      },
+      {
+        "id": "WorkLogReader",
+        "name": "WorkLogReader",
+        "kind": "static",
+        "members": [
+          "+Shipped(markdown, since) ShippedDay[]  (4)",
+          "+Headline(what) string  (4)"
+        ]
+      },
+      {
+        "id": "TodoReader",
+        "name": "TodoReader",
+        "kind": "static",
+        "members": [
+          "+OpenRows(markdown) OpenRow[]  (5)"
+        ]
+      },
+      {
+        "id": "CommitScopes",
+        "name": "CommitScopes",
+        "kind": "static",
+        "members": [
+          "+LastByItem(subjects) Dictionary<string, DateOnly>  (5)"
+        ]
+      },
+      {
+        "id": "BusyRule",
+        "name": "BusyRule",
+        "kind": "static",
+        "members": [
+          "+Busy(open, shipped, scopes, today) BusyItem[]  (5)"
+        ]
+      },
+      {
+        "id": "GitHubRepo",
+        "name": "GitHubRepo",
+        "members": [
+          "+FileAsync(path) string  (6)",
+          "+CommitsSinceAsync(day) Commit[]  (6)"
+        ]
+      },
+      {
+        "id": "NowCache",
+        "name": "NowCache",
+        "members": [
+          "+ReportAsync() NowReport?  (6: kept 15 minutes, last good on failure)"
+        ]
+      },
+      {
+        "id": "NowRoute",
+        "name": "NowRoute",
+        "kind": "static",
+        "members": [
+          "+MapSiteNow(group)  (7: GET /v1/now)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "NowReport",
+        "to": "BusyItem",
+        "kind": "holds"
+      },
+      {
+        "from": "NowReport",
+        "to": "ShippedDay",
+        "kind": "holds"
+      },
+      {
+        "from": "ShippedDay",
+        "to": "ShippedItem",
+        "kind": "holds"
+      },
+      {
+        "from": "BusyItem",
+        "to": "PartsProgress",
+        "kind": "holds"
+      },
+      {
+        "from": "NowBoard",
+        "to": "NowReport",
+        "kind": "uses",
+        "word": "draws"
+      },
+      {
+        "from": "NowBoard",
+        "to": "Tile",
+        "kind": "uses",
+        "word": "a busy item"
+      },
+      {
+        "from": "NowBoard",
+        "to": "Timeline",
+        "kind": "uses",
+        "word": "a shipped day"
+      },
+      {
+        "from": "Tile",
+        "to": "PartsProgress",
+        "kind": "uses"
+      },
+      {
+        "from": "NowRoute",
+        "to": "NowCache",
+        "kind": "uses"
+      },
+      {
+        "from": "NowCache",
+        "to": "GitHubRepo",
+        "kind": "uses",
+        "word": "at most every 15 minutes"
+      },
+      {
+        "from": "NowCache",
+        "to": "WorkLogReader",
+        "kind": "uses"
+      },
+      {
+        "from": "NowCache",
+        "to": "BusyRule",
+        "kind": "uses"
+      },
+      {
+        "from": "BusyRule",
+        "to": "TodoReader",
+        "kind": "uses"
+      },
+      {
+        "from": "BusyRule",
+        "to": "CommitScopes",
+        "kind": "uses"
+      },
+      {
+        "from": "NowCache",
+        "to": "NowReport",
+        "kind": "creates"
+      }
+    ]
+  }
+}
