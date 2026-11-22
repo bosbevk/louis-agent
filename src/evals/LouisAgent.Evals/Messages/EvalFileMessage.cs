@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Evals.Messages.Holes.Facts;
 using LouisAgent.Evals.Messages.Holes.Files;
 
 namespace LouisAgent.Evals.Messages;
@@ -31,6 +32,10 @@ public enum EvalFileMessage
     [Description("'{Words}': {Kind} names an agent's address, as '{Kind} acme' or '{Kind} acme.cook'.")]
     [Holes(typeof(FactNeedsAnAddressHoles))]
     FactNeedsAnAddress,
+
+    [Description("'{Words}' is no agent's address. Write an identity, as 'acme', or one of its roles, as 'acme.cook'.")]
+    [Holes(typeof(NotAnAddressHoles))]
+    NotAnAddress,
 
     [Description("'{Words}': never-says names the text the answer must not hold.")]
     [Holes(typeof(NeverSaysNeedsTextHoles))]
