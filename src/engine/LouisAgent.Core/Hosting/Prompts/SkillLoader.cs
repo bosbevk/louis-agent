@@ -61,9 +61,9 @@ public static class SkillLoader
         // for a mode, how it routes) frames everything after it
         AddBuiltIn(agent, composite, SkillFiles.Principles);
         string? roleFile = RoleFiles.FileOf(agent, role, level);
-        // A minion's base ({product}-minion.md) frames its role (F30): what every minion is, then what this one does
-        if (level == RoleLevel.Lookup && role is not null && RoleCatalog.MinionBaseOf(role) is { } minionBase)
-            AddBuiltIn(agent, composite, RoleCatalog.FileName(minionBase, RoleLevel.Lookup));
+        // A lookup agent's base frames its role (F30): what every lookup agent is, then what this one does
+        if (level == RoleLevel.Lookup && role is not null && RoleCatalog.LookupBaseOf(role) is { } lookupBase)
+            AddBuiltIn(agent, composite, lookupBase);
         if (roleFile is null)
         {
             // No role and no identity's default: only the principles and the guides.

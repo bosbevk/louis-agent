@@ -46,19 +46,19 @@ public static class TestAgent
     public const string Reader = Name + ".reader";
 
     /// <summary>
-    /// What every minion of the test agent is, loaded before its role: the engine finds it as
-    /// <c>{identity}-minion</c> for a role named <c>{identity}-minion-{function}</c>.
+    /// What every lookup agent of the test agent is, loaded before its own prompt: the engine finds it from the
+    /// lookup agent's identity.
     /// </summary>
     public const string MinionBase = Name + "-minion";
 
-    /// <summary>The heading of a minion role's own prompt, so a test can tell it loaded.</summary>
+    /// <summary>The heading of a lookup agent's own prompt, so a test can tell it loaded.</summary>
     public const string MinionHeading = "# Test agent minion: lookup";
 
-    /// <summary>A minion its specialist hands one small task and one tool.</summary>
-    public const string Minion = MinionBase + "-lookup";
+    /// <summary>A lookup agent its subagent hands one small task and one tool, named by its address.</summary>
+    public const string Minion = Name + ".lookup";
 
-    /// <summary>A second minion, for a test that names two.</summary>
-    public const string OtherMinion = MinionBase + "-find";
+    /// <summary>A second lookup agent, for a test that names two.</summary>
+    public const string OtherMinion = Name + ".find";
 
     /// <summary>
     /// The packs it names: fakes under the web's and the calculator's real names, since the framework's tests reference
@@ -79,11 +79,12 @@ public static class TestAgent
                 "# Test agent specialist", "The test agent's specialist.", "web, calculator"),
             [RoleCatalog.FileName(Reader, RoleLevel.Subagent)] = Prompt("voice", "subagent", "# Test agent reader",
                 "Works with the toolsets it is handed."),
-            [$"minions/{MinionBase}.md"] =
+            [RoleCatalog.LookupBaseOf(Minion)!] =
                 Prompt(MinionBase, "lookup", "# Test agent minion", "One task, one tool, one answer."),
-            [$"minions/{Minion}.md"] = Prompt(Minion, "lookup", MinionHeading, "Looks one thing up."),
-            [$"minions/{OtherMinion}.md"] =
-                Prompt(OtherMinion, "lookup", "# Test agent minion: find", "Finds one thing.")
+            [RoleCatalog.FileName(Minion, RoleLevel.Lookup)] =
+                Prompt($"{MinionBase}-lookup", "lookup", MinionHeading, "Looks one thing up."),
+            [RoleCatalog.FileName(OtherMinion, RoleLevel.Lookup)] =
+                Prompt($"{MinionBase}-find", "lookup", "# Test agent minion: find", "Finds one thing.")
         },
         voice: Voice,
         calls: [Specialist],

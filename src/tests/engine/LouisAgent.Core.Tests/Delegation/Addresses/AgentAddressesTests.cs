@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Tests.Delegation.Addresses;
 
 /// <summary>
 /// Who an address reaches on this instance (F127.3.1 step 4), on the tests' own prompts: <c>testprod</c> has a voice,
-/// a subagent (<c>testprod.specialist</c>), a minion role (<c>testprod-minion-lookup</c>) and the minions' base
+/// a subagent (<c>testprod.specialist</c>), a lookup agent (<c>testprod.lookup</c>) and the minions' base
 /// (<c>testprod-minion</c>), which is no role; <c>other</c> has no voice and no roles.
 /// </summary>
 public class AgentAddressesTests
@@ -47,18 +47,18 @@ public class AgentAddressesTests
         Assert.That(Resolve("testprod", "minion-lookup").Agent, Is.Null);
 
     /// <summary>
-    /// A minion's address (F127.5) is its identity and its function, <c>testprod.lookup</c>, which the minion tool
-    /// resolves to the file <c>testprod-minion-lookup</c>.
+    /// A lookup agent's address (F127.5) is its identity and its function, <c>testprod.lookup</c>, and that address is
+    /// its one name (CL68.3, ADR 0133).
     /// </summary>
     [Test]
-    public void AMinionsAddress_ReachesItsFile()
+    public void ALookupAgentsAddress_IsItsName()
     {
         var address = new AgentAddress("testprod", "lookup");
 
         Assert.Multiple(() =>
         {
             Assert.That(AgentAddresses.ResolveMinion(address, Identities, out _),
-                Is.EqualTo(new AddressedAgent(address, AddressKind.Minion, "testprod-minion-lookup")));
+                Is.EqualTo(new AddressedAgent(address, AddressKind.Minion, "testprod.lookup")));
             Assert.That(AgentAddresses.IsMinion(address), Is.True);
             Assert.That(AgentAddresses.IsMinion(new AgentAddress("testprod", "specialist")), Is.False);
         });

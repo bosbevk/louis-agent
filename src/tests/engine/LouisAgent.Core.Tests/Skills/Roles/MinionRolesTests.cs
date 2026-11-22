@@ -14,18 +14,16 @@ public class MinionRolesTests
     [Test]
     public void TheMinionRoles_AreListed_TheBaseIsNot()
     {
-        // The base (testprod-minion.md) frames every minion; it is no role a specialist can name.
-        Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod-minion-lookup" }));
-        Assert.That(RoleCatalog.MinionBaseOf("testprod-minion-lookup"), Is.EqualTo("testprod-minion"));
-        Assert.That(RoleCatalog.MinionBaseOf("testprod-specialist"), Is.Null, "a specialist's role has no base");
-        Assert.That(RoleCatalog.IsMinionBase("testprod-minion"), Is.True);
-        Assert.That(RoleCatalog.IsMinionBase("testprod-minion-lookup"), Is.False);
+        // CL68.3: a lookup agent is listed by its address; the base frames every one of its identity's and is no role.
+        Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod.lookup" }));
+        Assert.That(RoleCatalog.LookupBaseOf("testprod.lookup"), Is.EqualTo("minions/testprod-minion.md"));
+        Assert.That(RoleCatalog.LookupBaseOf("testprod/voice-en"), Is.Null, "a mode has no lookup base");
     }
 
     [Test]
     public void AMinionsPrompt_IsThePrinciples_TheBase_ThenItsRole_AndNoRouter()
     {
-        string docs = SkillLoader.Load(new AgentOptions(), [], "testprod-minion-lookup", RoleLevel.Lookup)
+        string docs = SkillLoader.Load(new AgentOptions(), [], "testprod.lookup", RoleLevel.Lookup)
             .Documentation;
 
         int principles = docs.IndexOf("# Principles", StringComparison.Ordinal);
@@ -44,6 +42,6 @@ public class MinionRolesTests
         Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], null, RoleLevel.Lookup));
         var ex = Assert.Throws<RoleException>(() =>
             SkillLoader.Load(new AgentOptions(), [], "testprod-minion", RoleLevel.Lookup))!;
-        Assert.That(ex.Message, Does.Contain("testprod-minion'").And.EndWith("Available: testprod-minion-lookup."));
+        Assert.That(ex.Message, Does.Contain("testprod-minion'").And.EndWith("Available: testprod.lookup."));
     }
 }

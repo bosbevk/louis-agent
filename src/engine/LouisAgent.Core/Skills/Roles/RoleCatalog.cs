@@ -28,17 +28,17 @@ public static partial class RoleCatalog
     private const int MaxNameLength = 40;
 
     /// <summary>
-    /// The base a minion role sits on (F30): <c>{product}-minion</c> for <c>{product}-minion-{function}</c>
-    /// (<c>acme-minion</c> for <c>acme-minion-web-lookup</c>), loaded before the role so every minion of a product
-    /// is told what a minion is once. Null for a name that isn't a minion role's shape.
+    /// The base every lookup agent of an identity loads first (F30, CL68.3), so each is told once what a lookup agent
+    /// is: <c>acme.lookup</c>'s is <c>minions/acme-minion.md</c>. None for a name that isn't an address.
     /// </summary>
-    public static string? MinionBaseOf(string role) =>
-        MinionRole().Match(role) is { Success: true } m ? m.Groups["base"].Value : null;
+    public static string? LookupBaseOf(string role) => role.Split('.') is [var identity, _]
+        ? $"{PromptFolder.Minions.Wire()}/{identity}{LookupFilePart}.md"
+        : null;
 
     /// <summary>
-    /// Whether <paramref name="name"/> is a minion base (<c>acme-minion</c>), which is no role a specialist can name.
+    /// What a lookup agent's file puts between its identity and its function: <c>acme-minion-lookup</c>.
     /// </summary>
-    public static bool IsMinionBase(string name) => MinionBase().IsMatch(name);
+    private const string LookupFilePart = "-minion";
 
     /// <summary>
     /// The folder of a level whose roles sit in one place: the agent's modes, and the minions. A subagent sits inside
@@ -59,28 +59,41 @@ public static partial class RoleCatalog
     /// The skill file of a named role at <paramref name="level"/>, relative to the skills folder: a subagent's
     /// address, <c>acme.cook</c>, is the file <c>agents/acme/subagents/cook/voice.md</c>.
     /// </summary>
-    public static string FileName(string name, RoleLevel level) => level == RoleLevel.Subagent
-        ? SubagentFile(name)
-        : $"{FolderOf(level)}/{name}.md";
+    public static string FileName(string name, RoleLevel level) => level switch
+    {
+        RoleLevel.Subagent => SubagentFile(name),
+        RoleLevel.Lookup when name.Split('.') is [var identity, var function] =>
+            $"{FolderOf(level)}/{identity}{LookupFilePart}-{function}.md",
+        _ => $"{FolderOf(level)}/{name}.md",
+    };
 
     /// <summary>
     /// The named roles at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
     /// <c>agents/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the subagents by
-    /// their addresses; at level 2 the minion roles, never a base (F30: <c>acme-minion</c> frames every minion, it is
-    /// no role itself).
+    /// their addresses; at level 2 the lookup agents by their addresses, never a base (F30: the base frames every
+    /// lookup agent, it is no role itself).
     /// </summary>
     public static IReadOnlyList<string> Available(RoleLevel level) =>
         (level switch
         {
             RoleLevel.Agent => Modes(),
             RoleLevel.Subagent => Subagents(),
-            _ => SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
-                .Select(f => f[..^".md".Length])
+            _ => Lookups()
         })
         .Where(IsValidName)
-        .Where(n => level != RoleLevel.Lookup || !IsMinionBase(n))
         .Order(StringComparer.Ordinal)
         .ToList();
+
+    /// <summary>
+    /// Every lookup agent by its address: <c>minions/acme-minion-lookup.md</c> is <c>acme.lookup</c>; a base,
+    /// <c>acme-minion.md</c>, has no function after it, so it is none.
+    /// </summary>
+    private static IEnumerable<string> Lookups() =>
+        SkillFileSource.Files(FolderOf(RoleLevel.Lookup))
+            .Where(file => file.EndsWith(".md", StringComparison.Ordinal))
+            .Select(file => file[..^".md".Length].Split($"{LookupFilePart}-"))
+            .Where(parts => parts is [_, _])
+            .Select(parts => $"{parts[0]}.{parts[1]}");
 
     /// <summary>
     /// The level that has a role by this name, or none (F127.3.1): a mode is the agent's, an address an agent's
@@ -158,14 +171,6 @@ public static partial class RoleCatalog
     /// <summary>A language mode: matches <c>acme/voice-af</c> (code <c>af</c>), not <c>acme/voice</c>.</summary>
     [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]
     private static partial Regex LanguageMode();
-
-    /// <summary>A minion role on its base: matches <c>acme-minion-web-lookup</c>, not <c>acme-minion</c>.</summary>
-    [GeneratedRegex("^(?<base>[a-z0-9]+-minion)-[a-z0-9]+(-[a-z0-9]+)*$")]
-    private static partial Regex MinionRole();
-
-    /// <summary>A minions' base: matches <c>acme-minion</c>, not <c>acme-minion-web-lookup</c>.</summary>
-    [GeneratedRegex("^[a-z0-9]+-minion$")]
-    private static partial Regex MinionBase();
 
     /// <summary>
     /// A heading after the first line, since a mode file starts with its voice's: matches the <c># </c> of

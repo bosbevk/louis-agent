@@ -29,7 +29,7 @@ public class MinionAskTests
     private const string Address = "testprod.lookup";
 
     /// <summary>That minion's role file, which the session opens with.</summary>
-    private const string Role = "testprod-minion-lookup";
+    private const string Role = "testprod.lookup";
 
     /// <summary>The identity the cook's turn runs as: it may ask that minion and its own voice, nothing else.</summary>
     private static readonly FakeIdentity Testprod =

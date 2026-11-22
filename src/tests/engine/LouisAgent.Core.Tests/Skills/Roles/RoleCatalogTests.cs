@@ -153,7 +153,7 @@ public class RoleCatalogTests
     {
         // CL8: the folders follow the levels; F30 step 4 fills minions/ (level 2) with its first role.
         Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.specialist" }));
-        Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod-minion-lookup" }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod.lookup" }));
     }
 
     /// <summary>
