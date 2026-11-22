@@ -135,6 +135,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("brand-line")]
     [TestCase("lit")]
     [TestCase("cast")]
+    [TestCase("press-shadow")]
     [TestCase("raised")]
     [TestCase("glowing")]
     [TestCase("focus-ring")]

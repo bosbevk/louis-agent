@@ -102,8 +102,8 @@
 .attach:hover { @include surface.panel(var(--bs-primary-bg-subtle)); color: var(--web-primary-deep); transform: rotate(90deg); }
 .attach input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .send, .stop { width: 40px; height: 40px; border-radius: 14px; border: 0; font-size: 18px; font-weight: 700; display: grid; place-items: center; color: var(--web-on-primary); transition: transform .25s var(--web-spring), box-shadow .25s var(--web-ease), opacity .2s; }
-.send { @include surface.panel(var(--web-cta)); background-size: 200% 100%; @include surface.cast(8px, 18px, -6px, .8); }
-.send:not(:disabled):hover { transform: translateY(-2px) scale(1.05); @include surface.cast(12px, 24px, -8px, .9); }
+.send { @include surface.panel(var(--web-cta)); background-size: 200% 100%; @include surface.press-shadow(); }
+.send:not(:disabled):hover { transform: translateY(-2px) scale(1.05); }
 .send:not(:disabled):active { transform: scale(.94); }
 .stop { @include surface.panel(var(--web-sidebar-foot)); font-size: 12px; animation: ring 1.8s var(--web-ease) infinite; }
 /* Code highlighting (highlight.js) */

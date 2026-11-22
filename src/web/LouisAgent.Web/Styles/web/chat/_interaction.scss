@@ -39,9 +39,7 @@
 .toolset-chip:hover { transform: translateY(-1px); @include surface.panel(var(--bs-success)); color: var(--web-on-primary); }
 .tool { transition: border-color .2s, box-shadow .2s, transform .25s var(--web-ease); }
 .tool:hover { transform: translateX(2px); @include surface.edged(var(--bs-primary), left); }
-/* Composer: the send button breathes once there's something to send. */
+/* Composer: the typing row's line firms up under the pointer. */
 .input-row:hover { @include surface.edged(var(--web-border-hover)); }
-.send:not(:disabled) { animation: breathe 2.4s var(--web-ease) infinite; }
-@keyframes breathe { 0%, 100% { @include surface.cast(8px, 18px, -6px, .8); } 50% { @include surface.cast(8px, 26px, -4px, 1); } }
 /* The pulse and the suggestions fit any width: no sideways scroll, and full-width cards on a phone. */
 .messages { overflow-x: hidden; }

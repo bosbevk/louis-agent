@@ -141,4 +141,28 @@ public class DepthIsTheThemesTests
             Assert.That(Mixin("_panes.scss", "lit"), Does.Contain("@include typed-in();"));
         });
     }
+
+    /// <summary>
+    /// The send throws the press's shadow, the same at rest and under the pointer, and stands still: no glow of its
+    /// own, and no breathing.
+    /// </summary>
+    [Test]
+    public void TheSend_ThrowsThePresssShadow_AndStandsStill()
+    {
+        var send = RulesFor(".send");
+        var hovered = RulesFor(".send:not(:disabled):hover");
+        bool breathes = Directory.EnumerateFiles(Styles, "*.scss", SearchOption.AllDirectories)
+            .Any(file => File.ReadAllText(file).Contains("@keyframes breathe", StringComparison.Ordinal));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(send.Any(rule => rule.Contains("@include surface.press-shadow();", StringComparison.Ordinal)),
+                Is.True, "the send includes surface.press-shadow()");
+            Assert.That(send.Where(rule => rule.Contains("surface.cast(", StringComparison.Ordinal)), Is.Empty);
+            Assert.That(hovered.Where(rule => rule.Contains("shadow", StringComparison.Ordinal) ||
+                                              rule.Contains("surface.cast(", StringComparison.Ordinal)), Is.Empty);
+            Assert.That(breathes, Is.False, "no sheet holds a breathe animation");
+            Assert.That(Mixin("_presses.scss", "press-shadow"), Does.Contain("box-shadow: var(--web-press-shadow);"));
+        });
+    }
 }
