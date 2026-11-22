@@ -32,6 +32,9 @@ come first.
 
 1. **Say what is reviewed**: which site, which theme, which pages, and what is left out. NN/g: the narrower the
    scope, the more detailed the review.
+   Where a feature's screens are neither built nor drawn, there is no page to review: measure on the running
+   site the theme's values those screens will read, in each theme and in light and dark, and make the missing
+   mockups the finding (*When nothing is built or drawn*).
 2. **Read the brief**: the brand guide, the theme's rule, and the theme's values in
    `src/web/LouisAgent.Web.Themes/Styles/theme-{name}/_light.scss` and `_dark.scss`. A theme's rule is in the
    themes' design doc, `src/docs/projects/LouisAgent.Web.Themes.md`, under *A theme's values*.
@@ -70,6 +73,15 @@ W3C's formula, as G17 writes it: a colour's luminance is `0.2126 R + 0.7152 G + 
 linear first. A channel `c`, its value over 255, is `c / 12.92` when it is at most 0.04045, and
 `((c + 0.055) / 1.055) ^ 2.4` above that. The ratio is `(lighter + 0.05) / (darker + 0.05)`. A text over a
 picture or a gradient has no one ground, so it is flagged and looked at by hand. A ratio is never rounded up.
+
+## When nothing is built or drawn
+
+A review asked for a feature that is still a plan has no page to look at. Say so first, plainly. Then look for
+what the feature's screens will stand on: the pages that show something like it today, and the theme's inks and
+grounds its words will wear, such as the warning and danger inks for a notice. Measure those on the running site
+as any other value, and say on which ground each holds. The first finding is that the screens are not drawn,
+with three ways to draw or avoid them through `/put-a-finding`. Nothing is said about how a screen looks until
+there is a sheet to look at.
 
 ## How a finding is ranked
 
