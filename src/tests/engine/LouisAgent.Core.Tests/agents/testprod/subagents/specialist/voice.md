@@ -1,5 +1,5 @@
 ---
-name: testprod-specialist
+name: voice
 description: The test product's specialist, which always loads the web where the instance has it.
 metadata:
   level: subagent

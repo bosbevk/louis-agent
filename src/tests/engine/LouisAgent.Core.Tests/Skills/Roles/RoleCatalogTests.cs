@@ -165,7 +165,7 @@ public class RoleCatalogTests
         Assert.That(new[] { "a.b.c", "a.b/c", ".cook", "acme." }.Any(RoleCatalog.IsValidName), Is.False);
 
         Assert.That(RoleCatalog.FileName("testprod.specialist", RoleLevel.Subagent),
-            Is.EqualTo("specialists/testprod-specialist.md"));
+            Is.EqualTo("agents/testprod/subagents/specialist/voice.md"));
     }
 
     [Test]

@@ -28,7 +28,7 @@ public static class NotAToolset
 
     /// <summary>The names a string is the value of when it is a program or a role level's folder.</summary>
     private static readonly string[] TargetsOfAProgramOrFolder =
-        ["evalHost", "DotNetHost", "SpecialistsFolder", "MinionsFolder"];
+        ["evalHost", "DotNetHost", "SubagentsFolder", "MinionsFolder"];
 
     /// <summary>The names that, when they come first in a statement, make the strings after them programs.</summary>
     private static readonly string[] NamesOfProgramLists =
@@ -60,7 +60,8 @@ public static class NotAToolset
     }
 
     /// <summary>
-    /// It is a key in square brackets: <c>settings["web"]</c>, or <c>["web"] = …</c> in a collection initializer (FX28).
+    /// It is a key in square brackets: <c>settings["web"]</c>, or <c>["web"] = …</c> in a collection initializer
+    /// (FX28).
     /// </summary>
     private static bool IsAnIndex(LiteralExpressionSyntax literal) =>
         literal.Parent is ArgumentSyntax

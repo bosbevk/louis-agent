@@ -1,20 +1,21 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Triage;
 
 namespace LouisAgent.Identities.Triage.Tests;
 
 /// <summary>
-/// The roles the manager asks (F106.3.2): each is a specialist file of the identity that names its toolsets and ends
+/// The roles the manager asks (F106.3.2): each is a subagent of the triage agent that names its toolsets and ends
 /// its work with its typed tool, and no other role's; every role file has a member and every member a file.
 /// </summary>
 public class TriageRolesTests
 {
-    /// <summary>A role's file, as the engine reads it.</summary>
+    /// <summary>A role's file, as the engine reads it: inside the triage agent, by its address (ADR 0133).</summary>
     private static string Role(TriageRole role)
     {
         var identity = new TriageIdentity();
-        var file = identity.Prompts.GetFileInfo($"{RoleCatalog.SpecialistsFolder}/{role.Wire()}.md");
+        var file = identity.Prompts.GetFileInfo(RoleCatalog.FileName(AddressOf(role), RoleLevel.Subagent));
         Assert.That(file.Exists, Is.True, $"{role.Wire()} is a file of the identity");
         using var reader = new StreamReader(file.CreateReadStream());
         return reader.ReadToEnd();
@@ -41,16 +42,23 @@ public class TriageRolesTests
         });
     }
 
-    /// <summary>A role file with no member is a role the code cannot name.</summary>
+    /// <summary>A subagent's folder with no member is a role the code cannot name.</summary>
     [Test]
-    public void EachRoleFileOfTheIdentity_IsAMember()
+    public void EachSubagentOfTheIdentity_IsAMember()
     {
         var identity = new TriageIdentity();
-        var members = Enum.GetValues<TriageRole>().Select(r => r.Wire()).ToHashSet();
-        var files = identity.Prompts.GetDirectoryContents(RoleCatalog.SpecialistsFolder).Select(f => f.Name)
-            .Where(name => name.EndsWith(".md", StringComparison.Ordinal)).Select(name => name[..^3]).ToList();
+        var members = Enum.GetValues<TriageRole>().Select(AddressOf).ToHashSet();
+        var subagents = identity.Prompts.GetDirectoryContents($"agents/triage/{RoleCatalog.SubagentsFolder}")
+            .Where(folder => folder.IsDirectory).Select(folder => $"triage.{folder.Name}").ToList();
 
-        Assert.That(files, Is.Not.Empty, "the specialists folder was found");
-        Assert.That(files.Where(name => !members.Contains(name)), Is.Empty, "a role file no TriageRole member names");
+        Assert.That(subagents, Is.Not.Empty, "the subagents folder was found");
+        Assert.That(subagents.Where(name => !members.Contains(name)), Is.Empty,
+            "a subagent no TriageRole member names");
     }
+
+    /// <summary>
+    /// A member's address: its wire name with its dash a dot, until the team names its subagents by their addresses
+    /// alone (CL68.2 step 6).
+    /// </summary>
+    private static string AddressOf(TriageRole role) => role.Wire().Replace('-', '.');
 }

@@ -14,13 +14,13 @@ public class PromptCatalogTests
     [Test]
     public void TheCatalogue_HoldsEveryBuiltInPrompt_WithItsHeader()
     {
-        var specialist = PromptCatalog.Get("specialists/testprod-specialist.md");
+        var specialist = PromptCatalog.Get("agents/testprod/subagents/specialist/voice.md");
 
         Assert.That(PromptCatalog.All.Select(p => p.Path), Does.Contain("shared/principles.md"));
         Assert.That(PromptCatalog.All.Select(p => p.Path), Has.None.EndsWith("README.md"),
             "a folder's README is no prompt");
         Assert.That((specialist?.Header?.Name, specialist?.Header?.Level),
-            Is.EqualTo(("testprod-specialist", (RoleLevel?)RoleLevel.Subagent)));
+            Is.EqualTo(("voice", (RoleLevel?)RoleLevel.Subagent)));
         Assert.That(specialist!.Body, Does.StartWith("# Testprod specialist"));
     }
 }

@@ -1,4 +1,6 @@
 using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Api.Testing;
 
@@ -73,9 +75,9 @@ public static class TestAgent
             [$"agents/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
             [$"agents/{Name}/voice-de.md"] =
                 Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
-            [$"specialists/{Name}-specialist.md"] = Prompt($"{Name}-specialist", "subagent",
+            [RoleCatalog.FileName(Specialist, RoleLevel.Subagent)] = Prompt("voice", "subagent",
                 "# Test agent specialist", "The test agent's specialist.", "web, calculator"),
-            [$"specialists/{Name}-reader.md"] = Prompt($"{Name}-reader", "subagent", "# Test agent reader",
+            [RoleCatalog.FileName(Reader, RoleLevel.Subagent)] = Prompt("voice", "subagent", "# Test agent reader",
                 "Works with the toolsets it is handed."),
             [$"minions/{MinionBase}.md"] =
                 Prompt(MinionBase, "minion", "# Test agent minion", "One task, one tool, one answer."),

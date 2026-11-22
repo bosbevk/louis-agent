@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames;
 /// </summary>
 public class NameScanTests
 {
-    private static readonly HashSet<string> Names = ["shops", "dotnet", "specialists", "web"];
+    private static readonly HashSet<string> Names = ["shops", "dotnet", "subagents", "web"];
 
     /// <summary>How many names the scan flags in this source.</summary>
     private static int Hits(string source) => NameScan.Flagged(source, Names).Count;
@@ -27,7 +27,7 @@ public class NameScanTests
     /// <summary>
     /// An executable, a key read from JSON and a role folder are not toolsets, so they are let through.
     /// </summary>
-    [TestCase("public const string SpecialistsFolder = \"specialists\";")]
+    [TestCase("public const string SubagentsFolder = \"subagents\";")]
     [TestCase("string evalHost = \"dotnet\")")]
     [TestCase("var run = ProcessRunner.Run(\"dotnet\", [\"test\"]);")]
     [TestCase("var value = element.GetProperty(\"web\");")]
@@ -47,7 +47,7 @@ public class NameScanTests
     [TestCase("Assert.That(start.FileName,\n    Is.EqualTo(\"dotnet\"));")]
     [TestCase(
         "Assert.That(Enum.GetValues<Mode>().Select(m => m.Wire()),\n    Is.EqualTo(new[] { \"web\", \"shops\" }));")]
-    [TestCase("public const string SpecialistsFolder =\n    \"specialists\";")]
+    [TestCase("public const string SubagentsFolder =\n    \"subagents\";")]
     [TestCase("string[] CommonCommands =\n[\n    \"dotnet\",\n    \"shops\",\n];")]
     [TestCase("class Runner(\n    string evalHost = \"dotnet\",\n    int repeat = 1);")]
     [TestCase("void Run(string evalHost = \"dotnet\") { }")]

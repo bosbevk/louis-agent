@@ -7,7 +7,7 @@ namespace LouisAgent.Packs.Rules.Tests;
 
 /// <summary>
 /// Every built-in prompt of every pack and every identity in this repository opens with its header: its name (the
-/// file's own) and its description, and the level of the folder it is in (ADR 0017, ADR 0063). Read from the disk,
+/// file's own) and its description, and the level of the folder it is in (ADR 0133, ADR 0063). Read from the disk,
 /// each in its project's prompt folders, so a prompt added without one fails here, not when a chat opens.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0063-a-prompt-says-what-it-is.md">ADR 0063: a prompt says what it is</seealso>
@@ -75,18 +75,18 @@ public class EveryPromptHasAHeaderTests
     }
 
     /// <summary>
-    /// The level a prompt's folder stands for (ADR 0017), the first of the three on its path, since an identity with
-    /// several agents keeps each one's prompts a folder deeper (the showroom's businesses); none outside the three.
+    /// The level a prompt's folders stand for, the deepest on its path (ADR 0133): an agent's voice is under
+    /// <c>agents/</c>, and its subagent's a few folders deeper, under <c>subagents/</c>; none outside them.
     /// </summary>
     private static RoleLevel? LevelOf(string path) =>
-        path.Split('/').SkipLast(1).Select(LevelOfFolder).FirstOrDefault(level => level is not null);
+        path.Split('/').SkipLast(1).Select(LevelOfFolder).LastOrDefault(level => level is not null);
 
     /// <summary>The level one folder stands for, or none.</summary>
     /// <remarks>A switch on the folder, one arm per level, read like a table (ADR 0051).</remarks>
     private static RoleLevel? LevelOfFolder(string folder) => folder switch
     {
         RoleCatalog.AgentFolder => RoleLevel.Agent,
-        RoleCatalog.SpecialistsFolder => RoleLevel.Subagent,
+        RoleCatalog.SubagentsFolder => RoleLevel.Subagent,
         RoleCatalog.MinionsFolder => RoleLevel.Minion,
         _ => null
     };

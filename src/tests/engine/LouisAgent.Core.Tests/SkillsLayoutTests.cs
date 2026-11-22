@@ -16,7 +16,7 @@ public class SkillsLayoutTests
     /// </summary>
     private static readonly string[] PromptFolders =
     [
-        RoleCatalog.AgentFolder, SkillFiles.FunctionsFolder, RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder,
+        RoleCatalog.AgentFolder, SkillFiles.FunctionsFolder, RoleCatalog.MinionsFolder,
         SkillFiles.ToolsetsFolder,
         SkillFiles.SharedFolder
     ];
@@ -42,7 +42,7 @@ public class SkillsLayoutTests
             .Select(f => f.File);
 
         Assert.That(misplaced, Is.Empty,
-            "core's prompts are agents/{product}/, agents/functions/, specialists/, minions/, toolsets/ and " +
+            "core's prompts are agents/{product}/, agents/functions/, minions/, toolsets/ and " +
             "shared/ only");
     }
 
