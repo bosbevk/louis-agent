@@ -21,7 +21,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (109)
+## Open (110)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -134,6 +134,7 @@ known limitations below are facts about today, not tasks.
 | CL61 | `ToolCallGuards` is over 200 lines once Rider lays out its message holes, and `Agent/Turns` holds six files: split it by responsibility (the oversized-result summary its own class, the folder into subfolders), its holes into records (ADR 0119), and have it end the turn through `TurnEnding.Ends` as `TurnRunner` does (found in F127.4.3 step 3) | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
 | CL69 | The framework's web library still names its chat code with the old word (`SpecialistAnswer` and its tests, and about 20 files' summaries): rename it to subagent through Rider (found in CL68.2, ADR 0133) | Cleanups | — |
+| CL70 | `AgentSessions.Create` as a method object (Louis, 2026-11-22: "why is this so ugly", his pick A of three, over a builder and a chain of checks): its eleven parameters one `SessionRequest` record, its body a `SessionOpening` class of small named steps, its four messages' holes records (ADR 0119); after CL68.3, before CL69 | Cleanups | — |
 
 ## Known limitations
 

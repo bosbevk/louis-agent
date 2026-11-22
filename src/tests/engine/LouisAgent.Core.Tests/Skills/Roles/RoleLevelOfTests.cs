@@ -4,9 +4,9 @@ using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
 /// <summary>
-/// A role's level is where its file is (F127.3.1 step 6), on the tests' own prompts: a mode under <c>agent/</c>, a
-/// specialist under <c>specialists/</c>, a minion role under <c>minions/</c>. Since the folder names the level, a role
-/// name may sit in one folder only.
+/// A role's level is where its file is (F127.3.1 step 6), on the tests' own prompts: a mode under <c>agents/</c>, a
+/// subagent under its agent's <c>subagents/</c>, a lookup agent under its <c>lookups/</c>. Since the folder names the
+/// level, a role name may sit in one folder only.
 /// </summary>
 public class RoleLevelOfTests
 {

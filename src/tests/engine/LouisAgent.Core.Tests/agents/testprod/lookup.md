@@ -1,5 +1,5 @@
 ---
-name: testprod-minion
+name: lookup
 description: What every minion of the test product is.
 metadata:
   level: lookup

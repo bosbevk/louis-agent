@@ -6,7 +6,8 @@ namespace LouisAgent.Core.Skills.Roles;
 
 /// <summary>
 /// The roles a session can choose (F21): <c>agents/{name}.md</c> (level 0, a voice), a subagent inside its agent at
-/// <c>agents/{identity}/subagents/{name}/voice.md</c> (level 1, ADR 0133), <c>minions/{name}.md</c> (level 2, F30),
+/// <c>agents/{identity}/subagents/{name}/voice.md</c> (level 1, ADR 0133), a lookup agent at
+/// <c>agents/{identity}/lookups/{name}/voice.md</c> (level 2, F30, ADR 0021),
 /// at their project's root and read only from the assembly (CL8 step 4). At level 0 a role is a mode (CL9, ADR
 /// 0019): one file, its voice then its routing, in a folder per product (<c>agents/acme/voice-en.md</c>), named
 /// <c>{product}/{mode}</c>; an identity's default is the mode of a session that names none. At level 1 a subagent is
@@ -22,34 +23,27 @@ public static partial class RoleCatalog
     /// <summary>Where an agent keeps its subagents, a folder each (ADR 0133).</summary>
     private static readonly string SubagentsFolder = PromptFolder.Subagents.Wire();
 
-    /// <summary>An agent's or a subagent's own prompt in its folder.</summary>
+    /// <summary>
+    /// Where an agent keeps its lookup agents, a folder each, apart from its subagents (CL68.3, Louis's pick B: "will
+    /// read better thinking of big identities").
+    /// </summary>
+    private static readonly string LookupsFolder = PromptFolder.Lookups.Wire();
+
+    /// <summary>An agent's, a subagent's or a lookup agent's own prompt in its folder.</summary>
     private static readonly string Voice = PromptFileName.Voice.Wire();
+
+    /// <summary>What every lookup agent of an identity loads first, at its agent's root.</summary>
+    private static readonly string LookupBase = PromptFileName.Lookup.Wire();
 
     private const int MaxNameLength = 40;
 
     /// <summary>
     /// The base every lookup agent of an identity loads first (F30, CL68.3), so each is told once what a lookup agent
-    /// is: <c>acme.lookup</c>'s is <c>minions/acme-minion.md</c>. None for a name that isn't an address.
+    /// is: <c>acme.lookup</c>'s is <c>agents/acme/lookup.md</c>. None for a name that isn't an address.
     /// </summary>
     public static string? LookupBaseOf(string role) => role.Split('.') is [var identity, _]
-        ? $"{PromptFolder.Minions.Wire()}/{identity}{LookupFilePart}.md"
+        ? $"{Agents}/{identity}/{LookupBase}"
         : null;
-
-    /// <summary>
-    /// What a lookup agent's file puts between its identity and its function: <c>acme-minion-lookup</c>.
-    /// </summary>
-    private const string LookupFilePart = "-minion";
-
-    /// <summary>
-    /// The folder of a level whose roles sit in one place: the agent's modes, and the minions. A subagent sits inside
-    /// its own agent, so it has none.
-    /// </summary>
-    private static string FolderOf(RoleLevel level) => level switch
-    {
-        RoleLevel.Agent => Agents,
-        RoleLevel.Lookup => PromptFolder.Minions.Wire(),
-        _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
-    };
 
     /// <summary>Whether <paramref name="name"/> can name a role (and so can be turned into a path safely).</summary>
     public static bool IsValidName(string? name) =>
@@ -57,14 +51,14 @@ public static partial class RoleCatalog
 
     /// <summary>
     /// The skill file of a named role at <paramref name="level"/>, relative to the skills folder: a subagent's
-    /// address, <c>acme.cook</c>, is the file <c>agents/acme/subagents/cook/voice.md</c>.
+    /// address, <c>acme.cook</c>, is the file <c>agents/acme/subagents/cook/voice.md</c>, a lookup agent's,
+    /// <c>acme.lookup</c>, <c>agents/acme/lookups/lookup/voice.md</c>.
     /// </summary>
     public static string FileName(string name, RoleLevel level) => level switch
     {
-        RoleLevel.Subagent => SubagentFile(name),
-        RoleLevel.Lookup when name.Split('.') is [var identity, var function] =>
-            $"{FolderOf(level)}/{identity}{LookupFilePart}-{function}.md",
-        _ => $"{FolderOf(level)}/{name}.md",
+        RoleLevel.Subagent => HelperFile(name, SubagentsFolder),
+        RoleLevel.Lookup => HelperFile(name, LookupsFolder),
+        _ => $"{Agents}/{name}.md",
     };
 
     /// <summary>
@@ -77,27 +71,16 @@ public static partial class RoleCatalog
         (level switch
         {
             RoleLevel.Agent => Modes(),
-            RoleLevel.Subagent => Subagents(),
-            _ => Lookups()
+            RoleLevel.Subagent => Helpers(SubagentsFolder),
+            _ => Helpers(LookupsFolder)
         })
         .Where(IsValidName)
         .Order(StringComparer.Ordinal)
         .ToList();
 
     /// <summary>
-    /// Every lookup agent by its address: <c>minions/acme-minion-lookup.md</c> is <c>acme.lookup</c>; a base,
-    /// <c>acme-minion.md</c>, has no function after it, so it is none.
-    /// </summary>
-    private static IEnumerable<string> Lookups() =>
-        SkillFileSource.Files(FolderOf(RoleLevel.Lookup))
-            .Where(file => file.EndsWith(".md", StringComparison.Ordinal))
-            .Select(file => file[..^".md".Length].Split($"{LookupFilePart}-"))
-            .Where(parts => parts is [_, _])
-            .Select(parts => $"{parts[0]}.{parts[1]}");
-
-    /// <summary>
     /// The level that has a role by this name, or none (F127.3.1): a mode is the agent's, an address an agent's
-    /// subagent's, one in <c>minions/</c> a minion's. A name is at one level only.
+    /// subagent's or lookup agent's. A name is at one level only.
     /// </summary>
     public static RoleLevel? LevelOf(string? role)
     {
@@ -134,14 +117,15 @@ public static partial class RoleCatalog
 
     /// <summary>
     /// The modes in <c>agents/</c>, one per <c>{product}/{mode}.md</c>: not the function skills, not a product's shared
-    /// <c>voice.md</c> when it has language modes.
+    /// <c>voice.md</c> when it has language modes, and not its lookup agents' base, <c>lookup.md</c>.
     /// </summary>
     private static IEnumerable<string> Modes()
     {
         var files = SkillFileSource.EmbeddedFiles
             .Where(f => f.StartsWith(Agents + "/", StringComparison.Ordinal) &&
                         f.EndsWith(".md", StringComparison.Ordinal)
-                        && !f.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal))
+                        && !f.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal)
+                        && Path.GetFileName(f) != LookupBase)
             .Select(f => f[(Agents.Length + 1)..^".md".Length])
             .Where(n => n.Count(c => c == '/') == 1)
             .ToList();
@@ -151,22 +135,23 @@ public static partial class RoleCatalog
     }
 
     /// <summary>
-    /// Every agent's subagents by their addresses: <c>agents/acme/subagents/cook/voice.md</c> is <c>acme.cook</c>.
+    /// Every agent's helpers in one of its folders, by their addresses: <c>agents/acme/subagents/cook/voice.md</c> is
+    /// <c>acme.cook</c>, and so is <c>agents/acme/lookups/cook/voice.md</c> among the lookup agents.
     /// </summary>
-    private static IEnumerable<string> Subagents() =>
+    private static IEnumerable<string> Helpers(string folder) =>
         SkillFileSource.EmbeddedFiles
             .Select(file => file.Split('/'))
-            .Where(parts => parts is [var agents, _, var subagents, _, var voice]
-                            && agents == Agents && subagents == SubagentsFolder && voice == Voice)
+            .Where(parts => parts is [var agents, _, var kind, _, var voice]
+                            && agents == Agents && kind == folder && voice == Voice)
             .Select(parts => $"{parts[1]}.{parts[3]}");
 
     /// <summary>
-    /// A subagent's file from its address, inside its agent; a name without its identity points at no file, so it is
-    /// refused as unknown.
+    /// A helper's file from its address, inside its agent in <paramref name="folder"/>; a name without its identity
+    /// points at no file, so it is refused as unknown.
     /// </summary>
-    private static string SubagentFile(string address) => address.Split('.') is [var identity, var subagent]
-        ? $"{Agents}/{identity}/{SubagentsFolder}/{subagent}/{Voice}"
-        : $"{Agents}/{SubagentsFolder}/{address}/{Voice}";
+    private static string HelperFile(string address, string folder) => address.Split('.') is [var identity, var name]
+        ? $"{Agents}/{identity}/{folder}/{name}/{Voice}"
+        : $"{Agents}/{folder}/{address}/{Voice}";
 
     /// <summary>A language mode: matches <c>acme/voice-af</c> (code <c>af</c>), not <c>acme/voice</c>.</summary>
     [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]

@@ -1,5 +1,5 @@
 ---
-name: testprod-minion-lookup
+name: voice
 description: The test product's minion that looks one thing up.
 metadata:
   level: lookup

@@ -7,8 +7,8 @@ using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
 // F30 step 4: a minion (level 2) is a function on the minion base; the specialist hands it one of its own tools (Louis:
-// no list of tools per role, the specialist's toolbox is the only one). CL15: on the tests' own minion
-// (Prompts/minions/).
+// no list of tools per role, the specialist's toolbox is the only one). CL68.3: on the tests' own lookup agent,
+// agents/testprod/lookups/lookup/.
 public class MinionRolesTests
 {
     [Test]
@@ -16,7 +16,10 @@ public class MinionRolesTests
     {
         // CL68.3: a lookup agent is listed by its address; the base frames every one of its identity's and is no role.
         Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod.lookup" }));
-        Assert.That(RoleCatalog.LookupBaseOf("testprod.lookup"), Is.EqualTo("minions/testprod-minion.md"));
+        Assert.That(RoleCatalog.LookupBaseOf("testprod.lookup"), Is.EqualTo("agents/testprod/lookup.md"));
+        Assert.That(RoleCatalog.FileName("testprod.lookup", RoleLevel.Lookup),
+            Is.EqualTo("agents/testprod/lookups/lookup/voice.md"), "inside its agent, apart from its subagents");
+        Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Does.Not.Contain("testprod.lookup"));
         Assert.That(RoleCatalog.LookupBaseOf("testprod/voice-en"), Is.Null, "a mode has no lookup base");
     }
 

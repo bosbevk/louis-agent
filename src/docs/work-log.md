@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 152 | 77 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 43 | 28 |
+| Cleanups (`CL`) | 43 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (109 in the TODO)
+## Open (110 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -131,6 +131,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 | CL69 | The framework's web library still names its chat code with the old word (`SpecialistAnswer` and its tests, and about 20 files' summaries): rename it to subagent through Rider (found in CL68.2, ADR 0133) | Cleanups |
+| CL70 | `AgentSessions.Create` as a method object (Louis, 2026-11-22: "why is this so ugly", his pick A of three, over a builder and a chain of checks): its eleven parameters one `SessionRequest` record, its body a `SessionOpening` class of small named steps, its four messages' holes records (ADR 0119); after CL68.3, before CL69 | Cleanups |
 
 ## Features (152 done)
 

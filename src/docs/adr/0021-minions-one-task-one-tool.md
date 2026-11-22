@@ -7,7 +7,8 @@
 gone. The rest (one task, one tool, the parent's toolbox the ceiling, `MINION_LLMS`, 16 a turn, never kept) stands.
 **Amended** (CL68.3, 2026-11-22, with [ADR 0133](0133-subagents-live-inside-their-agent.md); Louis: "Minions -->
 lookup-agents sub-agents"): a minion is a **lookup agent**, a subagent cut down to one task and one tool, kept inside
-its agent at `agents/{identity}/subagents/{name}/voice.md` with `level: lookup` in its header, named by its address
+its agent in a folder of its own, `agents/{identity}/lookups/{name}/voice.md`, apart from its subagents so a big
+identity reads well, with `level: lookup` in its header, named by its address
 (`acme.lookup`), and loading its identity's `agents/{identity}/lookup.md` first, where the base was
 `minions/{product}-minion.md`. `RoleLevel.Lookup`, `LookupAsk` and the setting `LOOKUP_LLMS` replace the minion
 names, with no old name kept (ADR 0049). The decision below stands under the new names.
