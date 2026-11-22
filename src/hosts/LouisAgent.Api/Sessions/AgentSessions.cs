@@ -1,3 +1,4 @@
+using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Api.Messages.Holes.Lookups;
 using LouisAgent.Api.Messages.Holes.Opening;
@@ -56,10 +57,14 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// <see cref="LookupAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
     /// Every other role refuses a tool.
     /// </summary>
-    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
-        string? role = null,
-        UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
-        SessionReplay? replay = null, SessionOpener? opener = null, string? identity = null)
+    public AgentSession Create(SessionRequest request) =>
+        Open(request.Toolsets, request.Tags, request.Depth, request.Role, request.Place, request.Llm, request.Tool,
+            request.Format, request.Replay, request.Opener, request.Identity);
+
+    /// <summary>The opening itself, from the request's values.</summary>
+    private AgentSession Open(IEnumerable<string>? toolsets, UsageTags? tags, int depth, string? role,
+        UserPlace? place, string? llm, string? tool, StreamFormat format, SessionReplay? replay,
+        SessionOpener? opener, string? identity)
     {
         // Who the session is (F109.3): the identity it names, whose voice it opens in unless it names a role of its
         // own; an identity this instance doesn't run is refused by name, with the ones it does.
