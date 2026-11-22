@@ -30,6 +30,11 @@ The step's test passes. This takes it to a commit. Four stops come first.
    names an SVG that wasn't redrawn after its JSON changed. On the last step, use `/finish-a-feature`, or
    `/fix-a-bug` for a fix. The plan changes only under *Approved during the build*. New text goes in
    the doc of its type.
+
+   A word changed in many files, or a thing deleted, needs three more looks. Louis's quotes keep their words, and a
+   string a test compares (a golden, a pinned name) changes only on purpose. A count of what was deleted is searched
+   for in the tests (`31`, `>= 30`), since an integration test or a sanity floor may still hold the old number. And a
+   name Rider's rename can't reach, such as a local, is changed by hand and built.
 4. **Format** every C# file in the commit, in this order and once:
    1. the commit's files (`git diff --name-only`, or Rider's git status tool);
    2. Rider's own formatter on each, through its MCP server: it is the one that wraps lines to 120, which
@@ -109,10 +114,6 @@ A change to the engine reaches every image in use.
 |---|---|
 | The framework's site | `docker compose -f src/site/docker/docker-compose.yml up -d --build` |
 | The code-review API or its web app | `docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api` |
-
-**Never while an eval run is going.** A run started from the eval studio runs inside the container. A rebuild makes
-the container again, and that ends the run. `GET /v1/admin/evals/runs/current` says whether one is going. Wait for
-it to end, then rebuild.
 
 ## In a cloud thread
 

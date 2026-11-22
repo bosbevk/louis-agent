@@ -1,4 +1,5 @@
 using LouisAgent.Site.Content.Trust;
+using LouisAgent.Site.Content.Trust.Parts;
 using LouisAgent.Site.Pages.About;
 using LouisAgent.Web.Components.Site.Tiles;
 
@@ -20,10 +21,11 @@ public class TrustPageTests
         var cut = ctx.Render<TrustPage>();
 
         var ids = cut.FindAll("section").Select(section => section.GetAttribute("id")).ToList();
-        Assert.That(ids, Is.EqualTo(new[]
-        {
-            "top", "where-it-runs", "your-data", "ai-safety", "if-something-breaks", "before-paying-customers"
-        }));
+        Assert.That(ids,
+            Is.EqualTo(new[]
+            {
+                "top", "where-it-runs", "your-data", "ai-safety", "if-something-breaks", "before-paying-customers"
+            }));
     }
 
     /// <summary>Every fact on the page is a tile that says In place or Not yet, and both kinds are there.</summary>
@@ -66,7 +68,7 @@ public class TrustPageTests
     [Test]
     public void RebuiltFromCode_IsInPlace_HeldToTheBicepFile()
     {
-        var fact = TrustFacts.IfSomethingBreaks.Single(fact => fact.Title == "Rebuilt from code");
+        var fact = TrustFacts.IfSomethingBreaks[ContinuityFact.RebuiltFromCode];
 
         Assert.That(fact.Status, Is.EqualTo(TileStatus.Done));
         Assert.That(fact.Source, Is.EqualTo("src/site/deploy/azure/main.bicep"));

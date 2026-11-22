@@ -27,9 +27,10 @@ A cleanup (`CL`) finishes by the same list, and so does each child of a parent (
    change anything the build proved different (for example F4's two cache markers instead of three).
 4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from the
    TODO's [Known limitations](../../../TODO.md#known-limitations) (the one list).
-5. **Measure:** for a feature that changes cost or quality, run its eval ([Run the evals](../../../src/docs/guides/run-the-evals.md);
-   a live run spends money, so on Louis's go). The run is kept in the eval store, so the write-up names the run's id
-   and its numbers.
+5. **Measure:** for a feature that changes cost or quality, run its eval on Louis's go, since a live run spends
+   money, and the write-up names the run and its numbers. The evals are being rebuilt
+   ([ADR 0134](../../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)), so until they run again the
+   write-up says plainly that no eval measured it.
 6. **The docs of every project it touched** (Louis, 2026-11-13): list the projects the feature's commits changed
    (`git diff --name-only main...HEAD`, by folder). For each one, read its design doc and its how-to (both show under
    `docs/` in the project in Rider) against the code as it is now: the parts, the structure table, the settings, how

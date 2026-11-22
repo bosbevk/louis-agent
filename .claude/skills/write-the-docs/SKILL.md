@@ -93,6 +93,7 @@ in ([the docs rules](../../rules/docs.md#what-every-doc-is), "explanatory and de
 - No bulleted list where it explains; no bold label followed by type names in brackets.
 - No build history: no "Claude picked", no "unattended", no dates of how the work went.
 - Every link and anchor resolves (`grep -rn "file.md#"` for a renamed heading), and the index line closes the doc.
+- An ADR another supersedes changes only its status line and its row in the index; the rest stays as written.
 - The Docs tests pass: `dotnet test src/tests/engine/LouisAgent.Core.Tests --filter "FullyQualifiedName~Docs"`.
 
 ## Handing it over

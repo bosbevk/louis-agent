@@ -40,6 +40,10 @@ A step that changes behaviour starts with its test (ADR 0014).
 A docs-only or configuration-only step has no test first. A change the tests can't reach says so when it is shown,
 with how it was checked instead.
 
+A deletion's test first is a list that names what goes, such as `PackagesTests`' packable projects, changed first
+and seen failing on the project still there. A removed test case only stops running, so it can't fail: when a list
+like that is all there is, say so when the step is shown.
+
 A refactor that changes no behaviour has no new test first either. Fowler defines a refactoring as a change to the
 code's inside "without changing its observable behavior", so the tests already there are what hold it, and they
 must pass before and after, unchanged. When it is shown, name those tests and what they assert, and say that no
