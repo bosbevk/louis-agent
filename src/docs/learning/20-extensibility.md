@@ -996,3 +996,49 @@ right after a page loaded, but did after a click; that wasn't looked into.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): one shared door, so a way to ask is a button. And *8 Memory and
 retrieval*: an index read from the real pages answers a search for nothing.
+
+## F169.3: one unit that meant something else, and a mark three places wear (2026-11-22)
+
+The design review found the brand's own parts in three states on one page. The violet ball in the name was 0.41
+of the letters in the header, half of them in the footer, and about three quarters under every picture. Orbi had
+no face, and the footer was a name with no link. Louis picked one size for the ball everywhere, the mark on Orbi and
+above the Overview's first words, and a footer of one row with three links. Four of the choices on the way were his
+on cards, and he picked the first option on each.
+
+The most useful lesson was one line. A theme said the ball's size in em, and everyone read that as a share of the
+name. It wasn't. The orb sets its own 17 pixel font size for the letter it can carry, so inside a name an em was
+always 17 pixels, whatever the name's size. Flat's ".5em" was 8.5 pixels in a 20.8 pixel header and in a 16.9 pixel
+footer alike, and that is why the footer's ball looked bigger. One `font-size: inherit` on the orb inside a name
+made the unit mean what the themes said. Then the values could be fixed: flat to 0.41, and glass, retro and the
+framework's default to 0.62, both measured on the running sites. A framework control serves every site, so a fix to
+it lands in every theme at once. That is why glass and retro waited on a card: between steps 2 and 8 their ball was
+three quarters of the letters on the branch, and nothing merged until it was settled.
+
+The mark in three new places is composition, not new drawing. The header's button, the panel's head and the
+phone's button each draw the framework's `Orb` and set its size, with its rings hidden, because a mark on a button
+is not an agent at work. Which layout's folded button wears the mark is a question asked of `WidgetLook`, the type
+that already knew what each layout adds, so the markup works nothing out. The first letter the bar put on its orb
+was written out in the bar, and the panel's head needed the same letter, so it moved to `Orb.InitialOf`, and both
+ask it. The mark above the Overview took a named `Mark` slot on `Band`, Louis's pick over a band that draws the orb
+itself or a control before the section. The slot is Blazor's templated component, the pattern `CornerLink` and the
+site's frame already use, and the band learns nothing of what a mark is. Its size grows with the screen's width
+from 48 to 64, a clamp and not a breakpoint, so the rule that our Sass writes no breakpoint held.
+
+The picture's ball was a contract with a font on someone else's machine. The name under every picture is one line
+of text, and its ball was the character ●, which Geist doesn't have, so every reader's browser borrowed it from
+another font: larger and above the line. Louis picked Geist's own bullet, at 1.41 times the letters with a drop of a
+tenth of a letter, over drawing the name as outlines or placing a disc by measured widths. It stays text, takes the
+picture's colours and needs the engine to measure nothing. Every picture in the repo was drawn again, 476 of them,
+and the one rendered in Geist shows the ball standing on the line at a small letter's height.
+
+What looking found that tests did not. The header button's mark first stood 19 pixels from its words instead of
+about 9, because every `.btn` is already a flex row with a 10 pixel gap and the mark added its own room. The tests
+were green, and only the picture of the running page showed it. A comment line put into the framework's sheet of
+surface names made a rule test miss the next name, since that test reads the sheet's declarations line by line; the
+comment came out again.
+
+What it cost: nothing was paid for. Every check was a test, a measure with Playwright on the local sites, or a
+picture of them.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a unit inside a shared control decides what every theme's
+value means, and a slot lets one page hand a part something the part need not know.

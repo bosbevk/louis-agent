@@ -33,7 +33,8 @@ public class PictureBrandTests
 
     /// <summary>
     /// The brand is the site's wordmark (Louis: "must look like this one just a bit smaller"): "l", the mark as its
-    /// "o", then "uis-agent", one word at the picture's right edge, heard as louis-agent.
+    /// "o", then "uis-agent", one word at the picture's right edge, heard as louis-agent. The mark is Geist's own bullet,
+    /// so it is drawn from the picture's own font (F169.3).
     /// </summary>
     [Test]
     public void TheBrand_IsTheSitesWordmark_AtTheRight()
@@ -44,12 +45,30 @@ public class PictureBrandTests
         Assert.Multiple(() =>
         {
             Assert.That(name.Nodes().Select(node => node is XElement span ? $"[{span.Value}]" : node.ToString()),
-                Is.EqualTo(new[] { "l", "[●]", "uis-agent" }), "the mark in the place of the o, nothing between");
+                Is.EqualTo(new[] { "l", "[•]", "[uis-agent]" }), "the mark in the place of the o, nothing between");
             Assert.That(mark.Attribute("class")?.Value, Is.EqualTo("pic-mark"));
             Assert.That(name.Attribute("aria-label")?.Value, Is.EqualTo("louis-agent"));
             Assert.That(name.Attribute("text-anchor")?.Value, Is.EqualTo("end"));
             Assert.That(name.Attribute("x")?.Value, Is.EqualTo(SvgWriter.N(300 - PictureBuilder.Inset)),
                 "in a little from the picture's right edge");
+        });
+    }
+
+    /// <summary>
+    /// F169.3: the ball is the header's share of the letters and stands on their line (Louis's pick A of three, "Geist's
+    /// own bullet, in the line"): the bullet at 1.41 times the letters draws a disc 0.41 of them, set down a tenth of
+    /// a letter, and the letters after it lifted back by as much, so they keep the line.
+    /// </summary>
+    [Test]
+    public void TheBall_IsTheHeadersShare_AndStandsOnTheLine()
+    {
+        var spans = Brand(Bare()).Element(Svg + "text")!.Elements(Svg + "tspan").ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(PictureBrand.Style, Does.Contain(".pic-mark { fill: #6b4dff; font-size: 1.41em; }"));
+            Assert.That(spans[0].Attribute("dy")?.Value, Is.EqualTo("1.5"), "a tenth of a 15 pixel letter down");
+            Assert.That(spans[1].Attribute("dy")?.Value, Is.EqualTo("-1.5"), "and the letters after it back up");
         });
     }
 

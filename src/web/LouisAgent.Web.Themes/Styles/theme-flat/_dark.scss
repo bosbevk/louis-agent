@@ -133,9 +133,9 @@
     // The page: one solid colour, no lines and no lights (FX182).
     --web-page-lines: none;
     --web-page-lights: none;
-    // The mark as a letter of the name: the size of glass's ball without its bubble, since flat has none, the small
-    // letters' height (FX184, Louis: "the blue dot must be smaller on flat cause we do not have another bubble").
-    --web-wordmark-o: .5em;
+    // The mark as a letter of the name: the header's share of the letters, wherever the name stands (F169.3, Louis's
+    // pick "B: the header's size, everywhere").
+    --web-wordmark-o: .41em;
 
     // Under the pointer, as the design's (FX185): the main button the lighter violet, the second filled white with
     // black words, and a chip's line white.

@@ -71,7 +71,9 @@ and the foot of each page leads to the one before and after.
 ### 3. How a page is put together
 
 A page is a run of `Band`s, each a named section with an id in words. A band holds the parts it needs and ends with
-its `DocLinks`, the docs it was written from. The Overview is the fullest example.
+its `DocLinks`, the docs it was written from. The Overview is the fullest example. Its first section opens with
+the brand's mark, the framework's orb handed to the band's `Mark` slot, over the topic: 64 across on a desktop and
+48 on a phone. No other section of any page has one, and `OverviewPageTests` holds it.
 
 ![The Overview: a band at a glance, a band with the real program and its docs, one band for each family, read from FrameworkFamily, and why C#](diagrams/LouisAgent.Web.Framework-components-overview.svg)
 
