@@ -8,7 +8,6 @@ public enum AiSafetyFact
     ModelTextIsData,
     HardLimits,
     EveryRequestMeasured,
-    CheckedOnEvals,
-    InjectionTestsAndAuditLog,
-    EvalsBeforeRelease
+    EvalsRebuilt,
+    InjectionTestsAndAuditLog
 }

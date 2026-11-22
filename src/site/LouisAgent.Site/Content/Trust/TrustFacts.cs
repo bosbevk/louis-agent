@@ -106,15 +106,12 @@ public static class TrustFacts
             AiSafetyFact.EveryRequestMeasured => new(TileStatus.Done, "Every request measured and watched",
                 "Each request to the model is priced in a ledger, and each step of a chat is traced in Azure's " +
                 "monitoring. One address opens at most 20 chats a day.", "src/docs/adr/0007-measure-every-request.md"),
-            AiSafetyFact.CheckedOnEvals => new(TileStatus.Done, "Checked on evals",
-                "Agents are checked on evals written in C#, scored by code and by a model as judge, with a person " +
-                "reviewing what the judge flags.", "src/docs/adr/0029-simulations-in-csharp.md"),
+            AiSafetyFact.EvalsRebuilt => new(TileStatus.Open, "Evals, being rebuilt",
+                "The old evals are deleted, and new ones are being built from scratch. Until they run, every merge " +
+                "runs the unit and integration tests.", "src/docs/adr/0134-an-eval-is-one-file-of-conversations.md"),
             AiSafetyFact.InjectionTestsAndAuditLog => new(TileStatus.Open, "Prompt-injection tests and an audit log",
                 "A suite of injection attacks, checks on what the agent says, and a log of every action are " +
                 "planned, not built.", "src/docs/plans/phase-7-checked-and-guarded.md"),
-            AiSafetyFact.EvalsBeforeRelease => new(TileStatus.Open, "Evals before every release",
-                "Every merge runs the unit and integration tests. Live evals cost money and are run by hand, so " +
-                "they don't hold back a release yet.", ".github/workflows/ci.yml"),
             _ => throw new ArgumentOutOfRangeException(nameof(fact), fact, null)
         });
 

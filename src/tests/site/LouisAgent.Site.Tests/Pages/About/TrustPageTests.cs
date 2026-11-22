@@ -75,6 +75,19 @@ public class TrustPageTests
     }
 
     /// <summary>
+    /// The evals are one tile, and it is open: they are being rebuilt from scratch, so the page shows them as planned,
+    /// never as in place (F126.1, Louis's pick, "One open tile that says so"; ADR 0100).
+    /// </summary>
+    [Test]
+    public void TheEvals_AreOneOpenTile()
+    {
+        var evals = TrustFacts.All.Where(fact => fact.Title.Contains("eval", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.That(evals.Select(fact => fact.Status), Is.EqualTo(new[] { TileStatus.Open }));
+    }
+
+    /// <summary>
     /// No fact rests on a demo's file: a demo can leave and take its files with it, and the fact would point at nothing
     /// (FX215, Puls's Bicep file).
     /// </summary>
